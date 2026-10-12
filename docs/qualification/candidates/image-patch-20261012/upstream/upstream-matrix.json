@@ -1,0 +1,1922 @@
+{
+  "approvedRecipeDelta": null,
+  "approvedSnapshotDelta": null,
+  "baseCommit": "90b4dc8472da13cdee9f49cdc0b4c8306ecbdc73",
+  "counts": {
+    "cohorts": {
+      "CURRENT_47": 47,
+      "HISTORICAL_OMITTED_TWO": 2,
+      "OLDER_FIVE": 5
+    },
+    "current47Severity": {
+      "CRITICAL": 5,
+      "HIGH": 17,
+      "LOW": 7,
+      "MEDIUM": 17,
+      "UNDEFINED": 1
+    },
+    "disposition": {
+      "OPEN": 54
+    },
+    "total": 54
+  },
+  "dateUtc": "2026-10-12",
+  "executionAdmission": "NOT_EXECUTABLE",
+  "rows": [
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-107655",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "2.4.18-1",
+        "status": "VULNERABLE"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 0,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "No released complete fix observed; eight cohort rows remain vulnerable in sid.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/cups",
+        "https://security-tracker.debian.org/tracker/CVE-2026-107655"
+      ],
+      "scannerSeverity": "MEDIUM",
+      "scannerSourcePackage": "cups",
+      "scannerSourceVersion": "2.4.10-3+deb13u2",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "cups"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-8927",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "8.23.0~rc3-1",
+        "status": "FIXED"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "8.14.1-2+deb13u5"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 1,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "Upstream8.21.0 released 2026-06-24 fixes the three cohort rows; forky 8.22.0-1 also fixed. No trixie fixed package verified.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/curl",
+        "https://security-tracker.debian.org/tracker/CVE-2026-8927"
+      ],
+      "scannerSeverity": "CRITICAL",
+      "scannerSourcePackage": "curl",
+      "scannerSourceVersion": "8.14.1-2+deb13u5",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "curl"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-24882",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "2.4.9-8",
+        "status": "FIXED"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.4.7-21+deb13u1"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 2,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "Observed sid package fixed for both rows; not a trixie package or dependency closure.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/gnupg2",
+        "https://security-tracker.debian.org/tracker/CVE-2026-24882"
+      ],
+      "scannerSeverity": "HIGH",
+      "scannerSourcePackage": "gnupg2",
+      "scannerSourceVersion": "2.4.7-21+deb13u1",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "gnupg2"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-39314",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "2.4.18-1",
+        "status": "FIXED"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 3,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "No released complete fix observed; eight cohort rows remain vulnerable in sid.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/cups",
+        "https://security-tracker.debian.org/tracker/CVE-2026-39314"
+      ],
+      "scannerSeverity": "MEDIUM",
+      "scannerSourcePackage": "cups",
+      "scannerSourceVersion": "2.4.10-3+deb13u2",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "cups"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-105326",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "2.4.18-1",
+        "status": "VULNERABLE"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 4,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "No released complete fix observed; eight cohort rows remain vulnerable in sid.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/cups",
+        "https://security-tracker.debian.org/tracker/CVE-2026-105326"
+      ],
+      "scannerSeverity": "LOW",
+      "scannerSourcePackage": "cups",
+      "scannerSourceVersion": "2.4.10-3+deb13u2",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "cups"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-85091",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "1:1.3.dfsg+really1.3.2-3",
+        "status": "VULNERABLE"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "1:1.3.dfsg+really1.3.1-1"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 5,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "Maintainer acknowledged source fix; no released Debian fixed version verified. Earlier-version scope remains disputed.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/zlib",
+        "https://security-tracker.debian.org/tracker/CVE-2026-85091"
+      ],
+      "scannerSeverity": "HIGH",
+      "scannerSourcePackage": "zlib",
+      "scannerSourceVersion": "1.3.dfsg+really1.3.1-1",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "zlib"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-86143",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "2.15.4+dfsg-1",
+        "status": "FIXED"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 6,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "Observed sid package fixed for all ten cohort rows; exact trixie backport unavailable in reviewed evidence.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/libxml2",
+        "https://security-tracker.debian.org/tracker/CVE-2026-86143"
+      ],
+      "scannerSeverity": "HIGH",
+      "scannerSourcePackage": "libxml2",
+      "scannerSourceVersion": "2.12.7+dfsg+really2.9.14-2.1+deb13u3",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "libxml2"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-95210",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "3.8.13-1",
+        "status": "VULNERABLE"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "3.8.9-3+deb13u4"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 7,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "All six cohort rows vulnerable even in sid. Critical88647/95210 await upstream assessment; description3.8.13 is not an introduced-version bound.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/gnutls28",
+        "https://security-tracker.debian.org/tracker/CVE-2026-95210"
+      ],
+      "scannerSeverity": "CRITICAL",
+      "scannerSourcePackage": "gnutls28",
+      "scannerSourceVersion": "3.8.9-3+deb13u4",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "gnutls28"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2025-68471",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "0.8-18",
+        "status": "FIXED"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "0.8-16"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 8,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "Observed sid package fixed for all five cohort rows; no trixie backport verified.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/avahi",
+        "https://security-tracker.debian.org/tracker/CVE-2025-68471"
+      ],
+      "scannerSeverity": "MEDIUM",
+      "scannerSourcePackage": "avahi",
+      "scannerSourceVersion": "0.8-16",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "avahi"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-93990",
+      "debianSid": {
+        "firstFixedVersionVerified": "2.8.4-2",
+        "observedVersion": "2.9.0-1",
+        "status": "FIXED"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.8.3-1~deb13u1"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 9,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "77214 requires 2.9.0-1.93990 first-fixed unstable2.8.4-2. Do not use2.8.5 as closure for both.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/expat",
+        "https://security-tracker.debian.org/tracker/CVE-2026-93990"
+      ],
+      "scannerSeverity": "HIGH",
+      "scannerSourcePackage": "expat",
+      "scannerSourceVersion": "2.8.3-1~deb13u1",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "expat"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-86142",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "2.15.4+dfsg-1",
+        "status": "FIXED"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 10,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "Observed sid package fixed for all ten cohort rows; exact trixie backport unavailable in reviewed evidence.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/libxml2",
+        "https://security-tracker.debian.org/tracker/CVE-2026-86142"
+      ],
+      "scannerSeverity": "HIGH",
+      "scannerSourcePackage": "libxml2",
+      "scannerSourceVersion": "2.12.7+dfsg+really2.9.14-2.1+deb13u3",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "libxml2"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-95184",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "3.8.13-1",
+        "status": "VULNERABLE"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "3.8.9-3+deb13u4"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 11,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "All six cohort rows vulnerable even in sid. Critical88647/95210 await upstream assessment; description3.8.13 is not an introduced-version bound.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/gnutls28",
+        "https://security-tracker.debian.org/tracker/CVE-2026-95184"
+      ],
+      "scannerSeverity": "HIGH",
+      "scannerSourcePackage": "gnutls28",
+      "scannerSourceVersion": "3.8.9-3+deb13u4",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "gnutls28"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-107886",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "2.4.18-1",
+        "status": "VULNERABLE"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 12,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "No released complete fix observed; eight cohort rows remain vulnerable in sid.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/cups",
+        "https://security-tracker.debian.org/tracker/CVE-2026-107886"
+      ],
+      "scannerSeverity": "LOW",
+      "scannerSourcePackage": "cups",
+      "scannerSourceVersion": "2.4.10-3+deb13u2",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "cups"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-74860",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "2.15.4+dfsg-1",
+        "status": "FIXED"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 13,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "Observed sid package fixed for all ten cohort rows; exact trixie backport unavailable in reviewed evidence.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/libxml2",
+        "https://security-tracker.debian.org/tracker/CVE-2026-74860"
+      ],
+      "scannerSeverity": "HIGH",
+      "scannerSourcePackage": "libxml2",
+      "scannerSourceVersion": "2.12.7+dfsg+really2.9.14-2.1+deb13u3",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "libxml2"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2024-52616",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "0.8-18",
+        "status": "FIXED"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "0.8-16"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 14,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "Observed sid package fixed for all five cohort rows; no trixie backport verified.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/avahi",
+        "https://security-tracker.debian.org/tracker/CVE-2024-52616"
+      ],
+      "scannerSeverity": "MEDIUM",
+      "scannerSourcePackage": "avahi",
+      "scannerSourceVersion": "0.8-16",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "avahi"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-39316",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "2.4.18-1",
+        "status": "FIXED"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 15,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "No released complete fix observed; eight cohort rows remain vulnerable in sid.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/cups",
+        "https://security-tracker.debian.org/tracker/CVE-2026-39316"
+      ],
+      "scannerSeverity": "MEDIUM",
+      "scannerSourcePackage": "cups",
+      "scannerSourceVersion": "2.4.10-3+deb13u2",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "cups"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-86137",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "2.15.4+dfsg-1",
+        "status": "FIXED"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 16,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "Observed sid package fixed for all ten cohort rows; exact trixie backport unavailable in reviewed evidence.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/libxml2",
+        "https://security-tracker.debian.org/tracker/CVE-2026-86137"
+      ],
+      "scannerSeverity": "MEDIUM",
+      "scannerSourcePackage": "libxml2",
+      "scannerSourceVersion": "2.12.7+dfsg+really2.9.14-2.1+deb13u3",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "libxml2"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-88647",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "3.8.13-1",
+        "status": "VULNERABLE"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "3.8.9-3+deb13u4"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 17,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "All six cohort rows vulnerable even in sid. Critical88647/95210 await upstream assessment; description3.8.13 is not an introduced-version bound.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/gnutls28",
+        "https://security-tracker.debian.org/tracker/CVE-2026-88647"
+      ],
+      "scannerSeverity": "CRITICAL",
+      "scannerSourcePackage": "gnutls28",
+      "scannerSourceVersion": "3.8.9-3+deb13u4",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "gnutls28"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2025-68468",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "0.8-18",
+        "status": "FIXED"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "0.8-16"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 18,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "Observed sid package fixed for all five cohort rows; no trixie backport verified.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/avahi",
+        "https://security-tracker.debian.org/tracker/CVE-2025-68468"
+      ],
+      "scannerSeverity": "MEDIUM",
+      "scannerSourcePackage": "avahi",
+      "scannerSourceVersion": "0.8-16",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "avahi"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-24401",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "0.8-18",
+        "status": "FIXED"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "0.8-16"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 19,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "Observed sid package fixed for all five cohort rows; no trixie backport verified.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/avahi",
+        "https://security-tracker.debian.org/tracker/CVE-2026-24401"
+      ],
+      "scannerSeverity": "MEDIUM",
+      "scannerSourcePackage": "avahi",
+      "scannerSourceVersion": "0.8-16",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "avahi"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-86141",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "2.15.4+dfsg-1",
+        "status": "FIXED"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 20,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "Observed sid package fixed for all ten cohort rows; exact trixie backport unavailable in reviewed evidence.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/libxml2",
+        "https://security-tracker.debian.org/tracker/CVE-2026-86141"
+      ],
+      "scannerSeverity": "LOW",
+      "scannerSourcePackage": "libxml2",
+      "scannerSourceVersion": "2.12.7+dfsg+really2.9.14-2.1+deb13u3",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "libxml2"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-88648",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "3.8.13-1",
+        "status": "VULNERABLE"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "3.8.9-3+deb13u4"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 21,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "All six cohort rows vulnerable even in sid. Critical88647/95210 await upstream assessment; description3.8.13 is not an introduced-version bound.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/gnutls28",
+        "https://security-tracker.debian.org/tracker/CVE-2026-88648"
+      ],
+      "scannerSeverity": "UNDEFINED",
+      "scannerSourcePackage": "gnutls28",
+      "scannerSourceVersion": "3.8.9-3+deb13u4",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "gnutls28"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-107890",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "2.4.18-1",
+        "status": "VULNERABLE"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 22,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "No released complete fix observed; eight cohort rows remain vulnerable in sid.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/cups",
+        "https://security-tracker.debian.org/tracker/CVE-2026-107890"
+      ],
+      "scannerSeverity": "LOW",
+      "scannerSourcePackage": "cups",
+      "scannerSourceVersion": "2.4.10-3+deb13u2",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "cups"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-34980",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "2.4.18-1",
+        "status": "FIXED"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 23,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "No released complete fix observed; eight cohort rows remain vulnerable in sid.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/cups",
+        "https://security-tracker.debian.org/tracker/CVE-2026-34980"
+      ],
+      "scannerSeverity": "MEDIUM",
+      "scannerSourcePackage": "cups",
+      "scannerSourceVersion": "2.4.10-3+deb13u2",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "cups"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-107888",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "2.4.18-1",
+        "status": "VULNERABLE"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 24,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "No released complete fix observed; eight cohort rows remain vulnerable in sid.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/cups",
+        "https://security-tracker.debian.org/tracker/CVE-2026-107888"
+      ],
+      "scannerSeverity": "MEDIUM",
+      "scannerSourcePackage": "cups",
+      "scannerSourceVersion": "2.4.10-3+deb13u2",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "cups"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-95209",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "3.8.13-1",
+        "status": "VULNERABLE"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "3.8.9-3+deb13u4"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 25,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "All six cohort rows vulnerable even in sid. Critical88647/95210 await upstream assessment; description3.8.13 is not an introduced-version bound.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/gnutls28",
+        "https://security-tracker.debian.org/tracker/CVE-2026-95209"
+      ],
+      "scannerSeverity": "HIGH",
+      "scannerSourcePackage": "gnutls28",
+      "scannerSourceVersion": "3.8.9-3+deb13u4",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "gnutls28"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-107161",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "2.1.28+dfsg1-11",
+        "status": "VULNERABLE"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.1.28+dfsg1-9"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 26,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "PR892 closed by author deleting head repository; no reviews or merge shown. Reporter patch is not a release.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/cyrus-sasl2",
+        "https://security-tracker.debian.org/tracker/CVE-2026-107161"
+      ],
+      "scannerSeverity": "HIGH",
+      "scannerSourcePackage": "cyrus-sasl2",
+      "scannerSourceVersion": "2.1.28+dfsg1-9",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "cyrus-sasl2"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-107885",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "2.4.18-1",
+        "status": "VULNERABLE"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 27,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "No released complete fix observed; eight cohort rows remain vulnerable in sid.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/cups",
+        "https://security-tracker.debian.org/tracker/CVE-2026-107885"
+      ],
+      "scannerSeverity": "LOW",
+      "scannerSourcePackage": "cups",
+      "scannerSourceVersion": "2.4.10-3+deb13u2",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "cups"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-86139",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "2.15.4+dfsg-1",
+        "status": "FIXED"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 28,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "Observed sid package fixed for all ten cohort rows; exact trixie backport unavailable in reviewed evidence.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/libxml2",
+        "https://security-tracker.debian.org/tracker/CVE-2026-86139"
+      ],
+      "scannerSeverity": "HIGH",
+      "scannerSourcePackage": "libxml2",
+      "scannerSourceVersion": "2.12.7+dfsg+really2.9.14-2.1+deb13u3",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "libxml2"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-86144",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "2.15.4+dfsg-1",
+        "status": "FIXED"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 29,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "Observed sid package fixed for all ten cohort rows; exact trixie backport unavailable in reviewed evidence.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/libxml2",
+        "https://security-tracker.debian.org/tracker/CVE-2026-86144"
+      ],
+      "scannerSeverity": "HIGH",
+      "scannerSourcePackage": "libxml2",
+      "scannerSourceVersion": "2.12.7+dfsg+really2.9.14-2.1+deb13u3",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "libxml2"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-107705",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "26.07.0-3",
+        "status": "VULNERABLE"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "25.03.0-5+deb13u4"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 30,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "No fixed Debian package verified. Upstream merge request was inaccessible through an anti-bot page.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/poppler",
+        "https://security-tracker.debian.org/tracker/CVE-2026-107705"
+      ],
+      "scannerSeverity": "HIGH",
+      "scannerSourcePackage": "poppler",
+      "scannerSourceVersion": "25.03.0-5+deb13u4",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "poppler"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-87875",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "2.4.18-1",
+        "status": "VULNERABLE"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 31,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "No released complete fix observed; eight cohort rows remain vulnerable in sid.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/cups",
+        "https://security-tracker.debian.org/tracker/CVE-2026-87875"
+      ],
+      "scannerSeverity": "MEDIUM",
+      "scannerSourcePackage": "cups",
+      "scannerSourceVersion": "2.4.10-3+deb13u2",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "cups"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-8924",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "8.23.0~rc3-1",
+        "status": "FIXED"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "8.14.1-2+deb13u5"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 32,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "Upstream8.21.0 released 2026-06-24 fixes the three cohort rows; forky 8.22.0-1 also fixed. No trixie fixed package verified.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/curl",
+        "https://security-tracker.debian.org/tracker/CVE-2026-8924"
+      ],
+      "scannerSeverity": "CRITICAL",
+      "scannerSourcePackage": "curl",
+      "scannerSourceVersion": "8.14.1-2+deb13u5",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "curl"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-77214",
+      "debianSid": {
+        "firstFixedVersionVerified": "2.9.0-1",
+        "observedVersion": "2.9.0-1",
+        "status": "FIXED"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.8.3-1~deb13u1"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 33,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "77214 requires 2.9.0-1.93990 first-fixed unstable2.8.4-2. Do not use2.8.5 as closure for both.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/expat",
+        "https://security-tracker.debian.org/tracker/CVE-2026-77214"
+      ],
+      "scannerSeverity": "HIGH",
+      "scannerSourcePackage": "expat",
+      "scannerSourceVersion": "2.8.3-1~deb13u1",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "expat"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-34979",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "2.4.18-1",
+        "status": "FIXED"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 34,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "No released complete fix observed; eight cohort rows remain vulnerable in sid.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/cups",
+        "https://security-tracker.debian.org/tracker/CVE-2026-34979"
+      ],
+      "scannerSeverity": "MEDIUM",
+      "scannerSourcePackage": "cups",
+      "scannerSourceVersion": "2.4.10-3+deb13u2",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "cups"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-41079",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "2.4.18-1",
+        "status": "FIXED"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 35,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "No released complete fix observed; eight cohort rows remain vulnerable in sid.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/cups",
+        "https://security-tracker.debian.org/tracker/CVE-2026-41079"
+      ],
+      "scannerSeverity": "MEDIUM",
+      "scannerSourcePackage": "cups",
+      "scannerSourceVersion": "2.4.10-3+deb13u2",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "cups"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-18495",
+      "debianSid": {
+        "firstFixedVersionVerified": "4.7.1-1",
+        "observedVersion": "4.7.2-1",
+        "status": "FIXED"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "4.7.0-3+deb13u3"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 36,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "18495 first-fixed unstable4.7.1-1;52490 first-fixed 4.7.2-1. Utility scope is a lead, not all-copy or runtime nonapplicability.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/CVE-2026-52490",
+        "https://security-tracker.debian.org/tracker/CVE-2026-18495"
+      ],
+      "scannerSeverity": "MEDIUM",
+      "scannerSourcePackage": "tiff",
+      "scannerSourceVersion": "4.7.0-3+deb13u3",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "tiff"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-86138",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "2.15.4+dfsg-1",
+        "status": "FIXED"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 37,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "Observed sid package fixed for all ten cohort rows; exact trixie backport unavailable in reviewed evidence.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/libxml2",
+        "https://security-tracker.debian.org/tracker/CVE-2026-86138"
+      ],
+      "scannerSeverity": "HIGH",
+      "scannerSourcePackage": "libxml2",
+      "scannerSourceVersion": "2.12.7+dfsg+really2.9.14-2.1+deb13u3",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "libxml2"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-52490",
+      "debianSid": {
+        "firstFixedVersionVerified": "4.7.2-1",
+        "observedVersion": "4.7.2-1",
+        "status": "FIXED"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "4.7.0-3+deb13u3"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 38,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "18495 first-fixed unstable4.7.1-1;52490 first-fixed 4.7.2-1. Utility scope is a lead, not all-copy or runtime nonapplicability.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/CVE-2026-52490",
+        "https://security-tracker.debian.org/tracker/CVE-2026-52490"
+      ],
+      "scannerSeverity": "CRITICAL",
+      "scannerSourcePackage": "tiff",
+      "scannerSourceVersion": "4.7.0-3+deb13u3",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "tiff"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-67693",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "3.8.13-1",
+        "status": "VULNERABLE"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "3.8.9-3+deb13u4"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 39,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "All six cohort rows vulnerable even in sid. Critical88647/95210 await upstream assessment; description3.8.13 is not an introduced-version bound.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/gnutls28",
+        "https://security-tracker.debian.org/tracker/CVE-2026-67693"
+      ],
+      "scannerSeverity": "HIGH",
+      "scannerSourcePackage": "gnutls28",
+      "scannerSourceVersion": "3.8.9-3+deb13u4",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "gnutls28"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-86140",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "2.15.4+dfsg-1",
+        "status": "FIXED"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 40,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "Observed sid package fixed for all ten cohort rows; exact trixie backport unavailable in reviewed evidence.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/libxml2",
+        "https://security-tracker.debian.org/tracker/CVE-2026-86140"
+      ],
+      "scannerSeverity": "HIGH",
+      "scannerSourcePackage": "libxml2",
+      "scannerSourceVersion": "2.12.7+dfsg+really2.9.14-2.1+deb13u3",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "libxml2"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-87876",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "2.4.18-1",
+        "status": "VULNERABLE"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 41,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "No released complete fix observed; eight cohort rows remain vulnerable in sid.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/cups",
+        "https://security-tracker.debian.org/tracker/CVE-2026-87876"
+      ],
+      "scannerSeverity": "LOW",
+      "scannerSourcePackage": "cups",
+      "scannerSourceVersion": "2.4.10-3+deb13u2",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "cups"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-57062",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "2.4.9-8",
+        "status": "FIXED"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.4.7-21+deb13u1"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 42,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "Observed sid package fixed for both rows; not a trixie package or dependency closure.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/gnupg2",
+        "https://security-tracker.debian.org/tracker/CVE-2026-57062"
+      ],
+      "scannerSeverity": "LOW",
+      "scannerSourcePackage": "gnupg2",
+      "scannerSourceVersion": "2.4.7-21+deb13u1",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "gnupg2"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-76781",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "2.15.4+dfsg-1",
+        "status": "FIXED"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 43,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "Observed sid package fixed for all ten cohort rows; exact trixie backport unavailable in reviewed evidence.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/libxml2",
+        "https://security-tracker.debian.org/tracker/CVE-2026-76781"
+      ],
+      "scannerSeverity": "MEDIUM",
+      "scannerSourcePackage": "libxml2",
+      "scannerSourceVersion": "2.12.7+dfsg+really2.9.14-2.1+deb13u3",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "libxml2"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-8286",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "8.23.0~rc3-1",
+        "status": "FIXED"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "8.14.1-2+deb13u5"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 44,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "Upstream8.21.0 released 2026-06-24 fixes the three cohort rows; forky 8.22.0-1 also fixed. No trixie fixed package verified.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/curl",
+        "https://security-tracker.debian.org/tracker/CVE-2026-8286"
+      ],
+      "scannerSeverity": "HIGH",
+      "scannerSourcePackage": "curl",
+      "scannerSourceVersion": "8.14.1-2+deb13u5",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "curl"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2026-58055",
+      "debianSid": {
+        "firstFixedVersionVerified": "1.70.0-1",
+        "observedVersion": "1.70.0-1",
+        "status": "FIXED"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "1.64.0-1.1+deb13u1"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 45,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "1.70.0-1 fixed for58055; nghttpx utility scope needs installed-copy proof, not package-name inference.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/CVE-2026-58055",
+        "https://security-tracker.debian.org/tracker/CVE-2026-58055"
+      ],
+      "scannerSeverity": "MEDIUM",
+      "scannerSourcePackage": "nghttp2",
+      "scannerSourceVersion": "1.64.0-1.1+deb13u1",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "nghttp2"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "CURRENT_47",
+      "cohortEvidence": {
+        "bytes": 59680,
+        "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+        "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+      },
+      "cve": "CVE-2025-68276",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "0.8-18",
+        "status": "FIXED"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "0.8-16"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": 46,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "Observed sid package fixed for all five cohort rows; no trixie backport verified.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/avahi",
+        "https://security-tracker.debian.org/tracker/CVE-2025-68276"
+      ],
+      "scannerSeverity": "MEDIUM",
+      "scannerSourcePackage": "avahi",
+      "scannerSourceVersion": "0.8-16",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "avahi"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "OLDER_FIVE",
+      "cohortEvidence": {
+        "bytes": 49134,
+        "commit": "90b4dc8472da13cdee9f49cdc0b4c8306ecbdc73",
+        "path": "docs/coordination/reports/W02-08-VENDOR-COMPARISON.json",
+        "sha256": "1462261eeccc1d79ae52e8e1c2e41a03bbd1881d3ad3e0e873fed70e84c57735"
+      },
+      "cve": "CVE-2026-95619",
+      "debianSid": {
+        "firstFixedVersionVerified": "14.4.0-3",
+        "observedVersion": "14.4.0-3",
+        "status": "FIXED"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "14.2.0-19"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": null,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "GCC14 source branch first-fixed sid 14.4.0-3. GCC12 to GCC14 provider change alone is not remediation.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/CVE-2026-95619",
+        "https://security-tracker.debian.org/tracker/CVE-2026-95619"
+      ],
+      "scannerSeverity": "HIGH",
+      "scannerSourcePackage": "gcc-12",
+      "scannerSourceVersion": "12.2.0-14+deb12u1",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "gcc-14"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "OLDER_FIVE",
+      "cohortEvidence": {
+        "bytes": 49134,
+        "commit": "90b4dc8472da13cdee9f49cdc0b4c8306ecbdc73",
+        "path": "docs/coordination/reports/W02-08-VENDOR-COMPARISON.json",
+        "sha256": "1462261eeccc1d79ae52e8e1c2e41a03bbd1881d3ad3e0e873fed70e84c57735"
+      },
+      "cve": "CVE-2026-78410",
+      "debianSid": {
+        "firstFixedVersionVerified": "2.42.3-1",
+        "observedVersion": "2.42.4-1",
+        "status": "FIXED"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.41.5-0+deb13u1"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": null,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "78408 needs 2.42.4-1; other three first-fixed 2.42.3-1. Newer source and kernel bounds for78409 remain a scope question.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/CVE-2026-78408",
+        "https://security-tracker.debian.org/tracker/CVE-2026-78410"
+      ],
+      "scannerSeverity": "HIGH",
+      "scannerSourcePackage": "util-linux",
+      "scannerSourceVersion": "2.38.1-5+deb12u3",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "util-linux"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "OLDER_FIVE",
+      "cohortEvidence": {
+        "bytes": 49134,
+        "commit": "90b4dc8472da13cdee9f49cdc0b4c8306ecbdc73",
+        "path": "docs/coordination/reports/W02-08-VENDOR-COMPARISON.json",
+        "sha256": "1462261eeccc1d79ae52e8e1c2e41a03bbd1881d3ad3e0e873fed70e84c57735"
+      },
+      "cve": "CVE-2026-78408",
+      "debianSid": {
+        "firstFixedVersionVerified": "2.42.4-1",
+        "observedVersion": "2.42.4-1",
+        "status": "FIXED"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.41.5-0+deb13u1"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": null,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "78408 needs 2.42.4-1; other three first-fixed 2.42.3-1. Newer source and kernel bounds for78409 remain a scope question.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/CVE-2026-78408",
+        "https://security-tracker.debian.org/tracker/CVE-2026-78408"
+      ],
+      "scannerSeverity": "HIGH",
+      "scannerSourcePackage": "util-linux",
+      "scannerSourceVersion": "2.38.1-5+deb12u3",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "util-linux"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "OLDER_FIVE",
+      "cohortEvidence": {
+        "bytes": 49134,
+        "commit": "90b4dc8472da13cdee9f49cdc0b4c8306ecbdc73",
+        "path": "docs/coordination/reports/W02-08-VENDOR-COMPARISON.json",
+        "sha256": "1462261eeccc1d79ae52e8e1c2e41a03bbd1881d3ad3e0e873fed70e84c57735"
+      },
+      "cve": "CVE-2026-76642",
+      "debianSid": {
+        "firstFixedVersionVerified": "2.42.3-1",
+        "observedVersion": "2.42.4-1",
+        "status": "FIXED"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.41.5-0+deb13u1"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": null,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "78408 needs 2.42.4-1; other three first-fixed 2.42.3-1. Newer source and kernel bounds for78409 remain a scope question.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/CVE-2026-78408",
+        "https://security-tracker.debian.org/tracker/CVE-2026-76642"
+      ],
+      "scannerSeverity": "HIGH",
+      "scannerSourcePackage": "util-linux",
+      "scannerSourceVersion": "2.38.1-5+deb12u3",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "util-linux"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "OLDER_FIVE",
+      "cohortEvidence": {
+        "bytes": 49134,
+        "commit": "90b4dc8472da13cdee9f49cdc0b4c8306ecbdc73",
+        "path": "docs/coordination/reports/W02-08-VENDOR-COMPARISON.json",
+        "sha256": "1462261eeccc1d79ae52e8e1c2e41a03bbd1881d3ad3e0e873fed70e84c57735"
+      },
+      "cve": "CVE-2026-78409",
+      "debianSid": {
+        "firstFixedVersionVerified": "2.42.3-1",
+        "observedVersion": "2.42.4-1",
+        "status": "FIXED"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.41.5-0+deb13u1"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": null,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "78408 needs 2.42.4-1; other three first-fixed 2.42.3-1. Newer source and kernel bounds for78409 remain a scope question.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/CVE-2026-78408",
+        "https://security-tracker.debian.org/tracker/CVE-2026-78409"
+      ],
+      "scannerSeverity": "HIGH",
+      "scannerSourcePackage": "util-linux",
+      "scannerSourceVersion": "2.38.1-5+deb12u3",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "util-linux"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "HISTORICAL_OMITTED_TWO",
+      "cohortEvidence": {
+        "bytes": 22464,
+        "commit": "90b4dc8472da13cdee9f49cdc0b4c8306ecbdc73",
+        "path": "docs/coordination/reports/CODEX-G1-SDK-SECURITY-ADMISSION-DISCOVERY.md",
+        "sha256": "80d82fc0cf6e8f40987099734741ffaf25a4789de26245376c14eca6d6e61e69"
+      },
+      "cohortEvidenceCaveat": "Preserved report records prior 49 rows; omission from 47 is not remediation. Original prior 49 raw scan not re-materialized by this upstream owner.",
+      "cve": "CVE-2026-107708",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "1.22.1-3",
+        "status": "VULNERABLE"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "1.21.3-5+deb13u1"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": null,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "Both historical omitted rows remain vulnerable; upstream commits for107708 are patch leads, not released Debian closure.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/krb5",
+        "https://security-tracker.debian.org/tracker/CVE-2026-107708"
+      ],
+      "scannerSeverity": "MEDIUM",
+      "scannerSourcePackage": "krb5",
+      "scannerSourceVersion": "1.21.3-5+deb13u1",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "krb5"
+    },
+    {
+      "acceptedImageDisposition": "OPEN",
+      "cohort": "HISTORICAL_OMITTED_TWO",
+      "cohortEvidence": {
+        "bytes": 22464,
+        "commit": "90b4dc8472da13cdee9f49cdc0b4c8306ecbdc73",
+        "path": "docs/coordination/reports/CODEX-G1-SDK-SECURITY-ADMISSION-DISCOVERY.md",
+        "sha256": "80d82fc0cf6e8f40987099734741ffaf25a4789de26245376c14eca6d6e61e69"
+      },
+      "cohortEvidenceCaveat": "Preserved report records prior 49 rows; omission from 47 is not remediation. Original prior 49 raw scan not re-materialized by this upstream owner.",
+      "cve": "CVE-2026-107778",
+      "debianSid": {
+        "firstFixedVersionVerified": null,
+        "observedVersion": "1.22.1-3",
+        "status": "VULNERABLE"
+      },
+      "debianTrixie": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "1.21.3-5+deb13u1"
+      },
+      "evidenceType": "RENDERED_VENDOR_STATUS_NOT_SIGNED_PACKAGE_BYTES",
+      "historicalScanIndex": null,
+      "nextDependency": "Obtain maintainer/vendor released fix or explicit scoped adjudication; authenticate package sources and every installed/bundled copy; establish coherent dependencies; independently review; later separately authorized fresh image scan and runtime qualification.",
+      "note": "Both historical omitted rows remain vulnerable; upstream commits for107708 are patch leads, not released Debian closure.",
+      "observationDateUtc": "2026-10-12",
+      "officialUrls": [
+        "https://security-tracker.debian.org/tracker/source-package/krb5",
+        "https://security-tracker.debian.org/tracker/CVE-2026-107778"
+      ],
+      "scannerSeverity": "HIGH",
+      "scannerSourcePackage": "krb5",
+      "scannerSourceVersion": "1.21.3-5+deb13u1",
+      "signedSnapshotCompatibility": "UNVERIFIED",
+      "sourcePackage": "krb5"
+    }
+  ],
+  "schema": "MeriWorkerImageUpstreamEvidence.v1",
+  "sourceOnly": true,
+  "status": "HOLD_NO_SUPPORTED_COHERENT_PATCH_SET_VERIFIED"
+}

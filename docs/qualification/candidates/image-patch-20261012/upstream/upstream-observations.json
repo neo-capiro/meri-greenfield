@@ -1,0 +1,181 @@
+{
+  "evidenceMechanism": "SUPPORTED_WEB_RENDERED_READ",
+  "hashMeaning": "A local hash binds these authored observations only, not a remote HTTP response or signature.",
+  "observations": [
+    {
+      "authority": "UPSTREAM_ADVISORY",
+      "eventDate": "2026-06-24",
+      "facts": "Release 8.21.0 on 2026-06-24 fixes affected7.46.0 through8.20.0. Vendor severityLOW differs from original scannerCRITICAL; no waiver or Debian package proof follows.",
+      "id": "curl-8924",
+      "url": "https://curl.se/docs/CVE-2026-8924.html"
+    },
+    {
+      "authority": "UPSTREAM_ADVISORY",
+      "eventDate": "2026-06-24",
+      "facts": "Release 8.21.0 on 2026-06-24 fixes affected7.12.0 through8.20.0. Vendor severityMEDIUM differs from scannerCRITICAL. CLI distinction does not clear installed libcurl or bundled copies.",
+      "id": "curl-8927",
+      "url": "https://curl.se/docs/CVE-2026-8927.html"
+    },
+    {
+      "authority": "UPSTREAM_ADVISORY",
+      "eventDate": "2026-06-24",
+      "facts": "Release 8.21.0 on 2026-06-24 fixes affected7.30.0 through8.20.0. Vendor severityLOW differs from scannerHIGH.",
+      "id": "curl-8286",
+      "url": "https://curl.se/docs/CVE-2026-8286.html"
+    },
+    {
+      "authority": "DEBIAN_VENDOR_CVE",
+      "eventDate": null,
+      "facts": "Trixie3.8.9-3+deb13u4 and sid 3.8.13-1 vulnerable; upstream assessment pending. No introduced or fixed version proved.",
+      "id": "gnutls-critical-88647",
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-88647"
+    },
+    {
+      "authority": "DEBIAN_VENDOR_CVE",
+      "eventDate": null,
+      "facts": "Trixie3.8.9-3+deb13u4 and sid 3.8.13-1 vulnerable; upstream assessment pending. Version mentioned in description is not an affected-range bound.",
+      "id": "gnutls-critical-95210",
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-95210"
+    },
+    {
+      "authority": "UPSTREAM_ADVISORY_INDEX",
+      "eventDate": "2026-04-29",
+      "facts": "Page recommends3.8.13 for distinct April2026 issues. No closure for the six cohort rows inferred from those other advisories or their absence.",
+      "id": "gnutls-advisories",
+      "url": "https://www.gnutls.org/security-new.html"
+    },
+    {
+      "authority": "DEBIAN_VENDOR_CVE",
+      "eventDate": null,
+      "facts": "Trixie4.7.0-3+deb13u3 vulnerable; unstable first-fixed 4.7.2-1. Upstreamb04e935cb6242f22cc8b63c99a372cf3ea825e4e points to tiffcrop. Installed-utility absence alone does not clear all copies.",
+      "id": "tiff-critical",
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-52490"
+    },
+    {
+      "authority": "DEBIAN_VENDOR_CVE",
+      "eventDate": null,
+      "facts": "Trixie4.7.0-3+deb13u3 vulnerable; unstable first-fixed 4.7.1-1. Upstream67fd283d276f09db54dc39b9ef7b979d4b45c4b1 fixes tiff 2pdf; current sid 4.7.2-1 fixed.",
+      "id": "tiff-medium",
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-18495"
+    },
+    {
+      "authority": "UPSTREAM_RELEASE",
+      "eventDate": "2026-10-05",
+      "facts": "Maintainer release2.9.0 dated5October16:39; UI shows verified tag signature. No archive download or local signature validation performed. Debian tracker has2.9.0-1 fixed for both cohort rows.",
+      "id": "expat-release",
+      "url": "https://github.com/libexpat/libexpat/releases/tag/R_2_9_0"
+    },
+    {
+      "authority": "DEBIAN_VENDOR_CVE",
+      "eventDate": null,
+      "facts": "Unstable first-fixed 2.8.4-2; upstream fixes taggedR_2_8_5. This does not cover77214.",
+      "id": "expat-93990",
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-93990"
+    },
+    {
+      "authority": "DEBIAN_VENDOR_CVE",
+      "eventDate": null,
+      "facts": "Unstable first-fixed 2.9.0-1; upstream 4d9b1c499ecb66323260a7274edcf86c5eab0517 taggedR_2_9_0.",
+      "id": "expat-77214",
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-77214"
+    },
+    {
+      "authority": "UPSTREAM_OWNER_AND_REPORTER_DISTINGUISHED",
+      "eventDate": "2026-10-04",
+      "facts": "Owner madler acknowledged fixdf84af2 on 17 September and described future release timing. A16 September commenter argued1.3.1 unaffected; Debian maintainer carnil on 4 October questioned earlier-version reachability. No maintainer-adjudicated1.3.1 exclusion or released Debian fix verified.",
+      "id": "zlib-maintainer",
+      "url": "https://github.com/madler/zlib/issues/1310"
+    },
+    {
+      "authority": "UPSTREAM_MAINTAINER_COMMIT",
+      "eventDate": null,
+      "facts": "Maintainer commit addresses85091 in gzwrite.c. Source patch exists; no release or installed/bundled-copy incorporation established.",
+      "id": "zlib-fix",
+      "url": "https://github.com/madler/zlib/commit/df84af25dc1942490e1d1c899a07619152a46148"
+    },
+    {
+      "authority": "REPORTER_PATCH_NOT_MERGED",
+      "eventDate": "2026-10-08",
+      "facts": "PR opened19June2026; page shows no reviews and closed8 October because author deleted head repository. No merge or released fix. Debian trixie and sid still vulnerable.",
+      "id": "sasl-proposal",
+      "url": "https://github.com/cyrusimap/cyrus-sasl/pull/892"
+    },
+    {
+      "authority": "DEBIAN_VENDOR_PACKAGE",
+      "eventDate": null,
+      "facts": "Both107708 and107778 remain vulnerable:trixie 1.21.3-5+deb13u1 and sid/forky 1.22.1-3. Their omission from 47 scan is not closure.",
+      "id": "krb5-vendor",
+      "url": "https://security-tracker.debian.org/tracker/source-package/krb5"
+    },
+    {
+      "authority": "DEBIAN_VENDOR_CVE",
+      "eventDate": null,
+      "facts": "Tracker lists upstreamf6e2c397ceda6467ebbaab8ed66d4895c9f1d6a7(master) and a88a18cafa1040a0c4f9c8d08288fc98831ec86d(1.22branch). Patch references are not released Debian fixes.",
+      "id": "krb5-107708",
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-107708"
+    },
+    {
+      "authority": "DEBIAN_VENDOR_CVE",
+      "eventDate": null,
+      "facts": "GCC14trixie14.2.0-19 vulnerable; sid 14.4.0-3 fixed. Other compiler branches have different status; do not infer fix from version magnitude.",
+      "id": "gcc14",
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-95619"
+    },
+    {
+      "authority": "UPSTREAM_RELEASE_TAG",
+      "eventDate": "2026-09-21",
+      "facts": "Maintainer karelzak taggedv2.42.4 on 21September10:33; no asset download or local signature verification performed.",
+      "id": "util-linux-release",
+      "url": "https://github.com/util-linux/util-linux/releases/tag/v2.42.4"
+    },
+    {
+      "authority": "DEBIAN_VENDOR_CVE",
+      "eventDate": null,
+      "facts": "Trixie2.41.5-0+deb13u1 vulnerable; first-fixedunstable2.42.4-1; upstream 286dd3ff41526b582ef48830de239dffbaa61f90.",
+      "id": "util-linux-78408",
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-78408"
+    },
+    {
+      "authority": "DEBIAN_VENDOR_CVE",
+      "eventDate": null,
+      "facts": "Trixie2.41.5-0+deb13u1 vulnerable; first-fixedunstable2.42.3-1. Current sid 2.42.4-1 fixed.",
+      "id": "util-linux-78410",
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-78410"
+    },
+    {
+      "authority": "DEBIAN_VENDOR_CVE",
+      "eventDate": null,
+      "facts": "Trixie2.41.5-0+deb13u1 vulnerable; first-fixedunstable2.42.3-1. Current sid 2.42.4-1 fixed.",
+      "id": "util-linux-76642",
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-76642"
+    },
+    {
+      "authority": "DEBIAN_VENDOR_CVE",
+      "eventDate": null,
+      "facts": "Trixie2.41.5-0+deb13u1 vulnerable; first-fixedunstable2.42.3-1. Source/kernel description bounds versus older distro status need adjudication.",
+      "id": "util-linux-78409",
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-78409"
+    }
+  ],
+  "observedDateUtc": "2026-10-12",
+  "originalResponseBytesCaptured": false,
+  "schema": "MeriAuthoredPublicObservations.v1",
+  "unreadableWebReads": [
+    {
+      "outcome": "ANTI_BOT_PAGE_NO_PATCH_EVIDENCE",
+      "url": "https://gitlab.freedesktop.org/poppler/poppler/-/merge_requests/2398"
+    },
+    {
+      "outcome": "WEB_INTERNAL_ERROR_NO_RELEASE_CONTENT",
+      "url": "https://gitlab.gnome.org/GNOME/libxml2/-/tags/v2.15.4"
+    },
+    {
+      "outcome": "ZERO_RENDERED_LINES_NO_RELEASE_CONTENT",
+      "url": "https://gitlab.com/libtiff/libtiff/-/releases/v4.7.2"
+    },
+    {
+      "outcome": "WEB_INTERNAL_ERROR_PACKAGE_TABLE_SUCCEEDED",
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-107778"
+    }
+  ]
+}
