@@ -1,0 +1,29 @@
+{
+  "command": [
+    "env",
+    "TEMPORAL_RECOVERY_SOURCE_ROOT=/workspace/meri-temporal-recovery-20261012",
+    "node",
+    "--test",
+    "docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-temporal-recovery-review-20261012",
+  "startUnixSeconds": 1791781312.468719,
+  "elapsedSeconds": 1.367387294769287,
+  "exitCode": 0,
+  "ownedPidAndGroup": 60176,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "reapedDescendants": [],
+  "streams": {
+    "stdout": {
+      "path": "prefreeze-bounded.stdout.txt",
+      "bytes": 2666,
+      "sha256": "872154fea968b11fea8057a2c80214b4e485e1de7d385389b3bb568bb9b5fd59"
+    },
+    "stderr": {
+      "path": "prefreeze-bounded.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

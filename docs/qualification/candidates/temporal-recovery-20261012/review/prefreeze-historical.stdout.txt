@@ -1,0 +1,52 @@
+✔ actual canonical pipeline retires A then atomically admits B and verifies the original checkpoint (84.793072ms)
+✔ foreign Temporal namespace denies before retirement or replacement (15.953588ms)
+✔ foreign Temporal workflowId denies before retirement or replacement (13.467561ms)
+✔ foreign Temporal workflowRunId denies before retirement or replacement (15.911876ms)
+✔ foreign Temporal taskQueue denies before retirement or replacement (13.459478ms)
+✔ foreign Temporal workflowType denies before retirement or replacement (13.301832ms)
+✔ foreign Temporal activityId denies before retirement or replacement (18.735228ms)
+✔ foreign Temporal activityType denies before retirement or replacement (13.030575ms)
+✔ foreign Temporal retry-attempt denies before retirement or replacement (13.024877ms)
+✔ foreign Temporal local-activity denies before retirement or replacement (13.156314ms)
+✔ worker-selected run UUID and extra authority fields refuse before any trusted call (28.723432ms)
+✔ effectful workflow input is rejected without invoking a getter or proxy trap (12.430506ms)
+✔ retirement foreign-task cannot mutate registry (14.032518ms)
+✔ retirement foreign-binding cannot mutate registry (14.793739ms)
+✔ retirement future-observation cannot mutate registry (15.753377ms)
+✔ retirement stale-observation cannot mutate registry (13.429494ms)
+✔ retirement future-stop cannot mutate registry (14.502321ms)
+✔ missing retirement capability fails construction before replacement (16.227168ms)
+✔ no committed checkpoint refuses canonical replacement and never loads data (2.011736ms)
+✔ wrong committed receipt refuses and cannot substitute another checkpoint (14.43423ms)
+✔ duplicate delivery cannot dispatch a second replacement or load (21.96518ms)
+✔ aborted retirement completion cannot dispatch replacement (8.813513ms)
+✔ expired retirement completion cannot dispatch replacement or reset deadline (8.273905ms)
+✔ uncertain replacement acknowledgement holds without retry, transport or guessed cancellation (11.449175ms)
+✔ cancel known replaced B consumes actual stopRun and durably revokes B only (28.647748ms)
+✔ cancellation releases a parked retirement wait before borrowed port completes (11.329475ms)
+✔ original phase deadline releases a parked retirement wait without a fresh port (39.538015ms)
+✔ cancelled pending replacement remains unknown without load or guessed revoke after late acknowledgement (10.396306ms)
+✔ restart cannot repeat the completed exact A-to-B replacement (35.300949ms)
+✖ expired original A remains historical lineage while fresh B can recover exact committed checkpoint (10.128955ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 29
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1351.751944
+
+✖ failing tests:
+
+test at docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs:224:1
+✖ expired original A remains historical lineage while fresh B can recover exact committed checkpoint (10.128955ms)
+  Error: FIXTURE_CLOCK_OR_EXPIRY
+      at fail (file:///workspace/meri-temporal-recovery-20261012/packages/contracts/qualification-sdk/validate.mjs:21:30)
+      at clock (file:///workspace/meri-temporal-recovery-20261012/packages/contracts/qualification-sdk/validate.mjs:69:70)
+      at assertFixtureContext (file:///workspace/meri-temporal-recovery-20261012/packages/contracts/qualification-sdk/validate.mjs:72:45)
+      at createFixtureRecoveryActivities (file:///workspace/meri-temporal-recovery-20261012/apps/control/qualification-temporal/recovery-activities.mjs:57:3)
+      at setup (file:///workspace/meri-temporal-recovery-review-20261012/docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs:48:20)
+      at async TestContext.<anonymous> (file:///workspace/meri-temporal-recovery-review-20261012/docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs:225:13)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

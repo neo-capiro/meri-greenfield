@@ -1,0 +1,443 @@
+✖ actual canonical pipeline retires A then atomically admits B and verifies the original checkpoint (1.028625ms)
+✖ foreign Temporal namespace denies before retirement or replacement (0.134261ms)
+✖ foreign Temporal workflowId denies before retirement or replacement (0.078718ms)
+✖ foreign Temporal workflowRunId denies before retirement or replacement (0.108553ms)
+✖ foreign Temporal taskQueue denies before retirement or replacement (0.114832ms)
+✖ foreign Temporal workflowType denies before retirement or replacement (0.075754ms)
+✖ foreign Temporal activityId denies before retirement or replacement (0.080721ms)
+✖ foreign Temporal activityType denies before retirement or replacement (0.10038ms)
+✖ foreign Temporal retry-attempt denies before retirement or replacement (0.137336ms)
+✖ foreign Temporal local-activity denies before retirement or replacement (0.142935ms)
+✖ worker-selected run UUID and extra authority fields refuse before any trusted call (0.178438ms)
+✖ effectful workflow input is rejected without invoking a getter or proxy trap (0.174913ms)
+✖ retirement foreign-task cannot mutate registry (0.137857ms)
+✖ retirement foreign-binding cannot mutate registry (0.060751ms)
+✖ retirement future-observation cannot mutate registry (0.043816ms)
+✖ retirement stale-observation cannot mutate registry (0.07338ms)
+✖ retirement future-stop cannot mutate registry (0.052629ms)
+✔ missing retirement capability fails construction before replacement (0.312459ms)
+✖ no committed checkpoint refuses canonical replacement and never loads data (0.102994ms)
+✖ wrong committed receipt refuses and cannot substitute another checkpoint (0.09334ms)
+✖ duplicate delivery cannot dispatch a second replacement or load (0.210917ms)
+✖ aborted retirement completion cannot dispatch replacement (0.135744ms)
+✖ expired retirement completion cannot dispatch replacement or reset deadline (0.151618ms)
+✖ uncertain replacement acknowledgement holds without retry, transport or guessed cancellation (0.123886ms)
+✖ cancel known replaced B consumes actual stopRun and durably revokes B only (0.085268ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 1
+ℹ fail 24
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 459.58191
+
+✖ failing tests:
+
+test at docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs:58:1
+✖ actual canonical pipeline retires A then atomically admits B and verifies the original checkpoint (1.028625ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs' imported from /workspace/meri-temporal-recovery-review-20261012/docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs
+      at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+      at moduleResolve (node:internal/modules/esm/resolve:865:10)
+      at defaultResolve (node:internal/modules/esm/resolve:992:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+      at #resolve (node:internal/modules/esm/loader:683:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+      at node:internal/modules/esm/loader:632:32
+      at TracingChannel.tracePromise (node:diagnostics_channel:362:14) {
+    code: 'ERR_MODULE_NOT_FOUND',
+    url: 'file:///workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs'
+  }
+
+test at docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs:82:4
+✖ foreign Temporal namespace denies before retirement or replacement (0.134261ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs' imported from /workspace/meri-temporal-recovery-review-20261012/docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs
+      at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+      at moduleResolve (node:internal/modules/esm/resolve:865:10)
+      at defaultResolve (node:internal/modules/esm/resolve:992:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+      at #resolve (node:internal/modules/esm/loader:683:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+      at node:internal/modules/esm/loader:632:32
+      at TracingChannel.tracePromise (node:diagnostics_channel:362:14) {
+    code: 'ERR_MODULE_NOT_FOUND',
+    url: 'file:///workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs'
+  }
+
+test at docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs:82:4
+✖ foreign Temporal workflowId denies before retirement or replacement (0.078718ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs' imported from /workspace/meri-temporal-recovery-review-20261012/docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs
+      at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+      at moduleResolve (node:internal/modules/esm/resolve:865:10)
+      at defaultResolve (node:internal/modules/esm/resolve:992:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+      at #resolve (node:internal/modules/esm/loader:683:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+      at node:internal/modules/esm/loader:632:32
+      at TracingChannel.tracePromise (node:diagnostics_channel:362:14) {
+    code: 'ERR_MODULE_NOT_FOUND',
+    url: 'file:///workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs'
+  }
+
+test at docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs:82:4
+✖ foreign Temporal workflowRunId denies before retirement or replacement (0.108553ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs' imported from /workspace/meri-temporal-recovery-review-20261012/docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs
+      at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+      at moduleResolve (node:internal/modules/esm/resolve:865:10)
+      at defaultResolve (node:internal/modules/esm/resolve:992:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+      at #resolve (node:internal/modules/esm/loader:683:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+      at node:internal/modules/esm/loader:632:32
+      at TracingChannel.tracePromise (node:diagnostics_channel:362:14) {
+    code: 'ERR_MODULE_NOT_FOUND',
+    url: 'file:///workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs'
+  }
+
+test at docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs:82:4
+✖ foreign Temporal taskQueue denies before retirement or replacement (0.114832ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs' imported from /workspace/meri-temporal-recovery-review-20261012/docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs
+      at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+      at moduleResolve (node:internal/modules/esm/resolve:865:10)
+      at defaultResolve (node:internal/modules/esm/resolve:992:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+      at #resolve (node:internal/modules/esm/loader:683:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+      at node:internal/modules/esm/loader:632:32
+      at TracingChannel.tracePromise (node:diagnostics_channel:362:14) {
+    code: 'ERR_MODULE_NOT_FOUND',
+    url: 'file:///workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs'
+  }
+
+test at docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs:82:4
+✖ foreign Temporal workflowType denies before retirement or replacement (0.075754ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs' imported from /workspace/meri-temporal-recovery-review-20261012/docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs
+      at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+      at moduleResolve (node:internal/modules/esm/resolve:865:10)
+      at defaultResolve (node:internal/modules/esm/resolve:992:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+      at #resolve (node:internal/modules/esm/loader:683:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+      at node:internal/modules/esm/loader:632:32
+      at TracingChannel.tracePromise (node:diagnostics_channel:362:14) {
+    code: 'ERR_MODULE_NOT_FOUND',
+    url: 'file:///workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs'
+  }
+
+test at docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs:82:4
+✖ foreign Temporal activityId denies before retirement or replacement (0.080721ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs' imported from /workspace/meri-temporal-recovery-review-20261012/docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs
+      at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+      at moduleResolve (node:internal/modules/esm/resolve:865:10)
+      at defaultResolve (node:internal/modules/esm/resolve:992:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+      at #resolve (node:internal/modules/esm/loader:683:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+      at node:internal/modules/esm/loader:632:32
+      at TracingChannel.tracePromise (node:diagnostics_channel:362:14) {
+    code: 'ERR_MODULE_NOT_FOUND',
+    url: 'file:///workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs'
+  }
+
+test at docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs:82:4
+✖ foreign Temporal activityType denies before retirement or replacement (0.10038ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs' imported from /workspace/meri-temporal-recovery-review-20261012/docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs
+      at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+      at moduleResolve (node:internal/modules/esm/resolve:865:10)
+      at defaultResolve (node:internal/modules/esm/resolve:992:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+      at #resolve (node:internal/modules/esm/loader:683:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+      at node:internal/modules/esm/loader:632:32
+      at TracingChannel.tracePromise (node:diagnostics_channel:362:14) {
+    code: 'ERR_MODULE_NOT_FOUND',
+    url: 'file:///workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs'
+  }
+
+test at docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs:82:4
+✖ foreign Temporal retry-attempt denies before retirement or replacement (0.137336ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs' imported from /workspace/meri-temporal-recovery-review-20261012/docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs
+      at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+      at moduleResolve (node:internal/modules/esm/resolve:865:10)
+      at defaultResolve (node:internal/modules/esm/resolve:992:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+      at #resolve (node:internal/modules/esm/loader:683:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+      at node:internal/modules/esm/loader:632:32
+      at TracingChannel.tracePromise (node:diagnostics_channel:362:14) {
+    code: 'ERR_MODULE_NOT_FOUND',
+    url: 'file:///workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs'
+  }
+
+test at docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs:82:4
+✖ foreign Temporal local-activity denies before retirement or replacement (0.142935ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs' imported from /workspace/meri-temporal-recovery-review-20261012/docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs
+      at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+      at moduleResolve (node:internal/modules/esm/resolve:865:10)
+      at defaultResolve (node:internal/modules/esm/resolve:992:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+      at #resolve (node:internal/modules/esm/loader:683:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+      at node:internal/modules/esm/loader:632:32
+      at TracingChannel.tracePromise (node:diagnostics_channel:362:14) {
+    code: 'ERR_MODULE_NOT_FOUND',
+    url: 'file:///workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs'
+  }
+
+test at docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs:88:1
+✖ worker-selected run UUID and extra authority fields refuse before any trusted call (0.178438ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs' imported from /workspace/meri-temporal-recovery-review-20261012/docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs
+      at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+      at moduleResolve (node:internal/modules/esm/resolve:865:10)
+      at defaultResolve (node:internal/modules/esm/resolve:992:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+      at #resolve (node:internal/modules/esm/loader:683:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+      at node:internal/modules/esm/loader:632:32
+      at TracingChannel.tracePromise (node:diagnostics_channel:362:14) {
+    code: 'ERR_MODULE_NOT_FOUND',
+    url: 'file:///workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs'
+  }
+
+test at docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs:96:1
+✖ effectful workflow input is rejected without invoking a getter or proxy trap (0.174913ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs' imported from /workspace/meri-temporal-recovery-review-20261012/docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs
+      at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+      at moduleResolve (node:internal/modules/esm/resolve:865:10)
+      at defaultResolve (node:internal/modules/esm/resolve:992:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+      at #resolve (node:internal/modules/esm/loader:683:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+      at node:internal/modules/esm/loader:632:32
+      at TracingChannel.tracePromise (node:diagnostics_channel:362:14) {
+    code: 'ERR_MODULE_NOT_FOUND',
+    url: 'file:///workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs'
+  }
+
+test at docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs:111:4
+✖ retirement foreign-task cannot mutate registry (0.137857ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs' imported from /workspace/meri-temporal-recovery-review-20261012/docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs
+      at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+      at moduleResolve (node:internal/modules/esm/resolve:865:10)
+      at defaultResolve (node:internal/modules/esm/resolve:992:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+      at #resolve (node:internal/modules/esm/loader:683:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+      at node:internal/modules/esm/loader:632:32
+      at TracingChannel.tracePromise (node:diagnostics_channel:362:14) {
+    code: 'ERR_MODULE_NOT_FOUND',
+    url: 'file:///workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs'
+  }
+
+test at docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs:111:4
+✖ retirement foreign-binding cannot mutate registry (0.060751ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs' imported from /workspace/meri-temporal-recovery-review-20261012/docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs
+      at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+      at moduleResolve (node:internal/modules/esm/resolve:865:10)
+      at defaultResolve (node:internal/modules/esm/resolve:992:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+      at #resolve (node:internal/modules/esm/loader:683:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+      at node:internal/modules/esm/loader:632:32
+      at TracingChannel.tracePromise (node:diagnostics_channel:362:14) {
+    code: 'ERR_MODULE_NOT_FOUND',
+    url: 'file:///workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs'
+  }
+
+test at docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs:111:4
+✖ retirement future-observation cannot mutate registry (0.043816ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs' imported from /workspace/meri-temporal-recovery-review-20261012/docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs
+      at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+      at moduleResolve (node:internal/modules/esm/resolve:865:10)
+      at defaultResolve (node:internal/modules/esm/resolve:992:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+      at #resolve (node:internal/modules/esm/loader:683:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+      at node:internal/modules/esm/loader:632:32
+      at TracingChannel.tracePromise (node:diagnostics_channel:362:14) {
+    code: 'ERR_MODULE_NOT_FOUND',
+    url: 'file:///workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs'
+  }
+
+test at docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs:111:4
+✖ retirement stale-observation cannot mutate registry (0.07338ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs' imported from /workspace/meri-temporal-recovery-review-20261012/docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs
+      at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+      at moduleResolve (node:internal/modules/esm/resolve:865:10)
+      at defaultResolve (node:internal/modules/esm/resolve:992:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+      at #resolve (node:internal/modules/esm/loader:683:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+      at node:internal/modules/esm/loader:632:32
+      at TracingChannel.tracePromise (node:diagnostics_channel:362:14) {
+    code: 'ERR_MODULE_NOT_FOUND',
+    url: 'file:///workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs'
+  }
+
+test at docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs:111:4
+✖ retirement future-stop cannot mutate registry (0.052629ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs' imported from /workspace/meri-temporal-recovery-review-20261012/docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs
+      at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+      at moduleResolve (node:internal/modules/esm/resolve:865:10)
+      at defaultResolve (node:internal/modules/esm/resolve:992:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+      at #resolve (node:internal/modules/esm/loader:683:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+      at node:internal/modules/esm/loader:632:32
+      at TracingChannel.tracePromise (node:diagnostics_channel:362:14) {
+    code: 'ERR_MODULE_NOT_FOUND',
+    url: 'file:///workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs'
+  }
+
+test at docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs:122:1
+✖ no committed checkpoint refuses canonical replacement and never loads data (0.102994ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs' imported from /workspace/meri-temporal-recovery-review-20261012/docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs
+      at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+      at moduleResolve (node:internal/modules/esm/resolve:865:10)
+      at defaultResolve (node:internal/modules/esm/resolve:992:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+      at #resolve (node:internal/modules/esm/loader:683:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+      at node:internal/modules/esm/loader:632:32
+      at TracingChannel.tracePromise (node:diagnostics_channel:362:14) {
+    code: 'ERR_MODULE_NOT_FOUND',
+    url: 'file:///workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs'
+  }
+
+test at docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs:128:1
+✖ wrong committed receipt refuses and cannot substitute another checkpoint (0.09334ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs' imported from /workspace/meri-temporal-recovery-review-20261012/docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs
+      at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+      at moduleResolve (node:internal/modules/esm/resolve:865:10)
+      at defaultResolve (node:internal/modules/esm/resolve:992:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+      at #resolve (node:internal/modules/esm/loader:683:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+      at node:internal/modules/esm/loader:632:32
+      at TracingChannel.tracePromise (node:diagnostics_channel:362:14) {
+    code: 'ERR_MODULE_NOT_FOUND',
+    url: 'file:///workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs'
+  }
+
+test at docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs:134:1
+✖ duplicate delivery cannot dispatch a second replacement or load (0.210917ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs' imported from /workspace/meri-temporal-recovery-review-20261012/docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs
+      at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+      at moduleResolve (node:internal/modules/esm/resolve:865:10)
+      at defaultResolve (node:internal/modules/esm/resolve:992:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+      at #resolve (node:internal/modules/esm/loader:683:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+      at node:internal/modules/esm/loader:632:32
+      at TracingChannel.tracePromise (node:diagnostics_channel:362:14) {
+    code: 'ERR_MODULE_NOT_FOUND',
+    url: 'file:///workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs'
+  }
+
+test at docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs:140:1
+✖ aborted retirement completion cannot dispatch replacement (0.135744ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs' imported from /workspace/meri-temporal-recovery-review-20261012/docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs
+      at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+      at moduleResolve (node:internal/modules/esm/resolve:865:10)
+      at defaultResolve (node:internal/modules/esm/resolve:992:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+      at #resolve (node:internal/modules/esm/loader:683:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+      at node:internal/modules/esm/loader:632:32
+      at TracingChannel.tracePromise (node:diagnostics_channel:362:14) {
+    code: 'ERR_MODULE_NOT_FOUND',
+    url: 'file:///workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs'
+  }
+
+test at docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs:147:1
+✖ expired retirement completion cannot dispatch replacement or reset deadline (0.151618ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs' imported from /workspace/meri-temporal-recovery-review-20261012/docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs
+      at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+      at moduleResolve (node:internal/modules/esm/resolve:865:10)
+      at defaultResolve (node:internal/modules/esm/resolve:992:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+      at #resolve (node:internal/modules/esm/loader:683:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+      at node:internal/modules/esm/loader:632:32
+      at TracingChannel.tracePromise (node:diagnostics_channel:362:14) {
+    code: 'ERR_MODULE_NOT_FOUND',
+    url: 'file:///workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs'
+  }
+
+test at docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs:154:1
+✖ uncertain replacement acknowledgement holds without retry, transport or guessed cancellation (0.123886ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs' imported from /workspace/meri-temporal-recovery-review-20261012/docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs
+      at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+      at moduleResolve (node:internal/modules/esm/resolve:865:10)
+      at defaultResolve (node:internal/modules/esm/resolve:992:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+      at #resolve (node:internal/modules/esm/loader:683:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+      at node:internal/modules/esm/loader:632:32
+      at TracingChannel.tracePromise (node:diagnostics_channel:362:14) {
+    code: 'ERR_MODULE_NOT_FOUND',
+    url: 'file:///workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs'
+  }
+
+test at docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs:168:1
+✖ cancel known replaced B consumes actual stopRun and durably revokes B only (0.085268ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs' imported from /workspace/meri-temporal-recovery-review-20261012/docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs
+      at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+      at moduleResolve (node:internal/modules/esm/resolve:865:10)
+      at defaultResolve (node:internal/modules/esm/resolve:992:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+      at #resolve (node:internal/modules/esm/loader:683:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+      at node:internal/modules/esm/loader:632:32
+      at TracingChannel.tracePromise (node:diagnostics_channel:362:14) {
+    code: 'ERR_MODULE_NOT_FOUND',
+    url: 'file:///workspace/meri-temporal-recovery-review-20261012/apps/control/qualification-temporal/recovery-activities.mjs'
+  }
