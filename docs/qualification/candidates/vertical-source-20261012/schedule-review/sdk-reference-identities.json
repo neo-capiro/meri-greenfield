@@ -48,6 +48,11 @@
       "path": "lib/workflow-client.js",
       "bytes": 68183,
       "sha256": "99fa99504829ab662a499c265a0a1b674590d85042180bc319384c4dab80650c"
+    },
+    {
+      "path": "src/grpc-retry.ts",
+      "bytes": 7101,
+      "sha256": "d37052af55d52afa3e98b8299751c9821687cc56e4698819a7629a090c9cf62d"
     }
   ]
 }
