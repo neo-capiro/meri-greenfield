@@ -15,8 +15,11 @@
       "id": "get_research_portfolio",
       "disposition": "selected",
       "boundary": "Proposed authorized Research Portfolio record/evidence/history read only; owner/client/grant policies and source inclusion require explicit acceptance; management workflow parity deferred.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "get_research_portfolio",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "get_research_portfolio_analytics",
@@ -29,8 +32,11 @@
       "id": "get_research_portfolio_changes",
       "disposition": "selected",
       "boundary": "Proposed authorized Research Portfolio record/evidence/history read only; owner/client/grant policies and source inclusion require explicit acceptance; management workflow parity deferred.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "get_research_portfolio_changes",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "create_research_portfolio_snapshot",
@@ -974,15 +980,21 @@
       "id": "get_business_development_context",
       "disposition": "selected",
       "boundary": "Proposed BizDev record/evidence/history read only, conditional on source agreement and tenant/provider entitlements; no scoring or brief-write parity.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "get_business_development_context",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "get_business_development_evidence",
       "disposition": "selected",
       "boundary": "Proposed BizDev record/evidence/history read only, conditional on source agreement and tenant/provider entitlements; no scoring or brief-write parity.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "get_business_development_evidence",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "get_business_development_brief",
@@ -1009,8 +1021,11 @@
       "id": "get_business_development_recent_changes",
       "disposition": "selected",
       "boundary": "Proposed BizDev record/evidence/history read only, conditional on source agreement and tenant/provider entitlements; no scoring or brief-write parity.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "get_business_development_recent_changes",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "get_district_federal_market",
@@ -2191,6 +2206,356 @@
       ],
       "fixtureIds": [
         "catalog.binding.lookup_client_registry"
+      ]
+    },
+    {
+      "operation": {
+        "id": "get_research_portfolio",
+        "version": "0.2.0"
+      },
+      "displayName": "Read the selected research portfolio",
+      "whenToUse": "Prepare a read of the portfolio selected by the trusted current conversation and resolved entity subject.",
+      "limitations": [
+        "Pending contract only; null handler, no enabled source or executable skill.",
+        "Source requirements are design declarations; current grants, availability and actual producer authority remain unqualified.",
+        "The result binding/subject wrapper is a new private Meri contract, not a legacy producer field or proof of current ownership, grants or client walls.",
+        "The generic gateway does not yet compose the required trusted binding/subject context for this family. A source adapter and current conversation-scope owner remain unqualified.",
+        "Portfolio identity comes from trusted current subject context; model selectors cannot grant portfolio or client access.",
+        "Historical event revisions need not equal the current portfolio revision. Captured scope-receipt revision remains external trusted owner state.",
+        "Bounded detail events, exhausted changes pages and opaque payloads prove neither full history nor authoritative absence or freshness.",
+        "get_research_evidence is a separate pending Clio/portfolio scope issue and is not covered by this binding."
+      ],
+      "positiveExamples": [
+        "Inspect a currently selected authorized research portfolio and its reported visible changes."
+      ],
+      "negativeExamples": [
+        "Select a foreign portfolio through model arguments, infer client access from a visible portfolio, or treat a page as complete history."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "research_portfolios",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio:0.2.0#/$defs/ResearchPortfolioDetailInput",
+        "sha256": "cb6d881f19cd7f37561e5955a082080211f1fa69ef520f7208ace9c2e3eb41bc"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio:0.2.0#/$defs/ResearchPortfolioDetailResult",
+        "sha256": "cb6d881f19cd7f37561e5955a082080211f1fa69ef520f7208ace9c2e3eb41bc"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.get_research_portfolio"
+      ]
+    },
+    {
+      "operation": {
+        "id": "get_research_portfolio_changes",
+        "version": "0.2.0"
+      },
+      "displayName": "Read selected research portfolio changes",
+      "whenToUse": "Prepare a read of the portfolio selected by the trusted current conversation and resolved entity subject.",
+      "limitations": [
+        "Pending contract only; null handler, no enabled source or executable skill.",
+        "Source requirements are design declarations; current grants, availability and actual producer authority remain unqualified.",
+        "The result binding/subject wrapper is a new private Meri contract, not a legacy producer field or proof of current ownership, grants or client walls.",
+        "The generic gateway does not yet compose the required trusted binding/subject context for this family. A source adapter and current conversation-scope owner remain unqualified.",
+        "Portfolio identity comes from trusted current subject context; model selectors cannot grant portfolio or client access.",
+        "Historical event revisions need not equal the current portfolio revision. Captured scope-receipt revision remains external trusted owner state.",
+        "Bounded detail events, exhausted changes pages and opaque payloads prove neither full history nor authoritative absence or freshness.",
+        "get_research_evidence is a separate pending Clio/portfolio scope issue and is not covered by this binding."
+      ],
+      "positiveExamples": [
+        "Inspect a currently selected authorized research portfolio and its reported visible changes."
+      ],
+      "negativeExamples": [
+        "Select a foreign portfolio through model arguments, infer client access from a visible portfolio, or treat a page as complete history."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "research_portfolios",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio:0.2.0#/$defs/ResearchPortfolioChangesInput",
+        "sha256": "cb6d881f19cd7f37561e5955a082080211f1fa69ef520f7208ace9c2e3eb41bc"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio:0.2.0#/$defs/ResearchPortfolioChangesResult",
+        "sha256": "cb6d881f19cd7f37561e5955a082080211f1fa69ef520f7208ace9c2e3eb41bc"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.get_research_portfolio_changes"
+      ]
+    },
+    {
+      "operation": {
+        "id": "get_business_development_context",
+        "version": "0.2.0"
+      },
+      "displayName": "Read selected business-development context",
+      "whenToUse": "Prepare this distinct read for the prospect selected by an actor-owned active conversation and current persisted scope.",
+      "limitations": [
+        "Pending contract only; null handler, no enabled source or executable skill.",
+        "Source requirements are design declarations; current grants, availability and actual producer authority remain unqualified.",
+        "The conversation UUID is a selector, not authorization. Current ownership, active state, persisted prospect scope and current data permissions remain trusted-server responsibilities.",
+        "The result is a frozen projected type, not proof of source freshness, entitlement, exhaustive absence, snapshot stability or provider qualification.",
+        "Evidence coverage.complete and coverage.partial may both be true; returned rows fitting the cap does not complete missing facts or sections.",
+        "suppressJev does not suppress every provider path: the frozen dossier may perform flag-gated live SAM work. This descriptor authorizes no provider call.",
+        "Recent changes are a bounded read with no exposed continuation request; unread counts and inferred implications do not establish bid or win intent.",
+        "Context/evidence result fields do not bind themselves to a conversation. A qualified adapter must correlate current authorized scope and preserve failures."
+      ],
+      "positiveExamples": [
+        "Inspect stored context, bounded evidence or recent changes for the currently selected prospect."
+      ],
+      "negativeExamples": [
+        "Use a model-selected prospect as authority, send outreach, mark alerts read, or infer completeness from returned row counts."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "business_development",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:business-development:0.2.0#/$defs/BusinessDevelopmentContextInput",
+        "sha256": "fff7362e49e0d981b1aeaeec881ea2e72e2fa263d9f64dfad94456fd50b330f1"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:business-development:0.2.0#/$defs/BusinessDevelopmentContextOutput",
+        "sha256": "fff7362e49e0d981b1aeaeec881ea2e72e2fa263d9f64dfad94456fd50b330f1"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.get_business_development_context"
+      ]
+    },
+    {
+      "operation": {
+        "id": "get_business_development_evidence",
+        "version": "0.2.0"
+      },
+      "displayName": "Read selected business-development evidence",
+      "whenToUse": "Prepare this distinct read for the prospect selected by an actor-owned active conversation and current persisted scope.",
+      "limitations": [
+        "Pending contract only; null handler, no enabled source or executable skill.",
+        "Source requirements are design declarations; current grants, availability and actual producer authority remain unqualified.",
+        "The conversation UUID is a selector, not authorization. Current ownership, active state, persisted prospect scope and current data permissions remain trusted-server responsibilities.",
+        "The result is a frozen projected type, not proof of source freshness, entitlement, exhaustive absence, snapshot stability or provider qualification.",
+        "Evidence coverage.complete and coverage.partial may both be true; returned rows fitting the cap does not complete missing facts or sections.",
+        "suppressJev does not suppress every provider path: the frozen dossier may perform flag-gated live SAM work. This descriptor authorizes no provider call.",
+        "Recent changes are a bounded read with no exposed continuation request; unread counts and inferred implications do not establish bid or win intent.",
+        "Context/evidence result fields do not bind themselves to a conversation. A qualified adapter must correlate current authorized scope and preserve failures."
+      ],
+      "positiveExamples": [
+        "Inspect stored context, bounded evidence or recent changes for the currently selected prospect."
+      ],
+      "negativeExamples": [
+        "Use a model-selected prospect as authority, send outreach, mark alerts read, or infer completeness from returned row counts."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "business_development",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:business-development:0.2.0#/$defs/BusinessDevelopmentEvidenceInput",
+        "sha256": "fff7362e49e0d981b1aeaeec881ea2e72e2fa263d9f64dfad94456fd50b330f1"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:business-development:0.2.0#/$defs/BusinessDevelopmentEvidenceOutput",
+        "sha256": "fff7362e49e0d981b1aeaeec881ea2e72e2fa263d9f64dfad94456fd50b330f1"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.get_business_development_evidence"
+      ]
+    },
+    {
+      "operation": {
+        "id": "get_business_development_recent_changes",
+        "version": "0.2.0"
+      },
+      "displayName": "Read selected business-development changes",
+      "whenToUse": "Prepare this distinct read for the prospect selected by an actor-owned active conversation and current persisted scope.",
+      "limitations": [
+        "Pending contract only; null handler, no enabled source or executable skill.",
+        "Source requirements are design declarations; current grants, availability and actual producer authority remain unqualified.",
+        "The conversation UUID is a selector, not authorization. Current ownership, active state, persisted prospect scope and current data permissions remain trusted-server responsibilities.",
+        "The result is a frozen projected type, not proof of source freshness, entitlement, exhaustive absence, snapshot stability or provider qualification.",
+        "Evidence coverage.complete and coverage.partial may both be true; returned rows fitting the cap does not complete missing facts or sections.",
+        "suppressJev does not suppress every provider path: the frozen dossier may perform flag-gated live SAM work. This descriptor authorizes no provider call.",
+        "Recent changes are a bounded read with no exposed continuation request; unread counts and inferred implications do not establish bid or win intent.",
+        "Context/evidence result fields do not bind themselves to a conversation. A qualified adapter must correlate current authorized scope and preserve failures."
+      ],
+      "positiveExamples": [
+        "Inspect stored context, bounded evidence or recent changes for the currently selected prospect."
+      ],
+      "negativeExamples": [
+        "Use a model-selected prospect as authority, send outreach, mark alerts read, or infer completeness from returned row counts."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "business_development",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:business-development:0.2.0#/$defs/BusinessDevelopmentRecentChangesInput",
+        "sha256": "fff7362e49e0d981b1aeaeec881ea2e72e2fa263d9f64dfad94456fd50b330f1"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:business-development:0.2.0#/$defs/BusinessDevelopmentRecentChangesOutput",
+        "sha256": "fff7362e49e0d981b1aeaeec881ea2e72e2fa263d9f64dfad94456fd50b330f1"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.get_business_development_recent_changes"
       ]
     }
   ]

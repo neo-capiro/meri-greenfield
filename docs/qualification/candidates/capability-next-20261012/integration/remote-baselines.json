@@ -1,0 +1,21 @@
+{
+  "observedAt": "2026-10-12 15:41:54 UTC",
+  "repository": "neo-capiro/meri-greenfield",
+  "basePR": {
+    "number": 22,
+    "url": "https://github.com/neo-capiro/meri-greenfield/pull/22",
+    "head": "task/meri-capability-successor-20261012",
+    "headSha": "4cdabab9ae3ef5f44e2a1eb10ae1a8a6622fa640",
+    "base": "release/meri-rc1-20261012",
+    "baseSha": "2f06feccca731d6cd388612cd568185ecc29668f",
+    "state": "open",
+    "draft": true,
+    "merged": false
+  },
+  "fixedRefs": {
+    "main": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc",
+    "RC1": "2f06feccca731d6cd388612cd568185ecc29668f",
+    "RC1AnnotatedTag": "b157217e69d36da1b53fa5944a0781a2f53a2f79"
+  },
+  "observationOnly": true
+}

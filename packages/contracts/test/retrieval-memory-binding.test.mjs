@@ -174,10 +174,12 @@ test('all thirteen earlier bindings retain legacy context grammar and refuse mem
 test('catalog preserves the original thirteen descriptors and complete selected/deferred ledger',()=>{
   const catalog=JSON.parse(readFileSync(new URL('../retrieval-0.2/catalog.json',import.meta.url)));
   // Canonical hash of the thirteen descriptors at the assigned source base.
-  assert.equal(canonicalSha256(catalog.operations.filter(value=>![reference.id,'query_action_items'].includes(value.operation.id))),
+  assert.equal(canonicalSha256(catalog.operations.filter(value=>![reference.id,'query_action_items',
+    'lookup_client_registry','get_business_development_context','get_business_development_evidence',
+    'get_business_development_recent_changes','get_research_portfolio','get_research_portfolio_changes'].includes(value.operation.id))),
     'c60f90cf599299c1edb14538b653772b4f1d52b9c311636653aba7c08de29095');
-  assert.equal(catalog.operations.length,15);assert.equal(catalog.originals.length,139);
+  assert.equal(catalog.operations.length,21);assert.equal(catalog.originals.length,139);
   assert.equal(catalog.originals.filter(value=>value.disposition==='selected').length,96);
   assert.equal(catalog.originals.filter(value=>value.disposition==='deferred').length,43);
-  assert.equal(catalog.originals.filter(value=>value.disposition==='selected'&&value.state==='pending').length,82);
+  assert.equal(catalog.originals.filter(value=>value.disposition==='selected'&&value.state==='pending').length,76);
 });
