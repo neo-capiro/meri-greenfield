@@ -1,0 +1,28 @@
+{
+  "libraryFileId": "libfile_0aa0b219f96c81918392471e3d52972f",
+  "fileId": "file_00000000380c81f78c19dc7b5dc2e4ac",
+  "version": 0,
+  "fileName": "meri-native-safe-gate-summaries-20261012-v2.zip",
+  "expectedBytes": 8253,
+  "expectedSha256": "8ff6cdc10e0ba2aa31cd65a0b1b116f94acad432e6ad7b1e3eed301db4e51884",
+  "bytesObtained": false,
+  "hashVerified": false,
+  "supportedTransferAttempts": [
+    {
+      "result": "library file transfer failed: download failed",
+      "exitCode": 1,
+      "networkOverride": false
+    },
+    {
+      "result": "library file transfer failed: download failed",
+      "exitCode": 1,
+      "networkOverride": true
+    }
+  ],
+  "safeErrorMetadata": {
+    "type": "URLError",
+    "reasonType": "OSError"
+  },
+  "sourceRuntimeJoin": "HOLD_UNVERIFIED_BYTES",
+  "next": "Requested individually readable safe summary JSON Library references; no signed transfer URL persisted."
+}
