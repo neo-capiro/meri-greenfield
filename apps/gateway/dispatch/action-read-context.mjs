@@ -4,6 +4,16 @@ import { deny } from './operation-result.mjs';
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/iu;
 
+export function normalizeActionReadRequest({ entry, request, identity }) {
+  if (typeof request.clientId !== 'string' || !UUID.test(request.clientId.trim())) deny('UNAVAILABLE');
+  const reference = request.clientId.trim();
+  // A UUID needs no name lookup. This only normalizes syntax; current business
+  // policy must still authorize the normalized request and select the same client.
+  try { return entry.contract.normalizeInput(request, { binding: identity.claims.binding,
+    clientResolution: { reference, clientId: reference.toLowerCase() } }); }
+  catch { deny('INVALID_ARGUMENTS'); }
+}
+
 export function prepareActionReadContext({ request, authority }) {
   // The complete family also describes names and unscoped lists. Connecting those
   // modes requires their own qualified resolution/policy; no implicit wall grant.
