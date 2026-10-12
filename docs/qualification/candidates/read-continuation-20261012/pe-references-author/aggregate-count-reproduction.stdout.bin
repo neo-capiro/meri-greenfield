@@ -1,0 +1,60 @@
+✔ three required selectors trim/cap UTF-16 and preserve case (2.956174ms)
+✔ missing and non-string selectors are typed refusals, never fabricated empty source pages (1.766244ms)
+✔ closed model and context objects accept no authority or request aliases (0.67213ms)
+✔ operation admission rejects unknowns and hostile coercion without effects (0.258448ms)
+✔ all success and fallback envelopes round-trip without caller mutation (6.389403ms)
+✔ bill envelope has no invented PE echo, source coverage or total (0.910979ms)
+✔ bill optional storage values remain nullable and links/package preserve their exact tuples (0.676937ms)
+✔ independent stored bill identity columns and unknown values are not normalized into fabricated facts (0.258348ms)
+✔ bill specificity then stored date ordering permits ties and null epoch semantics (1.037921ms)
+✔ bill source cap and unique stored IDs are enforced (2.931065ms)
+✔ bill SQL Date and all generated timestamps retain exact canonical serialization (0.71837ms)
+✔ contractor absent-table fallback cannot carry fabricated rows or success evidence (0.895957ms)
+✔ R-3 exhibit money cannot be included in award buckets or award count (1.119443ms)
+✔ candidate and uninventory buckets remain distinct; zeros do not grant coverage (1.258712ms)
+✔ award window/provenance/unit/category attribution cannot be silently upgraded (0.766182ms)
+✔ negative award adjustments and nullable exhibit costs preserve finite arithmetic (0.405399ms)
+✔ exhibit attribution follows null defaults and page truthiness without invented positive numeric constraints (0.439201ms)
+✔ contractor count/money correlations and own sorted group identity are enforced (1.494106ms)
+✔ contractor data and named performer source caps cannot imply population totals (0.834144ms)
+✔ report echoed PE binds only the selected syntax (0.322865ms)
+✔ empty report requires loaded-source caveat and cannot certify global absence (0.258118ms)
+✔ any program-level row requires aggregate caution and exact per-row caveat (0.491308ms)
+✔ source link scope is basis-derived including future unknown bases (0.321503ms)
+✔ accepted and candidate links preserve source evidence without approving candidate (0.638771ms)
+✔ report dedup cannot impose accepted-over-stronger-basis selection (0.243726ms)
+✔ report sorting is review status, basis, FY, confidence with ties allowed (0.395815ms)
+✔ report cap, nullable Int pages and unknown committee/action values remain distinct (0.96465ms)
+✔ inert admission rejects getters/proxies/cycles/nonfinite fields before effects (0.312039ms)
+✔ present bill links require stored string evidence, while the whole link may be null (0.356727ms)
+✖ derived award counts can exceed one stored Int32 without overflow or truncation (0.559001ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 29
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 249.116071
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-pe-references.test.mjs:143:1
+✖ derived award counts can exceed one stored Int32 without overflow or truncation (0.559001ms)
+  AssertionError [ERR_ASSERTION]: data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data/data must NOT have more than 0 items, data/todo must be equal to constant, data/evidence/federalAwards/count must be <= 2147483647, data must match exactly one schema in oneOf
+      at validateShape (file:///workspace/meri-pe-references-20261012/packages/contracts/test/retrieval-pe-references.test.mjs:10:72)
+      at assertPeReferenceOutput (file:///workspace/meri-pe-references-20261012/packages/contracts/retrieval-0.2/pe-references-validation.mjs:47:5)
+      at TestContext.<anonymous> (file:///workspace/meri-pe-references-20261012/packages/contracts/test/retrieval-pe-references.test.mjs:146:2)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

@@ -1,0 +1,22 @@
+[
+  {
+    "path": "packages/contracts/retrieval-0.2/pe-references.schema.json",
+    "bytes": 20845,
+    "sha256": "67414e910ce3c9206c9700579da69ed8cbfcfe32deda983041036613df481a78"
+  },
+  {
+    "path": "packages/contracts/retrieval-0.2/pe-references-validation.mjs",
+    "bytes": 3704,
+    "sha256": "31148c6057be537fe89c2e0d28d30901c8b104a94f992d6879e3260f4ee49215"
+  },
+  {
+    "path": "packages/contracts/retrieval-0.2/pe-contractors-validation.mjs",
+    "bytes": 1704,
+    "sha256": "277d41406bbe28153230d7c066d5f2bc5e899dbb1457f370367c952a13f35e25"
+  },
+  {
+    "path": "packages/contracts/test/retrieval-pe-references.test.mjs",
+    "bytes": 14396,
+    "sha256": "833592ed014e6d4b7e5824f659e4f350cdf26df6637b0328c3dd146fe5c777a5"
+  }
+]
