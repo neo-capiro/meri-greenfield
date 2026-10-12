@@ -1,0 +1,129 @@
+✔ independent lifecycle: construction is inert and create retains explicit SDK policy choices (72.947407ms)
+✔ independent lifecycle: update_scheduled_task uses exact borrowed handle (2.659177ms)
+✔ independent lifecycle: cancel_scheduled_task uses exact borrowed handle (1.612283ms)
+✔ independent lifecycle: invalid approval commandSha256 has no owner or SDK effect (0.963778ms)
+✔ independent lifecycle: invalid approval proposalId has no owner or SDK effect (0.468294ms)
+✔ independent lifecycle: invalid approval decision has no owner or SDK effect (0.418048ms)
+✔ independent lifecycle: invalid approval expiresAt has no owner or SDK effect (0.819432ms)
+✔ independent lifecycle: invalid approval approver has no owner or SDK effect (0.41877ms)
+✔ independent lifecycle: caller substitution is rejected before effects (0.442535ms)
+✔ independent lifecycle: scope substitution is rejected before effects (0.493292ms)
+✔ independent lifecycle: generation substitution is rejected before effects (0.358979ms)
+✔ independent lifecycle: task substitution is rejected before effects (0.442245ms)
+✔ independent lifecycle: unknown substitution is rejected before effects (0.353071ms)
+✔ independent lifecycle: approved bytes cannot be mutated while authorization is parked (8.206905ms)
+✔ independent lifecycle: hostile getter is inertly denied (0.435655ms)
+✔ independent lifecycle: hostile proxy is inertly denied (0.184458ms)
+✔ independent lifecycle: authority authorized mismatch denies before claim (0.866513ms)
+✔ independent lifecycle: authority bindingSha256 mismatch denies before claim (0.712762ms)
+✔ independent lifecycle: authority callerIdentity mismatch denies before claim (1.032792ms)
+✔ independent lifecycle: authority expiresAtMs mismatch denies before claim (1.042647ms)
+✔ independent lifecycle: authority extra mismatch denies before claim (0.615275ms)
+✔ independent lifecycle: pre-abort performs no authorization, claim or mutation (0.604809ms)
+✔ independent lifecycle: claim denial never reaches SDK (0.754444ms)
+✔ independent lifecycle: markDispatching denial never reaches SDK (0.788655ms)
+✔ independent lifecycle: cancelled parked claim cannot cause later mutation (4.447985ms)
+✔ independent lifecycle: cancelled parked markDispatching cannot cause later mutation (1.020985ms)
+✔ independent lifecycle: cancelled parked create cannot cause later mutation (0.991851ms)
+✔ independent lifecycle: cancelled parked commitKnown cannot cause later mutation (1.221656ms)
+✔ independent lifecycle: schedule handle returned after deadline cannot update (1.050528ms)
+✔ independent lifecycle: SDK update callback invoked after expiry refuses replacement (0.830508ms)
+✔ independent lifecycle: explicit cancellation targets exact runs and never terminates (1.624271ms)
+✔ independent lifecycle: list uses application-owned page and exact original history IDs (8.351021ms)
+✔ independent lifecycle: history run substitution rejects instead of relabeling latest run (1.462057ms)
+✔ independent lifecycle: no-history request causes no workflow lookup (1.392483ms)
+✔ independent lifecycle: update current-description Proxy is refused without traps (1.001085ms)
+✔ independent lifecycle: native UUID page order accepts equivalent mixed-case projections (2.458004ms)
+✔ independent lifecycle: lost SDK ACK retains unknown and never releases projection (0.908806ms)
+✔ independent lifecycle: authority expiry published before parked callback suppresses mutation (71.578369ms)
+✔ independent lifecycle: released authority after committed mutation cannot release success (1.371201ms)
+✔ independent lifecycle: deleted or missing Temporal schedule remains an explicitly unavailable authorized row (1.371031ms)
+✔ independent lifecycle: revoked missing-row release cannot become partial authorized data (1.141596ms)
+✔ independent lifecycle: current read authority failure never becomes unavailable row (0.981285ms)
+✔ independent lifecycle: invalid description identity does not become a missing-record assertion (0.996628ms)
+✔ independent lifecycle: contradictory SDK status label cannot relabel completed execution as running (1.248316ms)
+✔ independent lifecycle: SDK future status fallback remains UNKNOWN rather than invented named status (1.562739ms)
+✖ independent lifecycle: list sanitizes private authorize error (0.878199ms)
+✖ independent lifecycle: list sanitizes private ownerList error (0.38631ms)
+✖ independent lifecycle: list sanitizes private workflowDescribe error (1.265522ms)
+ℹ tests 48
+ℹ suites 0
+ℹ pass 45
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 594.041771
+
+✖ failing tests:
+
+test at apps/control/schedules/test/lifecycle-independent.test.mjs:323:68
+✖ independent lifecycle: list sanitizes private authorize error (0.878199ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: CREDENTIAL-CANARY
+      at async TestContext.<anonymous> (file:///workspace/meri-schedule-lifecycle-review-20261012/apps/control/schedules/test/lifecycle-independent.test.mjs:325:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: CREDENTIAL-CANARY
+        at Object.authorize (file:///workspace/meri-schedule-lifecycle-review-20261012/apps/control/schedules/test/lifecycle-independent.test.mjs:324:40)
+        at invoke (file:///workspace/meri-schedule-lifecycle-review-20261012/apps/control/schedules/test/lifecycle-independent.test.mjs:63:119)
+        at authorize (file:///workspace/meri-schedule-lifecycle-review-20261012/apps/control/schedules/test/lifecycle-independent.test.mjs:102:32)
+        at file:///workspace/meri-schedule-lifecycle-review-20261012/apps/control/schedules/schedule-lifecycle.mjs:33:48
+        at file:///workspace/meri-schedule-lifecycle-review-20261012/packages/runtime/operation-lifetime.mjs:38:65,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/schedules/test/lifecycle-independent.test.mjs:323:68
+✖ independent lifecycle: list sanitizes private ownerList error (0.38631ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: CREDENTIAL-CANARY
+      at async TestContext.<anonymous> (file:///workspace/meri-schedule-lifecycle-review-20261012/apps/control/schedules/test/lifecycle-independent.test.mjs:325:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: CREDENTIAL-CANARY
+        at Object.ownerList (file:///workspace/meri-schedule-lifecycle-review-20261012/apps/control/schedules/test/lifecycle-independent.test.mjs:324:40)
+        at invoke (file:///workspace/meri-schedule-lifecycle-review-20261012/apps/control/schedules/test/lifecycle-independent.test.mjs:63:119)
+        at scheduleOwner.list (file:///workspace/meri-schedule-lifecycle-review-20261012/apps/control/schedules/test/lifecycle-independent.test.mjs:101:46)
+        at file:///workspace/meri-schedule-lifecycle-review-20261012/apps/control/schedules/schedule-lifecycle.mjs:71:95
+        at file:///workspace/meri-schedule-lifecycle-review-20261012/packages/runtime/operation-lifetime.mjs:38:65,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/schedules/test/lifecycle-independent.test.mjs:323:68
+✖ independent lifecycle: list sanitizes private workflowDescribe error (1.265522ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: CREDENTIAL-CANARY
+      at async TestContext.<anonymous> (file:///workspace/meri-schedule-lifecycle-review-20261012/apps/control/schedules/test/lifecycle-independent.test.mjs:325:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: CREDENTIAL-CANARY
+        at Object.workflowDescribe (file:///workspace/meri-schedule-lifecycle-review-20261012/apps/control/schedules/test/lifecycle-independent.test.mjs:324:40)
+        at invoke (file:///workspace/meri-schedule-lifecycle-review-20261012/apps/control/schedules/test/lifecycle-independent.test.mjs:63:119)
+        at Object.describe (file:///workspace/meri-schedule-lifecycle-review-20261012/apps/control/schedules/test/lifecycle-independent.test.mjs:89:57)
+        at file:///workspace/meri-schedule-lifecycle-review-20261012/apps/control/schedules/temporal-run-history.mjs:23:75
+        at file:///workspace/meri-schedule-lifecycle-review-20261012/apps/control/schedules/schedule-lifecycle.mjs:39:109
+        at file:///workspace/meri-schedule-lifecycle-review-20261012/apps/control/schedules/test/lifecycle-independent.test.mjs:66:114
+        at invoke (file:///workspace/meri-schedule-lifecycle-review-20261012/apps/control/schedules/test/lifecycle-independent.test.mjs:63:131)
+        at Object.withAbortSignal (file:///workspace/meri-schedule-lifecycle-review-20261012/apps/control/schedules/test/lifecycle-independent.test.mjs:66:74)
+        at file:///workspace/meri-schedule-lifecycle-review-20261012/apps/control/schedules/schedule-lifecycle.mjs:39:72
+        at file:///workspace/meri-schedule-lifecycle-review-20261012/apps/control/schedules/test/lifecycle-independent.test.mjs:65:110,
+    operator: 'rejects',
+    diff: 'simple'
+  }

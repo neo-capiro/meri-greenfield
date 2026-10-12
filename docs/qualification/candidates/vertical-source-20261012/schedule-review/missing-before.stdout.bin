@@ -1,0 +1,61 @@
+✔ independent lifecycle: construction is inert and create retains explicit SDK policy choices (44.161391ms)
+✔ independent lifecycle: update_scheduled_task uses exact borrowed handle (2.593007ms)
+✔ independent lifecycle: cancel_scheduled_task uses exact borrowed handle (1.71648ms)
+✔ independent lifecycle: invalid approval commandSha256 has no owner or SDK effect (0.881655ms)
+✔ independent lifecycle: invalid approval proposalId has no owner or SDK effect (0.381122ms)
+✔ independent lifecycle: invalid approval decision has no owner or SDK effect (0.357857ms)
+✔ independent lifecycle: invalid approval expiresAt has no owner or SDK effect (0.740202ms)
+✔ independent lifecycle: invalid approval approver has no owner or SDK effect (0.544859ms)
+✔ independent lifecycle: caller substitution is rejected before effects (0.480773ms)
+✔ independent lifecycle: scope substitution is rejected before effects (0.401664ms)
+✔ independent lifecycle: generation substitution is rejected before effects (0.388594ms)
+✔ independent lifecycle: task substitution is rejected before effects (0.426862ms)
+✔ independent lifecycle: unknown substitution is rejected before effects (0.321534ms)
+✔ independent lifecycle: approved bytes cannot be mutated while authorization is parked (6.9193ms)
+✔ independent lifecycle: hostile getter is inertly denied (0.530448ms)
+✔ independent lifecycle: hostile proxy is inertly denied (0.248443ms)
+✔ independent lifecycle: authority authorized mismatch denies before claim (0.852061ms)
+✔ independent lifecycle: authority bindingSha256 mismatch denies before claim (0.699331ms)
+✔ independent lifecycle: authority callerIdentity mismatch denies before claim (0.663878ms)
+✔ independent lifecycle: authority expiresAtMs mismatch denies before claim (0.799792ms)
+✔ independent lifecycle: authority extra mismatch denies before claim (0.716718ms)
+✔ independent lifecycle: pre-abort performs no authorization, claim or mutation (0.477368ms)
+✔ independent lifecycle: claim denial never reaches SDK (0.587493ms)
+✔ independent lifecycle: markDispatching denial never reaches SDK (0.61825ms)
+✔ independent lifecycle: cancelled parked claim cannot cause later mutation (2.372516ms)
+✔ independent lifecycle: cancelled parked markDispatching cannot cause later mutation (0.841645ms)
+✔ independent lifecycle: cancelled parked create cannot cause later mutation (1.17764ms)
+✔ independent lifecycle: cancelled parked commitKnown cannot cause later mutation (1.029658ms)
+✔ independent lifecycle: schedule handle returned after deadline cannot update (0.877569ms)
+✔ independent lifecycle: SDK update callback invoked after expiry refuses replacement (0.717929ms)
+✔ independent lifecycle: explicit cancellation targets exact runs and never terminates (1.530941ms)
+✔ independent lifecycle: list uses application-owned page and exact original history IDs (8.503971ms)
+✔ independent lifecycle: history run substitution rejects instead of relabeling latest run (1.622378ms)
+✔ independent lifecycle: no-history request causes no workflow lookup (1.242837ms)
+✔ independent lifecycle: update current-description Proxy is refused without traps (0.872421ms)
+✔ independent lifecycle: native UUID page order accepts equivalent mixed-case projections (2.494469ms)
+✔ independent lifecycle: lost SDK ACK retains unknown and never releases projection (0.897068ms)
+✔ independent lifecycle: authority expiry published before parked callback suppresses mutation (70.955951ms)
+✔ independent lifecycle: released authority after committed mutation cannot release success (1.301587ms)
+✖ independent lifecycle: deleted or missing Temporal schedule remains an explicitly unavailable authorized row (1.250059ms)
+✔ independent lifecycle: revoked missing-row release cannot become partial authorized data (0.826602ms)
+✔ independent lifecycle: current read authority failure never becomes unavailable row (0.795335ms)
+✔ independent lifecycle: invalid description identity does not become a missing-record assertion (0.842126ms)
+ℹ tests 43
+ℹ suites 0
+ℹ pass 42
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 494.823902
+
+✖ failing tests:
+
+test at apps/control/schedules/test/lifecycle-independent.test.mjs:271:1
+✖ independent lifecycle: deleted or missing Temporal schedule remains an explicitly unavailable authorized row (1.250059ms)
+  Error: SCHEDULE_INSPECTION_FAILED
+      at error (file:///workspace/meri-schedule-lifecycle-review-20261012/apps/control/schedules/temporal-inspection.mjs:8:51)
+      at Object.inspect (file:///workspace/meri-schedule-lifecycle-review-20261012/apps/control/schedules/temporal-inspection.mjs:54:13) {
+    code: 'SCHEDULE_INSPECTION_FAILED'
+  }

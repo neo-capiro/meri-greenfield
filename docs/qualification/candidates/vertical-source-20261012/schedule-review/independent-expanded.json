@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/schedules/test/lifecycle-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-schedule-lifecycle-review-20261012",
+  "sourceHead": "0777e798f652e7c4d3f727a3039091ff36a62b85",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T22:14:28.642336+00:00",
+  "durationSeconds": 0.667,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 360777,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-review/independent-expanded.stdout.bin",
+      "bytes": 5294,
+      "sha256": "95dc3b1e1ab97e49d4731c519f55daf824351e477234fc50439cd25062747c6e"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-review/independent-expanded.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

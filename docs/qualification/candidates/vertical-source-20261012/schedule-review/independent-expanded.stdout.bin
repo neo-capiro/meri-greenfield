@@ -1,0 +1,74 @@
+✔ independent lifecycle: construction is inert and create retains explicit SDK policy choices (56.535301ms)
+✔ independent lifecycle: update_scheduled_task uses exact borrowed handle (3.185909ms)
+✔ independent lifecycle: cancel_scheduled_task uses exact borrowed handle (1.631632ms)
+✔ independent lifecycle: invalid approval commandSha256 has no owner or SDK effect (0.808966ms)
+✔ independent lifecycle: invalid approval proposalId has no owner or SDK effect (0.500432ms)
+✔ independent lifecycle: invalid approval decision has no owner or SDK effect (0.52542ms)
+✔ independent lifecycle: invalid approval expiresAt has no owner or SDK effect (0.591439ms)
+✔ independent lifecycle: invalid approval approver has no owner or SDK effect (0.634403ms)
+✔ independent lifecycle: caller substitution is rejected before effects (0.642656ms)
+✔ independent lifecycle: scope substitution is rejected before effects (0.532079ms)
+✔ independent lifecycle: generation substitution is rejected before effects (0.495395ms)
+✔ independent lifecycle: task substitution is rejected before effects (0.550447ms)
+✔ independent lifecycle: unknown substitution is rejected before effects (0.433502ms)
+✔ independent lifecycle: approved bytes cannot be mutated while authorization is parked (8.3294ms)
+✔ independent lifecycle: hostile getter is inertly denied (0.396566ms)
+✔ independent lifecycle: hostile proxy is inertly denied (0.176865ms)
+✔ independent lifecycle: authority authorized mismatch denies before claim (0.853022ms)
+✔ independent lifecycle: authority bindingSha256 mismatch denies before claim (0.721354ms)
+✔ independent lifecycle: authority callerIdentity mismatch denies before claim (0.671129ms)
+✔ independent lifecycle: authority expiresAtMs mismatch denies before claim (0.869071ms)
+✔ independent lifecycle: authority extra mismatch denies before claim (0.78497ms)
+✔ independent lifecycle: pre-abort performs no authorization, claim or mutation (0.554764ms)
+✔ independent lifecycle: claim denial never reaches SDK (0.796598ms)
+✔ independent lifecycle: markDispatching denial never reaches SDK (0.775105ms)
+✔ independent lifecycle: cancelled parked claim cannot cause later mutation (2.882913ms)
+✔ independent lifecycle: cancelled parked markDispatching cannot cause later mutation (2.524004ms)
+✔ independent lifecycle: cancelled parked create cannot cause later mutation (1.258151ms)
+✔ independent lifecycle: cancelled parked commitKnown cannot cause later mutation (1.484021ms)
+✔ independent lifecycle: schedule handle returned after deadline cannot update (1.115516ms)
+✔ independent lifecycle: SDK update callback invoked after expiry refuses replacement (1.180204ms)
+✔ independent lifecycle: explicit cancellation targets exact runs and never terminates (1.913707ms)
+✔ independent lifecycle: list uses application-owned page and exact original history IDs (11.413957ms)
+✔ independent lifecycle: history run substitution rejects instead of relabeling latest run (1.420735ms)
+✔ independent lifecycle: no-history request causes no workflow lookup (1.385262ms)
+✖ independent lifecycle: update current-description Proxy is refused without traps (1.552594ms)
+✖ independent lifecycle: native UUID page order accepts equivalent mixed-case projections (1.130629ms)
+✔ independent lifecycle: lost SDK ACK retains unknown and never releases projection (1.176819ms)
+✔ independent lifecycle: authority expiry published before parked callback suppresses mutation (71.71002ms)
+✔ independent lifecycle: released authority after committed mutation cannot release success (2.02184ms)
+ℹ tests 39
+ℹ suites 0
+ℹ pass 37
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 577.293301
+
+✖ failing tests:
+
+test at apps/control/schedules/test/lifecycle-independent.test.mjs:226:1
+✖ independent lifecycle: update current-description Proxy is refused without traps (1.552594ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-schedule-lifecycle-review-20261012/apps/control/schedules/test/lifecycle-independent.test.mjs:233:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/schedules/test/lifecycle-independent.test.mjs:236:1
+✖ independent lifecycle: native UUID page order accepts equivalent mixed-case projections (1.130629ms)
+  Error: SCHEDULE_LIST
+      at denySchedule (file:///workspace/meri-schedule-lifecycle-review-20261012/packages/contracts/schedules-0.2/lifecycle-validation.mjs:11:54)
+      at Object.list (file:///workspace/meri-schedule-lifecycle-review-20261012/apps/control/schedules/schedule-lifecycle.mjs:75:252)
+      at async TestContext.<anonymous> (file:///workspace/meri-schedule-lifecycle-review-20261012/apps/control/schedules/test/lifecycle-independent.test.mjs:241:15)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'SCHEDULE_LIST'
+  }
