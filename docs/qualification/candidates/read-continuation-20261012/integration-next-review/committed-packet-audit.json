@@ -1,0 +1,58 @@
+{
+  "source": "4566cef6417428d46274a14f7937ca11df66ae9d",
+  "packet": "57e56967c16e87ebecc34999553c9625190ad12a",
+  "packetOnlyDocumentation": true,
+  "packetChangedPaths": 75,
+  "rootCommittedReceiptAndStreamIdentities": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/integration-next/combined-final.json",
+      "bytes": 5584,
+      "sha256": "bfa17f58552eb62b3bf3446308f231c971e9d16efc4c312c252667c7fb5f8f5a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/integration-next/combined-final.stdout.bin",
+      "bytes": 154145,
+      "sha256": "d4377dfa6b28e575f910fc154db668d3685525a536d32a166e89418884d2c3e9"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/integration-next/combined-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/integration-next/public-distribution.json",
+      "bytes": 1432,
+      "sha256": "ed7eecab74f247085865b4e98f55a02dd626f86cc1babf41e8dbcf4637d667ea"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/integration-next/public-distribution.stdout.bin",
+      "bytes": 2046,
+      "sha256": "3f15d1533c2ec023fc16107ba4bf716f9af30e29ca86099dc3a753156e56c8ef"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/integration-next/public-distribution.stderr.bin",
+      "bytes": 1040,
+      "sha256": "cbbd466f3bf458f7f516c133ea486c1aada38d325ec9a80b698c26da8c18237f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/integration-next/source-audit.json",
+      "bytes": 1302,
+      "sha256": "95c9e205200fbd2fe3bca71c4f860dddc8dfff03e1762d50bf5a95e5f8694ba3"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/integration-next/source-audit.stdout.bin",
+      "bytes": 233,
+      "sha256": "860582fee61ef51d265b37ed1274b7bb969b67f9b5207a3d7d046129d7e79088"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/integration-next/source-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rootReceiptMembersVerified": 9,
+  "billAuthorMembersVerified": 51,
+  "billAuthorManifestSha256": "04690f2f994ac591f223c80c67dc8af63d8b83bb6a113efd0a1a3d9e4190f048",
+  "passed": 61,
+  "failed": 0
+}
