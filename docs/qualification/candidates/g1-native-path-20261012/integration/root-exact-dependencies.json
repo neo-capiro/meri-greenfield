@@ -1,0 +1,38 @@
+{
+  "command": [
+    "npm",
+    "ci",
+    "--ignore-scripts",
+    "--no-audit",
+    "--no-fund",
+    "--cache",
+    "/tmp/meri-recovery-cache-root"
+  ],
+  "cwd": "/workspace/meri-g1-native-path-20261012",
+  "sourceHead": "4911caec5937701c6da1b863ab6a536d40bfa6db",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T05:55:04.264249+00:00",
+  "durationSeconds": 3.329,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 71713,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/root-exact-dependencies.stdout.bin",
+      "bytes": 25,
+      "sha256": "87ce98749cbda0c632c25e9c4963c21076562a49f92ed1e744dbc6bafbc85f82"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/root-exact-dependencies.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

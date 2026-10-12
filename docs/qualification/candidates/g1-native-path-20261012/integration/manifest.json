@@ -1,0 +1,260 @@
+{
+  "scope": "root source integration evidence; no runtime acceptance",
+  "base": "e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5",
+  "integratedSourceHead": "c60bc58092c9ed34f2c5d718afe4d678f6cf79d4",
+  "finalReview": "4da0af87d7e34e0fcdaeec2ab1c520437eaf5af4",
+  "files": [
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/all-source-checks-complete.json",
+      "bytes": 2188,
+      "sha256": "77ed5fa2ce1d1531153a55c5a29feb8ad34317a36e590949ba10bb1bbaa7b75a"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/budget-fixture-contract-check.mjs",
+      "bytes": 2638,
+      "sha256": "4dfc8aaa3c1cf293bdc868ca1bd01cfae2767a001e52cfd32163e2b13dd783ab"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/budget-fixture-contract.json",
+      "bytes": 1317,
+      "sha256": "7cd2a83e26b873a472c0ae38b0d4c104fb422238c6fd4006672b65b494677b68"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/budget-fixture-contract.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/budget-fixture-contract.stdout.bin",
+      "bytes": 227,
+      "sha256": "29839c44b7e1af0aa3d651eed22591470980e73b289bce45bc4d4486273dadba"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/budget-independent.json",
+      "bytes": 1429,
+      "sha256": "1600ce5f1179339c3d5956e7e0c2950461b0793e307820c1b1321d9266b6abfe"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/budget-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/budget-independent.stdout.bin",
+      "bytes": 1316,
+      "sha256": "3f96294e949853a035391ee3811fc664fff95f9c384430850e8824d02de10fc1"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/budget-source-preservation.json",
+      "bytes": 1425,
+      "sha256": "4a81c433fb0aa1678e2a5c46d1290970d18c1c296a002b2f70cae966cd8b69dd"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/budget-source-preservation.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/budget-source-preservation.stdout.bin",
+      "bytes": 1025,
+      "sha256": "471aa65c11091e11ed56564448c7241eb433ad761918a7afb1e0df5ec33fb8b8"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/final-plan-link-check.json",
+      "bytes": 1954,
+      "sha256": "4dbc6663ed4daf2ebcef349d9de3e66f1d79e36e96c62675d9b0364648e55010"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/final-source-integrity.json",
+      "bytes": 1315,
+      "sha256": "890d9dae7fb72476c929eb10fe57e3a00aca030e1e1d7559547658d62680f641"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/final-source-integrity.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/final-source-integrity.stdout.bin",
+      "bytes": 34153,
+      "sha256": "ba980a61a803903948aed63cabf8c859cd54d69d41a1342389e09e59bc68cc9f"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/gateway-ordinary.json",
+      "bytes": 1614,
+      "sha256": "859f4de56f3c6986e9bab5ef2bcaf79d6f869d339dc3e7667ddc5b0cd345db85"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/gateway-ordinary.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/gateway-ordinary.stdout.bin",
+      "bytes": 14334,
+      "sha256": "81386192198bca93df35fe6694a5dbc6d5b5909b075da77dadf512625480b6a1"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/plan-link-check.json",
+      "bytes": 1706,
+      "sha256": "6f7d511414dedb877466ba6b54de8edbac0429295f61f786d1afbcbdd8d832b0"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/pr-stack-ancestry.json",
+      "bytes": 2173,
+      "sha256": "11040b0b2acc3df278650fb1936a3225da90dab6fd4d421d2c12f0fd9b5f78de"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/pr-stack-observation.json",
+      "bytes": 4393,
+      "sha256": "2ec22f398edba0021db6034a4928ad511c02e027d161e89c518c09b8b36ca958"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/publication-privacy-check.json",
+      "bytes": 192,
+      "sha256": "7e359c5c4ba8409a0b6d33f8faa47c9121fdf9783e5a51e00023b0900809cbee"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/roadmap-source.json",
+      "bytes": 1291,
+      "sha256": "c2a42146111235bc77e1fc65b2961c707ddf0f5d9ee41ad23888c26028ab2145"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/roadmap-source.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/roadmap-source.stdout.bin",
+      "bytes": 22295,
+      "sha256": "f495f363adfef2656985e02f6da7849a80c94f7270ae859d910d045facf9c2a0"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/root-exact-dependencies.json",
+      "bytes": 1329,
+      "sha256": "51d17c640d748f4b5015c0ec854f3d7fdf91dd5ed8ff37698961149574eea990"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/root-exact-dependencies.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/root-exact-dependencies.stdout.bin",
+      "bytes": 25,
+      "sha256": "87ce98749cbda0c632c25e9c4963c21076562a49f92ed1e744dbc6bafbc85f82"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/supervisor-author.json",
+      "bytes": 1299,
+      "sha256": "f0a554697c0f184bad78645dbaa06e1d18190c047c49708989e46cce571812b1"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/supervisor-author.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/supervisor-author.stdout.bin",
+      "bytes": 1400,
+      "sha256": "82b0977be106133c6db289bea1aa804b6bbd40a22fc6e71668fcff79c93dfd79"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/supervisor-independent-results.json",
+      "bytes": 9151,
+      "sha256": "4cdfda76db79a1d9162519c4aef9c8436c963002a8839a1dcbc918b11420cb0b"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/supervisor-independent.json",
+      "bytes": 1509,
+      "sha256": "608087e3722b2c1475f91171af9936f158681a801b44a0abb14bccf1d2e2b066"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/supervisor-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/supervisor-independent.stdout.bin",
+      "bytes": 6677,
+      "sha256": "7653b7b3ecd63656e59fcfe777d09b35412afde51697c21a91b6276ead3ff33a"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/supervisor-source-audit-results.json",
+      "bytes": 16006,
+      "sha256": "cd724b343407fcfd4f50aa5788a36134af68450b0f74dec368bf2cb72b6add7e"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/supervisor-source-audit.json",
+      "bytes": 1559,
+      "sha256": "9ea32ee347fd53483b745c0e16f82839e79e460f513197d70471fba428ff3744"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/supervisor-source-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/supervisor-source-audit.stdout.bin",
+      "bytes": 12534,
+      "sha256": "e3416645bc071828e8cdc080e2c3cb8d69e16b0c9e141e66024fa480b194459b"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/verify-integrated.py",
+      "bytes": 4602,
+      "sha256": "e67aa2adb8942e2082a994194433682d92f49c01794b9ebee225912daeb44ffc"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/whitespace-all.json",
+      "bytes": 188,
+      "sha256": "934284e814031147d4ca2bd92eee0491ce23a52ac33096a41c32905a839e6a47"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/whitespace-all.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/whitespace-all.stdout.txt",
+      "bytes": 811,
+      "sha256": "26a441c01c4ad5434072ea7ed17c3d7510aa4c755000fe008e186d8a65585fa5"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/whitespace-source.json",
+      "bytes": 2773,
+      "sha256": "0339d889ca9c35c2a27ab04e4101072e8ce46014d42739ef23ff90d446cfefd7"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/whitespace-source.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/whitespace-source.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/coordination/reports/MERI-G1-NATIVE-PATH-20261012.md",
+      "bytes": 11833,
+      "sha256": "e35867ce3fd1ed758daae8c87cea4bbd987fff95d5963ff4877fa85b010b277d"
+    },
+    {
+      "path": "docs/coordination/tasks/MERI-G1-NATIVE-PATH-20261012.md",
+      "bytes": 8766,
+      "sha256": "6a657468555140f8b688d913cbaf61e22fd334e0c82bb081a8d0c9b2edce3b40"
+    },
+    {
+      "path": "docs/plans/MERI-G1-SOURCE-TO-NATIVE.md",
+      "bytes": 22314,
+      "sha256": "9e786e216e6c43de8202d7bd407975fc70987e53bd87ff2a9fc01840de094f04"
+    }
+  ],
+  "selfExcluded": "docs/qualification/candidates/g1-native-path-20261012/integration/manifest.json",
+  "publicationMetadataExcluded": true
+}

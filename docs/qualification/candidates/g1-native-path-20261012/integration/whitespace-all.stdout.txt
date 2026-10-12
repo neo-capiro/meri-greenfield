@@ -1,0 +1,13 @@
+docs/qualification/candidates/g1-native-path-20261012/review/phase-reference-repair.diff:8: trailing whitespace.
++ 
+docs/qualification/candidates/g1-native-path-20261012/review/phase-reference-repair.diff:11: trailing whitespace.
++ 
+docs/qualification/candidates/g1-native-path-20261012/review/phase-reference-repair.diff:13: trailing whitespace.
++ 
+docs/qualification/candidates/g1-native-path-20261012/review/phase-reference-repair.diff:13: new blank line at EOF.
+docs/qualification/candidates/g1-native-path-20261012/review/whitespace-all.stdout.txt:2: trailing whitespace.
+++ 
+docs/qualification/candidates/g1-native-path-20261012/review/whitespace-all.stdout.txt:4: trailing whitespace.
+++ 
+docs/qualification/candidates/g1-native-path-20261012/review/whitespace-all.stdout.txt:6: trailing whitespace.
+++ 

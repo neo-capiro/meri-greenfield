@@ -1,0 +1,980 @@
+{
+  "scope": "OFFLINE_SOURCE_INTEGRITY_ONLY_NOT_RUNTIME_ADMISSION",
+  "sourceHead": "0e6830ed5c61950dfe66925b5d7423c8719c04cc",
+  "base": "e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5",
+  "originalFiles": 3945,
+  "originalFilesUnchanged": 3944,
+  "originalFilesChanged": [
+    "apps/gateway/budget/README.md"
+  ],
+  "acceptedSources": [
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/author/run-supervised.py",
+      "commit": "724850cb6cc84c8381fb52aec23b582e0e3b5872",
+      "bytes": 16402,
+      "sha256": "ccb6dba27ef3c2991df96c553ba21b097eeb243e4c86666b3cb8a8b7df7dfe3f"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/author/supervision.py",
+      "commit": "724850cb6cc84c8381fb52aec23b582e0e3b5872",
+      "bytes": 7846,
+      "sha256": "418ad3d9a5537f5ab4f97ddc748ab3529e4d491919e171c52754f772d69be142"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/author/source-checks.py",
+      "commit": "724850cb6cc84c8381fb52aec23b582e0e3b5872",
+      "bytes": 7912,
+      "sha256": "0de6b33e0d75600037133c2447ef084faa05478a993a2aa865f93096e3b8ba50"
+    },
+    {
+      "path": "apps/gateway/test/postgres-budget-admission.test.mjs",
+      "commit": "ea7b0bae9b630f750f7f329a144f3cc34f959b00",
+      "bytes": 5720,
+      "sha256": "92c1325c0951378b6de3256ae7e7b474fea19679fab6a1276841035fd5bc372e"
+    },
+    {
+      "path": "apps/gateway/test/postgres-budget-child.mjs",
+      "commit": "ea7b0bae9b630f750f7f329a144f3cc34f959b00",
+      "bytes": 1895,
+      "sha256": "493834c03bec2effaf0932049ad375e3624166ddcd230e8965dac32ff04bb9e9"
+    },
+    {
+      "path": "apps/gateway/test/postgres-budget-native-fixture.mjs",
+      "commit": "ea7b0bae9b630f750f7f329a144f3cc34f959b00",
+      "bytes": 10049,
+      "sha256": "a4a4cc8205668d72e15b2df46408f20172c1adc5914590b871f9ac206065f22a"
+    },
+    {
+      "path": "apps/gateway/test/postgres-budget.integration.mjs",
+      "commit": "ea7b0bae9b630f750f7f329a144f3cc34f959b00",
+      "bytes": 13079,
+      "sha256": "85c5b91c6424397c8d85f49770717ca459df2a247905690b539194ef88285693"
+    },
+    {
+      "path": "apps/gateway/budget/README.md",
+      "commit": "ea7b0bae9b630f750f7f329a144f3cc34f959b00",
+      "bytes": 9391,
+      "sha256": "3ba32da4e2e3ffa8d0dfbf59c50d084e367a372172d463f1e100fce64d886cd2"
+    }
+  ],
+  "manifests": [
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/author/current-manifest.json",
+      "bytes": 4781,
+      "sha256": "91357f110e9d878260e1ddae13dfb986b1c494e7f0de5c100ab281eed5ecb895",
+      "files": 20
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/review-manifest.json",
+      "bytes": 14294,
+      "sha256": "38e289d3a5ebc51bcb7b7b920ebe80bb07ed743d688bb29bea1a59cd35997e61",
+      "files": 62
+    },
+    {
+      "path": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/manifest-final.json",
+      "bytes": 9218,
+      "sha256": "7732351b85c2bf699a46943089dc5bb34384dde56fe0029f41933d1551ca9734",
+      "files": 50
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/review/manifest.json",
+      "bytes": 3410,
+      "sha256": "8fa42718ead34d372746bcb5e87e22fd465d8141afa2f6c0cec868ed43b46a81",
+      "files": 15
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/review/final-delta/manifest.json",
+      "bytes": 1964,
+      "sha256": "a8de71c46ab3d3e9e6c4bc19170d30e0ede796395fa36a9791a252b4d8d54cf4",
+      "files": 8
+    }
+  ],
+  "planSha256": "9e786e216e6c43de8202d7bd407975fc70987e53bd87ff2a9fc01840de094f04",
+  "planLinks": [
+    {
+      "target": "MERI-DEPLOYMENT.md",
+      "exists": true
+    },
+    {
+      "target": "../qualification/candidates/g1-native-path-20261012/integration/pr-stack-observation.json",
+      "exists": true
+    },
+    {
+      "target": "../qualification/candidates/g1-native-path-20261012/integration/pr-stack-ancestry.json",
+      "exists": true
+    },
+    {
+      "target": "../coordination/reports/MERI-MEMORY-SOURCE-INTEGRATION-20261012.md",
+      "exists": true
+    },
+    {
+      "target": "../../apps/control/qualification-sdk-fixture/service/control.mjs",
+      "exists": true
+    },
+    {
+      "target": "../../apps/gateway/budget/README.md",
+      "exists": true
+    },
+    {
+      "target": "../../apps/control/qualification-temporal/README.md",
+      "exists": true
+    },
+    {
+      "target": "../../apps/worker/qualification/README.md",
+      "exists": true
+    },
+    {
+      "target": "../coordination/reports/MERI-G1-RECOVERY-SANDBOX-INTEGRATION-20261012.md",
+      "exists": true
+    },
+    {
+      "target": "../coordination/reports/MERI-NATIVE-SUPERVISOR-REVIEW-20261012.md",
+      "exists": true
+    },
+    {
+      "target": "../qualification/candidates/g1-execution-options-20261012/author/image-options.json",
+      "exists": true
+    },
+    {
+      "target": "../qualification/candidates/ubuntu-source-assessment-20261012/author/obligations-54.json",
+      "exists": true
+    },
+    {
+      "target": "../coordination/reports/MERI-G1-EXECUTION-OPTIONS-20261012.md",
+      "exists": true
+    },
+    {
+      "target": "../qualification/candidates/g1-execution-options-20261012/author/execution-plan.json",
+      "exists": true
+    },
+    {
+      "target": "../../apps/gateway/test/postgres-budget.integration.mjs",
+      "exists": true
+    }
+  ],
+  "completedCaptures": [
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/budget-fixture-contract.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/budget-independent.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/budget-source-preservation.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/gateway-ordinary.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/roadmap-source.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/root-exact-dependencies.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/supervisor-author.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/supervisor-independent.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/supervisor-source-audit.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "docs/coordination/reports/MERI-NATIVE-SUPERVISOR-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "docs/coordination/tasks/MERI-NATIVE-SUPERVISOR-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/author/checks-final.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/author/checks-final.stdout.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/author/checks-first.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/author/checks-first.stdout.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/author/checks-freeze.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/author/checks-freeze.stdout.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/author/checks-late-read-fix.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/author/checks-late-read-fix.stdout.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/author/checks-second.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/author/checks-second.stdout.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/author/checks-third.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/author/checks-third.stdout.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/author/current-source-review.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/author/freeze-receipt.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/author/late-read-fix-receipt.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/author/run-supervised.py",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/author/source-checks.py",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/author/supervision.py",
+      "passed": true
+    },
+    {
+      "name": "docs/coordination/reports/MERI-NATIVE-SUPERVISOR-REVIEW-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/acceptance-receipt.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/current-source-analysis.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/deadline-mutant-command.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/deadline-mutant.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/deadline-mutant.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/deadline-mutant.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/deadline-removal-mutant.py.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/final-author-command.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/final-author.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/final-author.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/final-lifecycle-command.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/final-lifecycle.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/final-lifecycle.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/final-lifecycle.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/final-source-audit-command.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/final-source-audit.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/final-source-audit.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/final-source-audit.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/first-draft-lifecycle.py.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/first-inert-command.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/first-inert-results.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/first-inert.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/first-inert.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/freeze-0217137-author-command.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/freeze-0217137-author.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/freeze-0217137-author.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/freeze-0217137-lifecycle-command.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/freeze-0217137-lifecycle-source.py.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/freeze-0217137-lifecycle.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/freeze-0217137-lifecycle.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/freeze-0217137-lifecycle.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/frozen-criteria.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/inert-control-matrix.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/late-read-before-command.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/late-read-before.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/late-read-before.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/late-read-before.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/lifecycle-controls.py",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/outline.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/packet-author-command.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/packet-author.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/packet-author.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/packet-lifecycle-command.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/packet-lifecycle.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/packet-lifecycle.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/packet-lifecycle.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/reader-status-before-command.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/reader-status-before.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/reader-status-before.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/reader-status-before.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/reader-status-repaired-command.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/reader-status-repaired-source.py.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/reader-status-repaired.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/reader-status-repaired.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/reader-status-repaired.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/source-audit.py",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/source-freeze-prepacket-audit-command.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/source-freeze-prepacket-audit-note.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/source-freeze-prepacket-audit.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/source-freeze-prepacket-audit.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/native-supervisor-20261012/review/source-freeze-prepacket-audit.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/.gitattributes",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/admission-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/author-offline-final.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/author-offline-final.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/author-offline-final.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/group-deadline-source.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/group-original-clipped-source.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/group-original-clipped-source.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/group-original-clipped-source.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/group-original-source.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/group-original-source.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/group-original-source.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/independent-final.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/independent-final.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/independent-final.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/manifest.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/pg-primary-source.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/prefreeze-admission.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/prefreeze-admission.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/prefreeze-admission.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/prefreeze-fixture.sha256",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/repaired-author-offline.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/repaired-author-offline.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/repaired-author-offline.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/repaired-independent.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/repaired-independent.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/repaired-independent.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/repaired-integration-syntax.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/repaired-integration-syntax.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/repaired-integration-syntax.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/repaired-source.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/repaired-source.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/repaired-source.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/run-check.py",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/source-final.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/source-final.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/source-final.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/syntax-0.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/syntax-0.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/syntax-0.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/syntax-1.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/syntax-1.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/syntax-1.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/syntax-2.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/syntax-2.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/syntax-2.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/syntax-3.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/syntax-3.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/syntax-3.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/verify-source.py",
+      "passed": true
+    },
+    {
+      "name": "docs/coordination/reports/MERI-G1-NATIVE-PATH-REVIEW-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/review/independent.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/review/independent.stdout.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/review/initial-independent.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/review/initial-independent.stdout.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/review/initial-review-source.py",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/review/phase-reference-repair.diff",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/review/review-receipt.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/review/review-source.py",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/review/reviewed-source.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/review/whitespace-all.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/review/whitespace-all.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/review/whitespace-receipt.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/review/whitespace-source.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/review/whitespace-source.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/review/final-delta/REVIEW.md",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/review/final-delta/check-delta.py",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/review/final-delta/check.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/review/final-delta/check.stdout.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/review/final-delta/initial-check-delta.py",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/review/final-delta/initial-check.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/review/final-delta/initial-check.stdout.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/review/final-delta/receipt.json",
+      "passed": true
+    },
+    {
+      "name": "accepted source docs/qualification/candidates/native-supervisor-20261012/author/run-supervised.py",
+      "passed": true
+    },
+    {
+      "name": "accepted source docs/qualification/candidates/native-supervisor-20261012/author/supervision.py",
+      "passed": true
+    },
+    {
+      "name": "accepted source docs/qualification/candidates/native-supervisor-20261012/author/source-checks.py",
+      "passed": true
+    },
+    {
+      "name": "accepted source apps/gateway/test/postgres-budget-admission.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source apps/gateway/test/postgres-budget-child.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source apps/gateway/test/postgres-budget-native-fixture.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source apps/gateway/test/postgres-budget.integration.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source apps/gateway/budget/README.md",
+      "passed": true
+    },
+    {
+      "name": "all original files preserved except explicit budget README addition",
+      "passed": true
+    },
+    {
+      "name": "all final plan local links",
+      "passed": true
+    },
+    {
+      "name": "exact independently accepted plan",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/integration/budget-fixture-contract.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/integration/budget-fixture-contract.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "capture complete budget-fixture-contract.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/integration/budget-independent.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/integration/budget-independent.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "capture complete budget-independent.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/integration/budget-source-preservation.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/integration/budget-source-preservation.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "capture complete budget-source-preservation.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/integration/gateway-ordinary.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/integration/gateway-ordinary.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "capture complete gateway-ordinary.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/integration/roadmap-source.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/integration/roadmap-source.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "capture complete roadmap-source.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/integration/root-exact-dependencies.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/integration/root-exact-dependencies.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "capture complete root-exact-dependencies.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/integration/supervisor-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/integration/supervisor-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "capture complete supervisor-author.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/integration/supervisor-independent.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/integration/supervisor-independent.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "capture complete supervisor-independent.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/integration/supervisor-source-audit.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/g1-native-path-20261012/integration/supervisor-source-audit.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "capture complete supervisor-source-audit.json",
+      "passed": true
+    }
+  ],
+  "passed": 193,
+  "failed": 0,
+  "nativeTargetImportsOrExecution": false,
+  "g1Accepted": false
+}

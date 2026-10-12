@@ -1,0 +1,25 @@
+✔ configuration is frozen correlation only, with no resource invocation (5.654956ms)
+✔ default closed and exact opt-in (0.978079ms)
+✔ exact raw JSON digest and byte ceiling (0.362034ms)
+✔ configuration has closed fields and scalar identity (0.689426ms)
+✔ numeric system identity is rejected before native use (0.235865ms)
+✔ SHA object cannot execute string conversion (0.334012ms)
+✔ getter environment rejected without evaluating body (0.288013ms)
+✔ proxy environment rejected before reflection (0.149154ms)
+✔ inherited environment rejected (0.27977ms)
+✔ ambient provider/database/native injection configuration denied (0.318118ms)
+✔ future, elapsed and malformed trusted clock refused (0.483326ms)
+✔ loopback-only identity, port and bounded password (0.662025ms)
+✔ group cutoff fixed once before preparation and never extended (1.190319ms)
+✔ closed group guard rechecks global and original group deadlines (0.249554ms)
+✔ each fork and each send has synchronous group admission (0.240001ms)
+✔ early launch refusal cannot leave unhandled readiness rejection (0.24624ms)
+✔ delayed child admission carries original group cutoff to canonical DB clock guard (0.164507ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 90.100227

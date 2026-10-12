@@ -1,0 +1,59 @@
+# G1 source-to-native continuation — 12 October 2026
+
+**ACCEPT_SOURCE within the explicit limits below; native execution and G1 remain HOLD.** G0 is accepted, G1 OPEN, G2–G7 unentered. This continuation is stacked on PR16 `e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5` / tree `35e6da43d35e06701b5bde73db571b5e1e688ea8`. The [canonical source-to-native plan](../../plans/MERI-G1-SOURCE-TO-NATIVE.md) is the single current dependency, proposed merge and native-verification roadmap. Historical packets, failures and branches remain preserved.
+
+The integrated source freeze reviewed by the final roadmap reviewer is `c60bc58092c9ed34f2c5d718afe4d678f6cf79d4` / tree `f46871502fbf61612a2193708dc441fd153034af`. Final review merge `0e6830ed5c61950dfe66925b5d7423c8719c04cc` changes only review evidence. Subsequent root commits add this report, source-check/evidence and publication metadata; executable candidate and test bytes remain the accepted freezes below. Publication receipts record the final PR head separately to avoid a self-referential commit claim.
+
+## Accepted source and independent ownership
+
+| Lane | Exact accepted source/packet | Independent review | Decision and limits |
+| --- | --- | --- | --- |
+| Actual private-supervisor adaptation | Source `a9d5d849fe3065ee1aec2b17806e6b6219a511c7`; complete author packet `724850cb6cc84c8381fb52aec23b582e0e3b5872` | `c7a6b079feb0b4e57310d8068ab106347fa3c24f`, [report](MERI-NATIVE-SUPERVISOR-REVIEW-20261012.md) | ACCEPT_SOURCE only inert-tested lifecycle and blocked partial fixed-diagnostic composition. Runnable wrapper, hard deadline, evidence publication and native admission HOLD. |
+| Canonical budget real-engine test preparation | `ea7b0bae9b630f750f7f329a144f3cc34f959b00` / tree `eafd8e2f1a66c1809fe5e505cf87d04038cce4a9` | `ea5fe073513ab49ae61d9c291ccd11ff3803b32b`, [report](MERI-G1-BUDGET-NATIVE-TESTS-REVIEW-20261012.md) | ACCEPT_SOURCE_TESTS; all nine actual-pg cases UNRUN. No production outcome API, trusted durable invocation producer or host authority is supplied. |
+| Canonical roadmap | Initial corrected plan `f3db1505cbd2987244875097712d78a69da190c3`; final delta `97a64eb6ac9e372088dbabb3d9e05585cb95cc8e`, integrated at `c60bc58092c9ed34f2c5d718afe4d678f6cf79d4` | Initial `f0ac2279ffb3d80ffd3c8d957b9639494d9ddcbb`; final `4da0af87d7e34e0fcdaeec2ab1c520437eaf5af4`, [final review](../../qualification/candidates/g1-native-path-20261012/review/final-delta/REVIEW.md) | ACCEPT_SOURCE_PACKET; final plan SHA256 `9e786e216e6c43de8202d7bd407975fc70987e53bd87ff2a9fc01840de094f04`. No action expansion. |
+
+Author/reviewer roles use separate worktrees and exclusive paths from the [task outline](../tasks/MERI-G1-NATIVE-PATH-20261012.md). All accepted branches are merged into this isolated continuation, retaining ancestry and original evidence. No main merge, rebase, retarget or shared frontend/capirov2 edit occurred.
+
+## Concrete repairs and retained limits
+
+The current private wrapper relay was independently byte-verified locally:11124 bytes / SHA256 `e37894e22b3bb290c8b8b8fb7aaf35f2d7b2868cc2d469214913953d1b4fc9df`. Parent verified the original ZIP; this environment did not download or independently verify it. The proposal relay is a formatting derivative. Historical execution did not pin the wrapper hash. Private bodies and personal paths remain outside Git.
+
+The adaptation replaces the old-executable selection and fixed occupied destination with explicit bindings/fresh output, preserves canonical path/receipt guards, bounds descriptor reads, separates stdout/stderr EOF/errors/caps, and accounts against one original cooperative15-second budget. Independent review found and repaired reader-status exceptions and late-read byte accounting. Missing immutable source-verification/prior-manifest and Git pins deliberately refuse before filesystem/process work. The candidate entry, diagnostic and native ports were never imported or executed.
+
+Function-entry timing excludes interpreter startup/imports. Blocking calls, physical exit and descendants need an admitted enclosing watchdog. Stream hashes/exclusive writes do not provide fsync/readback/final-membership proof. `hardTotalProven`, `evidencePublicationVerified`, all runtime/admission flags and G1 acceptance remain false. The missing exact supporting identity JSON/member listing prevents adjudicating timestamp-inclusive identity/hash failures; no access-time exception is selected. Current executable metadata/hash does not establish distributor or DLL trust.
+
+The four new budget test modules use existing pg8.23.1, canonical `PostgresBudgetStore`/`createPostgresToolBudget`, existing contracts and migration0002. They prepare nine actual-engine cases for gateway binding/UNAVAILABLE, retained invocation and historical settlement, explicitly synthetic post-COMMIT acknowledgement loss, client release/eviction, separate-process invocation/run-call competition, and mixed model/tool UNKNOWN run-cap boundaries. Test SQL readback is not production reconciliation. No real network-ack-loss, server restart/WAL recovery or global-cap result is claimed.
+
+Offline admission is strict, bounded and default-closed. Root found the initial accepted candidate checked only the broader cutoff before fork/send; final source also checks the original30-second group cutoff and clips child reservation deadlines to it. A transaction already admitted may still finish late; these source guards are not physical query cancellation. The native entry is deliberately `postgres-budget.integration.mjs`, outside ordinary `*.test.mjs` discovery. Native entry/child mode, real Pool connection and SQL remain UNRUN. Its password and pg_control_system-read requirements need separate admission and are not silently added to the frozen first L1 action.
+
+## Verification and failure evidence
+
+| Check | Result and meaning |
+| --- | --- |
+| Ordinary gateway suite on integrated source | 173/173 PASS, including34 new offline admission controls; no native entry selected |
+| Supervisor author / independent lifecycle / independent static audit | 27/27,78/78,90/90 PASS; root replayed each using inert ports/source inspection only |
+| Independent budget admission/source guards | 17/17 PASS; root replayed against integrated source |
+| New fixture through actual canonical contract constructors | PASS using inert connect/query ports; two scripted fixture statements, zero connection attempts/real SQL |
+| Initial roadmap / final narrow delta | 183/183 and61/61 PASS; exact ancestry and15 final local links verified |
+| Final integrated source/evidence integrity | 193/193 PASS; accepted source hashes, five current manifests, raw streams and captured process absence verified |
+| Original PR16 preservation | 3944/3945 original files byte-identical; only `apps/gateway/budget/README.md` changed; all original tests, production modules, contracts, migrations and locks unchanged |
+| Dependency acquisition | Exact-lock `npm ci --ignore-scripts --no-audit --no-fund`,13 packages; no lifecycle scripts or native dependency execution |
+| Actual PostgreSQL, supervisor/diagnostic, Temporal server/Worker, SDK A/B, browser/renderer/image/cloud/provider | UNRUN / not authorized; no runtime gate closed |
+
+Root [integration evidence](../../qualification/candidates/g1-native-path-20261012/integration/) preserves raw stdout/stderr, exact command/source/capture hashes and receipts. Each bounded ordinary Linux source-check group exited, was waited and positively confirmed absent; no other owner's process was stopped. These receipts do not qualify the proposed native supervisor or physical task teardown. Unchanged broad PR16 suites were not repeated; their original evidence and limitations remain historical.
+
+Preserved failures include supervisor reader-status60 PASS/1 FAIL, deadline-removal mutant58/3 and late-read74/1; a static audit head race67/1 was resolved by binding the final author packet. Budget parser10/2 exposed scalar coercion defects; original-group controls1/3 then1/4 reject the retained old candidate. The old budget ACCEPT_SOURCE_TESTS was explicitly superseded by HOLD before repair and new acceptance. Roadmap's nonexistent phase label was corrected; original reviewer wording-check and final-delta checker syntax failures remain verbatim. Raw diff/whitespace evidence may itself contain whitespace errors and is not normalized. No failed native execution is implied by these source controls.
+
+## Concrete next action and outstanding decisions
+
+The canonical plan preserves the observed PR7→10→11→12→13→14→15→16→this-continuation order. All observed PRs are OPEN/DRAFT/unmerged, with all eight bases ancestral and seven adjacent base/head identities equal. Original PR2 is already in PR7 ancestry. PR8 is evidence-only and PR9 preservation; neither is a blind feature merge. A shipping owner must refresh heads and bind one integrated source/executable tuple before proposing any action.
+
+The frozen image packet has three distinct choices: retain Debian trixie for continued evidence work; explicitly approve Ubuntu26.04/Python3.14/any LibreOffice26.2 departure; and separately choose supported shared-library source-build lxml6.1.3 versus Ubuntu distro6.0.2 packaging/version/venv boundaries. None authorizes a build or waives supported authenticated dependency closure. The54 historical obligations retain22 positive source statements,20 unresolved and12 under investigation; no complete supported patched composition is established. The old47-finding image must never launch.
+
+First native proposal remains only `L1_DISPOSABLE_STATE`, NOT_EXECUTABLE/not authorized: one fresh local PostgreSQL cluster, two empty synthetic databases with separate nonsuperuser owners and temporary bootstrap identity, one PG loopback listener, two transient TLS listeners and one non-listening negative socket. One original720-second work/900-second cleanup envelope, exactly three existing command groups once, bounded streams, no retry/automatic next phase. It requests no cloud resource or provider calls ($0 provider; existing host cost unestimated), never Aurora. The exact resource, HBA/authentication, commands, identity and cleanup obligations are in the canonical plan and frozen packet.
+
+Before a final one-action permission request, provide a source-reviewed PostgreSQL launcher/external watchdog, admitted existing host/binaries/drivers, exact private paths, positive cluster/process/listener identities and proven containment for the narrowly proposed synthetic HBA trust (otherwise HOLD for supported credentials). Stop owned clients then exact cluster; prove absence before deleting only owned fresh files/secrets. The partial Python metadata wrapper cannot be used as that launcher. The new nine JS cases need their own explicit inclusion/identity/password/privilege proposal; no automatic chaining.
+
+Further source/runtime gaps remain: trusted task/invocation issuance, production durable outcome/readback/reconciliation, actual server restart persistence, full SDK checkpoint/restore and managed task-A/B physical retirement/stale rejection, Temporal history/replay, patched admitted host/image, sandboxed browser AND renderer, egress/watchdog/teardown, and independent artifact inspection. The private policy restriction blocks only affected host/Hermes work. Historical paid-model allowance is unreconciled, so authorized provider calls/spend remain zero.
+
+Scope remains139 original capabilities:96 selected/43 deferred,14 bound but unavailable/82 selected unmapped,14 named skills unqualified. Public0.1/private0.2, canonical registries, source disable, SDK sole model loop, Temporal durability and UI/proxy ownership are unchanged. Existing Aurora stays selected. No infrastructure, credentials, security/network/database state or customer data was changed.

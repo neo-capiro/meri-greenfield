@@ -1,0 +1,6 @@
+{
+  "scope": "Added/changed publication bytes only; bounded private-path/key-pattern screen, not a universal secret guarantee",
+  "pathsScanned": 242,
+  "flaggedPaths": [],
+  "passed": true
+}
