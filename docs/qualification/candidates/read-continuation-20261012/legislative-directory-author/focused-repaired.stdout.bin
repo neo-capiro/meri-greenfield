@@ -1,0 +1,37 @@
+✔ two operation selectors and exact definitions remain private (1.751965ms)
+✔ normalization trims, clips, cases and detaches frozen data with empty metadata (0.975947ms)
+✔ UTF16 clipping and explicit post-case overflow refusal (1.060405ms)
+✔ all56 pinned state and territory names normalize from codes and case variants (1.598814ms)
+✔ member limits preserve finite numeric/string coercion and invalid chamber omission (0.448435ms)
+✔ closed request and context reject malformed values and model authority fields (1.183579ms)
+✔ unknown and hostile operation/shape names never coerce or invoke accessors (0.341404ms)
+✔ accessors, proxies, cycles and hidden values refuse without invocation (0.29265ms)
+✔ missing namespace/committee and missing state retain distinct refusal (4.349461ms)
+✔ unresolved federal/state notes bind query and chamber without inventing ambiguity detail (0.675856ms)
+✔ resolved empty committee is distinct from unresolved selection (0.684029ms)
+✔ federal and state projected rows preserve nullable and freeform stored scalars (1.069729ms)
+✔ federal committee rows cannot imply district and state rows cannot carry federal attributes (0.573793ms)
+✔ committee namespace/chamber and code/id matching preserve different case rules (0.868306ms)
+✔ federal first matching leadership rows and role variants correlate exactly (1.746517ms)
+✔ role policy is anchored and preserves lowercasing rather than Unicode regex case folding (0.82445ms)
+✔ first of multiple role rows wins while federal null rank sorts as999 (0.518309ms)
+✔ state first leadership row follows reported order and ranking member remains null (0.436016ms)
+✔ no artificial roster count cap is introduced (1.471713ms)
+✔ roster notes preserve federal district warning and state nullable success (0.463097ms)
+✔ member missing filter and unrecognized state refuse before available result (1.856272ms)
+✔ member empty/partial results retain exact projection and provenance caveat (0.565921ms)
+✔ member list count is exactly returned rows and obeys requested limit (0.361894ms)
+✔ member filters and source case-insensitive state selection bind output (0.435975ms)
+✔ House districts preserve persisted signed integers; other chamber districts must be null (0.455696ms)
+✔ generatedAt is canonical metadata, not a current-time assertion (0.427843ms)
+✔ cross-family substitutions, extra result fields and hostile result values refuse (0.419932ms)
+✔ output snapshots are detached and mutable without changing source rows (0.185749ms)
+✔ source primary and membership unique keys forbid repeated member identities (0.666022ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 237.265527
