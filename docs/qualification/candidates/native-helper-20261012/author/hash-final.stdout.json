@@ -1,0 +1,552 @@
+{
+  "sourceSha256": "093786b7a527ee56d598a5c6d7b273c69e7578b5656241cf4784e8f8327abb34",
+  "mechanism": "AST-isolated public functions; explicit inert fs and clock only",
+  "observations": [
+    {
+      "latePort": null,
+      "result": {
+        "path": "/inert/member",
+        "bytes": 3,
+        "sha256": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+      },
+      "error": null,
+      "events": [
+        {
+          "port": "ancestor-root",
+          "startedAt": 0
+        },
+        {
+          "port": "ancestor-parent",
+          "startedAt": 0
+        },
+        {
+          "port": "named-before",
+          "startedAt": 0
+        },
+        {
+          "port": "open",
+          "startedAt": 0
+        },
+        {
+          "port": "opened-before",
+          "startedAt": 0
+        },
+        {
+          "port": "read-data",
+          "startedAt": 0
+        },
+        {
+          "port": "read-eof",
+          "startedAt": 0
+        },
+        {
+          "port": "opened-after",
+          "startedAt": 0
+        },
+        {
+          "port": "close",
+          "startedAt": 0
+        },
+        {
+          "port": "named-after",
+          "startedAt": 0
+        }
+      ],
+      "nonCleanupPortsAfterExpiry": [],
+      "closeCount": 1
+    },
+    {
+      "latePort": "ancestor-root",
+      "result": null,
+      "error": {
+        "type": "ValueError",
+        "message": "runner inventory deadline"
+      },
+      "events": [
+        {
+          "port": "ancestor-root",
+          "startedAt": 0
+        }
+      ],
+      "nonCleanupPortsAfterExpiry": [],
+      "closeCount": 0
+    },
+    {
+      "latePort": "ancestor-parent",
+      "result": null,
+      "error": {
+        "type": "ValueError",
+        "message": "runner inventory deadline"
+      },
+      "events": [
+        {
+          "port": "ancestor-root",
+          "startedAt": 0
+        },
+        {
+          "port": "ancestor-parent",
+          "startedAt": 0
+        }
+      ],
+      "nonCleanupPortsAfterExpiry": [],
+      "closeCount": 0
+    },
+    {
+      "latePort": "named-before",
+      "result": null,
+      "error": {
+        "type": "ValueError",
+        "message": "runner inventory deadline"
+      },
+      "events": [
+        {
+          "port": "ancestor-root",
+          "startedAt": 0
+        },
+        {
+          "port": "ancestor-parent",
+          "startedAt": 0
+        },
+        {
+          "port": "named-before",
+          "startedAt": 0
+        }
+      ],
+      "nonCleanupPortsAfterExpiry": [],
+      "closeCount": 0
+    },
+    {
+      "latePort": "open",
+      "result": null,
+      "error": {
+        "type": "ValueError",
+        "message": "runner inventory deadline"
+      },
+      "events": [
+        {
+          "port": "ancestor-root",
+          "startedAt": 0
+        },
+        {
+          "port": "ancestor-parent",
+          "startedAt": 0
+        },
+        {
+          "port": "named-before",
+          "startedAt": 0
+        },
+        {
+          "port": "open",
+          "startedAt": 0
+        },
+        {
+          "port": "close",
+          "startedAt": 10
+        }
+      ],
+      "nonCleanupPortsAfterExpiry": [],
+      "closeCount": 1
+    },
+    {
+      "latePort": "opened-before",
+      "result": null,
+      "error": {
+        "type": "ValueError",
+        "message": "runner inventory deadline"
+      },
+      "events": [
+        {
+          "port": "ancestor-root",
+          "startedAt": 0
+        },
+        {
+          "port": "ancestor-parent",
+          "startedAt": 0
+        },
+        {
+          "port": "named-before",
+          "startedAt": 0
+        },
+        {
+          "port": "open",
+          "startedAt": 0
+        },
+        {
+          "port": "opened-before",
+          "startedAt": 0
+        },
+        {
+          "port": "close",
+          "startedAt": 10
+        }
+      ],
+      "nonCleanupPortsAfterExpiry": [],
+      "closeCount": 1
+    },
+    {
+      "latePort": "read-data",
+      "result": null,
+      "error": {
+        "type": "ValueError",
+        "message": "runner inventory deadline"
+      },
+      "events": [
+        {
+          "port": "ancestor-root",
+          "startedAt": 0
+        },
+        {
+          "port": "ancestor-parent",
+          "startedAt": 0
+        },
+        {
+          "port": "named-before",
+          "startedAt": 0
+        },
+        {
+          "port": "open",
+          "startedAt": 0
+        },
+        {
+          "port": "opened-before",
+          "startedAt": 0
+        },
+        {
+          "port": "read-data",
+          "startedAt": 0
+        },
+        {
+          "port": "close",
+          "startedAt": 10
+        }
+      ],
+      "nonCleanupPortsAfterExpiry": [],
+      "closeCount": 1
+    },
+    {
+      "latePort": "read-eof",
+      "result": null,
+      "error": {
+        "type": "ValueError",
+        "message": "runner inventory deadline"
+      },
+      "events": [
+        {
+          "port": "ancestor-root",
+          "startedAt": 0
+        },
+        {
+          "port": "ancestor-parent",
+          "startedAt": 0
+        },
+        {
+          "port": "named-before",
+          "startedAt": 0
+        },
+        {
+          "port": "open",
+          "startedAt": 0
+        },
+        {
+          "port": "opened-before",
+          "startedAt": 0
+        },
+        {
+          "port": "read-data",
+          "startedAt": 0
+        },
+        {
+          "port": "read-eof",
+          "startedAt": 0
+        },
+        {
+          "port": "close",
+          "startedAt": 10
+        }
+      ],
+      "nonCleanupPortsAfterExpiry": [],
+      "closeCount": 1
+    },
+    {
+      "latePort": "opened-after",
+      "result": null,
+      "error": {
+        "type": "ValueError",
+        "message": "runner inventory deadline"
+      },
+      "events": [
+        {
+          "port": "ancestor-root",
+          "startedAt": 0
+        },
+        {
+          "port": "ancestor-parent",
+          "startedAt": 0
+        },
+        {
+          "port": "named-before",
+          "startedAt": 0
+        },
+        {
+          "port": "open",
+          "startedAt": 0
+        },
+        {
+          "port": "opened-before",
+          "startedAt": 0
+        },
+        {
+          "port": "read-data",
+          "startedAt": 0
+        },
+        {
+          "port": "read-eof",
+          "startedAt": 0
+        },
+        {
+          "port": "opened-after",
+          "startedAt": 0
+        },
+        {
+          "port": "close",
+          "startedAt": 10
+        }
+      ],
+      "nonCleanupPortsAfterExpiry": [],
+      "closeCount": 1
+    },
+    {
+      "latePort": "close",
+      "result": null,
+      "error": {
+        "type": "ValueError",
+        "message": "runner inventory deadline"
+      },
+      "events": [
+        {
+          "port": "ancestor-root",
+          "startedAt": 0
+        },
+        {
+          "port": "ancestor-parent",
+          "startedAt": 0
+        },
+        {
+          "port": "named-before",
+          "startedAt": 0
+        },
+        {
+          "port": "open",
+          "startedAt": 0
+        },
+        {
+          "port": "opened-before",
+          "startedAt": 0
+        },
+        {
+          "port": "read-data",
+          "startedAt": 0
+        },
+        {
+          "port": "read-eof",
+          "startedAt": 0
+        },
+        {
+          "port": "opened-after",
+          "startedAt": 0
+        },
+        {
+          "port": "close",
+          "startedAt": 0
+        }
+      ],
+      "nonCleanupPortsAfterExpiry": [],
+      "closeCount": 1
+    },
+    {
+      "latePort": "named-after",
+      "result": null,
+      "error": {
+        "type": "ValueError",
+        "message": "runner inventory deadline"
+      },
+      "events": [
+        {
+          "port": "ancestor-root",
+          "startedAt": 0
+        },
+        {
+          "port": "ancestor-parent",
+          "startedAt": 0
+        },
+        {
+          "port": "named-before",
+          "startedAt": 0
+        },
+        {
+          "port": "open",
+          "startedAt": 0
+        },
+        {
+          "port": "opened-before",
+          "startedAt": 0
+        },
+        {
+          "port": "read-data",
+          "startedAt": 0
+        },
+        {
+          "port": "read-eof",
+          "startedAt": 0
+        },
+        {
+          "port": "opened-after",
+          "startedAt": 0
+        },
+        {
+          "port": "close",
+          "startedAt": 0
+        },
+        {
+          "port": "named-after",
+          "startedAt": 0
+        }
+      ],
+      "nonCleanupPortsAfterExpiry": [],
+      "closeCount": 1
+    }
+  ],
+  "checks": [
+    {
+      "name": "on-time-hash-result",
+      "passed": true
+    },
+    {
+      "name": "on-time-owned-close-once",
+      "passed": true
+    },
+    {
+      "name": "ancestor-root-deadline-refusal",
+      "passed": true
+    },
+    {
+      "name": "ancestor-root-no-later-observation",
+      "passed": true
+    },
+    {
+      "name": "ancestor-root-owned-close-once",
+      "passed": true
+    },
+    {
+      "name": "ancestor-parent-deadline-refusal",
+      "passed": true
+    },
+    {
+      "name": "ancestor-parent-no-later-observation",
+      "passed": true
+    },
+    {
+      "name": "ancestor-parent-owned-close-once",
+      "passed": true
+    },
+    {
+      "name": "named-before-deadline-refusal",
+      "passed": true
+    },
+    {
+      "name": "named-before-no-later-observation",
+      "passed": true
+    },
+    {
+      "name": "named-before-owned-close-once",
+      "passed": true
+    },
+    {
+      "name": "open-deadline-refusal",
+      "passed": true
+    },
+    {
+      "name": "open-no-later-observation",
+      "passed": true
+    },
+    {
+      "name": "open-owned-close-once",
+      "passed": true
+    },
+    {
+      "name": "opened-before-deadline-refusal",
+      "passed": true
+    },
+    {
+      "name": "opened-before-no-later-observation",
+      "passed": true
+    },
+    {
+      "name": "opened-before-owned-close-once",
+      "passed": true
+    },
+    {
+      "name": "read-data-deadline-refusal",
+      "passed": true
+    },
+    {
+      "name": "read-data-no-later-observation",
+      "passed": true
+    },
+    {
+      "name": "read-data-owned-close-once",
+      "passed": true
+    },
+    {
+      "name": "read-eof-deadline-refusal",
+      "passed": true
+    },
+    {
+      "name": "read-eof-no-later-observation",
+      "passed": true
+    },
+    {
+      "name": "read-eof-owned-close-once",
+      "passed": true
+    },
+    {
+      "name": "opened-after-deadline-refusal",
+      "passed": true
+    },
+    {
+      "name": "opened-after-no-later-observation",
+      "passed": true
+    },
+    {
+      "name": "opened-after-owned-close-once",
+      "passed": true
+    },
+    {
+      "name": "close-deadline-refusal",
+      "passed": true
+    },
+    {
+      "name": "close-no-later-observation",
+      "passed": true
+    },
+    {
+      "name": "close-owned-close-once",
+      "passed": true
+    },
+    {
+      "name": "named-after-deadline-refusal",
+      "passed": true
+    },
+    {
+      "name": "named-after-no-later-observation",
+      "passed": true
+    },
+    {
+      "name": "named-after-owned-close-once",
+      "passed": true
+    }
+  ],
+  "passed": 32,
+  "failed": 0,
+  "nativeExecution": false
+}

@@ -1,0 +1,47 @@
+{
+  "base": "bf41cf69ebe892705cdd6f041dd2f1fb323048f5",
+  "sourceSha256": "093786b7a527ee56d598a5c6d7b273c69e7578b5656241cf4784e8f8327abb34",
+  "baselineSourceSha256": "7615e26a5d038ff2fa054cde3cdb04077def5636874f848c97e050dae9df03e9",
+  "baseline": {
+    "exitCode": 1,
+    "passed": 21,
+    "failed": 11,
+    "stderrBytes": 0
+  },
+  "repaired": {
+    "exitCode": 0,
+    "passed": 32,
+    "failed": 0,
+    "stderrBytes": 0
+  },
+  "maintainedTests": {
+    "exitCode": 0,
+    "testMethodsPassed": 9,
+    "mechanism": "AST-selected public definitions and inert ports only"
+  },
+  "helperRecomputation": {
+    "exitCode": 0,
+    "stderrBytes": 0,
+    "reportedOutcomesMatch": true,
+    "rejectionPreserved": true
+  },
+  "otherFunctionAstUnchanged": {
+    "identity": true,
+    "check_deadline": true,
+    "plain": true,
+    "selected_paths": true,
+    "inventory": true,
+    "write_result": true
+  },
+  "hashFileSignatureUnchanged": true,
+  "existingTrackedChanges": [
+    "scripts/qualification/worker_runner_inventory.py"
+  ],
+  "oldTestsWrapperWriterManifestsUnchanged": true,
+  "privatePathValuesScanned": 27,
+  "privatePathValueLeaks": 0,
+  "longPrivateSourceLinesFound": 0,
+  "privateSourceExecutedImportedOrCompiled": false,
+  "nativeExecution": false,
+  "g1Accepted": false
+}
