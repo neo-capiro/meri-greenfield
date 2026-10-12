@@ -169,3 +169,9 @@ test('independent entity: operation and shape names refuse hostile coercion',()=
 for(const [kind,candidate] of [['member',member],['committee',committee],['state_legislator',legislator]])test(`independent entity: name-query identities cannot repeat within ${kind}`,()=>{
  assert.throws(()=>check(page([candidate(),candidate()])));
 });
+
+test('independent entity: identical crosswalk projections and case-distinct name keys remain valid',()=>{
+ const candidate=member({matchedBy:'lis-crosswalk'});check(page([candidate,structuredClone(candidate)]),{query:'external'});
+ check(page([member({canonicalId:'same'}),member({canonicalId:'SAME'})]));
+ check(page([member({canonicalId:'shared'}),committee({canonicalId:'shared'})]));
+});
