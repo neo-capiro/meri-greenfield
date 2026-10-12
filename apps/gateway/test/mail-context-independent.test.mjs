@@ -102,9 +102,9 @@ for(const total of [0,1,null])test(`mail independent: terminal or unknown total 
   assert.equal(out.nextOffset,null);assert.equal(f.events.includes('retain'),false);assert.equal(out.evidenceReady,false);assert.deepEqual(out.negativeAssertion,{kind:'none'});
 });
 
-test('mail independent: model context and malformed input refuse before trusted ports',async()=>{
+test('mail independent: malformed shapes refuse before ports and semantic input before business effects',async()=>{
   for(const patch of [{previousPage:{}},{context:{}},{binding:{}},{subject:{kind:'personal',authorizationDecisionId:id('a')}},{offset:1},{offset:10001,asOf:ANCHOR},{limit:0},{asOf:null}]){
-    const f=fixture();await denied(f,patch);assert.deepEqual(f.events,[],JSON.stringify(patch));
+    const f=fixture();await denied(f,patch);assert.deepEqual(f.events,patch.offset===1?['capability','run']:[],JSON.stringify(patch));
   }
   let touched=0;const object=new Proxy({},{get(){touched++;throw Error('get');},ownKeys(){touched++;throw Error('keys');}});
   const f=fixture();await assert.rejects(f.create().execute(object,'synthetic'),/INVALID_ARGUMENTS/);assert.equal(touched,0);assert.deepEqual(f.events,[]);
@@ -134,9 +134,9 @@ for(const name of ['anchor','pageDecision','nextOffset','selection','window'])te
   await denied(f,nextArgs);assert.equal(f.events.includes('settle'),false);
 });
 
-test('mail independent: raw context objects/proxies never invoke accessors',async()=>{
+test('mail independent: raw context field accessors are rejected without invocation',async()=>{
   for(const stage of ['load','retain']){let reads=0;const f=stage==='load'?await seeded():fixture();
-    const raw=new Proxy({},{get(){reads++;throw Error('get');},ownKeys(){reads++;throw Error('keys');}});
+    const raw={};Object.defineProperty(raw,'record',{enumerable:true,get(){reads++;throw Error('record getter');}});
     f.contextPorts[stage==='load'?'loadPrevious':'retain']=async()=>raw;
     await denied(f,stage==='load'?nextArgs:{});assert.equal(reads,0);assert.equal(f.events.includes('settle'),false);
   }
@@ -152,7 +152,7 @@ for(const stage of ['load','retain','settle'])test(`mail independent: revoked au
   const f=stage==='load'?await seeded():fixture();const port=stage==='settle'?f.budget:f.contextPorts,method=stage==='load'?'loadPrevious':stage,original=port[method];
   port[method]=async call=>{const result=await original(call);f.state.revoked=true;return result;};
   await denied(f,stage==='load'?nextArgs:{});if(stage==='load')assert.equal(f.events.includes('reserve'),false);
-  if(stage==='retain')assert.equal(f.events.includes('uncertain'),true);if(stage==='settle')assert.equal(f.events.includes('uncertain'),false,'settled liability stays settled');
+  if(stage==='retain'||stage==='settle'){assert.equal(f.events.includes('settle'),true);assert.equal(f.events.includes('uncertain'),false,'historical settled liability stays settled');}
 });
 
 async function parkedCase(stage,cancel=false){
@@ -183,4 +183,33 @@ test('mail independent: source-disabled canonical catalog never reaches supplied
   assert.equal(catalog.originals.length,139);assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,14);
   for(const row of catalog.operations){assert.equal(row.availability,'unimplemented');assert.equal(row.handler,null);await assert.rejects(gateway.execute(JSON.stringify({operation:row.operation,arguments:{}}),'synthetic'),/UNAVAILABLE/);}
   assert.deepEqual(await gateway.discover(),[]);assert.equal(gateway.sourceEnabled,false);assert.deepEqual(f.events,[]);
+});
+
+
+test('mail independent: context port proxy/accessor admission is inert',async()=>{
+  for(const proxy of [false,true]){let touched=0;const f=fixture();
+    const ports=proxy?new Proxy({},{get(){touched++;throw Error('get');},getPrototypeOf(){touched++;throw Error('prototype');},ownKeys(){touched++;throw Error('keys');}}):{retain:async()=>''};
+    if(!proxy)Object.defineProperty(ports,'loadPrevious',{enumerable:true,get(){touched++;throw Error('load getter');}});
+    await denied(f,{}, {mailContextPorts:ports});assert.equal(touched,0);assert.equal(f.events.includes('reserve'),false);assert.equal(f.events.includes('handler'),false);
+  }
+});
+
+test('mail independent: shortened retained expiry bounds the next parked authority port',async()=>{
+  const f=await seeded();f.state.changeLoad=r=>{r.record.expiresAtMs=NOW+40;return r;};
+  const entered=deferred(),held=deferred(),original=f.authorityPorts.verifyCapability;let parkedSignal;
+  f.authorityPorts.verifyCapability=async(...args)=>{if(f.state.checks===2){f.events.push('park:authority');parkedSignal=args[1].signal;entered.resolve();await held.promise;}return original(...args);};
+  const controller=new AbortController();let failure,result=false;
+  const pending=f.create().execute(f.request(nextArgs),'synthetic',controller.signal).then(()=>{result=true;},e=>{failure=e.message;});
+  let timer;try{
+    await Promise.race([entered.promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('authority port not entered')),700);})]);clearTimeout(timer);
+    await Promise.race([pending,new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('retained deadline did not bound authority')),700);})]);clearTimeout(timer);
+    assert.equal(failure,'DEADLINE');assert.equal(parkedSignal.aborted,true);assert.equal(result,false);assert.equal(f.events.includes('reserve'),false);
+    const at=f.events.length;held.resolve();await drain();await drain();assert.deepEqual(f.events.slice(at),['capability'],'late authority completion has no subsequent business port');
+  }finally{clearTimeout(timer);controller.abort();held.resolve();await pending;}
+});
+
+test('mail independent: candidate output cannot promote previews or omit decisive reads',async()=>{
+  for(const mutate of [p=>p.evidenceReady=true,p=>p.negativeAssertion={kind:'absence'},p=>p.coverage.enumeration='complete',p=>p.snapshotVersionId='fabricated',p=>p.continuation.requiredReads=[],p=>p.messages[0].preview.fullSizeKnown=true]){
+    const f=fixture();f.state.changeOutput=p=>{mutate(p);return p;};await denied(f);assert.equal(f.events.includes('retain'),false);assert.equal(f.events.includes('settle'),false);assert.equal(f.events.includes('uncertain'),true);
+  }
 });
