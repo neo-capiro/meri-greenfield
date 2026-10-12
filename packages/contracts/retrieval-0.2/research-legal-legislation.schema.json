@@ -564,7 +564,8 @@
               "type": "array",
               "items": {
                 "$ref": "#/$defs/ResearchLegalQueryAst"
-              }
+              },
+              "minItems": 2
             }
           },
           "required": [
