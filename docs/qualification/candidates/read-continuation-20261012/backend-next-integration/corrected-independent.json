@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-backend-next-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-backend-next-20261012",
+  "sourceHead": "46b0ec6ce52cd7acc8405a9b8d2d0e33e082f806",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-12T20:05:37.446659+00:00",
+  "durationSeconds": 2.07,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 297335,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-integration/corrected-independent.stdout.bin",
+      "bytes": 3166,
+      "sha256": "0d7b53c1619726e3e454dc22fb10bfc8dd5f443ef139be5675c9e8b39f4a589d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-integration/corrected-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

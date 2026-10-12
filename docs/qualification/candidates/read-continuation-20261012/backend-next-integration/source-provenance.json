@@ -58,7 +58,7 @@
     },
     {
       "path": "packages/contracts/test/retrieval-backend-next-independent.test.mjs",
-      "reference": "1df6ef0acdb834634283eaa2bf7ff2dfd3d4f717"
+      "reference": "6be61080a23b1a7b8a5858b844bdab17391812fe"
     },
     {
       "path": "packages/contracts/test/retrieval-outreach-query-independent.test.mjs",

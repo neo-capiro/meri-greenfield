@@ -1,0 +1,52 @@
+{
+  "observedAt": "2026-10-12T20:07:43.106768+00:00",
+  "refs": [
+    {
+      "branch": "task/meri-program-elements-20261012",
+      "commit": "790638e4908429f190dd6414814ee872145fa289",
+      "remoteMatched": true
+    },
+    {
+      "branch": "review/meri-program-elements-20261012",
+      "commit": "3b06986d2f2dd2b89d17acff97c1fc1091aab85b",
+      "remoteMatched": true
+    },
+    {
+      "branch": "task/meri-outreach-query-20261012",
+      "commit": "b73c2994080cb9c03647f4ddf07f8057e37b71d3",
+      "remoteMatched": true
+    },
+    {
+      "branch": "review/meri-outreach-query-20261012",
+      "commit": "ec3e54045fcdf62941629e2ed7b4f40455ed04c4",
+      "remoteMatched": true
+    },
+    {
+      "branch": "task/meri-pe-reference-detachment-20261012",
+      "commit": "cb5310d34cddd13d04b2233c937f271b5b4713d1",
+      "remoteMatched": true
+    },
+    {
+      "branch": "review/meri-pe-reference-detachment-20261012",
+      "commit": "d42163c7de42aa39010d29be9c3fdd2693343084",
+      "remoteMatched": true
+    }
+  ],
+  "publication": "preservation branches pushed; continuation PR pending combined independent acceptance",
+  "remoteAnchors": {
+    "main": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc",
+    "rc1TagObject": "b157217e69d36da1b53fa5944a0781a2f53a2f79",
+    "rc1Peeled": "2f06feccca731d6cd388612cd568185ecc29668f"
+  },
+  "remoteReadOnlyCommand": [
+    "git",
+    "ls-remote",
+    "origin",
+    "refs/heads/task/meri-program-elements-20261012",
+    "refs/heads/review/meri-program-elements-20261012",
+    "refs/heads/task/meri-outreach-query-20261012",
+    "refs/heads/review/meri-outreach-query-20261012",
+    "refs/heads/task/meri-pe-reference-detachment-20261012",
+    "refs/heads/review/meri-pe-reference-detachment-20261012"
+  ]
+}

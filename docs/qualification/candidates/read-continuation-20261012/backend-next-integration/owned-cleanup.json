@@ -1,0 +1,87 @@
+{
+  "observedAt": "2026-10-12T20:08:46.790633+00:00",
+  "captures": [
+    {
+      "receipt": "docs/qualification/candidates/read-continuation-20261012/backend-next-integration/accepted-packets-corrected.json",
+      "sourceHead": "46b0ec6ce52cd7acc8405a9b8d2d0e33e082f806",
+      "exitCode": 0,
+      "ownedPidAndPgid": 297490,
+      "physicallyAbsentNow": true,
+      "durationSeconds": 0.971
+    },
+    {
+      "receipt": "docs/qualification/candidates/read-continuation-20261012/backend-next-integration/accepted-packets-final.json",
+      "sourceHead": "fecf97a4a8b742c6c09b781d3b799816e8b548e4",
+      "exitCode": 0,
+      "ownedPidAndPgid": 294949,
+      "physicallyAbsentNow": true,
+      "durationSeconds": 0.818
+    },
+    {
+      "receipt": "docs/qualification/candidates/read-continuation-20261012/backend-next-integration/accepted-packets-initial.json",
+      "sourceHead": "95f86751f12774768277ff8bdaddc55c4c208033",
+      "exitCode": 0,
+      "ownedPidAndPgid": 291249,
+      "physicallyAbsentNow": true,
+      "durationSeconds": 0.667
+    },
+    {
+      "receipt": "docs/qualification/candidates/read-continuation-20261012/backend-next-integration/corrected-independent.json",
+      "sourceHead": "46b0ec6ce52cd7acc8405a9b8d2d0e33e082f806",
+      "exitCode": 0,
+      "ownedPidAndPgid": 297335,
+      "physicallyAbsentNow": true,
+      "durationSeconds": 2.07
+    },
+    {
+      "receipt": "docs/qualification/candidates/read-continuation-20261012/backend-next-integration/expanded.json",
+      "sourceHead": "46b0ec6ce52cd7acc8405a9b8d2d0e33e082f806",
+      "exitCode": 0,
+      "ownedPidAndPgid": 297506,
+      "physicallyAbsentNow": true,
+      "durationSeconds": 114.988
+    },
+    {
+      "receipt": "docs/qualification/candidates/read-continuation-20261012/backend-next-integration/focused.json",
+      "sourceHead": "fecf97a4a8b742c6c09b781d3b799816e8b548e4",
+      "exitCode": 1,
+      "ownedPidAndPgid": 295511,
+      "physicallyAbsentNow": true,
+      "durationSeconds": 45.28
+    },
+    {
+      "receipt": "docs/qualification/candidates/read-continuation-20261012/backend-next-integration/public-contracts-launchers-repaired.json",
+      "sourceHead": "fecf97a4a8b742c6c09b781d3b799816e8b548e4",
+      "exitCode": 0,
+      "ownedPidAndPgid": 296120,
+      "physicallyAbsentNow": true,
+      "durationSeconds": 3.131
+    },
+    {
+      "receipt": "docs/qualification/candidates/read-continuation-20261012/backend-next-integration/public-contracts.json",
+      "sourceHead": "fecf97a4a8b742c6c09b781d3b799816e8b548e4",
+      "exitCode": 1,
+      "ownedPidAndPgid": 295486,
+      "physicallyAbsentNow": true,
+      "durationSeconds": 1.178
+    },
+    {
+      "receipt": "docs/qualification/candidates/read-continuation-20261012/backend-next-integration/source-audit-corrected.json",
+      "sourceHead": "46b0ec6ce52cd7acc8405a9b8d2d0e33e082f806",
+      "exitCode": 0,
+      "ownedPidAndPgid": 297934,
+      "physicallyAbsentNow": true,
+      "durationSeconds": 0.265
+    },
+    {
+      "receipt": "docs/qualification/candidates/read-continuation-20261012/backend-next-integration/source-audit.json",
+      "sourceHead": "fecf97a4a8b742c6c09b781d3b799816e8b548e4",
+      "exitCode": 0,
+      "ownedPidAndPgid": 295468,
+      "physicallyAbsentNow": true,
+      "durationSeconds": 0.319
+    }
+  ],
+  "allOwnedGroupsAbsent": true,
+  "otherOwnersStopped": false
+}

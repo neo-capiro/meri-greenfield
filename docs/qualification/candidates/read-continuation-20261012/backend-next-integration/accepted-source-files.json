@@ -86,8 +86,8 @@
   },
   {
     "path": "packages/contracts/test/retrieval-backend-next-independent.test.mjs",
-    "expectedSource": "1df6ef0acdb834634283eaa2bf7ff2dfd3d4f717",
-    "sha256": "f4aed5a2dfc8051e3c35b7145d5da89f0479b38d86562ef9ff934edf33c36e68"
+    "expectedSource": "6be61080a23b1a7b8a5858b844bdab17391812fe",
+    "sha256": "a0e91db09215e1f4722efe1e603c7ff032890ff14dcd350ad18625bbdfd5fa3c"
   },
   {
     "path": "packages/contracts/test/retrieval-outreach-query-independent.test.mjs",

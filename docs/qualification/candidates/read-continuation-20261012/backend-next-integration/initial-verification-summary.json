@@ -1,0 +1,32 @@
+{
+  "verdict": "PENDING_INDEPENDENT_COMBINED_ACCEPTANCE",
+  "canonicalSource": "fecf97a4a8b742c6c09b781d3b799816e8b548e4",
+  "completeTestSource": "46b0ec6ce52cd7acc8405a9b8d2d0e33e082f806",
+  "passed": {
+    "expanded": 3196,
+    "correctedIndependent": 29,
+    "publicTests": 7,
+    "sourceAudit": 7690,
+    "acceptedPacketChecks": 1192
+  },
+  "publicGenerationAndTypes": "PASS",
+  "preservedFailures": {
+    "focused": {
+      "passed": 1022,
+      "failed": 7,
+      "cause": "Reviewer synthetic PE identity and required year claims; original assertions retained; corrected29 and complete3196 suite passed"
+    },
+    "publicContracts": "First run generation passed, typecheck launcher MODULE_NOT_FOUND; exact7donor .bin symlinks restored, publiccheck passed"
+  },
+  "ownedCaptureGroups": 10,
+  "runtimeAccepted": false,
+  "sourceEnabled": false,
+  "scope": {
+    "original": 139,
+    "selected": 96,
+    "deferred": 43,
+    "mappedUnavailable": 70,
+    "selectedPending": 26,
+    "typedUnavailable": 71
+  }
+}
