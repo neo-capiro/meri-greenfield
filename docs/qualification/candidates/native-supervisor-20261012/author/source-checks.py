@@ -92,11 +92,13 @@ def need(value, label):
     checks.append(label)
 
 
-def run(stdout=(), stderr=(), code=0, before=0.0, spawn_delay=0.0, factory=Thread):
+def run(stdout=(), stderr=(), code=0, before=0.0, spawn_delay=0.0, factory=Thread,
+        stderr_step=0.0):
     clock = Clock()
     budget = Budget(clock)
     clock.now = before
     child = Child(clock, stdout, stderr, code)
+    child.stderr.step = stderr_step
     calls = []
 
     def spawn(argv, cwd):
@@ -136,6 +138,16 @@ result, child, _, clock = run(code=None)
 need(child.kills == 1 and clock.now <= 15 and not result["observationEligible"], "polling-action-cutoff")
 result, _, _, _ = run(code=False)
 need(not result["observationEligible"], "boolean-exit-refused")
+result, _, _, _ = run(stderr=[b"abc"], stderr_step=16.0)
+late = result["streams"]["stderr"]
+need(late["observedBytes"] == 3 and late["data"] == b"abc"
+     and late["error"] == "Refusal" and not late["eof"]
+     and not result["observationEligible"], "late-read-counted-without-success")
+result, _, _, _ = run(stderr=[b"x" * 65537], stderr_step=16.0)
+late = result["streams"]["stderr"]
+need(late["observedBytes"] == 65537 and len(late["data"]) == 65536
+     and late["overflow"] and late["error"] == "Refusal" and not late["eof"]
+     and not result["observationEligible"], "late-overflow-counted-and-retention-capped")
 
 
 class Unsettled(Thread):

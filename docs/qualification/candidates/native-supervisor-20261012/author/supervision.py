@@ -57,17 +57,21 @@ def capture(argv, cwd, budget, *, spawn, make_thread, sleep):
             while True:
                 budget.check("total")
                 content = stream.read(4096)
-                budget.check("total")
                 if type(content) is not bytes:
                     raise Refusal("non_binary_stream")
-                if content == b"":
-                    row["eof"] = True
-                    return
+                # Returned bytes are already observed, even if read returned
+                # late. Record their bounded facts before refusing lateness;
+                # this must not admit EOF, another read or a successful result.
                 row["observed"] += len(content)
                 room = row["cap"] - len(row["buffer"])
                 row["buffer"].extend(content[:max(0, room)])
                 if row["observed"] > row["cap"]:
                     row["overflow"] = True
+                budget.check("total")
+                if content == b"":
+                    row["eof"] = True
+                    return
+                if row["overflow"]:
                     return
         except Exception as error:
             row["error"] = type(error).__name__

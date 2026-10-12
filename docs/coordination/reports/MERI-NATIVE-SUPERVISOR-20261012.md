@@ -109,9 +109,24 @@ hashes and outputs remain separate. Root and independent review found an
 unbounded second JSON open after prehashing and unguarded `is_alive` calls; both
 were repaired. The action-deadline check was corrected before the independent
 reviewer's first replay, so there is no claimed failing original replay for that
-case; any removal control is explicitly a mutant. First independent draft replay
-was reported60/60; final exact-freeze review is pending and supersedes no raw
-evidence. Final author check count/source hashes are in the final capture.
+case; any removal control is explicitly a mutant. Independent chronology is
+preserved in the review lane: `first-inert-results.json` passed60/60; adding the
+throwing reader-state control produced60 pass/1 fail in
+`reader-status-before.json`. After that repair, `reader-status-repaired.json`
+and the first frozen replay passed72/72. The reviewer then added a late-read
+byte-accounting control against exact freeze
+`0217137304aa80dab662a4e98b934b30a9742cbc`: `late-read-before.json` records74
+pass/1 fail. A stderr read returned three bytes at second16; HOLD and refusal
+were correct, but observedBytes incorrectly remained zero. The exact failing
+source and raw evidence remain preserved in the review lane.
+
+The narrow follow-up records the type, actual returned-byte count, bounded
+retention and overflow before the post-read deadline check. A late return still
+refuses without accepting EOF, issuing another read or resetting the budget.
+New author controls cover the three-byte late read and a65,537-byte late stderr
+read retained at65,536 bytes. The follow-up author capture passes27/27 and leaves
+the original25-control freeze and all earlier outputs unchanged. Final exact
+independent review is pending; no earlier failure is erased or reclassified.
 
 The current synthetic controls do not qualify Windows process creation, real
 thread/pipe behavior, full filesystem bracketing, authentication, runtime
