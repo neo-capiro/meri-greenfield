@@ -1,0 +1,60 @@
+{
+  "kind": "SOURCE_ONLY_DRAFT_PUBLICATION",
+  "repository": "neo-capiro/meri-greenfield",
+  "pullRequest": 12,
+  "url": "https://github.com/neo-capiro/meri-greenfield/pull/12",
+  "state": "open",
+  "draft": true,
+  "merged": false,
+  "mergeable": true,
+  "verifiedPublicationHead": "4af67f88219a1d3e1952612940e1b8ee5cfabb41",
+  "verifiedPublicationTree": "b655ec5a81409ac61a00f0cf0970c8657682addc",
+  "branch": "task/meri-g1-source-continuation-20261012",
+  "baseBranch": "task/meri-memory-read-source-20261012",
+  "preservedBase": "5db2714b6dcbd3109c528e0afafcb654216133ca",
+  "testedSource": "7fadbbf987b85755a39898527509e17953f1a750",
+  "testedTree": "34f69c07bc59447b76a5ac1abb5c03a4a92d4260",
+  "author": "5ebe58d6480496689f409b03060b5fdb76c5d7fe",
+  "review": "fc725f80a52a13c3958fc615880f9d65821a95d7",
+  "verification": "GitHub get_pr_info and git ls-remote matched; this receipt is a later metadata-only descendant.",
+  "preservedRemoteHeads": {
+    "main": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc",
+    "pr7": "5ee46446b5f60034916f00b2a665b3e2bef9cf60",
+    "pr8": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+    "pr9": "c57b7d26df7de2acbd8c7d8edc7098f7d495053a",
+    "pr10": "7ba0e9d10ebf684e162dcc7c143915afdbf00f32",
+    "pr11": "5db2714b6dcbd3109c528e0afafcb654216133ca"
+  },
+  "borrowedWorktrees": {
+    "capirov2": {
+      "head": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "clean": true
+    },
+    "frontend": {
+      "head": "02c02d95bdf3949662b9123f425271c6491ffdab",
+      "clean": true
+    }
+  },
+  "checks": {
+    "root": 244,
+    "gateway": 146,
+    "independent": 35,
+    "public": 7,
+    "generation": "PASS",
+    "types": "PASS",
+    "original100msDeadline": "PASS",
+    "independentAccepted13": 35,
+    "diagnosticRootControls": 3,
+    "ownedIntegrationCheckGroupsAbsent": 5
+  },
+  "sourceAccepted": true,
+  "runtimeAccepted": false,
+  "nativeDiagnosticSourceAccepted": true,
+  "nativeDiagnosticExecutedHere": false,
+  "mainMergeAuthorized": false,
+  "all14Unavailable": true,
+  "g1": "OPEN",
+  "libraryConsumerBytesAvailable": false,
+  "parentNativeEvidenceReportedVerified": true,
+  "observedAt": "2026-10-12T03:06:29Z"
+}
