@@ -75,6 +75,8 @@ export function createClientKnowledgeAttachmentValidators({validateShape,schema}
       if(input.cursor&&(input.cursor.messageId!==source.sourceMessageId||input.cursor.originalBytesHash!==source.originalBytesHash))fail('Attachment source changed since cursor');
       if(next&&(next.mode!=='read'||next.messageId!==source.sourceMessageId||next.originalBytesHash!==source.originalBytesHash))fail('Attachment continuation source mismatch');
       if(c.characterStart>c.characterEnd||c.characterEnd>c.sectionCharacters||c.characterStart<input.locator.offset)fail('Attachment character range mismatch');
+      if(!input.query&&c.characterEnd-c.characterStart>input.limit)fail('Attachment no-query span exceeds requested limit');
+      if(input.query&&c.matched===false&&c.characterStart!==c.characterEnd)fail('Unmatched attachment section has a character span');
       const sectionComplete=c.characterStart===0&&c.characterEnd===c.sectionCharacters&&c.extractionStatus==='complete';
       const complete=sectionComplete&&c.locator.section===1&&next===null;
       if(c.sectionComplete!==sectionComplete||c.contentComplete!==complete||c.complete!==complete||c.truncated!==(next!==null||c.extractionStatus!=='complete'))fail('Attachment completion projection mismatch');
