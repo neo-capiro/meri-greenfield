@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/test/schedule-lifecycle.test.mjs"
+  ],
+  "cwd": "/workspace/meri-schedule-lifecycle-20261012",
+  "sourceHead": "6f8be6b140a1859cefd1880d77219ea23986de2f",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "845f3924ad4b66ef71ab09872bedc2cd012334b0ae16c2a7e7f1d798b614855a",
+  "startedAt": "2026-10-12T22:11:59.533645+00:00",
+  "durationSeconds": 0.667,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 359025,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/initial-author.stdout.bin",
+      "bytes": 1797,
+      "sha256": "4d98e2a8cc914b873c47c74be2f9b364e1580528a92446993c387d24017c4132"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/initial-author.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Unique label identifies initial or repaired backend integration test verification; prior receipts are preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

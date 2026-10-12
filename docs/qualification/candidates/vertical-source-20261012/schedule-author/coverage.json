@@ -1,0 +1,38 @@
+{
+  "sourceFreeze": "b5d0f55108a375ce15eed97d3a7a6926558221af",
+  "base": "e5fb3963de787bbd7b7663316c368f15814897da",
+  "operations": [
+    {
+      "id": "schedule_task",
+      "source": "IMPLEMENTED_SOURCE_PENDING_INDEPENDENT_ACCEPTANCE",
+      "path": "execute \u2192 durable claim/dispatch \u2192 ScheduleClient.create \u2192 acknowledged generation"
+    },
+    {
+      "id": "update_scheduled_task",
+      "source": "IMPLEMENTED_SOURCE_PENDING_INDEPENDENT_ACCEPTANCE",
+      "path": "execute \u2192 durable generation claim \u2192 ScheduleHandle.update synchronous replacement callback"
+    },
+    {
+      "id": "cancel_scheduled_task",
+      "source": "IMPLEMENTED_SOURCE_PENDING_INDEPENDENT_ACCEPTANCE",
+      "path": "execute \u2192 pause/delete + explicit exact-run cancel requests \u2192 generation acknowledgement"
+    },
+    {
+      "id": "list_scheduled_tasks",
+      "source": "IMPLEMENTED_SOURCE_PENDING_INDEPENDENT_ACCEPTANCE",
+      "path": "application-owner page \u2192 current per-projection authorization \u2192 exact Temporal inspection \u2192 bounded original execution descriptions"
+    }
+  ],
+  "sourceAvailable": false,
+  "runtime": "UNRUN",
+  "remainingPrerequisites": [
+    "Review/explicit application of migration and live PostgreSQL concurrency/uncertainty tests",
+    "Current policy/approval producer connected to authorize callback",
+    "Qualified exclusive Temporal schedule ownership: SDK update has no CAS",
+    "Qualified installed SDK connection options/retry behavior and converter/externalStorage behavior",
+    "Approved workflow template and task producer enforcing current scopes, budget/runtime/retry limits at future execution",
+    "Reconciliation owner for retained CLAIMED/DISPATCHING/UNKNOWN; no automatic redispatch or retry",
+    "Canonical capability/application route integration by root; public0.1 unchanged",
+    "Native Temporal/DB/security/tenant-isolation/runtime qualification remains G1 OPEN"
+  ]
+}

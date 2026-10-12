@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {scheduleShape,frozenScheduleData,scheduleErrorCode} from '../schedules-0.2/lifecycle-validation.mjs';
+const spec=()=>({calendars:[],intervals:[{every:60000,offset:0}],cronExpressions:[],skip:[],startAt:null,endAt:null,jitterMs:0,timezone:'America/New_York'});
+const calendar=()=>({second:[{start:0,end:0,step:1}],minute:'*',hour:'*',dayOfMonth:'*',month:'*',year:'*',dayOfWeek:'*',comment:'explicit calendar'});
+test('private spec admits all three explicit SDK schedule forms and exclusion calendars',()=>{const s=spec();s.calendars=[calendar()];s.skip=[calendar()];s.cronExpressions=['0 9 * * MON'];const out=scheduleShape('Spec',s);assert.deepEqual(out,s);assert.notEqual(out,s);assert.ok(Object.isFrozen(out.calendars[0]));});
+test('calendar default fields cannot be silently omitted',()=>{for(const key of Object.keys(calendar())){const c=calendar();delete c[key];assert.throws(()=>scheduleShape('Calendar',c));}});
+test('context/SQL/credentials cannot be injected into closed private intent selectors',()=>{const selection={operation:'list_scheduled_tasks',owner:{tenantId:'t',actorId:'a'},afterScheduleId:null,limit:1,historyLimit:0};for(const key of ['sql','namespace','credentials','query','sourceEnabled'])assert.throws(()=>scheduleShape('Selection',{...selection,[key]:'x'}));});
+test('listing and history resource bounds are independent and explicit',()=>{const s={operation:'list_scheduled_tasks',owner:{tenantId:'t',actorId:'a'},afterScheduleId:null,limit:20,historyLimit:10};assert.equal(scheduleShape('Selection',s).limit,20);assert.throws(()=>scheduleShape('Selection',{...s,limit:21}));assert.throws(()=>scheduleShape('Selection',{...s,historyLimit:11}));});
+test('opaque proxy/accessor inputs rejected by canonical inert boundary without evaluation',()=>{let n=0;assert.throws(()=>frozenScheduleData({get x(){n++;return 1;}}));assert.throws(()=>frozenScheduleData(new Proxy({},{})));assert.equal(n,0);});
+test('error scrubber does not inspect inherited/getter/proxy code fields',()=>{let n=0;assert.equal(scheduleErrorCode({get code(){n++;return 'secret';}}),null);assert.equal(scheduleErrorCode(new Proxy({},{getOwnPropertyDescriptor(){n++;}})),null);assert.equal(scheduleErrorCode(Object.create({code:'secret'})),null);assert.equal(n,0);});

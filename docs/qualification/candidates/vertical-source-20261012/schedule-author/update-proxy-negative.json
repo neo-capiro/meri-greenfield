@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-name-pattern=update current Proxy",
+    "apps/control/test/schedule-lifecycle.test.mjs"
+  ],
+  "cwd": "/workspace/meri-schedule-lifecycle-20261012",
+  "sourceHead": "3d40c348f5f04ed39defc886939743e985272ea9",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "845f3924ad4b66ef71ab09872bedc2cd012334b0ae16c2a7e7f1d798b614855a",
+  "startedAt": "2026-10-12T22:15:00.419790+00:00",
+  "durationSeconds": 0.466,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 361047,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/update-proxy-negative.stdout.bin",
+      "bytes": 844,
+      "sha256": "0a2ccc153b1ebd4d36ff8ffdcecd8d41fe502a9ae6856daf28820839f504f3ca"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/update-proxy-negative.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Unique label identifies initial or repaired backend integration test verification; prior receipts are preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,364 @@
+{
+  "base": "e5fb3963de787bbd7b7663316c368f15814897da",
+  "head": "b5d0f55108a375ce15eed97d3a7a6926558221af",
+  "originalEntries": 8678,
+  "source": [
+    {
+      "path": "apps/control/schedules/migrations/0001_schedule_owner.sql",
+      "gitEntry": "100644 blob f9372301f4fba17e4102efb4a63005ef39f9fe23",
+      "bytes": 1123,
+      "sha256": "bf8c593de97dcdae728765ecd90dac6696b290028d4ffb0586bdae0fe87d91c7"
+    },
+    {
+      "path": "apps/control/schedules/postgres-schedule-owner.mjs",
+      "gitEntry": "100644 blob 513c7d1658cd1212b47fc313c88a02ab9b0acf4c",
+      "bytes": 5399,
+      "sha256": "8385475b7ca25aff687221934ffe4f9773af311fa766c56b68e33f48cd656300"
+    },
+    {
+      "path": "apps/control/schedules/schedule-lifecycle.mjs",
+      "gitEntry": "100644 blob 6b8f68cd06fd2d162ef197285de8228aac84dd41",
+      "bytes": 8930,
+      "sha256": "516c4f31a055730b9485cc94de68e6d74e7b0ee8472d7403d078e5d282b08b93"
+    },
+    {
+      "path": "apps/control/schedules/temporal-run-history.mjs",
+      "gitEntry": "100644 blob cc0961c4729cf1eba36b3543c3ae12f733d7a56e",
+      "bytes": 2430,
+      "sha256": "cf1c01b281815ccf0b43b601825047dfbfdb196398162ca93229f0ab35870e7e"
+    },
+    {
+      "path": "apps/control/schedules/temporal-schedule-mutations.mjs",
+      "gitEntry": "100644 blob 8c775bae6740047abcf8e70f2172de5abc2492c3",
+      "bytes": 3403,
+      "sha256": "a4b75d9996d87eaaf2ab6d412516df70e3bb4d1bbf72ec96ccdcefd7104bb271"
+    },
+    {
+      "path": "apps/control/test/schedule-lifecycle-postgres.test.mjs",
+      "gitEntry": "100644 blob f4162b4d1088d97210a1f9bd0326ec549ea450fc",
+      "bytes": 5584,
+      "sha256": "d9687c901bd6c84144d573a224697b8dbc2e660c9ceb45857fa255b81347b8ca"
+    },
+    {
+      "path": "apps/control/test/schedule-lifecycle.test.mjs",
+      "gitEntry": "100644 blob 61164103b45b528f726e345e422ac31a092e2278",
+      "bytes": 16227,
+      "sha256": "75d533f9d89307f58c63410eee004450d72b5d1540140d0cc6e9a4d11b85749a"
+    },
+    {
+      "path": "packages/contracts/schedules-0.2/lifecycle-validation.mjs",
+      "gitEntry": "100644 blob 29ca16bf092fff3209547a5dbcc52f80c50d0fcb",
+      "bytes": 4406,
+      "sha256": "568347a5bdc0ef3180fa7e3934f8a1b824733bb0704a858542df731e41d657b1"
+    },
+    {
+      "path": "packages/contracts/schedules-0.2/lifecycle.schema.json",
+      "gitEntry": "100644 blob 175ff60e5e77ff7ae4865c9d3055b20139bed900",
+      "bytes": 18498,
+      "sha256": "981ba97ca3a4044d0d7ba3021cba1fdbb3b48b7106ee5b79e4cc61364f571d41"
+    },
+    {
+      "path": "packages/contracts/test/schedule-lifecycle.test.mjs",
+      "gitEntry": "100644 blob d5fcc79af2048c7fb2168c38dbe7aa7e7ae6e401",
+      "bytes": 2340,
+      "sha256": "d72e1bc4eb5aaed6af00552bb4fef531459e8ffd2d2fad1e5c4262caf3807dee"
+    }
+  ],
+  "receipts": [
+    "contracts-author.json",
+    "cursor-page-negative.json",
+    "final-author.json",
+    "initial-author.json",
+    "list-errors-negative.json",
+    "missing-temporal-negative.json",
+    "owner-author.json",
+    "owner-page-negative.json",
+    "repaired-page-author.json",
+    "repaired-proxy-author.json",
+    "repaired-unavailable-author.json",
+    "sanitized-list-author.json",
+    "status-negative.json",
+    "update-proxy-negative.json"
+  ],
+  "checks": [
+    {
+      "name": "all original Git entries unchanged",
+      "passed": true
+    },
+    {
+      "name": "initial adapter test prefix unchanged",
+      "passed": true
+    },
+    {
+      "name": "original owner tests unchanged",
+      "passed": true
+    },
+    {
+      "name": "SDK @temporalio/client/package.json",
+      "passed": true
+    },
+    {
+      "name": "SDK @temporalio/client/src/schedule-client.ts",
+      "passed": true
+    },
+    {
+      "name": "SDK @temporalio/client/src/schedule-types.ts",
+      "passed": true
+    },
+    {
+      "name": "SDK @temporalio/client/src/workflow-client.ts",
+      "passed": true
+    },
+    {
+      "name": "SDK @temporalio/client/src/connection.ts",
+      "passed": true
+    },
+    {
+      "name": "SDK @temporalio/client/src/types.ts",
+      "passed": true
+    },
+    {
+      "name": "SDK @temporalio/client/src/schedule-helpers.ts",
+      "passed": true
+    },
+    {
+      "name": "SDK @temporalio/client/src/helpers.ts",
+      "passed": true
+    },
+    {
+      "name": "SDK @temporalio/proto/protos/json-module.js",
+      "passed": true
+    },
+    {
+      "name": "contracts-author.json clean source",
+      "passed": true
+    },
+    {
+      "name": "contracts-author.json physically exited",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/schedule-author/contracts-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/schedule-author/contracts-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "cursor-page-negative.json clean source",
+      "passed": true
+    },
+    {
+      "name": "cursor-page-negative.json physically exited",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/schedule-author/cursor-page-negative.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/schedule-author/cursor-page-negative.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "final-author.json clean source",
+      "passed": true
+    },
+    {
+      "name": "final-author.json physically exited",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/schedule-author/final-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/schedule-author/final-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "initial-author.json clean source",
+      "passed": true
+    },
+    {
+      "name": "initial-author.json physically exited",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/schedule-author/initial-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/schedule-author/initial-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "list-errors-negative.json clean source",
+      "passed": true
+    },
+    {
+      "name": "list-errors-negative.json physically exited",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/schedule-author/list-errors-negative.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/schedule-author/list-errors-negative.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "missing-temporal-negative.json clean source",
+      "passed": true
+    },
+    {
+      "name": "missing-temporal-negative.json physically exited",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/schedule-author/missing-temporal-negative.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/schedule-author/missing-temporal-negative.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "owner-author.json clean source",
+      "passed": true
+    },
+    {
+      "name": "owner-author.json physically exited",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/schedule-author/owner-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/schedule-author/owner-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "owner-page-negative.json clean source",
+      "passed": true
+    },
+    {
+      "name": "owner-page-negative.json physically exited",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/schedule-author/owner-page-negative.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/schedule-author/owner-page-negative.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "repaired-page-author.json clean source",
+      "passed": true
+    },
+    {
+      "name": "repaired-page-author.json physically exited",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/schedule-author/repaired-page-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/schedule-author/repaired-page-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "repaired-proxy-author.json clean source",
+      "passed": true
+    },
+    {
+      "name": "repaired-proxy-author.json physically exited",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/schedule-author/repaired-proxy-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/schedule-author/repaired-proxy-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "repaired-unavailable-author.json clean source",
+      "passed": true
+    },
+    {
+      "name": "repaired-unavailable-author.json physically exited",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/schedule-author/repaired-unavailable-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/schedule-author/repaired-unavailable-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "sanitized-list-author.json clean source",
+      "passed": true
+    },
+    {
+      "name": "sanitized-list-author.json physically exited",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/schedule-author/sanitized-list-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/schedule-author/sanitized-list-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "status-negative.json clean source",
+      "passed": true
+    },
+    {
+      "name": "status-negative.json physically exited",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/schedule-author/status-negative.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/schedule-author/status-negative.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "update-proxy-negative.json clean source",
+      "passed": true
+    },
+    {
+      "name": "update-proxy-negative.json physically exited",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/schedule-author/update-proxy-negative.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/schedule-author/update-proxy-negative.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "failed negative controls retained",
+      "passed": true
+    }
+  ],
+  "passed": 69,
+  "failed": 0,
+  "scope": "Offline source only; real PostgreSQL and Temporal UNRUN"
+}

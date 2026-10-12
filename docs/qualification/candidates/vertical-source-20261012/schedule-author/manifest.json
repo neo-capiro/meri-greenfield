@@ -1,0 +1,247 @@
+{
+  "sourceFreeze": "b5d0f55108a375ce15eed97d3a7a6926558221af",
+  "base": "e5fb3963de787bbd7b7663316c368f15814897da",
+  "members": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/audit-result.json",
+      "bytes": 11360,
+      "sha256": "448e522983cec22c805350dc946107cc5450fdbdbb1a90b124010b7d228a4e23"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/audit.py",
+      "bytes": 2872,
+      "sha256": "c3cc4423fc1a456df63067bda59c04444f503c68f03e8c2426520a4939f7b499"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/capture-reaped.py",
+      "bytes": 3390,
+      "sha256": "845f3924ad4b66ef71ab09872bedc2cd012334b0ae16c2a7e7f1d798b614855a"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/contracts-author.json",
+      "bytes": 1335,
+      "sha256": "4ffb6df7b921594ef527c61c147f88695f220c9230e2880a8b1916d377169501"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/contracts-author.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/contracts-author.stdout.bin",
+      "bytes": 647,
+      "sha256": "39ca07ae53ce3a9ec3888351ad011ff04695d3bba3b9083014a852efad24d215"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/coverage.json",
+      "bytes": 1960,
+      "sha256": "ca4dfbc10149ad9a51d56730bb45923661989203a8705ff6630070296b2ceb86"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/cursor-page-negative.json",
+      "bytes": 1338,
+      "sha256": "8e243349a046c25c7821632773b8a6210c2c2c75adcafc063aba38912168003d"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/cursor-page-negative.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/cursor-page-negative.stdout.bin",
+      "bytes": 3411,
+      "sha256": "a178d473e4426777fab4b761f53541bbbb6c5517fcdca8fbc770080910672d31"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/final-author.json",
+      "bytes": 1443,
+      "sha256": "ca3ebc59052428b7842f8d3cf0103337efece96f5274f010ce1b5cb47147dcd0"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/final-author.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/final-author.stdout.bin",
+      "bytes": 3922,
+      "sha256": "d7110744b2b97e79031d95c2b4b4c7923789bb852d867e2f605d745f996a66c4"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/initial-author.json",
+      "bytes": 1326,
+      "sha256": "42a25210fb9f995a1ae703acc475423422ec908c21480df20ca615f58849f492"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/initial-author.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/initial-author.stdout.bin",
+      "bytes": 1797,
+      "sha256": "4d98e2a8cc914b873c47c74be2f9b364e1580528a92446993c387d24017c4132"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/list-errors-negative.json",
+      "bytes": 1394,
+      "sha256": "585d864b04e7895c482b2b21e2d0c84542d7b9d2b03945e5db3b00cf1d3c5f4a"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/list-errors-negative.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/list-errors-negative.stdout.bin",
+      "bytes": 4055,
+      "sha256": "8ea3eca4f0772db8e5ce83c7f8f65379aa81c04bb77d8dd1eb99b6445138fb18"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/missing-temporal-negative.json",
+      "bytes": 1397,
+      "sha256": "4cfd328d9c63f79bcca69af1c29bca5ea51026a0fa0ee8ff3eb17c8b1fd2040f"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/missing-temporal-negative.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/missing-temporal-negative.stdout.bin",
+      "bytes": 728,
+      "sha256": "310bdab33e993c3bd46a4a9270ebd8caa8bdfbe45e76606bb930ddae4ba0c0a3"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/owner-author.json",
+      "bytes": 1330,
+      "sha256": "ef5cc6f4d878c29d150c74d322581fca19830dc666d4126e5698c661f1b0426b"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/owner-author.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/owner-author.stdout.bin",
+      "bytes": 915,
+      "sha256": "764ea9092020594b2af55cea739b61dbbd30164f972f3bd94a9a98754c0d6a85"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/owner-page-negative.json",
+      "bytes": 1336,
+      "sha256": "f6a3a2228105523a004c1a1eaedcb4a0c5b2f5c8e56002d88d7abb589f6cb508"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/owner-page-negative.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/owner-page-negative.stdout.bin",
+      "bytes": 2698,
+      "sha256": "692aa3851ccdb6e8b9e7f5ca3f03ad281c6ac6af67d780ba3df576a78a1bb1c4"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/repaired-page-author.json",
+      "bytes": 1400,
+      "sha256": "93c31000bdd59cf291b19c3a1675d45a8cac67e9f0c4fdd798859bd5edeadf4b"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/repaired-page-author.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/repaired-page-author.stdout.bin",
+      "bytes": 2902,
+      "sha256": "14e3a9afe1202cd48f1c719bb34f743f41d815e432b20277d8d70329fee9d092"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/repaired-proxy-author.json",
+      "bytes": 1402,
+      "sha256": "570530abf5d02760948c6a725395b62a397b1412b396ae3c0f645a425e9791f4"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/repaired-proxy-author.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/repaired-proxy-author.stdout.bin",
+      "bytes": 2963,
+      "sha256": "b8cc5d766e1e72b1e53f7c6b0f2fd3014963cccc393b038784c1bb89547fbc98"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/repaired-unavailable-author.json",
+      "bytes": 1414,
+      "sha256": "eb460d8fd5bd501554b15cd125a2d021b06e4cfc3f7e8c9f5349b094cc2f17eb"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/repaired-unavailable-author.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/repaired-unavailable-author.stdout.bin",
+      "bytes": 3226,
+      "sha256": "943980ec6707b0663f5909f19963b0979c66fdba456d257abb41d97ceeb18d2e"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/sanitized-list-author.json",
+      "bytes": 1461,
+      "sha256": "26295b3ce25d45d476522238c185ea2acea1e560f748c15993ebb1bf72b0e510"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/sanitized-list-author.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/sanitized-list-author.stdout.bin",
+      "bytes": 4074,
+      "sha256": "9a8842964c476999334ea346dd6d5427c1af95939526768819cd9ca42aba4bbd"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/sdk-reference-identities.json",
+      "bytes": 3081,
+      "sha256": "f790391ff412d7b85465e115f2a20da8a96b90c275c3521fff09372403417bf6"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/setup-observations.json",
+      "bytes": 670,
+      "sha256": "8f6f02dccb3ef58a167fa2774d7587856353530f3cce41fa5ea9c1d229335528"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/status-negative.json",
+      "bytes": 1393,
+      "sha256": "8d46200f23378a6876360b560c4a74a20d767b5f1d71797bb71399ab6e0c006b"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/status-negative.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/status-negative.stdout.bin",
+      "bytes": 937,
+      "sha256": "8068bae257a085053e687fbed3e920ebc9148baab484e4b67ea8c130478d6b1a"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/update-proxy-negative.json",
+      "bytes": 1387,
+      "sha256": "c223bbc087a875c3604f0fa7da990e8475af881333bec6a746e26922464c6681"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/update-proxy-negative.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/update-proxy-negative.stdout.bin",
+      "bytes": 844,
+      "sha256": "0a2ccc153b1ebd4d36ff8ffdcecd8d41fe502a9ae6856daf28820839f504f3ca"
+    }
+  ],
+  "scope": "SOURCE_ONLY; no live PostgreSQL/Temporal qualification"
+}
