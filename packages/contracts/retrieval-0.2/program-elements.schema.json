@@ -920,7 +920,14 @@
           ]
         },
         "currentFundingClaim": {
-          "$ref": "#/$defs/ProgramElementClaim"
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProgramElementClaim"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "funding": {
           "$ref": "#/$defs/ProgramElementSearchFunding"
@@ -1507,11 +1514,15 @@
           "items": {
             "$ref": "#/$defs/ProgramElementLineageRow"
           }
+        },
+        "note": {
+          "const": "Candidate lineage is unverified. A changed stage label or a shared narrative does not establish that one line was consolidated into another."
         }
       },
       "required": [
         "accepted",
-        "candidates"
+        "candidates",
+        "note"
       ],
       "additionalProperties": false
     },
@@ -1807,7 +1818,8 @@
           "enum": [
             "historical",
             "current",
-            "outyear"
+            "outyear",
+            "unknown"
           ]
         },
         "current": {
@@ -1840,10 +1852,17 @@
           ]
         },
         "requestConflictValuesM": {
-          "type": "array",
-          "items": {
-            "type": "number"
-          }
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "fundingClaim": {
           "anyOf": [
