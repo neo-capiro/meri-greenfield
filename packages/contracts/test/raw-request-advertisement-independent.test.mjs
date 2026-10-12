@@ -19,7 +19,7 @@ const cases=[
  ['search_public_web','PublicWebSearchRequest',{query:' Review public ',limit:'3.8'},{query:'Review public',limit:3}],
  ['scrape_web_page','PublicWebPageRequest',{url:' https://example.test/review ',mode:' extract ',maxChars:'701.9'},{url:'https://example.test/review',mode:'extract',maxChars:701}],
  ['search_sam_opportunities','SamOpportunitiesRequest',{query:' Review source ',naics:null,limit:'2.9'},{query:'Review source',naics:null,includeInactive:false,limit:2}],
- ['get_florida_budget_project','FloridaBudgetRequest',{q:' retained spaces ',offset:'2.5'},{q:' retained spaces ',fiscalYear:'2026-27',projectId:'',offset:2.5,sessionKey:'',folderId:null,clientId:null}],
+ ['get_florida_budget_project','FloridaBudgetRequest',{q:' retained spaces ',offset:'2'},{q:' retained spaces ',fiscalYear:'2026-27',projectId:'',offset:2,sessionKey:'',folderId:null,clientId:null}],
  ['get_state_bill_status','StateBillStatusRequest',{query:' TX HB 7 ',state:' tx '},{billId:'TX HB 7',state:'tx'}],
  ['search_state_floor_votes','StateFloorVotesRequest',{query:' vote ',chamber:' HOUSE ',limit:'3.8'},{query:'vote',chamber:'house',limit:3}],
  ['find_contacts','TenantContactsRequest',{domain:' EXAMPLE.TEST ',query:' Person ',limit:'7.9'},{clientId:null,domain:'example.test',query:'Person',limit:7}],
@@ -35,7 +35,7 @@ const cases=[
  ['search_sec_filings','DisclosuresSecRequest',{companyName:' Review company ',limit:'3.9'},{limit:3,query:'Review company'}],
  ['search_fara_registrations','DisclosuresFaraRequest',{registrant:' Review registrant ',limit:'4.9'},{limit:4,registrantName:'Review registrant'}],
  ['search_lda_filings','DisclosuresLdaRequest',{query:' Review client ',registrant:' Registry ',issue:' Health ',year:'2025',page:'2.9'},{limit:15,clientName:'Review client',registrantName:'Registry',issueCode:'Health',page:2,year:2025}],
- ['get_bill_status','FederalBillStatusRequest',{query:' HR 7 '},{billId:'hr7-119'}],
+ ['get_bill_status','FederalBillStatusRequest',{query:' HR 7 '},{billId:'119-hr-7'}],
  ['search_floor_votes','FederalFloorVotesRequest',{member:' h001234 ',chamber:' HOUSE ',limit:'4.2'},{billId:null,query:null,member:'h001234',bioguideId:'H001234',chamber:'house',congress:null,limit:4}],
  ['search_state_bills','StateBillSearchRequest',{query:' Water ',state:' fl ',limit:'3.8'},{limit:3,query:'Water',state:'FL'}],
  ['get_state_legislator','StateLegislatorRequest',{query:' Member ',state:' fl ',limit:'3.8'},{limit:3,query:'Member',state:'FL'}],
@@ -58,4 +58,6 @@ const minimal={get_program_element:{peCode:'x'},get_pe_budget_timeline:{peCode:'
 for(const[id]of cases)test(`independent advertised defaults: ${id}`,()=>{const c=contract(id),raw=minimal[id]??{};const before=c.normalizeInput(raw,contexts[id]??{});advertised(c,raw);assert.deepEqual(c.normalizeInput(raw,contexts[id]??{}),before)});
 test('independent trusted resolution remains external, UUID cannot be rebound',()=>{const c=contract('search_tracked_bills');assert.throws(()=>c.normalizeInput({clientId:V},{...contexts.search_tracked_bills,clientReference:V}));assert.throws(()=>c.normalizeInput({clientId:'Review client'},{}));assert.deepEqual(c.normalizeInput({clientId:'Review client'},contexts.search_tracked_bills).input,{clientId:U})});
 test('independent required caller fields remain required',()=>{for(const id of Object.keys(minimal))assert.throws(()=>contract(id).normalizeInput({},contexts[id]??{}),id)});
-test('independent Request advertisement is not normalized validity or current authority',()=>{const c=contract('scrape_web_page');validateShape('PublicWebPageRequest',{url:'file:///private'});assert.throws(()=>c.normalizeInput({url:'file:///private'}));assert.equal(c.descriptor.available,false);assert.equal(c.descriptor.handler,null)});
+test('independent Request advertisement is not normalized validity or current authority',()=>{const c=contract('scrape_web_page');validateShape('PublicWebPageRequest',{url:'file:///private'});assert.throws(()=>c.normalizeInput({url:'file:///private'}));assert.equal(c.descriptor.availability,'unimplemented');assert.equal(c.descriptor.handler,null)});
+test('independent long raw registry selector remains valid before trimming',()=>{const raw={name:' '.repeat(301)+'Review'},c=contract('lookup_client_registry');assert.deepEqual(c.normalizeInput(raw).input,{name:'Review'});advertised(c,raw)});
+test('independent normalized domain constraints remain stronger than caller shape',()=>{const raw={offset:'2.5'},c=contract('get_florida_budget_project');validateShape('FloridaBudgetRequest',raw);assert.throws(()=>c.normalizeInput(raw,contexts.get_florida_budget_project))});

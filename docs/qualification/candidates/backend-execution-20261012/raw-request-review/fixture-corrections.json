@@ -1,0 +1,12 @@
+{
+  "beforeSha256": "223e02e1a07c73665efe65cf1540e671b2b150b8fb33fd8d0e525071ba6bae0a",
+  "afterSha256": "3a92e7a5c0d1ae4e9c21a7c1abd68a1fd55b1a714c305b93e94d9703c0c33106",
+  "sourceUnchanged": "7e128127e666242102ed83b6c10afc1e5b7fd3f8",
+  "originalResult": "105/159 pass,54failed; three reviewer fixture assumptions among advertisement failures",
+  "corrections": [
+    "Florida normalized offset is integer; replace invalid positive2.5 with2 and retain2.5 as explicit negative.",
+    "Canonical congressional identifier is119-hr-7, independently verified shared selector module.",
+    "Descriptor availability is enum unimplemented, not boolean available."
+  ],
+  "productionRepairRequestedByTheseCorrections": false
+}
