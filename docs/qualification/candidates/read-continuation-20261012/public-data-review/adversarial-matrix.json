@@ -1,0 +1,26 @@
+{
+  "frozenBeforeCandidateInspection": true,
+  "sourceReadyOnly": true,
+  "groups": [
+    "Operation identity and result tool/source variant substitution",
+    "Closed selector keys; model policy/tenant/client/credential fields cannot establish authority",
+    "UTF-16 trim/truncation, canonical defaults, finite clamp and page-bound behavior",
+    "Economic actual BLS/BEA selector support versus narrower registered legacy tool schema",
+    "Dataset alias precedence, zero-year truth limit and selectors irrelevant to the selected source",
+    "Unknown economic source is distinct from empty successful data",
+    "Required nullable fields versus omission; integer/float/JSON scalar fidelity without invented units/ranges",
+    "Census JSON projection allows ordinary JSON shapes; BEA visible tuples do not invent source identity uniqueness",
+    "BLS nested twelve-point and all source limit caps",
+    "Trusted policy off/shadow/enforce required for grants/legacy awards; missing or forged mode refused",
+    "Mode controls presence of structured deadline/date blocks; output does not select policy",
+    "Grant generatedAt/asOf consistency and legacy UTC-day versus New York-day boundary",
+    "Grant truthy response-date raw text always forces unknown even when text resembles ISO datetime",
+    "Date-only New York end-of-day honors daylight-saving transitions; daysRemaining is ceiling over observed elapsed time",
+    "Legacy versus structured deadline status may differ without laundering unknown into open/closed",
+    "Award date nulls preserve separate signing/action/source-update/performance/sync meanings",
+    "Legacy awards page signals bind request/default page size and reported total, including page10000 cap",
+    "UTF-16 title/description limits, nullable monetary numbers and inert narrative text",
+    "Independent raw failures, exact candidate/source hashes, original public/catalog/runtime boundaries and cleanup"
+  ],
+  "notProven": ["current authorization", "live source entitlement", "provider availability", "freshness", "atomic count/data snapshot", "authoritative absence", "runtime acceptance"]
+}
