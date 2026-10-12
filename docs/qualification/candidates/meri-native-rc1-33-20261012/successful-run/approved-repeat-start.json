@@ -1,0 +1,44 @@
+{
+  "t0": "2026-10-12T15:31:54+00:00",
+  "work_deadline": "2026-10-12T15:43:54+00:00",
+  "cleanup_deadline": "2026-10-12T15:46:54+00:00",
+  "source_commit": "2f06feccca731d6cd388612cd568185ecc29668f",
+  "source_tree": "39165ddad3989434908087f4571b70bea000a98d",
+  "correction_sha256": "5c68577d7e20c783d62100f486f5f20e3d01817917842a51b8614765a8c17a17",
+  "user_approval": "Sentinel_869ee88f52588191996035c078574448 at2026-10-12T14:55:38UTC",
+  "retry_authority": "Current parent delegation confirms original user approval covers the same action; previous no-retry renewal condition was delegation-only. One authorized same-scope retry.",
+  "original_schema_oid": 16389,
+  "prior_partial_schema_oid": 24577,
+  "original_row_hashes": {
+    "budget": {
+      "rows": 1,
+      "sha256": "1a8b23c94afd9b4af70bc6306c328275a0e5130fc271232cdfc55a358cda54d9"
+    },
+    "runs": {
+      "rows": 1,
+      "sha256": "b92f7d4757c3918bc71e82d89d919a8f028176faa53c72a5215d06f7bad49f3a"
+    },
+    "grants": {
+      "rows": 1,
+      "sha256": "1080d3928a510b1e692f54a3ab51b40ff2bb881cf8112522c02f7c915eeef3e4"
+    },
+    "requests": {
+      "rows": 1,
+      "sha256": "c56f7da70e84178cbc29215b9ad85563f13e3208e6a79c9728a2e39dc47d7105"
+    }
+  },
+  "certificate_not_before": "20261012153154Z",
+  "certificate_not_after": "20261012154654Z",
+  "expected_sequence": [
+    23,
+    1,
+    6,
+    3
+  ],
+  "historical_exited_pids": [
+    37280,
+    37281,
+    37282
+  ],
+  "historical_pids_not_claimed_reaped": true
+}

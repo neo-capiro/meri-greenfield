@@ -1,0 +1,221 @@
+{
+  "group": "rc1-python-state",
+  "tool_session": 40449,
+  "platform_terminal_exit": 0,
+  "passed": 23,
+  "postgres_cases": 20,
+  "pricing_configuration_cases": 3,
+  "skipped": 0,
+  "unittest_seconds": 6.643,
+  "completed_cases": [
+    [
+      "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_actual_database_lock_contention_never_exceeds_cap",
+      "ok"
+    ],
+    [
+      "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_cancelled_wait_keeps_actual_committed_unknown",
+      "ok"
+    ],
+    [
+      "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_capability_count_model_body_and_pricing_mismatch",
+      "ok"
+    ],
+    [
+      "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_cross_process_cap_contention",
+      "ok"
+    ],
+    [
+      "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_duplicate_slot_and_one_active_per_grant",
+      "ok"
+    ],
+    [
+      "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_excess_actual_is_recorded_unclamped_and_quarantines",
+      "ok"
+    ],
+    [
+      "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_expiry_is_evaluated_after_real_budget_lock_wait",
+      "ok"
+    ],
+    [
+      "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_expiry_revocation_and_reconnect_never_release_unknown",
+      "ok"
+    ],
+    [
+      "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_forged_native_body_cannot_bypass_semantic_envelope",
+      "ok"
+    ],
+    [
+      "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_incomplete_mismatched_settlement_preserves_liability",
+      "ok"
+    ],
+    [
+      "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_lost_commit_acknowledgement_denies_but_durable_hold_remains",
+      "ok"
+    ],
+    [
+      "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_pending_activation_and_exact_receipt",
+      "ok"
+    ],
+    [
+      "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_positive_no_dispatch_is_separate_and_bound",
+      "ok"
+    ],
+    [
+      "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_process_death_after_commit_and_reconnect",
+      "ok"
+    ],
+    [
+      "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_real_guard_receipt_is_committed_before_fake_transport_send",
+      "ok"
+    ],
+    [
+      "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_renewed_pricing_expiry_cannot_rebind_original_settlement",
+      "ok"
+    ],
+    [
+      "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_revoked_replaced_grant_only_reconciles_original_usage",
+      "ok"
+    ],
+    [
+      "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_settle_complete_bound_usage_then_next_slot",
+      "ok"
+    ],
+    [
+      "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_settlement_considers_other_unresolved_holds",
+      "ok"
+    ],
+    [
+      "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_stale_attempt_worker_policy_and_fence_denied_with_old_hold_counted",
+      "ok"
+    ],
+    [
+      "apps.proxy.qualification.test.test_postgres_state.PricingTests.test_database_configuration_and_connection_errors_are_closed",
+      "ok"
+    ],
+    [
+      "apps.proxy.qualification.test.test_postgres_state.PricingTests.test_exact_integer_ceiling_and_full_envelope",
+      "ok"
+    ],
+    [
+      "apps.proxy.qualification.test.test_postgres_state.PricingTests.test_invalid_counts_and_revision",
+      "ok"
+    ]
+  ],
+  "parent_pid": 62190,
+  "post_terminal_group_metadata": [],
+  "live_owned_group_members": 0,
+  "original_restoration": {
+    "at": "2026-10-12T15:34:44.847209+00:00",
+    "original_oid": 16389,
+    "original_row_hashes_match": true,
+    "original_liability": [
+      [
+        "old",
+        "UNKNOWN",
+        1076,
+        null
+      ]
+    ],
+    "prior_partial_oid": 24577,
+    "repeat_archive_oid": 24814,
+    "repeat_archive": "meri_qualification_rc1_20261012_repeat1"
+  },
+  "retained_repeat_state": {
+    "schema_oid": 24814,
+    "requests": [
+      [
+        "old",
+        "UNKNOWN",
+        1076,
+        null
+      ]
+    ],
+    "budget": [
+      [
+        1,
+        10000000,
+        0,
+        false
+      ]
+    ],
+    "objects": [
+      [
+        "budget",
+        "r"
+      ],
+      [
+        "budget_liabilities",
+        "v"
+      ],
+      [
+        "budget_pkey",
+        "i"
+      ],
+      [
+        "grants",
+        "r"
+      ],
+      [
+        "grants_capability_sha256_key",
+        "i"
+      ],
+      [
+        "grants_pkey",
+        "i"
+      ],
+      [
+        "one_unknown_per_grant",
+        "i"
+      ],
+      [
+        "one_unknown_tool_per_grant",
+        "i"
+      ],
+      [
+        "requests",
+        "r"
+      ],
+      [
+        "requests_pkey",
+        "i"
+      ],
+      [
+        "runs",
+        "r"
+      ],
+      [
+        "runs_pkey",
+        "i"
+      ],
+      [
+        "tool_grant_bindings",
+        "r"
+      ],
+      [
+        "tool_grant_bindings_pkey",
+        "i"
+      ],
+      [
+        "tool_reservations",
+        "r"
+      ],
+      [
+        "tool_reservations_pkey",
+        "i"
+      ],
+      [
+        "tool_reservations_reservation_id_key",
+        "i"
+      ],
+      [
+        "tool_run_allocations",
+        "r"
+      ],
+      [
+        "tool_run_allocations_pkey",
+        "i"
+      ]
+    ]
+  },
+  "raw_stderr_sha256": "7c39a97e2beb0ac99f0c9777d1341ecc0ab3e77efcdebfe013c060973e5d8c03"
+}

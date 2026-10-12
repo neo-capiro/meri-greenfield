@@ -1,0 +1,101 @@
+{
+  "recorded_at": "2026-10-12T15:45:08.610748+00:00",
+  "source_commit": "2f06feccca731d6cd388612cd568185ecc29668f",
+  "source_tree": "39165ddad3989434908087f4571b70bea000a98d",
+  "groups": [
+    {
+      "group": "rc1-python-state",
+      "source_path": "apps/proxy/qualification/test/test_postgres_state.py",
+      "source_sha256": "53b81e46edc3562a365836281ad8885665b039f95a7b130603b3b972ca688ad7",
+      "passed": 23,
+      "skipped": 0,
+      "platform_terminal_exit": 0,
+      "receipt": "/workspace/scratch/meri-native-repeat-rc1-20261012/rc1-python-state.receipt.json",
+      "receipt_sha256": "ebcc5791280d3cd6be084031738a7487f2202bad2dfd3d9ddff3eacb7e46a3bd",
+      "raw_streams": {
+        "stdout": {
+          "path": "/workspace/scratch/meri-native-repeat-rc1-20261012/rc1-python-state.stdout.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stderr": {
+          "path": "/workspace/scratch/meri-native-repeat-rc1-20261012/rc1-python-state.stderr.log",
+          "bytes": 4207,
+          "sha256": "7c39a97e2beb0ac99f0c9777d1341ecc0ab3e77efcdebfe013c060973e5d8c03"
+        }
+      }
+    },
+    {
+      "group": "sdk-registry-ingress",
+      "source_path": "apps/control/qualification-sdk-fixture/service/test/registry-ingress.test.mjs",
+      "source_sha256": "8a98b32b8a7253cf040126f4f29c04a650a56aa5202f779b0f1f61425437c23c",
+      "passed": 1,
+      "skipped": 0,
+      "platform_terminal_exit": 0,
+      "receipt": "/workspace/scratch/meri-native-repeat-rc1-20261012/sdk-registry-ingress.receipt.json",
+      "receipt_sha256": "7b08c10be293f76880ee724080cb2abf17a7a82b53ef4c47a90c61c73c32c45a",
+      "raw_streams": {
+        "stdout": {
+          "path": "/workspace/scratch/meri-native-repeat-rc1-20261012/sdk-registry-ingress.stdout.log",
+          "bytes": 346,
+          "sha256": "322c82a92a4dd4cb46a2c75bca5303ad48b256b3cfef203e6d5ab595d09547ec"
+        },
+        "stderr": {
+          "path": "/workspace/scratch/meri-native-repeat-rc1-20261012/sdk-registry-ingress.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "group": "sdk-registry",
+      "source_path": "apps/control/qualification-sdk-fixture/state/test/registry.test.mjs",
+      "source_sha256": "0835d0845e4d8f5e8e6a6dbd197fc4abd5b008d93a36463838bccfd4fcf4d4ad",
+      "passed": 6,
+      "skipped": 0,
+      "platform_terminal_exit": 0,
+      "receipt": "/workspace/scratch/meri-native-repeat-rc1-20261012/sdk-registry.receipt.json",
+      "receipt_sha256": "7d9634f566fac64b4907310895cac7255a1465260610eb35f5f84848ac44bb64",
+      "raw_streams": {
+        "stdout": {
+          "path": "/workspace/scratch/meri-native-repeat-rc1-20261012/sdk-registry.stdout.log",
+          "bytes": 1377,
+          "sha256": "891aef8fc4250c4ff0fd9a4af9fe6ee33b30a7953e788fc29c13d1f2f0f98c28"
+        },
+        "stderr": {
+          "path": "/workspace/scratch/meri-native-repeat-rc1-20261012/sdk-registry.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "group": "sdk-revocation-postgres",
+      "source_path": "apps/control/qualification-sdk-fixture/state/test/revocation-postgres.test.mjs",
+      "source_sha256": "a834e4d59f473686dc6230e4f88409719ae62b3fd160682da9b058d0a5637a7b",
+      "passed": 3,
+      "skipped": 0,
+      "platform_terminal_exit": 0,
+      "receipt": "/workspace/scratch/meri-native-repeat-rc1-20261012/sdk-revocation-postgres.receipt.json",
+      "receipt_sha256": "6db83671ab87ff339ab09c857e87328071ea33d0dee3a7a4771593fd04f5472a",
+      "raw_streams": {
+        "stdout": {
+          "path": "/workspace/scratch/meri-native-repeat-rc1-20261012/sdk-revocation-postgres.stdout.log",
+          "bytes": 781,
+          "sha256": "cc60175592b65f9f0aa26afa561529e103c91ae3d15cad5160f8663c1b182a0e"
+        },
+        "stderr": {
+          "path": "/workspace/scratch/meri-native-repeat-rc1-20261012/sdk-revocation-postgres.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    }
+  ],
+  "passed": 33,
+  "skipped": 0,
+  "terminal_receipt_sha256": "afa5e7159d077ea1c77f71640f482b8bced83312bee2128ed2756587d454e3db",
+  "cleanup_receipt_sha256": "1520d93bd801fe315eb296c8aac9ef405c5dc41357ca1e61683c5205baef68de",
+  "original_failed_receipts_preserved": true,
+  "producer_setup_passes_distinct_from_rc1": "Old setup23 used modulec0064102... and older checkout. This current exactRC1 module53b81e46... and33-case sequence were actually executed on preparedPG16.15."
+}

@@ -1,0 +1,66 @@
+{
+  "started_at": "2026-10-12T14:50:50.672053+00:00",
+  "ended_at": "2026-10-12T14:50:51.287638+00:00",
+  "argv": [
+    "npm",
+    "ci",
+    "--ignore-scripts",
+    "--no-audit",
+    "--no-fund",
+    "--registry=https://registry.npmjs.org",
+    "--userconfig=/workspace/scratch/meri-native-sdk-scope-20261012T144550Z/npm-user.empty.conf",
+    "--globalconfig=/workspace/scratch/meri-native-sdk-scope-20261012T144550Z/npm-global.empty.conf",
+    "--cache=/workspace/scratch/meri-native-sdk-scope-20261012T144550Z/npm-cache",
+    "--prefix=/workspace/scratch/meri-native-rc1-source-check-20261012T142905Z/rc1/apps/control/qualification-sdk-fixture/state",
+    "--https-proxy=http://proxy:8080",
+    "--fetch-retries=0",
+    "--fetch-timeout=30000",
+    "--strict-ssl=true"
+  ],
+  "cwd": "/workspace/scratch/meri-native-rc1-source-check-20261012T142905Z/rc1/apps/control/qualification-sdk-fixture/state",
+  "clean_environment_keys": [
+    "PATH",
+    "LANG",
+    "HTTPS_PROXY",
+    "HTTP_PROXY",
+    "NO_PROXY",
+    "NODE_EXTRA_CA_CERTS"
+  ],
+  "exit": 0,
+  "rerun_reason": "Restore existing environment-proxy public CA setting omitted by clean environment, retaining strictTLS verification. No CA/trust store changes. Prior failures/partial modules retained.",
+  "scripts_disabled": true,
+  "audit_and_fund_disabled": true,
+  "empty_npm_user_global_configs": true,
+  "proxy_has_credentials": false,
+  "existing_environment_ca_path": "/usr/local/share/ca-certificates/environment-proxy-ca.crt",
+  "existing_environment_ca_sha256": "7fa2d7d439db8bfa7c191457e61af5e3f4eb412314eb148766ac09e93786e4c3",
+  "tls_verification_enabled": true,
+  "lock_sha256_after": "c5ab764dcd9dcd8dee88d2cab3e7412fb9752e3a869c0a1693839c0567d3973a",
+  "root_dependencies_symlink": "/workspace/scratch/meri-native-rc1-source-check-20261012T142905Z/rc1/node_modules",
+  "installed_pg": "8.23.1",
+  "installed_versions": {
+    "node_modules/pg": "8.23.1",
+    "node_modules/pg-cloudflare": "1.4.1",
+    "node_modules/pg-connection-string": "2.14.1",
+    "node_modules/pg-int8": "1.0.1",
+    "node_modules/pg-pool": "3.14.0",
+    "node_modules/pg-protocol": "1.16.1",
+    "node_modules/pg-types": "2.2.0",
+    "node_modules/pgpass": "1.0.5",
+    "node_modules/postgres-array": "2.0.0",
+    "node_modules/postgres-bytea": "1.0.1",
+    "node_modules/postgres-date": "1.0.7",
+    "node_modules/postgres-interval": "1.2.0",
+    "node_modules/split2": "4.2.0",
+    "node_modules/xtend": "4.0.2"
+  },
+  "all_versions_match_lock": true,
+  "package-install-final.stdout.log": {
+    "bytes": 28,
+    "sha256": "b97e53a312adf2e7bc706b24f6f08e88b8a3e65a29d1d8f3c3f6c787fc580672"
+  },
+  "package-install-final.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

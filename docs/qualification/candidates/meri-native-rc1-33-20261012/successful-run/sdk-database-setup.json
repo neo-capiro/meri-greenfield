@@ -1,0 +1,9 @@
+{
+  "at": "2026-10-12T15:34:44.941557+00:00",
+  "database": "meri_qualification_sdk_fixture_rc1_20261012",
+  "owner": "qualification_owner",
+  "new_role_or_password": false,
+  "empty_sdk_schema": true,
+  "public_connect_temp_and_public_schema_privileges_restricted": true,
+  "migration_not_preapplied": true
+}

@@ -1,0 +1,6 @@
+{
+  "error": "ReadOnlySqlTransaction on ALTER SCHEMA from preflight connection",
+  "schema_mutation_occurred": false,
+  "test_commands_started": 0,
+  "resolution": "Separate explicitly scoped read-write setup transaction; keep original freshT0/deadlines."
+}

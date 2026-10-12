@@ -1,0 +1,590 @@
+{
+  "recorded_at": "2026-10-12T14:30:13.126167+00:00",
+  "requested_published_version": "b6ef97cc-e3e9-4657-8fcb-5edac8c9642a~cecfgver_6acceb80662881a29cefe4308e35e06b",
+  "version_limit": "User-supplied version; no independent published-version attestation exposed locally.",
+  "source": {
+    "checkout": "/workspace/meri-greenfield",
+    "head": {
+      "exit": 0,
+      "stdout": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc"
+    },
+    "working_tree_status": {
+      "exit": 0,
+      "stdout": ""
+    },
+    "test_last_changed": {
+      "exit": 0,
+      "stdout": "38fb29651e91a76fd76beb7d097aecfd8fb83605 Add Codex durable qualification proxy ledger with PostgreSQL evidence"
+    },
+    "sha256": {
+      "apps/proxy/qualification/test/test_postgres_state.py": "c0064102b6bb5978f1a285b2a8f416aee2d7e85733799c7ba3fc8b0eec03255c",
+      "apps/proxy/qualification/state/pricing.py": "76e3f2f10e4c45a112b22ed0085186f45d9e3995abc09ba49d5fd486e63d27f4",
+      "apps/proxy/qualification/state/postgres_store.py": "3b4cf4bb014b62908077feea01bff47189833e9669863c184ffe436cd63b3a6b",
+      "apps/proxy/qualification/state/grants.py": "7d1a3b313ca984f8cd5f4a3c2eeb31bc6075805b4b7843bcb84081390b98f50c",
+      "apps/proxy/qualification/state/ledger.py": "cf5627d63cf3d27f7288c54aa1d08863a9aa5c1d0c7c62da7fa3618f1b9dcfde",
+      "apps/proxy/qualification/state/migrations/0001_qualification_state.sql": "fa33f51c492361c280c4847ea08629f0c777cb6b0e9652f1e67f95543bda0dfc",
+      "apps/proxy/qualification/runtime/bedrock_transport.py": "0a07f8c47d88aaacaebb6016a81e57af2a926f20b29085798224b07c7aa01884",
+      "apps/proxy/qualification/runtime/bedrock_body.py": "8102362fc7c3daecf2f34d54b4a47cf5c5affc9eda7d24067688b86ee592a149"
+    },
+    "expected_rc1_test_sha256": "53b81e46edc3562a365836281ad8885665b039f95a7b130603b3b972ca688ad7",
+    "required_git_objects": {
+      "2f06feccca731d6cd388612cd568185ecc29668f": {
+        "exit": 128,
+        "stdout": ""
+      },
+      "c780eb4c75d0681717403c3cce690257a9a6b096": {
+        "exit": 128,
+        "stdout": ""
+      },
+      "39bd6b96cc13b78d9645f8c7110e7b5642ab2ae1": {
+        "exit": 128,
+        "stdout": ""
+      }
+    }
+  },
+  "producer_tests": {
+    "path": "/workspace/cloud-onboarding/meri-native/tests.log",
+    "sha256": "b9e23b71e60e7261bf64754400e5feb806306d93895382ca31a80196a9a66585",
+    "mtime_utc": "2026-10-12T14:10:07.425022+00:00",
+    "summary": "Ran 23 tests in 8.697s\n\nOK",
+    "test_classes": {
+      "PricingTests": [
+        "test_database_configuration_and_connection_errors_are_closed",
+        "test_exact_integer_ceiling_and_full_envelope",
+        "test_invalid_counts_and_revision"
+      ],
+      "PostgresTests": [
+        "test_actual_database_lock_contention_never_exceeds_cap",
+        "test_cancelled_wait_keeps_actual_committed_unknown",
+        "test_capability_count_model_body_and_pricing_mismatch",
+        "test_cross_process_cap_contention",
+        "test_duplicate_slot_and_one_active_per_grant",
+        "test_excess_actual_is_recorded_unclamped_and_quarantines",
+        "test_expiry_is_evaluated_after_real_budget_lock_wait",
+        "test_expiry_revocation_and_reconnect_never_release_unknown",
+        "test_forged_native_body_cannot_bypass_semantic_envelope",
+        "test_incomplete_mismatched_settlement_preserves_liability",
+        "test_lost_commit_acknowledgement_denies_but_durable_hold_remains",
+        "test_pending_activation_and_exact_receipt",
+        "test_positive_no_dispatch_is_separate_and_bound",
+        "test_process_death_after_commit_and_reconnect",
+        "test_real_guard_receipt_is_committed_before_fake_transport_send",
+        "test_renewed_pricing_expiry_cannot_rebind_original_settlement",
+        "test_revoked_replaced_grant_only_reconciles_original_usage",
+        "test_settle_complete_bound_usage_then_next_slot",
+        "test_settlement_considers_other_unresolved_holds",
+        "test_stale_attempt_worker_policy_and_fence_denied_with_old_hold_counted"
+      ]
+    },
+    "logged_tests": [
+      [
+        "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_actual_database_lock_contention_never_exceeds_cap",
+        "ok"
+      ],
+      [
+        "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_cancelled_wait_keeps_actual_committed_unknown",
+        "ok"
+      ],
+      [
+        "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_capability_count_model_body_and_pricing_mismatch",
+        "ok"
+      ],
+      [
+        "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_cross_process_cap_contention",
+        "ok"
+      ],
+      [
+        "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_duplicate_slot_and_one_active_per_grant",
+        "ok"
+      ],
+      [
+        "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_excess_actual_is_recorded_unclamped_and_quarantines",
+        "ok"
+      ],
+      [
+        "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_expiry_is_evaluated_after_real_budget_lock_wait",
+        "ok"
+      ],
+      [
+        "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_expiry_revocation_and_reconnect_never_release_unknown",
+        "ok"
+      ],
+      [
+        "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_forged_native_body_cannot_bypass_semantic_envelope",
+        "ok"
+      ],
+      [
+        "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_incomplete_mismatched_settlement_preserves_liability",
+        "ok"
+      ],
+      [
+        "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_lost_commit_acknowledgement_denies_but_durable_hold_remains",
+        "ok"
+      ],
+      [
+        "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_pending_activation_and_exact_receipt",
+        "ok"
+      ],
+      [
+        "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_positive_no_dispatch_is_separate_and_bound",
+        "ok"
+      ],
+      [
+        "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_process_death_after_commit_and_reconnect",
+        "ok"
+      ],
+      [
+        "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_real_guard_receipt_is_committed_before_fake_transport_send",
+        "ok"
+      ],
+      [
+        "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_renewed_pricing_expiry_cannot_rebind_original_settlement",
+        "ok"
+      ],
+      [
+        "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_revoked_replaced_grant_only_reconciles_original_usage",
+        "ok"
+      ],
+      [
+        "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_settle_complete_bound_usage_then_next_slot",
+        "ok"
+      ],
+      [
+        "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_settlement_considers_other_unresolved_holds",
+        "ok"
+      ],
+      [
+        "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_stale_attempt_worker_policy_and_fence_denied_with_old_hold_counted",
+        "ok"
+      ],
+      [
+        "apps.proxy.qualification.test.test_postgres_state.PricingTests.test_database_configuration_and_connection_errors_are_closed",
+        "ok"
+      ],
+      [
+        "apps.proxy.qualification.test.test_postgres_state.PricingTests.test_exact_integer_ceiling_and_full_envelope",
+        "ok"
+      ],
+      [
+        "apps.proxy.qualification.test.test_postgres_state.PricingTests.test_invalid_counts_and_revision",
+        "ok"
+      ]
+    ],
+    "method_list_matches_current_source": true,
+    "all_ok_none_skipped": true,
+    "classification": "20 PostgreSQL plus 3 pricing/configuration setup tests; not RC1 qualification. Log lacks contemporaneous source manifest."
+  },
+  "python": {
+    "version": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+    "prefix": "/workspace/cloud-onboarding/meri-native/venv"
+  },
+  "dependencies": [
+    {
+      "name": "aiohappyeyeballs",
+      "pinned": "2.7.1",
+      "installed": "2.7.1",
+      "match": true
+    },
+    {
+      "name": "aiohttp",
+      "pinned": "3.14.5",
+      "installed": "3.14.5",
+      "match": true
+    },
+    {
+      "name": "aiosignal",
+      "pinned": "1.4.0",
+      "installed": "1.4.0",
+      "match": true
+    },
+    {
+      "name": "annotated-types",
+      "pinned": "0.8.0",
+      "installed": "0.8.0",
+      "match": true
+    },
+    {
+      "name": "anyio",
+      "pinned": "4.15.1",
+      "installed": "4.15.1",
+      "match": true
+    },
+    {
+      "name": "attrs",
+      "pinned": "26.1.0",
+      "installed": "26.1.0",
+      "match": true
+    },
+    {
+      "name": "boto3",
+      "pinned": "1.43.111",
+      "installed": "1.43.111",
+      "match": true
+    },
+    {
+      "name": "botocore",
+      "pinned": "1.43.111",
+      "installed": "1.43.111",
+      "match": true
+    },
+    {
+      "name": "certifi",
+      "pinned": "2026.7.22",
+      "installed": "2026.7.22",
+      "match": true
+    },
+    {
+      "name": "charset-normalizer",
+      "pinned": "3.5.2",
+      "installed": "3.5.2",
+      "match": true
+    },
+    {
+      "name": "click",
+      "pinned": "8.5.0",
+      "installed": "8.5.0",
+      "match": true
+    },
+    {
+      "name": "distro",
+      "pinned": "1.9.0",
+      "installed": "1.9.0",
+      "match": true
+    },
+    {
+      "name": "fastuuid",
+      "pinned": "0.14.0",
+      "installed": "0.14.0",
+      "match": true
+    },
+    {
+      "name": "filelock",
+      "pinned": "3.32.7",
+      "installed": "3.32.7",
+      "match": true
+    },
+    {
+      "name": "frozenlist",
+      "pinned": "1.8.0",
+      "installed": "1.8.0",
+      "match": true
+    },
+    {
+      "name": "fsspec",
+      "pinned": "2026.9.0",
+      "installed": "2026.9.0",
+      "match": true
+    },
+    {
+      "name": "h11",
+      "pinned": "0.16.0",
+      "installed": "0.16.0",
+      "match": true
+    },
+    {
+      "name": "h2",
+      "pinned": "4.4.1",
+      "installed": "4.4.1",
+      "match": true
+    },
+    {
+      "name": "hf-xet",
+      "pinned": "1.7.0",
+      "installed": "1.7.0",
+      "match": true
+    },
+    {
+      "name": "hpack",
+      "pinned": "4.2.0",
+      "installed": "4.2.0",
+      "match": true
+    },
+    {
+      "name": "httpcore",
+      "pinned": "1.0.9",
+      "installed": "1.0.9",
+      "match": true
+    },
+    {
+      "name": "httpx",
+      "pinned": "0.28.1",
+      "installed": "0.28.1",
+      "match": true
+    },
+    {
+      "name": "huggingface_hub",
+      "pinned": "1.33.0",
+      "installed": "1.33.0",
+      "match": true
+    },
+    {
+      "name": "hyperframe",
+      "pinned": "6.1.0",
+      "installed": "6.1.0",
+      "match": true
+    },
+    {
+      "name": "idna",
+      "pinned": "3.20",
+      "installed": "3.20",
+      "match": true
+    },
+    {
+      "name": "importlib_metadata",
+      "pinned": "8.9.0",
+      "installed": "8.9.0",
+      "match": true
+    },
+    {
+      "name": "Jinja2",
+      "pinned": "3.1.6",
+      "installed": "3.1.6",
+      "match": true
+    },
+    {
+      "name": "jiter",
+      "pinned": "0.17.0",
+      "installed": "0.17.0",
+      "match": true
+    },
+    {
+      "name": "jmespath",
+      "pinned": "1.1.0",
+      "installed": "1.1.0",
+      "match": true
+    },
+    {
+      "name": "jsonschema",
+      "pinned": "4.26.0",
+      "installed": "4.26.0",
+      "match": true
+    },
+    {
+      "name": "jsonschema-specifications",
+      "pinned": "2025.9.1",
+      "installed": "2025.9.1",
+      "match": true
+    },
+    {
+      "name": "litellm",
+      "pinned": "1.104.2",
+      "installed": "1.104.2",
+      "match": true
+    },
+    {
+      "name": "MarkupSafe",
+      "pinned": "3.0.4",
+      "installed": "3.0.4",
+      "match": true
+    },
+    {
+      "name": "multidict",
+      "pinned": "7.1.0",
+      "installed": "7.1.0",
+      "match": true
+    },
+    {
+      "name": "openai",
+      "pinned": "2.54.0",
+      "installed": "2.54.0",
+      "match": true
+    },
+    {
+      "name": "packaging",
+      "pinned": "26.3",
+      "installed": "26.3",
+      "match": true
+    },
+    {
+      "name": "propcache",
+      "pinned": "0.5.4",
+      "installed": "0.5.4",
+      "match": true
+    },
+    {
+      "name": "psycopg",
+      "pinned": "3.3.3",
+      "installed": "3.3.3",
+      "match": true
+    },
+    {
+      "name": "psycopg-binary",
+      "pinned": "3.3.3",
+      "installed": "3.3.3",
+      "match": true
+    },
+    {
+      "name": "pydantic",
+      "pinned": "2.14.1",
+      "installed": "2.14.1",
+      "match": true
+    },
+    {
+      "name": "pydantic-settings",
+      "pinned": "2.15.0",
+      "installed": "2.15.0",
+      "match": true
+    },
+    {
+      "name": "pydantic_core",
+      "pinned": "2.50.1",
+      "installed": "2.50.1",
+      "match": true
+    },
+    {
+      "name": "python-dateutil",
+      "pinned": "2.9.0.post0",
+      "installed": "2.9.0.post0",
+      "match": true
+    },
+    {
+      "name": "python-dotenv",
+      "pinned": "1.2.4",
+      "installed": "1.2.4",
+      "match": true
+    },
+    {
+      "name": "PyYAML",
+      "pinned": "6.0.3",
+      "installed": "6.0.3",
+      "match": true
+    },
+    {
+      "name": "referencing",
+      "pinned": "0.37.0",
+      "installed": "0.37.0",
+      "match": true
+    },
+    {
+      "name": "regex",
+      "pinned": "2026.9.29",
+      "installed": "2026.9.29",
+      "match": true
+    },
+    {
+      "name": "requests",
+      "pinned": "2.34.2",
+      "installed": "2.34.2",
+      "match": true
+    },
+    {
+      "name": "rpds-py",
+      "pinned": "2026.9.1",
+      "installed": "2026.9.1",
+      "match": true
+    },
+    {
+      "name": "s3transfer",
+      "pinned": "0.19.2",
+      "installed": "0.19.2",
+      "match": true
+    },
+    {
+      "name": "six",
+      "pinned": "1.17.0",
+      "installed": "1.17.0",
+      "match": true
+    },
+    {
+      "name": "sniffio",
+      "pinned": "1.3.1",
+      "installed": "1.3.1",
+      "match": true
+    },
+    {
+      "name": "tiktoken",
+      "pinned": "0.14.0",
+      "installed": "0.14.0",
+      "match": true
+    },
+    {
+      "name": "tokenizers",
+      "pinned": "0.23.3",
+      "installed": "0.23.3",
+      "match": true
+    },
+    {
+      "name": "tqdm",
+      "pinned": "4.70.1",
+      "installed": "4.70.1",
+      "match": true
+    },
+    {
+      "name": "typing-inspection",
+      "pinned": "0.4.4",
+      "installed": "0.4.4",
+      "match": true
+    },
+    {
+      "name": "typing_extensions",
+      "pinned": "4.16.0",
+      "installed": "4.16.0",
+      "match": true
+    },
+    {
+      "name": "urllib3",
+      "pinned": "2.8.0",
+      "installed": "2.8.0",
+      "match": true
+    },
+    {
+      "name": "yarl",
+      "pinned": "1.25.1",
+      "installed": "1.25.1",
+      "match": true
+    },
+    {
+      "name": "zipp",
+      "pinned": "4.1.1",
+      "installed": "4.1.1",
+      "match": true
+    }
+  ],
+  "independent_pip_check": "No broken requirements found.",
+  "container": {
+    "id": "5d55589bfbc222ea4c9ae5c0bba7b862a10b2c521e741792b86d9264c69af845",
+    "image": "sha256:f1447071e6c8449dcf4056aa0994c81d3566ce5ee232de36b04dc25696a116dd",
+    "name": "/meri-native-postgres",
+    "purpose": "meri-native-tests",
+    "port_bindings": {
+      "5432/tcp": [
+        {
+          "HostIp": "127.0.0.1",
+          "HostPort": "55432"
+        }
+      ]
+    },
+    "volume_names": [
+      "meri-native-postgres-data"
+    ],
+    "privileged": false,
+    "state": {
+      "Status": "running",
+      "Running": true,
+      "StartedAt": "2026-10-12T14:23:35.273657527Z",
+      "FinishedAt": "2026-10-12T14:22:22.707883097Z",
+      "ExitCode": 0
+    }
+  },
+  "restart_scope": "Retained logs verify clean server restart at 14:09:26Z before producer suite completion (~14:10:07Z). Client process-death test does not restart server. Current post-republish start recovered interrupted WAL with one UNKNOWN row retained; no independently captured pre-restart row hash proves exact liability equality.",
+  "existing_snapshot_check": {
+    "normalized_equal": true,
+    "normalization": "Remove pg_dump restrict/unrestrict lines only.",
+    "normalized_sha256": "589108837bec8177c88c4f3b37b0e27f065b41235bbb8741013bc55387523464",
+    "scope": "Compare retained producer snapshots only; no verifier connection to existing database or host port 5432."
+  },
+  "original_evidence_sha256": {
+    "README.md": "a5d28412f44637d1cbaa34ccb41b4f46033a19cf48e9fc7bc04302570a789c8a",
+    "tests.log": "b9e23b71e60e7261bf64754400e5feb806306d93895382ca31a80196a9a66585",
+    "tests.initial-failure.log": "8e6c7626ee5f4aea1e4ad738adb3c6fe63950498227168a6778ecdac9ab68e75",
+    "start.sh": "ce4de9954bc2edece6677e587f8521b67a3c03308b162dd19fd234e682cc8643",
+    "run-tests.sh": "d1340050803fb3221999396237c1eb9c1e8adf1e4e6f14cdb435033617abfeae",
+    "image-id": "f6e9af591077cbebf699d9be183b024e890dec7c0a6d1f8022bf2d46c89c695d",
+    "requirements.txt": "cc47b54639d4b0e33798cb5d6ad0cf63480a69000b9c299df47fc21e0950279b",
+    "existing-schema.before.sql": "862d696004067c90ef74dad51d1b3f4eb2cd7b583c32ace4326a6abdac505639",
+    "existing-schema.after.sql": "f215d5b4ebc36bd40a02f6764650a92dbe0d10b879e77b00d3b1a555b68d3365"
+  },
+  "derived_from": "/workspace/scratch/meri-native-verification-20261012T143013Z/verification.json",
+  "original_sha256": "8f8da5b364ef4e254a86187f2225d7c2f45159192f890f3b5d0c0be9ba5e9168",
+  "notice": "Selected safe metadata only. Producer setup results are older-source evidence and do not replace RC1 coverage. Observed runtime/container identities are dated observations, not image admission."
+}

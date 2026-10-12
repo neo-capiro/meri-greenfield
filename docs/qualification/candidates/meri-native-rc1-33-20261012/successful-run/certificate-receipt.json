@@ -1,0 +1,65 @@
+{
+  "at": "2026-10-12T15:37:12.644214+00:00",
+  "pairs": [
+    {
+      "name": "ca1",
+      "private_key_path": "/workspace/scratch/meri-native-rc1-source-check-20261012T142905Z/rc1/.task-inputs/sdk-fixture-ingress-1/certs/ca1.key",
+      "private_key_device": 27,
+      "private_key_inode": 794961,
+      "private_key_mode": 384,
+      "public_certificate_sha256": "ab4fcf82ffd06f21e5c03d839281c1c5d9a0346c67b02f19f878254d6fcd13dc",
+      "public_metadata": "notBefore=Oct 12 15:31:54 2026 GMT\nnotAfter=Oct 12 15:46:54 2026 GMT\nsha256 Fingerprint=F3:C9:4E:5A:FF:40:28:CF:D6:78:3D:93:32:88:BE:E4:FD:48:D0:B8:18:87:F9:33:D9:3E:3F:B6:DD:24:0A:F1"
+    },
+    {
+      "name": "ca2",
+      "private_key_path": "/workspace/scratch/meri-native-rc1-source-check-20261012T142905Z/rc1/.task-inputs/sdk-fixture-ingress-1/certs/ca2.key",
+      "private_key_device": 27,
+      "private_key_inode": 795057,
+      "private_key_mode": 384,
+      "public_certificate_sha256": "088f3c43d3a331a68b86ea79ab606215ab44c0742f4b0ef958eece155c681072",
+      "public_metadata": "notBefore=Oct 12 15:31:54 2026 GMT\nnotAfter=Oct 12 15:46:54 2026 GMT\nsha256 Fingerprint=E5:C0:CC:99:5E:CD:5B:BD:3D:6C:A2:32:DA:27:42:37:CC:99:02:B6:FF:2D:84:D9:A0:E9:16:D5:CF:D6:1B:33"
+    },
+    {
+      "name": "server",
+      "private_key_path": "/workspace/scratch/meri-native-rc1-source-check-20261012T142905Z/rc1/.task-inputs/sdk-fixture-ingress-1/certs/server.key",
+      "private_key_device": 27,
+      "private_key_inode": 795153,
+      "private_key_mode": 384,
+      "public_certificate_sha256": "aa7969e662b49404d92694f30531575ce7dc2fd6937a354443edab4fcde7238d",
+      "public_metadata": "notBefore=Oct 12 15:31:54 2026 GMT\nnotAfter=Oct 12 15:46:54 2026 GMT\nsha256 Fingerprint=5D:89:CD:5E:C4:F6:ED:C2:44:74:A5:42:F2:72:BA:F3:AF:9E:69:3D:85:41:67:9E:31:1D:F5:AB:3B:F8:54:3E"
+    },
+    {
+      "name": "client-trusted",
+      "private_key_path": "/workspace/scratch/meri-native-rc1-source-check-20261012T142905Z/rc1/.task-inputs/sdk-fixture-ingress-1/certs/client-trusted.key",
+      "private_key_device": 27,
+      "private_key_inode": 795297,
+      "private_key_mode": 384,
+      "public_certificate_sha256": "3dd3248e8e459b77536986193ccfaaba75863b7778f801a1901e8af6a9fc1c40",
+      "public_metadata": "notBefore=Oct 12 15:31:54 2026 GMT\nnotAfter=Oct 12 15:46:54 2026 GMT\nsha256 Fingerprint=B0:79:1A:59:CD:37:0E:35:D2:EB:AD:27:7D:AE:F4:A1:C4:15:EE:4B:76:9F:6A:A1:39:6D:85:8F:B2:92:3D:A4"
+    },
+    {
+      "name": "client-trusted-b",
+      "private_key_path": "/workspace/scratch/meri-native-rc1-source-check-20261012T142905Z/rc1/.task-inputs/sdk-fixture-ingress-1/certs/client-trusted-b.key",
+      "private_key_device": 27,
+      "private_key_inode": 795688,
+      "private_key_mode": 384,
+      "public_certificate_sha256": "bc1b3cbafdd411f0dca7c21786662553681674866f83fdad5cfc5845de6a0293",
+      "public_metadata": "notBefore=Oct 12 15:31:54 2026 GMT\nnotAfter=Oct 12 15:46:54 2026 GMT\nsha256 Fingerprint=53:07:6A:5E:38:67:B9:27:F0:77:43:F2:59:F2:4D:92:48:23:B0:A0:70:19:F1:F9:55:9F:32:CD:C4:00:34:A1"
+    },
+    {
+      "name": "client-untrusted",
+      "private_key_path": "/workspace/scratch/meri-native-rc1-source-check-20261012T142905Z/rc1/.task-inputs/sdk-fixture-ingress-1/certs/client-untrusted.key",
+      "private_key_device": 27,
+      "private_key_inode": 795695,
+      "private_key_mode": 384,
+      "public_certificate_sha256": "da083d3c51f3ebe801598ea8b856a6edb34083e577c8938c2e80f86f9784ff2c",
+      "public_metadata": "notBefore=Oct 12 15:31:54 2026 GMT\nnotAfter=Oct 12 15:46:54 2026 GMT\nsha256 Fingerprint=4A:00:0D:CD:C9:1A:64:83:76:4D:33:A8:CA:18:8C:64:CB:35:5D:60:56:9B:93:32:8A:8E:5C:0E:8B:4B:86:5A"
+    }
+  ],
+  "directory_mode": 448,
+  "not_before": "2026-10-12T15:31:54+00:00",
+  "not_after": "2026-10-12T15:46:54+00:00",
+  "server_and_A_B_CA1_verify": "PASS",
+  "rogue_against_CA1": "REFUSED_EXPECTED",
+  "no_private_bytes_in_receipts": true
+}

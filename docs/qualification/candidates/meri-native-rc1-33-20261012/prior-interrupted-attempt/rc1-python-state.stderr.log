@@ -1,0 +1,4 @@
+test_actual_database_lock_contention_never_exceeds_cap (apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_actual_database_lock_contention_never_exceeds_cap) ... ok
+test_cancelled_wait_keeps_actual_committed_unknown (apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_cancelled_wait_keeps_actual_committed_unknown) ... ok
+test_capability_count_model_body_and_pricing_mismatch (apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_capability_count_model_body_and_pricing_mismatch) ... ok
+test_cross_process_cap_contention (apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_cross_process_cap_contention) ... 
