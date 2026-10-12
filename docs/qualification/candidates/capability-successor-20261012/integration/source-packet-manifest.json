@@ -1,0 +1,870 @@
+{
+  "schema": "meri-source-successor-packet/1",
+  "base": "2f06feccca731d6cd388612cd568185ecc29668f",
+  "acceptedSourceCommit": "6d2b0b0b2b53a7c229a84a7a44bf8feb9b1140f6",
+  "acceptedSourceTree": "63e61fd05f4d02b1734ad82c467124db62c7759c",
+  "independentReviewCommit": "80b862e294fe5241ec030a699958ab3fed1400fe",
+  "verdict": "ACCEPT_SOURCE",
+  "sourceEnabled": false,
+  "runtimeAccepted": false,
+  "tests": {
+    "combinedSource": 637,
+    "publicDistribution": 7,
+    "independentCombinedControls": 127,
+    "independentPreservation": 160
+  },
+  "selfExcluded": true,
+  "publicationReceiptsExcluded": true,
+  "files": [
+    {
+      "path": "apps/gateway/dispatch/mail-read-context.mjs",
+      "bytes": 5498,
+      "sha256": "1e119feb08b84a267bbd486f9c0608228828a5ddeba15e7698c17808938ce41f"
+    },
+    {
+      "path": "apps/gateway/dispatch/operation-context.mjs",
+      "bytes": 2327,
+      "sha256": "c4d0cc29a81bfb57a518d6518a60c282181db0dacf99a145b18b0b8842bc2e56"
+    },
+    {
+      "path": "apps/gateway/dispatch/tool-dispatch.mjs",
+      "bytes": 7502,
+      "sha256": "fc6b4df92d492da1b170e77df974cf3d9a405dec0baaf06f2285bd3c37e9146a"
+    },
+    {
+      "path": "apps/gateway/test/action-item-context-independent.test.mjs",
+      "bytes": 9572,
+      "sha256": "9c21d92f8c4318be40d7015156e9bacf3a41cb803f835723f17ad1a7cd27add2"
+    },
+    {
+      "path": "apps/gateway/test/action-item-context.test.mjs",
+      "bytes": 10862,
+      "sha256": "6bdfc88307475915cac5395d837059c4dda0a8bc6ea389abe22bbf8a380105b8"
+    },
+    {
+      "path": "apps/gateway/test/mail-context-independent.test.mjs",
+      "bytes": 22299,
+      "sha256": "86b23271d637b7fdc867acd2174e00ec65326e11d6dc9261bc69afc5f3faf046"
+    },
+    {
+      "path": "apps/gateway/test/mail-context.test.mjs",
+      "bytes": 23710,
+      "sha256": "b7c110e3abe9315aec4a2f290266e90142cf258efd3d7d4ba0a2a5f8ec0003c7"
+    },
+    {
+      "path": "apps/gateway/test/memory-context-independent.test.mjs",
+      "bytes": 18682,
+      "sha256": "33f6578edc8f8b5c9b480e22ec5d1b566d3ea51e628762776f0132aab7f608e8"
+    },
+    {
+      "path": "docs/CAPABILITY-CATALOG.md",
+      "bytes": 34766,
+      "sha256": "553f8bfd226f870ae72ac62856874799c59054cb8d7c2ab801917e459d562f98"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-CAPABILITY-ACTION-AUTHOR-20261012.md",
+      "bytes": 6443,
+      "sha256": "d0695a30fb4453ad42a52995893dcad19ae55d6f0772959db6f90b8f7f2cf667"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-CAPABILITY-ACTION-REVIEW-20261012.md",
+      "bytes": 10614,
+      "sha256": "e150f40d0f063ea240215c9f0939533efca9fc089027e167f955dcd565b9609f"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-CAPABILITY-INTEGRATION-REVIEW-20261012.md",
+      "bytes": 5333,
+      "sha256": "348a53c6d54cd1f317a0c1ec9aad4fc7ae37758d2f8d3cb6e022560460eedf12"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-CAPABILITY-MAIL-AUTHOR-20261012.md",
+      "bytes": 8007,
+      "sha256": "d29cf2e03b5fb548a8fa42257b3664a7498e57b4c5ec9339d9e1050000a3e4db"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-CAPABILITY-MAIL-REVIEW-20261012.md",
+      "bytes": 7413,
+      "sha256": "ebf44242be7d789081f98e9594aa05010baaba67b788c045464c63c8b10c7548"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-CAPABILITY-SUCCESSOR-20261012.md",
+      "bytes": 9213,
+      "sha256": "e1049f247ab8ca0bdd2e9d500fd0019d619a53bb9f8c0fba0dd8886fe6443b6d"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-CAPABILITY-SUCCESSOR-20261012.md",
+      "bytes": 5696,
+      "sha256": "2c2dedfc8b83a853bf7f3ed2d63f9d63a4d07daa6e0c135af6ca3d70718d0ee5"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/.gitattributes",
+      "bytes": 207,
+      "sha256": "18392d698fa30845e1ba09c69f0a68bfc17315768e461595d80b5cb7faa8f837"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-author/.gitattributes",
+      "bytes": 50,
+      "sha256": "c6f6dd8f4ac51495ea461a4feb6857c7a1ecbc4ab64841ab2f62ef4d6daf1778"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-author/baseline.json",
+      "bytes": 469,
+      "sha256": "8dbacb00a24416802d9753dc6486d84ce6bcfd4945aabd90b622f3294b53ba58"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-author/baseline.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-author/baseline.stdout.txt",
+      "bytes": 12976,
+      "sha256": "cc7ba61da243ecf467ec61e3aa23a0f884cf76dd317c24a8bce594c7e4058d15"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-author/cleanup.json",
+      "bytes": 1776,
+      "sha256": "e5403476bdfc19ffbe31c67f926383fefd67d35d023e5a427022fbaeba29d954"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-author/dependency-copy.json",
+      "bytes": 535,
+      "sha256": "e9b72f3a4b867a9caef48db52f1ba950318c5fbb6a9883e5597c82ce42df80f1"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-author/final-source.json",
+      "bytes": 1747,
+      "sha256": "ba8e9886a5cadff9ccbaa4457f4e0681d5e587b7b87d2fedd8436291ac44507a"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-author/final-source.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-author/final-source.stdout.txt",
+      "bytes": 46200,
+      "sha256": "6fb11e098129e2a8e890f364f3ebe08b841414de95e1aaa7ffeb6b231180eaa0"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-author/original/apps/gateway/test/memory-context-independent.test.mjs",
+      "bytes": 18589,
+      "sha256": "e478ec0ea725feb54003bfdd11a99d0b44303c920c16838a175b68be6fcf657a"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-author/original/packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "bytes": 12001,
+      "sha256": "85a099e8f1e87c5058d355bce28acb1010e044fc3a34175655095d82ad6e96b9"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-author/original/packages/contracts/retrieval-0.2/catalog.json",
+      "bytes": 79211,
+      "sha256": "733438a232fafbc7aaf8635ba30fd33d1fab94bc73949d2c9264b14c92e8cbce"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-author/original/packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+      "bytes": 13569,
+      "sha256": "5a8856da6dc45303cf416722540e4a22da9de3a9f6e359d2d620acb34436e487"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-author/original/packages/contracts/test/retrieval-mail.test.mjs",
+      "bytes": 29989,
+      "sha256": "294cdf427adce6d52d1892df7f0caf78b545d8c00cdec8136bf66acb3d97b5a6"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-author/original/packages/contracts/test/retrieval-memory-binding.test.mjs",
+      "bytes": 13468,
+      "sha256": "90a7429b1f79fc5baeb68144a5acc3e0532f6f51e6a2d3d0c855cfa048aa1003"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-author/original/packages/contracts/test/retrieval-operational-reads.test.mjs",
+      "bytes": 31046,
+      "sha256": "fb31ba2aca26600e2404ef6137c9a568e0fd27ed00299f4bc5b3a3ff1d3bdfb0"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-author/outline.md",
+      "bytes": 2693,
+      "sha256": "23ac766792d26ab44ac042a7cb6f8ef125994983cbb63e7cea74b0df36d8c104"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-author/pre-characterization-update.json",
+      "bytes": 593,
+      "sha256": "499191064badfe05865e855ac1dc31470766f6bc221492e3fd343c3ab0dde014"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-author/pre-characterization-update.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-author/pre-characterization-update.stdout.txt",
+      "bytes": 21344,
+      "sha256": "d2922c1207139af90b5611a79ef421256764d92666d360dac61505b6600f07ce"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-author/preservation.json",
+      "bytes": 1223,
+      "sha256": "9d222c4e6f2e76534998c6c84e0ad83f549eabb04e8f6f0656686f9434a6f632"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-author/public-distribution.json",
+      "bytes": 205,
+      "sha256": "a5a34c42d0dbb8f36c6b1fc37fdd4f892903aad81e4b774059c7484298d0b2f5"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-author/public-distribution.stderr.txt",
+      "bytes": 832,
+      "sha256": "a5bed74e8271b4bed502d2d779b1766e28a92b798d5f5560230b37ebdcc9e5a2"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-author/public-distribution.stdout.txt",
+      "bytes": 1946,
+      "sha256": "46800ac94d91148438c97f2fda61f8acaad51c58d5ecf51c2712b9b755a16bac"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-author/source-manifest.json",
+      "bytes": 1844,
+      "sha256": "483c69dbfdf0a0923841d157134586547052b13af1bbe5dc94d9c88115b0435b"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-review/.gitattributes",
+      "bytes": 50,
+      "sha256": "c6f6dd8f4ac51495ea461a4feb6857c7a1ecbc4ab64841ab2f62ef4d6daf1778"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-review/audit-preservation.py",
+      "bytes": 4836,
+      "sha256": "6d7052ce7eb74673301da69df222c81cabec0e7f8fd7cf16422d28c256d5e87f"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-review/baseline-catalog.json",
+      "bytes": 700,
+      "sha256": "6b633c84f05c80a2d7efe8bd8fe6ed722bc75b314c5488a020c260f9ea84746b"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-review/baseline.json",
+      "bytes": 836,
+      "sha256": "436ecf9996c732f9de95519f1b7298893592a695136ca98568b912027ed4c7c1"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-review/baseline.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-review/baseline.stdout.txt",
+      "bytes": 32118,
+      "sha256": "2f89a67d3288a9b7b0b35b87bca2759beb51125e94b9be2a583dcd65dc691716"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-review/controls-before-freeze.json",
+      "bytes": 957,
+      "sha256": "ca64fdec5d9c3ecdee6eb1543731f8eb4d7520d2ec0478a00f81037b52623fc3"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-review/exact-freeze.json",
+      "bytes": 842,
+      "sha256": "548fe1bf2922717fc741f21e1f6b7d845bf6d6970a8597b0b95ca765042f3a60"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-review/exact-freeze.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-review/exact-freeze.stdout.txt",
+      "bytes": 2440,
+      "sha256": "942d7c302624274c1c1f43a36123037c8217bc89c530e3063f63070eb2646ed6"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs",
+      "bytes": 6525,
+      "sha256": "047d23dd48ad94e04780c0445cc92f841b6f641b2fb86c75e4271f12b31f0740"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-review/preservation.json",
+      "bytes": 826,
+      "sha256": "8dc607b0d590001ce0ef4c1f4e44ca0952b78ea13bf80fd2fabb8cb6ce4fe337"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-review/preservation.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-review/preservation.stdout.txt",
+      "bytes": 3952,
+      "sha256": "888f6225d9c95275b9d3f293ce946c9bb4663d2daf7e8c363c4c1b877c1bde0d"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-review/review-manifest.json",
+      "bytes": 4481,
+      "sha256": "e576968285469afdda161c654edf1da7babede9e2ce44638f53dc64153c3d310"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-review/run-check.py",
+      "bytes": 2114,
+      "sha256": "f3f0f3d6592696ccac9ed44bd904c492f61c95a73a941b45b8da27618ddf174a"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/audit-correction.json",
+      "bytes": 608,
+      "sha256": "2fd98a29ff1817173763973c2b7385a1f48ef899b6bd78f175b9806cb1c0c75f"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/audit-integration-first.py.txt",
+      "bytes": 12139,
+      "sha256": "4a965f497100ee6dc9c9ae4e1b2e7b358df3abf6704e044a448749a64a3d0237"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/audit-integration.py",
+      "bytes": 12177,
+      "sha256": "5550cb0923e46a3d3c1c31931bab138e015dd944c355731f4ea221d625b49f8c"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/authored-whitespace.json",
+      "bytes": 1284,
+      "sha256": "102ddc73cf8c5da3e293161d1a89b38097ad0196a0503d7ccafccc4257f9e374"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/authored-whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/authored-whitespace.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/cleanup.json",
+      "bytes": 570,
+      "sha256": "a77554070aa592175f415c0bc5485235e7e1516f9e21c45523cc29e95bf47103"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/criteria.json",
+      "bytes": 2041,
+      "sha256": "e648cb1d2844cd80a6a616bc000effffece9b8319e1e61e940ceb56aa00ce98a"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/dependency-access.json",
+      "bytes": 454,
+      "sha256": "b3c080e83d0899e35b5f3df6792635791151fa3f5816d895becc2e1a167d7c41"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/final-whitespace.json",
+      "bytes": 1310,
+      "sha256": "5d85439a8554b0b08c56518cdd31414de8e92d1f110a3230761ea727eec8227e"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/final-whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/final-whitespace.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/focused-connected.json",
+      "bytes": 1544,
+      "sha256": "7d65599dcee1a32da70df66b3a87ab193c64a9bfd1f9f5a80548df047b6b3791"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/focused-connected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/focused-connected.stdout.bin",
+      "bytes": 10687,
+      "sha256": "064c0e847f652f5fda9d57aa0d1e82e777f67d89b6ce8406e88d1d9f94b50ad6"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/independent-audit-corrected.json",
+      "bytes": 1372,
+      "sha256": "c63c68231af9175a1dc036bedaeb267b3e430843e23fe3692f187f6c188850c9"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/independent-audit-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/independent-audit-corrected.stdout.bin",
+      "bytes": 25409,
+      "sha256": "01ae2d022377f332f09fc5b92b1a94264e7f4dd2e1f1da35044cdb7480f048b2"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/independent-audit.json",
+      "bytes": 1352,
+      "sha256": "6215d52571db0deeff7203339fb9624aab82673dcaaa35ce27747874ede590b7"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/independent-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/independent-audit.stdout.bin",
+      "bytes": 25412,
+      "sha256": "0a02338c4a22ebaf25635c778cb1e34b12d29ad8a8af3f6d619d06b3659c835b"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/review-manifest.json",
+      "bytes": 6253,
+      "sha256": "67498fc7d40b2b675bf5f44cff56516fd1a9db26ab8af73b7ff3bd1ca281df00"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration/combined-source.json",
+      "bytes": 3253,
+      "sha256": "589a66f65137bdd36c7a28b347528174b422bf561052076404491461de1e62f5"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration/combined-source.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration/combined-source.stdout.bin",
+      "bytes": 57116,
+      "sha256": "8ae8a66c9490fc3a0fffa9f6b6cc5cf2f02c7d57849034c43a8c075f1bdbc136"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration/final-whitespace.json",
+      "bytes": 1287,
+      "sha256": "be1598f58272b9726a36676002bbaf586813d1c6c2bbed8c28c051ca0c3a1c21"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration/final-whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration/final-whitespace.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration/packet-assembly-correction.json",
+      "bytes": 339,
+      "sha256": "c8493104df93fe5ab5e7851feb2fcbfa050e763f1c38c4e1e823838ae890e238"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration/packet-assembly-first.stderr.txt",
+      "bytes": 92,
+      "sha256": "628284b9b0b11e98667b6cd393453bfb31b2a7b7927b5fda38a5f630199e4c0b"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration/pr-body.md",
+      "bytes": 1810,
+      "sha256": "708f30460283aee1f59d4d8d9d1d202917539d5d0eae708ef6ac56a8559e6ea7"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration/preservation.json",
+      "bytes": 1310,
+      "sha256": "5950ff9e071d246c5e4b04ea14c68543600040b1fb624fa5b4c427de7251fdc9"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration/preservation.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration/preservation.stdout.bin",
+      "bytes": 878,
+      "sha256": "23f7b8dfdfe390b9fd9b5a35375b25fd1db13689260b003032695028134027b6"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration/public-distribution.json",
+      "bytes": 1429,
+      "sha256": "dc1020531c4727db1da32d0584d2d2508476351597078a6af2c84d052f0d09e7"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration/public-distribution.stderr.bin",
+      "bytes": 1040,
+      "sha256": "cbbd466f3bf458f7f516c133ea486c1aada38d325ec9a80b698c26da8c18237f"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration/public-distribution.stdout.bin",
+      "bytes": 2043,
+      "sha256": "fb57f8a75c2e4853d6cf718bf16e52af735958130ee6d403295d33d08e568a71"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration/raw-whitespace-before-attributes.json",
+      "bytes": 1322,
+      "sha256": "9cccf38bf52d3846803f2e065e00d3ebf5f5fe08695737e88f36e05f0ddb45f0"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration/raw-whitespace-before-attributes.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration/raw-whitespace-before-attributes.stdout.bin",
+      "bytes": 5606,
+      "sha256": "692c37d6b50babf63b31daa56bcebd3a21533918d3aba6c1dbb047caa8cd76b5"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration/remote-preservation.json",
+      "bytes": 1454,
+      "sha256": "f0a3241d7b00fe599e015048b830a119173892bff0da0849a7c6ab2df0c90a57"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration/remote-preservation.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration/remote-preservation.stdout.bin",
+      "bytes": 373,
+      "sha256": "085555e45bbbe92a54497db5ef983ec052d81fd1119c17064a5bfb7e86f2856d"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration/retained-packets.json",
+      "bytes": 1319,
+      "sha256": "8d2c185b7652e17a684a7110369c94e423eb5020d6af264d34b9c6d2e101d1ae"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration/retained-packets.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration/retained-packets.stdout.bin",
+      "bytes": 766,
+      "sha256": "11487b4b873985fde84f86e138219f7e687341e3b2e61dc15da95ffcd762cc6d"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration/verify-lane-packets.py",
+      "bytes": 1182,
+      "sha256": "d6b96375d3eec5f628b7bd68f87a7235d867c218cf12f59ec6fa361ae15f62d7"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration/verify-preservation.mjs",
+      "bytes": 4906,
+      "sha256": "e198789fcd0e630714165fe999353daf74b4ec8c8794aac77d653d49f02129d8"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/authored-whitespace.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/authored-whitespace.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/baseline-connected.json",
+      "bytes": 740,
+      "sha256": "6ba01e9716e78f5d8ef13f530af56cf783f215b2e043985eb8a00f2f713dd67c"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/baseline-connected.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/baseline-connected.stdout",
+      "bytes": 2593,
+      "sha256": "13b16fc261a5e763a7cb1d07372de4edb2d6a2279ec781547b695908a7970e48"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/baseline/operation-context.mjs",
+      "bytes": 1613,
+      "sha256": "0598ca96e1bff2817b0c0f02ef0a857a94a0d67508582d2b9369c5b6035855d5"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/baseline/tool-dispatch.mjs",
+      "bytes": 7213,
+      "sha256": "b935e5a9841c1c934398351af54439854ecfd6f3e1492e3694e58be633b5570d"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/capture-check.py",
+      "bytes": 1177,
+      "sha256": "474a6d269b0a1122edbc561ebf11a96c4669c674f9d3df887824da8900b24cf8"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/connected-after.json",
+      "bytes": 733,
+      "sha256": "be54bc2a0b8d8d4ae413e765c4312a7c956970a477114cc86662d12c871682ef"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/connected-after.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/connected-after.stdout",
+      "bytes": 359,
+      "sha256": "1182be8452ea8dee3fbd0b0d3dd28a4f7a16eccdf7a08d71e5af02e6eaa1c51c"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/dependency-provenance.json",
+      "bytes": 4894,
+      "sha256": "ea3c476ebcb35d2a0f00e6faec22c684cd60924935944f4dd04426eff6c0594f"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/focused-first.json",
+      "bytes": 730,
+      "sha256": "09c2f3df97ff34d3fc4ad29350beed6fe28f031bc1670066d392b070050efe60"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/focused-first.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/focused-first.stdout",
+      "bytes": 4150,
+      "sha256": "2b80b0b4bffad3d89e8cb76068affc8611273730353a726a2cbfd0289d275a8f"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/full-staged-raw.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/full-staged-raw.stdout",
+      "bytes": 256,
+      "sha256": "fc9426f107cefd77356c81f383884ae64c761d6563124a14c3b5fdeccd84f53c"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/gateway-source.json",
+      "bytes": 1265,
+      "sha256": "56d7556863b1a91a3118b126eeda8e3f16cd1c1649593cc29c4b33c3e24363f5"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/gateway-source.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/gateway-source.stdout.bin",
+      "bytes": 25642,
+      "sha256": "32b753213c4f007d1ecca12c5375ab8cb6e869b76b4606d188a6f1867fde52b1"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/manifest.json",
+      "bytes": 7591,
+      "sha256": "3ebb848a5a4c4bab3d6078b7d30e928c376bdf51b963a119ecb5c5846cb8e5dc"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/outline.json",
+      "bytes": 2447,
+      "sha256": "c595ccdc626b8f00f17f9705764a3796fcda779509e5c310754477efcf9150cd"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/public-distribution.json",
+      "bytes": 1423,
+      "sha256": "136ad075bb479dc15751ab044651249b247e06d43c02b2ca9441ced704610efe"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/public-distribution.stderr.bin",
+      "bytes": 1040,
+      "sha256": "cbbd466f3bf458f7f516c133ea486c1aada38d325ec9a80b698c26da8c18237f"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/public-distribution.stdout.bin",
+      "bytes": 2045,
+      "sha256": "9676fffb424529882839176581dbad869b068bf7ab9045602a252d7759b9b136"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/root-source.json",
+      "bytes": 1332,
+      "sha256": "726d942c808d3791eeb1fb5cae5e83d14614de69af6a0f392f4c4e06c9a1a396"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/root-source.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/root-source.stdout.bin",
+      "bytes": 22977,
+      "sha256": "5bfd347780b11e9a0da76821c3e24cb11c5386305c3ff615ce3b920990e0eae7"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/source-freeze.json",
+      "bytes": 901,
+      "sha256": "f8be6614efb4136e8d6a911a2b0d6af18ca4cbe9b15c254aaae41269af5a12e5"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/verify-packet.py",
+      "bytes": 4877,
+      "sha256": "0cc4e7de539b3ff64f17022aec9b88c515b478adf8254408857701e595fb6c1b"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/verify-result.json",
+      "bytes": 14511,
+      "sha256": "2bea0901b44fa9c9025ef6a92f83012b37184266810246ae7e1503fa7c9fcf1c"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/verify-result.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/whitespace-checks.json",
+      "bytes": 1998,
+      "sha256": "a34cfad13b612b0dbd730c3756c22f2695c94721c9da8db366d81e7f14f24ec4"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-review/authored-whitespace.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-review/authored-whitespace.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-review/baseline.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-review/baseline.stdout.txt",
+      "bytes": 45507,
+      "sha256": "54cf47eb0eb792a2581955f781ccf87a407e816e3246a04c817bee31b27d75c5"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-review/candidate-corrected.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-review/candidate-corrected.stdout.txt",
+      "bytes": 4321,
+      "sha256": "828095d792270eef39c56fbf0b01b703bc0dff3106a382ccc5142b6eb4d645c7"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-review/candidate-first.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-review/candidate-first.stdout.txt",
+      "bytes": 7409,
+      "sha256": "96a4196cc1b4783c7b0631090152429aae5b4567f934e9a1e9a34d73bfc71c49"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-review/criteria-correction.json",
+      "bytes": 906,
+      "sha256": "32d8b20d7871c69b10e6a1a2580fe03522cac2f93f3be549f73488e0288b6720"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-review/final-review.json",
+      "bytes": 1156,
+      "sha256": "7f36ba305d820bb843d7bb992279d843aad8f0826bbed1fd5ddb4530e1101dc7"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-review/first-replay-diagnosis.json",
+      "bytes": 1208,
+      "sha256": "ea9b2731a49f52488bb3d1e4f0a857bca47264cca73c2466b256972fd65185f3"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-review/frozen-criteria.json",
+      "bytes": 3248,
+      "sha256": "18678463ef2bd513448736502e27e8ce69608896fe19644965593ffd18b093e4"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-review/gateway-full-receipt.json",
+      "bytes": 801,
+      "sha256": "ed496349d8c2054855b4139d56648f9f68186bb1fdfb42317b548d3e3defc781"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-review/gateway-full.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-review/gateway-full.stdout.txt",
+      "bytes": 25631,
+      "sha256": "bb77a8ffb350e2e62220edd48f25081647e07dbd078bd8a88dade584aed94b64"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-review/packet-hygiene.json",
+      "bytes": 306,
+      "sha256": "c849563b4747e35e0525e812a5ff33788464ca458728ee395bcb6d66d2f6efdc"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-review/packet-whitespace.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-review/packet-whitespace.stdout.txt",
+      "bytes": 2486,
+      "sha256": "3e49ee981f38a98f21965418b52b4b8e531c57792d3c1db750f33191e8cc8881"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-review/review-manifest.json",
+      "bytes": 4903,
+      "sha256": "c78b33e93150ac82f2f5b036874740da06fbd323c12b47c850af3fddce8efc34"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-review/source-preservation.json",
+      "bytes": 3082,
+      "sha256": "582286d7e735508b68262a242191ccd0b0df016ad98490388662a6bb09bbd9cd"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "bytes": 13059,
+      "sha256": "66b852422060cbde0411c49001cb818666d369aacf804a5d9fcd871203e64d96"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog.json",
+      "bytes": 81945,
+      "sha256": "65b586ef1070100a77fe490ddb6b8f3dce1555b7b9602132bd644d223390b8d8"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+      "bytes": 6419,
+      "sha256": "d1f992dc627e00659bdd6aab07823520bfd1058a231da72bf214f81149d36428"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+      "bytes": 8008,
+      "sha256": "82f8f8a796b5f6131609b091c32ce8720b982e5e78f9a0d0036b03e429f5b3e6"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+      "bytes": 13615,
+      "sha256": "f43b9037e42f63b629e8116160fbec242bd955caaa82bfbfa276462b928b2d94"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-mail.test.mjs",
+      "bytes": 30019,
+      "sha256": "fa61de3bcf5d5ba2a3a756e05e341d56ac26073fb874afc565b70dde29f51c4f"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-memory-binding.test.mjs",
+      "bytes": 13500,
+      "sha256": "584de88a49f7f0300b727a1068f83a420ea0df297eecb166ec823c21e636ef5e"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-operational-reads.test.mjs",
+      "bytes": 31267,
+      "sha256": "5a9dde9741b011eda749813af06c0398aad160b7675bd6cce5f4a93c7019196c"
+    }
+  ]
+}
