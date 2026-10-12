@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-research-portfolio.test.mjs"
+  ],
+  "cwd": "/workspace/meri-research-portfolio-20261012",
+  "sourceHead": "e0163fb65a639a28d9423e929058b40b48cc556d",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T15:24:31.089498+00:00",
+  "durationSeconds": 1.169,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 130033,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/portfolio-author/portfolio-focused-initial.stdout.bin",
+      "bytes": 2354,
+      "sha256": "2987a4bc71ad9fe43b50dcf327dd77962f6334f0839327f915f48d919327fc81"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/portfolio-author/portfolio-focused-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
