@@ -52,7 +52,7 @@ export function createScheduleToolValidators({validateShape,schema}) {
       for(const key of LIMITS)if(p[key]!==c.limitResolution.effective[key]||p[key]>input.requestedLimits[key])denySchedule('SCHEDULE_TOOL_LIMITS');
       configuration={...input.policy,task:c.taskResolution.task,workflow:c.taskResolution.workflow};
     }
-    const intent=assertScheduleIntent({intentId:c.intentId,operation:id,expectedGeneration:create?0:c.current.generation,generation:create?1:c.current.generation+1,previousProjectionSha256:create?null:c.current.projectionSha256,projection:p,configuration,cancel},c.callerIdentity.tenantId);
+    const intent=assertScheduleIntent({intentId:c.intentId,operation:id,expectedGeneration:create?0:c.current.generation,generation:create?1:c.current.generation+1,previousProjectionSha256:create?null:c.current.projectionSha256,projection:p,configuration,cancel,...(configuration===null?{}:{taskInstructionSha256:canonicalSha256(input.taskInstruction)})},c.callerIdentity.tenantId);
     const intentSha256=canonicalSha256(intent);
     if(c.approval!==null)snapshotScheduleCall('Execute',{intent,approval:c.approval,callerIdentity:c.callerIdentity,deadlineMs:c.deadlineMs},c.nowMs);
     const proposal={operation:id,status:'approval_required',proposalId:intent.intentId,intentSha256,taskInstruction:id==='cancel_scheduled_task'?null:input.taskInstruction,projection:p,policy:configuration===null?null:input.policy,cancel};
