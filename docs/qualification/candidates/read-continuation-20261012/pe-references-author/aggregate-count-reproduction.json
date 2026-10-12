@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-pe-references.test.mjs"
+  ],
+  "cwd": "/workspace/meri-pe-references-20261012",
+  "sourceHead": "2aa0a33bdaf36af1224cfdb840bc493e53cea9f3",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T17:20:10.371410+00:00",
+  "durationSeconds": 0.315,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 185431,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-references-author/aggregate-count-reproduction.stdout.bin",
+      "bytes": 4415,
+      "sha256": "1f4a5c73234d17342cc7bc17bc91c6de71a32b73424fe79365b4bb379795fd58"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-references-author/aggregate-count-reproduction.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Author derived-count boundary: sums of grouped Int32 award counts are JavaScript totals, not another stored Int32",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
