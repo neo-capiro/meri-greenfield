@@ -1,0 +1,28 @@
+{
+  "pullRequest": 20,
+  "url": "https://github.com/neo-capiro/meri-greenfield/pull/20",
+  "draft": true,
+  "merged": false,
+  "base": "15f671a65365e3401f0ce07b46deb4cf63538346",
+  "sourceEvidenceHead": "8c51a624917609090caa042a4ae9d88be9ca782a",
+  "sourceEvidenceTree": "d1e07f4672934c895a3a41a248d3af3edb894b84",
+  "acceptedRoot": "e5e851f381d14359c00cca1b5438fe13f4fadfb0",
+  "documentReviewer": "1957a920ed6b46ef15ec634b1aa03b4ba44dc2ac",
+  "evidenceManifestSha256": "9fc05470b9caedbd4ccc9d09c131c360c2f4c535db561a321f770075d0667a87",
+  "evidenceManifestMembers": 92,
+  "allManifestMembersVerified": true,
+  "publishedLaneRefs": [
+    "task/meri-native-predicate-20261012",
+    "review/meri-native-predicate-20261012",
+    "task/meri-pgdg-metadata-20261012",
+    "review/meri-pgdg-metadata-20261012",
+    "review/meri-supervisor-predicate-integration-20261012"
+  ],
+  "sourceStackUnmerged": true,
+  "bodyCorrection": "Removed an accidental space in the 6,163-byte count only; original creation readback preserved.",
+  "publicationFollowup": "Only this publication directory is added after sourceEvidenceHead. Final exact branch head is verified after its commit/push; no self-referential head claim.",
+  "privateBodiesPublished": false,
+  "nativeAdmission": false,
+  "setup": "HOLD_EXTERNAL_INPUT_NOT_EXECUTABLE",
+  "fullHelperReview": "HOLD_MISSING_EXACT_NativeMetadata.cs"
+}
