@@ -29,7 +29,7 @@ export function createTenantContactsValidators({validateShape}) {
     const linked=selected.clientId!==null, hasSelector=linked || selected.domain!==null || selected.query!==null;
     if (!hasSelector) {
       validateShape('TenantContactsRefusal',page);
-      return result;
+      return page;
     }
     validateShape('TenantContactsPage',page);
     if ((page.clientId!==null)!==linked || page.matchedOn.linkedClient!==linked ||
@@ -63,7 +63,7 @@ export function createTenantContactsValidators({validateShape}) {
     if (page.note!==note) fail('Tenant contact note differs from returned profile window');
     // This legacy guidance neither registers nor permits deferred profile writes.
     // onProfile and inferred organization remain unverified source assertions.
-    return result;
+    return page;
   }
   return {normalizeTenantContactsInput,assertTenantContactsResult};
 }

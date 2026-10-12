@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://meri.invalid/retrieval/0.2/tenant-contacts.schema.json",
+  "$id": "urn:meri:retrieval:tenant-contacts:0.2.0",
   "$defs": {
     "TenantContactsContext": {
       "type": "object",
