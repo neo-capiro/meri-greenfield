@@ -1,0 +1,35 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-review/verify-author-packet.py",
+    "6d0ce36bed11605d49f97c363ee0ce29657a6293"
+  ],
+  "cwd": "/workspace/meri-regulatory-dockets-review-20261012",
+  "sourceHead": "8959b3b61ebd4d09a8cb7b1b27e75cb99734310f",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T18:05:31.366225+00:00",
+  "durationSeconds": 0.165,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 232685,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-review/author-packet.stdout.bin",
+      "bytes": 5487,
+      "sha256": "4a06f496c77d45bd19dbebf0145cf6d0bcc60070c4608f245dfdd3f56fb11515"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-review/author-packet.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

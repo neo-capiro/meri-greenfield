@@ -1,0 +1,187 @@
+{
+  "scope": "METADATA_ONLY_NO_SOURCE_TEST_REPLAY",
+  "authorFreeze": "6d0ce36bed11605d49f97c363ee0ce29657a6293",
+  "source": "57e09ebfda15d6057bdf4bfb7fc84b4061eac03f",
+  "manifestSha256": "66718412380284a6d9034eca9157a3b967b1bcbbc1c9fa74b5855e8788a8f3cd",
+  "members": 12,
+  "checks": [
+    {
+      "check": "twelve distinct manifest members",
+      "pass": true
+    },
+    {
+      "check": "exact source binding",
+      "pass": true
+    },
+    {
+      "check": "member docs/coordination/reports/CODEX-REGULATORY-DOCKETS-AUTHOR-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-author/build-schema.py",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-author/focused-initial-source.patch",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-author/focused-initial.json",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-author/focused-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-author/focused-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-author/inspect-references.cjs",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-author/outline.json",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-author/reference-identities.json",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-author/source-preservation.json",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-author/verify.py",
+      "pass": true
+    },
+    {
+      "check": "no source changes after source freeze",
+      "pass": true
+    },
+    {
+      "check": "preserved initial dirty patch",
+      "pass": true
+    },
+    {
+      "check": "exact focused command and successful cleanup",
+      "pass": true
+    },
+    {
+      "check": "stream docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-author/focused-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "stream docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-author/focused-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "23 passing raw tests",
+      "pass": true
+    },
+    {
+      "check": "exact capture producer",
+      "pass": true
+    },
+    {
+      "check": "seven paired refs",
+      "pass": true
+    },
+    {
+      "check": "ref frozen apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "check": "ref observed apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "check": "paired equality apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "check": "ref frozen apps/api/src/regulatory-docket/regulatory-docket.service.ts",
+      "pass": true
+    },
+    {
+      "check": "ref observed apps/api/src/regulatory-docket/regulatory-docket.service.ts",
+      "pass": true
+    },
+    {
+      "check": "paired equality apps/api/src/regulatory-docket/regulatory-docket.service.ts",
+      "pass": true
+    },
+    {
+      "check": "ref frozen apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "check": "ref observed apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "check": "paired equality apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "check": "ref frozen apps/api/src/meri/meri.controller.ts",
+      "pass": true
+    },
+    {
+      "check": "ref observed apps/api/src/meri/meri.controller.ts",
+      "pass": true
+    },
+    {
+      "check": "paired equality apps/api/src/meri/meri.controller.ts",
+      "pass": true
+    },
+    {
+      "check": "ref frozen apps/api/src/auth/roles.guard.ts",
+      "pass": true
+    },
+    {
+      "check": "ref observed apps/api/src/auth/roles.guard.ts",
+      "pass": true
+    },
+    {
+      "check": "paired equality apps/api/src/auth/roles.guard.ts",
+      "pass": true
+    },
+    {
+      "check": "ref frozen apps/api/src/meri/meri-tool-request-control.ts",
+      "pass": true
+    },
+    {
+      "check": "ref observed apps/api/src/meri/meri-tool-request-control.ts",
+      "pass": true
+    },
+    {
+      "check": "paired equality apps/api/src/meri/meri-tool-request-control.ts",
+      "pass": true
+    },
+    {
+      "check": "ref frozen apps/api/src/meri/tool-service-secret.guard.ts",
+      "pass": true
+    },
+    {
+      "check": "ref observed apps/api/src/meri/tool-service-secret.guard.ts",
+      "pass": true
+    },
+    {
+      "check": "paired equality apps/api/src/meri/tool-service-secret.guard.ts",
+      "pass": true
+    },
+    {
+      "check": "preserved author verifier36 passes",
+      "pass": true
+    }
+  ],
+  "passed": 44,
+  "failed": 0
+}
