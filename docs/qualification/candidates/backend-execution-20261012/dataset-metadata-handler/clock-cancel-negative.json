@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/gateway/test/dataset-metadata-handler.test.mjs"
+  ],
+  "cwd": "/workspace/meri-dataset-metadata-handler-20261012",
+  "sourceHead": "465d1963ba0d9d0d1e0584f5ae20045dd02a4425",
+  "sourceDiffSha256": "a7430089eca37dcd3d50849d108210266f6f438f632c10650e9c8a334e8fb7d1",
+  "sourceDiffBytes": 1466,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T21:17:32.382299+00:00",
+  "durationSeconds": 2.111,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 327183,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/clock-cancel-negative.stdout.bin",
+      "bytes": 3076,
+      "sha256": "0cc4e605708ca0fd561de5ba909a79534f627ea2350f45764accfb94fd02e3fc"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/clock-cancel-negative.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Independently found final injected-clock cancellation edge; preserve failing direct-handler regression before narrow repair.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
