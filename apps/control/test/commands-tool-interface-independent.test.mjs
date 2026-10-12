@@ -91,3 +91,8 @@ test('metadata phase ends before independently bounded executor lifetime begins'
  const actual=t.f.make();const late=createCommandToolInterface({...t.base,limits:{maxRequestMs:1,maxFactBytes:65536},executor:{async execute(...args){await new Promise(r=>setTimeout(r,10));return actual.execute(...args);}}});
  const out=await late.executeApproved(p.proposal,t.f.execution,'synthetic');assert.equal(out.status,'observed');assert.equal(t.f.state.effects,1);
 });
+
+test('caller cancellation after actual executor completion cannot release late success',async()=>{
+ const t=setup(),actual=t.f.make(),ac=new AbortController(),s=createCommandToolInterface({...t.base,executor:{async execute(...args){const value=await actual.execute(...args);ac.abort();return value;}}}),p=await s.prepare(t.raw);
+ await assert.rejects(s.executeApproved(p.proposal,t.f.execution,'synthetic',ac.signal));assert.equal(t.f.state.effects,1);assert.equal(t.f.state.sqlRows[0].state,'OUTCOME');
+});
