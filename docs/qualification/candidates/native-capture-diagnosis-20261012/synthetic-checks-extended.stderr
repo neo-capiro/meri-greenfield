@@ -1,0 +1,13 @@
+test_deadline_and_entry_bound_refuse (test_local_metadata.SyntheticDiagnostic.test_deadline_and_entry_bound_refuse) ... ok
+test_directory_symlink_is_reported_without_following (test_local_metadata.SyntheticDiagnostic.test_directory_symlink_is_reported_without_following) ... ok
+test_empty_selected_file_and_excluded_site_packages_without_body_reads (test_local_metadata.SyntheticDiagnostic.test_empty_selected_file_and_excluded_site_packages_without_body_reads) ... ok
+test_original_streams_are_compared_not_rewritten_or_exposed (test_local_metadata.SyntheticDiagnostic.test_original_streams_are_compared_not_rewritten_or_exposed) ... ok
+test_remote_drive_and_unc_refuse_without_metadata_io (test_local_metadata.SyntheticDiagnostic.test_remote_drive_and_unc_refuse_without_metadata_io) ... ok
+test_reparse_directory_is_reported_without_following (test_local_metadata.SyntheticDiagnostic.test_reparse_directory_is_reported_without_following) ... ok
+test_stream_size_and_symlink_refused_before_body_open (test_local_metadata.SyntheticDiagnostic.test_stream_size_and_symlink_refused_before_body_open) ... ok
+test_wrong_host_refuses_before_filesystem_or_windows_api (test_local_metadata.SyntheticDiagnostic.test_wrong_host_refuses_before_filesystem_or_windows_api) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.005s
+
+OK

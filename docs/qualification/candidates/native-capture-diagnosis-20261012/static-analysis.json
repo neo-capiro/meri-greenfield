@@ -1,0 +1,393 @@
+{
+  "schema": "meri-native-capture-static-analysis/1",
+  "classification": "STATIC_SOURCE_ONLY_ACTUAL_CAUSE_UNKNOWN",
+  "sourceCommit": "c225c4f6247c22c8906a23758477e431e3d88c15",
+  "sourceTree": "196ae19a744e40ba1a2b528daddeb42abe47ea94",
+  "sources": [
+    {
+      "commit": "c225c4f6247c22c8906a23758477e431e3d88c15",
+      "path": "scripts/qualification/worker_runner_capture.py",
+      "blob": "3f6331725105051fa00da6d71cf02554a463a4a5",
+      "bytes": 10069,
+      "sha256": "3219d21ec7d7bfa63deb07f87125e3ffcf5b6ff5df4f2b5f87f487cb6594153c",
+      "literalRefusals": [
+        {
+          "line": 39,
+          "type": "ValueError",
+          "message": "explicit read-only capture and fresh output required"
+        },
+        {
+          "line": 41,
+          "type": "ValueError",
+          "message": "actual Windows Python 3.11.15 runner required"
+        },
+        {
+          "line": 45,
+          "type": "ValueError",
+          "message": "fresh allocated runner output slot required"
+        },
+        {
+          "line": 56,
+          "type": "ValueError",
+          "message": "canonical version command required"
+        },
+        {
+          "line": 58,
+          "type": "ValueError",
+          "message": "bounded local version command required"
+        },
+        {
+          "line": 61,
+          "type": "ValueError",
+          "message": "Windows SYSTEMROOT required"
+        },
+        {
+          "line": 148,
+          "type": "ValueError",
+          "message": "fresh runner output already exists"
+        },
+        {
+          "line": 155,
+          "type": "ValueError",
+          "message": "runner capture deadline before native invocation"
+        },
+        {
+          "line": 159,
+          "type": "ValueError",
+          "message": "canonical AWS CLI version observation required"
+        },
+        {
+          "line": 162,
+          "type": "ValueError",
+          "message": "AWS CLI changed during version capture"
+        },
+        {
+          "line": 166,
+          "type": "ValueError",
+          "message": "runtime/helper snapshot changed during local version capture"
+        },
+        {
+          "line": 180,
+          "type": "ValueError",
+          "message": "runner observation byte bound"
+        },
+        {
+          "line": 110,
+          "type": "VersionPipeBoundaryError",
+          "message": "VERSION_PIPE_EOF_INCOMPLETE; DESCENDANT_TEARDOWN_UNQUALIFIED"
+        },
+        {
+          "line": 119,
+          "type": "ValueError",
+          "message": "bounded version output exceeded"
+        }
+      ]
+    },
+    {
+      "commit": "c225c4f6247c22c8906a23758477e431e3d88c15",
+      "path": "scripts/qualification/worker_runner_inventory.py",
+      "blob": "3f45d5b77904d6639be57942a53011f6a24e8833",
+      "bytes": 13224,
+      "sha256": "7615e26a5d038ff2fa054cde3cdb04077def5636874f848c97e050dae9df03e9",
+      "literalRefusals": [
+        {
+          "line": 43,
+          "type": "ValueError",
+          "message": "runner inventory deadline"
+        },
+        {
+          "line": 49,
+          "type": "ValueError",
+          "message": "runner link/reparse refused"
+        },
+        {
+          "line": 61,
+          "type": "ValueError",
+          "message": "absolute local runner path required"
+        },
+        {
+          "line": 73,
+          "type": "ValueError",
+          "message": "runner file byte bound"
+        },
+        {
+          "line": 98,
+          "type": "ValueError",
+          "message": "runner named file changed"
+        },
+        {
+          "line": 177,
+          "type": "ValueError",
+          "message": "positive inventory limits required"
+        },
+        {
+          "line": 193,
+          "type": "ValueError",
+          "message": "runner membership/identity changed during capture"
+        },
+        {
+          "line": 52,
+          "type": "ValueError",
+          "message": "runner directory required"
+        },
+        {
+          "line": 54,
+          "type": "ValueError",
+          "message": "runner single regular file required"
+        },
+        {
+          "line": 82,
+          "type": "ValueError",
+          "message": "runner open identity changed"
+        },
+        {
+          "line": 94,
+          "type": "ValueError",
+          "message": "runner file changed while reading"
+        },
+        {
+          "line": 110,
+          "type": "ValueError",
+          "message": "runner path length bound"
+        },
+        {
+          "line": 113,
+          "type": "ValueError",
+          "message": "duplicate/casefold runner path"
+        },
+        {
+          "line": 117,
+          "type": "ValueError",
+          "message": "runner member bound"
+        },
+        {
+          "line": 135,
+          "type": "ValueError",
+          "message": "runner directory changed while listing"
+        },
+        {
+          "line": 163,
+          "type": "ValueError",
+          "message": "canonical helper path required"
+        },
+        {
+          "line": 165,
+          "type": "ValueError",
+          "message": "duplicate/casefold helper path"
+        },
+        {
+          "line": 188,
+          "type": "ValueError",
+          "message": "runner aggregate byte bound"
+        },
+        {
+          "line": 227,
+          "type": "ValueError",
+          "message": "owned result directory substituted"
+        },
+        {
+          "line": 237,
+          "type": "ValueError",
+          "message": "owned result membership/directory changed"
+        },
+        {
+          "line": 271,
+          "type": "ValueError",
+          "message": "result closure changed during final readback"
+        },
+        {
+          "line": 91,
+          "type": "ValueError",
+          "message": "runner growing file refused"
+        },
+        {
+          "line": 240,
+          "type": "ValueError",
+          "message": "owned result file substituted"
+        },
+        {
+          "line": 249,
+          "type": "ValueError",
+          "message": "result filename refused"
+        },
+        {
+          "line": 251,
+          "type": "ValueError",
+          "message": "owned result directory substituted"
+        },
+        {
+          "line": 263,
+          "type": "ValueError",
+          "message": "owned result file readback differs"
+        },
+        {
+          "line": 269,
+          "type": "ValueError",
+          "message": "final result closure readback differs"
+        },
+        {
+          "line": 130,
+          "type": "ValueError",
+          "message": "runner directory-entry bound"
+        },
+        {
+          "line": 132,
+          "type": "ValueError",
+          "message": "runner enumeration escaped directory"
+        },
+        {
+          "line": 233,
+          "type": "ValueError",
+          "message": "owned result membership differs"
+        },
+        {
+          "line": 280,
+          "type": "ValueError",
+          "message": "capture failed; substituted slot preserved"
+        },
+        {
+          "line": 153,
+          "type": "ValueError",
+          "message": "runner selected-tree link/reparse refused"
+        },
+        {
+          "line": 276,
+          "type": "ValueError",
+          "message": "capture failed; substituted slot preserved"
+        },
+        {
+          "line": 284,
+          "type": "ValueError",
+          "message": "capture failed; owned slot contains foreign/incomplete files"
+        }
+      ]
+    },
+    {
+      "commit": "c225c4f6247c22c8906a23758477e431e3d88c15",
+      "path": "scripts/qualification/worker_image_build.py",
+      "blob": "22c6e871340bfd2638c1e5560af9589deb4b5e48",
+      "bytes": 33018,
+      "sha256": "7a50f535486e343aa534f32d7359c8281021dbe4ee5f88bb654ebb45675464b9",
+      "literalRefusals": []
+    },
+    {
+      "commit": "c225c4f6247c22c8906a23758477e431e3d88c15",
+      "path": "scripts/qualification/worker_build_binding.py",
+      "blob": "69e46343f679b766ded56449f70c1906435c044e",
+      "bytes": 6869,
+      "sha256": "6daff67b434e78824ee211803139a417bd23c6a3bb02dc0429695d86f5e1af53",
+      "literalRefusals": []
+    },
+    {
+      "commit": "c225c4f6247c22c8906a23758477e431e3d88c15",
+      "path": "scripts/qualification/test_worker_runner_capture.py",
+      "blob": "a13ad784529aee1f65c84cce4e0ac22d1e731c3a",
+      "bytes": 22365,
+      "sha256": "fa5bf1783299d2b00f740f951163a2904059c0a9510604282e40afcbb455d2ac",
+      "literalRefusals": [
+        {
+          "line": 239,
+          "type": "OSError",
+          "message": "synthetic failure"
+        },
+        {
+          "line": 258,
+          "type": "OSError",
+          "message": "synthetic directory substitution"
+        },
+        {
+          "line": 316,
+          "type": "RuntimeError",
+          "message": "synthetic clock initialization failure"
+        },
+        {
+          "line": 331,
+          "type": "RuntimeError",
+          "message": "synthetic clock polling failure"
+        }
+      ]
+    }
+  ],
+  "collectorCaptureCalls": [
+    "validate_config",
+    "filesystem.ancestors",
+    "filesystem.inventory",
+    "filesystem.hash_file",
+    "filesystem.check_deadline",
+    "version_runner",
+    "filesystem.hash_file",
+    "filesystem.inventory",
+    "encoded",
+    "filesystem.check_deadline",
+    "filesystem.write_result",
+    "observed_runtime",
+    "filesystem.Filesystem",
+    "clock",
+    "fs.lstat",
+    "ValueError",
+    "Path",
+    "clock",
+    "ValueError",
+    "ValueError",
+    "Path",
+    "ValueError",
+    "ValueError",
+    "dt.datetime.now(dt.timezone.utc).isoformat",
+    "dict",
+    "dict",
+    "encoded",
+    "len",
+    "ValueError",
+    "str",
+    "min",
+    "len",
+    "len",
+    "re.fullmatch",
+    "dt.datetime.now",
+    "stdout.decode('ascii').strip",
+    "len",
+    "hashlib.sha256(raw).hexdigest",
+    "sorted",
+    "stdout.decode",
+    "artifacts.items",
+    "hashlib.sha256"
+  ],
+  "builderPinsCalledByCapture": false,
+  "genericMessageBytes": {
+    "ASCII": 58,
+    "LF": 59,
+    "CRLF": 60
+  },
+  "nativeReportedValuesNotVerified": {
+    "exit": 2,
+    "elapsedSecondsApprox": 0.42,
+    "stdoutBytes": 0,
+    "stderrBytes": 60,
+    "verifiedFileCount": 1538,
+    "verifiedFileCountScope": "UNKNOWN"
+  },
+  "archiveParentReportedNotReadable": {
+    "libraryId": "libfile_1b8681bc826c8191840be9607beb82c5",
+    "name": "aws-readiness-20261012-r1.zip",
+    "bytes": 247272,
+    "members": 117,
+    "sha256": "44ff0a58cd5f6b34279d3844a84952bb498d5973c116127e4a8295cc9f5a9c65"
+  },
+  "diagnosticCandidate": {
+    "path": "docs/qualification/candidates/native-capture-diagnosis-20261012/inspect-local-metadata.py",
+    "sha256": "3780982e6906e6798232d9a7d7f1c5efa07f6dd7b9a25356976a2a73ed026bd3",
+    "bytes": 9447,
+    "imports": [
+      "argparse",
+      "ctypes",
+      "hashlib",
+      "json",
+      "os",
+      "re",
+      "stat",
+      "sys",
+      "time"
+    ],
+    "nativeExecuted": false
+  }
+}
