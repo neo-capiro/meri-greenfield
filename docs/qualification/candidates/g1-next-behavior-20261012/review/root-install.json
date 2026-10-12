@@ -1,0 +1,30 @@
+{
+  "command": [
+    "npm",
+    "ci",
+    "--ignore-scripts",
+    "--no-audit",
+    "--no-fund",
+    "--cache",
+    "/tmp/meri-g1-next-review-npm-cache"
+  ],
+  "cwd": "/workspace/meri-g1-next-behavior-review-20261012",
+  "startUnixSeconds": 1791776645.6869583,
+  "elapsedSeconds": 3.6249020099639893,
+  "exitCode": 0,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "fixtureRoot": null,
+  "streams": {
+    "stdout": {
+      "path": "root-install.stdout.txt",
+      "bytes": 25,
+      "sha256": "10a3b21efb70f84d46dae9fd0fc25ede9abef4b84b10aa0eed78fe9f0c6a96fa"
+    },
+    "stderr": {
+      "path": "root-install.stderr.txt",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    }
+  }
+}
