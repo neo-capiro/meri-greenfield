@@ -1,0 +1,41 @@
+{
+  "verdict": "ACCEPT_SOURCE for these two operations only",
+  "operations": [
+    "search_client_knowledge",
+    "query_knowledge_graph"
+  ],
+  "source": "9cc2d0cf62e0816f53cecd2b27a49cb5f450fe39",
+  "sourceFiles": [
+    {
+      "path": "packages/contracts/retrieval-0.2/client-knowledge-search.schema.json",
+      "bytes": 7915,
+      "sha256": "48d3da2ae76f17c6a88cce81e288ea91791491cd6287c5327c7dec8cbda0ed3c"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/client-knowledge-search-validation.mjs",
+      "bytes": 6371,
+      "sha256": "34e9bd94f39131c322c2d1cea9c2d3aa7a1d908b81073022ec40bdeec1f51362"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-client-knowledge-search.test.mjs",
+      "bytes": 6512,
+      "sha256": "426ff026b53ae7bd8ecc2476ddc9970cdf44ec0d790aec27bbeab59db63e4ca1"
+    }
+  ],
+  "passed": 48,
+  "failed": 0,
+  "independentCases": 32,
+  "authorCases": 16,
+  "raw": "first-pair-repaired.json",
+  "preservedSourceDefect": "Scoped graph accepted another client-type node at6c3a422; now exact selected-client string correlation refuses it. Non-client ownership is not inferred.",
+  "compatibility": "Ignored string KB limit defaults8 restored by author; original numeric fractions remain. Original graph seed alone affects summary, while effective scoped seed governs traversal.",
+  "unacceptedOperations": [
+    "read_chat_attachments",
+    "read_monday_client_boards",
+    "get_client_context",
+    "search_memory"
+  ],
+  "runtimeAccepted": false,
+  "currentAuthorityProved": false,
+  "packetReview": "author all-six packet not yet frozen"
+}
