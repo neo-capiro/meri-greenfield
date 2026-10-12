@@ -1,0 +1,197 @@
+{
+  "noNativeExecution": true,
+  "members": [
+    {
+      "artifact": "lxml@6.1.3",
+      "member": "lxml/_elementpath.cpython-313-x86_64-linux-gnu.so",
+      "bytes": 209192,
+      "sha256": "15ca8205b8b81335b4b53ae061df39beeff8d3d4008d505fc590d186f5bc3502",
+      "readelfExit": 0,
+      "readelfFile": "_elementpath.cpython-313-x86_64-linux-gnu.so.readelf.txt",
+      "needed": [
+        "libpthread.so.0",
+        "libc.so.6"
+      ],
+      "glibcSymbols": [
+        "GLIBC_2.14",
+        "GLIBC_2.2.5"
+      ]
+    },
+    {
+      "artifact": "lxml@6.1.3",
+      "member": "lxml/builder.cpython-313-x86_64-linux-gnu.so",
+      "bytes": 120984,
+      "sha256": "62e9b9d50fc8cc88c35dc01530cf6b3afd3267b2b7199e5ced08c5fb7ef632b6",
+      "readelfExit": 0,
+      "readelfFile": "builder.cpython-313-x86_64-linux-gnu.so.readelf.txt",
+      "needed": [
+        "libpthread.so.0",
+        "libc.so.6"
+      ],
+      "glibcSymbols": [
+        "GLIBC_2.14",
+        "GLIBC_2.2.5"
+      ]
+    },
+    {
+      "artifact": "lxml@6.1.3",
+      "member": "lxml/etree.cpython-313-x86_64-linux-gnu.so",
+      "bytes": 5252048,
+      "sha256": "053756324bbea21667e17477719a868210832d50bafa42e3c0def34a8fe99c1d",
+      "readelfExit": 0,
+      "readelfFile": "etree.cpython-313-x86_64-linux-gnu.so.readelf.txt",
+      "needed": [
+        "librt.so.1",
+        "libm.so.6",
+        "libpthread.so.0",
+        "libc.so.6"
+      ],
+      "glibcSymbols": [
+        "GLIBC_2.14",
+        "GLIBC_2.17",
+        "GLIBC_2.2.5",
+        "GLIBC_2.25",
+        "GLIBC_2.3",
+        "GLIBC_2.3.2",
+        "GLIBC_2.7"
+      ]
+    },
+    {
+      "artifact": "lxml@6.1.3",
+      "member": "lxml/objectify.cpython-313-x86_64-linux-gnu.so",
+      "bytes": 2920952,
+      "sha256": "a07a2fddd30f00d74bb031ac2dbcf65a1db3e43ad7c37bc2b2b514ee2d1203d9",
+      "readelfExit": 0,
+      "readelfFile": "objectify.cpython-313-x86_64-linux-gnu.so.readelf.txt",
+      "needed": [
+        "librt.so.1",
+        "libm.so.6",
+        "libpthread.so.0",
+        "libc.so.6"
+      ],
+      "glibcSymbols": [
+        "GLIBC_2.14",
+        "GLIBC_2.2.5",
+        "GLIBC_2.25",
+        "GLIBC_2.3",
+        "GLIBC_2.3.2",
+        "GLIBC_2.7"
+      ]
+    },
+    {
+      "artifact": "lxml@6.1.3",
+      "member": "lxml/sax.cpython-313-x86_64-linux-gnu.so",
+      "bytes": 182200,
+      "sha256": "95a7b26b204d2d764de70360163d7d9f940c3791f23510bc5edc787b6da51a6e",
+      "readelfExit": 0,
+      "readelfFile": "sax.cpython-313-x86_64-linux-gnu.so.readelf.txt",
+      "needed": [
+        "libpthread.so.0",
+        "libc.so.6"
+      ],
+      "glibcSymbols": [
+        "GLIBC_2.14",
+        "GLIBC_2.2.5"
+      ]
+    },
+    {
+      "artifact": "lxml@6.1.3",
+      "member": "lxml/html/_difflib.cpython-313-x86_64-linux-gnu.so",
+      "bytes": 533496,
+      "sha256": "11f0993139c022d258e56f2321da9176b0ef0f99a8da0c8d15d6e339855943ae",
+      "readelfExit": 0,
+      "readelfFile": "_difflib.cpython-313-x86_64-linux-gnu.so.readelf.txt",
+      "needed": [
+        "libpthread.so.0",
+        "libc.so.6"
+      ],
+      "glibcSymbols": [
+        "GLIBC_2.14",
+        "GLIBC_2.2.5"
+      ]
+    },
+    {
+      "artifact": "lxml@6.1.3",
+      "member": "lxml/html/diff.cpython-313-x86_64-linux-gnu.so",
+      "bytes": 361496,
+      "sha256": "f6dfe7c2dcc940f9eeaab118c21ce71269209754a5e35ffbd701257db5a53038",
+      "readelfExit": 0,
+      "readelfFile": "diff.cpython-313-x86_64-linux-gnu.so.readelf.txt",
+      "needed": [
+        "libpthread.so.0",
+        "libc.so.6"
+      ],
+      "glibcSymbols": [
+        "GLIBC_2.14",
+        "GLIBC_2.2.5"
+      ]
+    },
+    {
+      "artifact": "lxml@6.1.3",
+      "member": "lxml/includes/libexslt/exsltconfig.h",
+      "bytes": 1172,
+      "sha256": "407c7311b465bff87451206fa6bd19ae5d0cbb395cef5542aef811ea5aa72c46",
+      "versionDefines": [
+        "#define LIBEXSLT_DOTTED_VERSION \"0.8.24\"",
+        "#define LIBEXSLT_VERSION 824",
+        "#define LIBEXSLT_VERSION_STRING \"824\"",
+        "#define\tLIBEXSLT_VERSION_EXTRA \"\""
+      ]
+    },
+    {
+      "artifact": "lxml@6.1.3",
+      "member": "lxml/includes/libxml/xmlversion.h",
+      "bytes": 5112,
+      "sha256": "a15a5a13fc5bb6d69e64d14a4ae49f70b39c796cfb2d080a3fbd59d66b1764da",
+      "versionDefines": [
+        "#define LIBXML_DOTTED_VERSION \"2.14.6\"",
+        "#define LIBXML_VERSION 21406",
+        "#define LIBXML_VERSION_STRING \"21406\"",
+        "#define LIBXML_VERSION_EXTRA \"\"",
+        "#define LIBXML_TEST_VERSION xmlCheckVersion(21406);"
+      ]
+    },
+    {
+      "artifact": "lxml@6.1.3",
+      "member": "lxml/includes/libxslt/xsltconfig.h",
+      "bytes": 2910,
+      "sha256": "715e6c71d44aeb198e1de3a0dce0b0ea105f710fe7aed36cfed29e7d7ebbdf4e",
+      "versionDefines": [
+        "#define LIBXSLT_DOTTED_VERSION \"1.1.43\"",
+        "#define LIBXSLT_VERSION 10143",
+        "#define LIBXSLT_VERSION_STRING \"10143\"",
+        "#define\tLIBXSLT_VERSION_EXTRA \"\""
+      ]
+    },
+    {
+      "artifact": "@napi-rs/canvas-linux-x64-gnu@1.0.10",
+      "member": "package/skia.linux-x64-gnu.node",
+      "bytes": 34794048,
+      "sha256": "eff464d8c283ad1e73e36c636d9ec9a6469ae34c3c04b298794735c89f9c863a",
+      "readelfExit": 0,
+      "readelfFile": "skia.linux-x64-gnu.node.readelf.txt",
+      "needed": [
+        "libdl.so.2",
+        "libgcc_s.so.1",
+        "librt.so.1",
+        "libpthread.so.0",
+        "libm.so.6",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "glibcSymbols": [
+        "GLIBC_2.12",
+        "GLIBC_2.14",
+        "GLIBC_2.16",
+        "GLIBC_2.2.5",
+        "GLIBC_2.3",
+        "GLIBC_2.3.2",
+        "GLIBC_2.3.3",
+        "GLIBC_2.3.4",
+        "GLIBC_2.4",
+        "GLIBC_2.7",
+        "GLIBC_2.8"
+      ]
+    }
+  ]
+}

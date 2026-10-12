@@ -1,0 +1,5 @@
+# Preserve exact public metadata, notices and raw command outputs as evidence.
+notices/** binary
+metadata/** binary
+*.txt binary
+*.stderr binary

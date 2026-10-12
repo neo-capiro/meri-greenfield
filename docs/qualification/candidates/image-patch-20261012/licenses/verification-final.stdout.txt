@@ -1,0 +1,22 @@
+{
+  "result": "PASS",
+  "base": "90b4dc8472da13cdee9f49cdc0b4c8306ecbdc73",
+  "checks": {
+    "artifacts": 133,
+    "compressedBytes": 156633085,
+    "npm": 126,
+    "wheels": 7,
+    "actualPackageNoticeFiles": 153,
+    "retainedPackageNoticeCopies": 151,
+    "commercialHashOnly": 2,
+    "excludedDirectoryPlaceholders": 1,
+    "directPinnedLicenseChecks": 7
+  },
+  "scope": "archive hashes, metadata, retained notices, exact pins, private local vendor archive, Standard Webhooks scope, unchanged existing source",
+  "notEstablished": [
+    "license approval",
+    "security approval",
+    "assembled image attribution",
+    "runtime qualification"
+  ]
+}

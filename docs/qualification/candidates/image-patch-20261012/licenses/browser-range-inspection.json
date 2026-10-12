@@ -1,0 +1,9 @@
+{
+  "url": "https://storage.googleapis.com/chrome-for-testing-public/155.0.8059.12/linux64/chrome-linux64.zip",
+  "expectedArchiveBytes": 198335306,
+  "fullArchiveHashVerified": false,
+  "status": "FAILED",
+  "error": "BadZipFile: File is not a zip file",
+  "rangeRequests": [],
+  "rangeBytes": 0
+}
