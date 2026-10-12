@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/sandbox-lifecycle-20261012/review/precheck-signal-independent.test.mjs"
+  ],
+  "candidate": "2f182431a78f4ccb200a5e4adfd62b0ad3afa508",
+  "exitCode": 1,
+  "expectedFailure": true,
+  "nativeNetworkSignalsExecuted": false
+}

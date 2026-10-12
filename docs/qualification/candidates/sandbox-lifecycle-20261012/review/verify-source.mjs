@@ -18,7 +18,7 @@ const checks=[];function check(name,value){checks.push({name,passed:!!value});if
 check('exact candidate HEAD',git('rev-parse','HEAD').toString().trim()===candidate);
 check('clean source worktree',git('status','--porcelain').length===0);
 const changes=git('diff','--name-status',base,candidate).toString().trim().split('\n').filter(Boolean).map(x=>x.split('\t'));
-const allowedExisting=new Set(['apps/worker/qualification/probes/runtime.mjs','apps/worker/qualification/probes/browser.mjs','apps/worker/qualification/probes/office-export.mjs','apps/worker/qualification/probes/office-export.test.mjs','apps/worker/qualification/README.md','scripts/qualification/worker_context.py','scripts/qualification/worker_context_test.py']);
+const allowedExisting=new Set(['apps/worker/qualification/probes/runtime.mjs','apps/worker/qualification/probes/browser.mjs','apps/worker/qualification/probes/office-export.mjs','apps/worker/qualification/probes/office-export.test.mjs','apps/worker/qualification/README.md','scripts/qualification/worker_context.py','scripts/qualification/worker_context_test.py','apps/worker/qualification/package.json']);
 const allowedNew=new Set(['apps/worker/qualification/probes/owned-probe-child.mjs','apps/worker/qualification/probes/owned-probe-child.test.mjs','apps/worker/qualification/probes/browser-lifetime.mjs','apps/worker/qualification/probes/browser-lifetime.test.mjs','docs/coordination/reports/MERI-SANDBOX-LIFECYCLE-20261012.md','docs/coordination/tasks/MERI-SANDBOX-LIFECYCLE-20261012.md']);
 check('only allocated source and author evidence paths change',changes.every(([s,p])=>(s==='M'&&allowedExisting.has(p))||(s==='A'&&(allowedNew.has(p)||p.startsWith('docs/qualification/candidates/sandbox-lifecycle-20261012/author/')))));
 const parse=(s,p='file.mjs')=>ts.createSourceFile(p,s,ts.ScriptTarget.Latest,true,ts.ScriptKind.JS);
@@ -41,7 +41,13 @@ for(const [p,allowed] of Object.entries(unchangedFunctions)){
  }
 }
 const protectedPaths=git('ls-tree','-r','--name-only',base).toString().trim().split('\n').filter(p=>p.startsWith('packages/contracts/')||p.endsWith('package-lock.json')||p.endsWith('package.json')||p==='apps/worker/qualification/component-pins.json'||p==='apps/worker/qualification/requirements.lock.txt'||p==='apps/worker/qualification/Dockerfile'||p==='apps/worker/qualification/probes/artifacts.mjs'||p==='apps/worker/qualification/probes/artifacts.py'||p==='apps/worker/qualification/probes/static.test.mjs'||p==='apps/worker/qualification/probes/office-reconstruct.mjs');
-for(const p of protectedPaths)check(`protected original exact: ${p}`,before(p)===after(p));
+const workerPackage='apps/worker/qualification/package.json';
+const oldPackage=JSON.parse(before(workerPackage)),newPackage=JSON.parse(after(workerPackage));
+check('ordinary worker test discovery adds exactly three allocated suites',newPackage.scripts.test===oldPackage.scripts.test+' probes/office-export.test.mjs probes/owned-probe-child.test.mjs probes/browser-lifetime.test.mjs');
+newPackage.scripts.test=oldPackage.scripts.test;
+check('worker package preserves every other field',JSON.stringify(oldPackage)===JSON.stringify(newPackage));
+check('worker package preserves all bytes except additive test script',after(workerPackage).replace(' probes/office-export.test.mjs probes/owned-probe-child.test.mjs probes/browser-lifetime.test.mjs','')===before(workerPackage));
+for(const p of protectedPaths.filter(p=>p!==workerPackage))check(`protected original exact: ${p}`,before(p)===after(p));
 const contextTest='scripts/qualification/worker_context_test.py';
 check('context test has exactly three intended cardinality changes',after(contextTest).split(', 57)').length===4&&after(contextTest).replaceAll(', 57)',', 53)')===before(contextTest));
 const context='scripts/qualification/worker_context.py';
