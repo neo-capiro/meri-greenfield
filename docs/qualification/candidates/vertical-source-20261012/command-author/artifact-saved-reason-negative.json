@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/test/commands-artifact-compatibility.test.mjs",
+    "packages/contracts/test/command-artifact-file.test.mjs"
+  ],
+  "cwd": "/workspace/meri-command-execution-20261012",
+  "sourceHead": "1783a2e74ab24f45174dd895cb5d8d8b7bd33c1b",
+  "sourceDiffSha256": "579a5132247fe80c45378dadd7e6ee8f2ba44c32c5040d39a613b3b03e5de175",
+  "sourceDiffBytes": 7459,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T22:12:18.470101+00:00",
+  "durationSeconds": 0.417,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 359423,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-author/artifact-saved-reason-negative.stdout.bin",
+      "bytes": 3514,
+      "sha256": "f9bc48f5efa675a7fe38d40fcc9df2ea86c8108d22b1ea357d417ca4d01f09ce"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-author/artifact-saved-reason-negative.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Pinned saved-plus-reason source projection previously excluded by canonical private validator; preserve exact author negative before allocated narrow repair.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
