@@ -55,13 +55,13 @@ test('handler admits only own inert fields and never invokes hostile accessors/p
 });
 test('direct handler checks binding, policy, digest and fresh deadlines',async()=>{
  const f=connected(),call=await directCall(f);
- for(const change of [x=>x.argumentsSha256='f'.repeat(64),x=>x.input={q:'x'},x=>x.request={q:'x'},x=>x.authority.binding.writerFence=2,x=>x.authority.subject.actorId='other',x=>x.authority.policyRevision='changed',x=>x.authority.claims.expiresAt=new Date(NOW).toISOString(),x=>x.authority.claims.issuedAt=new Date(NOW+1).toISOString(),x=>x.authority.deadlineMs=NOW]){const bad=structuredClone({...call,signal:undefined});delete bad.signal;change(bad);await assert.rejects(f.handler(bad));}
+ for(const change of [x=>x.argumentsSha256='f'.repeat(64),x=>x.input={q:'x'},x=>x.request={q:'x'},x=>x.authority.binding.writerFence=2,x=>x.authority.subject.actorId='other',x=>x.authority.policyRevision='changed',x=>x.authority.claims.expiresAt=new Date(NOW).toISOString(),x=>x.authority.claims.issuedAt=new Date(NOW+1).toISOString(),x=>x.authority.deadlineMs=NOW]){const bad=JSON.parse(JSON.stringify({...call,signal:undefined}));delete bad.signal;change(bad);await assert.rejects(f.handler(bad));}
 });
 test('handler checks abort after registry projection and returns detached raw JSON',async()=>{
  const f=connected(),call=await directCall(f),controller=new AbortController();let n=0;
  const handler=createDatasetMetadataHandler({registry,now:()=>{if(++n===2)controller.abort();return NOW;}});
  await assert.rejects(handler({...call,signal:controller.signal}),/CANCELLED/);
- const out=JSON.parse(await f.handler(call));out.result.datasets[0].fields[0].name='mutated';assert.notEqual(registry.listDatasetMetadata()[0].fields[0].name,'mutated');
+ const out=JSON.parse(await f.handler({...call,signal:new AbortController().signal}));out.result.datasets[0].fields[0].name='mutated';assert.notEqual(registry.listDatasetMetadata()[0].fields[0].name,'mutated');
 });
 test('expired grant stale fence missing grants and source denial block before reserve',async()=>{
  for(const mode of ['expired','fence','grants','source']){const f=connected();if(mode==='expired')f.claims.expiresAt=new Date(NOW).toISOString();if(mode==='fence')f.state.fence++;if(mode==='grants')f.state.grants=[];if(mode==='source')f.state.sourceEnabled=false;await assert.rejects(f.create().execute(request,'synthetic'),/ACCESS_DENIED/);assert.equal(f.calls.includes('reserve'),false);assert.equal(f.calls.includes('handler'),false);}
