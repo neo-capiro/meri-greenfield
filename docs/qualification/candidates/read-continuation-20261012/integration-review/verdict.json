@@ -1,0 +1,46 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "candidate": "4280ebaba4cab554baf7e6b23175c34d21027097",
+  "candidateTree": "9a1ec45931de0944230f71f5aaac56215a3b5d05",
+  "productionFreeze": "4aaba8adeef8543548bfed15cf82b26e1afcc6bd",
+  "criteriaFreeze": "e7a07f5b4ae7dee338631fcb79ffe94ff2803d4d",
+  "priorPublication": "fd78590bff1b8551b145a7eafa0ed5f8e23d7bcc",
+  "counts": {
+    "original": 139,
+    "selected": 96,
+    "deferred": 43,
+    "mappedUnavailable": 36,
+    "selectedPending": 60,
+    "typedUnavailable": 37,
+    "newBindings": 16,
+    "independentControls": 62
+  },
+  "checks": {
+    "expandedSource": {
+      "passed": 1366,
+      "total": 1366
+    },
+    "sourceAudit": {
+      "passed": 5458,
+      "total": 5458
+    },
+    "publicDistribution": {
+      "passed": 7,
+      "total": 7
+    }
+  },
+  "runtimeAccepted": false,
+  "sourceConnectivity": false,
+  "handlersEnabled": false,
+  "gates": {
+    "G1": "OPEN",
+    "G2-G7": "UNENTERED"
+  },
+  "remaining": [
+    "Qualified trusted gateway family context and adapters",
+    "Native and live-source qualification",
+    "Clio-versus-portfolio scope",
+    "60 selected original mappings and14 skill qualification dependencies"
+  ],
+  "report": "docs/coordination/reports/CODEX-READ-CONTINUATION-INTEGRATION-REVIEW-20261012.md"
+}

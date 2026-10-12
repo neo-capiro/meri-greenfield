@@ -1,0 +1,23 @@
+{
+  "scope": "READ_ONLY_OWNED_PROCESS_GROUP_ABSENCE",
+  "observedAt": "2026-10-12T17:03:42.192178+00:00",
+  "groups": [
+    161977,
+    162653,
+    162724,
+    164109,
+    164493,
+    164494,
+    165589,
+    165608,
+    167755,
+    168195,
+    168366,
+    169289,
+    170725,
+    170860
+  ],
+  "remaining": [],
+  "mutations": false,
+  "receiptsAllClosed": true
+}
