@@ -1,0 +1,17 @@
+{
+  "name": "NativeMetadata.cs",
+  "bytes": 6163,
+  "sha256": "f551d7287611b982a93eebf02e93719bfdce355609bd7ca4f9cd546ae9bf0a4c",
+  "mode": "0600",
+  "directoryMode": "0o700",
+  "executed": false,
+  "compiled": false,
+  "verified": true,
+  "failedLocalTranscriptions": 1,
+  "sameOriginalEvidenceNotNewAuthority": true,
+  "scope": "Exact existing private packet member; source reading only, not new native evidence or authority",
+  "privateBodiesAndPathsPublished": false,
+  "localFailedTranscriptionPreserved": true,
+  "failedTranscriptionIsParentCorruptionEvidence": false,
+  "successfulExecutorObservationUtc": "2026-10-12T08:38:31Z"
+}
