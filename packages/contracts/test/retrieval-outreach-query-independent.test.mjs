@@ -18,9 +18,9 @@ const client=()=>({id:clientId,name:'Synthetic client',website:'not a URL',prima
 const prep=()=>({id:prepId,tenantId,meetingId,clientId,status:'generated',agenda:[],talkingPoints:{opaque:true},risks:null,followUps:'opaque',emailEvidence:5,summary:null,provider:null,model:null,promptHash:null,generatedFrom:{},editedByUserId:null,sharedAt:null,sharedByUserId:null,createdAt:at,updatedAt:at});
 const debrief=()=>({id:debriefId,meetingId,clientId,authorUserId:userId,author:person(),confidential:true,accessLevel:'stored custom level',status:'generated',keyVersion:null,sharedAt:null,sharedByUserId:null,createdAt:at,updatedAt:at});
 const meeting=()=>({id:meetingId,clientId,subject:'Meeting',startsAt:at,endsAt:at,location:null,organizerEmail:null,organizerName:null,metadata:{},client:client(),attendees:[{id:otherId,email:null,name:null,role:null}],preps:[prep()],debriefs:[debrief()]});
-const record=()=>({id:recordId,tenantId,clientId,meetingId,createdByUserId:userId,type:'campaign',status:'draft',title:'Title',subject:null,body:'',recipients:[],recipientCount:0,stats:{},metadata:{},lastStep:0,sentAt:null,openedInEmailAt:null,deletedAt:null,deletedByUserId:null,createdAt:at,updatedAt:at,client:client(),meeting:meeting(),createdBy:person()});
+const record=()=>({id:recordId,tenantId,clientId,meetingId,createdByUserId:userId,type:'campaign',status:'draft',title:'Title',subject:null,body:'',recipients:[],recipientCount:0,stats:{},metadata:{},lastStep:1,sentAt:null,openedInEmailAt:null,deletedAt:null,deletedByUserId:null,createdAt:at,updatedAt:at,client:client(),meeting:meeting(),createdBy:person()});
 const exact=()=>({tool:ID,generatedAt:at,record:record()});
-const campaign=()=>({id:recordId,name:'Campaign',type:'custom stored type',status:'custom stored status',subject:null,clientId:null,clientName:null,recipientCount:0,createdBy:person(),sentAt:null,createdAt:at});
+const campaign=()=>({id:recordId,name:'Campaign',type:'custom stored type',status:'custom stored status',subject:null,clientId:null,clientName:null,recipientCount:0,createdBy:'unformatted stored address',sentAt:null,createdAt:at});
 const list=()=>({tool:ID,generatedAt:at,total:1,campaigns:[campaign()]});
 const norm=(raw={},options=context)=>v.normalizeOutreachQueryInput(ID,raw,options);
 const check=(page=list(),raw={},options=context)=>v.assertOutreachQueryOutput(ID,page,raw,options);
@@ -95,7 +95,7 @@ test('independent outreach: campaign count, uniqueness and null scalar boundarie
  for(const total of [-1,1.2,Number.MAX_SAFE_INTEGER+1]){const p=list();p.total=total;assert.throws(()=>check(p));}
  const p=list();p.total=2;p.campaigns.push(campaign());assert.throws(()=>check(p));
  for(const count of [-1,1.5,null]){const p=list();p.campaigns[0].recipientCount=count;assert.throws(()=>check(p));}
- const q=list();q.campaigns[0].createdBy=null;assert.throws(()=>check(q));
+ const q=list();q.campaigns[0].createdBy=null;check(q);q.campaigns[0].createdBy=person();assert.throws(()=>check(q));
 });
 test('independent outreach: complete exact record and deep detachment',()=>{
  const p=exact(),saved=structuredClone(p),out=exactCheck(p);assert.deepEqual(out,p);assert.notEqual(out,p);assert.notEqual(out.record,p.record);assert.notEqual(out.record.meeting.preps[0],p.record.meeting.preps[0]);
