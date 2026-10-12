@@ -1,0 +1,19 @@
+{
+  "base": "c1c9bfde7dd466a0474589a224a99b44277adbc9",
+  "operation": "query_intelligence",
+  "reviewer": "memory_reviewer",
+  "criteria": [
+    "Independently trace exact pinned wrapper and all three downstream services, including transitive helpers, catches, storage/provider/model effects, and authorization owners; compare fd8765ec/current4be metadata without publishing private bodies.",
+    "Normalize only source-established optional clientName selector with inert admission, exact trim/UTF16 cap and omission semantics; disclose stricter typed admission if approved rather than claiming full coercion parity.",
+    "Canonical output is projected tool/generatedAt/data prose only; preserve exact fixed field types and closed envelope, but do not invent machine-readable claims, omission/absence semantics, component success, citations, budgets or completeness from opaque text.",
+    "Preserve individual catch-to-omission behavior and top-level error ownership; assembled prose cannot prove current source authorization, successful downstream calls, timestamp freshness or truth.",
+    "Reuse one canonical snapshot/validator owner; no private synthesis/retrieval/client/provider implementation imported or copied, no extra registry or production entry.",
+    "Require all relevant pinned/current reference hashes and explicit drift disposition; inspect downstream SQL/read/write/provider boundaries precisely without executing them.",
+    "Independent factory tests cover accepted/null/blank/Unicode selector boundaries, opaque prose and canonical timestamp bounds, unknown fields, hostile getters/proxies/cycles/symbols, detachment and source-only metadata.",
+    "Empty trusted context expected only if exact family needs none; actor/client/tenant identity stays separate current-authority prerequisite. Do not silently select consequential approval semantics.",
+    "Freeze controls before candidate replay; preserve all failures, exact author source/packet and original files. Focused and metadata audits only; root owns broad/public checks.",
+    "Keep139/96/43 scope and all existing contracts/runtime flags unchanged. No SQL/services/provider/models/native/cloud/frontend actions. Verify owned source-check process cleanup."
+  ],
+  "authorSourceReadBeforeCriteria": false,
+  "noDelegation": true
+}
