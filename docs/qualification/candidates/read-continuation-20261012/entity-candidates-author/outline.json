@@ -1,0 +1,40 @@
+{
+  "base": "a3e946c1fa264ae7b33205f5b87804ee1ef75773",
+  "operation": "resolve_entity",
+  "schemaId": "urn:meri:retrieval:entity-candidates:0.2.0",
+  "factory": "createEntityCandidatesValidators({validateShape,schema})",
+  "methods": "normalizeEntityCandidatesInput(operation,request,context), assertEntityCandidatesOutput(operation,output,request,context), validateEntityCandidatesShape(name,value), entityCandidatesInputDefinition(operation), entityCandidatesOutputDefinition(operation)",
+  "definitions": [
+    "EntityCandidatesRequest",
+    "EntityCandidatesInput",
+    "EntityCandidatesOutput",
+    "EntityCandidatesContext"
+  ],
+  "contextKeys": [
+    "defaultCongress"
+  ],
+  "trustedContext": "Required positive Int32 defaultCongress; no model value, ambient clock or derived source authority.",
+  "ownership": "Only new family schema/validator/test plus allocated report/evidence. Shared labels/catalog/loader unchanged; exact accepted state helper is a root-approved prerequisite, no edits.",
+  "dependencies": [
+    "snapshotOperationData",
+    "existing congressional-identity.mjs",
+    "exact accepted state-bill-identity.mjs"
+  ],
+  "behavior": [
+    "Five precise candidate variants and scalar/null domains",
+    "Direct, crosswalk and name phases must not mix; source-path-specific matchedBy variants",
+    "Type selection, returned count/limit, missing/empty notes and direct identity bindings",
+    "Crosswalk arbitrary namespaces including empty; repeated canonical IDs remain valid",
+    "Name group order and current-first per group; no projection-invented display substring or global current-first guarantee",
+    "Current-session selection and DB/crosswalk existence remain source-owned; no live state fallback"
+  ],
+  "compatibility": "Source optional string trim/clip/retrim and scalar numeric/string clamp retained; nonstring selector coercions rejected by typed request; canonical finite ISO generatedAt and UTC-midnight SQLDate within existing Ajv range. Opaque stored IDs remain unformatted on name/crosswalk paths.",
+  "checks": "Focused new tests only; no broad/public runs; offline pin/preservation/manifest audit and owned process reaping.",
+  "externalExecution": "None: no producer imports/copies/execution, SQL/provider/native/service/model/HTTP/cloud/frontend or activation.",
+  "sourceHistory": {
+    "prerequisite": "e721b6f815e68df80d598f9ff1d8127a190ae62a",
+    "initial": "49db57c9259f0180fad4f619bf745e541d935db9",
+    "repaired": "788c0419c9489dfdd4906a50b59661595a072713"
+  },
+  "repair": "Independent duplicate-name counterexamples exposed missing primary-key uniqueness. Name-only guard added; crosswalk duplicates retained; one invalid positive fixture second-ID corrected without removing assertions, preimage retained."
+}

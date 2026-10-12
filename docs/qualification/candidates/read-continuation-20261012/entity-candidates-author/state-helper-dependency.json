@@ -1,0 +1,8 @@
+{
+  "acceptedSource": "a25516ae8d2c44638800e492e439e212098dc750",
+  "reviewer": "1e5cf3d01c464f9955f8d1a43dee8218be71c784",
+  "path": "packages/contracts/retrieval-0.2/state-bill-identity.mjs",
+  "bytes": 1240,
+  "sha256": "25d86301366971f622f88fcdcf45ccf25036b677f38a5612283ac595872c6ad7",
+  "scope": "Exact prerequisite copy; root integration reuses its already integrated identical file, not a second owner or grammar."
+}
