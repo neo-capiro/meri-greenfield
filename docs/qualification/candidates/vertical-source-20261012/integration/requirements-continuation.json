@@ -144,6 +144,8 @@
           ]
         },
         {
+          "typedBudgetSource": "a73b65dc05b7554c0592bec22d940ef781344dd6",
+          "typedBudgetReview": "7f29b5270f790bcdceed9b5533815fc99561ecdc",
           "operations": [
             "create_word",
             "create_excel",
@@ -152,7 +154,7 @@
           ],
           "source": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
           "review": "3e4166b3d164ad5d589b8dbdcf87c9f144cd1cbe",
-          "behavior": "Concrete local library creation/revision/inspection/download with immutable provenance and admitted general-program boundary.",
+          "behavior": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical durable budget composition, and admitted general-program boundary.",
           "remaining": [
             "Native Office rendering/recalculation/quality and sandbox admission",
             "Production storage/current-authority and general inspection/publication adapters",
@@ -439,6 +441,8 @@
       ],
       "continuationComponents": [
         {
+          "typedBudgetSource": "a73b65dc05b7554c0592bec22d940ef781344dd6",
+          "typedBudgetReview": "7f29b5270f790bcdceed9b5533815fc99561ecdc",
           "operations": [
             "create_word",
             "create_excel",
@@ -447,7 +451,7 @@
           ],
           "source": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
           "review": "3e4166b3d164ad5d589b8dbdcf87c9f144cd1cbe",
-          "behavior": "Concrete local library creation/revision/inspection/download with immutable provenance and admitted general-program boundary.",
+          "behavior": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical durable budget composition, and admitted general-program boundary.",
           "remaining": [
             "Native Office rendering/recalculation/quality and sandbox admission",
             "Production storage/current-authority and general inspection/publication adapters",
@@ -603,6 +607,8 @@
           ]
         },
         {
+          "typedBudgetSource": "a73b65dc05b7554c0592bec22d940ef781344dd6",
+          "typedBudgetReview": "7f29b5270f790bcdceed9b5533815fc99561ecdc",
           "operations": [
             "create_word",
             "create_excel",
@@ -611,7 +617,7 @@
           ],
           "source": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
           "review": "3e4166b3d164ad5d589b8dbdcf87c9f144cd1cbe",
-          "behavior": "Concrete local library creation/revision/inspection/download with immutable provenance and admitted general-program boundary.",
+          "behavior": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical durable budget composition, and admitted general-program boundary.",
           "remaining": [
             "Native Office rendering/recalculation/quality and sandbox admission",
             "Production storage/current-authority and general inspection/publication adapters",
@@ -782,6 +788,8 @@
           ]
         },
         {
+          "typedBudgetSource": "a73b65dc05b7554c0592bec22d940ef781344dd6",
+          "typedBudgetReview": "7f29b5270f790bcdceed9b5533815fc99561ecdc",
           "operations": [
             "create_word",
             "create_excel",
@@ -790,7 +798,7 @@
           ],
           "source": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
           "review": "3e4166b3d164ad5d589b8dbdcf87c9f144cd1cbe",
-          "behavior": "Concrete local library creation/revision/inspection/download with immutable provenance and admitted general-program boundary.",
+          "behavior": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical durable budget composition, and admitted general-program boundary.",
           "remaining": [
             "Native Office rendering/recalculation/quality and sandbox admission",
             "Production storage/current-authority and general inspection/publication adapters",
@@ -963,6 +971,8 @@
           ]
         },
         {
+          "typedBudgetSource": "a73b65dc05b7554c0592bec22d940ef781344dd6",
+          "typedBudgetReview": "7f29b5270f790bcdceed9b5533815fc99561ecdc",
           "operations": [
             "create_word",
             "create_excel",
@@ -971,7 +981,7 @@
           ],
           "source": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
           "review": "3e4166b3d164ad5d589b8dbdcf87c9f144cd1cbe",
-          "behavior": "Concrete local library creation/revision/inspection/download with immutable provenance and admitted general-program boundary.",
+          "behavior": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical durable budget composition, and admitted general-program boundary.",
           "remaining": [
             "Native Office rendering/recalculation/quality and sandbox admission",
             "Production storage/current-authority and general inspection/publication adapters",
@@ -1067,6 +1077,8 @@
           ]
         },
         {
+          "typedBudgetSource": "a73b65dc05b7554c0592bec22d940ef781344dd6",
+          "typedBudgetReview": "7f29b5270f790bcdceed9b5533815fc99561ecdc",
           "operations": [
             "create_word",
             "create_excel",
@@ -1075,7 +1087,7 @@
           ],
           "source": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
           "review": "3e4166b3d164ad5d589b8dbdcf87c9f144cd1cbe",
-          "behavior": "Concrete local library creation/revision/inspection/download with immutable provenance and admitted general-program boundary.",
+          "behavior": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical durable budget composition, and admitted general-program boundary.",
           "remaining": [
             "Native Office rendering/recalculation/quality and sandbox admission",
             "Production storage/current-authority and general inspection/publication adapters",
@@ -1452,6 +1464,8 @@
           ]
         },
         {
+          "typedBudgetSource": "a73b65dc05b7554c0592bec22d940ef781344dd6",
+          "typedBudgetReview": "7f29b5270f790bcdceed9b5533815fc99561ecdc",
           "operations": [
             "create_word",
             "create_excel",
@@ -1460,7 +1474,7 @@
           ],
           "source": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
           "review": "3e4166b3d164ad5d589b8dbdcf87c9f144cd1cbe",
-          "behavior": "Concrete local library creation/revision/inspection/download with immutable provenance and admitted general-program boundary.",
+          "behavior": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical durable budget composition, and admitted general-program boundary.",
           "remaining": [
             "Native Office rendering/recalculation/quality and sandbox admission",
             "Production storage/current-authority and general inspection/publication adapters",
@@ -1662,6 +1676,8 @@
           ]
         },
         {
+          "typedBudgetSource": "a73b65dc05b7554c0592bec22d940ef781344dd6",
+          "typedBudgetReview": "7f29b5270f790bcdceed9b5533815fc99561ecdc",
           "operations": [
             "create_word",
             "create_excel",
@@ -1670,7 +1686,7 @@
           ],
           "source": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
           "review": "3e4166b3d164ad5d589b8dbdcf87c9f144cd1cbe",
-          "behavior": "Concrete local library creation/revision/inspection/download with immutable provenance and admitted general-program boundary.",
+          "behavior": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical durable budget composition, and admitted general-program boundary.",
           "remaining": [
             "Native Office rendering/recalculation/quality and sandbox admission",
             "Production storage/current-authority and general inspection/publication adapters",
@@ -1964,6 +1980,8 @@
       ],
       "continuationComponents": [
         {
+          "typedBudgetSource": "a73b65dc05b7554c0592bec22d940ef781344dd6",
+          "typedBudgetReview": "7f29b5270f790bcdceed9b5533815fc99561ecdc",
           "operations": [
             "create_word",
             "create_excel",
@@ -1972,7 +1990,7 @@
           ],
           "source": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
           "review": "3e4166b3d164ad5d589b8dbdcf87c9f144cd1cbe",
-          "behavior": "Concrete local library creation/revision/inspection/download with immutable provenance and admitted general-program boundary.",
+          "behavior": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical durable budget composition, and admitted general-program boundary.",
           "remaining": [
             "Native Office rendering/recalculation/quality and sandbox admission",
             "Production storage/current-authority and general inspection/publication adapters",
@@ -2251,6 +2269,8 @@
           ]
         },
         {
+          "typedBudgetSource": "a73b65dc05b7554c0592bec22d940ef781344dd6",
+          "typedBudgetReview": "7f29b5270f790bcdceed9b5533815fc99561ecdc",
           "operations": [
             "create_word",
             "create_excel",
@@ -2259,7 +2279,7 @@
           ],
           "source": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
           "review": "3e4166b3d164ad5d589b8dbdcf87c9f144cd1cbe",
-          "behavior": "Concrete local library creation/revision/inspection/download with immutable provenance and admitted general-program boundary.",
+          "behavior": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical durable budget composition, and admitted general-program boundary.",
           "remaining": [
             "Native Office rendering/recalculation/quality and sandbox admission",
             "Production storage/current-authority and general inspection/publication adapters",
@@ -2424,6 +2444,8 @@
           ]
         },
         {
+          "typedBudgetSource": "a73b65dc05b7554c0592bec22d940ef781344dd6",
+          "typedBudgetReview": "7f29b5270f790bcdceed9b5533815fc99561ecdc",
           "operations": [
             "create_word",
             "create_excel",
@@ -2432,7 +2454,7 @@
           ],
           "source": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
           "review": "3e4166b3d164ad5d589b8dbdcf87c9f144cd1cbe",
-          "behavior": "Concrete local library creation/revision/inspection/download with immutable provenance and admitted general-program boundary.",
+          "behavior": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical durable budget composition, and admitted general-program boundary.",
           "remaining": [
             "Native Office rendering/recalculation/quality and sandbox admission",
             "Production storage/current-authority and general inspection/publication adapters",
@@ -2567,6 +2589,8 @@
           ]
         },
         {
+          "typedBudgetSource": "a73b65dc05b7554c0592bec22d940ef781344dd6",
+          "typedBudgetReview": "7f29b5270f790bcdceed9b5533815fc99561ecdc",
           "operations": [
             "create_word",
             "create_excel",
@@ -2575,7 +2599,7 @@
           ],
           "source": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
           "review": "3e4166b3d164ad5d589b8dbdcf87c9f144cd1cbe",
-          "behavior": "Concrete local library creation/revision/inspection/download with immutable provenance and admitted general-program boundary.",
+          "behavior": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical durable budget composition, and admitted general-program boundary.",
           "remaining": [
             "Native Office rendering/recalculation/quality and sandbox admission",
             "Production storage/current-authority and general inspection/publication adapters",
