@@ -1,0 +1,28 @@
+{
+  "base": "ede7b56845816d38d0bbffab5a657aaa4f978739",
+  "discovery": "4b8368501acb22ea19486d7ab3a70eeebfd7e4da",
+  "frozenBeforeCandidateInspection": true,
+  "operations": ["search_program_elements", "get_program_element", "get_pe_budget_timeline"],
+  "criteria": [
+    "Inspect exact paired frozenfd8765ec and observed4be13b0 wrapper, read owner, scalar schema, claim and identity helpers, policy/mode and relevant projection tests. Retain only identities/derived metadata.",
+    "Closed request normalization preserves query-before-q fallback, UTF16 caps, service and budget activity semantics, optional hasData and page/limit defaults/caps. Deliberate coercion/wire narrowing needs explicit scope disclosure.",
+    "Trusted evidenceAccuracyMode and observation clocks are closed server context, not model arguments or current authorization proof. No ambient clock needed by pure source admission.",
+    "Search retains every reachable finder projection field except the exact removed raw money/spark keys. Existing claims/comparison fields remain distinct from the added unknown-cycle currentFundingClaim.",
+    "Search pages preserve current page/limit and source total behavior, including the first-row window count's empty-page zero. No false corpus absence/completeness inference.",
+    "Funding values preserve zero/null, signed amounts and raw stored Decimal wire distinctions. Do not invent probabilities from forecast amounts or unsigned/confidence constraints unsupported by source.",
+    "Stage, label, vehicle, FY, cycle class, isProjection and units correlate using canonical established vocabulary. NDAA authorization conference differs from appropriations conference/enactment.",
+    "Detail covers all ProgramElement and ProgramElementYear scalar fields plus summary, nullable billCount, project/source counts and current watch flag. All year rows retained without arbitrary page cap.",
+    "Detail supplied catalog request-mode cycle is distinct from fundingSummary's PE mark-bearing cycle; no unsupported equality or currentness claim. Shared cached detail is not fresh user watch authority.",
+    "Timeline covers all raw year scalars, ladder projection, missing-mark taxonomy, conflict values, provenance and all milestones. Date/null/order rules must follow actual storage/query, not guessed business chronology.",
+    "Timeline source observations and unknown provenance cannot be promoted into verified source freshness. Zero conflicting request suppresses misleading vs-request delta as specified.",
+    "Off/shadow keep legacy wire fields; enforce admits only established extended claim/lineage shape and exact accepted/candidate branches. Shadow effects remain unrun; lineage is not identity merger authority.",
+    "Missing element/error paths remain errors; do not invent successful not-found data or drop whole operation branches for lack of a separately named DTO.",
+    "Output selectors and actual stored identifiers correlate only to supported source facts; aliases/case/cache behavior require explicit handling, not unsupported row relationships.",
+    "Canonical inert JSON admission rejects getters/proxies/cycles/sparse arrays without executing them. Result returns detached validated snapshot; normalization and context snapshots cannot be changed by caller mutation.",
+    "No competing generic JSON walker, model loop, private implementation copy/import, shared catalog/public source/lock edits or invented adapters. Cohesive module boundaries and one vocabulary owner.",
+    "Run meaningful independent positive and adversarial controls against exact frozen candidate, preserve all failed probes and original assertions, use bounded owned-process reaping and verify cleanup.",
+    "Verdict ACCEPT_SOURCE or HOLD is exact-source only. Current tenant/user/feature/watch authority, actual Decimal serialization, cached data freshness, native/DB/provider/runtime integration remain explicitly unqualified when not proved."
+  ],
+  "knownDiscoveryGap": "Discovery metadata is not materialized at PR32 base; read exact4b836850 Git objects. First local rg missing-directory error retained in final diagnostics.",
+  "ownership": "Only independent test, report and program-elements-review evidence; author gateway_author owns production. No recursive delegation or runtime/native/source/provider execution."
+}
