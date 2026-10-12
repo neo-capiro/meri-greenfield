@@ -37,7 +37,9 @@ does not qualify an adapter, authorize source access or advance a runtime gate.
    absence certificate. Page length is bounded by admitted limit; do not impose
    atomic count/page equality or infer complete source coverage. Filtering
    relationships must respect actual equality/normalization semantics.
-5. `get_state_legislator`: query is required; optional state and limit1–8/default5.
+5. `get_state_legislator`: advertised query was required; the frozen factory API
+   preserves the actual producer's missing/blank-query no-match branch, with
+   optional state and limit1–8/default5.
    Three exact result alternatives are preserved: one full match, no match with
    note, or zero full matches plus bounded ambiguous candidate rows and note.
    Full and ambiguous row shapes differ. No accidental hybrid alternatives.
@@ -88,3 +90,9 @@ Pre-candidate clarification: this revision corrects the original blanket output
 freeze wording after inspecting the existing resolver. The original criteria
 commit remains preserved; normalized-argument immutability and output inertness
 remain required.
+
+API clarification before candidate: root froze the factory with optional query
+to preserve missing-query behavior, finite number/string/null clamp inputs,
+and explicitly refused nonempty options. The independent controls were written
+at `7e0da9b6dc9bf0a078bea9810dadd5059c5bbb59` against that API before the
+production candidate was supplied. They have not yet executed.
