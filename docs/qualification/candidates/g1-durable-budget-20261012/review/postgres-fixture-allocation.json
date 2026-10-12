@@ -1,0 +1,17 @@
+{
+  "received_at_utc": "2026-10-12T04:23:35.702649+00:00",
+  "authority": "Root additive fixture allocation after independent dependency observation",
+  "path": "apps/proxy/qualification/test/test_postgres_state.py",
+  "original_bytes": 19876,
+  "original_sha256": "c0064102b6bb5978f1a285b2a8f416aee2d7e85733799c7ba3fc8b0eec03255c",
+  "allowed": [
+    "Explicit migrate_tool_budget() call immediately after migrate_new_database() in existing real-engine setup",
+    "Add only three new foreign-key tables to the existing synthetic TRUNCATE list"
+  ],
+  "required": [
+    "All original test bodies/assertions otherwise byte-identical",
+    "No implicit0002 upgrade in old loader",
+    "No PostgreSQL engine execution",
+    "Snapshot compatibility and global/run totals must not double-count settled amounts"
+  ]
+}

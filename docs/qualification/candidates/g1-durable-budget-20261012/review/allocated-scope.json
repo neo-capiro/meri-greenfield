@@ -3,7 +3,7 @@
   "authority": "Root explicit source-only allocation and accounting decision; no execution/spend authority",
   "source_paths": [
     "NEW apps/gateway/budget/postgres-tool-budget.mjs",
-    "NEW apps/gateway/budget/binding.mjs",
+    "NEW apps/gateway/budget/tool-budget-binding.mjs",
     "NEW apps/gateway/budget/postgres-budget-store.mjs",
     "NEW apps/gateway/budget/durable-tool-dispatch.mjs",
     "NEW gateway budget README and two tests",
