@@ -1,0 +1,76 @@
+{
+  "authorFreeze": "e69cfd66fd349714f76c70c9c691a00545b90921",
+  "manifestSha256": "2cb68a316214d686ab25c7ddaa834f93f2703bf7fdffc010bee84e7d441b6b43",
+  "passed": 17,
+  "failed": 0,
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-READ-CONTINUATION-PUBLIC-REPORTS-AUTHOR-20261012.md",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/build-schema.py",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/focused-initial-source.patch",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/focused-initial.json",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/focused-initial.stderr.bin",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/focused-initial.stdout.bin",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/outline.json",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/public-distribution.json",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/public-distribution.stderr.bin",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/public-distribution.stdout.bin",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/reference-identities.json",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/root-source-check.json",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/root-source-check.stderr.bin",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/root-source-check.stdout.bin",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/source-preservation.json",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/verify-packet.py",
+      "passed": true
+    }
+  ]
+}
