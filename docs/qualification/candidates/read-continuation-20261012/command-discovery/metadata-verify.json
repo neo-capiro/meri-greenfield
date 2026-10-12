@@ -1,0 +1,33 @@
+{
+  "command": [
+    "python",
+    "docs/qualification/candidates/read-continuation-20261012/command-discovery/verify-checkpoint.py"
+  ],
+  "cwd": "/workspace/meri-command-contract-discovery-20261012",
+  "sourceHead": "ac7ae6d053132dcbfa50a3c22ce7af21baf8c2d6",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T17:52:27.317231+00:00",
+  "durationSeconds": 11.863,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 214325,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/command-discovery/metadata-verify.stdout.bin",
+      "bytes": 215,
+      "sha256": "f95c581d8561a31f6e9e7614aa8f4c84f347a8ef5038620226f5dcb3e4a05b49"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/command-discovery/metadata-verify.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Evidence-only correction: verifier and capture both used metadata-audit.json; original96pass stdout/receipt and commit preserved, detailed checks now separate.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -153,3 +153,10 @@ source adapter, durable effects, native artifacts or G1–G7 acceptance.
 Recorded result: **96/96 offline checks passed**, 6,110 base files byte-identical,
 24/24 source references unchanged across both pins. Capture exit0; owned
 PID/PGID207573 absent, no timeout or kill. These are metadata checks only.
+
+Evidence correction after checkpoint `ac7ae6d`: the first verifier detail and
+capture receipt used the same JSON filename; the capture retained its receipt
+and raw96-pass stdout, but replaced the detailed check list. The original commit
+is preserved. The verifier now writes `metadata-checks.json` and the separate
+`metadata-verify` capture reran the same96 checks successfully. Owned
+PID/PGID214325 absent; no timeout or kill. No production source changed.

@@ -1,0 +1,397 @@
+{
+  "scope": "OFFLINE_METADATA_ONLY",
+  "checks": 96,
+  "passed": 96,
+  "failed": 0,
+  "baseFilesByteIdentical": 6110,
+  "sourceReferences": 24,
+  "sourceDrift": 0,
+  "privateSourceExecuted": false,
+  "nativeRuntimeQualified": false,
+  "checksDetail": [
+    {
+      "label": "exact eleven unique selected operation records",
+      "pass": true
+    },
+    {
+      "label": "eleven match previous discovery",
+      "pass": true
+    },
+    {
+      "label": "eleven retained in pending disposition",
+      "pass": true
+    },
+    {
+      "label": "cancel_scheduled_task selected/pending/null unchanged",
+      "pass": true
+    },
+    {
+      "label": "create_excel selected/pending/null unchanged",
+      "pass": true
+    },
+    {
+      "label": "create_powerpoint selected/pending/null unchanged",
+      "pass": true
+    },
+    {
+      "label": "create_task selected/pending/null unchanged",
+      "pass": true
+    },
+    {
+      "label": "create_word selected/pending/null unchanged",
+      "pass": true
+    },
+    {
+      "label": "run_analysis selected/pending/null unchanged",
+      "pass": true
+    },
+    {
+      "label": "save_chat_attachments selected/pending/null unchanged",
+      "pass": true
+    },
+    {
+      "label": "save_memory selected/pending/null unchanged",
+      "pass": true
+    },
+    {
+      "label": "schedule_task selected/pending/null unchanged",
+      "pass": true
+    },
+    {
+      "label": "update_scheduled_task selected/pending/null unchanged",
+      "pass": true
+    },
+    {
+      "label": "update_task selected/pending/null unchanged",
+      "pass": true
+    },
+    {
+      "label": "pinned:apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "label": "observed:apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "label": "drift:apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "label": "pinned:apps/api/src/meri/meri-memory.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "observed:apps/api/src/meri/meri-memory.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "drift:apps/api/src/meri/meri-memory.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "pinned:apps/api/src/memory/memory-candidate.service.ts",
+      "pass": true
+    },
+    {
+      "label": "observed:apps/api/src/memory/memory-candidate.service.ts",
+      "pass": true
+    },
+    {
+      "label": "drift:apps/api/src/memory/memory-candidate.service.ts",
+      "pass": true
+    },
+    {
+      "label": "pinned:apps/api/src/memory/governed-memory-candidate.service.ts",
+      "pass": true
+    },
+    {
+      "label": "observed:apps/api/src/memory/governed-memory-candidate.service.ts",
+      "pass": true
+    },
+    {
+      "label": "drift:apps/api/src/memory/governed-memory-candidate.service.ts",
+      "pass": true
+    },
+    {
+      "label": "pinned:apps/api/src/meri/meri-client-filing.service.ts",
+      "pass": true
+    },
+    {
+      "label": "observed:apps/api/src/meri/meri-client-filing.service.ts",
+      "pass": true
+    },
+    {
+      "label": "drift:apps/api/src/meri/meri-client-filing.service.ts",
+      "pass": true
+    },
+    {
+      "label": "pinned:apps/api/src/meri/meri-client-filing.service.spec.ts",
+      "pass": true
+    },
+    {
+      "label": "observed:apps/api/src/meri/meri-client-filing.service.spec.ts",
+      "pass": true
+    },
+    {
+      "label": "drift:apps/api/src/meri/meri-client-filing.service.spec.ts",
+      "pass": true
+    },
+    {
+      "label": "pinned:apps/api/src/engagement/engagement.service.ts",
+      "pass": true
+    },
+    {
+      "label": "observed:apps/api/src/engagement/engagement.service.ts",
+      "pass": true
+    },
+    {
+      "label": "drift:apps/api/src/engagement/engagement.service.ts",
+      "pass": true
+    },
+    {
+      "label": "pinned:apps/api/src/engagement/research-portfolio-task-access.ts",
+      "pass": true
+    },
+    {
+      "label": "observed:apps/api/src/engagement/research-portfolio-task-access.ts",
+      "pass": true
+    },
+    {
+      "label": "drift:apps/api/src/engagement/research-portfolio-task-access.ts",
+      "pass": true
+    },
+    {
+      "label": "pinned:apps/api/src/engagement/engagement-access.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "observed:apps/api/src/engagement/engagement-access.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "drift:apps/api/src/engagement/engagement-access.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "pinned:apps/api/src/meri/meri-action-proposal.service.ts",
+      "pass": true
+    },
+    {
+      "label": "observed:apps/api/src/meri/meri-action-proposal.service.ts",
+      "pass": true
+    },
+    {
+      "label": "drift:apps/api/src/meri/meri-action-proposal.service.ts",
+      "pass": true
+    },
+    {
+      "label": "pinned:apps/api/src/meri/meri-action-proposal.service.spec.ts",
+      "pass": true
+    },
+    {
+      "label": "observed:apps/api/src/meri/meri-action-proposal.service.spec.ts",
+      "pass": true
+    },
+    {
+      "label": "drift:apps/api/src/meri/meri-action-proposal.service.spec.ts",
+      "pass": true
+    },
+    {
+      "label": "pinned:apps/api/src/meri/meri-approval.service.ts",
+      "pass": true
+    },
+    {
+      "label": "observed:apps/api/src/meri/meri-approval.service.ts",
+      "pass": true
+    },
+    {
+      "label": "drift:apps/api/src/meri/meri-approval.service.ts",
+      "pass": true
+    },
+    {
+      "label": "pinned:apps/api/src/meri/meri-actions.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "observed:apps/api/src/meri/meri-actions.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "drift:apps/api/src/meri/meri-actions.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "pinned:apps/api/src/meri/meri-policy-pack.service.ts",
+      "pass": true
+    },
+    {
+      "label": "observed:apps/api/src/meri/meri-policy-pack.service.ts",
+      "pass": true
+    },
+    {
+      "label": "drift:apps/api/src/meri/meri-policy-pack.service.ts",
+      "pass": true
+    },
+    {
+      "label": "pinned:apps/api/src/meri/meri-action-logical-outcome.ts",
+      "pass": true
+    },
+    {
+      "label": "observed:apps/api/src/meri/meri-action-logical-outcome.ts",
+      "pass": true
+    },
+    {
+      "label": "drift:apps/api/src/meri/meri-action-logical-outcome.ts",
+      "pass": true
+    },
+    {
+      "label": "pinned:apps/api/src/meri/meri-schedule.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "observed:apps/api/src/meri/meri-schedule.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "drift:apps/api/src/meri/meri-schedule.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "pinned:apps/api/src/meri/meri-tools.schedule-controls.spec.ts",
+      "pass": true
+    },
+    {
+      "label": "observed:apps/api/src/meri/meri-tools.schedule-controls.spec.ts",
+      "pass": true
+    },
+    {
+      "label": "drift:apps/api/src/meri/meri-tools.schedule-controls.spec.ts",
+      "pass": true
+    },
+    {
+      "label": "pinned:apps/api/src/meri/meri-schedule-execution-boundary.spec.ts",
+      "pass": true
+    },
+    {
+      "label": "observed:apps/api/src/meri/meri-schedule-execution-boundary.spec.ts",
+      "pass": true
+    },
+    {
+      "label": "drift:apps/api/src/meri/meri-schedule-execution-boundary.spec.ts",
+      "pass": true
+    },
+    {
+      "label": "pinned:apps/api/src/meri/meri-docgen.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "observed:apps/api/src/meri/meri-docgen.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "drift:apps/api/src/meri/meri-docgen.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "pinned:apps/api/src/meri/meri-text-artifact-receipt.ts",
+      "pass": true
+    },
+    {
+      "label": "observed:apps/api/src/meri/meri-text-artifact-receipt.ts",
+      "pass": true
+    },
+    {
+      "label": "drift:apps/api/src/meri/meri-text-artifact-receipt.ts",
+      "pass": true
+    },
+    {
+      "label": "pinned:apps/api/src/meri/meri-text-artifact-current-proposal.ts",
+      "pass": true
+    },
+    {
+      "label": "observed:apps/api/src/meri/meri-text-artifact-current-proposal.ts",
+      "pass": true
+    },
+    {
+      "label": "drift:apps/api/src/meri/meri-text-artifact-current-proposal.ts",
+      "pass": true
+    },
+    {
+      "label": "pinned:apps/api/src/meri/meri-analysis-provenance.ts",
+      "pass": true
+    },
+    {
+      "label": "observed:apps/api/src/meri/meri-analysis-provenance.ts",
+      "pass": true
+    },
+    {
+      "label": "drift:apps/api/src/meri/meri-analysis-provenance.ts",
+      "pass": true
+    },
+    {
+      "label": "pinned:packages/shared/src/index.ts",
+      "pass": true
+    },
+    {
+      "label": "observed:packages/shared/src/index.ts",
+      "pass": true
+    },
+    {
+      "label": "drift:packages/shared/src/index.ts",
+      "pass": true
+    },
+    {
+      "label": "pinned:apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "label": "observed:apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "label": "drift:apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "label": "canonical command action enum unchanged",
+      "pass": true
+    },
+    {
+      "label": "existing canonical ApprovalProposal",
+      "pass": true
+    },
+    {
+      "label": "existing canonical ApprovalDecision",
+      "pass": true
+    },
+    {
+      "label": "existing canonical CommandExecutionRequest",
+      "pass": true
+    },
+    {
+      "label": "existing canonical CommandReceipt",
+      "pass": true
+    },
+    {
+      "label": "existing canonical ArtifactVersion",
+      "pass": true
+    },
+    {
+      "label": "existing canonical ScheduleProjection",
+      "pass": true
+    },
+    {
+      "label": "explicit checkpoint/no source activation",
+      "pass": true
+    },
+    {
+      "label": "immutable old files preserved",
+      "pass": true
+    },
+    {
+      "label": "all base tracked bytes preserved",
+      "pass": true
+    }
+  ]
+}

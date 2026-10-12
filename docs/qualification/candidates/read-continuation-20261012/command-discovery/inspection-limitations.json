@@ -39,6 +39,12 @@
       "path": ".agents",
       "resolution": "No checkout-local .agents; /workspace/.agents listing had no applicable skill files.",
       "rawReceipt": "Original interactive tool transcript only."
+    },
+    {
+      "kind": "evidenceFilenameCollision",
+      "preservedCommit": "ac7ae6d053132dcbfa50a3c22ce7af21baf8c2d6",
+      "detail": "Initial capture receipt overwrote same-name verifier detail; original raw96pass output and receipt preserved.",
+      "repair": "Distinct metadata-checks.json and metadata-verify capture; identical96checks rerun pass."
     }
   ],
   "privacy": "Only own summaries, DTO metadata, symbol/line references and cryptographic identities retained; no private implementation bodies."

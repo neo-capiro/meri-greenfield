@@ -1,12 +1,13 @@
 {
   "base": "a3e946c1fa264ae7b33205f5b87804ee1ef75773",
+  "preservedInitialCheckpoint": "ac7ae6d053132dcbfa50a3c22ce7af21baf8c2d6",
   "classification": "DISCOVERY_CHECKPOINT_ONLY",
   "productionChanges": false,
   "files": [
     {
       "path": "docs/coordination/reports/CODEX-COMMAND-CONTRACT-DISCOVERY-20261012.md",
-      "bytes": 12024,
-      "sha256": "f29860e68c4a6bd9ff8f4aab7bcc1ab51caf1e736c628fdc1c1b54a1ef1e2b86"
+      "bytes": 12483,
+      "sha256": "83b47fa1d6503ca8247723a844498f9580a14e1cc7b3dbdee8a4588d8c7861e3"
     },
     {
       "path": "docs/qualification/candidates/read-continuation-20261012/command-discovery/capture-reaped.py",
@@ -20,8 +21,8 @@
     },
     {
       "path": "docs/qualification/candidates/read-continuation-20261012/command-discovery/inspection-limitations.json",
-      "bytes": 2227,
-      "sha256": "93d9df153fcab88c187409d43fa6fd025f11c9bb41762a0d1c935ab4b0f1781e"
+      "bytes": 2588,
+      "sha256": "bf785ec0b514207a90f94fcaf708700ebda4cb7e3db44b4c4c453cfcddee9ad6"
     },
     {
       "path": "docs/qualification/candidates/read-continuation-20261012/command-discovery/metadata-audit.json",
@@ -39,14 +40,34 @@
       "sha256": "f95c581d8561a31f6e9e7614aa8f4c84f347a8ef5038620226f5dcb3e4a05b49"
     },
     {
+      "path": "docs/qualification/candidates/read-continuation-20261012/command-discovery/metadata-checks.json",
+      "bytes": 10006,
+      "sha256": "b2f23cffdf8e2d709de13e76bad099991c744f7aef0747a4cf53cad7ce67be40"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/command-discovery/metadata-verify.json",
+      "bytes": 1429,
+      "sha256": "324c6d9ad6f625d1d8a94e67fefaef040c42cb75226823a237abf3290d24b3ff"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/command-discovery/metadata-verify.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/command-discovery/metadata-verify.stdout.bin",
+      "bytes": 215,
+      "sha256": "f95c581d8561a31f6e9e7614aa8f4c84f347a8ef5038620226f5dcb3e4a05b49"
+    },
+    {
       "path": "docs/qualification/candidates/read-continuation-20261012/command-discovery/reference-identities.json",
       "bytes": 18134,
       "sha256": "edbaca62f4dd9e05ddccd35009b942b16fc2333b24df5f9404e2046a2b50e1d2"
     },
     {
       "path": "docs/qualification/candidates/read-continuation-20261012/command-discovery/verify-checkpoint.py",
-      "bytes": 3575,
-      "sha256": "1e06b19f1af7fabba67337c7d73105a42419948767abb6529429f69f2a0f2393"
+      "bytes": 3576,
+      "sha256": "ad9976c293ca8b6af9a0bbfb1ea8bb5a059a0b07c35d97f139354aff34196c8e"
     }
   ]
 }

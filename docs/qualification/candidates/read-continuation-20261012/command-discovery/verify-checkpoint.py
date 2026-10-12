@@ -39,4 +39,4 @@ for path in tracked:
  if (root/path).read_bytes()!=expected_bytes:raise AssertionError('base preservation:'+path)
 check('all base tracked bytes preserved',True)
 result={'scope':'OFFLINE_METADATA_ONLY','checks':len(checks),'passed':sum(c['pass'] for c in checks),'failed':0,'baseFilesByteIdentical':len(tracked),'sourceReferences':len(m['references']),'sourceDrift':0,'privateSourceExecuted':False,'nativeRuntimeQualified':False,'checksDetail':checks}
-(ev/'metadata-audit.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps({k:v for k,v in result.items() if k!='checksDetail'}))
+(ev/'metadata-checks.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps({k:v for k,v in result.items() if k!='checksDetail'}))
