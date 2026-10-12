@@ -1,0 +1,9 @@
+{
+  "state": "pre-freeze expanded deadline and canonical entry controls",
+  "argv": [
+    "node",
+    "--test",
+    "/workspace/meri-g1-durable-budget-review-20261012/docs/qualification/candidates/g1-durable-budget-20261012/review/dispatch-independent.test.mjs"
+  ],
+  "exit_code": 1
+}

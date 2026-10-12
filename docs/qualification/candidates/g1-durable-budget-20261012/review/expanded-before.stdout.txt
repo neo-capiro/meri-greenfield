@@ -1,0 +1,47 @@
+✔ actual dispatcher consumes concrete SQL reservation and settlement once (17.790014ms)
+✔ fresh adapter and reservation identity cannot replay settled invocation (10.65993ms)
+✔ parallel same invocation has one handler and one debit (8.513013ms)
+✔ lost reserve COMMIT acknowledgement retains UNKNOWN and suppresses effect (7.058954ms)
+✔ mixed model/tool holds enforce global exact bound without counting settled twice (5.006013ms)
+✔ installed run cap includes settled and unknown model liability (6.861772ms)
+✔ database revocation/expiry/stale fence blocks actual effect despite fresh synthetic gateway claims (6.371755ms)
+✔ trusted binding substitution cannot mutate admitted allocation (1.369478ms)
+✔ late reserve after deadline keeps hold and never starts handler (52.40677ms)
+✔ default composition stays disabled before any SQL or handler (1.135106ms)
+✔ installed manifest runtime bounds parked handler before longer authority deadline (13.464705ms)
+✔ installed manifest runtime bounds parked settlement before longer authority deadline (32.93955ms)
+✔ manifest body/hash, exact budgets and allowed operation are required before SQL (1.222858ms)
+✔ known grant expiry bounds a parked tool before longer authority deadline (12.213404ms)
+✔ known schedule expiry bounds a parked tool before longer authority deadline (11.401384ms)
+✖ validated grant deadline is published before a later allocation read can park (117.102027ms)
+✔ canonical durable entry is inert, unavailable for every catalog operation, and refuses activation override (14.438158ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 16
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1264.880698
+
+✖ failing tests:
+
+test at docs/qualification/candidates/g1-durable-budget-20261012/review/dispatch-independent.test.mjs:95:1
+✖ validated grant deadline is published before a later allocation read can park (117.102027ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /^GatewayDenied: (DEADLINE|BUDGET_UNCERTAIN)$/. Input:
+  
+  'Error: validated grant deadline was parked before publication'
+  
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-durable-budget-review-20261012/docs/qualification/candidates/g1-durable-budget-20261012/review/dispatch-independent.test.mjs:98:22)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: validated grant deadline was parked before publication
+        at Timeout.<anonymous> (file:///workspace/meri-g1-durable-budget-review-20261012/docs/qualification/candidates/g1-durable-budget-20261012/review/dispatch-independent.test.mjs:98:118)
+        at listOnTimeout (node:internal/timers:635:17)
+        at process.processTimers (node:internal/timers:571:7),
+    expected: /^GatewayDenied: (DEADLINE|BUDGET_UNCERTAIN)$/,
+    operator: 'rejects',
+    diff: 'simple'
+  }

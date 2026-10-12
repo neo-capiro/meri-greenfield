@@ -21,7 +21,7 @@ function harness({ charge = 10, runCap = 100, globalCap = 100, runtimeSeconds = 
  const i={invocationId:'independent-call',grantId:uuid('8'),binding:f.binding,qualificationBinding:{runId:f.binding.runId,attempt:1,workerArn:'arn:aws:ecs:us-east-1:967807252336:task/synthetic/'+ 'a'.repeat(32),fence:1,policyRevision:policy},capabilitySha256:createHash('sha256').update(credential).digest('hex'),allocationSha256:canonicalSha256(allocation)};
  const q=i.qualificationBinding;
  let state={budget:{id:1,cap_micro_usd:String(globalCap),consumed_micro_usd:'0',quarantined:false},run:{run_id:q.runId,attempt:1,worker_arn:q.workerArn,fence:1,policy_revision:policy},grant:{run_id:q.runId,attempt:1,worker_arn:q.workerArn,fence:1,policy_revision:policy,grant_id:i.grantId,state:'ACTIVE',capability_sha256:i.capabilitySha256,expires_at:new Date(NOW+10000)},allocation:null,grantBinding:null,reservations:new Map(),model:[]};
- let chain=Promise.resolve(); let unknownCommit=false; let clock=NOW; let parkInsert; let inserted; let parkSettlement; let settlementReached;
+ let chain=Promise.resolve(); let unknownCommit=false; let clock=NOW; let parkInsert; let inserted; let parkSettlement; let settlementReached; let parkAllocation; let allocationReached;
  const queries=[];const releases=[];
  const rowsFor=s=>[...s.model,...[...s.reservations.values()].map(r=>({kind:'tool',slot:r.invocation_id,run_id:r.run_id,grant_id:r.grant_id,state:r.state,hold_micro_usd:r.hold_micro_usd,consumed_micro_usd:r.charged_micro_usd??'0'}))];
  const pool={async connect(){let local;let unlock;return {
@@ -33,7 +33,7 @@ function harness({ charge = 10, runCap = 100, globalCap = 100, runtimeSeconds = 
    if(sql==='COMMIT'){if(local)state=local;local=undefined;if(unknownCommit){unknownCommit=false;throw Error('lost ack');}return rows([]);}
    if(sql.startsWith('SELECT * FROM meri_qualification.runs'))return rows([local.run]);
    if(sql.startsWith('SELECT * FROM meri_qualification.grants'))return rows([local.grant]);
-   if(sql.startsWith('SELECT * FROM meri_qualification.tool_run_allocations'))return rows(local.allocation?[local.allocation]:[]);
+   if(sql.startsWith('SELECT * FROM meri_qualification.tool_run_allocations')){allocationReached?.();if(parkAllocation)await parkAllocation;return rows(local.allocation?[local.allocation]:[]);}
    if(sql.startsWith('INSERT INTO meri_qualification.tool_run_allocations')){local.allocation={run_id:p[0],allocation_sha256:p[1],allocation:p[2],max_tool_calls:String(p[3]),max_cost_micro_usd:String(p[4]),started_at:new Date(clock)};return rows([]);}
    if(sql.startsWith('SELECT * FROM meri_qualification.tool_grant_bindings'))return rows(local.grantBinding?[local.grantBinding]:[]);
    if(sql.startsWith('INSERT INTO meri_qualification.tool_grant_bindings')){local.grantBinding={grant_id:p[0],run_id:p[1],facts:p[2]};return rows([]);}
@@ -50,7 +50,7 @@ function harness({ charge = 10, runCap = 100, globalCap = 100, runtimeSeconds = 
  let id=7;
  const create=changes=>createDurableToolDispatch({pool,allocationJson:JSON.stringify(allocation),catalog:{entry:()=>f.entry,discoverable:()=>[f.entry]},authority:f.authority,limits,now:()=>f.state.now,newId:()=>uuid(String(id)),sourceEnabled:true,...changes});
  const call=(g=create(),inv=i)=>g.execute(requestJson,credential,JSON.stringify(inv));
- return {f,i,allocation,pool,create,call,queries,releases,state:()=>state,newReservation(){id=9;},loseCommit(){unknownCommit=true;},setClock(t){clock=t;},async install(){await create().bindTrustedGrant(JSON.stringify(i));},park(){let resume;parkInsert=new Promise(r=>{resume=r;});const reached=new Promise(r=>{inserted=r;});return {resume,reached};},parkSettlement(){let resume;parkSettlement=new Promise(r=>{resume=r;});const reached=new Promise(r=>{settlementReached=r;});return {resume,reached};}};
+ return {f,i,allocation,pool,create,call,queries,releases,state:()=>state,newReservation(){id=9;},loseCommit(){unknownCommit=true;},setClock(t){clock=t;},async install(){await create().bindTrustedGrant(JSON.stringify(i));},park(){let resume;parkInsert=new Promise(r=>{resume=r;});const reached=new Promise(r=>{inserted=r;});return {resume,reached};},parkSettlement(){let resume;parkSettlement=new Promise(r=>{resume=r;});const reached=new Promise(r=>{settlementReached=r;});return {resume,reached};},parkAllocation(){let resume;parkAllocation=new Promise(r=>{resume=r;});const reached=new Promise(r=>{allocationReached=r;});return {resume,reached};}};
 }
 
 test('actual dispatcher consumes concrete SQL reservation and settlement once',async()=>{const h=harness();await h.install();await h.call();assert.equal(h.f.calls.filter(x=>x==='handler').length,1);assert.equal(h.state().budget.consumed_micro_usd,'10');assert.equal(h.state().reservations.get(h.i.invocationId).state,'SETTLED');});
@@ -90,4 +90,23 @@ for(const expiry of ['grant','schedule'])test(`known ${expiry} expiry bounds a p
  const outcome=h.call(h.create({limits:{...limits,maxCleanupMs:20}}));outcome.catch(()=>{});
  try{await assert.rejects(Promise.race([outcome,new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('known '+expiry+' expiry failed to bound parked handler')),100);})]),/^GatewayDenied: (DEADLINE|BUDGET_UNCERTAIN)$/);assert.equal(h.state().reservations.get(h.i.invocationId).state,'UNKNOWN');}
  finally{clearTimeout(timer);release?.();await outcome.catch(()=>{});await new Promise(r=>setImmediate(r));}
+});
+
+test('validated grant deadline is published before a later allocation read can park',async()=>{
+ const h=harness();await h.install();h.state().grant.expires_at=new Date(NOW+10);const p=h.parkAllocation();let timer;
+ const outcome=h.call(h.create({limits:{...limits,maxCleanupMs:20}}));outcome.catch(()=>{});
+ try{await p.reached;await assert.rejects(Promise.race([outcome,new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('validated grant deadline was parked before publication')),100);})]),/^GatewayDenied: (DEADLINE|BUDGET_UNCERTAIN)$/);}
+ finally{clearTimeout(timer);p.resume();await outcome.catch(()=>{});await new Promise(r=>setTimeout(r,10));}
+ assert.equal(h.f.calls.includes('handler'),false);assert.equal(h.state().reservations.size,0);
+});
+
+test('canonical durable entry is inert, unavailable for every catalog operation, and refuses activation override',async()=>{
+ const {createDurableSourceDisabledGateway}=await load('apps/gateway/index.mjs');
+ const catalog=(await import(pathToFileURL(`${root}/packages/contracts/retrieval-0.2/catalog.json`),{with:{type:'json'}})).default;
+ const h=harness();h.allocation.catalogSha256=canonicalSha256(catalog);h.i.allocationSha256=canonicalSha256(h.allocation);let poolCalls=0;
+ const options={authorityPorts:h.f.ports,pool:{async connect(){poolCalls++;throw Error('must not connect');}},allocationJson:JSON.stringify(h.allocation),limits,now:()=>NOW,newId:()=>uuid('7')};
+ const gateway=createDurableSourceDisabledGateway(options);assert.equal(gateway.sourceEnabled,false);assert.deepEqual(await gateway.discover(),[]);
+ for(const entry of catalog.operations)await assert.rejects(gateway.execute(JSON.stringify({operation:entry.operation,arguments:{}}),'synthetic-opaque',JSON.stringify(h.i)),/UNAVAILABLE/);
+ assert.equal(poolCalls,0);assert.deepEqual(h.f.calls,[]);assert.throws(()=>createDurableSourceDisabledGateway({...options,sourceEnabled:true}),/GATEWAY_CONFIGURATION/);
+ const wrong={...h.allocation,catalogSha256:'f'.repeat(64)};assert.throws(()=>createDurableSourceDisabledGateway({...options,allocationJson:JSON.stringify(wrong)}));
 });
