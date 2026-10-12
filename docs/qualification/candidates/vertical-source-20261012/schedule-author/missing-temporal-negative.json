@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-name-pattern=cancelled retained row",
+    "apps/control/test/schedule-lifecycle.test.mjs"
+  ],
+  "cwd": "/workspace/meri-schedule-lifecycle-20261012",
+  "sourceHead": "4a54ce8224a3bdb2d720ea06ef3d6f61823d1808",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "845f3924ad4b66ef71ab09872bedc2cd012334b0ae16c2a7e7f1d798b614855a",
+  "startedAt": "2026-10-12T22:16:09.024537+00:00",
+  "durationSeconds": 0.418,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 361832,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/missing-temporal-negative.stdout.bin",
+      "bytes": 728,
+      "sha256": "310bdab33e993c3bd46a4a9270ebd8caa8bdfbe45e76606bb930ddae4ba0c0a3"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/missing-temporal-negative.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Unique label identifies initial or repaired backend integration test verification; prior receipts are preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

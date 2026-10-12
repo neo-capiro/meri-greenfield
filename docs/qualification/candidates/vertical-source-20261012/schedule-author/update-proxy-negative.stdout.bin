@@ -1,0 +1,25 @@
+✖ update current Proxy descriptor trap never executes (51.047001ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 410.260304
+
+✖ failing tests:
+
+test at apps/control/test/schedule-lifecycle.test.mjs:50:1
+✖ update current Proxy descriptor trap never executes (51.047001ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-schedule-lifecycle-20261012/apps/control/test/schedule-lifecycle.test.mjs:50:239)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }

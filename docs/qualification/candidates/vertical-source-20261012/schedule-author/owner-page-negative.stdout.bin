@@ -1,0 +1,48 @@
+✔ create binds full explicit policy/task/budget and journal before actual SDK effect (44.66867ms)
+✔ update uses actual update callback and omits create-only immediate option (2.597054ms)
+✔ pause and delete are explicit, running cancellation uses exact run ID only (3.151788ms)
+✔ same stable intent cannot redispatch (2.325105ms)
+✔ foreign tenant, wrong approval, generation skip and missing explicit policy fail before all ports (1.961137ms)
+✔ hostile request getter does not execute (0.251739ms)
+✔ immutable intent before first await (1.232482ms)
+✔ lost mutation ACK leaves durable uncertainty and refuses success (1.519433ms)
+✔ revocation after acknowledged durable mutation prevents release without rewriting acknowledged record (1.106293ms)
+✔ published expiry bounds parked authority before_claim (11.156809ms)
+✔ published expiry bounds parked authority before_dispatch (11.239433ms)
+✔ published expiry bounds parked authority before_create (11.067224ms)
+✔ published expiry bounds parked authority before_release (11.371402ms)
+✔ late nested connection callback cannot effect after deadline (10.700583ms)
+✔ late handle acquisition cannot call update (0.879041ms)
+✔ hostile SDK rejection is scrubbed without invoking code getter (0.723718ms)
+✔ pre-abort no work and borrowed connection never closed (0.790067ms)
+✔ list uses owned projections and safe exact original execution summaries (8.53546ms)
+✔ list wrong owner and changed history run fail closed (1.169418ms)
+✔ create composition is inert without pool connections (0.201233ms)
+✔ input policies cover pause/unlimited/zero remaining/immediate choices without defaults (0.476286ms)
+✔ list cursor uses UUID ordering independent of request hex case (1.637412ms)
+✔ list foreign owner is rejected before inspection (0.391479ms)
+✖ list cannot advertise more rows from an impossible short owner page (0.86461ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 23
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 462.110831
+
+✖ failing tests:
+
+test at apps/control/test/schedule-lifecycle.test.mjs:48:1
+✖ list cannot advertise more rows from an impossible short owner page (0.86461ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-schedule-lifecycle-20261012/apps/control/test/schedule-lifecycle.test.mjs:48:306)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }

@@ -1,0 +1,15 @@
+{
+  "head": "12be35ac727dcdc15c18e3e16bcdd7685c790b37",
+  "command": [
+    "git",
+    "diff",
+    "--check",
+    "e5fb3963de787bbd7b7663316c368f15814897da",
+    "HEAD"
+  ],
+  "exitCode": 2,
+  "stdoutBytes": 792,
+  "stdoutSha256": "3891129cce2144d7edd3b830bbc2e2c8553ec284165f71ba59eb250ab78f640a",
+  "stderrBytes": 0,
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

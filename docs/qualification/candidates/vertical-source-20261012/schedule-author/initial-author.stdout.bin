@@ -1,0 +1,29 @@
+✔ create binds full explicit policy/task/budget and journal before actual SDK effect (60.103746ms)
+✔ update uses actual update callback and omits create-only immediate option (2.550424ms)
+✔ pause and delete are explicit, running cancellation uses exact run ID only (2.676814ms)
+✔ same stable intent cannot redispatch (2.094889ms)
+✔ foreign tenant, wrong approval, generation skip and missing explicit policy fail before all ports (1.693806ms)
+✔ hostile request getter does not execute (0.236936ms)
+✔ immutable intent before first await (1.176749ms)
+✔ lost mutation ACK leaves durable uncertainty and refuses success (1.319293ms)
+✔ revocation after acknowledged durable mutation prevents release without rewriting acknowledged record (1.052832ms)
+✔ published expiry bounds parked authority before_claim (11.173165ms)
+✔ published expiry bounds parked authority before_dispatch (10.471531ms)
+✔ published expiry bounds parked authority before_create (11.48228ms)
+✔ published expiry bounds parked authority before_release (11.697523ms)
+✔ late nested connection callback cannot effect after deadline (11.10233ms)
+✔ late handle acquisition cannot call update (1.661487ms)
+✔ hostile SDK rejection is scrubbed without invoking code getter (0.754324ms)
+✔ pre-abort no work and borrowed connection never closed (0.502946ms)
+✔ list uses owned projections and safe exact original execution summaries (9.500982ms)
+✔ list wrong owner and changed history run fail closed (1.440466ms)
+✔ create composition is inert without pool connections (0.194483ms)
+✔ input policies cover pause/unlimited/zero remaining/immediate choices without defaults (0.501203ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 562.130537
