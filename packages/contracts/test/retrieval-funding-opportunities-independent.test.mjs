@@ -158,3 +158,39 @@ test('requirements page max25 and paging row count are actual request constraint
   data.requirements.push(requirement()); data.pagination.total = 26;
   assert.throws(() => requirementsOutput(data, { ...input(OPS[1]), limit: 25 }));
 });
+
+const LANDSCAPE_SOURCES = ['program_element', 'budget_movement', 'client_facility', 'congressional_district', 'legislation', 'hearing', 'regulation', 'committee', 'acquisition_personnel', 'reviewed_relationship', 'client_priority'];
+const WIRED = new Set(['program_element', 'client_facility', 'congressional_district']);
+function landscape(items = [], total = items.length) {
+  const sources = LANDSCAPE_SOURCES.map(source => ({ source, state: source === 'program_element' && total ? 'available' : WIRED.has(source) ? 'empty' : 'not_wired', itemCount: source === 'program_element' ? total : 0, explanation: 'Synthetic source coverage.' }));
+  return { fingerprint: items.length ? 'a'.repeat(64) : 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855', coverage: { available: total ? 1 : 0, wired: 3, declared: 11 }, sources, items };
+}
+function landscapeItem(i = 0) { return { source: 'program_element', sourceId: `pe-${i}`, label: 'Synthetic program', basis: 'source_backed', matchedOn: 'synthetic-code', evidenceRef: null, asOf: null }; }
+function landscapeOutput(data, truncated) { const value = envelope(OPS[4], 'available', data); if (truncated) value.truncated = truncated; return output(OPS[4], value); }
+
+test('landscape keeps all11 declared sources and distinguishes three wired empty sources', () => {
+  const data = landscape(); assert.doesNotThrow(() => landscapeOutput(data));
+  for (const patch of [{ available: 1 }, { wired: 11 }, { declared: 10 }]) assert.throws(() => landscapeOutput({ ...data, coverage: { ...data.coverage, ...patch } }));
+  const duplicate = clone(data); duplicate.sources[1] = clone(duplicate.sources[0]); assert.throws(() => landscapeOutput(duplicate));
+});
+test('landscape pre-truncation counts and retained fingerprint need not equal returned40-row slice', () => {
+  const items = Array.from({ length: 40 }, (_, i) => landscapeItem(i));
+  const data = landscape(items, 41);
+  assert.doesNotThrow(() => landscapeOutput(data, [{ collection: 'items', kept: 40, total: 41 }]));
+  assert.throws(() => landscapeOutput(data));
+  assert.throws(() => landscapeOutput(data, [{ collection: 'items', kept: 39, total: 41 }]));
+  assert.throws(() => landscapeOutput(data, [{ collection: 'items', kept: 40, total: 40 }]));
+  data.items.push(landscapeItem(40)); assert.throws(() => landscapeOutput(data, [{ collection: 'items', kept: 41, total: 42 }]));
+});
+test('landscape never upgrades unknown provenance or inferred basis to stronger source evidence', () => {
+  const data = landscape([landscapeItem()]); data.items[0].basis = 'inferred';
+  assert.doesNotThrow(() => landscapeOutput(data));
+  data.items[0].basis = 'verified'; assert.throws(() => landscapeOutput(data));
+  data.items[0].basis = 'inferred'; data.items[0].approvedEvidence = true; assert.throws(() => landscapeOutput(data));
+});
+test('landscape fingerprint grammar and unknown packet authority fields refuse', () => {
+  const data = landscape();
+  for (const fingerprint of ['', 'a'.repeat(63), 'g'.repeat(64)]) assert.throws(() => landscapeOutput({ ...data, fingerprint }));
+  assert.throws(() => landscapeOutput({ ...data, clientId: CLIENT }));
+  assert.throws(() => landscapeOutput({ ...data, generatedAt: ASOF }));
+});
