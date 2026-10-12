@@ -1,0 +1,9 @@
+{
+  "snapshotCommit": "d51fb9e6ad76ffd0b9d4fd0aa3b99b4b75b1bf02",
+  "manifestSha256": "6b6a8228d18acaa322a8f9ff80fff8c75fc2fd5a3392613a5b2988069715beab",
+  "members": 1026,
+  "verifiedMembers": 1026,
+  "productionAndTestBytesEqualAcceptedAndTestedFreezes": true,
+  "workingTreeWasClean": true,
+  "runtimeQualified": false
+}
