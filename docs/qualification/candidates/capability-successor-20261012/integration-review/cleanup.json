@@ -1,0 +1,23 @@
+{
+  "reviewerDependencySymlinkRemoved": true,
+  "borrowedInstallationPreserved": true,
+  "networkOrInstallation": false,
+  "ownedProcessGroups": [
+    {
+      "receipt": "focused-connected.json",
+      "ownedProcessGroup": 125869,
+      "absentAtCloseout": true
+    },
+    {
+      "receipt": "independent-audit.json",
+      "ownedProcessGroup": 126180,
+      "absentAtCloseout": true
+    },
+    {
+      "receipt": "independent-audit-corrected.json",
+      "ownedProcessGroup": 126379,
+      "absentAtCloseout": true
+    }
+  ],
+  "historicalPid1ZombiesUntouched": true
+}

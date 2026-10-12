@@ -1,0 +1,9 @@
+{
+  "source": "Existing root exact-lock installation",
+  "temporaryReviewerOwnedLink": "packages/contracts/node_modules",
+  "lockSha256": "dae8c670bb76b9c570f174d8749a8c59179cf865d5d6ec83b64a67bb5b2b06a6",
+  "networkOrInstall": false,
+  "cleanupRequired": "Remove reviewer-created link only; borrowed installation untouched",
+  "captureCopiedFromExactFreeze": true,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+}
