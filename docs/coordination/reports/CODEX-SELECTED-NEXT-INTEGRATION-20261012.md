@@ -1,0 +1,34 @@
+# Nine selected reads after PR26
+
+Source candidate `4566cef6417428d46274a14f7937ca11df66ae9d`, tree `bd830c104bc911d9aedd9a1059204b62b0f715a5`, extends published PR26 `2aa0a33bdaf36af1224cfdb840bc493e53cea9f3`. All four domain families have independent ACCEPT_SOURCE receipts. Combined integration review is pending; no runtime gate advances.
+
+The canonical private catalog0.2.6 retains **139 original capabilities,96 selected/43 deferred;45 mapped unavailable,51 selected pending;46 typed unavailable operations**. The extra typed operation is the previously partial action-item contract, which still cannot claim complete replacement. All37 previous descriptors and all original disposition/boundary text are unchanged. The derived139-row ledger in integration-next/capability-ledger.json is evidence, not another registry.
+
+| Family | Added operations | Source / independent review |
+| --- | --- | --- |
+| Disclosures3 | search_sec_filings; search_fara_registrations; search_lda_filings |88c9257e /5025b27c |
+| Acquisition personnel2 | search_acquisition_personnel; get_acquisition_person |fbe72ed6 /b859e4b5 |
+| Federal legislation2 | get_bill_status; search_floor_votes |b6d446a4 /0caf5ffd |
+| Congressional bill text2 | search_congress_bills; read_bill_text |079c9fd8 /698f545e |
+
+Root composes the reviewed schemas through the existing canonical compiler, catalog and resolver. Family validators remain separate. One shared pure congressional identity module serves the two actual callers; bill-text cursor admission and correlation have their own cohesive module. There is no duplicate registry, JSON admission walker, calendar source, model loop, source client or authorization service. The public0.1 package and all gateway production code are unchanged.
+
+Disclosure contexts are empty. Personnel requires trusted current actorRole; federal and bill-text operations require trusted defaultCongress. These values cannot come from model arguments. Output callbacks pass only declared context fields and the original request. Gateway supply of these contexts and actual current-source execution remain unqualified.
+
+## Fidelity decisions and retained failures
+
+- Disclosure review found that a country-filtered FARA page could release a null country and that non-string operation IDs could trigger coercion. Both failures and narrow repairs remain. Separate source counts may disagree with rows; LDA spending is finite JSON numeric data, not an exact Decimal arithmetic guarantee.
+- Acquisition deliberately pins observed4be13b0 contact/privacy policy separately from fd8765 inventory identity. Only capiro_admin admits top-level contact fields. Non-admin detail redaction removes the two specified top-level upload keys; nested and other opaque JSON are not claimed universally redacted. Source auditing is an unconditional tenant-context write, including missing detail, and remains an execution dependency. The read descriptor authorizes no audit write. An unapproved omission of the source query/q fallback failed independent review and was repaired with unchanged negative controls.
+- Federal status review reproduced the source helper's inherited-property label omission. The complete typed projection now refuses those status keys instead of inventing fallback labels. Ordinary unknown/empty labels remain. A resolved member's vote requires a selected position as an explicit fail-closed race boundary. Invalid floor bill/chamber selectors still remove filters. Stored bill Congress has no invented equality constraint with its textual ID.
+- Bill-text controls reproduced missing date/Congress correlations and overstrict stored UUID admission. The repaired source distinguishes general stored revision UUIDs from cursor-v4 syntax. Metadata fallback accepts only ISO date or explicit-zone date-time, a disclosed narrowing of legacy host-dependent dates; direct/text branches still ignore that selector. Lowercase SHA256 fields follow the pinned writer convention, not arbitrary CHAR64 storage or live provenance. Original fixtures, assumptions, failed runs, source preimages and all repairs remain.
+- Text search's10500 serialized UTF-16 character ceiling may refuse an oversized last source row. Sequential9000-character windows, six1000-character locator passages, multi-version grouped search passages and exact cursor lineage stay distinct. Neither source coverage flags nor cursor shape proves current pointer freshness or source truth.
+
+## Checks and limits
+
+Root canonical integration and prior continuation controls pass **121/121**. The expanded contracts/gateway/Hermes source replay passes **1666/1666**, no skipped tests, at4566cef. Public distribution **7/7**, generated-output and type checks pass. Root offline preservation audit passes **319/319**:16 explicitly allocated prior paths, all other original files exact, all37 prior descriptors, every original boundary, ten exact reviewed family/helper files,143 domain review-manifest members, all new raw schema hashes and disabled/null-handler/pending/zero-retry state. Source files and tracked source diff were clean at capture.
+
+The full source group185755 exited, with two descendants reaped; public group185770 exited, with three descendants reaped. Focused and audit groups also exited. Raw streams, command/source identities, elapsed times and cleanup facts are retained in integration-next. No runtime, current-authentication, revocation, durable-budget, checkpoint, native task-A/B recovery, browser/renderer sandbox, egress, watchdog, teardown or artifact-inspection gate is closed by these local checks.
+
+All operations remain unimplemented and unavailable; source connectivity stays false. G1 remains OPEN and G2–G7 unentered. Administrator memory self-approval remains the already approved exception. Native33 and its nine-budget continuation belong to the separate owner and were not repeated. No model/provider call, customer access, SQL/source operation, cloud image/resource/credential/network/database/security change, spend, frontend edit or main merge occurred.
+
+The source-only continuation proceeds independently: directory2 and PE references3 have dedicated author/reviewer lanes; rule status and other discovery-backed reads follow. The ten recommended reads, eleven selected command/artifact/analysis capabilities and thirty other pending reads remain recorded, with no silent removal or substitution by fixtures.

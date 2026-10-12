@@ -1,0 +1,23 @@
+✔ next canonical normalized request, closed context and result: search_sec_filings (5.181792ms)
+✔ next canonical raw schema pins and null-handler refusal: search_sec_filings (22.926633ms)
+✔ next canonical normalized request, closed context and result: search_fara_registrations (2.540179ms)
+✔ next canonical raw schema pins and null-handler refusal: search_fara_registrations (17.080323ms)
+✔ next canonical normalized request, closed context and result: search_lda_filings (2.660781ms)
+✔ next canonical raw schema pins and null-handler refusal: search_lda_filings (17.582948ms)
+✔ next canonical normalized request, closed context and result: search_acquisition_personnel (2.957077ms)
+✔ next canonical raw schema pins and null-handler refusal: search_acquisition_personnel (14.734606ms)
+✔ next canonical normalized request, closed context and result: get_acquisition_person (2.544556ms)
+✔ next canonical raw schema pins and null-handler refusal: get_acquisition_person (13.739118ms)
+✔ next canonical normalized request, closed context and result: get_bill_status (3.700354ms)
+✔ next canonical raw schema pins and null-handler refusal: get_bill_status (18.963204ms)
+✔ next canonical normalized request, closed context and result: search_floor_votes (3.08587ms)
+✔ next canonical raw schema pins and null-handler refusal: search_floor_votes (13.359138ms)
+✔ current role is mandatory and rechecked before personnel contact release (1.411012ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1582.750841
