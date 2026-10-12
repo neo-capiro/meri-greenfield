@@ -42,3 +42,17 @@ test('launch failure never creates a successful cleanup or child verdict',async(
  let attempts=0;const result=await runOwnedProbeChild({...common,script:'browser.mjs',spawnFn:()=>{attempts++;throw Error('synthetic spawn failure');}});
  assert.equal(attempts,1);assert.notEqual(result.status,0);assert.equal(result.cleanupConfirmed,false);assert.ok(result.error);
 });
+
+test('late normal close cannot outrun an expired watchdog timer after an event-loop stall',async()=>{
+ const c=child();const result=await runOwnedProbeChild({...common,script:'browser.mjs',deadlineMs:5,spawnFn:()=>{
+  queueMicrotask(()=>{const end=performance.now()+12;while(performance.now()<end){}c.stdout.emit('data',Buffer.from('{"ok":true}'));c.emit('close',0,null);});return c;
+ }});
+ assert.equal(result.timedOut,true);assert.ok(result.error);assert.equal(result.cleanupConfirmed,true);
+});
+
+test('malformed UTF-8 cannot inflate retained stderr beyond the byte cap',async()=>{
+ const c=child();const result=await runOwnedProbeChild({...common,script:'browser.mjs',spawnFn:()=>{
+  setImmediate(()=>{c.stderr.emit('data',Buffer.alloc(32768,255));c.emit('close',0,null);});return c;
+ }});
+ assert.ok(Buffer.byteLength(result.stderr)<=65536);assert.equal(result.overflow,true);assert.ok(result.error);
+});
