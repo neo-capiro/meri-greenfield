@@ -125,7 +125,7 @@ test('direct crosswalk and name phases cannot mix, while a missed direct ID may 
 });
 test('name-family order and current-first are local to each family', () => {
   check(page([{...member(), isCurrent: false}, committee(), {...legislator(), isCurrent: false}]));
-  check(page([member(), {...member(), isCurrent: false}, committee()]));
+  check(page([member(), {...member(), canonicalId: 'B000001', isCurrent: false}, committee()]));
   assert.throws(() => check(page([committee(), member()])));
   assert.throws(() => check(page([{...member(), isCurrent: false}, member()])));
   assert.throws(() => check(page([legislator(), committee()])));
@@ -162,4 +162,12 @@ test('projection rejects hidden columns, wrong identity type and arbitrary metho
 });
 test('accepted output is detached from the caller object', () => {
   const raw = page([member()]); const accepted = check(raw); raw.matches[0].display = 'Changed'; assert.equal(accepted.matches[0].display, 'Example Person');
+});
+
+
+test('name primary-key identity is unique within each family while crosswalk duplicates remain valid', () => {
+  for (const row of [member(), committee(), legislator()]) assert.throws(() => check(page([row, {...row}])));
+  check(page([member(), {...committee(), canonicalId: member().canonicalId}]));
+  const repeated = {...member(), matchedBy: 'source-crosswalk'};
+  check(page([repeated, {...repeated}]));
 });
