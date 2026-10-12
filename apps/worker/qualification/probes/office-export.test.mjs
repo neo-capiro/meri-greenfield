@@ -118,6 +118,11 @@ function materializeRun(base, sizes = SIZES) {
   for (const spec of EXPECTED_FILES) { const full = join(runDir, spec.path); mkdirSync(dirname(full), { recursive: true }); writeFileSync(full, makeBytes(sizes[spec.path], spec.index)); }
   return runDir;
 }
+const fixtureChildren = new WeakMap();
+const fixtureGroupPorts = {
+  groupKill(child) { if (!fixtureChildren.has(child)) throw new Error('unknown fixture child'); return true; },
+  probeGroup(child) { if (!fixtureChildren.has(child)) throw new Error('unknown fixture child'); return !fixtureChildren.get(child).closed; },
+};
 function generatingSpawn({ payload = realisticArtifactsPayload(), code = 0, signal = null, materialize = true, sizes = SIZES, assertEnv, onSpawn, bindPaths = true } = {}) {
   return (cmd, args, opts) => {
     if (assertEnv) assertEnv(opts.env);
@@ -132,8 +137,9 @@ function generatingSpawn({ payload = realisticArtifactsPayload(), code = 0, sign
           : value && typeof value === 'object' ? Object.fromEntries(Object.entries(value).map(([k, v]) => [k, rebind(v)])) : value;
       emitted = rebind(payload);
     }
-    const child = new EventEmitter(); child.stdout = new EventEmitter(); child.stderr = new EventEmitter(); child.kill = () => true;
-    setImmediate(() => { child.stdout.emit('data', Buffer.from(typeof emitted === 'string' ? emitted : JSON.stringify(emitted))); child.emit('exit', code, signal); child.emit('close', code, signal); });
+    const child = new EventEmitter(); child.pid = 424242; child.stdout = new EventEmitter(); child.stderr = new EventEmitter(); child.kill = () => true;
+    fixtureChildren.set(child, { closed: false });
+    setImmediate(() => { child.stdout.emit('data', Buffer.from(typeof emitted === 'string' ? emitted : JSON.stringify(emitted))); child.emit('exit', code, signal); fixtureChildren.get(child).closed = true; child.emit('close', code, signal); });
     return child;
   };
 }
@@ -539,7 +545,7 @@ test('CloudWatch-style JSON event envelope with embedded newlines is accepted', 
 
 test('main() streams a complete capture (with honest end.elapsedMs) and it reconstructs', async () => {
   const baseRoot = tempDir(); const stream = collectingStream();
-  const code = await main({ baseRoot, spawnFn: generatingSpawn({ assertEnv: (env) => { assert.equal(env.MERI_ARTIFACTS_RENDER, 'required'); assert.ok(env.MERI_ARTIFACTS_OUTPUT_DIR.startsWith(baseRoot)); } }), writeStream: stream, now: () => Date.now(), readCgroup: () => ({ scope: 'test', memoryCurrent: null, memoryPeak: null, memoryMax: null, pidsCurrent: null, cpuStatLines: 0 }) });
+  const code = await main({ ...fixtureGroupPorts, baseRoot, spawnFn: generatingSpawn({ assertEnv: (env) => { assert.equal(env.MERI_ARTIFACTS_RENDER, 'required'); assert.ok(env.MERI_ARTIFACTS_OUTPUT_DIR.startsWith(baseRoot)); } }), writeStream: stream, now: () => Date.now(), readCgroup: () => ({ scope: 'test', memoryCurrent: null, memoryPeak: null, memoryMax: null, pidsCurrent: null, cpuStatLines: 0 }) });
   assert.equal(code, 0);
   const kinds = stream.lines.map((l) => parseRecordLine(l).record.kind);
   assert.equal(kinds[0], 'capture'); assert.equal(kinds.at(-1), 'end'); assert.ok(!kinds.includes('error'));
@@ -559,7 +565,7 @@ test('main() emits only an error record after a failed/signalled/unclosed genera
   ];
   for (const c of cases) {
     const baseRoot = tempDir(); const stream = collectingStream();
-    const code = await main({ baseRoot, writeStream: stream, now: () => Date.now(), readCgroup: () => ({}), ...c });
+    const code = await main({ ...fixtureGroupPorts, baseRoot, writeStream: stream, now: () => Date.now(), readCgroup: () => ({}), ...c });
     assert.equal(code, 1);
     assert.deepEqual(stream.lines.map((l) => parseRecordLine(l).record.kind), ['error']);
     assert.equal(validateCapture(stream.lines.join('\n')).ok, false);
@@ -633,7 +639,7 @@ test('Codex owner correction: unsafe base ancestors are rejected before director
 
 test('Codex owner correction: main rejects a valid-looking payload from another generated run', async () => {
   const stream = collectingStream();
-  const code = await main({ baseRoot: tempDir(), writeStream: stream, spawnFn: generatingSpawn({ bindPaths: false }) });
+  const code = await main({ ...fixtureGroupPorts, baseRoot: tempDir(), writeStream: stream, spawnFn: generatingSpawn({ bindPaths: false }) });
   assert.equal(code, 1); assert.match(stream.lines.join('\n'), /newly generated run copy/);
 });
 

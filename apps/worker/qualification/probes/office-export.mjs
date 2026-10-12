@@ -821,7 +821,7 @@ export function defaultBaseRoot() {
 export async function main(opts = {}) {
   const {
     baseRoot = defaultBaseRoot(), spawnFn = spawn, writeStream = process.stdout,
-    now = () => Date.now(), readCgroup = readCgroupObservations, mkdir = mkdirSync, graceMs = 5000, detached,
+    now = () => Date.now(), readCgroup = readCgroupObservations, mkdir = mkdirSync, graceMs = 5000, detached, groupKill, probeGroup,
   } = opts;
   const genDl = normalizeDeadlineMs(opts.deadlineMs ?? Number(process.env.MERI_OFFICE_EXPORT_GEN_DEADLINE_MS || DEFAULT_DEADLINE_MS), { fallback: DEFAULT_DEADLINE_MS });
   const expDl = normalizeDeadlineMs(opts.exportDeadlineMs ?? Number(process.env.MERI_OFFICE_EXPORT_DEADLINE_MS || DEFAULT_EXPORT_DEADLINE_MS), { fallback: DEFAULT_EXPORT_DEADLINE_MS });
@@ -843,7 +843,7 @@ export async function main(opts = {}) {
     const baseCheck = assertPathChainIsRealDirectories(base);
     if (!baseCheck.ok) { await emitAbort([baseCheck.reason]); return 1; }
     const genStart = now();
-    const child = await runArtifactsChild({ base, deadlineMs: genDl.ms, spawnFn, graceMs, detached });
+    const child = await runArtifactsChild({ base, deadlineMs: genDl.ms, spawnFn, graceMs, detached, groupKill, probeGroup });
     const genElapsedMs = now() - genStart;
     const verdict = verifyArtifactsVerdict(child);
     if (!verdict.ok) { await emitAbort(verdict.reasons); return 1; }
