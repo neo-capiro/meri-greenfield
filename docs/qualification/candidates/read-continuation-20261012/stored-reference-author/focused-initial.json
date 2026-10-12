@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-stored-intelligence.test.mjs",
+    "packages/contracts/test/retrieval-dataset-metadata.test.mjs"
+  ],
+  "cwd": "/workspace/meri-stored-reference-reads-20261012",
+  "sourceHead": "4566cef6417428d46274a14f7937ca11df66ae9d",
+  "sourceDiffSha256": "0f35caa511764c08b35fdca76d1839150b122e6cb038b909e143c81b3c5015c5",
+  "sourceDiffBytes": 33687,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T17:29:31.352081+00:00",
+  "durationSeconds": 0.57,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 190946,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/stored-reference-author/focused-initial.stdout.bin",
+      "bytes": 3138,
+      "sha256": "e6a62c71743ee933f40f7b31ac6d7afeccedd9d942355aa871c233a73f840700"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/stored-reference-author/focused-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
