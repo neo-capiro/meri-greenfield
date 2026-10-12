@@ -1,0 +1,123 @@
+{
+  "repository": "neo-capiro/capirov2",
+  "sourceCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "observedCommit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+  "meriBase": "e94865529c5a1e97c79893527895f0b4b73be35f",
+  "scope": "READ_ONLY_INPUT_RESULT_POLICY_REFERENCE_DISCOVERY",
+  "privateBodiesPublished": false,
+  "sourceExecuted": false,
+  "references": [
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194",
+      "bytes": 415704,
+      "observedBlob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/prisma/schema.prisma",
+      "blob": "cdf1923217edae6e7624993796a5671922b61ac0",
+      "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0",
+      "bytes": 968034,
+      "observedBlob": "cdf1923217edae6e7624993796a5671922b61ac0",
+      "unchanged": true
+    },
+    {
+      "path": "packages/shared/src/index.ts",
+      "blob": "62eb32931826f77abd985bc142f6a65adad6a23a",
+      "sha256": "1a713331de044768f7bd8631db4762a08a3c3541a1bbc064c67bbff46fc9a75f",
+      "bytes": 273389,
+      "observedBlob": "62eb32931826f77abd985bc142f6a65adad6a23a",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-state-bill-status-tool.spec.ts",
+      "blob": "609a25e82ed3cf9f994ff352b3c90586486554a8",
+      "sha256": "5a03f936e0817a350dcb65cb79f2a909169a082da00884c122d0f7e3c879aae4",
+      "bytes": 12380,
+      "observedBlob": "609a25e82ed3cf9f994ff352b3c90586486554a8",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-state-bill-live.ts",
+      "blob": "01c312dfa17bfa0838c06e1ee2bc59fa6c58187f",
+      "sha256": "3692b6ec053f80d085fe4c47185eb7b2bcd528181ddb01d6f86a82782cf09049",
+      "bytes": 6366,
+      "observedBlob": "01c312dfa17bfa0838c06e1ee2bc59fa6c58187f",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-cbo-tool.spec.ts",
+      "blob": "30a58daf21f0cc6fb90e73cd7237d7732c21d8ef",
+      "sha256": "8e939595d3b1e7615d2afd4c405c4eb31966278b5af4e613ac84525a13410cc2",
+      "bytes": 1746,
+      "observedBlob": "30a58daf21f0cc6fb90e73cd7237d7732c21d8ef",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/district-nexus/r5-action-layer/r5-meri-district-tools.ts",
+      "blob": "b868f3c03903fb291bc95d6b74805a55fd30ebcd",
+      "sha256": "787b18b960a046482c55d122415b88fbc12d1c454eb64b2a07f4ff019666a527",
+      "bytes": 4823,
+      "observedBlob": "b868f3c03903fb291bc95d6b74805a55fd30ebcd",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/district-nexus/r5-action-layer/r5-types.ts",
+      "blob": "9352d1eaa80c91844f1b7c28473a6c3755344434",
+      "sha256": "bdd80810ed587b7e558f70761eac98d2c08000f1b303f10e164b4d371bd74967",
+      "bytes": 3615,
+      "observedBlob": "9352d1eaa80c91844f1b7c28473a6c3755344434",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/district-nexus/r5-action-layer/r5-flag.guard.ts",
+      "blob": "e831800b20113b0bca35b357d93e04e8140deae7",
+      "sha256": "00b584c35fbbe13ae9ea32ae25092022845446667650d36d17d245c81ccbae6c",
+      "bytes": 4408,
+      "observedBlob": "e831800b20113b0bca35b357d93e04e8140deae7",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/district-nexus/r5-action-layer/r5-district-context.service.ts",
+      "blob": "a4d5f7bbccb8f1573fd03b1b98f607424d864259",
+      "sha256": "4c013002d42eb15b2b2d961aa85bb682d48dd0b80a15ae014d4564962c7a54c4",
+      "bytes": 20920,
+      "observedBlob": "a4d5f7bbccb8f1573fd03b1b98f607424d864259",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/district-nexus/r5-action-layer/r5-meri-district-tools.spec.ts",
+      "blob": "e35d29ccfed6c3f317424122425ebdb6fa36e75d",
+      "sha256": "ce88b99e950a3d40fb76520a23e96433dbf15fff6be288add79f5c54742b7046",
+      "bytes": 4474,
+      "observedBlob": "e35d29ccfed6c3f317424122425ebdb6fa36e75d",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/district-nexus/r5-action-layer/r5-district-context.spec.ts",
+      "blob": "0f2952f5683e8bc6e25a33fba995d0afe425e2bc",
+      "sha256": "9631fe3534faf6355cd09a74cf9abdb03a812fbeec8bdc37b0df10d1c0ddf3f9",
+      "bytes": 7385,
+      "observedBlob": "0f2952f5683e8bc6e25a33fba995d0afe425e2bc",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/district-nexus/district-nexus-flag.guard.ts",
+      "blob": "e9c46c416031d18b97e0ea5ad461b0b309e46761",
+      "sha256": "ce28e224cb38de3feafa8ba07f23bc3b79520b639c81afd640d98ba107ceb746",
+      "bytes": 5368,
+      "observedBlob": "e9c46c416031d18b97e0ea5ad461b0b309e46761",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/common/us-states.ts",
+      "blob": "03f8a81e77ebf3969dcff8853bbf4cab9887a5fc",
+      "sha256": "f080718a458d1ac24e75b1b99315b30faea6ee0ab2234ce2c1a49dbd6026ae74",
+      "bytes": 2792,
+      "observedBlob": "03f8a81e77ebf3969dcff8853bbf4cab9887a5fc",
+      "unchanged": true
+    }
+  ]
+}
