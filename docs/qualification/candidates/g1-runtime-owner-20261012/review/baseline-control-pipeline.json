@@ -1,0 +1,27 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-g1-runtime-owner-review-20261012",
+  "startUnixSeconds": 1791778714.5176713,
+  "elapsedSeconds": 0.6172566413879395,
+  "exitCode": 0,
+  "ownedPidAndGroup": 45487,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "reapedDescendants": [],
+  "streams": {
+    "stdout": {
+      "path": "baseline-control-pipeline.stdout.txt",
+      "bytes": 223,
+      "sha256": "50e9be106ef8b58c698d7bbaaf4fa42fbb1dfc1edf0366ad2e315c5f40a9a63f"
+    },
+    "stderr": {
+      "path": "baseline-control-pipeline.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "initialFailure": "Initial copy from prior owned next-behavior worktree copied root but stopped with AssertionError because state/node_modules was absent; no source changes. Recovered by read-only copy from parent integration after exact package/lock equality.",
+  "dependencies": [
+    {
+      "package": "root",
+      "packageLockSha256": "b2293773bf4ddc6d23425b7d718b79575384679999b86fd3caad78e6eda4a42d",
+      "method": "copied existing local unchanged-lock dependencies; no install/network/scripts; root already copied from prior owned worktree"
+    },
+    {
+      "package": "apps/control/qualification-sdk-fixture/state",
+      "packageLockSha256": "c5ab764dcd9dcd8dee88d2cab3e7412fb9752e3a869c0a1693839c0567d3973a",
+      "method": "copied existing local unchanged-lock dependencies; no install/network/scripts; root already copied from prior owned worktree"
+    },
+    {
+      "package": "apps/control/qualification-sdk-fixture/service",
+      "packageLockSha256": "83cab595ad62ffcb42bb63622df5be81e161835b4dbfdc9f58b19b2a42f006cd",
+      "method": "copied existing local unchanged-lock dependencies; no install/network/scripts; root already copied from prior owned worktree"
+    }
+  ]
+}
