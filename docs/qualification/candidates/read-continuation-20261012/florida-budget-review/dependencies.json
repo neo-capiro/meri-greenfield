@@ -1,0 +1,58 @@
+{
+  "donor": "/workspace/meri-civic-integration-review-20261012",
+  "lockByteIdentical": true,
+  "network": false,
+  "install": false,
+  "hooks": false,
+  "packages": [
+    {
+      "name": "ajv",
+      "version": "8.20.0",
+      "files": 466,
+      "bytes": 1033496,
+      "fileManifestSha256": "51b5136e569f0d3a352e53b1a6da3b15db702adc9180d95dd43565952b65d171"
+    },
+    {
+      "name": "ajv-formats",
+      "version": "3.0.1",
+      "files": 15,
+      "bytes": 56763,
+      "fileManifestSha256": "3cfdefe48597e4db9341a72f2352020882a4c14c4d55676c86119e96c726b911"
+    },
+    {
+      "name": "fast-deep-equal",
+      "version": "3.1.3",
+      "files": 11,
+      "bytes": 12966,
+      "fileManifestSha256": "3663b88d62d64f2379b45c6b516e10409bf304f13cef8db764a822ee06f18547"
+    },
+    {
+      "name": "fast-uri",
+      "version": "3.1.8",
+      "files": 44,
+      "bytes": 220886,
+      "fileManifestSha256": "9c26d1fbf974987355133fed4f84469f81df97697117cb14409d7d061bb1f318"
+    },
+    {
+      "name": "json-schema-traverse",
+      "version": "1.0.0",
+      "files": 12,
+      "bytes": 22220,
+      "fileManifestSha256": "6d0893b2f893aba216ec136a6fb5aad88deeaf810a100a05fed3ff7315e2ac38"
+    },
+    {
+      "name": "require-from-string",
+      "version": "2.0.2",
+      "files": 4,
+      "bytes": 3422,
+      "fileManifestSha256": "cbe4d75bd9ed2113cc64a200480f38a7868be1995fdeb2438daa27677b05db52"
+    },
+    {
+      "name": "canonicalize",
+      "version": "5.1.0",
+      "files": 6,
+      "bytes": 24474,
+      "fileManifestSha256": "d59e3002be97b450f6c432df3dfdf34e99f84f10f348958b1fec03610bd59453"
+    }
+  ]
+}
