@@ -86,7 +86,7 @@ test('changed authorization intent is rejected',async()=>fixture(async({service}
 test('changed budget binding is rejected',async()=>fixture(async({service})=>assert.rejects(service.create(text,context()),/ARTIFACT_BUDGET/),{budget:{...budget,reserve:async x=>({...await budget.reserve(x),binding:{...x.binding,actorId:'other'}})},executor:synthetic}));
 test('unqualified inspection cannot claim rendered, native-opened or recalculated',async()=>{for(const key of ['rendered','nativeOpened','recalculated'])await fixture(async({service})=>assert.rejects(service.create(text,context()),/ARTIFACT_INSPECTION_MISMATCH/),{executor:{execute:async x=>{const r=await synthetic.execute(x);r.inspection[key]=true;return r;}}});});
 test('revocation after generation prevents any object commit',async()=>{let n=0;await fixture(async({service,root})=>{await assert.rejects(service.create(text,context()),/ARTIFACT_AUTHORITY/);assert.deepEqual(await readdir(join(root,'store','objects')),[]);},{authorize:async x=>({...await authorize(x),decision:++n>=3?'deny':'allow'}),executor:synthetic});});
-test('executor deadlines remain cancellation, not successful artifact publication',async()=>fixture(async({service})=>{const c=context();c.deadlineMs=Date.now()+30;await assert.rejects(service.create(text,c),e=>e.code==='ARTIFACT_DEADLINE'&&e.lifetime.physicalStopProven===false);},{executor:{execute:({signal})=>new Promise((_,reject)=>signal.addEventListener('abort',()=>reject(new Error('aborted')),{once:true}))}}));
+test('executor deadlines remain cancellation, not successful artifact publication',async()=>fixture(async({service})=>{const c=context();c.deadlineMs=Date.now()+30;await assert.rejects(service.create(text,c),e=>e.code==='ARTIFACT_BUDGET_SETTLEMENT_UNKNOWN'&&e.cause.code==='ARTIFACT_DEADLINE'&&e.budgetSettlementUnknown===true&&e.lifetime.physicalStopProven===false);},{executor:{execute:({signal})=>new Promise((_,reject)=>signal.addEventListener('abort',()=>reject(new Error('aborted')),{once:true}))}}));
 test('post-commit budget failure is explicit unknown effect',async()=>fixture(async({service})=>{await assert.rejects(service.create(text,context()),e=>e.code==='ARTIFACT_EFFECT_UNKNOWN'&&e.versionCommitted===true);},{budget:{...budget,settle:async()=>{throw new Error('settlement unavailable');}},executor:synthetic}));
 test('read integrity detects corrupted object bytes',async()=>fixture(async({service,ports})=>{const c=context(),r=await service.create(text,c);const broken=createArtifactService({...ports,objects:{...ports.objects,get:async()=>Buffer.from('changed')}});await assert.rejects(broken.download(r.version.versionId,c),/ARTIFACT_OBJECT_MISMATCH/);}));
 test('fixed Office conversion source arguments have no user option/path channel',()=>{const args=officeTransformArguments({workspace:'/tmp/owned',format:'docx',target:'pdf'});assert.deepEqual(args.slice(-4),['pdf','--outdir','/tmp/owned/out','/tmp/owned/input.docx']);assert.throws(()=>officeTransformArguments({workspace:'/tmp/owned',format:'txt',target:'exe'}));assert.throws(()=>createLibreOfficeTransformer({tempRoot:'/tmp'}),/UNAVAILABLE/);});
@@ -125,3 +125,17 @@ test('sandbox input/receipt verifier gates general code before any port call',as
   const boundary=createSandboxAnalysisBoundary({validatePublicShape:(n,v)=>shape(publicSchema.$id,n,v),canonicalSha256:hash,verifyAdmission:async()=>({allowed:false}),port:{execute:()=>assert.fail('not admitted')}});
   await assert.rejects(boundary.execute(value),/ADMISSION_REQUIRED/);
 });
+test('retained MIME and inspection format cannot substitute a different artifact type',async()=>fixture(async({service,ports})=>{
+  const c=context(),r=await service.create(text,c);
+  for(const mutate of [record=>{record.inspection.format='pdf';},record=>{record.version.mimeType='application/pdf';},record=>{record.version.filename='../wrong.txt';}]){
+    const broken=createArtifactService({...ports,versions:{...ports.versions,read:async(...args)=>{const record=await ports.versions.read(...args);mutate(record);return record;}}});
+    await assert.rejects(broken.download(r.version.versionId,c),/ARTIFACT_(INSPECTION_MISMATCH|VERSION_METADATA)/);
+  }
+}));
+test('failed generation retains cause and budget reconciliation identity',async()=>fixture(async({service})=>{
+  await assert.rejects(service.create(text,context()),e=>e.code==='ARTIFACT_BUDGET_SETTLEMENT_UNKNOWN'&&e.cause.message==='generation failed'&&e.budget.ticketId==='ticket'&&/^[a-f0-9]{64}$/.test(e.budget.requestSha256));
+},{executor:{execute:async()=>{throw new Error('generation failed');}},budget:{...budget,settle:async()=>{throw new Error('settlement failed');}}}));
+test('CRC-invalid PNG remains an explicit refusal, without fixing or fetching the asset',async()=>fixture(async({service,store})=>{
+  const bad=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aR2kAAAAASUVORK5CYII=','base64'),c=context();c.assets=[{id:'bad',object:await store.objects.put({objectId:randomUUID(),bytes:bad,scopes:c.scopes,requestSha256:'fixture'})}];
+  await assert.rejects(service.create({...word,content:{blocks:[{kind:'image',assetId:'bad',widthInches:1,heightInches:1}]}},c),/ARTIFACT_PROCESS_FAILED/);
+}));
