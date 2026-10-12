@@ -1,0 +1,52 @@
+{
+  "schema": "meri.native-interpreter-recovery-evidence/1",
+  "baseCommit": "690bac4cd44112b161d8e02818aeae7639ce237a",
+  "selfExcluded": true,
+  "files": [
+    {
+      "path": "docs/qualification/candidates/native-interpreter-recovery-20261012/author/checks.json",
+      "bytes": 719,
+      "sha256": "a85c11385d7cdce198f108d0948e9032a01c458a24cbd6477ce8482499916e61"
+    },
+    {
+      "path": "docs/qualification/candidates/native-interpreter-recovery-20261012/author/outline.md",
+      "bytes": 1186,
+      "sha256": "bb38236f1b693e77e3b3e5b1543d3a2ec55105afb299c2c73a9eee727c30f225"
+    },
+    {
+      "path": "docs/qualification/candidates/native-interpreter-recovery-20261012/author/parent-reported-diagnostic.json",
+      "bytes": 1561,
+      "sha256": "16850ca488ce0e41e398969c097cf998f3e77a1dff5380009154891b3f60a330"
+    },
+    {
+      "path": "docs/qualification/candidates/native-interpreter-recovery-20261012/author/primary-reference-observations.json",
+      "bytes": 1896,
+      "sha256": "df1b5c97b1b2dc240842153fdc9d56ae0cb6154bf0d62684ca74f89157538b7e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-interpreter-recovery-20261012/author/recovery-packet-template.json",
+      "bytes": 2382,
+      "sha256": "c844369294345214c766ecefd3ec4261db1e1e4e21f7f948a5372ce8145449f9"
+    },
+    {
+      "path": "docs/qualification/candidates/native-interpreter-recovery-20261012/author/static-readback.py",
+      "bytes": 3525,
+      "sha256": "181a851d78484152b9e8f325126da26689db06226e6f2b7a04849cca8f3e4f3f"
+    },
+    {
+      "path": "docs/qualification/candidates/native-interpreter-recovery-20261012/author/static-readback.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-interpreter-recovery-20261012/author/static-readback.stdout.json",
+      "bytes": 6577,
+      "sha256": "21f4ceae1739093845ac19b2f12ce530788b558019480f352a8ac6443fe0910e"
+    },
+    {
+      "path": "docs/coordination/reports/MERI-NATIVE-INTERPRETER-RECOVERY-20261012.md",
+      "bytes": 13891,
+      "sha256": "cb6c7207d428b7b548b49cfe181c98ceca400eab1cde9e8ff89d63ebe38b1207"
+    }
+  ]
+}
