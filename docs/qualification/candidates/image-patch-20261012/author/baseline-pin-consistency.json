@@ -1,0 +1,204 @@
+{
+  "sourcePackagingRecords": [
+    {
+      "group": "interruptionPackaging",
+      "path": "apps/worker/qualification/checkpoint/native-session-files.mjs",
+      "expectedBytes": 12049,
+      "actualBytes": 12049,
+      "expectedSha256": "543e05c230bf614cd5cf73f2d69877f1311ec0faf9d7ca205429161a75b842e1",
+      "actualSha256": "543e05c230bf614cd5cf73f2d69877f1311ec0faf9d7ca205429161a75b842e1",
+      "matches": true
+    },
+    {
+      "group": "interruptionPackaging",
+      "path": "scripts/sdk-capture/json-records.mjs",
+      "expectedBytes": 6814,
+      "actualBytes": 6814,
+      "expectedSha256": "8b889617a9565b7f1b5d29863b772b71f2c880a5fd1606b8a8b68ac2163be02d",
+      "actualSha256": "8b889617a9565b7f1b5d29863b772b71f2c880a5fd1606b8a8b68ac2163be02d",
+      "matches": true
+    },
+    {
+      "group": "interruptionPackaging",
+      "path": "scripts/sdk-capture/protocol.mjs",
+      "expectedBytes": 5151,
+      "actualBytes": 5151,
+      "expectedSha256": "c20499a3a9e29069f6a59b58c7262fda6dfddd03068d7a49d6d73003f07e4a9e",
+      "actualSha256": "c20499a3a9e29069f6a59b58c7262fda6dfddd03068d7a49d6d73003f07e4a9e",
+      "matches": true
+    },
+    {
+      "group": "sdkFixturePackaging",
+      "path": "apps/worker/qualification/checkpoint/fixture-channel.mjs",
+      "expectedBytes": 11858,
+      "actualBytes": 11858,
+      "expectedSha256": "160929a1ac8ce647574fac5740294d117ab70230d0a040b6d37ca4ef5712ad0b",
+      "actualSha256": "160929a1ac8ce647574fac5740294d117ab70230d0a040b6d37ca4ef5712ad0b",
+      "matches": true
+    },
+    {
+      "group": "sdkFixturePackaging",
+      "path": "apps/worker/qualification/checkpoint/fixture-channel.test.mjs",
+      "expectedBytes": 16419,
+      "actualBytes": 16419,
+      "expectedSha256": "3d8eb0e88e6ae45c6f55b1303e1f2075344c044ed0eba4e39a0f7ca26994612c",
+      "actualSha256": "3d8eb0e88e6ae45c6f55b1303e1f2075344c044ed0eba4e39a0f7ca26994612c",
+      "matches": true
+    },
+    {
+      "group": "sdkFixturePackaging",
+      "path": "apps/worker/qualification/checkpoint/fixture-transport.mjs",
+      "expectedBytes": 13008,
+      "actualBytes": 13008,
+      "expectedSha256": "3b802df4571cd2e170890c9bfd77be995997736ff4e5e003c3248946e3b3d31c",
+      "actualSha256": "3b802df4571cd2e170890c9bfd77be995997736ff4e5e003c3248946e3b3d31c",
+      "matches": true
+    },
+    {
+      "group": "sdkFixturePackaging",
+      "path": "apps/worker/qualification/checkpoint/fixture-transport.test.mjs",
+      "expectedBytes": 30179,
+      "actualBytes": 30179,
+      "expectedSha256": "8c676e68f2bb670dee4ed7405d29c009ef757387a49902e96a99fa99e3d6a3c5",
+      "actualSha256": "8c676e68f2bb670dee4ed7405d29c009ef757387a49902e96a99fa99e3d6a3c5",
+      "matches": true
+    },
+    {
+      "group": "sdkFixturePackaging",
+      "path": "apps/worker/qualification/checkpoint/resume-admission.mjs",
+      "expectedBytes": 5948,
+      "actualBytes": 5948,
+      "expectedSha256": "81b15faafc9f27b4e4107d7034708fd0f83a18caf09cbb367f03b7ef77701c9d",
+      "actualSha256": "81b15faafc9f27b4e4107d7034708fd0f83a18caf09cbb367f03b7ef77701c9d",
+      "matches": true
+    },
+    {
+      "group": "sdkFixturePackaging",
+      "path": "apps/worker/qualification/checkpoint/resume-admission.test.mjs",
+      "expectedBytes": 8022,
+      "actualBytes": 8022,
+      "expectedSha256": "5e53aaaf445c70dd7a56a55a3ea1ab2936a6eff86ed78b2dd04b072a79dfdb4f",
+      "actualSha256": "5e53aaaf445c70dd7a56a55a3ea1ab2936a6eff86ed78b2dd04b072a79dfdb4f",
+      "matches": true
+    },
+    {
+      "group": "sdkFixturePackaging",
+      "path": "apps/worker/qualification/checkpoint/fixture-sentinel.mjs",
+      "expectedBytes": 8266,
+      "actualBytes": 8266,
+      "expectedSha256": "4e5779fa84f149a4867e556e5fc7d20c644cd440a69f0ad4c6a7c4e8160324fd",
+      "actualSha256": "4e5779fa84f149a4867e556e5fc7d20c644cd440a69f0ad4c6a7c4e8160324fd",
+      "matches": true
+    },
+    {
+      "group": "sdkFixturePackaging",
+      "path": "apps/worker/qualification/checkpoint/fixture-sentinel.test.mjs",
+      "expectedBytes": 14919,
+      "actualBytes": 14919,
+      "expectedSha256": "73a14fea4fc24fd0a05f68523c4f9dbbbaf500dfd62f80225f8e93996f4e8ed7",
+      "actualSha256": "73a14fea4fc24fd0a05f68523c4f9dbbbaf500dfd62f80225f8e93996f4e8ed7",
+      "matches": true
+    },
+    {
+      "group": "sdkFixturePackaging",
+      "path": "apps/worker/qualification/probes/native-observations.mjs",
+      "expectedBytes": 7072,
+      "actualBytes": 7072,
+      "expectedSha256": "fea49e07f71dccbea3d6c21cab8d1e4502b79a2d1ff05085dbd2a0e2089b2b15",
+      "actualSha256": "fea49e07f71dccbea3d6c21cab8d1e4502b79a2d1ff05085dbd2a0e2089b2b15",
+      "matches": true
+    },
+    {
+      "group": "sdkFixturePackaging",
+      "path": "apps/worker/qualification/probes/native-stream-observer.mjs",
+      "expectedBytes": 3459,
+      "actualBytes": 3459,
+      "expectedSha256": "66fa0dec53eb9cc3d98a79d45a0cc8290281efc46dce7baa05e1f0721771beba",
+      "actualSha256": "66fa0dec53eb9cc3d98a79d45a0cc8290281efc46dce7baa05e1f0721771beba",
+      "matches": true
+    },
+    {
+      "group": "sdkFixturePackaging",
+      "path": "apps/worker/qualification/probes/native-namespace-observer.mjs",
+      "expectedBytes": 11069,
+      "actualBytes": 11069,
+      "expectedSha256": "6c4ff8b525c414f93f0d0d29653b1e8a68db5fc520d4f414cf88d0b3e08b23c4",
+      "actualSha256": "6c4ff8b525c414f93f0d0d29653b1e8a68db5fc520d4f414cf88d0b3e08b23c4",
+      "matches": true
+    },
+    {
+      "group": "sdkFixturePackaging",
+      "path": "packages/contracts/validate.mjs",
+      "expectedBytes": 3311,
+      "actualBytes": 3311,
+      "expectedSha256": "c2449fd55300b31bdc1e829b5d918a531f1c4b2c675085a5b4707726ddd36d10",
+      "actualSha256": "c2449fd55300b31bdc1e829b5d918a531f1c4b2c675085a5b4707726ddd36d10",
+      "matches": true
+    },
+    {
+      "group": "sdkFixturePackaging",
+      "path": "packages/contracts/meri.schema.json",
+      "expectedBytes": 50043,
+      "actualBytes": 50043,
+      "expectedSha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b",
+      "actualSha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b",
+      "matches": true
+    },
+    {
+      "group": "sdkFixturePackaging",
+      "path": "packages/contracts/qualification-sdk/validate.mjs",
+      "expectedBytes": 14049,
+      "actualBytes": 14049,
+      "expectedSha256": "2d0bd74171e390c370ad8d9e599f7c46ce4751e5efd6ba2c18923090b749b86c",
+      "actualSha256": "2d0bd74171e390c370ad8d9e599f7c46ce4751e5efd6ba2c18923090b749b86c",
+      "matches": true
+    },
+    {
+      "group": "sdkFixturePackaging",
+      "path": "packages/contracts/qualification-sdk/wire.mjs",
+      "expectedBytes": 1925,
+      "actualBytes": 1925,
+      "expectedSha256": "f8f506ceeca820f3957b67f8bcbfc36c80f009356baba83b32ac99afe401ad9a",
+      "actualSha256": "f8f506ceeca820f3957b67f8bcbfc36c80f009356baba83b32ac99afe401ad9a",
+      "matches": true
+    },
+    {
+      "group": "sdkFixturePackaging",
+      "path": "packages/contracts/qualification-sdk/fixture.schema.json",
+      "expectedBytes": 26397,
+      "actualBytes": 26397,
+      "expectedSha256": "fbf0655ab6960ac5c486c08ba70b2a31310086ca282f0e9a1f41c08430ebfa13",
+      "actualSha256": "fbf0655ab6960ac5c486c08ba70b2a31310086ca282f0e9a1f41c08430ebfa13",
+      "matches": true
+    },
+    {
+      "group": "sdkFixturePackaging",
+      "path": "packages/contracts/qualification-sdk/native-evidence.mjs",
+      "expectedBytes": 3849,
+      "actualBytes": 3849,
+      "expectedSha256": "0f587aefd26e189fd9099b1639910da6ec37725b5729c4ba5d98a4695ec5fcde",
+      "actualSha256": "0f587aefd26e189fd9099b1639910da6ec37725b5729c4ba5d98a4695ec5fcde",
+      "matches": true
+    },
+    {
+      "group": "sdkFixturePackaging",
+      "path": "packages/contracts/qualification-sdk/native-evidence.schema.json",
+      "expectedBytes": 11751,
+      "actualBytes": 11751,
+      "expectedSha256": "5f9ac8980940bf4928b2d655fa5e299208f3d6dbf8f1adceceb9727cb69f62f5",
+      "actualSha256": "5f9ac8980940bf4928b2d655fa5e299208f3d6dbf8f1adceceb9727cb69f62f5",
+      "matches": true
+    },
+    {
+      "group": "sdkFixturePackaging",
+      "path": "packages/contracts/test/sdk-fixture-wire.test.mjs",
+      "expectedBytes": 11632,
+      "actualBytes": 11632,
+      "expectedSha256": "0a292a418855ab4f3f07f096a618772928e06533fa05b41db4d4d6a56506abcc",
+      "actualSha256": "0a292a418855ab4f3f07f096a618772928e06533fa05b41db4d4d6a56506abcc",
+      "matches": true
+    }
+  ],
+  "npmRootMatches": true,
+  "npmPackages": 148
+}

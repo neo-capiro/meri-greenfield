@@ -1,0 +1,533 @@
+{
+  "baseCommit": "90b4dc8472da13cdee9f49cdc0b4c8306ecbdc73",
+  "baseTree": "1f6ac35ad37531e790c2a19c9e310c7e618e6522",
+  "decision": "HOLD",
+  "imageBuilt": false,
+  "scanPassed": false,
+  "runtimeAccepted": false,
+  "originalFiles": [
+    {
+      "path": "apps/worker/qualification/.dockerignore",
+      "bytes": 1542,
+      "sha256": "7bab997b99912abb20f7b87a0dc93e4024acdb4b0ccb1bc9449b464834a7c54b",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/Dockerfile",
+      "bytes": 18786,
+      "sha256": "3f86ae7ca55e8bbfb2814f1b335b7df8159daf9b5008df60f1165ba879c40f36",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/README.md",
+      "bytes": 13158,
+      "sha256": "c606fd180c1d57461dba0e94310cd4410ac3a051f61f76d92ae9b38a3e2a6a0e",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/package.json",
+      "bytes": 1143,
+      "sha256": "a32e658933bd058d2524cfb2112cf770e5be81827dbf5e789ddecbcab86e5d80",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/package-lock.json",
+      "bytes": 68705,
+      "sha256": "d3d4c5362e0c7dc1392ef9cad2048d00c564f1ff70d98c3e10108e50aa56147a",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/requirements.lock.txt",
+      "bytes": 1383,
+      "sha256": "47bb048b9750b074c7d33faba9f9c3873b7b461eaa4360bf57cb08d4f55c9765",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/component-pins.json",
+      "bytes": 36019,
+      "sha256": "2f2c5d52fbee23bbdb206456235664b9dbbdf5c3526ccc065d499ed0a61f5aed",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/sdk-options.mjs",
+      "bytes": 5402,
+      "sha256": "174efdfcf4731845d65c1f32de4c73e8a9032ccf1522022ab7675ccc7e6a5d9e",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/vendor/capiro-meri-contracts-0.1.0.tgz",
+      "bytes": 48823,
+      "sha256": "2f15ade9458cbffe960b7cc36c6fb77cb54cc2a0eca4bc7c0f918b77cfacd4ee",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/native-session-files.mjs",
+      "bytes": 12049,
+      "sha256": "543e05c230bf614cd5cf73f2d69877f1311ec0faf9d7ca205429161a75b842e1",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/fixture-channel.mjs",
+      "bytes": 11858,
+      "sha256": "160929a1ac8ce647574fac5740294d117ab70230d0a040b6d37ca4ef5712ad0b",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/fixture-channel.test.mjs",
+      "bytes": 16419,
+      "sha256": "3d8eb0e88e6ae45c6f55b1303e1f2075344c044ed0eba4e39a0f7ca26994612c",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/fixture-transport.mjs",
+      "bytes": 13008,
+      "sha256": "3b802df4571cd2e170890c9bfd77be995997736ff4e5e003c3248946e3b3d31c",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/fixture-transport.test.mjs",
+      "bytes": 30179,
+      "sha256": "8c676e68f2bb670dee4ed7405d29c009ef757387a49902e96a99fa99e3d6a3c5",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/resume-admission.mjs",
+      "bytes": 5948,
+      "sha256": "81b15faafc9f27b4e4107d7034708fd0f83a18caf09cbb367f03b7ef77701c9d",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/resume-admission.test.mjs",
+      "bytes": 8022,
+      "sha256": "5e53aaaf445c70dd7a56a55a3ea1ab2936a6eff86ed78b2dd04b072a79dfdb4f",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/fixture-sentinel.mjs",
+      "bytes": 8266,
+      "sha256": "4e5779fa84f149a4867e556e5fc7d20c644cd440a69f0ad4c6a7c4e8160324fd",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/fixture-sentinel.test.mjs",
+      "bytes": 14919,
+      "sha256": "73a14fea4fc24fd0a05f68523c4f9dbbbaf500dfd62f80225f8e93996f4e8ed7",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/artifacts.mjs",
+      "bytes": 15220,
+      "sha256": "3155bd31447f37b27c512cc2522a46947241c0f3fd74d738bed54920486757d6",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/artifacts.py",
+      "bytes": 8349,
+      "sha256": "b75d7eacc12c88fc87b23c7aab6bfa22adbb22eee99b4236f01ac90bde858d15",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/browser.mjs",
+      "bytes": 33634,
+      "sha256": "c09bd204a86c0cbfcdfa397b9b1f6938b078f7b4b3c6989a59d3588db2c481e0",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/image-inventory.py",
+      "bytes": 17978,
+      "sha256": "c7d682e67b5b3064947c92bebdce785aa04c3e00238fc8fb769d4a828479de58",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/image-inventory.test.mjs",
+      "bytes": 25547,
+      "sha256": "6f43c0d24e97f766aa588b6773dd6a3399074b35e6ad226e47e73adde27627e7",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/office-export.mjs",
+      "bytes": 51040,
+      "sha256": "78a3526f0e7ea738f675433a5289c49552011cef7267a2c9057827fb42ab5156",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/office-export.test.mjs",
+      "bytes": 42459,
+      "sha256": "da1087cd155c64a85a5d9dd818db275688f6e8610719d665007a8649e3423dde",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/office-reconstruct.mjs",
+      "bytes": 24134,
+      "sha256": "133d8c5adbfae930aa5e59d7d633e73482994106382cebef35b065d059303205",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/runtime.mjs",
+      "bytes": 16139,
+      "sha256": "56873762181926b276fc8283ceb9485d9fd55ef788bd4204b55feef241236716",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-capture.mjs",
+      "bytes": 52572,
+      "sha256": "027117958a878cce722650c57bd0fe6132c5be69a440a3b3b9cd6f83213e6083",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-capture.test.mjs",
+      "bytes": 62953,
+      "sha256": "4eca411e364d3da83b2e1afe5451f94b69a32e023b5733cf5ad4382008b73f84",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/native-observations.mjs",
+      "bytes": 7072,
+      "sha256": "fea49e07f71dccbea3d6c21cab8d1e4502b79a2d1ff05085dbd2a0e2089b2b15",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/native-stream-observer.mjs",
+      "bytes": 3459,
+      "sha256": "66fa0dec53eb9cc3d98a79d45a0cc8290281efc46dce7baa05e1f0721771beba",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/native-namespace-observer.mjs",
+      "bytes": 11069,
+      "sha256": "6c4ff8b525c414f93f0d0d29653b1e8a68db5fc520d4f414cf88d0b3e08b23c4",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-capture-options.mjs",
+      "bytes": 17469,
+      "sha256": "964f4f1958dd0707198fcd21611018b9a9337e90e5f434ed24ce47beb3986b0e",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-discovery-options.mjs",
+      "bytes": 6113,
+      "sha256": "868d470804fbc6aa3cfad5a9a2f39ca5ac2b71881c020b20db122efa7b16479b",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-discovery-options.test.mjs",
+      "bytes": 8608,
+      "sha256": "dd1e03d0f0641bf7133cb29e3c2259f0c9a1779aae8e3a29618e92b045f096f2",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-discovery-tools.mjs",
+      "bytes": 3924,
+      "sha256": "462dc2e956ee9ada8d64df32bc67a79aa58ceb16292d45219869effd2db776a7",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-discovery-tools.test.mjs",
+      "bytes": 9593,
+      "sha256": "eab916e8abd61493f768e425a705f7f814317d354221a2e1eacff8c5823f893a",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-interruption.mjs",
+      "bytes": 12617,
+      "sha256": "2764babd954e95f07caf964ac14e57ee8a5a7d148d1527f97d1af4ea16b9040f",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-interruption.test.mjs",
+      "bytes": 21053,
+      "sha256": "93ab5df298ad95c5169f76247d5e0093bab585e9eec7bb46b3350cb61ffc1daa",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-interruption-options.mjs",
+      "bytes": 2425,
+      "sha256": "132da9c8b37f258309a041bc4d8426a613b20e2fc35f622cd577f1b565c7d182",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-interruption-loopback.mjs",
+      "bytes": 11540,
+      "sha256": "784658878a08952fe665bcf13868830dba06402ccbb99b9d7a44cafc41fdf40d",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-interruption-loopback.test.mjs",
+      "bytes": 12941,
+      "sha256": "93188dbcbafd58291270c522542c9ed91815161dd03641ef9b1f4fa790d2f222",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/static.test.mjs",
+      "bytes": 66109,
+      "sha256": "910044c4c16b9d8e523bef960d80aac5f66632817afd9a103cf3e277b762e6e1",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "scripts/sdk-capture/json-records.mjs",
+      "bytes": 6814,
+      "sha256": "8b889617a9565b7f1b5d29863b772b71f2c880a5fd1606b8a8b68ac2163be02d",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "scripts/sdk-capture/protocol.mjs",
+      "bytes": 5151,
+      "sha256": "c20499a3a9e29069f6a59b58c7262fda6dfddd03068d7a49d6d73003f07e4a9e",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/validate.mjs",
+      "bytes": 3311,
+      "sha256": "c2449fd55300b31bdc1e829b5d918a531f1c4b2c675085a5b4707726ddd36d10",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/meri.schema.json",
+      "bytes": 50043,
+      "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/qualification-sdk/validate.mjs",
+      "bytes": 14049,
+      "sha256": "2d0bd74171e390c370ad8d9e599f7c46ce4751e5efd6ba2c18923090b749b86c",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/qualification-sdk/wire.mjs",
+      "bytes": 1925,
+      "sha256": "f8f506ceeca820f3957b67f8bcbfc36c80f009356baba83b32ac99afe401ad9a",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/qualification-sdk/fixture.schema.json",
+      "bytes": 26397,
+      "sha256": "fbf0655ab6960ac5c486c08ba70b2a31310086ca282f0e9a1f41c08430ebfa13",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/qualification-sdk/native-evidence.mjs",
+      "bytes": 3849,
+      "sha256": "0f587aefd26e189fd9099b1639910da6ec37725b5729c4ba5d98a4695ec5fcde",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/qualification-sdk/native-evidence.schema.json",
+      "bytes": 11751,
+      "sha256": "5f9ac8980940bf4928b2d655fa5e299208f3d6dbf8f1adceceb9727cb69f62f5",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/test/sdk-fixture-wire.test.mjs",
+      "bytes": 11632,
+      "sha256": "0a292a418855ab4f3f07f096a618772928e06533fa05b41db4d4d6a56506abcc",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "scripts/qualification/worker_context.py",
+      "bytes": 11723,
+      "sha256": "48f065d0ad61f98ba571c89dcd62141e6f8c9b272f0d371331d74a0dabf87851",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "scripts/qualification/worker_image_manifest.py",
+      "bytes": 1475,
+      "sha256": "9a080fa6a1fce15379e1f55e2fba1d3c6f7bff2c4c96743ae3794c8ae27da134",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "scripts/qualification/worker_image_build.py",
+      "bytes": 33018,
+      "sha256": "7a50f535486e343aa534f32d7359c8281021dbe4ee5f88bb654ebb45675464b9",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "scripts/qualification/worker_image_collect.py",
+      "bytes": 29750,
+      "sha256": "b9d7d634aba85c9339d683e4638f30862ff45f005616cbe23dc534184801075f",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "scripts/qualification/worker_build_binding.py",
+      "bytes": 6869,
+      "sha256": "6daff67b434e78824ee211803139a417bd23c6a3bb02dc0429695d86f5e1af53",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "scripts/qualification/test_worker_image_build.py",
+      "bytes": 36534,
+      "sha256": "b016e01668dda84f76b4afdecb317e96aea654ff0dfe91b5358beae791a1b84a",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "scripts/qualification/worker_context_test.py",
+      "bytes": 11156,
+      "sha256": "42ebe4455171806243a8459ea0194038264026af1605a0744bca3f303c3e5d87",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "package.json",
+      "bytes": 1936,
+      "sha256": "42f84c0309a87d043a4023f657a6b1932ac5c1ca9e51eca8874e33085cb64d98",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 12067,
+      "sha256": "b2293773bf4ddc6d23425b7d718b79575384679999b86fd3caad78e6eda4a42d",
+      "unchangedFromBase": true
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 scripts/qualification/worker_context_test.py",
+      "exitCode": 0,
+      "passed": 17,
+      "failed": 0
+    },
+    {
+      "command": "python3 scripts/qualification/test_worker_image_build.py",
+      "exitCode": 1,
+      "passed": 34,
+      "failed": 1,
+      "errors": 1
+    },
+    {
+      "command": "python3 scripts/qualification/worker_context.py --output /tmp/meri-image-patch-20261012-context-a",
+      "exitCode": 0
+    },
+    {
+      "command": "python3 scripts/qualification/worker_context.py --output /tmp/meri-image-patch-20261012-context-b",
+      "exitCode": 0
+    },
+    {
+      "command": "npm ci --ignore-scripts --no-audit --no-fund --include=optional (nested qualification package; task-owned cache)",
+      "exitCode": 0
+    },
+    {
+      "command": "npm test (nested qualification package; root dependencies absent)",
+      "exitCode": 1,
+      "passed": 93,
+      "failed": 4,
+      "reason": "ERR_MODULE_NOT_FOUND for root contract ajv/canonicalize imports"
+    },
+    {
+      "command": "npm ci --ignore-scripts --no-audit --no-fund --include=optional (root; task-owned cache)",
+      "exitCode": 0
+    },
+    {
+      "command": "npm test (nested qualification package; after unchanged root lock install)",
+      "exitCode": 0,
+      "passed": 197,
+      "failed": 0
+    }
+  ],
+  "evidence": {
+    "baseline-context-a.manifest.json": {
+      "bytes": 11180,
+      "sha256": "94216667decf5e4feed05914b3f295148d9437ee1c00b224ca4e92625b5b876f"
+    },
+    "baseline-context-a.stderr.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "baseline-context-a.stdout.txt": {
+      "bytes": 63,
+      "sha256": "41ee601bf3e78b144719690b279dfb123ffe5a01233e051c051c45510e24bcf0"
+    },
+    "baseline-context-b.manifest.json": {
+      "bytes": 11180,
+      "sha256": "94216667decf5e4feed05914b3f295148d9437ee1c00b224ca4e92625b5b876f"
+    },
+    "baseline-context-b.stderr.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "baseline-context-b.stdout.txt": {
+      "bytes": 63,
+      "sha256": "41ee601bf3e78b144719690b279dfb123ffe5a01233e051c051c45510e24bcf0"
+    },
+    "baseline-context-verification.json": {
+      "bytes": 921,
+      "sha256": "0da7cc9fb4830f9eb127d7eb1c9f2c8b452e3fe2b6846dbaff408294c414e978"
+    },
+    "baseline-pin-consistency.json": {
+      "bytes": 8520,
+      "sha256": "c57d2c067a9501b29ebeb766505621d4c294d9de509ddaeab5e6f607df266dd8"
+    },
+    "browser-download-metadata.json": {
+      "bytes": 754,
+      "sha256": "3ab840d269367eb8de1cf96d3b48dc3a73441e29626f354b000e1229ea595a08"
+    },
+    "build-guard-tests.stderr.txt": {
+      "bytes": 1900,
+      "sha256": "d4faefb0b0dfc7a8fcafeaeb5f88146457c24d1d2dcd96adca13159bb1d8c7ee"
+    },
+    "build-guard-tests.stdout.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "context-tests.stderr.txt": {
+      "bytes": 116,
+      "sha256": "1d522034fa04068fd1763ea4011ee13afb414c677408bde6892fc721d381f639"
+    },
+    "context-tests.stdout.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "installed-static-data-reproduction.json": {
+      "bytes": 8675,
+      "sha256": "b87ca7882eb0c7f54e48d97330cd0ff7d7d21e6ac74f5ad4d3fcde6bdaf2f146"
+    },
+    "npm-ci.stderr.txt": {
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    "npm-ci.stdout.txt": {
+      "bytes": 26,
+      "sha256": "f443539a2258953d9ddf5d3b07f202ff6a888d675d0cd8b2058c7b9d85edfc28"
+    },
+    "npm-lock-source-audit.json": {
+      "bytes": 42987,
+      "sha256": "de01aabcbea32566ad744080f8b3d280cd31866f44042417fa71b5885d598cd7"
+    },
+    "recipe-pin-consistency.json": {
+      "bytes": 5985,
+      "sha256": "e5dfbb5bb5eaf227a9995093836dd27c1dc4689b3823ac0eae29757b22759d17"
+    },
+    "root-npm-ci.stderr.txt": {
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    "root-npm-ci.stdout.txt": {
+      "bytes": 25,
+      "sha256": "10a3b21efb70f84d46dae9fd0fc25ede9abef4b84b10aa0eed78fe9f0c6a96fa"
+    },
+    "static-baseline.stderr.txt": {
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    "static-baseline.stdout.txt": {
+      "bytes": 14061,
+      "sha256": "cdac888cf7da4bdae68e9bdda72a432736aca2ad12242ef7a816e463580bbcbb"
+    },
+    "static-copy-layout.json": {
+      "bytes": 12116,
+      "sha256": "e236cf86d3bdb26045a38f2152e137a9d6722d5095b71670d0c2e320318d3873"
+    },
+    "static-rerun.stderr.txt": {
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    "static-rerun.stdout.txt": {
+      "bytes": 19158,
+      "sha256": "01a888d3ab7c7a6c4780674211860545c184f9796e1b38238a36d0d812649c5f"
+    }
+  },
+  "environment": {
+    "python": "Python 3.12.14",
+    "node": "v24.19.0"
+  },
+  "contextVerifiedAfterDependencyInstall": true
+}

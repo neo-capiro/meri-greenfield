@@ -1,0 +1,232 @@
+{
+  "method": "Offline existing simple COPY materialization and file reads only; no Docker build/full Dockerfile execution or installed dependency claim",
+  "sourceCommit": "90b4dc8472da13cdee9f49cdc0b4c8306ecbdc73",
+  "materializedLayout": "/tmp/meri-image-patch-copy-layout-20261012-zw5mk6pu",
+  "dataDependencies": [
+    {
+      "source": "static.test.mjs literal data read",
+      "imagePath": "/opt/meri-worker/package.json",
+      "producer": "Dockerfile COPY",
+      "observedInCopyLayout": true
+    },
+    {
+      "source": "static.test.mjs literal data read",
+      "imagePath": "/opt/meri-worker/package-lock.json",
+      "producer": "Dockerfile COPY",
+      "observedInCopyLayout": true
+    },
+    {
+      "source": "static.test.mjs literal data read",
+      "imagePath": "/opt/meri-worker/component-pins.json",
+      "producer": "Dockerfile COPY",
+      "observedInCopyLayout": false
+    },
+    {
+      "source": "static.test.mjs literal data read",
+      "imagePath": "/opt/meri-worker/Dockerfile",
+      "producer": "Dockerfile COPY",
+      "observedInCopyLayout": false
+    },
+    {
+      "source": "static.test.mjs literal data read",
+      "imagePath": "/opt/meri-worker/requirements.lock.txt",
+      "producer": "Dockerfile COPY",
+      "observedInCopyLayout": true
+    },
+    {
+      "source": "static.test.mjs literal data read",
+      "imagePath": "/opt/meri-worker/node_modules/@anthropic-ai/claude-agent-sdk/manifest.json",
+      "producer": "npm dependency installation",
+      "observedInCopyLayout": false
+    },
+    {
+      "source": "static.test.mjs literal data read",
+      "imagePath": "/opt/meri-worker/node_modules/@anthropic-ai/claude-agent-sdk/sdk.d.ts",
+      "producer": "npm dependency installation",
+      "observedInCopyLayout": false
+    },
+    {
+      "source": "static.test.mjs literal data read",
+      "imagePath": "/opt/meri-worker/node_modules/playwright-core/browsers.json",
+      "producer": "npm dependency installation",
+      "observedInCopyLayout": false
+    },
+    {
+      "source": "static.test.mjs literal data read",
+      "imagePath": "/opt/meri-worker/.dockerignore",
+      "producer": "Dockerfile COPY",
+      "observedInCopyLayout": false
+    },
+    {
+      "source": "interruptionPackaging dynamic installed-path data read",
+      "imagePath": "/opt/meri-worker/checkpoint/native-session-files.mjs",
+      "producer": "Dockerfile COPY",
+      "observedInCopyLayout": true,
+      "bytesAndSha256Match": true
+    },
+    {
+      "source": "interruptionPackaging dynamic installed-path data read",
+      "imagePath": "/scripts/sdk-capture/json-records.mjs",
+      "producer": "Dockerfile COPY",
+      "observedInCopyLayout": true,
+      "bytesAndSha256Match": true
+    },
+    {
+      "source": "interruptionPackaging dynamic installed-path data read",
+      "imagePath": "/scripts/sdk-capture/protocol.mjs",
+      "producer": "Dockerfile COPY",
+      "observedInCopyLayout": true,
+      "bytesAndSha256Match": true
+    },
+    {
+      "source": "sdkFixturePackaging dynamic installed-path data read",
+      "imagePath": "/opt/meri-worker/checkpoint/fixture-channel.mjs",
+      "producer": "Dockerfile COPY",
+      "observedInCopyLayout": true,
+      "bytesAndSha256Match": true
+    },
+    {
+      "source": "sdkFixturePackaging dynamic installed-path data read",
+      "imagePath": "/opt/meri-worker/checkpoint/fixture-channel.test.mjs",
+      "producer": "Dockerfile COPY",
+      "observedInCopyLayout": true,
+      "bytesAndSha256Match": true
+    },
+    {
+      "source": "sdkFixturePackaging dynamic installed-path data read",
+      "imagePath": "/opt/meri-worker/checkpoint/fixture-transport.mjs",
+      "producer": "Dockerfile COPY",
+      "observedInCopyLayout": true,
+      "bytesAndSha256Match": true
+    },
+    {
+      "source": "sdkFixturePackaging dynamic installed-path data read",
+      "imagePath": "/opt/meri-worker/checkpoint/fixture-transport.test.mjs",
+      "producer": "Dockerfile COPY",
+      "observedInCopyLayout": true,
+      "bytesAndSha256Match": true
+    },
+    {
+      "source": "sdkFixturePackaging dynamic installed-path data read",
+      "imagePath": "/opt/meri-worker/checkpoint/resume-admission.mjs",
+      "producer": "Dockerfile COPY",
+      "observedInCopyLayout": true,
+      "bytesAndSha256Match": true
+    },
+    {
+      "source": "sdkFixturePackaging dynamic installed-path data read",
+      "imagePath": "/opt/meri-worker/checkpoint/resume-admission.test.mjs",
+      "producer": "Dockerfile COPY",
+      "observedInCopyLayout": true,
+      "bytesAndSha256Match": true
+    },
+    {
+      "source": "sdkFixturePackaging dynamic installed-path data read",
+      "imagePath": "/opt/meri-worker/checkpoint/fixture-sentinel.mjs",
+      "producer": "Dockerfile COPY",
+      "observedInCopyLayout": true,
+      "bytesAndSha256Match": true
+    },
+    {
+      "source": "sdkFixturePackaging dynamic installed-path data read",
+      "imagePath": "/opt/meri-worker/checkpoint/fixture-sentinel.test.mjs",
+      "producer": "Dockerfile COPY",
+      "observedInCopyLayout": true,
+      "bytesAndSha256Match": true
+    },
+    {
+      "source": "sdkFixturePackaging dynamic installed-path data read",
+      "imagePath": "/opt/meri-worker/probes/native-observations.mjs",
+      "producer": "Dockerfile COPY",
+      "observedInCopyLayout": true,
+      "bytesAndSha256Match": true
+    },
+    {
+      "source": "sdkFixturePackaging dynamic installed-path data read",
+      "imagePath": "/opt/meri-worker/probes/native-stream-observer.mjs",
+      "producer": "Dockerfile COPY",
+      "observedInCopyLayout": true,
+      "bytesAndSha256Match": true
+    },
+    {
+      "source": "sdkFixturePackaging dynamic installed-path data read",
+      "imagePath": "/opt/meri-worker/probes/native-namespace-observer.mjs",
+      "producer": "Dockerfile COPY",
+      "observedInCopyLayout": true,
+      "bytesAndSha256Match": true
+    },
+    {
+      "source": "sdkFixturePackaging dynamic installed-path data read",
+      "imagePath": "/packages/contracts/validate.mjs",
+      "producer": "Dockerfile COPY",
+      "observedInCopyLayout": true,
+      "bytesAndSha256Match": true
+    },
+    {
+      "source": "sdkFixturePackaging dynamic installed-path data read",
+      "imagePath": "/packages/contracts/meri.schema.json",
+      "producer": "Dockerfile COPY",
+      "observedInCopyLayout": true,
+      "bytesAndSha256Match": true
+    },
+    {
+      "source": "sdkFixturePackaging dynamic installed-path data read",
+      "imagePath": "/packages/contracts/qualification-sdk/validate.mjs",
+      "producer": "Dockerfile COPY",
+      "observedInCopyLayout": true,
+      "bytesAndSha256Match": true
+    },
+    {
+      "source": "sdkFixturePackaging dynamic installed-path data read",
+      "imagePath": "/packages/contracts/qualification-sdk/wire.mjs",
+      "producer": "Dockerfile COPY",
+      "observedInCopyLayout": true,
+      "bytesAndSha256Match": true
+    },
+    {
+      "source": "sdkFixturePackaging dynamic installed-path data read",
+      "imagePath": "/packages/contracts/qualification-sdk/fixture.schema.json",
+      "producer": "Dockerfile COPY",
+      "observedInCopyLayout": true,
+      "bytesAndSha256Match": true
+    },
+    {
+      "source": "sdkFixturePackaging dynamic installed-path data read",
+      "imagePath": "/packages/contracts/qualification-sdk/native-evidence.mjs",
+      "producer": "Dockerfile COPY",
+      "observedInCopyLayout": true,
+      "bytesAndSha256Match": true
+    },
+    {
+      "source": "sdkFixturePackaging dynamic installed-path data read",
+      "imagePath": "/packages/contracts/qualification-sdk/native-evidence.schema.json",
+      "producer": "Dockerfile COPY",
+      "observedInCopyLayout": true,
+      "bytesAndSha256Match": true
+    },
+    {
+      "source": "sdkFixturePackaging dynamic installed-path data read",
+      "imagePath": "/packages/contracts/test/sdk-fixture-wire.test.mjs",
+      "producer": "Dockerfile COPY",
+      "observedInCopyLayout": true,
+      "bytesAndSha256Match": true
+    },
+    {
+      "source": "static.test.mjs local archive data read",
+      "imagePath": "/opt/meri-worker/vendor/capiro-meri-contracts-0.1.0.tgz",
+      "producer": "Dockerfile COPY",
+      "observedInCopyLayout": true,
+      "bytesAndSha256Match": true
+    }
+  ],
+  "missingRecipeData": [
+    "/opt/meri-worker/component-pins.json",
+    "/opt/meri-worker/Dockerfile",
+    "/opt/meri-worker/.dockerignore"
+  ],
+  "npmDataNotModeled": [
+    "/opt/meri-worker/node_modules/@anthropic-ai/claude-agent-sdk/manifest.json",
+    "/opt/meri-worker/node_modules/@anthropic-ai/claude-agent-sdk/sdk.d.ts",
+    "/opt/meri-worker/node_modules/playwright-core/browsers.json"
+  ]
+}
