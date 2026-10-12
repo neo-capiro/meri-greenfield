@@ -1,0 +1,148 @@
+{
+  "sourceCommit": "a25516ae8d2c44638800e492e439e212098dc750",
+  "authorMetadata": "314f3c35e5277e89ce44f243ee60d07049eb96b6",
+  "decision": "ACCEPT_SOURCE",
+  "scope": "Source contracts only; runtime/source availability HOLD; manifest self-excluded",
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-STATE-STATUS-VOTES-REVIEW-20261012.md",
+      "bytes": 8116,
+      "sha256": "e34bdabc82902a9243ac4ea1899c54884b2f9dbcb37b94efcd6b198c36cd8092"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-state-status-votes-independent.test.mjs",
+      "bytes": 12756,
+      "sha256": "ec55ed74fc6226a4ff8bc39ee2d5547e5406c0ecf75d32a911ec55affff18ad2"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-review/.gitattributes",
+      "bytes": 50,
+      "sha256": "1bee6826ab8565b1a50079d470700a548e73e2363ea12450cf37ea13454b9eba"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-review/audit.json",
+      "bytes": 8687,
+      "sha256": "6db911d0bf0a6a504eff91c6abc0752f753c8aacf20c0644a7b3a35f20c595cd"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-review/audit.py",
+      "bytes": 7855,
+      "sha256": "f6f27d3afeb36f986a98135580e3a4f2b8ec966c61e4b5c256499801005d9cf3"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-review/author-packet-integrity.json",
+      "bytes": 3011,
+      "sha256": "ae5eec38a3ea5ed2e88bcff00c8e3778765206e31d0853699b0eec46b2560925"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-review/criteria.md",
+      "bytes": 2309,
+      "sha256": "66265a3f68d5102bf5abde8a950a6adddd769a32372e31fd2814acd6ab8094cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-review/final-audit.json",
+      "bytes": 1468,
+      "sha256": "b0fde6432586ed8efa2597ef2793c025ac338cf651a806b18cad2fc1d9a110be"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-review/final-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-review/final-audit.stdout.bin",
+      "bytes": 57,
+      "sha256": "827cd7c8bc2d00ace0cc4e118457d42562650a0fa097193c3e9eaa95fc135020"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-review/final-independent.json",
+      "bytes": 1409,
+      "sha256": "ceebeac74ee4fe65f6dd6c468c8e58f3989408d2de6dd03a33e9782520811c68"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-review/final-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-review/final-independent.stdout.bin",
+      "bytes": 4642,
+      "sha256": "485ce5db6a001d0e05feb145baa77164e33aa086736a265ffbd51f647e4bbd3c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-review/initial-independent.json",
+      "bytes": 1345,
+      "sha256": "f4cf8f969c34b2806d369ad83036955b0f46f08f50bd1e22f5b3d58dc4b86bb2"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-review/initial-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-review/initial-independent.stdout.bin",
+      "bytes": 19363,
+      "sha256": "39fba9765b809ccbfeaba4b322f54effb7211508125994d5298b98d4db14d5e4"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-review/initial-source-identities.json",
+      "bytes": 911,
+      "sha256": "57fe25de5a15b2fe2c9f2da5bb9fe1196c3f6d06d4ff7e8cda1210ae9f61138d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-review/projection-findings.json",
+      "bytes": 4612,
+      "sha256": "ee212ce21987aa62b7a426c655afa75c916321296e6d8aad44940459ab472801"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-review/reference-identities-initial.json",
+      "bytes": 3821,
+      "sha256": "a7c32f2efd752ce1e4b47f57fb728a415bdd32777e96fd21b0d63874387d0891"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-review/reference-identities.json",
+      "bytes": 4322,
+      "sha256": "60aea627e214dbf7bd23207880cf82d21aa89f3602bcfce110c47f04a4de0240"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-review/source-audit-results.json",
+      "bytes": 8687,
+      "sha256": "80fa5578483b26f2ab5cec06ad62fa3dbc6c5ad2e42a611ce8410805aba5484b"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-review/source-audit.json",
+      "bytes": 1431,
+      "sha256": "27b8b2420f17c6d0a14942398d69f692f092b6b2a02a80cb7ce37a0bc3187bb6"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-review/source-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-review/source-audit.stdout.bin",
+      "bytes": 57,
+      "sha256": "827cd7c8bc2d00ace0cc4e118457d42562650a0fa097193c3e9eaa95fc135020"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-review/strict-union-failed-source/state-bill-identity.mjs",
+      "bytes": 1240,
+      "sha256": "25d86301366971f622f88fcdcf45ccf25036b677f38a5612283ac595872c6ad7"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-review/strict-union-failed-source/state-status-votes-validation.mjs",
+      "bytes": 8614,
+      "sha256": "43587a404705d7a589000c0bd228beb74be4880c12ebc71c17ca5fca93cfeaa1"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-review/strict-union-failed-source/state-status-votes.schema.json",
+      "bytes": 12878,
+      "sha256": "ac017527b6d8da90b91e61c550623144a8eed4cd89a3b020c4a23acd27a8fde2"
+    }
+  ]
+}
