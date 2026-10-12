@@ -1,0 +1,225 @@
+{
+  "scope": "METADATA_ONLY_NO_TEST_RUNTIME_EXECUTION",
+  "authorFreeze": "417e9942bd3e8decd1a5ed40760228e263107ed6",
+  "sourceUnchanged": "530416e490763155c5531140f4b70e95a9493b7b",
+  "manifestSha256": "60322fa07832f9cc5696a299721909169a02018075287eb081c6fa158457f67e",
+  "originalFiles": 6001,
+  "pairedReferences": 9,
+  "manifestMembers": 10,
+  "checks": [
+    {
+      "check": "manifest exact supplied hash",
+      "pass": true
+    },
+    {
+      "check": "ten distinct members",
+      "pass": true
+    },
+    {
+      "check": "source and acceptance remain bounded",
+      "pass": true
+    },
+    {
+      "check": "member docs/coordination/reports/CODEX-FACILITY-REPRESENTATION-AUTHOR-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/facility-representation-author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/facility-representation-author/focused.json",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/facility-representation-author/focused.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/facility-representation-author/focused.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/facility-representation-author/reference-identities.json",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/facility-representation-author/source-preservation.json",
+      "pass": true
+    },
+    {
+      "check": "member packages/contracts/retrieval-0.2/facility-representation-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "member packages/contracts/retrieval-0.2/facility-representation.schema.json",
+      "pass": true
+    },
+    {
+      "check": "member packages/contracts/test/retrieval-facility-representation.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact source-bound author command and success",
+      "pass": true
+    },
+    {
+      "check": "raw author stream docs/qualification/candidates/read-continuation-20261012/facility-representation-author/focused.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw author stream docs/qualification/candidates/read-continuation-20261012/facility-representation-author/focused.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "raw 22 pass zero fail and skip",
+      "pass": true
+    },
+    {
+      "check": "zero author stderr",
+      "pass": true
+    },
+    {
+      "check": "capture producer exact",
+      "pass": true
+    },
+    {
+      "check": "6001 original complete Git object/mode identities",
+      "pass": true
+    },
+    {
+      "check": "only documentation changed since accepted source",
+      "pass": true
+    },
+    {
+      "check": "preserved source packages/contracts/retrieval-0.2/facility-representation-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "preserved source packages/contracts/retrieval-0.2/facility-representation.schema.json",
+      "pass": true
+    },
+    {
+      "check": "preserved source packages/contracts/test/retrieval-facility-representation.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "nine paired references",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/src/meri/meri-tools.service.ts fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/src/meri/meri-tools.service.ts 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "paired no drift apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/src/clients/representation-resolver.service.ts fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/src/clients/representation-resolver.service.ts 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "paired no drift apps/api/src/clients/representation-resolver.service.ts",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/src/clients/district-code.util.ts fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/src/clients/district-code.util.ts 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "paired no drift apps/api/src/clients/district-code.util.ts",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/src/common/district-code.util.ts fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/src/common/district-code.util.ts 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "paired no drift apps/api/src/common/district-code.util.ts",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/src/common/us-states.ts fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/src/common/us-states.ts 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "paired no drift apps/api/src/common/us-states.ts",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/prisma/schema.prisma fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/prisma/schema.prisma 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "paired no drift apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/src/meri/meri.controller.ts fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/src/meri/meri.controller.ts 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "paired no drift apps/api/src/meri/meri.controller.ts",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/src/auth/roles.guard.ts fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/src/auth/roles.guard.ts 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "paired no drift apps/api/src/auth/roles.guard.ts",
+      "pass": true
+    },
+    {
+      "check": "reference packages/shared/src/index.ts fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "reference packages/shared/src/index.ts 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "paired no drift packages/shared/src/index.ts",
+      "pass": true
+    },
+    {
+      "check": "report identifies exact independent verdict",
+      "pass": true
+    }
+  ],
+  "passed": 53,
+  "failed": 0
+}
