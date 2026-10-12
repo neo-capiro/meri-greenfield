@@ -1,0 +1,315 @@
+{
+  "base": "fea47fdc68c7f0f22a335d3b16ba492c614b59d1",
+  "source": "c651a0ab75f416a06c91eff07a463d697adb0fa4",
+  "sourceTree": "f1f1196c069c57a602520921651ae994a364de3f",
+  "author": "23c8ab5951b14766e001ff59b23371ffc41b60f4",
+  "authorTree": "adf77b3490cafce499dce00bcbdd7844995499d0",
+  "reviewHeadAtAudit": "fcb468ca453d49d17a2b1ddf2ca71492c7b03b22",
+  "originalFiles": 5268,
+  "originalsPreserved": 5268,
+  "checks": [
+    {
+      "name": "all base files exact in source",
+      "pass": true
+    },
+    {
+      "name": "all base files exact in final author",
+      "pass": true
+    },
+    {
+      "name": "all base files exact in review",
+      "pass": true
+    },
+    {
+      "name": "source frozen packages/contracts/retrieval-0.2/district-nexus-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "source frozen packages/contracts/retrieval-0.2/district-nexus.schema.json",
+      "pass": true
+    },
+    {
+      "name": "source frozen packages/contracts/test/retrieval-district-nexus.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "source adds only allocated paths",
+      "pass": true
+    },
+    {
+      "name": "metadata changes only author report/evidence",
+      "pass": true
+    },
+    {
+      "name": "private pinned identity apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "private observed identity apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "private pinned identity apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "name": "private observed identity apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "name": "private pinned identity apps/api/src/district-nexus/r5-action-layer/r5-meri-district-tools.ts",
+      "pass": true
+    },
+    {
+      "name": "private observed identity apps/api/src/district-nexus/r5-action-layer/r5-meri-district-tools.ts",
+      "pass": true
+    },
+    {
+      "name": "private pinned identity apps/api/src/district-nexus/r5-action-layer/r5-types.ts",
+      "pass": true
+    },
+    {
+      "name": "private observed identity apps/api/src/district-nexus/r5-action-layer/r5-types.ts",
+      "pass": true
+    },
+    {
+      "name": "private pinned identity apps/api/src/district-nexus/r5-action-layer/r5-flag.guard.ts",
+      "pass": true
+    },
+    {
+      "name": "private observed identity apps/api/src/district-nexus/r5-action-layer/r5-flag.guard.ts",
+      "pass": true
+    },
+    {
+      "name": "private pinned identity apps/api/src/district-nexus/r5-action-layer/r5-district-context.service.ts",
+      "pass": true
+    },
+    {
+      "name": "private observed identity apps/api/src/district-nexus/r5-action-layer/r5-district-context.service.ts",
+      "pass": true
+    },
+    {
+      "name": "private pinned identity apps/api/src/district-nexus/r5-action-layer/r5-meri-district-tools.spec.ts",
+      "pass": true
+    },
+    {
+      "name": "private observed identity apps/api/src/district-nexus/r5-action-layer/r5-meri-district-tools.spec.ts",
+      "pass": true
+    },
+    {
+      "name": "private pinned identity apps/api/src/district-nexus/r5-action-layer/r5-district-context.spec.ts",
+      "pass": true
+    },
+    {
+      "name": "private observed identity apps/api/src/district-nexus/r5-action-layer/r5-district-context.spec.ts",
+      "pass": true
+    },
+    {
+      "name": "private pinned identity apps/api/src/district-nexus/district-nexus-flag.guard.ts",
+      "pass": true
+    },
+    {
+      "name": "private observed identity apps/api/src/district-nexus/district-nexus-flag.guard.ts",
+      "pass": true
+    },
+    {
+      "name": "private pinned identity apps/api/src/common/us-states.ts",
+      "pass": true
+    },
+    {
+      "name": "private observed identity apps/api/src/common/us-states.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned enum R5FactSection",
+      "pass": true
+    },
+    {
+      "name": "pinned enum R5FactBasis",
+      "pass": true
+    },
+    {
+      "name": "pinned enum R5AmountStage",
+      "pass": true
+    },
+    {
+      "name": "pinned enum R5GeographyScope",
+      "pass": true
+    },
+    {
+      "name": "pinned enum R5Coverage",
+      "pass": true
+    },
+    {
+      "name": "database character width changeKind",
+      "pass": true
+    },
+    {
+      "name": "database character width source",
+      "pass": true
+    },
+    {
+      "name": "database character width severity",
+      "pass": true
+    },
+    {
+      "name": "effective date nullable in storage",
+      "pass": true
+    },
+    {
+      "name": "single canonical snapshot helper import",
+      "pass": true
+    },
+    {
+      "name": "no source effects in family",
+      "pass": true
+    },
+    {
+      "name": "factory public interface only",
+      "pass": true
+    },
+    {
+      "name": "context transport has only binding and subject",
+      "pass": true
+    },
+    {
+      "name": "result wrapper Context",
+      "pass": true
+    },
+    {
+      "name": "result wrapper Changes",
+      "pass": true
+    },
+    {
+      "name": "disabled exact fields",
+      "pass": true
+    },
+    {
+      "name": "forty facts and thirty gaps",
+      "pass": true
+    },
+    {
+      "name": "twenty changes without cursor/total",
+      "pass": true
+    },
+    {
+      "name": "reported facts may claim complete only locally",
+      "pass": true
+    },
+    {
+      "name": "no observation discriminator proof",
+      "pass": true
+    },
+    {
+      "name": "owned group absent prefreeze-independent",
+      "pass": true
+    },
+    {
+      "name": "raw stream prefreeze-independent .bin",
+      "pass": true
+    },
+    {
+      "name": "raw stream prefreeze-independent .bin",
+      "pass": true
+    },
+    {
+      "name": "stderr empty prefreeze-independent",
+      "pass": true
+    },
+    {
+      "name": "owned group absent corrected-prefreeze-independent",
+      "pass": true
+    },
+    {
+      "name": "raw stream corrected-prefreeze-independent .bin",
+      "pass": true
+    },
+    {
+      "name": "raw stream corrected-prefreeze-independent .bin",
+      "pass": true
+    },
+    {
+      "name": "stderr empty corrected-prefreeze-independent",
+      "pass": true
+    },
+    {
+      "name": "owned group absent exact-source-tests",
+      "pass": true
+    },
+    {
+      "name": "raw stream exact-source-tests .bin",
+      "pass": true
+    },
+    {
+      "name": "raw stream exact-source-tests .bin",
+      "pass": true
+    },
+    {
+      "name": "stderr empty exact-source-tests",
+      "pass": true
+    },
+    {
+      "name": "no entire private bodies copied",
+      "pass": true
+    },
+    {
+      "name": "source whitespace",
+      "pass": true
+    }
+  ],
+  "sourceIdentities": [
+    {
+      "path": "packages/contracts/retrieval-0.2/district-nexus-validation.mjs",
+      "bytes": 4491,
+      "sha256": "089c236f35d513ce7b0b2eedd3f44c68e350469f267b36b827cbd6ac3b2fe891",
+      "blob": "4d6af651833e23a27af0024d0b37f89dc615b515"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/district-nexus.schema.json",
+      "bytes": 16317,
+      "sha256": "5ed5df5dfe380e68ddd2c6b367bac4f314620d3381e6e8649b2c92dae8c3df36",
+      "blob": "e0ea20eefc8ac2a8681119cc9045e4040e7ab4c5"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-district-nexus.test.mjs",
+      "bytes": 15521,
+      "sha256": "4abe3e94271f82409b24e1640f299db8362da274ede6179614d692d0e4aff75d",
+      "blob": "193a3f2250dc17499c11e093df2594cfcc85e699"
+    }
+  ],
+  "rawStreams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/district-review/prefreeze-independent.stdout.bin",
+      "bytes": 3830,
+      "sha256": "1e7feff155507ae9c7876565ecfe1048c82e66f417ac335940ea61701344e0ed"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/district-review/prefreeze-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/district-review/corrected-prefreeze-independent.stdout.bin",
+      "bytes": 2884,
+      "sha256": "88a51d372ce1f7bc4fc01434b7baf4f860c9e5bd212df35ca7754c5bc8cf2dc2"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/district-review/corrected-prefreeze-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/district-review/exact-source-tests.stdout.bin",
+      "bytes": 5161,
+      "sha256": "8c0ef520c24caafadcfdfea42f042e228c065cb1a38aadcc813a2889e22c924c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/district-review/exact-source-tests.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "privateBodiesPublished": false,
+  "privateSourceExecuted": false,
+  "runtimeAndAuthority": "UNRUN_UNAVAILABLE"
+}
