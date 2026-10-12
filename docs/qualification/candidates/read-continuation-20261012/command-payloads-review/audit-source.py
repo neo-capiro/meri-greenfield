@@ -30,7 +30,13 @@ for p in files:
   text=raw.decode();check('canonical_snapshot_owner:'+p,"import {snapshotOperationData} from '../retrieval-0.2/operation-contracts.mjs';" in text)
   check('no_extra_imports:'+p,sum(1 for l in text.splitlines() if l.startswith('import '))==1)
  if '/test/' in p:
-  old=git('show',initial+':'+p);check('original_frozen_author_test_prefix:'+p,raw.startswith(old))
+  old=git('show',initial+':'+p)
+  if p.endswith('command-artifact-file.test.mjs'):
+   old_line=next(line for line in old.splitlines(keepends=True) if line.startswith(b"test('pending before storage has reason/fileName"))
+   corrected=old_line.replace(b"test('pending before storage",b"test('failed before storage").replace(b"status:'pending'",b"status:'failed'")
+   check('one_explicit_source_incorrect_fixture_superseded',old.count(old_line)==1)
+   old=old.replace(old_line,corrected)
+  check('original_frozen_author_test_prefix_except_exact_disclosed_fixture:'+p,raw.startswith(old))
 for p in ['packages/contracts/meri.schema.json','packages/contracts/validate.mjs','packages/contracts/retrieval-0.2/operation-contracts.mjs','package.json','package-lock.json']:
  check('canonical_owner_unchanged:'+p,before[p]==after[p])
 references=json.loads((evidence/'reference-identities.json').read_text())['references']
@@ -38,7 +44,7 @@ for r in references:
  for v in r['versions']:
   raw=subprocess.check_output(['git','-C','/workspace/capirov2','show',v['commit']+':'+r['path']])
   check('private_reference_identity:'+v['commit'][:8]+':'+r['path'],len(raw)==v['bytes'] and hashlib.sha256(raw).hexdigest()==v['sha256'])
-for label in ['independent-first','independent-corrected','compatibility-negative','repaired-unchanged','independent-repaired']:
+for label in ['independent-first','independent-corrected','compatibility-negative','repaired-unchanged','independent-repaired','pending-negative','independent-final']:
  p=evidence/(label+'.json')
  if not p.exists():continue
  receipt=json.loads(p.read_text());check('owned_group_absent:'+label,receipt['ownedProcessGroupAbsent'] and not receipt['timedOut'] and not receipt['ownedGroupKillRequired'])
