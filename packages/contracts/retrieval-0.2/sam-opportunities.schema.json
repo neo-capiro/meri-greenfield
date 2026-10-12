@@ -1,0 +1,366 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:sam-opportunities:0.2.0",
+  "$defs": {
+    "SamOpportunitiesRequest": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "naics": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "includeInactive": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "limit": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "SamOpportunitiesInput": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "maxLength": 240
+        },
+        "naics": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "maxLength": 12
+        },
+        "includeInactive": {
+          "type": "boolean"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        }
+      },
+      "required": [
+        "query",
+        "naics",
+        "includeInactive",
+        "limit"
+      ],
+      "additionalProperties": false
+    },
+    "SamOpportunitiesContext": {
+      "type": "object",
+      "properties": {
+        "asOf": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-"
+        },
+        "sourceStatusAsOf": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-"
+        },
+        "sourceHealthAsOf": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-"
+        },
+        "evidenceAccuracyMode": {
+          "enum": [
+            "off",
+            "shadow",
+            "enforce"
+          ]
+        }
+      },
+      "required": [
+        "asOf",
+        "sourceStatusAsOf",
+        "sourceHealthAsOf",
+        "evidenceAccuracyMode"
+      ],
+      "additionalProperties": false
+    },
+    "SamOpportunitiesOutput": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "search_sam_opportunities"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-"
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "sourceFreshness": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SamFreshness"
+          },
+          "maxItems": 1
+        },
+        "sourceStatus": {
+          "enum": [
+            "healthy",
+            "unknown",
+            "degraded"
+          ]
+        },
+        "sourceReason": {
+          "enum": [
+            null,
+            "source_freshness_unavailable",
+            "all_federal_source_never_synced",
+            "source_freshness_unknown",
+            "latest_source_sync_incomplete",
+            "source_sync_stale"
+          ]
+        },
+        "notes": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "const": "Results cover Capiro’s synchronized SAM.gov catalog. No matching records does not establish that no current federal opportunity exists."
+            },
+            {
+              "const": "Source coverage is incomplete or unknown; inspect sourceFreshness before making current-opportunity or absence claims."
+            }
+          ],
+          "items": false,
+          "minItems": 1,
+          "maxItems": 2
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SamOpportunity"
+          },
+          "maxItems": 50
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "total",
+        "sourceFreshness",
+        "sourceStatus",
+        "sourceReason",
+        "notes",
+        "results"
+      ],
+      "additionalProperties": false
+    },
+    "SamOpportunity": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "noticeId": {
+          "type": "string"
+        },
+        "solicitationNumber": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "noticeType": {
+          "type": "string",
+          "maxLength": 32
+        },
+        "agency": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "office": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "pscCode": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 8
+        },
+        "naicsCode": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 8
+        },
+        "postedDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time",
+          "pattern": "^\\d{4}-"
+        },
+        "responseDeadline": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time",
+          "pattern": "^\\d{4}-"
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 300
+        },
+        "sourceUrl": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "active": {
+          "type": "boolean"
+        },
+        "deadline": {
+          "$ref": "#/$defs/SamDeadline"
+        }
+      },
+      "required": [
+        "id",
+        "noticeId",
+        "solicitationNumber",
+        "title",
+        "noticeType",
+        "agency",
+        "office",
+        "pscCode",
+        "naicsCode",
+        "postedDate",
+        "responseDeadline",
+        "description",
+        "sourceUrl",
+        "active"
+      ],
+      "additionalProperties": false
+    },
+    "SamFreshness": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "const": "sam_gov"
+        },
+        "state": {
+          "$ref": "urn:meri:retrieval:funding-opportunities:0.2.0#/$defs/FundingFreshness/properties/state"
+        },
+        "recordCount": {
+          "$ref": "urn:meri:retrieval:funding-opportunities:0.2.0#/$defs/FundingFreshness/properties/recordCount"
+        },
+        "activeRecordCount": {
+          "$ref": "urn:meri:retrieval:funding-opportunities:0.2.0#/$defs/FundingFreshness/properties/activeRecordCount"
+        },
+        "lastSyncedAt": {
+          "$ref": "urn:meri:retrieval:funding-opportunities:0.2.0#/$defs/FundingFreshness/properties/lastSyncedAt"
+        },
+        "latestAttemptAt": {
+          "$ref": "urn:meri:retrieval:funding-opportunities:0.2.0#/$defs/FundingFreshness/properties/latestAttemptAt"
+        },
+        "lastSuccessAt": {
+          "$ref": "urn:meri:retrieval:funding-opportunities:0.2.0#/$defs/FundingFreshness/properties/lastSuccessAt"
+        },
+        "countsUnavailable": {
+          "type": "boolean"
+        },
+        "neverSynced": {
+          "type": "boolean"
+        },
+        "lastRunStatus": {
+          "$ref": "urn:meri:retrieval:funding-opportunities:0.2.0#/$defs/FundingFreshness/properties/state"
+        },
+        "lastRunDegraded": {
+          "type": "boolean"
+        },
+        "hoursSinceLastSuccess": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        }
+      },
+      "required": [
+        "source",
+        "state",
+        "recordCount",
+        "activeRecordCount",
+        "lastSyncedAt",
+        "countsUnavailable",
+        "neverSynced",
+        "lastRunStatus",
+        "lastRunDegraded",
+        "hoursSinceLastSuccess"
+      ],
+      "additionalProperties": false
+    },
+    "SamDeadline": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "urn:meri:retrieval:funding-opportunities:0.2.0#/$defs/FundingDeadline"
+        }
+      ],
+      "properties": {
+        "basis": {
+          "enum": [
+            "explicit_datetime",
+            "unknown"
+          ]
+        },
+        "timeZone": {
+          "type": "null"
+        },
+        "rawText": false
+      }
+    }
+  }
+}
