@@ -1,0 +1,59 @@
+{
+  "head": "febdcb8e045e0362f65d9ada814d217d8c453327",
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "checks": [
+    {
+      "name": "all base Git tree entries preserved",
+      "passed": true,
+      "entries": 7677,
+      "changed": []
+    },
+    {
+      "name": "memory-proposal-source integrated exact manifest",
+      "passed": true,
+      "members": 30,
+      "wrong": []
+    },
+    {
+      "name": "memory-proposal-source-review integrated exact manifest",
+      "passed": true,
+      "members": 25,
+      "wrong": []
+    },
+    {
+      "name": "accepted source exact apps/gateway/sources/memory-proposals/handler.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/gateway/sources/memory-proposals/http-adapter.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/gateway/sources/memory-proposals/request-context.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/gateway/test/memory-proposal-source.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "59 actual integration controls and owned group absent",
+      "passed": true
+    }
+  ],
+  "packets": [
+    {
+      "lane": "memory-proposal-source",
+      "manifestSha256": "e7b10976d3f204a5cc641b7f0d27a225a82a6f27257249d3f46e1e707be9906d",
+      "members": 30
+    },
+    {
+      "lane": "memory-proposal-source-review",
+      "manifestSha256": "a245f96cd301b7fd6b67b7caa58c88892bb386fa880d915a78046aae7ddedd58",
+      "members": 25
+    }
+  ],
+  "passed": 8,
+  "failed": 0,
+  "runtimeAccepted": false
+}
