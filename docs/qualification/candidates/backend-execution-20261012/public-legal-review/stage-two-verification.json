@@ -1,0 +1,179 @@
+{
+  "status": "PASS",
+  "manifestBytes": 9360,
+  "manifestSha256": "891b3a9b02022e077a6135cf114fa08de2b07ada366ef61c4ef5e9d4e3bd5310",
+  "members": 38,
+  "passed": 42,
+  "total": 42,
+  "checks": [
+    {
+      "path": "docs/coordination/reports/CODEX-PUBLIC-LEGAL-REVIEW-20261012.md",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/criteria.md",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/first-independent.test.mjs.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/first-replay-correction.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-corrected.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-criteria.md",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-first-independent.test.mjs.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-first.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-harness-correction.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-metadata-audit.buffer-before.mjs.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-metadata-audit.buffer-before.stderr.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-metadata-audit.buffer-before.stdout.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-metadata-audit.initial.mjs.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-metadata-audit.initial.stderr.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-metadata-audit.initial.stdout.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-metadata-audit.mjs",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-metadata-audit.stderr.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-metadata-audit.stdout.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/initial-reference-identities.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/local-check-setup.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/pending-branch-findings.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/pending-policy-reference-identities.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/research-audit.py",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/research-audit.stderr",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/research-audit.stdout.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/research-corrected.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/research-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/research-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/research-first.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/research-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/research-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "path": "packages/contracts/test/retrieval-public-domain-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "path": "packages/contracts/test/retrieval-research-legal-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "processGroup": 307976,
+      "pass": true
+    },
+    {
+      "processGroup": 308436,
+      "pass": true
+    },
+    {
+      "processGroup": 311744,
+      "pass": true
+    },
+    {
+      "processGroup": 311914,
+      "pass": true
+    }
+  ],
+  "limits": "Only first two source families accepted. Metadata audit processes completed synchronously; no native/service/private producer execution. Borrowed-copy seven dependencies retained for remaining local review."
+}
