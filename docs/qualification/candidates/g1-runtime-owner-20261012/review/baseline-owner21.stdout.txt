@@ -1,0 +1,431 @@
+✔ independent actual control pipeline commits A, replaces B, loads and verifies exact bytes (61.85936ms)
+✖ independent owner exposes frozen content-free bound status without database work (2.727178ms)
+✖ independent owner stop before checkpoint consumes real revoke and denies subsequent ingress (0.892401ms)
+✖ independent repeated and concurrent stop reuses one attempt without timestamp rewrite (0.839532ms)
+✖ independent owner invalidates expired exact current grant without resetting original clock (1.282667ms)
+✖ independent owner cannot begin new durable stop after original cleanup deadline (1.019612ms)
+✖ independent current B stop leaves original immutable A commit intact (3.146589ms)
+✖ independent stale A stop refuses without closing B gate or changing B grant (0.79239ms)
+✖ independent wrong peer stop cannot close actual A gate (1.068556ms)
+✖ independent wrong actor stop cannot close actual A gate (0.886953ms)
+✖ independent wrong pin stop cannot close actual A gate (1.040934ms)
+✖ independent caller mutation across first database await cannot retarget stop (0.746352ms)
+✖ independent accessor and proxy stop targets cause no getter trap or durable dispatch (0.596416ms)
+✖ independent stop aborts parked evidence inspection before any object or commit effect (0.538369ms)
+✖ independent stop after parked object put prevents next object effect and publication (0.754845ms)
+✖ independent local stop gate catches request already parked in credential resolution before revocation completes (0.655985ms)
+✖ independent unknown revoke acknowledgement remains visible and repeated stop never retries (0.690227ms)
+✖ independent definite pre-update failure stays FAILED rather than unknown and does not retry (0.588374ms)
+✖ independent unknown publication survives bodyless ingress failure and settled handler tracking (0.594824ms)
+✖ independent ordinary checkpoint failure is not mislabelled as unknown publication (0.779912ms)
+✖ independent cleanup deadline bounds stop but never asserts parked work is physically stopped (0.582295ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 1
+ℹ fail 20
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 558.863949
+
+✖ failing tests:
+
+test at docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:31:1
+✖ independent owner exposes frozen content-free bound status without database work (2.727178ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at assertAPI (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:9:33)
+      at owned (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:12:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:38:1
+✖ independent owner stop before checkpoint consumes real revoke and denies subsequent ingress (0.892401ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at assertAPI (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:9:33)
+      at owned (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:12:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:49:1
+✖ independent repeated and concurrent stop reuses one attempt without timestamp rewrite (0.839532ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at assertAPI (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:9:33)
+      at owned (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:12:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:60:1
+✖ independent owner invalidates expired exact current grant without resetting original clock (1.282667ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at assertAPI (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:9:33)
+      at owned (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:12:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:67:1
+✖ independent owner cannot begin new durable stop after original cleanup deadline (1.019612ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at assertAPI (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:9:33)
+      at owned (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:12:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:76:1
+✖ independent current B stop leaves original immutable A commit intact (3.146589ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at assertAPI (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:9:33)
+      at owned (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:12:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:85:1
+✖ independent stale A stop refuses without closing B gate or changing B grant (0.79239ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at assertAPI (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:9:33)
+      at owned (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:12:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:94:47
+✖ independent wrong peer stop cannot close actual A gate (1.068556ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at assertAPI (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:9:33)
+      at owned (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:12:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:94:47
+✖ independent wrong actor stop cannot close actual A gate (0.886953ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at assertAPI (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:9:33)
+      at owned (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:12:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:94:47
+✖ independent wrong pin stop cannot close actual A gate (1.040934ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at assertAPI (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:9:33)
+      at owned (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:12:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:105:1
+✖ independent caller mutation across first database await cannot retarget stop (0.746352ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at assertAPI (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:9:33)
+      at owned (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:12:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:116:1
+✖ independent accessor and proxy stop targets cause no getter trap or durable dispatch (0.596416ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at assertAPI (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:9:33)
+      at owned (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:12:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:130:1
+✖ independent stop aborts parked evidence inspection before any object or commit effect (0.538369ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at assertAPI (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:9:33)
+      at owned (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:12:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:145:1
+✖ independent stop after parked object put prevents next object effect and publication (0.754845ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at assertAPI (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:9:33)
+      at owned (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:12:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:157:1
+✖ independent local stop gate catches request already parked in credential resolution before revocation completes (0.655985ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at assertAPI (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:9:33)
+      at owned (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:12:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:177:1
+✖ independent unknown revoke acknowledgement remains visible and repeated stop never retries (0.690227ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at assertAPI (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:9:33)
+      at owned (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:12:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:190:1
+✖ independent definite pre-update failure stays FAILED rather than unknown and does not retry (0.588374ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at assertAPI (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:9:33)
+      at owned (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:12:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:201:1
+✖ independent unknown publication survives bodyless ingress failure and settled handler tracking (0.594824ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at assertAPI (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:9:33)
+      at owned (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:12:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:223:1
+✖ independent ordinary checkpoint failure is not mislabelled as unknown publication (0.779912ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at assertAPI (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:9:33)
+      at owned (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:12:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:232:1
+✖ independent cleanup deadline bounds stop but never asserts parked work is physically stopped (0.582295ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at assertAPI (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:9:33)
+      at owned (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:12:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
