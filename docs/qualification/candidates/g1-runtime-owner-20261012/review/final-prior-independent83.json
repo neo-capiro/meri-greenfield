@@ -1,0 +1,32 @@
+{
+  "command": [
+    "env",
+    "G1_REVIEW_SOURCE_ROOT=/workspace/meri-g1-runtime-owner-20261012",
+    "node",
+    "--test",
+    "docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs",
+    "docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs",
+    "docs/qualification/candidates/g1-next-behavior-20261012/review/historical-context-positive.test.mjs",
+    "docs/qualification/candidates/g1-next-behavior-20261012/review/commit-uncertainty-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-g1-runtime-owner-review-20261012",
+  "startUnixSeconds": 1791779135.2993782,
+  "elapsedSeconds": 4.147038698196411,
+  "exitCode": 0,
+  "ownedPidAndGroup": 50446,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "reapedDescendants": [],
+  "streams": {
+    "stdout": {
+      "path": "final-prior-independent83.stdout.txt",
+      "bytes": 7113,
+      "sha256": "7795619d7594c7ef47842858eda8606f1b3ae7314378e3d34e77b73bca17fc7b"
+    },
+    "stderr": {
+      "path": "final-prior-independent83.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}
