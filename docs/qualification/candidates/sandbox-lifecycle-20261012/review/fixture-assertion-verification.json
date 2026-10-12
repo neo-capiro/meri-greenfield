@@ -1,0 +1,10 @@
+{
+  "base": "14be9fc614568a74133b89f2b229e50c9b030322",
+  "candidate": "41ded012694bbe0d90e18506ae57c50168f1a3fc",
+  "typescriptParser": "5.9.3",
+  "originalTestNames": 55,
+  "originalAssertionExpressions": 153,
+  "allExact": true,
+  "assertionSequenceSha256": "9a7e9cd7da321565df7382f9256608401b771e109d18d7fa63d754349ca79c08",
+  "sourceFileSha256": "c79b2f67a21ea2692f3c504a8cacf0f4ab910fe7ab93dfebcc5b4ae253e57877"
+}
