@@ -115,3 +115,11 @@ test('short artifact release deadline survives parked completion ACK and needs h
 test('post-settlement revocation prevents result release without refund or regeneration',async()=>{
   const t=fixture();await t.ready();t.state.authorizeHook=()=>{if(t.state.authorizations===5)throw Error('SYNTHETIC_REVOKED');};await assert.rejects(t.run(),/ARTIFACT_EFFECT_UNKNOWN/);assert.equal(t.b.state().budget.consumed_micro_usd,'10');assert.equal(t.state.commits,1);assert.equal((await t.create().reconcileInvocation(t.call)).stage,'SETTLED');
 });
+test('borrowed version read keeps its original receiver for revision',async()=>{
+  const t=fixture();await t.ready();const original=t.options.versions.read;t.options.versions.read=async function(...args){assert.equal(this,t.options.versions);return original(...args);};
+  const result=await t.run();const revised=await t.run({...t.call,deliveryId:'receiver-revision',baseVersionId:result.version.versionId});assert.equal(revised.version.parentVersionId,result.version.versionId);
+});
+test('oversized released metadata reports committed effect uncertainty rather than apparent no-effect failure',async()=>{
+  const t=fixture();await t.ready();await assert.rejects(t.create({limits:{maxRequestMs:9000,maxResponseBytes:512}}).execute(t.call,t.b.credential),error=>error.code==='ARTIFACT_EFFECT_UNKNOWN'&&error.versionCommitted===true&&error.cause.code==='ARTIFACT_RESPONSE_LIMIT');
+  assert.equal(t.state.commits,1);assert.equal(t.b.state().budget.consumed_micro_usd,'10');assert.equal((await t.create().reconcileInvocation(t.call)).stage,'SETTLED');
+});
