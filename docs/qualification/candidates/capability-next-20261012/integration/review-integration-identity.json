@@ -1,0 +1,12 @@
+{
+  "status": "PASS_REVIEW_BYTES_AND_SOURCE_PRESERVATION",
+  "acceptedSourceCommit": "c463f7f7e7580e26d07b31c5f4020eaa469d4f67",
+  "reviewCommit": "ccb58a5fb613b48866128771e55d78e2bcf8cceb",
+  "changedProductPathsSinceSourceFreeze": [
+    "apps/gateway/test/capability-next-independent.test.mjs",
+    "packages/contracts/test/retrieval-next-integration-independent.test.mjs"
+  ],
+  "reviewPacketFilesVerified": 26,
+  "rerunReason": "Corrected root audit manifest array name from files to members; initial setup failure retained.",
+  "runtimeAccepted": false
+}

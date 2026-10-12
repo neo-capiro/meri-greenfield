@@ -4,7 +4,7 @@ Combined source candidate:
 `c463f7f7e7580e26d07b31c5f4020eaa469d4f67`, tree
 `552b333286dc42d98602fc255b2e3ec75d834c4a`.
 Base: accepted PR22 `4cdabab9ae3ef5f44e2a1eb10ae1a8a6622fa640`.
-Domain reviews are ACCEPT_SOURCE; independent combined review is pending.
+Domain reviews and the independent combined review are **ACCEPT_SOURCE**.
 No runtime or deployment gate is accepted.
 
 ## Result and ledger
@@ -51,6 +51,16 @@ controls. Exact reports, source pins and raw checks are in the adjacent
 `CODEX-CAPABILITY-NEXT-*-{AUTHOR,REVIEW}-20261012.md` reports and
 `docs/qualification/candidates/capability-next-20261012/` evidence lanes.
 
+The [independent combined review](CODEX-CAPABILITY-NEXT-INTEGRATION-REVIEW-20261012.md)
+accepts the exact candidate above. Its clean freeze is
+`ccb58a5fb613b48866128771e55d78e2bcf8cceb`, tree
+`6e8339ccdb84615266750b5621f61b8dd8fbe8b4`; its 26-member manifest SHA256 is
+`31ebeda2312ff5885203f39683394f2ee3cc2db9d1a910278c13ff9eb480bcd8`.
+It passed **33/33 independent controls**, **871/871 combined tests** (the
+original 838 plus those 33), **426/426 source/receipt audits**, and **7/7 public
+distribution tests** with generated-byte and type checks. No production repair
+was required. Integration preserves the accepted author family bytes exactly.
+
 ## Root verification and preserved failures
 
 - Combined local contract/gateway/pure Hermes controls: **838/838 PASS** at the
@@ -74,6 +84,14 @@ and whitespace failures, and prior source snapshots are retained. The first root
 run was **836/838** because two legacy action tests mutated the last catalog
 entry after catalog growth. They now target the action ID explicitly, with every
 refusal assertion retained; the complete 838-test replay passed.
+The combined review's initial **29/32** run used an invalid synthetic portfolio
+event kind and null actor. Only that positive fixture was corrected; both bad
+values became explicit negative controls in the passing 33-test replay. Its
+original test commit, raw failure and receipt remain preserved.
+Root's first packet-admission audit used `files` instead of the review manifest's
+declared `members` array. That read-only audit setup failure is retained; the
+corrected check authenticates all 26 members and confirms only the two new
+review tests were added after the accepted source freeze.
 
 All current captures used the existing Linux subreaper, reaped owned descendants
 and confirmed owned process groups absent. No current capture timed out or
@@ -98,6 +116,10 @@ must reconcile that scope or name a portfolio-evidence producer. The memory
 self-approval conflict also remains undecided; the proposed canonical
 independent-reviewer resolution is recorded without implementing it.
 
-Publication will be a draft successor based on PR22's branch, preserving all
-author/reviewer branches and exact source commits. The final source-packet
-manifest and publication receipts are stored in this candidate's evidence tree.
+Publication is limited to a draft successor based on PR22's branch, preserving
+all author/reviewer branches and exact source commits. The final
+[source-packet manifest](../../qualification/candidates/capability-next-20261012/integration/source-packet-manifest.json)
+binds the changed source, tests, reports and raw evidence. Publication receipts
+are stored separately under this candidate's `publication/` directory to avoid
+self-referential packet hashes. No source changed after the accepted candidate;
+subsequent product-path changes add only the two independent reviewer test files.
