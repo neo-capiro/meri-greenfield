@@ -1,0 +1,138 @@
+{
+  "privateBodiesRetained": false,
+  "sources": [
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "locator": "1550\u20131570 registration; 2743 dispatch; 2908\u20132976 save wrapper",
+      "identities": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+          "bytes": 415704,
+          "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+          "bytes": 415704,
+          "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-memory.helpers.ts",
+      "locator": "1\u2013116 scope/key/TTL legacy normalization",
+      "identities": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "823d7e59550c84f961beba1a3bfa836f87d5e420",
+          "bytes": 6507,
+          "sha256": "646fe989ad50770d2b4ea119bb596310361e08eb2e59cca6811494d9a3b9fa66"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "823d7e59550c84f961beba1a3bfa836f87d5e420",
+          "bytes": 6507,
+          "sha256": "646fe989ad50770d2b4ea119bb596310361e08eb2e59cca6811494d9a3b9fa66"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/memory/memory-candidate-rules.ts",
+      "locator": "1\u2013148 personal/shared initial disposition",
+      "identities": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "2ea105ac9b533f16ce6ed03f83d7a4b7672c7b2f",
+          "bytes": 6467,
+          "sha256": "17f48ff5ca477057ed622afca0412481e0ba9220c6891df12d21bf5f1c87ceaf"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "2ea105ac9b533f16ce6ed03f83d7a4b7672c7b2f",
+          "bytes": 6467,
+          "sha256": "17f48ff5ca477057ed622afca0412481e0ba9220c6891df12d21bf5f1c87ceaf"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/memory/memory-candidate.service.ts",
+      "locator": "169\u2013179; 273\u2013479 atomic proposal/personal commit; 668\u2013705 authorization",
+      "identities": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "75e317f6b1b45872f28e2e0533a9e645419ec7dd",
+          "bytes": 39448,
+          "sha256": "0dd0ed91a682ebb5f1104ebacbb0ae682b1735e1f7e77518b8d7de04dc24bbc9"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "75e317f6b1b45872f28e2e0533a9e645419ec7dd",
+          "bytes": 39448,
+          "sha256": "0dd0ed91a682ebb5f1104ebacbb0ae682b1735e1f7e77518b8d7de04dc24bbc9"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/memory/memory-review-admin-policy.ts",
+      "locator": "1\u201317 approved administrator exception",
+      "identities": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "1f214b076d172b13648f1bf842d7c83363b944d3",
+          "bytes": 687,
+          "sha256": "ce7d9b36b52b7b63d1a8bdcaf0bab2acf3c57187dedc5752a80f8e95f733adc3"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "1f214b076d172b13648f1bf842d7c83363b944d3",
+          "bytes": 687,
+          "sha256": "ce7d9b36b52b7b63d1a8bdcaf0bab2acf3c57187dedc5752a80f8e95f733adc3"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/prisma/migrations/20260712020000_memory_candidate/migration.sql",
+      "locator": "candidate persistence baseline; static reference only",
+      "identities": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "79ac1f3fe6447ebc98cff1cf981c92bb626d49d1",
+          "bytes": 2578,
+          "sha256": "5db1209b83e5cdd5df1d951d05ff5abd432633d5a248e20a51edb4a8aba7a7c0"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "79ac1f3fe6447ebc98cff1cf981c92bb626d49d1",
+          "bytes": 2578,
+          "sha256": "5db1209b83e5cdd5df1d951d05ff5abd432633d5a248e20a51edb4a8aba7a7c0"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/prisma/migrations/20260815010000_memory_candidate_withdrawal/migration.sql",
+      "locator": "withdrawal status remains distinct",
+      "identities": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "97de046ed15e150d7ab471842ca3bf778843909b",
+          "bytes": 1371,
+          "sha256": "4c1a9b85039b3a0d914481d0ac9df6daa1db2fa964a4b218c91cf59c2878fcfb"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "97de046ed15e150d7ab471842ca3bf778843909b",
+          "bytes": 1371,
+          "sha256": "4c1a9b85039b3a0d914481d0ac9df6daa1db2fa964a4b218c91cf59c2878fcfb"
+        }
+      ],
+      "unchanged": true
+    }
+  ]
+}
