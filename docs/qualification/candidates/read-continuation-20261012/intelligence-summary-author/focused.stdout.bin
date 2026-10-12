@@ -1,0 +1,29 @@
+✔ single operation, canonical namespace and definitions are explicit (1.771342ms)
+✔ optional blank and null client selectors are omitted (1.377299ms)
+✔ client selection preserves case and caps UTF16 units after trim (0.209535ms)
+✔ no second trim silently changes a post-cap trailing space (0.189845ms)
+✔ strict scalar admission is distinct from legacy wrong-type fallback (0.479982ms)
+✔ request and context are closed, with no caller authority fields (0.529847ms)
+✔ normalization returns immutable detached input and qualification metadata (0.256555ms)
+✔ opaque prose preserves whitespace, contradictions and instruction-like text (1.388156ms)
+✔ empty prose and nonstring data are refused (0.464217ms)
+✔ no arbitrary producer excerpt cap is invented (1.418711ms)
+✔ output is exact closed tool/generatedAt/data envelope (0.664959ms)
+✔ canonical dates preserve ancient/future values without clock authority (0.159129ms)
+✔ noncanonical, invalid and expanded-year dates are explicit exclusions (0.461494ms)
+✔ validated result is detached while values and original input remain unchanged (0.203096ms)
+✔ direct shape helper enforces date relations and returns detached data (0.224627ms)
+✔ output assertion validates original request/context too (0.263756ms)
+✔ canonical JSON refuses getters without evaluating them (0.200921ms)
+✔ canonical JSON refuses proxies without invoking traps (0.138939ms)
+✔ canonical JSON rejects hidden, symbolic, cyclic and custom-prototype values (0.262254ms)
+✔ inert output does not infer a client name match or structured source facts (0.149755ms)
+✔ canonical transport ceiling remains active before oversized string allocation copy (0.301843ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 184.245282
