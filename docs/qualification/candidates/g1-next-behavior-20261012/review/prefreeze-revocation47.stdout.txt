@@ -1,0 +1,71 @@
+✔ independent owner registry provides standalone revokeRun (1.126144ms)
+✔ independent exact current interrupt revokes without checkpoint or run rewrite (5.945515ms)
+✔ independent exact current resume revokes without checkpoint or run rewrite (1.421801ms)
+✔ independent idempotent revoked readback issues no second UPDATE (1.674614ms)
+✔ independent expired exact current binding may be invalidated without time extension (1.392367ms)
+✔ independent future admission at locked DB clock refuses (1.365826ms)
+✔ independent stale A cannot revoke current B (0.974103ms)
+✔ independent mismatched tenant context cannot revoke (1.119544ms)
+✔ independent mismatched actor context cannot revoke (0.924379ms)
+✔ independent mismatched conversation context cannot revoke (1.03087ms)
+✔ independent mismatched canonicalRun context cannot revoke (0.914844ms)
+✔ independent mismatched session context cannot revoke (0.864087ms)
+✔ independent mismatched grant context cannot revoke (0.775213ms)
+✔ independent mismatched mapping context cannot revoke (0.957088ms)
+✔ independent mismatched task context cannot revoke (1.441791ms)
+✔ independent mismatched worker context cannot revoke (0.809344ms)
+✔ independent mismatched attemptId context cannot revoke (0.80639ms)
+✔ independent mismatched fence context cannot revoke (0.729354ms)
+✖ independent mismatched policy context cannot revoke (1.284333ms)
+✔ independent mismatched source context cannot revoke (0.889226ms)
+✔ independent mismatched image context cannot revoke (0.658175ms)
+✔ independent mismatched skills context cannot revoke (0.68785ms)
+✔ independent mismatched expiry context cannot revoke (0.869175ms)
+✔ independent mismatched admission context cannot revoke (0.663775ms)
+✔ independent mismatched namespace context cannot revoke (0.603964ms)
+✔ independent mismatched trusted peerId cannot revoke (0.719779ms)
+✔ independent mismatched trusted credentialId cannot revoke (0.620699ms)
+✔ independent inconsistent locked grant run_uuid refuses (0.790897ms)
+✔ independent inconsistent locked grant session_id refuses (0.660449ms)
+✔ independent inconsistent locked grant mapping_id refuses (0.651486ms)
+✔ independent inconsistent locked grant task_arn refuses (0.643113ms)
+✔ independent inconsistent locked grant attempt_id refuses (0.624084ms)
+✔ independent inconsistent locked grant worker_id refuses (1.068276ms)
+✔ independent inconsistent locked grant peer_id refuses (1.002407ms)
+✔ independent inconsistent locked grant credential_id refuses (0.703243ms)
+✔ independent inconsistent locked grant policy_revision refuses (0.71389ms)
+✔ independent inconsistent locked grant phase refuses (0.669763ms)
+✔ independent inconsistent locked grant admitted_at_ms refuses (0.685177ms)
+✔ independent inconsistent locked grant expires_at_ms refuses (0.792519ms)
+✔ independent unknown current run or grant refuses without mutation (1.233777ms)
+✔ independent source transaction COMMIT ambiguity propagates without automatic retry (0.969086ms)
+✔ independent database boundary failure never reaches later effect (1.908257ms)
+✔ independent caller mutation across first await cannot retarget revocation (0.742473ms)
+✔ independent accessor context denied without effect (0.537033ms)
+✔ independent proxy context denied without traps or transaction (0.564785ms)
+✔ independent revoked A existing authorize/publication/replacement paths deny (10.181464ms)
+✔ independent revoked B existing checkpoint load and verify paths deny (4.340406ms)
+ℹ tests 47
+ℹ suites 0
+ℹ pass 46
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 719.116799
+
+✖ failing tests:
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:39:60
+✖ independent mismatched policy context cannot revoke (1.284333ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:39:166)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }

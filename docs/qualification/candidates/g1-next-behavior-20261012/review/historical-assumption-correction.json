@@ -1,0 +1,9 @@
+{
+  "classification": "REVIEWER_ASSUMPTION_NOT_SOURCE_DEFECT",
+  "baseline": "2PASS/1FAIL",
+  "originalTestSha256": "4238f4bb764f93fa8ccebeb8588a2584e63a695cde599e402485a1fff8c68d20",
+  "preservedOriginalTest": "historical-context.initial-assumption.mjs",
+  "basis": "Canonical assertFixtureResponse first invokes assertFixtureRequest whose request context must remain current; producer current:false does not relax an expired requestA. Expired historicalA can still support currentB load/verify.",
+  "correction": "Only expired requestA authorize expectation becomes rejection; no source or contract edited.",
+  "correctedTestSha256": "95c0bcb1feabf1070e6d65c37986c22ae8d794a7809c59610f2bc17300adf776"
+}

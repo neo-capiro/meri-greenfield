@@ -1,0 +1,27 @@
+✔ independent expired historical A retains valid current B loadFixtureCheckpoint (21.792295ms)
+✔ independent expired historical A retains valid current B verifyFixtureCheckpoint (5.792654ms)
+✖ independent expired historical A retains valid current B authorizeFixturePhase (2.224713ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 2
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 478.076993
+
+✖ failing tests:
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/historical-context-positive.test.mjs:11:100
+✖ independent expired historical A retains valid current B authorizeFixturePhase (2.224713ms)
+  Error: FIXTURE_CLOCK_OR_EXPIRY
+      at fail (file:///workspace/meri-g1-next-behavior-review-20261012/packages/contracts/qualification-sdk/validate.mjs:21:30)
+      at clock (file:///workspace/meri-g1-next-behavior-review-20261012/packages/contracts/qualification-sdk/validate.mjs:69:70)
+      at assertFixtureContext (file:///workspace/meri-g1-next-behavior-review-20261012/packages/contracts/qualification-sdk/validate.mjs:72:45)
+      at assertFixtureRequest (file:///workspace/meri-g1-next-behavior-review-20261012/packages/contracts/qualification-sdk/validate.mjs:180:58)
+      at assertFixtureResponse (file:///workspace/meri-g1-next-behavior-review-20261012/packages/contracts/qualification-sdk/validate.mjs:194:3)
+      at checkResponse (file:///workspace/meri-g1-next-behavior-review-20261012/apps/control/qualification-sdk-fixture/service/handlers.mjs:32:3)
+      at Object.authorizeFixturePhase (file:///workspace/meri-g1-next-behavior-review-20261012/apps/control/qualification-sdk-fixture/service/handlers.mjs:75:12)
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/historical-context-positive.test.mjs:20:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

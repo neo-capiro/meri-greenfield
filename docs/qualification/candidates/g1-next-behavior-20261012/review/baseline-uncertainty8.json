@@ -1,0 +1,26 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/g1-next-behavior-20261012/review/commit-uncertainty-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-g1-next-behavior-review-20261012",
+  "startUnixSeconds": 1791777315.931883,
+  "elapsedSeconds": 0.6340475082397461,
+  "exitCode": 1,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "fixtureRoot": null,
+  "streams": {
+    "stdout": {
+      "path": "baseline-uncertainty8.stdout.txt",
+      "bytes": 11079,
+      "sha256": "3c9606f399864bbfb8947fc1ba7d8d824e067cee8dfaaa8fb41cdf941df2a236"
+    },
+    "stderr": {
+      "path": "baseline-uncertainty8.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}
