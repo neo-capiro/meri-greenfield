@@ -1,0 +1,755 @@
+diff --git a/apps/gateway/budget/README.md b/apps/gateway/budget/README.md
+new file mode 100644
+index 0000000..02b1da2
+--- /dev/null
++++ b/apps/gateway/budget/README.md
+@@ -0,0 +1,19 @@
++# Source-only durable tool budget composition
++
++`createDurableToolDispatch({pool, allocationJson, ...dispatchOptions})` concretely composes the existing `createToolDispatch` with `createPostgresToolBudget`. `execute(requestJson, credential, trustedInvocationJson, signal)` receives its server-owned invocation separately from worker tool JSON. Both trusted JSON documents are validated and frozen before awaits. No listener, database connection, migration, grant creation, source activation or model loop starts on import/construction. Default source-disabled behavior is inherited; the canonical fourteen source descriptors remain unavailable.
++
++The trusted runtime owner must use a dedicated pg **8.23.1** pool (existing pin: `apps/control/qualification-sdk-fixture/state/package.json`) configured for the selected qualification database, verified TLS outside loopback, narrowly scoped credentials, finite connection timeout at most five seconds, finite query timeout at most six seconds, bounded pool size and reviewed shutdown/drain ownership. No cross-application private store is imported. The pool is borrowed and never ended here. Its version/configuration are trusted composition prerequisites; an object with a `connect` method does not prove those properties. Runtime pool, database, migration and network qualification are **unrun**. A caller cancellation or query timeout does not prove physical cancellation of server work.
++
++Each transaction borrows one client, begins explicitly, sets server statement/lock timeouts, locks the original aggregate budget row, then reads database time. Acknowledged COMMIT precedes a reserved/settled receipt. Unknown BEGIN, rollback or COMMIT state evicts the client with `release(error)`; an acknowledged rollback can release healthy. Release failure cannot replace an existing commit-uncertainty classification. No retry, pool recreation or in-memory fallback exists. The dispatcher bounds its own wait/cleanup, including a parked connection/statement. A late transaction may still commit UNKNOWN, which is retained. Physical connection teardown remains the trusted pool owner's responsibility.
++
++`allocationJson` binds the actual private0.2 SkillManifest body, its canonical hash, exact canonical budgets, run identity, catalog digest and immutable positive per-operation charge schedule. Schedule operations must occur in that manifest's allowed operations. This validates manifest/body/limits consistency; actual producer authority and catalog/skill availability qualification remain prerequisites. Synthetic manifests in tests do not qualify a production skill. `maxToolCalls` is never inferred from `maxTurns`. The charge is conservative budget accounting, **not provider actual pricing or spend authorization**. Missing/zero/unsupported charges refuse.
++
++`trustedInvocationJson` contains full public RunBinding, distinct explicit qualification RunBinding correlation, exact grant and credential digest, allocation digest and a retained server-owned tool invocation ID. `bindTrustedGrant` is an explicit trusted-owner operation that stores this immutable correlation/allocation only after checking an already ACTIVE exact current grant. It creates/activates no run or grant. The runtime/Temporal owner must persist the same tool identity across retries/replacements; UI skill-invocation IDs and random per-execute reservation IDs are insufficient. Runtime wiring of that producer remains unqualified.
++
++Qualification migration0002 is explicit via Python `PostgresStore.migrate_tool_budget()`, after preserved migration0001. It is never automatic. Existing model accounting now depends on its combined liability view; absence fails closed. Deployment must coordinate the explicit schema upgrade and both source readers before admitting work. No migration was executed. The old real-engine harness adds only the explicit upgrade and new tables to its synthetic reset; all original test assertions remain unchanged. Other frozen Linux assembly/collector identities must be separately reviewed before runtime packaging.
++
++Under the shared budget-row lock, reservations count both model and tool UNKNOWN holds and settled charges, enforce global and installed run caps, and consume a durable tool-call slot before any handler. Every previously used invocation ID refuses redispatch, including across another reservation UUID or worker attempt. Narrower verified capability cost/output/runtime bounds apply. Known schedule expiry is published before the first authority port; validated database grant expiry before any later SQL await. Private run runtime starts at the immutable allocation's database creation time and is published into the existing dispatcher deadline before handler admission. Setup must therefore occur at the trusted run start; installing it late cannot retroactively prove total prior run duration.
++
++Settlement records the full fixed `charged_micro_usd`; it does not claim measured usage. Exact historical settlement remains possible after revocation without authorizing another effect. Cleanup only reads the original exact reservation: UNKNOWN remains UNKNOWN and SETTLED remains terminal. Expiry, abort, missing replies, worker replacement and elapsed time never refund liability. There is no automatic no-dispatch reconciliation path.
++
++Tests with a scripted SQL boundary establish source control flow and outcomes, including the actual dispatcher. They do not establish PostgreSQL atomicity, isolation, SQL execution, driver behavior, restart durability, real trusted identity, Temporal replay, image/runtime or G1 acceptance. Existing Aurora selection and the unknown remainder of the historical $10 allowance are unchanged; no database or paid provider action is authorized by this source.
+diff --git a/apps/gateway/budget/durable-tool-dispatch.mjs b/apps/gateway/budget/durable-tool-dispatch.mjs
+new file mode 100644
+index 0000000..7c900c4
+--- /dev/null
++++ b/apps/gateway/budget/durable-tool-dispatch.mjs
+@@ -0,0 +1,43 @@
++/** Concrete durable-budget composition around the existing single-call dispatcher. */
++import { createHash } from 'node:crypto';
++import { createToolDispatch } from '../dispatch/tool-dispatch.mjs';
++import { deny } from '../dispatch/operation-result.mjs';
++import { createPostgresToolBudget } from './postgres-tool-budget.mjs';
++import { allocation, invocation, assertAuthority } from './tool-budget-binding.mjs';
++
++export function createDurableToolDispatch({ pool, allocationJson, ...options }) {
++  if (Object.hasOwn(options, 'budget')) deny('GATEWAY_CONFIGURATION');
++  const a = allocation(allocationJson);
++  const owner = createPostgresToolBudget({ pool, allocationJson });
++  return Object.freeze({
++    bindTrustedGrant: owner.bindTrustedGrant,
++    async execute(requestJson, credential, trustedInvocationJson, signal) {
++      // Raw trusted JSON is copied and deeply frozen before the first await.
++      const i = invocation(trustedInvocationJson, a);
++      if (typeof credential !== 'string') deny('ACCESS_DENIED');
++      const credentialSha256 = createHash('sha256').update(credential).digest('hex');
++      const bound = owner.forInvocation(trustedInvocationJson); let current; let limitDeadline;
++      const verify = value => { if (bound.deadlineMs() !== undefined && options.now() >= bound.deadlineMs()) deny('DEADLINE'); try { assertAuthority(i, value.claims, credentialSha256); } catch { deny('ACCESS_DENIED'); } return value; };
++      const authority = {
++        async identify(call) {
++          // The trusted schedule is already validated: publish it before the
++          // first capability/authority port can park. Later facts only shorten.
++          call.limitDeadline(Date.parse(a.schedule.expiresAt));
++          return verify(await options.authority.identify(call)); },
++        async check(call) { limitDeadline = call.limitDeadline;
++          if (bound.deadlineMs() !== undefined) limitDeadline(bound.deadlineMs());
++          current = verify(await options.authority.check(call)); return current; },
++      };
++      const protect = action => async call => { try { return await action(call); } catch { deny('BUDGET_UNCERTAIN'); } };
++      const budget = {
++        reserve: protect(async call => { const receipt = await bound.reserve({ ...call, claims: current.claims, limitDeadline });
++          // Publish the stricter private/public runtime ceiling before handler admission.
++          return receipt; }),
++        settle: protect(bound.settle), markUncertain: protect(bound.markUncertain),
++      };
++      const dispatcher = createToolDispatch({ ...options, authority, budget });
++      return dispatcher.execute(requestJson, credential, signal);
++    },
++    async discover() { return []; },
++  });
++}
+diff --git a/apps/gateway/budget/postgres-budget-store.mjs b/apps/gateway/budget/postgres-budget-store.mjs
+new file mode 100644
+index 0000000..74fc865
+--- /dev/null
++++ b/apps/gateway/budget/postgres-budget-store.mjs
+@@ -0,0 +1,45 @@
++/** Owned transactions over a trusted pg 8.23.1-compatible pool. No import-time I/O. */
++export class BudgetStateDenied extends Error {}
++export class BudgetCommitUncertain extends BudgetStateDenied {}
++export const refuse = code => { throw new BudgetStateDenied(code); };
++
++export class PostgresBudgetStore {
++  constructor(pool) {
++    if (!pool || typeof pool.connect !== 'function') refuse('TRUSTED_POOL_REQUIRED');
++    this.pool = pool;
++  }
++  async transact(operation) {
++    let client; let begun = false; let committing = false; let result; let failure; let reusable = false;
++    try {
++      client = await this.pool.connect();
++      await client.query('BEGIN'); begun = true;
++      await client.query("SET LOCAL statement_timeout = '5s'");
++      await client.query("SET LOCAL lock_timeout = '2s'");
++      result = await operation(client);
++      committing = true;
++      await client.query('COMMIT'); reusable = true;
++    } catch (error) {
++      if (committing) failure = new BudgetCommitUncertain('COMMIT_ACKNOWLEDGEMENT_UNKNOWN');
++      else {
++        if (begun) { try { await client.query('ROLLBACK'); reusable = true; } catch {} }
++        failure = error instanceof BudgetStateDenied ? error : new BudgetStateDenied('BUDGET_STATE_UNAVAILABLE');
++      }
++    } finally {
++      if (client) {
++        // Any failed transaction/BEGIN acknowledgement may leave protocol or
++        // transaction state unknown. pg release(error) evicts it from the pool.
++        try { client.release(reusable ? undefined : failure); }
++        catch { failure ??= new BudgetCommitUncertain('CONNECTION_RELEASE_UNKNOWN'); }
++      }
++    }
++    if (failure) throw failure;
++    return result;
++  }
++  async lock(client) {
++    const row = (await client.query('SELECT * FROM meri_qualification.budget WHERE id=1 FOR UPDATE')).rows[0];
++    if (!row) refuse('BUDGET_UNAVAILABLE');
++    const now = (await client.query('SELECT clock_timestamp() AS now')).rows[0]?.now;
++    if (!(now instanceof Date) || !Number.isFinite(now.getTime())) refuse('DATABASE_TIME_UNAVAILABLE');
++    return { ...row, now };
++  }
++}
+diff --git a/apps/gateway/budget/postgres-tool-budget.mjs b/apps/gateway/budget/postgres-tool-budget.mjs
+new file mode 100644
+index 0000000..d0b28a8
+--- /dev/null
++++ b/apps/gateway/budget/postgres-tool-budget.mjs
+@@ -0,0 +1,105 @@
++/** Concrete tool accounting over the proxy qualification state's shared authority. */
++import { canonicalSha256 } from '../../../packages/contracts/validate.mjs';
++import { PostgresBudgetStore, refuse } from './postgres-budget-store.mjs';
++import { allocation, invocation, grantFacts, same, digest, integer } from './tool-budget-binding.mjs';
++
++const n = value => { try { if (!((typeof value === 'string' && /^(0|[1-9][0-9]*)$/.test(value)) || (Number.isSafeInteger(value) && value >= 0))) throw Error(); return BigInt(value); } catch { refuse('INVALID_STORED_MONEY'); } };
++const receipt = (reservationId, decision) => JSON.stringify({ reservationId, decision });
++const reservationIdCheck = value => { if (typeof value !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(value)) refuse('INVALID_RESERVATION_ID'); };
++
++export function createPostgresToolBudget({ pool, allocationJson }) {
++  const a = allocation(allocationJson); const allocationSha256 = canonicalSha256(a);
++  const store = new PostgresBudgetStore(pool);
++  async function admit(client, i, budget, publishDeadline) {
++    const q = i.qualificationBinding;
++    const run = (await client.query('SELECT * FROM meri_qualification.runs WHERE run_id=$1', [q.runId])).rows[0];
++    const grant = (await client.query('SELECT * FROM meri_qualification.grants WHERE grant_id=$1', [i.grantId])).rows[0];
++    const match = row => row && String(row.run_id) === q.runId && row.attempt === q.attempt && row.worker_arn === q.workerArn && row.fence === q.fence && row.policy_revision === q.policyRevision;
++    if (!match(run) || !match(grant) || grant.state !== 'ACTIVE' || grant.capability_sha256 !== i.capabilitySha256 ||
++        !(grant.expires_at instanceof Date) || !Number.isFinite(grant.expires_at.getTime()) || grant.expires_at <= budget.now) refuse('GRANT_ADMISSION_DENIED');
++    if (budget.quarantined || Date.parse(a.schedule.expiresAt) <= budget.now.getTime()) refuse('BUDGET_ADMISSION_DENIED');
++    publishDeadline?.(grant.expires_at.getTime());
++    return grant;
++  }
++  async function storedAllocation(client, i) {
++    const row = (await client.query('SELECT * FROM meri_qualification.tool_run_allocations WHERE run_id=$1', [i.binding.runId])).rows[0];
++    if (!row || row.allocation_sha256 !== allocationSha256 || !same(row.allocation, a) || n(row.max_tool_calls) !== n(a.budgets.maxToolCalls) || n(row.max_cost_micro_usd) !== n(a.budgets.maxCostMicroUSD)) refuse('ALLOCATION_MISMATCH');
++    return row;
++  }
++  async function bindTrustedGrant(invocationJson) {
++    // Explicit trusted-owner operation. No automatic grant activation or run creation.
++    const i = invocation(invocationJson, a); const facts = grantFacts(i);
++    return store.transact(async client => {
++      const budget = await store.lock(client); await admit(client, i, budget);
++      const old = (await client.query('SELECT * FROM meri_qualification.tool_run_allocations WHERE run_id=$1', [i.binding.runId])).rows[0];
++      if (old) await storedAllocation(client, i);
++      else await client.query('INSERT INTO meri_qualification.tool_run_allocations(run_id,allocation_sha256,allocation,max_tool_calls,max_cost_micro_usd) VALUES($1,$2,$3,$4,$5)', [i.binding.runId, allocationSha256, a, a.budgets.maxToolCalls, a.budgets.maxCostMicroUSD]);
++      const previous = (await client.query('SELECT * FROM meri_qualification.tool_grant_bindings WHERE grant_id=$1', [i.grantId])).rows[0];
++      if (previous && !same(previous.facts, facts)) refuse('GRANT_BINDING_IMMUTABLE');
++      if (!previous) await client.query('INSERT INTO meri_qualification.tool_grant_bindings(grant_id,run_id,facts) VALUES($1,$2,$3)', [i.grantId, i.binding.runId, facts]);
++    });
++  }
++  function forInvocation(invocationJson) {
++    const i = invocation(invocationJson, a); let admittedDeadlineMs; // Snapshot before any await.
++    const shorten = (deadline, publish) => {
++      if (!Number.isSafeInteger(deadline)) refuse('BUDGET_DEADLINE');
++      admittedDeadlineMs = Math.min(admittedDeadlineMs ?? deadline, deadline);
++      if (typeof publish === 'function') publish(admittedDeadlineMs);
++    };
++    async function original(client, reservationId, optional = false) {
++      const row = (await client.query('SELECT * FROM meri_qualification.tool_reservations WHERE invocation_id=$1', [i.invocationId])).rows[0];
++      if (!row && optional) return null;
++      if (!row || row.reservation_id !== reservationId || !same(row.facts, i)) refuse('RESERVATION_BINDING_MISMATCH');
++      return row;
++    }
++    return Object.freeze({
++      deadlineMs: () => admittedDeadlineMs,
++      async reserve(call) {
++        reservationIdCheck(call.reservationId); digest(call.argumentsSha256);
++        if (!same(call.binding, i.binding) || !same(call.claims?.binding, i.binding) || call.claims.policyRevision !== i.qualificationBinding.policyRevision || !same(call.budgets, call.claims.budgets)) refuse('CAPABILITY_BINDING_MISMATCH');
++        const charge = a.schedule.operations.find(item => same(item.operation, call.operation))?.chargeMicrousd;
++        integer(charge); integer(call.budgets.maxCostMicrousd); integer(call.budgets.maxOutputBytes);
++        if (!Number.isSafeInteger(call.deadlineMs)) refuse('INVALID_DEADLINE');
++        shorten(Math.min(call.deadlineMs, Date.parse(a.schedule.expiresAt), Date.parse(call.claims.expiresAt), Date.parse(call.claims.issuedAt)+call.budgets.maxRuntimeSeconds*1000), call.limitDeadline);
++        const facts = i; const operation = JSON.parse(JSON.stringify(call.operation)); const argumentsSha256 = call.argumentsSha256;
++        return store.transact(async client => {
++          const budget = await store.lock(client); await admit(client, i, budget, deadline => shorten(deadline, call.limitDeadline)); const installed = await storedAllocation(client, i);
++          if (!(installed.started_at instanceof Date) || !Number.isFinite(installed.started_at.getTime())) refuse('BUDGET_DEADLINE');
++          shorten(installed.started_at.getTime()+a.budgets.maxRuntimeSeconds*1000, call.limitDeadline);
++          if (!Number.isSafeInteger(admittedDeadlineMs) || call.signal?.aborted || budget.now.getTime() >= admittedDeadlineMs) refuse('BUDGET_DEADLINE');
++          const bound = (await client.query('SELECT * FROM meri_qualification.tool_grant_bindings WHERE grant_id=$1', [i.grantId])).rows[0];
++          if (!bound || !same(bound.facts, grantFacts(i))) refuse('GRANT_BINDING_MISMATCH');
++          if ((await client.query('SELECT * FROM meri_qualification.tool_reservations WHERE invocation_id=$1', [i.invocationId])).rows.length) refuse('INVOCATION_ALREADY_USED');
++          if ((await client.query("SELECT 1 FROM meri_qualification.budget_liabilities WHERE grant_id=$1 AND state='UNKNOWN'", [i.grantId])).rows.length) refuse('UNRESOLVED_GRANT_LIABILITY');
++          const totals = (await client.query("SELECT COALESCE(sum(CASE WHEN state='UNKNOWN' THEN hold_micro_usd ELSE 0 END),0) AS held, COALESCE(sum(CASE WHEN run_id=$1 THEN CASE WHEN state='UNKNOWN' THEN hold_micro_usd ELSE consumed_micro_usd END ELSE 0 END),0) AS run_total FROM meri_qualification.budget_liabilities", [i.binding.runId])).rows[0];
++          const count = (await client.query('SELECT count(*) AS calls FROM meri_qualification.tool_reservations WHERE run_id=$1', [i.binding.runId])).rows[0];
++          if (n(count.calls) >= n(a.budgets.maxToolCalls) || n(budget.consumed_micro_usd)+n(totals.held)+n(charge) > n(budget.cap_micro_usd) ||
++              n(totals.run_total)+n(charge) > n(Math.min(a.budgets.maxCostMicroUSD, call.budgets.maxCostMicrousd))) refuse('BUDGET_EXHAUSTED');
++          await client.query("INSERT INTO meri_qualification.tool_reservations(invocation_id,reservation_id,grant_id,run_id,facts,operation,arguments_sha256,hold_micro_usd,max_output_bytes,state) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,'UNKNOWN')", [i.invocationId, call.reservationId, i.grantId, i.binding.runId, facts, operation, argumentsSha256, charge, Math.min(a.budgets.maxOutputBytes,call.budgets.maxOutputBytes)]);
++          return receipt(call.reservationId, 'reserved');
++        });
++      },
++      async settle({ reservationId, outcome, outputBytes }) {
++        reservationIdCheck(reservationId);
++        if (outcome !== 'completed' || !Number.isSafeInteger(outputBytes) || outputBytes < 0 || outputBytes > a.budgets.maxOutputBytes) refuse('INVALID_SETTLEMENT');
++        return store.transact(async client => {
++          const budget = await store.lock(client); const row = await original(client, reservationId);
++          if (n(outputBytes) > n(row.max_output_bytes)) refuse('OUTPUT_BUDGET_EXCEEDED');
++          if (row.state !== 'UNKNOWN') refuse('SETTLEMENT_ALREADY_RECORDED');
++          // Fixed conservative accounting charge: no assertion about provider actual usage.
++          await client.query('UPDATE meri_qualification.budget SET consumed_micro_usd=consumed_micro_usd+$1 WHERE id=1', [row.hold_micro_usd]);
++          await client.query("UPDATE meri_qualification.tool_reservations SET state='SETTLED',charged_micro_usd=hold_micro_usd,output_bytes=$2,settled_at=clock_timestamp() WHERE invocation_id=$1", [i.invocationId, outputBytes]);
++          return receipt(reservationId, 'settled');
++        });
++      },
++      async markUncertain(reservationId) {
++        reservationIdCheck(reservationId);
++        return store.transact(async client => {
++          await store.lock(client); await original(client, reservationId, true);
++          // UNKNOWN already persists; SETTLED is terminal. No refund or state rewrite.
++        });
++      },
++    });
++  }
++  return Object.freeze({ bindTrustedGrant, forInvocation });
++}
+diff --git a/apps/gateway/budget/tool-budget-binding.mjs b/apps/gateway/budget/tool-budget-binding.mjs
+new file mode 100644
+index 0000000..622b9df
+--- /dev/null
++++ b/apps/gateway/budget/tool-budget-binding.mjs
+@@ -0,0 +1,52 @@
++/** Trusted allocation and invocation snapshots; validation does not grant authority. */
++import { canonicalSha256, validateShape as publicShape } from '../../../packages/contracts/validate.mjs';
++import { validateShape as privateShape } from '../../../packages/contracts/retrieval-0.2/validate.mjs';
++import { refuse } from './postgres-budget-store.mjs';
++
++const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
++export const digest = value => { if (typeof value !== 'string' || !/^[0-9a-f]{64}$/.test(value)) refuse('INVALID_DIGEST'); return value; };
++export const integer = value => { if (!Number.isSafeInteger(value) || value < 1) refuse('INVALID_BUDGET_INTEGER'); return value; };
++export const same = (a, b) => canonicalSha256(a) === canonicalSha256(b);
++export function keys(value, required) {
++  if (!value || typeof value !== 'object' || Array.isArray(value) || Object.keys(value).length !== required.length || required.some(k => !Object.hasOwn(value, k))) refuse('INVALID_BUDGET_SHAPE');
++}
++const freeze = value => { if (value && typeof value === 'object') { Object.values(value).forEach(freeze); Object.freeze(value); } return value; };
++export function snapshot(raw) {
++  if (typeof raw !== 'string' || Buffer.byteLength(raw) > 65536) refuse('TRUSTED_JSON_REQUIRED');
++  try { return freeze(JSON.parse(raw)); } catch { refuse('TRUSTED_JSON_REQUIRED'); }
++}
++export function allocation(raw) {
++  const a = snapshot(raw);
++  keys(a, ['run', 'manifest', 'manifestSha256', 'catalogSha256', 'budgets', 'schedule']);
++  keys(a.run, ['tenantId', 'actorId', 'conversationId', 'runId']);
++  publicShape('RunBinding', { ...a.run, attemptId: a.run.runId, workerId: a.run.runId, writerFence: 1 });
++  digest(a.manifestSha256); digest(a.catalogSha256); privateShape('Budgets', a.budgets);
++  privateShape('SkillManifest', a.manifest);
++  if (canonicalSha256(a.manifest) !== a.manifestSha256 || !same(a.manifest.budgets,a.budgets)) refuse('MANIFEST_BUDGET_MISMATCH');
++  keys(a.schedule, ['revision', 'expiresAt', 'operations']); digest(a.schedule.revision);
++  if (!Number.isSafeInteger(Date.parse(a.schedule.expiresAt)) || !Array.isArray(a.schedule.operations) || !a.schedule.operations.length || a.schedule.operations.length > 4096) refuse('INVALID_CHARGE_SCHEDULE');
++  const seen = new Set();
++  for (const item of a.schedule.operations) {
++    keys(item, ['operation', 'chargeMicrousd']); privateShape('OperationRef', item.operation); integer(item.chargeMicrousd);
++    if (!a.manifest.allowedOperations.some(op => same(op,item.operation))) refuse('MANIFEST_OPERATION_MISMATCH');
++    const key = canonicalSha256(item.operation); if (seen.has(key)) refuse('DUPLICATE_OPERATION_CHARGE'); seen.add(key);
++  }
++  return a;
++}
++export function invocation(raw, a) {
++  const i = snapshot(raw);
++  keys(i, ['invocationId', 'grantId', 'binding', 'qualificationBinding', 'capabilitySha256', 'allocationSha256']);
++  if (typeof i.invocationId !== 'string' || !/^[A-Za-z0-9_-]{1,128}$/.test(i.invocationId) || !UUID.test(i.grantId)) refuse('INVALID_INVOCATION_ID');
++  publicShape('RunBinding', i.binding); digest(i.capabilitySha256); digest(i.allocationSha256);
++  const q = i.qualificationBinding;
++  keys(q, ['runId', 'attempt', 'workerArn', 'fence', 'policyRevision']);
++  integer(q.attempt); integer(q.fence); digest(q.policyRevision);
++  if (q.attempt > 2147483647 || q.fence > 2147483647 || q.runId !== i.binding.runId || q.fence !== i.binding.writerFence ||
++      typeof q.workerArn !== 'string' || !/^arn:aws:ecs:us-east-1:967807252336:task\/[A-Za-z0-9_-]{1,255}\/[0-9a-f]{32}$/.test(q.workerArn)) refuse('INVALID_QUALIFICATION_MAPPING');
++  if (!same(a.run, Object.fromEntries(Object.keys(a.run).map(k => [k, i.binding[k]]))) || canonicalSha256(a) !== i.allocationSha256) refuse('ALLOCATION_BINDING_MISMATCH');
++  return i;
++}
++export function grantFacts(i) { const { invocationId: ignored, ...facts } = i; return facts; }
++export function assertAuthority(i, claims, credentialSha256) {
++  if (!same(i.binding, claims.binding) || i.qualificationBinding.policyRevision !== claims.policyRevision || credentialSha256 !== i.capabilitySha256) refuse('CAPABILITY_BINDING_MISMATCH');
++}
+diff --git a/apps/gateway/index.mjs b/apps/gateway/index.mjs
+index 2e27d9a..17bc6bf 100644
+--- a/apps/gateway/index.mjs
++++ b/apps/gateway/index.mjs
+@@ -15,3 +15,20 @@ export function createSourceDisabledGateway(options) {
+   return Object.freeze({ ...dispatcher, sourceEnabled: false,
+     status: 'SOURCE_ONLY_NO_PRODUCTION_ADAPTERS', catalogVersion: view.catalogVersion });
+ }
++
++import { createDurableToolDispatch } from './budget/durable-tool-dispatch.mjs';
++import { allocation as parseBudgetAllocation } from './budget/tool-budget-binding.mjs';
++import { canonicalSha256 } from '../../packages/contracts/validate.mjs';
++
++/** Concrete durable-budget entry; canonical source connectivity remains disabled. */
++export function createDurableSourceDisabledGateway(options) {
++  if (!options || Object.keys(options).some(key => !['authorityPorts', 'pool', 'allocationJson', 'limits', 'now', 'newId'].includes(key))) deny('GATEWAY_CONFIGURATION');
++  const { authorityPorts, pool, allocationJson, limits, now, newId } = options;
++  if (parseBudgetAllocation(allocationJson).catalogSha256 !== canonicalSha256(catalog)) deny('GATEWAY_CONFIGURATION');
++  const authority = createCurrentToolAuthority({ ports: authorityPorts, now, maxFactBytes: limits?.maxResponseBytes });
++  const view = createRuntimeCatalog({ catalogJson: JSON.stringify(catalog), contracts });
++  const dispatcher = createDurableToolDispatch({ pool, allocationJson, catalog: view, authority,
++    limits, now, newId, sourceEnabled: false });
++  return Object.freeze({ ...dispatcher, sourceEnabled: false,
++    status: 'SOURCE_ONLY_DURABLE_BUDGET_NO_PRODUCTION_ADAPTERS', catalogVersion: view.catalogVersion });
++}
+diff --git a/apps/gateway/test/durable-tool-budget.test.mjs b/apps/gateway/test/durable-tool-budget.test.mjs
+new file mode 100644
+index 0000000..74028f5
+--- /dev/null
++++ b/apps/gateway/test/durable-tool-budget.test.mjs
+@@ -0,0 +1,177 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import canonicalCatalog from '../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
++import { createHash, randomUUID } from 'node:crypto';
++import { canonicalSha256 } from '../../../packages/contracts/validate.mjs';
++import { createDurableSourceDisabledGateway } from '../index.mjs';
++import { createDurableToolDispatch } from '../budget/durable-tool-dispatch.mjs';
++import { createPostgresToolBudget } from '../budget/postgres-tool-budget.mjs';
++import { fixture, NOW, uuid, limits, operation, requestJson } from './fixtures.mjs';
++
++// Deliberate scripted SQL boundary, not a PostgreSQL concurrency/durability fixture.
++function setup() {
++  const f = fixture(); const policy = 'a'.repeat(64); const credential = 'synthetic-opaque';
++  f.claims.policyRevision = policy; f.claims.scopes[0].policyRevision = policy; f.subject.policyRevision = policy;
++  const allocation = { run: Object.fromEntries(['tenantId','actorId','conversationId','runId'].map(k => [k,f.binding[k]])),
++    manifestSha256:'b'.repeat(64),catalogSha256:'c'.repeat(64),budgets:{maxTurns:5,maxToolCalls:2,maxRecoveryAttempts:0,maxRuntimeSeconds:10,maxCostMicroUSD:100,maxOutputBytes:65536},
++    schedule:{revision:'d'.repeat(64),expiresAt:new Date(NOW+10000).toISOString(),operations:[{operation,chargeMicrousd:10}]} };
++  allocation.manifest = {contractVersion:'0.2.0',skillId:'quick_skill.relationship_brief',skillVersion:'1.0.0',prose:{id:'urn:meri:synthetic:budget-prose:1',sha256:'a'.repeat(64)},requiredSources:[{sourceId:'synthetic-source',authority:'authoritative',purpose:'enumeration'}],allowedOperations:[operation],subjectKinds:['personal'],windowBases:['unbounded'],completion:{requireAllSources:true,allowDisclosedPartial:true,negativeClaims:'complete-covered-only',rubric:[{id:'evidence',requirement:'Synthetic budget boundary',evidenceRequired:true}]},approval:{mutations:'separate-immutable-proposal',autoCreateTasks:false},budgets:allocation.budgets,versionPolicy:{existingRuns:'pin-immutable',resume:'exact-or-explicit-migration',fork:'preserve-unless-explicit-reselection'}};
++  allocation.manifestSha256=canonicalSha256(allocation.manifest);
++  const context = {invocationId:'trusted-tool-slot',grantId:uuid('8'),binding:f.binding,
++    qualificationBinding:{runId:f.binding.runId,attempt:1,workerArn:`arn:aws:ecs:us-east-1:967807252336:task/Synthetic/${'a'.repeat(32)}`,fence:1,policyRevision:policy},
++    capabilitySha256:createHash('sha256').update(credential).digest('hex'),allocationSha256:canonicalSha256(allocation)};
++  const state = { budget:{cap_micro_usd:100,consumed_micro_usd:0,quarantined:false},
++    run:{run_id:f.binding.runId,attempt:1,worker_arn:context.qualificationBinding.workerArn,fence:1,policy_revision:policy},
++    allocations:new Map(),bindings:new Map(),reservations:new Map(),model:[],commands:[],releases:[],connections:0,now:NOW };
++  state.grant={...state.run,grant_id:context.grantId,state:'ACTIVE',capability_sha256:context.capabilitySha256,expires_at:new Date(NOW+10000)};
++  const liabilities = () => [...state.model,...[...state.reservations.values()].map(r=>({...r,kind:'tool',slot:r.invocation_id,consumed_micro_usd:r.charged_micro_usd??0}))];
++  const pool = {async connect(){state.connections++;return {async query(sql,p=[]){
++    state.commands.push({sql,p});
++    if(sql.startsWith('SELECT * FROM meri_qualification.tool_run_allocations')&&state.parkAllocation)await state.allocationGate;
++    if(sql==='COMMIT'&&state.parkNextCommit){state.parkNextCommit=false;await state.commitGate;}
++    if(sql===state.failAt)throw Error('synthetic SQL loss');
++    let rows=[];
++    if(sql.includes('budget WHERE id=1 FOR UPDATE'))rows=[state.budget];
++    else if(sql==='SELECT clock_timestamp() AS now')rows=[{now:new Date(state.now)}];
++    else if(sql.startsWith('SELECT * FROM meri_qualification.runs'))rows=[state.run];
++    else if(sql.startsWith('SELECT * FROM meri_qualification.grants'))rows=[state.grant];
++    else if(sql.startsWith('SELECT * FROM meri_qualification.tool_run_allocations'))rows=state.allocations.has(p[0])?[state.allocations.get(p[0])]:[];
++    else if(sql.startsWith('INSERT INTO meri_qualification.tool_run_allocations'))state.allocations.set(p[0],{run_id:p[0],allocation_sha256:p[1],allocation:p[2],max_tool_calls:p[3],max_cost_micro_usd:p[4],started_at:new Date(state.now)});
++    else if(sql.startsWith('SELECT * FROM meri_qualification.tool_grant_bindings'))rows=state.bindings.has(p[0])?[state.bindings.get(p[0])]:[];
++    else if(sql.startsWith('INSERT INTO meri_qualification.tool_grant_bindings'))state.bindings.set(p[0],{facts:p[2]});
++    else if(sql.startsWith('SELECT * FROM meri_qualification.tool_reservations'))rows=state.reservations.has(p[0])?[state.reservations.get(p[0])]:[];
++    else if(sql.startsWith('SELECT 1 FROM meri_qualification.budget_liabilities'))rows=liabilities().filter(r=>r.grant_id===p[0]&&r.state==='UNKNOWN').map(()=>({one:1}));
++    else if(sql.includes('AS run_total FROM meri_qualification.budget_liabilities'))rows=[{held:liabilities().filter(r=>r.state==='UNKNOWN').reduce((n,r)=>n+Number(r.hold_micro_usd),0),run_total:liabilities().filter(r=>r.run_id===p[0]).reduce((n,r)=>n+Number(r.state==='UNKNOWN'?r.hold_micro_usd:r.consumed_micro_usd),0)}];
++    else if(sql.startsWith('SELECT count(*) AS calls'))rows=[{calls:[...state.reservations.values()].filter(r=>r.run_id===p[0]).length}];
++    else if(sql.startsWith('INSERT INTO meri_qualification.tool_reservations')){state.reservations.set(p[0],{invocation_id:p[0],reservation_id:p[1],grant_id:p[2],run_id:p[3],facts:p[4],operation:p[5],arguments_sha256:p[6],hold_micro_usd:p[7],max_output_bytes:p[8],state:'UNKNOWN'});if(state.loseReserveCommit)state.failAt='COMMIT';}
++    else if(sql.startsWith('UPDATE meri_qualification.budget SET consumed_micro_usd'))state.budget.consumed_micro_usd+=Number(p[0]);
++    else if(sql.startsWith('UPDATE meri_qualification.tool_reservations SET')){const row=state.reservations.get(p[0]);Object.assign(row,{state:'SETTLED',charged_micro_usd:row.hold_micro_usd,output_bytes:p[1]});if(state.loseSettleCommit)state.failAt='COMMIT';if(state.parkOnSettle)state.parkNextCommit=true;}
++    else if(!['BEGIN','COMMIT','ROLLBACK'].includes(sql)&&!sql.startsWith('SET LOCAL'))throw Error(`Unmodelled SQL ${sql}`);
++    return {rows};},release(error){state.releases.push(error);}};}};
++  const owner=()=>createPostgresToolBudget({pool,allocationJson:JSON.stringify(allocation)});
++  const gateway=()=>createDurableToolDispatch({pool,allocationJson:JSON.stringify(allocation),catalog:{entry:()=>f.entry,discoverable:()=>[f.entry]},authority:f.authority,limits,now:()=>f.state.now,newId:randomUUID,sourceEnabled:true});
++  const execute=(changes={})=>gateway().execute(requestJson,credential,JSON.stringify({...context,...changes}));
++  const bind=()=>{allocation.manifestSha256=canonicalSha256(allocation.manifest);context.allocationSha256=canonicalSha256(allocation);return owner().bindTrustedGrant(JSON.stringify(context));};
++  return {f,allocation,context,state,pool,owner,gateway,execute,bind,credential};
++}
++
++test('actual dispatcher uses persistent SQL slot and settles fixed charge once',async()=>{
++ const t=setup();await t.bind();const result=JSON.parse(await t.execute());assert.equal(result.data.total,0);
++ assert.equal(t.f.calls.filter(x=>x==='handler').length,1);const row=t.state.reservations.get(t.context.invocationId);
++ assert.equal(row.state,'SETTLED');assert.equal(row.charged_micro_usd,10);assert.equal(t.state.budget.consumed_micro_usd,10);
++ assert.equal(row.arguments_sha256,canonicalSha256({page:1,limit:10}));assert.equal(t.state.commands.filter(x=>x.sql.startsWith('INSERT INTO meri_qualification.tool_reservations')).length,1);
++ await assert.rejects(t.execute(),/BUDGET_UNCERTAIN/);assert.equal(t.f.calls.filter(x=>x==='handler').length,1);
++});
++test('lost reserve commit acknowledgement blocks handler and retains UNKNOWN on fresh owner replay',async()=>{
++ const t=setup();await t.bind();t.state.loseReserveCommit=true;await assert.rejects(t.execute(),/BUDGET_UNCERTAIN/);
++ assert.equal(t.f.calls.includes('handler'),false);assert.equal(t.state.reservations.get(t.context.invocationId).state,'UNKNOWN');
++ t.state.loseReserveCommit=false;t.state.failAt=undefined;await assert.rejects(t.execute(),/BUDGET_UNCERTAIN/);assert.equal(t.f.calls.includes('handler'),false);
++});
++test('lost settlement acknowledgement and cleanup preserve terminal charge',async()=>{
++ const t=setup();await t.bind();t.state.loseSettleCommit=true;await assert.rejects(t.execute(),/BUDGET_UNCERTAIN/);
++ assert.equal(t.state.reservations.get(t.context.invocationId).state,'SETTLED');assert.equal(t.state.budget.consumed_micro_usd,10);
++ t.state.failAt=undefined;await t.owner().forInvocation(JSON.stringify(t.context)).markUncertain(t.state.reservations.get(t.context.invocationId).reservation_id);
++ assert.equal(t.state.reservations.get(t.context.invocationId).state,'SETTLED');
++});
++for(const field of ['tenantId','actorId','conversationId','runId','attemptId','workerId','writerFence'])test(`trusted ${field} substitution denies before handler`,async()=>{
++ const t=setup();await t.bind();const binding={...t.context.binding,[field]:field==='writerFence'?2:field.endsWith('Id')&&field!=='tenantId'&&field!=='actorId'?uuid('9'):'foreign'};
++ await assert.rejects(t.execute({binding}));assert.equal(t.f.calls.includes('handler'),false);
++});
++test('wrong capability and policy mapping refuse before handler',async()=>{
++ const t=setup();await t.bind();await assert.rejects(t.execute({capabilitySha256:'e'.repeat(64)}),/ACCESS_DENIED/);
++ await assert.rejects(t.execute({qualificationBinding:{...t.context.qualificationBinding,policyRevision:'e'.repeat(64)}}),/ACCESS_DENIED/);assert.equal(t.f.calls.includes('handler'),false);
++});
++for(const condition of ['expired','revoked','stale','schedule','missing-binding'])test(`${condition} durable admission denies effect`,async()=>{
++ const t=setup();await t.bind();if(condition==='expired')t.state.grant.expires_at=new Date(NOW);if(condition==='revoked')t.state.grant.state='REVOKED';if(condition==='stale')t.state.run={...t.state.run,fence:2};if(condition==='schedule')t.state.now=NOW+10001;if(condition==='missing-binding')t.state.bindings.clear();
++ await assert.rejects(t.execute(),/BUDGET_UNCERTAIN/);assert.equal(t.f.calls.includes('handler'),false);
++});
++test('shared global model UNKNOWN liability refuses over-cap and allows exact bound',async()=>{
++ const t=setup();await t.bind();t.state.budget.consumed_micro_usd=20;t.state.model=[{run_id:uuid('9'),grant_id:uuid('9'),state:'UNKNOWN',hold_micro_usd:71}];
++ await assert.rejects(t.execute(),/BUDGET_UNCERTAIN/);assert.equal(t.f.calls.includes('handler'),false);
++ t.state.model[0].hold_micro_usd=70;await t.execute();assert.equal(t.state.budget.consumed_micro_usd,30);
++});
++test('shared run model settled and UNKNOWN liability enforce installed run cap',async()=>{
++ const t=setup();t.allocation.budgets.maxCostMicroUSD=50;t.context.allocationSha256=canonicalSha256(t.allocation);await t.bind();
++ t.state.model=[{run_id:t.context.binding.runId,grant_id:uuid('9'),state:'SETTLED',consumed_micro_usd:20},{run_id:t.context.binding.runId,grant_id:uuid('9'),state:'UNKNOWN',hold_micro_usd:21}];
++ await assert.rejects(t.execute(),/BUDGET_UNCERTAIN/);t.state.model[1].hold_micro_usd=20;await t.execute();
++});
++test('narrow capability cost and private tool count cannot be widened',async()=>{
++ const t=setup();await t.bind();t.f.claims.budgets.maxCostMicrousd=9;await assert.rejects(t.execute(),/BUDGET_UNCERTAIN/);
++ t.f.claims.budgets.maxCostMicrousd=100;await t.execute();await t.execute({invocationId:'second'});
++ await assert.rejects(t.execute({invocationId:'third'}),/BUDGET_UNCERTAIN/);assert.equal(t.f.calls.filter(x=>x==='handler').length,2);
++});
++test('missing schedule refuses; trusted JSON rejects object/getter without executing it',()=>{
++ const t=setup();t.allocation.schedule.operations=[];assert.throws(t.gateway);
++ let touched=0;const bad={get schedule(){touched++;throw Error('private');}};assert.throws(()=>createPostgresToolBudget({pool:t.pool,allocationJson:bad}));assert.equal(touched,0);
++});
++test('historical exact settlement survives revocation and cleanup does not grant authority',async()=>{
++ const t=setup();await t.bind();const bound=t.owner().forInvocation(JSON.stringify(t.context));
++ await bound.reserve({reservationId:uuid('7'),binding:t.f.binding,operation,argumentsSha256:canonicalSha256({}),budgets:t.f.claims.budgets,claims:t.f.claims,deadlineMs:NOW+1000});
++ t.state.grant.state='REVOKED';await bound.settle({reservationId:uuid('7'),outcome:'completed',outputBytes:1});await bound.markUncertain(uuid('7'));
++ assert.equal(t.state.budget.consumed_micro_usd,10);await assert.rejects(t.execute({invocationId:'new'}));
++});
++test('default source-disabled composition creates no database work or handler call',async()=>{
++ const t=setup();const d=createDurableToolDispatch({pool:t.pool,allocationJson:JSON.stringify(t.allocation),catalog:{entry:()=>t.f.entry,discoverable:()=>[]},authority:t.f.authority,limits,now:()=>NOW,newId:()=>uuid('7')});
++ await assert.rejects(d.execute(requestJson,t.credential,JSON.stringify(t.context)),/UNAVAILABLE/);assert.equal(t.state.connections,0);assert.equal(t.f.calls.includes('handler'),false);
++});
++
++test('actual manifest body/hash/budgets/allowed-operation consistency is mandatory',()=>{
++ for(const change of [t=>t.allocation.manifestSha256='f'.repeat(64),t=>t.allocation.budgets={...t.allocation.budgets,maxToolCalls:99},t=>{t.allocation.manifest.allowedOperations=[{id:'other.operation',version:'0.2.0'}];t.allocation.manifestSha256=canonicalSha256(t.allocation.manifest);}]){
++  const t=setup();change(t);assert.throws(t.gateway);assert.equal(t.state.connections,0);
++ }
++});
++
++for(const stage of ['handler','settlement'])test(`private runtime deadline stops parked ${stage} and preserves liability`,async()=>{
++ const t=setup();await t.bind();const installed=t.state.allocations.get(t.context.binding.runId);installed.started_at=new Date(NOW-9950);
++ let release;const gate=new Promise(resolve=>release=resolve);
++ if(stage==='handler')t.f.entry.execute=async()=>{t.f.calls.push('handler');await gate;return JSON.stringify(t.f.output);};
++ else {t.state.parkOnSettle=true;t.state.commitGate=gate;}
++ const began=performance.now();await assert.rejects(t.execute(),/DEADLINE|BUDGET_UNCERTAIN/);assert.ok(performance.now()-began<1500);
++ const row=t.state.reservations.get(t.context.invocationId);assert.ok(row);assert.equal(row.hold_micro_usd,10);assert.ok(['UNKNOWN','SETTLED'].includes(row.state));
++ release();await new Promise(resolve=>setImmediate(resolve));assert.equal(t.f.calls.filter(x=>x==='handler').length,1);
++});
++test('unknown replay with fresh reservation and changed arguments never repeats handler',async()=>{
++ const t=setup();await t.bind();t.f.entry.execute=async()=>{t.f.calls.push('handler');throw Error('synthetic output loss');};
++ await assert.rejects(t.execute());const first=t.state.reservations.get(t.context.invocationId).reservation_id;
++ await assert.rejects(t.gateway().execute(JSON.stringify({operation,arguments:{limit:2}}),t.credential,JSON.stringify(t.context)));
++ assert.equal(t.state.reservations.get(t.context.invocationId).reservation_id,first);assert.equal(t.f.calls.filter(x=>x==='handler').length,1);
++});
++
++test('canonical entry composes concrete budget and remains inert/unavailable without pool work',async()=>{
++ const t=setup();t.allocation.catalogSha256=canonicalSha256(canonicalCatalog);t.context.allocationSha256=canonicalSha256(t.allocation);const options={authorityPorts:t.f.ports,pool:t.pool,allocationJson:JSON.stringify(t.allocation),limits,now:()=>NOW,newId:randomUUID};
++ const d=createDurableSourceDisabledGateway(options);assert.equal(d.sourceEnabled,false);assert.match(d.status,/DURABLE_BUDGET/);assert.deepEqual(await d.discover(),[]);
++ await assert.rejects(d.execute(requestJson,t.credential,JSON.stringify(t.context)),/UNAVAILABLE/);assert.equal(t.state.connections,0);
++ assert.throws(()=>createDurableSourceDisabledGateway({...options,sourceEnabled:true}),/GATEWAY_CONFIGURATION/);
++ assert.throws(()=>createDurableSourceDisabledGateway({...options,allocationJson:JSON.stringify({...t.allocation,catalogSha256:'f'.repeat(64)})}),/GATEWAY_CONFIGURATION/);assert.equal(t.state.connections,0);
++});
++
++test('replacement attempt retains original UNKNOWN and cannot reuse trusted invocation slot',async()=>{
++ const t=setup();await t.bind();t.f.entry.execute=async()=>{t.f.calls.push('handler');throw Error('synthetic unknown');};await assert.rejects(t.execute());
++ const old=t.state.reservations.get(t.context.invocationId);assert.equal(old.state,'UNKNOWN');
++ t.context.grantId=uuid('9');t.context.binding.attemptId=uuid('a');t.context.binding.workerId=uuid('b');t.context.binding.writerFence=2;t.context.qualificationBinding.attempt=2;t.context.qualificationBinding.fence=2;t.f.state.fence=2;
++ t.state.run={...t.state.run,attempt:2,fence:2};t.state.grant={...t.state.grant,...t.state.run,grant_id:t.context.grantId};await t.bind();
++ await assert.rejects(t.execute(),/BUDGET_UNCERTAIN/);assert.equal(t.state.reservations.get(t.context.invocationId),old);assert.equal(old.state,'UNKNOWN');assert.equal(t.f.calls.filter(x=>x==='handler').length,1);
++});
++test('narrow private output limit retains UNKNOWN and returns no oversized result',async()=>{
++ const t=setup();t.allocation.budgets.maxOutputBytes=1;await t.bind();await assert.rejects(t.execute(),/BUDGET_UNCERTAIN/);
++ assert.equal(t.state.reservations.get(t.context.invocationId).state,'UNKNOWN');assert.equal(t.state.budget.consumed_micro_usd,0);
++});
++
++for(const expiry of ['grant','schedule'])test(`earlier ${expiry} expiry stops parked handler`,async()=>{
++ const t=setup();if(expiry==='schedule')t.allocation.schedule.expiresAt=new Date(NOW+50).toISOString();await t.bind();if(expiry==='grant')t.state.grant.expires_at=new Date(NOW+50);
++ let release;const gate=new Promise(resolve=>release=resolve);t.f.entry.execute=async()=>{t.f.calls.push('handler');await gate;return JSON.stringify(t.f.output);};
++ const start=performance.now();await assert.rejects(t.execute(),/DEADLINE|BUDGET_UNCERTAIN/);assert.ok(performance.now()-start<1500);assert.equal(t.state.reservations.get(t.context.invocationId).state,'UNKNOWN');release();await new Promise(resolve=>setImmediate(resolve));
++});
++
++test('known grant expiry is published before a later allocation SQL read can park',async()=>{
++ const t=setup();await t.bind();t.state.grant.expires_at=new Date(NOW+50);let release;t.state.allocationGate=new Promise(resolve=>release=resolve);t.state.parkAllocation=true;
++ const start=performance.now();await assert.rejects(t.execute(),/DEADLINE|BUDGET_UNCERTAIN/);assert.ok(performance.now()-start<1500);assert.equal(t.f.calls.includes('handler'),false);
++ release();await new Promise(resolve=>setImmediate(resolve));assert.equal(t.f.calls.includes('handler'),false);
++});
++
++test('known schedule expiry is published before the first authority port can park',async()=>{
++ const t=setup();t.allocation.schedule.expiresAt=new Date(NOW+50).toISOString();await t.bind();let release;const gate=new Promise(resolve=>release=resolve);const identify=t.f.authority.identify;
++ t.f.authority={...t.f.authority,async identify(call){await gate;return identify(call);}};
++ const initialConnections=t.state.connections;const start=performance.now();await assert.rejects(t.execute(),/DEADLINE/);assert.ok(performance.now()-start<1500);assert.equal(t.state.connections,initialConnections);assert.equal(t.f.calls.includes('handler'),false);
++ release();await new Promise(resolve=>setImmediate(resolve));
++});
+diff --git a/apps/gateway/test/postgres-tool-budget.test.mjs b/apps/gateway/test/postgres-tool-budget.test.mjs
+new file mode 100644
+index 0000000..3e1c638
+--- /dev/null
++++ b/apps/gateway/test/postgres-tool-budget.test.mjs
+@@ -0,0 +1,20 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import { PostgresBudgetStore, BudgetCommitUncertain, BudgetStateDenied } from '../budget/postgres-budget-store.mjs';
++
++for (const where of ['BEGIN','ROLLBACK','COMMIT']) test(`uncertain ${where} evicts connection and never retries`,async()=>{
++ const calls=[];const releases=[];let connected=0;
++ const store=new PostgresBudgetStore({async connect(){connected++;return {async query(sql){calls.push(sql);if(sql===where)throw Error('injected');return {rows:[]};},release(error){releases.push(error);}};}});
++ await assert.rejects(store.transact(async()=>{if(where==='ROLLBACK')throw new BudgetStateDenied('DENIED');}),where==='COMMIT'?BudgetCommitUncertain:BudgetStateDenied);
++ assert.equal(connected,1);assert.equal(releases.length,1);assert.ok(releases[0] instanceof Error);
++ assert.equal(calls.filter(x=>x==='COMMIT').length,where==='COMMIT'?1:0);
++});
++test('release error preserves original commit uncertainty',async()=>{
++ const store=new PostgresBudgetStore({async connect(){return {async query(sql){if(sql==='COMMIT')throw Error('lost');return {rows:[]};},release(){throw Error('release');}};}});
++ await assert.rejects(store.transact(async()=>1),/^Error: COMMIT_ACKNOWLEDGEMENT_UNKNOWN$/);
++});
++test('database time is sampled only after budget lock acknowledgement',async()=>{
++ const events=[];let unlock;const gate=new Promise(resolve=>unlock=resolve);const store=new PostgresBudgetStore({connect(){throw Error('unused');}});
++ const pending=store.lock({async query(sql){events.push(sql);if(sql.includes('FOR UPDATE')){await gate;return {rows:[{id:1}]};}return {rows:[{now:new Date(0)}]};}});
++ await new Promise(resolve=>setImmediate(resolve));assert.equal(events.length,1);unlock();assert.equal((await pending).now.getTime(),0);assert.equal(events.length,2);
++});
+diff --git a/apps/proxy/qualification/state/ledger.py b/apps/proxy/qualification/state/ledger.py
+index 7291b39..452423a 100644
+--- a/apps/proxy/qualification/state/ledger.py
++++ b/apps/proxy/qualification/state/ledger.py
+@@ -65,12 +65,17 @@ class PostgresLedger:
+             if (not grant or grant["state"]!="ACTIVE" or not same_binding(grant,self.binding)
+                 or grant["capability_sha256"]!=self.capability_sha256 or grant["expires_at"]<=budget["now"]):
+                 raise StateDenied("GRANT_ADMISSION_DENIED")
+-            cursor.execute("SELECT 1 FROM meri_qualification.requests WHERE request_id=%s OR (grant_id=%s AND state='UNKNOWN')",(request_id,self.grant_id))
++            cursor.execute("SELECT 1 FROM meri_qualification.budget_liabilities WHERE (kind='model' AND slot=%s) OR (grant_id=%s AND state='UNKNOWN')",(request_id,self.grant_id))
+             if cursor.fetchone():
+                 raise StateDenied("REQUEST_SLOT_ALREADY_USED")
+-            cursor.execute("SELECT COALESCE(sum(hold_micro_usd),0) AS held FROM meri_qualification.requests WHERE state='UNKNOWN'")
++            cursor.execute("SELECT COALESCE(sum(hold_micro_usd),0) AS held FROM meri_qualification.budget_liabilities WHERE state='UNKNOWN'")
+             held=cursor.fetchone()["held"]
+-            if budget["consumed_micro_usd"]+held+hold>budget["cap_micro_usd"]:
++            cursor.execute("SELECT max_cost_micro_usd FROM meri_qualification.tool_run_allocations WHERE run_id=%s",(self.binding.run_id,))
++            allocation=cursor.fetchone()
++            cursor.execute("SELECT COALESCE(sum(CASE WHEN state='UNKNOWN' THEN hold_micro_usd ELSE consumed_micro_usd END),0) AS total FROM meri_qualification.budget_liabilities WHERE run_id=%s",(self.binding.run_id,))
++            run_total=cursor.fetchone()["total"]
++            if (budget["consumed_micro_usd"]+held+hold>budget["cap_micro_usd"]
++                or (allocation and run_total+hold>allocation["max_cost_micro_usd"])):
+                 raise StateDenied("AGGREGATE_BUDGET_EXHAUSTED")
+             cursor.execute("INSERT INTO meri_qualification.requests(request_id,grant_id,run_id,attempt,worker_arn,fence,policy_revision,native_body_sha256,raw_request_sha256,model_id,profile_id,pricing_revision,pricing_valid_until,input_tokens,max_output_tokens,hold_micro_usd,state) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,'UNKNOWN')",(request_id,self.grant_id,*self.binding.values(),body.sha256,self.raw_request_sha256,COUNT_MODEL_ID,PROFILE_ID,self.pricing.revision,self.pricing.valid_until,count.input_tokens,body.max_output_tokens,hold))
+             return HoldReceipt(request_id,body.sha256,"UNKNOWN")
+@@ -100,9 +105,14 @@ class PostgresLedger:
+             budget=self.store.budget(cursor)
+             row=self._original(cursor,request_id,evidence.native_body_sha256,evidence.raw_request_sha256,evidence.pricing_revision)
+             inconsistent=(evidence.input_tokens!=row["input_tokens"] or evidence.output_tokens>row["max_output_tokens"])
+-            cursor.execute("SELECT COALESCE(sum(hold_micro_usd),0) AS held FROM meri_qualification.requests WHERE state='UNKNOWN' AND request_id<>%s",(request_id,))
++            cursor.execute("SELECT COALESCE(sum(hold_micro_usd),0) AS held FROM meri_qualification.budget_liabilities WHERE state='UNKNOWN' AND NOT (kind='model' AND slot=%s)",(request_id,))
+             remaining=cursor.fetchone()["held"]
+-            quarantine=(inconsistent or actual>row["hold_micro_usd"] or budget["consumed_micro_usd"]+remaining+actual>budget["cap_micro_usd"])
++            cursor.execute("SELECT max_cost_micro_usd FROM meri_qualification.tool_run_allocations WHERE run_id=%s",(self.binding.run_id,))
++            allocation=cursor.fetchone()
++            cursor.execute("SELECT COALESCE(sum(CASE WHEN state='UNKNOWN' THEN hold_micro_usd ELSE consumed_micro_usd END),0) AS total FROM meri_qualification.budget_liabilities WHERE run_id=%s AND NOT (kind='model' AND slot=%s)",(self.binding.run_id,request_id))
++            run_remaining=cursor.fetchone()["total"]
++            quarantine=(inconsistent or actual>row["hold_micro_usd"] or budget["consumed_micro_usd"]+remaining+actual>budget["cap_micro_usd"]
++                        or bool(allocation and run_remaining+actual>allocation["max_cost_micro_usd"]))
+             cursor.execute("UPDATE meri_qualification.budget SET consumed_micro_usd=consumed_micro_usd+%s,quarantined=quarantined OR %s WHERE id=1",(actual,quarantine))
+             cursor.execute("UPDATE meri_qualification.requests SET state='SETTLED',actual_micro_usd=%s,evidence_sha256=%s,settled_at=clock_timestamp() WHERE request_id=%s",(actual,evidence.evidence_sha256,request_id))
+             return {"actual_micro_usd":actual,"quarantined":bool(budget["quarantined"] or quarantine)}
+@@ -121,6 +131,6 @@ class PostgresLedger:
+         """Trusted operator/test read; unresolved rows never expire here."""
+         def operation(cursor):
+             budget=self.store.budget(cursor)
+-            cursor.execute("SELECT COALESCE(sum(hold_micro_usd),0) AS held,count(*) AS unresolved FROM meri_qualification.requests WHERE state='UNKNOWN'")
++            cursor.execute("SELECT COALESCE(sum(hold_micro_usd),0) AS held,count(*) AS unresolved FROM meri_qualification.budget_liabilities WHERE state='UNKNOWN'")
+             return {**budget,**cursor.fetchone()}
+         return self.store.transact(operation)
+diff --git a/apps/proxy/qualification/state/migrations/0002_tool_budget.sql b/apps/proxy/qualification/state/migrations/0002_tool_budget.sql
+new file mode 100644
+index 0000000..01939d5
+--- /dev/null
++++ b/apps/proxy/qualification/state/migrations/0002_tool_budget.sql
+@@ -0,0 +1,40 @@
++-- Explicit qualification-only upgrade. Apply only after 0001 by the trusted owner.
++-- Positive tool charges are conservative accounting, not provider actual usage.
++CREATE TABLE meri_qualification.tool_run_allocations (
++  run_id uuid PRIMARY KEY REFERENCES meri_qualification.runs,
++  allocation_sha256 char(64) NOT NULL CHECK(allocation_sha256 ~ '^[0-9a-f]{64}$'),
++  allocation jsonb NOT NULL,
++  started_at timestamptz NOT NULL DEFAULT clock_timestamp(),
++  max_tool_calls bigint NOT NULL CHECK(max_tool_calls>0),
++  max_cost_micro_usd bigint NOT NULL CHECK(max_cost_micro_usd>0)
++);
++CREATE TABLE meri_qualification.tool_grant_bindings (
++  grant_id uuid PRIMARY KEY REFERENCES meri_qualification.grants,
++  run_id uuid NOT NULL REFERENCES meri_qualification.tool_run_allocations,
++  facts jsonb NOT NULL
++);
++CREATE TABLE meri_qualification.tool_reservations (
++  invocation_id varchar(128) PRIMARY KEY,
++  reservation_id uuid UNIQUE NOT NULL,
++  grant_id uuid NOT NULL REFERENCES meri_qualification.tool_grant_bindings,
++  run_id uuid NOT NULL REFERENCES meri_qualification.tool_run_allocations,
++  facts jsonb NOT NULL, operation jsonb NOT NULL,
++  arguments_sha256 char(64) NOT NULL CHECK(arguments_sha256 ~ '^[0-9a-f]{64}$'),
++  hold_micro_usd bigint NOT NULL CHECK(hold_micro_usd>0),
++  max_output_bytes bigint NOT NULL CHECK(max_output_bytes>0),
++  state text NOT NULL CHECK(state IN ('UNKNOWN','SETTLED')),
++  charged_micro_usd bigint CHECK(charged_micro_usd>0),
++  output_bytes bigint CHECK(output_bytes>=0),
++  created_at timestamptz NOT NULL DEFAULT clock_timestamp(), settled_at timestamptz,
++  CHECK ((state='UNKNOWN' AND charged_micro_usd IS NULL AND output_bytes IS NULL AND settled_at IS NULL)
++    OR (state='SETTLED' AND charged_micro_usd=hold_micro_usd AND output_bytes IS NOT NULL AND settled_at IS NOT NULL))
++);
++CREATE UNIQUE INDEX one_unknown_tool_per_grant ON meri_qualification.tool_reservations(grant_id) WHERE state='UNKNOWN';
++CREATE VIEW meri_qualification.budget_liabilities AS
++  SELECT 'model'::text AS kind,request_id::text AS slot,run_id,grant_id,state,hold_micro_usd,
++         COALESCE(actual_micro_usd,0) AS consumed_micro_usd
++    FROM meri_qualification.requests
++  UNION ALL
++  SELECT 'tool'::text AS kind,invocation_id::text AS slot,run_id,grant_id,state,hold_micro_usd,
++         COALESCE(charged_micro_usd,0) AS consumed_micro_usd
++    FROM meri_qualification.tool_reservations;
+diff --git a/apps/proxy/qualification/state/postgres_store.py b/apps/proxy/qualification/state/postgres_store.py
+index 785bccd..90c9e6a 100644
+--- a/apps/proxy/qualification/state/postgres_store.py
++++ b/apps/proxy/qualification/state/postgres_store.py
+@@ -79,6 +79,11 @@ class PostgresStore:
+         sql = (Path(__file__).parent / "migrations/0001_qualification_state.sql").read_text(encoding="utf-8")
+         return self.transact(lambda cursor: cursor.execute(sql))
+ 
++    def migrate_tool_budget(self):
++        """Explicit owner upgrade after 0001; never called automatically."""
++        sql = (Path(__file__).parent / "migrations/0002_tool_budget.sql").read_text(encoding="utf-8")
++        return self.transact(lambda cursor: cursor.execute(sql))
++
+     @staticmethod
+     def budget(cursor):
+         cursor.execute("SELECT * FROM meri_qualification.budget WHERE id=1 FOR UPDATE")
+diff --git a/apps/proxy/qualification/test/test_postgres_state.py b/apps/proxy/qualification/test/test_postgres_state.py
+index 71543b5..07e9a29 100644
+--- a/apps/proxy/qualification/test/test_postgres_state.py
++++ b/apps/proxy/qualification/test/test_postgres_state.py
+@@ -66,7 +66,7 @@ class PostgresTests(unittest.TestCase):
+             or engine['user']!='qualification_owner' or type(engine['port']) is not int):
+             raise RuntimeError('unexpected test database')
+         cls.params={k:engine[k] for k in ('host','port','user')};cls.params['dbname']=engine['database']
+-        cls.store=PostgresStore(cls.params);cls.store.migrate_new_database()
++        cls.store=PostgresStore(cls.params);cls.store.migrate_new_database();cls.store.migrate_tool_budget()
+         with cls.store.connect() as connection:
+             row=connection.execute('SHOW fsync').fetchone()
+             if row['fsync']!='on':raise RuntimeError('fsync disabled')
+@@ -76,7 +76,7 @@ class PostgresTests(unittest.TestCase):
+         # Explicit synthetic fixture reset between independent cases, never a
+         # runtime API or demonstration that production budget may be reset.
+         with self.store.connect() as c:
+-            c.execute('TRUNCATE meri_qualification.requests,meri_qualification.grants,meri_qualification.runs')
++            c.execute('TRUNCATE meri_qualification.tool_reservations,meri_qualification.tool_grant_bindings,meri_qualification.tool_run_allocations,meri_qualification.requests,meri_qualification.grants,meri_qualification.runs')
+             c.execute('UPDATE meri_qualification.budget SET consumed_micro_usd=0,quarantined=false WHERE id=1')
+         self.grants=Grants(self.store)
+ 
+diff --git a/apps/proxy/qualification/test/test_tool_budget_source.py b/apps/proxy/qualification/test/test_tool_budget_source.py
+new file mode 100644
+index 0000000..b85ff39
+--- /dev/null
++++ b/apps/proxy/qualification/test/test_tool_budget_source.py
+@@ -0,0 +1,87 @@
++"""Actual Python ledger decisions against scripted SQL; no driver/DB/provider import."""
++import ast
++from dataclasses import dataclass
++from datetime import datetime,timedelta,timezone
++import hashlib
++import json
++from pathlib import Path
++import sys
++import types
++import unittest
++from unittest.mock import patch
++
++from apps.proxy.qualification.state.ledger import PostgresLedger,Settlement
++from apps.proxy.qualification.state.grants import RunBinding
++from apps.proxy.qualification.state.pricing import Pricing,StateDenied,PRICING_REVISION
++from apps.proxy.qualification.runtime.bedrock_body import BodyLimits,COUNT_MODEL_ID,INVOKE_URLS,inspect_native_request
++
++NOW=datetime(2026,10,12,tzinfo=timezone.utc)
++RUN='11111111-1111-4111-8111-111111111111'
++GRANT='22222222-2222-4222-8222-222222222222'
++BINDING=RunBinding(RUN,1,'arn:aws:ecs:us-east-1:967807252336:task/Synthetic/'+'a'*32,1,'b'*64)
++RAW=json.dumps({'anthropic_version':'bedrock-2023-05-31','max_tokens':16,'messages':[{'role':'user','content':'synthetic'}]},separators=(',',':')).encode()
++BODY=inspect_native_request('POST',sorted(INVOKE_URLS)[0],RAW,BodyLimits())
++
++@dataclass(frozen=True)
++class CountObservation:
++    input_tokens:int; native_body_sha256:str; model_id:str; origin:str
++@dataclass(frozen=True)
++class HoldReceipt:
++    request_id:str; native_body_sha256:str; state:str
++TRANSPORT=types.ModuleType('apps.proxy.qualification.runtime.bedrock_transport')
++TRANSPORT.CountObservation=CountObservation;TRANSPORT.HoldReceipt=HoldReceipt
++
++class ScriptedStore:
++    def __init__(self,steps,cap=10000000):
++        self.steps=list(steps);self.seen=[]
++        self.row={'now':NOW,'quarantined':False,'consumed_micro_usd':0,'cap_micro_usd':cap}
++    def transact(self,operation):return operation(self)
++    def budget(self,cursor):self.seen.append('LOCK');return self.row
++    def execute(self,sql,params=()):
++        self.seen.append(sql)
++        if not self.steps:raise AssertionError('Unexpected SQL: '+sql)
++        expected,self.result=self.steps.pop(0)
++        if expected not in sql:raise AssertionError((expected,sql))
++        if isinstance(self.result,Exception):raise self.result
++    def fetchone(self):return self.result
++
++def ledger(store):return PostgresLedger(store,grant_id=GRANT,binding=BINDING,capability_sha256='c'*64,raw_request_sha256='d'*64,pricing=Pricing(NOW+timedelta(hours=1)),expected_count_origin='fixture')
++def binding_row():return dict(zip(('run_id','attempt','worker_arn','fence','policy_revision'),BINDING.values()))
++def reserve_steps(held=0,run_total=0,cap=2000):
++    return [('FROM meri_qualification.runs',binding_row()),('FROM meri_qualification.grants',binding_row()|{'state':'ACTIVE','capability_sha256':'c'*64,'expires_at':NOW+timedelta(minutes=1)}),("(kind='model' AND slot=%s)",None),("budget_liabilities WHERE state='UNKNOWN'",{'held':held}),('tool_run_allocations',{'max_cost_micro_usd':cap}),('budget_liabilities WHERE run_id=%s',{'total':run_total})]
++
++class ToolBudgetSourceTests(unittest.TestCase):
++    def reserve(self,store):
++        with patch.dict(sys.modules,{TRANSPORT.__name__:TRANSPORT}):
++            return ledger(store).reserve_sync('collision',BODY,CountObservation(123,BODY.sha256,COUNT_MODEL_ID,'fixture'))
++    def test_model_reserve_counts_shared_global_hold(self):
++        store=ScriptedStore(reserve_steps(held=925),cap=2000)
++        with self.assertRaisesRegex(StateDenied,'BUDGET_EXHAUSTED'):self.reserve(store)
++        self.assertFalse(store.steps);self.assertFalse(any('INSERT' in sql for sql in store.seen))
++    def test_model_reserve_exact_global_and_run_bound(self):
++        store=ScriptedStore(reserve_steps(held=924,run_total=924)+[('INSERT INTO meri_qualification.requests',None)],cap=2000)
++        self.assertEqual(self.reserve(store).state,'UNKNOWN');self.assertFalse(store.steps)
++    def test_model_reserve_counts_shared_run_settled_and_unknown(self):
++        store=ScriptedStore(reserve_steps(run_total=925))
++        with self.assertRaisesRegex(StateDenied,'BUDGET_EXHAUSTED'):self.reserve(store)
++        self.assertFalse(store.steps)
++    def test_missing_migration_fails_before_send_receipt(self):
++        steps=reserve_steps();steps[2]=(steps[2][0],RuntimeError('synthetic undefined table'))
++        with self.assertRaises(RuntimeError):self.reserve(ScriptedStore(steps))
++    def test_model_snapshot_keeps_original_shape_with_combined_counts(self):
++        store=ScriptedStore([('budget_liabilities',{'held':45,'unresolved':2})]);result=ledger(store).snapshot()
++        self.assertEqual((result['held'],result['unresolved']),(45,2));self.assertFalse(store.steps)
++    def test_settlement_excludes_only_model_slot_and_quarantines_shared_run_overage(self):
++        original=binding_row()|{'grant_id':GRANT,'state':'UNKNOWN','native_body_sha256':BODY.sha256,'raw_request_sha256':'d'*64,'pricing_revision':PRICING_REVISION,'pricing_valid_until':NOW+timedelta(hours=1),'input_tokens':123,'max_output_tokens':16,'hold_micro_usd':1076}
++        store=ScriptedStore([('FROM meri_qualification.requests',original),("NOT (kind='model' AND slot=%s)",{'held':70}),('tool_run_allocations',{'max_cost_micro_usd':591}),("NOT (kind='model' AND slot=%s)",{'total':70}),('UPDATE meri_qualification.budget',None),('UPDATE meri_qualification.requests',None)])
++        result=ledger(store).settle_complete('collision',Settlement(BODY.sha256,'d'*64,PRICING_REVISION,'e'*64,123,7))
++        self.assertEqual(result,{'actual_micro_usd':522,'quarantined':True});self.assertFalse(store.steps)
++    def test_loader_is_explicit_and_migration_preserves_domain_identity(self):
++        root=Path(__file__).resolve().parents[4];tree=ast.parse((root/'apps/proxy/qualification/state/postgres_store.py').read_text())
++        cls=next(n for n in tree.body if isinstance(n,ast.ClassDef) and n.name=='PostgresStore')
++        methods={n.name:ast.get_source_segment((root/'apps/proxy/qualification/state/postgres_store.py').read_text(),n) for n in cls.body if isinstance(n,ast.FunctionDef)}
++        self.assertNotIn('0002',methods['migrate_new_database']);self.assertIn('0002_tool_budget.sql',methods['migrate_tool_budget'])
++        sql=(root/'apps/proxy/qualification/state/migrations/0002_tool_budget.sql').read_text()
++        self.assertIn("'model'::text AS kind",sql);self.assertIn("'tool'::text AS kind",sql);self.assertIn('charged_micro_usd',sql)
++
++if __name__=='__main__':unittest.main()

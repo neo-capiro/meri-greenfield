@@ -1,0 +1,15 @@
+{
+  "state": "uncommitted preliminary source; not accepted freeze",
+  "argv": [
+    "node",
+    "--test",
+    "/workspace/meri-g1-durable-budget-review-20261012/docs/qualification/candidates/g1-durable-budget-20261012/review/dispatch-independent.test.mjs"
+  ],
+  "exit_code": 1,
+  "source_sha256": {
+    "durable-tool-dispatch.mjs": "203849a146f90073c86f4b8419415092252ba68d22987c380478a77b2b940e89",
+    "postgres-tool-budget.mjs": "712eca5bb789cf0644e1295da245b804a40837d40684f1155fe6a81f0f08019e",
+    "tool-budget-binding.mjs": "95b2b77cddbfc7762f75bf15e72ba24a75d733acf0f42b3b7ad7845a5571258c",
+    "postgres-budget-store.mjs": "329145bdacbb5e3c9436db2e0622b9bbe6060a1e308f44aa5960e6593c010385"
+  }
+}

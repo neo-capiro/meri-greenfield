@@ -1,0 +1,456 @@
+{
+  "decision": "ACCEPT_SOURCE_ONLY",
+  "base": "1e6d430cf9c239caca4198aea42a762f13021cd5",
+  "sourceCommit": "1355c0ab9b0cb6162efef3b9d8ba4e3230a16ed9",
+  "sourceTree": "37336310a7773e93464e15404fb7907ae34dc09a",
+  "exactAuthorSourceMatches": {
+    "owner": {
+      "author": "357251ee531bf4da9778116090ec22a4a8ee27a3",
+      "exactSourceFiles": 4
+    },
+    "budget": {
+      "author": "d58a2b1c51c43420fa64c1036c509ab14d872996",
+      "exactSourceFiles": 13
+    }
+  },
+  "scopeLedger": {
+    "original": 139,
+    "selected": 96,
+    "deferred": 43,
+    "boundUnavailable": 14,
+    "selectedUnmapped": 82
+  },
+  "preservation": {
+    "originalFiles": 3215,
+    "unchangedOriginalFiles": 3209,
+    "originalPostgresTestBodies": 23
+  },
+  "receipts": [
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/baseline-gateway.json",
+      "exitCode": 0,
+      "sourceHead": "668d80f18d31d25d8d3c8fa19e5996a0938ddf26",
+      "reapedDescendants": 0
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/dependencies-contracts.json",
+      "exitCode": 0,
+      "sourceHead": "44b3bd39dc505a462ab3c4378f82545edc5b13c6",
+      "reapedDescendants": 0
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/dependencies-root.json",
+      "exitCode": 0,
+      "sourceHead": "203f7e9a957f32018e2176d51ee4af0fd10dfa00",
+      "reapedDescendants": 0
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/dependencies-service.json",
+      "exitCode": 0,
+      "sourceHead": "668d80f18d31d25d8d3c8fa19e5996a0938ddf26",
+      "reapedDescendants": 0
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/dependencies-state.json",
+      "exitCode": 0,
+      "sourceHead": "668d80f18d31d25d8d3c8fa19e5996a0938ddf26",
+      "reapedDescendants": 0
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/final-budget-independent.json",
+      "exitCode": 0,
+      "sourceHead": "1355c0ab9b0cb6162efef3b9d8ba4e3230a16ed9",
+      "reapedDescendants": 0
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/final-gateway.json",
+      "exitCode": 0,
+      "sourceHead": "1355c0ab9b0cb6162efef3b9d8ba4e3230a16ed9",
+      "reapedDescendants": 0
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/final-model-independent.json",
+      "exitCode": 0,
+      "sourceHead": "1355c0ab9b0cb6162efef3b9d8ba4e3230a16ed9",
+      "reapedDescendants": 0
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/final-model-source.json",
+      "exitCode": 0,
+      "sourceHead": "1355c0ab9b0cb6162efef3b9d8ba4e3230a16ed9",
+      "reapedDescendants": 0
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/final-public.json",
+      "exitCode": 0,
+      "sourceHead": "1355c0ab9b0cb6162efef3b9d8ba4e3230a16ed9",
+      "reapedDescendants": 3
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/final-root.json",
+      "exitCode": 0,
+      "sourceHead": "1355c0ab9b0cb6162efef3b9d8ba4e3230a16ed9",
+      "reapedDescendants": 2
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/integrated-owner26.json",
+      "exitCode": 0,
+      "sourceHead": "5412c83e746ca8eb5aa4f3a404154ee075bce603",
+      "reapedDescendants": 0
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/native-profile-author.json",
+      "exitCode": 0,
+      "sourceHead": "d7e63cd3ca3a39e988a94b6f457af9f7c04c56c4",
+      "reapedDescendants": 0
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/native-profile-independent.json",
+      "exitCode": 0,
+      "sourceHead": "d7e63cd3ca3a39e988a94b6f457af9f7c04c56c4",
+      "reapedDescendants": 0
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/source-preservation.json",
+      "exitCode": 0,
+      "sourceHead": "1355c0ab9b0cb6162efef3b9d8ba4e3230a16ed9",
+      "reapedDescendants": 0
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/ubuntu-independent.json",
+      "exitCode": 0,
+      "sourceHead": "44b3bd39dc505a462ab3c4378f82545edc5b13c6",
+      "reapedDescendants": 0
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/ubuntu301.json",
+      "exitCode": 0,
+      "sourceHead": "d7e63cd3ca3a39e988a94b6f457af9f7c04c56c4",
+      "reapedDescendants": 0
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/whitespace-all.json",
+      "exitCode": 2,
+      "sourceHead": "1355c0ab9b0cb6162efef3b9d8ba4e3230a16ed9",
+      "reapedDescendants": 0
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/whitespace-source.json",
+      "exitCode": 0,
+      "sourceHead": "1355c0ab9b0cb6162efef3b9d8ba4e3230a16ed9",
+      "reapedDescendants": 0
+    }
+  ],
+  "files": [
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/baseline-gateway.json",
+      "bytes": 1419,
+      "sha256": "68583001fbba69e8cc99f7a2fa96a5068df4371b3604700fbc46e9311930c8f3"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/baseline-gateway.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/baseline-gateway.stdout.bin",
+      "bytes": 8810,
+      "sha256": "d6296e1af711722d6dc02e853e196ec20236648ce76dda0ca362ac9eb0deaba3"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/dependencies-contracts.json",
+      "bytes": 1374,
+      "sha256": "369dacfb2d60db0540e3338c35837e0554b7d1c89e1b02bc70f360dde299ed8f"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/dependencies-contracts.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/dependencies-contracts.stdout.bin",
+      "bytes": 25,
+      "sha256": "1d41eb5f721bb9d5710254973769ef57dc59f277b97c8647bf6ffaff5426b4ba"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/dependencies-root.json",
+      "bytes": 1325,
+      "sha256": "fc420ce7bdfb7d7fbd926a74e249a2e4ee9a9da4d539b1be267214bae1abd567"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/dependencies-root.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/dependencies-root.stdout.bin",
+      "bytes": 25,
+      "sha256": "87ce98749cbda0c632c25e9c4963c21076562a49f92ed1e744dbc6bafbc85f82"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/dependencies-service.json",
+      "bytes": 1399,
+      "sha256": "87325d2a0d533c34f81374093c71b0035b67622be175b132708510a3932338fa"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/dependencies-service.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/dependencies-service.stdout.bin",
+      "bytes": 25,
+      "sha256": "eea091c3d2b5de342cf739d313b01ea8cacb89dbe65492f961d412dd00c39f1f"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/dependencies-state.json",
+      "bytes": 1392,
+      "sha256": "659b9b3e891f756a1fb2fb74f74ede0a88db94745d9ce534552f870d114d0dcb"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/dependencies-state.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/dependencies-state.stdout.bin",
+      "bytes": 28,
+      "sha256": "e5654f56396272b003be96826362043ea81f771622331925576ee1366dfcaa99"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/final-budget-independent.json",
+      "bytes": 1505,
+      "sha256": "fb9b5deae1a79b62cf59abca75fbc8d15d6e5a3713463003484fc8749ca9653b"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/final-budget-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/final-budget-independent.stdout.bin",
+      "bytes": 2732,
+      "sha256": "1bca378e85e2ef0fcfff647b512a8ce1c773232c013c675d98006ac4958801c3"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/final-gateway.json",
+      "bytes": 1523,
+      "sha256": "c39429acdf6357f3e796bc39e6684433075bfd760dd361430e82c0ccfaa3303c"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/final-gateway.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/final-gateway.stdout.bin",
+      "bytes": 11855,
+      "sha256": "8a20e47ae8199a6abec5b1898fb4fc946a9daa004b72445905ff9d7a3876b6ab"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/final-model-independent.json",
+      "bytes": 1387,
+      "sha256": "3181b173129a35e0fe4e0082a122fc3712d7fb0ae6e5ad7f0b17512e6e7648d0"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/final-model-independent.stderr.bin",
+      "bytes": 931,
+      "sha256": "8bb9210883e246b2d83291546e9fb4439e21e4b2dbb38afd0c1065be38e5c316"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/final-model-independent.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/final-model-source.json",
+      "bytes": 1314,
+      "sha256": "a4340ab70ab5477fb8ebc72eef9f8b66c44c59d24409a7891b3e7d258d409046"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/final-model-source.stderr.bin",
+      "bytes": 1491,
+      "sha256": "96f40d8a174f2082077074e99dce98061480bba675b44bdeff620792d6ef1dab"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/final-model-source.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/final-public.json",
+      "bytes": 1414,
+      "sha256": "f3cf2a4cc986186c0f3f1562f0c09f7ad05c43e5b643cd17a133dbb57b05ad75"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/final-public.stderr.bin",
+      "bytes": 832,
+      "sha256": "a5bed74e8271b4bed502d2d779b1766e28a92b798d5f5560230b37ebdcc9e5a2"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/final-public.stdout.bin",
+      "bytes": 1945,
+      "sha256": "9c199993e67da9fc9373f951e7dcc536da97038bb7ca39360f83c5c155440e17"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/final-root.json",
+      "bytes": 1318,
+      "sha256": "350ca83dfbd69e30990676d5e3d76170001be12f5f177a30fa1e96e9a253dd34"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/final-root.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/final-root.stdout.bin",
+      "bytes": 22960,
+      "sha256": "ff313542435c67f8a157b4587cdfacec33e7fbc531aef2c5a4ff2ed7fb61dd8e"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/integrated-owner26.json",
+      "bytes": 1315,
+      "sha256": "43b8a2dea32c5ddda93b4f40803d63b8c038b73a787da4b2bc13cb6acfe832c5"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/integrated-owner26.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/integrated-owner26.stdout.bin",
+      "bytes": 2663,
+      "sha256": "8450727749633b29c321ebe1a880865c34f70398db4beaa2be4eb79076a547ec"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/native-profile-author.json",
+      "bytes": 1301,
+      "sha256": "61ee2bd8ea624cb7a5cf2c24008d7d8ab7fcc8e768d930410cb17974f7367ca9"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/native-profile-author.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/native-profile-author.stdout.bin",
+      "bytes": 902,
+      "sha256": "153d7ea2aa6842d7d85b7b847f3b261153037353c7e3df622b236ec6bed23317"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/native-profile-independent.json",
+      "bytes": 1414,
+      "sha256": "a5003cfafa1ca3050443ddba2ab2358ded383bb6002904e5a6cb175f0541f09c"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/native-profile-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/native-profile-independent.stdout.bin",
+      "bytes": 3082,
+      "sha256": "f6fe4d78a48930a12ec407da247a581f151e7647a77e0d0b50d9ded5a5ee5048"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/review-ubuntu.py",
+      "bytes": 3228,
+      "sha256": "ec214b0e48451e966844c62c566bdb160a9ad07b7e421cae8996b493f5f00229"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/seal-evidence.py",
+      "bytes": 3868,
+      "sha256": "a476a933d65edea7aa751f7879c577a3f28104da8956ebf80015df49b4ab9cbb"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/source-preservation.json",
+      "bytes": 1310,
+      "sha256": "378a27cf9a395f1d08aed5b4d2a14acccc00a9e66ff9dc4c4027f2787bc6b1f0"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/source-preservation.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/source-preservation.stdout.bin",
+      "bytes": 4535,
+      "sha256": "51ebe15ce52b6d4194e2d9796d1fd591f8675a1aa2a7b26abffdb6dae2ed1352"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/ubuntu-independent.json",
+      "bytes": 1385,
+      "sha256": "3a382289229a901cc0cd94b5107bb9f857e85d9bda72bbe5956c92df65272e47"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/ubuntu-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/ubuntu-independent.stdout.bin",
+      "bytes": 5036,
+      "sha256": "0f797218240c979287a6992164c1ca8ed4a715dd631dbc864f6c6a3cc8044b3b"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/ubuntu301.json",
+      "bytes": 1315,
+      "sha256": "8f4ad32c0714fe9cdc530088acbab408f1c669e57e1de1e7e3d73175693f433c"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/ubuntu301.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/ubuntu301.stdout.bin",
+      "bytes": 25544,
+      "sha256": "c62b2a410f2491a3144a65a5b2b30afc0e9a8c125fa5c4751bbdb757d2f8e222"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/verify-source.py",
+      "bytes": 3770,
+      "sha256": "713f5abf57ad36df9bf746c309c1f89fa2b5dd9e10f7f48879a30e47c47d0629"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/whitespace-all.json",
+      "bytes": 1282,
+      "sha256": "9a275d5f78ca0ee6ac7ce74b9802220eaf4757398d323b123c4772d59564ae2a"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/whitespace-all.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/whitespace-all.stdout.bin",
+      "bytes": 1951,
+      "sha256": "24e1ae1bbc8a62ea318a8b2818e8ef7b1a0da81ee85e8ba79a06258f2fd90303"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/whitespace-source.json",
+      "bytes": 1363,
+      "sha256": "3dc11a37dd05559b783858e052c681a90ef69acac7ada10d6256dd5d03fc0ffc"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/whitespace-source.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/whitespace-source.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rawEvidenceWhitespace": "FULL_DIFF_EXIT_2_PRESERVED; source/report check PASS",
+  "runtime": "HOLD",
+  "database": "UNRUN",
+  "native": "UNRUN",
+  "image": "HOLD"
+}

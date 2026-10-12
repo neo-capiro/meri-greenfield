@@ -1,0 +1,512 @@
+{
+  "base": "1e6d430cf9c239caca4198aea42a762f13021cd5",
+  "candidate": "d58a2b1c51c43420fa64c1036c509ab14d872996",
+  "tree": "6d127cfcd443c748b246e05139533b23350736ed",
+  "source_patch_sha256": "fab07c5d1f2d9c35afe9ed963d9430d610bf4c3aca92c5fdae431222d0da42f7",
+  "checks": [
+    {
+      "name": "exact candidate HEAD",
+      "passed": true
+    },
+    {
+      "name": "clean author worktree",
+      "passed": true
+    },
+    {
+      "name": "only four approved existing files modified",
+      "passed": true
+    },
+    {
+      "name": "no deleted or renamed paths",
+      "passed": true
+    },
+    {
+      "name": "all new source paths allocated",
+      "passed": true
+    },
+    {
+      "name": "entire original gateway entry prefix exact",
+      "passed": true
+    },
+    {
+      "name": "real engine fixture inverse exactly reproduces original bytes",
+      "passed": true
+    },
+    {
+      "name": "all original real engine test method ASTs exact",
+      "passed": true
+    },
+    {
+      "name": "explicit loader inverse exactly reproduces original store",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: apps/control/qualification-sdk-fixture/service/package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: apps/control/qualification-sdk-fixture/service/package.json",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: apps/control/qualification-sdk-fixture/state/package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: apps/control/qualification-sdk-fixture/state/package.json",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: apps/control/qualification-temporal/package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: apps/control/qualification-temporal/package.json",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: apps/gateway/authorization/current-tool-authority.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: apps/gateway/catalog/runtime-catalog.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: apps/gateway/dispatch/dispatch-lifetime.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: apps/gateway/dispatch/memory-read-context.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: apps/gateway/dispatch/operation-context.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: apps/gateway/dispatch/operation-result.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: apps/gateway/dispatch/read-result-envelope.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: apps/gateway/dispatch/tool-dispatch.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: apps/gateway/test/authority-deadline.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: apps/gateway/test/fixtures.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: apps/gateway/test/gateway.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: apps/gateway/test/memory-context-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: apps/gateway/test/memory-context.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: apps/proxy/qualification/package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: apps/proxy/qualification/package.json",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: apps/proxy/qualification/state/migrations/0001_qualification_state.sql",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: apps/worker/qualification/package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: apps/worker/qualification/package.json",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: docs/qualification/candidates/image-remediation-20261011/retrieval-package.json",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: package.json",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/README.md",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/THIRD-PARTY-NOTICES.md",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/dist/browser.d.ts",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/dist/browser.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/dist/contracts.d.ts",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/dist/index.d.ts",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/dist/metadata.d.ts",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/dist/metadata.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/generate.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/meri.schema.json",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/package.json",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/qualification-sdk/fixture.schema.json",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/qualification-sdk/native-evidence.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/qualification-sdk/native-evidence.schema.json",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/qualification-sdk/validate.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/qualification-sdk/wire.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/retrieval-0.2/catalog.json",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/retrieval-0.2/catalog.schema.json",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/retrieval-0.2/common.schema.json",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/retrieval-0.2/data-search-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/retrieval-0.2/data-search.schema.json",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/retrieval-0.2/federal-market-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/retrieval-0.2/federal-market.schema.json",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/retrieval-0.2/mail-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/retrieval-0.2/mail.schema.json",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/retrieval-0.2/meeting-source-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/retrieval-0.2/meeting-source.schema.json",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/retrieval-0.2/memory-proposals-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/retrieval-0.2/memory-proposals.schema.json",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/retrieval-0.2/memory-review-policy.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/retrieval-0.2/operation-contracts.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/retrieval-0.2/operational-reads-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/retrieval-0.2/operational-reads.schema.json",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/retrieval-0.2/retrieval.schema.json",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/retrieval-0.2/skill.schema.json",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/retrieval-0.2/validate.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/test/boundaries.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/test/native-evidence-fixture.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/test/public-package.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/test/public-types.ts",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/test/retrieval-data-search.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/test/retrieval-federal-market.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/test/retrieval-mail.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/test/retrieval-meeting-source.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/test/retrieval-memory-binding.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/test/retrieval-memory-proposals.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/test/retrieval-memory-review-policy.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/test/retrieval-operational-reads.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/test/retrieval-r2.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/test/sdk-fixture-contract.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/test/sdk-fixture-wire.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/test/sdk-native-evidence.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/contracts/validate.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/ui-stream/package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "protected original byte equality: packages/ui-stream/package.json",
+      "passed": true
+    },
+    {
+      "name": "author source receipt verified: apps/gateway/budget/README.md",
+      "passed": true
+    },
+    {
+      "name": "author source receipt verified: apps/gateway/budget/durable-tool-dispatch.mjs",
+      "passed": true
+    },
+    {
+      "name": "author source receipt verified: apps/gateway/budget/postgres-budget-store.mjs",
+      "passed": true
+    },
+    {
+      "name": "author source receipt verified: apps/gateway/budget/postgres-tool-budget.mjs",
+      "passed": true
+    },
+    {
+      "name": "author source receipt verified: apps/gateway/budget/tool-budget-binding.mjs",
+      "passed": true
+    },
+    {
+      "name": "author source receipt verified: apps/gateway/index.mjs",
+      "passed": true
+    },
+    {
+      "name": "author source receipt verified: apps/gateway/test/durable-tool-budget.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "author source receipt verified: apps/gateway/test/postgres-tool-budget.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "author source receipt verified: apps/proxy/qualification/state/ledger.py",
+      "passed": true
+    },
+    {
+      "name": "author source receipt verified: apps/proxy/qualification/state/migrations/0002_tool_budget.sql",
+      "passed": true
+    },
+    {
+      "name": "author source receipt verified: apps/proxy/qualification/state/postgres_store.py",
+      "passed": true
+    },
+    {
+      "name": "author source receipt verified: apps/proxy/qualification/test/test_postgres_state.py",
+      "passed": true
+    },
+    {
+      "name": "author source receipt verified: apps/proxy/qualification/test/test_tool_budget_source.py",
+      "passed": true
+    }
+  ],
+  "protected_files": 85,
+  "original_engine_test_methods": 23,
+  "changed_source_files": [
+    {
+      "path": "apps/gateway/budget/README.md",
+      "bytes": 5761,
+      "sha256": "fdb6f3e161f71c109815fe7c95d596c47c63f3ace3441e9d66a1d6954be6b924"
+    },
+    {
+      "path": "apps/gateway/budget/durable-tool-dispatch.mjs",
+      "bytes": 2710,
+      "sha256": "cce93b9478b83b54941e3231b74c54093606a841220bc105962aaa85a96a7953"
+    },
+    {
+      "path": "apps/gateway/budget/postgres-budget-store.mjs",
+      "bytes": 2074,
+      "sha256": "329145bdacbb5e3c9436db2e0622b9bbe6060a1e308f44aa5960e6593c010385"
+    },
+    {
+      "path": "apps/gateway/budget/postgres-tool-budget.mjs",
+      "bytes": 9624,
+      "sha256": "948471649ac7f0ded182e2f5dc6ed2b64b4ac171a5809dd2a40564978190155e"
+    },
+    {
+      "path": "apps/gateway/budget/tool-budget-binding.mjs",
+      "bytes": 4161,
+      "sha256": "f04cfdb7d9f7bbbba27bb65536cc04cfbd431ddcece06fd70e7092c81a1a2a70"
+    },
+    {
+      "path": "apps/gateway/index.mjs",
+      "bytes": 2604,
+      "sha256": "7d65135ff62b319e628bca08417aaa1fe23e88056fc8e849ce2ad3499001e1f2"
+    },
+    {
+      "path": "apps/gateway/test/durable-tool-budget.test.mjs",
+      "bytes": 19710,
+      "sha256": "519dc900f33f5c46dc2fbd2d3021a58c8e1f759656c7875f10d0b441bc6765c4"
+    },
+    {
+      "path": "apps/gateway/test/postgres-tool-budget.test.mjs",
+      "bytes": 1833,
+      "sha256": "2e9a6f2f15bc78b57dd1bfa84beb2e8e124acb699294f340a878f0f3fc023407"
+    },
+    {
+      "path": "apps/proxy/qualification/state/ledger.py",
+      "bytes": 9682,
+      "sha256": "872c09d2a6ea98b578c1e0f1cbe2e96da1e8c28425dff47fedf0d99fd0bf4a14"
+    },
+    {
+      "path": "apps/proxy/qualification/state/migrations/0002_tool_budget.sql",
+      "bytes": 2391,
+      "sha256": "53d3933a440ed0801411d3ed544f4c554f397b3338acaad1ce1addcce4ef5809"
+    },
+    {
+      "path": "apps/proxy/qualification/state/postgres_store.py",
+      "bytes": 4729,
+      "sha256": "2914bc050535bf88cf1f297252f8b8771d3df5b4ceb303aa9f35ec1409389b9b"
+    },
+    {
+      "path": "apps/proxy/qualification/test/test_postgres_state.py",
+      "bytes": 20024,
+      "sha256": "53b81e46edc3562a365836281ad8885665b039f95a7b130603b3b972ca688ad7"
+    },
+    {
+      "path": "apps/proxy/qualification/test/test_tool_budget_source.py",
+      "bytes": 6367,
+      "sha256": "b1db126fea982f3e5ecac7b90ffe7f0ecbb7779b1bdfc1b3498e24bee5866c84"
+    }
+  ],
+  "modified_original_paths": [
+    "apps/gateway/index.mjs",
+    "apps/proxy/qualification/state/ledger.py",
+    "apps/proxy/qualification/state/postgres_store.py",
+    "apps/proxy/qualification/test/test_postgres_state.py"
+  ],
+  "all_passed": true
+}

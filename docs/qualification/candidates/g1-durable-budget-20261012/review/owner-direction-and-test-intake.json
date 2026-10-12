@@ -1,0 +1,47 @@
+{
+  "received_at_utc": "2026-10-12T04:19:06.371446+00:00",
+  "authority": "Root source implementation direction via collaboration; not runtime/build/spend authority",
+  "directions": [
+    "Concrete JavaScript PostgreSQL adapter consumed by actual gateway dispatch.",
+    "Trusted per-execute invocation ID separate from worker/model arguments.",
+    "Full RunBinding plus capability/policy binding.",
+    "Private0.2 manifest maxToolCalls and maxCostMicroUSD; do not substitute public maxTurns.",
+    "No invented prices; absence of explicit trusted operation-liability schedule refuses.",
+    "Shared aggregate accounting if toolUSD; centrally allocated source-only migration after proposal.",
+    "Replay safe denial acceptable; no result cache required.",
+    "Historical trusted settlement after revocation remains possible; unknown liabilities remain.",
+    "Existing exact-lock source-worktree read-only tests allowed; isolated npm ci --ignore-scripts if necessary.",
+    "Unknown historical aggregate $10 balance still prohibits provider calls."
+  ],
+  "awaiting": [
+    "Exact production path/migration allocation and frozen author candidate.",
+    "Actual DB/runtime tests remain unauthorized/UNRUN."
+  ],
+  "original_gateway_test_files": [
+    {
+      "path": "apps/gateway/test/authority-deadline.test.mjs",
+      "bytes": 5678,
+      "sha256": "4e8a9eac66b1481cbce30cec68274a25681026890688644ccdf28a78d0c81d28"
+    },
+    {
+      "path": "apps/gateway/test/fixtures.mjs",
+      "bytes": 5042,
+      "sha256": "53915bd72e3e7eb9a7a70219c06aa4359948a9c9abab91469fcfaaf1322f8a2c"
+    },
+    {
+      "path": "apps/gateway/test/gateway.test.mjs",
+      "bytes": 11834,
+      "sha256": "6f71caf19539fca672c1217df079e58a6ed772f91648536bfe3f45e8a2d5d0e4"
+    },
+    {
+      "path": "apps/gateway/test/memory-context-independent.test.mjs",
+      "bytes": 18589,
+      "sha256": "e478ec0ea725feb54003bfdd11a99d0b44303c920c16838a175b68be6fcf657a"
+    },
+    {
+      "path": "apps/gateway/test/memory-context.test.mjs",
+      "bytes": 12610,
+      "sha256": "675653ef2aac9de901f3bc2ab0280c38058b435835c5a4c808e564a7563a571d"
+    }
+  ]
+}

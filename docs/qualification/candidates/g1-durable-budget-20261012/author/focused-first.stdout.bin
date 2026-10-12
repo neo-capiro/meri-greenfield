@@ -1,0 +1,35 @@
+✔ actual dispatcher uses persistent SQL slot and settles fixed charge once (16.090355ms)
+✔ lost reserve commit acknowledgement blocks handler and retains UNKNOWN on fresh owner replay (3.411045ms)
+✔ lost settlement acknowledgement and cleanup preserve terminal charge (3.555732ms)
+✔ trusted tenantId substitution denies before handler (0.547603ms)
+✔ trusted actorId substitution denies before handler (0.397047ms)
+✔ trusted conversationId substitution denies before handler (0.45283ms)
+✔ trusted runId substitution denies before handler (0.411138ms)
+✔ trusted attemptId substitution denies before handler (1.05814ms)
+✔ trusted workerId substitution denies before handler (0.768195ms)
+✔ trusted writerFence substitution denies before handler (0.706121ms)
+✔ wrong capability and policy mapping refuse before handler (1.339302ms)
+✔ expired durable admission denies effect (1.678902ms)
+✔ revoked durable admission denies effect (1.043868ms)
+✔ stale durable admission denies effect (1.123068ms)
+✔ schedule durable admission denies effect (1.135886ms)
+✔ missing-binding durable admission denies effect (0.985731ms)
+✔ shared global model UNKNOWN liability refuses over-cap and allows exact bound (2.866467ms)
+✔ shared run model settled and UNKNOWN liability enforce installed run cap (3.154129ms)
+✔ narrow capability cost and private tool count cannot be widened (4.886702ms)
+✔ missing schedule refuses; trusted JSON rejects object/getter without executing it (0.305189ms)
+✔ historical exact settlement survives revocation and cleanup does not grant authority (1.404971ms)
+✔ default source-disabled composition creates no database work or handler call (0.478489ms)
+✔ uncertain BEGIN evicts connection and never retries (1.931542ms)
+✔ uncertain ROLLBACK evicts connection and never retries (0.245258ms)
+✔ uncertain COMMIT evicts connection and never retries (0.28583ms)
+✔ release error preserves original commit uncertainty (1.214655ms)
+✔ database time is sampled only after budget lock acknowledgement (5.123628ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 923.441674

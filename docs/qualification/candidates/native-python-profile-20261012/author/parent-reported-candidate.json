@@ -1,0 +1,39 @@
+{
+  "candidate": {
+    "role": "EXISTING_ASTRAL_CPYTHON_3_11_15_X64_01",
+    "privateExecutablePathPublished": false,
+    "executableBytes": null,
+    "executableSha256": null,
+    "distributorBuildProvenance": null,
+    "reportedFileVersion": "3.11.15",
+    "reportedProductVersion": "3.11.15",
+    "reportedRegistration": {
+      "owner": "HKCU Python Astral",
+      "sysVersion": "3.11.15",
+      "sysArchitecture": "64bit"
+    },
+    "reportedPlainFixedDriveRoles": [
+      "installation-root",
+      "executable",
+      "Lib",
+      "DLLs"
+    ],
+    "reportedNoReparse": true,
+    "reportedCandidatesExamined": 15,
+    "reportedCommandsExamined": 7,
+    "reportedRegistrationRootsExamined": 3,
+    "reportedInterpreterExecutions": 0,
+    "actualRuntimeIdentityVerified": false,
+    "hostIdentityPrivate": null,
+    "hostIdentityVerified": false
+  },
+  "receipt": {
+    "source": "Parent report; private ZIP not materialized or independently decoded",
+    "libraryFileId": "libfile_ee8293e64a0481919b5bc74589b86ae1",
+    "backingFileId": "file_000000002e4081fd98254cda1d10f790",
+    "bytes": 12009,
+    "sha256": "a5f05e1ae1087d9d36687a149f2e602c874ef61311f3352c64552eac79cc3ecd",
+    "materialized": false,
+    "libraryRetried": false
+  }
+}

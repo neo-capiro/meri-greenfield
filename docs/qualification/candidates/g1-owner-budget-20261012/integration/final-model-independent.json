@@ -1,0 +1,36 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "docs/qualification/candidates/g1-durable-budget-20261012/review/model-accounting-independent.py",
+    "/workspace/meri-g1-owner-budget-20261012",
+    "-v"
+  ],
+  "cwd": "/workspace/meri-g1-owner-budget-20261012",
+  "sourceHead": "1355c0ab9b0cb6162efef3b9d8ba4e3230a16ed9",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T04:46:10.828466+00:00",
+  "durationSeconds": 0.122,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 56004,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/final-model-independent.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/final-model-independent.stderr.bin",
+      "bytes": 931,
+      "sha256": "8bb9210883e246b2d83291546e9fb4439e21e4b2dbb38afd0c1065be38e5c316"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

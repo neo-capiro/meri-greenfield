@@ -1,0 +1,29 @@
+{
+  "command": [
+    "env",
+    "G1_OWNER_SOURCE_ROOT=/workspace/meri-g1-runtime-owner-20261012",
+    "node",
+    "--test",
+    "docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-g1-runtime-owner-review-20261012",
+  "startUnixSeconds": 1791778890.3211732,
+  "elapsedSeconds": 1.0181734561920166,
+  "exitCode": 1,
+  "ownedPidAndGroup": 45989,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "reapedDescendants": [],
+  "streams": {
+    "stdout": {
+      "path": "prefreeze-owner21.stdout.txt",
+      "bytes": 7222,
+      "sha256": "3026c3cb7f638d1ec737e6fb696a56b4720122353329f4adcfc1c3dfee185d85"
+    },
+    "stderr": {
+      "path": "prefreeze-owner21.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

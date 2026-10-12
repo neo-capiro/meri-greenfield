@@ -1,0 +1,205 @@
+{
+  "verdict": "PASS",
+  "base": "1e6d430cf9c239caca4198aea42a762f13021cd5",
+  "final": "357251ee531bf4da9778116090ec22a4a8ee27a3",
+  "finalTree": "461a8fd4bf3f8ca40db4b4de992561e5a799778f",
+  "authorWorktreeClean": true,
+  "baseFiles": 3215,
+  "unchangedBaseFiles": 3213,
+  "changedBaseFiles": [
+    "apps/control/qualification-sdk-fixture/service/README.md",
+    "apps/control/qualification-sdk-fixture/service/control.mjs"
+  ],
+  "newFiles": [
+    "apps/control/qualification-sdk-fixture/service/run-stop.mjs",
+    "apps/control/qualification-sdk-fixture/service/test/run-stop.test.mjs",
+    "docs/coordination/reports/MERI-G1-RUNTIME-OWNER-20261012.md",
+    "docs/coordination/tasks/MERI-G1-RUNTIME-OWNER-20261012.md",
+    "docs/qualification/candidates/g1-runtime-owner-20261012/author/.gitattributes",
+    "docs/qualification/candidates/g1-runtime-owner-20261012/author/admission-before-repair.stderr.txt",
+    "docs/qualification/candidates/g1-runtime-owner-20261012/author/admission-before-repair.stdout.txt",
+    "docs/qualification/candidates/g1-runtime-owner-20261012/author/admission-repaired.stderr.txt",
+    "docs/qualification/candidates/g1-runtime-owner-20261012/author/admission-repaired.stdout.txt",
+    "docs/qualification/candidates/g1-runtime-owner-20261012/author/discovery-sources.json",
+    "docs/qualification/candidates/g1-runtime-owner-20261012/author/first.stderr.txt",
+    "docs/qualification/candidates/g1-runtime-owner-20261012/author/first.stdout.txt",
+    "docs/qualification/candidates/g1-runtime-owner-20261012/author/focused.stderr.txt",
+    "docs/qualification/candidates/g1-runtime-owner-20261012/author/focused.stdout.txt",
+    "docs/qualification/candidates/g1-runtime-owner-20261012/author/root.stderr.txt",
+    "docs/qualification/candidates/g1-runtime-owner-20261012/author/root.stdout.txt",
+    "docs/qualification/candidates/g1-runtime-owner-20261012/author/source-preservation.json"
+  ],
+  "files": {
+    "apps/control/qualification-sdk-fixture/service/README.md": {
+      "bytes": 12033,
+      "sha256": "ade227112efae5da0b08928b027cc5c217819a0681299277ad20cbbdad0ed7e7",
+      "gitBlob": "731053df3b2df2582d1c68a819006bd902e4d989"
+    },
+    "apps/control/qualification-sdk-fixture/service/control.mjs": {
+      "bytes": 3738,
+      "sha256": "76f76b7f6231d91a25d09df787d1dc629d68d204c884a8c258d733fcbbadf74e",
+      "gitBlob": "7f0cf5754b816abb56d74ac2d92c3bf96346277e"
+    },
+    "apps/control/qualification-sdk-fixture/service/run-stop.mjs": {
+      "bytes": 6757,
+      "sha256": "5be0412841282d19bed28fac0b41556ac012bbdff4523e4e2fac45c43446623b",
+      "gitBlob": "023e802d6e05e56176b48e836a9b87e1907e0e9e"
+    },
+    "apps/control/qualification-sdk-fixture/service/test/run-stop.test.mjs": {
+      "bytes": 8426,
+      "sha256": "c7af34c090138e19eb0c5c6f53938b7557dee3eb287449a201f03b5f7da9e0d8",
+      "gitBlob": "d6753aecc0282602bb95ba28c0d138060c8d888d"
+    },
+    "apps/control/qualification-sdk-fixture/service/handlers.mjs": {
+      "bytes": 8840,
+      "sha256": "da2790cf10c93209df670997cfc0666f102d9afad3ca3cca181eab37234b6510",
+      "gitBlob": "84224f9ca8aca1a1a6e1bfefbaba51bf83034860"
+    },
+    "apps/control/qualification-sdk-fixture/state/registry.mjs": {
+      "bytes": 18644,
+      "sha256": "59f302b9e0f3760b28ffe9a2ff59a68438ec7e731d71ce88a61b48d3fffc2720",
+      "gitBlob": "24a7c305b874db63645900fd755cf42426ff625b"
+    },
+    "apps/control/qualification-sdk-fixture/state/revocation.mjs": {
+      "bytes": 2623,
+      "sha256": "cd020d2874f14db039dc84cd299762246697ad153c5da6d45d47ce6acd145154",
+      "gitBlob": "a1750497f6e548f9a88fa97ac3b7b4d75652b3c5"
+    },
+    "apps/control/qualification-sdk-fixture/state/errors.mjs": {
+      "bytes": 982,
+      "sha256": "4bc40e78cb615881b5e396a3967944150d0a1fd0a3298f34494782af27c7041d",
+      "gitBlob": "a03e62e09ad714b3c49535bfe1d7453520cb44e4"
+    },
+    "apps/control/qualification-sdk-fixture/state/store.mjs": {
+      "bytes": 5512,
+      "sha256": "6285aa361434f63060801446ebbea16868fbe59344a56c24e27c57403d2796a1",
+      "gitBlob": "429f611c9e2028756258fd32c1bf01011c273d82"
+    },
+    "apps/control/qualification-sdk-fixture/ingress/index.mjs": {
+      "bytes": 6291,
+      "sha256": "e621a4008c83153160c4d2a776b1e736b2bfb786174dc0250a3f7b25cc12b2e9",
+      "gitBlob": "a573348046be18279f4e9dee85f1dc3323b18257"
+    },
+    "apps/control/qualification-sdk-fixture/ingress/dispatch.mjs": {
+      "bytes": 3788,
+      "sha256": "b869c670748e13e963265a3ab2df512040c1c9c3fa5336266e7cc2f653965078",
+      "gitBlob": "424a8d9003b9f37583286f039381c15eac6a899b"
+    }
+  },
+  "receipts": {
+    "baseline-control-pipeline.json": {
+      "exitCode": 0,
+      "counts": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "skipped": 0
+      },
+      "ownedProcessGroupAbsent": true,
+      "externalTimeout": false
+    },
+    "baseline-owner21.json": {
+      "exitCode": 1,
+      "counts": {
+        "tests": 21,
+        "pass": 1,
+        "fail": 20,
+        "skipped": 0
+      },
+      "ownedProcessGroupAbsent": true,
+      "externalTimeout": false
+    },
+    "final-author-original64.json": {
+      "exitCode": 0,
+      "counts": {
+        "tests": 64,
+        "pass": 64,
+        "fail": 0,
+        "skipped": 0
+      },
+      "ownedProcessGroupAbsent": true,
+      "externalTimeout": false
+    },
+    "final-owner26.json": {
+      "exitCode": 0,
+      "counts": {
+        "tests": 26,
+        "pass": 26,
+        "fail": 0,
+        "skipped": 0
+      },
+      "ownedProcessGroupAbsent": true,
+      "externalTimeout": false
+    },
+    "final-prior-independent83.json": {
+      "exitCode": 0,
+      "counts": {
+        "tests": 83,
+        "pass": 83,
+        "fail": 0,
+        "skipped": 0
+      },
+      "ownedProcessGroupAbsent": true,
+      "externalTimeout": false
+    },
+    "final-root244.json": {
+      "exitCode": 0,
+      "counts": {
+        "tests": 244,
+        "pass": 244,
+        "fail": 0,
+        "skipped": 0
+      },
+      "ownedProcessGroupAbsent": true,
+      "externalTimeout": false
+    },
+    "prefreeze-owner21-corrected.json": {
+      "exitCode": 1,
+      "counts": {
+        "tests": 21,
+        "pass": 20,
+        "fail": 1,
+        "skipped": 0
+      },
+      "ownedProcessGroupAbsent": true,
+      "externalTimeout": false
+    },
+    "prefreeze-owner21.json": {
+      "exitCode": 1,
+      "counts": {
+        "tests": 21,
+        "pass": 16,
+        "fail": 5,
+        "skipped": 0
+      },
+      "ownedProcessGroupAbsent": true,
+      "externalTimeout": false
+    },
+    "prefreeze-owner24.json": {
+      "exitCode": 0,
+      "counts": {
+        "tests": 24,
+        "pass": 24,
+        "fail": 0,
+        "skipped": 0
+      },
+      "ownedProcessGroupAbsent": true,
+      "externalTimeout": false
+    },
+    "prefreeze-owner26.json": {
+      "exitCode": 0,
+      "counts": {
+        "tests": 26,
+        "pass": 26,
+        "fail": 0,
+        "skipped": 0
+      },
+      "ownedProcessGroupAbsent": true,
+      "externalTimeout": false
+    }
+  },
+  "databaseEngine": "UNRUN",
+  "nativeRuntime": "UNRUN",
+  "workerTls": "SIMULATED_ONLY",
+  "objectStore": "SCRIPTED_LOCAL_ONLY"
+}

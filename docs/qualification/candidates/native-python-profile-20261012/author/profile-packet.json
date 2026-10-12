@@ -1,0 +1,140 @@
+{
+  "schema": "meri.native-python-profile-proposal/1",
+  "status": "INCOMPLETE_SOURCE_REVIEW_ONLY_HOLD_EXECUTION",
+  "baseCommit": "1e6d430cf9c239caca4198aea42a762f13021cd5",
+  "candidate": {
+    "role": "EXISTING_ASTRAL_CPYTHON_3_11_15_X64_01",
+    "privateExecutablePathPublished": false,
+    "executableBytes": null,
+    "executableSha256": null,
+    "distributorBuildProvenance": null,
+    "reportedFileVersion": "3.11.15",
+    "reportedProductVersion": "3.11.15",
+    "reportedRegistration": {
+      "owner": "HKCU Python Astral",
+      "sysVersion": "3.11.15",
+      "sysArchitecture": "64bit"
+    },
+    "reportedPlainFixedDriveRoles": [
+      "installation-root",
+      "executable",
+      "Lib",
+      "DLLs"
+    ],
+    "reportedNoReparse": true,
+    "reportedCandidatesExamined": 15,
+    "reportedCommandsExamined": 7,
+    "reportedRegistrationRootsExamined": 3,
+    "reportedInterpreterExecutions": 0,
+    "actualRuntimeIdentityVerified": false,
+    "hostIdentityPrivate": null,
+    "hostIdentityVerified": false
+  },
+  "receipt": {
+    "source": "Parent report; private ZIP not materialized or independently decoded",
+    "libraryFileId": "libfile_ee8293e64a0481919b5bc74589b86ae1",
+    "backingFileId": "file_000000002e4081fd98254cda1d10f790",
+    "bytes": 12009,
+    "sha256": "a5f05e1ae1087d9d36687a149f2e602c874ef61311f3352c64552eac79cc3ecd",
+    "materialized": false,
+    "libraryRetried": false
+  },
+  "nextAction": {
+    "kind": "one-ancestor-metadata-diagnostic",
+    "source": {
+      "path": "docs/qualification/candidates/native-ancestor-diagnosis-20261012/inspect-ancestor-metadata.py",
+      "bytes": 6297,
+      "sha256": "9514b8e8ad0aff24e1eea7e782dd32178d856011fafcb750ce2c0f9a715c6efd"
+    },
+    "argv": [
+      "<EXACT_PARENT_PRIVATE_PREVERIFIED_EXISTING_CANDIDATE>",
+      "-I",
+      "-B",
+      "-S",
+      "<EXACT_PRIVATE_REVIEWED_ANCESTOR_SCRIPT_PATH>",
+      "--repository",
+      "<EXACT_ORIGINAL_PRIVATE_REPOSITORY>",
+      "--original-output",
+      "<EXACT_ORIGINAL_PRIVATE_OUTPUT_ARGUMENT>"
+    ],
+    "argvComplete": false,
+    "cwdPrivate": null,
+    "cooperativeSeconds": 10,
+    "externalSeconds": 15,
+    "sourceStdoutBytesMaximum": 32768,
+    "sourceStderrBytesMaximum": null,
+    "proposedExternalStderrBytesMaximum": 32768,
+    "stderrPolicyReviewed": false,
+    "attempts": 1,
+    "bodyReads": 0,
+    "writes": 0,
+    "children": 0,
+    "sourceChecksExecutableIdentity": false,
+    "ioCounterScope": "Diagnostic application counters only: no explicit target file-body reads, filesystem writes or child creation. Excludes interpreter startup, imports, DLL loading and implicit runtime I/O.",
+    "inferenceLimits": [
+      "-I -B -S does not authenticate executable/loaded runtime or prove zero startup/runtime reads.",
+      "Metadata predicates do not establish hostile-filesystem race safety.",
+      "Cooperative timeout does not interrupt a blocked native syscall; external supervision remains required."
+    ]
+  },
+  "supervisor": {
+    "sourceSha256": null,
+    "sourceBytes": null,
+    "exactInvocation": null,
+    "privateReceiptSlot": null,
+    "reviewed": false,
+    "require": [
+      "pid-and-creation-identity",
+      "exit-code",
+      "elapsed-time",
+      "both-stream-EOFs",
+      "timeout",
+      "overflow",
+      "kill",
+      "physical-exit",
+      "raw-stream-sizes-and-hashes",
+      "executable-script-supervisor-argv-identities"
+    ]
+  },
+  "broaderMetadata": {
+    "source": {
+      "path": "docs/qualification/candidates/native-capture-diagnosis-20261012/inspect-local-metadata.py",
+      "bytes": 9447,
+      "sha256": "3780982e6906e6798232d9a7d7f1c5efa07f6dd7b9a25356976a2a73ed026bd3"
+    },
+    "separateAuthorityRequired": true,
+    "cooperativeSeconds": 10,
+    "sourceStdoutBytesMaximum": 1048576,
+    "argumentMode": "metadata",
+    "automatic": false
+  },
+  "selectedInventory": {
+    "source": {
+      "path": "scripts/qualification/worker_runner_inventory.py",
+      "bytes": 13224,
+      "sha256": "7615e26a5d038ff2fa054cde3cdb04077def5636874f848c97e050dae9df03e9"
+    },
+    "separateAuthorityRequired": true,
+    "cooperativeSeconds": 60,
+    "maximumFileBytes": 16777216,
+    "maximumTotalBytes": 268435456,
+    "fullRuntimeClosure": false
+  },
+  "authority": {
+    "executionApproved": false,
+    "collectorApproved": false,
+    "awsCliApproved": false,
+    "buildApproved": false,
+    "installationApproved": false,
+    "pathRelaxationApproved": false,
+    "automaticFollowup": false
+  },
+  "acceptance": {
+    "profileSourceReviewed": false,
+    "executableQualified": false,
+    "runnerQualified": false,
+    "buildAuthorized": false,
+    "runtimeAccepted": false,
+    "g1Accepted": false
+  }
+}

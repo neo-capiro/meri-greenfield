@@ -1,0 +1,86 @@
+✖ actual dispatcher consumes concrete SQL reservation and settlement once (11.834747ms)
+✖ fresh adapter and reservation identity cannot replay settled invocation (2.606345ms)
+✖ parallel same invocation has one handler and one debit (4.196814ms)
+✖ lost reserve COMMIT acknowledgement retains UNKNOWN and suppresses effect (2.720116ms)
+✖ mixed model/tool holds enforce global exact bound without counting settled twice (1.837861ms)
+✖ installed run cap includes settled and unknown model liability (1.846043ms)
+✔ database revocation/expiry/stale fence blocks actual effect despite fresh synthetic gateway claims (4.917697ms)
+✔ trusted binding substitution cannot mutate admitted allocation (0.598659ms)
+✖ late reserve after deadline keeps hold and never starts handler (11.163419ms)
+✔ default composition stays disabled before any SQL or handler (0.862395ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 3
+ℹ fail 7
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 894.505831
+
+✖ failing tests:
+
+test at docs/qualification/candidates/g1-durable-budget-20261012/review/dispatch-independent.test.mjs:54:1
+✖ actual dispatcher consumes concrete SQL reservation and settlement once (11.834747ms)
+  GatewayDenied: BUDGET_UNCERTAIN
+      at safeFailure (file:///workspace/meri-g1-durable-budget-20261012/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at Object.execute (file:///workspace/meri-g1-durable-budget-20261012/apps/gateway/dispatch/tool-dispatch.mjs:95:13)
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-durable-budget-review-20261012/docs/qualification/candidates/g1-durable-budget-20261012/review/dispatch-independent.test.mjs:54:126)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at docs/qualification/candidates/g1-durable-budget-20261012/review/dispatch-independent.test.mjs:55:1
+✖ fresh adapter and reservation identity cannot replay settled invocation (2.606345ms)
+  GatewayDenied: BUDGET_UNCERTAIN
+      at safeFailure (file:///workspace/meri-g1-durable-budget-20261012/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at Object.execute (file:///workspace/meri-g1-durable-budget-20261012/apps/gateway/dispatch/tool-dispatch.mjs:95:13)
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-durable-budget-review-20261012/docs/qualification/candidates/g1-durable-budget-20261012/review/dispatch-independent.test.mjs:55:126)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-durable-budget-20261012/review/dispatch-independent.test.mjs:56:1
+✖ parallel same invocation has one handler and one debit (4.196814ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///workspace/meri-g1-durable-budget-review-20261012/docs/qualification/candidates/g1-durable-budget-20261012/review/dispatch-independent.test.mjs:56:170)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-durable-budget-20261012/review/dispatch-independent.test.mjs:57:1
+✖ lost reserve COMMIT acknowledgement retains UNKNOWN and suppresses effect (2.720116ms)
+  TypeError: Cannot read properties of undefined (reading 'state')
+      at TestContext.<anonymous> (file:///workspace/meri-g1-durable-budget-review-20261012/docs/qualification/candidates/g1-durable-budget-20261012/review/dispatch-independent.test.mjs:57:300)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-durable-budget-20261012/review/dispatch-independent.test.mjs:58:1
+✖ mixed model/tool holds enforce global exact bound without counting settled twice (1.837861ms)
+  GatewayDenied: BUDGET_UNCERTAIN
+      at safeFailure (file:///workspace/meri-g1-durable-budget-20261012/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at Object.execute (file:///workspace/meri-g1-durable-budget-20261012/apps/gateway/dispatch/tool-dispatch.mjs:95:13)
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-durable-budget-review-20261012/docs/qualification/candidates/g1-durable-budget-20261012/review/dispatch-independent.test.mjs:58:546)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-durable-budget-20261012/review/dispatch-independent.test.mjs:59:1
+✖ installed run cap includes settled and unknown model liability (1.846043ms)
+  GatewayDenied: BUDGET_UNCERTAIN
+      at safeFailure (file:///workspace/meri-g1-durable-budget-20261012/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at Object.execute (file:///workspace/meri-g1-durable-budget-20261012/apps/gateway/dispatch/tool-dispatch.mjs:95:13)
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-durable-budget-review-20261012/docs/qualification/candidates/g1-durable-budget-20261012/review/dispatch-independent.test.mjs:59:513)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-durable-budget-20261012/review/dispatch-independent.test.mjs:62:1
+✖ late reserve after deadline keeps hold and never starts handler (11.163419ms)
+  GatewayDenied: BUDGET_UNCERTAIN
+      at safeFailure (file:///workspace/meri-g1-durable-budget-20261012/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at Object.execute (file:///workspace/meri-g1-durable-budget-20261012/apps/gateway/dispatch/tool-dispatch.mjs:95:13)

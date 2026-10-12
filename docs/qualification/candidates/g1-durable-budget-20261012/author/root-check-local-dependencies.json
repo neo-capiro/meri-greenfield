@@ -1,0 +1,15 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "check"
+  ],
+  "cwd": "/workspace/meri-g1-durable-budget-20261012",
+  "exit": 0,
+  "seconds": 5.488847255706787,
+  "timedOut": false,
+  "pid": 53005,
+  "reaped": true,
+  "stdoutSha256": "0ccc43a74e50e106084953f8ffde0234f4f3b0f551726414b428da0bf22ab29b",
+  "stderrSha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+}

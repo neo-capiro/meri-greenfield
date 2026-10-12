@@ -1,0 +1,12 @@
+{
+  "state": "pre-freeze source",
+  "argv": [
+    "python3",
+    "-B",
+    "/workspace/meri-g1-durable-budget-review-20261012/docs/qualification/candidates/g1-durable-budget-20261012/review/model-accounting-independent.py",
+    "/workspace/meri-g1-durable-budget-20261012",
+    "-v"
+  ],
+  "exit_code": 0,
+  "engine": "scripted SQL rows only; actual model ledger and integer liability; no DB driver/native/provider"
+}

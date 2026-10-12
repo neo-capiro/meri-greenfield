@@ -1,0 +1,68 @@
+{
+  "baseCommit": "1e6d430cf9c239caca4198aea42a762f13021cd5",
+  "previousFreeze": "2965a26f63d38330455cdfd9cefc0b6fe002a663",
+  "allBaseTrackedFilesUnchanged": true,
+  "selfExcluded": true,
+  "files": [
+    {
+      "path": "docs/qualification/candidates/native-python-profile-20261012/author/check-packet.mjs",
+      "bytes": 4253,
+      "sha256": "36adfc85972a223fa971f96fd5856631d6595cefc191879f587cadbc56b3cba4"
+    },
+    {
+      "path": "docs/qualification/candidates/native-python-profile-20261012/author/checks-final.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-python-profile-20261012/author/checks-final.stdout.json",
+      "bytes": 902,
+      "sha256": "153d7ea2aa6842d7d85b7b847f3b261153037353c7e3df622b236ec6bed23317"
+    },
+    {
+      "path": "docs/qualification/candidates/native-python-profile-20261012/author/checks-host-correction.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-python-profile-20261012/author/checks-host-correction.stdout.json",
+      "bytes": 902,
+      "sha256": "153d7ea2aa6842d7d85b7b847f3b261153037353c7e3df622b236ec6bed23317"
+    },
+    {
+      "path": "docs/qualification/candidates/native-python-profile-20261012/author/checks.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-python-profile-20261012/author/checks.stdout.json",
+      "bytes": 902,
+      "sha256": "153d7ea2aa6842d7d85b7b847f3b261153037353c7e3df622b236ec6bed23317"
+    },
+    {
+      "path": "docs/qualification/candidates/native-python-profile-20261012/author/parent-reported-candidate.json",
+      "bytes": 1247,
+      "sha256": "9b904abd3a61cbc9c0eea14fa467ed2aa529f52ff0cad1cbe4423f0ef74a0309"
+    },
+    {
+      "path": "docs/qualification/candidates/native-python-profile-20261012/author/profile-packet.json",
+      "bytes": 4693,
+      "sha256": "87d9c17d1cfb28c28fe24013f0015fa4cd7092f12fc676a3c2fd0feb35ce4d50"
+    },
+    {
+      "path": "docs/qualification/candidates/native-python-profile-20261012/author/source-identities.json",
+      "bytes": 1332,
+      "sha256": "7c5e75de8e3eab3a528e7ff183a473c7e27a574c379b0e4a192d3f5afab6dfce"
+    },
+    {
+      "path": "docs/coordination/reports/MERI-NATIVE-PYTHON-PROFILE-20261012.md",
+      "bytes": 7468,
+      "sha256": "2cb472203065af70a2f83bec693bdfc206676f52f390e58b5985c4f6c5ac5a59"
+    },
+    {
+      "path": "docs/coordination/tasks/MERI-NATIVE-PYTHON-PROFILE-20261012.md",
+      "bytes": 2012,
+      "sha256": "2c6733554aa518440bf6c34724dbf68668523ec1cd79acf56d8c2e6b3be46c6d"
+    }
+  ]
+}

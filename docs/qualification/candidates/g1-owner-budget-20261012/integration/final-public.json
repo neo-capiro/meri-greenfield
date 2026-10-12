@@ -1,0 +1,49 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "check",
+    "--prefix",
+    "packages/contracts"
+  ],
+  "cwd": "/workspace/meri-g1-owner-budget-20261012",
+  "sourceHead": "1355c0ab9b0cb6162efef3b9d8ba4e3230a16ed9",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T04:46:32.573044+00:00",
+  "durationSeconds": 3.239,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 56376,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 56413,
+      "status": 0
+    },
+    {
+      "pid": 56507,
+      "status": 0
+    },
+    {
+      "pid": 56526,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/final-public.stdout.bin",
+      "bytes": 1945,
+      "sha256": "9c199993e67da9fc9373f951e7dcc536da97038bb7ca39360f83c5c155440e17"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/final-public.stderr.bin",
+      "bytes": 832,
+      "sha256": "a5bed74e8271b4bed502d2d779b1766e28a92b798d5f5560230b37ebdcc9e5a2"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

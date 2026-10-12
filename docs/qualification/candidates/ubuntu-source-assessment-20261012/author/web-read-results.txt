@@ -1,0 +1,86 @@
+Internal Error ()
+citeturn67view0 [wordlim: 200] Source: open({"ref_id":"https://ubuntu.com/security/cves/CVE-2026-88647.json","lineno":null}); Total lines: 1
+L0: Failed to fetch https://ubuntu.com/security/cves/CVE-2026-88647.json: TimeoutError
+--------------------------------------------------------------------------------
+Internal Error ()
+citeturn67view1 [wordlim: 200] Source: open({"ref_id":"https://archive.ubuntu.com/ubuntu/project/ubuntu-archive-keyring.gpg","lineno":null}); Total lines: 1
+L0: Failed to fetch https://archive.ubuntu.com/ubuntu/project/ubuntu-archive-keyring.gpg: (400) Unsupported content-type: application/pgp-signature
+--------------------------------------------------------------------------------
+Internal Error ()
+citeturn67view2 [wordlim: 200] Source: open({"ref_id":"https://ubuntu.com/security/docs/security-updates/vex/","lineno":null}); Total lines: 1
+L0: Failed to fetch https://ubuntu.com/security/docs/security-updates/vex/: (404) Not Found
+
+ (https://ubuntu.com/security/cves/CVE-2026-52490.json)
+citeturn68view0 [wordlim: 200] Crawled: last week; Content type: application/json; Source: open({"ref_id":"https://ubuntu.com/security/cves/CVE-2026-52490.json","lineno":null}); Total lines: 1
+L0: {"bugs":[""],"codename":null,"cvss3":null,"description":"\nAn issue in libtiff 85f2ac8e0b01cb7db2bbecf4a3b891bdbef67938 allows an\nattacker to execute arbitrary code via the process_command_opts() function\nin tools/tiffcrop.c","id":"CVE-2026-52490","impact":null,"mitigation":"","notes":[],"notices":[],"notices_ids":[],"packages":[],"patches":{},"priority":"medium","published":"2026-08-24T21:17:00","references":["https://www.cve.org/CVERecord?id=CVE-2026-52490"],"status":"active","tags":{},"ubuntu_description":"","updated_at":"2026-09-02T21:18:16.918232+00:00"}
+--------------------------------------------------------------------------------
+Internal Error ()
+citeturn68view1 [wordlim: 200] Source: open({"ref_id":"https://ubuntu.com/security/cves/CVE-2026-107778.json","lineno":null}); Total lines: 1
+L0: Failed to fetch https://ubuntu.com/security/cves/CVE-2026-107778.json: TimeoutError
+--------------------------------------------------------------------------------
+Internal Error ()
+citeturn68view2 [wordlim: 200] Source: open({"ref_id":"https://ubuntu.com/security/cves/CVE-2026-95210.json","lineno":null}); Total lines: 1
+L0: Failed to fetch https://ubuntu.com/security/cves/CVE-2026-95210.json: TimeoutError
+
+Internal Error ()
+citeturn69view0 [wordlim: 200] Source: open({"ref_id":"https://ubuntu.com/security/cves/CVE-2026-88647.json","lineno":null}); Total lines: 1
+L0: Failed to fetch https://ubuntu.com/security/cves/CVE-2026-88647.json: (400) Timeout fetching
+--------------------------------------------------------------------------------
+Internal Error ()
+citeturn69view1 [wordlim: 200] Source: open({"ref_id":"https://ubuntu.com/security/cves/CVE-2026-88648.json","lineno":null}); Total lines: 1
+L0: Failed to fetch https://ubuntu.com/security/cves/CVE-2026-88648.json: TimeoutError
+--------------------------------------------------------------------------------
+Internal Error ()
+citeturn69view2 [wordlim: 200] Source: open({"ref_id":"https://ubuntu.com/security/cves/CVE-2026-95184.json","lineno":null}); Total lines: 1
+L0: Failed to fetch https://ubuntu.com/security/cves/CVE-2026-95184.json: TimeoutError
+--------------------------------------------------------------------------------
+Internal Error ()
+citeturn69view3 [wordlim: 200] Source: open({"ref_id":"https://ubuntu.com/security/cves/CVE-2026-95209.json","lineno":null}); Total lines: 1
+L0: Failed to fetch https://ubuntu.com/security/cves/CVE-2026-95209.json: TimeoutError
+
+Internal Error ()
+citeturn72view0 [wordlim: 200] Source: open({"ref_id":"https://ubuntu.com/security/cves/CVE-2026-67693.json","lineno":null}); Total lines: 1
+L0: Failed to fetch https://ubuntu.com/security/cves/CVE-2026-67693.json: TimeoutError
+--------------------------------------------------------------------------------
+Internal Error ()
+citeturn72view1 [wordlim: 200] Source: open({"ref_id":"https://ubuntu.com/security/cves/CVE-2026-107655.json","lineno":null}); Total lines: 1
+L0: Failed to fetch https://ubuntu.com/security/cves/CVE-2026-107655.json: TimeoutError
+--------------------------------------------------------------------------------
+Internal Error ()
+citeturn72view2 [wordlim: 200] Source: open({"ref_id":"https://ubuntu.com/security/cves/CVE-2026-107886.json","lineno":null}); Total lines: 1
+L0: Failed to fetch https://ubuntu.com/security/cves/CVE-2026-107886.json: TimeoutError
+--------------------------------------------------------------------------------
+Internal Error ()
+citeturn72view3 [wordlim: 200] Source: open({"ref_id":"https://ubuntu.com/security/cves/CVE-2026-107890.json","lineno":null}); Total lines: 1
+L0: Failed to fetch https://ubuntu.com/security/cves/CVE-2026-107890.json: TimeoutError
+
+Internal Error ()
+citeturn70view0 [wordlim: 200] Source: open({"ref_id":"https://ubuntu.com/security/cves/CVE-2026-107888.json","lineno":null}); Total lines: 1
+L0: Failed to fetch https://ubuntu.com/security/cves/CVE-2026-107888.json: TimeoutError
+--------------------------------------------------------------------------------
+Internal Error ()
+citeturn70view1 [wordlim: 200] Source: open({"ref_id":"https://ubuntu.com/security/cves/CVE-2026-107885.json","lineno":null}); Total lines: 1
+L0: Failed to fetch https://ubuntu.com/security/cves/CVE-2026-107885.json: TimeoutError
+--------------------------------------------------------------------------------
+Internal Error ()
+citeturn70view2 [wordlim: 200] Source: open({"ref_id":"https://ubuntu.com/security/cves/CVE-2026-107705.json","lineno":null}); Total lines: 1
+L0: Failed to fetch https://ubuntu.com/security/cves/CVE-2026-107705.json: TimeoutError
+--------------------------------------------------------------------------------
+Internal Error ()
+citeturn70view3 [wordlim: 200] Source: open({"ref_id":"https://ubuntu.com/security/cves/CVE-2026-107708.json","lineno":null}); Total lines: 1
+L0: Failed to fetch https://ubuntu.com/security/cves/CVE-2026-107708.json: TimeoutError
+
+ (https://ubuntu.com/security/cves/CVE-2025-68471.json)
+citeturn71view0 [wordlim: 200] Crawled: today; Content type: application/json; Source: open({"ref_id":"https://ubuntu.com/security/cves/CVE-2025-68471.json","lineno":null}); Total lines: 4
+L0: {"bugs":[""],"codename":null,"cvss3":6.5,"description":"\nAvahi is a system which facilitates service discovery on a local network\nvia the mDNS/DNS-SD protocol suite.
+L1: In 0.9-rc2 and earlier, avahi-daemon\ncan be crashed by sending 2 unsolicited announcements with CNAME resource\nrecords 2 seconds apart.","id":"CVE-2025-68471","impact":{"baseMetricV3":{"cvssV3":{"attackComplexity":"LOW","attackVector":"NETWORK","availabilityImpact":"HIGH","baseScore":6.5,"baseSeverity":"MEDIUM","confidentialityImpact":"NONE","integrityImpact":"NONE","privilegesRequired":"NONE","scope":"UNCHANGED","userInteraction":"REQUIRED","vectorString":"CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H","version":"3.1"}}},"mitigation":"","notes":[],"notices":[{"cves_ids":["CVE-2025-68471","CVE-2025-68276","CVE-2025-68468"],"description":"It was discovered that Avahi incorrectly terminated when processing browser\nrecords with wide-area disabled.
+L2: An attacker could possibly use this issue\nto cause Avahi to crash, resulting in a denial of service. (CVE-2025-68276)\n\nIt was discovered that Avahi incorrectly terminated when processing\nunsolicited CNAME records pointing to resource records with short TTLs. An\nattacker could possibly use this issue to cause Avahi to crash, resulting\nin a denial of service. (CVE-2025-68468)\n\nIt was discovered that Avahi incorrectly terminated when processing\nunsolicited CNAME records in quick succession.
+--------------------------------------------------------------------------------
+Internal Error ()
+citeturn71view1 [wordlim: 200] Source: open({"ref_id":"https://ubuntu.com/security/cves/CVE-2025-68468.json","lineno":null}); Total lines: 1
+--------------------------------------------------------------------------------
+ (https://ubuntu.com/security/cves/CVE-2025-68276.json)
+citeturn71view2 [wordlim: 200] Crawled: today; Content type: application/json; Source: open({"ref_id":"https://ubuntu.com/security/cves/CVE-2025-68276.json","lineno":null}); Total lines: 4
+--------------------------------------------------------------------------------
+Internal Error ()
+citeturn71view3 [wordlim: 200] Source: open({"ref_id":"https://ubuntu.com/security/cves/CVE-2026-24882.json","lineno":null}); Total lines: 1

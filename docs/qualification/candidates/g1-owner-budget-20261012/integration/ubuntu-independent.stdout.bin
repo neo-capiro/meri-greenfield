@@ -1,0 +1,196 @@
+{
+  "verdict": "ACCEPT_SOURCE_EVIDENCE_ONLY",
+  "authorFreeze": "7f6154e8a2f518a7860bc2421dd6853ff358e156",
+  "originalFilesUnchanged": true,
+  "retainedObligations": 54,
+  "imageDispositionsOpen": 54,
+  "vendorCounts": {
+    "VENDOR_STATUS_UNRESOLVED": 20,
+    "fixed": 18,
+    "under_investigation": 12,
+    "not_affected": 4
+  },
+  "exactVersionMatches": [
+    {
+      "cve": "CVE-2026-8927",
+      "provider": "curl",
+      "status": "fixed",
+      "purls": [
+        "pkg:deb/ubuntu/curl@8.18.0-1ubuntu2.7?arch=source&distro=resolute"
+      ]
+    },
+    {
+      "cve": "CVE-2026-39314",
+      "provider": "cups",
+      "status": "fixed",
+      "purls": [
+        "pkg:deb/ubuntu/cups@2.4.16-1ubuntu1.3?arch=source&distro=resolute"
+      ]
+    },
+    {
+      "cve": "CVE-2026-86143",
+      "provider": "libxml2",
+      "status": "fixed",
+      "purls": [
+        "pkg:deb/ubuntu/libxml2@2.15.2+dfsg-0.1ubuntu0.3?arch=source&distro=resolute"
+      ]
+    },
+    {
+      "cve": "CVE-2026-86142",
+      "provider": "libxml2",
+      "status": "fixed",
+      "purls": [
+        "pkg:deb/ubuntu/libxml2@2.15.2+dfsg-0.1ubuntu0.3?arch=source&distro=resolute"
+      ]
+    },
+    {
+      "cve": "CVE-2026-74860",
+      "provider": "libxml2",
+      "status": "fixed",
+      "purls": [
+        "pkg:deb/ubuntu/libxml2@2.15.2+dfsg-0.1ubuntu0.3?arch=source&distro=resolute"
+      ]
+    },
+    {
+      "cve": "CVE-2024-52616",
+      "provider": "avahi",
+      "status": "not_affected",
+      "purls": [
+        "pkg:deb/ubuntu/avahi@0.8-18ubuntu1.1?arch=source&distro=resolute"
+      ]
+    },
+    {
+      "cve": "CVE-2026-39316",
+      "provider": "cups",
+      "status": "fixed",
+      "purls": [
+        "pkg:deb/ubuntu/cups@2.4.16-1ubuntu1.3?arch=source&distro=resolute"
+      ]
+    },
+    {
+      "cve": "CVE-2026-86137",
+      "provider": "libxml2",
+      "status": "not_affected",
+      "purls": [
+        "pkg:deb/ubuntu/libxml2@2.15.2+dfsg-0.1ubuntu0.3?arch=source&distro=resolute"
+      ]
+    },
+    {
+      "cve": "CVE-2026-24401",
+      "provider": "avahi",
+      "status": "not_affected",
+      "purls": [
+        "pkg:deb/ubuntu/avahi@0.8-18ubuntu1.1?arch=source&distro=resolute"
+      ]
+    },
+    {
+      "cve": "CVE-2026-86141",
+      "provider": "libxml2",
+      "status": "not_affected",
+      "purls": [
+        "pkg:deb/ubuntu/libxml2@2.15.2+dfsg-0.1ubuntu0.3?arch=source&distro=resolute"
+      ]
+    },
+    {
+      "cve": "CVE-2026-34980",
+      "provider": "cups",
+      "status": "fixed",
+      "purls": [
+        "pkg:deb/ubuntu/cups@2.4.16-1ubuntu1.3?arch=source&distro=resolute"
+      ]
+    },
+    {
+      "cve": "CVE-2026-86139",
+      "provider": "libxml2",
+      "status": "fixed",
+      "purls": [
+        "pkg:deb/ubuntu/libxml2@2.15.2+dfsg-0.1ubuntu0.3?arch=source&distro=resolute"
+      ]
+    },
+    {
+      "cve": "CVE-2026-86144",
+      "provider": "libxml2",
+      "status": "fixed",
+      "purls": [
+        "pkg:deb/ubuntu/libxml2@2.15.2+dfsg-0.1ubuntu0.3?arch=source&distro=resolute"
+      ]
+    },
+    {
+      "cve": "CVE-2026-8924",
+      "provider": "curl",
+      "status": "fixed",
+      "purls": [
+        "pkg:deb/ubuntu/curl@8.18.0-1ubuntu2.7?arch=source&distro=resolute"
+      ]
+    },
+    {
+      "cve": "CVE-2026-34979",
+      "provider": "cups",
+      "status": "fixed",
+      "purls": [
+        "pkg:deb/ubuntu/cups@2.4.16-1ubuntu1.3?arch=source&distro=resolute"
+      ]
+    },
+    {
+      "cve": "CVE-2026-41079",
+      "provider": "cups",
+      "status": "fixed",
+      "purls": [
+        "pkg:deb/ubuntu/cups@2.4.16-1ubuntu1.3?arch=source&distro=resolute"
+      ]
+    },
+    {
+      "cve": "CVE-2026-86138",
+      "provider": "libxml2",
+      "status": "fixed",
+      "purls": [
+        "pkg:deb/ubuntu/libxml2@2.15.2+dfsg-0.1ubuntu0.3?arch=source&distro=resolute"
+      ]
+    },
+    {
+      "cve": "CVE-2026-86140",
+      "provider": "libxml2",
+      "status": "fixed",
+      "purls": [
+        "pkg:deb/ubuntu/libxml2@2.15.2+dfsg-0.1ubuntu0.3?arch=source&distro=resolute"
+      ]
+    },
+    {
+      "cve": "CVE-2026-57062",
+      "provider": "gnupg2",
+      "status": "fixed",
+      "purls": [
+        "pkg:deb/ubuntu/gnupg2@2.4.8-4ubuntu3.1?arch=source&distro=resolute"
+      ]
+    },
+    {
+      "cve": "CVE-2026-76781",
+      "provider": "libxml2",
+      "status": "fixed",
+      "purls": [
+        "pkg:deb/ubuntu/libxml2@2.15.2+dfsg-0.1ubuntu0.3?arch=source&distro=resolute"
+      ]
+    },
+    {
+      "cve": "CVE-2026-8286",
+      "provider": "curl",
+      "status": "fixed",
+      "purls": [
+        "pkg:deb/ubuntu/curl@8.18.0-1ubuntu2.7?arch=source&distro=resolute"
+      ]
+    },
+    {
+      "cve": "CVE-2026-58055",
+      "provider": "nghttp2",
+      "status": "fixed",
+      "purls": [
+        "pkg:deb/ubuntu/nghttp2@1.68.0-2ubuntu0.2?arch=source&distro=resolute"
+      ]
+    }
+  ],
+  "directFunctions": 35,
+  "indices": 6,
+  "matrixSha256": "b92134c9ee84095e451bbfcd5b11309de532542fe8ea6c2683da372d08b1d693",
+  "immutableRecipe": "HOLD_NOT_DEMONSTRABLE",
+  "runtime": "UNRUN"
+}

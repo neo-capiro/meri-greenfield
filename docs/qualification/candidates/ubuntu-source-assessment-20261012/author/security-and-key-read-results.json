@@ -1,0 +1,40 @@
+[
+  {
+    "name": "ubuntu-archive-2018-key",
+    "url": "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xF6ECB3762474EDA9D21B7022871920D1991BC93C",
+    "maxBytes": 24000,
+    "timeoutSeconds": 8,
+    "startedUtc": "2026-10-12T04:26:24.117037+00:00",
+    "result": "FAILED",
+    "error": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "path": "raw/ubuntu-archive-2018-key.body"
+  },
+  {
+    "name": "resolute-security-main-packages",
+    "url": "https://archive.ubuntu.com/ubuntu/dists/resolute-security/main/binary-amd64/Packages.xz",
+    "maxBytes": 650000,
+    "timeoutSeconds": 8,
+    "startedUtc": "2026-10-12T04:26:24.130587+00:00",
+    "declaredLength": "599716",
+    "httpStatus": 200,
+    "result": "READ",
+    "bytes": 599716,
+    "sha256": "e094f77d426124a877938e72c211e6e726a5fd4dea9fd260ba5f7ef85f1d4144",
+    "path": "raw/resolute-security-main-packages.body"
+  },
+  {
+    "name": "resolute-security-universe-packages",
+    "url": "https://archive.ubuntu.com/ubuntu/dists/resolute-security/universe/binary-amd64/Packages.xz",
+    "maxBytes": 250000,
+    "timeoutSeconds": 8,
+    "startedUtc": "2026-10-12T04:26:25.243127+00:00",
+    "declaredLength": "200948",
+    "httpStatus": 200,
+    "result": "READ",
+    "bytes": 200948,
+    "sha256": "58f52e78c1589500550cb76e7eb06b94e473786347649cb86165f7635e730331",
+    "path": "raw/resolute-security-universe-packages.body"
+  }
+]

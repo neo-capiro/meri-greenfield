@@ -1,0 +1,39 @@
+✔ actual dispatcher uses persistent SQL slot and settles fixed charge once (19.715849ms)
+✔ lost reserve commit acknowledgement blocks handler and retains UNKNOWN on fresh owner replay (4.045548ms)
+✔ lost settlement acknowledgement and cleanup preserve terminal charge (3.694951ms)
+✔ trusted tenantId substitution denies before handler (0.889226ms)
+✔ trusted actorId substitution denies before handler (0.72506ms)
+✔ trusted conversationId substitution denies before handler (1.174574ms)
+✔ trusted runId substitution denies before handler (0.907763ms)
+✔ trusted attemptId substitution denies before handler (1.237069ms)
+✔ trusted workerId substitution denies before handler (1.053933ms)
+✔ trusted writerFence substitution denies before handler (2.428639ms)
+✔ wrong capability and policy mapping refuse before handler (1.506463ms)
+✔ expired durable admission denies effect (1.505201ms)
+✔ revoked durable admission denies effect (1.275436ms)
+✔ stale durable admission denies effect (1.248766ms)
+✔ schedule durable admission denies effect (1.4178ms)
+✔ missing-binding durable admission denies effect (1.277068ms)
+✔ shared global model UNKNOWN liability refuses over-cap and allows exact bound (3.096402ms)
+✔ shared run model settled and UNKNOWN liability enforce installed run cap (3.912488ms)
+✔ narrow capability cost and private tool count cannot be widened (5.827414ms)
+✔ missing schedule refuses; trusted JSON rejects object/getter without executing it (0.447022ms)
+✔ historical exact settlement survives revocation and cleanup does not grant authority (1.576128ms)
+✔ default source-disabled composition creates no database work or handler call (0.61254ms)
+✔ actual manifest body/hash/budgets/allowed-operation consistency is mandatory (0.657288ms)
+✔ private runtime deadline stops parked handler and preserves liability (53.51758ms)
+✔ private runtime deadline stops parked settlement and preserves liability (52.539841ms)
+✔ unknown replay with fresh reservation and changed arguments never repeats handler (3.582402ms)
+✔ uncertain BEGIN evicts connection and never retries (1.158601ms)
+✔ uncertain ROLLBACK evicts connection and never retries (0.172099ms)
+✔ uncertain COMMIT evicts connection and never retries (0.169384ms)
+✔ release error preserves original commit uncertainty (0.858119ms)
+✔ database time is sampled only after budget lock acknowledgement (2.973717ms)
+ℹ tests 31
+ℹ suites 0
+ℹ pass 31
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1028.190505

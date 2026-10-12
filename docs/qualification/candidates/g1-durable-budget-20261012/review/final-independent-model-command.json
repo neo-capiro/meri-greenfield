@@ -1,0 +1,17 @@
+{
+  "candidate": "d58a2b1c51c43420fa64c1036c509ab14d872996",
+  "time": "2026-10-12T04:42:01.581537+00:00",
+  "argv": [
+    "python3",
+    "-B",
+    "/workspace/meri-g1-durable-budget-review-20261012/docs/qualification/candidates/g1-durable-budget-20261012/review/model-accounting-independent.py",
+    "/workspace/meri-g1-durable-budget-20261012",
+    "-v"
+  ],
+  "cwd": "/workspace/meri-g1-durable-budget-20261012",
+  "exit_code": 0,
+  "seconds": 0.13371158100017055,
+  "reaped": true,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "8bb9210883e246b2d83291546e9fb4439e21e4b2dbb38afd0c1065be38e5c316"
+}

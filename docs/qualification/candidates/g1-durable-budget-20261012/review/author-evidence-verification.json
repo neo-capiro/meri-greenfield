@@ -1,0 +1,254 @@
+{
+  "candidate": "d58a2b1c51c43420fa64c1036c509ab14d872996",
+  "checks": [
+    {
+      "path": "baseline-ledger.py",
+      "passed": true
+    },
+    {
+      "path": "baseline-postgres_store.py",
+      "passed": true
+    },
+    {
+      "path": "baseline-source.json",
+      "passed": true
+    },
+    {
+      "path": "baseline-test_postgres_state.py",
+      "passed": true
+    },
+    {
+      "path": "capture.py",
+      "passed": true
+    },
+    {
+      "path": "cleanup.json",
+      "passed": true
+    },
+    {
+      "path": "distribution-local-dependencies.json",
+      "passed": true
+    },
+    {
+      "path": "distribution-local-dependencies.stderr.bin",
+      "passed": true
+    },
+    {
+      "path": "distribution-local-dependencies.stdout.bin",
+      "passed": true
+    },
+    {
+      "path": "distribution.json",
+      "passed": true
+    },
+    {
+      "path": "distribution.stderr.bin",
+      "passed": true
+    },
+    {
+      "path": "distribution.stdout.bin",
+      "passed": true
+    },
+    {
+      "path": "expiry-independent.json",
+      "passed": true
+    },
+    {
+      "path": "expiry-independent.stderr.bin",
+      "passed": true
+    },
+    {
+      "path": "expiry-independent.stdout.bin",
+      "passed": true
+    },
+    {
+      "path": "focused-canonical.json",
+      "passed": true
+    },
+    {
+      "path": "focused-canonical.stderr.bin",
+      "passed": true
+    },
+    {
+      "path": "focused-canonical.stdout.bin",
+      "passed": true
+    },
+    {
+      "path": "focused-deadline.json",
+      "passed": true
+    },
+    {
+      "path": "focused-deadline.stderr.bin",
+      "passed": true
+    },
+    {
+      "path": "focused-deadline.stdout.bin",
+      "passed": true
+    },
+    {
+      "path": "focused-first.json",
+      "passed": true
+    },
+    {
+      "path": "focused-first.stderr.bin",
+      "passed": true
+    },
+    {
+      "path": "focused-first.stdout.bin",
+      "passed": true
+    },
+    {
+      "path": "focused-manifest.json",
+      "passed": true
+    },
+    {
+      "path": "focused-manifest.stderr.bin",
+      "passed": true
+    },
+    {
+      "path": "focused-manifest.stdout.bin",
+      "passed": true
+    },
+    {
+      "path": "gateway-final-expiry.json",
+      "passed": true
+    },
+    {
+      "path": "gateway-final-expiry.stderr.bin",
+      "passed": true
+    },
+    {
+      "path": "gateway-final-expiry.stdout.bin",
+      "passed": true
+    },
+    {
+      "path": "gateway-final-publication.json",
+      "passed": true
+    },
+    {
+      "path": "gateway-final-publication.stderr.bin",
+      "passed": true
+    },
+    {
+      "path": "gateway-final-publication.stdout.bin",
+      "passed": true
+    },
+    {
+      "path": "gateway-final.json",
+      "passed": true
+    },
+    {
+      "path": "gateway-final.stderr.bin",
+      "passed": true
+    },
+    {
+      "path": "gateway-final.stdout.bin",
+      "passed": true
+    },
+    {
+      "path": "gateway-freeze.json",
+      "passed": true
+    },
+    {
+      "path": "gateway-freeze.stderr.bin",
+      "passed": true
+    },
+    {
+      "path": "gateway-freeze.stdout.bin",
+      "passed": true
+    },
+    {
+      "path": "gateway-full.json",
+      "passed": true
+    },
+    {
+      "path": "gateway-full.stderr.bin",
+      "passed": true
+    },
+    {
+      "path": "gateway-full.stdout.bin",
+      "passed": true
+    },
+    {
+      "path": "preservation.json",
+      "passed": true
+    },
+    {
+      "path": "python-source.json",
+      "passed": true
+    },
+    {
+      "path": "python-source.stderr.bin",
+      "passed": true
+    },
+    {
+      "path": "python-source.stdout.bin",
+      "passed": true
+    },
+    {
+      "path": "root-check-local-dependencies.json",
+      "passed": true
+    },
+    {
+      "path": "root-check-local-dependencies.stderr.bin",
+      "passed": true
+    },
+    {
+      "path": "root-check-local-dependencies.stdout.bin",
+      "passed": true
+    },
+    {
+      "path": "root-check-repaired.json",
+      "passed": true
+    },
+    {
+      "path": "root-check-repaired.stderr.bin",
+      "passed": true
+    },
+    {
+      "path": "root-check-repaired.stdout.bin",
+      "passed": true
+    },
+    {
+      "path": "root-check.json",
+      "passed": true
+    },
+    {
+      "path": "root-check.stderr.bin",
+      "passed": true
+    },
+    {
+      "path": "root-check.stdout.bin",
+      "passed": true
+    },
+    {
+      "path": "source-manifest.json",
+      "passed": true
+    },
+    {
+      "path": "store-intermediate-negative.json",
+      "passed": true
+    },
+    {
+      "path": "store-intermediate-negative.stderr.bin",
+      "passed": true
+    },
+    {
+      "path": "store-intermediate-negative.stdout.bin",
+      "passed": true
+    },
+    {
+      "path": "store-repaired.json",
+      "passed": true
+    },
+    {
+      "path": "store-repaired.stderr.bin",
+      "passed": true
+    },
+    {
+      "path": "store-repaired.stdout.bin",
+      "passed": true
+    }
+  ],
+  "all_passed": true
+}

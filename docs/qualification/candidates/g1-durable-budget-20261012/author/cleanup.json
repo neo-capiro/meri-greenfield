@@ -1,0 +1,115 @@
+{
+  "ownedCapturedChildren": [
+    {
+      "receipt": "distribution-local-dependencies.json",
+      "pid": 53231,
+      "exit": 0,
+      "reaped": true
+    },
+    {
+      "receipt": "distribution.json",
+      "pid": 52655,
+      "exit": 1,
+      "reaped": true
+    },
+    {
+      "receipt": "expiry-independent.json",
+      "pid": 54354,
+      "exit": 0,
+      "reaped": true
+    },
+    {
+      "receipt": "focused-canonical.json",
+      "pid": 53808,
+      "exit": 0,
+      "reaped": true
+    },
+    {
+      "receipt": "focused-deadline.json",
+      "pid": 52317,
+      "exit": 0,
+      "reaped": true
+    },
+    {
+      "receipt": "focused-first.json",
+      "pid": 51192,
+      "exit": 0,
+      "reaped": true
+    },
+    {
+      "receipt": "focused-manifest.json",
+      "pid": 51383,
+      "exit": 0,
+      "reaped": true
+    },
+    {
+      "receipt": "gateway-final-expiry.json",
+      "pid": 54367,
+      "exit": 0,
+      "reaped": true
+    },
+    {
+      "receipt": "gateway-final-publication.json",
+      "pid": 54497,
+      "exit": 0,
+      "reaped": true
+    },
+    {
+      "receipt": "gateway-final.json",
+      "pid": 53642,
+      "exit": 0,
+      "reaped": true
+    },
+    {
+      "receipt": "gateway-freeze.json",
+      "pid": 54035,
+      "exit": 0,
+      "reaped": true
+    },
+    {
+      "receipt": "gateway-full.json",
+      "pid": 51884,
+      "exit": 0,
+      "reaped": true
+    },
+    {
+      "receipt": "python-source.json",
+      "pid": 51823,
+      "exit": 0,
+      "reaped": true
+    },
+    {
+      "receipt": "root-check-local-dependencies.json",
+      "pid": 53005,
+      "exit": 0,
+      "reaped": true
+    },
+    {
+      "receipt": "root-check-repaired.json",
+      "pid": 52429,
+      "exit": 1,
+      "reaped": true
+    },
+    {
+      "receipt": "root-check.json",
+      "pid": 51949,
+      "exit": 1,
+      "reaped": true
+    },
+    {
+      "receipt": "store-intermediate-negative.json",
+      "pid": 50986,
+      "exit": 1,
+      "reaped": true
+    },
+    {
+      "receipt": "store-repaired.json",
+      "pid": 51015,
+      "exit": 0,
+      "reaped": true
+    }
+  ],
+  "liveDatabaseNativeProviderProcessesStarted": false,
+  "dependencyCopiesLocalIgnored": true,
+  "donorTreesMutated": false
+}

@@ -1,0 +1,36 @@
+✔ actual dispatcher uses persistent SQL slot and settles fixed charge once (17.516279ms)
+✔ lost reserve commit acknowledgement blocks handler and retains UNKNOWN on fresh owner replay (3.852825ms)
+✔ lost settlement acknowledgement and cleanup preserve terminal charge (3.680126ms)
+✔ trusted tenantId substitution denies before handler (0.857748ms)
+✔ trusted actorId substitution denies before handler (0.857097ms)
+✔ trusted conversationId substitution denies before handler (2.273524ms)
+✔ trusted runId substitution denies before handler (0.914754ms)
+✔ trusted attemptId substitution denies before handler (1.073963ms)
+✔ trusted workerId substitution denies before handler (1.08617ms)
+✔ trusted writerFence substitution denies before handler (0.792961ms)
+✔ wrong capability and policy mapping refuse before handler (1.507173ms)
+✔ expired durable admission denies effect (1.399902ms)
+✔ revoked durable admission denies effect (1.17208ms)
+✔ stale durable admission denies effect (1.281334ms)
+✔ schedule durable admission denies effect (1.290498ms)
+✔ missing-binding durable admission denies effect (1.270207ms)
+✔ shared global model UNKNOWN liability refuses over-cap and allows exact bound (3.103639ms)
+✔ shared run model settled and UNKNOWN liability enforce installed run cap (3.532444ms)
+✔ narrow capability cost and private tool count cannot be widened (6.144375ms)
+✔ missing schedule refuses; trusted JSON rejects object/getter without executing it (0.383716ms)
+✔ historical exact settlement survives revocation and cleanup does not grant authority (1.706822ms)
+✔ default source-disabled composition creates no database work or handler call (0.668003ms)
+✔ actual manifest body/hash/budgets/allowed-operation consistency is mandatory (0.669956ms)
+✔ uncertain BEGIN evicts connection and never retries (1.372791ms)
+✔ uncertain ROLLBACK evicts connection and never retries (0.178819ms)
+✔ uncertain COMMIT evicts connection and never retries (0.171868ms)
+✔ release error preserves original commit uncertainty (1.020412ms)
+✔ database time is sampled only after budget lock acknowledgement (4.650062ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 951.242201

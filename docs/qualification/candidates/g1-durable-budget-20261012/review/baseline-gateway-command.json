@@ -1,0 +1,16 @@
+{
+  "candidate": "1e6d430cf9c239caca4198aea42a762f13021cd5",
+  "argv": [
+    "node",
+    "--test",
+    "/workspace/meri-g1-executable-source-20261012/apps/gateway/test/authority-deadline.test.mjs",
+    "/workspace/meri-g1-executable-source-20261012/apps/gateway/test/gateway.test.mjs",
+    "/workspace/meri-g1-executable-source-20261012/apps/gateway/test/memory-context-independent.test.mjs",
+    "/workspace/meri-g1-executable-source-20261012/apps/gateway/test/memory-context.test.mjs"
+  ],
+  "cwd": "/workspace/meri-g1-executable-source-20261012",
+  "exit_code": 0,
+  "duration_seconds": 2.17,
+  "source_sha256": "1ba9d1d2afa22bbff9008fb1de13853e25ec98684d7e0bbc87904e979e7b9cfb",
+  "execution": "Read-only exact baseline source worktree; preinstalled dependencies, no install"
+}

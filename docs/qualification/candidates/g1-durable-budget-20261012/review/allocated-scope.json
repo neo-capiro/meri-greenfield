@@ -1,0 +1,32 @@
+{
+  "received_at_utc": "2026-10-12T04:22:10.267945+00:00",
+  "authority": "Root explicit source-only allocation and accounting decision; no execution/spend authority",
+  "source_paths": [
+    "NEW apps/gateway/budget/postgres-tool-budget.mjs",
+    "NEW apps/gateway/budget/tool-budget-binding.mjs",
+    "NEW apps/gateway/budget/postgres-budget-store.mjs",
+    "NEW apps/gateway/budget/durable-tool-dispatch.mjs",
+    "NEW gateway budget README and two tests",
+    "NEW apps/proxy/qualification/state/migrations/0002_tool_budget.sql",
+    "narrow existing apps/proxy/qualification/state/ledger.py",
+    "narrow existing apps/proxy/qualification/state/postgres_store.py",
+    "NEW focused proxy tests"
+  ],
+  "protected": [
+    "original migration0001",
+    "contracts",
+    "locks",
+    "original test assertions"
+  ],
+  "accounting_decision": [
+    "Explicit positive trusted fixed per-dispatch accounting charges only.",
+    "charged_micro_usd is not measured provider/source actual cost or tariff.",
+    "Success consumes full charge; UNKNOWN retains full hold; no refund.",
+    "Shared aggregate and installed per-run cap include model+tool UNKNOWN and settled usage exactly once.",
+    "No schedule or missing migration0002/view fails closed.",
+    "Persist complete binding/capability/policy/manifest/schedule and recheck current state after locks.",
+    "Trusted historical settlement after revocation is allowed; new dispatch remains denied."
+  ],
+  "criteria_interpretation": "DB6/DB8 trusted accounting policy is the approved fixed charge, not fabricated measured usage. All remaining criteria apply.",
+  "engine": "UNRUN; scripted SQL controls only"
+}

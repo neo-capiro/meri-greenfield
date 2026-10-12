@@ -1,0 +1,26 @@
+{
+  "base": "1e6d430cf9c239caca4198aea42a762f13021cd5",
+  "base_files": 3215,
+  "unchanged_base_files": 3213,
+  "changed_base_files": [
+    "apps/control/qualification-sdk-fixture/service/README.md",
+    "apps/control/qualification-sdk-fixture/service/control.mjs"
+  ],
+  "source_only": true,
+  "database_execution": false,
+  "native_execution": false,
+  "files": {
+    "apps/control/qualification-sdk-fixture/service/control.mjs": {
+      "bytes": 3738,
+      "sha256": "76f76b7f6231d91a25d09df787d1dc629d68d204c884a8c258d733fcbbadf74e"
+    },
+    "apps/control/qualification-sdk-fixture/service/run-stop.mjs": {
+      "bytes": 6757,
+      "sha256": "5be0412841282d19bed28fac0b41556ac012bbdff4523e4e2fac45c43446623b"
+    },
+    "apps/control/qualification-sdk-fixture/service/test/run-stop.test.mjs": {
+      "bytes": 8426,
+      "sha256": "c7af34c090138e19eb0c5c6f53938b7557dee3eb287449a201f03b5f7da9e0d8"
+    }
+  }
+}
