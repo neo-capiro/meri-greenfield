@@ -1,0 +1,22 @@
+{
+  "kind": "REVIEWER_LOCAL_LOOKUP_ONLY",
+  "failures": [
+    {
+      "requested": "dependencies.json",
+      "result": "ENOENT",
+      "correct": "dependency-setup.json"
+    },
+    {
+      "requested": "dependency-copy.json",
+      "result": "ENOENT",
+      "correct": "dependency-setup.json"
+    },
+    {
+      "requested": "schedule-tool-author/integration-api.json in review worktree",
+      "result": "ENOENT; docs-only final author packet not merged",
+      "correct": "read immutable author Git packet e45bca0f via audit-packet.py"
+    }
+  ],
+  "sourceChanged": false,
+  "oracleChanged": false
+}

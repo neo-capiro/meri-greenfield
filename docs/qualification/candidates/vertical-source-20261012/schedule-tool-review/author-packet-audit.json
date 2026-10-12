@@ -1,0 +1,33 @@
+{
+  "command": [
+    "python3",
+    "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/audit-packet.py"
+  ],
+  "cwd": "/workspace/meri-schedule-tool-interface-review-20261012",
+  "sourceHead": "8dd0043cf743b6c3908aa0b809689bebc12deddd",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T22:48:17.604646+00:00",
+  "durationSeconds": 0.265,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 383045,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/author-packet-audit.stdout.bin",
+      "bytes": 198,
+      "sha256": "3b5de9fde3c3c7e14dfcb7a2f2bf1bc0c4c4598d845133c698afc574e3599953"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/author-packet-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

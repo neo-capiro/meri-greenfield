@@ -1,0 +1,40 @@
+{
+  "copies": [
+    {
+      "name": "ajv",
+      "physicalOwnedCopy": true,
+      "donorTouched": false
+    },
+    {
+      "name": "ajv-formats",
+      "physicalOwnedCopy": true,
+      "donorTouched": false
+    },
+    {
+      "name": "canonicalize",
+      "physicalOwnedCopy": true,
+      "donorTouched": false
+    },
+    {
+      "name": "fast-deep-equal",
+      "physicalOwnedCopy": true,
+      "donorTouched": false
+    },
+    {
+      "name": "fast-uri",
+      "physicalOwnedCopy": true,
+      "donorTouched": false
+    },
+    {
+      "name": "json-schema-traverse",
+      "physicalOwnedCopy": true,
+      "donorTouched": false
+    },
+    {
+      "name": "require-from-string",
+      "physicalOwnedCopy": true,
+      "donorTouched": false
+    }
+  ],
+  "installExecuted": false
+}
