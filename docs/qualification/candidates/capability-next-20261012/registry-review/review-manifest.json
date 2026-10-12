@@ -28,6 +28,11 @@
     "preservationAudit": {
       "pass": 47,
       "fail": 0
+    },
+    "finalWhitespace": {
+      "exitCode": 0,
+      "historicalFailuresPreserved": true,
+      "waiverScope": "Only exact preserved pre-fix snapshot; no authored check waiver"
     }
   },
   "source": [
@@ -63,8 +68,13 @@
   "members": [
     {
       "path": "docs/coordination/reports/CODEX-CAPABILITY-NEXT-REGISTRY-REVIEW-20261012.md",
-      "bytes": 4599,
-      "sha256": "dbfc47db136c763cbfe6017887a20413b288390610195eb3c565607e470275c6"
+      "bytes": 4883,
+      "sha256": "ea75e7bc7e62a11d63a3f3122c557452f6ac948483f70dc8cb808529635ee1dd"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/.gitattributes",
+      "bytes": 137,
+      "sha256": "5cddd818c95e4485eeb57472e6f03cc1f8875c4a6fd79c0de2ca4d7bf634bb1b"
     },
     {
       "path": "docs/qualification/candidates/capability-next-20261012/registry-review/capture-reaped.py",
@@ -73,8 +83,8 @@
     },
     {
       "path": "docs/qualification/candidates/capability-next-20261012/registry-review/cleanup.json",
-      "bytes": 966,
-      "sha256": "fbaa0f652c5c2ecf1bf2bb9a08b00ead631de666e95d8bf4811a88bac79ded01"
+      "bytes": 1305,
+      "sha256": "1bd75480f4cbe2ca8ca9b6508a302335d332d1c7b8a1bd3f48419d7680eca3fe"
     },
     {
       "path": "docs/qualification/candidates/capability-next-20261012/registry-review/criteria.json",
@@ -100,6 +110,21 @@
       "path": "docs/qualification/candidates/capability-next-20261012/registry-review/final-test-before-whitespace.mjs.txt",
       "bytes": 9150,
       "sha256": "f4bc673f8f7251b6370af40f61771eb62eae4f76319e569dabc36614bc21b135"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/final-whitespace.json",
+      "bytes": 1285,
+      "sha256": "44d5336d31bd855aebafccc3e772762a13ab68e35e319963b50031c31ae291e4"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/final-whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/final-whitespace.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "path": "docs/qualification/candidates/capability-next-20261012/registry-review/first-independent.json",
@@ -218,8 +243,13 @@
     },
     {
       "path": "docs/qualification/candidates/capability-next-20261012/registry-review/review-chronology.json",
-      "bytes": 1878,
-      "sha256": "55e64a2de0c0ad6d5d67b4f2f02b39ac7560688a4fd27001a9670d742cbd16f6"
+      "bytes": 2337,
+      "sha256": "5db686bac0130b270f5337277adc90be5bc574d4988ff43ddb08cc3f0e2bdfb8"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/review-manifest-first.json",
+      "bytes": 10987,
+      "sha256": "a85f2e316b1b9fb8a91386e245bcf86cc33b1f4c345d786abd54b95da6d232a1"
     },
     {
       "path": "docs/qualification/candidates/capability-next-20261012/registry-review/staged-whitespace-corrected.json",
@@ -256,5 +286,6 @@
       "bytes": 9149,
       "sha256": "a92bfe3bb92f252062a872ef4e70ec0af6a80de9428bc31cd1375ce7e4218003"
     }
-  ]
+  ],
+  "supersedesManifest": "review-manifest-first.json (retained historical manifest before evidence whitespace closeout)"
 }

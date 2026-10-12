@@ -35,6 +35,10 @@
     "cause": "Reviewer test had a new blank line at EOF after moving freeze-specific characterization out",
     "fix": "Remove only redundant final blank line",
     "beforeSnapshot": "final-test-before-whitespace.mjs.txt",
-    "testBehaviorChanged": false
+    "testBehaviorChanged": false,
+    "secondReceipt": "staged-whitespace-corrected.json",
+    "secondExitCode": 2,
+    "secondCause": "Current authored test was fixed; exact saved pre-fix snapshot still contains the intentionally retained original blank EOF line.",
+    "finalDisposition": "Exact filename attribute disables whitespace checking only for this preserved pre-fix snapshot. Current test and authored source/report retain normal whitespace checks; original bytes are unchanged."
   }
 }

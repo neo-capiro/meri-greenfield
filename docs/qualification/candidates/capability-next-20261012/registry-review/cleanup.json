@@ -34,6 +34,21 @@
       "receipt": "preservation-audit.json",
       "group": 137036,
       "absentAtCloseout": true
+    },
+    {
+      "receipt": "staged-whitespace.json",
+      "group": 137422,
+      "absentAtCloseout": true
+    },
+    {
+      "receipt": "staged-whitespace-corrected.json",
+      "group": 137539,
+      "absentAtCloseout": true
+    },
+    {
+      "receipt": "final-whitespace.json",
+      "group": 137742,
+      "absentAtCloseout": true
     }
   ],
   "dependencies": "Parent-provisioned existing exact-lock copy retained; no installation or symlink created by reviewer",
