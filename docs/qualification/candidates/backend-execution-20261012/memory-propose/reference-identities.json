@@ -1,0 +1,123 @@
+[
+  {
+    "path": "apps/api/src/meri/meri-tools.service.ts",
+    "purpose": "saveMemory2908-2976; selector intent, pending versus auto-committed projection",
+    "pinnedCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+    "pinnedBlob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+    "observedCommit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+    "observedBlob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+    "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194",
+    "bytes": 415704,
+    "unchanged": true
+  },
+  {
+    "path": "apps/api/src/meri/meri-memory.helpers.ts",
+    "purpose": "buildSavedMemoryRecord60-103; scope fallback, logical key transformation, TTL duration/ambient expiry",
+    "pinnedCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+    "pinnedBlob": "823d7e59550c84f961beba1a3bfa836f87d5e420",
+    "observedCommit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+    "observedBlob": "823d7e59550c84f961beba1a3bfa836f87d5e420",
+    "sha256": "646fe989ad50770d2b4ea119bb596310361e08eb2e59cca6811494d9a3b9fa66",
+    "bytes": 6507,
+    "unchanged": true
+  },
+  {
+    "path": "apps/api/src/meri/meri-memory.helpers.spec.ts",
+    "purpose": "source characterization of scope, key, content and TTL",
+    "pinnedCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+    "pinnedBlob": "24f0cbed0a62f93f6c30b0b6c1629c2c054fefd8",
+    "observedCommit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+    "observedBlob": "24f0cbed0a62f93f6c30b0b6c1629c2c054fefd8",
+    "sha256": "2494bee267918a41df1c2235412ba70f6caa3b95ddd87a81f2abcdd6bcb6824c",
+    "bytes": 7127,
+    "unchanged": true
+  },
+  {
+    "path": "apps/api/src/memory/memory-candidate.service.ts",
+    "purpose": "proposeSaveMemory224 onward; actual pending versus personal commit producer",
+    "pinnedCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+    "pinnedBlob": "75e317f6b1b45872f28e2e0533a9e645419ec7dd",
+    "observedCommit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+    "observedBlob": "75e317f6b1b45872f28e2e0533a9e645419ec7dd",
+    "sha256": "0dd0ed91a682ebb5f1104ebacbb0ae682b1735e1f7e77518b8d7de04dc24bbc9",
+    "bytes": 39448,
+    "unchanged": true
+  },
+  {
+    "path": "apps/api/src/memory/memory-candidate-rules.ts",
+    "purpose": "explicit personal flow versus shared pending policy",
+    "pinnedCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+    "pinnedBlob": "2ea105ac9b533f16ce6ed03f83d7a4b7672c7b2f",
+    "observedCommit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+    "observedBlob": "2ea105ac9b533f16ce6ed03f83d7a4b7672c7b2f",
+    "sha256": "17f48ff5ca477057ed622afca0412481e0ba9220c6891df12d21bf5f1c87ceaf",
+    "bytes": 6467,
+    "unchanged": true
+  },
+  {
+    "path": "apps/api/src/memory/memory-candidate-rules.spec.ts",
+    "purpose": "candidate policy negative and positive controls",
+    "pinnedCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+    "pinnedBlob": "b2ccd3f4269a3749ff0b913d2757f2824938e543",
+    "observedCommit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+    "observedBlob": "b2ccd3f4269a3749ff0b913d2757f2824938e543",
+    "sha256": "05b420a727bd00df64fcea0724928d1622fb6309c4fa3998070152d786112b90",
+    "bytes": 5941,
+    "unchanged": true
+  },
+  {
+    "path": "apps/api/src/memory/memory-candidate.atomicity.spec.ts",
+    "purpose": "source commit/pending transaction characterization",
+    "pinnedCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+    "pinnedBlob": "79e5f4ab7bdf82d5cdb4435963be49bda4982f8d",
+    "observedCommit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+    "observedBlob": "79e5f4ab7bdf82d5cdb4435963be49bda4982f8d",
+    "sha256": "23b4750ba80f2718ecccfe68393b94cbd5631dda31f46dbd027919dff06b263b",
+    "bytes": 17040,
+    "unchanged": true
+  },
+  {
+    "path": "apps/api/src/memory/memory-review-admin-policy.ts",
+    "purpose": "exact approved administrator roles; no policy change",
+    "pinnedCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+    "pinnedBlob": "1f214b076d172b13648f1bf842d7c83363b944d3",
+    "observedCommit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+    "observedBlob": "1f214b076d172b13648f1bf842d7c83363b944d3",
+    "sha256": "ce7d9b36b52b7b63d1a8bdcaf0bab2acf3c57187dedc5752a80f8e95f733adc3",
+    "bytes": 687,
+    "unchanged": true
+  },
+  {
+    "path": "apps/api/src/memory/memory-authorization.helpers.ts",
+    "purpose": "current action-specific authorization remains source owner",
+    "pinnedCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+    "pinnedBlob": "542f8362f834126b5dad16bef72ffa6998d0cf27",
+    "observedCommit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+    "observedBlob": "542f8362f834126b5dad16bef72ffa6998d0cf27",
+    "sha256": "a0c2ece14a7d8164d3a7c7a2f028ffe75a486c91f6fdda8b11fa48cab66c60e7",
+    "bytes": 7526,
+    "unchanged": true
+  },
+  {
+    "path": "apps/api/src/memory/memory-wall.helpers.ts",
+    "purpose": "current client wall owner",
+    "pinnedCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+    "pinnedBlob": "48b9bf4b9246baac7cd3188d012ea7638aeb8a68",
+    "observedCommit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+    "observedBlob": "48b9bf4b9246baac7cd3188d012ea7638aeb8a68",
+    "sha256": "91961048fd944885b8a06d229009259cf4866a4d40338d09685b1608f29a9255",
+    "bytes": 7833,
+    "unchanged": true
+  },
+  {
+    "path": "apps/api/prisma/schema.prisma",
+    "purpose": "stored model scalar source metadata; no migration or execution",
+    "pinnedCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+    "pinnedBlob": "cdf1923217edae6e7624993796a5671922b61ac0",
+    "observedCommit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+    "observedBlob": "cdf1923217edae6e7624993796a5671922b61ac0",
+    "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0",
+    "bytes": 968034,
+    "unchanged": true
+  }
+]
