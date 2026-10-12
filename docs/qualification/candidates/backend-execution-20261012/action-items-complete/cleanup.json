@@ -1,0 +1,38 @@
+{
+  "ownedGroups": [
+    {
+      "receipt": "exact-source.json",
+      "ownedPidAndPgid": 319037,
+      "absentAtCloseout": true,
+      "captureExitCode": 0,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "initial-author.json",
+      "ownedPidAndPgid": 317734,
+      "absentAtCloseout": true,
+      "captureExitCode": 0,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "metadata-audit.json",
+      "ownedPidAndPgid": 319119,
+      "absentAtCloseout": true,
+      "captureExitCode": 0,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "whitespace.json",
+      "ownedPidAndPgid": 319176,
+      "absentAtCloseout": true,
+      "captureExitCode": 0,
+      "timedOut": false,
+      "killRequired": false
+    }
+  ],
+  "allAbsent": true,
+  "otherOwnersTouched": false
+}

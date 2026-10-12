@@ -1,0 +1,146 @@
+{
+  "sourceHead": "d0eee05150e25c11971f27709a1e2604d12a1fbd",
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "originalEntriesPreserved": 7677,
+  "checks": [
+    {
+      "name": "pinned metadata identity apps/api/src/meri/meri-tools.service.ts",
+      "passed": true
+    },
+    {
+      "name": "observed unchanged apps/api/src/meri/meri-tools.service.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned metadata identity apps/api/src/meri/meri-action-item-read.helpers.ts",
+      "passed": true
+    },
+    {
+      "name": "observed unchanged apps/api/src/meri/meri-action-item-read.helpers.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned metadata identity apps/api/src/meri/meri-action-item-read.proof.ts",
+      "passed": true
+    },
+    {
+      "name": "observed unchanged apps/api/src/meri/meri-action-item-read.proof.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned metadata identity apps/api/src/intelligence/actions/action-recommendation-read.service.ts",
+      "passed": true
+    },
+    {
+      "name": "observed unchanged apps/api/src/intelligence/actions/action-recommendation-read.service.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned metadata identity apps/api/src/intelligence/actions/action-recommendation-read.service.spec.ts",
+      "passed": true
+    },
+    {
+      "name": "observed unchanged apps/api/src/intelligence/actions/action-recommendation-read.service.spec.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned metadata identity apps/api/src/intelligence/actions/action-recommendation.types.ts",
+      "passed": true
+    },
+    {
+      "name": "observed unchanged apps/api/src/intelligence/actions/action-recommendation.types.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned metadata identity apps/api/src/intelligence/action-recommendation.controller.ts",
+      "passed": true
+    },
+    {
+      "name": "observed unchanged apps/api/src/intelligence/action-recommendation.controller.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned metadata identity apps/api/prisma/schema.prisma",
+      "passed": true
+    },
+    {
+      "name": "observed unchanged apps/api/prisma/schema.prisma",
+      "passed": true
+    },
+    {
+      "name": "pinned metadata identity apps/api/prisma/migrations/20260607200000_add_action_recommendation/migration.sql",
+      "passed": true
+    },
+    {
+      "name": "observed unchanged apps/api/prisma/migrations/20260607200000_add_action_recommendation/migration.sql",
+      "passed": true
+    },
+    {
+      "name": "pinned metadata identity apps/api/prisma/migrations/20280924040000_district_actions/migration.sql",
+      "passed": true
+    },
+    {
+      "name": "observed unchanged apps/api/prisma/migrations/20280924040000_district_actions/migration.sql",
+      "passed": true
+    },
+    {
+      "name": "all original Git entries unchanged",
+      "passed": true
+    },
+    {
+      "name": "no uncommitted original source change",
+      "passed": true
+    },
+    {
+      "name": "all26 projected fields present",
+      "passed": true
+    },
+    {
+      "name": "only clientName optional",
+      "passed": true
+    },
+    {
+      "name": "four-field raw unscoped envelope",
+      "passed": true
+    },
+    {
+      "name": "input canonical dependency",
+      "passed": true
+    },
+    {
+      "name": "output canonical scoped dependency",
+      "passed": true
+    },
+    {
+      "name": "sole import canonical inert snapshot",
+      "passed": true
+    },
+    {
+      "name": "real scoped validation delegated",
+      "passed": true
+    },
+    {
+      "name": "full binding correlation",
+      "passed": true
+    },
+    {
+      "name": "no ambient source/clock",
+      "passed": true
+    },
+    {
+      "name": "both accepted results detached",
+      "passed": true
+    },
+    {
+      "name": "signed priority storage bound",
+      "passed": true
+    },
+    {
+      "name": "no native proof in unscopedcard",
+      "passed": true
+    }
+  ],
+  "passed": 34,
+  "privateBodiesPublished": false,
+  "sourceRuntimeQualified": false
+}

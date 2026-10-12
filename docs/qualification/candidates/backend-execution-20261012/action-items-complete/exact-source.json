@@ -1,0 +1,36 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-action-items-complete.test.mjs",
+    "packages/contracts/test/retrieval-operational-reads.test.mjs",
+    "packages/contracts/test/retrieval-action-item-binding.test.mjs"
+  ],
+  "cwd": "/workspace/meri-action-items-complete-20261012",
+  "sourceHead": "d0eee05150e25c11971f27709a1e2604d12a1fbd",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T21:04:01.764432+00:00",
+  "durationSeconds": 2.535,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 319037,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/action-items-complete/exact-source.stdout.bin",
+      "bytes": 4758,
+      "sha256": "e9a44a94581dc4f42a33e087e48eb55ee114abb139faf14a57fe951c9cf0c244"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/action-items-complete/exact-source.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Exact tracked source freeze plus unchanged focused operational/partial-binding assertions; no source edits since initial author29pass.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
