@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-florida-budget-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-florida-budget-review-20261012",
+  "sourceHead": "a3462b24f2d7edcb75b68605cd0842e3fa101f41",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T19:06:24.392395+00:00",
+  "durationSeconds": 0.265,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 264143,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/independent-before-repair.stdout.bin",
+      "bytes": 5422,
+      "sha256": "ed265ffdb9b2b7380e5284d73e09a6332549e03a6d6dd5ab68a137593af67924"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/independent-before-repair.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
