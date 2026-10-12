@@ -1,0 +1,13 @@
+{
+  "verdict": "HOLD",
+  "sourceCommit": "ff59080a4d6c0f8c8c3104e2083bc4c2b0c514f8",
+  "checks": "34/37 combined; 3 independent source failures",
+  "findings": [
+    "Wrong coordinate branch accepted for PDF reader.",
+    "Selected locator section can exceed sectionCount.",
+    "PDF page coordinate can differ from selected section."
+  ],
+  "sourceBasis": "Pinned readAttachment/extractSection plus format helpers; coordinates and section count are projection facts, not runtime/authorization proof.",
+  "raw": "attachments-initial.json",
+  "independentControlsCommit": "cb6387d05e43e32c738d794bef17719a884c0a6f"
+}
