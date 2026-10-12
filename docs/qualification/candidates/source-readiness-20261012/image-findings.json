@@ -1,0 +1,835 @@
+{
+  "schema": "meri-derived-image-hold-accounting/1",
+  "status": "FORBIDDEN_TO_LAUNCH",
+  "evidence": {
+    "bytes": 59680,
+    "imageDigest": "sha256:8d1ec09aa78f47a11019089dacde93289fc66a39f55bd4357e59eeb25d9b52ac",
+    "registryId": "967807252336",
+    "repositoryName": "meri-greenfield/qualification-worker",
+    "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+  },
+  "scanMetadata": {
+    "findingSeverityCounts": {
+      "CRITICAL": 5,
+      "HIGH": 17,
+      "LOW": 7,
+      "MEDIUM": 17,
+      "UNDEFINED": 1
+    },
+    "imageScanCompletedAt": "2026-10-11T14:17:54-04:00",
+    "vulnerabilitySourceUpdatedAt": "2026-10-11T14:17:54-04:00"
+  },
+  "severityCounts": {
+    "CRITICAL": 5,
+    "HIGH": 17,
+    "INFORMATIONAL": 0,
+    "LOW": 7,
+    "MEDIUM": 17,
+    "UNDEFINED": 1
+  },
+  "findingCount": 47,
+  "findings": [
+    {
+      "index": 0,
+      "name": "CVE-2026-107655",
+      "severity": "MEDIUM",
+      "observedProvider": {
+        "name": "cups",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/0"
+    },
+    {
+      "index": 1,
+      "name": "CVE-2026-8927",
+      "severity": "CRITICAL",
+      "observedProvider": {
+        "name": "curl",
+        "version": "8.14.1-2+deb13u5"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/1"
+    },
+    {
+      "index": 2,
+      "name": "CVE-2026-24882",
+      "severity": "HIGH",
+      "observedProvider": {
+        "name": "gnupg2",
+        "version": "2.4.7-21+deb13u1"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/2"
+    },
+    {
+      "index": 3,
+      "name": "CVE-2026-39314",
+      "severity": "MEDIUM",
+      "observedProvider": {
+        "name": "cups",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/3"
+    },
+    {
+      "index": 4,
+      "name": "CVE-2026-105326",
+      "severity": "LOW",
+      "observedProvider": {
+        "name": "cups",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/4"
+    },
+    {
+      "index": 5,
+      "name": "CVE-2026-85091",
+      "severity": "HIGH",
+      "observedProvider": {
+        "name": "zlib",
+        "version": "1.3.dfsg+really1.3.1-1"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/5"
+    },
+    {
+      "index": 6,
+      "name": "CVE-2026-86143",
+      "severity": "HIGH",
+      "observedProvider": {
+        "name": "libxml2",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/6"
+    },
+    {
+      "index": 7,
+      "name": "CVE-2026-95210",
+      "severity": "CRITICAL",
+      "observedProvider": {
+        "name": "gnutls28",
+        "version": "3.8.9-3+deb13u4"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/7"
+    },
+    {
+      "index": 8,
+      "name": "CVE-2025-68471",
+      "severity": "MEDIUM",
+      "observedProvider": {
+        "name": "avahi",
+        "version": "0.8-16"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/8"
+    },
+    {
+      "index": 9,
+      "name": "CVE-2026-93990",
+      "severity": "HIGH",
+      "observedProvider": {
+        "name": "expat",
+        "version": "2.8.3-1~deb13u1"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/9"
+    },
+    {
+      "index": 10,
+      "name": "CVE-2026-86142",
+      "severity": "HIGH",
+      "observedProvider": {
+        "name": "libxml2",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/10"
+    },
+    {
+      "index": 11,
+      "name": "CVE-2026-95184",
+      "severity": "HIGH",
+      "observedProvider": {
+        "name": "gnutls28",
+        "version": "3.8.9-3+deb13u4"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/11"
+    },
+    {
+      "index": 12,
+      "name": "CVE-2026-107886",
+      "severity": "LOW",
+      "observedProvider": {
+        "name": "cups",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/12"
+    },
+    {
+      "index": 13,
+      "name": "CVE-2026-74860",
+      "severity": "HIGH",
+      "observedProvider": {
+        "name": "libxml2",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/13"
+    },
+    {
+      "index": 14,
+      "name": "CVE-2024-52616",
+      "severity": "MEDIUM",
+      "observedProvider": {
+        "name": "avahi",
+        "version": "0.8-16"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/14"
+    },
+    {
+      "index": 15,
+      "name": "CVE-2026-39316",
+      "severity": "MEDIUM",
+      "observedProvider": {
+        "name": "cups",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/15"
+    },
+    {
+      "index": 16,
+      "name": "CVE-2026-86137",
+      "severity": "MEDIUM",
+      "observedProvider": {
+        "name": "libxml2",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/16"
+    },
+    {
+      "index": 17,
+      "name": "CVE-2026-88647",
+      "severity": "CRITICAL",
+      "observedProvider": {
+        "name": "gnutls28",
+        "version": "3.8.9-3+deb13u4"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/17"
+    },
+    {
+      "index": 18,
+      "name": "CVE-2025-68468",
+      "severity": "MEDIUM",
+      "observedProvider": {
+        "name": "avahi",
+        "version": "0.8-16"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/18"
+    },
+    {
+      "index": 19,
+      "name": "CVE-2026-24401",
+      "severity": "MEDIUM",
+      "observedProvider": {
+        "name": "avahi",
+        "version": "0.8-16"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/19"
+    },
+    {
+      "index": 20,
+      "name": "CVE-2026-86141",
+      "severity": "LOW",
+      "observedProvider": {
+        "name": "libxml2",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/20"
+    },
+    {
+      "index": 21,
+      "name": "CVE-2026-88648",
+      "severity": "UNDEFINED",
+      "observedProvider": {
+        "name": "gnutls28",
+        "version": "3.8.9-3+deb13u4"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/21"
+    },
+    {
+      "index": 22,
+      "name": "CVE-2026-107890",
+      "severity": "LOW",
+      "observedProvider": {
+        "name": "cups",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/22"
+    },
+    {
+      "index": 23,
+      "name": "CVE-2026-34980",
+      "severity": "MEDIUM",
+      "observedProvider": {
+        "name": "cups",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/23"
+    },
+    {
+      "index": 24,
+      "name": "CVE-2026-107888",
+      "severity": "MEDIUM",
+      "observedProvider": {
+        "name": "cups",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/24"
+    },
+    {
+      "index": 25,
+      "name": "CVE-2026-95209",
+      "severity": "HIGH",
+      "observedProvider": {
+        "name": "gnutls28",
+        "version": "3.8.9-3+deb13u4"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/25"
+    },
+    {
+      "index": 26,
+      "name": "CVE-2026-107161",
+      "severity": "HIGH",
+      "observedProvider": {
+        "name": "cyrus-sasl2",
+        "version": "2.1.28+dfsg1-9"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/26"
+    },
+    {
+      "index": 27,
+      "name": "CVE-2026-107885",
+      "severity": "LOW",
+      "observedProvider": {
+        "name": "cups",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/27"
+    },
+    {
+      "index": 28,
+      "name": "CVE-2026-86139",
+      "severity": "HIGH",
+      "observedProvider": {
+        "name": "libxml2",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/28"
+    },
+    {
+      "index": 29,
+      "name": "CVE-2026-86144",
+      "severity": "HIGH",
+      "observedProvider": {
+        "name": "libxml2",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/29"
+    },
+    {
+      "index": 30,
+      "name": "CVE-2026-107705",
+      "severity": "HIGH",
+      "observedProvider": {
+        "name": "poppler",
+        "version": "25.03.0-5+deb13u4"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/30"
+    },
+    {
+      "index": 31,
+      "name": "CVE-2026-87875",
+      "severity": "MEDIUM",
+      "observedProvider": {
+        "name": "cups",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/31"
+    },
+    {
+      "index": 32,
+      "name": "CVE-2026-8924",
+      "severity": "CRITICAL",
+      "observedProvider": {
+        "name": "curl",
+        "version": "8.14.1-2+deb13u5"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/32"
+    },
+    {
+      "index": 33,
+      "name": "CVE-2026-77214",
+      "severity": "HIGH",
+      "observedProvider": {
+        "name": "expat",
+        "version": "2.8.3-1~deb13u1"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/33"
+    },
+    {
+      "index": 34,
+      "name": "CVE-2026-34979",
+      "severity": "MEDIUM",
+      "observedProvider": {
+        "name": "cups",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/34"
+    },
+    {
+      "index": 35,
+      "name": "CVE-2026-41079",
+      "severity": "MEDIUM",
+      "observedProvider": {
+        "name": "cups",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/35"
+    },
+    {
+      "index": 36,
+      "name": "CVE-2026-18495",
+      "severity": "MEDIUM",
+      "observedProvider": {
+        "name": "tiff",
+        "version": "4.7.0-3+deb13u3"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/36"
+    },
+    {
+      "index": 37,
+      "name": "CVE-2026-86138",
+      "severity": "HIGH",
+      "observedProvider": {
+        "name": "libxml2",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/37"
+    },
+    {
+      "index": 38,
+      "name": "CVE-2026-52490",
+      "severity": "CRITICAL",
+      "observedProvider": {
+        "name": "tiff",
+        "version": "4.7.0-3+deb13u3"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/38"
+    },
+    {
+      "index": 39,
+      "name": "CVE-2026-67693",
+      "severity": "HIGH",
+      "observedProvider": {
+        "name": "gnutls28",
+        "version": "3.8.9-3+deb13u4"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/39"
+    },
+    {
+      "index": 40,
+      "name": "CVE-2026-86140",
+      "severity": "HIGH",
+      "observedProvider": {
+        "name": "libxml2",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/40"
+    },
+    {
+      "index": 41,
+      "name": "CVE-2026-87876",
+      "severity": "LOW",
+      "observedProvider": {
+        "name": "cups",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/41"
+    },
+    {
+      "index": 42,
+      "name": "CVE-2026-57062",
+      "severity": "LOW",
+      "observedProvider": {
+        "name": "gnupg2",
+        "version": "2.4.7-21+deb13u1"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/42"
+    },
+    {
+      "index": 43,
+      "name": "CVE-2026-76781",
+      "severity": "MEDIUM",
+      "observedProvider": {
+        "name": "libxml2",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/43"
+    },
+    {
+      "index": 44,
+      "name": "CVE-2026-8286",
+      "severity": "HIGH",
+      "observedProvider": {
+        "name": "curl",
+        "version": "8.14.1-2+deb13u5"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/44"
+    },
+    {
+      "index": 45,
+      "name": "CVE-2026-58055",
+      "severity": "MEDIUM",
+      "observedProvider": {
+        "name": "nghttp2",
+        "version": "1.64.0-1.1+deb13u1"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/45"
+    },
+    {
+      "index": 46,
+      "name": "CVE-2025-68276",
+      "severity": "MEDIUM",
+      "observedProvider": {
+        "name": "avahi",
+        "version": "0.8-16"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "sourcePointer": "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json#/findings/46"
+    }
+  ],
+  "olderVendorObligationsClosed": false,
+  "runtimeAdmitted": false,
+  "historicalScanImmutableLocator": null
+}
