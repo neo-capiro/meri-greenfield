@@ -1,0 +1,202 @@
+{
+  "decision": "ACCEPT_SOURCE",
+  "source": "ed307ab4d5653e3972fd82d8ebe3b54345a3ca4e",
+  "authorPacket": "3dbf6b796bacad59a5f1366c83ad7d9372125f5c",
+  "members": [
+    {
+      "path": "apps/gateway/test/dataset-metadata-handler-independent.test.mjs",
+      "bytes": 12598,
+      "sha256": "9158486b3e415c210221edf9fd4a497b7df0d954202b6b54ef9db9a7931958b6"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-DATASET-METADATA-HANDLER-REVIEW-20261012.md",
+      "bytes": 5395,
+      "sha256": "1c9e93ee98439b20de90bc4dda15e2e17650385591697e81c75d7da387def276"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-DATASET-METADATA-HANDLER-REVIEW-20261012.md",
+      "bytes": 693,
+      "sha256": "9e267e40247c21238d72b4c7af8bd04075e568037521de0b7391d22b6e0ea3e6"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/.gitattributes",
+      "bytes": 50,
+      "sha256": "1bee6826ab8565b1a50079d470700a548e73e2363ea12450cf37ea13454b9eba"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/audit-packet.py",
+      "bytes": 2335,
+      "sha256": "fb7361e35d309ec0e66c7de386a93bc3555ab1a3b58522813aae9b2335c31364"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/audit-source.py",
+      "bytes": 3872,
+      "sha256": "cf67da34c1a81b3316e741dcfab28968046b20baa4b2ff02598eea9baa96edee"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/canonical-import-replay.json",
+      "bytes": 1360,
+      "sha256": "82c877fd67da2c96ea6a6e20d003883122de00dfb261775b3aa6f2d125d00558"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/canonical-import-replay.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/canonical-import-replay.stdout.bin",
+      "bytes": 3133,
+      "sha256": "f2eb2a197e3b4c940f7da3e7c301bc15bcfb124df7a12b14ad68cecafee47f0c"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/controls-before-alias-fixture-fix.mjs",
+      "bytes": 12546,
+      "sha256": "3e4b9b231db2b54f0cfed847b19ae56706ea3eef06879fd002b13b4615e49d5d"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/controls-before-import-fix.mjs",
+      "bytes": 12576,
+      "sha256": "9ef5cc868309a30c4ffff4397b065246f67b09a4928614ceccdd0529f8b6c369"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/criteria.json",
+      "bytes": 2085,
+      "sha256": "d5d8824d0f092c6c43a45503760ede4f146d844d878c186c541065324b3e9645"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/exact-first-freeze-abort-repro.json",
+      "bytes": 1374,
+      "sha256": "c8646fc441dcb5913a85d2e72b6f83a74670cd3f1028a263ca9ebe7771bcffa1"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/exact-first-freeze-abort-repro.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/exact-first-freeze-abort-repro.stdout.bin",
+      "bytes": 2434,
+      "sha256": "a48d743436346ea270dfea578e69324d7b2d952540bfadbc398ccf22d4ab3155"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/final-independent.json",
+      "bytes": 1348,
+      "sha256": "7cc41c5ed45ebcafc5e9f6d7f3b9295c1a9f63c4847dd3f0b106635dee94836d"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/final-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/final-independent.stdout.bin",
+      "bytes": 1703,
+      "sha256": "cd5fa8311f243ae07f16fb850c45082954fbab9aeb4188c8be695a1b534e4fe4"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/final-packet-audit.json",
+      "bytes": 1506,
+      "sha256": "1e34fc4de32341c4dc12dab3b214c1d0a359d4c914d694083abb07482f8803d2"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/final-packet-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/final-packet-audit.stdout.bin",
+      "bytes": 11253,
+      "sha256": "ef053035e3c688071fa9c102a8e4f26e29225ab142deed848b0c0c43c477b70d"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/final-source-audit.json",
+      "bytes": 1457,
+      "sha256": "c097e82560d923cbd70bb27997155946b41b6e36871bf6e47af9ff70e9209951"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/final-source-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/final-source-audit.stdout.bin",
+      "bytes": 2852,
+      "sha256": "f467f572ed2c4da0cd35cb935472efc7face544d2f2f88f2398e5e01ced9edf6"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/frozen-controls-first-replay.json",
+      "bytes": 1370,
+      "sha256": "cd68ff190dcafbc9b7d1e6f927d432b77a7816e166c59defdaad584d55fbc881"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/frozen-controls-first-replay.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/frozen-controls-first-replay.stdout.bin",
+      "bytes": 1165,
+      "sha256": "c30e3e94117fc2f024db476530df09cd2d6c7f923a081c57fd4ed7218ee19ba6"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/handler-before-final-abort-fix.mjs.txt",
+      "bytes": 4030,
+      "sha256": "87d31c977fbd848dfc8521431c679ac1c0912871962e858e9ca464a2150b4908"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/harness-corrections.json",
+      "bytes": 801,
+      "sha256": "7b10b28bff1f24bcc4ba52a446af2defd35dd4483984a360b1feaa586de60120"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/missing-source-baseline.json",
+      "bytes": 1360,
+      "sha256": "9c2e9d3e9127d5885c490eb25ee66dc46d2f06e1290db8a7cacf766a8e65ffd0"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/missing-source-baseline.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/missing-source-baseline.stdout.bin",
+      "bytes": 1677,
+      "sha256": "1c29b5a13acb946b655a8f76b0c5e51e140b082429c4346c15e17a7c6a7a0e99"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/original-dispatch-contexts.json",
+      "bytes": 1486,
+      "sha256": "7840a4a9442ad5c1fe6b72b5511afd7eb84baabea754a4835c38b3bbe67dc6b8"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/original-dispatch-contexts.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/original-dispatch-contexts.stdout.bin",
+      "bytes": 8804,
+      "sha256": "52f66489ac149b20bbb2b62664d1470327542980388ad4f8d4ba6392910ad6fd"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/owned-cleanup.json",
+      "bytes": 1283,
+      "sha256": "543bd54b03729c9f1bfda2f855f3d68495f034319031534ef0591e063f14b2ea"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/packet-audit-results.json",
+      "bytes": 11253,
+      "sha256": "ef053035e3c688071fa9c102a8e4f26e29225ab142deed848b0c0c43c477b70d"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/source-audit-results.json",
+      "bytes": 2852,
+      "sha256": "f467f572ed2c4da0cd35cb935472efc7face544d2f2f88f2398e5e01ced9edf6"
+    }
+  ]
+}

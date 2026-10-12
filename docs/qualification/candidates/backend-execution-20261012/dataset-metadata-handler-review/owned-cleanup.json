@@ -19,6 +19,12 @@
       "observedAbsent": true
     },
     {
+      "capture": "final-packet-audit.json",
+      "pgid": 329045,
+      "exitCode": 0,
+      "observedAbsent": true
+    },
+    {
       "capture": "final-source-audit.json",
       "pgid": 328462,
       "exitCode": 0,
@@ -44,7 +50,7 @@
     }
   ],
   "freshOwnedProcessGroupMembers": [],
-  "ownedGroupsAbsent": 7,
+  "ownedGroupsAbsent": 8,
   "otherProcessesSignalled": false,
   "limits": "Local check groups only; not native task or physical transport teardown."
 }
