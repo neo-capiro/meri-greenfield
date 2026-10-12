@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-bill-text-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-bill-text-review-20261012",
+  "sourceHead": "6974f0ca3445e08e3fb34a0a6d373a7a19e33bfb",
+  "sourceDiffSha256": "a3ef0d81b7eb5aaec2b43d7f1a607bff6df8d655be5fb56b02868d8bfba19cff",
+  "sourceDiffBytes": 1825,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T17:14:17.479808+00:00",
+  "durationSeconds": 0.365,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 177056,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/output-uuid-before.stdout.bin",
+      "bytes": 9761,
+      "sha256": "5db1409da7f0b94935c524b28543ec1fdf4c3c60cffcac11e09175d720dedcd3"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/output-uuid-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Independently reproduce author-discovered output UUID overrestriction; generic DB UUID differs from source input cursor-v4.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
