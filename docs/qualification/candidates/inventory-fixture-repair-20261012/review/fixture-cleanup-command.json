@@ -1,0 +1,10 @@
+{
+  "command": [
+    "node",
+    "--input-type=module",
+    "--eval",
+    "<exact fixture-cleanup-eval.mjs bytes>"
+  ],
+  "exit_code": 0,
+  "source_helper": "Original test prefix, with only PROBE pathname rebound to the inspected local production source."
+}

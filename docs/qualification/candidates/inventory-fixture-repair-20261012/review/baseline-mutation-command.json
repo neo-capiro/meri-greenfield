@@ -1,0 +1,11 @@
+{
+  "args": [
+    "python3",
+    "-B",
+    "docs/qualification/candidates/inventory-fixture-repair-20261012/review/mutation-controls.py",
+    "apps/worker/qualification/probes/image-inventory.py",
+    "docs/qualification/candidates/inventory-fixture-repair-20261012/review/baseline-mutation-controls.json"
+  ],
+  "exit_code": 0,
+  "duration_seconds": 0.11
+}
