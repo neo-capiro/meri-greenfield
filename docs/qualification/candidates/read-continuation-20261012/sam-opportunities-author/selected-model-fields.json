@@ -1,0 +1,103 @@
+{
+  "model": "SamOpportunity",
+  "fields": [
+    {
+      "name": "id",
+      "type": "String",
+      "uuidStorage": true,
+      "unique": false,
+      "varchar": null
+    },
+    {
+      "name": "noticeId",
+      "type": "String",
+      "uuidStorage": false,
+      "unique": true,
+      "varchar": null
+    },
+    {
+      "name": "solicitationNumber",
+      "type": "String?",
+      "uuidStorage": false,
+      "unique": false,
+      "varchar": null
+    },
+    {
+      "name": "title",
+      "type": "String",
+      "uuidStorage": false,
+      "unique": false,
+      "varchar": null
+    },
+    {
+      "name": "noticeType",
+      "type": "String",
+      "uuidStorage": false,
+      "unique": false,
+      "varchar": 32
+    },
+    {
+      "name": "agency",
+      "type": "String?",
+      "uuidStorage": false,
+      "unique": false,
+      "varchar": null
+    },
+    {
+      "name": "office",
+      "type": "String?",
+      "uuidStorage": false,
+      "unique": false,
+      "varchar": null
+    },
+    {
+      "name": "pscCode",
+      "type": "String?",
+      "uuidStorage": false,
+      "unique": false,
+      "varchar": 8
+    },
+    {
+      "name": "naicsCode",
+      "type": "String?",
+      "uuidStorage": false,
+      "unique": false,
+      "varchar": 8
+    },
+    {
+      "name": "postedDate",
+      "type": "DateTime?",
+      "uuidStorage": false,
+      "unique": false,
+      "varchar": null
+    },
+    {
+      "name": "responseDeadline",
+      "type": "DateTime?",
+      "uuidStorage": false,
+      "unique": false,
+      "varchar": null
+    },
+    {
+      "name": "description",
+      "type": "String?",
+      "uuidStorage": false,
+      "unique": false,
+      "varchar": null
+    },
+    {
+      "name": "sourceUrl",
+      "type": "String?",
+      "uuidStorage": false,
+      "unique": false,
+      "varchar": null
+    },
+    {
+      "name": "active",
+      "type": "Boolean",
+      "uuidStorage": false,
+      "unique": false,
+      "varchar": null
+    }
+  ]
+}

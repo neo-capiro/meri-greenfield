@@ -1,0 +1,28 @@
+# SAM opportunities source author packet
+
+Source `02bac2139b13dec288b5ca2c19edc3be85e2c6b2`, tree `e38ab9d7dd189d7ea23deaeb4adb40bc7b5627ed`, adds the separate private `search_sam_opportunities` DTO family. Outline `446ad6f` preceded implementation. The first source `ac1c8d86cbef293d1afb82268ce755be975b8e49` and its failed strict-Ajv compilation remain preserved. Root owns registration and all source adapters; this source does not activate a capability or duplicate funding search.
+
+`createSamOpportunitiesValidators({validateShape,schema})` exposes ID-taking normalization and output assertion, definition selectors and shape validation. Request, effective Input, Context and Output schemas are distinct. Query/NAICS normalize to null or string using source trim, UTF-16 clipping at240/12, then the downstream second trim. IncludeInactive defaults false. Finite number/string limits preserve Number conversion, integer truncation and clamp1..50/default20; null/nonfinite-string uses the fallback. Wrong scalar/object selectors are a declared typed restriction from permissive legacy fallback. Canonical inert JSON owns transport limits and hostile-data refusal. Normalization is frozen; output and nested values are detached from caller references.
+
+All four context keys are mandatory: trusted asOf, evidenceAccuracyMode, sourceStatusAsOf and sourceHealthAsOf. Three canonical clock strings bind three independent observation sites: generatedAt/deadlines, wrapper48-hour classification and adapter hours-since-sync. They need not be chronologically ordered; wall-clock observations are not monotonic. Mode is trusted off/shadow/enforce and cannot be selected through model arguments. The actual producer does not yet supply a qualified independent-clock receipt; adapter qualification remains open.
+
+The module reuses unchanged canonical fundingInstant/assertFundingBrief and FundingDeadline/FundingFreshness property definitions. It adds SAM-specific relationships, not a second deadline or JSON engine. Fourteen fields match the exact stored selection. ID has UUID storage, noticeId is unique, and noticeType/PSC/NAICS storage ceilings count Unicode code points. Description is normalized whitespace and at most300 UTF-16 units, including any ellipsis. Null stored description projects an empty string. Nullable dates and strings remain nullable; sourceUrl is not newly constrained as a URL. POC/private contact fields are absent. Nonnull posted timestamps retain descending order; exact null placement remains a source-adapter obligation. Query can match hidden description or other fields, so returned titles need not contain it. Active and NAICS-prefix conditions are checked. Count and row queries are independent: total can be below returned length and empty rows prove no corpus absence.
+
+Health retains the nine existing states and optional latestAttemptAt/lastSuccessAt fields. Raw lastSyncedAt remains string|null; blank/invalid text keeps the unknown branch, and finite noncanonical strings retain the source's Date.parse interpretation. Only trusted clock inputs require canonical dates. Source parsing and timestamp provenance remain producer obligations, not timezone or currentness authority. Hours are computed from lastSyncedAt, independently of lastSuccessAt, and future dates clamp hours to zero. Derived flags distinguish state===never_synced from a null timestamp.
+
+Status precedence is absent health/null recordCount, null timestamp, blank/invalid timestamp, noncurrent state, age>=48hours, then healthy. Unavailable and unknown reasons yield unknown status; the other reasons yield degraded. Defensive empty health is permitted only with its unavailable/unknown result. It establishes no absence claim. Exact benign guidance note literals are contract data, with source hashes retained; their second note is required only when a source reason exists. Enforce mode alone includes per-row structured deadlines, with stored timestamp lineage, UTC date-only/null timezone, shared ceil-day arithmetic and open-at-equality semantics. All source observations remain unqualified.
+
+Nine source/reference pairs at immutable `fd8765ec01d292013758606204f2c9d886cd31c1` and observed `4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace` are unchanged. Stored global SAM rows, independent count and tenant-sensitive source-health/enablement reads were inspected as source data only. No live SAM fallback, ingest, query implementation, source execution, current authorization or provider permission is introduced.
+
+| Check | Result |
+| --- | --- |
+| Initial exact source strict-Ajv compilation | 0 pass /1 failed file; raw failure preserved |
+| Repaired exact source focused controls | 35/35 pass |
+| Source/reference/preservation audit | 62/62 pass |
+| Independent focused replay reported by readiness_author | 37 independent +35 author =72/72 pass |
+| Base preservation | All6,528 original blobs unchanged |
+| Broad/public, actual source/SQL/provider/model/native/runtime | UNRUN in this lane |
+
+The first schema used a variable-length prefixItems tuple for the same two allowed notes arrays. Strict Ajv refused its tuple shape. The repair expresses those exact arrays with enum; only the test fixture's schema lookup changed, while all35 behavioral assertion bodies and the validator remained byte-identical. Every raw capture is retained. All three owned process groups are absent. Only the two allocated dependency symlinks were removed; installed targets are unchanged.
+
+This is a source candidate for independent acceptance. Canonical composition, actual source visibility/provenance, clock capture and all native/G1 runtime gates remain **HOLD**. Public0.1/private0.2 and the full139/96/43 scope remain unchanged.
