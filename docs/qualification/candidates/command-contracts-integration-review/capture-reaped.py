@@ -10,7 +10,7 @@ import subprocess
 import sys
 import time
 
-root = Path(__file__).resolve().parents[5]
+root = Path(__file__).resolve().parents[4]
 evidence = Path(__file__).resolve().parent
 label, *command = sys.argv[1:]
 if not command or not label.replace('-', '').isalnum():
