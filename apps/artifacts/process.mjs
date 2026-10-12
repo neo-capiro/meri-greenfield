@@ -30,4 +30,3 @@ export async function runArtifactProcess(executable,args,{cwd,input,signal,deadl
     return {stdout:Buffer.concat(stdout),receipt};
   }finally{clearTimeout(timer);signal?.removeEventListener('abort',abort);}
 }
-
