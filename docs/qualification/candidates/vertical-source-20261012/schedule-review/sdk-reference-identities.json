@@ -1,0 +1,53 @@
+{
+  "package": "@temporalio/client",
+  "version": "1.24.0",
+  "commit": "1fd1c81a0383f5f5c7923dd735472c7d1ffdc867",
+  "execution": "none; source read only",
+  "files": [
+    {
+      "path": "package.json",
+      "bytes": 1096,
+      "sha256": "946629172fe386280e72e1856aacf0c8f760264991c3268b00790bf4929c2651"
+    },
+    {
+      "path": "src/schedule-client.ts",
+      "bytes": 21460,
+      "sha256": "209cba3633017d48231ea72a7d0846d8ca6070e0911b1d36d379f256c3339796"
+    },
+    {
+      "path": "src/schedule-types.ts",
+      "bytes": 27417,
+      "sha256": "7282d996927b598eb4870772d34ac75613ae09d3d71741594b7fd7fb062fc6d5"
+    },
+    {
+      "path": "src/schedule-helpers.ts",
+      "bytes": 14411,
+      "sha256": "d97650b0212056cf4c6239b65cf428de844ee7bea5d2c465cf151fe161f7abb1"
+    },
+    {
+      "path": "src/workflow-client.ts",
+      "bytes": 81685,
+      "sha256": "bd142f9d483b74db626b26196a1a725c19c66a99ebe757fe9fa781884affd3b4"
+    },
+    {
+      "path": "src/connection.ts",
+      "bytes": 25915,
+      "sha256": "00be538ef0853e99335bc11e9cdf910f411a8d2cd3ae50b8087fae585a93b43f"
+    },
+    {
+      "path": "lib/schedule-client.js",
+      "bytes": 20546,
+      "sha256": "40cc2033748347fbed0611a8dc733a33b9e48a399c7028c079fbdea6cfbe02d4"
+    },
+    {
+      "path": "lib/schedule-types.d.ts",
+      "bytes": 27670,
+      "sha256": "3db6dac31dc25aa73938a6717564fd5fa86873a3cea63640a1b38de34737d24e"
+    },
+    {
+      "path": "lib/workflow-client.js",
+      "bytes": 68183,
+      "sha256": "99fa99504829ab662a499c265a0a1b674590d85042180bc319384c4dab80650c"
+    }
+  ]
+}
