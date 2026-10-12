@@ -55,7 +55,7 @@ assert.equal(git('diff', '--name-only', base, '--', ...unchanged), '', 'protecte
 assert.equal(git('rev-parse', 'release/meri-rc1-20261012'), base);
 assert.equal(git('rev-parse', 'meri-rc1-20261012^{}'), base);
 assert.equal(git('rev-parse', 'task/meri-native-helper-integration-20261012'), base);
-assert.equal(git('rev-parse', 'main'), '8b123bea4c90794dc2d766814b6ddbdbfe0928bc');
+assert.equal(git('rev-parse', 'origin/main'), '8b123bea4c90794dc2d766814b6ddbdbfe0928bc');
 const planSha256 = createHash('sha256').update(readFileSync(new URL('../../../../../docs/plans/MERI-DEPLOYMENT.md', import.meta.url))).digest('hex');
 assert.equal(planSha256, inventory.planSha256);
 console.log(JSON.stringify({status: 'PASS_SOURCE_PRESERVATION_ONLY', sourceHead: git('rev-parse', 'HEAD'), base,
