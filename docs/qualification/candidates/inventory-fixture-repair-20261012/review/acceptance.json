@@ -1,0 +1,36 @@
+{
+  "outcome": "ACCEPT_SOURCE",
+  "scope": "Fixture repair only; source-guard repair and image/runtime admission separate",
+  "candidate_commit": "0ea9b778c983108f664455e7fc4e195a0a33148a",
+  "candidate_tree": "212590b14e9b737e3ca27dfba5f80530898e604b",
+  "test": {
+    "bytes": 27407,
+    "sha256": "845473b633ded89e8c94d1fe59637cee87418a7c0a2cdc3d2fe131971961b1b3"
+  },
+  "production_probe": {
+    "bytes": 17978,
+    "sha256": "c7d682e67b5b3064947c92bebdce785aa04c3e00238fc8fb769d4a828479de58",
+    "unchanged": true
+  },
+  "context": {
+    "members": 53,
+    "bytes": 996428,
+    "manifest_bytes": 11180,
+    "manifest_sha256": "0f9cc23fb20d3d292fc5f2759a570ec5b022a5b9068d17ac545251803f73e903",
+    "assembler_sha256": "48f065d0ad61f98ba571c89dcd62141e6f8c9b272f0d371331d74a0dabf87851"
+  },
+  "checks": {
+    "original_plus_appended": "26/26",
+    "context": "17/17",
+    "independent_filesystem": "12/12",
+    "size_blind_mutant": "rejected with expected exit1",
+    "fixture_cleanup_after_assertion": "passed",
+    "stale_source_guard": "fails both baseline and candidate; preserved and separately assigned"
+  },
+  "criteria_commit": "2435e40",
+  "baseline_evidence_commit": "ffd0c6a",
+  "review_report_sha256": "e67092a5dc5a3ed44d61ab3e7f58d648f0b9b7ade34b21437dcfe2a81d0df0e2",
+  "source_shared_pins_edited": false,
+  "cloud_native_provider_actions": false,
+  "owned_background_processes": 0
+}

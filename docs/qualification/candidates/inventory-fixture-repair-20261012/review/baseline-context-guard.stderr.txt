@@ -1,0 +1,16 @@
+F
+======================================================================
+FAIL: test_context_manifest_pin_tracks_candidate_bytes (test_worker_image_build.Controls.test_context_manifest_pin_tracks_candidate_bytes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/meri-inventory-fixture-review-20261012/scripts/qualification/test_worker_image_build.py", line 159, in test_context_manifest_pin_tracks_candidate_bytes
+    self.assertEqual(build.context_manifest_sha(files), collect.CONTEXT_SHA)
+AssertionError: '94216667decf5e4feed05914b3f295148d9437ee1c00b224ca4e92625b5b876f' != '18836912a03fc035d69c0cfc57d1f407e5c46af1bdd37c21a761f5d42dc84dda'
+- 94216667decf5e4feed05914b3f295148d9437ee1c00b224ca4e92625b5b876f
++ 18836912a03fc035d69c0cfc57d1f407e5c46af1bdd37c21a761f5d42dc84dda
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.003s
+
+FAILED (failures=1)
