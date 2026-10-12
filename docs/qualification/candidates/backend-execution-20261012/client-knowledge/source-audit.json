@@ -1,8 +1,8 @@
 {
-  "sourceHead": "4ecc4dfc6cbc683d901daf6a0761927d9f3831eb",
+  "sourceHead": "dcb375c544de2dfcd4cdecc2692cc8ec9a83cb03",
   "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
-  "passed": 285,
-  "total": 285,
+  "passed": 297,
+  "total": 297,
   "checks": [
     {
       "label": "readable apps/api/src/meri/meri-tools.service.ts",
@@ -877,23 +877,11 @@
       "pass": true
     },
     {
-      "label": "complete scalar model ClientCapability",
-      "pass": true
-    },
-    {
-      "label": "complete scalar model MailThread",
-      "pass": true
-    },
-    {
-      "label": "complete scalar model Client",
-      "pass": true
-    },
-    {
       "label": "complete scalar model ClientSubmissionHistory",
       "pass": true
     },
     {
-      "label": "complete scalar model ClientPerson",
+      "label": "complete scalar model EngagementTask",
       "pass": true
     },
     {
@@ -901,7 +889,19 @@
       "pass": true
     },
     {
-      "label": "complete scalar model EngagementTask",
+      "label": "complete scalar model ClientPerson",
+      "pass": true
+    },
+    {
+      "label": "complete scalar model Client",
+      "pass": true
+    },
+    {
+      "label": "complete scalar model ClientCapability",
+      "pass": true
+    },
+    {
+      "label": "complete scalar model MailThread",
       "pass": true
     },
     {
@@ -950,6 +950,22 @@
     },
     {
       "label": "owned group still absent 311975",
+      "pass": true
+    },
+    {
+      "label": "bounded captured exit attachments-uuid-before.json",
+      "pass": true
+    },
+    {
+      "label": "raw output docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-uuid-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "label": "raw output docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-uuid-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "label": "owned group still absent 319448",
       "pass": true
     },
     {
@@ -1030,6 +1046,22 @@
     },
     {
       "label": "owned group still absent 310125",
+      "pass": true
+    },
+    {
+      "label": "bounded captured exit attachments-uuid-final.json",
+      "pass": true
+    },
+    {
+      "label": "raw output docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-uuid-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "label": "raw output docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-uuid-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "label": "owned group still absent 319959",
       "pass": true
     },
     {
@@ -1126,6 +1158,22 @@
     },
     {
       "label": "owned group still absent 317886",
+      "pass": true
+    },
+    {
+      "label": "bounded captured exit attachments-uuid-repaired.json",
+      "pass": true
+    },
+    {
+      "label": "raw output docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-uuid-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "label": "raw output docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-uuid-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "label": "owned group still absent 319651",
       "pass": true
     },
     {

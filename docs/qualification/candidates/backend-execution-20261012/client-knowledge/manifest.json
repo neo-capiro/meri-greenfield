@@ -1,11 +1,11 @@
 {
-  "sourceFreeze": "4ecc4dfc6cbc683d901daf6a0761927d9f3831eb",
+  "sourceFreeze": "dcb375c544de2dfcd4cdecc2692cc8ec9a83cb03",
   "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME",
   "members": [
     {
       "path": "docs/coordination/reports/CODEX-CLIENT-KNOWLEDGE-20261012.md",
-      "bytes": 8563,
-      "sha256": "416f8b5efa99b466b3c0dd6a167c87d8f0e29271375b253496e38f5c12d6b719"
+      "bytes": 9165,
+      "sha256": "1bbb9cf35bed7d9f6a063af5da6aa5a04182e58590dc6e8192a448c8127cc93e"
     },
     {
       "path": "docs/coordination/tasks/CODEX-CLIENT-KNOWLEDGE-20261012.md",
@@ -128,14 +128,64 @@
       "sha256": "13467d0f31616d7b65e65bb494a09b8b39db4a02b6d358a1729e94d0c2d914ff"
     },
     {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-uuid-before.json",
+      "bytes": 1374,
+      "sha256": "7707778c97ccd0fc8854a316e9eca212e2089677fa06dff3a847eb8066da0e50"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-uuid-before.patch",
+      "bytes": 2488,
+      "sha256": "021aca60e5f0ada8eb7a233d20328c7575e328470ab80cea17072c42bc9d7465"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-uuid-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-uuid-before.stdout.bin",
+      "bytes": 2311,
+      "sha256": "df2daaff66e1c2dbfca9033e8a99aea2e4d279baebb5bce55e43a429234d17bb"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-uuid-final.json",
+      "bytes": 1370,
+      "sha256": "6941885248150a0d040f86260b3722573a0f87c8b486058ac9851e1a9a1fd78a"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-uuid-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-uuid-final.stdout.bin",
+      "bytes": 1183,
+      "sha256": "a1194c46b3d83ae9ab8105c3d10767f4d2e5ea464a0e38e051239b4b55d24f84"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-uuid-repaired.json",
+      "bytes": 1379,
+      "sha256": "579e72c41bacdc0e113a3f34c173424220bc9c81a917f78158bc04ab37d73207"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-uuid-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-uuid-repaired.stdout.bin",
+      "bytes": 1181,
+      "sha256": "d3548dcf96c9f5fb567ee06b4548358d587426cd1df94be0d70f612919ff0e18"
+    },
+    {
       "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge/capture-reaped.py",
       "bytes": 3388,
       "sha256": "e0eda6c30be9041846623c04ea10e0392677bfa0fd9c340b19559f35c69de8e3"
     },
     {
       "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge/failure-notes.json",
-      "bytes": 1781,
-      "sha256": "da850b9975e1e0f7bacdaed33be2814986c9a26464cc96a027a61bf698217890"
+      "bytes": 2123,
+      "sha256": "202f394d91e613b15624c5363f64fcde0fdf3ae2012289745e0640155dcc230b"
     },
     {
       "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge/memory-initial.json",
@@ -220,7 +270,7 @@
     {
       "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge/operation-ledger.json",
       "bytes": 4054,
-      "sha256": "49c6a53d7710e46628d5182ead35d9f6e7041d245c97724798530fb0fcfaf035"
+      "sha256": "56e23b487efb00fa272091a54c91b462096fb8b0a9fccf5a37b35fee2c31b03b"
     },
     {
       "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge/profile-initial.json",
@@ -278,14 +328,19 @@
       "sha256": "485501eb9ba4f6905383b8ef8b6ae7c4836a8107bb2a151ef77cc18f4dc2ceb6"
     },
     {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge/source-audit-4ecc4dfc.json",
+      "bytes": 33293,
+      "sha256": "e41090b28b196ec6f0e15d0677f8833e3dc99d333b2b97bd15fd63d14bac553f"
+    },
+    {
       "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge/source-audit-b24d87c2.json",
       "bytes": 31721,
       "sha256": "bcfb501cd2c4fc221ca8801141679f45a7a0a963b616783d0aa6002200e20cd4"
     },
     {
       "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge/source-audit.json",
-      "bytes": 33293,
-      "sha256": "e41090b28b196ec6f0e15d0677f8833e3dc99d333b2b97bd15fd63d14bac553f"
+      "bytes": 34865,
+      "sha256": "1ad7d89248e900d0d0790683b37d1d19e70217c03ed5ddf8d1c14cb14ea51ed3"
     },
     {
       "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge/verify-source.py",
@@ -294,8 +349,8 @@
     },
     {
       "path": "packages/contracts/retrieval-0.2/client-knowledge-attachments-validation.mjs",
-      "bytes": 9572,
-      "sha256": "d44aeee1cd67274fbb91d2f24743632fc929198915f3012ed2dde661d8c9073e"
+      "bytes": 9705,
+      "sha256": "5d66ad4c3ff18b22e1f43b7af09f18b60b4c376834d2601737dbd7801bd4330a"
     },
     {
       "path": "packages/contracts/retrieval-0.2/client-knowledge-attachments.schema.json",
@@ -344,8 +399,8 @@
     },
     {
       "path": "packages/contracts/test/retrieval-client-knowledge-attachments.test.mjs",
-      "bytes": 7666,
-      "sha256": "aae93f90bbf45056e4795d5f1332ec277ef2f7bd3f8e578ef38afe1a177bc290"
+      "bytes": 8383,
+      "sha256": "8d76286f0e266a94c39389de3a9fb92ba4cb8d90b0b33f992674d1064ce61a5f"
     },
     {
       "path": "packages/contracts/test/retrieval-client-knowledge-memory.test.mjs",

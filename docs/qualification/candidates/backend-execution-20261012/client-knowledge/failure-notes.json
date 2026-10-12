@@ -15,6 +15,10 @@
     {
       "label": "attachments-span-before",
       "note": "Nine pass/two fail on prior packet3798c578 with additive regressions: no-query span exceeded requested limit; query miss retained nonzero span. Exact preimage patch/raw retained. Two narrow guards repaired both; query-match context may exceed limit."
+    },
+    {
+      "label": "attachments-uuid-before",
+      "note": "Eleven pass/one fail on prior packet a6d8ef48. Uppercase first-page attachment UUID is accepted by typed database lookup and emitted lowercase. Repaired returned source/emitted cursor UUID identity only; raw input cursor selector/scope remain exact. Patch/raw preserved."
     }
   ],
   "reviewerFailures": [

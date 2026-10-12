@@ -1,0 +1,35 @@
+✔ attachment manifest defaults and empty query difference (18.001888ms)
+✔ attachment complete manifest does not establish content completeness (42.265178ms)
+✔ attachment source sections bind text, bytes receipt, locator and external trust (5.137762ms)
+✔ attachment cursor is correlated but fake HMAC is expressly not authenticated (9.570966ms)
+✔ attachment cursor stale version, noncanonical encoding and explicit locator conflict fail (0.708375ms)
+✔ attachment metadata permits signed stored page counts and absent original bytes (0.763127ms)
+✔ attachment partial/empty section is not complete even without next cursor (0.508193ms)
+✔ attachment detached return and hostile nested JSON (0.661795ms)
+✔ attachment coordinate kind and selected section stay bound (2.086326ms)
+✔ attachment no-query span obeys requested limit while query context can exceed it (1.19726ms)
+✔ attachment query miss has no returned character span (0.862596ms)
+✖ attachment first-page UUID case normalizes only returned source and continuation identity (0.753482ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 11
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 501.544088
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-client-knowledge-attachments.test.mjs:28:1
+✖ attachment first-page UUID case normalizes only returned source and continuation identity (0.753482ms)
+  Error: Attachment section selector mismatch
+      at fail (file:///workspace/meri-client-knowledge-20261012/packages/contracts/retrieval-0.2/client-knowledge-attachments-validation.mjs:4:33)
+      at Object.assertResult (file:///workspace/meri-client-knowledge-20261012/packages/contracts/retrieval-0.2/client-knowledge-attachments-validation.mjs:73:108)
+      at TestContext.<anonymous> (file:///workspace/meri-client-knowledge-20261012/packages/contracts/test/retrieval-client-knowledge-attachments.test.mjs:28:248)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

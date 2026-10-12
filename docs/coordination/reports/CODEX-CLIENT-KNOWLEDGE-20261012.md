@@ -9,7 +9,7 @@ Base: `1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8`. Worktree `/workspace/meri-clie
 | search_client_knowledge | client-knowledge-search | asOf | 9cc2d0cf |
 | query_knowledge_graph | client-knowledge-search | none | 9cc2d0cf |
 | read_monday_client_boards | client-knowledge-monday | none | 5ee54465 |
-| read_chat_attachments | client-knowledge-attachments | asOf, scope | 4ecc4dfc |
+| read_chat_attachments | client-knowledge-attachments | asOf, scope | dcb375c5 |
 | search_memory | client-knowledge-memory | tenantId, userId | b24d87c2 |
 | get_client_context | client-knowledge-profile | asOf, clientResolution | 47e8eb3c |
 
@@ -34,3 +34,5 @@ Focused tests use strict Ajv and real contract methods. Raw command outputs, sou
 Combined exact-source focused replay at `b24d87c2ad2e13d9d9f83bf5328a1328fd03762f` passed 54/54. The source diff was empty for this final replay; owned group315960 was absent without timeout or kill. Independent review is per exact family; final aggregate review and author packet verification are reported separately. No broad/native test was substituted for runtime gates. Owned captured groups were physically absent; no borrowed dependency tree or other owner's process was modified.
 
 Follow-up exact attachment source `4ecc4dfc6cbc683d901daf6a0761927d9f3831eb` repairs two independently identified window relations: a no-query span cannot exceed the requested limit, and a query miss has a zero-width span. A matching query may retain surrounding context larger than the requested limit. The added controls failed 2/11 against the preserved prior candidate, then passed 11/11 on the exact repair with an empty source diff; group318070 was absent without timeout or kill. The earlier 54/54 six-operation receipt remains unchanged. The final offline audit passed 285/285, with all fifteen captured groups absent and original273-check audit retained. Final independent verdict and packet audit remain separate receipts.
+
+Final attachment compatibility source `dcb375c544de2dfcd4cdecc2692cc8ec9a83cb03` preserves case-equivalent UUID database lookup on a first page: returned source and emitted continuation may use canonical UUID case. Supplied cursor attachment selectors, conversation and trusted scope comparisons remain exact, matching the source parser. The new positive failed against the prior candidate (11/12), then exact final focused replay passed 12/12; the failure patch/raw are preserved. Final offline audit passed 297/297; all eighteen captured groups were absent. This changes no authority or HMAC claim.
