@@ -1,0 +1,39 @@
+✔ actual disabled gateway exposes exact ABSENT observation with zero ledger mutation (12.88629ms)
+✔ UNKNOWN returns immutable bounded accounting through actual owner composition (8.080179ms)
+✔ SETTLED returns immutable bounded accounting through actual owner composition (6.597933ms)
+✔ canonical lost reserve acknowledgement retained across fresh readback without replay (6.296379ms)
+✔ canonical lost settle acknowledgement retained across fresh readback without replay (6.188197ms)
+✔ historical original A remains inspectable after expiry/revocation/quarantine and replacement B (5.247554ms)
+✔ ABSENT is a snapshot; same existing trusted invocation may become UNKNOWN after later reservation (7.686237ms)
+✔ read acknowledgement uncertainty and ordinary query failure release no success receipt or writes (12.216875ms)
+✔ read serialized behind actual canonical reservation boundary sees committed UNKNOWN (9.35208ms)
+✔ parallel observations do not alter or settle liability (12.562884ms)
+✔ all canonical descriptor execute paths remain unavailable before further transaction/authority work (6.944423ms)
+✔ ABSENT requires retained allocation and original grant binding (10.863401ms)
+✔ UNKNOWN requires retained allocation and original grant binding (12.079368ms)
+✔ raw expected/invocation objects cannot execute getters or proxy reflection (11.181829ms)
+✔ closed invalid expectations deny before scripted connection work (14.395397ms)
+✔ operation/argument mismatch cannot expose an existing outcome (6.978244ms)
+✔ tenant actor conversation run and allocation substitution cannot read other scope (19.270581ms)
+✔ historical grant correlation rejects task attempt fence policy capability and grant substitutions (36.165374ms)
+✔ retained allocation and grant-binding duplicate columns cannot disagree with facts (20.092587ms)
+✖ reservation duplicate identities and full original facts cannot disagree (17.69877ms)
+✔ UNKNOWN rejects charge/output/time fields inconsistent with retained liability (27.071943ms)
+✔ SETTLED refuses malformed amounts, output overflow, missing or unordered timestamps (29.71958ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 21
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1224.899769
+
+✖ failing tests:
+
+test at docs/qualification/candidates/g1-budget-outcome-20261012/review/outcome-independent.test.mjs:88:1
+✖ reservation duplicate identities and full original facts cannot disagree (17.69877ms)
+  TypeError: Cannot assign to read only property 'workerId' of object '#<Object>'
+      at TestContext.<anonymous> (file:///workspace/meri-budget-outcome-review-20261012/docs/qualification/candidates/g1-budget-outcome-20261012/review/outcome-independent.test.mjs:90:61)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
