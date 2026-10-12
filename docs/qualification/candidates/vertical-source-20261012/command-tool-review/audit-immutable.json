@@ -1,0 +1,36 @@
+{
+  "command": [
+    "python3",
+    "-I",
+    "-B",
+    "-S",
+    "docs/qualification/candidates/vertical-source-20261012/command-tool-review/audit.py"
+  ],
+  "cwd": "/workspace/meri-command-tool-interface-review-20261012",
+  "sourceHead": "0e4eb69140dd25086b9a59b34e8c37722260c91c",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T22:52:32.422861+00:00",
+  "durationSeconds": 0.365,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 384853,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/audit-immutable.stdout.bin",
+      "bytes": 5644,
+      "sha256": "feaadb58551228cf662c2067fb2bf563b02df5c6623f8cd608e7bfacab03371a"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/audit-immutable.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Immutable83 source checkout and all retained stream hashes; prior live-root five-field mismatch and missing sparse module setup failures preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

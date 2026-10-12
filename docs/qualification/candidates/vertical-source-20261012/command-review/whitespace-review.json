@@ -1,0 +1,6 @@
+{
+  "initialExitCode": 2,
+  "initialRawSha256": "e70eb603ae10cdf4c5a9a2b28efa5fdf0397c204761c36ec774c3f0779a52683",
+  "finding": "Two trailing-space blank lines emitted by Node assertion in preserved cleanup failure; no authored source whitespace issue",
+  "resolution": "Candidate-local raw stdout/stderr binary attributes; raw bytes unchanged"
+}

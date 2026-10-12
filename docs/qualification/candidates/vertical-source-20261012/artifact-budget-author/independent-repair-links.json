@@ -1,0 +1,19 @@
+{
+  "reviewWorktree": "/workspace/meri-artifact-budget-review-20261012",
+  "source": "a73b65dc05b7554c0592bec22d940ef781344dd6",
+  "counterexampleRefs": [
+    "aea805c7",
+    "b69340f6",
+    "18c07952",
+    "68f5c63afb44d78c3383522efd5d64ef7c8fa6d6"
+  ],
+  "reportedFocused": {
+    "independent": 37,
+    "author": 33,
+    "passed": 70,
+    "failed": 0,
+    "group": 390702,
+    "groupAbsent": true
+  },
+  "evidenceStatus": "Independent reviewer message; exact review packet remains separately owned and will be bound at its final freeze."
+}

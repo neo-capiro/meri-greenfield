@@ -1,0 +1,33 @@
+✔ task.create advertises raw request, delegates actual payload normalizer and correlates full command (35.877563ms)
+✔ task.create pending output needs complete trusted original proposal (18.198171ms)
+✔ task.create real executor output is exact-correlated and absence/extra outcome refused (2488.703092ms)
+✔ task.update advertises raw request, delegates actual payload normalizer and correlates full command (13.153369ms)
+✔ task.update pending output needs complete trusted original proposal (16.047898ms)
+✔ task.update real executor output is exact-correlated and absence/extra outcome refused (14.978161ms)
+✔ memory.propose advertises raw request, delegates actual payload normalizer and correlates full command (4.55768ms)
+✔ memory.propose pending output needs complete trusted original proposal (5.174767ms)
+✔ memory.propose real executor output is exact-correlated and absence/extra outcome refused (11.716044ms)
+✔ artifact.file advertises raw request, delegates actual payload normalizer and correlates full command (8.919225ms)
+✔ artifact.file pending output needs complete trusted original proposal (8.315598ms)
+✔ artifact.file real executor output is exact-correlated and absence/extra outcome refused (16.538455ms)
+✔ model inputs cannot provide server command metadata or approved flags (1.557611ms)
+✔ closed context and hostile raw values are refused without executing accessors (0.475234ms)
+✔ proposal guard binds entire original metadata and returns detached data (2.880339ms)
+✔ all domain transformations retain explicit source limitations (0.884219ms)
+✔ normalized digest describes complete intent including immutable artifact version (1.18469ms)
+ℹ Error: A resource generated asynchronous activity after the test ended. This activity created the error "Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/meri-command-registry-frozen-review-20261012/apps/gateway/index.mjs' imported from /workspace/meri-command-tool-interface-review-20261012/packages/contracts/test/command-tool-interface-independent.test.mjs" which triggered an uncaughtException event, caught by the test runner.
+✖ packages/contracts/test/command-tool-interface-independent.test.mjs (5630.525572ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 17
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5638.261108
+
+✖ failing tests:
+
+test at packages/contracts/test/command-tool-interface-independent.test.mjs:1:1
+✖ packages/contracts/test/command-tool-interface-independent.test.mjs (5630.525572ms)
+  'test failed'

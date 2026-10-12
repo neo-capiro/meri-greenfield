@@ -1,0 +1,209 @@
+{
+  "base": "e5fb3963de787bbd7b7663316c368f15814897da",
+  "head": "441613b0432bf8c84c8acb33e237e6595b6170c7",
+  "originalEntries": 8678,
+  "unchangedOriginalEntries": 8641,
+  "deletedEntries": [],
+  "changedOriginalEntries": [
+    {
+      "path": "apps/gateway/authorization/current-tool-authority.mjs",
+      "beforeGitEntry": "100644 blob 5eed1731a5a36d5e9e9ac8eb971de4b87f702291",
+      "afterGitEntry": "100644 blob d5a03019779ef40af8437f0344137685fbde2e0b"
+    },
+    {
+      "path": "apps/gateway/budget/postgres-tool-budget.mjs",
+      "beforeGitEntry": "100644 blob 58d9bc963e71276f66a259cc8d98e779c27df810",
+      "afterGitEntry": "100644 blob c5bd2b0eb74491f8f0b493774798e3acdb406e89"
+    },
+    {
+      "path": "apps/gateway/budget/tool-budget-dispatch.mjs",
+      "beforeGitEntry": "100644 blob fa515c63aaadc3887b9a0e5610b28b850717291f",
+      "afterGitEntry": "100644 blob 565f5f518b6c6109d29d208ffa455856032e16bd"
+    },
+    {
+      "path": "apps/gateway/dispatch/operation-context.mjs",
+      "beforeGitEntry": "100644 blob 586376b1380bb6b3da6e9201567c0917ccc6d743",
+      "afterGitEntry": "100644 blob ef8eb959dc58fe83ec025bef20652ac7f3d450be"
+    },
+    {
+      "path": "apps/gateway/index.mjs",
+      "beforeGitEntry": "100644 blob 17bc6bf5b5f0e14a90f11d0d5ada5293dcc197bf",
+      "afterGitEntry": "100644 blob 412c6d03f951b2b6c608e87294d85113bdd0b220"
+    },
+    {
+      "path": "apps/gateway/sources/memory-proposals/http-adapter.mjs",
+      "beforeGitEntry": "100644 blob a8b2e6b72cfcd36f54b060f5183392cc7d723832",
+      "afterGitEntry": "100644 blob f45ccbc8a90a6f30c89d6fed85602bc912d46bc2"
+    },
+    {
+      "path": "apps/gateway/sources/memory-proposals/request-context.mjs",
+      "beforeGitEntry": "100644 blob fa33bb8ae1cde47d37330003806268efa7ae585c",
+      "afterGitEntry": "100644 blob 5ccc55404b41efbb1b42bfe8ef523f9fa2518eda"
+    },
+    {
+      "path": "apps/gateway/test/action-item-context-independent.test.mjs",
+      "beforeGitEntry": "100644 blob 71d3eca534cb18de7ea74917b23aa64c5e94c1bd",
+      "afterGitEntry": "100644 blob 5f0de6a95a69d27a069fbf92806408e9b37459c3"
+    },
+    {
+      "path": "apps/gateway/test/capability-next-independent.test.mjs",
+      "beforeGitEntry": "100644 blob 38090175fdc2ba0072e2d9dad9585567dce4189c",
+      "afterGitEntry": "100644 blob 2483195831d37137a48df28f73c34ea4f7d184cb"
+    },
+    {
+      "path": "apps/gateway/test/mail-context-independent.test.mjs",
+      "beforeGitEntry": "100644 blob ed57e35b8b606197b1915ae8c08e8c7ff94a1b81",
+      "afterGitEntry": "100644 blob e0ff7e9a2791c9b86be1a4b76cc9a68c7a69fd35"
+    },
+    {
+      "path": "apps/gateway/test/memory-context-independent.test.mjs",
+      "beforeGitEntry": "100644 blob cbee1df9f2e212a8064dff9fc647e094d5021e37",
+      "afterGitEntry": "100644 blob d60718b84f28c651116e29eefcd0fa2f60eb30c6"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/artifact-file-validation.mjs",
+      "beforeGitEntry": "100644 blob 3b883350b3435a7a5b08ad458c2d32068c47a9c9",
+      "afterGitEntry": "100644 blob 3ec298823fd26a1421837c5fed814ee06281e8f9"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/validate.mjs",
+      "beforeGitEntry": "100644 blob 48201f8f8c35c77e7839121dc57bdc57f1ffebc0",
+      "afterGitEntry": "100644 blob 66ebbcfe8fde9248ae333bbee4aa1804a0a6b981"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "beforeGitEntry": "100644 blob 875915d248484b44aa5614561c30a88958d4a315",
+      "afterGitEntry": "100644 blob 39fc2c6e58c2507a5fa65a70ca55686ddaa8ecb6"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog.json",
+      "beforeGitEntry": "100644 blob 48d4b2927aeb4d8de33be9782409f1e0d0716121",
+      "afterGitEntry": "100644 blob cd978e975962950785fba09f355e94141d5a77a8"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/validate.mjs",
+      "beforeGitEntry": "100644 blob 04cffb6fc7c67ff7925e4e13629cb1f6246ef533",
+      "afterGitEntry": "100644 blob 0af8e513d120b3747a72375977f6431c9d3fc473"
+    },
+    {
+      "path": "packages/contracts/test/backend-execution-connected.test.mjs",
+      "beforeGitEntry": "100644 blob 22bb2c285825140cee9f1cf3fcc1425c6e330d01",
+      "afterGitEntry": "100644 blob de42b309f8ce0ee78520607729b4bb335aeef893"
+    },
+    {
+      "path": "packages/contracts/test/backend-execution-expectations.mjs",
+      "beforeGitEntry": "100644 blob 1eb11acd04ade87ff16499e4ee2054459a37cf0b",
+      "afterGitEntry": "100644 blob 622da1e0c462ad3a6285842f52218fd2c985361c"
+    },
+    {
+      "path": "packages/contracts/test/backend-execution-integration-independent.test.mjs",
+      "beforeGitEntry": "100644 blob c754cc181ba17c1cdaa3028a32c3abb32b199f73",
+      "afterGitEntry": "100644 blob 47d0603a2d9ccbb137f88a881a283ea0654861f8"
+    },
+    {
+      "path": "packages/contracts/test/command-artifact-file.test.mjs",
+      "beforeGitEntry": "100644 blob e97215ed99b4920ae8c0cce4017b739702312e59",
+      "afterGitEntry": "100644 blob 52c21320fe3e17d21372328b4cd9d1a38c4ea644"
+    },
+    {
+      "path": "packages/contracts/test/command-contracts-integration-independent.test.mjs",
+      "beforeGitEntry": "100644 blob 8165ef2f3fb6ebefdacaae86ada3a2c43d224f6a",
+      "afterGitEntry": "100644 blob a6d669aa6eb7b45bd3a6ce4a19866ce96452dad8"
+    },
+    {
+      "path": "packages/contracts/test/command-payloads-independent.test.mjs",
+      "beforeGitEntry": "100644 blob ba0a050ea8b50fb555e25dc03c7af13a78713710",
+      "afterGitEntry": "100644 blob 12297858212bacb86e0b1307d4a40bea07b20973"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+      "beforeGitEntry": "100644 blob 6a15a30af97ae42f3c0921ac1238c436123cb50d",
+      "afterGitEntry": "100644 blob 2e785b1e5d6e3700d8f1b509d73376e4f189d010"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+      "beforeGitEntry": "100644 blob 6e69e8ce949a3a3918b72b8374d2db38b360a229",
+      "afterGitEntry": "100644 blob 95db541d51e63615b89b7c95dff36a2e36aea71f"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-backend-next-independent.test.mjs",
+      "beforeGitEntry": "100644 blob 184da5b157b094129ec00387fd32c42b925fef07",
+      "afterGitEntry": "100644 blob 285a262de663535382d3174bddebc28123c58a16"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+      "beforeGitEntry": "100644 blob f25efdb67a27938918f7a511a2a60d7fc8b4e3e2",
+      "afterGitEntry": "100644 blob 1e9714a2c77099d7140150c132b0159b5878adbc"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-civic-integration-independent.test.mjs",
+      "beforeGitEntry": "100644 blob 14c2493e0dda030e14548c7cc3e35a7220f23245",
+      "afterGitEntry": "100644 blob 04bef815f1747a7d643b9db4043bfa2689164b6f"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-mail.test.mjs",
+      "beforeGitEntry": "100644 blob 417dc79256e07cbdc6cb631018597d692bdab8fe",
+      "afterGitEntry": "100644 blob e937ca289b6f09d941cd2166c98e8aff29e4aff0"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-memory-binding.test.mjs",
+      "beforeGitEntry": "100644 blob 4bfa181465398f05a6f4202317984ca3bc263cfa",
+      "afterGitEntry": "100644 blob 1a220a18b913b8f1ccd5709bce22ab92a54fbb37"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-next-bindings.test.mjs",
+      "beforeGitEntry": "100644 blob e473351dacae4e73123889a2d122cae7767d1763",
+      "afterGitEntry": "100644 blob 9f8941e7e4ce0624b57e07a6f5df46c2818eab0d"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+      "beforeGitEntry": "100644 blob 61580259c24438a5ab65281943027b07e0cb269f",
+      "afterGitEntry": "100644 blob 154fba463d80d603ec413460c647fa9fc6db364d"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-observed-integration-independent.test.mjs",
+      "beforeGitEntry": "100644 blob 5876b3e1481ec42a1bac3b0c83af82fa1b3a384f",
+      "afterGitEntry": "100644 blob 85e5a6c3a355e674ad1d295b7dc0f62960fbed32"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+      "beforeGitEntry": "100644 blob 57aca3c47e05f50a574fbef700cdea40fed0d436",
+      "afterGitEntry": "100644 blob 83b27d222a973fe64332ae164d75bb7dcee86f8a"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+      "beforeGitEntry": "100644 blob 70f126debb025373c11f39fc203cd73d620340ae",
+      "afterGitEntry": "100644 blob 88d6215bd6c68bbf6d3b859e10bbd08a4cd6d894"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-reference-integration-independent.test.mjs",
+      "beforeGitEntry": "100644 blob 5ca2d0f1c1489067382837892387cdc6ef711ac6",
+      "afterGitEntry": "100644 blob 04fdcd5e6355acf33442e1cc56dbe4d55ef18a62"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-selected-next-bindings.test.mjs",
+      "beforeGitEntry": "100644 blob cbb4702c6db879496a848571877a29ebd8dcf25a",
+      "afterGitEntry": "100644 blob 5ccdb62d8aee2abc2d5efaf6f53e95af59d7bec7"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-selected-next-independent.test.mjs",
+      "beforeGitEntry": "100644 blob 104aae4da80722e582cacaead6819be87e7b0159",
+      "afterGitEntry": "100644 blob 63be536d9f14bbb0d4b2305add33658f1efb0b22"
+    }
+  ],
+  "newEntries": 927,
+  "originalTestPathsChanged": 25,
+  "testDeclarationsRetained": 373,
+  "assertionCallsitesBefore": 1531,
+  "assertionCallsitesAfter": 1539,
+  "protectedPrefixes": [
+    "apps/worker/",
+    "apps/control/qualification-sdk-fixture/",
+    "packages/runtime/",
+    "packages/contracts/qualification-sdk/",
+    "packages/contracts/dist/"
+  ],
+  "protectedFileCount": 137,
+  "protectedFilesExact": true,
+  "meaning": "Original source is preserved except the explicit reviewed source/test deltas listed. No deleted paths; no public/dependency/native-owner edits."
+}

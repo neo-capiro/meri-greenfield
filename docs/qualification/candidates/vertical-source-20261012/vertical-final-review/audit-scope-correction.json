@@ -1,0 +1,7 @@
+{
+  "kind": "REVIEWER_AUDIT_PATH_CLASSIFICATION",
+  "failure": "Initial code-source audit included apps/control/commands/README.md, which was added in a later evidence packet and is absent at the behavior source freeze ca506ba1.",
+  "correction": "Exclude Markdown from new executable/schema source identity loop. Existing-file preservation is unchanged; README remains part of candidate Git metadata. No product or assertion change.",
+  "originalScript": "audit-integration-first.py.txt",
+  "rawFailure": "integration-audit-first.stderr.bin"
+}

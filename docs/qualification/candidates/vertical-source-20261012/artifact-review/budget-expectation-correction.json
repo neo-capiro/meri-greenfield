@@ -1,0 +1,14 @@
+{
+  "source": "f8f06c7e8e549cc36280734364ac50b968085177",
+  "originalReplay": "service-first-repair.json",
+  "result": {
+    "passed": 19,
+    "failed": 1
+  },
+  "change": "Generic ARTIFACT_EFFECT_UNKNOWN expectation superseded by exact ARTIFACT_BUDGET_SETTLEMENT_UNKNOWN with original generation cause, correlated budget ticket/request/binding and explicit uncertainty. No production modification.",
+  "additionalControls": [
+    "late reservation",
+    "uncorrelated reservation",
+    "late committed settlement"
+  ]
+}

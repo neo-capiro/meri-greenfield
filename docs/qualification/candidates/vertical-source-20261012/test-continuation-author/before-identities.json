@@ -1,0 +1,77 @@
+[
+  {
+    "path": "packages/contracts/test/backend-execution-connected.test.mjs",
+    "sha256": "2e92b4ad8419ba919626bf99b3d41c47cfc94e5f6d93b5897ae8898d57dccd64",
+    "blob": "22bb2c285825140cee9f1cf3fcc1425c6e330d01"
+  },
+  {
+    "path": "packages/contracts/test/backend-execution-integration-independent.test.mjs",
+    "sha256": "2929e27e5fe78d3d2989b3d1770dd253f94b4d9659cce26e5078043cdea6fbc8",
+    "blob": "c754cc181ba17c1cdaa3028a32c3abb32b199f73"
+  },
+  {
+    "path": "packages/contracts/test/command-contracts-integration-independent.test.mjs",
+    "sha256": "a8d99bbfe2160a7a02c5fdb70754d98c125eb494ca0bff374a517c2918948c72",
+    "blob": "8165ef2f3fb6ebefdacaae86ada3a2c43d224f6a"
+  },
+  {
+    "path": "packages/contracts/test/command-payloads-independent.test.mjs",
+    "sha256": "c36d43f41e7168b136beb320981da15c039336ff21f1a4de36dde562bb8c4abe",
+    "blob": "ba0a050ea8b50fb555e25dc03c7af13a78713710"
+  },
+  {
+    "path": "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+    "sha256": "79d5729c89cbc3bebc8d581e0b8a95bd76613d09981cc573fbf07fc5fd887052",
+    "blob": "6a15a30af97ae42f3c0921ac1238c436123cb50d"
+  },
+  {
+    "path": "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+    "sha256": "e37e47eb6d41ec7c52313320788838240d88569fb3edce75828bc07d490251b0",
+    "blob": "6e69e8ce949a3a3918b72b8374d2db38b360a229"
+  },
+  {
+    "path": "packages/contracts/test/retrieval-backend-next-independent.test.mjs",
+    "sha256": "0b69c36d54d367d86b89f3f89e716e656d537b91008771fc10845823b35cfeb3",
+    "blob": "184da5b157b094129ec00387fd32c42b925fef07"
+  },
+  {
+    "path": "packages/contracts/test/retrieval-civic-integration-independent.test.mjs",
+    "sha256": "17a0eb6d7f96139c0b2776509192f5effad00935b5d0d6a36de83781cc19ec57",
+    "blob": "14c2493e0dda030e14548c7cc3e35a7220f23245"
+  },
+  {
+    "path": "packages/contracts/test/retrieval-mail.test.mjs",
+    "sha256": "ca55bb015d147ddf7838a5f8a4cefbf4bcb399e3cfba5ccca4baf094bce13bf5",
+    "blob": "417dc79256e07cbdc6cb631018597d692bdab8fe"
+  },
+  {
+    "path": "packages/contracts/test/retrieval-next-bindings.test.mjs",
+    "sha256": "2500051c46bad2f83ba0998ab290bfe6cd495fc76acfc2f72c11bab19ee59950",
+    "blob": "e473351dacae4e73123889a2d122cae7767d1763"
+  },
+  {
+    "path": "packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+    "sha256": "9e4c0724c46ab81bdd6fbeba2b9fbc1610a111de4126886389949449a94f6c48",
+    "blob": "61580259c24438a5ab65281943027b07e0cb269f"
+  },
+  {
+    "path": "packages/contracts/test/retrieval-observed-integration-independent.test.mjs",
+    "sha256": "54b8190d22ca20c879d9ff4887b21200e66507214f659185566eaee8320f130c",
+    "blob": "5876b3e1481ec42a1bac3b0c83af82fa1b3a384f"
+  },
+  {
+    "path": "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+    "sha256": "48864c8b1a13d35ed93501016b137ab00ec5061cf01d3ab81aaac510f8b335bd",
+    "blob": "57aca3c47e05f50a574fbef700cdea40fed0d436"
+  },
+  {
+    "path": "packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+    "sha256": "482d1da949c813afe8cacd2a270d63ec914df3dd29a121a7aedd9dac11b3bc45",
+    "blob": "70f126debb025373c11f39fc203cd73d620340ae"
+  },
+  {
+    "path": "packages/contracts/test/vertical-execution-integration-independent.test.mjs",
+    "sha256": "36df16c9482aadf9b8a650f53ac12fbd687a15b11bb23e313a5be231b489da59",
+    "blob": "bb16c1705ff072e44b7bd2818cb443b4b69dd174"
+  }
+]

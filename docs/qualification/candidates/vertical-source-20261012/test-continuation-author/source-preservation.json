@@ -1,0 +1,33 @@
+{
+  "command": [
+    "python3",
+    "docs/qualification/candidates/vertical-source-20261012/test-continuation-author/source-audit.py"
+  ],
+  "cwd": "/workspace/meri-vertical-test-continuation-20261012",
+  "sourceHead": "2955ec6cfd1b38908cc62d9a1f5a8800bf7f5bdc",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T23:02:52.967031+00:00",
+  "durationSeconds": 0.265,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 392379,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-author/source-preservation.stdout.bin",
+      "bytes": 7179,
+      "sha256": "5f74cacff139ac8f22d5813f2f810c927efffe3289e730889132ac9f915f27e3"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-author/source-preservation.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Exact15-file scope/base/root-helper preservation, retained declaration/assertion counts and forward+inverse byte reconstruction.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

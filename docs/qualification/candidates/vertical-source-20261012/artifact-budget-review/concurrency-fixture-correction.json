@@ -1,0 +1,7 @@
+{
+  "source": "5647415bb4d8e7548741fb9af7fb92a0df2d6cf6",
+  "priorTest": "c8ee9618575cccaa76105cff6e1f6a37cd942e6c",
+  "result": "30 pass / 4 fail: three actual cancellation uncertainty failures; one reviewer concurrency assumption",
+  "classification": "reviewer fixture correction only",
+  "detail": "The canonical owner refuses a second reservation while first liability remains unresolved. A successful sibling was unsupported. Corrected oracle retains this refusal and verifies it cannot inherit first-call artifact identity; finally now releases parked fake ports even if a sibling fails. Original capture exited naturally with group absent; no native/process leak."
+}

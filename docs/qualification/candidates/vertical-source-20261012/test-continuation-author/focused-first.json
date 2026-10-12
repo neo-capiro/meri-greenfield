@@ -1,0 +1,48 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/backend-execution-connected.test.mjs",
+    "packages/contracts/test/backend-execution-integration-independent.test.mjs",
+    "packages/contracts/test/command-contracts-integration-independent.test.mjs",
+    "packages/contracts/test/command-payloads-independent.test.mjs",
+    "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+    "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+    "packages/contracts/test/retrieval-backend-next-independent.test.mjs",
+    "packages/contracts/test/retrieval-civic-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-mail.test.mjs",
+    "packages/contracts/test/retrieval-next-bindings.test.mjs",
+    "packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-observed-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+    "packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+    "packages/contracts/test/vertical-execution-integration-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-vertical-test-continuation-20261012",
+  "sourceHead": "1375349a62f4abc036ee091d0d2ebe3a6ec62910",
+  "sourceDiffSha256": "216d10c012b0de08d1a237e1588b995a6d6e65fbc2e2f95de468fd82c746cdc5",
+  "sourceDiffBytes": 64260,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T23:01:14.088505+00:00",
+  "durationSeconds": 15.502,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 391516,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-author/focused-first.stdout.bin",
+      "bytes": 47071,
+      "sha256": "757fa45711f1f21d099332b78bb0299a606bfdfc1db7419d9e115898871fdf4e"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-author/focused-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "First focused15 replay after explicit accepted count/mapping/path/export and saved-reason expectation updates; original broad failure is retained by exact Git path/hash.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

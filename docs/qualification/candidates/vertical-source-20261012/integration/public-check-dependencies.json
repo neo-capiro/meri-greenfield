@@ -1,0 +1,57 @@
+[
+  {
+    "path": "/workspace/meri-vertical-source-20261012/packages/contracts/node_modules/ajv",
+    "kind": "owned-copy",
+    "source": "/workspace/meri-read-continuation-20261012/packages/contracts/node_modules/ajv"
+  },
+  {
+    "path": "/workspace/meri-vertical-source-20261012/packages/contracts/node_modules/ajv-formats",
+    "kind": "owned-copy",
+    "source": "/workspace/meri-read-continuation-20261012/packages/contracts/node_modules/ajv-formats"
+  },
+  {
+    "path": "/workspace/meri-vertical-source-20261012/packages/contracts/node_modules/canonicalize",
+    "kind": "owned-copy",
+    "source": "/workspace/meri-read-continuation-20261012/packages/contracts/node_modules/canonicalize"
+  },
+  {
+    "path": "/workspace/meri-vertical-source-20261012/packages/contracts/node_modules/fast-deep-equal",
+    "kind": "owned-copy",
+    "source": "/workspace/meri-read-continuation-20261012/packages/contracts/node_modules/fast-deep-equal"
+  },
+  {
+    "path": "/workspace/meri-vertical-source-20261012/packages/contracts/node_modules/fast-uri",
+    "kind": "owned-copy",
+    "source": "/workspace/meri-read-continuation-20261012/packages/contracts/node_modules/fast-uri"
+  },
+  {
+    "path": "/workspace/meri-vertical-source-20261012/packages/contracts/node_modules/json-schema-traverse",
+    "kind": "owned-copy",
+    "source": "/workspace/meri-read-continuation-20261012/packages/contracts/node_modules/json-schema-traverse"
+  },
+  {
+    "path": "/workspace/meri-vertical-source-20261012/packages/contracts/node_modules/require-from-string",
+    "kind": "owned-copy",
+    "source": "/workspace/meri-read-continuation-20261012/packages/contracts/node_modules/require-from-string"
+  },
+  {
+    "path": "/workspace/meri-vertical-source-20261012/packages/contracts/node_modules/esbuild",
+    "kind": "owned-symlink",
+    "source": "/workspace/meri-read-continuation-20261012/packages/contracts/node_modules/esbuild"
+  },
+  {
+    "path": "/workspace/meri-vertical-source-20261012/packages/contracts/node_modules/json-schema-to-typescript",
+    "kind": "owned-symlink",
+    "source": "/workspace/meri-read-continuation-20261012/packages/contracts/node_modules/json-schema-to-typescript"
+  },
+  {
+    "path": "/workspace/meri-vertical-source-20261012/packages/contracts/node_modules/typescript",
+    "kind": "owned-symlink",
+    "source": "/workspace/meri-read-continuation-20261012/packages/contracts/node_modules/typescript"
+  },
+  {
+    "path": "/workspace/meri-vertical-source-20261012/packages/contracts/node_modules/.bin/tsc",
+    "kind": "owned-symlink",
+    "source": "../typescript/bin/tsc"
+  }
+]

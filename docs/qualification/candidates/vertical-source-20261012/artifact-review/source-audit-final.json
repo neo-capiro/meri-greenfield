@@ -1,0 +1,522 @@
+{
+  "base": "e5fb3963de787bbd7b7663316c368f15814897da",
+  "source": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
+  "sourceTree": "2bedef6f8857afd44f57e0925e0183908ce46742",
+  "reviewHead": "037b2f6f0ba2974f9ce35b08b2a353c4fed33e10",
+  "preservedOriginalEntries": 8678,
+  "products": [
+    {
+      "path": "apps/artifacts/local-executor.mjs",
+      "bytes": 4031,
+      "sha256": "68c6e1453f902dff5f83c5ab5a4e182e6fa96fee3dcf603998a6dae3de7367e0",
+      "modeBlob": "100644 blob 51584faac0948c64cd30a87ca07f74057d453c56"
+    },
+    {
+      "path": "apps/artifacts/local-store.mjs",
+      "bytes": 4613,
+      "sha256": "267007d8b17837f7e97d368bdb928a8663b2c4d3e2c50ad9b775509b69fe8610",
+      "modeBlob": "100644 blob 9063106d263e2cc9e822151a02b1e8b4a7ac3b4a"
+    },
+    {
+      "path": "apps/artifacts/office-transform.mjs",
+      "bytes": 2345,
+      "sha256": "13906d0247e3fdd226632ec0e4ac55cd994743a2d9c2c4cf7c6dde5f0aac03c9",
+      "modeBlob": "100644 blob 1bed7bcba6bd0053fa2c5967ecdbb777fdb7b7b1"
+    },
+    {
+      "path": "apps/artifacts/presentation.mjs",
+      "bytes": 3469,
+      "sha256": "6cb8244920a09aadf8b35255be55c058577098a1f20449a51ea44a1e159c79db",
+      "modeBlob": "100644 blob 50bf6bb189d36cabd287828a9c0bdbddf32240f8"
+    },
+    {
+      "path": "apps/artifacts/process.mjs",
+      "bytes": 3448,
+      "sha256": "902a4804e6d7e30d343a3aa918546b26a6c4b6684b6bbd2446c1530055069faa",
+      "modeBlob": "100644 blob fc9980d3198acff857f04eb78879d67ecce3c2d8"
+    },
+    {
+      "path": "apps/artifacts/python/analysis.py",
+      "bytes": 4841,
+      "sha256": "c9363307ffb2bae72b51e81bc5da8350daded0993efecd0606bdfb48a7dae1c4",
+      "modeBlob": "100644 blob ca4310810399aeb2584397034ac18c5d9a361fe4"
+    },
+    {
+      "path": "apps/artifacts/python/entry.py",
+      "bytes": 3568,
+      "sha256": "2037b957434218c086f4680a5509a7bba562764df49ca341c6ee461a60f83b9e",
+      "modeBlob": "100644 blob 6d3b288c2ab39459355542e872b1c0deca5ed165"
+    },
+    {
+      "path": "apps/artifacts/python/office.py",
+      "bytes": 5779,
+      "sha256": "46028e1a2d000676dcf1a4375580537db0f2f3771cc2b9ae335ac2912dff0be4",
+      "modeBlob": "100644 blob beb391e5c9a232cab85bce1ee7323f172a5b24da"
+    },
+    {
+      "path": "apps/artifacts/sandbox-analysis.mjs",
+      "bytes": 4436,
+      "sha256": "d6d8b79dfcf851522418bcdd58e7f7fe1186ab32c1cd6fbee4d90c8c59236f3b",
+      "modeBlob": "100644 blob 1f9ed8867e3709a79ad0d6a00c70fcabb39e34b2"
+    },
+    {
+      "path": "apps/artifacts/service.mjs",
+      "bytes": 11868,
+      "sha256": "88abc4f0d9a449dbd547232e772015abef5a60473de22c4b55854ca5a36cefaa",
+      "modeBlob": "100644 blob 6cff1338286d60ba529c750be7101587bad7a8d7"
+    },
+    {
+      "path": "apps/artifacts/test/artifact-execution.test.mjs",
+      "bytes": 23899,
+      "sha256": "5c37319b6adb56533ecade368225f58acf1878597a2b78b1bc77e127fe3feda1",
+      "modeBlob": "100644 blob 229b429a413c6b262d74c9755df316d0c55c99e3"
+    },
+    {
+      "path": "packages/contracts/artifacts-0.2/artifact-formats.mjs",
+      "bytes": 599,
+      "sha256": "0ff685fcaf1bd06b5ac2f13aa55b60b77d068e0592c19a0137421ca29ae2e772",
+      "modeBlob": "100644 blob cdb688315d9cf416451a3bb8b7b428a1b9c1e2f7"
+    },
+    {
+      "path": "packages/contracts/artifacts-0.2/artifact-validation.mjs",
+      "bytes": 7419,
+      "sha256": "f356625d0024aa185925cae6bc84e813a3439cb6dcca17755b5d64edf4821880",
+      "modeBlob": "100644 blob f57cd40d42a3bbf7cccd7fb2cb603635bb5dbd3f"
+    },
+    {
+      "path": "packages/contracts/artifacts-0.2/artifact.schema.json",
+      "bytes": 40724,
+      "sha256": "d90585d5e8ce60fb803fffc345ee9dd8c1e685c03b0319724afce8603094d486",
+      "modeBlob": "100644 blob fb36ab9256687b4c3ce2bfdf687f199a247dfa0b"
+    }
+  ],
+  "receipts": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/adapters-repaired.json",
+      "exitCode": 0,
+      "sourceHead": "2f1c823367133398f85c2bf10d0bae64bbea6c61",
+      "ownedPidAndPgid": 367833
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/final-focused.json",
+      "exitCode": 0,
+      "sourceHead": "68cfc1438e6cb07420e56f01f8568f2ad32291ea",
+      "ownedPidAndPgid": 371138
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/final-independent-corrected.json",
+      "exitCode": 0,
+      "sourceHead": "a6652cbf2d57c7528e255b5734ffadd155463074",
+      "ownedPidAndPgid": 370383
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/final-independent-first.json",
+      "exitCode": 1,
+      "sourceHead": "08bac223b4f1f0a90609b7cd4403b7af9edeb9ce",
+      "ownedPidAndPgid": 369799
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/first-adapters.json",
+      "exitCode": 1,
+      "sourceHead": "fe983d2f1e2415f4b712665b325bd39410681d5f",
+      "ownedPidAndPgid": 364884
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/first-connected.json",
+      "exitCode": 0,
+      "sourceHead": "b156f10a5f39628c3fd083876d17225a775d21a5",
+      "ownedPidAndPgid": 361546
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/first-contracts.json",
+      "exitCode": 0,
+      "sourceHead": "b156f10a5f39628c3fd083876d17225a775d21a5",
+      "ownedPidAndPgid": 361496
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/first-service.json",
+      "exitCode": 1,
+      "sourceHead": "b156f10a5f39628c3fd083876d17225a775d21a5",
+      "ownedPidAndPgid": 362799
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/service-corrected-oracle.json",
+      "exitCode": 1,
+      "sourceHead": "b156f10a5f39628c3fd083876d17225a775d21a5",
+      "ownedPidAndPgid": 363127
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/service-first-repair.json",
+      "exitCode": 1,
+      "sourceHead": "56161aa78b765bb1e7739befcd2d158a9a93c9b0",
+      "ownedPidAndPgid": 367033
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/service-repaired.json",
+      "exitCode": 0,
+      "sourceHead": "024e81eada80008aaa04419c38babcf9e1bc1e97",
+      "ownedPidAndPgid": 367281
+    }
+  ],
+  "checks": [
+    {
+      "name": "all baseline modes and blobs unchanged in source",
+      "pass": true
+    },
+    {
+      "name": "all baseline modes and blobs unchanged in review",
+      "pass": true
+    },
+    {
+      "name": "exact14 product and author-test additions",
+      "pass": true
+    },
+    {
+      "name": "author source additions allocated only",
+      "pass": true
+    },
+    {
+      "name": "exact source apps/artifacts/local-executor.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact source apps/artifacts/local-store.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact source apps/artifacts/office-transform.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact source apps/artifacts/presentation.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact source apps/artifacts/process.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact source apps/artifacts/python/analysis.py",
+      "pass": true
+    },
+    {
+      "name": "exact source apps/artifacts/python/entry.py",
+      "pass": true
+    },
+    {
+      "name": "exact source apps/artifacts/python/office.py",
+      "pass": true
+    },
+    {
+      "name": "exact source apps/artifacts/sandbox-analysis.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact source apps/artifacts/service.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact source apps/artifacts/test/artifact-execution.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact source packages/contracts/artifacts-0.2/artifact-formats.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact source packages/contracts/artifacts-0.2/artifact-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact source packages/contracts/artifacts-0.2/artifact.schema.json",
+      "pass": true
+    },
+    {
+      "name": "reference AGENTS.md",
+      "pass": true
+    },
+    {
+      "name": "reference docs/IMPLEMENTATION-STANDARDS.md",
+      "pass": true
+    },
+    {
+      "name": "reference docs/plans/MERI-DEPLOYMENT.md",
+      "pass": true
+    },
+    {
+      "name": "reference docs/COMPONENTS.md",
+      "pass": true
+    },
+    {
+      "name": "reference docs/coordination/r2/skills.json",
+      "pass": true
+    },
+    {
+      "name": "reference docs/coordination/r2/capabilities.json",
+      "pass": true
+    },
+    {
+      "name": "reference packages/contracts/meri.schema.json",
+      "pass": true
+    },
+    {
+      "name": "reference packages/contracts/validate.mjs",
+      "pass": true
+    },
+    {
+      "name": "reference packages/contracts/commands-0.2/artifact-file.schema.json",
+      "pass": true
+    },
+    {
+      "name": "reference packages/contracts/commands-0.2/artifact-file-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "reference packages/contracts/retrieval-0.2/operation-contracts.mjs",
+      "pass": true
+    },
+    {
+      "name": "receipt zero source diff adapters-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "owned process absent receipt adapters-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "owned process absent now adapters-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/vertical-source-20261012/artifact-review/adapters-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/vertical-source-20261012/artifact-review/adapters-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "receipt zero source diff final-focused.json",
+      "pass": true
+    },
+    {
+      "name": "owned process absent receipt final-focused.json",
+      "pass": true
+    },
+    {
+      "name": "owned process absent now final-focused.json",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/vertical-source-20261012/artifact-review/final-focused.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/vertical-source-20261012/artifact-review/final-focused.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "receipt zero source diff final-independent-corrected.json",
+      "pass": true
+    },
+    {
+      "name": "owned process absent receipt final-independent-corrected.json",
+      "pass": true
+    },
+    {
+      "name": "owned process absent now final-independent-corrected.json",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/vertical-source-20261012/artifact-review/final-independent-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/vertical-source-20261012/artifact-review/final-independent-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "receipt zero source diff final-independent-first.json",
+      "pass": true
+    },
+    {
+      "name": "owned process absent receipt final-independent-first.json",
+      "pass": true
+    },
+    {
+      "name": "owned process absent now final-independent-first.json",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/vertical-source-20261012/artifact-review/final-independent-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/vertical-source-20261012/artifact-review/final-independent-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "receipt zero source diff first-adapters.json",
+      "pass": true
+    },
+    {
+      "name": "owned process absent receipt first-adapters.json",
+      "pass": true
+    },
+    {
+      "name": "owned process absent now first-adapters.json",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/vertical-source-20261012/artifact-review/first-adapters.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/vertical-source-20261012/artifact-review/first-adapters.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "receipt zero source diff first-connected.json",
+      "pass": true
+    },
+    {
+      "name": "owned process absent receipt first-connected.json",
+      "pass": true
+    },
+    {
+      "name": "owned process absent now first-connected.json",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/vertical-source-20261012/artifact-review/first-connected.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/vertical-source-20261012/artifact-review/first-connected.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "receipt zero source diff first-contracts.json",
+      "pass": true
+    },
+    {
+      "name": "owned process absent receipt first-contracts.json",
+      "pass": true
+    },
+    {
+      "name": "owned process absent now first-contracts.json",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/vertical-source-20261012/artifact-review/first-contracts.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/vertical-source-20261012/artifact-review/first-contracts.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "receipt zero source diff first-service.json",
+      "pass": true
+    },
+    {
+      "name": "owned process absent receipt first-service.json",
+      "pass": true
+    },
+    {
+      "name": "owned process absent now first-service.json",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/vertical-source-20261012/artifact-review/first-service.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/vertical-source-20261012/artifact-review/first-service.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "receipt zero source diff service-corrected-oracle.json",
+      "pass": true
+    },
+    {
+      "name": "owned process absent receipt service-corrected-oracle.json",
+      "pass": true
+    },
+    {
+      "name": "owned process absent now service-corrected-oracle.json",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/vertical-source-20261012/artifact-review/service-corrected-oracle.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/vertical-source-20261012/artifact-review/service-corrected-oracle.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "receipt zero source diff service-first-repair.json",
+      "pass": true
+    },
+    {
+      "name": "owned process absent receipt service-first-repair.json",
+      "pass": true
+    },
+    {
+      "name": "owned process absent now service-first-repair.json",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/vertical-source-20261012/artifact-review/service-first-repair.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/vertical-source-20261012/artifact-review/service-first-repair.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "receipt zero source diff service-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "owned process absent receipt service-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "owned process absent now service-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/vertical-source-20261012/artifact-review/service-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/vertical-source-20261012/artifact-review/service-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "final exact115 no failures or skips",
+      "pass": true
+    },
+    {
+      "name": "original overflow value retained",
+      "pass": true
+    },
+    {
+      "name": "first four actual service failures retained",
+      "pass": true
+    },
+    {
+      "name": "original adapters6pass2fail retained",
+      "pass": true
+    },
+    {
+      "name": "general test present and committed",
+      "pass": true
+    }
+  ],
+  "passed": 89,
+  "failed": 0,
+  "runtimeAcceptance": false
+}

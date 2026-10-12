@@ -1,0 +1,169 @@
+{
+  "verdict": "PASS",
+  "base": "1375349a62f4abc036ee091d0d2ebe3a6ec62910",
+  "candidate": "2955ec6cfd1b38908cc62d9a1f5a8800bf7f5bdc",
+  "checks": 9366,
+  "failed": [],
+  "originalEntries": 9298,
+  "untouchedOriginalEntries": 9283,
+  "modifiedExistingPaths": [
+    "packages/contracts/test/backend-execution-connected.test.mjs",
+    "packages/contracts/test/backend-execution-integration-independent.test.mjs",
+    "packages/contracts/test/command-contracts-integration-independent.test.mjs",
+    "packages/contracts/test/command-payloads-independent.test.mjs",
+    "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+    "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+    "packages/contracts/test/retrieval-backend-next-independent.test.mjs",
+    "packages/contracts/test/retrieval-civic-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-mail.test.mjs",
+    "packages/contracts/test/retrieval-next-bindings.test.mjs",
+    "packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-observed-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+    "packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+    "packages/contracts/test/vertical-execution-integration-independent.test.mjs"
+  ],
+  "newAppsPackagesPaths": [
+    "packages/contracts/test/vertical-continuation-expectations.mjs"
+  ],
+  "forwardSha256": "216d10c012b0de08d1a237e1588b995a6d6e65fbc2e2f95de468fd82c746cdc5",
+  "inverseSha256": "af1c66be6795b4d13474d4124a2f206d2a5c1c5f6c7b3a04fd58cf9c97a6b254",
+  "files": [
+    {
+      "path": "packages/contracts/test/backend-execution-connected.test.mjs",
+      "beforeSha256": "2e92b4ad8419ba919626bf99b3d41c47cfc94e5f6d93b5897ae8898d57dccd64",
+      "afterSha256": "1cf3a44b93d2ab93a245d5ee14ed9efc13aefc0f3af574a948470c96e441cc56",
+      "beforeTests": 9,
+      "afterTests": 9,
+      "beforeAssertions": 64,
+      "afterAssertions": 64
+    },
+    {
+      "path": "packages/contracts/test/backend-execution-integration-independent.test.mjs",
+      "beforeSha256": "2929e27e5fe78d3d2989b3d1770dd253f94b4d9659cce26e5078043cdea6fbc8",
+      "afterSha256": "005b108138230add7f1f0b572da1516d2da54fe368eda831af361f7007c331a3",
+      "beforeTests": 10,
+      "afterTests": 10,
+      "beforeAssertions": 101,
+      "afterAssertions": 101
+    },
+    {
+      "path": "packages/contracts/test/command-contracts-integration-independent.test.mjs",
+      "beforeSha256": "a8d99bbfe2160a7a02c5fdb70754d98c125eb494ca0bff374a517c2918948c72",
+      "afterSha256": "a30abc9b84aae4be73be274dd383023daff4a700afe74fb669d5526f83ae6373",
+      "beforeTests": 36,
+      "afterTests": 36,
+      "beforeAssertions": 82,
+      "afterAssertions": 84
+    },
+    {
+      "path": "packages/contracts/test/command-payloads-independent.test.mjs",
+      "beforeSha256": "c36d43f41e7168b136beb320981da15c039336ff21f1a4de36dde562bb8c4abe",
+      "afterSha256": "26d644aa70954c15f4a695556b33b4b2eebbe34ce41c6cd01eda417de574e606",
+      "beforeTests": 47,
+      "afterTests": 47,
+      "beforeAssertions": 75,
+      "afterAssertions": 76
+    },
+    {
+      "path": "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+      "beforeSha256": "79d5729c89cbc3bebc8d581e0b8a95bd76613d09981cc573fbf07fc5fd887052",
+      "afterSha256": "f59cedf63d7f3bf59b2a4327e27b0f4857737eff6adfdcaba87d36e06ad876bc",
+      "beforeTests": 7,
+      "afterTests": 7,
+      "beforeAssertions": 45,
+      "afterAssertions": 45
+    },
+    {
+      "path": "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+      "beforeSha256": "e37e47eb6d41ec7c52313320788838240d88569fb3edce75828bc07d490251b0",
+      "afterSha256": "5881f8e3c6b88e99ac66b74d9d216643a9bc4003330e8a2494be1a036bf72225",
+      "beforeTests": 11,
+      "afterTests": 11,
+      "beforeAssertions": 39,
+      "afterAssertions": 39
+    },
+    {
+      "path": "packages/contracts/test/retrieval-backend-next-independent.test.mjs",
+      "beforeSha256": "0b69c36d54d367d86b89f3f89e716e656d537b91008771fc10845823b35cfeb3",
+      "afterSha256": "ef6aebc2416393d001690673c8f2ce8a6ccd82bb0ba8a4c572f9aca21dfe81dd",
+      "beforeTests": 17,
+      "afterTests": 17,
+      "beforeAssertions": 82,
+      "afterAssertions": 83
+    },
+    {
+      "path": "packages/contracts/test/retrieval-civic-integration-independent.test.mjs",
+      "beforeSha256": "17a0eb6d7f96139c0b2776509192f5effad00935b5d0d6a36de83781cc19ec57",
+      "afterSha256": "9063fd5144330bec1d3861a1ff7e7959c13d7805d1fa0ecfa2312c9d68fe8eee",
+      "beforeTests": 14,
+      "afterTests": 14,
+      "beforeAssertions": 73,
+      "afterAssertions": 74
+    },
+    {
+      "path": "packages/contracts/test/retrieval-mail.test.mjs",
+      "beforeSha256": "ca55bb015d147ddf7838a5f8a4cefbf4bcb399e3cfba5ccca4baf094bce13bf5",
+      "afterSha256": "6c534eb966f74d0a5b809b4099c3df890a6489c308946f1af8ecf291545336e5",
+      "beforeTests": 37,
+      "afterTests": 37,
+      "beforeAssertions": 108,
+      "afterAssertions": 108
+    },
+    {
+      "path": "packages/contracts/test/retrieval-next-bindings.test.mjs",
+      "beforeSha256": "2500051c46bad2f83ba0998ab290bfe6cd495fc76acfc2f72c11bab19ee59950",
+      "afterSha256": "17603c941d2edff728b831f12405a7fe7e2b18f1f6f197c3d5b2c9fa324c048d",
+      "beforeTests": 6,
+      "afterTests": 6,
+      "beforeAssertions": 55,
+      "afterAssertions": 55
+    },
+    {
+      "path": "packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+      "beforeSha256": "9e4c0724c46ab81bdd6fbeba2b9fbc1610a111de4126886389949449a94f6c48",
+      "afterSha256": "435c058a29839d4f46b3ce0b48ed615a981da58e86ed765e343d39796d6d604c",
+      "beforeTests": 12,
+      "afterTests": 12,
+      "beforeAssertions": 67,
+      "afterAssertions": 68
+    },
+    {
+      "path": "packages/contracts/test/retrieval-observed-integration-independent.test.mjs",
+      "beforeSha256": "54b8190d22ca20c879d9ff4887b21200e66507214f659185566eaee8320f130c",
+      "afterSha256": "7d71cddfd9453abd95f5732e3976e7ba8b6a04f8b82d1a43a65186a5092c4ca2",
+      "beforeTests": 15,
+      "afterTests": 15,
+      "beforeAssertions": 77,
+      "afterAssertions": 78
+    },
+    {
+      "path": "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+      "beforeSha256": "48864c8b1a13d35ed93501016b137ab00ec5061cf01d3ab81aaac510f8b335bd",
+      "afterSha256": "efb495f9bf39aab9700172903e855bb662bca47fc6c405a165d4bd15da98d131",
+      "beforeTests": 7,
+      "afterTests": 7,
+      "beforeAssertions": 36,
+      "afterAssertions": 36
+    },
+    {
+      "path": "packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+      "beforeSha256": "482d1da949c813afe8cacd2a270d63ec914df3dd29a121a7aedd9dac11b3bc45",
+      "afterSha256": "c5b50a591a3e039b38d9ab892b879672a65c68d9c25435a5376f63f72359d1d2",
+      "beforeTests": 15,
+      "afterTests": 15,
+      "beforeAssertions": 97,
+      "afterAssertions": 97
+    },
+    {
+      "path": "packages/contracts/test/vertical-execution-integration-independent.test.mjs",
+      "beforeSha256": "36df16c9482aadf9b8a650f53ac12fbd687a15b11bb23e313a5be231b489da59",
+      "afterSha256": "f75a80c9aa51d974c2a8abcc0599afaf588e31c0e73da1abc36cfc24910cb1e5",
+      "beforeTests": 14,
+      "afterTests": 14,
+      "beforeAssertions": 54,
+      "afterAssertions": 54
+    }
+  ],
+  "scope": "Counts supplement individual semantic diff review; neither counts nor reversibility alone proves correct assertions."
+}

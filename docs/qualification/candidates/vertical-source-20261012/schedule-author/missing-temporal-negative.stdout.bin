@@ -1,0 +1,19 @@
+✖ cancelled retained row remains listable after actual unavailable Temporal describe (11.331029ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 356.942907
+
+✖ failing tests:
+
+test at apps/control/test/schedule-lifecycle.test.mjs:51:1
+✖ cancelled retained row remains listable after actual unavailable Temporal describe (11.331029ms)
+  Error: SCHEDULE_INSPECTION_FAILED
+      at error (file:///workspace/meri-schedule-lifecycle-20261012/apps/control/schedules/temporal-inspection.mjs:8:51)
+      at Object.inspect (file:///workspace/meri-schedule-lifecycle-20261012/apps/control/schedules/temporal-inspection.mjs:54:13) {
+    code: 'SCHEDULE_INSPECTION_FAILED'
+  }

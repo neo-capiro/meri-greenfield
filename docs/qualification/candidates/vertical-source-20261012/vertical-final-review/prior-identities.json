@@ -1,0 +1,33 @@
+{
+  "command": [
+    "node",
+    "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/capture-pr37-identities.mjs"
+  ],
+  "cwd": "/workspace/meri-vertical-final-review-20261012",
+  "sourceHead": "8b7b79737391b60f0e4722e76a4ed7ab408a52f3",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T22:55:44.314574+00:00",
+  "durationSeconds": 0.367,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 387853,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/prior-identities.stdout.bin",
+      "bytes": 48,
+      "sha256": "76e65a4986cb5b0ede144ed8487747202ff5a3e435a3556e6a8ac9adc06b4827"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/prior-identities.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

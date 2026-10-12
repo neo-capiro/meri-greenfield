@@ -1,0 +1,49 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "check",
+    "--prefix",
+    "packages/contracts"
+  ],
+  "cwd": "/workspace/meri-vertical-source-20261012",
+  "sourceHead": "7c92f09870496855e968784c30869f185f39250f",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-12T22:54:34.869699+00:00",
+  "durationSeconds": 3.926,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 386612,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 386722,
+      "status": 0
+    },
+    {
+      "pid": 386842,
+      "status": 0
+    },
+    {
+      "pid": 386869,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/integration/public-distribution-check.stdout.bin",
+      "bytes": 1947,
+      "sha256": "e12856cc71606243afaedcce70c651c1758020a69c1383017e12bd48a3aede08"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/integration/public-distribution-check.stderr.bin",
+      "bytes": 832,
+      "sha256": "a5bed74e8271b4bed502d2d779b1766e28a92b798d5f5560230b37ebdcc9e5a2"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

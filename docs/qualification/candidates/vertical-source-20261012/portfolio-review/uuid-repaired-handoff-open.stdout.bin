@@ -1,0 +1,86 @@
+✔ independent complete review stays projected and correlated (43.674022ms)
+✔ independent complete snapshot stays projected and correlated (7.659947ms)
+✔ independent complete current_continuity stays projected and correlated (5.977842ms)
+✔ independent uppercase UUID selectors retain stored UUID identity (5.92005ms)
+✔ independent caller grammar refuses {} (0.552841ms)
+✔ independent caller grammar refuses {"origin":"raw_members","recordId":"bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb"} (0.283857ms)
+✔ independent caller grammar refuses {"origin":"review"} (0.359431ms)
+✔ independent caller grammar refuses {"origin":"review","recordId":"not-id"} (0.248234ms)
+✔ independent caller grammar refuses {"origin":"current_continuity","recordId":"bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb"} (0.419751ms)
+✔ independent caller grammar refuses {"origin":"review","recordId":"bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb","portfolioId":"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"} (0.559001ms)
+✔ independent caller grammar refuses {"origin":"review","recordId":"bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb","asOf":"2026-10-12T01:00:00.000Z"} (0.364207ms)
+✔ independent caller grammar refuses {"origin":"review","recordId":"bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb","subject":{}} (0.308144ms)
+✔ independent caller grammar refuses {"origin":"review","recordId":"bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb","tenantId":"foreign"} (0.213401ms)
+✔ independent caller grammar refuses {"origin":"review","recordId":"bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb","url":"https://evil.invalid"} (0.247081ms)
+✔ independent caller grammar refuses {"origin":"review","recordId":"bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb","limit":1} (0.174242ms)
+✔ independent review refuses duplicate-same-lane without settle (8.085656ms)
+✔ independent review refuses different-version without settle (3.258699ms)
+✔ independent review refuses foreign-tenant without settle (3.063125ms)
+✔ independent review refuses foreign-portfolio without settle (3.338159ms)
+✔ independent review refuses wrong-stance without settle (3.036825ms)
+✔ independent review refuses incomplete-lane without settle (2.983256ms)
+✔ independent absent review is unavailable at source and never an absence DTO (0.48565ms)
+✔ independent same immutable review observed in two lanes may be retained once (4.379504ms)
+✔ independent snapshot correlation id (2.958598ms)
+✔ independent snapshot correlation portfolio (2.778588ms)
+✔ independent snapshot correlation revision (2.400168ms)
+✔ independent snapshot correlation calculation (2.164053ms)
+✔ independent snapshot correlation missing-access (2.346367ms)
+✔ independent snapshot correlation duplicate-contribution (2.841643ms)
+✔ independent snapshot correlation missing-evidence (3.695115ms)
+✔ independent continuity refuses duplicate-id (3.664229ms)
+✔ independent continuity refuses duplicate-key (3.815947ms)
+✔ independent continuity refuses count (3.488254ms)
+✔ independent continuity refuses foreign-tenant (2.714331ms)
+✔ independent continuity refuses foreign-portfolio (2.691937ms)
+✔ independent continuity refuses bad-date (2.40094ms)
+✔ independent context and output admission reject getters/proxies without callbacks (0.721264ms)
+✔ independent projected opaque evidence is detached from mutable source (0.740133ms)
+✔ independent revoke after source body prevents release (5.152597ms)
+✔ independent subject after source body prevents release (4.084692ms)
+✔ independent fence after source body prevents release (4.684402ms)
+✔ independent final revocation after settlement still suppresses output (4.369179ms)
+✔ independent shortened release deadline refuses parked settlement and late output (28.62721ms)
+✔ independent abort parked credential forbids later lane (3.138709ms)
+✔ independent abort parked fetch forbids later lane (3.260702ms)
+✔ independent abort parked body forbids later lane (3.523958ms)
+✔ independent credential getter cannot start fetch (2.391025ms)
+✔ independent credential proxy cannot start fetch (2.185035ms)
+✔ independent credential foreign-binding cannot start fetch (2.842573ms)
+✔ independent credential expired cannot start fetch (2.112937ms)
+✔ independent credential newline cannot start fetch (2.023563ms)
+✔ independent credential extra-field cannot start fetch (2.876865ms)
+✔ independent HTTP bad-encoding refusal remains bounded and sanitized (2.543664ms)
+✔ independent HTTP oversized refusal remains bounded and sanitized (2.06243ms)
+✔ independent HTTP invalid-json refusal remains bounded and sanitized (2.558487ms)
+✔ independent HTTP duplicate-header-length refusal remains bounded and sanitized (2.231775ms)
+✔ independent HTTP private-error refusal remains bounded and sanitized (3.792041ms)
+✔ independent canonical source-disabled entry has zero effects (7.925937ms)
+✖ independent eager-body response handoff abort still cancels acquired body (6.869618ms)
+ℹ tests 59
+ℹ suites 0
+ℹ pass 58
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2685.808949
+
+✖ failing tests:
+
+test at apps/gateway/test/research-evidence-independent.test.mjs:66:1
+✖ independent eager-body response handoff abort still cancels acquired body (6.869618ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///workspace/meri-portfolio-evidence-review-20261012/apps/gateway/test/research-evidence-independent.test.mjs:69:291)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,358 @@
+{
+  "source": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
+  "manifestSha256": "66869910a999d07e46a00b5d002ba889fc906aa21d80d56506590c1f3604e3f2",
+  "members": 69,
+  "passed": 87,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "complete unique reviewer membership",
+      "pass": true
+    },
+    {
+      "name": "apps/artifacts/test/artifact-adapters-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "apps/artifacts/test/artifact-process-independent-child.mjs",
+      "pass": true
+    },
+    {
+      "name": "apps/artifacts/test/artifact-process-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "apps/artifacts/test/artifact-service-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "docs/coordination/reports/CODEX-ARTIFACT-EXECUTION-REVIEW-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "docs/coordination/tasks/CODEX-ARTIFACT-EXECUTION-REVIEW-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/adapter-first-integer-result.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/adapters-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/adapters-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/adapters-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/audit-author-packet.py",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/audit-source.py",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/author-packet-audit.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/baseline-identities.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/budget-expectation-correction.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/dependency-closeout.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/draft-schema-check.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/final-fixture-correction.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/final-focused.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/final-focused.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/final-focused.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/final-independent-corrected.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/final-independent-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/final-independent-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/final-independent-first.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/final-independent-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/final-independent-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/first-adapters.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/first-adapters.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/first-adapters.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/first-connected.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/first-connected.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/first-connected.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/first-contracts.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/first-contracts.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/first-contracts.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/first-findings.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/first-service-independent.test.mjs.txt",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/first-service.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/first-service.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/first-service.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/general-extension-criteria.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/independent-matrix.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/installed-metadata.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/pptx-installed-metadata.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/preparation.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/service-before-budget-code-correction.mjs.txt",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/service-before-inspection-fixture-correction.mjs.txt",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/service-corrected-oracle.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/service-corrected-oracle.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/service-corrected-oracle.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/service-first-repair.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/service-first-repair.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/service-first-repair.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/service-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/service-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/service-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/source-audit-final.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/source-audit.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/verify-packet.py",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/whitespace-authored.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/whitespace-authored.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/whitespace-complete.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/whitespace-complete.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/whitespace-successor.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/artifact-review/whitespace.json",
+      "pass": true
+    },
+    {
+      "name": "packages/contracts/test/artifact-execution-independent-general.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "packages/contracts/test/artifact-execution-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "source apps/artifacts/local-executor.mjs",
+      "pass": true
+    },
+    {
+      "name": "source apps/artifacts/local-store.mjs",
+      "pass": true
+    },
+    {
+      "name": "source apps/artifacts/office-transform.mjs",
+      "pass": true
+    },
+    {
+      "name": "source apps/artifacts/presentation.mjs",
+      "pass": true
+    },
+    {
+      "name": "source apps/artifacts/process.mjs",
+      "pass": true
+    },
+    {
+      "name": "source apps/artifacts/python/analysis.py",
+      "pass": true
+    },
+    {
+      "name": "source apps/artifacts/python/entry.py",
+      "pass": true
+    },
+    {
+      "name": "source apps/artifacts/python/office.py",
+      "pass": true
+    },
+    {
+      "name": "source apps/artifacts/sandbox-analysis.mjs",
+      "pass": true
+    },
+    {
+      "name": "source apps/artifacts/service.mjs",
+      "pass": true
+    },
+    {
+      "name": "source apps/artifacts/test/artifact-execution.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "source packages/contracts/artifacts-0.2/artifact-formats.mjs",
+      "pass": true
+    },
+    {
+      "name": "source packages/contracts/artifacts-0.2/artifact-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "source packages/contracts/artifacts-0.2/artifact.schema.json",
+      "pass": true
+    },
+    {
+      "name": "all author metadata checks passed",
+      "pass": true
+    },
+    {
+      "name": "exact115 final source tests",
+      "pass": true
+    },
+    {
+      "name": "seven owned links removed",
+      "pass": true
+    }
+  ],
+  "runtimeAcceptance": false
+}

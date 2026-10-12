@@ -1,0 +1,14 @@
+file:///workspace/meri-vertical-source-20261012/packages/contracts/retrieval-0.2/validate.mjs:78
+  if (!check(value)) throw new Error(`${name}: ${ajv.errorsText(check.errors)}`);
+                           ^
+
+Error: Catalog: data/operations/85/sourceRequirements must NOT have fewer than 1 items, data/operations/86/sourceRequirements must NOT have fewer than 1 items, data/operations/87/sourceRequirements must NOT have fewer than 1 items, data/operations/88/sourceRequirements must NOT have fewer than 1 items
+    at validateShape (file:///workspace/meri-vertical-source-20261012/packages/contracts/retrieval-0.2/validate.mjs:78:28)
+    at assertCatalog (file:///workspace/meri-vertical-source-20261012/packages/contracts/retrieval-0.2/catalog-validation.mjs:374:3)
+    at createOperationContracts (file:///workspace/meri-vertical-source-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:71:39)
+    at file:///workspace/meri-vertical-source-20261012/packages/contracts/retrieval-0.2/validate.mjs:336:43
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async file:///workspace/meri-vertical-source-20261012/[eval1]:1:1
+
+Node.js v24.19.0

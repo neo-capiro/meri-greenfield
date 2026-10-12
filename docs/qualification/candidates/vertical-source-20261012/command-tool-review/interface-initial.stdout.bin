@@ -1,0 +1,46 @@
+✔ direct tool interface refuses absent executor result rather than exposing it as execution (32.028849ms)
+✔ direct interface correlates actual returned receipt to original command (42.011938ms)
+✔ task.create: actual raw→proposal→current executor/journal/source path (17.660399ms)
+✔ task.update: actual raw→proposal→current executor/journal/source path (48.272109ms)
+✔ memory.propose: actual raw→proposal→current executor/journal/source path (19.259504ms)
+✔ artifact.file: actual raw→proposal→current executor/journal/source path (27.219379ms)
+✔ raw request authority injection is rejected before metadata allocation (1.221035ms)
+✔ metadata exact operation/action/binding/request/input/scopes/approver correlations (7.350691ms)
+✔ metadata clocks require finite current checkedAt and ordered unexpired proposal (3.184277ms)
+✔ effectful raw/options/owner receipts refuse without executing getters or traps (0.780844ms)
+✔ lost metadata acknowledgement is not retried and may leave an owner record (0.773452ms)
+✔ preaborted prepare never enters metadata owner (0.493141ms)
+✔ late prepare receipt after cancellation never releases/starts effect (6.355815ms)
+✔ late read receipt after cancellation never releases/starts effect (2.697345ms)
+✔ clock advances past original metadata cutoff cannot issue a proposal (0.807994ms)
+✔ read must reconstruct every original proposal field, including retention clocks (10.341797ms)
+✔ current owner refusal and current approval revocation independently stop execution (3.348824ms)
+✔ caller mutation while preparation is parked cannot substitute selected input (1.306574ms)
+✔ personal preparation remains proposal-only and execution keeps genuine producer HOLD (3.546611ms)
+✔ same actor approver is not silently prohibited by transport correlation (1.447446ms)
+✔ metadata phase ends before independently bounded executor lifetime begins (20.002379ms)
+✖ caller cancellation after actual executor completion cannot release late success (12.720633ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 21
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2876.408399
+
+✖ failing tests:
+
+test at apps/control/test/commands-tool-interface-independent.test.mjs:95:1
+✖ caller cancellation after actual executor completion cannot release late success (12.720633ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-command-tool-interface-review-20261012/apps/control/test/commands-tool-interface-independent.test.mjs:97:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }

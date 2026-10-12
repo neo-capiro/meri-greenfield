@@ -1,0 +1,11 @@
+{
+  "source": "814ecf1baa1b5890545576a0815257199505103a",
+  "firstReplay": {
+    "tests": 55,
+    "passed": 44,
+    "failed": 11
+  },
+  "fixtureCorrection": "New closed inspection DTO requires exact TXT encoding/whitespace details; synthetic lifecycle fixture replaced only its generic details object, all 23 assertions retained.",
+  "testCollectionCorrection": "General control file committed with --sparse was not retained on disk after merge. Node collection ignored this missing file. Expanded sparse patterns to materialize exact committed 22-control file; no assertion/source change. Initial receipt preserved; never report those missing controls as passed.",
+  "nativeExecution": false
+}

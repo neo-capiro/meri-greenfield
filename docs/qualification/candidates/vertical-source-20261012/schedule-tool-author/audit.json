@@ -1,0 +1,464 @@
+{
+  "base": "d7bd22361f232211a6c1ec6b8d67115cfe36ebbd",
+  "source": "d9296aa2db1290091a355c47fb1db3d87ac98665",
+  "originalEntries": 8744,
+  "unchangedOriginalEntries": 8742,
+  "changedOriginals": [
+    "packages/contracts/schedules-0.2/lifecycle-validation.mjs",
+    "packages/contracts/schedules-0.2/lifecycle.schema.json"
+  ],
+  "checks": [
+    {
+      "name": "only two explicitly allocated existing files changed",
+      "pass": true
+    },
+    {
+      "name": "all other original Git entries byte/mode preserved",
+      "pass": true
+    },
+    {
+      "name": "worktree exact frozen apps/control/schedules/tool-interface.mjs",
+      "pass": true
+    },
+    {
+      "name": "worktree exact frozen packages/contracts/schedules-0.2/tool-interface.schema.json",
+      "pass": true
+    },
+    {
+      "name": "worktree exact frozen packages/contracts/schedules-0.2/tool-interface-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "worktree exact frozen packages/contracts/schedules-0.2/lifecycle-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "worktree exact frozen packages/contracts/schedules-0.2/lifecycle.schema.json",
+      "pass": true
+    },
+    {
+      "name": "worktree exact frozen packages/contracts/test/schedule-tool-interface.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "worktree exact frozen packages/contracts/test/schedule-tool-interface-fixtures.mjs",
+      "pass": true
+    },
+    {
+      "name": "worktree exact frozen apps/control/test/schedule-tool-interface.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "only optional instruction digest schema addition",
+      "pass": true
+    },
+    {
+      "name": "preserved extracted predicate c7e672943826",
+      "pass": true
+    },
+    {
+      "name": "preserved extracted predicate ac6475b10f9b",
+      "pass": true
+    },
+    {
+      "name": "preserved extracted predicate e8d8658e0872",
+      "pass": true
+    },
+    {
+      "name": "preserved extracted predicate 23d0debcbc5f",
+      "pass": true
+    },
+    {
+      "name": "preserved extracted predicate 60729ed23d62",
+      "pass": true
+    },
+    {
+      "name": "preserved extracted predicate 7d8ceb443ebc",
+      "pass": true
+    },
+    {
+      "name": "preserved extracted predicate 4b3eef55116f",
+      "pass": true
+    },
+    {
+      "name": "preserved extracted predicate 09dc502b9c56",
+      "pass": true
+    },
+    {
+      "name": "preserved extracted predicate cf870234ebd6",
+      "pass": true
+    },
+    {
+      "name": "preserved extracted predicate 5367c42abfb8",
+      "pass": true
+    },
+    {
+      "name": "preserved extracted predicate d2fd666263c2",
+      "pass": true
+    },
+    {
+      "name": "preserved extracted predicate 9d7143855b42",
+      "pass": true
+    },
+    {
+      "name": "preserved extracted predicate 42f9c0ffdb0d",
+      "pass": true
+    },
+    {
+      "name": "preserved extracted predicate c16e30ba5973",
+      "pass": true
+    },
+    {
+      "name": "preserved extracted predicate b0bc70f74efa",
+      "pass": true
+    },
+    {
+      "name": "original approval predicate preserved",
+      "pass": true
+    },
+    {
+      "name": "original lifecycle tests unchanged packages/contracts/test/schedule-lifecycle.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "original lifecycle tests unchanged apps/control/test/schedule-lifecycle.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "original lifecycle tests unchanged apps/control/test/schedule-lifecycle-postgres.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "original new-tool test prefix preserved packages/contracts/test/schedule-tool-interface.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "original new-tool test prefix preserved apps/control/test/schedule-tool-interface.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "extracted-lifecycle exact recorded exit",
+      "pass": true
+    },
+    {
+      "name": "extracted-lifecycle clean captured source",
+      "pass": true
+    },
+    {
+      "name": "extracted-lifecycle bounded owned cleanup",
+      "pass": true
+    },
+    {
+      "name": "extracted-lifecycle stdout hash",
+      "pass": true
+    },
+    {
+      "name": "extracted-lifecycle stderr hash",
+      "pass": true
+    },
+    {
+      "name": "extracted-lifecycle owned group still absent",
+      "pass": true
+    },
+    {
+      "name": "initial-tool-author exact recorded exit",
+      "pass": true
+    },
+    {
+      "name": "initial-tool-author clean captured source",
+      "pass": true
+    },
+    {
+      "name": "initial-tool-author bounded owned cleanup",
+      "pass": true
+    },
+    {
+      "name": "initial-tool-author stdout hash",
+      "pass": true
+    },
+    {
+      "name": "initial-tool-author stderr hash",
+      "pass": true
+    },
+    {
+      "name": "initial-tool-author owned group still absent",
+      "pass": true
+    },
+    {
+      "name": "disposition-negative exact recorded exit",
+      "pass": true
+    },
+    {
+      "name": "disposition-negative clean captured source",
+      "pass": true
+    },
+    {
+      "name": "disposition-negative bounded owned cleanup",
+      "pass": true
+    },
+    {
+      "name": "disposition-negative stdout hash",
+      "pass": true
+    },
+    {
+      "name": "disposition-negative stderr hash",
+      "pass": true
+    },
+    {
+      "name": "disposition-negative owned group still absent",
+      "pass": true
+    },
+    {
+      "name": "repaired-tool-author exact recorded exit",
+      "pass": true
+    },
+    {
+      "name": "repaired-tool-author clean captured source",
+      "pass": true
+    },
+    {
+      "name": "repaired-tool-author bounded owned cleanup",
+      "pass": true
+    },
+    {
+      "name": "repaired-tool-author stdout hash",
+      "pass": true
+    },
+    {
+      "name": "repaired-tool-author stderr hash",
+      "pass": true
+    },
+    {
+      "name": "repaired-tool-author owned group still absent",
+      "pass": true
+    },
+    {
+      "name": "connected-tool-author exact recorded exit",
+      "pass": true
+    },
+    {
+      "name": "connected-tool-author clean captured source",
+      "pass": true
+    },
+    {
+      "name": "connected-tool-author bounded owned cleanup",
+      "pass": true
+    },
+    {
+      "name": "connected-tool-author stdout hash",
+      "pass": true
+    },
+    {
+      "name": "connected-tool-author stderr hash",
+      "pass": true
+    },
+    {
+      "name": "connected-tool-author owned group still absent",
+      "pass": true
+    },
+    {
+      "name": "inspection-negative exact recorded exit",
+      "pass": true
+    },
+    {
+      "name": "inspection-negative clean captured source",
+      "pass": true
+    },
+    {
+      "name": "inspection-negative bounded owned cleanup",
+      "pass": true
+    },
+    {
+      "name": "inspection-negative stdout hash",
+      "pass": true
+    },
+    {
+      "name": "inspection-negative stderr hash",
+      "pass": true
+    },
+    {
+      "name": "inspection-negative owned group still absent",
+      "pass": true
+    },
+    {
+      "name": "inspection-repaired exact recorded exit",
+      "pass": true
+    },
+    {
+      "name": "inspection-repaired clean captured source",
+      "pass": true
+    },
+    {
+      "name": "inspection-repaired bounded owned cleanup",
+      "pass": true
+    },
+    {
+      "name": "inspection-repaired stdout hash",
+      "pass": true
+    },
+    {
+      "name": "inspection-repaired stderr hash",
+      "pass": true
+    },
+    {
+      "name": "inspection-repaired owned group still absent",
+      "pass": true
+    },
+    {
+      "name": "instruction-negative exact recorded exit",
+      "pass": true
+    },
+    {
+      "name": "instruction-negative clean captured source",
+      "pass": true
+    },
+    {
+      "name": "instruction-negative bounded owned cleanup",
+      "pass": true
+    },
+    {
+      "name": "instruction-negative stdout hash",
+      "pass": true
+    },
+    {
+      "name": "instruction-negative stderr hash",
+      "pass": true
+    },
+    {
+      "name": "instruction-negative owned group still absent",
+      "pass": true
+    },
+    {
+      "name": "instruction-repaired exact recorded exit",
+      "pass": true
+    },
+    {
+      "name": "instruction-repaired clean captured source",
+      "pass": true
+    },
+    {
+      "name": "instruction-repaired bounded owned cleanup",
+      "pass": true
+    },
+    {
+      "name": "instruction-repaired stdout hash",
+      "pass": true
+    },
+    {
+      "name": "instruction-repaired stderr hash",
+      "pass": true
+    },
+    {
+      "name": "instruction-repaired owned group still absent",
+      "pass": true
+    }
+  ],
+  "passed": 86,
+  "sourceIdentities": [
+    {
+      "path": "apps/control/schedules/tool-interface.mjs",
+      "blob": "c1e619e50eb5b188546ae3a635bdab094471e779",
+      "bytes": 4367,
+      "sha256": "8311d6524a18dd69cedeb4c344c4f5df17a87c45591cdc1bcaa0b7fbdc3618c2"
+    },
+    {
+      "path": "packages/contracts/schedules-0.2/tool-interface.schema.json",
+      "blob": "39ab9865345a26ecbbe7b418460f0885f64bbe27",
+      "bytes": 24305,
+      "sha256": "2de8450111ea263876553f86b895d7fe93bca65ec55bcd649421e21a6f6d3fcf"
+    },
+    {
+      "path": "packages/contracts/schedules-0.2/tool-interface-validation.mjs",
+      "blob": "d2db9d75659669462a56bbdea7d955ce8a7d5efa",
+      "bytes": 9000,
+      "sha256": "36891fa03f59250353d750b3fea8cada3d01f7c3d9a24a470ac7cfa24d93cd20"
+    },
+    {
+      "path": "packages/contracts/schedules-0.2/lifecycle-validation.mjs",
+      "blob": "b39aeade13e3206c8919eb4c8bc2e3a4c65ab549",
+      "bytes": 4553,
+      "sha256": "26ab4b12156f969dd36cfe776c8ccf7606df7e5c55a0ffb90e9f3e1e16fc2a34"
+    },
+    {
+      "path": "packages/contracts/schedules-0.2/lifecycle.schema.json",
+      "blob": "a9f10d4df0fcccca4cce77d35258a1e6ca61cf52",
+      "bytes": 18610,
+      "sha256": "0b391e3e94fc3278de6d061694772a853c54c083630f874c5dc54c82a01f5001"
+    },
+    {
+      "path": "packages/contracts/test/schedule-tool-interface.test.mjs",
+      "blob": "a8a1455dcf2568e7106643366c690b9f8508655c",
+      "bytes": 6696,
+      "sha256": "3dd13e9ab6e155d2baf4de3fd4c363bde73732a9d5fd48e7141ec2932de8c499"
+    },
+    {
+      "path": "packages/contracts/test/schedule-tool-interface-fixtures.mjs",
+      "blob": "7726e44707e2328fbb2c97a366818e1ff4fbf1d7",
+      "bytes": 3773,
+      "sha256": "94d37031d0d2d9cff02c33d9c5e1de6c22099b86256b7971297f899056474c32"
+    },
+    {
+      "path": "apps/control/test/schedule-tool-interface.test.mjs",
+      "blob": "aa57aff6740e0712fed031aba06c50b53a64383b",
+      "bytes": 7781,
+      "sha256": "49c2470e90c32d198cab59bc1fc338d5737593725e472c62724de8605421daa4"
+    }
+  ],
+  "captures": [
+    {
+      "label": "extracted-lifecycle",
+      "sourceHead": "6826b781d22820d17816f0138635de0746ff7a2b",
+      "exitCode": 0,
+      "ownedPidAndPgid": 370031
+    },
+    {
+      "label": "initial-tool-author",
+      "sourceHead": "7523e1abe370a079eb92f55a61518303d5c885c1",
+      "exitCode": 0,
+      "ownedPidAndPgid": 373884
+    },
+    {
+      "label": "disposition-negative",
+      "sourceHead": "a54296564df632c26f3a8ce350acf60d63921cf6",
+      "exitCode": 1,
+      "ownedPidAndPgid": 374136
+    },
+    {
+      "label": "repaired-tool-author",
+      "sourceHead": "cf3abc8758341e728561466c54c1d4364c807a4a",
+      "exitCode": 0,
+      "ownedPidAndPgid": 374444
+    },
+    {
+      "label": "connected-tool-author",
+      "sourceHead": "6389a03b7fc059857e5d47637ad40a7a3e32054b",
+      "exitCode": 0,
+      "ownedPidAndPgid": 374697
+    },
+    {
+      "label": "inspection-negative",
+      "sourceHead": "d994c77564c751bba84bcf3cb3a4fb28b83ccfc5",
+      "exitCode": 1,
+      "ownedPidAndPgid": 375423
+    },
+    {
+      "label": "inspection-repaired",
+      "sourceHead": "0e8735c8a65c31b911b20794e1655587f23ae534",
+      "exitCode": 0,
+      "ownedPidAndPgid": 375526
+    },
+    {
+      "label": "instruction-negative",
+      "sourceHead": "366f2283f6a3cc56d8e8218a47ccb09fd1c8599d",
+      "exitCode": 1,
+      "ownedPidAndPgid": 377155
+    },
+    {
+      "label": "instruction-repaired",
+      "sourceHead": "d9296aa2db1290091a355c47fb1db3d87ac98665",
+      "exitCode": 0,
+      "ownedPidAndPgid": 377363
+    }
+  ],
+  "scope": "OFFLINE_SOURCE_ONLY_NO_RUNTIME_ACCEPTANCE"
+}

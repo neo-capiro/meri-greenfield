@@ -1,0 +1,38 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/gateway/test/research-evidence-independent.test.mjs",
+    "apps/gateway/test/research-evidence-source.test.mjs",
+    "apps/gateway/test/memory-proposal-source.test.mjs",
+    "apps/gateway/test/memory-proposal-source-independent.test.mjs",
+    "packages/contracts/test/retrieval-research-portfolio.test.mjs"
+  ],
+  "cwd": "/workspace/meri-portfolio-evidence-review-20261012",
+  "sourceHead": "4d1bbf4b31d570d30ee2e5d4268fbcc379da9e8b",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T22:32:44.628007+00:00",
+  "durationSeconds": 7.51,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 373113,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/handoff-repaired-final.stdout.bin",
+      "bytes": 13388,
+      "sha256": "c052b9d54e4641102b260d069829322ccc7e0e4d10c922d0e3208f228b650a4e"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/handoff-repaired-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

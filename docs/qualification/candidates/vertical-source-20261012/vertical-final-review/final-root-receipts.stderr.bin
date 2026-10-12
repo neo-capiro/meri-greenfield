@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/workspace/meri-vertical-final-review-20261012/docs/qualification/candidates/vertical-source-20261012/vertical-final-review/audit-root-receipts.py", line 26, in <module>
+    counts={k:int(re.findall(r'^# '+k+r' (\d+)$',stdout,re.M)[-1]) for k in ['tests','pass','fail','cancelled','skipped']}
+                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^
+IndexError: list index out of range

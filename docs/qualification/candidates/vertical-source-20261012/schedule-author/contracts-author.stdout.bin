@@ -1,0 +1,14 @@
+✔ private spec admits all three explicit SDK schedule forms and exclusion calendars (30.950134ms)
+✔ calendar default fields cannot be silently omitted (10.084847ms)
+✔ context/SQL/credentials cannot be injected into closed private intent selectors (2.94801ms)
+✔ listing and history resource bounds are independent and explicit (0.41258ms)
+✔ opaque proxy/accessor inputs rejected by canonical inert boundary without evaluation (0.181673ms)
+✔ error scrubber does not inspect inherited/getter/proxy code fields (0.198078ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 392.146564

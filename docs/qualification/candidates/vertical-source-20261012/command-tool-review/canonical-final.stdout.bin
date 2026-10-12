@@ -1,0 +1,33 @@
+✔ task.create advertises raw request, delegates actual payload normalizer and correlates full command (54.695759ms)
+✔ task.create pending output needs complete trusted original proposal (17.863316ms)
+✔ task.create real executor output is exact-correlated and absence/extra outcome refused (2533.944531ms)
+✔ task.update advertises raw request, delegates actual payload normalizer and correlates full command (16.800559ms)
+✔ task.update pending output needs complete trusted original proposal (13.838017ms)
+✔ task.update real executor output is exact-correlated and absence/extra outcome refused (13.935053ms)
+✔ memory.propose advertises raw request, delegates actual payload normalizer and correlates full command (4.195185ms)
+✔ memory.propose pending output needs complete trusted original proposal (5.537192ms)
+✔ memory.propose real executor output is exact-correlated and absence/extra outcome refused (10.42027ms)
+✔ artifact.file advertises raw request, delegates actual payload normalizer and correlates full command (7.000601ms)
+✔ artifact.file pending output needs complete trusted original proposal (7.440863ms)
+✔ artifact.file real executor output is exact-correlated and absence/extra outcome refused (12.555008ms)
+✔ model inputs cannot provide server command metadata or approved flags (1.186914ms)
+✔ closed context and hostile raw values are refused without executing accessors (0.568805ms)
+✔ proposal guard binds entire original metadata and returns detached data (2.331033ms)
+✔ all domain transformations retain explicit source limitations (0.99814ms)
+✔ normalized digest describes complete intent including immutable artifact version (0.935566ms)
+✔ canonical create_task uses actual raw schema and command normalizer/output callbacks (20.400429ms)
+✔ canonical create_task production gateway remains unavailable before authority/budget (8.788878ms)
+✔ canonical update_task uses actual raw schema and command normalizer/output callbacks (21.244508ms)
+✔ canonical update_task production gateway remains unavailable before authority/budget (7.849977ms)
+✔ canonical save_memory uses actual raw schema and command normalizer/output callbacks (21.320672ms)
+✔ canonical save_memory production gateway remains unavailable before authority/budget (9.650423ms)
+✔ canonical save_chat_attachments uses actual raw schema and command normalizer/output callbacks (20.442041ms)
+✔ canonical save_chat_attachments production gateway remains unavailable before authority/budget (7.217917ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5305.762594

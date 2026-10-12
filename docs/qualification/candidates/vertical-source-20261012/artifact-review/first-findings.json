@@ -1,0 +1,38 @@
+{
+  "source": "82376401bbfbb1e301bf7e1a5b23b04e49197033",
+  "firstService": {
+    "passed": 14,
+    "failed": 6,
+    "total": 20
+  },
+  "reviewerCorrections": [
+    {
+      "cases": [
+        "late returned authority",
+        "abort before start"
+      ],
+      "cause": "Expected prefixed code in Error.message; candidate intentionally uses unprefixed message plus prefixed error.code.",
+      "repair": "Assert unchanged ARTIFACT_DEADLINE code on the typed code field; no semantic relaxation."
+    }
+  ],
+  "sourceFindings": [
+    {
+      "id": "inspection-format",
+      "finding": "inspect succeeds after retained inspection.format is changed from txt to pdf"
+    },
+    {
+      "id": "version-media-type",
+      "finding": "download succeeds after stored version.mimeType is changed to application/pdf despite txt spec/bytes"
+    },
+    {
+      "id": "allocation-lifetime",
+      "finding": "Invalid ids() result leaves one lifetime timer active because allocation validation is outside try/finally; reviewer clears only the observed timer"
+    },
+    {
+      "id": "failed-budget-uncertainty",
+      "finding": "Executor fails, budget.settle then throws; source swallows settlement failure and returns original generation failure without explicit unknown-effect result"
+    }
+  ],
+  "sourceEdits": false,
+  "originalTestPreserved": "first-service-independent.test.mjs.txt"
+}

@@ -1,0 +1,462 @@
+{
+  "base": "e5fb3963de787bbd7b7663316c368f15814897da",
+  "candidate": "b5d0f55108a375ce15eed97d3a7a6926558221af",
+  "candidateTree": "af40efa3a94ddf7becf926df6523089174a40b04",
+  "scope": "SOURCE_ONLY; static markers supplement actual 134 behavioral tests, not proof of SQL/server semantics",
+  "originalMembers": 8678,
+  "sourceManifest": [
+    {
+      "path": "apps/control/schedules/migrations/0001_schedule_owner.sql",
+      "gitBlob": "f9372301f4fba17e4102efb4a63005ef39f9fe23",
+      "bytes": 1123,
+      "sha256": "bf8c593de97dcdae728765ecd90dac6696b290028d4ffb0586bdae0fe87d91c7"
+    },
+    {
+      "path": "apps/control/schedules/postgres-schedule-owner.mjs",
+      "gitBlob": "513c7d1658cd1212b47fc313c88a02ab9b0acf4c",
+      "bytes": 5399,
+      "sha256": "8385475b7ca25aff687221934ffe4f9773af311fa766c56b68e33f48cd656300"
+    },
+    {
+      "path": "apps/control/schedules/schedule-lifecycle.mjs",
+      "gitBlob": "6b8f68cd06fd2d162ef197285de8228aac84dd41",
+      "bytes": 8930,
+      "sha256": "516c4f31a055730b9485cc94de68e6d74e7b0ee8472d7403d078e5d282b08b93"
+    },
+    {
+      "path": "apps/control/schedules/temporal-run-history.mjs",
+      "gitBlob": "cc0961c4729cf1eba36b3543c3ae12f733d7a56e",
+      "bytes": 2430,
+      "sha256": "cf1c01b281815ccf0b43b601825047dfbfdb196398162ca93229f0ab35870e7e"
+    },
+    {
+      "path": "apps/control/schedules/temporal-schedule-mutations.mjs",
+      "gitBlob": "8c775bae6740047abcf8e70f2172de5abc2492c3",
+      "bytes": 3403,
+      "sha256": "a4b75d9996d87eaaf2ab6d412516df70e3bb4d1bbf72ec96ccdcefd7104bb271"
+    },
+    {
+      "path": "apps/control/test/schedule-lifecycle-postgres.test.mjs",
+      "gitBlob": "f4162b4d1088d97210a1f9bd0326ec549ea450fc",
+      "bytes": 5584,
+      "sha256": "d9687c901bd6c84144d573a224697b8dbc2e660c9ceb45857fa255b81347b8ca"
+    },
+    {
+      "path": "apps/control/test/schedule-lifecycle.test.mjs",
+      "gitBlob": "61164103b45b528f726e345e422ac31a092e2278",
+      "bytes": 16227,
+      "sha256": "75d533f9d89307f58c63410eee004450d72b5d1540140d0cc6e9a4d11b85749a"
+    },
+    {
+      "path": "packages/contracts/schedules-0.2/lifecycle-validation.mjs",
+      "gitBlob": "29ca16bf092fff3209547a5dbcc52f80c50d0fcb",
+      "bytes": 4406,
+      "sha256": "568347a5bdc0ef3180fa7e3934f8a1b824733bb0704a858542df731e41d657b1"
+    },
+    {
+      "path": "packages/contracts/schedules-0.2/lifecycle.schema.json",
+      "gitBlob": "175ff60e5e77ff7ae4865c9d3055b20139bed900",
+      "bytes": 18498,
+      "sha256": "981ba97ca3a4044d0d7ba3021cba1fdbb3b48b7106ee5b79e4cc61364f571d41"
+    },
+    {
+      "path": "packages/contracts/test/schedule-lifecycle.test.mjs",
+      "gitBlob": "d5fcc79af2048c7fb2168c38dbe7aa7e7ae6e401",
+      "bytes": 2340,
+      "sha256": "d72e1bc4eb5aaed6af00552bb4fef531459e8ffd2d2fad1e5c4262caf3807dee"
+    }
+  ],
+  "passed": 74,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "all original Git members preserved",
+      "passed": true,
+      "detail": {
+        "count": 8678,
+        "changed": []
+      }
+    },
+    {
+      "name": "protected:packages/contracts/meri.schema.json",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "protected:packages/contracts/validate.mjs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "protected:packages/runtime/operation-lifetime.mjs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "protected:apps/control/schedules/temporal-inspection.mjs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "protected:packages/contracts/schedules-0.2/inspection.schema.json",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "protected:packages/contracts/schedules-0.2/inspection-validation.mjs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "protected:apps/control/test/temporal-inspection.test.mjs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "protected:apps/control/schedules/test/temporal-inspection-independent.test.mjs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "protected:package.json",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "protected:package-lock.json",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "protected:packages/contracts/package.json",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "protected:packages/contracts/package-lock.json",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "exact source:apps/control/schedules/migrations/0001_schedule_owner.sql",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "exact source:apps/control/schedules/postgres-schedule-owner.mjs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "exact source:apps/control/schedules/schedule-lifecycle.mjs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "exact source:apps/control/schedules/temporal-run-history.mjs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "exact source:apps/control/schedules/temporal-schedule-mutations.mjs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "exact source:apps/control/test/schedule-lifecycle-postgres.test.mjs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "exact source:apps/control/test/schedule-lifecycle.test.mjs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "exact source:packages/contracts/schedules-0.2/lifecycle-validation.mjs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "exact source:packages/contracts/schedules-0.2/lifecycle.schema.json",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "exact source:packages/contracts/test/schedule-lifecycle.test.mjs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "exact allocated source count",
+      "passed": true,
+      "detail": [
+        "apps/control/schedules/migrations/0001_schedule_owner.sql",
+        "apps/control/schedules/postgres-schedule-owner.mjs",
+        "apps/control/schedules/schedule-lifecycle.mjs",
+        "apps/control/schedules/temporal-run-history.mjs",
+        "apps/control/schedules/temporal-schedule-mutations.mjs",
+        "apps/control/test/schedule-lifecycle-postgres.test.mjs",
+        "apps/control/test/schedule-lifecycle.test.mjs",
+        "packages/contracts/schedules-0.2/lifecycle-validation.mjs",
+        "packages/contracts/schedules-0.2/lifecycle.schema.json",
+        "packages/contracts/test/schedule-lifecycle.test.mjs"
+      ]
+    },
+    {
+      "name": "initial author test file retained as byte prefix",
+      "passed": true,
+      "detail": {
+        "initialBytes": 11213
+      }
+    },
+    {
+      "name": "concrete PostgreSQL factory composes actual owner",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "canonical lifetime imported",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "existing inspector reused",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "no module-local alternate timers",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "atomic missing-row creation serializes using advisory transaction lock",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "retained intent binds digest and generation comparison",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "database schema preserves tenant-qualified primary keys",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "database unresolved intent states explicit",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "no implicit migration execution/import",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "installed SDK version is exact",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "SDK metadata:package.json",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "SDK metadata:src/schedule-client.ts",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "SDK metadata:src/schedule-types.ts",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "SDK metadata:src/schedule-helpers.ts",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "SDK metadata:src/workflow-client.ts",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "SDK metadata:src/connection.ts",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "SDK metadata:lib/schedule-client.js",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "SDK metadata:lib/schedule-types.d.ts",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "SDK metadata:lib/workflow-client.js",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "SDK metadata:src/grpc-retry.ts",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "SDK metadata:src/helpers.ts",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "SDK metadata:src/types.ts",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "raw receipt:independent-first",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "raw stream:docs/qualification/candidates/vertical-source-20261012/schedule-review/independent-first.stdout.bin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "raw stream:docs/qualification/candidates/vertical-source-20261012/schedule-review/independent-first.stderr.bin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "raw receipt:independent-expanded",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "raw stream:docs/qualification/candidates/vertical-source-20261012/schedule-review/independent-expanded.stdout.bin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "raw stream:docs/qualification/candidates/vertical-source-20261012/schedule-review/independent-expanded.stderr.bin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "raw receipt:owner-first",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "raw stream:docs/qualification/candidates/vertical-source-20261012/schedule-review/owner-first.stdout.bin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "raw stream:docs/qualification/candidates/vertical-source-20261012/schedule-review/owner-first.stderr.bin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "raw receipt:repaired-first",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "raw stream:docs/qualification/candidates/vertical-source-20261012/schedule-review/repaired-first.stdout.bin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "raw stream:docs/qualification/candidates/vertical-source-20261012/schedule-review/repaired-first.stderr.bin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "raw receipt:missing-before",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "raw stream:docs/qualification/candidates/vertical-source-20261012/schedule-review/missing-before.stdout.bin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "raw stream:docs/qualification/candidates/vertical-source-20261012/schedule-review/missing-before.stderr.bin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "raw receipt:missing-repaired",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "raw stream:docs/qualification/candidates/vertical-source-20261012/schedule-review/missing-repaired.stdout.bin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "raw stream:docs/qualification/candidates/vertical-source-20261012/schedule-review/missing-repaired.stderr.bin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "raw receipt:status-before",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "raw stream:docs/qualification/candidates/vertical-source-20261012/schedule-review/status-before.stdout.bin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "raw stream:docs/qualification/candidates/vertical-source-20261012/schedule-review/status-before.stderr.bin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "raw receipt:list-errors-before",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "raw stream:docs/qualification/candidates/vertical-source-20261012/schedule-review/list-errors-before.stdout.bin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "raw stream:docs/qualification/candidates/vertical-source-20261012/schedule-review/list-errors-before.stderr.bin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "raw receipt:final-behavior",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "raw stream:docs/qualification/candidates/vertical-source-20261012/schedule-review/final-behavior.stdout.bin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "raw stream:docs/qualification/candidates/vertical-source-20261012/schedule-review/final-behavior.stderr.bin",
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "runtimeAccepted": false,
+  "sqlExecuted": false,
+  "sdkExecuted": false
+}

@@ -1,0 +1,55 @@
+{
+  "source": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
+  "schema": "packages/contracts/artifacts-0.2/artifact.schema.json",
+  "id": "urn:meri:artifacts:0.2.0",
+  "module": "packages/contracts/artifacts-0.2/artifact-validation.mjs",
+  "factory": "createArtifactValidators({validateShape,validatePublicShape,canonicalSha256})",
+  "normalize": "normalizeArtifactInput(id,request,context) -> {input,metadata}",
+  "assert": "assertArtifactOutput(id,result,request,context)",
+  "operations": [
+    {
+      "id": "create_word",
+      "inputDefinition": "WordRequest",
+      "outputDefinition": "ArtifactCreatedResult"
+    },
+    {
+      "id": "create_excel",
+      "inputDefinition": "ExcelRequest",
+      "outputDefinition": "ArtifactCreatedResult"
+    },
+    {
+      "id": "create_powerpoint",
+      "inputDefinition": "PowerpointRequest",
+      "outputDefinition": "ArtifactCreatedResult"
+    },
+    {
+      "id": "run_analysis",
+      "inputDefinition": "AnalysisRequest",
+      "outputDefinition": "ArtifactOperationResult"
+    }
+  ],
+  "contextKeys": [
+    "binding",
+    "scopes",
+    "evidence",
+    "assets",
+    "deadlineMs",
+    "maxBytes",
+    "analysisAdmission"
+  ],
+  "analysisAdmission": "optional overall; required only sandbox, server-owned receiptSha256/manifestSha256/imageDigest",
+  "modelAuthorityFields": false,
+  "service": "createArtifactService({validators,authorize,budget,versions,objects,executor,now,ids})",
+  "methods": [
+    "create(request,context,{signal})",
+    "revise(baseVersionId,request,context,{signal})",
+    "inspect(versionId,context,{signal})",
+    "download(versionId,context,{signal})"
+  ],
+  "generalBoundary": "createSandboxAnalysisBoundary({validatePublicShape,canonicalSha256,port,verifyAdmission,now}).execute({program,inputs,outputs,binding,scopes,deadlineMs,maxBytes,admission},{signal})",
+  "generalDispatch": "Separate admitted boundary; create/revise rejects sandbox format with ANALYSIS_SANDBOX_DISPATCH_REQUIRED. Root composition owns shared authority/budget and native admission. No local general code path.",
+  "filing": "Exact public ObjectReference preserved; no source filing effect; gateway command owner consumes verified immutable object tuple.",
+  "registryChange": false,
+  "nativeQualified": false,
+  "behavioralSource": "814ecf1baa1b5890545576a0815257199505103a"
+}

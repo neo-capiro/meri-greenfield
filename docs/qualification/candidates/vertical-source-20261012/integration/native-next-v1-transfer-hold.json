@@ -1,0 +1,41 @@
+{
+  "libraryFileId": "libfile_14e1c1b5e82c819188ddf388776c019b",
+  "version": 1,
+  "fileId": "file_00000000b2308230a3ac147545c18e23",
+  "filename": "meri-sdk-advertisement-reviewed-source-handoff-20261012.zip",
+  "reportedBytes": 33110,
+  "reportedSha256": "59163f55b061c5cdbd25ecf9d9a7c688b46444bc27cacd576200d42d907eafb8",
+  "reportedSource": "a833eb48437889a8744a9a81012442340cc5dd01",
+  "reportedTree": "5b06a3e75747575f494b53eff6310dec470f647c",
+  "currentBackendHead": "b288982e613a49cee94803def94cdcb393151840",
+  "sourceBase": "e5fb3963de787bbd7b7663316c368f15814897da",
+  "unchangedPathsSinceBase": [
+    "apps/worker",
+    "apps/control/qualification-sdk-fixture",
+    "packages/runtime"
+  ],
+  "supportedMetadata": {
+    "resolvedVersion": 1,
+    "sizeBytes": 33110,
+    "unavailableItems": 0
+  },
+  "supportedDownload": {
+    "helper": "current bundled library_file_transfer.py",
+    "exitCode": 1,
+    "error": "library file transfer failed: download failed"
+  },
+  "verifiedBytes": false,
+  "exactOverlayPathsKnown": false,
+  "composition": "NO_BACKEND_CHANGES_IN_OWNER_PATHS; EXACT_OVERLAY_BYTES_NOT_VERIFIED",
+  "reportedCorrection": "overlay target directory /opt/meri-worker/probes; source patches unchanged",
+  "requiredNext": "Three module paths and expected base/current hashes or fetchable Git branch; no user approval is required for read-only agreement",
+  "nativeVerdict": "NOT_JOINED",
+  "G1Accepted": false,
+  "browser": "HOLD",
+  "freshTransferNetworkRetry": {
+    "additionalNetworkPermission": true,
+    "exitCode": 1,
+    "error": "library file transfer failed: download failed",
+    "bytesObtained": false
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "sourceCommit": "b5d0f55108a375ce15eed97d3a7a6926558221af",
+  "sourceTree": "af40efa3a94ddf7becf926df6523089174a40b04",
+  "independentPassed": 84,
+  "authorPassed": 50,
+  "combinedPassed": 134,
+  "sourceAuditPassed": 74,
+  "originalMembersPreserved": 8678,
+  "runtimeAccepted": false,
+  "authorPacket": "d7bd22361f232211a6c1ec6b8d67115cfe36ebbd",
+  "authorPacketChecksPassed": 108
+}

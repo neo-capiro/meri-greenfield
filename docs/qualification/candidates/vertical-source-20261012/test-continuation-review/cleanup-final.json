@@ -1,0 +1,50 @@
+{
+  "groups": [
+    {
+      "receipt": "docs/qualification/candidates/vertical-source-20261012/test-continuation-review/independent-audit.json",
+      "pgid": 392110,
+      "freshAbsent": true,
+      "timeout": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "docs/qualification/candidates/vertical-source-20261012/test-continuation-review/independent-inverse.json",
+      "pgid": 392077,
+      "freshAbsent": true,
+      "timeout": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "docs/qualification/candidates/vertical-source-20261012/test-continuation-review/independent-packet.json",
+      "pgid": 393649,
+      "freshAbsent": true,
+      "timeout": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "docs/qualification/candidates/vertical-source-20261012/test-continuation-author/focused-first.json",
+      "pgid": 391516,
+      "freshAbsent": true,
+      "timeout": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "docs/qualification/candidates/vertical-source-20261012/test-continuation-author/frozen-focused.json",
+      "pgid": 392476,
+      "freshAbsent": true,
+      "timeout": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "docs/qualification/candidates/vertical-source-20261012/test-continuation-author/source-preservation.json",
+      "pgid": 392379,
+      "freshAbsent": true,
+      "timeout": false,
+      "killRequired": false
+    }
+  ],
+  "count": 6,
+  "allAbsent": true,
+  "reviewerDependencies": "No copies, symlinks or installs created; donors and other owners untouched.",
+  "runtimeTeardownClaim": false
+}

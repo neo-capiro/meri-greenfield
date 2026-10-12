@@ -1,0 +1,78 @@
+{
+  "ownedGroups": [
+    {
+      "receipt": "eager-handoff-before.json",
+      "pgid": 371931,
+      "absentNow": true,
+      "reportedAbsent": true,
+      "timeout": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "handoff-repaired-final.json",
+      "pgid": 373113,
+      "absentNow": true,
+      "reportedAbsent": true,
+      "timeout": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "independent-initial-corrected.json",
+      "pgid": 371729,
+      "absentNow": true,
+      "reportedAbsent": true,
+      "timeout": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "independent-initial-restored.json",
+      "pgid": 370516,
+      "absentNow": true,
+      "reportedAbsent": true,
+      "timeout": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "independent-initial.json",
+      "pgid": 370205,
+      "absentNow": true,
+      "reportedAbsent": true,
+      "timeout": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "memory-handoff-before.json",
+      "pgid": 372905,
+      "absentNow": true,
+      "reportedAbsent": true,
+      "timeout": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "source-audit-final.json",
+      "pgid": 374232,
+      "absentNow": true,
+      "reportedAbsent": true,
+      "timeout": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "source-audit-first.json",
+      "pgid": 373994,
+      "absentNow": true,
+      "reportedAbsent": true,
+      "timeout": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "uuid-repaired-handoff-open.json",
+      "pgid": 372248,
+      "absentNow": true,
+      "reportedAbsent": true,
+      "timeout": false,
+      "killRequired": false
+    }
+  ],
+  "allAbsent": true,
+  "otherOwnersUntouched": true
+}

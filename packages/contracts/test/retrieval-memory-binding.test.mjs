@@ -1,3 +1,4 @@
+import {verticalOperationIds,schemaRelativePath} from './vertical-source-expectations.mjs';
 // Explicit reviewed continuation allowlist; the original13-descriptor hash is unchanged.
 const continuationIds = ["search_funding_opportunities", "get_funding_opportunity_requirements", "get_funding_opportunity", "get_opportunity_client_context", "get_opportunity_government_landscape", "read_client_documents", "query_economic_data", "search_federal_grants", "search_federal_awards", "get_district_nexus_context", "get_district_nexus_changes", "search_state_bills", "get_state_legislator", "search_cbo_cost_estimates", "search_gao_reports", "search_crs_reports", "search_sec_filings", "search_fara_registrations", "search_lda_filings", "search_acquisition_personnel", "get_acquisition_person", "get_bill_status", "search_floor_votes", "search_congress_bills", "read_bill_text", "get_committee_roster", "list_members", "get_pe_contractors", "get_pe_bills", "get_pe_report_language", "get_state_rule_status", "get_certification_status", "search_intel_articles", "list_global_datasets", "get_representation", "get_state_bill_status", "search_state_floor_votes", "query_regulatory_dockets", "find_contacts", "resolve_entity", "search_tracked_bills", "query_intelligence", "search_public_web", "scrape_web_page", "search_sam_opportunities", "get_florida_budget_project", "query_outreach", "search_program_elements", "get_program_element", "get_pe_budget_timeline", "search_client_knowledge", "query_knowledge_graph", "read_monday_client_boards", "read_chat_attachments", "search_memory", "get_client_context", "search_research_sources", "query_global_data", "search_legislative_research", "get_legal_reference", "search_legiwatch_news", "search_committee_hearings"];
 // Independently specified synthetic DTOs; no source access or authorization.
@@ -176,12 +177,12 @@ test('all thirteen earlier bindings retain legacy context grammar and refuse mem
 test('catalog preserves the original thirteen descriptors and complete selected/deferred ledger',()=>{
   const catalog=JSON.parse(readFileSync(new URL('../retrieval-0.2/catalog.json',import.meta.url)));
   // Canonical hash of the thirteen descriptors at the assigned source base.
-  assert.equal(canonicalSha256(catalog.operations.filter(value=>![reference.id,'query_action_items','actions.query',
+  assert.equal(canonicalSha256(catalog.operations.filter(value=>![...verticalOperationIds,reference.id,'query_action_items','actions.query',
     'lookup_client_registry','get_business_development_context','get_business_development_evidence',
     'get_business_development_recent_changes','get_research_portfolio','get_research_portfolio_changes',...continuationIds].includes(value.operation.id))),
     'c60f90cf599299c1edb14538b653772b4f1d52b9c311636653aba7c08de29095');
-  assert.equal(catalog.operations.length,84);assert.equal(catalog.originals.length,139);
+  assert.equal(catalog.operations.length,97);assert.equal(catalog.originals.length,139);
   assert.equal(catalog.originals.filter(value=>value.disposition==='selected').length,96);
   assert.equal(catalog.originals.filter(value=>value.disposition==='deferred').length,43);
-  assert.equal(catalog.originals.filter(value=>value.disposition==='selected'&&value.state==='pending').length,13);
+  assert.equal(catalog.originals.filter(value=>value.disposition==='selected'&&value.state==='pending').length,0);
 });

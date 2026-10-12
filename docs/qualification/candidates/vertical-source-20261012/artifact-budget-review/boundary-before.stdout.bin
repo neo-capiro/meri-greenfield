@@ -1,0 +1,118 @@
+✔ real current-authority + artifact + canonical owner hashes committed record, not delivery (90.316863ms)
+✔ fresh decision ID may rotate while stable selected subject is unchanged (16.468909ms)
+✔ canonical policy refuses decision actor before budget reservation (8.707112ms)
+✔ canonical policy refuses subject actor before budget reservation (5.721285ms)
+✔ canonical policy refuses missing grant before budget reservation (5.949379ms)
+✔ canonical policy refuses decision policy before budget reservation (4.895031ms)
+✔ canonical policy refuses unmatched decision ID before budget reservation (4.849893ms)
+✔ canonical authority refuses current writer fence without effects (5.744896ms)
+✔ canonical authority refuses expired capability without effects (5.195754ms)
+✔ canonical authority refuses disabled source without effects (5.428114ms)
+✔ canonical authority refuses missing source without effects (5.123695ms)
+✔ subject change after reserve refuses execution and leaves UNKNOWN, never refund (7.008013ms)
+✔ artifact resource digest mismatch cannot borrow canonical policy permission (5.402134ms)
+✔ changed trusted scopes cannot be substituted by otherwise valid current policy (5.334764ms)
+✔ current revocation after settlement prevents release but preserves charged version (13.161068ms)
+✔ resource release expiry while marker ACK parked refuses now, reconciles historical completion (18.471766ms)
+✔ wrong commit acknowledgement cannot publish durable completion (9.645255ms)
+✔ wrong immutable readback forbids version commit while retaining object uncertainty (8.677327ms)
+✔ late returned object write is retained as UNKNOWN and never starts version commit (7.855639ms)
+✔ late version acknowledgement cannot become a completion marker (9.207225ms)
+✔ borrowed receivers survive create and revise with exact base object and intent (24.013931ms)
+✔ snapshot of delivery remains exact while generation is parked (11.158283ms)
+✔ lost reserve ACK cannot regenerate, only canonical reconciliation (10.454122ms)
+✔ lost marker ACK cannot regenerate, only canonical reconciliation (14.889551ms)
+✔ lost settle ACK cannot regenerate, only canonical reconciliation (16.142058ms)
+✔ same delivery plus changed parent conflicts before read or regeneration (24.615667ms)
+✔ wrong producer task binding cannot reuse a bound grant (3.262683ms)
+✔ no startup pool calls or invocation bypass; default disabled before prepare (2.668207ms)
+✔ postpublication response ceiling reports exact committed uncertainty (13.419288ms)
+✔ generator exception preserves original cause and durable UNKNOWN without marker (10.893444ms)
+✖ outer cancellation during putHook retains explicit effect uncertainty (20.294971ms)
+✖ outer cancellation during commitHook retains explicit effect uncertainty (9.870774ms)
+✖ outer cancellation after reservation persistence exposes budget identity without artifact effects (7.069135ms)
+✖ concurrent deliveries keep cancellation identity separate from a successful sibling (9.91475ms)
+ℹ Error: Test "concurrent deliveries keep cancellation identity separate from a successful sibling" at apps/artifacts/test/postgres-service-independent.test.mjs:108:1 generated asynchronous activity after the test ended. This activity created the error "Error: ARTIFACT_EFFECT_UNKNOWN" and would have caused the test to fail, but instead triggered an unhandledRejection event.
+ℹ tests 34
+ℹ suites 0
+ℹ pass 30
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10329.982062
+
+✖ failing tests:
+
+test at apps/artifacts/test/postgres-service-independent.test.mjs:94:45
+✖ outer cancellation during putHook retains explicit effect uncertainty (20.294971ms)
+  AssertionError [ERR_ASSERTION]: {"name":"GatewayDenied","message":"CANCELLED","ownKeys":["name"],"stored":1,"committed":0,"reservation":"UNKNOWN","completion":null}
+  + actual - expected
+  
+  + undefined
+  - 'ARTIFACT_EFFECT_UNKNOWN'
+  
+      at TestContext.<anonymous> (file:///workspace/meri-artifact-budget-review-20261012/apps/artifacts/test/postgres-service-independent.test.mjs:99:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'ARTIFACT_EFFECT_UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/artifacts/test/postgres-service-independent.test.mjs:94:45
+✖ outer cancellation during commitHook retains explicit effect uncertainty (9.870774ms)
+  AssertionError [ERR_ASSERTION]: {"name":"GatewayDenied","message":"CANCELLED","ownKeys":["name"],"stored":1,"committed":1,"reservation":"UNKNOWN","completion":null}
+  + actual - expected
+  
+  + undefined
+  - 'ARTIFACT_EFFECT_UNKNOWN'
+  
+      at TestContext.<anonymous> (file:///workspace/meri-artifact-budget-review-20261012/apps/artifacts/test/postgres-service-independent.test.mjs:99:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'ARTIFACT_EFFECT_UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/artifacts/test/postgres-service-independent.test.mjs:101:1
+✖ outer cancellation after reservation persistence exposes budget identity without artifact effects (7.069135ms)
+  AssertionError [ERR_ASSERTION]: {"name":"GatewayDenied","message":"CANCELLED","keys":["name"]}
+  + actual - expected
+  
+  + undefined
+  - 'ARTIFACT_BUDGET_RESERVATION_UNKNOWN'
+  
+      at TestContext.<anonymous> (file:///workspace/meri-artifact-budget-review-20261012/apps/artifacts/test/postgres-service-independent.test.mjs:105:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'ARTIFACT_BUDGET_RESERVATION_UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/artifacts/test/postgres-service-independent.test.mjs:108:1
+✖ concurrent deliveries keep cancellation identity separate from a successful sibling (9.91475ms)
+  Error: ARTIFACT_BUDGET_RESERVATION_UNKNOWN
+      at generate (file:///workspace/meri-artifact-budget-review-20261012/apps/artifacts/service.mjs:85:199)
+      at async Object.execute (file:///workspace/meri-artifact-budget-review-20261012/apps/artifacts/postgres-service.mjs:84:20) {
+    code: 'ARTIFACT_BUDGET_RESERVATION_UNKNOWN',
+    cause: GatewayDenied: BUDGET_UNCERTAIN
+        at deny (file:///workspace/meri-artifact-budget-review-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+        at Object.reserve (file:///workspace/meri-artifact-budget-review-20261012/apps/gateway/budget/tool-budget-execution.mjs:29:82)
+        at async Object.reserve (file:///workspace/meri-artifact-budget-review-20261012/apps/artifacts/postgres-service.mjs:67:15),
+    lifetime: { unsettledOperations: 0, physicalStopProven: false },
+    budgetSettlementUnknown: false,
+    budgetReservationUnknown: true,
+    budget: { ticketId: null, requestSha256: '1b3f4080567c89328cd17468f7d285591ad32048b9e44b5f6fce6d6b17825e0e', binding: { tenantId: 'synthetic-tenant', actorId: 'synthetic-actor', conversationId: '11111111-1111-4111-8111-111111111111', runId: '22222222-2222-4222-8222-222222222222', attemptId: '33333333-3333-4333-8333-333333333333', workerId: '44444444-4444-4444-8444-444444444444', writerFence: 1 } }
+  }

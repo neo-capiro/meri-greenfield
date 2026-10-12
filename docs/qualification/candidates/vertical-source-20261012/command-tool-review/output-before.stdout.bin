@@ -1,0 +1,40 @@
+✖ direct tool interface refuses absent executor result rather than exposing it as execution (10.33745ms)
+✖ direct interface correlates actual returned receipt to original command (40.64849ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2812.636243
+
+✖ failing tests:
+
+test at apps/control/test/commands-tool-interface-independent.test.mjs:6:1
+✖ direct tool interface refuses absent executor result rather than exposing it as execution (10.33745ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-command-tool-interface-review-20261012/apps/control/test/commands-tool-interface-independent.test.mjs:8:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/test/commands-tool-interface-independent.test.mjs:10:1
+✖ direct interface correlates actual returned receipt to original command (40.64849ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-command-tool-interface-review-20261012/apps/control/test/commands-tool-interface-independent.test.mjs:12:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }

@@ -1,0 +1,18 @@
+✔ claim concretely locks schedule and persists identity before commit (2.984106ms)
+✔ reused intent stops before projection mutation and rolls back (0.719161ms)
+✔ stale generation preserves unknown active intent and refuses update (0.319901ms)
+✔ lost commit evicts client and preserves unknown marker (0.468704ms)
+✔ failed rollback evicts client instead of healthy reuse (0.234302ms)
+✔ ambiguous BEGIN evicts and does not attempt another operation (0.244468ms)
+✔ release failure cannot overwrite commit uncertainty (0.326932ms)
+✔ terminal acknowledged journal cannot be changed to UNKNOWN (0.461514ms)
+✔ acknowledgement atomically advances exact generation and releases active intent (0.521474ms)
+✔ callback expiry after borrowed pool acquisition evicts without BEGIN (0.36609ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 300.06375

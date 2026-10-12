@@ -1,0 +1,10 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
+import {assertArtifactFileResult} from '../../../packages/contracts/commands-0.2/validate.mjs';
+const id=n=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
+const binding={tenantId:'tenant',actorId:'actor',conversationId:id(1),runId:id(2),attemptId:id(3),workerId:id(4),writerFence:1};
+const scope={tenantId:'tenant',kind:'client',resourceId:id(9),policyRevision:'p1'};
+const object={objectId:id(10),versionId:'storage-version',sha256:'a'.repeat(64),bytes:1,scopes:[scope]};
+const command={contractVersion:'0.1.0',commandId:id(5),binding,action:'artifact.file',arguments:{clientId:id(9),conversationId:id(1)},attachments:[object],scopes:[scope],idempotencyKey:'file-1'};
+const context={binding,destination:command.arguments};
+test('source saved original bytes may disclose partial chat extraction reason',()=>{for(const reason of ['Original saved; extraction was partial','']){const file={object,fileName:'f',status:'saved',documentId:id(11),location:'/files',indexingStatus:'pending',reused:false,reason};const r={commandSha256:canonicalSha256(command),files:[file]};assert.equal(assertArtifactFileResult(r,command,context).files[0].reason,reason);}});

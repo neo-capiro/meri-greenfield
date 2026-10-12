@@ -1,0 +1,17 @@
+fatal: not a git repository (or any of the parent directories): .git
+Traceback (most recent call last):
+  File "/workspace/meri-command-execution-review-20261012/docs/qualification/candidates/vertical-source-20261012/command-review/audit-source.py", line 15, in <module>
+    old,new=tree(BASE),tree(SOURCE)
+            ^^^^^^^^^^
+  File "/workspace/meri-command-execution-review-20261012/docs/qualification/candidates/vertical-source-20261012/command-review/audit-source.py", line 14, in tree
+    return {row.split(b'\t',1)[1].decode():row.split(b'\t',1)[0].decode() for row in git('ls-tree','-rz',ref).split(b'\0') if row}
+                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/meri-command-execution-review-20261012/docs/qualification/candidates/vertical-source-20261012/command-review/audit-source.py", line 11, in git
+    def git(*args,root=ROOT):return subprocess.check_output(['git','-C',str(root),*args])
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['git', '-C', '/workspace', 'ls-tree', '-rz', 'e5fb3963de787bbd7b7663316c368f15814897da']' returned non-zero exit status 128.

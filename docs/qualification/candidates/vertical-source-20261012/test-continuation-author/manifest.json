@@ -1,0 +1,198 @@
+{
+  "base": "1375349a62f4abc036ee091d0d2ebe3a6ec62910",
+  "source": "2955ec6cfd1b38908cc62d9a1f5a8800bf7f5bdc",
+  "scope": "TEST_ONLY_NO_RUNTIME_ADMISSION",
+  "selfExcluded": true,
+  "members": [
+    {
+      "path": "packages/contracts/test/backend-execution-connected.test.mjs",
+      "bytes": 19469,
+      "sha256": "1cf3a44b93d2ab93a245d5ee14ed9efc13aefc0f3af574a948470c96e441cc56"
+    },
+    {
+      "path": "packages/contracts/test/backend-execution-integration-independent.test.mjs",
+      "bytes": 13352,
+      "sha256": "005b108138230add7f1f0b572da1516d2da54fe368eda831af361f7007c331a3"
+    },
+    {
+      "path": "packages/contracts/test/command-contracts-integration-independent.test.mjs",
+      "bytes": 17467,
+      "sha256": "a30abc9b84aae4be73be274dd383023daff4a700afe74fb669d5526f83ae6373"
+    },
+    {
+      "path": "packages/contracts/test/command-payloads-independent.test.mjs",
+      "bytes": 23443,
+      "sha256": "26d644aa70954c15f4a695556b33b4b2eebbe34ce41c6cd01eda417de574e606"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+      "bytes": 9155,
+      "sha256": "f59cedf63d7f3bf59b2a4327e27b0f4857737eff6adfdcaba87d36e06ad876bc"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+      "bytes": 10878,
+      "sha256": "5881f8e3c6b88e99ac66b74d9d216643a9bc4003330e8a2494be1a036bf72225"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-backend-next-independent.test.mjs",
+      "bytes": 15725,
+      "sha256": "ef6aebc2416393d001690673c8f2ce8a6ccd82bb0ba8a4c572f9aca21dfe81dd"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-civic-integration-independent.test.mjs",
+      "bytes": 15033,
+      "sha256": "9063fd5144330bec1d3861a1ff7e7959c13d7805d1fa0ecfa2312c9d68fe8eee"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-mail.test.mjs",
+      "bytes": 30134,
+      "sha256": "6c534eb966f74d0a5b809b4099c3df890a6489c308946f1af8ecf291545336e5"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-next-bindings.test.mjs",
+      "bytes": 10078,
+      "sha256": "17603c941d2edff728b831f12405a7fe7e2b18f1f6f197c3d5b2c9fa324c048d"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+      "bytes": 17074,
+      "sha256": "435c058a29839d4f46b3ce0b48ed615a981da58e86ed765e343d39796d6d604c"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-observed-integration-independent.test.mjs",
+      "bytes": 14940,
+      "sha256": "7d71cddfd9453abd95f5732e3976e7ba8b6a04f8b82d1a43a65186a5092c4ca2"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+      "bytes": 10088,
+      "sha256": "efb495f9bf39aab9700172903e855bb662bca47fc6c405a165d4bd15da98d131"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+      "bytes": 24659,
+      "sha256": "c5b50a591a3e039b38d9ab892b879672a65c68d9c25435a5376f63f72359d1d2"
+    },
+    {
+      "path": "packages/contracts/test/vertical-execution-integration-independent.test.mjs",
+      "bytes": 10739,
+      "sha256": "f75a80c9aa51d974c2a8abcc0599afaf588e31c0e73da1abc36cfc24910cb1e5"
+    },
+    {
+      "path": "packages/contracts/test/vertical-continuation-expectations.mjs",
+      "bytes": 760,
+      "sha256": "8941d841dbcea1fcd45d4ae2b4e843dea47045a36bb3b71da7e9b1f344bf5f2c"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-VERTICAL-TEST-CONTINUATION-20261012.md",
+      "bytes": 2471,
+      "sha256": "43a7b1af31b1d95415e61f7d285b5d2d3d17c4605a4d1bbc52f3d828b174b100"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-VERTICAL-TEST-CONTINUATION-20261012.md",
+      "bytes": 5056,
+      "sha256": "907e4650d08d61ee5573ef5754b64ba1c568df9ff698c83489fa8d075c4efb67"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-author/.gitattributes",
+      "bytes": 50,
+      "sha256": "1bee6826ab8565b1a50079d470700a548e73e2363ea12450cf37ea13454b9eba"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-author/allowlist.json",
+      "bytes": 1396,
+      "sha256": "dca3ad494e18200ee8545d9180e44bbbdf3926f3a7c54f0b8e4cb8f71d1ea474"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-author/baseline-failures.json",
+      "bytes": 3567,
+      "sha256": "9441cacbfc6e0f788a6512368d1bbb89301b5bc68fb78ffdf12f7b8c7b410a4a"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-author/before-identities.json",
+      "bytes": 3434,
+      "sha256": "219a56a86ce80a4ecdda2a33cfa7da1c2e4f7d551ce506bd6278213213f170ce"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-author/cleanup.json",
+      "bytes": 560,
+      "sha256": "6404923500b18009a2c348d526ba1c6e9ac75ee692f34ff9daa0251372b71efc"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-author/focused-first.json",
+      "bytes": 2481,
+      "sha256": "9f16dbb95d00eae226485cda94d5d65014b67a46d2d626793eb87fbbdea17cc3"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-author/focused-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-author/focused-first.stdout.bin",
+      "bytes": 47071,
+      "sha256": "757fa45711f1f21d099332b78bb0299a606bfdfc1db7419d9e115898871fdf4e"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-author/forward.patch",
+      "bytes": 64260,
+      "sha256": "216d10c012b0de08d1a237e1588b995a6d6e65fbc2e2f95de468fd82c746cdc5"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-author/frozen-focused.json",
+      "bytes": 2440,
+      "sha256": "3e313b6a40a7824e4d18764673a8faf9be7881d9b39f7248b3f951169223042e"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-author/frozen-focused.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-author/frozen-focused.stdout.bin",
+      "bytes": 47075,
+      "sha256": "71418408e3be087b9d7b88dc8edc34b2694da3ce990d7936e492abdf2c907dd9"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-author/inverse.patch",
+      "bytes": 64260,
+      "sha256": "af1c66be6795b4d13474d4124a2f206d2a5c1c5f6c7b3a04fd58cf9c97a6b254"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-author/setup-diagnostic.json",
+      "bytes": 383,
+      "sha256": "f4cf87d103d9eb64bb320c7d74c75b3d28ca2178fe0347b274f81bba7533fbc2"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-author/source-audit.py",
+      "bytes": 3568,
+      "sha256": "82f1a7c56fef04a5f843a0bb08a20963033e902768a5fd3c9d9568689e6cfd30"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-author/source-preservation.json",
+      "bytes": 1417,
+      "sha256": "1155bb2d9fc06f37c0e3dcb65ca570194b247c2a4672199c19055218d7110b02"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-author/source-preservation.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-author/source-preservation.stdout.bin",
+      "bytes": 7179,
+      "sha256": "5f74cacff139ac8f22d5813f2f810c927efffe3289e730889132ac9f915f27e3"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-author/test-expectation-changes.json",
+      "bytes": 6342,
+      "sha256": "86ea664f4661aaf4d8010376e6b8d8cf1105c84f0c5f4417c04ec4e941c6afab"
+    }
+  ]
+}

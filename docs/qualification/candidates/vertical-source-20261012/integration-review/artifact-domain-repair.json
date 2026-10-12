@@ -1,0 +1,102 @@
+{
+  "canonicalArtifactCandidate": "1625c95d89593f07ec072ad71f9756a41e0c0db1",
+  "acceptedArtifactSource": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
+  "domainJoinedAt": "83d0f5951a5e0c5d86d3a8684c2396b6cf13f794",
+  "domainFiles": [
+    {
+      "path": "apps/artifacts/local-executor.mjs",
+      "acceptedBlob": "51584faac0948c64cd30a87ca07f74057d453c56",
+      "joinedBlob": "51584faac0948c64cd30a87ca07f74057d453c56",
+      "matches": true
+    },
+    {
+      "path": "apps/artifacts/local-store.mjs",
+      "acceptedBlob": "9063106d263e2cc9e822151a02b1e8b4a7ac3b4a",
+      "joinedBlob": "9063106d263e2cc9e822151a02b1e8b4a7ac3b4a",
+      "matches": true
+    },
+    {
+      "path": "apps/artifacts/office-transform.mjs",
+      "acceptedBlob": "1bed7bcba6bd0053fa2c5967ecdbb777fdb7b7b1",
+      "joinedBlob": "1bed7bcba6bd0053fa2c5967ecdbb777fdb7b7b1",
+      "matches": true
+    },
+    {
+      "path": "apps/artifacts/presentation.mjs",
+      "acceptedBlob": "50bf6bb189d36cabd287828a9c0bdbddf32240f8",
+      "joinedBlob": "50bf6bb189d36cabd287828a9c0bdbddf32240f8",
+      "matches": true
+    },
+    {
+      "path": "apps/artifacts/process.mjs",
+      "acceptedBlob": "fc9980d3198acff857f04eb78879d67ecce3c2d8",
+      "joinedBlob": "fc9980d3198acff857f04eb78879d67ecce3c2d8",
+      "matches": true
+    },
+    {
+      "path": "apps/artifacts/python/analysis.py",
+      "acceptedBlob": "ca4310810399aeb2584397034ac18c5d9a361fe4",
+      "joinedBlob": "ca4310810399aeb2584397034ac18c5d9a361fe4",
+      "matches": true
+    },
+    {
+      "path": "apps/artifacts/python/entry.py",
+      "acceptedBlob": "6d3b288c2ab39459355542e872b1c0deca5ed165",
+      "joinedBlob": "6d3b288c2ab39459355542e872b1c0deca5ed165",
+      "matches": true
+    },
+    {
+      "path": "apps/artifacts/python/office.py",
+      "acceptedBlob": "beb391e5c9a232cab85bce1ee7323f172a5b24da",
+      "joinedBlob": "beb391e5c9a232cab85bce1ee7323f172a5b24da",
+      "matches": true
+    },
+    {
+      "path": "apps/artifacts/sandbox-analysis.mjs",
+      "acceptedBlob": "1f9ed8867e3709a79ad0d6a00c70fcabb39e34b2",
+      "joinedBlob": "1f9ed8867e3709a79ad0d6a00c70fcabb39e34b2",
+      "matches": true
+    },
+    {
+      "path": "apps/artifacts/service.mjs",
+      "acceptedBlob": "6cff1338286d60ba529c750be7101587bad7a8d7",
+      "joinedBlob": "6cff1338286d60ba529c750be7101587bad7a8d7",
+      "matches": true
+    },
+    {
+      "path": "apps/artifacts/test/artifact-execution.test.mjs",
+      "acceptedBlob": "229b429a413c6b262d74c9755df316d0c55c99e3",
+      "joinedBlob": "229b429a413c6b262d74c9755df316d0c55c99e3",
+      "matches": true
+    },
+    {
+      "path": "packages/contracts/artifacts-0.2/artifact-formats.mjs",
+      "acceptedBlob": "cdb688315d9cf416451a3bb8b7b428a1b9c1e2f7",
+      "joinedBlob": "cdb688315d9cf416451a3bb8b7b428a1b9c1e2f7",
+      "matches": true
+    },
+    {
+      "path": "packages/contracts/artifacts-0.2/artifact-validation.mjs",
+      "acceptedBlob": "f57cd40d42a3bbf7cccd7fb2cb603635bb5dbd3f",
+      "joinedBlob": "f57cd40d42a3bbf7cccd7fb2cb603635bb5dbd3f",
+      "matches": true
+    },
+    {
+      "path": "packages/contracts/artifacts-0.2/artifact.schema.json",
+      "acceptedBlob": "fb36ab9256687b4c3ce2bfdf687f199a247dfa0b",
+      "joinedBlob": "fb36ab9256687b4c3ce2bfdf687f199a247dfa0b",
+      "matches": true
+    }
+  ],
+  "oneByteRepair": {
+    "path": "apps/artifacts/process.mjs",
+    "beforeBytes": 3449,
+    "afterBytes": 3448,
+    "beforeSha256": "56eae7666ae6528f05a6e0f5803f0ef5876e3e0cd0aae3785e8dd858e04a0878",
+    "afterSha256": "902a4804e6d7e30d343a3aa918546b26a6c4b6684b6bbd2446c1530055069faa",
+    "exactFinalLfRemoved": true
+  },
+  "verdict": "ACCEPT_SOURCE for artifact4 canonical wiring and exact repaired domain only",
+  "excluded": "83 also contains separately reviewed command registration; no combined-source acceptance inferred. Await exact final13 freeze.",
+  "testRerun": "Not required for exact extra-LF removal; prior26 canonical controls and domain115 controls retained."
+}

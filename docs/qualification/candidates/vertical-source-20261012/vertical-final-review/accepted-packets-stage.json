@@ -1,0 +1,34 @@
+{
+  "command": [
+    "python3",
+    "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/audit-accepted-packets.py",
+    "e38c8d65"
+  ],
+  "cwd": "/workspace/meri-vertical-final-review-20261012",
+  "sourceHead": "a4307bee4220263c4ec89873e93da0648670b242",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T23:14:42.100837+00:00",
+  "durationSeconds": 0.517,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 396793,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/accepted-packets-stage.stdout.bin",
+      "bytes": 57,
+      "sha256": "89cec4e26234f0af4481b51ff0898f0f5e1826b7d1be012a85f008772a6df925"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/accepted-packets-stage.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,43 @@
+{
+  "command": [
+    "bash",
+    "-c",
+    "node --test --test-concurrency=2 packages/contracts/test/*.test.mjs evals/qualification/hermes-session.test.mjs apps/gateway/test/*.test.mjs apps/control/test/*.test.mjs apps/control/schedules/test/*.test.mjs apps/artifacts/test/*.test.mjs"
+  ],
+  "cwd": "/workspace/meri-vertical-source-20261012",
+  "sourceHead": "441613b0432bf8c84c8acb33e237e6595b6170c7",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-12T23:15:55.052201+00:00",
+  "durationSeconds": 138.709,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 397391,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 398458,
+      "status": 0
+    },
+    {
+      "pid": 398477,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/integration/combined-source-final.stdout.bin",
+      "bytes": 467651,
+      "sha256": "27c78cfc47bdf9be61eccca91b30188df2cb33468a3aeaf962fcfc1b2322f5a7"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/integration/combined-source-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Final integrated replay after independently accepted thirteen-operation source, finite test expectation continuation, command and artifact durable compositions; explicit harness source root supplied.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

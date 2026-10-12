@@ -1,0 +1,14 @@
+{
+  "physicalOwnedCopies": [
+    "ajv",
+    "ajv-formats",
+    "canonicalize",
+    "fast-deep-equal",
+    "fast-uri",
+    "json-schema-traverse",
+    "require-from-string"
+  ],
+  "donor": "accepted existing minimal dependency tree",
+  "installationExecuted": false,
+  "donorTouched": false
+}

@@ -1,0 +1,50 @@
+{
+  "repository": "neo-capiro/meri-greenfield",
+  "main": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc",
+  "mainEvidence": "Successful git ls-remote in this continuation",
+  "pullRequests": [
+    {
+      "pr": 7,
+      "url": "https://github.com/neo-capiro/meri-greenfield/pull/7",
+      "head": "task/codex-g1-publish-20261011",
+      "headSha": "5ee46446b5f60034916f00b2a665b3e2bef9cf60",
+      "draft": true,
+      "state": "open",
+      "merged": false,
+      "base": "main"
+    },
+    {
+      "pr": 8,
+      "url": "https://github.com/neo-capiro/meri-greenfield/pull/8",
+      "head": "shipper/aws-preflight-20261011-r1",
+      "headSha": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+      "draft": true,
+      "state": "open",
+      "merged": false,
+      "base": "task/codex-g1-publish-20261011"
+    },
+    {
+      "pr": 9,
+      "url": "https://github.com/neo-capiro/meri-greenfield/pull/9",
+      "head": "task/handover-preserve-candidates-20261012",
+      "headSha": "c57b7d26df7de2acbd8c7d8edc7098f7d495053a",
+      "draft": true,
+      "state": "open",
+      "merged": false,
+      "base": "task/codex-g1-publish-20261011"
+    },
+    {
+      "pr": 37,
+      "url": "https://github.com/neo-capiro/meri-greenfield/pull/37",
+      "head": "task/meri-backend-execution-20261012",
+      "headSha": "e5fb3963de787bbd7b7663316c368f15814897da",
+      "draft": true,
+      "state": "open",
+      "merged": false,
+      "base": "task/meri-backend-next-20261012"
+    }
+  ],
+  "originalPR2": "Preserved in accepted ancestry; not integrated again",
+  "sourceConnectivity": false,
+  "runtimeAccepted": false
+}

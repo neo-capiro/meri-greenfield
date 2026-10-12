@@ -1,0 +1,124 @@
+{
+  "sourceHead": "4ca2df209f768a7d76a840ccc629c808b01ff9f5",
+  "scope": "Only root-owned temporary copies/symlinks and generated audit bytecode removed; all donor trees/source/branches/worktrees/evidence retained.",
+  "removed": [
+    {
+      "path": "/workspace/meri-vertical-source-20261012/node_modules/ajv",
+      "kind": "owned-copy",
+      "removed": true
+    },
+    {
+      "path": "/workspace/meri-vertical-source-20261012/node_modules/ajv-formats",
+      "kind": "owned-copy",
+      "removed": true
+    },
+    {
+      "path": "/workspace/meri-vertical-source-20261012/node_modules/canonicalize",
+      "kind": "owned-copy",
+      "removed": true
+    },
+    {
+      "path": "/workspace/meri-vertical-source-20261012/node_modules/fast-deep-equal",
+      "kind": "owned-copy",
+      "removed": true
+    },
+    {
+      "path": "/workspace/meri-vertical-source-20261012/node_modules/fast-uri",
+      "kind": "owned-copy",
+      "removed": true
+    },
+    {
+      "path": "/workspace/meri-vertical-source-20261012/node_modules/json-schema-traverse",
+      "kind": "owned-copy",
+      "removed": true
+    },
+    {
+      "path": "/workspace/meri-vertical-source-20261012/node_modules/require-from-string",
+      "kind": "owned-copy",
+      "removed": true
+    },
+    {
+      "path": "/workspace/meri-vertical-source-20261012/packages/contracts/node_modules/ajv",
+      "kind": "owned-copy",
+      "removed": true
+    },
+    {
+      "path": "/workspace/meri-vertical-source-20261012/packages/contracts/node_modules/ajv-formats",
+      "kind": "owned-copy",
+      "removed": true
+    },
+    {
+      "path": "/workspace/meri-vertical-source-20261012/packages/contracts/node_modules/canonicalize",
+      "kind": "owned-copy",
+      "removed": true
+    },
+    {
+      "path": "/workspace/meri-vertical-source-20261012/packages/contracts/node_modules/fast-deep-equal",
+      "kind": "owned-copy",
+      "removed": true
+    },
+    {
+      "path": "/workspace/meri-vertical-source-20261012/packages/contracts/node_modules/fast-uri",
+      "kind": "owned-copy",
+      "removed": true
+    },
+    {
+      "path": "/workspace/meri-vertical-source-20261012/packages/contracts/node_modules/json-schema-traverse",
+      "kind": "owned-copy",
+      "removed": true
+    },
+    {
+      "path": "/workspace/meri-vertical-source-20261012/packages/contracts/node_modules/require-from-string",
+      "kind": "owned-copy",
+      "removed": true
+    },
+    {
+      "path": "/workspace/meri-vertical-source-20261012/packages/contracts/node_modules/esbuild",
+      "kind": "owned-symlink",
+      "removed": true
+    },
+    {
+      "path": "/workspace/meri-vertical-source-20261012/packages/contracts/node_modules/json-schema-to-typescript",
+      "kind": "owned-symlink",
+      "removed": true
+    },
+    {
+      "path": "/workspace/meri-vertical-source-20261012/packages/contracts/node_modules/typescript",
+      "kind": "owned-symlink",
+      "removed": true
+    },
+    {
+      "path": "/workspace/meri-vertical-source-20261012/packages/contracts/node_modules/.bin/tsc",
+      "kind": "owned-symlink",
+      "removed": true
+    },
+    {
+      "path": "/workspace/meri-vertical-source-20261012/docs/qualification/candidates/vertical-source-20261012/integration/__pycache__/build-final-preservation.cpython-312.pyc",
+      "kind": "owned-audit-bytecode",
+      "removed": true
+    }
+  ],
+  "processChecks": [
+    {
+      "receipt": "combined-source-check.json",
+      "ownedPgid": 385679,
+      "currentlyAbsent": true
+    },
+    {
+      "receipt": "combined-source-final.json",
+      "ownedPgid": 397391,
+      "currentlyAbsent": true
+    },
+    {
+      "receipt": "public-distribution-check.json",
+      "ownedPgid": 386612,
+      "currentlyAbsent": true
+    },
+    {
+      "receipt": "command-interface-integrated.json",
+      "ownedPgid": 389172,
+      "currentlyAbsent": true
+    }
+  ],
+  "sourceCodeChanged": false
+}

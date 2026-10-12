@@ -1,0 +1,44 @@
+{
+  "time": "2026-10-12T22:24:41.428892+00:00",
+  "removed": [
+    {
+      "path": "/workspace/meri-schedule-lifecycle-review-20261012/node_modules/ajv",
+      "logicalBytes": 1033496
+    },
+    {
+      "path": "/workspace/meri-schedule-lifecycle-review-20261012/node_modules/ajv-formats",
+      "logicalBytes": 56763
+    },
+    {
+      "path": "/workspace/meri-schedule-lifecycle-review-20261012/node_modules/canonicalize",
+      "logicalBytes": 24474
+    },
+    {
+      "path": "/workspace/meri-schedule-lifecycle-review-20261012/node_modules/fast-deep-equal",
+      "logicalBytes": 12966
+    },
+    {
+      "path": "/workspace/meri-schedule-lifecycle-review-20261012/node_modules/fast-uri",
+      "logicalBytes": 220886
+    },
+    {
+      "path": "/workspace/meri-schedule-lifecycle-review-20261012/node_modules/json-schema-traverse",
+      "logicalBytes": 22220
+    },
+    {
+      "path": "/workspace/meri-schedule-lifecycle-review-20261012/node_modules/require-from-string",
+      "logicalBytes": 3422
+    }
+  ],
+  "copiedToNextOwnedReview": [
+    "/workspace/meri-portfolio-evidence-review-20261012/node_modules/ajv",
+    "/workspace/meri-portfolio-evidence-review-20261012/node_modules/ajv-formats",
+    "/workspace/meri-portfolio-evidence-review-20261012/node_modules/canonicalize",
+    "/workspace/meri-portfolio-evidence-review-20261012/node_modules/fast-deep-equal",
+    "/workspace/meri-portfolio-evidence-review-20261012/node_modules/fast-uri",
+    "/workspace/meri-portfolio-evidence-review-20261012/node_modules/json-schema-traverse",
+    "/workspace/meri-portfolio-evidence-review-20261012/node_modules/require-from-string"
+  ],
+  "beforeFreeBytes": 59719680,
+  "afterFreeBytes": 59715584
+}

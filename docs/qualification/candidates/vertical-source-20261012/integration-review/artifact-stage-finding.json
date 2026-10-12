@@ -1,0 +1,9 @@
+{
+  "source": "1625c95d89593f07ec072ad71f9756a41e0c0db1",
+  "acceptedDomain": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
+  "finding": "Accepted artifact process source pin does not match: one extra final LF retained from814. Functional controls26/26 pass; exact source audit42/43. Root owns repair.",
+  "severity": "exact source/preservation binding; no observed semantic difference",
+  "patchBytes": 400,
+  "patchSha256": "889ac64225b39700e2493baf4428221c9faa43293364255d44e9c7e46f966820",
+  "nativeAcceptance": false
+}

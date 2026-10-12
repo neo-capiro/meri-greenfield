@@ -1,0 +1,30 @@
+{
+  "libraryFileId": "libfile_14e1c1b5e82c819188ddf388776c019b",
+  "fileId": "file_00000000120c81f785828d79665e331c",
+  "filename": "meri-sdk-advertisement-reviewed-source-handoff-20261012.zip",
+  "reportedBytes": 32854,
+  "reportedSha256": "aac5c1635fee383e0f81a04c4cff656438dec3e3189cdfd21df6ee4c6598b4ff",
+  "reportedSource": "a833eb48437889a8744a9a81012442340cc5dd01",
+  "reportedTree": "5b06a3e75747575f494b53eff6310dec470f647c",
+  "currentBackendHead": "83d0f5951a5e0c5d86d3a8684c2396b6cf13f794",
+  "sourceBase": "e5fb3963de787bbd7b7663316c368f15814897da",
+  "unchangedPathsSinceBase": [
+    "apps/worker",
+    "apps/control/qualification-sdk-fixture",
+    "packages/runtime"
+  ],
+  "supportedMaterialization": "metadata returned; bundledhelper exit1 downloadfailed; no bytes obtained",
+  "readRoute": "No readable content found for ZIP",
+  "verifiedBytes": false,
+  "localNativeCommitAvailable": false,
+  "nativeVerdict": "NOT_JOINED",
+  "G1Accepted": false,
+  "browser": "HOLD",
+  "requiredNext": "Exact module paths/base hashes plus accessible Git branch or separately readable patch/receipt files.",
+  "supportedGithubCommitLookup": {
+    "repo": "neo-capiro/meri-greenfield",
+    "commit": "a833eb48437889a8744a9a81012442340cc5dd01",
+    "httpStatus": 422,
+    "result": "No commit found for SHA"
+  }
+}

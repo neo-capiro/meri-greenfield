@@ -1,0 +1,20 @@
+[
+  {
+    "path": "/tmp/meri-continuation-npm-cache/_cacache",
+    "files": 60,
+    "bytes": 82231572,
+    "scope": "Root-owned disposable npm download cache only; sibling _logs preserved. No source, evidence, installed dependency, branch or worktree removed."
+  },
+  {
+    "path": "/tmp/meri-recovery-cache-root/_cacache",
+    "files": 26,
+    "bytes": 68985230,
+    "scope": "Root-owned disposable npm download cache only; sibling _logs preserved. No source, evidence, installed dependency, branch or worktree removed."
+  },
+  {
+    "path": "/tmp/meri-owner-budget-npm-cache/_cacache",
+    "files": 140,
+    "bytes": 83805206,
+    "scope": "Root-owned disposable npm download cache only; sibling _logs preserved. No source, evidence, installed dependency, branch or worktree removed."
+  }
+]

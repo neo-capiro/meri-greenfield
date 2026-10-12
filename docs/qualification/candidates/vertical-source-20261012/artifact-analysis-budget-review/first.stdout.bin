@@ -1,0 +1,111 @@
+✔ concrete boundary plus canonical owner returns exact pending result and one conservative charge (99.037585ms)
+✔ disabled/typed/code requests and borrowed executor injection refuse without I/O (4.443177ms)
+✔ no exposed kernel, legacy invocation, pool disposal or native callback selection (3.468924ms)
+✔ request/context/program snapshots cannot be rebound by caller mutation after submission (11.613305ms)
+✔ same delivery rejects changed immutable program without a second dispatch (11.999354ms)
+✔ changed admission manifest conflicts with same owned delivery identity (11.605803ms)
+✔ foreign program scope and changed trusted binding refuse before pool (2.908311ms)
+✔ credential mismatch and revoked first authority execute no native port (7.107252ms)
+✔ immutable maximum exceeding current capability is refused rather than rewritten (6.440279ms)
+✔ immutable deadline exceeding fresh authority is refused before reservation (6.090924ms)
+✔ shorter persisted allocation window is detected during preparation without native dispatch or reservation (6.137844ms)
+✔ invalid admission receiptSha256 cannot dispatch or fake settlement (6.711357ms)
+✔ invalid admission manifestSha256 cannot dispatch or fake settlement (10.963917ms)
+✔ invalid admission imageDigest cannot dispatch or fake settlement (6.257835ms)
+✔ native port rejection retains exact invocation uncertainty without refund/retry (9.625596ms)
+✔ invalid produced hash retains uncertainty and never publishes (6.544626ms)
+✔ invalid produced output retains uncertainty and never publishes (11.730495ms)
+✔ invalid produced scope retains uncertainty and never publishes (12.028288ms)
+✔ invalid produced bytes retains uncertainty and never publishes (11.917211ms)
+✔ validated output snapshot survives borrowed receipt mutation during later authority await (17.011818ms)
+✔ authority refusal at check2 retains known immutable outputs and pending state (14.327904ms)
+✔ authority refusal at check3 retains known immutable outputs and pending state (15.807718ms)
+✔ lost prepare ACK keeps canonical identity and explicit accounting reconciliation (11.655938ms)
+✔ lost reserve ACK keeps canonical identity and explicit accounting reconciliation (20.053559ms)
+✔ lost marker ACK keeps canonical identity and explicit accounting reconciliation (28.555507ms)
+✔ lost settle ACK keeps canonical identity and explicit accounting reconciliation (23.26163ms)
+✔ admission expiry while completion ACK is parked prevents live settlement but permits explicit reconciliation (17.592982ms)
+✔ cancellation during reserve ACK executes no native port and preserves original UNKNOWN (31.32538ms)
+✔ metadata response overflow preserves produced outputs but no fake settlement/publication (13.411517ms)
+✔ outer cancellation during sandbox dispatch retains explicit output uncertainty (13.449384ms)
+✔ outer cancellation during reserve preserves known output/accounting state (11.831262ms)
+✔ outer cancellation during marker preserves known output/accounting state (16.029811ms)
+✔ outer cancellation during settle preserves known output/accounting state (26.393828ms)
+✔ real policy/boundary/owner settles exact pending output snapshot and byte sum (122.959299ms)
+✔ canonical actor mismatch denies before accounting (13.755614ms)
+✔ canonical grant mismatch denies before accounting (12.859968ms)
+✔ canonical subject decision mismatch denies before accounting (11.65698ms)
+✔ source authorization false denies before admission or native effects (12.04947ms)
+✔ admission receiptSha256 substitution leaves UNKNOWN without native dispatch (20.282273ms)
+✔ admission manifestSha256 substitution leaves UNKNOWN without native dispatch (13.781152ms)
+✔ admission imageDigest substitution leaves UNKNOWN without native dispatch (13.236313ms)
+✔ admission intentSha256 substitution leaves UNKNOWN without native dispatch (13.011024ms)
+✔ extra output output cannot produce a completion marker (13.90617ms)
+✔ different scope output cannot produce a completion marker (13.003624ms)
+✔ wrong immutable image output cannot produce a completion marker (11.84973ms)
+✔ oversized total output cannot produce a completion marker (12.738265ms)
+✔ fabricated publication output cannot produce a completion marker (12.547879ms)
+✔ borrowed native result mutation during later policy await cannot alter accounted outputs (18.21042ms)
+✔ raw request and configured admission detached before parked admission resumes (19.072605ms)
+✔ changed same-delivery program or admission never regenerates (24.778901ms)
+✔ lost prepare ACK uses explicit historical reconciliation only (11.373534ms)
+✔ lost reserve ACK uses explicit historical reconciliation only (28.674735ms)
+✔ lost marker ACK uses explicit historical reconciliation only (29.886903ms)
+✔ lost settle ACK uses explicit historical reconciliation only (34.673381ms)
+✔ outer cancellation during reserve retains observation and original cause (16.790715ms)
+✔ outer cancellation during marker retains observation and original cause (11.089006ms)
+✔ outer cancellation during settle retains observation and original cause (11.521005ms)
+✔ native port cancellation leaves output unknown and makes no completion claim (9.202471ms)
+✔ post-settlement authority rejection preserves confirmed settlement without result release (24.174042ms)
+✔ admission expiry survives parked marker without silently changing native intent (12.455329ms)
+✔ current output ceiling refuses immutable input rather than rewriting it (7.088083ms)
+✔ current shorter run deadline refuses original intent before reserve (8.560035ms)
+✔ no constructor effects, no exposed bypass or raw program code authority (14.573082ms)
+✔ late returned native receipt remains unknown without marker or success (8.61025ms)
+✔ oversized response metadata preserves validated tuples without false settlement (9.083772ms)
+✖ revocation while reserve is parked prevents subsequent native dispatch (10.030856ms)
+✖ revocation while admission is parked prevents subsequent native dispatch (8.502428ms)
+ℹ tests 67
+ℹ suites 0
+ℹ pass 65
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3453.464411
+
+✖ failing tests:
+
+test at apps/artifacts/test/postgres-analysis-independent.test.mjs:75:44
+✖ revocation while reserve is parked prevents subsequent native dispatch (10.030856ms)
+  AssertionError [ERR_ASSERTION]: fresh current policy must refuse before a newly started external effect
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/meri-artifact-analysis-budget-review-20261012/apps/artifacts/test/postgres-analysis-independent.test.mjs:78:103)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/artifacts/test/postgres-analysis-independent.test.mjs:75:44
+✖ revocation while admission is parked prevents subsequent native dispatch (8.502428ms)
+  AssertionError [ERR_ASSERTION]: fresh current policy must refuse before a newly started external effect
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/meri-artifact-analysis-budget-review-20261012/apps/artifacts/test/postgres-analysis-independent.test.mjs:78:103)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

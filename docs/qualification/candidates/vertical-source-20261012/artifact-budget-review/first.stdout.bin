@@ -1,0 +1,84 @@
+✔ create_word: actual canonical reserve/marker/settle charges once and never regenerates on replay (105.270852ms)
+✔ create_excel: actual canonical reserve/marker/settle charges once and never regenerates on replay (33.742842ms)
+✔ create_powerpoint: actual canonical reserve/marker/settle charges once and never regenerates on replay (17.415724ms)
+✔ run_analysis: actual canonical reserve/marker/settle charges once and never regenerates on replay (16.911827ms)
+✔ revision consumes exact prior version, charges a distinct delivery and preserves original (23.034828ms)
+✔ default disabled and sandbox refusal precede all pool/executor ports (6.868553ms)
+✔ factory never closes borrowed pool and does not expose kernel bypasses (2.977785ms)
+✔ mutation of factory inputs cannot substitute current request context or scopes (29.371532ms)
+✔ same delivery with changed request conflicts before generation (17.636229ms)
+✔ same delivery with changed trusted evidence conflicts before generation (34.06817ms)
+✔ credential mismatch and current authority denial cause no generation/reservation (9.483222ms)
+✔ unrelated operation and foreign producer binding fail before I/O (4.869999ms)
+✔ canonical allocation/capability ceilings reach actual executor and forbid oversized publication (11.882779ms)
+✔ lower current output ceiling before publication refuses with retained liability (8.418291ms)
+✔ generator failure retains explicit UNKNOWN without marker, refund or retry (28.197338ms)
+✔ lost prepare ACK preserves actual owner identity and only explicit reconciliation (11.249777ms)
+✔ lost reserve ACK preserves actual owner identity and only explicit reconciliation (16.931607ms)
+✔ lost marker ACK preserves actual owner identity and only explicit reconciliation (23.252897ms)
+✔ lost settle ACK preserves actual owner identity and only explicit reconciliation (32.252882ms)
+✔ cancelled preparation at connect cannot start generator or later accounting (14.913333ms)
+✔ cancelled preparation at BEGIN cannot start generator or later accounting (13.215892ms)
+✔ cancelled preparation at SET LOCAL statement_timeout = '5s' cannot start generator or later accounting (13.056032ms)
+✔ short artifact release deadline survives parked completion ACK and needs historical reconciliation (26.088118ms)
+✔ post-settlement revocation prevents result release without refund or regeneration (10.95197ms)
+✔ borrowed version read keeps its original receiver for revision (23.81374ms)
+✔ oversized released metadata reports committed effect uncertainty rather than apparent no-effect failure (10.374693ms)
+✔ real current-authority + artifact + canonical owner hashes committed record, not delivery (104.953248ms)
+✔ fresh decision ID may rotate while stable selected subject is unchanged (20.38029ms)
+✔ canonical policy refuses decision actor before budget reservation (6.444626ms)
+✔ canonical policy refuses subject actor before budget reservation (6.740099ms)
+✔ canonical policy refuses missing grant before budget reservation (18.095224ms)
+✔ canonical policy refuses decision policy before budget reservation (6.393389ms)
+✔ canonical policy refuses unmatched decision ID before budget reservation (4.972844ms)
+✔ canonical authority refuses current writer fence without effects (6.504856ms)
+✔ canonical authority refuses expired capability without effects (5.561007ms)
+✔ canonical authority refuses disabled source without effects (8.039222ms)
+✔ canonical authority refuses missing source without effects (5.34357ms)
+✔ subject change after reserve refuses execution and leaves UNKNOWN, never refund (6.935543ms)
+✔ artifact resource digest mismatch cannot borrow canonical policy permission (5.421809ms)
+✖ changed trusted scopes cannot be substituted by otherwise valid current policy (3.25364ms)
+✔ current revocation after settlement prevents release but preserves charged version (21.547985ms)
+✔ resource release expiry while marker ACK parked refuses now, reconciles historical completion (26.817073ms)
+✔ wrong commit acknowledgement cannot publish durable completion (10.075052ms)
+✔ wrong immutable readback forbids version commit while retaining object uncertainty (16.247608ms)
+✔ late returned object write is retained as UNKNOWN and never starts version commit (8.682499ms)
+✔ late version acknowledgement cannot become a completion marker (9.643683ms)
+✔ borrowed receivers survive create and revise with exact base object and intent (30.309763ms)
+✔ snapshot of delivery remains exact while generation is parked (31.327101ms)
+✔ lost reserve ACK cannot regenerate, only canonical reconciliation (13.07509ms)
+✔ lost marker ACK cannot regenerate, only canonical reconciliation (15.576429ms)
+✔ lost settle ACK cannot regenerate, only canonical reconciliation (17.08056ms)
+✔ same delivery plus changed parent conflicts before read or regeneration (12.218783ms)
+✔ wrong producer task binding cannot reuse a bound grant (3.292929ms)
+✔ no startup pool calls or invocation bypass; default disabled before prepare (3.07386ms)
+✔ postpublication response ceiling reports exact committed uncertainty (29.627867ms)
+✔ generator exception preserves original cause and durable UNKNOWN without marker (12.929081ms)
+ℹ tests 56
+ℹ suites 0
+ℹ pass 55
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4126.367
+
+✖ failing tests:
+
+test at apps/artifacts/test/postgres-service-independent.test.mjs:77:1
+✖ changed trusted scopes cannot be substituted by otherwise valid current policy (3.25364ms)
+  AssertionError [ERR_ASSERTION]: data/scopes must NOT have fewer than 1 items
+      at validateShape (file:///workspace/meri-artifact-budget-review-20261012/apps/artifacts/test/postgres-service-independent.test.mjs:16:185)
+      at Object.context (file:///workspace/meri-artifact-budget-review-20261012/packages/contracts/artifacts-0.2/artifact-validation.mjs:40:32)
+      at createPostgresArtifactService (file:///workspace/meri-artifact-budget-review-20261012/apps/artifacts/postgres-service.mjs:14:91)
+      at Object.owner (file:///workspace/meri-artifact-budget-review-20261012/apps/artifacts/test/postgres-service-independent.test.mjs:44:24)
+      at TestContext.<anonymous> (file:///workspace/meri-artifact-budget-review-20261012/apps/artifacts/test/postgres-service-independent.test.mjs:77:200)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

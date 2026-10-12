@@ -1,0 +1,44 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=2",
+    "apps/control/test/vertical-schedule-registry.test.mjs",
+    "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+    "packages/contracts/test/retrieval-selected-next-bindings.test.mjs",
+    "packages/contracts/test/retrieval-selected-next-independent.test.mjs",
+    "packages/contracts/test/retrieval-reference-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-memory-binding.test.mjs",
+    "apps/gateway/test/action-item-context-independent.test.mjs",
+    "apps/gateway/test/capability-next-independent.test.mjs",
+    "apps/gateway/test/memory-context-independent.test.mjs",
+    "apps/gateway/test/mail-context-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-vertical-source-20261012",
+  "sourceHead": "87cfec09fd3a3963ca513fd9a2233d68bdcc7af9",
+  "sourceDiffSha256": "119c361953393555b4fc91b1d4e5033f0682f48ee4365aa1d124ea09cac68883",
+  "sourceDiffBytes": 23711,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-12T22:51:24.761317+00:00",
+  "durationSeconds": 20.34,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 384198,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/integration/schedule-catalog-connected.stdout.bin",
+      "bytes": 239336,
+      "sha256": "123ef7e9ab5a89ddde29511d142866396bf9582d0dd61aff208e995e56f05df4"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/integration/schedule-catalog-connected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

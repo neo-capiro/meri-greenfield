@@ -1,7 +1,7 @@
 {
   "contractVersion": "0.2.0",
   "catalogId": "meri.retrieval",
-  "catalogVersion": "0.2.11",
+  "catalogVersion": "0.2.15",
   "sourceRegistryCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
   "originals": [
     {
@@ -146,9 +146,12 @@
     {
       "id": "get_research_evidence",
       "disposition": "selected",
-      "boundary": "Proposed authorized Research Portfolio record/evidence/history read only; owner/client/grant policies and source inclusion require explicit acceptance; management workflow parity deferred.",
-      "replacement": null,
-      "state": "pending"
+      "boundary": "D011/R2 selected projected evidence: exact authorized review and retained snapshot plus current annual continuity. Raw member and unrestricted older-history exposure unavailable; no Portfolio management workflow parity.",
+      "replacement": {
+        "id": "get_research_evidence",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "read_chat_attachments",
@@ -204,8 +207,11 @@
       "id": "run_analysis",
       "disposition": "selected",
       "boundary": "New reproducible analysis over authorized inputs; verify referenced values and outputs using adopted Python libraries; no source mutations.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "run_analysis",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "search_client_knowledge",
@@ -695,8 +701,11 @@
       "id": "save_chat_attachments",
       "disposition": "selected",
       "boundary": "Initial artifact filing only; verified exact version and source scopes preserved; no arbitrary attachment or folder access expansion.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "save_chat_attachments",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "send_email",
@@ -756,8 +765,11 @@
       "id": "save_memory",
       "disposition": "selected",
       "boundary": "Candidate proposal only through new memory.propose; no direct publication, confirmation, correction or deletion parity is accepted.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "save_memory",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "confirm_memory",
@@ -871,50 +883,71 @@
       "id": "create_word",
       "disposition": "selected",
       "boundary": "New local native Word artifact generation and revisions with byte and render validation; Capiro source writes require separate filing approval.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "create_word",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "create_excel",
       "disposition": "selected",
       "boundary": "New native spreadsheet generation and supported revisions; originals, formulas, recalculation limits and reference totals verified.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "create_excel",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "create_powerpoint",
       "disposition": "selected",
       "boundary": "New editable slide generation and revisions with per-slide render validation and immutable versions.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "create_powerpoint",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "schedule_task",
       "disposition": "selected",
       "boundary": "New application Temporal Schedule only, bound to initiating actor, scope, timezone and budget; existing Capiro schedule parity is not accepted.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "schedule_task",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "list_scheduled_tasks",
       "disposition": "selected",
       "boundary": "New application-owned Temporal schedule inspection and run history; current Capiro schedule store parity is not accepted.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "list_scheduled_tasks",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "cancel_scheduled_task",
       "disposition": "selected",
       "boundary": "New application Temporal Schedule cancellation; cancellation and run-history fixtures required.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "cancel_scheduled_task",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "update_scheduled_task",
       "disposition": "selected",
       "boundary": "New application schedule update and pause controls; recheck authority; no arbitrary external action expansion.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "update_scheduled_task",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "query_tasks",
@@ -1027,15 +1060,21 @@
       "id": "create_task",
       "disposition": "selected",
       "boundary": "Initial task command; immutable approval, current authority, source invariants, idempotency and receipt required after G3-G5.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "create_task",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "update_task",
       "disposition": "selected",
       "boundary": "Initial task command; existing task ownership and field invariants require fixtures; repeated delivery must produce one outcome.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "update_task",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "update_client_profile",
@@ -2415,7 +2454,7 @@
         "Portfolio identity comes from trusted current subject context; model selectors cannot grant portfolio or client access.",
         "Historical event revisions need not equal the current portfolio revision. Captured scope-receipt revision remains external trusted owner state.",
         "Bounded detail events, exhausted changes pages and opaque payloads prove neither full history nor authoritative absence or freshness.",
-        "get_research_evidence is a separate pending Clio/portfolio scope issue and is not covered by this binding."
+        "Projected Portfolio evidence has its own get_research_evidence binding; this detail/changes operation does not return it."
       ],
       "positiveExamples": [
         "Inspect a currently selected authorized research portfolio and its reported visible changes."
@@ -2485,7 +2524,7 @@
         "Portfolio identity comes from trusted current subject context; model selectors cannot grant portfolio or client access.",
         "Historical event revisions need not equal the current portfolio revision. Captured scope-receipt revision remains external trusted owner state.",
         "Bounded detail events, exhausted changes pages and opaque payloads prove neither full history nor authoritative absence or freshness.",
-        "get_research_evidence is a separate pending Clio/portfolio scope issue and is not covered by this binding."
+        "Projected Portfolio evidence has its own get_research_evidence binding; this detail/changes operation does not return it."
       ],
       "positiveExamples": [
         "Inspect a currently selected authorized research portfolio and its reported visible changes."
@@ -7045,6 +7084,895 @@
       ],
       "fixtureIds": [
         "catalog.binding.search_committee_hearings"
+      ]
+    },
+    {
+      "operation": {
+        "id": "get_research_evidence",
+        "version": "0.2.0"
+      },
+      "displayName": "Read projected research Portfolio evidence",
+      "whenToUse": "Read an exact authorized review or retained snapshot, or the current annual continuity projection, for the Portfolio selected by trusted conversation context.",
+      "limitations": [
+        "Source-only contract and executable adapter candidate; null production handler, source disabled, runtime qualification pending.",
+        "Only already exposed projected evidence is included. Raw member evidence and unrestricted older decision/history access remain unavailable.",
+        "Exact review lookup reads all four lanes separately. It refuses conflicting versions and reports unavailable if no match was observed; it never proves absence or atomic coverage.",
+        "Snapshots retain complete contributions/version references/access requirements within admission limits. Their hashes and references are source claims, not byte-integrity or current-analytics proof.",
+        "Current annual continuity can derive readonly facts and carries original persisted metadata; it is not unrestricted historical selection.",
+        "Current conversation scope, identity, Portfolio viewer grants, source availability and client disclosure policy require qualified trusted adapters. Source approval is not runtime acceptance."
+      ],
+      "positiveExamples": [
+        "Read evidence on a named review or snapshot in the currently authorized Portfolio.",
+        "Inspect the current continuity evidence and its retained limitations."
+      ],
+      "negativeExamples": [
+        "Fetch raw member evidence, arbitrary older decisions, external source bytes, or mutate Portfolio workflows.",
+        "Treat a missing exact review as proof of nonexistence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "research_portfolios",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-evidence:0.2.0#/$defs/ResearchPortfolioEvidenceInput",
+        "sha256": "87549b042b5dc84160020ae08c93db834a5d9f28aa13ffc45d652c186ae3767b"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-evidence:0.2.0#/$defs/ResearchPortfolioEvidenceResult",
+        "sha256": "87549b042b5dc84160020ae08c93db834a5d9f28aa13ffc45d652c186ae3767b"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.get_research_evidence"
+      ]
+    },
+    {
+      "operation": {
+        "id": "create_word",
+        "version": "0.2.0"
+      },
+      "displayName": "Create or revise a Word document",
+      "whenToUse": "Prepare an immutable artifact or analysis request under trusted current task authority, source scopes and budgets.",
+      "limitations": [
+        "Independently reviewed source only. Null production handler, source disabled, native/runtime qualification pending.",
+        "Creation/revision uses trusted current artifact authority and immutable versions. This descriptor supplies no approval, grant or user confirmation. Filing remains a separate immutable approved command.",
+        "Actual local library generation, structural inspection and process cleanup are source evidence. Native rendering/recalculation, quality, isolation and production persistence/budget adapters remain unqualified.",
+        "Raw arguments cannot carry trusted task identity, authority or image admission. Assets and provenance are exact immutable references checked against current scopes.",
+        "Natural-language revisions require a new typed replacement request and immutable version; full Office WYSIWYG editing remains separate scope.",
+        "The artifact_versions requirement denotes the immutable version/provenance store and current exact-version access, not an assertion that generated text is authoritative source evidence."
+      ],
+      "positiveExamples": [
+        "Prepare a typed request for a new version with source provenance and inspect its exact returned artifact references."
+      ],
+      "negativeExamples": [
+        "Run arbitrary code on an unqualified host, infer rendered quality from ZIP structure, or file a generated artifact without separate approved intent."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "artifact_versions",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:artifacts:0.2.0#/$defs/WordRequest",
+        "sha256": "d90585d5e8ce60fb803fffc345ee9dd8c1e685c03b0319724afce8603094d486"
+      },
+      "outputSchema": {
+        "id": "urn:meri:artifacts:0.2.0#/$defs/ArtifactCreatedResult",
+        "sha256": "d90585d5e8ce60fb803fffc345ee9dd8c1e685c03b0319724afce8603094d486"
+      },
+      "aliases": [],
+      "sideEffect": "local-artifact",
+      "requiredGrants": [
+        "artifact.publish"
+      ],
+      "approvalBoundary": "qualified-source-review",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.create_word"
+      ]
+    },
+    {
+      "operation": {
+        "id": "create_excel",
+        "version": "0.2.0"
+      },
+      "displayName": "Create or revise an Excel workbook",
+      "whenToUse": "Prepare an immutable artifact or analysis request under trusted current task authority, source scopes and budgets.",
+      "limitations": [
+        "Independently reviewed source only. Null production handler, source disabled, native/runtime qualification pending.",
+        "Creation/revision uses trusted current artifact authority and immutable versions. This descriptor supplies no approval, grant or user confirmation. Filing remains a separate immutable approved command.",
+        "Actual local library generation, structural inspection and process cleanup are source evidence. Native rendering/recalculation, quality, isolation and production persistence/budget adapters remain unqualified.",
+        "Raw arguments cannot carry trusted task identity, authority or image admission. Assets and provenance are exact immutable references checked against current scopes.",
+        "Natural-language revisions require a new typed replacement request and immutable version; full Office WYSIWYG editing remains separate scope.",
+        "The artifact_versions requirement denotes the immutable version/provenance store and current exact-version access, not an assertion that generated text is authoritative source evidence."
+      ],
+      "positiveExamples": [
+        "Prepare a typed request for a new version with source provenance and inspect its exact returned artifact references."
+      ],
+      "negativeExamples": [
+        "Run arbitrary code on an unqualified host, infer rendered quality from ZIP structure, or file a generated artifact without separate approved intent."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "artifact_versions",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:artifacts:0.2.0#/$defs/ExcelRequest",
+        "sha256": "d90585d5e8ce60fb803fffc345ee9dd8c1e685c03b0319724afce8603094d486"
+      },
+      "outputSchema": {
+        "id": "urn:meri:artifacts:0.2.0#/$defs/ArtifactCreatedResult",
+        "sha256": "d90585d5e8ce60fb803fffc345ee9dd8c1e685c03b0319724afce8603094d486"
+      },
+      "aliases": [],
+      "sideEffect": "local-artifact",
+      "requiredGrants": [
+        "artifact.publish"
+      ],
+      "approvalBoundary": "qualified-source-review",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.create_excel"
+      ]
+    },
+    {
+      "operation": {
+        "id": "create_powerpoint",
+        "version": "0.2.0"
+      },
+      "displayName": "Create or revise a PowerPoint presentation",
+      "whenToUse": "Prepare an immutable artifact or analysis request under trusted current task authority, source scopes and budgets.",
+      "limitations": [
+        "Independently reviewed source only. Null production handler, source disabled, native/runtime qualification pending.",
+        "Creation/revision uses trusted current artifact authority and immutable versions. This descriptor supplies no approval, grant or user confirmation. Filing remains a separate immutable approved command.",
+        "Actual local library generation, structural inspection and process cleanup are source evidence. Native rendering/recalculation, quality, isolation and production persistence/budget adapters remain unqualified.",
+        "Raw arguments cannot carry trusted task identity, authority or image admission. Assets and provenance are exact immutable references checked against current scopes.",
+        "Natural-language revisions require a new typed replacement request and immutable version; full Office WYSIWYG editing remains separate scope.",
+        "The artifact_versions requirement denotes the immutable version/provenance store and current exact-version access, not an assertion that generated text is authoritative source evidence."
+      ],
+      "positiveExamples": [
+        "Prepare a typed request for a new version with source provenance and inspect its exact returned artifact references."
+      ],
+      "negativeExamples": [
+        "Run arbitrary code on an unqualified host, infer rendered quality from ZIP structure, or file a generated artifact without separate approved intent."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "artifact_versions",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:artifacts:0.2.0#/$defs/PowerpointRequest",
+        "sha256": "d90585d5e8ce60fb803fffc345ee9dd8c1e685c03b0319724afce8603094d486"
+      },
+      "outputSchema": {
+        "id": "urn:meri:artifacts:0.2.0#/$defs/ArtifactCreatedResult",
+        "sha256": "d90585d5e8ce60fb803fffc345ee9dd8c1e685c03b0319724afce8603094d486"
+      },
+      "aliases": [],
+      "sideEffect": "local-artifact",
+      "requiredGrants": [
+        "artifact.publish"
+      ],
+      "approvalBoundary": "qualified-source-review",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.create_powerpoint"
+      ]
+    },
+    {
+      "operation": {
+        "id": "run_analysis",
+        "version": "0.2.0"
+      },
+      "displayName": "Run bounded analysis with inspected artifacts",
+      "whenToUse": "Prepare an immutable artifact or analysis request under trusted current task authority, source scopes and budgets.",
+      "limitations": [
+        "Independently reviewed source only. Null production handler, source disabled, native/runtime qualification pending.",
+        "Creation/revision uses trusted current artifact authority and immutable versions. This descriptor supplies no approval, grant or user confirmation. Filing remains a separate immutable approved command.",
+        "Actual local library generation, structural inspection and process cleanup are source evidence. Native rendering/recalculation, quality, isolation and production persistence/budget adapters remain unqualified.",
+        "Raw arguments cannot carry trusted task identity, authority or image admission. Assets and provenance are exact immutable references checked against current scopes.",
+        "Natural-language revisions require a new typed replacement request and immutable version; full Office WYSIWYG editing remains separate scope.",
+        "Typed pandas is one supported mode. General analysis carries an immutable program and exact inputs/outputs through a separately admitted sandbox boundary; this local host never executes that general program.",
+        "General results remain pending independent inspection/publication and do not fabricate an ArtifactVersion. No model-supplied image or sandbox approval.",
+        "The artifact_versions requirement denotes the immutable version/provenance store and current exact-version access, not an assertion that generated text is authoritative source evidence."
+      ],
+      "positiveExamples": [
+        "Prepare a typed request for a new version with source provenance and inspect its exact returned artifact references."
+      ],
+      "negativeExamples": [
+        "Run arbitrary code on an unqualified host, infer rendered quality from ZIP structure, or file a generated artifact without separate approved intent."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "artifact_versions",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:artifacts:0.2.0#/$defs/AnalysisRequest",
+        "sha256": "d90585d5e8ce60fb803fffc345ee9dd8c1e685c03b0319724afce8603094d486"
+      },
+      "outputSchema": {
+        "id": "urn:meri:artifacts:0.2.0#/$defs/ArtifactOperationResult",
+        "sha256": "d90585d5e8ce60fb803fffc345ee9dd8c1e685c03b0319724afce8603094d486"
+      },
+      "aliases": [],
+      "sideEffect": "local-artifact",
+      "requiredGrants": [
+        "artifact.publish"
+      ],
+      "approvalBoundary": "qualified-source-review",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.run_analysis"
+      ]
+    },
+    {
+      "operation": {
+        "id": "create_task",
+        "version": "0.2.0"
+      },
+      "displayName": "Create an approved task",
+      "whenToUse": "Prepare immutable selected command intent for review, then execute only that exact currently approved proposal through the command executor.",
+      "limitations": [
+        "Source-only immutable proposal and concrete journal/HTTP execution composition; null production handler, source disabled, no runtime acceptance.",
+        "Raw arguments confer no actor, scope, capability, approval or current authority. Trusted metadata prepares exact command identity, idempotency key, scopes and required approver before review.",
+        "Execution rechecks current approval, capability, task identity, policy, source authority, budget and expiry. Lost acknowledgments remain indeterminate and never authorize retry, refund or duplicate mutation.",
+        "The actual shared Postgres budget owner and command journal are composed in source; real database, JWT/credentials, transport and native idempotency qualification remain pending.",
+        "Original public 0.1 contracts remain unchanged; task.update is a private 0.2 unconditional patch and offers no fabricated compare-and-swap protection."
+      ],
+      "positiveExamples": [
+        "Prepare and review the exact normalized command, then use its immutable proposal and original idempotency identity."
+      ],
+      "negativeExamples": [
+        "Execute raw model arguments directly, approve changed intent, infer source success from a lost acknowledgment, or retry an unknown mutation."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "capiro_commands",
+          "authority": "authoritative",
+          "purpose": "enumeration"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:commands:tool-interface:0.2.0#/$defs/TaskCreateToolRequest",
+        "sha256": "7c394fc336eeb91435d38b57e45180af838fd898e33f0e0f8e34fe8dcf4e8842"
+      },
+      "outputSchema": {
+        "id": "urn:meri:commands:tool-interface:0.2.0#/$defs/TaskCreateToolResult",
+        "sha256": "7c394fc336eeb91435d38b57e45180af838fd898e33f0e0f8e34fe8dcf4e8842"
+      },
+      "aliases": [],
+      "sideEffect": "source-command",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.create_task"
+      ]
+    },
+    {
+      "operation": {
+        "id": "update_task",
+        "version": "0.2.0"
+      },
+      "displayName": "Update an approved task",
+      "whenToUse": "Prepare immutable selected command intent for review, then execute only that exact currently approved proposal through the command executor.",
+      "limitations": [
+        "Source-only immutable proposal and concrete journal/HTTP execution composition; null production handler, source disabled, no runtime acceptance.",
+        "Raw arguments confer no actor, scope, capability, approval or current authority. Trusted metadata prepares exact command identity, idempotency key, scopes and required approver before review.",
+        "Execution rechecks current approval, capability, task identity, policy, source authority, budget and expiry. Lost acknowledgments remain indeterminate and never authorize retry, refund or duplicate mutation.",
+        "The actual shared Postgres budget owner and command journal are composed in source; real database, JWT/credentials, transport and native idempotency qualification remain pending.",
+        "Original public 0.1 contracts remain unchanged; task.update is a private 0.2 unconditional patch and offers no fabricated compare-and-swap protection."
+      ],
+      "positiveExamples": [
+        "Prepare and review the exact normalized command, then use its immutable proposal and original idempotency identity."
+      ],
+      "negativeExamples": [
+        "Execute raw model arguments directly, approve changed intent, infer source success from a lost acknowledgment, or retry an unknown mutation."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "capiro_commands",
+          "authority": "authoritative",
+          "purpose": "enumeration"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:commands:tool-interface:0.2.0#/$defs/TaskUpdateToolRequest",
+        "sha256": "7c394fc336eeb91435d38b57e45180af838fd898e33f0e0f8e34fe8dcf4e8842"
+      },
+      "outputSchema": {
+        "id": "urn:meri:commands:tool-interface:0.2.0#/$defs/TaskUpdateToolResult",
+        "sha256": "7c394fc336eeb91435d38b57e45180af838fd898e33f0e0f8e34fe8dcf4e8842"
+      },
+      "aliases": [],
+      "sideEffect": "source-command",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.update_task"
+      ]
+    },
+    {
+      "operation": {
+        "id": "save_memory",
+        "version": "0.2.0"
+      },
+      "displayName": "Propose governed memory",
+      "whenToUse": "Prepare immutable selected command intent for review, then execute only that exact currently approved proposal through the command executor.",
+      "limitations": [
+        "Source-only immutable proposal and concrete journal/HTTP execution composition; null production handler, source disabled, no runtime acceptance.",
+        "Raw arguments confer no actor, scope, capability, approval or current authority. Trusted metadata prepares exact command identity, idempotency key, scopes and required approver before review.",
+        "Execution rechecks current approval, capability, task identity, policy, source authority, budget and expiry. Lost acknowledgments remain indeterminate and never authorize retry, refund or duplicate mutation.",
+        "The actual shared Postgres budget owner and command journal are composed in source; real database, JWT/credentials, transport and native idempotency qualification remain pending.",
+        "Original public 0.1 contracts remain unchanged; task.update is a private 0.2 unconditional patch and offers no fabricated compare-and-swap protection.",
+        "Memory output is a pending source candidate, never an autocommitted memory. Personal scope remains unavailable because its observed producer route autocommits; no alternate store or fallback publication."
+      ],
+      "positiveExamples": [
+        "Prepare and review the exact normalized command, then use its immutable proposal and original idempotency identity."
+      ],
+      "negativeExamples": [
+        "Execute raw model arguments directly, approve changed intent, infer source success from a lost acknowledgment, or retry an unknown mutation."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "capiro_commands",
+          "authority": "authoritative",
+          "purpose": "enumeration"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:commands:tool-interface:0.2.0#/$defs/MemoryProposeToolRequest",
+        "sha256": "7c394fc336eeb91435d38b57e45180af838fd898e33f0e0f8e34fe8dcf4e8842"
+      },
+      "outputSchema": {
+        "id": "urn:meri:commands:tool-interface:0.2.0#/$defs/MemoryProposeToolResult",
+        "sha256": "7c394fc336eeb91435d38b57e45180af838fd898e33f0e0f8e34fe8dcf4e8842"
+      },
+      "aliases": [],
+      "sideEffect": "proposal",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.save_memory"
+      ]
+    },
+    {
+      "operation": {
+        "id": "save_chat_attachments",
+        "version": "0.2.0"
+      },
+      "displayName": "File exact approved artifact versions",
+      "whenToUse": "Prepare immutable selected command intent for review, then execute only that exact currently approved proposal through the command executor.",
+      "limitations": [
+        "Source-only immutable proposal and concrete journal/HTTP execution composition; null production handler, source disabled, no runtime acceptance.",
+        "Raw arguments confer no actor, scope, capability, approval or current authority. Trusted metadata prepares exact command identity, idempotency key, scopes and required approver before review.",
+        "Execution rechecks current approval, capability, task identity, policy, source authority, budget and expiry. Lost acknowledgments remain indeterminate and never authorize retry, refund or duplicate mutation.",
+        "The actual shared Postgres budget owner and command journal are composed in source; real database, JWT/credentials, transport and native idempotency qualification remain pending.",
+        "Original public 0.1 contracts remain unchanged; task.update is a private 0.2 unconditional patch and offers no fabricated compare-and-swap protection.",
+        "Exact object/version/hash/bytes/scopes and current attachment broker correlation are required. Per-file partial outcomes and extraction warnings remain explicit; no invented native transaction ID."
+      ],
+      "positiveExamples": [
+        "Prepare and review the exact normalized command, then use its immutable proposal and original idempotency identity."
+      ],
+      "negativeExamples": [
+        "Execute raw model arguments directly, approve changed intent, infer source success from a lost acknowledgment, or retry an unknown mutation."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "capiro_commands",
+          "authority": "authoritative",
+          "purpose": "enumeration"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:commands:tool-interface:0.2.0#/$defs/ArtifactFileToolRequest",
+        "sha256": "7c394fc336eeb91435d38b57e45180af838fd898e33f0e0f8e34fe8dcf4e8842"
+      },
+      "outputSchema": {
+        "id": "urn:meri:commands:tool-interface:0.2.0#/$defs/ArtifactFileToolResult",
+        "sha256": "7c394fc336eeb91435d38b57e45180af838fd898e33f0e0f8e34fe8dcf4e8842"
+      },
+      "aliases": [],
+      "sideEffect": "source-command",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.save_chat_attachments"
+      ]
+    },
+    {
+      "operation": {
+        "id": "schedule_task",
+        "version": "0.2.0"
+      },
+      "displayName": "Create an approved schedule",
+      "whenToUse": "Prepare and review a complete explicit schedule intent, then apply only its exact current approval through the owned lifecycle.",
+      "limitations": [
+        "Source-only model interface and concrete application ownership/Temporal SDK adapters. Null production handler and runtime qualification pending.",
+        "Only scheduleContext carries trusted current caller, owner, scope, projection/generation, task/template, destination and effective-limit resolution. Raw instruction or identifiers grant no authority.",
+        "Create/update approval hashes include exact normalized instruction digest and full resolved intent. Current qualified producers must implement the task/template mapping and future workflow scope/budget enforcement.",
+        "List preserves unavailable inspection separately from absence and denied access. Returned windows are bounded; historyComplete and currentRetryVerified remain false.",
+        "Cancellation selects pause/delete and explicit original runs. An acknowledgment is not physical stop. Lost effects remain unknown; SDK updates have no compare-and-swap and transport retries can issue multiple attempts.",
+        "Source-only SQL migrations are not applied. Real Postgres/Temporal durability, current policy and production wiring remain unqualified.",
+        "The existing command.execute capability vocabulary is a required prerequisite, not sufficient schedule authority. The qualified current schedule authorization adapter must separately bind delegated owner, exact intent, scope and approval; no new public action enum is introduced."
+      ],
+      "positiveExamples": [
+        "Review the explicit timezone, complete schedule policy, instruction, destination and effective budgets, or inspect an authorized stored schedule page."
+      ],
+      "negativeExamples": [
+        "Treat model-supplied owner/workflow/policy as authorization, reuse approval after instruction change, infer complete retry history, or claim cancellation physically stopped work."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "application_schedules",
+          "authority": "authoritative",
+          "purpose": "enumeration"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:schedules:tool-interface:0.2.0#/$defs/ScheduleTaskRequest",
+        "sha256": "2de8450111ea263876553f86b895d7fe93bca65ec55bcd649421e21a6f6d3fcf"
+      },
+      "outputSchema": {
+        "id": "urn:meri:schedules:tool-interface:0.2.0#/$defs/ScheduleMutationOutput",
+        "sha256": "2de8450111ea263876553f86b895d7fe93bca65ec55bcd649421e21a6f6d3fcf"
+      },
+      "aliases": [],
+      "sideEffect": "schedule",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.schedule_task"
+      ]
+    },
+    {
+      "operation": {
+        "id": "list_scheduled_tasks",
+        "version": "0.2.0"
+      },
+      "displayName": "List authorized schedules and original run history",
+      "whenToUse": "Inspect authorized application schedules and bounded original-run history.",
+      "limitations": [
+        "Source-only model interface and concrete application ownership/Temporal SDK adapters. Null production handler and runtime qualification pending.",
+        "Only scheduleContext carries trusted current caller, owner, scope, projection/generation, task/template, destination and effective-limit resolution. Raw instruction or identifiers grant no authority.",
+        "Create/update approval hashes include exact normalized instruction digest and full resolved intent. Current qualified producers must implement the task/template mapping and future workflow scope/budget enforcement.",
+        "List preserves unavailable inspection separately from absence and denied access. Returned windows are bounded; historyComplete and currentRetryVerified remain false.",
+        "Cancellation selects pause/delete and explicit original runs. An acknowledgment is not physical stop. Lost effects remain unknown; SDK updates have no compare-and-swap and transport retries can issue multiple attempts.",
+        "Source-only SQL migrations are not applied. Real Postgres/Temporal durability, current policy and production wiring remain unqualified."
+      ],
+      "positiveExamples": [
+        "Review the explicit timezone, complete schedule policy, instruction, destination and effective budgets, or inspect an authorized stored schedule page."
+      ],
+      "negativeExamples": [
+        "Treat model-supplied owner/workflow/policy as authorization, reuse approval after instruction change, infer complete retry history, or claim cancellation physically stopped work."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "application_schedules",
+          "authority": "authoritative",
+          "purpose": "enumeration"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:schedules:tool-interface:0.2.0#/$defs/ListScheduledTasksRequest",
+        "sha256": "2de8450111ea263876553f86b895d7fe93bca65ec55bcd649421e21a6f6d3fcf"
+      },
+      "outputSchema": {
+        "id": "urn:meri:schedules:tool-interface:0.2.0#/$defs/ListScheduledTasksOutput",
+        "sha256": "2de8450111ea263876553f86b895d7fe93bca65ec55bcd649421e21a6f6d3fcf"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.list_scheduled_tasks"
+      ]
+    },
+    {
+      "operation": {
+        "id": "cancel_scheduled_task",
+        "version": "0.2.0"
+      },
+      "displayName": "Cancel or pause an approved schedule",
+      "whenToUse": "Prepare and review a complete explicit schedule intent, then apply only its exact current approval through the owned lifecycle.",
+      "limitations": [
+        "Source-only model interface and concrete application ownership/Temporal SDK adapters. Null production handler and runtime qualification pending.",
+        "Only scheduleContext carries trusted current caller, owner, scope, projection/generation, task/template, destination and effective-limit resolution. Raw instruction or identifiers grant no authority.",
+        "Create/update approval hashes include exact normalized instruction digest and full resolved intent. Current qualified producers must implement the task/template mapping and future workflow scope/budget enforcement.",
+        "List preserves unavailable inspection separately from absence and denied access. Returned windows are bounded; historyComplete and currentRetryVerified remain false.",
+        "Cancellation selects pause/delete and explicit original runs. An acknowledgment is not physical stop. Lost effects remain unknown; SDK updates have no compare-and-swap and transport retries can issue multiple attempts.",
+        "Source-only SQL migrations are not applied. Real Postgres/Temporal durability, current policy and production wiring remain unqualified.",
+        "The existing command.execute capability vocabulary is a required prerequisite, not sufficient schedule authority. The qualified current schedule authorization adapter must separately bind delegated owner, exact intent, scope and approval; no new public action enum is introduced."
+      ],
+      "positiveExamples": [
+        "Review the explicit timezone, complete schedule policy, instruction, destination and effective budgets, or inspect an authorized stored schedule page."
+      ],
+      "negativeExamples": [
+        "Treat model-supplied owner/workflow/policy as authorization, reuse approval after instruction change, infer complete retry history, or claim cancellation physically stopped work."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "application_schedules",
+          "authority": "authoritative",
+          "purpose": "enumeration"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:schedules:tool-interface:0.2.0#/$defs/CancelScheduledTaskRequest",
+        "sha256": "2de8450111ea263876553f86b895d7fe93bca65ec55bcd649421e21a6f6d3fcf"
+      },
+      "outputSchema": {
+        "id": "urn:meri:schedules:tool-interface:0.2.0#/$defs/ScheduleMutationOutput",
+        "sha256": "2de8450111ea263876553f86b895d7fe93bca65ec55bcd649421e21a6f6d3fcf"
+      },
+      "aliases": [],
+      "sideEffect": "schedule",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.cancel_scheduled_task"
+      ]
+    },
+    {
+      "operation": {
+        "id": "update_scheduled_task",
+        "version": "0.2.0"
+      },
+      "displayName": "Update an approved schedule",
+      "whenToUse": "Prepare and review a complete explicit schedule intent, then apply only its exact current approval through the owned lifecycle.",
+      "limitations": [
+        "Source-only model interface and concrete application ownership/Temporal SDK adapters. Null production handler and runtime qualification pending.",
+        "Only scheduleContext carries trusted current caller, owner, scope, projection/generation, task/template, destination and effective-limit resolution. Raw instruction or identifiers grant no authority.",
+        "Create/update approval hashes include exact normalized instruction digest and full resolved intent. Current qualified producers must implement the task/template mapping and future workflow scope/budget enforcement.",
+        "List preserves unavailable inspection separately from absence and denied access. Returned windows are bounded; historyComplete and currentRetryVerified remain false.",
+        "Cancellation selects pause/delete and explicit original runs. An acknowledgment is not physical stop. Lost effects remain unknown; SDK updates have no compare-and-swap and transport retries can issue multiple attempts.",
+        "Source-only SQL migrations are not applied. Real Postgres/Temporal durability, current policy and production wiring remain unqualified.",
+        "The existing command.execute capability vocabulary is a required prerequisite, not sufficient schedule authority. The qualified current schedule authorization adapter must separately bind delegated owner, exact intent, scope and approval; no new public action enum is introduced."
+      ],
+      "positiveExamples": [
+        "Review the explicit timezone, complete schedule policy, instruction, destination and effective budgets, or inspect an authorized stored schedule page."
+      ],
+      "negativeExamples": [
+        "Treat model-supplied owner/workflow/policy as authorization, reuse approval after instruction change, infer complete retry history, or claim cancellation physically stopped work."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "application_schedules",
+          "authority": "authoritative",
+          "purpose": "enumeration"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:schedules:tool-interface:0.2.0#/$defs/UpdateScheduledTaskRequest",
+        "sha256": "2de8450111ea263876553f86b895d7fe93bca65ec55bcd649421e21a6f6d3fcf"
+      },
+      "outputSchema": {
+        "id": "urn:meri:schedules:tool-interface:0.2.0#/$defs/ScheduleMutationOutput",
+        "sha256": "2de8450111ea263876553f86b895d7fe93bca65ec55bcd649421e21a6f6d3fcf"
+      },
+      "aliases": [],
+      "sideEffect": "schedule",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.update_scheduled_task"
       ]
     }
   ]

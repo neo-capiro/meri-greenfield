@@ -10,9 +10,10 @@ const freeze = value => {
   return value;
 };
 
-export function createCurrentToolAuthority({ ports, now, maxFactBytes }) {
+export function createCurrentToolAuthority({ ports, now, maxFactBytes, capabilityAction = 'tool.read' }) {
   if (!ports || PORTS.some(name => typeof ports[name] !== 'function') ||
-      typeof now !== 'function' || !Number.isSafeInteger(maxFactBytes) || maxFactBytes < 1) deny('GATEWAY_CONFIGURATION');
+      typeof now !== 'function' || !Number.isSafeInteger(maxFactBytes) || maxFactBytes < 1 ||
+      !['tool.read', 'command.execute'].includes(capabilityAction)) deny('GATEWAY_CONFIGURATION');
   const active = (signal, deadlineMs) => {
     if (signal?.aborted || now() >= deadlineMs) deny('ACCESS_DENIED');
   };
@@ -27,7 +28,7 @@ export function createCurrentToolAuthority({ ports, now, maxFactBytes }) {
       const claims = parseRawJson(await ports.verifyCapability(credential, { signal }), maxFactBytes, 'ACCESS_DENIED');
       validateShape('CapabilityClaims', claims);
       const issuedAt = Date.parse(claims.issuedAt); const expiresAt = Date.parse(claims.expiresAt);
-      if (claims.audience !== 'meri-gateway' || !claims.actions.includes('tool.read') ||
+      if (claims.audience !== 'meri-gateway' || !claims.actions.includes(capabilityAction) ||
           !Number.isSafeInteger(issuedAt) || !Number.isSafeInteger(expiresAt) || issuedAt > now() || expiresAt <= now() ||
           claims.scopes.some(scope => scope.tenantId !== claims.binding.tenantId || scope.policyRevision !== claims.policyRevision)) deny('ACCESS_DENIED');
       active(signal, expiresAt);

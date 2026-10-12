@@ -1,0 +1,33 @@
+{
+  "first": {
+    "source": "bad3ecb968813d57a7fa1cf77eb5fa0647cb9a30",
+    "pass": 22,
+    "fail": 2,
+    "classification": "synthetic fixture timing",
+    "repair": "c111051337e882042d88c6734dd3dca4c6fef631",
+    "explanation": "Shortened expiry belongs to pre-commit fourth action check, not post-settlement fifth. Final domain revocation must actually refuse the returned receipt; merely toggling the next canonical authority check produces no current refusal. Assertions unchanged."
+  },
+  "corrected": {
+    "pass": 24,
+    "fail": 0
+  },
+  "boundary-before": {
+    "source": "faad16bd2929997a1b49eab6b96f16c09b8781b4",
+    "pass": 24,
+    "fail": 2,
+    "classification": "production composition defects",
+    "repair": "5647415bb4d8e7548741fb9af7fb92a0df2d6cf6",
+    "explanation": "Borrowed versions.read must retain original receiver. Metadata limit rejection after successful service commit must retain structured ARTIFACT_EFFECT_UNKNOWN with versionCommitted rather than suggest no effects. Both controls replay unchanged."
+  },
+  "final": {
+    "pass": 26,
+    "fail": 0,
+    "skips": 0
+  },
+  "setupObservations": [
+    "Initial cat targeted absent root IMPLEMENTATION-STANDARDS.md; correct docs/IMPLEMENTATION-STANDARDS.md subsequently read.",
+    "git sparse-checkout add rejected unsupported --no-cone flag; no checkout/source mutation from failed command, corrected with existing non-cone configuration.",
+    "First exec session ID was not printed by orchestration; complete file receipt records exit1 and group380130 absent. No test was rerun merely to recover terminal output."
+  ],
+  "nativeOrDatabaseQualification": "UNRUN"
+}

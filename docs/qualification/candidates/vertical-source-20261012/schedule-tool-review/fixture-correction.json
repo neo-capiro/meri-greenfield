@@ -1,0 +1,7 @@
+{
+  "kind": "REVIEWER_FIXTURE_ONLY",
+  "source": "0e8735c8a65c31b911b20794e1655587f23ae534",
+  "baseline": "57/60: two actual instruction approval failures, one invalid synthetic cancel runId",
+  "reason": "Existing approved lifecycle Run requires UUID runId; reviewer used descriptive string. Replace only synthetic runId with existing synthetic UUID and preserve exact equality assertion. Original test/raw remain in Git.",
+  "productionChanged": false
+}

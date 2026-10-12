@@ -1,0 +1,353 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "runtimeVerdict": "HOLD",
+  "source": "441613b0432bf8c84c8acb33e237e6595b6170c7",
+  "packet": "b733e9d43ec7d43cbd867ac73a0df2b533d79dc4",
+  "reviewHeadBeforeManifest": "cddfc8b8466d64584b06cf6940a5683e2738c67d",
+  "reviewOnlyCommitOrderBeforeManifest": [
+    "c25fe5e8e1281c36800fd1d2e784cf1ae9888d44",
+    "cf6483ba0f4cad44512e919b149dae2337206b5a",
+    "82afd622cec8713a2b801428ae7f6b580c57b18e",
+    "d97b06468daaaaefdea65ce46614a6278661a74e",
+    "7b1426ed6fcf2d9a5fcd23442f4f42887a00fe9c",
+    "fbdeaed0c0507f63912a610953e82788234d877e",
+    "467dfbcccda9003c8f7c235b93cdf5cc520c0e8b",
+    "f6ffa56aacfedf40214158c62f13c98140bec9e3",
+    "a4307bee4220263c4ec89873e93da0648670b242",
+    "17e0f6ab9eb86377c0922b1d805c45cef6d97fc9",
+    "085a6ac85870585a3409c943e4353ba43df16908",
+    "38bec39a6ac294928d05513f91378827f3db7eda",
+    "070b84e20e0dc4beb8a1bcece70cd86ab0c3b1ce",
+    "3c8c172bb705f8a4a1891c009ffd28810cecce0e",
+    "b08e3ca9bdc8a2166d98e6cf092d96a99307bfa8",
+    "cddfc8b8466d64584b06cf6940a5683e2738c67d"
+  ],
+  "excludedDependencyMerge": "8b7b79737391b60f0e4722e76a4ed7ab408a52f3",
+  "independentCanonicalControls": 40,
+  "sourceAuditChecks": 167,
+  "acceptedPacketChecks": 308,
+  "rootReceiptChecks": 29,
+  "metadataContinuationChecks": 386,
+  "verifiedRootSuite": {
+    "passed": 5174,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "verifiedPublicTests": 7,
+  "ownedGroupsAbsent": 10,
+  "removedOwnedDependencyBytes": 1374227,
+  "selfExcluded": true,
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-VERTICAL-FINAL-INTEGRATION-REVIEW-20261012.md",
+      "bytes": 7497,
+      "sha256": "ead3c2c89c8be7040d39a56426b114e75b8d42f01aa840fdfb42323c25cb1e23"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-VERTICAL-FINAL-INTEGRATION-REVIEW-20261012.md",
+      "bytes": 1058,
+      "sha256": "ad987695f319809d646cdddb65e49ae8061501ecac5f0719c7d5b8995a97d0ef"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/accepted-packet-audit-result.json",
+      "bytes": 59685,
+      "sha256": "dd745a7c4a937cdfcd8ee6fea56fd618d70238f5389cc6d0b832db24a9a98afd"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/accepted-packet-stage-audit-result.json",
+      "bytes": 46699,
+      "sha256": "8329d217b45b98bfc095204f7e64ac4a6592c5c0c34d3edc002d58cdc647b2e5"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/accepted-packets-stage.json",
+      "bytes": 1366,
+      "sha256": "8211ec015b1fa87edf467435a9b77191a74c4d85d93502f29431c4e0c6d28298"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/accepted-packets-stage.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/accepted-packets-stage.stdout.bin",
+      "bytes": 57,
+      "sha256": "89cec4e26234f0af4481b51ff0898f0f5e1826b7d1be012a85f008772a6df925"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/audit-accepted-packets.py",
+      "bytes": 2249,
+      "sha256": "1efb47adfcff13b236eeb6605e2fce1695fe9a41d87220579643be5e5ea9b263"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/audit-final-integration.py",
+      "bytes": 9285,
+      "sha256": "4bd3efc41bab35ca1c2832473a931b8c37bb529c0393ce50757c45761ca51937"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/audit-integration-first.py.txt",
+      "bytes": 7438,
+      "sha256": "47e10394848c447b329744cd60e1f28eafdea33af1a1a7107245c531682739ab"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/audit-integration.py",
+      "bytes": 7464,
+      "sha256": "0207a74d0c6c2470df036856a7de94377ccfb0ea57e0c0a252decd6d9b511e11"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/audit-root-receipts-first.py.txt",
+      "bytes": 3857,
+      "sha256": "3828f9bc0a2afda8307398462737127b8e5e7c4a6cf11780b5430333ef0e1efd"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/audit-root-receipts.py",
+      "bytes": 3863,
+      "sha256": "3b86565f3fd7fa0e0e645e4e02e70637061400cf882b403ac4320513bd29e013"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/audit-scope-correction.json",
+      "bytes": 545,
+      "sha256": "30435a4ecd53a78c325c19a9a19006fb1f68c14030a169ddc299b6b249b18c71"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/canonical-expanded.json",
+      "bytes": 1324,
+      "sha256": "8a1dc5e7413b46ab1ad9b17a9614fbda11b851de94c8cdab5744a76eda5ea14b"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/canonical-expanded.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/canonical-expanded.stdout.bin",
+      "bytes": 4225,
+      "sha256": "2f31bcf1c821e13902e18b9e8431e0971e18ccbbc563effd2e1e004e42f402a0"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/canonical-first.json",
+      "bytes": 1318,
+      "sha256": "0c03a46418ead1fdaf958d99d60979cd272b5cc2b2b1103fc798e85cff677987"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/canonical-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/canonical-first.stdout.bin",
+      "bytes": 4006,
+      "sha256": "e62496cdb876a4078bef6f8d592e637cc2112d01d29ceaa12549a46596a675a4"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/capture-pr37-identities.mjs",
+      "bytes": 1237,
+      "sha256": "8fdef00521786c1516d7b0ec3a27de0e018d38bbbbf21efad9a9b875baffbf74"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/cleanup-final.json",
+      "bytes": 1970,
+      "sha256": "c2aada3ee59a4425322e08b447e50573019096d45a0ceca1ac91329b0eb62fbf"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/criteria.json",
+      "bytes": 2109,
+      "sha256": "c6ebfcd51e18606ee47ad413e6710b118d03013303ce3be6bd4148376dd29c9f"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/dependency-setup.json",
+      "bytes": 292,
+      "sha256": "89e8f85ba421d06e83b8d6b7b16e8fcecb6ae82a72bf5c738363fb60cc65423d"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/final-accepted-packets.json",
+      "bytes": 1485,
+      "sha256": "b41a7c7206aed2c1230d9b16a5922d5d3f11d50f20c97cbb3ff32c042da63b8b"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/final-accepted-packets.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/final-accepted-packets.stdout.bin",
+      "bytes": 89,
+      "sha256": "28057e3f30502e89a74a19a6479374e8de92e9729de43ef224aaeb7b554b0234"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/final-integration-audit-result.json",
+      "bytes": 51557,
+      "sha256": "4dd50e1bdb71126d779533f7f20dcec4145bc783d8a4bf6098d5fbd48486aeb6"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/final-metadata-binding.json",
+      "bytes": 79286,
+      "sha256": "461a8878e8af60f817723e55f5864390ceb9d73c20d06d6ff34e1c2eedd6bdef"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/final-root-receipts-corrected.json",
+      "bytes": 1560,
+      "sha256": "9badd85af44d9081c67c613db430c06251c57ef887b4290e63a7d1a9f56c92f6"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/final-root-receipts-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/final-root-receipts-corrected.stdout.bin",
+      "bytes": 1250,
+      "sha256": "1122afbde70bfbc6a05e02ba34ad9e2674afd542ffd04f324283a487c74fdb66"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/final-root-receipts.json",
+      "bytes": 1539,
+      "sha256": "8aebaeaf7f7b6238887d6bc7f6704c9db381881f09e06f23fcee95be62ff0c80"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/final-root-receipts.stderr.bin",
+      "bytes": 438,
+      "sha256": "6d6e997ff61dc92ab8970763149edb45e8b2cd142fbb3dbe2d41c61b3c4e0223"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/final-root-receipts.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/final-source-audit.json",
+      "bytes": 1440,
+      "sha256": "2c7bcfa8e498c595c851b8284ede404f0d52b4c52bb101419960520e5e297a98"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/final-source-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/final-source-audit.stdout.bin",
+      "bytes": 167,
+      "sha256": "7b7c2dee8a64eeffead650ff0cacda937e4131f625ae566c34597420912e8e88"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/final-test-expectation-reviewed-forward.patch",
+      "bytes": 98692,
+      "sha256": "53d208964bbd23444cd64bd2ba2046632668975bc9c27c27c8bcbec8ffaf2241"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/final-test-expectation-reviewed-inverse.patch",
+      "bytes": 98692,
+      "sha256": "1b698a888f254fbbcef799c22d98cdfe266d3ed2f776f70736a840a223b12fb0"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/final-verdict.json",
+      "bytes": 1808,
+      "sha256": "9a466319bfa5962a4d7dc5025a20a6fab364c8c225f75d81716854ef8c5070c4"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/integration-audit-corrected.json",
+      "bytes": 1356,
+      "sha256": "9843cd78a79737bcbaba46ad52fff298d39bce5cb7c740506fbe65d68684d1f1"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/integration-audit-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/integration-audit-corrected.stdout.bin",
+      "bytes": 166,
+      "sha256": "20f9f8e9cfdb0e5086af70dec841bb24ea58067883cd90dd254768466362a284"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/integration-audit-first.json",
+      "bytes": 1349,
+      "sha256": "cf9277e14d92df8ed5e57e6610d934c8492db00ef576c25f0cbb0c327a8053ab"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/integration-audit-first.stderr.bin",
+      "bytes": 2053,
+      "sha256": "3069eae772c9fa61b911806f0f6f0949d311aa9f3f23f6a1673b9e451ab631c0"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/integration-audit-first.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/integration-audit-result.json",
+      "bytes": 33368,
+      "sha256": "4d353f81cd17a64add4fce33c6a92541fc38174281c584f02f5d79a42f2048f1"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/pr37-identities.json",
+      "bytes": 71507,
+      "sha256": "f7553aa474169593eba41e780031153311566cd038990cfa922d68e45ec2c782"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/prior-identities.json",
+      "bytes": 1337,
+      "sha256": "23b92cf56e4e8c691235e1075d1f8ab288f60f0b18e2369ec92ca5c6cf3b5e3e"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/prior-identities.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/prior-identities.stdout.bin",
+      "bytes": 48,
+      "sha256": "76e65a4986cb5b0ede144ed8487747202ff5a3e435a3556e6a8ac9adc06b4827"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/receipt-parser-correction.json",
+      "bytes": 547,
+      "sha256": "eda9214ccd63576bef4be7b5de3e9da0e60893ec35ebdae808531550c5c5a324"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/root-receipt-audit-result.json",
+      "bytes": 4880,
+      "sha256": "bafac68c00f527ecf3c642f241e652a0b17a5d2ae2902da12e197de5ba65bdf1"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/test-expectation-reviewed-forward.patch",
+      "bytes": 36456,
+      "sha256": "9f0074ac06fd78481dabc05b86a50312b8fc9775666e41cf4576d8ca4fdb27b6"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/test-expectation-reviewed-inverse.patch",
+      "bytes": 36456,
+      "sha256": "869c2bf75fa31467b776d40ed23dded7a2eeceb3f9cc7e870accc728bd0589f3"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/verify-manifest.py",
+      "bytes": 722,
+      "sha256": "664b48e857c856c1be47742d0717d93389f67ed77af98d83229b42b759b690f5"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/whitespace-final.json",
+      "bytes": 357,
+      "sha256": "1a875d1beacd158ace840124434d6652236e5a96ec1ebb8ffd2116c94b495a67"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/whitespace-full.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/whitespace-full.stdout.bin",
+      "bytes": 8700,
+      "sha256": "938f10aeb8b37b53ec30726c65aef0fd8f1f7de26ddfcf46b3689e029125bd08"
+    },
+    {
+      "path": "packages/contracts/test/vertical-final-integration-independent.test.mjs",
+      "bytes": 17620,
+      "sha256": "8445cfd6f2de74c7f1aea05c861c0e077763448bab067af4f96ff9b42396412a"
+    }
+  ]
+}

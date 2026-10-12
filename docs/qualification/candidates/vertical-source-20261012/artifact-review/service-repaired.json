@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/artifacts/test/artifact-service-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-artifact-execution-review-20261012",
+  "sourceHead": "024e81eada80008aaa04419c38babcf9e1bc1e97",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T22:25:32.725031+00:00",
+  "durationSeconds": 0.57,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 367281,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/service-repaired.stdout.bin",
+      "bytes": 2014,
+      "sha256": "3cf676f87278b3554844676407d6af159b4ceb585351fc8ceb624e47daaf469f"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/service-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,1341 @@
+{
+  "base": "e5fb3963de787bbd7b7663316c368f15814897da",
+  "candidate": "441613b0432bf8c84c8acb33e237e6595b6170c7",
+  "candidateTree": "b14f441a572f7fa69c758db60ef52a632be2769a",
+  "originalEntries": 8678,
+  "originalEntriesExact": 8641,
+  "changedExisting": [
+    "apps/gateway/authorization/current-tool-authority.mjs",
+    "apps/gateway/budget/postgres-tool-budget.mjs",
+    "apps/gateway/budget/tool-budget-dispatch.mjs",
+    "apps/gateway/dispatch/operation-context.mjs",
+    "apps/gateway/index.mjs",
+    "apps/gateway/sources/memory-proposals/http-adapter.mjs",
+    "apps/gateway/sources/memory-proposals/request-context.mjs",
+    "apps/gateway/test/action-item-context-independent.test.mjs",
+    "apps/gateway/test/capability-next-independent.test.mjs",
+    "apps/gateway/test/mail-context-independent.test.mjs",
+    "apps/gateway/test/memory-context-independent.test.mjs",
+    "packages/contracts/commands-0.2/artifact-file-validation.mjs",
+    "packages/contracts/commands-0.2/validate.mjs",
+    "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+    "packages/contracts/retrieval-0.2/catalog.json",
+    "packages/contracts/retrieval-0.2/validate.mjs",
+    "packages/contracts/test/backend-execution-connected.test.mjs",
+    "packages/contracts/test/backend-execution-expectations.mjs",
+    "packages/contracts/test/backend-execution-integration-independent.test.mjs",
+    "packages/contracts/test/command-artifact-file.test.mjs",
+    "packages/contracts/test/command-contracts-integration-independent.test.mjs",
+    "packages/contracts/test/command-payloads-independent.test.mjs",
+    "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+    "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+    "packages/contracts/test/retrieval-backend-next-independent.test.mjs",
+    "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+    "packages/contracts/test/retrieval-civic-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-mail.test.mjs",
+    "packages/contracts/test/retrieval-memory-binding.test.mjs",
+    "packages/contracts/test/retrieval-next-bindings.test.mjs",
+    "packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-observed-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+    "packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+    "packages/contracts/test/retrieval-reference-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-selected-next-bindings.test.mjs",
+    "packages/contracts/test/retrieval-selected-next-independent.test.mjs"
+  ],
+  "sourceIdentities": [
+    {
+      "path": "apps/gateway/authorization/current-tool-authority.mjs",
+      "source": "ca506ba1591b35eae5d389e551787017328eea73",
+      "bytes": 6613,
+      "sha256": "794e1f54f6966d2d852d0483606c76410ed684d889ca24c7ea78dac6f2c01043"
+    },
+    {
+      "path": "apps/gateway/budget/postgres-tool-budget.mjs",
+      "source": "ca506ba1591b35eae5d389e551787017328eea73",
+      "bytes": 13226,
+      "sha256": "1605c224a0caaed35121768be388af39e3aabf9b84f4e70767c7dfbdda8a0336"
+    },
+    {
+      "path": "apps/gateway/budget/tool-budget-dispatch.mjs",
+      "source": "ca506ba1591b35eae5d389e551787017328eea73",
+      "bytes": 623,
+      "sha256": "d6dace94cb0232047a2922b8c0cc6769f090e07b36aca51e64320287ebb552aa"
+    },
+    {
+      "path": "apps/gateway/index.mjs",
+      "source": "ca506ba1591b35eae5d389e551787017328eea73",
+      "bytes": 3220,
+      "sha256": "d32b969c816c352e523af3bd470af715481a5691c5e1b550e07ea4cf5a33fc09"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/artifact-file-validation.mjs",
+      "source": "ca506ba1591b35eae5d389e551787017328eea73",
+      "bytes": 5611,
+      "sha256": "82678a74912a4ad58b3c72322acf8a89a0f7b3a23880bdb8b62404251489a4ea"
+    },
+    {
+      "path": "apps/gateway/dispatch/operation-context.mjs",
+      "source": "62062236e38ac77b9494a04668df6969ab1f33e2",
+      "bytes": 2792,
+      "sha256": "ff5c51f840a4aabdb8e47804a93acc414aa7e154f78703cbf98fee17910cad67"
+    },
+    {
+      "path": "apps/gateway/sources/memory-proposals/http-adapter.mjs",
+      "source": "62062236e38ac77b9494a04668df6969ab1f33e2",
+      "bytes": 3597,
+      "sha256": "92f67b46f77a20dbdf315950d313a2fa968b39523c8fdef9f1d0c8b8c96cfea4"
+    },
+    {
+      "path": "apps/gateway/sources/memory-proposals/request-context.mjs",
+      "source": "62062236e38ac77b9494a04668df6969ab1f33e2",
+      "bytes": 1920,
+      "sha256": "bea3b150aac3fc035179735cd1da6050e80dfa9015e8c486e7f0de7d350ef738"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/validate.mjs",
+      "source": "83d0f5951a5e0c5d86d3a8684c2396b6cf13f794",
+      "bytes": 2648,
+      "sha256": "78cfb98b060a4ccadfa66006f5958bd7941586783c2d9dc39a2d5d90678f47ac"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "source": "c80260046e33d742811fca6f553af4033eb393bc",
+      "bytes": 58911,
+      "sha256": "59ee000292db17b02e3e00e89c94bbed1d61a66525f419c59c84821af4800e02"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog.json",
+      "source": "c80260046e33d742811fca6f553af4033eb393bc",
+      "bytes": 330499,
+      "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/validate.mjs",
+      "source": "c80260046e33d742811fca6f553af4033eb393bc",
+      "bytes": 31386,
+      "sha256": "3798d5e55e10777b24397d0867b6b722218bceba9663de4f007e78e818b40c34"
+    },
+    {
+      "path": "packages/contracts/test/command-artifact-file.test.mjs",
+      "source": "ca506ba1591b35eae5d389e551787017328eea73",
+      "bytes": 11342,
+      "sha256": "87ecc32b4cf448b33fa209b5646e4d6d19f45598f6ef89b558d1544669fca427"
+    },
+    {
+      "path": "apps/artifacts/local-executor.mjs",
+      "source": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
+      "bytes": 4031,
+      "sha256": "68c6e1453f902dff5f83c5ab5a4e182e6fa96fee3dcf603998a6dae3de7367e0"
+    },
+    {
+      "path": "apps/artifacts/local-store.mjs",
+      "source": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
+      "bytes": 4613,
+      "sha256": "267007d8b17837f7e97d368bdb928a8663b2c4d3e2c50ad9b775509b69fe8610"
+    },
+    {
+      "path": "apps/artifacts/office-transform.mjs",
+      "source": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
+      "bytes": 2345,
+      "sha256": "13906d0247e3fdd226632ec0e4ac55cd994743a2d9c2c4cf7c6dde5f0aac03c9"
+    },
+    {
+      "path": "apps/artifacts/postgres-analysis.mjs",
+      "source": "cee27278cc58ab35f72763faa8c9b49ff80c8725",
+      "bytes": 9669,
+      "sha256": "248b73760f296298fc5424b25fffee8aa02beccbccd8c4bd9c27c95c47fd51b5"
+    },
+    {
+      "path": "apps/artifacts/postgres-service.mjs",
+      "source": "a73b65dc05b7554c0592bec22d940ef781344dd6",
+      "bytes": 12329,
+      "sha256": "67fe1bbdb1642cf19261229bd84eefd3fef1eba5f4974109b5280c48b354714e"
+    },
+    {
+      "path": "apps/artifacts/presentation.mjs",
+      "source": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
+      "bytes": 3469,
+      "sha256": "6cb8244920a09aadf8b35255be55c058577098a1f20449a51ea44a1e159c79db"
+    },
+    {
+      "path": "apps/artifacts/process.mjs",
+      "source": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
+      "bytes": 3448,
+      "sha256": "902a4804e6d7e30d343a3aa918546b26a6c4b6684b6bbd2446c1530055069faa"
+    },
+    {
+      "path": "apps/artifacts/python/analysis.py",
+      "source": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
+      "bytes": 4841,
+      "sha256": "c9363307ffb2bae72b51e81bc5da8350daded0993efecd0606bdfb48a7dae1c4"
+    },
+    {
+      "path": "apps/artifacts/python/entry.py",
+      "source": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
+      "bytes": 3568,
+      "sha256": "2037b957434218c086f4680a5509a7bba562764df49ca341c6ee461a60f83b9e"
+    },
+    {
+      "path": "apps/artifacts/python/office.py",
+      "source": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
+      "bytes": 5779,
+      "sha256": "46028e1a2d000676dcf1a4375580537db0f2f3771cc2b9ae335ac2912dff0be4"
+    },
+    {
+      "path": "apps/artifacts/sandbox-analysis.mjs",
+      "source": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
+      "bytes": 4436,
+      "sha256": "d6d8b79dfcf851522418bcdd58e7f7fe1186ab32c1cd6fbee4d90c8c59236f3b"
+    },
+    {
+      "path": "apps/artifacts/service.mjs",
+      "source": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
+      "bytes": 11868,
+      "sha256": "88abc4f0d9a449dbd547232e772015abef5a60473de22c4b55854ca5a36cefaa"
+    },
+    {
+      "path": "apps/control/commands/approval-context.mjs",
+      "source": "ca506ba1591b35eae5d389e551787017328eea73",
+      "bytes": 1617,
+      "sha256": "2d8c60f3c782295e8cab335c701fabc8a4d33287b7ca939246bf698985bd4073"
+    },
+    {
+      "path": "apps/control/commands/durable-executor.mjs",
+      "source": "ca506ba1591b35eae5d389e551787017328eea73",
+      "bytes": 3046,
+      "sha256": "1fb45049a3f214e9191b30818dfa122cb999eacc8316bf4ee5a5dbe6ee08b80d"
+    },
+    {
+      "path": "apps/control/commands/executor.mjs",
+      "source": "ca506ba1591b35eae5d389e551787017328eea73",
+      "bytes": 8892,
+      "sha256": "a20227164972ed53c16d4e198438399a7dac1fd39ed72de428a5a99187d55863"
+    },
+    {
+      "path": "apps/control/commands/intent.mjs",
+      "source": "ca506ba1591b35eae5d389e551787017328eea73",
+      "bytes": 189,
+      "sha256": "9e10bf80b170e8e3e7ae9da9fca44ba480ef05e90ddaec05f9f224b1af87b19e"
+    },
+    {
+      "path": "apps/control/commands/migrations/0001_commands.sql",
+      "source": "ca506ba1591b35eae5d389e551787017328eea73",
+      "bytes": 1074,
+      "sha256": "252683e2db8ffd36dbc7b3cfdada9a28f59a0f192522253a852686369560704b"
+    },
+    {
+      "path": "apps/control/commands/postgres-command-journal.mjs",
+      "source": "ca506ba1591b35eae5d389e551787017328eea73",
+      "bytes": 5343,
+      "sha256": "c4152987233f7ba4a68b7e013d087d27c8ddadb35b058f21c185d99bec6dd08c"
+    },
+    {
+      "path": "apps/control/commands/protocol.mjs",
+      "source": "ca506ba1591b35eae5d389e551787017328eea73",
+      "bytes": 159,
+      "sha256": "998a7617ba2b5c6ae9abffa9b25527c4c011476a36cd647c7e98deeaefb0218c"
+    },
+    {
+      "path": "apps/control/commands/source-http.mjs",
+      "source": "ca506ba1591b35eae5d389e551787017328eea73",
+      "bytes": 7185,
+      "sha256": "c864f91d547a2a703e71ac69d7cb3f7c4c34f309bae49611b3b07779d6739654"
+    },
+    {
+      "path": "apps/control/commands/source-projection.mjs",
+      "source": "ca506ba1591b35eae5d389e551787017328eea73",
+      "bytes": 3269,
+      "sha256": "8d7febb1bc91f231210e52921c1dd7223a0bcd4560897b8000e66c2e6e9f575f"
+    },
+    {
+      "path": "apps/control/commands/tool-interface.mjs",
+      "source": "d0433f7c7e52e6dbc606a9937f92705a42ac863a",
+      "bytes": 6139,
+      "sha256": "68cb594a9d3869a0194210d056409e509b5fe0719e35e5feced222235b0a3481"
+    },
+    {
+      "path": "apps/control/schedules/migrations/0001_schedule_owner.sql",
+      "source": "d9296aa2db1290091a355c47fb1db3d87ac98665",
+      "bytes": 1123,
+      "sha256": "bf8c593de97dcdae728765ecd90dac6696b290028d4ffb0586bdae0fe87d91c7"
+    },
+    {
+      "path": "apps/control/schedules/postgres-schedule-owner.mjs",
+      "source": "d9296aa2db1290091a355c47fb1db3d87ac98665",
+      "bytes": 5399,
+      "sha256": "8385475b7ca25aff687221934ffe4f9773af311fa766c56b68e33f48cd656300"
+    },
+    {
+      "path": "apps/control/schedules/schedule-lifecycle.mjs",
+      "source": "d9296aa2db1290091a355c47fb1db3d87ac98665",
+      "bytes": 8930,
+      "sha256": "516c4f31a055730b9485cc94de68e6d74e7b0ee8472d7403d078e5d282b08b93"
+    },
+    {
+      "path": "apps/control/schedules/temporal-run-history.mjs",
+      "source": "d9296aa2db1290091a355c47fb1db3d87ac98665",
+      "bytes": 2430,
+      "sha256": "cf1c01b281815ccf0b43b601825047dfbfdb196398162ca93229f0ab35870e7e"
+    },
+    {
+      "path": "apps/control/schedules/temporal-schedule-mutations.mjs",
+      "source": "d9296aa2db1290091a355c47fb1db3d87ac98665",
+      "bytes": 3403,
+      "sha256": "a4b75d9996d87eaaf2ab6d412516df70e3bb4d1bbf72ec96ccdcefd7104bb271"
+    },
+    {
+      "path": "apps/control/schedules/tool-interface.mjs",
+      "source": "d9296aa2db1290091a355c47fb1db3d87ac98665",
+      "bytes": 4367,
+      "sha256": "8311d6524a18dd69cedeb4c344c4f5df17a87c45591cdc1bcaa0b7fbdc3618c2"
+    },
+    {
+      "path": "apps/gateway/budget/tool-budget-execution.mjs",
+      "source": "ca506ba1591b35eae5d389e551787017328eea73",
+      "bytes": 4485,
+      "sha256": "79c95fede4bcfecb0bafa6b00bea5a85e0ef5cd4328c9d8e381c611083f7e9dc"
+    },
+    {
+      "path": "apps/gateway/sources/json-response.mjs",
+      "source": "62062236e38ac77b9494a04668df6969ab1f33e2",
+      "bytes": 2131,
+      "sha256": "7dcf9c8136c444a0b48b25022c4fad058e63f1ace66d0d5cad008385492d2ed1"
+    },
+    {
+      "path": "apps/gateway/sources/research-portfolio-evidence/handler.mjs",
+      "source": "62062236e38ac77b9494a04668df6969ab1f33e2",
+      "bytes": 1810,
+      "sha256": "d43944b263ed074ec9dd0e0da9691dbcaad3ab7caa498fe2909a50e37c93de30"
+    },
+    {
+      "path": "apps/gateway/sources/research-portfolio-evidence/http-adapter.mjs",
+      "source": "62062236e38ac77b9494a04668df6969ab1f33e2",
+      "bytes": 4476,
+      "sha256": "97634d2a4f16fce0c5ac697f5275a3e9254d269d8c1243cc064bb25575ffca06"
+    },
+    {
+      "path": "apps/gateway/sources/research-portfolio-evidence/projection.mjs",
+      "source": "62062236e38ac77b9494a04668df6969ab1f33e2",
+      "bytes": 4358,
+      "sha256": "f3b69e7c21181ae93fbf97a49f05e62a8eebe8966824bec42de608a2c01ca3da"
+    },
+    {
+      "path": "apps/gateway/sources/research-portfolio-evidence/request-context.mjs",
+      "source": "62062236e38ac77b9494a04668df6969ab1f33e2",
+      "bytes": 2008,
+      "sha256": "2423779ebad05718b8af4143c65bf2f80b3c5a12a046d121db34ce82d5fe1d6d"
+    },
+    {
+      "path": "apps/gateway/sources/source-admission.mjs",
+      "source": "62062236e38ac77b9494a04668df6969ab1f33e2",
+      "bytes": 1213,
+      "sha256": "7ca90f00425a58a0ced924db2a4d75116d4532814f1d462be80f74ce368d171e"
+    },
+    {
+      "path": "packages/contracts/artifacts-0.2/artifact-formats.mjs",
+      "source": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
+      "bytes": 599,
+      "sha256": "0ff685fcaf1bd06b5ac2f13aa55b60b77d068e0592c19a0137421ca29ae2e772"
+    },
+    {
+      "path": "packages/contracts/artifacts-0.2/artifact-validation.mjs",
+      "source": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
+      "bytes": 7419,
+      "sha256": "f356625d0024aa185925cae6bc84e813a3439cb6dcca17755b5d64edf4821880"
+    },
+    {
+      "path": "packages/contracts/artifacts-0.2/artifact.schema.json",
+      "source": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
+      "bytes": 40724,
+      "sha256": "d90585d5e8ce60fb803fffc345ee9dd8c1e685c03b0319724afce8603094d486"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/execution-boundary.mjs",
+      "source": "ca506ba1591b35eae5d389e551787017328eea73",
+      "bytes": 1562,
+      "sha256": "e1c3cfb9fd75b7e623f1bc9492ab06793b4145277336eac1039ff5eef8e6690c"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/execution-intent.mjs",
+      "source": "ca506ba1591b35eae5d389e551787017328eea73",
+      "bytes": 2727,
+      "sha256": "eaec7046bd40fdffe97b92a4ed44f0ef458f6ac93b501d447ac201748da2350b"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/task-update-validation.mjs",
+      "source": "ca506ba1591b35eae5d389e551787017328eea73",
+      "bytes": 3186,
+      "sha256": "883ee549d2520ea47c558aa33e893eac8f5e76596aef834c7775b4c2ae35d5e5"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/task-update.schema.json",
+      "source": "ca506ba1591b35eae5d389e551787017328eea73",
+      "bytes": 5176,
+      "sha256": "2def0842b4f72ce862df09f0064b0ea32ab7428d25cb2f10bdc2b6055d26c857"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/tool-interface-validation.mjs",
+      "source": "83d0f5951a5e0c5d86d3a8684c2396b6cf13f794",
+      "bytes": 3816,
+      "sha256": "52ad4e9f8887b5231648f21ba08a7a02cd1ce390b241a1868a2ffd384112e4a3"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/tool-interface.schema.json",
+      "source": "83d0f5951a5e0c5d86d3a8684c2396b6cf13f794",
+      "bytes": 7362,
+      "sha256": "7c394fc336eeb91435d38b57e45180af838fd898e33f0e0f8e34fe8dcf4e8842"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/execution-schema-sources.mjs",
+      "source": "c80260046e33d742811fca6f553af4033eb393bc",
+      "bytes": 1322,
+      "sha256": "8800631223c542fcd99b1ac0ac5aca37c3f27bc4348ee8b632e77faf49adadd8"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/execution-tool-validators.mjs",
+      "source": "c80260046e33d742811fca6f553af4033eb393bc",
+      "bytes": 1286,
+      "sha256": "e5bb5b5d28265622d612b9c6bd347eb342609d6e7af929b82018372be006b895"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/research-portfolio-evidence-validation.mjs",
+      "source": "62062236e38ac77b9494a04668df6969ab1f33e2",
+      "bytes": 3456,
+      "sha256": "38d3ae81832be600754462df12ad88db9836796a8f283b73042dedaed6b90a13"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/research-portfolio-evidence.schema.json",
+      "source": "62062236e38ac77b9494a04668df6969ab1f33e2",
+      "bytes": 23592,
+      "sha256": "87549b042b5dc84160020ae08c93db834a5d9f28aa13ffc45d652c186ae3767b"
+    },
+    {
+      "path": "packages/contracts/schedules-0.2/lifecycle-validation.mjs",
+      "source": "d9296aa2db1290091a355c47fb1db3d87ac98665",
+      "bytes": 4553,
+      "sha256": "26ab4b12156f969dd36cfe776c8ccf7606df7e5c55a0ffb90e9f3e1e16fc2a34"
+    },
+    {
+      "path": "packages/contracts/schedules-0.2/lifecycle.schema.json",
+      "source": "d9296aa2db1290091a355c47fb1db3d87ac98665",
+      "bytes": 18610,
+      "sha256": "0b391e3e94fc3278de6d061694772a853c54c083630f874c5dc54c82a01f5001"
+    },
+    {
+      "path": "packages/contracts/schedules-0.2/tool-interface-validation.mjs",
+      "source": "d9296aa2db1290091a355c47fb1db3d87ac98665",
+      "bytes": 9000,
+      "sha256": "36891fa03f59250353d750b3fea8cada3d01f7c3d9a24a470ac7cfa24d93cd20"
+    },
+    {
+      "path": "packages/contracts/schedules-0.2/tool-interface.schema.json",
+      "source": "d9296aa2db1290091a355c47fb1db3d87ac98665",
+      "bytes": 24305,
+      "sha256": "2de8450111ea263876553f86b895d7fe93bca65ec55bcd649421e21a6f6d3fcf"
+    }
+  ],
+  "testContinuationSource": "2955ec6cfd1b38908cc62d9a1f5a8800bf7f5bdc",
+  "testContinuationReview": "d19f73649bec835da360265f603c87ef170efb92",
+  "generalBudgetSource": "cee27278cc58ab35f72763faa8c9b49ff80c8725",
+  "testDeltas": [
+    {
+      "path": "apps/gateway/test/action-item-context-independent.test.mjs",
+      "beforeSha256": "2eedfd9929825ab489b765a797c0de97a3d665f3f2f462c0f5fe57e083e8f37f",
+      "afterSha256": "d6cc4511b186a882fa37da64e940f6552cb1c2fc080f1d0b356d84140af68653",
+      "testDeclarationsBefore": 14,
+      "testDeclarationsAfter": 14,
+      "assertionsBefore": 56,
+      "assertionsAfter": 56
+    },
+    {
+      "path": "apps/gateway/test/capability-next-independent.test.mjs",
+      "beforeSha256": "1c9953e0e9efaade981851c20e6592579e63d37c6d2718ebda8732ac13f08b38",
+      "afterSha256": "63ca114b28cd00f354e8e1b38a1be5e5159a31bccb1239f682eed74f2785e90b",
+      "testDeclarationsBefore": 1,
+      "testDeclarationsAfter": 1,
+      "assertionsBefore": 6,
+      "assertionsAfter": 6
+    },
+    {
+      "path": "apps/gateway/test/mail-context-independent.test.mjs",
+      "beforeSha256": "cbe5b1d176bb75f8597879635716d151d86b3dd22a4b4a5fc22f1339f2367390",
+      "afterSha256": "559ab2ba4ad26fe9ea1775dd43a15689890d3443bb7d5dfd8535fe3914b5ceaa",
+      "testDeclarationsBefore": 18,
+      "testDeclarationsAfter": 18,
+      "assertionsBefore": 82,
+      "assertionsAfter": 82
+    },
+    {
+      "path": "apps/gateway/test/memory-context-independent.test.mjs",
+      "beforeSha256": "9dcb48a2ad738276a11f6e2e847bca3c47f48fd7d47fab109ee534189bf47bba",
+      "afterSha256": "6a1ad652c8159c510bb34958ab49293d9c3436e163ce5a9e7656a9c03915c340",
+      "testDeclarationsBefore": 15,
+      "testDeclarationsAfter": 15,
+      "assertionsBefore": 55,
+      "assertionsAfter": 55
+    },
+    {
+      "path": "packages/contracts/test/backend-execution-expectations.mjs",
+      "beforeSha256": "4690f3f4e00fa1e6fda2fe0738b75fd653c654aacd3503994afb927f944da5c4",
+      "afterSha256": "b297ca34f65334544c8a8e1151566806a9d659c8b31f1e792aa6e655ff516418",
+      "testDeclarationsBefore": 0,
+      "testDeclarationsAfter": 0,
+      "assertionsBefore": 3,
+      "assertionsAfter": 3
+    },
+    {
+      "path": "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+      "beforeSha256": "0d79fb0acef22a1dc9244d292b7d9b4f87b17de70303fcd210ca63db86de29e1",
+      "afterSha256": "cd904833ebcd711e2d009fcb1375a7da45f184895a42c1527ba9bb59b6f92b70",
+      "testDeclarationsBefore": 14,
+      "testDeclarationsAfter": 14,
+      "assertionsBefore": 72,
+      "assertionsAfter": 72
+    },
+    {
+      "path": "packages/contracts/test/retrieval-memory-binding.test.mjs",
+      "beforeSha256": "8c8bc4217cf72c634ca6ffde599f9040f28660f1a22c2061654a21875a8e9ab2",
+      "afterSha256": "ed54f94fffcd83e813118400cbf8df5b4efcb61cb7cc33a8af6b30cea8054bd5",
+      "testDeclarationsBefore": 12,
+      "testDeclarationsAfter": 12,
+      "assertionsBefore": 68,
+      "assertionsAfter": 68
+    },
+    {
+      "path": "packages/contracts/test/retrieval-reference-integration-independent.test.mjs",
+      "beforeSha256": "9865daf6a32b98f36083ea5cad351e867a50c3b528c9fad518bf62335c8d2e93",
+      "afterSha256": "74ea5539e68310e1a763be79603fe28e478cc8071a8247493260575e3a3e67bd",
+      "testDeclarationsBefore": 14,
+      "testDeclarationsAfter": 14,
+      "assertionsBefore": 74,
+      "assertionsAfter": 75
+    },
+    {
+      "path": "packages/contracts/test/retrieval-selected-next-bindings.test.mjs",
+      "beforeSha256": "490f8fc42d40fe19769aba19d5ace0a32c5e426b3ab916658e9f0e4be67885ce",
+      "afterSha256": "739154d7720cbee6999c353a374f7d0fc41b0878a3edd572b57a79c6a1578ff4",
+      "testDeclarationsBefore": 6,
+      "testDeclarationsAfter": 6,
+      "assertionsBefore": 35,
+      "assertionsAfter": 35
+    },
+    {
+      "path": "packages/contracts/test/retrieval-selected-next-independent.test.mjs",
+      "beforeSha256": "02a10746f971979b3f396174b6c97494e90df81eed0ee3284092eb3db755fea2",
+      "afterSha256": "eea3d5625815f2e90b677c22eed6079841dd448c3a9079387d174db3423e2a1f",
+      "testDeclarationsBefore": 9,
+      "testDeclarationsAfter": 9,
+      "assertionsBefore": 40,
+      "assertionsAfter": 40
+    },
+    {
+      "path": "packages/contracts/test/backend-execution-connected.test.mjs",
+      "beforeSha256": "2e92b4ad8419ba919626bf99b3d41c47cfc94e5f6d93b5897ae8898d57dccd64",
+      "afterSha256": "1cf3a44b93d2ab93a245d5ee14ed9efc13aefc0f3af574a948470c96e441cc56",
+      "testDeclarationsBefore": 9,
+      "testDeclarationsAfter": 9,
+      "assertionsBefore": 64,
+      "assertionsAfter": 64
+    },
+    {
+      "path": "packages/contracts/test/backend-execution-integration-independent.test.mjs",
+      "beforeSha256": "2929e27e5fe78d3d2989b3d1770dd253f94b4d9659cce26e5078043cdea6fbc8",
+      "afterSha256": "005b108138230add7f1f0b572da1516d2da54fe368eda831af361f7007c331a3",
+      "testDeclarationsBefore": 10,
+      "testDeclarationsAfter": 10,
+      "assertionsBefore": 101,
+      "assertionsAfter": 101
+    },
+    {
+      "path": "packages/contracts/test/command-contracts-integration-independent.test.mjs",
+      "beforeSha256": "a8d99bbfe2160a7a02c5fdb70754d98c125eb494ca0bff374a517c2918948c72",
+      "afterSha256": "a30abc9b84aae4be73be274dd383023daff4a700afe74fb669d5526f83ae6373",
+      "testDeclarationsBefore": 36,
+      "testDeclarationsAfter": 36,
+      "assertionsBefore": 82,
+      "assertionsAfter": 84
+    },
+    {
+      "path": "packages/contracts/test/command-payloads-independent.test.mjs",
+      "beforeSha256": "c36d43f41e7168b136beb320981da15c039336ff21f1a4de36dde562bb8c4abe",
+      "afterSha256": "26d644aa70954c15f4a695556b33b4b2eebbe34ce41c6cd01eda417de574e606",
+      "testDeclarationsBefore": 47,
+      "testDeclarationsAfter": 47,
+      "assertionsBefore": 75,
+      "assertionsAfter": 76
+    },
+    {
+      "path": "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+      "beforeSha256": "79d5729c89cbc3bebc8d581e0b8a95bd76613d09981cc573fbf07fc5fd887052",
+      "afterSha256": "f59cedf63d7f3bf59b2a4327e27b0f4857737eff6adfdcaba87d36e06ad876bc",
+      "testDeclarationsBefore": 7,
+      "testDeclarationsAfter": 7,
+      "assertionsBefore": 45,
+      "assertionsAfter": 45
+    },
+    {
+      "path": "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+      "beforeSha256": "e37e47eb6d41ec7c52313320788838240d88569fb3edce75828bc07d490251b0",
+      "afterSha256": "5881f8e3c6b88e99ac66b74d9d216643a9bc4003330e8a2494be1a036bf72225",
+      "testDeclarationsBefore": 11,
+      "testDeclarationsAfter": 11,
+      "assertionsBefore": 39,
+      "assertionsAfter": 39
+    },
+    {
+      "path": "packages/contracts/test/retrieval-backend-next-independent.test.mjs",
+      "beforeSha256": "0b69c36d54d367d86b89f3f89e716e656d537b91008771fc10845823b35cfeb3",
+      "afterSha256": "ef6aebc2416393d001690673c8f2ce8a6ccd82bb0ba8a4c572f9aca21dfe81dd",
+      "testDeclarationsBefore": 17,
+      "testDeclarationsAfter": 17,
+      "assertionsBefore": 82,
+      "assertionsAfter": 83
+    },
+    {
+      "path": "packages/contracts/test/retrieval-civic-integration-independent.test.mjs",
+      "beforeSha256": "17a0eb6d7f96139c0b2776509192f5effad00935b5d0d6a36de83781cc19ec57",
+      "afterSha256": "9063fd5144330bec1d3861a1ff7e7959c13d7805d1fa0ecfa2312c9d68fe8eee",
+      "testDeclarationsBefore": 14,
+      "testDeclarationsAfter": 14,
+      "assertionsBefore": 73,
+      "assertionsAfter": 74
+    },
+    {
+      "path": "packages/contracts/test/retrieval-mail.test.mjs",
+      "beforeSha256": "ca55bb015d147ddf7838a5f8a4cefbf4bcb399e3cfba5ccca4baf094bce13bf5",
+      "afterSha256": "6c534eb966f74d0a5b809b4099c3df890a6489c308946f1af8ecf291545336e5",
+      "testDeclarationsBefore": 37,
+      "testDeclarationsAfter": 37,
+      "assertionsBefore": 108,
+      "assertionsAfter": 108
+    },
+    {
+      "path": "packages/contracts/test/retrieval-next-bindings.test.mjs",
+      "beforeSha256": "2500051c46bad2f83ba0998ab290bfe6cd495fc76acfc2f72c11bab19ee59950",
+      "afterSha256": "17603c941d2edff728b831f12405a7fe7e2b18f1f6f197c3d5b2c9fa324c048d",
+      "testDeclarationsBefore": 6,
+      "testDeclarationsAfter": 6,
+      "assertionsBefore": 55,
+      "assertionsAfter": 55
+    },
+    {
+      "path": "packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+      "beforeSha256": "9e4c0724c46ab81bdd6fbeba2b9fbc1610a111de4126886389949449a94f6c48",
+      "afterSha256": "435c058a29839d4f46b3ce0b48ed615a981da58e86ed765e343d39796d6d604c",
+      "testDeclarationsBefore": 12,
+      "testDeclarationsAfter": 12,
+      "assertionsBefore": 67,
+      "assertionsAfter": 68
+    },
+    {
+      "path": "packages/contracts/test/retrieval-observed-integration-independent.test.mjs",
+      "beforeSha256": "54b8190d22ca20c879d9ff4887b21200e66507214f659185566eaee8320f130c",
+      "afterSha256": "7d71cddfd9453abd95f5732e3976e7ba8b6a04f8b82d1a43a65186a5092c4ca2",
+      "testDeclarationsBefore": 15,
+      "testDeclarationsAfter": 15,
+      "assertionsBefore": 77,
+      "assertionsAfter": 78
+    },
+    {
+      "path": "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+      "beforeSha256": "48864c8b1a13d35ed93501016b137ab00ec5061cf01d3ab81aaac510f8b335bd",
+      "afterSha256": "efb495f9bf39aab9700172903e855bb662bca47fc6c405a165d4bd15da98d131",
+      "testDeclarationsBefore": 7,
+      "testDeclarationsAfter": 7,
+      "assertionsBefore": 36,
+      "assertionsAfter": 36
+    },
+    {
+      "path": "packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+      "beforeSha256": "482d1da949c813afe8cacd2a270d63ec914df3dd29a121a7aedd9dac11b3bc45",
+      "afterSha256": "c5b50a591a3e039b38d9ab892b879672a65c68d9c25435a5376f63f72359d1d2",
+      "testDeclarationsBefore": 15,
+      "testDeclarationsAfter": 15,
+      "assertionsBefore": 97,
+      "assertionsAfter": 97
+    },
+    {
+      "path": "packages/contracts/test/command-artifact-file.test.mjs",
+      "beforeSha256": "6701fa89be4249742ce6a2c74ee8767acfa5a4e28d206c19609e7275fa1ef925",
+      "afterSha256": "87ecc32b4cf448b33fa209b5646e4d6d19f45598f6ef89b558d1544669fca427",
+      "testDeclarationsBefore": 27,
+      "testDeclarationsAfter": 27,
+      "assertionsBefore": 37,
+      "assertionsAfter": 37
+    }
+  ],
+  "checks": [
+    {
+      "name": "accepted continuation has14 further PR37 tests",
+      "passed": true
+    },
+    {
+      "name": "accepted test continuation exact packages/contracts/test/backend-execution-connected.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted test continuation exact packages/contracts/test/backend-execution-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted test continuation exact packages/contracts/test/command-contracts-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted test continuation exact packages/contracts/test/command-payloads-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted test continuation exact packages/contracts/test/retrieval-action-item-binding.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted test continuation exact packages/contracts/test/retrieval-action-item-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted test continuation exact packages/contracts/test/retrieval-backend-next-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted test continuation exact packages/contracts/test/retrieval-civic-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted test continuation exact packages/contracts/test/retrieval-mail.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted test continuation exact packages/contracts/test/retrieval-next-bindings.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted test continuation exact packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted test continuation exact packages/contracts/test/retrieval-observed-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted test continuation exact packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted test continuation exact packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted test continuation exact packages/contracts/test/vertical-continuation-expectations.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted test continuation exact packages/contracts/test/vertical-execution-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "initial root helper remains exact packages/contracts/test/vertical-source-expectations.mjs",
+      "passed": true
+    },
+    {
+      "name": "initial root helper remains exact packages/contracts/test/backend-execution-expectations.mjs",
+      "passed": true
+    },
+    {
+      "name": "reviewed original40 canonical controls unchanged",
+      "passed": true
+    },
+    {
+      "name": "only declared PR37 existing files changed",
+      "passed": true
+    },
+    {
+      "name": "all other original Git entries exact",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/gateway/authorization/current-tool-authority.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/gateway/budget/postgres-tool-budget.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/gateway/budget/tool-budget-dispatch.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/gateway/index.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact packages/contracts/commands-0.2/artifact-file-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/gateway/dispatch/operation-context.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/gateway/sources/memory-proposals/http-adapter.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/gateway/sources/memory-proposals/request-context.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact packages/contracts/commands-0.2/validate.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact packages/contracts/retrieval-0.2/catalog.json",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact packages/contracts/retrieval-0.2/validate.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact packages/contracts/test/command-artifact-file.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/artifacts/local-executor.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/artifacts/local-store.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/artifacts/office-transform.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/artifacts/postgres-analysis.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/artifacts/postgres-service.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/artifacts/presentation.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/artifacts/process.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/artifacts/python/analysis.py",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/artifacts/python/entry.py",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/artifacts/python/office.py",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/artifacts/sandbox-analysis.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/artifacts/service.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/control/commands/approval-context.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/control/commands/durable-executor.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/control/commands/executor.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/control/commands/intent.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/control/commands/migrations/0001_commands.sql",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/control/commands/postgres-command-journal.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/control/commands/protocol.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/control/commands/source-http.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/control/commands/source-projection.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/control/commands/tool-interface.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/control/schedules/migrations/0001_schedule_owner.sql",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/control/schedules/postgres-schedule-owner.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/control/schedules/schedule-lifecycle.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/control/schedules/temporal-run-history.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/control/schedules/temporal-schedule-mutations.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/control/schedules/tool-interface.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/gateway/budget/tool-budget-execution.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/gateway/sources/json-response.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/gateway/sources/research-portfolio-evidence/handler.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/gateway/sources/research-portfolio-evidence/http-adapter.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/gateway/sources/research-portfolio-evidence/projection.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/gateway/sources/research-portfolio-evidence/request-context.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact apps/gateway/sources/source-admission.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact packages/contracts/artifacts-0.2/artifact-formats.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact packages/contracts/artifacts-0.2/artifact-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact packages/contracts/artifacts-0.2/artifact.schema.json",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact packages/contracts/commands-0.2/execution-boundary.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact packages/contracts/commands-0.2/execution-intent.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact packages/contracts/commands-0.2/task-update-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact packages/contracts/commands-0.2/task-update.schema.json",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact packages/contracts/commands-0.2/tool-interface-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact packages/contracts/commands-0.2/tool-interface.schema.json",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact packages/contracts/retrieval-0.2/execution-schema-sources.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact packages/contracts/retrieval-0.2/execution-tool-validators.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact packages/contracts/retrieval-0.2/research-portfolio-evidence-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact packages/contracts/retrieval-0.2/research-portfolio-evidence.schema.json",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact packages/contracts/schedules-0.2/lifecycle-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact packages/contracts/schedules-0.2/lifecycle.schema.json",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact packages/contracts/schedules-0.2/tool-interface-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted source exact packages/contracts/schedules-0.2/tool-interface.schema.json",
+      "passed": true
+    },
+    {
+      "name": "exact25 existing PR37 test paths",
+      "passed": true
+    },
+    {
+      "name": "inverse restores full original test apps/gateway/test/action-item-context-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "inverse restores full original test apps/gateway/test/capability-next-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "inverse restores full original test apps/gateway/test/mail-context-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "inverse restores full original test apps/gateway/test/memory-context-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "inverse restores full original test packages/contracts/test/backend-execution-expectations.mjs",
+      "passed": true
+    },
+    {
+      "name": "inverse restores full original test packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "inverse restores full original test packages/contracts/test/retrieval-memory-binding.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "inverse restores full original test packages/contracts/test/retrieval-reference-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "inverse restores full original test packages/contracts/test/retrieval-selected-next-bindings.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "inverse restores full original test packages/contracts/test/retrieval-selected-next-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "inverse restores full original test packages/contracts/test/backend-execution-connected.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "inverse restores full original test packages/contracts/test/backend-execution-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "inverse restores full original test packages/contracts/test/command-contracts-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "inverse restores full original test packages/contracts/test/command-payloads-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "inverse restores full original test packages/contracts/test/retrieval-action-item-binding.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "inverse restores full original test packages/contracts/test/retrieval-action-item-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "inverse restores full original test packages/contracts/test/retrieval-backend-next-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "inverse restores full original test packages/contracts/test/retrieval-civic-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "inverse restores full original test packages/contracts/test/retrieval-mail.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "inverse restores full original test packages/contracts/test/retrieval-next-bindings.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "inverse restores full original test packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "inverse restores full original test packages/contracts/test/retrieval-observed-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "inverse restores full original test packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "inverse restores full original test packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "inverse restores full original test packages/contracts/test/command-artifact-file.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test declaration count apps/gateway/test/action-item-context-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "assertion count retained or enlarged apps/gateway/test/action-item-context-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test declaration count apps/gateway/test/capability-next-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "assertion count retained or enlarged apps/gateway/test/capability-next-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test declaration count apps/gateway/test/mail-context-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "assertion count retained or enlarged apps/gateway/test/mail-context-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test declaration count apps/gateway/test/memory-context-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "assertion count retained or enlarged apps/gateway/test/memory-context-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test declaration count packages/contracts/test/backend-execution-expectations.mjs",
+      "passed": true
+    },
+    {
+      "name": "assertion count retained or enlarged packages/contracts/test/backend-execution-expectations.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test declaration count packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "assertion count retained or enlarged packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test declaration count packages/contracts/test/retrieval-memory-binding.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "assertion count retained or enlarged packages/contracts/test/retrieval-memory-binding.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test declaration count packages/contracts/test/retrieval-reference-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "assertion count retained or enlarged packages/contracts/test/retrieval-reference-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test declaration count packages/contracts/test/retrieval-selected-next-bindings.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "assertion count retained or enlarged packages/contracts/test/retrieval-selected-next-bindings.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test declaration count packages/contracts/test/retrieval-selected-next-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "assertion count retained or enlarged packages/contracts/test/retrieval-selected-next-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test declaration count packages/contracts/test/backend-execution-connected.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "assertion count retained or enlarged packages/contracts/test/backend-execution-connected.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test declaration count packages/contracts/test/backend-execution-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "assertion count retained or enlarged packages/contracts/test/backend-execution-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test declaration count packages/contracts/test/command-contracts-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "assertion count retained or enlarged packages/contracts/test/command-contracts-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test declaration count packages/contracts/test/command-payloads-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "assertion count retained or enlarged packages/contracts/test/command-payloads-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test declaration count packages/contracts/test/retrieval-action-item-binding.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "assertion count retained or enlarged packages/contracts/test/retrieval-action-item-binding.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test declaration count packages/contracts/test/retrieval-action-item-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "assertion count retained or enlarged packages/contracts/test/retrieval-action-item-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test declaration count packages/contracts/test/retrieval-backend-next-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "assertion count retained or enlarged packages/contracts/test/retrieval-backend-next-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test declaration count packages/contracts/test/retrieval-civic-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "assertion count retained or enlarged packages/contracts/test/retrieval-civic-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test declaration count packages/contracts/test/retrieval-mail.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "assertion count retained or enlarged packages/contracts/test/retrieval-mail.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test declaration count packages/contracts/test/retrieval-next-bindings.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "assertion count retained or enlarged packages/contracts/test/retrieval-next-bindings.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test declaration count packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "assertion count retained or enlarged packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test declaration count packages/contracts/test/retrieval-observed-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "assertion count retained or enlarged packages/contracts/test/retrieval-observed-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test declaration count packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "assertion count retained or enlarged packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test declaration count packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "assertion count retained or enlarged packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test declaration count packages/contracts/test/command-artifact-file.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "assertion count retained or enlarged packages/contracts/test/command-artifact-file.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "exact governing requirement bytes hash",
+      "passed": true
+    },
+    {
+      "name": "all53 whole requirement objects retained",
+      "passed": true
+    },
+    {
+      "name": "whole runtime requirements not promoted",
+      "passed": true
+    },
+    {
+      "name": "all public schemas distribution and dependency files exact",
+      "passed": true
+    }
+  ],
+  "passed": 167,
+  "failed": 0,
+  "runtimeAccepted": false
+}

@@ -1,0 +1,124 @@
+✔ independent pending schedule_task exposes exact choices without effect (88.233132ms)
+✔ independent pending update_scheduled_task exposes exact choices without effect (6.923078ms)
+✔ independent pending cancel_scheduled_task exposes exact choices without effect (5.914261ms)
+✔ independent approved schedule_task traverses accepted owner and SDK (9.26551ms)
+✔ independent approved update_scheduled_task traverses accepted owner and SDK (4.500086ms)
+✔ independent approved cancel_scheduled_task traverses accepted owner and SDK (3.140501ms)
+✖ independent changing reviewed instruction changes immutable approval digest (2.266357ms)
+✖ independent old approval cannot authorize changed reviewed instruction (2.020688ms)
+✔ independent model authority field tenantId refuses before ports (0.606412ms)
+✔ independent model authority field owner refuses before ports (0.343036ms)
+✔ independent model authority field scopes refuses before ports (0.326571ms)
+✔ independent model authority field approval refuses before ports (0.309946ms)
+✔ independent model authority field workflow refuses before ports (0.335754ms)
+✔ independent model authority field task refuses before ports (0.462586ms)
+✔ independent model authority field manifestSha256 refuses before ports (0.301344ms)
+✔ independent model authority field callerIdentity refuses before ports (0.214753ms)
+✔ independent model authority field scheduleContext refuses before ports (0.278028ms)
+✔ independent omitted policy is not a silent product default (0.21915ms)
+✔ independent omitted overlap is not a silent product default (0.183897ms)
+✔ independent omitted timezone is not a silent product default (0.202224ms)
+✔ independent omitted catchup is not a silent product default (0.219109ms)
+✔ independent omitted running is not a silent product default (0.150486ms)
+✔ independent omitted destination is not a silent product default (0.154933ms)
+✔ independent omitted limits is not a silent product default (0.187432ms)
+✔ independent context correlation digest refuses (0.498049ms)
+✔ independent context correlation task-hash refuses (0.638801ms)
+✔ independent context correlation destination-reference refuses (0.434894ms)
+✔ independent context correlation destination-id refuses (0.51217ms)
+✔ independent context correlation requested-hash refuses (0.749036ms)
+✔ independent context correlation effective refuses (0.452921ms)
+✔ independent context correlation scope-tenant refuses (0.457147ms)
+✔ independent context correlation owner-tenant refuses (0.476456ms)
+✔ independent context correlation future-clock refuses (1.02414ms)
+✔ independent context correlation long-deadline refuses (0.379921ms)
+✔ independent current projection projectionSha256 cannot be rebound (0.535345ms)
+✔ independent current projection scheduleId cannot be rebound (0.573542ms)
+✔ independent current projection temporalScheduleId cannot be rebound (0.445189ms)
+✔ independent current projection createdAt cannot be rebound (0.496907ms)
+✔ independent current projection owner cannot be rebound (0.515275ms)
+✔ independent approval commandSha256 cannot authorize another intent (1.839876ms)
+✔ independent approval proposalId cannot authorize another intent (1.446184ms)
+✔ independent approval decision cannot authorize another intent (1.587336ms)
+✔ independent approval expiresAt cannot authorize another intent (1.28382ms)
+✔ independent approval approver cannot authorize another intent (1.169318ms)
+✔ independent trimming precedes digest and review without mutating raw input (2.001529ms)
+✔ independent blank instruction and destination cannot become reviewable task (1.716881ms)
+✔ independent getters and proxies do not execute during request or context admission (0.661664ms)
+✔ independent caller mutation while authorize parks cannot change prepared intent (2.324164ms)
+✔ independent list defaults bind actual owner and original execution IDs (38.033868ms)
+✔ independent absent SDK schedule remains an authorized unavailable row (2.166387ms)
+✔ independent workflow summary failure refuses instead of claiming empty history (1.956331ms)
+✔ independent no actual owner rows is distinct from an unavailable row (0.941936ms)
+✖ independent explicit cancellation run references reach exact SDK execution (0.267212ms)
+✔ independent pending current denial before_tool has no lifecycle effect (1.054265ms)
+✔ independent pending current denial before_tool_release has no lifecycle effect (2.602402ms)
+✔ independent acknowledged lifecycle denied at outer release preserves disposition (4.035507ms)
+✔ independent actual SDK mutation error retains UNKNOWN and durable uncertainty (2.298696ms)
+✔ independent parked current authority deadline starts no lifecycle (22.603701ms)
+✔ independent parked current authority abort starts no lifecycle (2.957476ms)
+✔ independent own hostile error properties are never executed or disclosed (1.654147ms)
+ℹ tests 60
+ℹ suites 0
+ℹ pass 57
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 572.80282
+
+✖ failing tests:
+
+test at packages/contracts/test/schedule-tool-independent.test.mjs:50:1
+✖ independent changing reviewed instruction changes immutable approval digest (2.266357ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to:
+  
+  '8baab219710394542caeb60a67b7f70d831595fc2a1a773aa3b73a3bbf7d425b'
+      at TestContext.<anonymous> (file:///workspace/meri-schedule-tool-interface-review-20261012/packages/contracts/test/schedule-tool-independent.test.mjs:50:413)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '8baab219710394542caeb60a67b7f70d831595fc2a1a773aa3b73a3bbf7d425b',
+    expected: '8baab219710394542caeb60a67b7f70d831595fc2a1a773aa3b73a3bbf7d425b',
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/schedule-tool-independent.test.mjs:51:1
+✖ independent old approval cannot authorize changed reviewed instruction (2.020688ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-schedule-tool-interface-review-20261012/packages/contracts/test/schedule-tool-independent.test.mjs:51:294)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/schedule-tool-independent.test.mjs:65:1
+✖ independent explicit cancellation run references reach exact SDK execution (0.267212ms)
+  Error: SCHEDULE_TOOL_DATA
+      at denySchedule (file:///workspace/meri-schedule-tool-interface-review-20261012/packages/contracts/schedules-0.2/lifecycle-validation.mjs:11:54)
+      at shape (file:///workspace/meri-schedule-tool-interface-review-20261012/packages/contracts/schedules-0.2/tool-interface-validation.mjs:19:33)
+      at normalized (file:///workspace/meri-schedule-tool-interface-review-20261012/packages/contracts/schedules-0.2/tool-interface-validation.mjs:23:33)
+      at Object.prepare (file:///workspace/meri-schedule-tool-interface-review-20261012/packages/contracts/schedules-0.2/tool-interface-validation.mjs:29:17)
+      at approve (file:///workspace/meri-schedule-tool-interface-review-20261012/packages/contracts/test/schedule-tool-independent.test.mjs:31:40)
+      at TestContext.<anonymous> (file:///workspace/meri-schedule-tool-interface-review-20261012/packages/contracts/test/schedule-tool-independent.test.mjs:65:255)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19) {
+    code: 'SCHEDULE_TOOL_DATA'
+  }

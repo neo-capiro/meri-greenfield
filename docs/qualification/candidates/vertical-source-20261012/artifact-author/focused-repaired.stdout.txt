@@ -1,0 +1,38 @@
+✔ all four typed requests compile under strict private/public schemas (49.272722ms)
+✔ reject code, external inputs, malformed Unicode, unsafe functions and shape drift (1.116408ms)
+✔ context rejects foreign provenance and assets (12.238689ms)
+✔ exact UTF8 TXT download plus current-attempt authorization and owned cleanup (101.801009ms)
+✔ actual Word package contains rich runs, tables and embedded chart (1288.445806ms)
+✔ actual XLSX distinguishes literal formulas and preserves declared formulas with unverified cache (175.246491ms)
+✔ actual editable PptxGenJS deck includes notes, chart, table and multiple slides (97.495517ms)
+✔ actual pandas join, typed delta and chart produce inspectable result bundle (1388.543775ms)
+✔ immutable revision preserves original exact bytes and rejects stale parent (164.446265ms)
+✔ denied authority stops before generation (2.260639ms)
+✔ changed authorization intent is rejected (1.532203ms)
+✔ changed budget binding is rejected (2.145806ms)
+✔ unqualified inspection cannot claim rendered, native-opened or recalculated (5.211715ms)
+✔ revocation after generation prevents any object commit (2.157033ms)
+✔ executor deadlines remain cancellation, not successful artifact publication (31.374927ms)
+✔ post-commit budget failure is explicit unknown effect (4.109258ms)
+✔ read integrity detects corrupted object bytes (58.241511ms)
+✔ fixed Office conversion source arguments have no user option/path channel (0.99108ms)
+✔ general analysis is unavailable without admitted native port (2.450554ms)
+✔ actual openpyxl cell revision keeps original XLSX and explicit literals/formulas (390.51558ms)
+✔ trusted immutable PNG asset produces Word and PPT image parts without URL fetch (223.068373ms)
+✔ actual fixed child deadline rejects and removes owned output workspace (4.612013ms)
+✔ fixed child output failure remains a failure with owned workspace cleanup (65.100121ms)
+✔ pure source PDF composition remains unavailable without explicit transformer (3.178067ms)
+✔ all asset/provenance tuples participate in immutable intent (10.283339ms)
+✔ stable version allocation cannot overwrite an immutable committed version (9.09961ms)
+✔ sandbox input/receipt verifier gates general code before any port call (0.92473ms)
+✔ retained MIME and inspection format cannot substitute a different artifact type (64.004809ms)
+✔ failed generation retains cause and budget reconciliation identity (2.993009ms)
+✔ CRC-invalid PNG remains an explicit refusal, without fixing or fetching the asset (60.856667ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 30
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4396.446473

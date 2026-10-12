@@ -1,0 +1,34 @@
+✔ independent staged artifact catalog retains139/96/43 and89typed88mapped8pending (0.976007ms)
+✔ independent all85 prior descriptors and original boundaries remain exact (4.996892ms)
+✔ independent every descriptor stays unavailable and effect-free at catalog boundary (0.256395ms)
+✔ independent create_word exact binding uses caller schema and current schema digest (0.703688ms)
+✔ independent create_word normalizes through actual canonical domain and detaches (14.768631ms)
+✔ independent create_word output enforces domain provenance and detached values (20.594851ms)
+✔ independent create_word rejects authority injection and hostile input (0.627384ms)
+✔ independent create_excel exact binding uses caller schema and current schema digest (0.324718ms)
+✔ independent create_excel normalizes through actual canonical domain and detaches (1.730571ms)
+✔ independent create_excel output enforces domain provenance and detached values (3.294162ms)
+✔ independent create_excel rejects authority injection and hostile input (0.634434ms)
+✔ independent create_powerpoint exact binding uses caller schema and current schema digest (0.324458ms)
+✔ independent create_powerpoint normalizes through actual canonical domain and detaches (1.131251ms)
+✔ independent create_powerpoint output enforces domain provenance and detached values (1.966556ms)
+✔ independent create_powerpoint rejects authority injection and hostile input (0.570748ms)
+✔ independent run_analysis exact binding uses caller schema and current schema digest (0.283636ms)
+✔ independent run_analysis normalizes through actual canonical domain and detaches (0.850619ms)
+✔ independent run_analysis output enforces domain provenance and detached values (1.698193ms)
+✔ independent run_analysis rejects authority injection and hostile input (0.429456ms)
+✔ independent private internal artifact names cannot shadow global contract definitions (0.897469ms)
+✔ independent canonical cross-field validators are connected (0.686893ms)
+✔ independent catalog refuses schema digest and empty source requirement corruption (16.032722ms)
+✔ independent original operation/version and output request are mandatory (0.675826ms)
+✔ independent canonical general branch forwards trusted manifest and immutable refs (4.124651ms)
+✔ independent canonical general branch refuses absent or caller-injected admission (1.23071ms)
+✔ independent canonical general output keeps scope intent and inspection gates (3.152549ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2712.296123

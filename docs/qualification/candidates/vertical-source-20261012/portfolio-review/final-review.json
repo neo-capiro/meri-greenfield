@@ -1,0 +1,59 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "scope": "Projected Portfolio evidence plus explicit shared memory response-admission extraction/ownership repair only",
+  "sourceCommit": "62062236e38ac77b9494a04668df6969ab1f33e2",
+  "sourceSequence": [
+    "f8caa12c5640b3bbdaa733ce3d98ec344888f7f8",
+    "0e4971b53972bfb6fab9dbb04def9d3f61b66d78",
+    "468be0b9d047bc43338e0ad4aa1b55baea5f3355",
+    "62062236e38ac77b9494a04668df6969ab1f33e2"
+  ],
+  "sourceAcceptanceReview": "f90b08afe3542c7095779c32192c15a020b4f7ad",
+  "reviewOnlyCommitsBeforePacketClose": [
+    "8a33d1b8f5bd6d7ab5c24d8a9d37c76ed2e85a47",
+    "9cfd36f7580f025898b7dd47accadca61a68348a",
+    "5f46e2c33c8301b2f71bc05aa3537c1bf2a2afca",
+    "fbc96acf02566ded0c5236c33e5b1c3b5a3aca8e",
+    "4b615bcf1942f4feceacc904d31c550f539699fb",
+    "0468671b2c8971853f7f6144171e509fddac1b97",
+    "fa76ae6a43e5b52f554876cb04ac5b8d0b651b52",
+    "0b62e5ef5ba5cfac4c06e55078a2b9355614f67a",
+    "bf89c19135290cfc0b745e0dfad565eb2961e772",
+    "7f4da6b767b9eda172399ef4dccaba44e14daa13",
+    "9c52be90085f35e352a7424ab6705c5062432105",
+    "f90b08afe3542c7095779c32192c15a020b4f7ad"
+  ],
+  "skipAuthorCherryPicks": [
+    "1d404061f4ae356955f9baf517a424e774176254",
+    "4d1bbf4b31d570d30ee2e5d4268fbcc379da9e8b",
+    "5887588fad83cfb0cefa32306fbc7993943eadaf"
+  ],
+  "checks": {
+    "focused": {
+      "passed": 146,
+      "failed": 0,
+      "independent": 60,
+      "existingAndRoot": 86
+    },
+    "sourceAudit": {
+      "passed": 580,
+      "failed": 0
+    },
+    "originalEntries": 8689,
+    "identicalOriginalEntries": 8683,
+    "allowedOriginalChanges": 6,
+    "ownedGroupsAbsent": 9,
+    "rawFailuresRetained": true,
+    "authoredWhitespaceExitCode": 0,
+    "fullWhitespaceExitCode": 2
+  },
+  "runtimeAccepted": false,
+  "sourceConnected": false,
+  "remainingGates": [
+    "Qualified current conversation/Portfolio viewer/client access authority",
+    "Qualified bound source credentials and actual source routes",
+    "Durable budgets and actual transport/socket cancellation",
+    "Native G1/runtime admission and broader root integration acceptance"
+  ],
+  "noSourceEditsByReviewer": true
+}

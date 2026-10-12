@@ -1,3 +1,4 @@
+import {verticalOperationIds,schemaRelativePath} from './vertical-source-expectations.mjs';
 import {addedOperations,fullActionReference,expectedExistingDescriptor,expectedExistingBinding,expectedExistingOriginal} from './backend-execution-expectations.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -15,7 +16,7 @@ const [OUTREACH,SEARCH,DETAIL,TIMELINE]=ids,T='2026-10-12T12:00:00.000Z',U='aaaa
 const ev=new URL('../../../docs/qualification/candidates/read-continuation-20261012/backend-next-review/',import.meta.url);
 const oldCatalog=JSON.parse(readFileSync(new URL('baseline-catalog.json',ev))),oldBindings=JSON.parse(readFileSync(new URL('baseline-bindings.json',ev)));
 const copy=structuredClone,resolve=id=>resolveOperationContract({id,version:'0.2.0'});
-const schema=group=>JSON.parse(readFileSync(new URL(`../retrieval-0.2/${group}.schema.json`,import.meta.url)));
+const schema=group=>JSON.parse(readFileSync(new URL(schemaRelativePath(group),import.meta.url)));
 const context=id=>id===OUTREACH?{clientResolution:null}:{evidenceAccuracyMode:'off'};
 const request=id=>[DETAIL,TIMELINE].includes(id)?{peCode:'review-pe'}:{};
 const campaign=()=>({id:U,clientId:null,name:'Stored campaign',type:'stored',status:'draft',subject:null,sentAt:null,createdAt:T,clientName:null,recipientCount:0,createdBy:null});
@@ -30,17 +31,17 @@ function output(id){
 const check=(id,page=output(id),raw=request(id),ctx=context(id))=>resolve(id).assertOutput(page,{...ctx,request:raw});
 
 test('all139 originals and67 prior descriptors/callbacks survive exactly four new mappings',()=>{
- assertCatalog(catalog);assert.equal(catalog.catalogVersion,'0.2.11');assert.equal(catalog.operations.length,84);assert.equal(bindings.length,84);
- assert.deepEqual(catalog.operations.filter(x=>!ids.includes(x.operation.id)&&!addedOperations.includes(x.operation.id)&&x.operation.id!=='actions.query'),oldCatalog.operations.map(expectedExistingDescriptor));
- assert.deepEqual(JSON.parse(JSON.stringify(bindings.filter(x=>!ids.includes(x.id)&&!addedOperations.includes(x.id)),(k,v)=>typeof v==='function'?{source:v.toString()}:v)),oldBindings.map(expectedExistingBinding));
+ assertCatalog(catalog);assert.equal(catalog.catalogVersion,'0.2.15');assert.equal(catalog.operations.length,97);assert.equal(bindings.length,97);
+ assert.deepEqual(catalog.operations.filter(x=>!verticalOperationIds.includes(x.operation.id)&&!ids.includes(x.operation.id)&&!addedOperations.includes(x.operation.id)&&x.operation.id!=='actions.query'),oldCatalog.operations.map(expectedExistingDescriptor));
+ assert.deepEqual(JSON.parse(JSON.stringify(bindings.filter(x=>!verticalOperationIds.includes(x.id)&&!ids.includes(x.id)&&!addedOperations.includes(x.id)),(k,v)=>typeof v==='function'?{source:v.toString()}:v)),oldBindings.map(expectedExistingBinding));
  assert.deepEqual(catalog.originals.map(x=>x.id),oldCatalog.originals.map(expectedExistingOriginal).map(x=>x.id));
- assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);assert.equal(catalog.originals.filter(x=>x.disposition==='deferred').length,43);assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,83);assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.state==='pending').length,13);
+ assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);assert.equal(catalog.originals.filter(x=>x.disposition==='deferred').length,43);assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,96);assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.state==='pending').length,0);
  for(const old of oldCatalog.originals.map(expectedExistingOriginal))assert.deepEqual(catalog.originals.find(x=>x.id===old.id),ids.includes(old.id)?{...old,state:'mapped',replacement:{id:old.id,version:'0.2.0'}}:old);
  assert.deepEqual(catalog.originals.find(x=>x.id==='query_action_items').replacement,fullActionReference);
- for(const id of ['create_task','save_memory','get_pe_buyer_workspace'])assert.throws(()=>resolve(id));
+ for(const id of ['create_task','save_memory','get_pe_buyer_workspace'])if(verticalOperationIds.includes(id))assert.doesNotThrow(()=>resolve(id));else assert.throws(()=>resolve(id));
 });
 test('all84 exact schema byte pins preserve pending closed handlers',()=>{
- for(const b of bindings){const d=resolve(b.id).descriptor,raw=readFileSync(new URL(`../retrieval-0.2/${b.group}.schema.json`,import.meta.url)),s=JSON.parse(raw);
+ for(const b of bindings){const d=resolve(b.id).descriptor,raw=readFileSync(new URL(schemaRelativePath(b.group),import.meta.url)),s=JSON.parse(raw);
   for(const [name,def]of[['inputSchema',b.input],['outputSchema',b.output]])assert.deepEqual(d[name],{id:`${s.$id}#/$defs/${def}`,sha256:createHash('sha256').update(raw).digest('hex')});
   assert.equal(d.handler,null);assert.equal(d.availability,'unimplemented');assert.equal(d.qualification,'pending');assert.equal(d.retry.maxRetries,0);
  }

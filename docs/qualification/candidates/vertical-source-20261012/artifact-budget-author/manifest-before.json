@@ -1,0 +1,119 @@
+{
+  "source": "5647415bb4d8e7548741fb9af7fb92a0df2d6cf6",
+  "members": [
+    {
+      "path": "apps/artifacts/postgres-service.mjs",
+      "bytes": 9911,
+      "sha256": "711115a758fedeb1d9e09c73d66f62957d59126b66c520bae8d9c076c6680fb2"
+    },
+    {
+      "path": "apps/artifacts/test/artifact-postgres-service.test.mjs",
+      "bytes": 14980,
+      "sha256": "f8e075dac7299c00b298702e39a9b6f4b45c560261d5555fc83ce674be838789"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-ARTIFACT-BUDGET-20261012.md",
+      "bytes": 5959,
+      "sha256": "b292d23aaae51d14e6e5d3f8f85621751c60413c96e8d5bdd42d969ead0b935e"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-ARTIFACT-BUDGET-20261012.md",
+      "bytes": 3502,
+      "sha256": "143cb5854d67c734dcb10343ea6f274ab17f357cee4941aeee9e1756378ecb67"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/api.json",
+      "bytes": 1857,
+      "sha256": "0fada9e4aa1c5d60ee7c1459a3b700c60c71f5b6842224bd8b41d6ba194b266d"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/boundary-before.json",
+      "bytes": 490,
+      "sha256": "10a91f17eb2ee408fc77c560014c4fb1d1cc7f390633e562506880f099c6bbef"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/boundary-before.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/boundary-before.stdout.txt",
+      "bytes": 4693,
+      "sha256": "6cd15c20604fc898aaca9a4ab64954537e3cd6dd812f9946adc2b7300b2437a8"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/corrected.json",
+      "bytes": 490,
+      "sha256": "d724bb516e02fda45e5c80c7e9182ad6ca060a57d538c8c074bd34b62b65a70f"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/corrected.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/corrected.stdout.txt",
+      "bytes": 2534,
+      "sha256": "b0392720ed29d1a9a25605bd5b01a6b500e820e9b9222d87a78f1fdbd56a0ac0"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/failures-and-repairs.json",
+      "bytes": 1650,
+      "sha256": "744443112fe24b698fd8e02aa06f63da3cea71b5756c1f665f5ece63e034160b"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/final.json",
+      "bytes": 490,
+      "sha256": "e66d56a0345f7936be1bedfdf6ecf23ef0e1ba45a17024835a651ad6ea8f9be2"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/final.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/final.stdout.txt",
+      "bytes": 2739,
+      "sha256": "ad3e5984c0cb16b1176847b4b2a4574eb78e59bd7889cee9c25b2a5b0c9ca6cf"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/first.json",
+      "bytes": 490,
+      "sha256": "5959ceff5d53e5a79ad327ac7367bd7ee422110af81e16a8922acc27dda247cb"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/first.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/first.stdout.txt",
+      "bytes": 3969,
+      "sha256": "2f0ce70221908e6cbad083c6ae6e746aa74238b0dbbd2acff6c33599ee74d280"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/references.json",
+      "bytes": 4670,
+      "sha256": "2f06565f06a1ccdfa90ed86b02119e9f36a68a68002048fefba72f55c1aa187c"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/run-focused.py",
+      "bytes": 1643,
+      "sha256": "3ab44f2827d3c74f1b3479c6d93f06e2100032806c0140f2872997d21cde98b2"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/source-preservation.json",
+      "bytes": 1530,
+      "sha256": "bfda315ec7308bd3f02f5ef2158040e114af178aa57aa6f4b470909f62aacb56"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/verify.py",
+      "bytes": 2823,
+      "sha256": "a9c0393769f64d87bfd9676149512ae50edf3d1ccfda21c1cb7d33c8f2e0da3e"
+    }
+  ],
+  "exclusions": [
+    "manifest.json: self-reference",
+    "verify-result.json: verifier output"
+  ]
+}

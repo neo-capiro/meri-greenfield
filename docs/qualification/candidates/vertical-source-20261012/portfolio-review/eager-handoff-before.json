@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-name-pattern=eager-body",
+    "apps/gateway/test/research-evidence-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-portfolio-evidence-review-20261012",
+  "sourceHead": "0468671b2c8971853f7f6144171e509fddac1b97",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T22:30:49.679217+00:00",
+  "durationSeconds": 2.88,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 371931,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/eager-handoff-before.stdout.bin",
+      "bytes": 925,
+      "sha256": "d5e264499640e0cf0770b3fa44235c1bf1c347e07840ffb69074d4078e6b47a6"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/eager-handoff-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

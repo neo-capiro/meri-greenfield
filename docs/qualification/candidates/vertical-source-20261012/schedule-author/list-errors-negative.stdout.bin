@@ -1,0 +1,78 @@
+✖ list authorize errors are sanitized (7.739071ms)
+✖ list owner errors are sanitized (2.687038ms)
+✖ list history errors are sanitized (7.5054ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 0
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 394.108143
+
+✖ failing tests:
+
+test at apps/control/test/schedule-lifecycle.test.mjs:56:51
+✖ list authorize errors are sanitized (7.739071ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: CREDENTIAL-CANARY
+      at async TestContext.<anonymous> (file:///workspace/meri-schedule-lifecycle-20261012/apps/control/test/schedule-lifecycle.test.mjs:56:544)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: CREDENTIAL-CANARY
+        at authorize (file:///workspace/meri-schedule-lifecycle-20261012/apps/control/test/schedule-lifecycle.test.mjs:56:228)
+        at file:///workspace/meri-schedule-lifecycle-20261012/apps/control/schedules/schedule-lifecycle.mjs:33:48
+        at file:///workspace/meri-schedule-lifecycle-20261012/packages/runtime/operation-lifetime.mjs:38:65,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/test/schedule-lifecycle.test.mjs:56:51
+✖ list owner errors are sanitized (2.687038ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: CREDENTIAL-CANARY
+      at async TestContext.<anonymous> (file:///workspace/meri-schedule-lifecycle-20261012/apps/control/test/schedule-lifecycle.test.mjs:56:544)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: CREDENTIAL-CANARY
+        at owner.list (file:///workspace/meri-schedule-lifecycle-20261012/apps/control/test/schedule-lifecycle.test.mjs:56:289)
+        at file:///workspace/meri-schedule-lifecycle-20261012/apps/control/schedules/schedule-lifecycle.mjs:71:95
+        at file:///workspace/meri-schedule-lifecycle-20261012/packages/runtime/operation-lifetime.mjs:38:65,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/test/schedule-lifecycle.test.mjs:56:51
+✖ list history errors are sanitized (7.5054ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: CREDENTIAL-CANARY
+      at async TestContext.<anonymous> (file:///workspace/meri-schedule-lifecycle-20261012/apps/control/test/schedule-lifecycle.test.mjs:56:544)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: CREDENTIAL-CANARY
+        at Object.describe (file:///workspace/meri-schedule-lifecycle-20261012/apps/control/test/schedule-lifecycle.test.mjs:56:383)
+        at file:///workspace/meri-schedule-lifecycle-20261012/apps/control/schedules/temporal-run-history.mjs:23:75
+        at file:///workspace/meri-schedule-lifecycle-20261012/apps/control/schedules/schedule-lifecycle.mjs:39:109
+        at Object.withAbortSignal (file:///workspace/meri-schedule-lifecycle-20261012/apps/control/test/schedule-lifecycle.test.mjs:18:134)
+        at file:///workspace/meri-schedule-lifecycle-20261012/apps/control/schedules/schedule-lifecycle.mjs:39:72
+        at Object.withDeadline (file:///workspace/meri-schedule-lifecycle-20261012/apps/control/test/schedule-lifecycle.test.mjs:18:73)
+        at file:///workspace/meri-schedule-lifecycle-20261012/apps/control/schedules/schedule-lifecycle.mjs:38:71
+        at file:///workspace/meri-schedule-lifecycle-20261012/packages/runtime/operation-lifetime.mjs:38:65,
+    operator: 'rejects',
+    diff: 'simple'
+  }

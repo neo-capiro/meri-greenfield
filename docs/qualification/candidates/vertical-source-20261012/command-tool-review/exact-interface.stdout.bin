@@ -1,0 +1,47 @@
+✔ direct tool interface refuses absent executor result rather than exposing it as execution (26.804551ms)
+✔ direct interface correlates actual returned receipt to original command (50.324299ms)
+✔ task.create: actual raw→proposal→current executor/journal/source path (24.620172ms)
+✔ task.update: actual raw→proposal→current executor/journal/source path (56.008207ms)
+✔ memory.propose: actual raw→proposal→current executor/journal/source path (29.797339ms)
+✔ artifact.file: actual raw→proposal→current executor/journal/source path (40.075098ms)
+✔ raw request authority injection is rejected before metadata allocation (1.233704ms)
+✔ metadata exact operation/action/binding/request/input/scopes/approver correlations (8.631884ms)
+✔ metadata clocks require finite current checkedAt and ordered unexpired proposal (3.820453ms)
+✔ effectful raw/options/owner receipts refuse without executing getters or traps (1.006302ms)
+✔ lost metadata acknowledgement is not retried and may leave an owner record (0.880644ms)
+✔ preaborted prepare never enters metadata owner (0.539761ms)
+✔ late prepare receipt after cancellation never releases/starts effect (13.354313ms)
+✔ late read receipt after cancellation never releases/starts effect (2.682913ms)
+✔ clock advances past original metadata cutoff cannot issue a proposal (0.909677ms)
+✔ read must reconstruct every original proposal field, including retention clocks (13.960515ms)
+✔ current owner refusal and current approval revocation independently stop execution (3.711268ms)
+✔ caller mutation while preparation is parked cannot substitute selected input (1.216478ms)
+✔ personal preparation remains proposal-only and execution keeps genuine producer HOLD (3.86539ms)
+✔ same actor approver is not silently prohibited by transport correlation (1.631252ms)
+✔ metadata phase ends before independently bounded executor lifetime begins (21.250101ms)
+✔ caller cancellation after actual executor completion cannot release late success (8.923984ms)
+✔ task.create advertises raw request, delegates actual payload normalizer and correlates full command (7.632923ms)
+✔ task.create pending output needs complete trusted original proposal (16.750689ms)
+✔ task.create real executor output is exact-correlated and absence/extra outcome refused (44.987882ms)
+✔ task.update advertises raw request, delegates actual payload normalizer and correlates full command (15.239867ms)
+✔ task.update pending output needs complete trusted original proposal (14.299444ms)
+✔ task.update real executor output is exact-correlated and absence/extra outcome refused (15.662823ms)
+✔ memory.propose advertises raw request, delegates actual payload normalizer and correlates full command (3.882205ms)
+✔ memory.propose pending output needs complete trusted original proposal (5.737153ms)
+✔ memory.propose real executor output is exact-correlated and absence/extra outcome refused (12.833946ms)
+✔ artifact.file advertises raw request, delegates actual payload normalizer and correlates full command (10.302105ms)
+✔ artifact.file pending output needs complete trusted original proposal (11.078362ms)
+✔ artifact.file real executor output is exact-correlated and absence/extra outcome refused (22.340531ms)
+✔ model inputs cannot provide server command metadata or approved flags (1.713135ms)
+✔ closed context and hostile raw values are refused without executing accessors (0.763758ms)
+✔ proposal guard binds entire original metadata and returns detached data (3.973042ms)
+✔ all domain transformations retain explicit source limitations (1.394856ms)
+✔ normalized digest describes complete intent including immutable artifact version (1.411842ms)
+ℹ tests 39
+ℹ suites 0
+ℹ pass 39
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2894.667738

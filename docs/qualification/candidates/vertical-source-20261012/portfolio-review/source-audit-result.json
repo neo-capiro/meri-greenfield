@@ -1,0 +1,2359 @@
+{
+  "base": "26f11758",
+  "candidate": "62062236e38ac77b9494a04668df6969ab1f33e2",
+  "reviewHead": "9c52be90085f35e352a7424ab6705c5062432105",
+  "originalEntries": 8689,
+  "unchangedOriginalEntries": 8683,
+  "changedOriginalPaths": [
+    "apps/gateway/dispatch/operation-context.mjs",
+    "apps/gateway/sources/memory-proposals/http-adapter.mjs",
+    "apps/gateway/sources/memory-proposals/request-context.mjs",
+    "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+    "packages/contracts/retrieval-0.2/catalog.json",
+    "packages/contracts/retrieval-0.2/validate.mjs"
+  ],
+  "exactCandidatePaths": [
+    "apps/gateway/dispatch/operation-context.mjs",
+    "apps/gateway/sources/json-response.mjs",
+    "apps/gateway/sources/memory-proposals/http-adapter.mjs",
+    "apps/gateway/sources/memory-proposals/request-context.mjs",
+    "apps/gateway/sources/research-portfolio-evidence/handler.mjs",
+    "apps/gateway/sources/research-portfolio-evidence/http-adapter.mjs",
+    "apps/gateway/sources/research-portfolio-evidence/projection.mjs",
+    "apps/gateway/sources/research-portfolio-evidence/request-context.mjs",
+    "apps/gateway/sources/source-admission.mjs",
+    "apps/gateway/test/research-evidence-fixtures.mjs",
+    "apps/gateway/test/research-evidence-source.test.mjs",
+    "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+    "packages/contracts/retrieval-0.2/catalog.json",
+    "packages/contracts/retrieval-0.2/research-portfolio-evidence-validation.mjs",
+    "packages/contracts/retrieval-0.2/research-portfolio-evidence.schema.json",
+    "packages/contracts/retrieval-0.2/validate.mjs"
+  ],
+  "checks": [
+    {
+      "name": "only six explicitly allocated original files change",
+      "passed": true
+    },
+    {
+      "name": "all other original Git entries preserved",
+      "passed": true
+    },
+    {
+      "name": "protected apps/gateway/dispatch/tool-dispatch.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected apps/gateway/sources/memory-proposals/handler.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "protected package.json",
+      "passed": true
+    },
+    {
+      "name": "protected packages/contracts/package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "protected packages/contracts/validate.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected packages/runtime/operation-lifetime.mjs",
+      "passed": true
+    },
+    {
+      "name": "exact final source apps/gateway/dispatch/operation-context.mjs",
+      "passed": true
+    },
+    {
+      "name": "exact final source apps/gateway/sources/json-response.mjs",
+      "passed": true
+    },
+    {
+      "name": "exact final source apps/gateway/sources/memory-proposals/http-adapter.mjs",
+      "passed": true
+    },
+    {
+      "name": "exact final source apps/gateway/sources/memory-proposals/request-context.mjs",
+      "passed": true
+    },
+    {
+      "name": "exact final source apps/gateway/sources/research-portfolio-evidence/handler.mjs",
+      "passed": true
+    },
+    {
+      "name": "exact final source apps/gateway/sources/research-portfolio-evidence/http-adapter.mjs",
+      "passed": true
+    },
+    {
+      "name": "exact final source apps/gateway/sources/research-portfolio-evidence/projection.mjs",
+      "passed": true
+    },
+    {
+      "name": "exact final source apps/gateway/sources/research-portfolio-evidence/request-context.mjs",
+      "passed": true
+    },
+    {
+      "name": "exact final source apps/gateway/sources/source-admission.mjs",
+      "passed": true
+    },
+    {
+      "name": "exact final source apps/gateway/test/research-evidence-fixtures.mjs",
+      "passed": true
+    },
+    {
+      "name": "exact final source apps/gateway/test/research-evidence-source.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "exact final source packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "exact final source packages/contracts/retrieval-0.2/catalog.json",
+      "passed": true
+    },
+    {
+      "name": "exact final source packages/contracts/retrieval-0.2/research-portfolio-evidence-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "exact final source packages/contracts/retrieval-0.2/research-portfolio-evidence.schema.json",
+      "passed": true
+    },
+    {
+      "name": "exact final source packages/contracts/retrieval-0.2/validate.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/control/qualification-sdk-fixture/ingress/test/fixture-data.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/control/qualification-sdk-fixture/ingress/test/harness.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/control/qualification-sdk-fixture/ingress/test/ingress.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/control/qualification-sdk-fixture/ingress/test/worker-channel-loopback.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/control/qualification-sdk-fixture/service/test/cancellation.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/control/qualification-sdk-fixture/service/test/control.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/control/qualification-sdk-fixture/service/test/fake-s3.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/control/qualification-sdk-fixture/service/test/fixture.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/control/qualification-sdk-fixture/service/test/handlers.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/control/qualification-sdk-fixture/service/test/native-evidence-publisher.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/control/qualification-sdk-fixture/service/test/native-evidence.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/control/qualification-sdk-fixture/service/test/registry-ingress.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/control/qualification-sdk-fixture/service/test/run-stop.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/control/qualification-sdk-fixture/service/test/s3-checkpoint.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/control/qualification-sdk-fixture/state/test/registry.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/control/qualification-sdk-fixture/state/test/revocation-postgres.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/control/qualification-sdk-fixture/state/test/revocation.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/control/schedules/test/temporal-inspection-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/control/test/temporal-inspection.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/control/test/tool-invocations.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/gateway/test/action-item-context-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/gateway/test/action-item-context.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/gateway/test/authority-deadline.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/gateway/test/capability-next-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/gateway/test/command-authority.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/gateway/test/dataset-metadata-handler-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/gateway/test/dataset-metadata-handler.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/gateway/test/durable-tool-budget.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/gateway/test/fixtures.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/gateway/test/gateway.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/gateway/test/mail-context-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/gateway/test/mail-context.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/gateway/test/memory-context-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/gateway/test/memory-context.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/gateway/test/memory-proposal-source-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/gateway/test/memory-proposal-source.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/gateway/test/postgres-budget-admission.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/gateway/test/postgres-budget-child.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/gateway/test/postgres-budget-native-fixture.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/gateway/test/postgres-budget.integration.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/gateway/test/postgres-tool-budget.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/gateway/test/tool-budget-outcome.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/gateway/test/tool-invocation-owner.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/gateway/test/tool-invocation-transaction.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/proxy/qualification/test/offline-policy.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test apps/proxy/qualification/test/test_aws_counter.py",
+      "passed": true
+    },
+    {
+      "name": "original test apps/proxy/qualification/test/test_bedrock_transport.py",
+      "passed": true
+    },
+    {
+      "name": "original test apps/proxy/qualification/test/test_ingress.py",
+      "passed": true
+    },
+    {
+      "name": "original test apps/proxy/qualification/test/test_lifetime.py",
+      "passed": true
+    },
+    {
+      "name": "original test apps/proxy/qualification/test/test_native_usage.py",
+      "passed": true
+    },
+    {
+      "name": "original test apps/proxy/qualification/test/test_postgres_state.py",
+      "passed": true
+    },
+    {
+      "name": "original test apps/proxy/qualification/test/test_server.py",
+      "passed": true
+    },
+    {
+      "name": "original test apps/proxy/qualification/test/test_tool_budget_source.py",
+      "passed": true
+    },
+    {
+      "name": "original test docs/qualification/candidates/capability-successor-20261012/action-author/original/apps/gateway/test/memory-context-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test docs/qualification/candidates/capability-successor-20261012/action-author/original/packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test docs/qualification/candidates/capability-successor-20261012/action-author/original/packages/contracts/test/retrieval-mail.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test docs/qualification/candidates/capability-successor-20261012/action-author/original/packages/contracts/test/retrieval-memory-binding.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test docs/qualification/candidates/capability-successor-20261012/action-author/original/packages/contracts/test/retrieval-operational-reads.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test docs/qualification/candidates/read-continuation-20261012/certification-status-author/initial-harness-failed-source/packages/contracts/test/retrieval-certification-status.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-preimage/packages/contracts/test/command-artifact-file.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-preimage/packages/contracts/test/command-task-create.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction-preimage/packages/contracts/test/command-artifact-file.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction-preimage/packages/contracts/test/command-task-create.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test docs/qualification/candidates/read-continuation-20261012/disclosures-author/country-null-failed-source/packages/contracts/test/retrieval-disclosures.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test docs/qualification/candidates/read-continuation-20261012/disclosures-author/initial-source/packages/contracts/test/retrieval-disclosures.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test docs/qualification/candidates/read-continuation-20261012/district-author/initial-source/packages/contracts/test/retrieval-district-nexus.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test docs/qualification/candidates/read-continuation-20261012/federal-legislation-author/initial-source/packages/contracts/test/retrieval-federal-legislation.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test docs/qualification/candidates/read-continuation-20261012/federal-legislation-author/prototype-status-failed-source/packages/contracts/test/retrieval-federal-legislation.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test docs/qualification/candidates/read-continuation-20261012/pe-references-author/aggregate-count-failed-source/packages/contracts/test/retrieval-pe-references.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test docs/qualification/candidates/read-continuation-20261012/pe-references-author/evidence-null-failed-source/packages/contracts/test/retrieval-pe-references.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test docs/qualification/candidates/read-continuation-20261012/pe-references-author/initial-source/packages/contracts/test/retrieval-pe-references.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/backend-execution-connected.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/backend-execution-expectations.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/backend-execution-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/boundaries.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/command-artifact-file.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/command-contracts-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/command-payloads-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/command-task-create.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/commands-memory-propose-connected.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/commands-memory-propose-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/commands-memory-propose.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/native-evidence-fixture.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/public-package.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/public-types.ts",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/raw-request-advertisement-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-acquisition-personnel-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-acquisition-personnel.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-action-item-binding.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-action-item-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-action-items-complete-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-action-items-complete.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-backend-next-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-bill-text-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-bill-text.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-business-development-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-business-development.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-certification-status-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-certification-status.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-civic-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-client-documents-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-client-documents.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-client-knowledge-attachments-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-client-knowledge-attachments.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-client-knowledge-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-client-knowledge-memory-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-client-knowledge-memory.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-client-knowledge-monday-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-client-knowledge-monday.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-client-knowledge-profile-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-client-knowledge-profile.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-client-knowledge-search.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-client-registry-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-client-registry.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-data-search.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-dataset-metadata-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-dataset-metadata.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-disclosures-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-disclosures.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-district-nexus-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-district-nexus.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-entity-candidates-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-entity-candidates.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-facility-representation-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-facility-representation.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-federal-legislation-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-federal-legislation.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-federal-market.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-florida-budget-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-florida-budget.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-funding-opportunities.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-intelligence-summary-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-intelligence-summary.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-legislative-directory-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-legislative-directory.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-mail.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-meeting-source.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-memory-binding.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-memory-proposals.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-memory-review-policy.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-next-bindings.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-observed-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-operational-reads.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-outreach-query-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-outreach-query.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-pe-reference-detachment-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-pe-reference-detachment.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-pe-references-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-pe-references.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-program-elements-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-program-elements.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-public-data-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-public-data.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-public-domain-hearings.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-public-domain-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-public-domain-query.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-public-reports-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-public-reports.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-public-web-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-public-web.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-r2.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-reference-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-regulatory-dockets-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-regulatory-dockets.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-research-legal-candidates.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-research-legal-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-research-legal-legislation.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-research-legal-news.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-research-portfolio-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-research-portfolio.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-rule-status-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-rule-status.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-sam-opportunities-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-sam-opportunities.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-selected-next-bindings.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-selected-next-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-state-legislation-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-state-legislation.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-state-status-votes-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-state-status-votes.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-stored-intelligence-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-stored-intelligence.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-tenant-contacts-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-tenant-contacts.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-tracked-bills-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/retrieval-tracked-bills.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/sdk-fixture-contract.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/sdk-fixture-wire.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original test packages/contracts/test/sdk-native-evidence.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "139 original capabilities",
+      "passed": true
+    },
+    {
+      "name": "96 selected 43 deferred",
+      "passed": true
+    },
+    {
+      "name": "85 typed 84 mapped 12 pending",
+      "passed": true
+    },
+    {
+      "name": "catalog version only prescribed 0.2.12",
+      "passed": true
+    },
+    {
+      "name": "original accounting manage_research_portfolio",
+      "passed": true
+    },
+    {
+      "name": "original accounting get_research_portfolio",
+      "passed": true
+    },
+    {
+      "name": "original accounting get_research_portfolio_analytics",
+      "passed": true
+    },
+    {
+      "name": "original accounting get_research_portfolio_changes",
+      "passed": true
+    },
+    {
+      "name": "original accounting create_research_portfolio_snapshot",
+      "passed": true
+    },
+    {
+      "name": "original accounting request_research_portfolio_output",
+      "passed": true
+    },
+    {
+      "name": "original accounting save_research_portfolio_output_to_client",
+      "passed": true
+    },
+    {
+      "name": "original accounting watch_research_portfolio",
+      "passed": true
+    },
+    {
+      "name": "original accounting update_research_portfolio_change_state",
+      "passed": true
+    },
+    {
+      "name": "original accounting get_research_portfolio_bookmarks",
+      "passed": true
+    },
+    {
+      "name": "original accounting create_research_portfolio_bookmark",
+      "passed": true
+    },
+    {
+      "name": "original accounting get_research_portfolio_fit",
+      "passed": true
+    },
+    {
+      "name": "original accounting get_research_portfolio_reviews",
+      "passed": true
+    },
+    {
+      "name": "original accounting add_research_portfolio_review_note",
+      "passed": true
+    },
+    {
+      "name": "original accounting get_research_portfolio_rules",
+      "passed": true
+    },
+    {
+      "name": "original accounting get_research_portfolio_imports",
+      "passed": true
+    },
+    {
+      "name": "original accounting get_research_portfolio_operations",
+      "passed": true
+    },
+    {
+      "name": "original accounting prepare_research_portfolio_brief",
+      "passed": true
+    },
+    {
+      "name": "original accounting prepare_research_portfolio_meeting",
+      "passed": true
+    },
+    {
+      "name": "only evidence maps",
+      "passed": true
+    },
+    {
+      "name": "original accounting read_chat_attachments",
+      "passed": true
+    },
+    {
+      "name": "original accounting read_monday_client_boards",
+      "passed": true
+    },
+    {
+      "name": "original accounting search_capiro_data",
+      "passed": true
+    },
+    {
+      "name": "original accounting get_client_context",
+      "passed": true
+    },
+    {
+      "name": "original accounting search_research_sources",
+      "passed": true
+    },
+    {
+      "name": "original accounting run_analysis",
+      "passed": true
+    },
+    {
+      "name": "original accounting search_client_knowledge",
+      "passed": true
+    },
+    {
+      "name": "original accounting query_intelligence",
+      "passed": true
+    },
+    {
+      "name": "original accounting query_knowledge_graph",
+      "passed": true
+    },
+    {
+      "name": "original accounting find_path_to",
+      "passed": true
+    },
+    {
+      "name": "original accounting search_memory",
+      "passed": true
+    },
+    {
+      "name": "original accounting list_memory_proposals",
+      "passed": true
+    },
+    {
+      "name": "original accounting search_congress_bills",
+      "passed": true
+    },
+    {
+      "name": "original accounting get_bill_status",
+      "passed": true
+    },
+    {
+      "name": "original accounting read_bill_text",
+      "passed": true
+    },
+    {
+      "name": "original accounting get_certification_status",
+      "passed": true
+    },
+    {
+      "name": "original accounting search_floor_votes",
+      "passed": true
+    },
+    {
+      "name": "original accounting search_cbo_cost_estimates",
+      "passed": true
+    },
+    {
+      "name": "original accounting resolve_entity",
+      "passed": true
+    },
+    {
+      "name": "original accounting search_lda_filings",
+      "passed": true
+    },
+    {
+      "name": "original accounting list_global_datasets",
+      "passed": true
+    },
+    {
+      "name": "original accounting query_global_data",
+      "passed": true
+    },
+    {
+      "name": "original accounting search_sec_filings",
+      "passed": true
+    },
+    {
+      "name": "original accounting search_fara_registrations",
+      "passed": true
+    },
+    {
+      "name": "original accounting search_federal_grants",
+      "passed": true
+    },
+    {
+      "name": "original accounting search_federal_awards",
+      "passed": true
+    },
+    {
+      "name": "original accounting search_gao_reports",
+      "passed": true
+    },
+    {
+      "name": "original accounting search_state_bills",
+      "passed": true
+    },
+    {
+      "name": "original accounting get_state_bill_status",
+      "passed": true
+    },
+    {
+      "name": "original accounting search_state_floor_votes",
+      "passed": true
+    },
+    {
+      "name": "original accounting get_state_legislator",
+      "passed": true
+    },
+    {
+      "name": "original accounting get_committee_roster",
+      "passed": true
+    },
+    {
+      "name": "original accounting get_representation",
+      "passed": true
+    },
+    {
+      "name": "original accounting list_members",
+      "passed": true
+    },
+    {
+      "name": "original accounting get_state_rule_status",
+      "passed": true
+    },
+    {
+      "name": "original accounting search_intel_articles",
+      "passed": true
+    },
+    {
+      "name": "original accounting search_committee_hearings",
+      "passed": true
+    },
+    {
+      "name": "original accounting get_legiwatch_review",
+      "passed": true
+    },
+    {
+      "name": "original accounting search_legiwatch_news",
+      "passed": true
+    },
+    {
+      "name": "original accounting get_florida_budget_project",
+      "passed": true
+    },
+    {
+      "name": "original accounting compare_florida_budget_amounts",
+      "passed": true
+    },
+    {
+      "name": "original accounting prepare_legiwatch_briefing",
+      "passed": true
+    },
+    {
+      "name": "original accounting search_legislative_research",
+      "passed": true
+    },
+    {
+      "name": "original accounting get_legal_reference",
+      "passed": true
+    },
+    {
+      "name": "original accounting compare_legislative_versions",
+      "passed": true
+    },
+    {
+      "name": "original accounting save_legislative_research",
+      "passed": true
+    },
+    {
+      "name": "original accounting preview_legiwatch_relevance",
+      "passed": true
+    },
+    {
+      "name": "original accounting save_legiwatch_relevance",
+      "passed": true
+    },
+    {
+      "name": "original accounting apply_legiwatch_suggestion",
+      "passed": true
+    },
+    {
+      "name": "original accounting search_crs_reports",
+      "passed": true
+    },
+    {
+      "name": "original accounting query_economic_data",
+      "passed": true
+    },
+    {
+      "name": "original accounting get_district_nexus_context",
+      "passed": true
+    },
+    {
+      "name": "original accounting get_district_nexus_changes",
+      "passed": true
+    },
+    {
+      "name": "original accounting search_public_web",
+      "passed": true
+    },
+    {
+      "name": "original accounting scrape_web_page",
+      "passed": true
+    },
+    {
+      "name": "original accounting create_meeting_brief",
+      "passed": true
+    },
+    {
+      "name": "original accounting draft_policy_memo",
+      "passed": true
+    },
+    {
+      "name": "original accounting save_note",
+      "passed": true
+    },
+    {
+      "name": "original accounting save_chat_attachments",
+      "passed": true
+    },
+    {
+      "name": "original accounting send_email",
+      "passed": true
+    },
+    {
+      "name": "original accounting list_emails",
+      "passed": true
+    },
+    {
+      "name": "original accounting search_emails",
+      "passed": true
+    },
+    {
+      "name": "original accounting get_email_thread",
+      "passed": true
+    },
+    {
+      "name": "original accounting list_upcoming_meetings",
+      "passed": true
+    },
+    {
+      "name": "original accounting reply_email",
+      "passed": true
+    },
+    {
+      "name": "original accounting save_memory",
+      "passed": true
+    },
+    {
+      "name": "original accounting confirm_memory",
+      "passed": true
+    },
+    {
+      "name": "original accounting correct_memory",
+      "passed": true
+    },
+    {
+      "name": "original accounting forget_memory",
+      "passed": true
+    },
+    {
+      "name": "original accounting search_program_elements",
+      "passed": true
+    },
+    {
+      "name": "original accounting get_program_element",
+      "passed": true
+    },
+    {
+      "name": "original accounting get_pe_budget_timeline",
+      "passed": true
+    },
+    {
+      "name": "original accounting get_pe_buyer_workspace",
+      "passed": true
+    },
+    {
+      "name": "original accounting get_pe_contractors",
+      "passed": true
+    },
+    {
+      "name": "original accounting get_pe_bills",
+      "passed": true
+    },
+    {
+      "name": "original accounting get_pe_report_language",
+      "passed": true
+    },
+    {
+      "name": "original accounting search_acquisition_personnel",
+      "passed": true
+    },
+    {
+      "name": "original accounting get_acquisition_person",
+      "passed": true
+    },
+    {
+      "name": "original accounting create_word",
+      "passed": true
+    },
+    {
+      "name": "original accounting create_excel",
+      "passed": true
+    },
+    {
+      "name": "original accounting create_powerpoint",
+      "passed": true
+    },
+    {
+      "name": "original accounting schedule_task",
+      "passed": true
+    },
+    {
+      "name": "original accounting list_scheduled_tasks",
+      "passed": true
+    },
+    {
+      "name": "original accounting cancel_scheduled_task",
+      "passed": true
+    },
+    {
+      "name": "original accounting update_scheduled_task",
+      "passed": true
+    },
+    {
+      "name": "original accounting query_tasks",
+      "passed": true
+    },
+    {
+      "name": "original accounting query_action_items",
+      "passed": true
+    },
+    {
+      "name": "original accounting search_tracked_bills",
+      "passed": true
+    },
+    {
+      "name": "original accounting query_regulatory_dockets",
+      "passed": true
+    },
+    {
+      "name": "original accounting search_sam_opportunities",
+      "passed": true
+    },
+    {
+      "name": "original accounting query_debriefs",
+      "passed": true
+    },
+    {
+      "name": "original accounting read_client_meetings",
+      "passed": true
+    },
+    {
+      "name": "original accounting query_outreach",
+      "passed": true
+    },
+    {
+      "name": "original accounting read_client_documents",
+      "passed": true
+    },
+    {
+      "name": "original accounting lookup_client_registry",
+      "passed": true
+    },
+    {
+      "name": "original accounting create_client",
+      "passed": true
+    },
+    {
+      "name": "original accounting create_task",
+      "passed": true
+    },
+    {
+      "name": "original accounting update_task",
+      "passed": true
+    },
+    {
+      "name": "original accounting update_client_profile",
+      "passed": true
+    },
+    {
+      "name": "original accounting find_contacts",
+      "passed": true
+    },
+    {
+      "name": "original accounting search_funding_opportunities",
+      "passed": true
+    },
+    {
+      "name": "original accounting get_funding_opportunity_requirements",
+      "passed": true
+    },
+    {
+      "name": "original accounting get_funding_opportunity",
+      "passed": true
+    },
+    {
+      "name": "original accounting explain_opportunity_match",
+      "passed": true
+    },
+    {
+      "name": "original accounting get_opportunity_client_context",
+      "passed": true
+    },
+    {
+      "name": "original accounting get_opportunity_government_landscape",
+      "passed": true
+    },
+    {
+      "name": "original accounting compare_funding_opportunities",
+      "passed": true
+    },
+    {
+      "name": "original accounting build_opportunity_action_plan",
+      "passed": true
+    },
+    {
+      "name": "original accounting search_federal_contract_awards",
+      "passed": true
+    },
+    {
+      "name": "original accounting search_federal_subawards",
+      "passed": true
+    },
+    {
+      "name": "original accounting search_contract_vehicles",
+      "passed": true
+    },
+    {
+      "name": "original accounting search_procurement_forecasts",
+      "passed": true
+    },
+    {
+      "name": "original accounting get_business_development_context",
+      "passed": true
+    },
+    {
+      "name": "original accounting get_business_development_evidence",
+      "passed": true
+    },
+    {
+      "name": "original accounting get_business_development_brief",
+      "passed": true
+    },
+    {
+      "name": "original accounting resolve_business_development_source",
+      "passed": true
+    },
+    {
+      "name": "original accounting save_business_development_brief",
+      "passed": true
+    },
+    {
+      "name": "original accounting get_business_development_recent_changes",
+      "passed": true
+    },
+    {
+      "name": "original accounting get_district_federal_market",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor mail.read_thread",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor mail.list_messages",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor mail.search_messages",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor meeting.list_upcoming_meetings",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor meeting.read_client_meetings",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor meeting.query_debriefs",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor query_tasks",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor search_capiro_data",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor search_federal_contract_awards",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor search_federal_subawards",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor search_contract_vehicles",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor search_procurement_forecasts",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor get_district_federal_market",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor memory.list_own_proposals",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor query_action_items",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor lookup_client_registry",
+      "passed": true
+    },
+    {
+      "name": "existing portfolio descriptor footnote only",
+      "passed": true
+    },
+    {
+      "name": "existing portfolio descriptor footnote only",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor get_business_development_context",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor get_business_development_evidence",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor get_business_development_recent_changes",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor search_funding_opportunities",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor get_funding_opportunity_requirements",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor get_funding_opportunity",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor get_opportunity_client_context",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor get_opportunity_government_landscape",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor read_client_documents",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor query_economic_data",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor search_federal_grants",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor search_federal_awards",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor get_district_nexus_context",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor get_district_nexus_changes",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor search_state_bills",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor get_state_legislator",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor search_cbo_cost_estimates",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor search_gao_reports",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor search_crs_reports",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor search_sec_filings",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor search_fara_registrations",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor search_lda_filings",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor search_acquisition_personnel",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor get_acquisition_person",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor get_bill_status",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor search_floor_votes",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor search_congress_bills",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor read_bill_text",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor get_committee_roster",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor list_members",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor get_pe_contractors",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor get_pe_bills",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor get_pe_report_language",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor get_state_rule_status",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor get_certification_status",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor search_intel_articles",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor list_global_datasets",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor get_representation",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor get_state_bill_status",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor search_state_floor_votes",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor query_regulatory_dockets",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor find_contacts",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor resolve_entity",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor search_tracked_bills",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor query_intelligence",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor search_public_web",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor scrape_web_page",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor search_sam_opportunities",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor get_florida_budget_project",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor query_outreach",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor search_program_elements",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor get_program_element",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor get_pe_budget_timeline",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor search_client_knowledge",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor query_knowledge_graph",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor read_monday_client_boards",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor read_chat_attachments",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor search_memory",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor get_client_context",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor search_research_sources",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor query_global_data",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor search_legislative_research",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor get_legal_reference",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor actions.query",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor search_legiwatch_news",
+      "passed": true
+    },
+    {
+      "name": "existing descriptor search_committee_hearings",
+      "passed": true
+    },
+    {
+      "name": "production disabled mail.read_thread",
+      "passed": true
+    },
+    {
+      "name": "production disabled mail.list_messages",
+      "passed": true
+    },
+    {
+      "name": "production disabled mail.search_messages",
+      "passed": true
+    },
+    {
+      "name": "production disabled meeting.list_upcoming_meetings",
+      "passed": true
+    },
+    {
+      "name": "production disabled meeting.read_client_meetings",
+      "passed": true
+    },
+    {
+      "name": "production disabled meeting.query_debriefs",
+      "passed": true
+    },
+    {
+      "name": "production disabled query_tasks",
+      "passed": true
+    },
+    {
+      "name": "production disabled search_capiro_data",
+      "passed": true
+    },
+    {
+      "name": "production disabled search_federal_contract_awards",
+      "passed": true
+    },
+    {
+      "name": "production disabled search_federal_subawards",
+      "passed": true
+    },
+    {
+      "name": "production disabled search_contract_vehicles",
+      "passed": true
+    },
+    {
+      "name": "production disabled search_procurement_forecasts",
+      "passed": true
+    },
+    {
+      "name": "production disabled get_district_federal_market",
+      "passed": true
+    },
+    {
+      "name": "production disabled memory.list_own_proposals",
+      "passed": true
+    },
+    {
+      "name": "production disabled query_action_items",
+      "passed": true
+    },
+    {
+      "name": "production disabled lookup_client_registry",
+      "passed": true
+    },
+    {
+      "name": "production disabled get_research_portfolio",
+      "passed": true
+    },
+    {
+      "name": "production disabled get_research_portfolio_changes",
+      "passed": true
+    },
+    {
+      "name": "production disabled get_business_development_context",
+      "passed": true
+    },
+    {
+      "name": "production disabled get_business_development_evidence",
+      "passed": true
+    },
+    {
+      "name": "production disabled get_business_development_recent_changes",
+      "passed": true
+    },
+    {
+      "name": "production disabled search_funding_opportunities",
+      "passed": true
+    },
+    {
+      "name": "production disabled get_funding_opportunity_requirements",
+      "passed": true
+    },
+    {
+      "name": "production disabled get_funding_opportunity",
+      "passed": true
+    },
+    {
+      "name": "production disabled get_opportunity_client_context",
+      "passed": true
+    },
+    {
+      "name": "production disabled get_opportunity_government_landscape",
+      "passed": true
+    },
+    {
+      "name": "production disabled read_client_documents",
+      "passed": true
+    },
+    {
+      "name": "production disabled query_economic_data",
+      "passed": true
+    },
+    {
+      "name": "production disabled search_federal_grants",
+      "passed": true
+    },
+    {
+      "name": "production disabled search_federal_awards",
+      "passed": true
+    },
+    {
+      "name": "production disabled get_district_nexus_context",
+      "passed": true
+    },
+    {
+      "name": "production disabled get_district_nexus_changes",
+      "passed": true
+    },
+    {
+      "name": "production disabled search_state_bills",
+      "passed": true
+    },
+    {
+      "name": "production disabled get_state_legislator",
+      "passed": true
+    },
+    {
+      "name": "production disabled search_cbo_cost_estimates",
+      "passed": true
+    },
+    {
+      "name": "production disabled search_gao_reports",
+      "passed": true
+    },
+    {
+      "name": "production disabled search_crs_reports",
+      "passed": true
+    },
+    {
+      "name": "production disabled search_sec_filings",
+      "passed": true
+    },
+    {
+      "name": "production disabled search_fara_registrations",
+      "passed": true
+    },
+    {
+      "name": "production disabled search_lda_filings",
+      "passed": true
+    },
+    {
+      "name": "production disabled search_acquisition_personnel",
+      "passed": true
+    },
+    {
+      "name": "production disabled get_acquisition_person",
+      "passed": true
+    },
+    {
+      "name": "production disabled get_bill_status",
+      "passed": true
+    },
+    {
+      "name": "production disabled search_floor_votes",
+      "passed": true
+    },
+    {
+      "name": "production disabled search_congress_bills",
+      "passed": true
+    },
+    {
+      "name": "production disabled read_bill_text",
+      "passed": true
+    },
+    {
+      "name": "production disabled get_committee_roster",
+      "passed": true
+    },
+    {
+      "name": "production disabled list_members",
+      "passed": true
+    },
+    {
+      "name": "production disabled get_pe_contractors",
+      "passed": true
+    },
+    {
+      "name": "production disabled get_pe_bills",
+      "passed": true
+    },
+    {
+      "name": "production disabled get_pe_report_language",
+      "passed": true
+    },
+    {
+      "name": "production disabled get_state_rule_status",
+      "passed": true
+    },
+    {
+      "name": "production disabled get_certification_status",
+      "passed": true
+    },
+    {
+      "name": "production disabled search_intel_articles",
+      "passed": true
+    },
+    {
+      "name": "production disabled list_global_datasets",
+      "passed": true
+    },
+    {
+      "name": "production disabled get_representation",
+      "passed": true
+    },
+    {
+      "name": "production disabled get_state_bill_status",
+      "passed": true
+    },
+    {
+      "name": "production disabled search_state_floor_votes",
+      "passed": true
+    },
+    {
+      "name": "production disabled query_regulatory_dockets",
+      "passed": true
+    },
+    {
+      "name": "production disabled find_contacts",
+      "passed": true
+    },
+    {
+      "name": "production disabled resolve_entity",
+      "passed": true
+    },
+    {
+      "name": "production disabled search_tracked_bills",
+      "passed": true
+    },
+    {
+      "name": "production disabled query_intelligence",
+      "passed": true
+    },
+    {
+      "name": "production disabled search_public_web",
+      "passed": true
+    },
+    {
+      "name": "production disabled scrape_web_page",
+      "passed": true
+    },
+    {
+      "name": "production disabled search_sam_opportunities",
+      "passed": true
+    },
+    {
+      "name": "production disabled get_florida_budget_project",
+      "passed": true
+    },
+    {
+      "name": "production disabled query_outreach",
+      "passed": true
+    },
+    {
+      "name": "production disabled search_program_elements",
+      "passed": true
+    },
+    {
+      "name": "production disabled get_program_element",
+      "passed": true
+    },
+    {
+      "name": "production disabled get_pe_budget_timeline",
+      "passed": true
+    },
+    {
+      "name": "production disabled search_client_knowledge",
+      "passed": true
+    },
+    {
+      "name": "production disabled query_knowledge_graph",
+      "passed": true
+    },
+    {
+      "name": "production disabled read_monday_client_boards",
+      "passed": true
+    },
+    {
+      "name": "production disabled read_chat_attachments",
+      "passed": true
+    },
+    {
+      "name": "production disabled search_memory",
+      "passed": true
+    },
+    {
+      "name": "production disabled get_client_context",
+      "passed": true
+    },
+    {
+      "name": "production disabled search_research_sources",
+      "passed": true
+    },
+    {
+      "name": "production disabled query_global_data",
+      "passed": true
+    },
+    {
+      "name": "production disabled search_legislative_research",
+      "passed": true
+    },
+    {
+      "name": "production disabled get_legal_reference",
+      "passed": true
+    },
+    {
+      "name": "production disabled actions.query",
+      "passed": true
+    },
+    {
+      "name": "production disabled search_legiwatch_news",
+      "passed": true
+    },
+    {
+      "name": "production disabled search_committee_hearings",
+      "passed": true
+    },
+    {
+      "name": "production disabled get_research_evidence",
+      "passed": true
+    },
+    {
+      "name": "both schema hashes exact",
+      "passed": true
+    },
+    {
+      "name": "new input is actual model request",
+      "passed": true
+    },
+    {
+      "name": "raw member and historical selectors unadvertised",
+      "passed": true
+    },
+    {
+      "name": "canonical registry exact previous bytes plus one insertion",
+      "passed": true
+    },
+    {
+      "name": "trusted binding subject context only",
+      "passed": true
+    },
+    {
+      "name": "exact extracted ownFields",
+      "passed": true
+    },
+    {
+      "name": "exact extracted frozenData",
+      "passed": true
+    },
+    {
+      "name": "memory readContext byte-identical",
+      "passed": true
+    },
+    {
+      "name": "reader retains new TextDecoder('utf-8'",
+      "passed": true
+    },
+    {
+      "name": "reader retains Number.isSafeInteger(Number(length))",
+      "passed": true
+    },
+    {
+      "name": "reader retains bytes!==Number(length)",
+      "passed": true
+    },
+    {
+      "name": "reader retains part.value instanceof Uint8Array",
+      "passed": true
+    },
+    {
+      "name": "reader retains reader.cancel()",
+      "passed": true
+    },
+    {
+      "name": "reader retains reader.releaseLock()",
+      "passed": true
+    },
+    {
+      "name": "response ownership repair memory-proposals",
+      "passed": true
+    },
+    {
+      "name": "response ownership repair research-portfolio-evidence",
+      "passed": true
+    },
+    {
+      "name": "original memory acquisition also lacked outer response owner",
+      "passed": true
+    },
+    {
+      "name": "private source no drift packages/shared/src/research-portfolios.ts",
+      "passed": true
+    },
+    {
+      "name": "private source no drift apps/api/src/research-portfolios/research-portfolios.controller.ts",
+      "passed": true
+    },
+    {
+      "name": "private source no drift apps/api/src/research-portfolios/research-portfolio-review.service.ts",
+      "passed": true
+    },
+    {
+      "name": "private source no drift apps/api/src/research-portfolios/research-portfolio-analytics.service.ts",
+      "passed": true
+    },
+    {
+      "name": "private source no drift apps/api/src/research-portfolios/research-portfolio-access.ts",
+      "passed": true
+    },
+    {
+      "name": "private source no drift apps/api/src/research-portfolios/research-portfolio-meri-scope.service.ts",
+      "passed": true
+    },
+    {
+      "name": "source viewer gate listReviews",
+      "passed": true
+    },
+    {
+      "name": "source tenant transaction listReviews",
+      "passed": true
+    },
+    {
+      "name": "source viewer gate getAnnualReview",
+      "passed": true
+    },
+    {
+      "name": "source tenant transaction getAnnualReview",
+      "passed": true
+    },
+    {
+      "name": "source viewer gate snapshot",
+      "passed": true
+    },
+    {
+      "name": "source tenant transaction snapshot",
+      "passed": true
+    },
+    {
+      "name": "fixed controller delegate listReviews",
+      "passed": true
+    },
+    {
+      "name": "actual existing GET listReviews",
+      "passed": true
+    },
+    {
+      "name": "fixed controller delegate getAnnualReview",
+      "passed": true
+    },
+    {
+      "name": "actual existing GET getAnnualReview",
+      "passed": true
+    },
+    {
+      "name": "fixed controller delegate snapshot",
+      "passed": true
+    },
+    {
+      "name": "actual existing GET snapshot",
+      "passed": true
+    },
+    {
+      "name": "annual GET explicitly passes false persistence",
+      "passed": true
+    },
+    {
+      "name": "annual persistence branch is conditional",
+      "passed": true
+    },
+    {
+      "name": "annual readonly projection retains persisted discriminator",
+      "passed": true
+    },
+    {
+      "name": "existing review lane mine",
+      "passed": true
+    },
+    {
+      "name": "existing review lane team",
+      "passed": true
+    },
+    {
+      "name": "existing review lane deferred",
+      "passed": true
+    },
+    {
+      "name": "existing review lane resolved",
+      "passed": true
+    },
+    {
+      "name": "review DTO projects evidenceFor",
+      "passed": true
+    },
+    {
+      "name": "review DTO projects evidenceAgainst",
+      "passed": true
+    },
+    {
+      "name": "retained snapshot DTO projects clientAccessRequirements",
+      "passed": true
+    },
+    {
+      "name": "retained snapshot DTO projects versions",
+      "passed": true
+    },
+    {
+      "name": "retained snapshot DTO projects limitations",
+      "passed": true
+    },
+    {
+      "name": "retained snapshot DTO projects observedAt",
+      "passed": true
+    },
+    {
+      "name": "retained snapshot DTO projects readAt",
+      "passed": true
+    }
+  ],
+  "passed": 580,
+  "failed": 0,
+  "privateSourceExecuted": false,
+  "runtimeAccepted": false
+}

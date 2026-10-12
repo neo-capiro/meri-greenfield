@@ -1,0 +1,137 @@
+{
+  "checks": 32,
+  "passed": 32,
+  "failed": 0,
+  "rows": [
+    {
+      "path": "apps/artifacts/test/postgres-analysis-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-ARTIFACT-ANALYSIS-BUDGET-REVIEW-20261012.md",
+      "pass": true
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-ARTIFACT-ANALYSIS-BUDGET-REVIEW-20261012.md",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/audit-final.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/audit-initial.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/audit.py",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/authored-whitespace.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/authored-whitespace.stderr.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/authored-whitespace.stdout.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/authority-before.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/authority-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/authority-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/baseline.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/cleanup.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/current-authority-finding.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/final-authored-whitespace.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/first-independent.test.mjs.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/first-postgres-analysis.mjs.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/first.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/first.stderr.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/first.stdout.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/repaired.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/source-preservation.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/verify-packet.py",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/whitespace.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/whitespace.stderr.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/whitespace.stdout.bin",
+      "pass": true
+    },
+    {
+      "path": "apps/artifacts/postgres-analysis.mjs",
+      "pass": true
+    },
+    {
+      "path": "apps/artifacts/test/artifact-postgres-analysis.test.mjs",
+      "pass": true
+    }
+  ],
+  "source": "cee27278cc58ab35f72763faa8c9b49ff80c8725",
+  "manifestSha256": "f3a9ca010a497d3cb63bb06fe5af2faf27bca47301a1a269802a8307742c30ad"
+}

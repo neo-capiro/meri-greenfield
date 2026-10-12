@@ -1,0 +1,9 @@
+{
+  "method": "supported authorized GitHub repository content read",
+  "repository": "neo-capiro/capiro-agent-ops",
+  "path": "AGENTS.md",
+  "ref": "default branch",
+  "result": "HTTP404 Not Found",
+  "privateBodyRetrieved": false,
+  "consequence": "Only affected private-policy-dependent host/Hermes operations remain blocked. Independent Meri source continues. No paid model, infrastructure, security, network or database action authorized."
+}

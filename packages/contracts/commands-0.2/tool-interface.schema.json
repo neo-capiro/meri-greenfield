@@ -1,0 +1,279 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:commands:tool-interface:0.2.0",
+  "$comment": "Private unavailable source bindings. Raw arguments do not authorize execution; full immutable command and trusted context are required to correlate observed receipt/result. No absent execution success, retry or native exactly-once inference.",
+  "$defs": {
+    "TaskCreateToolRequest": {
+      "$ref": "urn:meri:commands:task-create:0.2.0#/$defs/TaskCreateRaw"
+    },
+    "TaskCreateToolResult": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "approval_required"
+            },
+            "proposal": {
+              "$ref": "urn:meri:contracts:0.1.0#/$defs/ApprovalProposal"
+            }
+          },
+          "required": [
+            "status",
+            "proposal"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "observed"
+            },
+            "outcome": {
+              "type": "object",
+              "properties": {
+                "receipt": {
+                  "$ref": "urn:meri:contracts:0.1.0#/$defs/CommandReceipt"
+                },
+                "result": {
+                  "$ref": "urn:meri:commands:task-create:0.2.0#/$defs/TaskCreateResult"
+                }
+              },
+              "required": [
+                "receipt",
+                "result"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "status",
+            "outcome"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "indeterminate"
+            },
+            "outcome": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "status",
+            "outcome"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "TaskUpdateToolRequest": {
+      "$ref": "urn:meri:commands:task-update:0.2.0#/$defs/TaskUpdateRaw"
+    },
+    "TaskUpdateToolResult": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "approval_required"
+            },
+            "proposal": {
+              "$ref": "urn:meri:commands:task-update:0.2.0#/$defs/TaskUpdateApprovalProposal"
+            }
+          },
+          "required": [
+            "status",
+            "proposal"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "observed"
+            },
+            "outcome": {
+              "type": "object",
+              "properties": {
+                "receipt": {
+                  "$ref": "urn:meri:contracts:0.1.0#/$defs/CommandReceipt"
+                },
+                "result": {
+                  "$ref": "urn:meri:commands:task-update:0.2.0#/$defs/TaskUpdateResult"
+                }
+              },
+              "required": [
+                "receipt",
+                "result"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "status",
+            "outcome"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "indeterminate"
+            },
+            "outcome": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "status",
+            "outcome"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ArtifactFileToolRequest": {
+      "$ref": "urn:meri:commands:artifact-file:0.2.0#/$defs/ArtifactFileRaw"
+    },
+    "ArtifactFileToolResult": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "approval_required"
+            },
+            "proposal": {
+              "$ref": "urn:meri:contracts:0.1.0#/$defs/ApprovalProposal"
+            }
+          },
+          "required": [
+            "status",
+            "proposal"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "observed"
+            },
+            "outcome": {
+              "type": "object",
+              "properties": {
+                "receipt": {
+                  "$ref": "urn:meri:contracts:0.1.0#/$defs/CommandReceipt"
+                },
+                "result": {
+                  "$ref": "urn:meri:commands:artifact-file:0.2.0#/$defs/ArtifactFileResult"
+                }
+              },
+              "required": [
+                "receipt",
+                "result"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "status",
+            "outcome"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "indeterminate"
+            },
+            "outcome": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "status",
+            "outcome"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "MemoryProposeToolRequest": {
+      "$ref": "urn:meri:commands:memory-propose:0.2.0#/$defs/MemoryProposeRaw"
+    },
+    "MemoryProposeToolResult": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "approval_required"
+            },
+            "proposal": {
+              "$ref": "urn:meri:contracts:0.1.0#/$defs/ApprovalProposal"
+            }
+          },
+          "required": [
+            "status",
+            "proposal"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "observed"
+            },
+            "outcome": {
+              "type": "object",
+              "properties": {
+                "receipt": {
+                  "$ref": "urn:meri:contracts:0.1.0#/$defs/CommandReceipt"
+                },
+                "result": {
+                  "$ref": "urn:meri:commands:memory-propose:0.2.0#/$defs/MemoryProposeResult"
+                }
+              },
+              "required": [
+                "receipt",
+                "result"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "status",
+            "outcome"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "indeterminate"
+            },
+            "outcome": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "status",
+            "outcome"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

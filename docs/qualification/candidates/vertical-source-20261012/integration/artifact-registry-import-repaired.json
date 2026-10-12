@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--input-type=module",
+    "-e",
+    "const m=await import('./packages/contracts/retrieval-0.2/validate.mjs'); console.log(['create_word','create_excel','create_powerpoint','run_analysis'].map(id=>m.resolveOperationContract({id,version:'0.2.0'}).descriptor.availability))"
+  ],
+  "cwd": "/workspace/meri-vertical-source-20261012",
+  "sourceHead": "a1b88956772b8f9e401b64558be6755e9e6aa01c",
+  "sourceDiffSha256": "5d13abafad849bdd2245b36da597555e74dc69abe1b7eadb5aa487dd5a6ef2ca",
+  "sourceDiffBytes": 7868,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-12T22:39:17.220983+00:00",
+  "durationSeconds": 2.373,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 376475,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/integration/artifact-registry-import-repaired.stdout.bin",
+      "bytes": 71,
+      "sha256": "da4e5a81fa975ceb3cc31f4c130db297cb1dc35c6aff52ceb4a9793b7ba08f53"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/integration/artifact-registry-import-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,1278 @@
+{
+  "candidate": "4ca2df209f768a7d76a840ccc629c808b01ff9f5",
+  "packets": [
+    {
+      "review": "d19f73649bec835da360265f603c87ef170efb92",
+      "manifest": "docs/qualification/candidates/vertical-source-20261012/test-continuation-review/manifest.json",
+      "bytes": 6569,
+      "sha256": "e5b98b85671a32a3c57f254494d969a7ff2f5cf207bc94d2980c294f04dd9b71",
+      "members": 24,
+      "source": "2955ec6cfd1b38908cc62d9a1f5a8800bf7f5bdc",
+      "runtimeAccepted": false
+    },
+    {
+      "review": "7f29b5270f790bcdceed9b5533815fc99561ecdc",
+      "manifest": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/manifest.json",
+      "bytes": 11303,
+      "sha256": "8183c0c16a416f33adf456481be68575fc616678cc05d39f2194375e3ed7db81",
+      "members": 45,
+      "source": "a73b65dc05b7554c0592bec22d940ef781344dd6",
+      "runtimeAccepted": false
+    },
+    {
+      "review": "64f5a56c50c048a700481d28914db9d2c219cb8d",
+      "manifest": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/manifest.json",
+      "bytes": 12532,
+      "sha256": "a461ff39ddbcf9799cd8c5a2dd0a0b88ce573312c2141d001fc28ac1d18bcb6a",
+      "members": 49,
+      "source": "d0433f7c7e52e6dbc606a9937f92705a42ac863a",
+      "runtimeAccepted": false
+    },
+    {
+      "review": "207d9f084e335b7bd7051ff97b1c844f0671e425",
+      "manifest": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/manifest.json",
+      "bytes": 7992,
+      "sha256": "f3a9ca010a497d3cb63bb06fe5af2faf27bca47301a1a269802a8307742c30ad",
+      "members": 30,
+      "source": "cee27278cc58ab35f72763faa8c9b49ff80c8725",
+      "runtimeAccepted": false
+    }
+  ],
+  "checks": [
+    {
+      "name": "one manifest test-continuation-review",
+      "passed": true
+    },
+    {
+      "name": "explicit source acceptance test-continuation-review",
+      "passed": true
+    },
+    {
+      "name": "exact accepted manifest integrated test-continuation-review",
+      "passed": true
+    },
+    {
+      "name": "frozen member test-continuation-review docs/coordination/reports/CODEX-VERTICAL-TEST-CONTINUATION-REVIEW-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "integrated member test-continuation-review docs/coordination/reports/CODEX-VERTICAL-TEST-CONTINUATION-REVIEW-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "frozen member test-continuation-review docs/coordination/tasks/CODEX-VERTICAL-TEST-CONTINUATION-REVIEW-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "integrated member test-continuation-review docs/coordination/tasks/CODEX-VERTICAL-TEST-CONTINUATION-REVIEW-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "frozen member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/.gitattributes",
+      "passed": true
+    },
+    {
+      "name": "integrated member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/.gitattributes",
+      "passed": true
+    },
+    {
+      "name": "frozen member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/audit-packet.py",
+      "passed": true
+    },
+    {
+      "name": "integrated member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/audit-packet.py",
+      "passed": true
+    },
+    {
+      "name": "frozen member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/audit-result.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/audit-result.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/audit.py",
+      "passed": true
+    },
+    {
+      "name": "integrated member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/audit.py",
+      "passed": true
+    },
+    {
+      "name": "frozen member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "name": "integrated member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "name": "frozen member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/cleanup-final.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/cleanup-final.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/expectation-mutations.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "integrated member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/expectation-mutations.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "frozen member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/independent-audit.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/independent-audit.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/independent-audit.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/independent-audit.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/independent-audit.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/independent-audit.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/independent-forward.patch",
+      "passed": true
+    },
+    {
+      "name": "integrated member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/independent-forward.patch",
+      "passed": true
+    },
+    {
+      "name": "frozen member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/independent-inverse.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/independent-inverse.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/independent-inverse.patch",
+      "passed": true
+    },
+    {
+      "name": "integrated member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/independent-inverse.patch",
+      "passed": true
+    },
+    {
+      "name": "frozen member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/independent-inverse.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/independent-inverse.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/independent-inverse.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/independent-inverse.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/independent-packet.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/independent-packet.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/independent-packet.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/independent-packet.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/independent-packet.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/independent-packet.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/initial-failure-census.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/initial-failure-census.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/packet-audit-result.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/packet-audit-result.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/patch-whitespace-before.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/patch-whitespace-before.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/semantic-diff-review.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member test-continuation-review docs/qualification/candidates/vertical-source-20261012/test-continuation-review/semantic-diff-review.json",
+      "passed": true
+    },
+    {
+      "name": "one manifest artifact-budget-review",
+      "passed": true
+    },
+    {
+      "name": "explicit source acceptance artifact-budget-review",
+      "passed": true
+    },
+    {
+      "name": "exact accepted manifest integrated artifact-budget-review",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review apps/artifacts/test/postgres-service-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review apps/artifacts/test/postgres-service-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/coordination/tasks/CODEX-ARTIFACT-BUDGET-REVIEW-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/coordination/tasks/CODEX-ARTIFACT-BUDGET-REVIEW-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/coordination/reports/CODEX-ARTIFACT-BUDGET-REVIEW-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/coordination/reports/CODEX-ARTIFACT-BUDGET-REVIEW-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/audit-final.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/audit-final.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/audit.py",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/audit.py",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/authored-whitespace.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/authored-whitespace.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/baseline.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/baseline.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/boundary-before-independent.test.mjs.txt",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/boundary-before-independent.test.mjs.txt",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/boundary-before.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/boundary-before.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/boundary-before.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/boundary-before.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/boundary-before.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/boundary-before.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation-facts.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation-facts.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation-facts.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation-facts.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation-facts.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation-facts.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation-finding.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation-finding.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation-independent.test.mjs.txt",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation-independent.test.mjs.txt",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation-postgres-service.mjs.txt",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation-postgres-service.mjs.txt",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cleanup.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cleanup.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/concurrency-fixture-correction.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/concurrency-fixture-correction.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/final.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/final.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/final.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/final.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/final.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/final.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/first-fixture-correction.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/first-fixture-correction.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/first-independent.test.mjs.txt",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/first-independent.test.mjs.txt",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/first.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/first.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/first.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/first.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/first.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/first.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/repaired.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/repaired.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/repaired.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/repaired.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/repaired.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/repaired.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/setup-notes.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/setup-notes.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/source-preservation.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/source-preservation.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/verify-packet.py",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/verify-packet.py",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/version-ack-before-postgres-service.mjs.txt",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/version-ack-before-postgres-service.mjs.txt",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/version-ack-before.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/version-ack-before.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/version-ack-before.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/version-ack-before.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/version-ack-before.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/version-ack-before.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/version-ack-finding.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/version-ack-finding.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/whitespace.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/whitespace.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/whitespace.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/whitespace.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/whitespace.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/whitespace.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "one manifest command-tool-review",
+      "passed": true
+    },
+    {
+      "name": "explicit source acceptance command-tool-review",
+      "passed": true
+    },
+    {
+      "name": "exact accepted manifest integrated command-tool-review",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review apps/control/test/commands-tool-interface-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review apps/control/test/commands-tool-interface-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/coordination/reports/CODEX-COMMAND-TOOL-INTERFACE-REVIEW-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/coordination/reports/CODEX-COMMAND-TOOL-INTERFACE-REVIEW-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/coordination/tasks/CODEX-COMMAND-TOOL-INTERFACE-REVIEW-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/coordination/tasks/CODEX-COMMAND-TOOL-INTERFACE-REVIEW-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/.gitattributes",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/.gitattributes",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/audit-before.py",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/audit-before.py",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/audit-final.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/audit-final.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/audit-final.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/audit-final.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/audit-final.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/audit-final.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/audit-immutable.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/audit-immutable.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/audit-immutable.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/audit-immutable.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/audit-immutable.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/audit-immutable.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/audit-live-root-mismatch.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/audit-live-root-mismatch.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/audit-result.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/audit-result.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/audit.py",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/audit.py",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-final.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-final.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-final.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-final.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-final.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-final.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-immutable-complete.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-immutable-complete.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-immutable-complete.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-immutable-complete.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-immutable-complete.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-immutable-complete.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-immutable-replay.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-immutable-replay.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-immutable-replay.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-immutable-replay.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-immutable-replay.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-immutable-replay.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-immutable.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-immutable.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-immutable.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-immutable.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-immutable.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-immutable.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-initial.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-initial.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-initial.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-initial.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-initial.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-initial.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/cleanup-final.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/cleanup-final.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/exact-interface.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/exact-interface.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/exact-interface.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/exact-interface.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/exact-interface.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/exact-interface.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/fixture.mjs",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/fixture.mjs",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/interface-initial.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/interface-initial.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/interface-initial.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/interface-initial.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/interface-initial.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/interface-initial.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/late-release-prefreeze-source/tool-interface.mjs",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/late-release-prefreeze-source/tool-interface.mjs",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/output-before.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/output-before.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/output-before.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/output-before.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/output-before.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/output-before.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/output-prefreeze-source/tool-interface.mjs",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/output-prefreeze-source/tool-interface.mjs",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/pure-initial.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/pure-initial.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/pure-initial.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/pure-initial.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/pure-initial.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/pure-initial.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/sparse-setup-note.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/sparse-setup-note.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/whitespace-before.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review docs/qualification/candidates/vertical-source-20261012/command-tool-review/whitespace-before.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member command-tool-review packages/contracts/test/command-tool-interface-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "integrated member command-tool-review packages/contracts/test/command-tool-interface-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "one manifest artifact-analysis-budget-review",
+      "passed": true
+    },
+    {
+      "name": "explicit source acceptance artifact-analysis-budget-review",
+      "passed": true
+    },
+    {
+      "name": "exact accepted manifest integrated artifact-analysis-budget-review",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-analysis-budget-review apps/artifacts/test/postgres-analysis-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-analysis-budget-review apps/artifacts/test/postgres-analysis-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-analysis-budget-review docs/coordination/tasks/CODEX-ARTIFACT-ANALYSIS-BUDGET-REVIEW-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-analysis-budget-review docs/coordination/tasks/CODEX-ARTIFACT-ANALYSIS-BUDGET-REVIEW-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-analysis-budget-review docs/coordination/reports/CODEX-ARTIFACT-ANALYSIS-BUDGET-REVIEW-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-analysis-budget-review docs/coordination/reports/CODEX-ARTIFACT-ANALYSIS-BUDGET-REVIEW-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/audit-final.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/audit-final.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/audit-initial.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/audit-initial.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/audit.py",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/audit.py",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/authored-whitespace.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/authored-whitespace.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/authored-whitespace.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/authored-whitespace.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/authored-whitespace.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/authored-whitespace.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/authority-before.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/authority-before.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/authority-before.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/authority-before.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/authority-before.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/authority-before.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/baseline.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/baseline.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/cleanup.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/cleanup.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/current-authority-finding.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/current-authority-finding.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/final-authored-whitespace.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/final-authored-whitespace.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/first-independent.test.mjs.txt",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/first-independent.test.mjs.txt",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/first-postgres-analysis.mjs.txt",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/first-postgres-analysis.mjs.txt",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/first.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/first.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/first.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/first.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/first.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/first.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/repaired.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/repaired.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/repaired.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/repaired.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/repaired.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/repaired.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/source-preservation.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/source-preservation.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/verify-packet.py",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/verify-packet.py",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/whitespace.json",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/whitespace.json",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/whitespace.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/whitespace.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "frozen member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/whitespace.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "integrated member artifact-analysis-budget-review docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/whitespace.stdout.bin",
+      "passed": true
+    }
+  ],
+  "passed": 308,
+  "failed": 0,
+  "runtimeAccepted": false
+}

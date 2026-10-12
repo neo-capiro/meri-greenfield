@@ -1,0 +1,429 @@
+{
+  "decision": "ACCEPT_SOURCE",
+  "source": "ca506ba1591b35eae5d389e551787017328eea73",
+  "authorPacket": "5a8d11399d8a4b65a5b04d73f9f22e5de54a157f",
+  "acceptanceCommit": "8d23dc14",
+  "independentControls": 113,
+  "sourceAudit": 8773,
+  "authorPacketAudit": 135,
+  "members": [
+    {
+      "path": "apps/control/test/commands-independent-durable.test.mjs",
+      "bytes": 11013,
+      "sha256": "cc5968dd56c6f993ae426741c239b5d7641c3f1d1cab0cfd28fe8c5de9df259f"
+    },
+    {
+      "path": "apps/control/test/commands-independent-fixture.mjs",
+      "bytes": 11271,
+      "sha256": "aaaad5ad5a849a2b109ec5d9a53354b9bde7a925a673ab5a89fc3b35cd835b87"
+    },
+    {
+      "path": "apps/control/test/commands-independent-journal.test.mjs",
+      "bytes": 3804,
+      "sha256": "08ee7592586724e3fc100887087c0614218e3a3a9b41286d0a1e73395acafaf1"
+    },
+    {
+      "path": "apps/control/test/commands-independent-pipeline.test.mjs",
+      "bytes": 7935,
+      "sha256": "e62bcdedc267b1f88d68da07ec5a12812aa113934ec07105bb145016f23aedb7"
+    },
+    {
+      "path": "apps/control/test/commands-independent-transport-budget.test.mjs",
+      "bytes": 6760,
+      "sha256": "e02e5058b1a6dfe300e02b65dd3b90d44db111a4a91b5b4c49f6a9869659bdec"
+    },
+    {
+      "path": "apps/gateway/test/command-authority-independent.test.mjs",
+      "bytes": 6593,
+      "sha256": "517efb0c6dbfa49fd64b64b5bb0f2468a2d88e6955d2388ba945a2fe12ed129c"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-COMMAND-EXECUTION-REVIEW-20261012.md",
+      "bytes": 8604,
+      "sha256": "56b43a2d09416ca359f2263a4ad6fb0f11696f02fac40ead75a6f11b8e1e3f85"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-COMMAND-EXECUTION-REVIEW-20261012.md",
+      "bytes": 4572,
+      "sha256": "d2751a79a460cb4c7db8e97267b2adcb53a0a3aec5002a7680b4563913dcb1b4"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/.gitattributes",
+      "bytes": 128,
+      "sha256": "f2c8f17af5918d6d4d626cee3302a5a60b42c7228ca599ceb6f5188991c585a9"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/audit-packet.py",
+      "bytes": 2822,
+      "sha256": "f21d64c0c2f6586e1451fc1fe0a99c667d5b6b09892770255e498727388009d6"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/audit-source.py",
+      "bytes": 4947,
+      "sha256": "26d63c1a00b022ed3f5ccd549c161545e4404084259afd82cd23d4438af48b07"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/baseline-identities.json",
+      "bytes": 2091,
+      "sha256": "0feb1c65fd681c781c1fd37a5913f38c9d2f2f497eeb2fa86633c3202949739e"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/candidate-independent.json",
+      "bytes": 1722,
+      "sha256": "082717674e0b03c711ff4b65cda51f5141452a646e8169ff16f697e09ac5e5ad"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/candidate-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/candidate-independent.stdout.bin",
+      "bytes": 9600,
+      "sha256": "a33a6c0d45e1b4e989a5752a192f7e815ce80f974558d0dae666fbc88b1b052d"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/cleanup-final.json",
+      "bytes": 2223,
+      "sha256": "d7f08d417d7ea664c3c9f9f18a92009a74c6472f1dee6be3acefb95835084793"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/cleanup-prefreeze-reached.json",
+      "bytes": 1363,
+      "sha256": "9d4ba6b73030000b6c231ebf947ec649804436d2d1b823d628b78aa5af7e0705"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/cleanup-prefreeze-reached.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/cleanup-prefreeze-reached.stdout.bin",
+      "bytes": 1193,
+      "sha256": "c98bc48f0dab371975ae737e20ad68a90a47f68197408bca7a6b1c4e9bd2882c"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/cleanup-prefreeze-source/executor.mjs",
+      "bytes": 8554,
+      "sha256": "24ed9ea0359f7376c01f3ae8092e98dcefafabee49330ebcb05efcb7501c13f5"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/cleanup-prefreeze-source/identities.json",
+      "bytes": 354,
+      "sha256": "45bba14ef9de009dd1fdb588044fd734fbe6e0ef26c0b34e789addd375d69ddf"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/cleanup-prefreeze-source/postgres-command-journal.mjs",
+      "bytes": 5331,
+      "sha256": "b5fc5c00bfc3f89621a451641e22b360c6fc787e66ba071ec7e2e000f48bc496"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/cleanup-prefreeze.json",
+      "bytes": 1347,
+      "sha256": "61ab1d3c0ebaa431a4998a513c06526529f17d2453ae25beaf161b3dd16a60b9"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/cleanup-prefreeze.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/cleanup-prefreeze.stdout.bin",
+      "bytes": 1343,
+      "sha256": "82969181023c15b24928dbfcefa06a909d0e10529437efd640821ae8ff7d3e04"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/command-authority-final.json",
+      "bytes": 1308,
+      "sha256": "5a023e818e95636a12a4d3b006441d0e246946a03d4cfa45092cf4acdc6a04e3"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/command-authority-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/command-authority-final.stdout.bin",
+      "bytes": 1430,
+      "sha256": "4fc90c434043a2b117ea0a7220c76773504799081fb0129e95d575a278784f51"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/command-authority-source.diff",
+      "bytes": 3020,
+      "sha256": "e827890edca4ecd1fc47cc9aefaed0bc00347b0f8b297ef7f0df1b8c0b539b67"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/command-authority-verdict.json",
+      "bytes": 904,
+      "sha256": "ab0b799e16b2456442bde127b2fb47b2ab30759e15ad74cd3d60ccecc46cac49"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/dependencies.json",
+      "bytes": 634,
+      "sha256": "a78627ca128dd13d9df1f0fbf40e65b38b60c4df94c324743ea942a406bdb34b"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/durable-prefreeze.json",
+      "bytes": 1295,
+      "sha256": "306bc0f6799590c87221e1d94faea847452a1aefeb5f7a3f097c7876dd0b8581"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/durable-prefreeze.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/durable-prefreeze.stdout.bin",
+      "bytes": 1812,
+      "sha256": "f36af618fede50ccfbe2a221ddaca69ec99ceeb19dd49159dfc837b634d83d8d"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/durable-recovery-final.json",
+      "bytes": 1304,
+      "sha256": "e8092ec62da05c506ac67c6ebe3d077d603b2d0d157c5dee003f7090668ab1c7"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/durable-recovery-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/durable-recovery-final.stdout.bin",
+      "bytes": 2021,
+      "sha256": "e59f809a03ea886b04fb90fc01295cd9a88bb69cc85a206512ebd49f5b6b8565"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/filing-baseline-source/artifact-file-validation.mjs",
+      "bytes": 5641,
+      "sha256": "56d5bdfdfe4876d3a0e6157226516a193e6ad75a9bf0b7e258cb3b2d044c0c04"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/filing-baseline-source/command-artifact-file.test.mjs",
+      "bytes": 11370,
+      "sha256": "6701fa89be4249742ce6a2c74ee8767acfa5a4e28d206c19609e7275fa1ef925"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/filing-before.json",
+      "bytes": 1302,
+      "sha256": "a950795764920868426b7e7feec940aaca596edfef4a95cd0db10cd3bd8bb598"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/filing-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/filing-before.stdout.bin",
+      "bytes": 2740,
+      "sha256": "7754cc5988f91f22ad9ae6aaa11bcc10dbe86b55798f2b12b741a7e3bda224c4"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/journal-prefreeze-source/approval-context.mjs",
+      "bytes": 1617,
+      "sha256": "2d8c60f3c782295e8cab335c701fabc8a4d33287b7ca939246bf698985bd4073"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/journal-prefreeze-source/identities.json",
+      "bytes": 646,
+      "sha256": "2f494e44b0403aa5243cb7e4e33d956a310a15dcfa80acb02c6397f2cee800ef"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/journal-prefreeze-source/postgres-command-journal.mjs",
+      "bytes": 4442,
+      "sha256": "3e5c5a83ad2e1c7466b1837d4f83d6c7112695baee62f51fabc083e215d1a29b"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/journal-prefreeze-source/protocol.mjs",
+      "bytes": 1587,
+      "sha256": "762eaa1a5af0907bfb6f82c6e2dfbb9a2e7e1fb549b7f68f533d8daee1940e3d"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/journal-prefreeze.json",
+      "bytes": 1295,
+      "sha256": "823e6783e35d3d6668de01f58718dbbeeb32d81163ad28809dc3794ad088a6c4"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/journal-prefreeze.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/journal-prefreeze.stdout.bin",
+      "bytes": 3953,
+      "sha256": "b9548c772cacb02feea53ad527a8905acd2a27f858af76521d8c6fa2e603e595"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/journal-repair-prefreeze.json",
+      "bytes": 1308,
+      "sha256": "fed1e5d8d5ea381ea11959f9c8b2228397fc7a31c2dd34847c5362e76965b7da"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/journal-repair-prefreeze.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/journal-repair-prefreeze.stdout.bin",
+      "bytes": 432,
+      "sha256": "b1429efef44fb857517185bf428e4b42566b3e10d0d5f8d978da7d20f73b3cb5"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/original-test-inverse.json",
+      "bytes": 531,
+      "sha256": "16107b661559ddf27a393a56d3cf4375706414333279562d96a4592bd50ff932"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/packet-audit-final.json",
+      "bytes": 1347,
+      "sha256": "164cc5b64c71e0027c54a0136e0efbf2194069e8fd8191867f7a31c302a41232"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/packet-audit-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/packet-audit-final.stdout.bin",
+      "bytes": 25482,
+      "sha256": "252555323c08fc4e673a90ad46728e7f878bf8109228da240e3d6536550ba77e"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/pipeline-prefreeze.json",
+      "bytes": 1298,
+      "sha256": "1d75b8819b93fbe9b79685191478ae04c57a4003067810ff11719ae1777fc203"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/pipeline-prefreeze.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/pipeline-prefreeze.stdout.bin",
+      "bytes": 2574,
+      "sha256": "8a41389683b577031508fed0d36394a0bb889e1b83144528ba8bcdd3d4ba7910"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/reference-identities.json",
+      "bytes": 7851,
+      "sha256": "a1405e2609c96c06d67e146d19a1d1077b77e7795cba0382e11d6f6857235bc2"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/review-only-commits.json",
+      "bytes": 1076,
+      "sha256": "26dfdff3c8b79560ea80add88348b22f9608aa9dddc56361896617fd4f58266f"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/setup-diagnostics.json",
+      "bytes": 673,
+      "sha256": "00bcae32116d4d48bfa59bc8dcf4629b7b448304b42bd6a58f3a27995a425914"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/source-audit-final.json",
+      "bytes": 1349,
+      "sha256": "7192ebfe07d746db28d704d47dccd670c09442b6e00115efd6bb6fd0222152e3"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/source-audit-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/source-audit-final.stdout.bin",
+      "bytes": 1429411,
+      "sha256": "804d56a65fd0ec69c427a1ac6093ac229402e6b29afb851b80076452433023c9"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/source-audit-initial.json",
+      "bytes": 1350,
+      "sha256": "90ffe02558b22ab8340f34697be6df9b3b6475818030af5c14f1a0657f1d9fab"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/source-audit-initial.stderr.bin",
+      "bytes": 1677,
+      "sha256": "ebf52fe6a9c0ab439a277510698138962b5100736598ff3633b6aaaf9524c6c6"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/source-audit-initial.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/source-audit.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/source-findings.json",
+      "bytes": 2985,
+      "sha256": "c45d223a2f6ec758efd143269b4fc3d004760408919661bd453877713a788b82"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/tested-source-identities.json",
+      "bytes": 4894,
+      "sha256": "0b358375fb2c0b97b59ff2c2fb171f0274fdaa95980b3eb4a090ad2efd5e1319"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/transport-budget-prefreeze.json",
+      "bytes": 1322,
+      "sha256": "92fa3ca09db5710345f16d0aea494228e5467ac694323d92ba9524b4ae29130c"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/transport-budget-prefreeze.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/transport-budget-prefreeze.stdout.bin",
+      "bytes": 2160,
+      "sha256": "98ddb2cf4a6582f2c161a5423443a63e6fbc96576a9572d8a3de0d9b8879674d"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/update-prefreeze.json",
+      "bytes": 1308,
+      "sha256": "d770582fce17bd9da8a1cb0e259efda23204bd5054c627c20f63ab9677ec27f6"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/update-prefreeze.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/update-prefreeze.stdout.bin",
+      "bytes": 1247,
+      "sha256": "7140944395f8235173d93d3702180489d44a3b75c4f701ca25306b95a80341dc"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/verdict.json",
+      "bytes": 753,
+      "sha256": "18a7a03a9e1162dd7f3976746d7a036956c28bbc9c6f25336b92802b86af33a7"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/whitespace-before.stdout.bin",
+      "bytes": 272,
+      "sha256": "e70eb603ae10cdf4c5a9a2b28efa5fdf0397c204761c36ec774c3f0779a52683"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/whitespace-review.json",
+      "bytes": 348,
+      "sha256": "08bf2ff62de41d1c2fcca486103faa9b19d17d456721c92786089ae228ade5c1"
+    },
+    {
+      "path": "packages/contracts/test/commands-execution-independent-filing.test.mjs",
+      "bytes": 2848,
+      "sha256": "bc6b77a888ca33000dd8714765a5c4c8aa00a5b3b211b461b0cbf29782ae2b72"
+    },
+    {
+      "path": "packages/contracts/test/commands-execution-independent-update.test.mjs",
+      "bytes": 6002,
+      "sha256": "5e17d661d904ca97b9cd38dcb0bfaaa1ba644a31a24c2f09fb70ab497f50cf51"
+    }
+  ],
+  "selfExcluded": true,
+  "nativeRuntime": "HOLD/UNRUN",
+  "personalPendingMemory": "HOLD_BEFORE_EFFECT"
+}

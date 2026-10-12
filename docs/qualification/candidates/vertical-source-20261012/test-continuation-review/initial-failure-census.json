@@ -1,0 +1,190 @@
+{
+  "base": "1375349a62f4abc036ee091d0d2ebe3a6ec62910",
+  "rawSource": "7c92f09870496855e968784c30869f185f39250f",
+  "rawPath": "docs/qualification/candidates/vertical-source-20261012/integration/combined-source-check.stdout.bin",
+  "rawBytes": 512054,
+  "rawSha256": "0674334cbcda8e038e094a2247191dbcf3d449626273d9c4fdb4bdb850aad92a",
+  "total": 4904,
+  "pass": 4881,
+  "fail": 23,
+  "testPaths": [
+    "packages/contracts/test/backend-execution-connected.test.mjs",
+    "packages/contracts/test/backend-execution-integration-independent.test.mjs",
+    "packages/contracts/test/command-contracts-integration-independent.test.mjs",
+    "packages/contracts/test/command-payloads-independent.test.mjs",
+    "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+    "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+    "packages/contracts/test/retrieval-backend-next-independent.test.mjs",
+    "packages/contracts/test/retrieval-civic-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-mail.test.mjs",
+    "packages/contracts/test/retrieval-next-bindings.test.mjs",
+    "packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-observed-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+    "packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+    "packages/contracts/test/vertical-execution-integration-independent.test.mjs"
+  ],
+  "failures": [
+    {
+      "path": "apps/control/test/commands-durable-budget.test.mjs",
+      "line": 1,
+      "column": 1,
+      "test": "apps/control/test/commands-durable-budget.test.mjs (2728.546493ms)",
+      "kind": "runner source-root environment missing; assertions untouched"
+    },
+    {
+      "path": "packages/contracts/test/backend-execution-connected.test.mjs",
+      "line": 65,
+      "column": 1,
+      "test": "exact13 accepted mappings preserve139 original identities and84 unavailable descriptors (8.175154ms)",
+      "kind": "test expectation continuation; semantic diff review required"
+    },
+    {
+      "path": "packages/contracts/test/backend-execution-integration-independent.test.mjs",
+      "line": 83,
+      "column": 1,
+      "test": "all original139/96selected/43deferred remain tracked with84typed/83mapped/13pending (0.951663ms)",
+      "kind": "test expectation continuation; semantic diff review required"
+    },
+    {
+      "path": "packages/contracts/test/command-contracts-integration-independent.test.mjs",
+      "line": 18,
+      "column": 1,
+      "test": "connected namespace is private0.2 with only deliberately named validators (2.94318ms)",
+      "kind": "test expectation continuation; semantic diff review required"
+    },
+    {
+      "path": "packages/contracts/test/command-payloads-independent.test.mjs",
+      "line": 59,
+      "column": 1,
+      "test": "command independent: saved permits pending indexing but never reason or not_indexed (1.28259ms)",
+      "kind": "test expectation continuation; semantic diff review required"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+      "line": 17,
+      "column": 1,
+      "test": "partial action binding does not declare full native parity or activate a handler (9.822293ms)",
+      "kind": "test expectation continuation; semantic diff review required"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+      "line": 80,
+      "column": 1,
+      "test": "all fourteen original descriptors and all139 native rows remain exact (3.119879ms)",
+      "kind": "test expectation continuation; semantic diff review required"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+      "line": 18,
+      "column": 1,
+      "test": "partial binding preserves every original row and fourteen descriptors (9.384223ms)",
+      "kind": "test expectation continuation; semantic diff review required"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-backend-next-independent.test.mjs",
+      "line": 32,
+      "column": 1,
+      "test": "all139 originals and67 prior descriptors/callbacks survive exactly four new mappings (10.375701ms)",
+      "kind": "test expectation continuation; semantic diff review required"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-backend-next-independent.test.mjs",
+      "line": 42,
+      "column": 1,
+      "test": "all84 exact schema byte pins preserve pending closed handlers (0.441314ms)",
+      "kind": "test expectation continuation; semantic diff review required"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-civic-integration-independent.test.mjs",
+      "line": 37,
+      "column": 1,
+      "test": "all original139 rows,56 descriptors and callback implementations survive seven exact additions (8.262232ms)",
+      "kind": "test expectation continuation; semantic diff review required"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-civic-integration-independent.test.mjs",
+      "line": 48,
+      "column": 1,
+      "test": "every schema pin resolves exact bytes while every descriptor remains unavailable (0.490138ms)",
+      "kind": "test expectation continuation; semantic diff review required"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-mail.test.mjs",
+      "line": 131,
+      "column": 1,
+      "test": "concrete catalog preserves every ledger ID/boundary and fourteen unavailable mappings and a partial typed operation (11.757202ms)",
+      "kind": "test expectation continuation; semantic diff review required"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-next-bindings.test.mjs",
+      "line": 16,
+      "column": 1,
+      "test": "selected read additions preserve every prior descriptor and original accepted boundary (3.312675ms)",
+      "kind": "test expectation continuation; semantic diff review required"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+      "line": 66,
+      "column": 1,
+      "test": "independent exact baseline: only the six prior and16 reviewed continuation mappings change; all prior descriptors survive (8.633158ms)",
+      "kind": "test expectation continuation; semantic diff review required"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+      "line": 84,
+      "column": 1,
+      "test": "all 84 canonical descriptors resolve exact raw schema definitions without collisions (0.277678ms)",
+      "kind": "test expectation continuation; semantic diff review required"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-observed-integration-independent.test.mjs",
+      "line": 30,
+      "column": 1,
+      "test": "original139 rows and63 descriptors/callbacks survive exactly four full mappings (10.260007ms)",
+      "kind": "test expectation continuation; semantic diff review required"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-observed-integration-independent.test.mjs",
+      "line": 37,
+      "column": 1,
+      "test": "all84 descriptors have exact schema byte pins and no implementation admission (0.545071ms)",
+      "kind": "test expectation continuation; semantic diff review required"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+      "line": 49,
+      "column": 1,
+      "test": "reviewed continuation preserves139 originals and the exact prior21 descriptors (8.194246ms)",
+      "kind": "test expectation continuation; semantic diff review required"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+      "line": 75,
+      "column": 1,
+      "test": "independent original139 boundaries and prior21 descriptors survive the16 prior and9 next explicit mappings (12.307686ms)",
+      "kind": "test expectation continuation; semantic diff review required"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+      "line": 94,
+      "column": 1,
+      "test": "independent registry exact raw schema pins, explicit context sets and unavailable state (0.44688ms)",
+      "kind": "test expectation continuation; semantic diff review required"
+    },
+    {
+      "path": "packages/contracts/test/vertical-execution-integration-independent.test.mjs",
+      "line": 19,
+      "column": 1,
+      "test": "independent staged artifact catalog retains139/96/43 and89typed88mapped8pending (1.699287ms)",
+      "kind": "test expectation continuation; semantic diff review required"
+    },
+    {
+      "path": "packages/contracts/test/vertical-execution-integration-independent.test.mjs",
+      "line": 20,
+      "column": 1,
+      "test": "independent all85 prior descriptors and original boundaries remain exact (4.417226ms)",
+      "kind": "test expectation continuation; semantic diff review required"
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "base": "e5fb3963de787bbd7b7663316c368f15814897da",
+  "files": [
+    {
+      "path": "packages/contracts/meri.schema.json",
+      "bytes": 50043,
+      "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b"
+    },
+    {
+      "path": "packages/contracts/validate.mjs",
+      "bytes": 3311,
+      "sha256": "c2449fd55300b31bdc1e829b5d918a531f1c4b2c675085a5b4707726ddd36d10"
+    },
+    {
+      "path": "packages/runtime/operation-lifetime.mjs",
+      "bytes": 2595,
+      "sha256": "10730af13c7cf29623fc7e8c836262b02f01e3436ac6e1488d263ec6ed19b52f"
+    },
+    {
+      "path": "apps/control/schedules/temporal-inspection.mjs",
+      "bytes": 4345,
+      "sha256": "48cde95e629b57944d46fac9b54f4756e55a81330f3b8abcc1ddb60150c7cdc8"
+    },
+    {
+      "path": "packages/contracts/schedules-0.2/inspection.schema.json",
+      "bytes": 6806,
+      "sha256": "2e6a140a555984f6de88c4d1bded03bb2aebec9bd2e9bc34709130d0ee22fa85"
+    },
+    {
+      "path": "packages/contracts/schedules-0.2/inspection-validation.mjs",
+      "bytes": 5177,
+      "sha256": "bb96d966fc4fe83efffc4cafafed26f7337c7ad74ee13ed189ac7d5462731c81"
+    },
+    {
+      "path": "apps/control/test/temporal-inspection.test.mjs",
+      "bytes": 11702,
+      "sha256": "d45a115628b6b3f6409f81e6815b44efc71af2f2a0d43519a1aab7660a57d341"
+    },
+    {
+      "path": "apps/control/schedules/test/temporal-inspection-independent.test.mjs",
+      "bytes": 16285,
+      "sha256": "b45c20dd644946641c3c6abd3de4c01d2ae7a08356fc89854cff477705e6ecf1"
+    },
+    {
+      "path": "package.json",
+      "bytes": 1936,
+      "sha256": "42f84c0309a87d043a4023f657a6b1932ac5c1ca9e51eca8874e33085cb64d98"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 12067,
+      "sha256": "b2293773bf4ddc6d23425b7d718b79575384679999b86fd3caad78e6eda4a42d"
+    },
+    {
+      "path": "packages/contracts/package.json",
+      "bytes": 1291,
+      "sha256": "5ffd1042ab28e234a4803344f34a882bd0695580914d21136e7c13e43c7ddbe7"
+    },
+    {
+      "path": "packages/contracts/package-lock.json",
+      "bytes": 24995,
+      "sha256": "dae8c670bb76b9c570f174d8749a8c59179cf865d5d6ec83b64a67bb5b2b06a6"
+    }
+  ]
+}

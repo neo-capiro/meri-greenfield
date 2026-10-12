@@ -1,0 +1,108 @@
+✔ independent complete review stays projected and correlated (46.101883ms)
+✔ independent complete snapshot stays projected and correlated (8.843216ms)
+✔ independent complete current_continuity stays projected and correlated (9.795657ms)
+✖ independent uppercase UUID selectors retain stored UUID identity (3.589046ms)
+✔ independent caller grammar refuses {} (0.651199ms)
+✔ independent caller grammar refuses {"origin":"raw_members","recordId":"bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb"} (0.267482ms)
+✔ independent caller grammar refuses {"origin":"review"} (0.295484ms)
+✔ independent caller grammar refuses {"origin":"review","recordId":"not-id"} (0.22586ms)
+✔ independent caller grammar refuses {"origin":"current_continuity","recordId":"bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb"} (0.281864ms)
+✔ independent caller grammar refuses {"origin":"review","recordId":"bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb","portfolioId":"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"} (0.397608ms)
+✔ independent caller grammar refuses {"origin":"review","recordId":"bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb","asOf":"2026-10-12T01:00:00.000Z"} (0.234603ms)
+✔ independent caller grammar refuses {"origin":"review","recordId":"bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb","subject":{}} (0.186681ms)
+✔ independent caller grammar refuses {"origin":"review","recordId":"bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb","tenantId":"foreign"} (0.202284ms)
+✔ independent caller grammar refuses {"origin":"review","recordId":"bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb","url":"https://evil.invalid"} (0.277257ms)
+✔ independent caller grammar refuses {"origin":"review","recordId":"bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb","limit":1} (0.220181ms)
+✔ independent review refuses duplicate-same-lane without settle (4.238132ms)
+✔ independent review refuses different-version without settle (4.828349ms)
+✔ independent review refuses foreign-tenant without settle (3.836579ms)
+✔ independent review refuses foreign-portfolio without settle (3.169756ms)
+✔ independent review refuses wrong-stance without settle (3.720994ms)
+✔ independent review refuses incomplete-lane without settle (3.13286ms)
+✔ independent absent review is unavailable at source and never an absence DTO (0.613262ms)
+✔ independent same immutable review observed in two lanes may be retained once (4.163329ms)
+✔ independent snapshot correlation id (3.079139ms)
+✔ independent snapshot correlation portfolio (3.043986ms)
+✔ independent snapshot correlation revision (2.235782ms)
+✔ independent snapshot correlation calculation (2.068289ms)
+✔ independent snapshot correlation missing-access (2.252537ms)
+✔ independent snapshot correlation duplicate-contribution (2.602774ms)
+✔ independent snapshot correlation missing-evidence (2.875464ms)
+✔ independent continuity refuses duplicate-id (2.858428ms)
+✔ independent continuity refuses duplicate-key (2.81984ms)
+✔ independent continuity refuses count (2.405096ms)
+✔ independent continuity refuses foreign-tenant (1.939837ms)
+✔ independent continuity refuses foreign-portfolio (2.041409ms)
+✔ independent continuity refuses bad-date (2.272016ms)
+✔ independent context and output admission reject getters/proxies without callbacks (0.636236ms)
+✔ independent projected opaque evidence is detached from mutable source (0.425059ms)
+✔ independent revoke after source body prevents release (3.832933ms)
+✔ independent subject after source body prevents release (3.6519ms)
+✔ independent fence after source body prevents release (3.410077ms)
+✔ independent final revocation after settlement still suppresses output (4.025042ms)
+✖ independent shortened release deadline refuses parked settlement and late output (0.263827ms)
+✔ independent abort parked credential forbids later lane (14.91167ms)
+✔ independent abort parked fetch forbids later lane (3.732842ms)
+✖ independent abort parked body forbids later lane (3.740464ms)
+✔ independent credential getter cannot start fetch (2.232166ms)
+✔ independent credential proxy cannot start fetch (2.204675ms)
+✔ independent credential foreign-binding cannot start fetch (1.932635ms)
+✔ independent credential expired cannot start fetch (2.331776ms)
+✔ independent credential newline cannot start fetch (2.292748ms)
+✔ independent credential extra-field cannot start fetch (1.805315ms)
+✔ independent HTTP bad-encoding refusal remains bounded and sanitized (2.280759ms)
+✔ independent HTTP oversized refusal remains bounded and sanitized (2.264584ms)
+✔ independent HTTP invalid-json refusal remains bounded and sanitized (2.191845ms)
+✔ independent HTTP duplicate-header-length refusal remains bounded and sanitized (2.046217ms)
+✔ independent HTTP private-error refusal remains bounded and sanitized (1.659525ms)
+✔ independent canonical source-disabled entry has zero effects (7.374307ms)
+ℹ tests 58
+ℹ suites 0
+ℹ pass 55
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2709.519512
+
+✖ failing tests:
+
+test at apps/gateway/test/research-evidence-independent.test.mjs:50:1
+✖ independent uppercase UUID selectors retain stored UUID identity (3.589046ms)
+  GatewayDenied: INVALID_RESULT
+      at safeFailure (file:///workspace/meri-portfolio-evidence-review-20261012/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at Object.execute (file:///workspace/meri-portfolio-evidence-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:100:13)
+      at async TestContext.<anonymous> (file:///workspace/meri-portfolio-evidence-review-20261012/apps/gateway/test/research-evidence-independent.test.mjs:50:178)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/gateway/test/research-evidence-independent.test.mjs:61:1
+✖ independent shortened release deadline refuses parked settlement and late output (0.263827ms)
+  GatewayDenied: GATEWAY_CONFIGURATION
+      at deny (file:///workspace/meri-portfolio-evidence-review-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+      at createToolDispatch (file:///workspace/meri-portfolio-evidence-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:23:105)
+      at Object.create (file:///workspace/meri-portfolio-evidence-review-20261012/apps/gateway/test/research-evidence-independent.test.mjs:34:216)
+      at TestContext.<anonymous> (file:///workspace/meri-portfolio-evidence-review-20261012/apps/gateway/test/research-evidence-independent.test.mjs:61:424)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/gateway/test/research-evidence-independent.test.mjs:62:50
+✖ independent abort parked body forbids later lane (3.740464ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///workspace/meri-portfolio-evidence-review-20261012/apps/gateway/test/research-evidence-independent.test.mjs:62:1082)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

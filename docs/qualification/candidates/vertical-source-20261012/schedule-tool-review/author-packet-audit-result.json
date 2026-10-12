@@ -1,0 +1,718 @@
+{
+  "authorPacket": "e45bca0f83851362923a74ad0dc7e164cda0f4ea",
+  "authorTree": "cc6c3b0e86ed583e804ab45809f74685ecf51c0e",
+  "sourceFreeze": "d9296aa2db1290091a355c47fb1db3d87ac98665",
+  "manifestSha256": "e87d7e5eaad534f7744fe3a688783a3fd9a361b7d5d5e5f2a56435ef5ed05f23",
+  "manifestMembers": 48,
+  "sourcePaths": [
+    "apps/control/schedules/tool-interface.mjs",
+    "apps/control/test/schedule-tool-interface.test.mjs",
+    "packages/contracts/schedules-0.2/lifecycle-validation.mjs",
+    "packages/contracts/schedules-0.2/lifecycle.schema.json",
+    "packages/contracts/schedules-0.2/tool-interface-validation.mjs",
+    "packages/contracts/schedules-0.2/tool-interface.schema.json",
+    "packages/contracts/test/schedule-tool-interface-fixtures.mjs",
+    "packages/contracts/test/schedule-tool-interface.test.mjs"
+  ],
+  "checks": [
+    {
+      "name": "exact author packet tree",
+      "passed": true
+    },
+    {
+      "name": "author packet manifest identity",
+      "passed": true
+    },
+    {
+      "name": "48 unique manifest entries",
+      "passed": true
+    },
+    {
+      "name": "manifest binds exact reviewed source and predecessor",
+      "passed": true
+    },
+    {
+      "name": "immutable member apps/control/schedules/tool-interface.mjs",
+      "passed": true
+    },
+    {
+      "name": "current author bytes apps/control/schedules/tool-interface.mjs",
+      "passed": true
+    },
+    {
+      "name": "immutable member apps/control/test/schedule-tool-interface.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "current author bytes apps/control/test/schedule-tool-interface.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/coordination/reports/CODEX-SCHEDULE-TOOL-INTERFACE-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/coordination/reports/CODEX-SCHEDULE-TOOL-INTERFACE-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/coordination/tasks/CODEX-SCHEDULE-TOOL-INTERFACE-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/coordination/tasks/CODEX-SCHEDULE-TOOL-INTERFACE-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/audit.json",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/audit.json",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/audit.py",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/audit.py",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/connected-tool-author.json",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/connected-tool-author.json",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/connected-tool-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/connected-tool-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/connected-tool-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/connected-tool-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/dependency-cleanup.json",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/dependency-cleanup.json",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/disposition-negative.json",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/disposition-negative.json",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/disposition-negative.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/disposition-negative.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/disposition-negative.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/disposition-negative.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/extracted-lifecycle.json",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/extracted-lifecycle.json",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/extracted-lifecycle.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/extracted-lifecycle.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/extracted-lifecycle.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/extracted-lifecycle.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/initial-tool-author.json",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/initial-tool-author.json",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/initial-tool-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/initial-tool-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/initial-tool-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/initial-tool-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/inspection-negative.json",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/inspection-negative.json",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/inspection-negative.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/inspection-negative.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/inspection-negative.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/inspection-negative.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/inspection-repaired.json",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/inspection-repaired.json",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/inspection-repaired.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/inspection-repaired.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/inspection-repaired.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/inspection-repaired.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/instruction-negative.json",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/instruction-negative.json",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/instruction-negative.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/instruction-negative.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/instruction-negative.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/instruction-negative.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/instruction-repaired.json",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/instruction-repaired.json",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/instruction-repaired.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/instruction-repaired.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/instruction-repaired.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/instruction-repaired.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/integration-api.json",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/integration-api.json",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/repaired-tool-author.json",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/repaired-tool-author.json",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/repaired-tool-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/repaired-tool-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/repaired-tool-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/repaired-tool-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/report-write-first-failure.json",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/report-write-first-failure.json",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/verify-packet.py",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/verify-packet.py",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/whitespace-authored.json",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/whitespace-authored.json",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/whitespace-first.json",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/whitespace-first.json",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/whitespace-first.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/whitespace-first.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "immutable member docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/whitespace-first.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "current author bytes docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/whitespace-first.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "immutable member packages/contracts/schedules-0.2/lifecycle-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "current author bytes packages/contracts/schedules-0.2/lifecycle-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "immutable member packages/contracts/schedules-0.2/lifecycle.schema.json",
+      "passed": true
+    },
+    {
+      "name": "current author bytes packages/contracts/schedules-0.2/lifecycle.schema.json",
+      "passed": true
+    },
+    {
+      "name": "immutable member packages/contracts/schedules-0.2/tool-interface-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "current author bytes packages/contracts/schedules-0.2/tool-interface-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "immutable member packages/contracts/schedules-0.2/tool-interface.schema.json",
+      "passed": true
+    },
+    {
+      "name": "current author bytes packages/contracts/schedules-0.2/tool-interface.schema.json",
+      "passed": true
+    },
+    {
+      "name": "immutable member packages/contracts/test/schedule-tool-interface-fixtures.mjs",
+      "passed": true
+    },
+    {
+      "name": "current author bytes packages/contracts/test/schedule-tool-interface-fixtures.mjs",
+      "passed": true
+    },
+    {
+      "name": "immutable member packages/contracts/test/schedule-tool-interface.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "current author bytes packages/contracts/test/schedule-tool-interface.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "packet and reviewer retain exact source apps/control/schedules/tool-interface.mjs",
+      "passed": true
+    },
+    {
+      "name": "packet and reviewer retain exact source apps/control/test/schedule-tool-interface.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "packet and reviewer retain exact source packages/contracts/schedules-0.2/lifecycle-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "packet and reviewer retain exact source packages/contracts/schedules-0.2/lifecycle.schema.json",
+      "passed": true
+    },
+    {
+      "name": "packet and reviewer retain exact source packages/contracts/schedules-0.2/tool-interface-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "packet and reviewer retain exact source packages/contracts/schedules-0.2/tool-interface.schema.json",
+      "passed": true
+    },
+    {
+      "name": "packet and reviewer retain exact source packages/contracts/test/schedule-tool-interface-fixtures.mjs",
+      "passed": true
+    },
+    {
+      "name": "packet and reviewer retain exact source packages/contracts/test/schedule-tool-interface.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "no source changes after source freeze",
+      "passed": true
+    },
+    {
+      "name": "capture clean source docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/connected-tool-author.json",
+      "passed": true
+    },
+    {
+      "name": "capture raw stream docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/connected-tool-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "capture raw stream docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/connected-tool-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "capture did not time out or kill docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/connected-tool-author.json",
+      "passed": true
+    },
+    {
+      "name": "fresh author group absent 374697",
+      "passed": true
+    },
+    {
+      "name": "capture clean source docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/disposition-negative.json",
+      "passed": true
+    },
+    {
+      "name": "capture raw stream docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/disposition-negative.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "capture raw stream docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/disposition-negative.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "capture did not time out or kill docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/disposition-negative.json",
+      "passed": true
+    },
+    {
+      "name": "fresh author group absent 374136",
+      "passed": true
+    },
+    {
+      "name": "capture clean source docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/extracted-lifecycle.json",
+      "passed": true
+    },
+    {
+      "name": "capture raw stream docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/extracted-lifecycle.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "capture raw stream docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/extracted-lifecycle.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "capture did not time out or kill docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/extracted-lifecycle.json",
+      "passed": true
+    },
+    {
+      "name": "fresh author group absent 370031",
+      "passed": true
+    },
+    {
+      "name": "capture clean source docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/initial-tool-author.json",
+      "passed": true
+    },
+    {
+      "name": "capture raw stream docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/initial-tool-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "capture raw stream docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/initial-tool-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "capture did not time out or kill docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/initial-tool-author.json",
+      "passed": true
+    },
+    {
+      "name": "fresh author group absent 373884",
+      "passed": true
+    },
+    {
+      "name": "capture clean source docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/inspection-negative.json",
+      "passed": true
+    },
+    {
+      "name": "capture raw stream docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/inspection-negative.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "capture raw stream docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/inspection-negative.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "capture did not time out or kill docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/inspection-negative.json",
+      "passed": true
+    },
+    {
+      "name": "fresh author group absent 375423",
+      "passed": true
+    },
+    {
+      "name": "capture clean source docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/inspection-repaired.json",
+      "passed": true
+    },
+    {
+      "name": "capture raw stream docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/inspection-repaired.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "capture raw stream docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/inspection-repaired.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "capture did not time out or kill docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/inspection-repaired.json",
+      "passed": true
+    },
+    {
+      "name": "fresh author group absent 375526",
+      "passed": true
+    },
+    {
+      "name": "capture clean source docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/instruction-negative.json",
+      "passed": true
+    },
+    {
+      "name": "capture raw stream docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/instruction-negative.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "capture raw stream docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/instruction-negative.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "capture did not time out or kill docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/instruction-negative.json",
+      "passed": true
+    },
+    {
+      "name": "fresh author group absent 377155",
+      "passed": true
+    },
+    {
+      "name": "capture clean source docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/instruction-repaired.json",
+      "passed": true
+    },
+    {
+      "name": "capture raw stream docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/instruction-repaired.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "capture raw stream docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/instruction-repaired.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "capture did not time out or kill docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/instruction-repaired.json",
+      "passed": true
+    },
+    {
+      "name": "fresh author group absent 377363",
+      "passed": true
+    },
+    {
+      "name": "capture clean source docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/repaired-tool-author.json",
+      "passed": true
+    },
+    {
+      "name": "capture raw stream docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/repaired-tool-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "capture raw stream docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/repaired-tool-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "capture did not time out or kill docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/repaired-tool-author.json",
+      "passed": true
+    },
+    {
+      "name": "fresh author group absent 374444",
+      "passed": true
+    },
+    {
+      "name": "nine author capture receipts",
+      "passed": true
+    },
+    {
+      "name": "retained author counts disposition-negative",
+      "passed": true
+    },
+    {
+      "name": "retained author exit disposition-negative",
+      "passed": true
+    },
+    {
+      "name": "retained author counts inspection-negative",
+      "passed": true
+    },
+    {
+      "name": "retained author exit inspection-negative",
+      "passed": true
+    },
+    {
+      "name": "retained author counts instruction-negative",
+      "passed": true
+    },
+    {
+      "name": "retained author exit instruction-negative",
+      "passed": true
+    },
+    {
+      "name": "retained author counts instruction-repaired",
+      "passed": true
+    },
+    {
+      "name": "retained author exit instruction-repaired",
+      "passed": true
+    },
+    {
+      "name": "raw whitespace refusal preserved",
+      "passed": true
+    },
+    {
+      "name": "authored whitespace passes",
+      "passed": true
+    },
+    {
+      "name": "author cleanup only owned symlinks",
+      "passed": true
+    },
+    {
+      "name": "report scope Canonical model bindings must use Request definitions",
+      "passed": true
+    },
+    {
+      "name": "report scope No catalog, public contract, existing inspector, shared lifetime, SQL migration, PostgreSQL owner or SDK adapter changed",
+      "passed": true
+    },
+    {
+      "name": "report scope this hash is not evidence of that execution",
+      "passed": true
+    },
+    {
+      "name": "report scope multiple-invalid-input diagnostic priority can differ",
+      "passed": true
+    },
+    {
+      "name": "report scope No database migration/query, Temporal service",
+      "passed": true
+    },
+    {
+      "name": "report scope UNKNOWN",
+      "passed": true
+    },
+    {
+      "name": "report scope ACKNOWLEDGED_NOT_RELEASED",
+      "passed": true
+    },
+    {
+      "name": "integration API is metadata object",
+      "passed": true
+    }
+  ],
+  "passed": 174,
+  "failed": 0,
+  "runtimeAccepted": false
+}

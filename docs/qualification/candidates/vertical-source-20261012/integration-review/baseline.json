@@ -1,0 +1,76 @@
+{
+  "base": "9f9e7e4e12fc81d3727ba556089dd8b1b64f4ce7",
+  "rootTask": "CODEX-VERTICAL-SOURCE-20261012",
+  "source": "read-only committed baseline; uncommitted candidate not inspected",
+  "references": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 6582,
+      "sha256": "a0650949b74e5aee709bd8b3c9d480f95f5b898778ac8f7b3927eb54b141437a",
+      "blob": "fe8cefa588409d8562f0e6d939a6da7d120c0d87"
+    },
+    {
+      "path": "docs/IMPLEMENTATION-STANDARDS.md",
+      "bytes": 11082,
+      "sha256": "d4f10f964ee207187abacd967649a1cfc9bdd468072dc01f859268f08b719959",
+      "blob": "7f680395e07d1114667a800f3f8ed77010a3eac2"
+    },
+    {
+      "path": "docs/plans/MERI-DEPLOYMENT.md",
+      "bytes": 86848,
+      "sha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388",
+      "blob": "c9849375e463e88a064b256f715db7858cd369df"
+    },
+    {
+      "path": "packages/contracts/meri.schema.json",
+      "bytes": 50043,
+      "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b",
+      "blob": "d7b3c22491ae81c5e875243754413aa7d35097e3"
+    },
+    {
+      "path": "packages/contracts/validate.mjs",
+      "bytes": 3311,
+      "sha256": "c2449fd55300b31bdc1e829b5d918a531f1c4b2c675085a5b4707726ddd36d10",
+      "blob": "2effe37084e7d20c20a33dc0104baea237f7d309"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog.json",
+      "bytes": 291533,
+      "sha256": "adf321d93f3819c13a21e8608f0cfa704e91e749d7c49f01e18aaa403438c3bf",
+      "blob": "a0530d61d5580451e35f8505256a5e74bd8c109e"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/validate.mjs",
+      "bytes": 30268,
+      "sha256": "9c61039d28e6cd098fdbeb4e0a5e3d428b1e538ebe027ee4b320fb8e6cc928d1",
+      "blob": "472a06d8bb21b609e2ede0716f6e091a3c38cd5b"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "bytes": 51571,
+      "sha256": "7cd7014ec7794caa9fd8902c2f810ea929588aa7a9657ab2434441c0c02e4ce9",
+      "blob": "1678011d8fb5f479bd883bee1afcd58eadc46ea7"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/operation-contracts.mjs",
+      "bytes": 5544,
+      "sha256": "f09b6b3a8b0186b3e2f05a17135ce40bac9ed728796493501ce7d8d4d647adfd",
+      "blob": "f5ba11b19952a58023971ca434de2506e96035b8"
+    }
+  ],
+  "originals": 139,
+  "states": {
+    "deferred": 43,
+    "mapped": 84,
+    "pending": 12
+  },
+  "catalogKeys": [
+    "contractVersion",
+    "catalogId",
+    "catalogVersion",
+    "sourceRegistryCommit",
+    "originals",
+    "operations"
+  ],
+  "acceptedArtifactSource": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae"
+}

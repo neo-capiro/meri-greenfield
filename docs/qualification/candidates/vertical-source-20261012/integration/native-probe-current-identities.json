@@ -1,0 +1,126 @@
+{
+  "backendHead": "7e9ce17f6b0b6485543ba7e261e0f11407b0a4c1",
+  "base": "e5fb3963de787bbd7b7663316c368f15814897da",
+  "ownershipAgreement": "No backend edits to any module under apps/worker/qualification/probes; the owner may independently compare these hashes with its accepted overlay base. This does not verify the unavailable overlay bytes or native capture.",
+  "records": [
+    {
+      "repositoryPath": "apps/worker/qualification/probes/artifacts.mjs",
+      "nativeTarget": "/opt/meri-worker/probes/artifacts.mjs",
+      "sha256": "3155bd31447f37b27c512cc2522a46947241c0f3fd74d738bed54920486757d6",
+      "bytes": 15220,
+      "exactPR37Bytes": true
+    },
+    {
+      "repositoryPath": "apps/worker/qualification/probes/browser-lifetime.mjs",
+      "nativeTarget": "/opt/meri-worker/probes/browser-lifetime.mjs",
+      "sha256": "1acd04d3fc6080d5c2fa411775e18afe0df6ba04cffaa03ac36882efd9e5450b",
+      "bytes": 5458,
+      "exactPR37Bytes": true
+    },
+    {
+      "repositoryPath": "apps/worker/qualification/probes/browser.mjs",
+      "nativeTarget": "/opt/meri-worker/probes/browser.mjs",
+      "sha256": "157fa783cdedcb16e00bf56c3022a1151831987f6492dc20b8b879d613304629",
+      "bytes": 34537,
+      "exactPR37Bytes": true
+    },
+    {
+      "repositoryPath": "apps/worker/qualification/probes/native-namespace-observer.mjs",
+      "nativeTarget": "/opt/meri-worker/probes/native-namespace-observer.mjs",
+      "sha256": "6c4ff8b525c414f93f0d0d29653b1e8a68db5fc520d4f414cf88d0b3e08b23c4",
+      "bytes": 11069,
+      "exactPR37Bytes": true
+    },
+    {
+      "repositoryPath": "apps/worker/qualification/probes/native-observations.mjs",
+      "nativeTarget": "/opt/meri-worker/probes/native-observations.mjs",
+      "sha256": "fea49e07f71dccbea3d6c21cab8d1e4502b79a2d1ff05085dbd2a0e2089b2b15",
+      "bytes": 7072,
+      "exactPR37Bytes": true
+    },
+    {
+      "repositoryPath": "apps/worker/qualification/probes/native-stream-observer.mjs",
+      "nativeTarget": "/opt/meri-worker/probes/native-stream-observer.mjs",
+      "sha256": "66fa0dec53eb9cc3d98a79d45a0cc8290281efc46dce7baa05e1f0721771beba",
+      "bytes": 3459,
+      "exactPR37Bytes": true
+    },
+    {
+      "repositoryPath": "apps/worker/qualification/probes/office-export.mjs",
+      "nativeTarget": "/opt/meri-worker/probes/office-export.mjs",
+      "sha256": "5f96ba57834b7482d40fe085a83d6373a96f3badf74d9e9f3b868db501ac64b1",
+      "bytes": 46889,
+      "exactPR37Bytes": true
+    },
+    {
+      "repositoryPath": "apps/worker/qualification/probes/office-reconstruct.mjs",
+      "nativeTarget": "/opt/meri-worker/probes/office-reconstruct.mjs",
+      "sha256": "133d8c5adbfae930aa5e59d7d633e73482994106382cebef35b065d059303205",
+      "bytes": 24134,
+      "exactPR37Bytes": true
+    },
+    {
+      "repositoryPath": "apps/worker/qualification/probes/owned-probe-child.mjs",
+      "nativeTarget": "/opt/meri-worker/probes/owned-probe-child.mjs",
+      "sha256": "c24e00e9bfcce6d864e84419bc556480c5c8d490ba14d958a35f493905336472",
+      "bytes": 7410,
+      "exactPR37Bytes": true
+    },
+    {
+      "repositoryPath": "apps/worker/qualification/probes/runtime.mjs",
+      "nativeTarget": "/opt/meri-worker/probes/runtime.mjs",
+      "sha256": "d72e4aa4188ffdf7fc26e39d261c642030e2b1c6226dd83d6ecf20df1d3927ce",
+      "bytes": 16986,
+      "exactPR37Bytes": true
+    },
+    {
+      "repositoryPath": "apps/worker/qualification/probes/sdk-capture-options.mjs",
+      "nativeTarget": "/opt/meri-worker/probes/sdk-capture-options.mjs",
+      "sha256": "964f4f1958dd0707198fcd21611018b9a9337e90e5f434ed24ce47beb3986b0e",
+      "bytes": 17469,
+      "exactPR37Bytes": true
+    },
+    {
+      "repositoryPath": "apps/worker/qualification/probes/sdk-capture.mjs",
+      "nativeTarget": "/opt/meri-worker/probes/sdk-capture.mjs",
+      "sha256": "027117958a878cce722650c57bd0fe6132c5be69a440a3b3b9cd6f83213e6083",
+      "bytes": 52572,
+      "exactPR37Bytes": true
+    },
+    {
+      "repositoryPath": "apps/worker/qualification/probes/sdk-discovery-options.mjs",
+      "nativeTarget": "/opt/meri-worker/probes/sdk-discovery-options.mjs",
+      "sha256": "868d470804fbc6aa3cfad5a9a2f39ca5ac2b71881c020b20db122efa7b16479b",
+      "bytes": 6113,
+      "exactPR37Bytes": true
+    },
+    {
+      "repositoryPath": "apps/worker/qualification/probes/sdk-discovery-tools.mjs",
+      "nativeTarget": "/opt/meri-worker/probes/sdk-discovery-tools.mjs",
+      "sha256": "462dc2e956ee9ada8d64df32bc67a79aa58ceb16292d45219869effd2db776a7",
+      "bytes": 3924,
+      "exactPR37Bytes": true
+    },
+    {
+      "repositoryPath": "apps/worker/qualification/probes/sdk-interruption-loopback.mjs",
+      "nativeTarget": "/opt/meri-worker/probes/sdk-interruption-loopback.mjs",
+      "sha256": "784658878a08952fe665bcf13868830dba06402ccbb99b9d7a44cafc41fdf40d",
+      "bytes": 11540,
+      "exactPR37Bytes": true
+    },
+    {
+      "repositoryPath": "apps/worker/qualification/probes/sdk-interruption-options.mjs",
+      "nativeTarget": "/opt/meri-worker/probes/sdk-interruption-options.mjs",
+      "sha256": "132da9c8b37f258309a041bc4d8426a613b20e2fc35f622cd577f1b565c7d182",
+      "bytes": 2425,
+      "exactPR37Bytes": true
+    },
+    {
+      "repositoryPath": "apps/worker/qualification/probes/sdk-interruption.mjs",
+      "nativeTarget": "/opt/meri-worker/probes/sdk-interruption.mjs",
+      "sha256": "2764babd954e95f07caf964ac14e57ee8a5a7d148d1527f97d1af4ea16b9040f",
+      "bytes": 12617,
+      "exactPR37Bytes": true
+    }
+  ]
+}

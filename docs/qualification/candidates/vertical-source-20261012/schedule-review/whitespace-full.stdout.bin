@@ -1,0 +1,36 @@
+docs/qualification/candidates/vertical-source-20261012/schedule-author/list-errors-negative.stdout.bin:18: trailing whitespace.
++  
+docs/qualification/candidates/vertical-source-20261012/schedule-author/list-errors-negative.stdout.bin:20: trailing whitespace.
++  
+docs/qualification/candidates/vertical-source-20261012/schedule-author/list-errors-negative.stdout.bin:38: trailing whitespace.
++  
+docs/qualification/candidates/vertical-source-20261012/schedule-author/list-errors-negative.stdout.bin:40: trailing whitespace.
++  
+docs/qualification/candidates/vertical-source-20261012/schedule-author/list-errors-negative.stdout.bin:58: trailing whitespace.
++  
+docs/qualification/candidates/vertical-source-20261012/schedule-author/list-errors-negative.stdout.bin:60: trailing whitespace.
++  
+docs/qualification/candidates/vertical-source-20261012/schedule-author/whitespace.stdout.bin:2: trailing whitespace.
+++  
+docs/qualification/candidates/vertical-source-20261012/schedule-author/whitespace.stdout.bin:4: trailing whitespace.
+++  
+docs/qualification/candidates/vertical-source-20261012/schedule-author/whitespace.stdout.bin:6: trailing whitespace.
+++  
+docs/qualification/candidates/vertical-source-20261012/schedule-author/whitespace.stdout.bin:8: trailing whitespace.
+++  
+docs/qualification/candidates/vertical-source-20261012/schedule-author/whitespace.stdout.bin:10: trailing whitespace.
+++  
+docs/qualification/candidates/vertical-source-20261012/schedule-author/whitespace.stdout.bin:12: trailing whitespace.
+++  
+docs/qualification/candidates/vertical-source-20261012/schedule-review/list-errors-before.stdout.bin:63: trailing whitespace.
++  
+docs/qualification/candidates/vertical-source-20261012/schedule-review/list-errors-before.stdout.bin:65: trailing whitespace.
++  
+docs/qualification/candidates/vertical-source-20261012/schedule-review/list-errors-before.stdout.bin:85: trailing whitespace.
++  
+docs/qualification/candidates/vertical-source-20261012/schedule-review/list-errors-before.stdout.bin:87: trailing whitespace.
++  
+docs/qualification/candidates/vertical-source-20261012/schedule-review/list-errors-before.stdout.bin:107: trailing whitespace.
++  
+docs/qualification/candidates/vertical-source-20261012/schedule-review/list-errors-before.stdout.bin:109: trailing whitespace.
++  

@@ -1,0 +1,36 @@
+# Independent schedule tool interface review
+
+**ACCEPT_SOURCE** for source `d9296aa2db1290091a355c47fb1db3d87ac98665`, against accepted lifecycle predecessor `d7bd22361f232211a6c1ec6b8d67115cfe36ebbd`. Author evidence packet `e45bca0f83851362923a74ad0dc7e164cda0f4ea` (tree `cc6c3b0e86ed583e804ab45809f74685ecf51c0e`) retains identical source. This accepts the four private tool contracts, actual application composition, narrow intent-validation extraction and optional instruction-digest extension. Canonical registration is separately owned and not reviewed here. All production connectivity and runtime admission remain **HOLD**.
+
+Criteria were committed at `5734ff7c7dcc4b89ad1d5e027fb021980bc9bfde` before inspecting candidate production, after its author freezes already existed. The reviewer authored no production code. The review uses the existing public approval, schedule projection, shared lifetime and accepted durable lifecycle; it introduces no approval, identity, persistence or policy engine.
+
+## Repaired independent defect
+
+The initial candidate `0e8735c8a65c31b911b20794e1655587f23ae534` showed an instruction and checked a trusted resolver's instruction digest, but omitted both the instruction and its digest from the actual approved intent. Changing the instruction and matching context while retaining the resolved task/version therefore preserved the intent hash and reused an old approval. Two independent controls reproduced this defect. Root explicitly allocated its repair.
+
+The tool now computes `taskInstructionSha256` directly from the normalized instruction into create/update intents before canonical hashing. The lifecycle permits this optional field for compatibility with existing callers; the new tool requires it through construction, and cancellation refuses it. The approved digest, durable owner binding and displayed words now agree. A trusted task/template resolver and future workflow still have to establish and implement the instruction mapping; this source check does not prove execution of those words.
+
+Initial independent replay was 57/60: the two actual failures plus one reviewer fixture that supplied a non-UUID cancel run ID. Only that fixture value and corresponding exact assertion were corrected, with original test bytes/raw result retained. The unchanged instruction controls then produced 58/60. Exact author repair `d9296aa2` passed the same 60/60 controls. Sixteen additional controls subsequently passed, producing **76/76**.
+
+## Evidence and preservation
+
+- Independent connected/contract controls: **76/76**, including pending and approved paths for all four operations, actual accepted lifecycle/SDK adapters with inert ports, stale/hash/approval/context refusal, complete policy and limits, detached/hostile admission, bounded list/history, absent inspection, uncertainty, cancellation and parked late completions.
+- Independent replay of all original lifecycle and new author controls: **90/90** (50 original plus 40 author). No original test was edited by the reviewer.
+- Exact source audit: **256/256**. Of 8,744 predecessor Git entries, 8,742 are identical; only the two allocated private lifecycle files changed. The optional schema field is the only schema delta. Original intent predicate blocks and public approval checks are preserved in the extraction; diagnostic priority for multiply invalid input can differ. All eight candidate apps/packages paths match the exact source freeze. Original public contracts, inspector, shared lifetime, SDK adapter, durable owner, migration, locks and catalog remain exact.
+- Final author packet audit: **174/174**, verifying all 48 manifest members, source identities, raw stream hashes, retained negative counts, report boundaries and nine author groups absent. Manifest SHA256: `e87d7e5eaad534f7744fe3a688783a3fd9a361b7d5d5e5f2a56435ef5ed05f23`.
+
+Raw failures, corrected fixture history, repaired receipts and source-bound subreaper outputs remain in [the reviewer packet](../../qualification/candidates/vertical-source-20261012/schedule-tool-review/). Author outcome-loss (0/2), inspection correlation (1/4), and instruction approval (0/2) failures remain in the immutable author packet. The final report-directory setup failure and raw-only whitespace failure are also preserved. The reviewer additionally records unsuccessful metadata filename lookups as local inspection mistakes; they did not change source or a test oracle.
+
+All seven reviewer-owned captured groups were independently observed absent at closeout. Only seven owned physical dependency copies (1,374,227 bytes) were removed; donor trees were untouched. Full reviewer whitespace checking returns exit2 solely for two preserved raw failure-stream spacing lines (271-byte diagnostic); reviewer-authored text passes. The packet manifest excludes only itself.
+
+## Interface and qualification boundary
+
+`createScheduleToolValidators({validateShape,schema})` owns `urn:meri:schedules:tool-interface:0.2.0`. Canonical callers must advertise the Request definitions, not normalized Input definitions. The sole trusted wrapper is `{scheduleContext: ...}`. `createScheduleToolInterface({lifecycle,validators,authorize,clock}).execute({operation,request,context,signal})` is the concrete entry point.
+
+Create/update requests contain the exact instruction, full explicit schedule spec/policy, destination reference and requested limits. Trusted context supplies caller/owner/tenant/scopes, immutable projection/generation, task and destination resolution, effective limits and the optional public approval. Pending proposals are reviewable and perform no mutation; an approved path requires the exact private intent hash and fresh current authorization. Delegated owner policy remains the current authorization callback's responsibility. Cancellation expresses pause/delete and exact run cancellation choices; it is not a physical-stop guarantee.
+
+List preserves unavailable inspection separately from an empty owned page and from refused authorization. Returned inspection windows and original-run summaries are bounded and correlated. `historyComplete` and `currentRetryVerified` remain false. No filtered output claims the SDK avoided upstream decoding or configured external storage work.
+
+Sanitized errors preserve `UNKNOWN` and `ACKNOWLEDGED_NOT_RELEASED`; late acknowledgements do not authorize result delivery, retry or new execution. The local 60-second inspection/action bound is distinct from future schedule execution budgets. SDK update has no compare-and-swap; connection retries may issue multiple wire attempts; encoding and external storage can outlive local cancellation. No exactly-once or hard physical cancellation claim is accepted.
+
+No Temporal service, PostgreSQL operation/migration, native workload, provider/model call, deployment, credential or infrastructure action ran. Runtime prerequisites remain qualified current authorization and task/destination/limit/projection producers, concrete durable transactions and reconciliation, actual SDK/server behavior, and future workflow scope/budget enforcement. Existing scope accounting and Aurora selection are unchanged. Broader/public suites were not repeated for this isolated lane.

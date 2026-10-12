@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/artifacts/test/postgres-analysis-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-artifact-analysis-budget-review-20261012",
+  "sourceHead": "26eca5aa2614b8ea5ef9991a98414c3785bcbd4d",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T23:08:19.048777+00:00",
+  "durationSeconds": 2.935,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 394659,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/authority-before.stdout.bin",
+      "bytes": 6173,
+      "sha256": "e68d13b9757884529e2652bfb26da0da9cc8896305893a4ee1904110ff1a373f"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/authority-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

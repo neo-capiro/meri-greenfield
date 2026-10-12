@@ -1,0 +1,15 @@
+# General analysis canonical budget composition
+
+12 October 2026. Parent explicitly allocated a second concrete source composition for the general `run_analysis` obligation. Base `2e65dfedfe043ea0e2693f506d104c8de05c24ca` preserves typed artifact budget candidate `5647415b`, original artifact source `47aef9f9` and accepted public budget kernel `ca506ba1`. This branch must not edit those files.
+
+Dedicated worktree `/workspace/meri-artifact-analysis-budget-20261012`, branch `task/meri-artifact-analysis-budget-20261012`. Own only new `apps/artifacts/postgres-analysis.mjs`, `apps/artifacts/test/artifact-postgres-analysis.test.mjs`, this task/matching report and `vertical-source-20261012/artifact-analysis-budget-author/**`. Source tests use the inherited inert scripted pool and fake native port. No SQL engine, database, program/native/Office execution, package/network/provider/model/cloud/security/customer action or spend.
+
+## Outline before code
+
+`createPostgresAnalysisExecutor` accepts borrowed pool/allocation/producer, trusted minimal descriptor and artifact context, actual artifact validators, current authority, qualified sandbox port/admission verifier, clock, reservation ID factory, limits. `sourceEnabled` defaults false. Application input is `{deliveryId,request}`; request is precisely the canonical `run_analysis` sandbox format, containing immutable program/input object tuples and declared output names. Trusted context holds binding/scopes/evidence/assets/deadline/output limit and exact admission image/manifest/receipt; these never become model authority.
+
+Reuse public `createPostgresBudgetExecution`, accepted `createSandboxAnalysisBoundary`, canonical public shape/hash and actual `normalizeArtifactInput`/`assertArtifactOutput`. Owned methods are `prepareInvocation`, `execute`, `reconcileInvocation`, explicit `bindTrustedGrant`. No own SQL, accounting schema, retry, refund, timer, SDK loop or executable-program parsing.
+
+Lifecycle: current authority; canonical reservation; exact admission and sandbox boundary; fresh authority and closed pending result validation; immutable completion hash and canonical settlement; fresh authority before release. Binary ceiling counts declared immutable output bytes; response metadata separately bounded. Exact immutable intent cannot silently change its deadline/maxBytes to fit new authority: refuse before dispatch if context exceeds canonical admission. Native admission expiry can narrow lifetime/settlement deadline. Post-dispatch errors retain effect and budget uncertainty; explicit reconciliation never executes a program. Successful result retains inspection/publication pending and creates no ArtifactVersion.
+
+Verify connected source with exact program/input/output/admission correlations, all current checks, caps, held costs, stale/revoked/changed scope, cancellation/late ACK, lost reserve/marker/settle ACKs, no retry/double-charge, borrowed receiver preservation and refused generic/model-code input. Preserve failures and cleanup owned test groups. Independent reviewer remains separate; source acceptance does not qualify the external sandbox or PostgreSQL engine.

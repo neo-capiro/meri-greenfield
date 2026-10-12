@@ -1,0 +1,48 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/backend-execution-connected.test.mjs",
+    "packages/contracts/test/backend-execution-integration-independent.test.mjs",
+    "packages/contracts/test/command-contracts-integration-independent.test.mjs",
+    "packages/contracts/test/command-payloads-independent.test.mjs",
+    "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+    "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+    "packages/contracts/test/retrieval-backend-next-independent.test.mjs",
+    "packages/contracts/test/retrieval-civic-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-mail.test.mjs",
+    "packages/contracts/test/retrieval-next-bindings.test.mjs",
+    "packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-observed-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+    "packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+    "packages/contracts/test/vertical-execution-integration-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-vertical-test-continuation-20261012",
+  "sourceHead": "2955ec6cfd1b38908cc62d9a1f5a8800bf7f5bdc",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T23:03:01.464641+00:00",
+  "durationSeconds": 15.678,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 392476,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-author/frozen-focused.stdout.bin",
+      "bytes": 47075,
+      "sha256": "71418408e3be087b9d7b88dc8edc34b2694da3ce990d7936e492abdf2c907dd9"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-author/frozen-focused.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Exact immutable2955ec6c focused455 replay for final independent acceptance, with zero source diff and no broad/full-run expansion.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

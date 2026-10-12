@@ -1,0 +1,58 @@
+✔ independent service creates, inspects and downloads exact detached version (62.021632ms)
+✔ independent revision preserves original and uses explicit parent lineage (10.63316ms)
+✔ independent historical provenance survives current resumed binding (4.108726ms)
+✔ independent wrong authority requestSha256 blocks every execution effect (0.759293ms)
+✔ independent wrong authority scopesSha256 blocks every execution effect (0.507875ms)
+✔ independent wrong authority resourceSha256 blocks every execution effect (0.594394ms)
+✔ independent wrong authority binding blocks every execution effect (0.442446ms)
+✔ independent wrong authority decision blocks every execution effect (0.453143ms)
+✔ independent revoke after generation leaves no committed object or version (1.217012ms)
+✔ independent output inspection hash mismatch cannot publish (1.238705ms)
+✔ independent wrong storage tuple becomes explicit unknown effect (1.402151ms)
+✔ independent wrong commit receipt cannot report success (1.821102ms)
+✔ independent late returned authority stops next port (0.658311ms)
+✔ independent late returned object commit preserves uncertainty (1.408941ms)
+✔ independent abort before start allocates no ports (0.341575ms)
+✔ independent intent binds exact asset tuples and evidence (4.382188ms)
+✔ independent read refuses changed stored inspection format (3.942546ms)
+✔ independent download refuses mime inconsistent with original spec (1.596944ms)
+✔ independent invalid ID allocation releases lifetime timer (0.315525ms)
+✖ independent failed budget settlement is disclosed even before storage (1.319617ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 19
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 459.308909
+
+✖ failing tests:
+
+test at apps/artifacts/test/artifact-service-independent.test.mjs:38:1
+✖ independent failed budget settlement is disclosed even before storage (1.319617ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: ARTIFACT_BUDGET_SETTLEMENT_UNKNOWN
+      at async TestContext.<anonymous> (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-service-independent.test.mjs:38:288)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: ARTIFACT_BUDGET_SETTLEMENT_UNKNOWN
+        at generate (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:84:199)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-service-independent.test.mjs:38:288)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+      [cause]: Error: generation failed
+          at f.ports.executor.execute (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-service-independent.test.mjs:38:161)
+          at file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:65:52
+          at file:///workspace/meri-artifact-execution-review-20261012/packages/runtime/operation-lifetime.mjs:38:65
+    },
+    operator: 'rejects',
+    diff: 'simple'
+  }

@@ -1,0 +1,107 @@
+{
+  "references": [
+    {
+      "path": "packages/shared/src/research-portfolios.ts",
+      "versions": [
+        {
+          "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "ed70483bea476eaced8b1ae4e45ccc1f373a1341",
+          "bytes": 31751,
+          "sha256": "8cd82fdc0ac7d6fcb3d61be1b84f6537c50e1bf0d0872043c9e62b46fbb23c90"
+        },
+        {
+          "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "ed70483bea476eaced8b1ae4e45ccc1f373a1341",
+          "bytes": 31751,
+          "sha256": "8cd82fdc0ac7d6fcb3d61be1b84f6537c50e1bf0d0872043c9e62b46fbb23c90"
+        }
+      ]
+    },
+    {
+      "path": "apps/api/src/research-portfolios/research-portfolios.controller.ts",
+      "versions": [
+        {
+          "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "b3fe6a6d4372542f8d0c976f946d1bd87102f842",
+          "bytes": 25314,
+          "sha256": "a03597a28e8884e503b32a471bb1584a4ba7b7c5785f26e3cdb00a9c40234a19"
+        },
+        {
+          "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "b3fe6a6d4372542f8d0c976f946d1bd87102f842",
+          "bytes": 25314,
+          "sha256": "a03597a28e8884e503b32a471bb1584a4ba7b7c5785f26e3cdb00a9c40234a19"
+        }
+      ]
+    },
+    {
+      "path": "apps/api/src/research-portfolios/research-portfolio-review.service.ts",
+      "versions": [
+        {
+          "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "6503f7f76e33f678de2ec7b1d27ebf4ecff07e46",
+          "bytes": 65674,
+          "sha256": "be95aac547917aeaf8e51035c0eee068572b4ceb307c67c3442240d31438306f"
+        },
+        {
+          "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "6503f7f76e33f678de2ec7b1d27ebf4ecff07e46",
+          "bytes": 65674,
+          "sha256": "be95aac547917aeaf8e51035c0eee068572b4ceb307c67c3442240d31438306f"
+        }
+      ]
+    },
+    {
+      "path": "apps/api/src/research-portfolios/research-portfolio-analytics.service.ts",
+      "versions": [
+        {
+          "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "0ff6253e623fdc25838cd781186aa585db2dc144",
+          "bytes": 21363,
+          "sha256": "3242c2cbacb2d5710f567db58e5a5ccd1294640f28a24c8efa3823489ff6c631"
+        },
+        {
+          "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "0ff6253e623fdc25838cd781186aa585db2dc144",
+          "bytes": 21363,
+          "sha256": "3242c2cbacb2d5710f567db58e5a5ccd1294640f28a24c8efa3823489ff6c631"
+        }
+      ]
+    },
+    {
+      "path": "apps/api/src/research-portfolios/research-portfolio-access.ts",
+      "versions": [
+        {
+          "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "6f110e358145ff50e424e2f6805669c0081998fa",
+          "bytes": 1833,
+          "sha256": "927d3292d437c944d80ccb9be6f9e7f77a15906eb9408eb9b3aa1ca259fb7e08"
+        },
+        {
+          "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "6f110e358145ff50e424e2f6805669c0081998fa",
+          "bytes": 1833,
+          "sha256": "927d3292d437c944d80ccb9be6f9e7f77a15906eb9408eb9b3aa1ca259fb7e08"
+        }
+      ]
+    },
+    {
+      "path": "apps/api/src/research-portfolios/research-portfolio-meri-scope.service.ts",
+      "versions": [
+        {
+          "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "1a1132aacc19d8565778ecf83614b2cff658cd3e",
+          "bytes": 6332,
+          "sha256": "35417378d7cdd373ccab8ecfc72f6e0c52ce521d80f93b52a8790c1e998e0ea9"
+        },
+        {
+          "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "1a1132aacc19d8565778ecf83614b2cff658cd3e",
+          "bytes": 6332,
+          "sha256": "35417378d7cdd373ccab8ecfc72f6e0c52ce521d80f93b52a8790c1e998e0ea9"
+        }
+      ]
+    }
+  ],
+  "limits": "Only static source predicates and locator/hash metadata, no private body/import/execution; current source/provider/policy/database behavior UNRUN."
+}

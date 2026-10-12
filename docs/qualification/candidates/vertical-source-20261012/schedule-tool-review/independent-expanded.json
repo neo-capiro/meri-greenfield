@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/schedule-tool-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-schedule-tool-interface-review-20261012",
+  "sourceHead": "7f17b323fb8c1732528bf7822d97263c4a489279",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T22:43:14.544072+00:00",
+  "durationSeconds": 0.768,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 379242,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/independent-expanded.stdout.bin",
+      "bytes": 6532,
+      "sha256": "b8161dfaa90df044d879306290d2193c83bca7edcad5e6f8fd4e2ad869161240"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/independent-expanded.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

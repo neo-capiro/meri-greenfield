@@ -1,0 +1,86 @@
+[
+  {
+    "path": "apps/gateway/authorization/current-tool-authority.mjs",
+    "source": "ca506ba1591b35eae5d389e551787017328eea73",
+    "review": "eb19cd4023434a9016598e07fbf6e607193d9229",
+    "sha256": "794e1f54f6966d2d852d0483606c76410ed684d889ca24c7ea78dac6f2c01043",
+    "exactAcceptedBytes": true
+  },
+  {
+    "path": "apps/gateway/budget/postgres-tool-budget.mjs",
+    "source": "ca506ba1591b35eae5d389e551787017328eea73",
+    "review": "eb19cd4023434a9016598e07fbf6e607193d9229",
+    "sha256": "1605c224a0caaed35121768be388af39e3aabf9b84f4e70767c7dfbdda8a0336",
+    "exactAcceptedBytes": true
+  },
+  {
+    "path": "apps/gateway/budget/tool-budget-dispatch.mjs",
+    "source": "ca506ba1591b35eae5d389e551787017328eea73",
+    "review": "eb19cd4023434a9016598e07fbf6e607193d9229",
+    "sha256": "d6dace94cb0232047a2922b8c0cc6769f090e07b36aca51e64320287ebb552aa",
+    "exactAcceptedBytes": true
+  },
+  {
+    "path": "apps/gateway/index.mjs",
+    "source": "ca506ba1591b35eae5d389e551787017328eea73",
+    "review": "eb19cd4023434a9016598e07fbf6e607193d9229",
+    "sha256": "d32b969c816c352e523af3bd470af715481a5691c5e1b550e07ea4cf5a33fc09",
+    "exactAcceptedBytes": true
+  },
+  {
+    "path": "apps/gateway/dispatch/operation-context.mjs",
+    "source": "62062236e38ac77b9494a04668df6969ab1f33e2",
+    "review": "c94867684d14b2517a1a1c3f040ce4194d7c1fc6",
+    "sha256": "ff5c51f840a4aabdb8e47804a93acc414aa7e154f78703cbf98fee17910cad67",
+    "exactAcceptedBytes": true
+  },
+  {
+    "path": "apps/gateway/sources/memory-proposals/http-adapter.mjs",
+    "source": "62062236e38ac77b9494a04668df6969ab1f33e2",
+    "review": "c94867684d14b2517a1a1c3f040ce4194d7c1fc6",
+    "sha256": "92f67b46f77a20dbdf315950d313a2fa968b39523c8fdef9f1d0c8b8c96cfea4",
+    "exactAcceptedBytes": true
+  },
+  {
+    "path": "apps/gateway/sources/memory-proposals/request-context.mjs",
+    "source": "62062236e38ac77b9494a04668df6969ab1f33e2",
+    "review": "c94867684d14b2517a1a1c3f040ce4194d7c1fc6",
+    "sha256": "bea3b150aac3fc035179735cd1da6050e80dfa9015e8c486e7f0de7d350ef738",
+    "exactAcceptedBytes": true
+  },
+  {
+    "path": "packages/contracts/commands-0.2/artifact-file-validation.mjs",
+    "source": "ca506ba1591b35eae5d389e551787017328eea73",
+    "review": "eb19cd4023434a9016598e07fbf6e607193d9229",
+    "sha256": "82678a74912a4ad58b3c72322acf8a89a0f7b3a23880bdb8b62404251489a4ea",
+    "exactAcceptedBytes": true
+  },
+  {
+    "path": "packages/contracts/commands-0.2/validate.mjs",
+    "source": "83d0f5951a5e0c5d86d3a8684c2396b6cf13f794",
+    "review": "64f5a56c50c048a700481d28914db9d2c219cb8d",
+    "sha256": "78cfb98b060a4ccadfa66006f5958bd7941586783c2d9dc39a2d5d90678f47ac",
+    "exactAcceptedBytes": true
+  },
+  {
+    "path": "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+    "source": "c80260046e33d742811fca6f553af4033eb393bc",
+    "review": "3c8c172bb705f8a4a1891c009ffd28810cecce0e",
+    "sha256": "59ee000292db17b02e3e00e89c94bbed1d61a66525f419c59c84821af4800e02",
+    "exactAcceptedBytes": true
+  },
+  {
+    "path": "packages/contracts/retrieval-0.2/catalog.json",
+    "source": "c80260046e33d742811fca6f553af4033eb393bc",
+    "review": "3c8c172bb705f8a4a1891c009ffd28810cecce0e",
+    "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+    "exactAcceptedBytes": true
+  },
+  {
+    "path": "packages/contracts/retrieval-0.2/validate.mjs",
+    "source": "c80260046e33d742811fca6f553af4033eb393bc",
+    "review": "3c8c172bb705f8a4a1891c009ffd28810cecce0e",
+    "sha256": "3798d5e55e10777b24397d0867b6b722218bceba9663de4f007e78e818b40c34",
+    "exactAcceptedBytes": true
+  }
+]

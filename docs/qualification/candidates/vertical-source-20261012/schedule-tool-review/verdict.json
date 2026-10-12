@@ -1,0 +1,17 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "source": "d9296aa2db1290091a355c47fb1db3d87ac98665",
+  "authorPacket": "e45bca0f83851362923a74ad0dc7e164cda0f4ea",
+  "independentTests": 76,
+  "originalAndAuthorTests": 90,
+  "sourceAudit": 256,
+  "authorPacketAudit": 174,
+  "runtimeAccepted": false,
+  "canonicalRegistrationReviewed": false,
+  "remaining": [
+    "current authorization and trusted task/destination/limit/projection producers",
+    "real durable transaction/reconciliation behavior",
+    "Temporal SDK/server/native behavior",
+    "future workflow instruction/scope/budget enforcement"
+  ]
+}

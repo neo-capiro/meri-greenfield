@@ -1,0 +1,10 @@
+{
+  "kind": "REVIEWER_AUDIT_CORRECTION_NOT_SOURCE_DEFECT",
+  "initial": "576 passed / 4 failed",
+  "corrections": [
+    "Root explicitly disclosed two previous descriptor limitations-only footnotes; initial reviewer audit allowed only detail, now includes changes descriptor with all other fields still equal.",
+    "Private controller route parameter name is :id, not :portfolioId; HTTP URL unchanged. Corrected three lexical route matches against actual pinned source."
+  ],
+  "assertionsRemoved": false,
+  "privateBodiesPublished": false
+}

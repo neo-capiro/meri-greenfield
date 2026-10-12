@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/test/schedule-lifecycle.test.mjs",
+    "apps/control/test/schedule-lifecycle-postgres.test.mjs"
+  ],
+  "cwd": "/workspace/meri-schedule-lifecycle-20261012",
+  "sourceHead": "245403501c7a812185877b9d97934282f25c4ccb",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "845f3924ad4b66ef71ab09872bedc2cd012334b0ae16c2a7e7f1d798b614855a",
+  "startedAt": "2026-10-12T22:16:31.388607+00:00",
+  "durationSeconds": 0.567,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 362094,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/repaired-unavailable-author.stdout.bin",
+      "bytes": 3226,
+      "sha256": "943980ec6707b0663f5909f19963b0979c66fdba456d257abb41d97ceeb18d2e"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/repaired-unavailable-author.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Unique label identifies initial or repaired backend integration test verification; prior receipts are preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,31 @@
+✔ independent service creates, inspects and downloads exact detached version (59.314698ms)
+✔ independent revision preserves original and uses explicit parent lineage (10.9637ms)
+✔ independent historical provenance survives current resumed binding (4.774846ms)
+✔ independent wrong authority requestSha256 blocks every execution effect (0.868206ms)
+✔ independent wrong authority scopesSha256 blocks every execution effect (0.384459ms)
+✔ independent wrong authority resourceSha256 blocks every execution effect (0.547504ms)
+✔ independent wrong authority binding blocks every execution effect (0.474965ms)
+✔ independent wrong authority decision blocks every execution effect (0.718421ms)
+✔ independent revoke after generation leaves no committed object or version (1.414909ms)
+✔ independent output inspection hash mismatch cannot publish (1.549462ms)
+✔ independent wrong storage tuple becomes explicit unknown effect (1.642302ms)
+✔ independent wrong commit receipt cannot report success (1.944636ms)
+✔ independent late returned authority stops next port (0.542306ms)
+✔ independent late returned object commit preserves uncertainty (1.895283ms)
+✔ independent abort before start allocates no ports (0.585601ms)
+✔ independent intent binds exact asset tuples and evidence (4.858943ms)
+✔ independent read refuses changed stored inspection format (3.802612ms)
+✔ independent download refuses mime inconsistent with original spec (1.620319ms)
+✔ independent invalid ID allocation releases lifetime timer (0.320933ms)
+✔ independent failed budget settlement is disclosed even before storage (0.839494ms)
+✔ independent late budget reservation is uncertain and admits no executor (0.91047ms)
+✔ independent mismatched reservation never settles an untrusted ticket (0.559151ms)
+✔ independent late settlement after commit keeps effect and budget uncertainty (1.786439ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 489.562022

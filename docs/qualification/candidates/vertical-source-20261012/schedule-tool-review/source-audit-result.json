@@ -1,0 +1,1081 @@
+{
+  "base": "d7bd22361f232211a6c1ec6b8d67115cfe36ebbd",
+  "source": "d9296aa2db1290091a355c47fb1db3d87ac98665",
+  "sourceIdentities": [
+    {
+      "path": "apps/control/schedules/tool-interface.mjs",
+      "bytes": 4367,
+      "sha256": "8311d6524a18dd69cedeb4c344c4f5df17a87c45591cdc1bcaa0b7fbdc3618c2"
+    },
+    {
+      "path": "apps/control/test/schedule-tool-interface.test.mjs",
+      "bytes": 7781,
+      "sha256": "49c2470e90c32d198cab59bc1fc338d5737593725e472c62724de8605421daa4"
+    },
+    {
+      "path": "packages/contracts/schedules-0.2/lifecycle-validation.mjs",
+      "bytes": 4553,
+      "sha256": "26ab4b12156f969dd36cfe776c8ccf7606df7e5c55a0ffb90e9f3e1e16fc2a34"
+    },
+    {
+      "path": "packages/contracts/schedules-0.2/lifecycle.schema.json",
+      "bytes": 18610,
+      "sha256": "0b391e3e94fc3278de6d061694772a853c54c083630f874c5dc54c82a01f5001"
+    },
+    {
+      "path": "packages/contracts/schedules-0.2/tool-interface-validation.mjs",
+      "bytes": 9000,
+      "sha256": "36891fa03f59250353d750b3fea8cada3d01f7c3d9a24a470ac7cfa24d93cd20"
+    },
+    {
+      "path": "packages/contracts/schedules-0.2/tool-interface.schema.json",
+      "bytes": 24305,
+      "sha256": "2de8450111ea263876553f86b895d7fe93bca65ec55bcd649421e21a6f6d3fcf"
+    },
+    {
+      "path": "packages/contracts/test/schedule-tool-interface-fixtures.mjs",
+      "bytes": 3773,
+      "sha256": "94d37031d0d2d9cff02c33d9c5e1de6c22099b86256b7971297f899056474c32"
+    },
+    {
+      "path": "packages/contracts/test/schedule-tool-interface.test.mjs",
+      "bytes": 6696,
+      "sha256": "3dd13e9ab6e155d2baf4de3fd4c363bde73732a9d5fd48e7141ec2932de8c499"
+    }
+  ],
+  "originalEntries": 8744,
+  "unchangedOriginalEntries": 8742,
+  "changedOriginalPaths": [
+    "packages/contracts/schedules-0.2/lifecycle-validation.mjs",
+    "packages/contracts/schedules-0.2/lifecycle.schema.json"
+  ],
+  "checks": [
+    {
+      "name": "only two root allocated existing files changed",
+      "passed": true
+    },
+    {
+      "name": "all other baseline Git entries identical",
+      "passed": true
+    },
+    {
+      "name": "exact source apps/control/schedules/tool-interface.mjs",
+      "passed": true
+    },
+    {
+      "name": "exact source apps/control/test/schedule-tool-interface.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "exact source packages/contracts/schedules-0.2/lifecycle-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "exact source packages/contracts/schedules-0.2/lifecycle.schema.json",
+      "passed": true
+    },
+    {
+      "name": "exact source packages/contracts/schedules-0.2/tool-interface-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "exact source packages/contracts/schedules-0.2/tool-interface.schema.json",
+      "passed": true
+    },
+    {
+      "name": "exact source packages/contracts/test/schedule-tool-interface-fixtures.mjs",
+      "passed": true
+    },
+    {
+      "name": "exact source packages/contracts/test/schedule-tool-interface.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/control/qualification-sdk-fixture/ingress/test/fixture-data.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/control/qualification-sdk-fixture/ingress/test/generate-certs.ps1",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/control/qualification-sdk-fixture/ingress/test/harness.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/control/qualification-sdk-fixture/ingress/test/ingress.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/control/qualification-sdk-fixture/ingress/test/worker-channel-loopback.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/control/qualification-sdk-fixture/service/test/cancellation.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/control/qualification-sdk-fixture/service/test/control.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/control/qualification-sdk-fixture/service/test/fake-s3.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/control/qualification-sdk-fixture/service/test/fixture.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/control/qualification-sdk-fixture/service/test/handlers.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/control/qualification-sdk-fixture/service/test/native-evidence-publisher.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/control/qualification-sdk-fixture/service/test/native-evidence.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/control/qualification-sdk-fixture/service/test/registry-ingress.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/control/qualification-sdk-fixture/service/test/run-stop.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/control/qualification-sdk-fixture/service/test/s3-checkpoint.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/control/qualification-sdk-fixture/state/test/registry.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/control/qualification-sdk-fixture/state/test/revocation-postgres.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/control/qualification-sdk-fixture/state/test/revocation.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/control/schedules/migrations/0001_schedule_owner.sql",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/control/schedules/postgres-schedule-owner.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/control/schedules/schedule-lifecycle.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/control/schedules/temporal-inspection.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/control/schedules/temporal-run-history.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/control/schedules/temporal-schedule-mutations.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/control/schedules/test/temporal-inspection-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/control/test/schedule-lifecycle-postgres.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/control/test/schedule-lifecycle.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/control/test/temporal-inspection.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/control/test/tool-invocations.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/gateway/test/action-item-context-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/gateway/test/action-item-context.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/gateway/test/authority-deadline.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/gateway/test/capability-next-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/gateway/test/dataset-metadata-handler-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/gateway/test/dataset-metadata-handler.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/gateway/test/durable-tool-budget.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/gateway/test/fixtures.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/gateway/test/gateway.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/gateway/test/mail-context-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/gateway/test/mail-context.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/gateway/test/memory-context-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/gateway/test/memory-context.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/gateway/test/memory-proposal-source-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/gateway/test/memory-proposal-source.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/gateway/test/postgres-budget-admission.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/gateway/test/postgres-budget-child.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/gateway/test/postgres-budget-native-fixture.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/gateway/test/postgres-budget.integration.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/gateway/test/postgres-tool-budget.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/gateway/test/tool-budget-outcome.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/gateway/test/tool-invocation-owner.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/gateway/test/tool-invocation-transaction.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/proxy/qualification/test/offline-policy.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/proxy/qualification/test/test_aws_counter.py",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/proxy/qualification/test/test_bedrock_transport.py",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/proxy/qualification/test/test_ingress.py",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/proxy/qualification/test/test_lifetime.py",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/proxy/qualification/test/test_native_usage.py",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/proxy/qualification/test/test_postgres_state.py",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/proxy/qualification/test/test_server.py",
+      "passed": true
+    },
+    {
+      "name": "protected original apps/proxy/qualification/test/test_tool_budget_source.py",
+      "passed": true
+    },
+    {
+      "name": "protected original docs/qualification/candidates/capability-successor-20261012/action-author/original/apps/gateway/test/memory-context-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original docs/qualification/candidates/capability-successor-20261012/action-author/original/packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original docs/qualification/candidates/capability-successor-20261012/action-author/original/packages/contracts/test/retrieval-mail.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original docs/qualification/candidates/capability-successor-20261012/action-author/original/packages/contracts/test/retrieval-memory-binding.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original docs/qualification/candidates/capability-successor-20261012/action-author/original/packages/contracts/test/retrieval-operational-reads.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original docs/qualification/candidates/read-continuation-20261012/certification-status-author/initial-harness-failed-source/packages/contracts/test/retrieval-certification-status.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-preimage/packages/contracts/test/command-artifact-file.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-preimage/packages/contracts/test/command-task-create.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction-preimage/packages/contracts/test/command-artifact-file.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction-preimage/packages/contracts/test/command-task-create.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original docs/qualification/candidates/read-continuation-20261012/disclosures-author/country-null-failed-source/packages/contracts/test/retrieval-disclosures.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original docs/qualification/candidates/read-continuation-20261012/disclosures-author/initial-source/packages/contracts/test/retrieval-disclosures.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original docs/qualification/candidates/read-continuation-20261012/district-author/initial-source/packages/contracts/test/retrieval-district-nexus.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original docs/qualification/candidates/read-continuation-20261012/federal-legislation-author/initial-source/packages/contracts/test/retrieval-federal-legislation.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original docs/qualification/candidates/read-continuation-20261012/federal-legislation-author/prototype-status-failed-source/packages/contracts/test/retrieval-federal-legislation.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original docs/qualification/candidates/read-continuation-20261012/pe-references-author/aggregate-count-failed-source/packages/contracts/test/retrieval-pe-references.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original docs/qualification/candidates/read-continuation-20261012/pe-references-author/evidence-null-failed-source/packages/contracts/test/retrieval-pe-references.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original docs/qualification/candidates/read-continuation-20261012/pe-references-author/initial-source/packages/contracts/test/retrieval-pe-references.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "protected original package.json",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/dist/browser.d.ts",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/dist/browser.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/dist/contracts.d.ts",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/dist/index.d.ts",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/dist/metadata.d.ts",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/dist/metadata.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/meri.schema.json",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/retrieval-0.2/catalog.json",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/retrieval-0.2/validate.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/backend-execution-connected.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/backend-execution-expectations.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/backend-execution-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/boundaries.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/command-artifact-file.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/command-contracts-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/command-payloads-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/command-task-create.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/commands-memory-propose-connected.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/commands-memory-propose-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/commands-memory-propose.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/native-evidence-fixture.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/public-package.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/public-types.ts",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/raw-request-advertisement-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-acquisition-personnel-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-acquisition-personnel.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-action-item-binding.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-action-item-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-action-items-complete-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-action-items-complete.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-backend-next-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-bill-text-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-bill-text.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-business-development-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-business-development.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-certification-status-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-certification-status.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-civic-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-client-documents-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-client-documents.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-client-knowledge-attachments-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-client-knowledge-attachments.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-client-knowledge-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-client-knowledge-memory-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-client-knowledge-memory.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-client-knowledge-monday-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-client-knowledge-monday.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-client-knowledge-profile-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-client-knowledge-profile.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-client-knowledge-search.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-client-registry-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-client-registry.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-data-search.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-dataset-metadata-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-dataset-metadata.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-disclosures-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-disclosures.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-district-nexus-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-district-nexus.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-entity-candidates-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-entity-candidates.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-facility-representation-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-facility-representation.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-federal-legislation-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-federal-legislation.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-federal-market.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-florida-budget-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-florida-budget.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-funding-opportunities.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-intelligence-summary-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-intelligence-summary.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-legislative-directory-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-legislative-directory.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-mail.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-meeting-source.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-memory-binding.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-memory-proposals.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-memory-review-policy.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-next-bindings.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-observed-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-operational-reads.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-outreach-query-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-outreach-query.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-pe-reference-detachment-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-pe-reference-detachment.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-pe-references-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-pe-references.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-program-elements-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-program-elements.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-public-data-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-public-data.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-public-domain-hearings.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-public-domain-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-public-domain-query.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-public-reports-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-public-reports.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-public-web-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-public-web.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-r2.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-reference-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-regulatory-dockets-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-regulatory-dockets.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-research-legal-candidates.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-research-legal-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-research-legal-legislation.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-research-legal-news.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-research-portfolio-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-research-portfolio.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-rule-status-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-rule-status.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-sam-opportunities-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-sam-opportunities.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-selected-next-bindings.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-selected-next-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-state-legislation-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-state-legislation.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-state-status-votes-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-state-status-votes.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-stored-intelligence-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-stored-intelligence.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-tenant-contacts-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-tenant-contacts.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-tracked-bills-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/retrieval-tracked-bills.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/schedule-lifecycle.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/sdk-fixture-contract.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/sdk-fixture-wire.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/test/sdk-native-evidence.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/contracts/validate.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original packages/runtime/operation-lifetime.mjs",
+      "passed": true
+    },
+    {
+      "name": "only optional private intent field added to existing schema",
+      "passed": true
+    },
+    {
+      "name": "instruction digest typed exact lowerhex",
+      "passed": true
+    },
+    {
+      "name": "all prior helper prefix bytes exact",
+      "passed": true
+    },
+    {
+      "name": "all authority helpers after extraction exact",
+      "passed": true
+    },
+    {
+      "name": "all original intent predicates preserved in extraction",
+      "passed": true
+    },
+    {
+      "name": "public approval predicate byte-identical",
+      "passed": true
+    },
+    {
+      "name": "original Execute delegates canonical extracted validation",
+      "passed": true
+    },
+    {
+      "name": "new private schema URN correct",
+      "passed": true
+    },
+    {
+      "name": "closed caller ScheduleTaskRequest",
+      "passed": true
+    },
+    {
+      "name": "complete explicit caller choices ScheduleTaskRequest",
+      "passed": true
+    },
+    {
+      "name": "closed caller UpdateScheduledTaskRequest",
+      "passed": true
+    },
+    {
+      "name": "complete explicit caller choices UpdateScheduledTaskRequest",
+      "passed": true
+    },
+    {
+      "name": "closed caller CancelScheduledTaskRequest",
+      "passed": true
+    },
+    {
+      "name": "complete explicit caller choices CancelScheduledTaskRequest",
+      "passed": true
+    },
+    {
+      "name": "closed caller ListScheduledTasksRequest",
+      "passed": true
+    },
+    {
+      "name": "complete explicit policy",
+      "passed": true
+    },
+    {
+      "name": "closed trusted ScheduleMutationContext",
+      "passed": true
+    },
+    {
+      "name": "closed trusted ScheduleListContext",
+      "passed": true
+    },
+    {
+      "name": "inspection schema reused not copied",
+      "passed": true
+    },
+    {
+      "name": "approval canonical public schema reused",
+      "passed": true
+    },
+    {
+      "name": "instruction hash computed from normalized model text",
+      "passed": true
+    },
+    {
+      "name": "current private intent remains canonical owner",
+      "passed": true
+    },
+    {
+      "name": "one shared operation lifetime reused",
+      "passed": true
+    },
+    {
+      "name": "app invokes borrowed execute and list",
+      "passed": true
+    },
+    {
+      "name": "pending branch calls no mutation",
+      "passed": true
+    },
+    {
+      "name": "root-owned registration unchanged",
+      "passed": true
+    },
+    {
+      "name": "initial tool prefix exact apps/control/test/schedule-tool-interface.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "initial tool prefix exact packages/contracts/test/schedule-tool-interface.test.mjs",
+      "passed": true
+    }
+  ],
+  "passed": 256,
+  "failed": 0,
+  "runtimeAccepted": false
+}

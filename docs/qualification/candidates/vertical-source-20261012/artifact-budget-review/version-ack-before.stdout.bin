@@ -1,0 +1,80 @@
+✔ real current-authority + artifact + canonical owner hashes committed record, not delivery (84.785478ms)
+✔ fresh decision ID may rotate while stable selected subject is unchanged (15.328732ms)
+✔ canonical policy refuses decision actor before budget reservation (6.55337ms)
+✔ canonical policy refuses subject actor before budget reservation (5.879866ms)
+✔ canonical policy refuses missing grant before budget reservation (5.654157ms)
+✔ canonical policy refuses decision policy before budget reservation (5.349959ms)
+✔ canonical policy refuses unmatched decision ID before budget reservation (5.850261ms)
+✔ canonical authority refuses current writer fence without effects (5.448207ms)
+✔ canonical authority refuses expired capability without effects (6.033497ms)
+✔ canonical authority refuses disabled source without effects (5.692394ms)
+✔ canonical authority refuses missing source without effects (5.524651ms)
+✔ subject change after reserve refuses execution and leaves UNKNOWN, never refund (6.970677ms)
+✔ artifact resource digest mismatch cannot borrow canonical policy permission (10.144202ms)
+✔ changed trusted scopes cannot be substituted by otherwise valid current policy (5.841358ms)
+✔ current revocation after settlement prevents release but preserves charged version (16.424381ms)
+✔ resource release expiry while marker ACK parked refuses now, reconciles historical completion (13.124305ms)
+✔ wrong commit acknowledgement cannot publish durable completion (9.760084ms)
+✔ wrong immutable readback forbids version commit while retaining object uncertainty (8.40854ms)
+✔ late returned object write is retained as UNKNOWN and never starts version commit (8.750445ms)
+✔ late version acknowledgement cannot become a completion marker (9.551189ms)
+✔ borrowed receivers survive create and revise with exact base object and intent (23.565103ms)
+✔ snapshot of delivery remains exact while generation is parked (11.792733ms)
+✔ lost reserve ACK cannot regenerate, only canonical reconciliation (11.071477ms)
+✔ lost marker ACK cannot regenerate, only canonical reconciliation (20.285509ms)
+✔ lost settle ACK cannot regenerate, only canonical reconciliation (14.482669ms)
+✔ same delivery plus changed parent conflicts before read or regeneration (11.870048ms)
+✔ wrong producer task binding cannot reuse a bound grant (2.909628ms)
+✔ no startup pool calls or invocation bypass; default disabled before prepare (2.324508ms)
+✔ postpublication response ceiling reports exact committed uncertainty (10.732416ms)
+✔ generator exception preserves original cause and durable UNKNOWN without marker (9.966335ms)
+✔ outer cancellation during putHook retains explicit effect uncertainty (29.088974ms)
+✔ outer cancellation during commitHook retains explicit effect uncertainty (18.330247ms)
+✔ outer cancellation after reservation persistence exposes budget identity without artifact effects (5.797032ms)
+✔ concurrent rejected delivery cannot steal pending call effect identity (9.040582ms)
+✖ outer cancellation during marker preserves already confirmed version commit (9.248343ms)
+✖ outer cancellation during settle preserves already confirmed version commit (9.847385ms)
+ℹ tests 36
+ℹ suites 0
+ℹ pass 34
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2951.832182
+
+✖ failing tests:
+
+test at apps/artifacts/test/postgres-service-independent.test.mjs:119:40
+✖ outer cancellation during marker preserves already confirmed version commit (9.248343ms)
+  AssertionError [ERR_ASSERTION]: correlated commit ACK was already accepted before budget.settle
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-artifact-budget-review-20261012/apps/artifacts/test/postgres-service-independent.test.mjs:122:99)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/artifacts/test/postgres-service-independent.test.mjs:119:40
+✖ outer cancellation during settle preserves already confirmed version commit (9.847385ms)
+  AssertionError [ERR_ASSERTION]: correlated commit ACK was already accepted before budget.settle
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-artifact-budget-review-20261012/apps/artifacts/test/postgres-service-independent.test.mjs:122:99)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--input-type=module",
+    "-e",
+    "const m=await import('./packages/contracts/retrieval-0.2/validate.mjs'); console.log(['schedule_task','list_scheduled_tasks','cancel_scheduled_task','update_scheduled_task'].map(id=>m.resolveOperationContract({id,version:'0.2.0'}).descriptor.availability))"
+  ],
+  "cwd": "/workspace/meri-vertical-source-20261012",
+  "sourceHead": "87cfec09fd3a3963ca513fd9a2233d68bdcc7af9",
+  "sourceDiffSha256": "33b2b9d75769073a73f1d62a542c1c5c428b88185e812181c9fb6cd6825b6aed",
+  "sourceDiffBytes": 22832,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-12T22:49:58.746287+00:00",
+  "durationSeconds": 2.624,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 383692,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/integration/schedule-registry-import.stdout.bin",
+      "bytes": 71,
+      "sha256": "da4e5a81fa975ceb3cc31f4c130db297cb1dc35c6aff52ceb4a9793b7ba08f53"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/integration/schedule-registry-import.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

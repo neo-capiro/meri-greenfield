@@ -1,0 +1,85 @@
+{
+  "sourceOnly": true,
+  "moduleImported": false,
+  "sdkExecuted": false,
+  "candidateInspected": false,
+  "referencesFile": "sdk-reference-identities.json",
+  "facts": [
+    {
+      "id": "SDK01",
+      "locator": "src/schedule-client.ts:209-283",
+      "consequence": "create awaits SDK handler then returns handle; requestId random per call; codecs/interceptors/externalStorage can precede RPC; ALREADY_EXISTS is not proof of original intent"
+    },
+    {
+      "id": "SDK02",
+      "locator": "src/schedule-client.ts:314-356,512-523",
+      "consequence": "update describes and invokes synchronous transform, preserves existing headers, compiles replacement then sends without conflictToken; no application generation CAS guaranteed"
+    },
+    {
+      "id": "SDK03",
+      "locator": "src/schedule-client.ts:253-255,541-548",
+      "consequence": "create triggerImmediately hardcodes ALLOW_ALL; explicit trigger overlap is separate RPC; partial two-step effects must remain distinguishable"
+    },
+    {
+      "id": "SDK04",
+      "locator": "src/schedule-client.ts:525-559",
+      "consequence": "delete/pause/unpause/trigger/backfill are distinct operations; none proves workflow physically stopped"
+    },
+    {
+      "id": "SDK05",
+      "locator": "src/schedule-client.ts:412-457",
+      "consequence": "list traverses paginated namespace query and decodes memo/externalStorage; it supplies neither application tenant authorization nor finite total-output guarantee by itself"
+    },
+    {
+      "id": "SDK06",
+      "locator": "src/schedule-client.ts:470-509",
+      "consequence": "describe decodes action/memo and running/recent windows before projection; omission does not avoid upstream codec effects"
+    },
+    {
+      "id": "SDK07",
+      "locator": "src/workflow-client.ts:1835-1890,1948-1976",
+      "consequence": "cancel/terminate are separate; getHandle exact run vs first-chain ID vs latest differ; fetchHistory buffers every page, so output truncation alone cannot bound acquisition"
+    },
+    {
+      "id": "SDK08",
+      "locator": "src/connection.ts:181,510-542,563-593; src/grpc-retry.ts:65-87",
+      "consequence": "default gRPC interceptor retries; deadline/abort apply at request creation, abort subscription does not precheck already-aborted signal; converter delay can precede RPC; no physical remote cancellation claim"
+    },
+    {
+      "id": "SDK09",
+      "locator": "src/schedule-helpers.ts:200-225,290-308",
+      "consequence": "workflowId and args have SDK defaults; remainingActions undefined means unlimited; adapter must bind explicit approved choices rather than silently inherit policy"
+    },
+    {
+      "id": "SDK10",
+      "locator": "src/schedule-types.ts:45-55; src/schedule-client.ts:488",
+      "consequence": "catchup comment/default documentation conflicts; reviewed explicit integer value needed, no undocumented product default inferred"
+    }
+  ],
+  "inventory": [
+    {
+      "id": "schedule_task",
+      "boundary": "New application create; no legacy parity"
+    },
+    {
+      "id": "list_scheduled_tasks",
+      "boundary": "Authorized application-owned listing/inspection and run-history projection; full event histories not assumed"
+    },
+    {
+      "id": "update_scheduled_task",
+      "boundary": "Update and pause controls; current authority required"
+    },
+    {
+      "id": "cancel_scheduled_task",
+      "boundary": "Cancellation with explicit separate running-run effects"
+    }
+  ],
+  "discoveryNotes": [
+    {
+      "path": "docs/coordination/tasks/CODEX-VERTICAL-SOURCE-20261012.md",
+      "atBase": "not present at PR37",
+      "correctRead": "git show 7754f1d4:docs/coordination/tasks/CODEX-VERTICAL-SOURCE-20261012.md",
+      "claim": "root outline read at exact later commit; no need to mutate base"
+    }
+  ]
+}

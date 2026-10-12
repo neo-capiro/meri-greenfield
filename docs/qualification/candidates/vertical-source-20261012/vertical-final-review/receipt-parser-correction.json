@@ -1,0 +1,8 @@
+{
+  "kind": "reviewer receipt-format correction",
+  "failure": "final-root-receipts.json",
+  "preimageSha256": "3828f9bc0a2afda8307398462737127b8e5e7c4a6cf11780b5430333ef0e1efd",
+  "observed": "Node24 root captures use spec reporter \u2139 summaries, not TAP # summaries; public npm script is typecheck, not check:types.",
+  "correction": "Read either explicit summary prefix with identical count requirements; match the actual pinned typecheck script token. No test, source, receipt or assertion threshold changed.",
+  "runtimeAccepted": false
+}

@@ -1,0 +1,6 @@
+{
+  "initialSource": "c69dfdca84feded1407674c528591def842fbc0a",
+  "result": "55 pass / 1 fail",
+  "classification": "reviewer fixture error",
+  "detail": "Empty scopes are synchronously rejected during factory context validation; that invalid fixture never reached the intended asynchronous policy-scope correlation. Replace with a schema-valid different resourceId while preserving the refusal and no-generation assertions. Product source unchanged."
+}

@@ -1,0 +1,388 @@
+{
+  "passed": 95,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "member apps/artifacts/local-executor.mjs",
+      "pass": true
+    },
+    {
+      "name": "member apps/artifacts/local-store.mjs",
+      "pass": true
+    },
+    {
+      "name": "member apps/artifacts/office-transform.mjs",
+      "pass": true
+    },
+    {
+      "name": "member apps/artifacts/presentation.mjs",
+      "pass": true
+    },
+    {
+      "name": "member apps/artifacts/process.mjs",
+      "pass": true
+    },
+    {
+      "name": "member apps/artifacts/python/analysis.py",
+      "pass": true
+    },
+    {
+      "name": "member apps/artifacts/python/entry.py",
+      "pass": true
+    },
+    {
+      "name": "member apps/artifacts/python/office.py",
+      "pass": true
+    },
+    {
+      "name": "member apps/artifacts/sandbox-analysis.mjs",
+      "pass": true
+    },
+    {
+      "name": "member apps/artifacts/service.mjs",
+      "pass": true
+    },
+    {
+      "name": "member apps/artifacts/test/artifact-execution.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "member docs/coordination/reports/CODEX-ARTIFACT-EXECUTION-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "member docs/coordination/tasks/CODEX-ARTIFACT-EXECUTION-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/vertical-source-20261012/artifact-author/api.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/vertical-source-20261012/artifact-author/coverage.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/vertical-source-20261012/artifact-author/failures-and-repairs.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/vertical-source-20261012/artifact-author/focused-canonical.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/vertical-source-20261012/artifact-author/focused-canonical.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/vertical-source-20261012/artifact-author/focused-canonical.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/vertical-source-20261012/artifact-author/focused-first.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/vertical-source-20261012/artifact-author/focused-first.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/vertical-source-20261012/artifact-author/focused-first.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/vertical-source-20261012/artifact-author/focused-overflow-image-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/vertical-source-20261012/artifact-author/focused-overflow-image-repaired.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/vertical-source-20261012/artifact-author/focused-overflow-image-repaired.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/vertical-source-20261012/artifact-author/focused-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/vertical-source-20261012/artifact-author/focused-repaired.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/vertical-source-20261012/artifact-author/focused-repaired.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/vertical-source-20261012/artifact-author/focused-second.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/vertical-source-20261012/artifact-author/focused-second.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/vertical-source-20261012/artifact-author/focused-second.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/vertical-source-20261012/artifact-author/installed-metadata.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/vertical-source-20261012/artifact-author/png-fixture-correction.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/vertical-source-20261012/artifact-author/reference-identities.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/vertical-source-20261012/artifact-author/run-focused.py",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/vertical-source-20261012/artifact-author/source-preservation.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/vertical-source-20261012/artifact-author/verify.py",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/vertical-source-20261012/artifact-author/whitespace-after.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/vertical-source-20261012/artifact-author/whitespace-after.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/vertical-source-20261012/artifact-author/whitespace-before.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/vertical-source-20261012/artifact-author/whitespace-before.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/vertical-source-20261012/artifact-author/whitespace.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/vertical-source-20261012/artifact-author/workflow-coverage.json",
+      "pass": true
+    },
+    {
+      "name": "member packages/contracts/artifacts-0.2/artifact-formats.mjs",
+      "pass": true
+    },
+    {
+      "name": "member packages/contracts/artifacts-0.2/artifact-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "member packages/contracts/artifacts-0.2/artifact.schema.json",
+      "pass": true
+    },
+    {
+      "name": "source apps/artifacts/local-executor.mjs",
+      "pass": true
+    },
+    {
+      "name": "source apps/artifacts/local-store.mjs",
+      "pass": true
+    },
+    {
+      "name": "source apps/artifacts/office-transform.mjs",
+      "pass": true
+    },
+    {
+      "name": "source apps/artifacts/presentation.mjs",
+      "pass": true
+    },
+    {
+      "name": "source apps/artifacts/process.mjs",
+      "pass": true
+    },
+    {
+      "name": "source apps/artifacts/python/analysis.py",
+      "pass": true
+    },
+    {
+      "name": "source apps/artifacts/python/entry.py",
+      "pass": true
+    },
+    {
+      "name": "source apps/artifacts/python/office.py",
+      "pass": true
+    },
+    {
+      "name": "source apps/artifacts/sandbox-analysis.mjs",
+      "pass": true
+    },
+    {
+      "name": "source apps/artifacts/service.mjs",
+      "pass": true
+    },
+    {
+      "name": "source apps/artifacts/test/artifact-execution.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "source packages/contracts/artifacts-0.2/artifact-formats.mjs",
+      "pass": true
+    },
+    {
+      "name": "source packages/contracts/artifacts-0.2/artifact-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "source packages/contracts/artifacts-0.2/artifact.schema.json",
+      "pass": true
+    },
+    {
+      "name": "all8678originals",
+      "pass": true
+    },
+    {
+      "name": "reference AGENTS.md",
+      "pass": true
+    },
+    {
+      "name": "reference docs/IMPLEMENTATION-STANDARDS.md",
+      "pass": true
+    },
+    {
+      "name": "reference docs/COMPONENTS.md",
+      "pass": true
+    },
+    {
+      "name": "reference docs/plans/MERI-DEPLOYMENT.md",
+      "pass": true
+    },
+    {
+      "name": "reference docs/CAPABILITY-SCOPE.md",
+      "pass": true
+    },
+    {
+      "name": "reference docs/coordination/r2/skills.json",
+      "pass": true
+    },
+    {
+      "name": "reference packages/contracts/meri.schema.json",
+      "pass": true
+    },
+    {
+      "name": "reference packages/contracts/commands-0.2/artifact-file.schema.json",
+      "pass": true
+    },
+    {
+      "name": "reference packages/contracts/commands-0.2/artifact-file-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "reference packages/runtime/operation-lifetime.mjs",
+      "pass": true
+    },
+    {
+      "name": "reference docs/SKILL-CONTRACT.md",
+      "pass": true
+    },
+    {
+      "name": "reference packages/contracts/retrieval-0.2/skill.schema.json",
+      "pass": true
+    },
+    {
+      "name": "focused-first raw",
+      "pass": true
+    },
+    {
+      "name": "focused-first result",
+      "pass": true
+    },
+    {
+      "name": "focused-first ownership",
+      "pass": true
+    },
+    {
+      "name": "focused-second raw",
+      "pass": true
+    },
+    {
+      "name": "focused-second result",
+      "pass": true
+    },
+    {
+      "name": "focused-second ownership",
+      "pass": true
+    },
+    {
+      "name": "focused-repaired raw",
+      "pass": true
+    },
+    {
+      "name": "focused-repaired result",
+      "pass": true
+    },
+    {
+      "name": "focused-repaired ownership",
+      "pass": true
+    },
+    {
+      "name": "focused-overflow-image-repaired raw",
+      "pass": true
+    },
+    {
+      "name": "focused-overflow-image-repaired result",
+      "pass": true
+    },
+    {
+      "name": "focused-overflow-image-repaired ownership",
+      "pass": true
+    },
+    {
+      "name": "focused-canonical raw",
+      "pass": true
+    },
+    {
+      "name": "focused-canonical result",
+      "pass": true
+    },
+    {
+      "name": "focused-canonical ownership",
+      "pass": true
+    },
+    {
+      "name": "whitespaceexactonebyte",
+      "pass": true
+    },
+    {
+      "name": "whitespace before",
+      "pass": true
+    },
+    {
+      "name": "whitespace after",
+      "pass": true
+    },
+    {
+      "name": "allfourretained",
+      "pass": true
+    },
+    {
+      "name": "nativeunjoined",
+      "pass": true
+    },
+    {
+      "name": "fourteenoriginalintents",
+      "pass": true
+    },
+    {
+      "name": "canonicalownership",
+      "pass": true
+    }
+  ],
+  "source": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
+  "nativeExecution": false
+}

@@ -1,0 +1,14 @@
+{
+  "ownedDependencyLinksRemoved": [
+    "ajv",
+    "ajv-formats",
+    "canonicalize",
+    "fast-deep-equal",
+    "fast-uri",
+    "json-schema-traverse",
+    "require-from-string"
+  ],
+  "borrowedTargetsChanged": false,
+  "processGroups": "All seven independently rechecked absent in audit-final; no timers or owned test processes remain",
+  "runtimeExecution": false
+}

@@ -1,0 +1,238 @@
+{
+  "scope": "All current reviewer-owned files, self excluded",
+  "sourceCommit": "62062236e38ac77b9494a04668df6969ab1f33e2",
+  "members": [
+    {
+      "path": "apps/gateway/test/research-evidence-independent.test.mjs",
+      "bytes": 18236,
+      "sha256": "797b5f6ee3bdab4eb0ef328fd6eb473ea2e1af47d056abe4f45bae6dd3026d67"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-PORTFOLIO-EVIDENCE-REVIEW-20261012.md",
+      "bytes": 8387,
+      "sha256": "18d3fdd3601d9fba51e2997faf192f9e187cfd1331d99965cfb7eeffa5689e37"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/audit-correction.json",
+      "bytes": 543,
+      "sha256": "4639a2bbba4e60817596d1442e4fa48f447d27cc214b8a163573cc6bdfc2c796"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/audit-source-initial.py.txt",
+      "bytes": 10459,
+      "sha256": "751905b8c28a6a14a1b54f4c4b7e1d427dacada899462b21e1eae4be6e8a6251"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/audit-source.py",
+      "bytes": 10469,
+      "sha256": "e02ca494044b0d19e02e4a784079862593b0b83b245636709d08bd84b75cc707"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/criteria.json",
+      "bytes": 1998,
+      "sha256": "84ba78339b844ec2d1c41e2c855d237c97de0b07b07fec757bcf47a70d965093"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/dependency-cleanup.json",
+      "bytes": 1972,
+      "sha256": "bd8f147ade2163668f6a827ebaa96fb19097853cc2df0c1e8b89be4616015d4d"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/eager-handoff-before.json",
+      "bytes": 1343,
+      "sha256": "ebb3c7e9e3d2d196ffc4f0f4824a74a2002e13249666e85f600cc46e17596d93"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/eager-handoff-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/eager-handoff-before.stdout.bin",
+      "bytes": 925,
+      "sha256": "d5e264499640e0cf0770b3fa44235c1bf1c347e07840ffb69074d4078e6b47a6"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/final-review.json",
+      "bytes": 2142,
+      "sha256": "ef979f5c940e6610ec43613987e2559050fad197c187c71c3003c688d0de27d1"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/handoff-repaired-final.json",
+      "bytes": 1565,
+      "sha256": "8eec71f2848e7acee3d71fe1a8686fefb0fa48630621c9799b10734b5d64870d"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/handoff-repaired-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/handoff-repaired-final.stdout.bin",
+      "bytes": 13388,
+      "sha256": "c052b9d54e4641102b260d069829322ccc7e0e4d10c922d0e3208f228b650a4e"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/independent-initial-corrected.json",
+      "bytes": 1325,
+      "sha256": "46019a47160f8011474f74adaf50997369443535a218ec2d9bd23514b05b37a2"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/independent-initial-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/independent-initial-corrected.stdout.bin",
+      "bytes": 5740,
+      "sha256": "b23f13032e40717ea58a785864a1e215edea7b464e10de839f197c69d31a5b1c"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/independent-initial-restored.json",
+      "bytes": 1322,
+      "sha256": "17f46c7fc06c87ec3e6b34650364378d79dce3e6d31ab0765929656a675f0c49"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/independent-initial-restored.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/independent-initial-restored.stdout.bin",
+      "bytes": 7577,
+      "sha256": "04044137fdd19482bc82dbcb76ea4eabd53d9f8d3acf723fe526a4b287dbce19"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/independent-initial.json",
+      "bytes": 1305,
+      "sha256": "fdaafeb9069653130eb6e60a1597c2b0c05a92dc7cf714746db352da7f4445cf"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/independent-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/independent-initial.stdout.bin",
+      "bytes": 1573,
+      "sha256": "0a28699618738ad41ecc9544fdde3d1b77c904d282f0f434e8c0335708eddf38"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/memory-handoff-before.json",
+      "bytes": 1356,
+      "sha256": "bf95e6672cbb5f44c77530ce980632608d0b1261120a5eefe66eacbde28a67f8"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/memory-handoff-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/memory-handoff-before.stdout.bin",
+      "bytes": 939,
+      "sha256": "cc39e7093d86fcf2a53345f662585b3dfa4f07d1df25a5d798e3782f0bf69a78"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/physical-cleanup.json",
+      "bytes": 1792,
+      "sha256": "34a6d2a4497c3632a72297556e7275bf0c664b30af49f9e63a74d604852a0dec"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/reference-identities.json",
+      "bytes": 3998,
+      "sha256": "6d943498c71c767ff4af6b60e87402f0dccb6b047e19c2880bc1c5515e24582c"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/root-receipt-audit.json",
+      "bytes": 1610,
+      "sha256": "9c80d0a89d2d68c711ed188bb43393836404439172725710488d5c48638cc755"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/source-audit-final.json",
+      "bytes": 1322,
+      "sha256": "b75092c7865f59d977a43f09d421fd3211a80b555bd133b55520262f6eeba7b4"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/source-audit-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/source-audit-final.stdout.bin",
+      "bytes": 145,
+      "sha256": "c0b6c2c7347accd8d1b81d8e6e2ea781ddc20aafa5a4b91291608886979bc242"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/source-audit-first.json",
+      "bytes": 1322,
+      "sha256": "8991d1f5fee6b7d598c0a0644575b8760c1955f50186b9cc39b4a17a9491e0e9"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/source-audit-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/source-audit-first.stdout.bin",
+      "bytes": 325,
+      "sha256": "d10f2847fa443e7ff87cb3bebd48d6e60dc2bd6024f5f25ddf7c88d500da04f2"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/source-audit-initial-result.json",
+      "bytes": 65003,
+      "sha256": "174f36ad4be6527687bc3fcb1a5b4ac554e9c79f3e3645656aec5f4018dcf88e"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/source-audit-result.json",
+      "bytes": 64992,
+      "sha256": "8535bb9df1e070d046502fc61d6dc717fa65d77be103028ded40f40e8f56211d"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/uuid-repaired-handoff-open.json",
+      "bytes": 1319,
+      "sha256": "bbf5bc7b208fc6d8ff86fe4209d564989ef409e02513b2f9a0a2685a705d7235"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/uuid-repaired-handoff-open.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/uuid-repaired-handoff-open.stdout.bin",
+      "bytes": 5771,
+      "sha256": "7db53b8306afccccef177ea15b21164f2465f8f35067882a098db92edce96e09"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/whitespace-authored.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/whitespace-authored.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/whitespace-full.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/whitespace-full.stdout.bin",
+      "bytes": 1094,
+      "sha256": "63e3440a5ec531c17b4dbaa2b198abb5471fca865c0cbe432ba926aeec9bfe32"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/portfolio-review/whitespace.json",
+      "bytes": 244,
+      "sha256": "fbc69ed575a5841f9eb3064e40e0ae477172d68cae31551f5c79157f3a72a042"
+    }
+  ],
+  "privateBodiesPublished": false,
+  "runtimeAccepted": false
+}

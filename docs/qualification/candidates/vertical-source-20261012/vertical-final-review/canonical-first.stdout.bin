@@ -1,0 +1,46 @@
+✔ final canonical create_task advertises actual raw and invokes normalizer (3.611704ms)
+✔ final canonical create_task refuses caller authority context and hostile substitutions (0.758151ms)
+✔ final canonical update_task advertises actual raw and invokes normalizer (1.334378ms)
+✔ final canonical update_task refuses caller authority context and hostile substitutions (0.395535ms)
+✔ final canonical save_memory advertises actual raw and invokes normalizer (1.604364ms)
+✔ final canonical save_memory refuses caller authority context and hostile substitutions (0.81086ms)
+✔ final canonical save_chat_attachments advertises actual raw and invokes normalizer (2.373181ms)
+✔ final canonical save_chat_attachments refuses caller authority context and hostile substitutions (0.709627ms)
+✔ final canonical create_word advertises actual raw and invokes normalizer (14.266775ms)
+✔ final canonical create_word refuses caller authority context and hostile substitutions (4.01462ms)
+✔ final canonical create_excel advertises actual raw and invokes normalizer (2.004415ms)
+✔ final canonical create_excel refuses caller authority context and hostile substitutions (0.903909ms)
+✔ final canonical create_powerpoint advertises actual raw and invokes normalizer (1.341999ms)
+✔ final canonical create_powerpoint refuses caller authority context and hostile substitutions (0.945332ms)
+✔ final canonical run_analysis advertises actual raw and invokes normalizer (1.175779ms)
+✔ final canonical run_analysis refuses caller authority context and hostile substitutions (4.211727ms)
+✔ final canonical schedule_task advertises actual raw and invokes normalizer (40.567355ms)
+✔ final canonical schedule_task refuses caller authority context and hostile substitutions (3.31017ms)
+✔ final canonical update_scheduled_task advertises actual raw and invokes normalizer (4.799922ms)
+✔ final canonical update_scheduled_task refuses caller authority context and hostile substitutions (2.098357ms)
+✔ final canonical cancel_scheduled_task advertises actual raw and invokes normalizer (3.992036ms)
+✔ final canonical cancel_scheduled_task refuses caller authority context and hostile substitutions (1.151453ms)
+✔ final canonical list_scheduled_tasks advertises actual raw and invokes normalizer (6.89898ms)
+✔ final canonical list_scheduled_tasks refuses caller authority context and hostile substitutions (1.06355ms)
+✔ final canonical get_research_evidence advertises actual raw and invokes normalizer (3.136189ms)
+✔ final canonical get_research_evidence refuses caller authority context and hostile substitutions (1.192244ms)
+✔ final canonical create_task correlates exact command even for indeterminate observation (5.2706ms)
+✔ final canonical update_task correlates exact command even for indeterminate observation (4.934064ms)
+✔ final canonical save_memory correlates exact command even for indeterminate observation (4.021481ms)
+✔ final canonical save_chat_attachments correlates exact command even for indeterminate observation (4.598699ms)
+✔ final canonical schedule_task validators feed actual accepted schedule application (17.622634ms)
+✔ final canonical update_scheduled_task validators feed actual accepted schedule application (10.727109ms)
+✔ final canonical cancel_scheduled_task validators feed actual accepted schedule application (6.8395ms)
+✔ final canonical list_scheduled_tasks validators feed actual accepted schedule application (3.074065ms)
+✔ final loader keeps generic private schema names out of global namespace (0.382496ms)
+✔ final one canonical catalog covers139 original96selected43deferred and97typed96mapped0pending (6.958219ms)
+✔ final all97 production routes remain unavailable before authority budget or source effects (10.913119ms)
+✔ final thirteen descriptors bind exact schema bytes and refuse tampering (116.571938ms)
+ℹ tests 38
+ℹ suites 0
+ℹ pass 38
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3191.925611

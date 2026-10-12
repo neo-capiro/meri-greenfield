@@ -1,0 +1,12 @@
+{
+  "scopeAuthority": "Parent explicit20261012 clarification of D011/R2 selects already authorized projected review/snapshot/current continuity. No new raw member or unrestricted older-history disclosure.",
+  "review": "Four separate existing viewer-gated lanes cover open/assigned mine+team, deferred, resolved/cancelled metadata. Exact observed match only; move between reads can miss a row. Unavailable is not absence, conflicting duplicate versions refuse.",
+  "snapshot": "Viewer-gated retained exact snapshot. Every contribution/version/access-requirement/limitation retained within admission bounds. No analytics/createSnapshot invocation. No claim source contentHash verifies narrower projection.",
+  "continuity": "Current annual GET derives readonly continuity with persistence=false, defaults only; item persisted flag retained or absent, no historical selector. Source counts correlate with exact returned items.",
+  "transport": "Trusted HTTPS origin with fixed GET paths. Task-binding user bearer broker; no service secret inferred from ordinary controller route. No redirects/retry/arbitrary modelURL/byte dereference. Existing memory JSON decoding and inert-source admission extracted for actualreuse.",
+  "runtimeQualified": false,
+  "sourceConnected": false,
+  "reviewRequired": true,
+  "authorSource": "f8caa12c5640b3bbdaa733ce3d98ec344888f7f8",
+  "checks": "85/85 actual Portfolio source + original memory adapter/independent and Portfolio contracts; ownedPG363374 absent."
+}

@@ -1,0 +1,276 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "reviewHeadBeforeManifest": "cadf45f17fd21cad0e62601cb23870b535cb81b0",
+  "applicationSource": "d0433f7c7e52e6dbc606a9937f92705a42ac863a",
+  "pureSource": "1625c95d89593f07ec072ad71f9756a41e0c0db1",
+  "canonicalFourCommandSlice": "83d0f5951a5e0c5d86d3a8684c2396b6cf13f794",
+  "authorPacket": "52e60d45c262444e8347d8f99fc1d7f7b4517fa8",
+  "reviewOnlyCommitOrderBeforeManifest": [
+    "43086434eed3d8ddacfa2f63a3034b6da3ff2729",
+    "905e115f55be8263c49faecedb47b77471e7fe20",
+    "1b92ff3e46714c5bf8dff877bbe713f99263814f",
+    "27611c631476e6a6e2a0319dbe6a667ff948ef13",
+    "a19dd42ff99e8cdfc11b8fb7e9aa20b9c681bc09",
+    "75ac7333c694777e4789269c2cb313e127520d04",
+    "cadf45f17fd21cad0e62601cb23870b535cb81b0"
+  ],
+  "excludedDependencies": [
+    "5d47fd192bd41db6a84955d0dc92ad3eb05f96d1",
+    "148ff384accf39d18bf88d4be65fe5bbbf073c23",
+    "4248c3ebae46a4093b9dc76a8ac475bcb5688b77",
+    "0e4eb69140dd25086b9a59b34e8c37722260c91c"
+  ],
+  "independentDistinctControls": 47,
+  "auditChecks": 8870,
+  "authorBaseEntriesPreserved": 8735,
+  "ownedAndAuthorGroupsAbsent": 16,
+  "runtime": "HOLD_UNRUN",
+  "selfExcluded": true,
+  "members": [
+    {
+      "path": "apps/control/test/commands-tool-interface-independent.test.mjs",
+      "bytes": 9385,
+      "sha256": "f7ca5c755e094dead0f3b47777970fbec760522c83d23e7725a5899ca6751d5c"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-COMMAND-TOOL-INTERFACE-REVIEW-20261012.md",
+      "bytes": 6809,
+      "sha256": "051cd76b209f5d8be13d66deeffaaa410ed93be334ff125aabfab047a7215090"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-COMMAND-TOOL-INTERFACE-REVIEW-20261012.md",
+      "bytes": 4831,
+      "sha256": "20bfc7188cd70b69dd9537b098b0f3d2346f1a638da6f8d6419e12f603c82762"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/.gitattributes",
+      "bytes": 50,
+      "sha256": "1bee6826ab8565b1a50079d470700a548e73e2363ea12450cf37ea13454b9eba"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/audit-before.py",
+      "bytes": 6237,
+      "sha256": "ffa1ea90effa146b5611ae118412d8f0fb58ddac96f0c50488f42576f900cfa7"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/audit-final.json",
+      "bytes": 1345,
+      "sha256": "47048ff24b6c02319a50bbddaebb4dbe03017bb58d17d0fb48e29ba27407d9cb"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/audit-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/audit-final.stdout.bin",
+      "bytes": 5382,
+      "sha256": "d5545030800ed3ba88126b2302e6d1e0ebd5c3589594e76716da1ac0a279e51d"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/audit-immutable.json",
+      "bytes": 1439,
+      "sha256": "4686114fad342c439188cb894e473add9c5b51def9913669fae593dcb2f212f4"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/audit-immutable.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/audit-immutable.stdout.bin",
+      "bytes": 5644,
+      "sha256": "feaadb58551228cf662c2067fb2bf563b02df5c6623f8cd608e7bfacab03371a"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/audit-live-root-mismatch.json",
+      "bytes": 6226,
+      "sha256": "c4abd846e403130475436e78dc4dce4e209688101edfcc89639d0d704a7a7bdc"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/audit-result.json",
+      "bytes": 6600,
+      "sha256": "e1fa4767743937c5920fd497b1e83f99d15b4ffe82fb82aedffeb8c4cbefd1c2"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/audit.py",
+      "bytes": 6546,
+      "sha256": "d67a16f6061bfcd4a25da9f29a5e7f3e22ff037cc43d2bab70652b3ebcded8b3"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-final.json",
+      "bytes": 1317,
+      "sha256": "d764c32aa361e7ef6e37a57c71f1e2db664351a41ce759fa47e686f7d8adfd28"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-final.stdout.bin",
+      "bytes": 2653,
+      "sha256": "f0b7c62d0d56816f92ebc4c56c1af572568e97ba46648b49b5b4f21e555c773b"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-immutable-complete.json",
+      "bytes": 1412,
+      "sha256": "2995ac7ac486ddd98e26e6edb46167ed3523f6e44edcddf011a42a8867cbdaad"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-immutable-complete.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-immutable-complete.stdout.bin",
+      "bytes": 2555,
+      "sha256": "b89d6f9a62c8e23646cbd3a8dfc6576ee46a85997fa325531a9ee9b443f8bd83"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-immutable-replay.json",
+      "bytes": 1413,
+      "sha256": "8e25a04e292e1327d41adfca0f996d99b6aae0ada29167ebbe91b5eb92bc8af0"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-immutable-replay.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-immutable-replay.stdout.bin",
+      "bytes": 2654,
+      "sha256": "02d5b21ac6bab3a51f177ab853a0fdc5f95da1175833ce72e7daa78f78603b17"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-immutable.json",
+      "bytes": 1396,
+      "sha256": "2ecd31d207a132a0deca1ae0ce0c203b7ecb54472600b906db372020fbbf06e2"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-immutable.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-immutable.stdout.bin",
+      "bytes": 2554,
+      "sha256": "fa6cd714382211be60075f61f22d37cf18d4ad8777a535c02beb3e4ba0c7dd71"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-initial.json",
+      "bytes": 1322,
+      "sha256": "e932f936ca4b37d19d1c7ab2b45cc54fb9f1a4812e3409f15a45262e1620b148"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-initial.stdout.bin",
+      "bytes": 4466,
+      "sha256": "280828cf33e686785f778308d16007fa548d4fc02e5f854c8a8b13375ac912a8"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/cleanup-final.json",
+      "bytes": 3982,
+      "sha256": "0dfda278080d593ecb56e4a24d84b66ff30141152c7f315e6642581d17ae0ef4"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/exact-interface.json",
+      "bytes": 1388,
+      "sha256": "b7f238a10162292c6e41e3e541095030a006dec53f97d7d144a7e19a24f5fe83"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/exact-interface.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/exact-interface.stdout.bin",
+      "bytes": 3850,
+      "sha256": "26bbd363bceb60667082936752fea2f009901a912498a11266a78ff344f8dff6"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/fixture.mjs",
+      "bytes": 3624,
+      "sha256": "c5e39c5cc66ac49573202a56781826ad956205a541e3865b52f7b95d469feee6"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/interface-initial.json",
+      "bytes": 1317,
+      "sha256": "73a2f8aed011dbdb101934e59034df212bcdb657a09aa8713cd7f4b971db512c"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/interface-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/interface-initial.stdout.bin",
+      "bytes": 2884,
+      "sha256": "ff5507827d9ac1cff7e763983fcef50f34173421d75f351efd6dd7afa3b54f15"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/late-release-prefreeze-source/tool-interface.mjs",
+      "bytes": 5992,
+      "sha256": "7ac111e0eb411c7bc30315d0ca185caae8e637f31e79f0cfaa908d9d4c5c9942"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/output-before.json",
+      "bytes": 1309,
+      "sha256": "961cdfe84c4d65810e247b4182e610564db15f058db7010a8757da424e8d0c75"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/output-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/output-before.stdout.bin",
+      "bytes": 1748,
+      "sha256": "7b5bccd0cb0d927440805e8639a2b3db356241508342eafaa84269c6722d9ef7"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/output-prefreeze-source/tool-interface.mjs",
+      "bytes": 5621,
+      "sha256": "21691b21e97c80cc96a67ccae00f79ced7c69c99f02f64d77d215c835b9f2c03"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/pure-initial.json",
+      "bytes": 1312,
+      "sha256": "115f6944eb0923e73c68121ad229a1890926bafde5f5511c88e531439e30f239"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/pure-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/pure-initial.stdout.bin",
+      "bytes": 1811,
+      "sha256": "823cea29b8d8f0520b47eb8e0a3bc2c84913a3bb50f2c502fc29940b928447be"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/sparse-setup-note.json",
+      "bytes": 516,
+      "sha256": "bffffec857da4bfbd096a7861f1a05f80d7c6c3c9ff54e39756aac2c4469a7d5"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/whitespace-before.json",
+      "bytes": 914,
+      "sha256": "d1ec33574043a7fec1dc6b056b6c68d3ffbc3b6b4401a650436fe2dd1d6fde47"
+    },
+    {
+      "path": "packages/contracts/test/command-tool-interface-independent.test.mjs",
+      "bytes": 8699,
+      "sha256": "402fe5c228f2970a3832948cf90c55902beb33222561776084cc554808af9165"
+    }
+  ]
+}

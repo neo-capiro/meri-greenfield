@@ -1,0 +1,70 @@
+{
+  "basis": "Read-only pinned source metadata; no private implementation imported, executed or stored.",
+  "sourceRoutes": {
+    "controller": "apps/api/src/meri/meri.controller.ts:312,512-514",
+    "minimumRole": "standard_user",
+    "toolEntry": "POST /clio/tools/:name",
+    "serviceSecretGuard": "configuration-dependent; identity broker/runtime remain unqualified"
+  },
+  "taskCreate": {
+    "wrapper": "meri-tools.service.ts:8969-8995",
+    "owner": "engagement.service.ts:5629-5647",
+    "sourceIdempotencyClaim": false,
+    "resultFields": [
+      "id",
+      "title",
+      "status",
+      "dueDate",
+      "clientId",
+      "createdAt"
+    ],
+    "transactionIdProjected": false,
+    "scope": "ordinary tenant/minimum-role semantics; no invented Research Portfolio gate"
+  },
+  "taskUpdate": {
+    "wrapper": "meri-tools.service.ts:8998-9031",
+    "owner": "engagement.service.ts:5676-5692",
+    "patchFields": [
+      "status",
+      "dueDate",
+      "title"
+    ],
+    "dueDateNullOrBlank": "omitted, never an explicit clear through this wrapper",
+    "noPatch": "refused",
+    "sourceCAS": false,
+    "sourceIdempotencyClaim": false,
+    "resultFields": [
+      "id",
+      "title",
+      "status",
+      "dueDate",
+      "clientId",
+      "updatedAt"
+    ],
+    "transactionIdProjected": false,
+    "sourceSpecialCase": "Existing Research Portfolio source-tag task checks remain in native owner; do not generalize into an ordinary task wall."
+  },
+  "filing": {
+    "owner": "meri-client-filing.service.ts:118-190",
+    "nativeAttachmentId": "present in all per-file branches145/150/166/179 and FileReceipt declaration",
+    "mapping": "exact unique attachmentId to trusted immutable ObjectReference; native ID alone is not bytes attestation",
+    "sourceIdempotencyInput": "line160; does not establish generic command replay safety",
+    "savedReason": "lines167-172 permit reason on saved truncated-extraction observation",
+    "allSavedAggregate": "only all selected objects saved supports succeeded; mixed outcomes retain possible effects",
+    "transactionIdProjected": false
+  },
+  "correction": {
+    "initialReviewerClaim": "per-file attachmentId absent",
+    "cause": "colon-property-only scanner omitted shorthand properties",
+    "recheck": "FileReceipt attachmentId:string and shorthand attachmentId in all four pushes",
+    "classification": "reviewer metadata assumption; not production defect",
+    "privateSourceBodyStored": false
+  },
+  "rootDecisions": {
+    "authority": "root owns closed capabilityAction addition to canonical engine; command executor injects canonical authority",
+    "taskUpdate": "private0.2 unconditional patch only",
+    "memory": "client/firm pending seam may proceed; personal legacy auto-commit is pre-effect HOLD",
+    "filing": "narrow saved+reason correction allocated; old assertion inverse required",
+    "migration": "root allocated apps/control/commands/migrations/0001_commands.sql; source only, never applied"
+  }
+}

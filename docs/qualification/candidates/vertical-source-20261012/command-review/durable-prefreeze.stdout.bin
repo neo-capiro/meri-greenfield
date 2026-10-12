@@ -1,0 +1,28 @@
+✔ actual canonical producer/accounting path: task.create (74.403939ms)
+✔ actual canonical producer/accounting path: task.update (32.981245ms)
+✔ actual canonical producer/accounting path: memory.propose (32.067331ms)
+✔ actual canonical producer/accounting path: artifact.file (30.383217ms)
+✔ default unavailable and personal pending refusal allocate no invocation/effect (8.759548ms)
+✔ two owners of exact delivery retain one source effect and one fixed charge (22.684235ms)
+✔ restart-style repeated exact command reads persisted outcome without a second hold/effect (21.598702ms)
+✔ same delivery changed immutable command is conflict before new effect (21.341435ms)
+✔ canonical stored revoked denies before effect (4.504667ms)
+✔ canonical stored expired denies before effect (4.044054ms)
+✔ canonical stored wrong-fence denies before effect (4.019827ms)
+✔ canonical stored quarantined denies before effect (3.861329ms)
+✔ existing model UNKNOWN liability blocks new canonical command reservation (20.335111ms)
+✔ lost prepare commit ACK does not automatically redispatch/refund (5.638141ms)
+✔ lost reserve commit ACK does not automatically redispatch/refund (16.37268ms)
+✔ lost marker commit ACK does not automatically redispatch/refund (36.64706ms)
+✔ lost settle commit ACK does not automatically redispatch/refund (24.655882ms)
+✔ aborted parked marker COMMIT retains proof/hold without later automatic accounting; explicit historical reconcile charges once (28.943471ms)
+✔ fresh shortened release deadline fences parked marker ACK and keeps liability (23.587854ms)
+✔ source failure after reservation retains UNKNOWN without marker or charge (25.214517ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6472.154773

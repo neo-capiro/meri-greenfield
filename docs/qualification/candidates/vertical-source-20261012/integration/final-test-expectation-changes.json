@@ -1,0 +1,272 @@
+{
+  "base": "e5fb3963de787bbd7b7663316c368f15814897da",
+  "head": "441613b0432bf8c84c8acb33e237e6595b6170c7",
+  "changes": [
+    {
+      "path": "apps/gateway/test/action-item-context-independent.test.mjs",
+      "beforeSha256": "2eedfd9929825ab489b765a797c0de97a3d665f3f2f462c0f5fe57e083e8f37f",
+      "afterSha256": "d6cc4511b186a882fa37da64e940f6552cb1c2fc080f1d0b356d84140af68653",
+      "beforeTests": 14,
+      "afterTests": 14,
+      "beforeAssertions": 56,
+      "afterAssertions": 56,
+      "reviewedTitleChange": [
+        "all84 production operations remain unavailable and zero-effect",
+        "all97 production operations remain unavailable and zero-effect"
+      ]
+    },
+    {
+      "path": "apps/gateway/test/capability-next-independent.test.mjs",
+      "beforeSha256": "1c9953e0e9efaade981851c20e6592579e63d37c6d2718ebda8732ac13f08b38",
+      "afterSha256": "63ca114b28cd00f354e8e1b38a1be5e5159a31bccb1239f682eed74f2785e90b",
+      "beforeTests": 1,
+      "afterTests": 1,
+      "beforeAssertions": 6,
+      "afterAssertions": 6,
+      "reviewedTitleChange": [
+        "independent combined catalog remains invisible and refuses all84 operations before every effect",
+        "independent combined catalog remains invisible and refuses all97 operations before every effect"
+      ]
+    },
+    {
+      "path": "apps/gateway/test/mail-context-independent.test.mjs",
+      "beforeSha256": "cbe5b1d176bb75f8597879635716d151d86b3dd22a4b4a5fc22f1339f2367390",
+      "afterSha256": "559ab2ba4ad26fe9ea1775dd43a15689890d3443bb7d5dfd8535fe3914b5ceaa",
+      "beforeTests": 18,
+      "afterTests": 18,
+      "beforeAssertions": 82,
+      "afterAssertions": 82,
+      "reviewedTitleChange": null
+    },
+    {
+      "path": "apps/gateway/test/memory-context-independent.test.mjs",
+      "beforeSha256": "9dcb48a2ad738276a11f6e2e847bca3c47f48fd7d47fab109ee534189bf47bba",
+      "afterSha256": "6a1ad652c8159c510bb34958ab49293d9c3436e163ce5a9e7656a9c03915c340",
+      "beforeTests": 15,
+      "afterTests": 15,
+      "beforeAssertions": 55,
+      "afterAssertions": 55,
+      "reviewedTitleChange": null
+    },
+    {
+      "path": "packages/contracts/test/backend-execution-connected.test.mjs",
+      "beforeSha256": "2e92b4ad8419ba919626bf99b3d41c47cfc94e5f6d93b5897ae8898d57dccd64",
+      "afterSha256": "1cf3a44b93d2ab93a245d5ee14ed9efc13aefc0f3af574a948470c96e441cc56",
+      "beforeTests": 9,
+      "afterTests": 9,
+      "beforeAssertions": 64,
+      "afterAssertions": 64,
+      "reviewedTitleChange": null
+    },
+    {
+      "path": "packages/contracts/test/backend-execution-expectations.mjs",
+      "beforeSha256": "4690f3f4e00fa1e6fda2fe0738b75fd653c654aacd3503994afb927f944da5c4",
+      "afterSha256": "b297ca34f65334544c8a8e1151566806a9d659c8b31f1e792aa6e655ff516418",
+      "beforeTests": 0,
+      "afterTests": 0,
+      "beforeAssertions": 3,
+      "afterAssertions": 3,
+      "reviewedTitleChange": null
+    },
+    {
+      "path": "packages/contracts/test/backend-execution-integration-independent.test.mjs",
+      "beforeSha256": "2929e27e5fe78d3d2989b3d1770dd253f94b4d9659cce26e5078043cdea6fbc8",
+      "afterSha256": "005b108138230add7f1f0b572da1516d2da54fe368eda831af361f7007c331a3",
+      "beforeTests": 10,
+      "afterTests": 10,
+      "beforeAssertions": 101,
+      "afterAssertions": 101,
+      "reviewedTitleChange": null
+    },
+    {
+      "path": "packages/contracts/test/command-artifact-file.test.mjs",
+      "beforeSha256": "6701fa89be4249742ce6a2c74ee8767acfa5a4e28d206c19609e7275fa1ef925",
+      "afterSha256": "87ecc32b4cf448b33fa209b5646e4d6d19f45598f6ef89b558d1544669fca427",
+      "beforeTests": 27,
+      "afterTests": 27,
+      "beforeAssertions": 37,
+      "afterAssertions": 37,
+      "reviewedTitleChange": null
+    },
+    {
+      "path": "packages/contracts/test/command-contracts-integration-independent.test.mjs",
+      "beforeSha256": "a8d99bbfe2160a7a02c5fdb70754d98c125eb494ca0bff374a517c2918948c72",
+      "afterSha256": "a30abc9b84aae4be73be274dd383023daff4a700afe74fb669d5526f83ae6373",
+      "beforeTests": 36,
+      "afterTests": 36,
+      "beforeAssertions": 82,
+      "afterAssertions": 84,
+      "reviewedTitleChange": null
+    },
+    {
+      "path": "packages/contracts/test/command-payloads-independent.test.mjs",
+      "beforeSha256": "c36d43f41e7168b136beb320981da15c039336ff21f1a4de36dde562bb8c4abe",
+      "afterSha256": "26d644aa70954c15f4a695556b33b4b2eebbe34ce41c6cd01eda417de574e606",
+      "beforeTests": 47,
+      "afterTests": 47,
+      "beforeAssertions": 75,
+      "afterAssertions": 76,
+      "reviewedTitleChange": null
+    },
+    {
+      "path": "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+      "beforeSha256": "79d5729c89cbc3bebc8d581e0b8a95bd76613d09981cc573fbf07fc5fd887052",
+      "afterSha256": "f59cedf63d7f3bf59b2a4327e27b0f4857737eff6adfdcaba87d36e06ad876bc",
+      "beforeTests": 7,
+      "afterTests": 7,
+      "beforeAssertions": 45,
+      "afterAssertions": 45,
+      "reviewedTitleChange": null
+    },
+    {
+      "path": "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+      "beforeSha256": "e37e47eb6d41ec7c52313320788838240d88569fb3edce75828bc07d490251b0",
+      "afterSha256": "5881f8e3c6b88e99ac66b74d9d216643a9bc4003330e8a2494be1a036bf72225",
+      "beforeTests": 11,
+      "afterTests": 11,
+      "beforeAssertions": 39,
+      "afterAssertions": 39,
+      "reviewedTitleChange": null
+    },
+    {
+      "path": "packages/contracts/test/retrieval-backend-next-independent.test.mjs",
+      "beforeSha256": "0b69c36d54d367d86b89f3f89e716e656d537b91008771fc10845823b35cfeb3",
+      "afterSha256": "ef6aebc2416393d001690673c8f2ce8a6ccd82bb0ba8a4c572f9aca21dfe81dd",
+      "beforeTests": 17,
+      "afterTests": 17,
+      "beforeAssertions": 82,
+      "afterAssertions": 83,
+      "reviewedTitleChange": null
+    },
+    {
+      "path": "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+      "beforeSha256": "0d79fb0acef22a1dc9244d292b7d9b4f87b17de70303fcd210ca63db86de29e1",
+      "afterSha256": "cd904833ebcd711e2d009fcb1375a7da45f184895a42c1527ba9bb59b6f92b70",
+      "beforeTests": 14,
+      "afterTests": 14,
+      "beforeAssertions": 72,
+      "afterAssertions": 72,
+      "reviewedTitleChange": null
+    },
+    {
+      "path": "packages/contracts/test/retrieval-civic-integration-independent.test.mjs",
+      "beforeSha256": "17a0eb6d7f96139c0b2776509192f5effad00935b5d0d6a36de83781cc19ec57",
+      "afterSha256": "9063fd5144330bec1d3861a1ff7e7959c13d7805d1fa0ecfa2312c9d68fe8eee",
+      "beforeTests": 14,
+      "afterTests": 14,
+      "beforeAssertions": 73,
+      "afterAssertions": 74,
+      "reviewedTitleChange": null
+    },
+    {
+      "path": "packages/contracts/test/retrieval-mail.test.mjs",
+      "beforeSha256": "ca55bb015d147ddf7838a5f8a4cefbf4bcb399e3cfba5ccca4baf094bce13bf5",
+      "afterSha256": "6c534eb966f74d0a5b809b4099c3df890a6489c308946f1af8ecf291545336e5",
+      "beforeTests": 37,
+      "afterTests": 37,
+      "beforeAssertions": 110,
+      "afterAssertions": 110,
+      "reviewedTitleChange": null
+    },
+    {
+      "path": "packages/contracts/test/retrieval-memory-binding.test.mjs",
+      "beforeSha256": "8c8bc4217cf72c634ca6ffde599f9040f28660f1a22c2061654a21875a8e9ab2",
+      "afterSha256": "ed54f94fffcd83e813118400cbf8df5b4efcb61cb7cc33a8af6b30cea8054bd5",
+      "beforeTests": 12,
+      "afterTests": 12,
+      "beforeAssertions": 68,
+      "afterAssertions": 68,
+      "reviewedTitleChange": null
+    },
+    {
+      "path": "packages/contracts/test/retrieval-next-bindings.test.mjs",
+      "beforeSha256": "2500051c46bad2f83ba0998ab290bfe6cd495fc76acfc2f72c11bab19ee59950",
+      "afterSha256": "17603c941d2edff728b831f12405a7fe7e2b18f1f6f197c3d5b2c9fa324c048d",
+      "beforeTests": 6,
+      "afterTests": 6,
+      "beforeAssertions": 55,
+      "afterAssertions": 55,
+      "reviewedTitleChange": null
+    },
+    {
+      "path": "packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+      "beforeSha256": "9e4c0724c46ab81bdd6fbeba2b9fbc1610a111de4126886389949449a94f6c48",
+      "afterSha256": "435c058a29839d4f46b3ce0b48ed615a981da58e86ed765e343d39796d6d604c",
+      "beforeTests": 12,
+      "afterTests": 12,
+      "beforeAssertions": 67,
+      "afterAssertions": 68,
+      "reviewedTitleChange": null
+    },
+    {
+      "path": "packages/contracts/test/retrieval-observed-integration-independent.test.mjs",
+      "beforeSha256": "54b8190d22ca20c879d9ff4887b21200e66507214f659185566eaee8320f130c",
+      "afterSha256": "7d71cddfd9453abd95f5732e3976e7ba8b6a04f8b82d1a43a65186a5092c4ca2",
+      "beforeTests": 15,
+      "afterTests": 15,
+      "beforeAssertions": 77,
+      "afterAssertions": 78,
+      "reviewedTitleChange": null
+    },
+    {
+      "path": "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+      "beforeSha256": "48864c8b1a13d35ed93501016b137ab00ec5061cf01d3ab81aaac510f8b335bd",
+      "afterSha256": "efb495f9bf39aab9700172903e855bb662bca47fc6c405a165d4bd15da98d131",
+      "beforeTests": 7,
+      "afterTests": 7,
+      "beforeAssertions": 36,
+      "afterAssertions": 36,
+      "reviewedTitleChange": null
+    },
+    {
+      "path": "packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+      "beforeSha256": "482d1da949c813afe8cacd2a270d63ec914df3dd29a121a7aedd9dac11b3bc45",
+      "afterSha256": "c5b50a591a3e039b38d9ab892b879672a65c68d9c25435a5376f63f72359d1d2",
+      "beforeTests": 15,
+      "afterTests": 15,
+      "beforeAssertions": 97,
+      "afterAssertions": 97,
+      "reviewedTitleChange": null
+    },
+    {
+      "path": "packages/contracts/test/retrieval-reference-integration-independent.test.mjs",
+      "beforeSha256": "9865daf6a32b98f36083ea5cad351e867a50c3b528c9fad518bf62335c8d2e93",
+      "afterSha256": "74ea5539e68310e1a763be79603fe28e478cc8071a8247493260575e3a3e67bd",
+      "beforeTests": 14,
+      "afterTests": 14,
+      "beforeAssertions": 74,
+      "afterAssertions": 75,
+      "reviewedTitleChange": [
+        "actual production gateway keeps all84 unavailable without any authority or budget effects",
+        "actual production gateway keeps all97 unavailable without any authority or budget effects"
+      ]
+    },
+    {
+      "path": "packages/contracts/test/retrieval-selected-next-bindings.test.mjs",
+      "beforeSha256": "490f8fc42d40fe19769aba19d5ace0a32c5e426b3ab916658e9f0e4be67885ce",
+      "afterSha256": "739154d7720cbee6999c353a374f7d0fc41b0878a3edd572b57a79c6a1578ff4",
+      "beforeTests": 6,
+      "afterTests": 6,
+      "beforeAssertions": 35,
+      "afterAssertions": 35,
+      "reviewedTitleChange": null
+    },
+    {
+      "path": "packages/contracts/test/retrieval-selected-next-independent.test.mjs",
+      "beforeSha256": "02a10746f971979b3f396174b6c97494e90df81eed0ee3284092eb3db755fea2",
+      "afterSha256": "eea3d5625815f2e90b677c22eed6079841dd448c3a9079387d174db3423e2a1f",
+      "beforeTests": 9,
+      "afterTests": 9,
+      "beforeAssertions": 40,
+      "afterAssertions": 40,
+      "reviewedTitleChange": null
+    }
+  ],
+  "inverseRestoresEveryOriginalTestByte": true,
+  "inverseChangesNoOtherPath": true,
+  "newArtifactStageTest": "packages/contracts/test/vertical-execution-integration-independent.test.mjs",
+  "newArtifactStageNote": "Not present at PR37; its later8 mapping expectation changes are separately preserved and independently reviewed in test-continuation-author/review.",
+  "forwardSha256": "53d208964bbd23444cd64bd2ba2046632668975bc9c27c27c8bcbec8ffaf2241",
+  "inverseSha256": "1b698a888f254fbbcef799c22d98cdfe266d3ed2f776f70736a840a223b12fb0",
+  "scope": "Finite independently reviewed expectation changes; no assertion deletion or runtime admission."
+}

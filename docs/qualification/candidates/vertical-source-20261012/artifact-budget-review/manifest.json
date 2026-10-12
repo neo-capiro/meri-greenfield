@@ -1,0 +1,251 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "runtimeVerdict": "HOLD",
+  "source": "a73b65dc05b7554c0592bec22d940ef781344dd6",
+  "sourceTree": "cab03252f33f55e125e0e7af98f4353ab4a60666",
+  "authorPacket": "0249c7c2c63fd8a9643439178ca66bbe63d15912",
+  "authorManifestSha256": "11163cb18b90b20f983770d8dc77a479d660da259940f9346e32516a33473fc0",
+  "members": [
+    {
+      "path": "apps/artifacts/test/postgres-service-independent.test.mjs",
+      "bytes": 21762,
+      "sha256": "fd1befea68297fe27d1b90c5368c8618f943d18be63c9d72da7601ceef971d89"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-ARTIFACT-BUDGET-REVIEW-20261012.md",
+      "bytes": 3386,
+      "sha256": "294753a4f459c9fb0ac5e153c2b732d84d418ddced9de3aabb2afc6a4f14814e"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-ARTIFACT-BUDGET-REVIEW-20261012.md",
+      "bytes": 4606,
+      "sha256": "16495a463dace905f5a20e178e96d61eaca319d59f491fd2db0bab66b9850a6f"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/audit-final.json",
+      "bytes": 18148,
+      "sha256": "dba4d601d9040766549980bbfc211af01a2516077bf29ef072c3fc942f1b7e6f"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/audit.py",
+      "bytes": 5536,
+      "sha256": "62d5345e1650e1ad2b958f96fa6f2093028a4f290b4aca114569c4382f4bd884"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/authored-whitespace.json",
+      "bytes": 555,
+      "sha256": "2bae0fdfd823485fbfd0ad49b865e5cc5389c6c038bb7d6221864555fd651fcf"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/baseline.json",
+      "bytes": 1955,
+      "sha256": "361901502d0c329d8b137f8c4eb944b9fa804ef9b913690869c2081b6d610421"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/boundary-before-independent.test.mjs.txt",
+      "bytes": 20178,
+      "sha256": "1951cb802930e7fd34294911488a1636735f2e2025bc22d5629da55b9ed0f29e"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/boundary-before.json",
+      "bytes": 1308,
+      "sha256": "0a3896e763d294fcd5aee87e551973e838fb97981dd04171db0beac07eebe24d"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/boundary-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/boundary-before.stdout.bin",
+      "bytes": 7665,
+      "sha256": "ba0b22541e72499861d3aad9c1e9a504c18ea3b254a0dd3fb708a6a6fb5ff388"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation-facts.json",
+      "bytes": 1313,
+      "sha256": "9a3e7a6207c8e15666866419cf5d7ef195110c5a28b7d71ff4936edbb993e287"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation-facts.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation-facts.stdout.bin",
+      "bytes": 4727,
+      "sha256": "6d2d0df786ab1c4e9104545d58d4f6c670c7887092248f517a1e9b44f67f11ff"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation-finding.json",
+      "bytes": 666,
+      "sha256": "86380c0499b2c12af9117e59982826d30f03008fd81dbc218c8af4c0cb90a26f"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation-independent.test.mjs.txt",
+      "bytes": 18142,
+      "sha256": "a8531a3cc7be46f7d50dda9905fbbe8a8003ac4d2842bcc28d0bedc82edd7e26"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation-postgres-service.mjs.txt",
+      "bytes": 9911,
+      "sha256": "711115a758fedeb1d9e09c73d66f62957d59126b66c520bae8d9c076c6680fb2"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation.json",
+      "bytes": 1301,
+      "sha256": "c06bcd75985d6f82399f626709c9e587741e76e834cd78f4fd4774bd4accad71"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation.stdout.bin",
+      "bytes": 4529,
+      "sha256": "4a04f5f92ab90c24e003d9c294ea065f09814bb21177b4137c7dc5d3bcd20480"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cleanup.json",
+      "bytes": 370,
+      "sha256": "6be245f889f8fe248cf2724ff50320c8cb4469ef439297588cfcce419009d71d"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/concurrency-fixture-correction.json",
+      "bytes": 675,
+      "sha256": "2299d98ef2aedaee61a1f388a88f32ec68902bf2cc295b648376e338e10d56a1"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/final.json",
+      "bytes": 1349,
+      "sha256": "7a0839343ec4d370c9900438364ceff18c9cecb6acb4f5aa02575d90fb9f6fdf"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/final.stdout.bin",
+      "bytes": 6707,
+      "sha256": "8836a7b1da62191febb80815d1c6ef256e20dd75a1cd6c2a1d8283fcb975410b"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/first-fixture-correction.json",
+      "bytes": 455,
+      "sha256": "d7acecabd68c4fc3f25d390bc2ed8bbf8b01a2738cc829008c71f93ff6f7773c"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/first-independent.test.mjs.txt",
+      "bytes": 17375,
+      "sha256": "e102bf22812109ea55992ce67bb1f3471377ef098f7fce58ea091cde978da2e4"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/first.json",
+      "bytes": 1349,
+      "sha256": "514bc2e1f9a0ccd94ef57cd3c9dbc248a26cd967435e576c692e9d4f6db60c86"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/first.stdout.bin",
+      "bytes": 6674,
+      "sha256": "e0c208877bbc49b2107f88d36181f5dd68bdf4d9171135fd0785865d4725deea"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/repaired.json",
+      "bytes": 1355,
+      "sha256": "04496d375d9bb2708e408b02998884e1c4e7fa6c37bd694b95841c4ca035d077"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/repaired.stdout.bin",
+      "bytes": 6227,
+      "sha256": "f9159f76e834d8bca4cd71a1800671e52351c7a67a49aa5c4a8abcb29723a8c8"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/setup-notes.json",
+      "bytes": 558,
+      "sha256": "51359647c77f986eff32e86200eaea5dbd3201f16a1a267661133aff0d119af4"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/source-preservation.json",
+      "bytes": 418,
+      "sha256": "8179de4f7906e7e041125d807648395255ac4b84b7f8dee65f7c2c6cd88a09ec"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/verify-packet.py",
+      "bytes": 1084,
+      "sha256": "8efe25f551105e4c7e5ea6138242e8e9e9396b0a2bb964f4864eab2c26a89559"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/version-ack-before-postgres-service.mjs.txt",
+      "bytes": 11807,
+      "sha256": "a7222c933bf1bb714e2219453ebc6f6bb7b9796d800b8c38e1949a1fdff7cbd2"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/version-ack-before.json",
+      "bytes": 1313,
+      "sha256": "19cfadb69beb02cc2a57b0c620e114ec98f8cd2f53ed0f346d998ad246b67cde"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/version-ack-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/version-ack-before.stdout.bin",
+      "bytes": 4839,
+      "sha256": "c02cdb022db3b8a164da8a20162df5fdc76fb0b3b61bd791b9d2235922869338"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/version-ack-finding.json",
+      "bytes": 626,
+      "sha256": "ab10244a2e5aac3a985e98fcd57b488b0dd59e4995222d001ddd4a3875bf842d"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/whitespace.json",
+      "bytes": 658,
+      "sha256": "6ef4b268fa45be437984544075d151cfd4ff635eb7a96177320be450334e7179"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/whitespace.stdout.bin",
+      "bytes": 2424,
+      "sha256": "ca4098732b32490809246d702a9380fa06cef642ee2cc59d4e43a152d5b849eb"
+    }
+  ],
+  "reviewedSourceFiles": [
+    {
+      "path": "apps/artifacts/postgres-service.mjs",
+      "bytes": 12329,
+      "sha256": "67fe1bbdb1642cf19261229bd84eefd3fef1eba5f4974109b5280c48b354714e"
+    },
+    {
+      "path": "apps/artifacts/test/artifact-postgres-service.test.mjs",
+      "bytes": 17117,
+      "sha256": "b0c6bbacfa94c0fc7319f205644335c71fd686b51461a422fac01390762ecd89"
+    }
+  ],
+  "exclusions": [
+    "manifest.json (self)",
+    "packet-verification.json (records this manifest digest)"
+  ]
+}

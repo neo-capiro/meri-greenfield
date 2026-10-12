@@ -1,0 +1,57 @@
+{
+  "base": "23f2ba78879972538fd1b7b7a56b2f8e2626a6c3",
+  "acceptedArtifact": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
+  "acceptedBudgetKernel": "ca506ba1591b35eae5d389e551787017328eea73",
+  "references": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 6582,
+      "sha256": "a0650949b74e5aee709bd8b3c9d480f95f5b898778ac8f7b3927eb54b141437a"
+    },
+    {
+      "path": "docs/IMPLEMENTATION-STANDARDS.md",
+      "bytes": 11082,
+      "sha256": "d4f10f964ee207187abacd967649a1cfc9bdd468072dc01f859268f08b719959"
+    },
+    {
+      "path": "docs/plans/MERI-DEPLOYMENT.md",
+      "bytes": 86848,
+      "sha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388"
+    },
+    {
+      "path": "apps/artifacts/service.mjs",
+      "bytes": 11868,
+      "sha256": "88abc4f0d9a449dbd547232e772015abef5a60473de22c4b55854ca5a36cefaa"
+    },
+    {
+      "path": "apps/gateway/index.mjs",
+      "bytes": 3220,
+      "sha256": "d32b969c816c352e523af3bd470af715481a5691c5e1b550e07ea4cf5a33fc09"
+    },
+    {
+      "path": "apps/gateway/budget/tool-budget-execution.mjs",
+      "bytes": 4485,
+      "sha256": "79c95fede4bcfecb0bafa6b00bea5a85e0ef5cd4328c9d8e381c611083f7e9dc"
+    },
+    {
+      "path": "apps/gateway/budget/postgres-tool-budget.mjs",
+      "bytes": 13226,
+      "sha256": "1605c224a0caaed35121768be388af39e3aabf9b84f4e70767c7dfbdda8a0336"
+    },
+    {
+      "path": "apps/gateway/budget/tool-invocation-owner.mjs",
+      "bytes": 9007,
+      "sha256": "ede1672b79da5055f3ea8a2e1b8603c50d5ba9783914fab24195a8e6356aec75"
+    },
+    {
+      "path": "apps/gateway/budget/tool-invocation-record.mjs",
+      "bytes": 3580,
+      "sha256": "dc3fc265fe10d2013d50a96441c9af8ec8032b16f4c74c2cd7f446ee588f47c3"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-invocation-20261012/review/invocation-harness.mjs",
+      "bytes": 12240,
+      "sha256": "de2589e662788859c97fd54afd37730309e90db3ed8ad067711348baf68a741a"
+    }
+  ]
+}

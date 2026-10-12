@@ -1,0 +1,16 @@
+{
+  "base": "83d0f5951a5e0c5d86d3a8684c2396b6cf13f794",
+  "stage": "FROZEN_BEFORE_COMBINED_CANDIDATE_INSPECTION",
+  "scope": "Independent final canonical integration of thirteen operations; accepted domain internals are not redundantly requalified.",
+  "criteria": [
+    "One canonical registry/loader owns all 97 typed descriptors, 96 mapped selected source capabilities and zero pending; original 139/96/43 scope remains intact.",
+    "All prior 84 descriptors remain exact except explicit previously reviewed metadata corrections; new thirteen are finite, unique, schema/hash/version bound and source-disabled with null production handlers.",
+    "Actual canonical request advertisement uses raw Request definitions and actual validators, accepts supported defaults/aliases, refuses caller-owned trusted authority and unknown fields.",
+    "Four schedule operations reuse actual scheduleToolValidators through one scheduleContext namespace and the accepted application tool interface; immutable review/approval binding and pending behavior are preserved.",
+    "All thirteen accepted family source identities and required dependencies match exact freezes; no alternate registry, approval engine, JSON walker or imported legacy implementation.",
+    "Original public0.1/contracts/locks and unrelated files remain exact. Ten authorized existing-test updates preserve every original behavior assertion; finite allowlists/static external paths may change only as explicitly disclosed with reversible patches.",
+    "Actual connected canonical tests exercise schema selection, context admission, normalized/results correlation and unavailable production paths rather than just descriptor names.",
+    "Root broad/public source receipts must bind immutable integrated source and preserve all raw failures. G1 runtime remains false; full53 requirement ledger stays2 discovery/51 pending.",
+    "No native/service/SQL/cloud/provider/security/spend actions. All independent failures and owned process cleanup retained; final ACCEPT_SOURCE or HOLD applies only to the exact combined source/evidence reviewed."
+  ]
+}

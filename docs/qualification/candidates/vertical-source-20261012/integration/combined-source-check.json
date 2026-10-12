@@ -1,0 +1,43 @@
+{
+  "command": [
+    "bash",
+    "-c",
+    "node --test --test-concurrency=2 packages/contracts/test/*.test.mjs evals/qualification/hermes-session.test.mjs apps/gateway/test/*.test.mjs apps/control/test/*.test.mjs apps/control/schedules/test/*.test.mjs apps/artifacts/test/*.test.mjs"
+  ],
+  "cwd": "/workspace/meri-vertical-source-20261012",
+  "sourceHead": "7c92f09870496855e968784c30869f185f39250f",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-12T22:54:02.541858+00:00",
+  "durationSeconds": 131.077,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 385679,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 387212,
+      "status": 0
+    },
+    {
+      "pid": 387231,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/integration/combined-source-check.stdout.bin",
+      "bytes": 512054,
+      "sha256": "0674334cbcda8e038e094a2247191dbcf3d449626273d9c4fdb4bdb850aad92a"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/integration/combined-source-check.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,8 @@
+{
+  "source": "19ca2562da9476f4d9180e788c6536571d3ba840",
+  "testFreeze": "68f5c63afb44d78c3383522efd5d64ef7c8fa6d6",
+  "pass": 34,
+  "fail": 2,
+  "finding": "After a validated correlated version commit ACK, cancellation during canonical marker or settlement exposes ARTIFACT_EFFECT_UNKNOWN but incorrectly versionCommitted:false. The same field must retain known ACK truth while delivery/accounting remain uncertain.",
+  "repairScope": "Observe a fully correlated valid ACK in the private wrapper only; do not change service/kernel, grant current delivery authority, or claim physical persistence beyond returned receipt."
+}

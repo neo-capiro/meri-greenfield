@@ -1,0 +1,126 @@
+{
+  "source": "ca506ba1591b35eae5d389e551787017328eea73",
+  "tree": "f235ecf6d5017a35f9f913dd97b81b98b77b7fef",
+  "files": [
+    {
+      "path": "apps/control/commands/approval-context.mjs",
+      "blob": "c2f679fa9adfe594274089636f30240c6826e63f",
+      "bytes": 1617,
+      "sha256": "2d8c60f3c782295e8cab335c701fabc8a4d33287b7ca939246bf698985bd4073"
+    },
+    {
+      "path": "apps/control/commands/durable-executor.mjs",
+      "blob": "5e6e7536d632ecaeb6c286fa2d723dfdcf084625",
+      "bytes": 3046,
+      "sha256": "1fb45049a3f214e9191b30818dfa122cb999eacc8316bf4ee5a5dbe6ee08b80d"
+    },
+    {
+      "path": "apps/control/commands/executor.mjs",
+      "blob": "27bbae087a013780605c9fde6ac05199d8ba2450",
+      "bytes": 8892,
+      "sha256": "a20227164972ed53c16d4e198438399a7dac1fd39ed72de428a5a99187d55863"
+    },
+    {
+      "path": "apps/control/commands/intent.mjs",
+      "blob": "05e9de693bf90d2398d0579a221e8811298a669f",
+      "bytes": 189,
+      "sha256": "9e10bf80b170e8e3e7ae9da9fca44ba480ef05e90ddaec05f9f224b1af87b19e"
+    },
+    {
+      "path": "apps/control/commands/migrations/0001_commands.sql",
+      "blob": "532c7d29b323ac6df92d17040181f5d8f9efdfa4",
+      "bytes": 1074,
+      "sha256": "252683e2db8ffd36dbc7b3cfdada9a28f59a0f192522253a852686369560704b"
+    },
+    {
+      "path": "apps/control/commands/postgres-command-journal.mjs",
+      "blob": "eb07fc072474b9c82f026af833616858cb181dd1",
+      "bytes": 5343,
+      "sha256": "c4152987233f7ba4a68b7e013d087d27c8ddadb35b058f21c185d99bec6dd08c"
+    },
+    {
+      "path": "apps/control/commands/protocol.mjs",
+      "blob": "45e452f1916218fc4d65f6667c0f14354a5e18cc",
+      "bytes": 159,
+      "sha256": "998a7617ba2b5c6ae9abffa9b25527c4c011476a36cd647c7e98deeaefb0218c"
+    },
+    {
+      "path": "apps/control/commands/source-http.mjs",
+      "blob": "8e496614327deff97de0cab8557baa87923575aa",
+      "bytes": 7185,
+      "sha256": "c864f91d547a2a703e71ac69d7cb3f7c4c34f309bae49611b3b07779d6739654"
+    },
+    {
+      "path": "apps/control/commands/source-projection.mjs",
+      "blob": "e6b1819332250a750ac6535267e621f7cb5f154d",
+      "bytes": 3269,
+      "sha256": "8d7febb1bc91f231210e52921c1dd7223a0bcd4560897b8000e66c2e6e9f575f"
+    },
+    {
+      "path": "apps/gateway/authorization/current-tool-authority.mjs",
+      "blob": "d5a03019779ef40af8437f0344137685fbde2e0b",
+      "bytes": 6613,
+      "sha256": "794e1f54f6966d2d852d0483606c76410ed684d889ca24c7ea78dac6f2c01043"
+    },
+    {
+      "path": "apps/gateway/budget/postgres-tool-budget.mjs",
+      "blob": "c5bd2b0eb74491f8f0b493774798e3acdb406e89",
+      "bytes": 13226,
+      "sha256": "1605c224a0caaed35121768be388af39e3aabf9b84f4e70767c7dfbdda8a0336"
+    },
+    {
+      "path": "apps/gateway/budget/tool-budget-dispatch.mjs",
+      "blob": "565f5f518b6c6109d29d208ffa455856032e16bd",
+      "bytes": 623,
+      "sha256": "d6dace94cb0232047a2922b8c0cc6769f090e07b36aca51e64320287ebb552aa"
+    },
+    {
+      "path": "apps/gateway/budget/tool-budget-execution.mjs",
+      "blob": "9c4b721a185fa58755e9250682f45b5d3fee3d33",
+      "bytes": 4485,
+      "sha256": "79c95fede4bcfecb0bafa6b00bea5a85e0ef5cd4328c9d8e381c611083f7e9dc"
+    },
+    {
+      "path": "apps/gateway/index.mjs",
+      "blob": "412c6d03f951b2b6c608e87294d85113bdd0b220",
+      "bytes": 3220,
+      "sha256": "d32b969c816c352e523af3bd470af715481a5691c5e1b550e07ea4cf5a33fc09"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/artifact-file-validation.mjs",
+      "blob": "3ec298823fd26a1421837c5fed814ee06281e8f9",
+      "bytes": 5611,
+      "sha256": "82678a74912a4ad58b3c72322acf8a89a0f7b3a23880bdb8b62404251489a4ea"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/execution-boundary.mjs",
+      "blob": "22099d1728b4c62742b55c9bbefa1151f0599788",
+      "bytes": 1562,
+      "sha256": "e1c3cfb9fd75b7e623f1bc9492ab06793b4145277336eac1039ff5eef8e6690c"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/execution-intent.mjs",
+      "blob": "baaaf477002d4aa64edf54ef01b860a670085aae",
+      "bytes": 2727,
+      "sha256": "eaec7046bd40fdffe97b92a4ed44f0ef458f6ac93b501d447ac201748da2350b"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/task-update-validation.mjs",
+      "blob": "dd3ef9f7dcab784010f19e1bbb490da1ba5ef6cf",
+      "bytes": 3186,
+      "sha256": "883ee549d2520ea47c558aa33e893eac8f5e76596aef834c7775b4c2ae35d5e5"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/task-update.schema.json",
+      "blob": "4a8df50e2f9df9e4ae6533e93785adb44adf625a",
+      "bytes": 5176,
+      "sha256": "2def0842b4f72ce862df09f0064b0ea32ab7428d25cb2f10bdc2b6055d26c857"
+    },
+    {
+      "path": "packages/contracts/test/command-artifact-file.test.mjs",
+      "blob": "52c21320fe3e17d21372328b4cd9d1a38c4ea644",
+      "bytes": 11342,
+      "sha256": "87ecc32b4cf448b33fa209b5646e4d6d19f45598f6ef89b558d1544669fca427"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "canonicalImmutable": "17 pass then module missing: apps/gateway/index.mjs was outside initial sparse selection",
+  "canonicalImmutableComplete": "17 pass then same module missing: git sparse-checkout add rejected unsupported --no-cone; shell continued to capture",
+  "correction": "git sparse-checkout add /apps/gateway/ succeeded, required file explicitly checked before unchanged test replay",
+  "final": "canonical-immutable-replay25/25",
+  "claim": "Setup errors, no production or test behavior repairs."
+}

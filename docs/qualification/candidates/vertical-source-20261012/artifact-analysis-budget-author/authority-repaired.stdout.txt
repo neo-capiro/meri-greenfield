@@ -1,0 +1,47 @@
+✔ concrete boundary plus canonical owner returns exact pending result and one conservative charge (90.743812ms)
+✔ disabled/typed/code requests and borrowed executor injection refuse without I/O (4.272202ms)
+✔ no exposed kernel, legacy invocation, pool disposal or native callback selection (5.862383ms)
+✔ request/context/program snapshots cannot be rebound by caller mutation after submission (11.028579ms)
+✔ same delivery rejects changed immutable program without a second dispatch (13.518432ms)
+✔ changed admission manifest conflicts with same owned delivery identity (12.349895ms)
+✔ foreign program scope and changed trusted binding refuse before pool (2.885228ms)
+✔ credential mismatch and revoked first authority execute no native port (8.502811ms)
+✔ immutable maximum exceeding current capability is refused rather than rewritten (8.92042ms)
+✔ immutable deadline exceeding fresh authority is refused before reservation (8.116091ms)
+✔ shorter persisted allocation window is detected during preparation without native dispatch or reservation (5.666488ms)
+✔ invalid admission receiptSha256 cannot dispatch or fake settlement (6.793142ms)
+✔ invalid admission manifestSha256 cannot dispatch or fake settlement (6.146049ms)
+✔ invalid admission imageDigest cannot dispatch or fake settlement (7.288146ms)
+✔ native port rejection retains exact invocation uncertainty without refund/retry (9.737057ms)
+✔ invalid produced hash retains uncertainty and never publishes (12.011156ms)
+✔ invalid produced output retains uncertainty and never publishes (7.521627ms)
+✔ invalid produced scope retains uncertainty and never publishes (7.865594ms)
+✔ invalid produced bytes retains uncertainty and never publishes (6.779501ms)
+✔ validated output snapshot survives borrowed receipt mutation during later authority await (9.155192ms)
+✔ authority refusal at check3 retains known immutable outputs and pending state (7.39041ms)
+✔ authority refusal at check4 retains known immutable outputs and pending state (8.50168ms)
+✔ lost prepare ACK keeps canonical identity and explicit accounting reconciliation (6.455124ms)
+✔ lost reserve ACK keeps canonical identity and explicit accounting reconciliation (11.250062ms)
+✔ lost marker ACK keeps canonical identity and explicit accounting reconciliation (13.986586ms)
+✔ lost settle ACK keeps canonical identity and explicit accounting reconciliation (14.002219ms)
+✔ admission expiry while completion ACK is parked prevents live settlement but permits explicit reconciliation (10.386584ms)
+✔ cancellation during reserve ACK executes no native port and preserves original UNKNOWN (24.825219ms)
+✔ metadata response overflow preserves produced outputs but no fake settlement/publication (9.576665ms)
+✔ outer cancellation during sandbox dispatch retains explicit output uncertainty (8.356001ms)
+✔ outer cancellation during reserve preserves known output/accounting state (7.001785ms)
+✔ outer cancellation during marker preserves known output/accounting state (9.617117ms)
+✔ outer cancellation during settle preserves known output/accounting state (9.038487ms)
+✔ fresh revocation after parked reserve refuses native dispatch (6.902395ms)
+✔ fresh revocation after parked admission refuses native dispatch (6.974194ms)
+✔ changed run-deadline during admission refuses unchanged intent before dispatch (7.403589ms)
+✔ changed capability-expiry during admission refuses unchanged intent before dispatch (6.771919ms)
+✔ changed output-bytes during admission refuses unchanged intent before dispatch (6.511058ms)
+✔ shorter independent admission expiry permits original intent within current authority (10.21784ms)
+ℹ tests 39
+ℹ suites 0
+ℹ pass 39
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2829.742834

@@ -1,0 +1,1904 @@
+{
+  "base": "e5fb3963de787bbd7b7663316c368f15814897da",
+  "operations": [
+    {
+      "id": "mail.read_thread",
+      "sha256": "8f9e6204dd6f6189fc9af90a57c6a45272be1f17ed41495bf9481e84e9f19543"
+    },
+    {
+      "id": "mail.list_messages",
+      "sha256": "deaae1d46eb76d273a2e738cfaf5f88d98992baed291b18e61177d67fc426499"
+    },
+    {
+      "id": "mail.search_messages",
+      "sha256": "5f7072ca4ca1d6511f66a252d8bb82d60e438e5e85d9ea53acb734fb85923a21"
+    },
+    {
+      "id": "meeting.list_upcoming_meetings",
+      "sha256": "3a378d6cc7cdab7ade26e5c05df9d645b6d8898e6dba5122e6319727dc5d955c"
+    },
+    {
+      "id": "meeting.read_client_meetings",
+      "sha256": "033cc053bf4cd404e152bf2d44a367bf8e1d5fa17e9f9804749691a49b9663bd"
+    },
+    {
+      "id": "meeting.query_debriefs",
+      "sha256": "bcebc2a1214b0ec46a3da305c22859db49759ae993fcf9ad89904b54ef5ed627"
+    },
+    {
+      "id": "query_tasks",
+      "sha256": "d4759849397db18893c6514ab3f7a25bbadbe97d2352a4bac256524a9f670d54"
+    },
+    {
+      "id": "search_capiro_data",
+      "sha256": "c6ea9286eb9c2e0ee4906a6f2596b8428efe38fba46e9befc6a87851ed63cfc5"
+    },
+    {
+      "id": "search_federal_contract_awards",
+      "sha256": "51fcc534262bfc28505e7dc88bc7dd34ed3decb1fedf18642ad9100f36d44161"
+    },
+    {
+      "id": "search_federal_subawards",
+      "sha256": "0f7a88433634300136d7ee6dd52a861aae8ceb401c38c2f18eaebe04163ec468"
+    },
+    {
+      "id": "search_contract_vehicles",
+      "sha256": "1bd8dad33cc73f9705b7f3cd4fef8cc2c81bb8dc7bffca92ba3d2524013774a5"
+    },
+    {
+      "id": "search_procurement_forecasts",
+      "sha256": "10b4f896d921881a74071469baf6462a6736b05bed712d85d92e88486a81b3b2"
+    },
+    {
+      "id": "get_district_federal_market",
+      "sha256": "bc2363058bf9fa87e2e0882f1b73d6af4a7515b3cb39dd5371fd131e2c37d1a4"
+    },
+    {
+      "id": "memory.list_own_proposals",
+      "sha256": "b9a560ebbb7f9acac05bbdb1a172314832103944f937e42fc12dcb07b8b26fe6"
+    },
+    {
+      "id": "query_action_items",
+      "sha256": "8860ad69c3cd22e1a94b63fe7c4a5a73a747972792a04c1f0e0f97e52ca8d61d"
+    },
+    {
+      "id": "lookup_client_registry",
+      "sha256": "f40ab2f22e5688e13661b61bd0ccd96a0fca2765583573d10c23d6275c985ab6"
+    },
+    {
+      "id": "get_research_portfolio",
+      "sha256": "996a6d451c432c7aad49035a6c36be7a3056dabf949d04d6fbf72b6e50ef09a1"
+    },
+    {
+      "id": "get_research_portfolio_changes",
+      "sha256": "2590d288f078ddfd4933b02cce2f2033f76c2ae9ffaa245072972bc841b27a48"
+    },
+    {
+      "id": "get_business_development_context",
+      "sha256": "6d949955b5295a29741e5de14399aaf72fa996b676d766ac42096cd861686f3c"
+    },
+    {
+      "id": "get_business_development_evidence",
+      "sha256": "309add88943556e711c7e41fb3be2160471766c8851c6e8dbc7280d091df25d1"
+    },
+    {
+      "id": "get_business_development_recent_changes",
+      "sha256": "3f1d5fcb0dd8a0e181d226cad685e3bcf0fcbfc4bb7cac58a0bf5a232d360fed"
+    },
+    {
+      "id": "search_funding_opportunities",
+      "sha256": "dc719f84bd7e9f81e987496edc48d53b2d898f493a72012046b0a6345ee087b6"
+    },
+    {
+      "id": "get_funding_opportunity_requirements",
+      "sha256": "27cc70ee48248c3403109cfbd23d93e3668f946b2f2e850d9af7b06fdd5fc631"
+    },
+    {
+      "id": "get_funding_opportunity",
+      "sha256": "30d502f21f80e69ddb7d8bef916bc4fc6c056313133a47c3b4fe7226e215247f"
+    },
+    {
+      "id": "get_opportunity_client_context",
+      "sha256": "2299a866f594fd3a72bc08b39f83e26bf821ca6dae269b7515f8d661a5d59e36"
+    },
+    {
+      "id": "get_opportunity_government_landscape",
+      "sha256": "4bf01e7ec3c8266351c8104d942447b74ab5c066ff3f042eed9b0a546a627fc0"
+    },
+    {
+      "id": "read_client_documents",
+      "sha256": "582fab9533d4645078fc41cd510b8bb61c16f9aa685380d39460c5f3ad1d7c32"
+    },
+    {
+      "id": "query_economic_data",
+      "sha256": "837c328ee8f327749cb31ff02008d190599ee538659f7b8924ea4afb30caf19f"
+    },
+    {
+      "id": "search_federal_grants",
+      "sha256": "2b3d3f5787d75dcd718e642951819655ecec3860b889e9e52f4c6581fa32ae46"
+    },
+    {
+      "id": "search_federal_awards",
+      "sha256": "b87168c8b56a4aefb45bcf55a7f7a3b419207812977f0d83e008db7c3a39076b"
+    },
+    {
+      "id": "get_district_nexus_context",
+      "sha256": "e573e8337a3b6a53b0a5c62221ba79acf9a56aa366aee75b5e3806a89505cbf6"
+    },
+    {
+      "id": "get_district_nexus_changes",
+      "sha256": "4d265c2395f910177bb31b099d779639d292657d5e16ee976ad126f450e1e987"
+    },
+    {
+      "id": "search_state_bills",
+      "sha256": "75786d722eb2ac9e21ac4eaa9cc1f9a6bc5b04e404beb1b186b7e06e8377325d"
+    },
+    {
+      "id": "get_state_legislator",
+      "sha256": "2285a7260b0ebdac0524876c34c0811e7ff1f7e74fb75b0b18b1326eb42173be"
+    },
+    {
+      "id": "search_cbo_cost_estimates",
+      "sha256": "52b552cc4a45b0bc22d51a38c38ccd9f46ac3baca80d24a96f0d4f2cd350bd75"
+    },
+    {
+      "id": "search_gao_reports",
+      "sha256": "d51f41f0a9eec7a623b0a4a69a31907d829115996cc75689d498ef15fe6fafcc"
+    },
+    {
+      "id": "search_crs_reports",
+      "sha256": "66dbbe1ef8fc4fbe19d9fb6ef1b093a21a7d2e3806c0d01f169fa96df5a99953"
+    },
+    {
+      "id": "search_sec_filings",
+      "sha256": "790f0be1dbe12d2e72c43a51dcc2e67c076d0ae78340db8603f4cae11b83ec40"
+    },
+    {
+      "id": "search_fara_registrations",
+      "sha256": "c876d9393abe000daba74fc8e328a805dda1706bfe80fd8f17473344a4021286"
+    },
+    {
+      "id": "search_lda_filings",
+      "sha256": "d741ef7380289fca71a3bc9191815c9cb4c4a2fc2dfa58b2ce1e516a45fee8bb"
+    },
+    {
+      "id": "search_acquisition_personnel",
+      "sha256": "a6cbfb4ba4eefb6cadb4455520bac7d10cbe02670d55297208d47d8201d7782a"
+    },
+    {
+      "id": "get_acquisition_person",
+      "sha256": "9892e9c922ca926ffd63639cf546d2346b2e9d3eb76a93820eb525c77009b681"
+    },
+    {
+      "id": "get_bill_status",
+      "sha256": "26e11b17a17d0b8517ecfc0f4c3e4503a522dedf182cfb171480dc54fdf91ca9"
+    },
+    {
+      "id": "search_floor_votes",
+      "sha256": "3ef7e0bf622c34a7c735e470b311fb5c940d35dafdea5941e35a3d8258b64426"
+    },
+    {
+      "id": "search_congress_bills",
+      "sha256": "bb002952b6d245edf19c9f7f0ebeba3ac8188f3be424d798d1ea9370d098a503"
+    },
+    {
+      "id": "read_bill_text",
+      "sha256": "bfaa72419f5900168001f71d701c6cb33d17689c246ac33ee515099f17fec168"
+    },
+    {
+      "id": "get_committee_roster",
+      "sha256": "19b446d4502afbce14e4e4cf47ce5066a2f705a3d7b918051c701b0556bceec0"
+    },
+    {
+      "id": "list_members",
+      "sha256": "17ee0e027a7c25275389a9bad67c100d5949714db8e2ee92d7d18e7ee251866b"
+    },
+    {
+      "id": "get_pe_contractors",
+      "sha256": "b3f78253d4e3410cc0fc38142cdef6f9e0c73faef4e3e772bea9199b72f3c3c9"
+    },
+    {
+      "id": "get_pe_bills",
+      "sha256": "a3eee41b85af331af0c4d6c8dd952caff07487ae9bf40a9e978646fc9c8b9193"
+    },
+    {
+      "id": "get_pe_report_language",
+      "sha256": "4cb34d518b3098d5161d8ebfc6494bbc570dea627b63cd58b1e297170dffeefb"
+    },
+    {
+      "id": "get_state_rule_status",
+      "sha256": "0120bc6cdf45d9a14ab72d9ce7eeef723358bef02f3bc2b9b83071fa5cd10f2f"
+    },
+    {
+      "id": "get_certification_status",
+      "sha256": "a4dbd592f055da4799cafb4a9de2071f0e8f551fa15b580917b8cb7bee0830a6"
+    },
+    {
+      "id": "search_intel_articles",
+      "sha256": "dfc90e66e92c26ce441ecd0ae9119800633173c04755f95d1ce1d78ffbe974e3"
+    },
+    {
+      "id": "list_global_datasets",
+      "sha256": "d6aad7afbd472e82360b86f1c6a640d3e8b0247935cc931566745689d3187f3a"
+    },
+    {
+      "id": "get_representation",
+      "sha256": "e32eb68c2669e17a3b08ec1f9843f99cd1a2fb57c5836e74583aed9fa799bc08"
+    },
+    {
+      "id": "get_state_bill_status",
+      "sha256": "cf23258c053a814de222c1130b29e933907bc8346be1605be101ee26179f914b"
+    },
+    {
+      "id": "search_state_floor_votes",
+      "sha256": "26ee2c274cff93b1d90c274b04cee203c539337c9abfbccaec733ac978fd7dab"
+    },
+    {
+      "id": "query_regulatory_dockets",
+      "sha256": "43d28c248590b83f9d65a54ccc517fe7b63d88675f8ac880f9a6bdebf3c1d19d"
+    },
+    {
+      "id": "find_contacts",
+      "sha256": "810a969b33f2f3d1f16faab6ea7dc175bd69ab099f4b8e2b7f5f06376499694e"
+    },
+    {
+      "id": "resolve_entity",
+      "sha256": "f299642b75ea6592ef52e5a603db5f62a923faa4357b16a52980a55fcd52abe2"
+    },
+    {
+      "id": "search_tracked_bills",
+      "sha256": "4d9d2bf17d687ca9db4218fd4082b6fd24bbab00f37b81426b09da339a33ea3c"
+    },
+    {
+      "id": "query_intelligence",
+      "sha256": "34644bc7baf75a20de97e87e4d855b61f8eaf8c0cc6d546a152d371e71dad50b"
+    },
+    {
+      "id": "search_public_web",
+      "sha256": "17b6176ad6e50856b838aec7a3f7a814c4fd98b815ff01d81053aee352a1e6e0"
+    },
+    {
+      "id": "scrape_web_page",
+      "sha256": "8800dc3e3b19527e5bbd3aab1e44607bfb418dd9c966b14edbe5a325dda4e12e"
+    },
+    {
+      "id": "search_sam_opportunities",
+      "sha256": "1538c725d8e48fff2e6e7b2b7cb554de4d50b056a27d146c65c98b333f90aab6"
+    },
+    {
+      "id": "get_florida_budget_project",
+      "sha256": "e5f8da073c77361a1a4ac293ffc02917242198258d912142a8869ffd9838923c"
+    },
+    {
+      "id": "query_outreach",
+      "sha256": "5d0fff2421a7035d272495406f8d6970596abd0715bbda18e108f75e93227ba0"
+    },
+    {
+      "id": "search_program_elements",
+      "sha256": "bfac94b0337a357c66d3051f410741c0ec93bbb6663071728fd4c7b4e0320250"
+    },
+    {
+      "id": "get_program_element",
+      "sha256": "68ce195ae2fd8888cc25f0410c2547c1479fc596c9c283f3a1ab2b8934a5b60f"
+    },
+    {
+      "id": "get_pe_budget_timeline",
+      "sha256": "f28004d1f2ecfda5ce18ea6ead55c5c22781e10fc70c8fafced5a4af00e524d2"
+    },
+    {
+      "id": "search_client_knowledge",
+      "sha256": "7d40b5889d8f2d27e4881462a9a81f8364b4af690b34aeb0f31c315a41f0b12d"
+    },
+    {
+      "id": "query_knowledge_graph",
+      "sha256": "1c6651bcc3259b9e4a66adda6f268b6fb69c8ef2436aa6c92d138313fcaa387e"
+    },
+    {
+      "id": "read_monday_client_boards",
+      "sha256": "fc35512de86bb0d1af81d062c708e9677b4e4da3969b2a178947fed5c13df1ca"
+    },
+    {
+      "id": "read_chat_attachments",
+      "sha256": "d325d0543a6d649cbfaa69991bcc9620269f46ecbb68636b84bd0ff9f76e456d"
+    },
+    {
+      "id": "search_memory",
+      "sha256": "d5688a635fef321296ae5687ad242c84f5040631c0913e03b91ad4b1ff2f52d0"
+    },
+    {
+      "id": "get_client_context",
+      "sha256": "999598a3be91a34cf7d9acef977d977c7cebcb9e152072b36643045c876005dd"
+    },
+    {
+      "id": "search_research_sources",
+      "sha256": "1f963b4edfb800de6816021391bb0975e09ba8af46d9ffe749fcd8c3a53d5ede"
+    },
+    {
+      "id": "query_global_data",
+      "sha256": "bc3c6b1212321eaef5d7cfa6c67e6cdf823d783faf615101a910d38d1a229c33"
+    },
+    {
+      "id": "search_legislative_research",
+      "sha256": "0a63a62b06466b8669201706728428a3b10ac56fb47415215d9c9b5f49a8054f"
+    },
+    {
+      "id": "get_legal_reference",
+      "sha256": "9feddf94e018f5b25998a2691c8cd8796c47b28912e296a389c8d1034026bb7c"
+    },
+    {
+      "id": "actions.query",
+      "sha256": "ee99e6ae6eab7eb6e21a6bf47c5b3f12cc60582dd50fddebb977717b63a008ff"
+    },
+    {
+      "id": "search_legiwatch_news",
+      "sha256": "ddb6de9cd99823e3464b5be4b9d6cb905e7d7674cf293e1fe481470cfeadd70f"
+    },
+    {
+      "id": "search_committee_hearings",
+      "sha256": "31ad1ab30c20b38ab37ed31591e43a51599a7e82961ebedf03a9586e3c2369a7"
+    }
+  ],
+  "bindings": [
+    {
+      "id": "search_client_knowledge",
+      "sha256": "023b1cd5fda0629e1bbcba46955e4009e3207ccd93788d5890f59b5954c2b8eb"
+    },
+    {
+      "id": "query_knowledge_graph",
+      "sha256": "1b18007d650e23a837008420ad553730c403a22d38952d8b2b46998ebb2f7a57"
+    },
+    {
+      "id": "read_monday_client_boards",
+      "sha256": "e2587107306fef2693e8a26c3b576bf2bcdc5b71f6f66b2bc9cad70faeae1513"
+    },
+    {
+      "id": "read_chat_attachments",
+      "sha256": "80e4e2bc23c758048fc81ac324bd0d8fc3a3d0c5aac78df1f7929e1063c02563"
+    },
+    {
+      "id": "search_memory",
+      "sha256": "a74fceee4660f07de8169fd5442105a379cf2dd22bf49d0380eadf8583f1af69"
+    },
+    {
+      "id": "get_client_context",
+      "sha256": "23f7a5ad3cc14c09e98af6804fdbebdda74781fcbc2e1c4d71d1400b96cbebe8"
+    },
+    {
+      "id": "search_research_sources",
+      "sha256": "6d3a7a7ae5e4a71597be717629c2735a2430c3214f863b82f5f748b31fe8ed01"
+    },
+    {
+      "id": "query_global_data",
+      "sha256": "83fd70e362fc896e2c60614178e01d30fd6c8c38f06ab017440c66c47b28e1d3"
+    },
+    {
+      "id": "search_legislative_research",
+      "sha256": "d054d77b91372b1b1fe8654ef383ed674ac4275b0c1f30640c519aa09085dd5f"
+    },
+    {
+      "id": "get_legal_reference",
+      "sha256": "bc2fcab3fb5e18c3bbab816b5f37310b6fd824625feda91029a7cb9e58991f34"
+    },
+    {
+      "id": "actions.query",
+      "sha256": "f86b3316cd727bd6edfd6bd1c544f2fba5ae2269814b150a28cda4e999ebcfca"
+    },
+    {
+      "id": "search_legiwatch_news",
+      "sha256": "715e1bc0a49c8626f5f0e77fa4da83c6b99bdffb26f8cc9bf31a18789df53730"
+    },
+    {
+      "id": "search_committee_hearings",
+      "sha256": "d76898d7a3bbf6f5cbb2c6c22e63e3347c4e9959805a530b4ff242b75bd1d497"
+    },
+    {
+      "id": "query_outreach",
+      "sha256": "d47ecb2fcd82aad92802328d85be6b32f9400c2538b56f46e59ea42714b99baa"
+    },
+    {
+      "id": "search_program_elements",
+      "sha256": "d57041b5165fe7e7f81187accb56f3826f7dd383a4b82beececacd0d571a4daa"
+    },
+    {
+      "id": "get_program_element",
+      "sha256": "bc2c092a82ed3579690a9bdbcc723c54b85fbd9e26556462dec61aee32cb2153"
+    },
+    {
+      "id": "get_pe_budget_timeline",
+      "sha256": "a55a765cfe613ffc997418c4b9e9584877c40b94767e87d6769e5a7a1c4a0e3c"
+    },
+    {
+      "id": "search_public_web",
+      "sha256": "0d2a7ca0e25a49e9e4d459d9b4a3251c4ae8081ea77fe506364abb203904f264"
+    },
+    {
+      "id": "scrape_web_page",
+      "sha256": "7ecc10692b0b4ba7fb10fa6d3052ff757de525f52b6aed5c51a91ba8d7a15e98"
+    },
+    {
+      "id": "search_sam_opportunities",
+      "sha256": "e3b17a57c5143c62f2bcff2662d3c06359fea714543a308be0ead52564d1ab07"
+    },
+    {
+      "id": "get_florida_budget_project",
+      "sha256": "a822a3718f2693e75c22d55af382806efcafa9ff9c512e84a87da6da8f31b998"
+    },
+    {
+      "id": "get_state_bill_status",
+      "sha256": "70d4ca1684dd7d2d7e7e12614f811a213f111725631b9ba0cca68227832c3162"
+    },
+    {
+      "id": "search_state_floor_votes",
+      "sha256": "f9dbe92d3f6cc3d9c540f1099e16f0fa3b662e9f1e3ec70cf2b3006e564200a8"
+    },
+    {
+      "id": "query_regulatory_dockets",
+      "sha256": "9b1038b9aae7900936a11e38fdf907b6b2e6cfc8f8b3aead776fd95dbca4f433"
+    },
+    {
+      "id": "find_contacts",
+      "sha256": "dab2c6fcc9407b4f93b9f9e8c4f03920bcf8ec9b2a3648d569af08fb7a02a45e"
+    },
+    {
+      "id": "resolve_entity",
+      "sha256": "64a6e05b0543e51a3793e7b8d638be7a36f07568058b7741a0d58386b127fa99"
+    },
+    {
+      "id": "search_tracked_bills",
+      "sha256": "b5feca0031d94e4ffb6cae44927b946c6ac9443fd64802400e6c50b374f7dab9"
+    },
+    {
+      "id": "query_intelligence",
+      "sha256": "7d31f66e2fcc1277a6c8821003d87e8c4647308b72cf39b3f3cfd7b4b1b08962"
+    },
+    {
+      "id": "get_committee_roster",
+      "sha256": "fe4ada98eea7491feba6a8fda476165c84c0c1c58a1d73a4afb315481ca7b535"
+    },
+    {
+      "id": "list_members",
+      "sha256": "678fa5e33413cd9df456d27deece925873995600a0d1de7284fff01b70dbc1cc"
+    },
+    {
+      "id": "get_pe_contractors",
+      "sha256": "f8c855d16d4072c4e5934925301b7a23dc118590d8e349f1c7826f4676ed87aa"
+    },
+    {
+      "id": "get_pe_bills",
+      "sha256": "594517f569393d28ce5ce7c312b61f24ce917dd0861626b41470a266cd5d699d"
+    },
+    {
+      "id": "get_pe_report_language",
+      "sha256": "29e57a9d0d6d69583116c7563597e1f7eb380a55b3bc67f4574407813d64eb76"
+    },
+    {
+      "id": "get_state_rule_status",
+      "sha256": "c3b30d639628acf6050ca34a67d2c17d903fffe65d367746297bfa0f72235d26"
+    },
+    {
+      "id": "get_certification_status",
+      "sha256": "d74103e2ac349a582f9f6cc944140abcbbc2b2821d4bda68a569cf49ec0b7cdc"
+    },
+    {
+      "id": "search_intel_articles",
+      "sha256": "9780d710800ba24f44504723be9c4975dd107f2136b7ac618966f7f1fda116e1"
+    },
+    {
+      "id": "list_global_datasets",
+      "sha256": "8d8fef17c230ac48b3cf5289960809f50ffb2cbefe3b0b33c9b08835997139cc"
+    },
+    {
+      "id": "get_representation",
+      "sha256": "4e52ee44f5055f726af3ed74d7d72186b2ee54a1d37e39af60db2db4ec80da39"
+    },
+    {
+      "id": "search_congress_bills",
+      "sha256": "2dcc3a6d319ec1989342f33f91f3d394248c6f6f7041e513f61ad9db42921a56"
+    },
+    {
+      "id": "read_bill_text",
+      "sha256": "7b673f2ae77fe0accc4fdf1ecce8ba3aa2f9d47a367343d169cfeb8be85d8762"
+    },
+    {
+      "id": "search_sec_filings",
+      "sha256": "cae9436fa394d718e9f8dd26b932e908ff606c401b762fdb42e4a8a669cc82a5"
+    },
+    {
+      "id": "search_fara_registrations",
+      "sha256": "dbaaef40a7ff2d106d83b457f9ab7edcb11fb4bf6c0fd52d13f3fa90d1c256d9"
+    },
+    {
+      "id": "search_lda_filings",
+      "sha256": "9e9b4d18242f434e69be94a77713ba5c3b60331ba334173b94b530b4d213a5b3"
+    },
+    {
+      "id": "search_acquisition_personnel",
+      "sha256": "9a376cf586dc1c175ad03abbe95a3f90e580ab11c1a7b70fc75c4698250d6ecb"
+    },
+    {
+      "id": "get_acquisition_person",
+      "sha256": "932df3886c05a99e49ca9a248c293862852d47afa3a7e1100664d45381097846"
+    },
+    {
+      "id": "get_bill_status",
+      "sha256": "0e616950c39aade535a2515d0676ddcc34b27a6a056e85840da5d86f36a599ff"
+    },
+    {
+      "id": "search_floor_votes",
+      "sha256": "14d016dc65d577722a3586fc00fa656bdafae96d9c94017ea69aea2d8c7c6769"
+    },
+    {
+      "id": "search_cbo_cost_estimates",
+      "sha256": "8232cc93f167553c055981c7ff46c565e9d13ad9f775db6f24b71c1d96af48ae"
+    },
+    {
+      "id": "search_gao_reports",
+      "sha256": "38063785591fbbfc316b5fc5a035b40e0fabeda65342995aa1cba5365168d9fa"
+    },
+    {
+      "id": "search_crs_reports",
+      "sha256": "0ad9948f852e2f90338b6ffa1fa142404f91b53a1d8053986ff9cba3a9985afc"
+    },
+    {
+      "id": "search_state_bills",
+      "sha256": "7ce644daffbfade8b45b4b8ed8a5faa7a638ea4d3f8f0c2662fd7e50211cd880"
+    },
+    {
+      "id": "get_state_legislator",
+      "sha256": "fd70fa200c95cab66771014d05712ad09e9a797b286c514b15495a9fc9b2999f"
+    },
+    {
+      "id": "search_funding_opportunities",
+      "sha256": "f4a21eca0f7a5519274095602d9ded0add9717d61c530e6bea71018887825c96"
+    },
+    {
+      "id": "get_funding_opportunity_requirements",
+      "sha256": "04208c4ddf4f915b3eab357f4b86fbd633a90464c06bd3464215ef0980ba0371"
+    },
+    {
+      "id": "get_funding_opportunity",
+      "sha256": "8bcbdbc97febb86ae3bd842fd2fd160962e249293afb53f52715c041ef2365e3"
+    },
+    {
+      "id": "get_opportunity_client_context",
+      "sha256": "16956f8af408ed3c0e5cf9b1d5dd56fb1455b441d3e9945c607388b33c8ec5e9"
+    },
+    {
+      "id": "get_opportunity_government_landscape",
+      "sha256": "80a110cd6e320fb1675a201bcc6fe43a3939d81d1160bf5d0d1820fa7a60b59d"
+    },
+    {
+      "id": "read_client_documents",
+      "sha256": "5466e40a1b98cf8faa7f3ea0118ab8b3c808a858e994dec4dadfdaf0e6c9959a"
+    },
+    {
+      "id": "query_economic_data",
+      "sha256": "c6342005eadfc134b0be30d139f761539e61a022a9c36acfee08914d055398ff"
+    },
+    {
+      "id": "search_federal_grants",
+      "sha256": "a3659723c276f0c3542055255790141335512856fadec3a0429fbea7599d5800"
+    },
+    {
+      "id": "search_federal_awards",
+      "sha256": "01066da8245b447962096c2fa868ef0f34a27f9aa2029de0066285ef604df0f3"
+    },
+    {
+      "id": "get_district_nexus_context",
+      "sha256": "fcfb37f95cc7fbdb7a9e414ad1a0ab834a9da17086f6a289a1e3b4629a15bf60"
+    },
+    {
+      "id": "get_district_nexus_changes",
+      "sha256": "0d2d6a75ca0ac367c245564cb767cd92971946890a1c0db2f7cb9a261c34ebce"
+    },
+    {
+      "id": "get_business_development_context",
+      "sha256": "0d936e7e2286ab5e8ee3260598257865fe33d948f0a2ded67c5a93a3c1f93a13"
+    },
+    {
+      "id": "get_business_development_evidence",
+      "sha256": "48fbc6adf8d2c2d6541d292c921d4a70fa24be0aa7524221a97a565a7c157ba9"
+    },
+    {
+      "id": "get_business_development_recent_changes",
+      "sha256": "dd332c22561cc9b4cd6df2e9d38c26c0a859c5d0acc30a7f5fe67480d6df60a6"
+    },
+    {
+      "id": "lookup_client_registry",
+      "sha256": "f533094f154b6fa433614274f126a04db89631f180a1a19b78304b865407254f"
+    },
+    {
+      "id": "get_research_portfolio",
+      "sha256": "10b97f0df7d7d754baafbe23ddd6740858eeb375548ba5fc222cecdadbee127c"
+    },
+    {
+      "id": "get_research_portfolio_changes",
+      "sha256": "7bafd8b92aeeeae25bdd8346324efcca5a79ddbc8e495b620835a1748dd426c7"
+    },
+    {
+      "id": "mail.read_thread",
+      "sha256": "73f72cf0d20e14f3dc8fe4f080e98699c2a82ee52817d706facdb61d22264281"
+    },
+    {
+      "id": "mail.list_messages",
+      "sha256": "ebca592485f057c0bd8e242c20ff50bc103c6e77f073b502d091fc9c158e78dd"
+    },
+    {
+      "id": "mail.search_messages",
+      "sha256": "397b874d461bf61b29cc82ac7213ea7786e8cfe90ba6783d58453fce2bf50c23"
+    },
+    {
+      "id": "meeting.list_upcoming_meetings",
+      "sha256": "314aeb91e1268441c7a156ad1ad9a4e88fd4e828221876dbb3bd9235597ae70c"
+    },
+    {
+      "id": "meeting.read_client_meetings",
+      "sha256": "b7e30730326b86bb155a1f0ebffea48f824033f420ad17a14423dfba847b60c6"
+    },
+    {
+      "id": "meeting.query_debriefs",
+      "sha256": "0d75d1a05b15ce4de8b3bdd7c5ace412ec55aa3ea749d2329ed83a923a117b87"
+    },
+    {
+      "id": "query_tasks",
+      "sha256": "b14c34b53327eaab6392d19017c9e72b8880cf92cbc594af8a179d9b63ee6a02"
+    },
+    {
+      "id": "search_capiro_data",
+      "sha256": "9baa02ae1b1122f742c140f94d6ab9868ff64ee0980edd6e9fd2c0b1c8417d1a"
+    },
+    {
+      "id": "search_federal_contract_awards",
+      "sha256": "58697e0992b3670bcd1157a95bfd94ec751301fcbe39e2602641b06251a349ec"
+    },
+    {
+      "id": "search_federal_subawards",
+      "sha256": "731218302304a40420f438229ff997511a4bc56dce8defbafda30af40099f37b"
+    },
+    {
+      "id": "search_contract_vehicles",
+      "sha256": "a44c47f9533a6d5270459632345d1b6e608b273aff4c109dc6522039ebd02f18"
+    },
+    {
+      "id": "search_procurement_forecasts",
+      "sha256": "e0ef0b9d1b37a6ca552d67c7983c1cb39094d86f8ce28edc7968a888568f4c43"
+    },
+    {
+      "id": "get_district_federal_market",
+      "sha256": "45789a04d8fb650877e307dc0c2746159f9ca23b3a5984eca5e648229a3407dd"
+    },
+    {
+      "id": "memory.list_own_proposals",
+      "sha256": "8d2cefab05ae2211992cfd7f8311972a24c74dde905f01e18cf286ff4d24f18e"
+    },
+    {
+      "id": "query_action_items",
+      "sha256": "ebf7502da15b5a71e95d6b109703462307e0e8175d41af8a960b6300275aae21"
+    }
+  ],
+  "originals": [
+    {
+      "id": "manage_research_portfolio",
+      "disposition": "deferred",
+      "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "get_research_portfolio",
+      "disposition": "selected",
+      "boundary": "Proposed authorized Research Portfolio record/evidence/history read only; owner/client/grant policies and source inclusion require explicit acceptance; management workflow parity deferred.",
+      "replacement": {
+        "id": "get_research_portfolio",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "get_research_portfolio_analytics",
+      "disposition": "deferred",
+      "boundary": "Portfolio analytics has domain scoring and aggregation semantics beyond source reads; fixture and scope not agreed.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "get_research_portfolio_changes",
+      "disposition": "selected",
+      "boundary": "Proposed authorized Research Portfolio record/evidence/history read only; owner/client/grant policies and source inclusion require explicit acceptance; management workflow parity deferred.",
+      "replacement": {
+        "id": "get_research_portfolio_changes",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "create_research_portfolio_snapshot",
+      "disposition": "deferred",
+      "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "request_research_portfolio_output",
+      "disposition": "deferred",
+      "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "save_research_portfolio_output_to_client",
+      "disposition": "deferred",
+      "boundary": "Portfolio-specific filing workflow is not selected; narrow verified-artifact filing is a separate proposed command.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "watch_research_portfolio",
+      "disposition": "deferred",
+      "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "update_research_portfolio_change_state",
+      "disposition": "deferred",
+      "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "get_research_portfolio_bookmarks",
+      "disposition": "deferred",
+      "boundary": "Portfolio bookmark workflow is not required by defined v1; private-source access still needs an inventory decision.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "create_research_portfolio_bookmark",
+      "disposition": "deferred",
+      "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "get_research_portfolio_fit",
+      "disposition": "deferred",
+      "boundary": "Portfolio fit scoring is a specialized business workflow; no agreed behavior or benchmark.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "get_research_portfolio_reviews",
+      "disposition": "deferred",
+      "boundary": "Portfolio review workflow parity is not agreed; relevant records may be inventoried separately.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "add_research_portfolio_review_note",
+      "disposition": "deferred",
+      "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "get_research_portfolio_rules",
+      "disposition": "deferred",
+      "boundary": "Portfolio rule-management surface is not part of the initial workspace or command set.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "get_research_portfolio_imports",
+      "disposition": "deferred",
+      "boundary": "Portfolio import administration is separate scope; no import workflow selected.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "get_research_portfolio_operations",
+      "disposition": "deferred",
+      "boundary": "Portfolio operations diagnostics is a specialized workflow with unqualified permissions.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "prepare_research_portfolio_brief",
+      "disposition": "deferred",
+      "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "prepare_research_portfolio_meeting",
+      "disposition": "deferred",
+      "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "get_research_evidence",
+      "disposition": "selected",
+      "boundary": "Proposed authorized Research Portfolio record/evidence/history read only; owner/client/grant policies and source inclusion require explicit acceptance; management workflow parity deferred.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "read_chat_attachments",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "read_chat_attachments",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "read_monday_client_boards",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "read_monday_client_boards",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "search_capiro_data",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "search_capiro_data",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "get_client_context",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "get_client_context",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "search_research_sources",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "search_research_sources",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "run_analysis",
+      "disposition": "selected",
+      "boundary": "New reproducible analysis over authorized inputs; verify referenced values and outputs using adopted Python libraries; no source mutations.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "search_client_knowledge",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "search_client_knowledge",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "query_intelligence",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "query_intelligence",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "query_knowledge_graph",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "query_knowledge_graph",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "find_path_to",
+      "disposition": "deferred",
+      "boundary": "Relationship-path recommendation behavior and policy fixture are not sufficiently defined; graph record reads remain proposed.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "search_memory",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "search_memory",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "list_memory_proposals",
+      "disposition": "selected",
+      "boundary": "Current-authority read of canonical proposal status and provenance; candidate visibility cannot grant publish/review authority.",
+      "replacement": {
+        "id": "memory.list_own_proposals",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "search_congress_bills",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "search_congress_bills",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "get_bill_status",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "get_bill_status",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "read_bill_text",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "read_bill_text",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "get_certification_status",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "get_certification_status",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "search_floor_votes",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "search_floor_votes",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "search_cbo_cost_estimates",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "search_cbo_cost_estimates",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "resolve_entity",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "resolve_entity",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "search_lda_filings",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "search_lda_filings",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "list_global_datasets",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "list_global_datasets",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "query_global_data",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "query_global_data",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "search_sec_filings",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "search_sec_filings",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "search_fara_registrations",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "search_fara_registrations",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "search_federal_grants",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "search_federal_grants",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "search_federal_awards",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "search_federal_awards",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "search_gao_reports",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "search_gao_reports",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "search_state_bills",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "search_state_bills",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "get_state_bill_status",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "get_state_bill_status",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "search_state_floor_votes",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "search_state_floor_votes",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "get_state_legislator",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "get_state_legislator",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "get_committee_roster",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "get_committee_roster",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "get_representation",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "get_representation",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "list_members",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "list_members",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "get_state_rule_status",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "get_state_rule_status",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "search_intel_articles",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "search_intel_articles",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "search_committee_hearings",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "search_committee_hearings",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "get_legiwatch_review",
+      "disposition": "deferred",
+      "boundary": "Saved LegiWatch review workflow and its state semantics require separate acceptance.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "search_legiwatch_news",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "search_legiwatch_news",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "get_florida_budget_project",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "get_florida_budget_project",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "compare_florida_budget_amounts",
+      "disposition": "deferred",
+      "boundary": "Florida-specific budget comparison workflow needs explicit units, provenance and expected-value fixtures.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "prepare_legiwatch_briefing",
+      "disposition": "deferred",
+      "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "search_legislative_research",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "search_legislative_research",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "get_legal_reference",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "get_legal_reference",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "compare_legislative_versions",
+      "disposition": "deferred",
+      "boundary": "Legislative version comparison behavior and legal-reference fidelity need separate qualification.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "save_legislative_research",
+      "disposition": "deferred",
+      "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "preview_legiwatch_relevance",
+      "disposition": "deferred",
+      "boundary": "LegiWatch relevance scoring is a specialized proposal workflow outside the initial commands.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "save_legiwatch_relevance",
+      "disposition": "deferred",
+      "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "apply_legiwatch_suggestion",
+      "disposition": "deferred",
+      "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "search_crs_reports",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "search_crs_reports",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "query_economic_data",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "query_economic_data",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "get_district_nexus_context",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "get_district_nexus_context",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "get_district_nexus_changes",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "get_district_nexus_changes",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "search_public_web",
+      "disposition": "selected",
+      "boundary": "Public search/browsing intent through supported tools and one qualified Playwright integration; enforce egress, conversation state and artifact provenance.",
+      "replacement": {
+        "id": "search_public_web",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "scrape_web_page",
+      "disposition": "selected",
+      "boundary": "Public search/browsing intent through supported tools and one qualified Playwright integration; enforce egress, conversation state and artifact provenance.",
+      "replacement": {
+        "id": "scrape_web_page",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "create_meeting_brief",
+      "disposition": "deferred",
+      "boundary": "Existing stored meeting-brief workflow is deferred; new local native brief generation is required separately.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "draft_policy_memo",
+      "disposition": "deferred",
+      "boundary": "Existing policy-memo workflow is deferred; new local artifact drafting is required separately.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "save_note",
+      "disposition": "deferred",
+      "boundary": "Source note mutation is not selected; local drafting and native artifacts remain required.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "save_chat_attachments",
+      "disposition": "selected",
+      "boundary": "Initial artifact filing only; verified exact version and source scopes preserved; no arbitrary attachment or folder access expansion.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "send_email",
+      "disposition": "deferred",
+      "boundary": "External send is outside the initial source command set; mailbox identity, immutable approval and delivery idempotency unqualified.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "list_emails",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "mail.list_messages",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "search_emails",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "mail.search_messages",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "get_email_thread",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "mail.read_thread",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "list_upcoming_meetings",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "meeting.list_upcoming_meetings",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "reply_email",
+      "disposition": "deferred",
+      "boundary": "External reply is outside initial commands; thread ownership and provider outcome reconciliation unqualified.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "save_memory",
+      "disposition": "selected",
+      "boundary": "Candidate proposal only through new memory.propose; no direct publication, confirmation, correction or deletion parity is accepted.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "confirm_memory",
+      "disposition": "deferred",
+      "boundary": "Direct canonical memory confirmation is beyond initial sourced proposals; review/lifecycle policy must be separately qualified.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "correct_memory",
+      "disposition": "deferred",
+      "boundary": "Direct canonical memory correction is deferred; v1 can propose a sourced correction without editing active memory.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "forget_memory",
+      "disposition": "deferred",
+      "boundary": "Canonical revocation/deletion and legal-hold workflow is deferred; application retention/deletion remains mandatory.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "search_program_elements",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "search_program_elements",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "get_program_element",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "get_program_element",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "get_pe_budget_timeline",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "get_pe_budget_timeline",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "get_pe_buyer_workspace",
+      "disposition": "deferred",
+      "boundary": "Buyer-workspace composition and specialized analysis are not defined as initial parity.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "get_pe_contractors",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "get_pe_contractors",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "get_pe_bills",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "get_pe_bills",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "get_pe_report_language",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "get_pe_report_language",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "search_acquisition_personnel",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "search_acquisition_personnel",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "get_acquisition_person",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "get_acquisition_person",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "create_word",
+      "disposition": "selected",
+      "boundary": "New local native Word artifact generation and revisions with byte and render validation; Capiro source writes require separate filing approval.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "create_excel",
+      "disposition": "selected",
+      "boundary": "New native spreadsheet generation and supported revisions; originals, formulas, recalculation limits and reference totals verified.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "create_powerpoint",
+      "disposition": "selected",
+      "boundary": "New editable slide generation and revisions with per-slide render validation and immutable versions.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "schedule_task",
+      "disposition": "selected",
+      "boundary": "New application Temporal Schedule only, bound to initiating actor, scope, timezone and budget; existing Capiro schedule parity is not accepted.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "list_scheduled_tasks",
+      "disposition": "selected",
+      "boundary": "New application-owned Temporal schedule inspection and run history; current Capiro schedule store parity is not accepted.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "cancel_scheduled_task",
+      "disposition": "selected",
+      "boundary": "New application Temporal Schedule cancellation; cancellation and run-history fixtures required.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "update_scheduled_task",
+      "disposition": "selected",
+      "boundary": "New application schedule update and pause controls; recheck authority; no arbitrary external action expansion.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "query_tasks",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "query_tasks",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "query_action_items",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "actions.query",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "search_tracked_bills",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "search_tracked_bills",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "query_regulatory_dockets",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "query_regulatory_dockets",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "search_sam_opportunities",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "search_sam_opportunities",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "query_debriefs",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "meeting.query_debriefs",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "read_client_meetings",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "meeting.read_client_meetings",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "query_outreach",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "query_outreach",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "read_client_documents",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "read_client_documents",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "lookup_client_registry",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "lookup_client_registry",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "create_client",
+      "disposition": "deferred",
+      "boundary": "Client creation is outside initial commands; source transaction and audit invariants not qualified.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "create_task",
+      "disposition": "selected",
+      "boundary": "Initial task command; immutable approval, current authority, source invariants, idempotency and receipt required after G3-G5.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "update_task",
+      "disposition": "selected",
+      "boundary": "Initial task command; existing task ownership and field invariants require fixtures; repeated delivery must produce one outcome.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "update_client_profile",
+      "disposition": "deferred",
+      "boundary": "Client profile mutation is outside initial commands; field/lifecycle policy not qualified.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "find_contacts",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "find_contacts",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "search_funding_opportunities",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "search_funding_opportunities",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "get_funding_opportunity_requirements",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "get_funding_opportunity_requirements",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "get_funding_opportunity",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "get_funding_opportunity",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "explain_opportunity_match",
+      "disposition": "deferred",
+      "boundary": "Opportunity match scoring/explanation parity has no accepted rubric or independent expected values.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "get_opportunity_client_context",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "get_opportunity_client_context",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "get_opportunity_government_landscape",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "get_opportunity_government_landscape",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "compare_funding_opportunities",
+      "disposition": "deferred",
+      "boundary": "Funding comparison workflow has unagreed scoring and explanation requirements.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "build_opportunity_action_plan",
+      "disposition": "deferred",
+      "boundary": "Funding action-plan workflow parity is not established by opportunity source access.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "search_federal_contract_awards",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "search_federal_contract_awards",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "search_federal_subawards",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "search_federal_subawards",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "search_contract_vehicles",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "search_contract_vehicles",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "search_procurement_forecasts",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "search_procurement_forecasts",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "get_business_development_context",
+      "disposition": "selected",
+      "boundary": "Proposed BizDev record/evidence/history read only, conditional on source agreement and tenant/provider entitlements; no scoring or brief-write parity.",
+      "replacement": {
+        "id": "get_business_development_context",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "get_business_development_evidence",
+      "disposition": "selected",
+      "boundary": "Proposed BizDev record/evidence/history read only, conditional on source agreement and tenant/provider entitlements; no scoring or brief-write parity.",
+      "replacement": {
+        "id": "get_business_development_evidence",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "get_business_development_brief",
+      "disposition": "deferred",
+      "boundary": "BizDev brief composition and persisted-versus-generated behavior need explicit scope and fixtures.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "resolve_business_development_source",
+      "disposition": "deferred",
+      "boundary": "BizDev source resolution behavior may involve provider actions; precise boundary is unqualified.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "save_business_development_brief",
+      "disposition": "deferred",
+      "boundary": "BizDev-specific saved brief workflow is outside initial commands.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "get_business_development_recent_changes",
+      "disposition": "selected",
+      "boundary": "Proposed BizDev record/evidence/history read only, conditional on source agreement and tenant/provider entitlements; no scoring or brief-write parity.",
+      "replacement": {
+        "id": "get_business_development_recent_changes",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "get_district_federal_market",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": {
+        "id": "get_district_federal_market",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    }
+  ],
+  "oldPortfolioLimitation": "get_research_evidence is a separate pending Clio/portfolio scope issue and is not covered by this binding."
+}
