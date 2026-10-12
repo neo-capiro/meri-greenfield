@@ -141,3 +141,7 @@ test('CLI reads bounded descriptor chunks instead of unbounded readFile after st
   assert.equal(unbounded,0,'pre-stat size is not an allocation bound against subsequent growth');assert.ok(lengths.length>0);assert.ok(lengths.every(n=>Number.isSafeInteger(n)&&n>0&&n<=16*1024*1024+1));
  }finally{fs.open=original;syncBuiltinESMExports();await fs.rm(dir,{recursive:true,force:true});}
 });
+
+function rehashOriginalTrace(o){const b=o.authorization[1].binding;b.original.bindingSha256=hash({context:b.original.context,request:b.original.request});const {bindingSha256,...intent}=b;b.bindingSha256=hash(intent);o.authorization[1].receipt.bindingSha256=b.bindingSha256;}
+test('actual prepared original cannot substitute retained delivery identity even with recomputed pins',async()=>{for(const field of ['lookupId','resultReference','requestId']){const f=await actualControlCapture();f.o.authorization[1].binding.original.context[field]=id(95);rehashOriginalTrace(f.o);assert.equal(scored(f).counts.failed,1,field);}});
+test('actual prepared original request and normalized digest bind frozen arguments',async()=>{const f=await actualControlCapture();const b=f.o.authorization[1].binding.original;b.request.arguments.status='new';b.argumentsSha256=resolveOperationContract({id:'actions.query',version:'0.2.0'}).normalizeInput(b.request.arguments,{binding:binding(),clientResolution:{reference:id(5),clientId:id(5)}}).argumentsSha256;rehashOriginalTrace(f.o);assert.equal(scored(f).counts.failed,1);});
