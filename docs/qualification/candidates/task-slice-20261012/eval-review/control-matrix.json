@@ -1,0 +1,136 @@
+{
+  "schema": "meri-independent-review-matrix/1",
+  "frozenBeforeCandidateInspection": true,
+  "criteriaCommit": "1dbe41d0",
+  "scope": "source controls only; exact APIs pending author agreement",
+  "cases": [
+    {
+      "id": "F01",
+      "requirement": "Approved-input receipt must bind exact corpus/source/config payload, not only a claimed count"
+    },
+    {
+      "id": "F02",
+      "requirement": "Synthetic controls cannot be relabelled as real without independently pinned changed provenance"
+    },
+    {
+      "id": "F03",
+      "requirement": "Case IDs are unique and exact; groups may not cross development/calibration/heldout"
+    },
+    {
+      "id": "F04",
+      "requirement": "Freeze is detached from caller mutation and rejects accessors/proxies/non-JSON"
+    },
+    {
+      "id": "F05",
+      "requirement": "Gold never silently truncates and empty corpus does not pass rate thresholds"
+    },
+    {
+      "id": "F06",
+      "requirement": "Runner projection excludes gold labels and does not reveal heldout expected outcomes"
+    },
+    {
+      "id": "F07",
+      "requirement": "Source snapshot and config substitutions refuse"
+    },
+    {
+      "id": "F08",
+      "requirement": "Invalid approval/unknown input fields fail closed"
+    },
+    {
+      "id": "S01",
+      "requirement": "Exact actual allowed observation passes only its frozen selected scope and returned result"
+    },
+    {
+      "id": "S02",
+      "requirement": "Denial and clarification remain distinct expected outcomes"
+    },
+    {
+      "id": "S03",
+      "requirement": "Wrong route or accepted arguments fails"
+    },
+    {
+      "id": "S04",
+      "requirement": "Wrong case/source/config/run hash fails"
+    },
+    {
+      "id": "S05",
+      "requirement": "Wrong tenant/actor/client/binding/window fails"
+    },
+    {
+      "id": "S06",
+      "requirement": "Altered returned action content or IDs fails"
+    },
+    {
+      "id": "S07",
+      "requirement": "Action recommendation cannot be reclassified as accepted task/completed/delivered"
+    },
+    {
+      "id": "S08",
+      "requirement": "Incomplete/empty/failed source cannot establish exhaustive absence"
+    },
+    {
+      "id": "S09",
+      "requirement": "Missing cases counted explicitly without success dilution"
+    },
+    {
+      "id": "S10",
+      "requirement": "Skipped/ineligible/failed cases counted separately with nonempty reasons"
+    },
+    {
+      "id": "S11",
+      "requirement": "Unknown or duplicate observation IDs cannot displace required cases"
+    },
+    {
+      "id": "S12",
+      "requirement": "Malformed observation stays visible as failure or rejects the batch, never silently dropped"
+    },
+    {
+      "id": "S13",
+      "requirement": "Gold record recalls and any scope/count claims reflect full frozen expectations"
+    },
+    {
+      "id": "S14",
+      "requirement": "Zero denominator produces unmeasured/ineligible status, never a manufactured perfect score"
+    },
+    {
+      "id": "S15",
+      "requirement": "Synthetics remain separate from real/heldout denominators"
+    },
+    {
+      "id": "S16",
+      "requirement": "Output observations detach from later caller mutations"
+    },
+    {
+      "id": "S17",
+      "requirement": "Public threshold/gate values cannot be relaxed by caller configuration"
+    },
+    {
+      "id": "C01",
+      "requirement": "CLI help and missing/invalid options are bounded; no network/source access"
+    },
+    {
+      "id": "C02",
+      "requirement": "CLI ingestion/scoring matches library output and rejects wrong pins"
+    },
+    {
+      "id": "C03",
+      "requirement": "Fresh outputs are exclusive; existing evidence remains intact"
+    },
+    {
+      "id": "C04",
+      "requirement": "Oversized/untrusted files are bounded or explicitly refused without side effects"
+    },
+    {
+      "id": "P01",
+      "requirement": "Original files/catalog/public0.1/empty real corpus are unchanged"
+    },
+    {
+      "id": "P02",
+      "requirement": "Real corpus remains zero in local evidence, native/RG qualification unmeasured"
+    },
+    {
+      "id": "P03",
+      "requirement": "Every raw failed replay/preimage and cleanup result remains in the packet"
+    }
+  ]
+}
