@@ -6,7 +6,7 @@ def blob(p):return subprocess.check_output(['git','-C',str(ROOT),'show',REF+':'+
 checks=[]
 def check(name,ok):checks.append({'name':name,'passed':bool(ok)})
 m=json.loads(blob(PREFIX+'manifest.json'));paths=[r['path'] for r in m['files']]
-check('Unique bounded relative membership',len(paths)==len(set(paths))==23 and all(not p.startswith('/') and '..' not in pathlib.PurePosixPath(p).parts for p in paths))
+check('Unique bounded relative membership',len(paths)==len(set(paths))==24 and all(not p.startswith('/') and '..' not in pathlib.PurePosixPath(p).parts for p in paths))
 for r in m['files']:
  b=blob(r['path']);check('Exact packet member '+r['path'],len(b)==r['bytes'] and hashlib.sha256(b).hexdigest()==r['sha256'])
 for r in m['files']:
@@ -21,7 +21,7 @@ for label in ['focused','metadata-audit','metadata-audit-repaired']:
  check('Owned group absent '+label,r['ownedProcessGroupAbsent'] and not r['timedOut'] and not r['ownedGroupKillRequired'])
  for stream in r['streams']:
   b=blob(stream['path']);check('Raw captured bytes '+stream['path'],len(b)==stream['bytes'] and hashlib.sha256(b).hexdigest()==stream['sha256'])
-verification=json.loads(blob(PREFIX+'verification.json'));check('Declared manifest verifier34 pass',verification['checks']==verification['passed']==34 and verification['failed']==0)
+verification=json.loads(blob(PREFIX+'verification.json'));check('Declared manifest verifier35 pass',verification['checks']==verification['passed']==35 and verification['failed']==0)
 findings=json.loads(blob(PREFIX+'source-findings.json'));check('Source-only truth limits retained',findings['runtimeAccepted'] is False and findings['sourceExecuted'] is False and findings['privateBodiesPublished'] is False and findings['countScope']['absenceEvidence'] is False)
 report=blob('docs/coordination/reports/CODEX-INTELLIGENCE-SUMMARY-AUTHOR-20261012.md').decode();check('Configured lobby branch clarified','configur' in report.lower() and 'openlobby' in report.lower())
 out={'authorPacket':REF,'source':m['source'],'manifestSha256':hashlib.sha256(blob(PREFIX+'manifest.json')).hexdigest(),'checks':checks,'passed':sum(x['passed'] for x in checks),'failed':sum(not x['passed'] for x in checks)}

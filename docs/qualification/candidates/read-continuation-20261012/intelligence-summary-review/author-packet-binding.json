@@ -1,0 +1,15 @@
+{
+  "initialAuthorPacket": "f5082ffd85964268c539852aae4a13ed7a5a1dec",
+  "finalAuthorPacket": "e46b425fd68a106e67dc5afdebf611ec33b201ea",
+  "sourceUnchanged": "d48c9620e30c3686217095cb45b24f1b0c8218a2",
+  "authorManifestSha256": "5da126a136e96c21916f522c204d137d80a88cdd892fab540201a98915e9df43",
+  "independentMetadataPassed": 43,
+  "independentMetadataFailed": 0,
+  "auditScriptSha256": "e47cd40195ed54d56372678f15b56724d0657fd5ad07c2f24166b99f7c51e617",
+  "adjustedExpectedMembersBeforeFirstRun": {
+    "before": 23,
+    "after": 24,
+    "reason": "Documentation correction adds one immutable receipt; final author verifier correspondingly34 to35."
+  },
+  "runtimeAccepted": false
+}
