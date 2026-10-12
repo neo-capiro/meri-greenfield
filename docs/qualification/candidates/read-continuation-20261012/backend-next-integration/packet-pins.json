@@ -20,7 +20,7 @@
   "additionalCode": [
     {
       "path": "packages/contracts/test/retrieval-backend-next-independent.test.mjs",
-      "reference": "4878e954e690c0b06c40cbad653c0e13cd24c40b"
+      "reference": "1df6ef0acdb834634283eaa2bf7ff2dfd3d4f717"
     }
   ]
 }
