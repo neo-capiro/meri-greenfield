@@ -1,0 +1,15 @@
+{
+  "classification": "UNCHANGED_BASELINE_SOURCE_REPRODUCED_NOT_A_PATCHED_IMAGE",
+  "members": 53,
+  "bytes": 994568,
+  "bothManifestsByteIdentical": true,
+  "contextManifestSha256": "94216667decf5e4feed05914b3f295148d9437ee1c00b224ca4e92625b5b876f",
+  "collectorContextSha256": "18836912a03fc035d69c0cfc57d1f407e5c46af1bdd37c21a761f5d42dc84dda",
+  "assemblerSha256": "48f065d0ad61f98ba571c89dcd62141e6f8c9b272f0d371331d74a0dabf87851",
+  "collectorAssemblerSha256": "67c1cf554e80c62eeb56b6dcb9be00106adf9b1b8b40beba85249de662b835eb",
+  "commitAuthority": false,
+  "buildAdmitted": false,
+  "runtimeAdmitted": false,
+  "contextPinMatches": false,
+  "assemblerPinMatches": false
+}

@@ -1,0 +1,12 @@
+{
+  "status": "FAILED_SOURCE_CHECK_FIXED",
+  "exitCode": 1,
+  "command": "python3 -I -B -S docs/qualification/candidates/image-patch-20261012/upstream/verify-packet.py",
+  "scriptSha256": "b5406610d96b4d599978cd7f5781554879d0e32d7498890dcff812de5668d900",
+  "originalStdoutPath": "verification-initial.stdout.bin",
+  "stderrCapture": "Tool-rendered stderr, original stderr bytes not separately captured.",
+  "stderrObserved": "fatal: not a git repository (or any of the parent directories): .git; CalledProcessError: git show exited128",
+  "cause": "Verifier used HERE.parents[5] (workspace) instead of HERE.parents[4] (repository). This is a local packet-check defect, not an image/runtime failure.",
+  "repair": "Change repository ancestor index to4. Rerun only offline packet consistency checks.",
+  "imageOrRuntimeAction": false
+}

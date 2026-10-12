@@ -1,0 +1,40 @@
+{
+  "status": "PASS_SOURCE_INTEGRATION_ONLY",
+  "base": "90b4dc8472da13cdee9f49cdc0b4c8306ecbdc73",
+  "sourceHead": "1ca95218508a21db306e1cee6da5ba96a2339799",
+  "originalTrackedFilesUnchanged": 2243,
+  "ownerBindings": {
+    "imageAuthor": {
+      "commit": "9aff2d9e1e125fe9e0fc4d2e7bef49d7ff623d53",
+      "matchedNewFiles": 29
+    },
+    "upstream": {
+      "commit": "07c45dcedf18517aa0049e24aca1c9f3b4b50b96",
+      "matchedNewFiles": 85
+    },
+    "imageReviewer": {
+      "commit": "86575d5d2d0e812ed18033512047fe421179b6d7",
+      "matchedNewFiles": 45
+    },
+    "licenseAuthor": {
+      "commit": "839f3d43b4b24a6ca37b0b873ab90abd81b51725",
+      "matchedNewFiles": 365
+    },
+    "licenseReviewer": {
+      "commit": "767468da397f3f757d68050a015d265373cb786c",
+      "matchedNewFiles": 31
+    },
+    "diagnosticAuthor": {
+      "commit": "dc4a046028bdfb798dc2b1888721afc45f2e97a3",
+      "matchedNewFiles": 20
+    },
+    "diagnosticReviewer": {
+      "commit": "d1f0f90ab4d2836752dfd7bc436d5d996d100636",
+      "matchedNewFiles": 35
+    }
+  },
+  "unchangedContextManifestSha256": "94216667decf5e4feed05914b3f295148d9437ee1c00b224ca4e92625b5b876f",
+  "buildAuthorized": false,
+  "runtimeAccepted": false,
+  "g1Accepted": false
+}

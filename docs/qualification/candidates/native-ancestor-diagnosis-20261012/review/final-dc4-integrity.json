@@ -1,0 +1,26 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "docs/qualification/candidates/native-ancestor-diagnosis-20261012/review/freeze_integrity.py"
+  ],
+  "cwd": "/workspace/meri-native-ancestor-diagnosis-review-20261012",
+  "startUnixSeconds": 1791775925.013446,
+  "elapsedSeconds": 0.11441683769226074,
+  "exitCode": 0,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "fixtureRoot": null,
+  "streams": {
+    "stdout": {
+      "path": "final-dc4-integrity.stdout.txt",
+      "bytes": 581,
+      "sha256": "39dc0a1ba382bfcc020c69678981af2cf7b9805654f5ab127f2ea8ffddc77205"
+    },
+    "stderr": {
+      "path": "final-dc4-integrity.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

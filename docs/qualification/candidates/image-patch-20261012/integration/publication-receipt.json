@@ -1,0 +1,40 @@
+{
+  "observedAt": "2026-10-12T03:36:43.089345+00:00",
+  "pullRequest": {
+    "url": "https://github.com/neo-capiro/meri-greenfield/pull/13",
+    "number": 13,
+    "draft": true,
+    "state": "open",
+    "merged": false,
+    "baseSha": "90b4dc8472da13cdee9f49cdc0b4c8306ecbdc73",
+    "headSha": "de24a5079e737afafef006728e09b8ead85da233",
+    "headTree": "2aa9c16bf2517108981e465fa12124b8799b6de7",
+    "headRole": "Reviewed-source and report/evidence publication before this receipt-only commit",
+    "metadataSource": "Successful supported GitHub create_pull_request response"
+  },
+  "observedRemoteHeads": {
+    "refs/heads/main": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc",
+    "refs/heads/review/meri-image-license-20261012": "767468da397f3f757d68050a015d265373cb786c",
+    "refs/heads/review/meri-image-patch-20261012": "86575d5d2d0e812ed18033512047fe421179b6d7",
+    "refs/heads/review/meri-native-ancestor-diagnosis-20261012": "d1f0f90ab4d2836752dfd7bc436d5d996d100636",
+    "refs/heads/shipper/aws-preflight-20261011-r1": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+    "refs/heads/task/codex-g1-publish-20261011": "5ee46446b5f60034916f00b2a665b3e2bef9cf60",
+    "refs/heads/task/handover-preserve-candidates-20261012": "c57b7d26df7de2acbd8c7d8edc7098f7d495053a",
+    "refs/heads/task/meri-g1-source-continuation-20261012": "90b4dc8472da13cdee9f49cdc0b4c8306ecbdc73",
+    "refs/heads/task/meri-image-license-evidence-20261012": "839f3d43b4b24a6ca37b0b873ab90abd81b51725",
+    "refs/heads/task/meri-image-patch-author-20261012": "9aff2d9e1e125fe9e0fc4d2e7bef49d7ff623d53",
+    "refs/heads/task/meri-image-source-preparation-20261012": "de24a5079e737afafef006728e09b8ead85da233",
+    "refs/heads/task/meri-image-upstream-evidence-20261012": "07c45dcedf18517aa0049e24aca1c9f3b4b50b96",
+    "refs/heads/task/meri-native-ancestor-diagnosis-20261012": "dc4a046028bdfb798dc2b1888721afc45f2e97a3"
+  },
+  "decisions": {
+    "imagePreparation": "ACCEPT_SOURCE_PREPARATION",
+    "licensePacket": "ACCEPT_SOURCE_EVIDENCE",
+    "ancestorDiagnostic": "ACCEPT_SOURCE",
+    "patchedImage": "HOLD",
+    "build": "HOLD",
+    "runtime": "HOLD",
+    "G1": "OPEN"
+  },
+  "noDeploymentOrMerge": true
+}

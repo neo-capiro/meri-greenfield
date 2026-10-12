@@ -1,0 +1,404 @@
+{
+  "archive_sha256": "54ad1d38174d6ef56d1f165e52547ece8e6c24b865f2a072d9ebaacfbad1ca47",
+  "checks": [
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 32269,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34065,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34089,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34091,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34092,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34093,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34094,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34095,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34142,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34247,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34251,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34252,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34253,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34256,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34257,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34258,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34261,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34262,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34263,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34264,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34274,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34275,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34276,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34277,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34278,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34279,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34280,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34367,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34384,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34397,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34401,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34439,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34440,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34442,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34611,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34612,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34614,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34616,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34617,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34618,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34619,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34621,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34622,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34623,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34624,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 34936,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 35059,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 35084,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 35091,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 38192,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 38294,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 38305,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 38324,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 38333,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 38350,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 38360,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 38364,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 38367,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 38407,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 44644,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 75537,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 75538,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 75730,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 75731,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 75748,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "line": 76458,
+      "sha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "passed": true
+    }
+  ],
+  "passed": 66,
+  "binary_download_or_execution": false,
+  "limits": "Package-source references do not verify browser/headless-shell/ffmpeg archives, notices, installed versions or image admission."
+}

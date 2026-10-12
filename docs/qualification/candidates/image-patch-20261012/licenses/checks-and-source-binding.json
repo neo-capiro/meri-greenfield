@@ -1,0 +1,167 @@
+{
+  "baseCommit": "90b4dc8472da13cdee9f49cdc0b4c8306ecbdc73",
+  "baseTree": "1f6ac35ad37531e790c2a19c9e310c7e618e6522",
+  "worktree": "/workspace/meri-image-license-evidence-20261012",
+  "branch": "task/meri-image-license-evidence-20261012",
+  "observedAt": "2026-10-12T03:27:07.664599+00:00",
+  "sourceSha256": {
+    "AGENTS.md": "a0650949b74e5aee709bd8b3c9d480f95f5b898778ac8f7b3927eb54b141437a",
+    "docs/IMPLEMENTATION-STANDARDS.md": "d4f10f964ee207187abacd967649a1cfc9bdd468072dc01f859268f08b719959",
+    "docs/plans/MERI-DEPLOYMENT.md": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388",
+    "docs/COMPONENTS.md": "d41dae59bf7b350a3a2c8c95bad55a3f571e1220060bea3f52798f8f9f98f3a7",
+    "apps/worker/qualification/Dockerfile": "3f86ae7ca55e8bbfb2814f1b335b7df8159daf9b5008df60f1165ba879c40f36",
+    "apps/worker/qualification/package.json": "a32e658933bd058d2524cfb2112cf770e5be81827dbf5e789ddecbcab86e5d80",
+    "apps/worker/qualification/package-lock.json": "d3d4c5362e0c7dc1392ef9cad2048d00c564f1ff70d98c3e10108e50aa56147a",
+    "apps/worker/qualification/requirements.lock.txt": "47bb048b9750b074c7d33faba9f9c3873b7b461eaa4360bf57cb08d4f55c9765",
+    "apps/worker/qualification/component-pins.json": "2f2c5d52fbee23bbdb206456235664b9dbbdf5c3526ccc065d499ed0a61f5aed"
+  },
+  "checks": [
+    {
+      "argv": [
+        "readelf",
+        "-d",
+        "-V",
+        "/tmp/meri-image-license-evidence-20261012/lxml6.1.3___elementpath.cpython-313-x86_64-linux-gnu.so"
+      ],
+      "exit": 0,
+      "durationSeconds": 0.002,
+      "stdout": "replay-_elementpath.cpython-313-x86_64-linux-gnu.so.readelf.txt",
+      "stderr": "replay-_elementpath.cpython-313-x86_64-linux-gnu.so.readelf.txt.stderr",
+      "memberSha256": "15ca8205b8b81335b4b53ae061df39beeff8d3d4008d505fc590d186f5bc3502"
+    },
+    {
+      "argv": [
+        "readelf",
+        "-d",
+        "-V",
+        "/tmp/meri-image-license-evidence-20261012/lxml6.1.3__builder.cpython-313-x86_64-linux-gnu.so"
+      ],
+      "exit": 0,
+      "durationSeconds": 0.001,
+      "stdout": "replay-builder.cpython-313-x86_64-linux-gnu.so.readelf.txt",
+      "stderr": "replay-builder.cpython-313-x86_64-linux-gnu.so.readelf.txt.stderr",
+      "memberSha256": "62e9b9d50fc8cc88c35dc01530cf6b3afd3267b2b7199e5ced08c5fb7ef632b6"
+    },
+    {
+      "argv": [
+        "readelf",
+        "-d",
+        "-V",
+        "/tmp/meri-image-license-evidence-20261012/lxml6.1.3__etree.cpython-313-x86_64-linux-gnu.so"
+      ],
+      "exit": 0,
+      "durationSeconds": 0.002,
+      "stdout": "replay-etree.cpython-313-x86_64-linux-gnu.so.readelf.txt",
+      "stderr": "replay-etree.cpython-313-x86_64-linux-gnu.so.readelf.txt.stderr",
+      "memberSha256": "053756324bbea21667e17477719a868210832d50bafa42e3c0def34a8fe99c1d"
+    },
+    {
+      "argv": [
+        "readelf",
+        "-d",
+        "-V",
+        "/tmp/meri-image-license-evidence-20261012/lxml6.1.3__objectify.cpython-313-x86_64-linux-gnu.so"
+      ],
+      "exit": 0,
+      "durationSeconds": 0.002,
+      "stdout": "replay-objectify.cpython-313-x86_64-linux-gnu.so.readelf.txt",
+      "stderr": "replay-objectify.cpython-313-x86_64-linux-gnu.so.readelf.txt.stderr",
+      "memberSha256": "a07a2fddd30f00d74bb031ac2dbcf65a1db3e43ad7c37bc2b2b514ee2d1203d9"
+    },
+    {
+      "argv": [
+        "readelf",
+        "-d",
+        "-V",
+        "/tmp/meri-image-license-evidence-20261012/lxml6.1.3__sax.cpython-313-x86_64-linux-gnu.so"
+      ],
+      "exit": 0,
+      "durationSeconds": 0.002,
+      "stdout": "replay-sax.cpython-313-x86_64-linux-gnu.so.readelf.txt",
+      "stderr": "replay-sax.cpython-313-x86_64-linux-gnu.so.readelf.txt.stderr",
+      "memberSha256": "95a7b26b204d2d764de70360163d7d9f940c3791f23510bc5edc787b6da51a6e"
+    },
+    {
+      "argv": [
+        "readelf",
+        "-d",
+        "-V",
+        "/tmp/meri-image-license-evidence-20261012/lxml6.1.3___difflib.cpython-313-x86_64-linux-gnu.so"
+      ],
+      "exit": 0,
+      "durationSeconds": 0.001,
+      "stdout": "replay-_difflib.cpython-313-x86_64-linux-gnu.so.readelf.txt",
+      "stderr": "replay-_difflib.cpython-313-x86_64-linux-gnu.so.readelf.txt.stderr",
+      "memberSha256": "11f0993139c022d258e56f2321da9176b0ef0f99a8da0c8d15d6e339855943ae"
+    },
+    {
+      "argv": [
+        "readelf",
+        "-d",
+        "-V",
+        "/tmp/meri-image-license-evidence-20261012/lxml6.1.3__diff.cpython-313-x86_64-linux-gnu.so"
+      ],
+      "exit": 0,
+      "durationSeconds": 0.001,
+      "stdout": "replay-diff.cpython-313-x86_64-linux-gnu.so.readelf.txt",
+      "stderr": "replay-diff.cpython-313-x86_64-linux-gnu.so.readelf.txt.stderr",
+      "memberSha256": "f6dfe7c2dcc940f9eeaab118c21ce71269209754a5e35ffbd701257db5a53038"
+    },
+    {
+      "argv": [
+        "readelf",
+        "-d",
+        "-V",
+        "/tmp/meri-image-license-evidence-20261012/napi-rs_canvas-linux-x64-gnu1.0.10__skia.linux-x64-gnu.node"
+      ],
+      "exit": 0,
+      "durationSeconds": 0.003,
+      "stdout": "replay-skia.linux-x64-gnu.node.readelf.txt",
+      "stderr": "replay-skia.linux-x64-gnu.node.readelf.txt.stderr",
+      "memberSha256": "eff464d8c283ad1e73e36c636d9ec9a6469ae34c3c04b298794735c89f9c863a"
+    },
+    {
+      "argv": [
+        "python3",
+        "docs/qualification/candidates/image-patch-20261012/licenses/verify-evidence.py"
+      ],
+      "exit": 0,
+      "durationSeconds": 0.411,
+      "stdout": "verification-final.stdout.txt",
+      "stderr": "verification-final.stderr.txt"
+    }
+  ],
+  "collectionChecks": [
+    {
+      "argv": [
+        "python3",
+        "docs/qualification/candidates/image-patch-20261012/licenses/collect-package-notices.py"
+      ],
+      "exit": 0,
+      "stdout": "package-collection.stdout.txt",
+      "stderr": "package-collection.stderr.txt",
+      "note": "Original completed collection; no repeat network download."
+    },
+    {
+      "argv": [
+        "python3",
+        "docs/qualification/candidates/image-patch-20261012/licenses/collect-upstream.py"
+      ],
+      "exit": 0,
+      "stdout": "upstream-collection.stdout.txt",
+      "stderr": "upstream-collection.stderr.txt",
+      "note": "Collector completed; underlying blocked fetches remain FAILED records."
+    }
+  ],
+  "scriptSyntax": "All three retained Python scripts parsed by stdlib ast; no package import",
+  "existingTrackedDiff": [],
+  "rawArchiveRoot": "/tmp/meri-image-license-evidence-20261012",
+  "unrun": [
+    "image build/push",
+    "SDK/model invocation",
+    "browser/renderer/runtime execution",
+    "apt resolution",
+    "installed native library version probe",
+    "license/security approval"
+  ]
+}

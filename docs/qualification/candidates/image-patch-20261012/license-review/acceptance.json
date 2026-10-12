@@ -1,0 +1,39 @@
+{
+  "outcome": "ACCEPT_SOURCE_EVIDENCE",
+  "reviewer": "Codex /root/memory_reviewer",
+  "completed_at_utc": "2026-10-12T03:30:43.793469+00:00",
+  "base_commit": "90b4dc8472da13cdee9f49cdc0b4c8306ecbdc73",
+  "candidate_commit": "839f3d43b4b24a6ca37b0b873ab90abd81b51725",
+  "candidate_tree": "7ddeab03a786b74f737eb5cb0ca825874451fd07",
+  "criteria_commit": "465e58ba363db878db5d6ca4d629febb284f3f66",
+  "criteria_sha256": "3b247e27789020dc06c0f1b53b002f5313e0310cceb296e0e7c1461c58c81e1f",
+  "report_sha256": "5ded58a2c177ab0c9c9371b940aa031a47f354d2ab03e1cc76428aa9972356c1",
+  "passed": {
+    "artifact_checks": 1141,
+    "supplement_checks": 16,
+    "wheel_target_records": 7,
+    "glibc_symbol_records": 8,
+    "browser_source_locators": 66,
+    "manifest_files": 363,
+    "candidate_git_blob_checks": 365
+  },
+  "preserved_failed_checks": [
+    "Initial reviewer extractor failure excluding LIBXML_TEST_VERSION; explicit replay exit 1 in initial-filter-replay-command.json.",
+    "Producer blocked upstream/browser retrievals retained in candidate packet; not rerun by reviewer."
+  ],
+  "remaining_gates": [
+    "Integrated attribution bundle and unresolved https/native canvas/Skia/browser/headless-shell/FFmpeg/base/OS/font/office/native attribution.",
+    "Applicable SDK commercial terms, hosted integration/auth/billing and third-party inventory determination.",
+    "Supported patched component selection, separately authorized exact image build/SBOM/scan and security disposition.",
+    "Actual native/SDK/browser/renderer/recovery/isolation/egress/watchdog/teardown qualification and required action/budget/security approvals."
+  ],
+  "legal_clearance": false,
+  "image_admission": false,
+  "runtime_acceptance": false,
+  "owned_process_matches": [],
+  "downloaded_bytes": 0,
+  "installs": 0,
+  "downloaded_code_executions": 0,
+  "external_actions": 0,
+  "other_owners_touched": false
+}

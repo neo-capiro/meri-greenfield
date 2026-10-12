@@ -1,0 +1,79 @@
+{
+  "target": "Linux x86_64 glibc, CPython 3.13; declared compatibility only, no installed/import test",
+  "artifacts": [
+    {
+      "artifact": "python-docx@1.2.0",
+      "requires_python": ">=3.9",
+      "tags": [
+        "py3-none-any"
+      ],
+      "target_tag_eligible": true,
+      "metadata_sha256": "4c4cc819ebe6de4aca44daccfd3f9173e6f46d9ed900ad1c388ff9efb7b6b1d7",
+      "wheel_metadata_sha256": "ff309ddcdd65ebd02bc724dbf2bcc4a0ff53a5b61792a44548d383e4ebb19d3b"
+    },
+    {
+      "artifact": "XlsxWriter@3.2.9",
+      "requires_python": ">=3.8",
+      "tags": [
+        "py3-none-any"
+      ],
+      "target_tag_eligible": true,
+      "metadata_sha256": "10d504f188e087f07a06b9038ed0535f37ac072c232e60c075ddb0aedb7b7d78",
+      "wheel_metadata_sha256": "227f454cdc5e3fad0a9d3906c3bc24ea624f61dfdd4128c46665dd05d30223ef"
+    },
+    {
+      "artifact": "openpyxl@3.1.5",
+      "requires_python": ">=3.8",
+      "tags": [
+        "py2-none-any",
+        "py3-none-any"
+      ],
+      "target_tag_eligible": true,
+      "metadata_sha256": "23f80ca9830dd89435da1710f26deda8f81e5409287e74540210c72627a4ad96",
+      "wheel_metadata_sha256": "0d96a30f8a702d6b9eef40807dced86b14f5c0b51c88d06f37f4d372f5e996d1"
+    },
+    {
+      "artifact": "pypdf@6.20.0",
+      "requires_python": ">=3.9",
+      "tags": [
+        "py3-none-any"
+      ],
+      "target_tag_eligible": true,
+      "metadata_sha256": "3e19bd73d4535a9cb085b32de5e3a990e0753a4c2c5f1fcdfcf856116158f809",
+      "wheel_metadata_sha256": "96a37c8d7b7f425a05386731f644adbd66ebca17c45e8236176cfe614466df9d"
+    },
+    {
+      "artifact": "lxml@6.1.3",
+      "requires_python": ">=3.8",
+      "tags": [
+        "cp313-cp313-manylinux_2_26_x86_64",
+        "cp313-cp313-manylinux_2_28_x86_64"
+      ],
+      "target_tag_eligible": true,
+      "metadata_sha256": "aad89f8107bc74045b86c9b7f7c0984196102520dd7faed5e4e45693b7c315ef",
+      "wheel_metadata_sha256": "14fd72c649aab40454e034a232c58ae240af827e60e0c43aedc04bca4b3ffb5c"
+    },
+    {
+      "artifact": "et_xmlfile@2.0.0",
+      "requires_python": ">=3.8",
+      "tags": [
+        "py3-none-any"
+      ],
+      "target_tag_eligible": true,
+      "metadata_sha256": "0e97d7ea909ed0fbe03d88bc8b6f58677cee1b07bd3353ce361cd2405915204e",
+      "wheel_metadata_sha256": "1e20998f3bb2e83c3485d5f94772c214f0e6152e015a5f07fbc5b7f577e6817e"
+    },
+    {
+      "artifact": "typing_extensions@4.16.0",
+      "requires_python": ">=3.9",
+      "tags": [
+        "py3-none-any"
+      ],
+      "target_tag_eligible": true,
+      "metadata_sha256": "b05084ca1d50879865178d9fff9fabeab61bdfb1f361bfbde95421ffc8f9be46",
+      "wheel_metadata_sha256": "1b68144734c4b66791f27add5d425f3620775585718a03d0f9b110ba3a4d88db"
+    }
+  ],
+  "passed": 7,
+  "total": 7
+}

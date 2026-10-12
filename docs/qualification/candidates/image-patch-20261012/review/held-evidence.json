@@ -1,0 +1,40 @@
+{
+  "image": "sha256:8d1ec09aa78f47a11019089dacde93289fc66a39f55bd4357e59eeb25d9b52ac",
+  "findings": 47,
+  "severityCounts": {
+    "MEDIUM": 17,
+    "CRITICAL": 5,
+    "HIGH": 17,
+    "LOW": 7,
+    "UNDEFINED": 1
+  },
+  "sourcePackages": [
+    "avahi",
+    "cups",
+    "curl",
+    "cyrus-sasl2",
+    "expat",
+    "gnupg2",
+    "gnutls28",
+    "libxml2",
+    "nghttp2",
+    "poppler",
+    "tiff",
+    "zlib"
+  ],
+  "installedPackageLines": 325,
+  "retainedReferences": [
+    {
+      "sourceCommit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+      "bytes": 59680,
+      "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+    },
+    {
+      "sourceCommit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+      "path": "docs/qualification/aws-shipper-20261011-r1/historical-artifacts/01-os-installed-packages.txt",
+      "bytes": 8570,
+      "sha256": "1fa4f64de64341e41eb02988cb362a393102949122b331a44334049aee121c83"
+    }
+  ]
+}

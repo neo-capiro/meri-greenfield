@@ -1,0 +1,287 @@
+{
+  "method": "Static model of existing simple COPY instructions only; no Docker build or full Dockerfile execution",
+  "sourceCommit": "90b4dc8472da13cdee9f49cdc0b4c8306ecbdc73",
+  "copyRecords": [
+    {
+      "contextPath": "package.json",
+      "imagePath": "/opt/meri-worker/package.json",
+      "copyInstruction": "COPY package.json package-lock.json ./"
+    },
+    {
+      "contextPath": "package-lock.json",
+      "imagePath": "/opt/meri-worker/package-lock.json",
+      "copyInstruction": "COPY package.json package-lock.json ./"
+    },
+    {
+      "contextPath": "vendor/capiro-meri-contracts-0.1.0.tgz",
+      "imagePath": "/opt/meri-worker/vendor/capiro-meri-contracts-0.1.0.tgz",
+      "copyInstruction": "COPY vendor/capiro-meri-contracts-0.1.0.tgz ./vendor/capiro-meri-contracts-0.1.0.tgz"
+    },
+    {
+      "contextPath": "requirements.lock.txt",
+      "imagePath": "/opt/meri-worker/requirements.lock.txt",
+      "copyInstruction": "COPY requirements.lock.txt ./"
+    },
+    {
+      "contextPath": "sdk-options.mjs",
+      "imagePath": "/opt/meri-worker/sdk-options.mjs",
+      "copyInstruction": "COPY sdk-options.mjs ./"
+    },
+    {
+      "contextPath": "probes/artifacts.mjs",
+      "imagePath": "/opt/meri-worker/probes/artifacts.mjs",
+      "copyInstruction": "COPY probes/ ./probes/"
+    },
+    {
+      "contextPath": "probes/artifacts.py",
+      "imagePath": "/opt/meri-worker/probes/artifacts.py",
+      "copyInstruction": "COPY probes/ ./probes/"
+    },
+    {
+      "contextPath": "probes/browser.mjs",
+      "imagePath": "/opt/meri-worker/probes/browser.mjs",
+      "copyInstruction": "COPY probes/ ./probes/"
+    },
+    {
+      "contextPath": "probes/image-inventory.py",
+      "imagePath": "/opt/meri-worker/probes/image-inventory.py",
+      "copyInstruction": "COPY probes/ ./probes/"
+    },
+    {
+      "contextPath": "probes/image-inventory.test.mjs",
+      "imagePath": "/opt/meri-worker/probes/image-inventory.test.mjs",
+      "copyInstruction": "COPY probes/ ./probes/"
+    },
+    {
+      "contextPath": "probes/office-export.mjs",
+      "imagePath": "/opt/meri-worker/probes/office-export.mjs",
+      "copyInstruction": "COPY probes/ ./probes/"
+    },
+    {
+      "contextPath": "probes/office-export.test.mjs",
+      "imagePath": "/opt/meri-worker/probes/office-export.test.mjs",
+      "copyInstruction": "COPY probes/ ./probes/"
+    },
+    {
+      "contextPath": "probes/office-reconstruct.mjs",
+      "imagePath": "/opt/meri-worker/probes/office-reconstruct.mjs",
+      "copyInstruction": "COPY probes/ ./probes/"
+    },
+    {
+      "contextPath": "probes/runtime.mjs",
+      "imagePath": "/opt/meri-worker/probes/runtime.mjs",
+      "copyInstruction": "COPY probes/ ./probes/"
+    },
+    {
+      "contextPath": "probes/sdk-capture.mjs",
+      "imagePath": "/opt/meri-worker/probes/sdk-capture.mjs",
+      "copyInstruction": "COPY probes/ ./probes/"
+    },
+    {
+      "contextPath": "probes/sdk-capture.test.mjs",
+      "imagePath": "/opt/meri-worker/probes/sdk-capture.test.mjs",
+      "copyInstruction": "COPY probes/ ./probes/"
+    },
+    {
+      "contextPath": "probes/native-observations.mjs",
+      "imagePath": "/opt/meri-worker/probes/native-observations.mjs",
+      "copyInstruction": "COPY probes/ ./probes/"
+    },
+    {
+      "contextPath": "probes/native-stream-observer.mjs",
+      "imagePath": "/opt/meri-worker/probes/native-stream-observer.mjs",
+      "copyInstruction": "COPY probes/ ./probes/"
+    },
+    {
+      "contextPath": "probes/native-namespace-observer.mjs",
+      "imagePath": "/opt/meri-worker/probes/native-namespace-observer.mjs",
+      "copyInstruction": "COPY probes/ ./probes/"
+    },
+    {
+      "contextPath": "probes/sdk-capture-options.mjs",
+      "imagePath": "/opt/meri-worker/probes/sdk-capture-options.mjs",
+      "copyInstruction": "COPY probes/ ./probes/"
+    },
+    {
+      "contextPath": "probes/sdk-discovery-options.mjs",
+      "imagePath": "/opt/meri-worker/probes/sdk-discovery-options.mjs",
+      "copyInstruction": "COPY probes/ ./probes/"
+    },
+    {
+      "contextPath": "probes/sdk-discovery-options.test.mjs",
+      "imagePath": "/opt/meri-worker/probes/sdk-discovery-options.test.mjs",
+      "copyInstruction": "COPY probes/ ./probes/"
+    },
+    {
+      "contextPath": "probes/sdk-discovery-tools.mjs",
+      "imagePath": "/opt/meri-worker/probes/sdk-discovery-tools.mjs",
+      "copyInstruction": "COPY probes/ ./probes/"
+    },
+    {
+      "contextPath": "probes/sdk-discovery-tools.test.mjs",
+      "imagePath": "/opt/meri-worker/probes/sdk-discovery-tools.test.mjs",
+      "copyInstruction": "COPY probes/ ./probes/"
+    },
+    {
+      "contextPath": "probes/sdk-interruption.mjs",
+      "imagePath": "/opt/meri-worker/probes/sdk-interruption.mjs",
+      "copyInstruction": "COPY probes/ ./probes/"
+    },
+    {
+      "contextPath": "probes/sdk-interruption.test.mjs",
+      "imagePath": "/opt/meri-worker/probes/sdk-interruption.test.mjs",
+      "copyInstruction": "COPY probes/ ./probes/"
+    },
+    {
+      "contextPath": "probes/sdk-interruption-options.mjs",
+      "imagePath": "/opt/meri-worker/probes/sdk-interruption-options.mjs",
+      "copyInstruction": "COPY probes/ ./probes/"
+    },
+    {
+      "contextPath": "probes/sdk-interruption-loopback.mjs",
+      "imagePath": "/opt/meri-worker/probes/sdk-interruption-loopback.mjs",
+      "copyInstruction": "COPY probes/ ./probes/"
+    },
+    {
+      "contextPath": "probes/sdk-interruption-loopback.test.mjs",
+      "imagePath": "/opt/meri-worker/probes/sdk-interruption-loopback.test.mjs",
+      "copyInstruction": "COPY probes/ ./probes/"
+    },
+    {
+      "contextPath": "probes/static.test.mjs",
+      "imagePath": "/opt/meri-worker/probes/static.test.mjs",
+      "copyInstruction": "COPY probes/ ./probes/"
+    },
+    {
+      "contextPath": "checkpoint/native-session-files.mjs",
+      "imagePath": "/opt/meri-worker/checkpoint/native-session-files.mjs",
+      "copyInstruction": "COPY checkpoint/native-session-files.mjs ./checkpoint/native-session-files.mjs"
+    },
+    {
+      "contextPath": "checkpoint/fixture-channel.mjs",
+      "imagePath": "/opt/meri-worker/checkpoint/fixture-channel.mjs",
+      "copyInstruction": "COPY checkpoint/fixture-channel.mjs checkpoint/fixture-channel.test.mjs checkpoint/fixture-transport.mjs checkpoint/fixture-transport.test.mjs ./checkpoint/"
+    },
+    {
+      "contextPath": "checkpoint/fixture-channel.test.mjs",
+      "imagePath": "/opt/meri-worker/checkpoint/fixture-channel.test.mjs",
+      "copyInstruction": "COPY checkpoint/fixture-channel.mjs checkpoint/fixture-channel.test.mjs checkpoint/fixture-transport.mjs checkpoint/fixture-transport.test.mjs ./checkpoint/"
+    },
+    {
+      "contextPath": "checkpoint/fixture-transport.mjs",
+      "imagePath": "/opt/meri-worker/checkpoint/fixture-transport.mjs",
+      "copyInstruction": "COPY checkpoint/fixture-channel.mjs checkpoint/fixture-channel.test.mjs checkpoint/fixture-transport.mjs checkpoint/fixture-transport.test.mjs ./checkpoint/"
+    },
+    {
+      "contextPath": "checkpoint/fixture-transport.test.mjs",
+      "imagePath": "/opt/meri-worker/checkpoint/fixture-transport.test.mjs",
+      "copyInstruction": "COPY checkpoint/fixture-channel.mjs checkpoint/fixture-channel.test.mjs checkpoint/fixture-transport.mjs checkpoint/fixture-transport.test.mjs ./checkpoint/"
+    },
+    {
+      "contextPath": "checkpoint/resume-admission.mjs",
+      "imagePath": "/opt/meri-worker/checkpoint/resume-admission.mjs",
+      "copyInstruction": "COPY checkpoint/resume-admission.mjs checkpoint/resume-admission.test.mjs checkpoint/fixture-sentinel.mjs checkpoint/fixture-sentinel.test.mjs ./checkpoint/"
+    },
+    {
+      "contextPath": "checkpoint/resume-admission.test.mjs",
+      "imagePath": "/opt/meri-worker/checkpoint/resume-admission.test.mjs",
+      "copyInstruction": "COPY checkpoint/resume-admission.mjs checkpoint/resume-admission.test.mjs checkpoint/fixture-sentinel.mjs checkpoint/fixture-sentinel.test.mjs ./checkpoint/"
+    },
+    {
+      "contextPath": "checkpoint/fixture-sentinel.mjs",
+      "imagePath": "/opt/meri-worker/checkpoint/fixture-sentinel.mjs",
+      "copyInstruction": "COPY checkpoint/resume-admission.mjs checkpoint/resume-admission.test.mjs checkpoint/fixture-sentinel.mjs checkpoint/fixture-sentinel.test.mjs ./checkpoint/"
+    },
+    {
+      "contextPath": "checkpoint/fixture-sentinel.test.mjs",
+      "imagePath": "/opt/meri-worker/checkpoint/fixture-sentinel.test.mjs",
+      "copyInstruction": "COPY checkpoint/resume-admission.mjs checkpoint/resume-admission.test.mjs checkpoint/fixture-sentinel.mjs checkpoint/fixture-sentinel.test.mjs ./checkpoint/"
+    },
+    {
+      "contextPath": "build-dependencies/sdk-capture/json-records.mjs",
+      "imagePath": "/scripts/sdk-capture/json-records.mjs",
+      "copyInstruction": "COPY build-dependencies/sdk-capture/json-records.mjs build-dependencies/sdk-capture/protocol.mjs /scripts/sdk-capture/"
+    },
+    {
+      "contextPath": "build-dependencies/sdk-capture/protocol.mjs",
+      "imagePath": "/scripts/sdk-capture/protocol.mjs",
+      "copyInstruction": "COPY build-dependencies/sdk-capture/json-records.mjs build-dependencies/sdk-capture/protocol.mjs /scripts/sdk-capture/"
+    },
+    {
+      "contextPath": "build-dependencies/contracts/validate.mjs",
+      "imagePath": "/packages/contracts/validate.mjs",
+      "copyInstruction": "COPY build-dependencies/contracts/ /packages/contracts/"
+    },
+    {
+      "contextPath": "build-dependencies/contracts/meri.schema.json",
+      "imagePath": "/packages/contracts/meri.schema.json",
+      "copyInstruction": "COPY build-dependencies/contracts/ /packages/contracts/"
+    },
+    {
+      "contextPath": "build-dependencies/contracts/qualification-sdk/validate.mjs",
+      "imagePath": "/packages/contracts/qualification-sdk/validate.mjs",
+      "copyInstruction": "COPY build-dependencies/contracts/ /packages/contracts/"
+    },
+    {
+      "contextPath": "build-dependencies/contracts/qualification-sdk/wire.mjs",
+      "imagePath": "/packages/contracts/qualification-sdk/wire.mjs",
+      "copyInstruction": "COPY build-dependencies/contracts/ /packages/contracts/"
+    },
+    {
+      "contextPath": "build-dependencies/contracts/qualification-sdk/fixture.schema.json",
+      "imagePath": "/packages/contracts/qualification-sdk/fixture.schema.json",
+      "copyInstruction": "COPY build-dependencies/contracts/ /packages/contracts/"
+    },
+    {
+      "contextPath": "build-dependencies/contracts/qualification-sdk/native-evidence.mjs",
+      "imagePath": "/packages/contracts/qualification-sdk/native-evidence.mjs",
+      "copyInstruction": "COPY build-dependencies/contracts/ /packages/contracts/"
+    },
+    {
+      "contextPath": "build-dependencies/contracts/qualification-sdk/native-evidence.schema.json",
+      "imagePath": "/packages/contracts/qualification-sdk/native-evidence.schema.json",
+      "copyInstruction": "COPY build-dependencies/contracts/ /packages/contracts/"
+    },
+    {
+      "contextPath": "build-dependencies/contracts/test/sdk-fixture-wire.test.mjs",
+      "imagePath": "/packages/contracts/test/sdk-fixture-wire.test.mjs",
+      "copyInstruction": "COPY build-dependencies/contracts/ /packages/contracts/"
+    }
+  ],
+  "staticSuiteMetadataReads": [
+    {
+      "path": "/opt/meri-worker/package.json",
+      "explicitlyCopied": true
+    },
+    {
+      "path": "/opt/meri-worker/package-lock.json",
+      "explicitlyCopied": true
+    },
+    {
+      "path": "/opt/meri-worker/component-pins.json",
+      "explicitlyCopied": false
+    },
+    {
+      "path": "/opt/meri-worker/Dockerfile",
+      "explicitlyCopied": false
+    },
+    {
+      "path": "/opt/meri-worker/requirements.lock.txt",
+      "explicitlyCopied": true
+    },
+    {
+      "path": "/opt/meri-worker/.dockerignore",
+      "explicitlyCopied": false
+    },
+    {
+      "path": "/opt/meri-worker/vendor/capiro-meri-contracts-0.1.0.tgz",
+      "explicitlyCopied": true
+    }
+  ],
+  "collectorIntentionallyClassifiesBuildOnly": [
+    ".dockerignore",
+    "Dockerfile",
+    "README.md",
+    "component-pins.json"
+  ]
+}

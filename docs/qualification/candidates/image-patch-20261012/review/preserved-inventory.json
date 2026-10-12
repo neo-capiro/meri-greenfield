@@ -1,0 +1,26 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/worker/qualification/probes/image-inventory.test.mjs"
+  ],
+  "cwd": "/workspace/meri-image-patch-review-20261012",
+  "startUnixSeconds": 1791774954.239701,
+  "elapsedSeconds": 4.08186936378479,
+  "exitCode": 1,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "fixtureRoot": null,
+  "streams": {
+    "stdout": {
+      "path": "preserved-inventory.stdout.txt",
+      "bytes": 6650,
+      "sha256": "341ae923a04780c6ab90216e7edc7bd9ee0c3d21a53656711a894425e051ea66"
+    },
+    "stderr": {
+      "path": "preserved-inventory.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

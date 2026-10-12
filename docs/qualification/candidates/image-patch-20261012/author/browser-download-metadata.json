@@ -1,0 +1,27 @@
+{
+  "source": "unchanged nested lock installed with ignore-scripts; browser package metadata only",
+  "browsersJsonSha256": "f8a818e27de670929765493bb92715c0253336b5b99fd59918318305e84ef17c",
+  "selectedMetadata": [
+    {
+      "name": "chromium",
+      "revision": "1247",
+      "installByDefault": true,
+      "browserVersion": "155.0.8059.12",
+      "title": "Chrome for Testing"
+    },
+    {
+      "name": "chromium-headless-shell",
+      "revision": "1247",
+      "installByDefault": true,
+      "browserVersion": "155.0.8059.12",
+      "title": "Chrome Headless Shell"
+    },
+    {
+      "name": "ffmpeg",
+      "revision": "1011",
+      "installByDefault": true
+    }
+  ],
+  "browserDownloadsExecuted": false,
+  "archiveHashesReverified": false
+}

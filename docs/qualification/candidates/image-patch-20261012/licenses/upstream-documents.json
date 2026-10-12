@@ -1,0 +1,77 @@
+[
+  {
+    "url": "https://raw.githubusercontent.com/nodejs/node/v24.21.0/LICENSE",
+    "name": "node-v24.21.0-LICENSE.txt",
+    "status": 200,
+    "finalUrl": "https://raw.githubusercontent.com/nodejs/node/v24.21.0/LICENSE",
+    "bytes": 157609,
+    "sha256": "5888dbb9a1d2b18f2c3e6c5f6af1b39de658372b402a0577b002777f14c62ace",
+    "retainedFile": "notices/node-v24.21.0-LICENSE.txt"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/python/cpython/v3.13.5/LICENSE",
+    "name": "cpython-v3.13.5-LICENSE.txt",
+    "status": 200,
+    "finalUrl": "https://raw.githubusercontent.com/python/cpython/v3.13.5/LICENSE",
+    "bytes": 13809,
+    "sha256": "78b12c3a81360b357002334f0e70ea0e92eebf7a9b358805c03c48484945f3bb",
+    "retainedFile": "notices/cpython-v3.13.5-LICENSE.txt"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/standard-webhooks/standard-webhooks/b4d2c14fc5b4ccff3ff271e3b087dff812254c59/LICENSE",
+    "name": "standardwebhooks-exact-LICENSE.txt",
+    "status": 200,
+    "finalUrl": "https://raw.githubusercontent.com/standard-webhooks/standard-webhooks/b4d2c14fc5b4ccff3ff271e3b087dff812254c59/LICENSE",
+    "bytes": 11357,
+    "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+    "retainedFile": "notices/standardwebhooks-exact-LICENSE.txt"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/Brooooooklyn/canvas/7d19abed029287e7c26b14eaa6e67d560a37d853/.gitmodules",
+    "name": "canvas-exact-gitmodules.txt",
+    "status": 200,
+    "finalUrl": "https://raw.githubusercontent.com/Brooooooklyn/canvas/7d19abed029287e7c26b14eaa6e67d560a37d853/.gitmodules",
+    "bytes": 172,
+    "sha256": "42bbce9349d520c24475215871371def98636c3d8b9f7bdce138302f492f648c",
+    "retainedFile": "notices/canvas-exact-gitmodules.txt"
+  },
+  {
+    "url": "https://api.github.com/repos/Brooooooklyn/canvas/git/trees/7d19abed029287e7c26b14eaa6e67d560a37d853",
+    "name": "canvas-exact-tree.json",
+    "error": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/python/cpython/v3.13.5/Doc/c-api/stable.rst",
+    "name": "cpython-v3.13.5-abi.rst",
+    "status": 200,
+    "finalUrl": "https://raw.githubusercontent.com/python/cpython/v3.13.5/Doc/c-api/stable.rst",
+    "bytes": 8221,
+    "sha256": "8d630f385292767c3fa312dd49f0311eb3f1483031a41e1e21cd6a0fca03c109",
+    "retainedFile": "notices/cpython-v3.13.5-abi.rst"
+  },
+  {
+    "url": "https://lxml.de/installation.html",
+    "name": "lxml-installation.html",
+    "error": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>"
+  },
+  {
+    "url": "https://code.claude.com/docs/en/legal-and-compliance",
+    "name": "sdk-legal-and-compliance.html",
+    "error": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>"
+  },
+  {
+    "url": "https://www.anthropic.com/legal/commercial-terms",
+    "name": "sdk-commercial-terms.html",
+    "error": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>"
+  },
+  {
+    "url": "https://registry.npmjs.org/isarray/-/isarray-1.0.0.tgz",
+    "member": "package/README.md",
+    "archiveSha256": "e23c76f14f5222e07e39d89858b61e8e33f96956de9e0df3659cbdf8db950c87",
+    "originalMemberSha256": "ff138e683771b187f3629c383db72ee7d632009010a36d08e18e8d2a34222ec7",
+    "retainedFile": "notices/isarray-1.0.0-inline-MIT-LICENSE.txt",
+    "derivative": "Complete inline license section, bytes from heading to EOF",
+    "bytes": 1108,
+    "sha256": "66aa9feab8bb39aceebd69f2a357015d57ceab486d3c7a19ff8d3d4110a6d101"
+  }
+]

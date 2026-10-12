@@ -1,0 +1,19 @@
+{
+  "counts": {
+    "lock_locations": 147,
+    "eligible_locations": 130,
+    "excluded_locations": 17,
+    "selected_unique_registry_npm": 126,
+    "local_vendor": 1,
+    "wheels": 7,
+    "package_artifacts": 133,
+    "compressed_bytes": 156633085,
+    "notice_file_records": 153,
+    "retained_package_notice_files": 151,
+    "commercial_hash_only": 2,
+    "directory_placeholders": 1
+  },
+  "checks": 1141,
+  "failures": [],
+  "unlisted_notice_like_files": []
+}

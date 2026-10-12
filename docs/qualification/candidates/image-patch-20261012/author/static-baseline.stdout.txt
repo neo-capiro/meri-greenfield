@@ -1,0 +1,203 @@
+
+> @meri/qualification-worker@0.0.0 test
+> node --test probes/static.test.mjs checkpoint/fixture-channel.test.mjs checkpoint/fixture-transport.test.mjs checkpoint/resume-admission.test.mjs checkpoint/fixture-sentinel.test.mjs
+
+node:internal/modules/package_json_reader:301
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'canonicalize' imported from /workspace/meri-image-patch-author-20261012/packages/contracts/test/sdk-fixture-wire.test.mjs
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:301:9)
+    at packageResolve (node:internal/modules/esm/resolve:768:81)
+    at moduleResolve (node:internal/modules/esm/resolve:859:18)
+    at defaultResolve (node:internal/modules/esm/resolve:992:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+    at #resolve (node:internal/modules/esm/loader:683:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v24.19.0
+✖ checkpoint/fixture-channel.test.mjs (40.983795ms)
+node:internal/modules/package_json_reader:301
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ajv' imported from /workspace/meri-image-patch-author-20261012/packages/contracts/qualification-sdk/validate.mjs
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:301:9)
+    at packageResolve (node:internal/modules/esm/resolve:768:81)
+    at moduleResolve (node:internal/modules/esm/resolve:859:18)
+    at defaultResolve (node:internal/modules/esm/resolve:992:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+    at #resolve (node:internal/modules/esm/loader:683:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v24.19.0
+✖ checkpoint/fixture-sentinel.test.mjs (42.95931ms)
+node:internal/modules/package_json_reader:301
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'canonicalize' imported from /workspace/meri-image-patch-author-20261012/packages/contracts/test/sdk-fixture-wire.test.mjs
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:301:9)
+    at packageResolve (node:internal/modules/esm/resolve:768:81)
+    at moduleResolve (node:internal/modules/esm/resolve:859:18)
+    at defaultResolve (node:internal/modules/esm/resolve:992:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+    at #resolve (node:internal/modules/esm/loader:683:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v24.19.0
+✖ checkpoint/fixture-transport.test.mjs (45.115772ms)
+node:internal/modules/package_json_reader:301
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ajv' imported from /workspace/meri-image-patch-author-20261012/packages/contracts/validate.mjs
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:301:9)
+    at packageResolve (node:internal/modules/esm/resolve:768:81)
+    at moduleResolve (node:internal/modules/esm/resolve:859:18)
+    at defaultResolve (node:internal/modules/esm/resolve:992:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+    at #resolve (node:internal/modules/esm/loader:683:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v24.19.0
+✖ checkpoint/resume-admission.test.mjs (59.083067ms)
+✔ package.json pins the exact qualification dependency versions (2.231826ms)
+✔ package-lock.json locks the same exact versions with integrity (0.398028ms)
+✔ component-pins.json agrees with package.json, lock and tests (0.240482ms)
+✔ the sole local public contracts archive is exact reviewed regular-file DATA (0.794755ms)
+✔ public package lock adds only its exact local record and canonicalize closure (0.493311ms)
+✔ public contracts provenance stays versioned source DATA without image admission (0.148934ms)
+✔ Docker copies and size/hash-verifies the exact public archive before npm ci (0.298188ms)
+✔ Docker context admits exactly the one selected vendor archive (0.250597ms)
+✔ SDK bundle manifest declares CLI 2.1.295 and the pinned linux-x64 checksum (0.211969ms)
+✔ playwright-core maps Chromium revision 1247 to version 155.0.8059.12 (0.245649ms)
+✔ requirements.lock.txt pins the four direct Python libraries and transitives with hashes (0.289966ms)
+✔ published sdk.d.ts declares the supported configuration fields (not hypothetical APIs) (0.734184ms)
+✔ buildQualificationOptions produces the explicit inert options (0.248153ms)
+✔ options builder rejects overrides that re-enable discovery or move cwd (0.387512ms)
+✔ assertInertOptions fails closed on non-inert option sets (0.233201ms)
+✔ options builder refuses unsupported SessionStore combinations (0.276876ms)
+✔ reference store load of a missing session returns null (0.150056ms)
+✔ reference store retains opaque entries and their unknown fields unchanged (4.663661ms)
+✔ reference store accepts and retains UUID-less entries (0.27283ms)
+✔ reference store separates the main transcript from subagent subkeys (0.526531ms)
+✔ reference store separates project and session scopes (0.159469ms)
+✔ OBSERVED: InMemorySessionStore does not deduplicate repeated UUIDs (upstream guarantee NOT assumed) (0.145198ms)
+✔ verifyRestore succeeds on exact ordered opaque-entry equality (0.281383ms)
+✔ verifyRestore fails closed when expected state is absent (0.254552ms)
+✔ verifyRestore fails when an opaque unknown field changed (2.46081ms)
+✔ verifyRestore fails when a duplicate or UUID-less entry is missing (0.262074ms)
+✔ process identification rejects the MCP Node launcher and unrelated profiles (0.45937ms)
+✔ process identification requires an associated renderer and the exact run profile (0.118538ms)
+✔ sandbox verdict accepts Layer 1 Namespace + Seccomp-BPF Yes with an actual browser and renderer (0.289115ms)
+✔ sandbox verdict accepts Layer 1 SUID and rejects None/missing/ambiguous/No (0.248103ms)
+✔ sandbox verdict rejects missing evidence, generic prose or a missing renderer (0.132419ms)
+✔ sandbox rows: unknown labels ignored, duplicates and unexpected values ambiguous (0.160461ms)
+✔ disabling flags are detected anywhere in any process argv (0.207713ms)
+✔ extractResultSection decodes the exact Result section (two-cell object with escaped newlines) (0.346131ms)
+✔ extractResultSection decodes multi-line pretty JSON Result (0.101142ms)
+✔ extractResultSection fails closed on missing, duplicate, empty, error or malformed Result (0.175784ms)
+✔ decodeToolResult prefers structuredContent over the Result section (0.148082ms)
+✔ parseStructuredOutput parses complete pretty multi-line JSON (0.14661ms)
+✔ parseStructuredOutput fails closed on malformed, missing, noisy or non-object output (0.087301ms)
+✔ classifyChildResult refuses a nested ok:true inside an outer failed verdict (0.194773ms)
+✔ classifyChildResult fails on nonzero status, missing verdict and timeout (0.106039ms)
+✔ summarize/computeExitCode treat a required skipped or failed check as not-ok (0.154022ms)
+✔ Dockerfile pins an immutable base digest and non-root UID/GID 10001 (0.137617ms)
+✔ Dockerfile declares the writable mount points and read-only-root expectation (0.109454ms)
+✔ Dockerfile pins Debian repositories to the snapshot with signature verification and Check-Valid-Until disabled (0.111307ms)
+✔ Dockerfile bootstraps ca-certificates over HTTP then switches to HTTPS with a pinned CA version (0.359911ms)
+✔ Dockerfile keeps the browser tree root-owned and asserts the setuid helper after ownership ops (0.125268ms)
+✔ Dockerfile performs one locked npm install with optional binaries and no fallback (0.101242ms)
+✔ Dockerfile installs the matched CfT browser via the adopted Playwright CLI and keeps the sandbox helper (0.106129ms)
+✔ component-pins.json records the inspected CfT archive, sha256 and helper path (0.142364ms)
+✔ component-pins.json records CFT per-file pins and provenance (0.06647ms)
+✔ Dockerfile byte-verifies CFT files at the established paths and emits build evidence fail-closed (0.064446ms)
+✔ component-pins.json records base license source and the prior runtime-probe evidence (0.057346ms)
+✔ component-pins.json records the trixie snapshot, python 3.13 and coherent direct pins (0.163266ms)
+✔ Dockerfile OS package pins match the component-pins resolved versions (no drift) (0.109555ms)
+✔ Dockerfile refreshes inherited packages and records build-time evidence (0.15302ms)
+✔ component-pins.json distinguishes the prior built candidate from the unbuilt refresh (0.143415ms)
+✔ classifyNetworkResults requires expected denial classes and a 10.80 positive control (0.191198ms)
+✔ classifyNetworkResults fails on resolver success, unknown error class, wrong range or failed connect (0.178298ms)
+✔ addressIn10_80 matches only the qualification VPC range (0.116555ms)
+✔ classifySubprocess fails on nonzero status, signal or spawn error (0.117336ms)
+✔ decideNative fails when generation or PPTX inspection fails (0.191207ms)
+✔ decideRecalc requires successful conversion, a NEW file and observed numeric 6 (0.188633ms)
+✔ decideRender treats disabled rendering as a visible not-passed result (0.13948ms)
+✔ decideRender fails on any failed conversion, missing PNG or failed PDF inspection (0.197077ms)
+✔ the SDK reference store is the actual pinned upstream export (0.05953ms)
+✔ helper discovery accepts a root-owned 4755 alias matching the pinned helper (0.098879ms)
+✔ helper discovery rejects a missing, wrong-bytes, non-root or non-4755 alias (0.084607ms)
+✔ classifyUnshareDiagnostic reads the simple newuserns check and never calls killed/timeout/spawn-error children ok (0.238489ms)
+✔ parseSelfStatus and mountFlagsFor extract bounded security fields (0.381854ms)
+✔ planBrowserSteps lists the granular browser-dependent substeps (0.212419ms)
+✔ real-flow: nav/snapshot success without a Result section is NOT fatal (1.192052ms)
+✔ real-flow: a fatal get_config stops the sequence and runs no later MCP call (0.296456ms)
+✔ real-flow: a fatal nav-fixture stops the sequence and runs no later MCP call (0.177797ms)
+✔ real-flow: a fatal snapshot stops the sequence and runs no later MCP call (0.151197ms)
+✔ real-flow: a fatal download-nav stops the sequence and runs no later MCP call (0.120592ms)
+✔ real-flow: a fatal version-nav stops the sequence and runs no later MCP call (0.168233ms)
+✔ real-flow: a fatal sandbox-nav stops the sequence and runs no later MCP call (0.195474ms)
+✔ real-flow: download-bytes failure (no file) stops before version/sandbox MCP calls (0.326951ms)
+✔ real-flow: version-eval failure stops before sandbox navigation (0.290207ms)
+✔ decideRecalc passes only on original inputs, retained formula and numeric 6 (0.091738ms)
+✔ decideRecalc fails on wrong 0, actual null, missing inspection, python failure, malformed parse and constant 6 without formula (0.17308ms)
+✔ decideRecalc rejects good-looking observed facts from a failed inspection child (false-pass guard) (0.112249ms)
+✔ classifyNetworkResults requires the direct-IP negative and fails on CONNECTED or ambiguous results (0.107772ms)
+✔ an absent optional MCP config tool is recorded as not-run, without a call (0.156846ms)
+✔ native generation never accepts successful-looking JSON from a signalled or errored child (0.114202ms)
+✔ component-pins.json records the trixie base manifest digests and retained public-source hashes (0.073501ms)
+✔ component-pins.json records the cp313 lxml wheel and real downloaded-byte verification (0.141673ms)
+✔ Dockerfile ends with the owner-closed inventory over the exact declared roots and helpers (0.201132ms)
+✔ interruption packaging keeps accepted entry paths and canonical scanner bytes (0.378169ms)
+✔ private SDK fixture closure has exact context bytes and image paths (0.744128ms)
+✔ Dockerfile reduces SUID/SGID via chmod only, before the inventory, before USER (0.244498ms)
+✔ Dockerfile preserves SDK/CFT hashes, non-root identity, strict env and no bypass (0.176646ms)
+ℹ tests 97
+ℹ suites 0
+ℹ pass 93
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 418.701901
+
+✖ failing tests:
+
+test at checkpoint/fixture-channel.test.mjs:1:1
+✖ checkpoint/fixture-channel.test.mjs (40.983795ms)
+  'test failed'
+
+test at checkpoint/fixture-sentinel.test.mjs:1:1
+✖ checkpoint/fixture-sentinel.test.mjs (42.95931ms)
+  'test failed'
+
+test at checkpoint/fixture-transport.test.mjs:1:1
+✖ checkpoint/fixture-transport.test.mjs (45.115772ms)
+  'test failed'
+
+test at checkpoint/resume-admission.test.mjs:1:1
+✖ checkpoint/resume-admission.test.mjs (59.083067ms)
+  'test failed'

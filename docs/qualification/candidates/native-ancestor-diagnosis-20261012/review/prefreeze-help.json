@@ -1,0 +1,29 @@
+{
+  "command": [
+    "python3",
+    "-I",
+    "-B",
+    "-S",
+    "/workspace/meri-native-ancestor-diagnosis-20261012/docs/qualification/candidates/native-ancestor-diagnosis-20261012/inspect-ancestor-metadata.py",
+    "--help"
+  ],
+  "cwd": "/workspace/meri-native-ancestor-diagnosis-review-20261012",
+  "startUnixSeconds": 1791775758.9436336,
+  "elapsedSeconds": 0.032033443450927734,
+  "exitCode": 0,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "fixtureRoot": null,
+  "streams": {
+    "stdout": {
+      "path": "prefreeze-help.stdout.txt",
+      "bytes": 573,
+      "sha256": "00bafc96e13d9267505ae945a20b2c45aa4553850274986b77c979f28efb33a5"
+    },
+    "stderr": {
+      "path": "prefreeze-help.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

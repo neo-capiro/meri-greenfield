@@ -1,0 +1,28 @@
+{
+  "command": [
+    "env",
+    "IMAGE_REVIEW_ROOT=/workspace/meri-image-patch-author-20261012",
+    "python3",
+    "-B",
+    "docs/qualification/candidates/image-patch-20261012/review/independent_controls.py"
+  ],
+  "cwd": "/workspace/meri-image-patch-review-20261012",
+  "startUnixSeconds": 1791775479.844504,
+  "elapsedSeconds": 0.4656083583831787,
+  "exitCode": 0,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "fixtureRoot": null,
+  "streams": {
+    "stdout": {
+      "path": "final-independent14.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stderr": {
+      "path": "final-independent14.stderr.txt",
+      "bytes": 2040,
+      "sha256": "ae5555c2cb42ac774f8646e4efaf6377b3222e5b2f44f5abad37461b81ab91dd"
+    }
+  }
+}

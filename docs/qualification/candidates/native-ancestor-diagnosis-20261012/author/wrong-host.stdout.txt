@@ -1,0 +1,1 @@
+{"buildAuthorized": false, "childProcesses": 0, "collectorExecuted": false, "fileBodiesRead": 0, "filesystemWrites": 0, "observation": null, "reason": "actual_windows_python_3_11_15_required", "runnerQualified": false, "runtimeAccepted": false, "status": "DIAGNOSTIC_REFUSED"}

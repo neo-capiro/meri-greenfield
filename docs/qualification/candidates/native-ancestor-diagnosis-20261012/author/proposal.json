@@ -1,0 +1,32 @@
+{
+  "schema": "meri-native-ancestor-diagnostic-proposal/1",
+  "status": "SOURCE_PROPOSAL_NOT_NATIVE_EXECUTION_APPROVAL",
+  "baseCommit": "90b4dc8472da13cdee9f49cdc0b4c8306ecbdc73",
+  "script": {
+    "path": "docs/qualification/candidates/native-ancestor-diagnosis-20261012/inspect-ancestor-metadata.py",
+    "bytes": 6297,
+    "sha256": "9514b8e8ad0aff24e1eea7e782dd32178d856011fafcb750ce2c0f9a715c6efd"
+  },
+  "powershell": "& '<EXACT_ORIGINAL_PYTHON_EXE>' -I -B -S '<REVIEWED_ANCESTOR_DIAGNOSTIC_ABSOLUTE_PATH>' --repository '<EXACT_ORIGINAL_REPOSITORY_ABSOLUTE_PATH>' --original-output '<EXACT_ORIGINAL_OUTPUT_ARGUMENT>'",
+  "externalSupervisorSeconds": 15,
+  "externalSupervisorImplemented": false,
+  "internalDeadlineSeconds": 10,
+  "maxStdoutBytes": 32768,
+  "maxPathChars": 1024,
+  "maxAncestorsPerRole": 64,
+  "roles": [
+    "repository",
+    "output-parent",
+    "basePrefix",
+    "Lib",
+    "DLLs"
+  ],
+  "nativeExecutionPerformed": false,
+  "runnerQualified": false,
+  "buildAuthorized": false,
+  "runtimeAccepted": false,
+  "fileBodiesRead": 0,
+  "filesystemWrites": 0,
+  "childProcesses": 0,
+  "syntaxOnlyInputRole": "original-output"
+}

@@ -1,0 +1,13 @@
+{
+  "artifact": "/tmp/meri-image-license-evidence-20261012/standardwebhooks-source.tgz",
+  "archiveSha256": "6543b0f8db7eed216fa67856e1d6607cadd87e3a50bd4d6481403694c315f3de",
+  "gitHead": "b4d2c14fc5b4ccff3ff271e3b087dff812254c59",
+  "packageMember": "standard-webhooks-b4d2c14fc5b4ccff3ff271e3b087dff812254c59/libraries/javascript/package.json",
+  "packageMemberSha256": "686397f0f0202e0b693cfd3f6241d7a8da3df326f9642867a484fbbd295690b6",
+  "packageName": "standardwebhooks",
+  "packageVersion": "1.1.1",
+  "packageLicenseLabel": "MIT",
+  "nearestAncestorLicenseMember": "standard-webhooks-b4d2c14fc5b4ccff3ff271e3b087dff812254c59/libraries/LICENSE",
+  "nearestAncestorLicenseSha256": "5ec8c7b26b64d881a6706617bed25c049f97f2f35de034c756de8546fd6dbe27",
+  "resolution": "Exact-version JavaScript package is under libraries/LICENSE (MIT). Repository root LICENSE is Apache-2.0 and does not replace the package-specific ancestor notice. Original missing npm notice and apparent root mismatch evidence remain preserved. Packaging the MIT notice is still required before a complete distribution claim."
+}
