@@ -1,0 +1,104 @@
+{
+  "repository": "neo-capiro/capirov2",
+  "pin": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "observedCurrent": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+  "privateBodiesPublished": false,
+  "references": [
+    {
+      "path": "apps/api/src/meri/meri-document-read.helpers.ts",
+      "blob": "94cd51e8208e71c01a833445797d010fa79cfa67",
+      "observedCurrentBlob": "94cd51e8208e71c01a833445797d010fa79cfa67",
+      "unchanged": true,
+      "bytes": 9656,
+      "sha256": "2d96116443207cfc1c5a1c21a01fa88e2ab51a32635e9b9838320acc2c350d41"
+    },
+    {
+      "path": "apps/api/src/meri/meri-document-read.helpers.spec.ts",
+      "blob": "d17f06d81d471baa42a6f992fefd94c48fdf032b",
+      "observedCurrentBlob": "d17f06d81d471baa42a6f992fefd94c48fdf032b",
+      "unchanged": true,
+      "bytes": 6259,
+      "sha256": "08a4ceba43513353b2a8869e1054bc6a86bce541948385447b561af0080b8eda"
+    },
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "observedCurrentBlob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "unchanged": true,
+      "bytes": 415704,
+      "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194"
+    },
+    {
+      "path": "apps/api/src/meri/meri-tools.firmdata.spec.ts",
+      "blob": "cb845b2c9111a86af7c787fb28a59ea3f9e91666",
+      "observedCurrentBlob": "cb845b2c9111a86af7c787fb28a59ea3f9e91666",
+      "unchanged": true,
+      "bytes": 85003,
+      "sha256": "e4cc3b37ed612d388be6cec24cbe3859f47c4f4c1c147e7bd233c31acb1f65da"
+    },
+    {
+      "path": "apps/api/src/engagement/engagement.service.ts",
+      "blob": "2f0fc56b2eff3526118df7a052d13e76daf020a4",
+      "observedCurrentBlob": "2f0fc56b2eff3526118df7a052d13e76daf020a4",
+      "unchanged": true,
+      "bytes": 499454,
+      "sha256": "b0a12dbce2157701bafdba36bead922de2e274216de9c00a2b0c797dcbf93df0"
+    },
+    {
+      "path": "apps/api/src/engagement/engagement-document-read.spec.ts",
+      "blob": "aa8548bdef2c1a62c6d40141639639df2497a275",
+      "observedCurrentBlob": "aa8548bdef2c1a62c6d40141639639df2497a275",
+      "unchanged": true,
+      "bytes": 7840,
+      "sha256": "5d0cc0a28e20f4cabe4cd20f639af93f032af724f70076570d09896bc0f18ba5"
+    },
+    {
+      "path": "apps/api/src/engagement/attachment-section-extract.ts",
+      "blob": "1497bcd0536eab009abe0a8d3d9cd363c3b386d7",
+      "observedCurrentBlob": "1497bcd0536eab009abe0a8d3d9cd363c3b386d7",
+      "unchanged": true,
+      "bytes": 4930,
+      "sha256": "c451d27f1d746a94e0b2ca23b0d10841b05747a2925a410cfb8729eb2eeafb77"
+    },
+    {
+      "path": "apps/api/src/engagement/attachment-section-extract.spec.ts",
+      "blob": "2a1c30814b0815e4a28996ea20d8f162ba10233b",
+      "observedCurrentBlob": "2a1c30814b0815e4a28996ea20d8f162ba10233b",
+      "unchanged": true,
+      "bytes": 4087,
+      "sha256": "15d415a77e60c16dc63556594dec3eb18e087df04e7c9b77c4fb341d98cb5e7f"
+    },
+    {
+      "path": "apps/api/src/engagement/attachment-content.service.ts",
+      "blob": "c7824bdac3141077dba7938182f6323d673ce52e",
+      "observedCurrentBlob": "c7824bdac3141077dba7938182f6323d673ce52e",
+      "unchanged": true,
+      "bytes": 18100,
+      "sha256": "f3dccadfa28e651ebcc01503bd8d71722aa2fc7c0c96ea519605c7d38988bd6c"
+    },
+    {
+      "path": "apps/api/src/engagement/attachment-pdf-vision.ts",
+      "blob": "9dee18a757074cdf44b40463600e0daa1067de0b",
+      "observedCurrentBlob": "9dee18a757074cdf44b40463600e0daa1067de0b",
+      "unchanged": true,
+      "bytes": 6245,
+      "sha256": "ac5a8a5406ab7e0a82a35e9f1ee05ff98cf14e7a62db8e944761cb7a08c7e944"
+    },
+    {
+      "path": "apps/api/src/engagement/attachment-pdf-vision.spec.ts",
+      "blob": "13c15a499374730cb4b0a2b84122a9366e1384e6",
+      "observedCurrentBlob": "13c15a499374730cb4b0a2b84122a9366e1384e6",
+      "unchanged": true,
+      "bytes": 5554,
+      "sha256": "c4c89082d5adeefb3e857449ab7df8388bdb44e3c16913d0f31778bcac45ea6b"
+    },
+    {
+      "path": "apps/api/src/memory/memory-wall.helpers.ts",
+      "blob": "48b9bf4b9246baac7cd3188d012ea7638aeb8a68",
+      "observedCurrentBlob": "48b9bf4b9246baac7cd3188d012ea7638aeb8a68",
+      "unchanged": true,
+      "bytes": 7833,
+      "sha256": "91961048fd944885b8a06d229009259cf4866a4d40338d09685b1608f29a9255"
+    }
+  ]
+}
