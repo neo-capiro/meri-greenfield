@@ -1,0 +1,10 @@
+✔ mail.list_messages: three pages consume trusted prior results and one canonical normalization per call (35.58051ms)
+✔ mail.search_messages: three pages consume trusted prior results and one canonical normalization per call (13.231157ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1110.641106

@@ -1,0 +1,415 @@
+{
+  "scope": "OFFLINE_SOURCE_AND_PACKET_ONLY",
+  "baseCommit": "5b1b5985bc73cbfe901c17e65acf9fd50b3d7e33",
+  "sourceCommit": "8c4ec8dc2a9caad8640eb9f4741f5de2d7696887",
+  "originalPaths": 4893,
+  "unchangedOriginalPaths": 4891,
+  "checks": [
+    {
+      "name": "manifest pins exact base and source",
+      "passed": true
+    },
+    {
+      "name": "manifest local path: docs/coordination/reports/CODEX-CAPABILITY-MAIL-AUTHOR-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "manifest bytes: docs/coordination/reports/CODEX-CAPABILITY-MAIL-AUTHOR-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "manifest local path: docs/qualification/candidates/capability-successor-20261012/mail-author/authored-whitespace.stderr",
+      "passed": true
+    },
+    {
+      "name": "manifest bytes: docs/qualification/candidates/capability-successor-20261012/mail-author/authored-whitespace.stderr",
+      "passed": true
+    },
+    {
+      "name": "manifest local path: docs/qualification/candidates/capability-successor-20261012/mail-author/authored-whitespace.stdout",
+      "passed": true
+    },
+    {
+      "name": "manifest bytes: docs/qualification/candidates/capability-successor-20261012/mail-author/authored-whitespace.stdout",
+      "passed": true
+    },
+    {
+      "name": "manifest local path: docs/qualification/candidates/capability-successor-20261012/mail-author/baseline/operation-context.mjs",
+      "passed": true
+    },
+    {
+      "name": "manifest bytes: docs/qualification/candidates/capability-successor-20261012/mail-author/baseline/operation-context.mjs",
+      "passed": true
+    },
+    {
+      "name": "manifest local path: docs/qualification/candidates/capability-successor-20261012/mail-author/baseline/tool-dispatch.mjs",
+      "passed": true
+    },
+    {
+      "name": "manifest bytes: docs/qualification/candidates/capability-successor-20261012/mail-author/baseline/tool-dispatch.mjs",
+      "passed": true
+    },
+    {
+      "name": "manifest local path: docs/qualification/candidates/capability-successor-20261012/mail-author/baseline-connected.json",
+      "passed": true
+    },
+    {
+      "name": "manifest bytes: docs/qualification/candidates/capability-successor-20261012/mail-author/baseline-connected.json",
+      "passed": true
+    },
+    {
+      "name": "manifest local path: docs/qualification/candidates/capability-successor-20261012/mail-author/baseline-connected.stderr",
+      "passed": true
+    },
+    {
+      "name": "manifest bytes: docs/qualification/candidates/capability-successor-20261012/mail-author/baseline-connected.stderr",
+      "passed": true
+    },
+    {
+      "name": "manifest local path: docs/qualification/candidates/capability-successor-20261012/mail-author/baseline-connected.stdout",
+      "passed": true
+    },
+    {
+      "name": "manifest bytes: docs/qualification/candidates/capability-successor-20261012/mail-author/baseline-connected.stdout",
+      "passed": true
+    },
+    {
+      "name": "manifest local path: docs/qualification/candidates/capability-successor-20261012/mail-author/capture-check.py",
+      "passed": true
+    },
+    {
+      "name": "manifest bytes: docs/qualification/candidates/capability-successor-20261012/mail-author/capture-check.py",
+      "passed": true
+    },
+    {
+      "name": "manifest local path: docs/qualification/candidates/capability-successor-20261012/mail-author/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "name": "manifest bytes: docs/qualification/candidates/capability-successor-20261012/mail-author/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "name": "manifest local path: docs/qualification/candidates/capability-successor-20261012/mail-author/connected-after.json",
+      "passed": true
+    },
+    {
+      "name": "manifest bytes: docs/qualification/candidates/capability-successor-20261012/mail-author/connected-after.json",
+      "passed": true
+    },
+    {
+      "name": "manifest local path: docs/qualification/candidates/capability-successor-20261012/mail-author/connected-after.stderr",
+      "passed": true
+    },
+    {
+      "name": "manifest bytes: docs/qualification/candidates/capability-successor-20261012/mail-author/connected-after.stderr",
+      "passed": true
+    },
+    {
+      "name": "manifest local path: docs/qualification/candidates/capability-successor-20261012/mail-author/connected-after.stdout",
+      "passed": true
+    },
+    {
+      "name": "manifest bytes: docs/qualification/candidates/capability-successor-20261012/mail-author/connected-after.stdout",
+      "passed": true
+    },
+    {
+      "name": "manifest local path: docs/qualification/candidates/capability-successor-20261012/mail-author/dependency-provenance.json",
+      "passed": true
+    },
+    {
+      "name": "manifest bytes: docs/qualification/candidates/capability-successor-20261012/mail-author/dependency-provenance.json",
+      "passed": true
+    },
+    {
+      "name": "manifest local path: docs/qualification/candidates/capability-successor-20261012/mail-author/focused-first.json",
+      "passed": true
+    },
+    {
+      "name": "manifest bytes: docs/qualification/candidates/capability-successor-20261012/mail-author/focused-first.json",
+      "passed": true
+    },
+    {
+      "name": "manifest local path: docs/qualification/candidates/capability-successor-20261012/mail-author/focused-first.stderr",
+      "passed": true
+    },
+    {
+      "name": "manifest bytes: docs/qualification/candidates/capability-successor-20261012/mail-author/focused-first.stderr",
+      "passed": true
+    },
+    {
+      "name": "manifest local path: docs/qualification/candidates/capability-successor-20261012/mail-author/focused-first.stdout",
+      "passed": true
+    },
+    {
+      "name": "manifest bytes: docs/qualification/candidates/capability-successor-20261012/mail-author/focused-first.stdout",
+      "passed": true
+    },
+    {
+      "name": "manifest local path: docs/qualification/candidates/capability-successor-20261012/mail-author/full-staged-raw.stderr",
+      "passed": true
+    },
+    {
+      "name": "manifest bytes: docs/qualification/candidates/capability-successor-20261012/mail-author/full-staged-raw.stderr",
+      "passed": true
+    },
+    {
+      "name": "manifest local path: docs/qualification/candidates/capability-successor-20261012/mail-author/full-staged-raw.stdout",
+      "passed": true
+    },
+    {
+      "name": "manifest bytes: docs/qualification/candidates/capability-successor-20261012/mail-author/full-staged-raw.stdout",
+      "passed": true
+    },
+    {
+      "name": "manifest local path: docs/qualification/candidates/capability-successor-20261012/mail-author/gateway-source.json",
+      "passed": true
+    },
+    {
+      "name": "manifest bytes: docs/qualification/candidates/capability-successor-20261012/mail-author/gateway-source.json",
+      "passed": true
+    },
+    {
+      "name": "manifest local path: docs/qualification/candidates/capability-successor-20261012/mail-author/gateway-source.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest bytes: docs/qualification/candidates/capability-successor-20261012/mail-author/gateway-source.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest local path: docs/qualification/candidates/capability-successor-20261012/mail-author/gateway-source.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest bytes: docs/qualification/candidates/capability-successor-20261012/mail-author/gateway-source.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest local path: docs/qualification/candidates/capability-successor-20261012/mail-author/outline.json",
+      "passed": true
+    },
+    {
+      "name": "manifest bytes: docs/qualification/candidates/capability-successor-20261012/mail-author/outline.json",
+      "passed": true
+    },
+    {
+      "name": "manifest local path: docs/qualification/candidates/capability-successor-20261012/mail-author/public-distribution.json",
+      "passed": true
+    },
+    {
+      "name": "manifest bytes: docs/qualification/candidates/capability-successor-20261012/mail-author/public-distribution.json",
+      "passed": true
+    },
+    {
+      "name": "manifest local path: docs/qualification/candidates/capability-successor-20261012/mail-author/public-distribution.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest bytes: docs/qualification/candidates/capability-successor-20261012/mail-author/public-distribution.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest local path: docs/qualification/candidates/capability-successor-20261012/mail-author/public-distribution.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest bytes: docs/qualification/candidates/capability-successor-20261012/mail-author/public-distribution.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest local path: docs/qualification/candidates/capability-successor-20261012/mail-author/root-source.json",
+      "passed": true
+    },
+    {
+      "name": "manifest bytes: docs/qualification/candidates/capability-successor-20261012/mail-author/root-source.json",
+      "passed": true
+    },
+    {
+      "name": "manifest local path: docs/qualification/candidates/capability-successor-20261012/mail-author/root-source.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest bytes: docs/qualification/candidates/capability-successor-20261012/mail-author/root-source.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest local path: docs/qualification/candidates/capability-successor-20261012/mail-author/root-source.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest bytes: docs/qualification/candidates/capability-successor-20261012/mail-author/root-source.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest local path: docs/qualification/candidates/capability-successor-20261012/mail-author/source-freeze.json",
+      "passed": true
+    },
+    {
+      "name": "manifest bytes: docs/qualification/candidates/capability-successor-20261012/mail-author/source-freeze.json",
+      "passed": true
+    },
+    {
+      "name": "manifest local path: docs/qualification/candidates/capability-successor-20261012/mail-author/verify-packet.py",
+      "passed": true
+    },
+    {
+      "name": "manifest bytes: docs/qualification/candidates/capability-successor-20261012/mail-author/verify-packet.py",
+      "passed": true
+    },
+    {
+      "name": "manifest local path: docs/qualification/candidates/capability-successor-20261012/mail-author/whitespace-checks.json",
+      "passed": true
+    },
+    {
+      "name": "manifest bytes: docs/qualification/candidates/capability-successor-20261012/mail-author/whitespace-checks.json",
+      "passed": true
+    },
+    {
+      "name": "exact four allocated source paths",
+      "passed": true
+    },
+    {
+      "name": "base is source ancestor",
+      "passed": true
+    },
+    {
+      "name": "source tree pinned",
+      "passed": true
+    },
+    {
+      "name": "working source equals freeze: apps/gateway/dispatch/operation-context.mjs",
+      "passed": true
+    },
+    {
+      "name": "working source equals freeze: apps/gateway/dispatch/mail-read-context.mjs",
+      "passed": true
+    },
+    {
+      "name": "working source equals freeze: apps/gateway/dispatch/tool-dispatch.mjs",
+      "passed": true
+    },
+    {
+      "name": "working source equals freeze: apps/gateway/test/mail-context.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original preserved: operation-context.mjs",
+      "passed": true
+    },
+    {
+      "name": "original preserved: tool-dispatch.mjs",
+      "passed": true
+    },
+    {
+      "name": "all originals except two allocated modules unchanged",
+      "passed": true
+    },
+    {
+      "name": "no original test changed",
+      "passed": true
+    },
+    {
+      "name": "gateway-source frozen source",
+      "passed": true
+    },
+    {
+      "name": "gateway-source counts",
+      "passed": true
+    },
+    {
+      "name": "gateway-source exited and group absent",
+      "passed": true
+    },
+    {
+      "name": "gateway-source stream docs/qualification/candidates/capability-successor-20261012/mail-author/gateway-source.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "gateway-source stream docs/qualification/candidates/capability-successor-20261012/mail-author/gateway-source.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "root-source frozen source",
+      "passed": true
+    },
+    {
+      "name": "root-source counts",
+      "passed": true
+    },
+    {
+      "name": "root-source exited and group absent",
+      "passed": true
+    },
+    {
+      "name": "root-source stream docs/qualification/candidates/capability-successor-20261012/mail-author/root-source.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "root-source stream docs/qualification/candidates/capability-successor-20261012/mail-author/root-source.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "public-distribution frozen source",
+      "passed": true
+    },
+    {
+      "name": "public-distribution counts",
+      "passed": true
+    },
+    {
+      "name": "public-distribution exited and group absent",
+      "passed": true
+    },
+    {
+      "name": "public-distribution stream docs/qualification/candidates/capability-successor-20261012/mail-author/public-distribution.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "public-distribution stream docs/qualification/candidates/capability-successor-20261012/mail-author/public-distribution.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "baseline-connected direct child reaped only",
+      "passed": true
+    },
+    {
+      "name": "baseline-connected stdout",
+      "passed": true
+    },
+    {
+      "name": "baseline-connected stderr",
+      "passed": true
+    },
+    {
+      "name": "connected-after direct child reaped only",
+      "passed": true
+    },
+    {
+      "name": "connected-after stdout",
+      "passed": true
+    },
+    {
+      "name": "connected-after stderr",
+      "passed": true
+    },
+    {
+      "name": "focused-first direct child reaped only",
+      "passed": true
+    },
+    {
+      "name": "focused-first stdout",
+      "passed": true
+    },
+    {
+      "name": "focused-first stderr",
+      "passed": true
+    },
+    {
+      "name": "accepted subreaper copied unchanged",
+      "passed": true
+    }
+  ],
+  "passed": 101,
+  "failed": 0
+}
