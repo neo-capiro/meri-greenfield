@@ -1,0 +1,40 @@
+docs/qualification/candidates/capability-successor-20261012/mail-review/baseline.stdout.txt:436: trailing whitespace.
++  
+docs/qualification/candidates/capability-successor-20261012/mail-review/baseline.stdout.txt:438: trailing whitespace.
++  
+docs/qualification/candidates/capability-successor-20261012/mail-review/baseline.stdout.txt:453: trailing whitespace.
++  
+docs/qualification/candidates/capability-successor-20261012/mail-review/baseline.stdout.txt:455: trailing whitespace.
++  
+docs/qualification/candidates/capability-successor-20261012/mail-review/baseline.stdout.txt:470: trailing whitespace.
++  
+docs/qualification/candidates/capability-successor-20261012/mail-review/baseline.stdout.txt:472: trailing whitespace.
++  
+docs/qualification/candidates/capability-successor-20261012/mail-review/baseline.stdout.txt:487: trailing whitespace.
++  
+docs/qualification/candidates/capability-successor-20261012/mail-review/baseline.stdout.txt:489: trailing whitespace.
++  
+docs/qualification/candidates/capability-successor-20261012/mail-review/baseline.stdout.txt:504: trailing whitespace.
++  
+docs/qualification/candidates/capability-successor-20261012/mail-review/baseline.stdout.txt:506: trailing whitespace.
++  
+docs/qualification/candidates/capability-successor-20261012/mail-review/baseline.stdout.txt:535: trailing whitespace.
++  
+docs/qualification/candidates/capability-successor-20261012/mail-review/baseline.stdout.txt:537: trailing whitespace.
++  
+docs/qualification/candidates/capability-successor-20261012/mail-review/candidate-first.stdout.txt:61: trailing whitespace.
++  
+docs/qualification/candidates/capability-successor-20261012/mail-review/candidate-first.stdout.txt:67: trailing whitespace.
++  
+docs/qualification/candidates/capability-successor-20261012/mail-review/candidate-first.stdout.txt:82: trailing whitespace.
++  
+docs/qualification/candidates/capability-successor-20261012/mail-review/candidate-first.stdout.txt:84: trailing whitespace.
++  
+docs/qualification/candidates/capability-successor-20261012/mail-review/candidate-first.stdout.txt:108: trailing whitespace.
++  
+docs/qualification/candidates/capability-successor-20261012/mail-review/candidate-first.stdout.txt:110: trailing whitespace.
++  
+docs/qualification/candidates/capability-successor-20261012/mail-review/gateway-full.stdout.txt:298: trailing whitespace.
++  
+docs/qualification/candidates/capability-successor-20261012/mail-review/gateway-full.stdout.txt:313: trailing whitespace.
++  

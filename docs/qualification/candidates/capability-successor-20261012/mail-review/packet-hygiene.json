@@ -1,0 +1,8 @@
+{
+  "fullPacketExitCode": 2,
+  "warningBytes": 2486,
+  "warningSha256": "3e49ee981f38a98f21965418b52b4b8e531c57792d3c1db750f33191e8cc8881",
+  "authoredExitCode": 0,
+  "rawFailureBodiesNormalized": false,
+  "reason": "Preserved raw Node diagnostic whitespace; source and authored text checked separately"
+}
