@@ -1,0 +1,38 @@
+{
+  "command": [
+    "python",
+    "-I",
+    "-B",
+    "-S",
+    "docs/qualification/candidates/native-helper-integration-20261012/integration/hash-preservation-controls.py",
+    "/workspace/meri-native-helper-integration-20261012",
+    "observed-preservation"
+  ],
+  "cwd": "/workspace/meri-native-helper-integration-20261012",
+  "sourceHead": "08e8f56712cf4af0390b5646e5e0558e5ef9dc76",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T09:01:14.015289+00:00",
+  "durationSeconds": 0.115,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 112976,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-helper-integration-20261012/integration/captured-preservation.stdout.bin",
+      "bytes": 28,
+      "sha256": "bff3b8a87f0bceeb2a38c198795957227d4bb790b03c3e84bede230d6dd53f87"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-integration-20261012/integration/captured-preservation.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
