@@ -1,0 +1,131 @@
+{
+  "scope": "INDEPENDENT_PRIVATE_REFERENCE_METADATA_ONLY",
+  "references": [
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+          "bytes": 415704,
+          "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+          "bytes": 415704,
+          "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/regulatory-docket/regulatory-docket.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "fefc3cf2296c81f965be2d4b632b169969563534",
+          "bytes": 1987,
+          "sha256": "74767e7652be0b3fa7b375df9e895180e9eb0c4599ef580e3985c2492d1c5607"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "fefc3cf2296c81f965be2d4b632b169969563534",
+          "bytes": 1987,
+          "sha256": "74767e7652be0b3fa7b375df9e895180e9eb0c4599ef580e3985c2492d1c5607"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/prisma/schema.prisma",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "cdf1923217edae6e7624993796a5671922b61ac0",
+          "bytes": 968034,
+          "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "cdf1923217edae6e7624993796a5671922b61ac0",
+          "bytes": 968034,
+          "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-tools.firmdata.spec.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "cb845b2c9111a86af7c787fb28a59ea3f9e91666",
+          "bytes": 85003,
+          "sha256": "e4cc3b37ed612d388be6cec24cbe3859f47c4f4c1c147e7bd233c31acb1f65da"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "cb845b2c9111a86af7c787fb28a59ea3f9e91666",
+          "bytes": 85003,
+          "sha256": "e4cc3b37ed612d388be6cec24cbe3859f47c4f4c1c147e7bd233c31acb1f65da"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri.controller.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "598e9146e5568349f213cbd548de0213113dc924",
+          "bytes": 44992,
+          "sha256": "c9562a30e6a67ed75eaf74850d1e4d67c133f040035fb4df8ac80605a3123586"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "598e9146e5568349f213cbd548de0213113dc924",
+          "bytes": 44992,
+          "sha256": "c9562a30e6a67ed75eaf74850d1e4d67c133f040035fb4df8ac80605a3123586"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/auth/roles.guard.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "60fbbc8a1de21962a95af60842d25087f58a612d",
+          "bytes": 2703,
+          "sha256": "18e23d68f96a565b1994131b9affe7e4463e47e4979f22d897c7beaf450e6aa9"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "60fbbc8a1de21962a95af60842d25087f58a612d",
+          "bytes": 2703,
+          "sha256": "18e23d68f96a565b1994131b9affe7e4463e47e4979f22d897c7beaf450e6aa9"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-tool-request-control.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "e0cd084e488b50feadabfd8e325f86edc1611b41",
+          "bytes": 2198,
+          "sha256": "e0808b351f92eb2a5d1b609fcfeafd08f2ed4388e2c26e9cdcf4b991af0a4287"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "e0cd084e488b50feadabfd8e325f86edc1611b41",
+          "bytes": 2198,
+          "sha256": "e0808b351f92eb2a5d1b609fcfeafd08f2ed4388e2c26e9cdcf4b991af0a4287"
+        }
+      ],
+      "unchanged": true
+    }
+  ]
+}
