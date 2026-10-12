@@ -1,0 +1,16 @@
+{
+  "state": "pre-freeze known expiry probe",
+  "argv": [
+    "node",
+    "--test",
+    "--test-name-pattern=known .* expiry",
+    "/workspace/meri-g1-durable-budget-review-20261012/docs/qualification/candidates/g1-durable-budget-20261012/review/dispatch-independent.test.mjs"
+  ],
+  "exit_code": 1,
+  "hashes": {
+    "durable-tool-dispatch.mjs": "f803af9e1e22da156cd01da23364703e929a8567f62da22c9b98eafd1f7baf8e",
+    "postgres-tool-budget.mjs": "f70ae01081ce46975c69c537901d84a965fa61beefba2b68ea471cae7df9ea44",
+    "tool-budget-binding.mjs": "f04cfdb7d9f7bbbba27bb65536cc04cfbd431ddcece06fd70e7092c81a1a2a70",
+    "postgres-budget-store.mjs": "329145bdacbb5e3c9436db2e0622b9bbe6060a1e308f44aa5960e6593c010385"
+  }
+}
