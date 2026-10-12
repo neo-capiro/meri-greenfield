@@ -1,0 +1,38 @@
+{
+  "command": [
+    "python",
+    "-I",
+    "-B",
+    "-S",
+    "docs/qualification/candidates/pgdg-metadata-20261012/review/audit-author.py",
+    "/workspace/meri-pgdg-metadata-20261012",
+    "76355bfe516260ba758dee44f9fcf454e317cd71"
+  ],
+  "cwd": "/workspace/meri-supervisor-predicate-20261012",
+  "sourceHead": "ed0fb1fee6363952b0798e406862f963f9bc70b4",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T08:21:10.535292+00:00",
+  "durationSeconds": 0.165,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 109846,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/integration/pgdg-review-exact.stdout.bin",
+      "bytes": 186,
+      "sha256": "91f5fec0db643a8593753e87eda96ad284f5d213542811c37c843cacd4b74d0c"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/integration/pgdg-review-exact.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Correct original-root invocation: prior integrated call retained two expected exact-freeze/roadmap assertions; review exact clean author worktree",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

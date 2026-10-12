@@ -1,0 +1,40 @@
+# Exact predicate evidence and PostgreSQL prerequisite continuation
+
+This continuation starts from preserved PR19 `15f671a65365e3401f0ce07b46deb4cf63538346`, tree `843ee186aa3af6d84b09948b92f399a78c3f2ba3`. It accepts bounded source/evidence findings only. **Complete native-helper review, supported supervisor adaptation, PostgreSQL setup and every native gate remain HOLD.** No production source changed; the existing canonical roadmap is the only modified pre-existing file.
+
+## Reviewed freezes
+
+| Lane | Exact author | Independent reviewer | Decision |
+| --- | --- | --- | --- |
+| Complete private-record facts and offline verifier | `7591d8670e53fa49876aa762b0407b8baf2c66ba` | `33e2ab2fbfa42c635f1ee69368da7fa24bc3cb91` | ACCEPT_SOURCE for observations/conjunction/verifier only; helper and adaptation HOLD |
+| Narrow PGDG metadata continuation | `76355bfe516260ba758dee44f9fcf454e317cd71` | `e98df5f1502a732cc22d6bc6d3911e4e8e956bfc` | ACCEPT_SOURCE_EVIDENCE; HOLD_EXTERNAL_INPUT / NOT_EXECUTABLE |
+
+Criteria were frozen independently before conclusions. Author/reviewer branches, original negative observations and unsuccessful checks remain preserved. The [predicate review](MERI-NATIVE-PREDICATE-REVIEW-20261012.md) and [metadata review](MERI-PGDG-METADATA-REVIEW-20261012.md) define the accepted scope; neither grants runtime authority.
+
+## Private evidence: exact bytes, same rejection
+
+The parent supplied two existing packet members. This environment verified `candidate-hash-and-paths.json`60,160B/SHA256 `1817c1d72c2bbfafba943d0cbff4314ac210694a481565b5036a986087659d84` and `collect.ps1`23,776B/SHA256 `729298afadd57a97fe8325ff862d0e208befd9392b4befa5f91053dddfcd25e1`. Files remain0600 in a0700 private directory outside Git. Two candidate and one collector local transcription failures are preserved privately; these were local transcription errors, not evidence of corrupted parent input. The original ZIP remains parent-verified only. In this source continuation, no private collector/helper, proposed target interpreter/diagnostic/supervisor was imported, compiled or executed.
+
+All35 complete before/after pairs were inspected. Exactly12 pairs differ only in `LastAccessTime`, indices0–2 for executable, root, Lib and DLLs. The six inline identity/plain fields agree. The named/opened executable comparisons agree; the recorded hash reads91,648 bytes with its pinned SHA and no hash error. Actual collector acceptance also requires all-fields stability, recorded false. The visible four-term conjunction therefore remains false. Removing that term would change this observation to acceptance; the invalid control detects this and no such change is applied.
+
+The collector delegates `Same`, `Named` and `Hash` to **`NativeMetadata.cs`,6,163B/SHA256 `f551d7287611b982a93eebf02e93719bfdce355609bd7ca4f9cd546ae9bf0a4c`**. This exact existing member is the only additional relay needed for the current predicate review. Its bytes have not arrived. Consequently the exact helper comparison and native open/read/close/cancellation behavior remain unreviewed; recorded access-time differences alone do not establish its precise failure predicate or their cause. Do not request the two now-verified members again. No canonical inventory/wrapper/writer edit is justified yet, and no runtime fix is claimed.
+
+Separate original source-verification row count/schema/hash, complete absolute-path prior-preservation inventory, original collector receipt bindings, Git immutable identity/distributor provenance, unused authorized destination, enclosing watchdog/physical exit and execution permission remain unresolved. The new packet manifest cannot substitute for those inputs. All native publication/admission flags stay false. [Root recount](../../qualification/candidates/supervisor-predicate-integration-20261012/integration/root-private-observation.json) and [intake receipt](../../qualification/candidates/supervisor-predicate-integration-20261012/integration/verified-private-intake.json) contain hashes, counts and field names only.
+
+## One external PostgreSQL decision package
+
+All8 fresh official raw metadata requests still failed with proxy403/zero body. Detached Release/Release.gpg and the selected `.dsc` route did not resolve authentication. Rendered web output is not raw signed evidence; a403 proves neither `.dsc` existence nor content. Retrieval stopped. No target package, wheel or runtime/source archive was acquired, and no supported prefix recipe was invented.
+
+The [bounded external package](../../qualification/candidates/pgdg-metadata-20261012/author/decision-package.json) asks an accountable owner to arrange an existing supported evidence-only handoff of a coherent signed PGDG release/key with independent trust, same-release main/17 amd64 Packages and main Sources, conditional Sources-bound `.dsc`, provenance, and exact build-bound prefix/loader/lifecycle support. Proposed intake limits:7 raw metadata members/9 total,4MiB decoded aggregate,1.5MB per metadata member. Bind a fresh evidence-only destination before transfer; stop on overflow or mismatched/untrusted evidence. These are proposed metadata bounds, not full package closure, transfer/setup permission or a materialization recipe. If exact prefix support cannot be substantiated, the accountable owner must separately select and review a supported provisioning method. No install, source build, host change, authentication exception or launcher is selected.
+
+## Validation and preserved failures
+
+Predicate review passed25 data checks,16 independent inert controls,19 author controls and18 integrity checks. The reviewer preserved an initial24/1 digit-regex checker mistake and its corrected replay; the author preserved a tool transport failure before process creation. Root independently rehashed/recounted the exact private members and replayed19/19 author controls. Only public JSON-analysis code ran; private source remained data.
+
+PGDG review passed98/98 independent checks and reproduced63/63 author checks at the exact clean author freeze. Root replay of the integrated author verifier retained62 passes/1 failure: the intentionally updated canonical roadmap no longer matches its historical byte pin. Root verified the old pin against PR19. Root initially pointed the exact-author audit at the integrated worktree, preserving96 passes/2 expected placement/historical-roadmap failures; the corrected exact clean author-worktree replay passes98/98. The verifier, prior roadmap and all raw failure output remain unchanged. [Pin and replay explanation](../../qualification/candidates/supervisor-predicate-integration-20261012/integration/pgdg-integrated-pin-explanation.json) records these limits.
+
+Root local checks use the unchanged owned-process capture, retain both streams and confirm each owned process group absent. These are ordinary bounded source checks, not native watchdog qualification. Final root-document review, preservation/privacy observations and publication receipts accompany this packet; publication does not change the decisions above.
+
+The executor responded successfully at **2026-10-12T08:17:07Z** after the parent's disconnect notification; Git then confirmed preserved source and unpublished evidence. [Availability receipt](../../qualification/candidates/supervisor-predicate-integration-20261012/integration/executor-availability.json) records the actual command rather than inferring availability from turn status.
+
+G0 accepted/G1 OPEN/G2–G7 unentered;139 originals,96 selected/43 deferred,14 bound unavailable/82 selected unmapped and14 unqualified skills. All source connectivity stays disabled. Public0.1/private0.2, canonical registries/original tests, SDK sole model loop, Temporal durability, AI SDK/Elements transport, Aurora and separate frontend ownership remain. No main merge, target runtime action, SQL/migration, container/image, network/security/credentials/customer data, cloud/provider call or spend occurred. Continue from the [single canonical roadmap](../../plans/MERI-G1-SOURCE-TO-NATIVE.md); no parallel execution plan is introduced.

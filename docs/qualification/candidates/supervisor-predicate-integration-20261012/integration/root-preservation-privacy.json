@@ -1,0 +1,37 @@
+{
+  "base": "15f671a65365e3401f0ce07b46deb4cf63538346",
+  "originalTrackedFiles": 4696,
+  "unchangedOriginals": 4695,
+  "changedOriginals": [
+    "docs/plans/MERI-G1-SOURCE-TO-NATIVE.md"
+  ],
+  "newFilesAtObservation": 80,
+  "allProductionSourceAndOriginalEvidenceUnchanged": true,
+  "privateValueScanCount": 9,
+  "scannedChangedAndNewFiles": 81,
+  "privateBodyOrPathMatches": 0,
+  "ownedCheckGroups": [
+    {
+      "receipt": "pgdg-review.json",
+      "exitCode": 1,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "receipt": "pgdg-review-exact.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "receipt": "pgdg-author.json",
+      "exitCode": 1,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "receipt": "predicate-author.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    }
+  ],
+  "allOwnedCheckGroupsAbsent": true,
+  "runtimeActions": false
+}
