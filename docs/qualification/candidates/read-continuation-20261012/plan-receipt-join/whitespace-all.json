@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "git",
+    "diff",
+    "--check",
+    "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+    "HEAD"
+  ],
+  "exitCode": 2,
+  "meaning": "Exact five retained failed-copy preimages contain their original extra LF; do not normalize evidence.",
+  "stdoutSha256": "f9b4fabf23d72ec1e6218c51fd34031dc5840a6f126adcd3905db5352dfee6d3",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

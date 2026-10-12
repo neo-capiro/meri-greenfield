@@ -1,0 +1,12 @@
+{
+  "localFrontendObjectLookup": {
+    "repository": "/workspace/capiro-frontend",
+    "object": "ee01be3b2c5c64a53744994ae4ad0d992a111054",
+    "observedError": "fatal: git cat-file: could not get object info",
+    "captureLimit": "Original tool text retained in conversation; no separate original stdout/stderr file or per-command status captured. Enclosing shell proceeded to independent Git reads. No successful local object verification claimed."
+  },
+  "supportedFallback": "Parent explicitly authorized read-only GitHub metadata route; PR14 +5 exact committed files obtained, with original Git blob verification. No source archive or payload.",
+  "fileMaterializationFailure": "See frontend/materialization-failure.json and all5 exact initial-extra-newline preimages; each corrected file now matches connector Git blob.",
+  "clock": "2026-10-12 20:14:23 UTC cutoff; shipping state remains dated reported start, not re-polled",
+  "processScope": "Synchronous Git/Python documentary commands only; all tool calls returned. No daemon, service, native or background process created; other owners untouched."
+}

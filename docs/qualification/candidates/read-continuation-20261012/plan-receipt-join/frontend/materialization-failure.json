@@ -1,0 +1,41 @@
+{
+  "status": "FAIL before correction; PASS exact Git-blob check after correction",
+  "cause": "Local add-file patch appended one extra LF to each decoded connector source; original upstream content not changed",
+  "files": [
+    {
+      "path": "README.md",
+      "initialBytes": 7020,
+      "initialSha256": "b13cf040bab18e15f0e4913ca4a7852f74288f9b4db131a61d5e4d54ff35ac68",
+      "expectedGitBlob": "0ff96f893f902ae3ec413022097abd97b2547aff",
+      "correction": "Remove sole extra LF introduced by local apply_patch materialization; exact resulting Git blob independently matches connector identity"
+    },
+    {
+      "path": "STATUS.json",
+      "initialBytes": 6173,
+      "initialSha256": "c8e557d742f3ac9a5e527d81524ecee3ea682bd005e7ec0eb54057c18fde5630",
+      "expectedGitBlob": "c7ea49b501fdfa559c323d30f72c77de7019a9da",
+      "correction": "Remove sole extra LF introduced by local apply_patch materialization; exact resulting Git blob independently matches connector identity"
+    },
+    {
+      "path": "SOURCE.json",
+      "initialBytes": 2876,
+      "initialSha256": "cf5cb4024fa15e02e13474beb609ed0992e7a87d870cacf7a2c3eb6ff9d443fd",
+      "expectedGitBlob": "b4e9dd132b354566e162380b9985bc2fcc71d943",
+      "correction": "Remove sole extra LF introduced by local apply_patch materialization; exact resulting Git blob independently matches connector identity"
+    },
+    {
+      "path": "REMAINING.md",
+      "initialBytes": 3117,
+      "initialSha256": "e4ac3880cd5bf55863a6be215bef6bc484fcaf496b05d2882860e93e079d57ca",
+      "expectedGitBlob": "717d69635fad777e13d31435dbe9f522ace7131a",
+      "correction": "Remove sole extra LF introduced by local apply_patch materialization; exact resulting Git blob independently matches connector identity"
+    },
+    {
+      "path": "publication-review.md",
+      "initialBytes": 6334,
+      "initialSha256": "a4d78975e0cc56c18b31ce21716b03f6ff1a0b177da6412f9103288959d9c631",
+      "expectedGitBlob": "de522fdbf34e6629e3471a38825fdd7e91ed380b",
+      "correction": "Remove sole extra LF introduced by local apply_patch materialization; exact resulting Git blob independently matches connector identity"
+    }
+  ]
+}

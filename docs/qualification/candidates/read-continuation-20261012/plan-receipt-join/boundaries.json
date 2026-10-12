@@ -1,0 +1,75 @@
+{
+  "gateStates": {
+    "G0": "accepted discovery",
+    "G1": "OPEN",
+    "G2": "unentered",
+    "G3": "unentered",
+    "G4": "unentered",
+    "G5": "unentered",
+    "G6": "unentered",
+    "G7": "unentered"
+  },
+  "originalBenchmarks": {
+    "realTasksMinimum": 60,
+    "completionRateMinimum": 0.9,
+    "factualCorrectnessMinimum": 0.95,
+    "adversarialIsolationCasesMinimum": 100,
+    "unauthorizedDisclosureAllowed": 0,
+    "sourceCoverageRequired": 1,
+    "recoveryFixturePassRequired": 1,
+    "recoverySecondsMaximum": 120,
+    "duplicateMutationAllowed": 0,
+    "nativeFilesOpenRequired": 1,
+    "artifactHumanQualityMinimum": 0.95,
+    "concurrentRuns": 10,
+    "uiAcknowledgementP95SecondsMaximum": 2,
+    "freshTaskReadinessP95SecondsMaximum": 90,
+    "allVisibleControlBehaviorRequired": 1
+  },
+  "r2Benchmark": {
+    "realSeedRequestsMinimum": 75,
+    "labelledCasesMinimum": 200,
+    "syntheticReplacementAllowed": false,
+    "warmLookupP95SecondsMaximum": 15,
+    "stricterOriginalOrdinary8s": "Preserve if the companion original cohort retains it, per R2 line445. PR34 and evaluation prose carry historical8s; this lane has not independently located primary original8s target or measured cohort. Never replace a stricter applicable cohort."
+  },
+  "scopeTensions": [
+    "find_path_to",
+    "confirm_memory",
+    "correct_memory",
+    "forget_memory"
+  ],
+  "scopeTensionDisposition": "Deferred native IDs versus R2 covered-family labels retained; no authority reclassification. Broader graph/memory/drafting/coworker requirements survive.",
+  "skills": 14,
+  "memoryAdministratorSelfApproval": "already approved exception; no new decision requested",
+  "priorAcceptedRead": {
+    "source": "753566baf2d230ed241941dcdeca41625277cb1d",
+    "typed": 67,
+    "mapped": 66,
+    "pending": 30,
+    "handlers": "null/unavailable"
+  },
+  "acceptedRead": {
+    "source": "fecf97a4a8b742c6c09b781d3b799816e8b548e4",
+    "typed": 71,
+    "mapped": 70,
+    "pending": 26,
+    "acceptance": "ACCEPT_SOURCE per exactd0b181e3 committed independent report; PR35 receipt locally read; no runtime acceptance",
+    "handlers": "null/unavailable"
+  },
+  "nativeReportedCohorts": [
+    33,
+    9,
+    12
+  ],
+  "frontEnd337Metric": "Native Portfolio rows, not Meri139 native capability IDs or705 workbook requirements; no row acceptance claimed.",
+  "shipping": {
+    "sourceFromFrontendReceipt": "d5dd0be9bf5ad7800e648ff1421ce047523288b3",
+    "frontendNewerQualifiedSource": "ee01be3b2c5c64a53744994ae4ad0d992a111054",
+    "buildIdReported": "18b3316a-9403-40f9-807b-3ddf24c40d7b",
+    "buildStartedUTC": "2026-10-12T19:42:46Z",
+    "latestIndependentState": "not queried; no terminal/source-image binding or acceptance receipt",
+    "action": "Shipping owner must bind exact build/source/context/digest and decide intended reviewed source; do not silently attribute PR14 fixes to older d5dd image or rebuild without authority."
+  },
+  "scopeOfThisLane": "Metadata/source reads only. Authorized supported GitHub GET for frontend metadata performed; no product/native/SQL/host/cloud/build/provider/customer/spend actions. No services/background children."
+}

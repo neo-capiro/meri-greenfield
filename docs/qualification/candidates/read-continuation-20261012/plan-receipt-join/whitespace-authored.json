@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "git",
+    "diff",
+    "--check",
+    "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+    "HEAD",
+    "--",
+    ".",
+    ":(exclude)docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/frontend/initial-extra-newline.*"
+  ],
+  "exitCode": 0,
+  "meaning": "All authored/current-receipt files pass; only five immutable failed-copy preimages excluded.",
+  "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}
