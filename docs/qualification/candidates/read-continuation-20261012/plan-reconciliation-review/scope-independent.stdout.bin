@@ -1,0 +1,1436 @@
+{
+  "scope": "79efba457f41ce436b91f76741dac783ba82010b",
+  "scopeTree": "6654ee1de9531694d0093d1e524751ddb1a2f09a",
+  "scopeReferences": 32,
+  "scopeManifestMembers": 17,
+  "baseTrackedFiles": 6947,
+  "passed": 313,
+  "failed": 43,
+  "checks": [
+    {
+      "check": "139 original,96 selected,43 deferred",
+      "pass": true
+    },
+    {
+      "check": "all43 IDs exactly once",
+      "pass": true
+    },
+    {
+      "check": "43 unchanged against PR31 base",
+      "pass": true
+    },
+    {
+      "check": "18read/25write provenance",
+      "pass": true
+    },
+    {
+      "check": "manage_research_portfolio: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "manage_research_portfolio: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "manage_research_portfolio: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "manage_research_portfolio: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "manage_research_portfolio: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "manage_research_portfolio: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "manage_research_portfolio: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_analytics: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_analytics: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_analytics: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_analytics: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_analytics: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_analytics: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "get_research_portfolio_analytics: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "create_research_portfolio_snapshot: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "create_research_portfolio_snapshot: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "create_research_portfolio_snapshot: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "create_research_portfolio_snapshot: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "create_research_portfolio_snapshot: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "create_research_portfolio_snapshot: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "create_research_portfolio_snapshot: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "request_research_portfolio_output: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "request_research_portfolio_output: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "request_research_portfolio_output: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "request_research_portfolio_output: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "request_research_portfolio_output: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "request_research_portfolio_output: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "request_research_portfolio_output: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "save_research_portfolio_output_to_client: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "save_research_portfolio_output_to_client: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "save_research_portfolio_output_to_client: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "save_research_portfolio_output_to_client: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "save_research_portfolio_output_to_client: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "save_research_portfolio_output_to_client: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "save_research_portfolio_output_to_client: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "watch_research_portfolio: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "watch_research_portfolio: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "watch_research_portfolio: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "watch_research_portfolio: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "watch_research_portfolio: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "watch_research_portfolio: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "watch_research_portfolio: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "update_research_portfolio_change_state: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "update_research_portfolio_change_state: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "update_research_portfolio_change_state: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "update_research_portfolio_change_state: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "update_research_portfolio_change_state: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "update_research_portfolio_change_state: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "update_research_portfolio_change_state: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_bookmarks: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_bookmarks: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_bookmarks: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_bookmarks: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_bookmarks: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_bookmarks: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "get_research_portfolio_bookmarks: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "create_research_portfolio_bookmark: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "create_research_portfolio_bookmark: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "create_research_portfolio_bookmark: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "create_research_portfolio_bookmark: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "create_research_portfolio_bookmark: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "create_research_portfolio_bookmark: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "create_research_portfolio_bookmark: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_fit: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_fit: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_fit: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_fit: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_fit: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_fit: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "get_research_portfolio_fit: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_reviews: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_reviews: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_reviews: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_reviews: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_reviews: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_reviews: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "get_research_portfolio_reviews: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "add_research_portfolio_review_note: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "add_research_portfolio_review_note: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "add_research_portfolio_review_note: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "add_research_portfolio_review_note: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "add_research_portfolio_review_note: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "add_research_portfolio_review_note: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "add_research_portfolio_review_note: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_rules: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_rules: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_rules: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_rules: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_rules: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_rules: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "get_research_portfolio_rules: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_imports: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_imports: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_imports: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_imports: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_imports: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_imports: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "get_research_portfolio_imports: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_operations: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_operations: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_operations: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_operations: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_operations: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "get_research_portfolio_operations: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "get_research_portfolio_operations: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "prepare_research_portfolio_brief: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "prepare_research_portfolio_brief: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "prepare_research_portfolio_brief: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "prepare_research_portfolio_brief: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "prepare_research_portfolio_brief: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "prepare_research_portfolio_brief: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "prepare_research_portfolio_brief: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "prepare_research_portfolio_meeting: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "prepare_research_portfolio_meeting: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "prepare_research_portfolio_meeting: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "prepare_research_portfolio_meeting: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "prepare_research_portfolio_meeting: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "prepare_research_portfolio_meeting: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "prepare_research_portfolio_meeting: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "find_path_to: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "find_path_to: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "find_path_to: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "find_path_to: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "find_path_to: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "find_path_to: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "find_path_to: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "get_legiwatch_review: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "get_legiwatch_review: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "get_legiwatch_review: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "get_legiwatch_review: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "get_legiwatch_review: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "get_legiwatch_review: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "get_legiwatch_review: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "compare_florida_budget_amounts: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "compare_florida_budget_amounts: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "compare_florida_budget_amounts: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "compare_florida_budget_amounts: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "compare_florida_budget_amounts: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "compare_florida_budget_amounts: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "compare_florida_budget_amounts: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "prepare_legiwatch_briefing: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "prepare_legiwatch_briefing: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "prepare_legiwatch_briefing: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "prepare_legiwatch_briefing: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "prepare_legiwatch_briefing: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "prepare_legiwatch_briefing: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "prepare_legiwatch_briefing: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "compare_legislative_versions: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "compare_legislative_versions: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "compare_legislative_versions: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "compare_legislative_versions: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "compare_legislative_versions: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "compare_legislative_versions: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "compare_legislative_versions: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "save_legislative_research: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "save_legislative_research: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "save_legislative_research: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "save_legislative_research: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "save_legislative_research: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "save_legislative_research: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "save_legislative_research: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "preview_legiwatch_relevance: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "preview_legiwatch_relevance: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "preview_legiwatch_relevance: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "preview_legiwatch_relevance: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "preview_legiwatch_relevance: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "preview_legiwatch_relevance: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "preview_legiwatch_relevance: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "save_legiwatch_relevance: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "save_legiwatch_relevance: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "save_legiwatch_relevance: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "save_legiwatch_relevance: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "save_legiwatch_relevance: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "save_legiwatch_relevance: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "save_legiwatch_relevance: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "apply_legiwatch_suggestion: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "apply_legiwatch_suggestion: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "apply_legiwatch_suggestion: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "apply_legiwatch_suggestion: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "apply_legiwatch_suggestion: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "apply_legiwatch_suggestion: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "apply_legiwatch_suggestion: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "create_meeting_brief: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "create_meeting_brief: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "create_meeting_brief: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "create_meeting_brief: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "create_meeting_brief: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "create_meeting_brief: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "create_meeting_brief: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "draft_policy_memo: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "draft_policy_memo: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "draft_policy_memo: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "draft_policy_memo: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "draft_policy_memo: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "draft_policy_memo: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "draft_policy_memo: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "save_note: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "save_note: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "save_note: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "save_note: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "save_note: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "save_note: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "save_note: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "send_email: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "send_email: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "send_email: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "send_email: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "send_email: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "send_email: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "send_email: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "reply_email: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "reply_email: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "reply_email: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "reply_email: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "reply_email: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "reply_email: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "reply_email: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "confirm_memory: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "confirm_memory: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "confirm_memory: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "confirm_memory: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "confirm_memory: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "confirm_memory: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "confirm_memory: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "correct_memory: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "correct_memory: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "correct_memory: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "correct_memory: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "correct_memory: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "correct_memory: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "correct_memory: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "forget_memory: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "forget_memory: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "forget_memory: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "forget_memory: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "forget_memory: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "forget_memory: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "forget_memory: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "get_pe_buyer_workspace: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "get_pe_buyer_workspace: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "get_pe_buyer_workspace: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "get_pe_buyer_workspace: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "get_pe_buyer_workspace: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "get_pe_buyer_workspace: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "get_pe_buyer_workspace: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "create_client: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "create_client: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "create_client: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "create_client: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "create_client: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "create_client: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "create_client: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "update_client_profile: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "update_client_profile: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "update_client_profile: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "update_client_profile: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "update_client_profile: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "update_client_profile: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "update_client_profile: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "explain_opportunity_match: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "explain_opportunity_match: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "explain_opportunity_match: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "explain_opportunity_match: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "explain_opportunity_match: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "explain_opportunity_match: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "explain_opportunity_match: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "compare_funding_opportunities: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "compare_funding_opportunities: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "compare_funding_opportunities: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "compare_funding_opportunities: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "compare_funding_opportunities: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "compare_funding_opportunities: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "compare_funding_opportunities: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "build_opportunity_action_plan: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "build_opportunity_action_plan: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "build_opportunity_action_plan: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "build_opportunity_action_plan: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "build_opportunity_action_plan: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "build_opportunity_action_plan: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "build_opportunity_action_plan: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "get_business_development_brief: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "get_business_development_brief: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "get_business_development_brief: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "get_business_development_brief: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "get_business_development_brief: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "get_business_development_brief: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "get_business_development_brief: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "resolve_business_development_source: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "resolve_business_development_source: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "resolve_business_development_source: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "resolve_business_development_source: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "resolve_business_development_source: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "resolve_business_development_source: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "resolve_business_development_source: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "save_business_development_brief: catalog state/reason/replacement/flag",
+      "pass": true
+    },
+    {
+      "check": "save_business_development_brief: exact catalog pointer",
+      "pass": true
+    },
+    {
+      "check": "save_business_development_brief: original proposal line/rationale",
+      "pass": true
+    },
+    {
+      "check": "save_business_development_brief: accepted ledger preserves reason",
+      "pass": true
+    },
+    {
+      "check": "save_business_development_brief: batch authority not invented individual proof",
+      "pass": true
+    },
+    {
+      "check": "save_business_development_brief: actual workbook cells",
+      "pass": false
+    },
+    {
+      "check": "save_business_development_brief: no audit reclassification",
+      "pass": true
+    },
+    {
+      "check": "four covered-family differences explicit",
+      "pass": true
+    },
+    {
+      "check": "scope reference 753566ba:packages/contracts/retrieval-0.2/catalog.json",
+      "pass": true
+    },
+    {
+      "check": "scope reference cff71e1b:packages/contracts/retrieval-0.2/catalog.json",
+      "pass": true
+    },
+    {
+      "check": "scope reference 7a44d575:docs/CAPABILITY-SCOPE.md",
+      "pass": true
+    },
+    {
+      "check": "scope reference c558b153:docs/CAPABILITY-SCOPE.md",
+      "pass": true
+    },
+    {
+      "check": "scope reference cff71e1b:docs/CAPABILITY-SCOPE.md",
+      "pass": true
+    },
+    {
+      "check": "scope reference cff71e1b:docs/CAPABILITIES.json",
+      "pass": true
+    },
+    {
+      "check": "scope reference e14564e6:docs/coordination/r2/capabilities.json",
+      "pass": true
+    },
+    {
+      "check": "scope reference e14564e6:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+      "pass": true
+    },
+    {
+      "check": "scope reference 3406ed7e:docs/coordination/DECISIONS.md",
+      "pass": true
+    },
+    {
+      "check": "scope reference c558b153:docs/coordination/DECISIONS.md",
+      "pass": true
+    },
+    {
+      "check": "scope reference e14564e6:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+      "pass": true
+    },
+    {
+      "check": "scope reference cff71e1b:docs/plans/Meri_Greenfield_Agent_Plan.docx",
+      "pass": true
+    },
+    {
+      "check": "scope reference cff71e1b:docs/handover/20261012/inputs/Meri_Greenfield_Agent_Plan.original.docx",
+      "pass": true
+    },
+    {
+      "check": "scope reference cff71e1b:docs/plans/archive/MERI-DEPLOYMENT-20261009-before-figma.md",
+      "pass": true
+    },
+    {
+      "check": "scope reference cff71e1b:docs/plans/archive/MERI-DEPLOYMENT-20261010-before-R2.md",
+      "pass": true
+    },
+    {
+      "check": "scope reference cff71e1b:docs/handover/20261012/inputs/Meri_Codex_Hermes_Deployment_Plan.original.md",
+      "pass": true
+    },
+    {
+      "check": "scope reference cff71e1b:docs/plans/MERI-DEPLOYMENT.md",
+      "pass": true
+    },
+    {
+      "check": "scope reference cff71e1b:docs/plans/revisions/20261010-R2/Meri_Codex_Hermes_Deployment_Plan-R2.md",
+      "pass": true
+    },
+    {
+      "check": "scope reference cff71e1b:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+      "pass": true
+    },
+    {
+      "check": "scope reference cff71e1b:docs/plans/revisions/20261010-R2/manifest.json",
+      "pass": true
+    },
+    {
+      "check": "scope reference cff71e1b:docs/handover/20261012/inputs/manifest.json",
+      "pass": true
+    },
+    {
+      "check": "scope reference cff71e1b:docs/handover/20261011/Meri_Greenfield_Engineering_Handover_2026-10-11.docx",
+      "pass": true
+    },
+    {
+      "check": "scope reference cff71e1b:docs/handover/20261011/Meri_Greenfield_Engineering_Handover_2026-10-11.md",
+      "pass": true
+    },
+    {
+      "check": "scope reference cff71e1b:docs/handover/20261012/REMOTE-RESUME-CURRENT-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "scope reference cff71e1b:AGENTS.md",
+      "pass": true
+    },
+    {
+      "check": "scope reference cff71e1b:docs/IMPLEMENTATION-STANDARDS.md",
+      "pass": true
+    },
+    {
+      "check": "scope reference cff71e1b:docs/coordination/DECISIONS.md",
+      "pass": true
+    },
+    {
+      "check": "scope reference cff71e1b:docs/coordination/reports/CODEX-G0-DISCOVERY.md",
+      "pass": true
+    },
+    {
+      "check": "scope reference cff71e1b:docs/handover/20261011/CONTINUATION-INSTRUCTIONS.md",
+      "pass": true
+    },
+    {
+      "check": "scope reference cff71e1b:docs/handover/20261011/REFERENCE-INDEX.md",
+      "pass": true
+    },
+    {
+      "check": "scope reference cff71e1b:docs/handover/20261012/CONTEXT-INDEX.json",
+      "pass": true
+    },
+    {
+      "check": "scope reference cff71e1b:docs/decisions/MEMORY-ADMIN-SELF-APPROVAL-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "scope packet docs/coordination/reports/CODEX-SCOPE-AUTHORITY-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "scope packet docs/qualification/candidates/read-continuation-20261012/scope-authority/authority-timeline.json",
+      "pass": true
+    },
+    {
+      "check": "scope packet docs/qualification/candidates/read-continuation-20261012/scope-authority/deferred-ledger.json",
+      "pass": true
+    },
+    {
+      "check": "scope packet docs/qualification/candidates/read-continuation-20261012/scope-authority/input-lineage.json",
+      "pass": true
+    },
+    {
+      "check": "scope packet docs/qualification/candidates/read-continuation-20261012/scope-authority/missing-evidence.json",
+      "pass": true
+    },
+    {
+      "check": "scope packet docs/qualification/candidates/read-continuation-20261012/scope-authority/offline-checks.json",
+      "pass": true
+    },
+    {
+      "check": "scope packet docs/qualification/candidates/read-continuation-20261012/scope-authority/outline.json",
+      "pass": true
+    },
+    {
+      "check": "scope packet docs/qualification/candidates/read-continuation-20261012/scope-authority/reconcile-initial.json",
+      "pass": true
+    },
+    {
+      "check": "scope packet docs/qualification/candidates/read-continuation-20261012/scope-authority/reconcile-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "scope packet docs/qualification/candidates/read-continuation-20261012/scope-authority/reconcile-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "scope packet docs/qualification/candidates/read-continuation-20261012/scope-authority/reconcile.py",
+      "pass": true
+    },
+    {
+      "check": "scope packet docs/qualification/candidates/read-continuation-20261012/scope-authority/reference-identities.json",
+      "pass": true
+    },
+    {
+      "check": "scope packet docs/qualification/candidates/read-continuation-20261012/scope-authority/research-diagnostics.json",
+      "pass": true
+    },
+    {
+      "check": "scope packet docs/qualification/candidates/read-continuation-20261012/scope-authority/verification.json",
+      "pass": true
+    },
+    {
+      "check": "scope packet docs/qualification/candidates/read-continuation-20261012/scope-authority/verification.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "scope packet docs/qualification/candidates/read-continuation-20261012/scope-authority/verify.py",
+      "pass": true
+    },
+    {
+      "check": "scope packet docs/qualification/candidates/read-continuation-20261012/scope-authority/whitespace.json",
+      "pass": true
+    },
+    {
+      "check": "scope only allocated additions",
+      "pass": true
+    }
+  ],
+  "limits": "Read-only Git object and ZIP/XML metadata validation; no runtime, private producer import, native/SQL/provider execution, workbook formulas or package installs."
+}

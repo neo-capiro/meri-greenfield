@@ -1,0 +1,30 @@
+{
+  "metadataOnly": true,
+  "sourceDefects": [],
+  "reviewerFailures": [
+    {
+      "kind": "incorrectWorkbookColumnAssumption",
+      "retained": "scope-independent.stdout.bin",
+      "passed": 313,
+      "failed": 43,
+      "preimage": "audit-initial.py.txt",
+      "correction": "Actual header row7: E=New Meri coverage/scopeText; F=Coverage status. Changed the two mistaken column references only; all original43 checks retained."
+    },
+    {
+      "kind": "FileNotFoundError",
+      "capture": "Tool output only; no private content",
+      "reason": "Attempted criteria.json instead of existing criteria.md, then attempted reviewer receipt relative to author cwd; corrected absolute/actual path."
+    },
+    {
+      "kind": "KeyError",
+      "capture": "Tool output only; no private content",
+      "reason": "Assumed header row3; actual sparse workbook header is row7. Read actual nonempty row keys, no workbook edit."
+    }
+  ],
+  "draftFinding": {
+    "kind": "nullOperationIdentities",
+    "retained": "draft-null-operation-identities.json",
+    "sha256": "834af143af56f6df562e669ea5670301ff9ccfc8b43d189cb856b7a09d5ee9c9",
+    "consequence": "Cannot join67 typed descriptors to actual IDs/versions; totals alone insufficient. Author notified; not runtime defect."
+  }
+}
