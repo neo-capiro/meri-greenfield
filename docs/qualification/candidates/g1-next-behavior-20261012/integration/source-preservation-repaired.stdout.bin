@@ -1,0 +1,22 @@
+{
+  "base": "690bac4cd44112b161d8e02818aeae7639ce237a",
+  "candidate": "60bf49961514b8f479ae517089736d545ad0ee0e",
+  "baseTrackedFiles": 2884,
+  "unchangedOriginalFiles": 2876,
+  "onlyChangedOriginalFiles": [
+    "apps/control/qualification-sdk-fixture/service/README.md",
+    "apps/control/qualification-sdk-fixture/service/handlers.mjs",
+    "apps/control/qualification-sdk-fixture/state/README.md",
+    "apps/control/qualification-sdk-fixture/state/registry.mjs",
+    "apps/worker/qualification/probes/image-inventory.test.mjs",
+    "scripts/qualification/test_worker_image_build.py",
+    "scripts/qualification/worker_image_build.py",
+    "scripts/qualification/worker_image_collect.py"
+  ],
+  "stableHistoricalWorkerContextReference": "5ee46446b5f60034916f00b2a665b3e2bef9cf60",
+  "stableHistoricalMembersUnchanged": 44,
+  "canonicalContractsRegistryLocksMigrationsUnchanged": true,
+  "fixtureProductionInventoryUnchanged": true,
+  "newBuildAuthority": false,
+  "newRuntimeAcceptance": false
+}

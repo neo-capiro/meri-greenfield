@@ -1,0 +1,34 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "docs/qualification/candidates/g1-next-behavior-20261012/integration/verify-source.py"
+  ],
+  "cwd": "/workspace/meri-g1-executable-source-20261012",
+  "sourceHead": "60bf49961514b8f479ae517089736d545ad0ee0e",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T04:05:39.968191+00:00",
+  "durationSeconds": 0.165,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 43673,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/g1-next-behavior-20261012/integration/source-preservation-repaired.stdout.bin",
+      "bytes": 999,
+      "sha256": "944a5e33982f0f2a40665363d475591b036d16d5b512284efa3e131a094955a6"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-next-behavior-20261012/integration/source-preservation-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Independent review confirmed stale historical baseline; separately authored REFERENCE-only repair now uses accepted PR7. Preserve original failure and initial verifier; verify only the added authorized file change.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
