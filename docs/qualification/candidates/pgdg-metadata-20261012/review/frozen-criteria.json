@@ -1,0 +1,25 @@
+{
+  "baseCommit": "15f671a65365e3401f0ce07b46deb4cf63538346",
+  "baseTree": "843ee186aa3af6d84b09948b92f399a78c3f2ba3",
+  "role": "Independent metadata continuation reviewer",
+  "acceptedPriorAuthor": "05b297923791e434c52aa63eca6d3752d21af54e",
+  "acceptedPriorReview": "bf701db3389067de5c6aa503ff2698595b53289f",
+  "outline": [
+    "Preserve accepted native-prefix assessment and frozen setup/native boundaries; inspect only changed official metadata claims.",
+    "Review author retrieval implementation and exact immutable receipts, provenance, authentication and dependency/support consequences.",
+    "Run bounded offline file/Git consistency and preservation checks against the exact clean author freeze; do not repeat broad searches or native discovery.",
+    "Commit source-evidence disposition with concise exact external prerequisites, raw failures and explicit unrun gates."
+  ],
+  "criteria": [
+    {"id": "C1", "requirement": "Exact PR19 base, allocated new task/report/evidence paths only, prior source and all accepted native-prefix receipts unchanged."},
+    {"id": "C2", "requirement": "Every new retrieval uses an official supported metadata endpoint with exact requested/final URL, captured bytes/hash, finite bounds and honest errors; no proxy bypass or target package/wheel/archive acquisition."},
+    {"id": "C3", "requirement": "Signed-release/key/index/package authentication requires exact raw bytes and accepted trust binding. HTTPS, listed checksum, tool-rendered text or detached signature alone is not authentication. UNRUN when unavailable."},
+    {"id": "C4", "requirement": "Any asserted dependency closure binds exact release/build/package version/architecture/alternatives and all loaders/configuration/extensions; no PGDG/Debian build substitution or guessed metadata from filename."},
+    {"id": "C5", "requirement": "Supported official channel and extraction mechanism do not establish exact prefix support. Retain conditional relocation and unbound packaging limitations; no unsupported executable setup/launcher claim."},
+    {"id": "C6", "requirement": "If blocked, name a concise concrete supported metadata-transfer and exact build/layout support prerequisite; no repeated generic discovery, architecture choice, setup action or approval request without an executable bounded packet."},
+    {"id": "C7", "requirement": "Review exact author freeze/manifest and original raw failures with offline checks only. Distinguish source-evidence acceptance from setup/native/G1 acceptance, and retain cleanup/authority limits."}
+  ],
+  "authorizedReview": ["read-only source and official metadata assessment", "ordinary bounded offline checks", "new review evidence and commit"],
+  "forbidden": ["target payload download/extraction/install/import/execution", "native SQL/database/daemon/namespace probes", "proxy bypass", "cloud/paid/provider/customer actions", "new architecture choices", "recursive delegation"],
+  "researchPolicy": "Reuse prior independently retained primary sources. Additional narrow official reads only if necessary to resolve a new material claim; no repeated broad search."
+}
