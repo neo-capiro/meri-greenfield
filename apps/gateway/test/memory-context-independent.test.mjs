@@ -193,6 +193,29 @@ for(const field of ['decision','keySha256','previousSha256','checkedAtMs'])test(
   await denied(f);assert.equal(f.events.includes('retain'),true);assert.equal(f.events.includes('settle'),false);assert.equal(f.events.includes('uncertain'),true);
 });
 
+for(const target of ['load','retain'])test(`independent: ${target} rejects hostile non-JSON receipt without property effects`,async()=>{
+  const f=target==='load'?await seeded():fixture({nextCursor:'cursor-one'});let effects=0;
+  const hostile=new Proxy({},{get(){effects++;throw Error('get');},ownKeys(){effects++;throw Error('keys');}});
+  f.contextPorts[target==='load'?'loadPrevious':'retain']=async()=>hostile;
+  await denied(f,target==='load'?{cursor:'cursor-one'}:{});assert.equal(effects,0);
+  assert.equal(f.events.includes('settle'),false);if(target==='load')assert.equal(f.events.includes('handler'),false);
+});
+
+test('independent: retained ports receive immutable context detached from model objects',async()=>{
+  const f=fixture({nextCursor:'cursor-one'}),retain=f.contextPorts.retain;
+  f.contextPorts.retain=async call=>{
+    for(const value of [call.record,call.record.key,call.record.key.binding,call.record.key.subject,
+      call.record.previous,call.record.previous.request,call.record.previous.page])assert.ok(Object.isFrozen(value));
+    return retain(call);
+  };
+  await f.create().execute(request({}),'synthetic');f.state.nextCursor=null;
+  const loadPrevious=f.contextPorts.loadPrevious;f.contextPorts.loadPrevious=async call=>{
+    for(const value of [call.key,call.key.binding,call.key.subject,call.key.operation])assert.ok(Object.isFrozen(value));
+    return loadPrevious(call);
+  };
+  await f.create().execute(request({cursor:'cursor-one'}),'synthetic');
+});
+
 test('independent: release revocation prevents retain, final revocation prevents release',async()=>{
   for(const stage of ['handler','settle']){
     const f=fixture({nextCursor:'cursor-one'});
