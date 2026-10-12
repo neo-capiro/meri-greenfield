@@ -113,3 +113,9 @@ test('independent recovered reader policy receives original source scopes and cu
  const out=await h.read({context:c});const a=h.s.auth.at(-1).binding;
  assert.deepEqual(a.original.context.scopes,h.c.scopes);assert.deepEqual(a.scopes,c.scopes);assert.equal(a.current.actorId,'delegated-reader');assert.deepEqual(out.observation.subject.scopes,h.c.scopes);
 });
+
+test('independent malformed current-authority receipts refuse before durable claim',async()=>{
+ for(const change of [r=>({...r,authorized:false}),r=>({...r,bindingSha256:'a'.repeat(64)}),r=>({...r,expiresAtMs:NOW}),r=>({...r,expiresAtMs:NaN}),r=>({...r,extra:true})]){
+  const h=harness({authorize:(s,good)=>async q=>change(await good(q))});await assert.rejects(h.lookup());assert.equal(count(h,'claim'),0);assert.equal(count(h,'gateway'),0);
+ }
+});
