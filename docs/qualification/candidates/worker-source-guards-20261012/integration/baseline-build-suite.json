@@ -1,0 +1,41 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "scripts/qualification",
+    "-p",
+    "test_worker_image_build.py",
+    "-v"
+  ],
+  "cwd": "/workspace/meri-g1-executable-source-20261012",
+  "sourceHead": "54135942f3f59a29e0c0c10ca53fb7b49969ea57",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T03:49:23.898283+00:00",
+  "durationSeconds": 0.165,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 36761,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/worker-source-guards-20261012/integration/baseline-build-suite.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/worker-source-guards-20261012/integration/baseline-build-suite.stderr.bin",
+      "bytes": 6723,
+      "sha256": "304e141a4b6fbf079b3b49b06884bc44d520850ce1ed6ec3134b868c7c7561e4"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

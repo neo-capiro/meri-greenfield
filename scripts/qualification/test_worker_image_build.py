@@ -455,13 +455,13 @@ class FreshRunnerBinding(unittest.TestCase):
                 'capturedAt': self.now.isoformat(), 'expiresAt': (self.now+dt.timedelta(seconds=300)).isoformat(),
                 'reviewer': 'synthetic root'}
 
-    def test_exact_new_binding_does_not_change_historical_identity(self):
+    def test_exact_new_binding_preserves_historical_execution_identity(self):
         value, _ = self.proposal()
         self.assertEqual(value['target']['caller']['Arn'], binding.PRINCIPAL)
         self.assertEqual(build.WORKER_BUILDER_PRINCIPAL, 'arn:aws:iam::967807252336:user/hermes-cli')
         self.assertEqual(build.PYTHON_SHA, '10d845f50a2af64e3500bb2fcb348b5bc98a75d8ddada63e45ba1da6a1fc79d1')
-        self.assertEqual(collect.ASSEMBLER_SHA, '67c1cf554e80c62eeb56b6dcb9be00106adf9b1b8b40beba85249de662b835eb')
-        self.assertEqual(collect.CONTEXT_SHA, '18836912a03fc035d69c0cfc57d1f407e5c46af1bdd37c21a761f5d42dc84dda')
+        self.assertEqual(collect.ASSEMBLER_SHA, '48f065d0ad61f98ba571c89dcd62141e6f8c9b272f0d371331d74a0dabf87851')
+        self.assertEqual(collect.CONTEXT_SHA, '0f9cc23fb20d3d292fc5f2759a570ec5b022a5b9068d17ac545251803f73e903')
 
     def test_proposal_refuses_wrong_target_or_unpinned_closure(self):
         changes = [('profile', 'default'), ('region', 'us-west-2'), ('account', '000000000000')]

@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/worker/qualification/probes/image-inventory.test.mjs"
+  ],
+  "cwd": "/workspace/meri-g1-executable-source-20261012",
+  "sourceHead": "54135942f3f59a29e0c0c10ca53fb7b49969ea57",
+  "sourceDiffSha256": "9b085748196d115947177b8ee2fb072cb8ed3a2ca3e6de37fa158b211db9b667",
+  "sourceDiffBytes": 2512,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T03:49:46.325409+00:00",
+  "durationSeconds": 4.593,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 36849,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/worker-source-guards-20261012/integration/inventory-suite.stdout.bin",
+      "bytes": 2506,
+      "sha256": "e671acd71c14d579b854d848cec5bed00f7eb62c9c569a6fb6dd2f2451fb85b0"
+    },
+    {
+      "path": "docs/qualification/candidates/worker-source-guards-20261012/integration/inventory-suite.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
