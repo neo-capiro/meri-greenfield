@@ -165,3 +165,7 @@ test('independent entity: operation and shape names refuse hostile coercion',()=
   assert.throws(()=>v.entityCandidatesInputDefinition(unknown));assert.throws(()=>v.entityCandidatesOutputDefinition(unknown));assert.throws(()=>v.normalizeEntityCandidatesInput(unknown,{},context));assert.throws(()=>v.assertEntityCandidatesOutput(unknown,page([member()]),{},context));assert.throws(()=>v.validateEntityCandidatesShape(unknown,{}));
  }assert.equal(effects,0);
 });
+
+for(const [kind,candidate] of [['member',member],['committee',committee],['state_legislator',legislator]])test(`independent entity: name-query identities cannot repeat within ${kind}`,()=>{
+ assert.throws(()=>check(page([candidate(),candidate()])));
+});
