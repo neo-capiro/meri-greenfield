@@ -1,0 +1,17 @@
+# Artifact canonical budget composition — 12 October 2026
+
+Base: artifact author `b97fb68c336da35874923c3f5e83a73e870d6f95`, accepted source `47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae`. Import accepted command/shared-budget prerequisite `ca506ba1` without editing it. Dedicated branch/worktree `task/meri-artifact-budget-20261012` / `/workspace/meri-artifact-budget-20261012`.
+
+Own only new `apps/artifacts/postgres-service.mjs`, `apps/artifacts/test/artifact-postgres-service.test.mjs`, this task, matching report and `vertical-source-20261012/artifact-budget-author/**`. Preserve all accepted service/kernel files. No SQL/database execution, package installation, providers, model, native, cloud, resources or activation. Bounded local source tests use the existing inert scripted pool, never a database driver. Independent review belongs to the separately assigned reviewer.
+
+## Outline before implementation
+
+`createPostgresArtifactService` imports only public `createPostgresBudgetExecution` from `apps/gateway/index.mjs`, canonical public validation/hash, and own accepted `createArtifactService`. The caller supplies borrowed pool, allocation JSON, immutable producer/context/descriptor and existing authority/artifact ports. It owns neither pool nor ports. No listeners, startup I/O, second ledger, retry or new timer.
+
+Public input is `{deliveryId,baseVersionId,request}` with null base for creation. Context and operation descriptor are trusted factory inputs. Methods: `prepareInvocation`, `execute(value,credential,signal)`, `reconcileInvocation`, explicit `bindTrustedGrant`. Source execution defaults unavailable. General sandbox requests remain refused by the accepted local artifact service. Artifact inspect/download remain existing separately authorized service APIs, not undisclosed billed operation aliases.
+
+Canonical delivery identity hashes operation plus exact request/context/base intent. Factory and each invocation snapshot inputs before awaits. Canonical current authority and artifact action/resource authority must correlate binding/scopes/operation/policy; both narrow the effective deadline. A narrow port adapter returns the service's existing reservation receipt only after the canonical durable reservation ACK. Binary output ceiling is the minimum trusted request/allocation/capability limit. Fixed cost comes only from canonical schedule.
+
+The service settles before final release authorization. Therefore durable completion hashes the exact immutable committed version/object/spec/inspection/request record, not a later authorization-bearing response. Completion means budget accounting for a retained committed artifact, not delivery or native qualification. Failed generation leaves canonical UNKNOWN and explicit existing service budget uncertainty; no fabricated failed-settled receipt, refund or automatic retry. Late/uncertain reservation, commit-marker and settlement preserve current kernel behavior. Reconciliation is explicit historical accounting, never fresh effect authority.
+
+Verify actual kernel/store composition using the existing scripted pool: success/charge/immutable completion; repeat delivery no second generation; changed context/request collision; output caps; denied/current authority; failed generation retains UNKNOWN; lost prepare/reserve/marker/settle ACKs; cancellation/late checks; no exposed executable port or pool disposal. Keep raw failing results and owned-process absence. Actual Postgres/native qualification remains UNRUN.
