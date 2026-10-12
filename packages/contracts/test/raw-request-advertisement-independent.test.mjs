@@ -61,3 +61,15 @@ test('independent required caller fields remain required',()=>{for(const id of O
 test('independent Request advertisement is not normalized validity or current authority',()=>{const c=contract('scrape_web_page');validateShape('PublicWebPageRequest',{url:'file:///private'});assert.throws(()=>c.normalizeInput({url:'file:///private'}));assert.equal(c.descriptor.availability,'unimplemented');assert.equal(c.descriptor.handler,null)});
 test('independent long raw registry selector remains valid before trimming',()=>{const raw={name:' '.repeat(301)+'Review'},c=contract('lookup_client_registry');assert.deepEqual(c.normalizeInput(raw).input,{name:'Review'});advertised(c,raw)});
 test('independent normalized domain constraints remain stronger than caller shape',()=>{const raw={offset:'2.5'},c=contract('get_florida_budget_project');validateShape('FloridaBudgetRequest',raw);assert.throws(()=>c.normalizeInput(raw,contexts.get_florida_budget_project))});
+// Trace the factory's real validateShape call, rather than treating a suffix as
+// admission evidence. These are local Meri contract factories, not source adapters.
+const factoryNames={
+ 'outreach-query':'createOutreachQueryValidators','program-elements':'createProgramElementValidators','public-web':'createPublicWebValidators','sam-opportunities':'createSamOpportunitiesValidators','florida-budget':'createFloridaBudgetValidators','state-status-votes':'createStateStatusVotesValidators','tenant-contacts':'createTenantContactsValidators','entity-candidates':'createEntityCandidatesValidators','tracked-bills':'createTrackedBillsValidators','legislative-directory':'createLegislativeDirectoryValidators','pe-references':'createPeReferenceValidators','rule-status':'createRuleStatusValidators','certification-status':'createCertificationStatusValidators','disclosures':'createDisclosuresValidators','federal-legislation':'createFederalLegislationValidators','state-legislation':'createStateLegislationValidators','public-data':'createPublicDataValidators','client-registry':'createClientRegistryValidators'};
+for(const[id,rawDef,raw,expected]of cases)test(`independent instrumented factory admission: ${id}`,async()=>{
+ const b=CATALOG_OPERATION_BINDINGS.find(x=>x.id===id),schema=JSON.parse(readFileSync(new URL(`../retrieval-0.2/${b.group}.schema.json`,import.meta.url)));
+ const module=await import(`../retrieval-0.2/${b.group}-validation.mjs`);
+ const {assertSubject}=await import('../retrieval-0.2/validate.mjs');const {canonicalSha256}=await import('../validate.mjs');const calls=[];
+ const factory=module[factoryNames[b.group]]({schema,assertSubject,canonicalSha256,validateShape(name,value){calls.push(name);return validateShape(name,value)}});
+ const api=b.group==='florida-budget'?{floridaBudgetValidators:factory}:factory;
+ const result=b.normalize(api,raw,contexts[id]??{},b);assert.deepEqual(result.input,expected);assert.ok(calls.includes(rawDef),`${id} never admitted ${rawDef}: ${calls.join(',')}`);validateShape(rawDef.replace(/Request$/,'Input'),result.input);
+});
