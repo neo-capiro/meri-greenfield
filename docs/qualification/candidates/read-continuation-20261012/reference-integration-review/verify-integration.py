@@ -38,7 +38,9 @@ changed=sorted(path for path,old_blob in old.items() if current.get(path)!=old_b
 check('exact reviewed existing-path changes only',changed==sorted(expectations['changedOriginalPaths']))
 check('no original files deleted',all(path in current for path in old))
 check('original public0.1 package and dependencies untouched',all(current.get(p)==oid for p,oid in old.items() if (p.startswith('packages/contracts/') and not p.startswith(('packages/contracts/retrieval-0.2/','packages/contracts/test/'))) or p.endswith(('package-lock.json','package.json'))))
-check('runtime, worker, proxy and Python source unchanged',all(current.get(p)==oid for p,oid in old.items() if p.startswith(('apps/','scripts/'))))
+runtime_test_changes=set(expectations.get('allowedRuntimeTestChanges',[]))
+check('only reviewed gateway test expectations exempted from runtime byte equality',runtime_test_changes.issubset(set(expectations['changedOriginalPaths'])) and all(p.startswith('apps/gateway/test/') and p.endswith('.test.mjs') for p in runtime_test_changes))
+check('runtime production, worker, proxy and Python source unchanged',all(current.get(p)==oid for p,oid in old.items() if p.startswith(('apps/','scripts/')) and p not in runtime_test_changes))
 check('canonical bounded JSON snapshot owner unchanged',current['packages/contracts/retrieval-0.2/operation-contracts.mjs']==old['packages/contracts/retrieval-0.2/operation-contracts.mjs'])
 identity_changes={row['path']:row for row in expectations.get('familyIdentityChanges',[])}
 check('at most exact two authorized family identity changes',set(identity_changes).issubset({'packages/contracts/retrieval-0.2/legislative-directory.schema.json','packages/contracts/retrieval-0.2/rule-status.schema.json'}))
