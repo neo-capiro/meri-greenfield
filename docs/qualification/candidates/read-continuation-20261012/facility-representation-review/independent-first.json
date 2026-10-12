@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-facility-representation-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-facility-representation-review-20261012",
+  "sourceHead": "6e7d5ad11d046d233d8d72d7fb767812307b01c4",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T17:38:52.183573+00:00",
+  "durationSeconds": 1.722,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 195343,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/facility-representation-review/independent-first.stdout.bin",
+      "bytes": 2682,
+      "sha256": "d4bc20d0527ce3c70717fece6c1f34fd3637b97255b0752712a41082dbf3b280"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/facility-representation-review/independent-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

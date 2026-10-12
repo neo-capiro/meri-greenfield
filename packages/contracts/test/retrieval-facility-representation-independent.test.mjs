@@ -163,3 +163,20 @@ test('independent facility: cycles, hidden properties and class instances fail i
   const cycle={clientId};cycle.self=cycle;
   for(const input of [cycle,new Date(),Object.defineProperty({},'clientId',{value:clientId})])assert.throws(()=>normalize(input));
 });
+
+test('independent facility: normalization detaches selectors and neither API mutates caller data',()=>{
+  const freeze=value=>{if(value&&typeof value==='object'){for(const child of Object.values(value))freeze(child);Object.freeze(value);}return value;};
+  const input=freeze({clientId:` ${clientId} `,state:'fl'}),ctx=freeze(context()),page=freeze(result());
+  const before=JSON.stringify([input,ctx,page]);const normalized=normalize(input,ctx);
+  assert.notEqual(normalized,input);normalized.state='NY';assert.equal(input.state,'fl');
+  assert.equal(check(page,input,ctx),page);assert.equal(JSON.stringify([input,ctx,page]),before);
+});
+test('independent facility: checking wire metadata uses no ambient clock',()=>{
+  const original=Date.now;let reads=0;Date.now=()=>{reads++;throw new Error('ambient clock forbidden');};
+  try {normalize({});check();assert.equal(reads,0);} finally {Date.now=original;}
+});
+test('independent facility: equivalent UUID spellings cannot duplicate facility identity',()=>{
+  const id='abcdefab-abcd-0000-0000-000000000001';
+  check(result([facility({facilityId:id})]));
+  assert.throws(()=>check(result([facility({facilityId:id}),facility({facilityId:id.toUpperCase()})])));
+});
