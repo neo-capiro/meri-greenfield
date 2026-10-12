@@ -1,0 +1,63 @@
+{
+  "scope": "Selected source/application/artifact commands and analysis remain in original96; known effects are not missing DTOs.",
+  "records": [
+    {
+      "id": "save_memory",
+      "locator": "meri-tools.service.ts:2908-2972",
+      "effect": "Proposes saved-memory candidate and returns pending saved:false/candidateId or saved:true receipt. Selected proposal path; admin self-approval decision is already approved, not reopened by this discovery.",
+      "gate": "Current actor/client scope, canonical governance, idempotency and receipt qualification; no source approval/write implementation copied."
+    },
+    {
+      "id": "save_chat_attachments",
+      "locator": "meri-tools.service.ts:7083-7090",
+      "effect": "clientFiling.saveAttachments after ensureClientVisible; source filing is a write.",
+      "gate": "Approved filing, exact attachment/conversation binding, current access and receipt."
+    },
+    {
+      "id": "schedule_task",
+      "locator": "meri-tools.service.ts:8153-8295",
+      "effect": "Historical source normalizes schedule effect, reconciles receipts, checks owner quota and creates owner-scoped record.",
+      "gate": "Selected replacement is new application Temporal Schedule, explicitly not legacy schedule-store parity. Ownership/timezone/budget/durable receipt fixtures required."
+    },
+    {
+      "id": "cancel_scheduled_task",
+      "locator": "meri-tools.service.ts:8319-8332",
+      "effect": "Historical owner-scoped updateMany disables/cancels; false when no affected row.",
+      "gate": "New application Temporal cancellation and durable history; no source mutation authorized here."
+    },
+    {
+      "id": "update_scheduled_task",
+      "locator": "meri-tools.service.ts:8341-8418",
+      "effect": "Historical owner-scoped pause/resume/run_now checks and compare/update; no arbitrary external action expansion.",
+      "gate": "New application schedule current authority and one-outcome delivery."
+    },
+    {
+      "id": "create_task",
+      "locator": "meri-tools.service.ts:8969-8996",
+      "effect": "Current client visibility before engagement task create; result projects id/title/status/dueDate/clientId/createdAt.",
+      "gate": "Immutable approval, current authority, source invariants, idempotency and receipt per selected boundary."
+    },
+    {
+      "id": "update_task",
+      "locator": "meri-tools.service.ts:8998-9033",
+      "effect": "Task status aliases/field normalization then engagement update; result id/title/status/dueDate/clientId/updatedAt.",
+      "gate": "Current task ownership and allowed field invariants, repeated-delivery receipt."
+    },
+    {
+      "ids": [
+        "create_word",
+        "create_excel",
+        "create_powerpoint"
+      ],
+      "locator": "canonical catalog selected boundaries",
+      "effect": "Selected new local artifact creation/revisions, originals preserved and render/byte validations.",
+      "gate": "Governed sandbox/renderer/native artifact inspection and optional separate source filing; existing source command shape is not native execution acceptance."
+    },
+    {
+      "id": "run_analysis",
+      "locator": "canonical catalog selected boundary",
+      "effect": "Selected new reproducible analysis over authorized inputs; no source mutations.",
+      "gate": "Referenced values/output verification, authorized data and bounded execution."
+    }
+  ]
+}
