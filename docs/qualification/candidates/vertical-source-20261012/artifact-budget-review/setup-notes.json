@@ -1,0 +1,14 @@
+{
+  "events": [
+    {
+      "kind": "read-only path lookup",
+      "detail": "Initial authority lookup used a nonexistent flat path; rg located the actual authorization/current-tool-authority.mjs, then it was read."
+    },
+    {
+      "kind": "sparse report directory absent",
+      "detail": "First report redirection and commit failed because docs/coordination/reports did not yet exist in sparse checkout. No file was created or lost; created the allocated directory and wrote the report."
+    }
+  ],
+  "sourceChanges": false,
+  "runtimeActions": false
+}

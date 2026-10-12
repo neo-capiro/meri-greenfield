@@ -1,0 +1,518 @@
+{
+  "source": "a73b65dc05b7554c0592bec22d940ef781344dd6",
+  "sourceTree": "cab03252f33f55e125e0e7af98f4353ab4a60666",
+  "authorPacket": "0249c7c2c63fd8a9643439178ca66bbe63d15912",
+  "authorManifestSha256": "11163cb18b90b20f983770d8dc77a479d660da259940f9346e32516a33473fc0",
+  "authorManifestMembers": 39,
+  "originalTrackedEntries": 8768,
+  "checks": 124,
+  "passed": 124,
+  "failed": 0,
+  "rows": [
+    {
+      "name": "all original mode/blob entries preserved a73b65dc05b7554c0592bec22d940ef781344dd6",
+      "pass": true,
+      "detail": {
+        "originals": 8768,
+        "differences": []
+      }
+    },
+    {
+      "name": "all original mode/blob entries preserved 0249c7c2c63fd8a9643439178ca66bbe63d15912",
+      "pass": true,
+      "detail": {
+        "originals": 8768,
+        "differences": []
+      }
+    },
+    {
+      "name": "new production scope exact",
+      "pass": true
+    },
+    {
+      "name": "exact reviewed product apps/artifacts/postgres-service.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact reviewed product apps/artifacts/test/artifact-postgres-service.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "accepted public budget owner imported",
+      "pass": true
+    },
+    {
+      "name": "accepted artifact service imported",
+      "pass": true
+    },
+    {
+      "name": "no direct SQL/driver/subprocess imports",
+      "pass": true
+    },
+    {
+      "name": "source disabled by default",
+      "pass": true
+    },
+    {
+      "name": "general analysis separate refusal",
+      "pass": true
+    },
+    {
+      "name": "canonical unchanged apps/artifacts/service.mjs",
+      "pass": true
+    },
+    {
+      "name": "canonical unchanged apps/gateway/index.mjs",
+      "pass": true
+    },
+    {
+      "name": "canonical unchanged apps/gateway/budget/postgres-tool-budget.mjs",
+      "pass": true
+    },
+    {
+      "name": "canonical unchanged apps/gateway/budget/tool-budget-execution.mjs",
+      "pass": true
+    },
+    {
+      "name": "canonical unchanged packages/runtime/operation-lifetime.mjs",
+      "pass": true
+    },
+    {
+      "name": "canonical unchanged packages/contracts/meri.schema.json",
+      "pass": true
+    },
+    {
+      "name": "canonical unchanged packages/contracts/validate.mjs",
+      "pass": true
+    },
+    {
+      "name": "canonical unchanged packages/contracts/retrieval-0.2/catalog.json",
+      "pass": true
+    },
+    {
+      "name": "author manifest binds exact source",
+      "pass": true
+    },
+    {
+      "name": "manifest names unique",
+      "pass": true
+    },
+    {
+      "name": "author member apps/artifacts/postgres-service.mjs",
+      "pass": true
+    },
+    {
+      "name": "author member apps/artifacts/test/artifact-postgres-service.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "author member docs/coordination/reports/CODEX-ARTIFACT-BUDGET-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "author member docs/coordination/tasks/CODEX-ARTIFACT-BUDGET-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/api.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/boundary-before.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/boundary-before.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/boundary-before.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/cancellation-repair.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/cancellation-repair.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/cancellation-repair.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/corrected.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/corrected.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/corrected.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/failures-and-repairs.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/final.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/final.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/final.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/first.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/first.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/first.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/independent-repair-links.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/initial-manifest.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/initial-report.md",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/initial-source-preservation.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/initial-verify-result.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/initial-verify.py",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/manifest-before.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/references.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/run-focused.py",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/source-preservation.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/verifier-before-receipt.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/verifier-before.py",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/verifier-before.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/verifier-before.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/verify.py",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/version-ack-repair.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/version-ack-repair.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/version-ack-repair.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "author group receipt docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/boundary-before.json",
+      "pass": true
+    },
+    {
+      "name": "author source diff docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/boundary-before.json",
+      "pass": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/boundary-before.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/boundary-before.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "author physical group readback docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/boundary-before.json",
+      "pass": true
+    },
+    {
+      "name": "author group receipt docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/cancellation-repair.json",
+      "pass": true
+    },
+    {
+      "name": "author source diff docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/cancellation-repair.json",
+      "pass": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/cancellation-repair.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/cancellation-repair.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "author physical group readback docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/cancellation-repair.json",
+      "pass": true
+    },
+    {
+      "name": "author group receipt docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/corrected.json",
+      "pass": true
+    },
+    {
+      "name": "author source diff docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/corrected.json",
+      "pass": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/corrected.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/corrected.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "author physical group readback docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/corrected.json",
+      "pass": true
+    },
+    {
+      "name": "author group receipt docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/final.json",
+      "pass": true
+    },
+    {
+      "name": "author source diff docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/final.json",
+      "pass": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/final.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/final.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "author physical group readback docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/final.json",
+      "pass": true
+    },
+    {
+      "name": "author group receipt docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/first.json",
+      "pass": true
+    },
+    {
+      "name": "author source diff docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/first.json",
+      "pass": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/first.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/first.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "author physical group readback docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/first.json",
+      "pass": true
+    },
+    {
+      "name": "author group receipt docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/version-ack-repair.json",
+      "pass": true
+    },
+    {
+      "name": "author source diff docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/version-ack-repair.json",
+      "pass": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/version-ack-repair.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/version-ack-repair.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "author physical group readback docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/version-ack-repair.json",
+      "pass": true
+    },
+    {
+      "name": "review capture clean source boundary-before.json",
+      "pass": true
+    },
+    {
+      "name": "review owned group absent boundary-before.json",
+      "pass": true
+    },
+    {
+      "name": "review physical group readback boundary-before.json",
+      "pass": true
+    },
+    {
+      "name": "review stream docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/boundary-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "review stream docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/boundary-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "review capture clean source version-ack-before.json",
+      "pass": true
+    },
+    {
+      "name": "review owned group absent version-ack-before.json",
+      "pass": true
+    },
+    {
+      "name": "review physical group readback version-ack-before.json",
+      "pass": true
+    },
+    {
+      "name": "review stream docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/version-ack-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "review stream docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/version-ack-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "review capture clean source first.json",
+      "pass": true
+    },
+    {
+      "name": "review owned group absent first.json",
+      "pass": true
+    },
+    {
+      "name": "review physical group readback first.json",
+      "pass": true
+    },
+    {
+      "name": "review stream docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/first.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "review stream docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/first.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "review capture clean source final.json",
+      "pass": true
+    },
+    {
+      "name": "review owned group absent final.json",
+      "pass": true
+    },
+    {
+      "name": "review physical group readback final.json",
+      "pass": true
+    },
+    {
+      "name": "review stream docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/final.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "review stream docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/final.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "review capture clean source cancellation.json",
+      "pass": true
+    },
+    {
+      "name": "review owned group absent cancellation.json",
+      "pass": true
+    },
+    {
+      "name": "review physical group readback cancellation.json",
+      "pass": true
+    },
+    {
+      "name": "review stream docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "review stream docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "review capture clean source cancellation-facts.json",
+      "pass": true
+    },
+    {
+      "name": "review owned group absent cancellation-facts.json",
+      "pass": true
+    },
+    {
+      "name": "review physical group readback cancellation-facts.json",
+      "pass": true
+    },
+    {
+      "name": "review stream docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation-facts.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "review stream docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation-facts.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "review capture clean source repaired.json",
+      "pass": true
+    },
+    {
+      "name": "review owned group absent repaired.json",
+      "pass": true
+    },
+    {
+      "name": "review physical group readback repaired.json",
+      "pass": true
+    },
+    {
+      "name": "review stream docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "review stream docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/repaired.stderr.bin",
+      "pass": true
+    }
+  ],
+  "scope": "source and metadata only; no runtime or engine acceptance"
+}
