@@ -1,0 +1,58 @@
+✔ three nonempty projections admit exact fields and retained nullable values (9.319957ms)
+✔ global empty context refuses invented binding, actor or client authority (4.27603ms)
+✔ SEC aliases use first nonempty trimmed value and literal form/cik selectors (1.202046ms)
+✔ FARA aliases and all normalized filters remain distinct (0.384287ms)
+✔ LDA alias precedence preserves independent client, issue and registrant dimensions (0.377927ms)
+✔ aliases trim then truncate by UTF16 and can preserve a split surrogate (0.307442ms)
+✔ numeric clamp defaults, truncation, numeric strings and fallback are preserved (0.531799ms)
+✔ LDA zero or NaN year is absent while finite Int32 selectors remain exact (0.791309ms)
+✔ typed ingress refuses non-scalar legacy coercions and unknown request fields (1.86397ms)
+✔ independent count race permits zero total with rows and large total with none (0.733302ms)
+✔ total is finite nonnegative safe integer without deriving completeness or pages (2.967839ms)
+✔ request row bound and LDA page/window cannot be substituted (1.160664ms)
+✔ unique source identities reject duplicates even if other projected fields differ (0.362875ms)
+✔ SEC exact cik and formType filtering refuses cross-request results (0.296635ms)
+✔ FARA exact status filtering does not invent a status enum (0.244518ms)
+✔ FARA nonempty country filter cannot return a null storage country (0.192439ms)
+✔ FARA general query may match unreturned description suffix without a visible match (0.156536ms)
+✔ LDA exact issue and year relations preserve case and array membership (0.296726ms)
+✔ descriptions preserve empty summaries but refuse unnormalized whitespace and UTF16 overflow (1.001174ms)
+✔ SEC and FARA native date-only fields require midnight UTC; nullable FARA stays null (0.451739ms)
+✔ observation order descends and permits ties without an invented tie-breaker (0.560652ms)
+✔ finite timestamps reject leap seconds, malformed values and Date objects (1.205381ms)
+✔ nullable dates do not provide a fake snapshot or global source freshness bound (0.308544ms)
+✔ LDA monetary values preserve null zero negative and rounded Number behavior (0.95199ms)
+✔ LDA disclosure numeric IDs are nullable signed Int32, not Capiro client UUIDs (1.728787ms)
+✔ nullable projected fields are required, and discarded storage fields cannot leak (1.604371ms)
+✔ opaque URL, CIK, registration and filing identifiers are not reformatted (0.211257ms)
+✔ inert request and options admission never invokes getters or proxy traps (0.214182ms)
+✔ hostile nested output values refuse without effects and normalization stays detached (0.2062ms)
+✖ operation selector is an inert string and cannot execute property-key coercion (0.276926ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 29
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 349.586474
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-disclosures-independent.test.mjs:132:1
+✖ operation selector is an inert string and cannot execute property-key coercion (0.276926ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-disclosures-review-20261012/packages/contracts/test/retrieval-disclosures-independent.test.mjs:134:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }

@@ -1,0 +1,14 @@
+{
+  "files": [
+    {
+      "path": "packages/contracts/retrieval-0.2/disclosures-validation.mjs",
+      "bytes": 5610,
+      "sha256": "aba229e95d811a1462c5ef0254877c0c1ad5bf0f067337a732c25f6bf4608286"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/disclosures.schema.json",
+      "bytes": 15855,
+      "sha256": "80e6c104e75821e9cfe2861b19073b1e83ea17f87a3efd5e90b77edd4eba8c3f"
+    }
+  ]
+}

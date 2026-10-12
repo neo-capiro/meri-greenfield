@@ -129,3 +129,7 @@ test('hostile nested output values refuse without effects and normalization stay
   let effects=0;const p=page(SEC);Object.defineProperty(p.data[0],'description',{enumerable:true,get(){effects++;return 'x';}});reject(SEC,p);reject(SEC,new Proxy(page(SEC),{get(){effects++;throw Error('effect');},ownKeys(){effects++;throw Error('effect');}}));assert.equal(effects,0);
   const raw={query:' q '},n=normalize(SEC,raw);n.query='other';assert.equal(raw.query,' q ');
 });
+test('operation selector is an inert string and cannot execute property-key coercion',()=>{
+  let effects=0;const operation={};Object.defineProperty(operation,Symbol.toPrimitive,{get(){effects++;return ()=>'search_sec_filings';}});
+  assert.throws(()=>normalize(operation,{}));assert.equal(effects,0);
+});
