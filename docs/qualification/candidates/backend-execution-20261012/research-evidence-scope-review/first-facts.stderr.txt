@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/workspace/meri-research-evidence-scope-review-20261012/docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/verify-scope-facts.py", line 24, in <module>
+    stored=json.loads(get(BASE,'docs/plans/revisions/20261010-R2/inventory-stored-cells.json'));sheet=next(s for s in stored if s['name']=='Native backend');cells=next(r for r in sheet['rows'] if str(r['row'])=='27')['cells'];vals=[x.get('value','') for x in cells]
+                                                                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+StopIteration

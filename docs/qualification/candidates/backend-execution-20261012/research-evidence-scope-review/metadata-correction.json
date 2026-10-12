@@ -1,0 +1,5 @@
+{
+  "cause": "Reviewer used the ledger family label Native backend as the original worksheet name; stored workbook sheet is Current native tools, row27.",
+  "repair": "Use exact original worksheet name; keep row and capability assertions unchanged.",
+  "noSourceOrScopeChange": true
+}
