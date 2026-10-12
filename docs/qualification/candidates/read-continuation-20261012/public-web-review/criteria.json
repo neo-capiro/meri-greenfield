@@ -1,0 +1,20 @@
+{
+  "base": "c1c9bfde7dd466a0474589a224a99b44277adbc9",
+  "reviewer": "memory_reviewer",
+  "operations": [
+    "search_public_web",
+    "scrape_public_page"
+  ],
+  "candidateInspected": false,
+  "chronology": "Criteria frozen after author preliminary source306734 already existed, but before reviewer candidate inspection or behavioral replay. Independently trace pinned references first.",
+  "criteria": [
+    "Trace exact wrapper and all provider/page helpers as private data only; compare inventoryfd8765 and observed4be identities, failure branches and policy owners without publishing private bodies.",
+    "Review actual input normalization/defaults/caps, typed compatibility limits, closed trusted context and opaque external URLs; model input does not establish authority, safe network destinations or permission.",
+    "Search variants preserve provider-specific publishedAt presence/type, fallback/refusal/error envelopes, actual limits/results fields and raw URL semantics; never infer cross-provider date normalization or reliable completeness.",
+    "Page HTML/PDF projections preserve content extraction, coverage and truncation claims only as actually established by source; trace helper whitespace/cap/hash order before asserting prefix/hash relationships.",
+    "External content is untrusted data. Shape/hash consistency does not establish SSRF safety, external response authenticity, source truth, parser/browser isolation, legal access, current authority or physical cancellation.",
+    "Reuse canonical inert JSON admission with no new registry/walker/provider/parser implementation. Hostile getters/proxies/cycles/symbols and model-owned authority refuse without effects.",
+    "Freeze meaningful independent controls before candidate replay, preserve failures exactly, request author repairs rather than editing production.",
+    "Only focused and metadata checks; canonical integration/full suite belongs root. Preserve139/96/43, old contracts/tests/deps, private0.2/public0.1 and unavailable handlers. No actual fetch/provider/model/parser/browser/SQL/native/cloud/frontend execution or recursive delegation."
+  ]
+}
