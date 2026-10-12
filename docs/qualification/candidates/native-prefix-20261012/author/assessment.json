@@ -1,0 +1,642 @@
+{
+  "schemaVersion": 1,
+  "sourceBase": "6cfb1f9a4d8acd66c5bd8d38d892d656fa3cd89e",
+  "sourceTree": "7072177eefc7a8b495625ab0c20c0e82b7c55dd8",
+  "decision": "HOLD_EXTERNAL_INPUT",
+  "executionStatus": "NOT_EXECUTABLE",
+  "targetPayloadAcquired": false,
+  "targetPayloadExtracted": false,
+  "targetRuntimeExecuted": false,
+  "qualificationExecuted": false,
+  "sameHostOnly": true,
+  "chosenResearchChannel": {
+    "vendor": "PostgreSQL PGDG",
+    "suite": "trixie-pgdg",
+    "architecture": "amd64",
+    "major": 17,
+    "support": "Official channel supports Debian13 amd64; artifact-only prefix support not established"
+  },
+  "packageLeads": [
+    {
+      "name": "postgresql-17",
+      "version": "17.11-1.pgdg13+2",
+      "url": "https://apt.postgresql.org/pub/repos/apt/pool/main/p/postgresql-17/postgresql-17_17.11-1.pgdg13+2_amd64.deb",
+      "listedBytes": 16667232,
+      "sha256": null,
+      "status": "POOL_LISTING_ONLY_NOT_AUTHENTICATED"
+    },
+    {
+      "name": "postgresql-client-17",
+      "version": "17.11-1.pgdg13+2",
+      "url": "https://apt.postgresql.org/pub/repos/apt/pool/main/p/postgresql-17/postgresql-client-17_17.11-1.pgdg13+2_amd64.deb",
+      "listedBytes": 2069984,
+      "sha256": null,
+      "status": "POOL_LISTING_ONLY_NOT_AUTHENTICATED"
+    }
+  ],
+  "twoPackageListedBytesSubtotal": 18737216,
+  "subtotalIsClosureOrDownloadApproval": false,
+  "debianAlternative": {
+    "serverAndClientVersion": "17.11-0+deb13u1",
+    "channel": "Debian13/trixie official",
+    "status": "SUPPORTED_INSTALLED_PACKAGE_CHANNEL_NOT_AUTHENTICATED_PREFIX_CLOSURE",
+    "mustNotSubstituteForPGDGRecords": true
+  },
+  "metadataPrerequisites": {
+    "InRelease": {
+      "url": "https://apt.postgresql.org/pub/repos/apt/dists/trixie-pgdg/InRelease",
+      "webRenderedDate": "Sun, 11 Oct 2026 11:46:20 UTC",
+      "exactBytesAvailable": false,
+      "signatureVerification": "UNRUN_MISSING_RAW_INPUTS"
+    },
+    "publicKey": {
+      "url": "https://www.postgresql.org/media/keys/ACCC4CF8.asc",
+      "exactBytesAvailable": false,
+      "trustedFingerprintVerified": false
+    },
+    "indices": [
+      {
+        "url": "https://apt.postgresql.org/pub/repos/apt/dists/trixie-pgdg/main/binary-amd64/Packages.bz2",
+        "webRenderedBytes": 921199,
+        "webRenderedSha256": "d3e5c2dfcac2998ddf71ef30453f1ed24796b37c5bbb37c4b1c4f3baa43087ef"
+      },
+      {
+        "url": "https://apt.postgresql.org/pub/repos/apt/dists/trixie-pgdg/17/binary-amd64/Packages.bz2",
+        "webRenderedBytes": 6764,
+        "webRenderedSha256": "e544778c0f5e0f3b3b0d9ddbadcb41c5df67b936217636093e91489cd7fd1132"
+      }
+    ],
+    "renderedHashesAreNotAuthenticated": true,
+    "additionalInputs": "Same release authenticated Sources/buildinfo/control/filelist/maintainer scripts and distro dependency indices sufficient to bind exact PGDG build and recursive closure; no target archives requested under this task",
+    "requiredBinaryFields": [
+      "Package",
+      "Version",
+      "Architecture",
+      "Filename",
+      "Size",
+      "SHA256",
+      "Installed-Size",
+      "Depends",
+      "Pre-Depends",
+      "Breaks",
+      "Conflicts",
+      "Provides",
+      "Multi-Arch"
+    ],
+    "requiredSourceFields": [
+      "Package",
+      "Version",
+      "Binary",
+      "Architecture",
+      "Directory",
+      "Checksums-Sha256",
+      "Build-Depends",
+      "Vcs-Git"
+    ],
+    "sourceIndexUrl": "https://apt.postgresql.org/pub/repos/apt/dists/trixie-pgdg/main/source/Sources.bz2"
+  },
+  "relocation": {
+    "status": "NOT_SUBSTANTIATED_NOT_PROVEN_IMPOSSIBLE",
+    "upstreamSource": "raw/postgres17-path.c",
+    "upstreamRef": "REL_17_11",
+    "mechanism": "make_relative_path preserves relative compiled directory tails; mismatch returns original absolute target",
+    "packagingSource": "raw/common-postgresql.mk",
+    "packagingRef": "credativ/postgresql-common master as retrieved; mirror, not authenticated/mapped to selected PGDG package",
+    "sourceOnlyLayoutHypothesis": "Preserving usr/lib/postgresql/17/bin alongside usr/share/postgresql/17 and usr/lib/postgresql/17/lib may satisfy upstream relocation tails. This does not bind the selected binary, loader, absolute sysconf/tzdata, extension or package lifecycle behavior.",
+    "externalPrerequisite": "PGDG maintainer or accountable platform-owner supported profile for this exact build: complete package/file set, compiled directories and patches, interpreter/DT_NEEDED/RPATH/RUNPATH closure, allowed direct binary paths, external tzdata/locales/config requirements and absence of postinstall/service/initdb/HBA/credential side effects. A successful unpack alone is insufficient."
+  },
+  "pythonDriver": {
+    "backendProposal": "PSYCOPG_IMPL=python with exact psycopg3.3.3 and admitted native libpq; metadata-compatible, not installed/admitted",
+    "sourceSupport": "Pinned3.3.3 docs list Python3.10\u20133.14, PostgreSQL10\u201318 and Linux; no claim saved interpreter distribution/provenance independently qualified",
+    "cOrBinaryExtraSelected": false,
+    "windowsBinaryRejected": true,
+    "linuxTzdataWheelRequiredByPsycopgMarker": false,
+    "pureBackendStillLoadsNativeLibraries": true,
+    "wheels": [
+      {
+        "name": "psycopg",
+        "version": "3.3.3",
+        "file": "psycopg-3.3.3-py3-none-any.whl",
+        "url": "https://files.pythonhosted.org/packages/c8/5b/181e2e3becb7672b502f0ed7f16ed7352aca7c109cfb94cf3878a9186db9/psycopg-3.3.3-py3-none-any.whl",
+        "bytes": 212768,
+        "sha256": "f96525a72bcfade6584ab17e89de415ff360748c766f0106959144dcbb38c698",
+        "requiresPython": ">=3.10",
+        "requiresDist": [
+          "typing-extensions>=4.6; python_version < \"3.13\"",
+          "tzdata; sys_platform == \"win32\"",
+          "psycopg-c==3.3.3; implementation_name != \"pypy\" and extra == \"c\"",
+          "psycopg-binary==3.3.3; implementation_name != \"pypy\" and extra == \"binary\"",
+          "psycopg-pool; extra == \"pool\"",
+          "anyio>=4.0; extra == \"test\"",
+          "mypy>=1.19.0; implementation_name != \"pypy\" and extra == \"test\"",
+          "pproxy>=2.7; extra == \"test\"",
+          "pytest>=6.2.5; extra == \"test\"",
+          "pytest-cov>=3.0; extra == \"test\"",
+          "pytest-randomly>=3.5; extra == \"test\"",
+          "ast-comments>=1.1.2; extra == \"dev\"",
+          "black>=26.1.0; extra == \"dev\"",
+          "codespell>=2.2; extra == \"dev\"",
+          "cython-lint>=0.16; extra == \"dev\"",
+          "dnspython>=2.1; extra == \"dev\"",
+          "flake8>=4.0; extra == \"dev\"",
+          "isort[colors]>=6.0; extra == \"dev\"",
+          "isort-psycopg; extra == \"dev\"",
+          "mypy>=1.19.0; extra == \"dev\"",
+          "pre-commit>=4.0.1; extra == \"dev\"",
+          "types-setuptools>=57.4; extra == \"dev\"",
+          "types-shapely>=2.0; extra == \"dev\"",
+          "wheel>=0.37; extra == \"dev\"",
+          "Sphinx>=5.0; extra == \"docs\"",
+          "furo==2022.6.21; extra == \"docs\"",
+          "sphinx-autobuild>=2021.3.14; extra == \"docs\"",
+          "sphinx-autodoc-typehints>=1.12; extra == \"docs\""
+        ],
+        "license": "LGPL-3.0-only",
+        "yanked": false,
+        "metadata": "raw/psycopg333-pypi.json",
+        "payloadAcquired": false
+      },
+      {
+        "name": "typing-extensions",
+        "version": "4.15.0",
+        "file": "typing_extensions-4.15.0-py3-none-any.whl",
+        "url": "https://files.pythonhosted.org/packages/18/67/36e9267722cc04a6b9f15c7f3441c2363321a3ea07da7ae0c0707beb2a9c/typing_extensions-4.15.0-py3-none-any.whl",
+        "bytes": 44614,
+        "sha256": "f0fa19c6845758ab08074a0cfa8b7aecb71c999ca73d62883bc25cc018c4e548",
+        "requiresPython": ">=3.9",
+        "requiresDist": null,
+        "license": "PSF-2.0",
+        "yanked": false,
+        "metadata": "raw/typing415-pypi.json",
+        "payloadAcquired": false
+      }
+    ],
+    "wheelBytesSubtotal": 257382,
+    "payloadHashesVerified": false,
+    "signatureOrAttestationVerified": false
+  },
+  "nodeDriver": {
+    "requiredRuntime": ">=24 <25",
+    "runtimeIdentityAdmitted": false,
+    "canonicalLock": "apps/control/qualification-sdk-fixture/state/package-lock.json",
+    "packageCount": 14,
+    "packages": [
+      {
+        "name": "pg",
+        "version": "8.23.1",
+        "canonicalLockPath": "node_modules/pg",
+        "tarballUrl": "https://registry.npmjs.org/pg/-/pg-8.23.1.tgz",
+        "integrity": "sha512-aL96AHANtWjPLDOLqnhx+ngp9+UK7ETEU8VJrDCGvsSSi/mGLcWYsS6Herg7lmaBJe4uwrfqsa7gTEFaSizDoQ==",
+        "registryMetadata": "raw/pg8231-metadata.json",
+        "registryIdentityMatchesLock": true,
+        "registryDeclaredUnpackedBytes": 102632,
+        "license": "MIT",
+        "optional": false,
+        "payloadAcquired": false
+      },
+      {
+        "name": "pg-cloudflare",
+        "version": "1.4.1",
+        "canonicalLockPath": "node_modules/pg-cloudflare",
+        "tarballUrl": "https://registry.npmjs.org/pg-cloudflare/-/pg-cloudflare-1.4.1.tgz",
+        "integrity": "sha512-6PQbsFWZcp9EmJEwy5cGQ2La+AMWpP46lgbb8X+U/XsHIUweYDNCpeuKck5RxL2MdVFi7krbbEi5nX4Zh7JhrQ==",
+        "registryMetadata": "raw/npm-pg-cloudflare-1.4.1.json",
+        "registryIdentityMatchesLock": true,
+        "registryDeclaredUnpackedBytes": 25701,
+        "license": "MIT",
+        "optional": true,
+        "payloadAcquired": false
+      },
+      {
+        "name": "pg-connection-string",
+        "version": "2.14.1",
+        "canonicalLockPath": "node_modules/pg-connection-string",
+        "tarballUrl": "https://registry.npmjs.org/pg-connection-string/-/pg-connection-string-2.14.1.tgz",
+        "integrity": "sha512-qR3kGNPBLpCNtz0evbKA0Y/MRFXwSSdT+pTJvYp/bXTcReZbvX1kzF0IyTc1QnxqF7AZbOeBhNL8R5mYQZV/MA==",
+        "registryMetadata": "raw/npm-pg-connection-string-2.14.1.json",
+        "registryIdentityMatchesLock": true,
+        "registryDeclaredUnpackedBytes": 16148,
+        "license": "MIT",
+        "optional": false,
+        "payloadAcquired": false
+      },
+      {
+        "name": "pg-int8",
+        "version": "1.0.1",
+        "canonicalLockPath": "node_modules/pg-int8",
+        "tarballUrl": "https://registry.npmjs.org/pg-int8/-/pg-int8-1.0.1.tgz",
+        "integrity": "sha512-WCtabS6t3c8SkpDBUlb1kjOs7l66xsGdKpIPZsg4wR+B3+u9UAum2odSsF9tnvxg80h4ZxLWMy4pRjOsFIqQpw==",
+        "registryMetadata": "raw/npm-pg-int8-1.0.1.json",
+        "registryIdentityMatchesLock": true,
+        "registryDeclaredUnpackedBytes": null,
+        "license": "ISC",
+        "optional": false,
+        "payloadAcquired": false
+      },
+      {
+        "name": "pg-pool",
+        "version": "3.14.0",
+        "canonicalLockPath": "node_modules/pg-pool",
+        "tarballUrl": "https://registry.npmjs.org/pg-pool/-/pg-pool-3.14.0.tgz",
+        "integrity": "sha512-gKtPkFdQPU3DksooVLi9LsjZxrsBUZIpa+7aVx+LV5pNh0KzP4Zleud2po+ConrxbuXGBJ6Hfer6hdgpIBpBaw==",
+        "registryMetadata": "raw/npm-pg-pool-3.14.0.json",
+        "registryIdentityMatchesLock": true,
+        "registryDeclaredUnpackedBytes": 29835,
+        "license": "MIT",
+        "optional": false,
+        "payloadAcquired": false
+      },
+      {
+        "name": "pg-protocol",
+        "version": "1.16.1",
+        "canonicalLockPath": "node_modules/pg-protocol",
+        "tarballUrl": "https://registry.npmjs.org/pg-protocol/-/pg-protocol-1.16.1.tgz",
+        "integrity": "sha512-p9VOFMiHB/ZbJATetbg+99PxssTVSQRnyuPSQ67mN1+1KBOjZaZ83ZQzltnxPhJwSsC3nwVjJ10DVJlerbFzLg==",
+        "registryMetadata": "raw/npm-pg-protocol-1.16.1.json",
+        "registryIdentityMatchesLock": true,
+        "registryDeclaredUnpackedBytes": 202040,
+        "license": "MIT",
+        "optional": false,
+        "payloadAcquired": false
+      },
+      {
+        "name": "pg-types",
+        "version": "2.2.0",
+        "canonicalLockPath": "node_modules/pg-types",
+        "tarballUrl": "https://registry.npmjs.org/pg-types/-/pg-types-2.2.0.tgz",
+        "integrity": "sha512-qTAAlrEsl8s4OiEQY69wDvcMIdQN6wdz5ojQiOy6YRMuynxenON0O5oCpJI6lshc6scgAY8qvJ2On/p+CXY0GA==",
+        "registryMetadata": "raw/npm-pg-types-2.2.0.json",
+        "registryIdentityMatchesLock": true,
+        "registryDeclaredUnpackedBytes": 35296,
+        "license": "MIT",
+        "optional": false,
+        "payloadAcquired": false
+      },
+      {
+        "name": "pgpass",
+        "version": "1.0.5",
+        "canonicalLockPath": "node_modules/pgpass",
+        "tarballUrl": "https://registry.npmjs.org/pgpass/-/pgpass-1.0.5.tgz",
+        "integrity": "sha512-FdW9r/jQZhSeohs1Z3sI1yxFQNFvMcnmfuj4WBMUTxOrAyLMaTcE1aAMBiTlbMNaXvBCQuVi0R7hd8udDSP7ug==",
+        "registryMetadata": "raw/npm-pgpass-1.0.5.json",
+        "registryIdentityMatchesLock": true,
+        "registryDeclaredUnpackedBytes": 10323,
+        "license": "MIT",
+        "optional": false,
+        "payloadAcquired": false
+      },
+      {
+        "name": "postgres-array",
+        "version": "2.0.0",
+        "canonicalLockPath": "node_modules/postgres-array",
+        "tarballUrl": "https://registry.npmjs.org/postgres-array/-/postgres-array-2.0.0.tgz",
+        "integrity": "sha512-VpZrUqU5A69eQyW2c5CA1jtLecCsN2U/bD6VilrFDWq5+5UIEVO7nazS3TEcHf1zuPYO/sqGvUvW62g86RXZuA==",
+        "registryMetadata": "raw/npm-postgres-array-2.0.0.json",
+        "registryIdentityMatchesLock": true,
+        "registryDeclaredUnpackedBytes": 4903,
+        "license": "MIT",
+        "optional": false,
+        "payloadAcquired": false
+      },
+      {
+        "name": "postgres-bytea",
+        "version": "1.0.1",
+        "canonicalLockPath": "node_modules/postgres-bytea",
+        "tarballUrl": "https://registry.npmjs.org/postgres-bytea/-/postgres-bytea-1.0.1.tgz",
+        "integrity": "sha512-5+5HqXnsZPE65IJZSMkZtURARZelel2oXUEO8rH83VS/hxH5vv1uHquPg5wZs8yMAfdv971IU+kcPUczi7NVBQ==",
+        "registryMetadata": "raw/npm-postgres-bytea-1.0.1.json",
+        "registryIdentityMatchesLock": true,
+        "registryDeclaredUnpackedBytes": 3095,
+        "license": "MIT",
+        "optional": false,
+        "payloadAcquired": false
+      },
+      {
+        "name": "postgres-date",
+        "version": "1.0.7",
+        "canonicalLockPath": "node_modules/postgres-date",
+        "tarballUrl": "https://registry.npmjs.org/postgres-date/-/postgres-date-1.0.7.tgz",
+        "integrity": "sha512-suDmjLVQg78nMK2UZ454hAG+OAW+HQPZ6n++TNDUX+L0+uUlLywnoxJKDou51Zm+zTCjrCl0Nq6J9C5hP9vK/Q==",
+        "registryMetadata": "raw/npm-postgres-date-1.0.7.json",
+        "registryIdentityMatchesLock": true,
+        "registryDeclaredUnpackedBytes": 5915,
+        "license": "MIT",
+        "optional": false,
+        "payloadAcquired": false
+      },
+      {
+        "name": "postgres-interval",
+        "version": "1.2.0",
+        "canonicalLockPath": "node_modules/postgres-interval",
+        "tarballUrl": "https://registry.npmjs.org/postgres-interval/-/postgres-interval-1.2.0.tgz",
+        "integrity": "sha512-9ZhXKM/rw350N1ovuWHbGxnGh/SNJ4cnxHiM0rxE4VN41wsg8P8zWn9hv/buK00RP4WvlOyr/RBDiptyxVbkZQ==",
+        "registryMetadata": "raw/npm-postgres-interval-1.2.0.json",
+        "registryIdentityMatchesLock": true,
+        "registryDeclaredUnpackedBytes": 6727,
+        "license": "MIT",
+        "optional": false,
+        "payloadAcquired": false
+      },
+      {
+        "name": "split2",
+        "version": "4.2.0",
+        "canonicalLockPath": "node_modules/split2",
+        "tarballUrl": "https://registry.npmjs.org/split2/-/split2-4.2.0.tgz",
+        "integrity": "sha512-UcjcJOWknrNkF6PLX83qcHM6KHgVKNkV62Y8a5uYDVv9ydGQVwAHMKqHdJje1VTWpljG0WYpCDhrCdAOYH4TWg==",
+        "registryMetadata": "raw/npm-split2-4.2.0.json",
+        "registryIdentityMatchesLock": true,
+        "registryDeclaredUnpackedBytes": 17419,
+        "license": "ISC",
+        "optional": false,
+        "payloadAcquired": false
+      },
+      {
+        "name": "xtend",
+        "version": "4.0.2",
+        "canonicalLockPath": "node_modules/xtend",
+        "tarballUrl": "https://registry.npmjs.org/xtend/-/xtend-4.0.2.tgz",
+        "integrity": "sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==",
+        "registryMetadata": "raw/npm-xtend-4.0.2.json",
+        "registryIdentityMatchesLock": true,
+        "registryDeclaredUnpackedBytes": 6465,
+        "license": "MIT",
+        "optional": false,
+        "payloadAcquired": false
+      }
+    ],
+    "nativePeerRequired": false,
+    "nativePeerReason": "pg-native peer is optional in canonical pg metadata; source imports Client from pg, not native. No native peer was added.",
+    "payloadIntegrityVerified": false,
+    "registrySignaturesVerified": false
+  },
+  "installedDependencyMetadata": {
+    "basis": "Direct-dependency comparison lead from official Debian17.11-0+deb13u1 package pages, not substitute PGDG control records and not a transitive/ELF/security closure",
+    "rows": [
+      {
+        "package": "debconf",
+        "version": "1.5.91",
+        "status": "installed",
+        "architecture": "all",
+        "declaredDepends": ""
+      },
+      {
+        "package": "libc6:amd64",
+        "version": "2.41-12+deb13u4",
+        "status": "installed",
+        "architecture": "amd64",
+        "declaredDepends": "libgcc-s1"
+      },
+      {
+        "package": "libgcc-s1:amd64",
+        "version": "14.2.0-19",
+        "status": "installed",
+        "architecture": "amd64",
+        "declaredDepends": "gcc-14-base (= 14.2.0-19), libc6 (>= 2.35)"
+      },
+      {
+        "package": "libgssapi-krb5-2:amd64",
+        "version": "1.21.3-5+deb13u1",
+        "status": "installed",
+        "architecture": "amd64",
+        "declaredDepends": "libkrb5-3 (= 1.21.3-5+deb13u1), libc6 (>= 2.38), libcom-err2 (>= 1.43.9), libk5crypto3 (>= 1.20), libkrb5support0 (= 1.21.3-5+deb13u1)"
+      },
+      {
+        "package": "libicu76:amd64",
+        "version": "76.1-4",
+        "status": "installed",
+        "architecture": "amd64",
+        "declaredDepends": "libc6 (>= 2.38), libgcc-s1 (>= 3.0), libstdc++6 (>= 14)"
+      },
+      {
+        "package": "libldap2:amd64",
+        "version": "2.6.10+dfsg-1",
+        "status": "installed",
+        "architecture": "amd64",
+        "declaredDepends": "libc6 (>= 2.38), libsasl2-2 (>= 2.1.28+dfsg1), libssl3t64 (>= 3.0.0)"
+      },
+      {
+        "package": "libllvm19:amd64",
+        "version": "1:19.1.7-3+b1",
+        "status": "installed",
+        "architecture": "amd64",
+        "declaredDepends": "libc6 (>= 2.38), libedit2 (>= 2.11-20080614-0), libffi8 (>= 3.4), libgcc-s1 (>= 4.3), libstdc++6 (>= 12), libxml2 (>= 2.7.4), libz3-4 (>= 4.13.3), libzstd1 (>= 1.5.5), zlib1g (>= 1:1.2.0)"
+      },
+      {
+        "package": "liblz4-1:amd64",
+        "version": "1.10.0-4",
+        "status": "installed",
+        "architecture": "amd64",
+        "declaredDepends": "libc6 (>= 2.14), libxxhash0 (>= 0.6.5)"
+      },
+      {
+        "package": "libpam0g:amd64",
+        "version": "1.7.0-5",
+        "status": "installed",
+        "architecture": "amd64",
+        "declaredDepends": "libaudit1 (>= 1:2.2.1), libc6 (>= 2.34), debconf (>= 0.5) | debconf-2.0"
+      },
+      {
+        "package": "libpq5:amd64",
+        "version": "17.11-0+deb13u1",
+        "status": "installed",
+        "architecture": "amd64",
+        "declaredDepends": "libc6 (>= 2.38), libgssapi-krb5-2 (>= 1.17), libldap2 (>= 2.6.2), libssl3t64 (>= 3.0.0)"
+      },
+      {
+        "package": "libreadline8t64:amd64",
+        "version": "8.2-6",
+        "status": "installed",
+        "architecture": "amd64",
+        "declaredDepends": "readline-common, libc6 (>= 2.38), libtinfo6 (>= 6)"
+      },
+      {
+        "package": "libselinux1:amd64",
+        "version": "3.8.1-1",
+        "status": "installed",
+        "architecture": "amd64",
+        "declaredDepends": "libc6 (>= 2.38), libpcre2-8-0 (>= 10.22)"
+      },
+      {
+        "package": "libssl3t64:amd64",
+        "version": "3.5.7-1~deb13u2",
+        "status": "installed",
+        "architecture": "amd64",
+        "declaredDepends": "libc6 (>= 2.38), libzstd1 (>= 1.5.5), zlib1g (>= 1:1.1.4), openssl-provider-legacy"
+      },
+      {
+        "package": "libstdc++6:amd64",
+        "version": "14.2.0-19",
+        "status": "installed",
+        "architecture": "amd64",
+        "declaredDepends": "gcc-14-base (= 14.2.0-19), libc6 (>= 2.38), libgcc-s1 (>= 4.3)"
+      },
+      {
+        "package": "libsystemd0:amd64",
+        "version": "257.13-1~deb13u1",
+        "status": "installed",
+        "architecture": "amd64",
+        "declaredDepends": "libc6 (>= 2.39), libcap2 (>= 1:2.10)"
+      },
+      {
+        "package": "libuuid1:amd64",
+        "version": "2.41.5-0+deb13u1",
+        "status": "installed",
+        "architecture": "amd64",
+        "declaredDepends": "libc6 (>= 2.38)"
+      },
+      {
+        "package": "libxml2:amd64",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3",
+        "status": "installed",
+        "architecture": "amd64",
+        "declaredDepends": "libc6 (>= 2.38), liblzma5 (>= 5.1.1alpha+20120614), zlib1g (>= 1:1.2.3.4)"
+      },
+      {
+        "package": "libxslt1.1:amd64",
+        "version": "1.1.35-1.2+deb13u3",
+        "status": "installed",
+        "architecture": "amd64",
+        "declaredDepends": "libc6 (>= 2.38), libgcrypt20 (>= 1.11.0), libxml2 (>= 2.9.0)"
+      },
+      {
+        "package": "libzstd1:amd64",
+        "version": "1.5.7+dfsg-1",
+        "status": "installed",
+        "architecture": "amd64",
+        "declaredDepends": "libc6 (>= 2.34)"
+      },
+      {
+        "package": "locales",
+        "version": null,
+        "status": "not-installed",
+        "architecture": null,
+        "declaredDepends": ""
+      },
+      {
+        "package": "locales-all",
+        "version": "2.41-12+deb13u4",
+        "status": "installed",
+        "architecture": "amd64",
+        "declaredDepends": "libc-l10n (>> 2.41)"
+      },
+      {
+        "package": "sensible-utils",
+        "version": "0.0.25",
+        "status": "installed",
+        "architecture": "all",
+        "declaredDepends": ""
+      },
+      {
+        "package": "tzdata",
+        "version": "2026b-0+deb13u1",
+        "status": "installed",
+        "architecture": "all",
+        "declaredDepends": "debconf (>= 0.5) | debconf-2.0"
+      },
+      {
+        "package": "zlib1g:amd64",
+        "version": "1:1.3.dfsg+really1.3.1-1+b1",
+        "status": "installed",
+        "architecture": "amd64",
+        "declaredDepends": "libc6 (>= 2.14)"
+      }
+    ],
+    "missingNames": [
+      "postgresql-common",
+      "postgresql-client-common",
+      "ssl-cert"
+    ],
+    "queryReceipt": "host-dependency-query.json"
+  },
+  "sourceBindings": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 6582,
+      "sha256": "a0650949b74e5aee709bd8b3c9d480f95f5b898778ac8f7b3927eb54b141437a"
+    },
+    {
+      "path": "docs/IMPLEMENTATION-STANDARDS.md",
+      "bytes": 11082,
+      "sha256": "d4f10f964ee207187abacd967649a1cfc9bdd468072dc01f859268f08b719959"
+    },
+    {
+      "path": "docs/plans/MERI-DEPLOYMENT.md",
+      "bytes": 86848,
+      "sha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388"
+    },
+    {
+      "path": "docs/plans/MERI-G1-SOURCE-TO-NATIVE.md",
+      "bytes": 28232,
+      "sha256": "8bde7696c99883948a8eb9595cce4e43e721c390968a13b456956cfa0ca83822"
+    },
+    {
+      "path": "docs/coordination/reports/MERI-G1-L1-HOST-20261012.md",
+      "bytes": 7034,
+      "sha256": "604957145d0badde2d7c9083b0199a00dfd501eb69fb368e2ec32f64e6cb72e6"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/setup-packet.json",
+      "bytes": 9446,
+      "sha256": "745539e8d862dbcd62d8e8d10efbb8e0c48bd14166741515262f748017df8eb2"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-execution-options-20261012/author/execution-plan.json",
+      "bytes": 36920,
+      "sha256": "caefeacf2310a8fd11dbd3ac5976a824bb0ffe33e0183a0a01ddc776e14c1f1d"
+    },
+    {
+      "path": "apps/proxy/qualification/state/postgres_store.py",
+      "bytes": 4729,
+      "sha256": "2914bc050535bf88cf1f297252f8b8771d3df5b4ceb303aa9f35ec1409389b9b"
+    },
+    {
+      "path": "apps/proxy/qualification/state/dependencies.json",
+      "bytes": 2783,
+      "sha256": "50cb8b2050c9708031c127ce05a79716d1ec692260162ece5292437cdd11df80"
+    },
+    {
+      "path": "apps/control/qualification-sdk-fixture/state/package.json",
+      "bytes": 378,
+      "sha256": "e6ff93a2cfdf3ca49b19b0e40b72bf065a6b885951370b293cdcb861401629e6"
+    },
+    {
+      "path": "apps/control/qualification-sdk-fixture/state/package-lock.json",
+      "bytes": 5739,
+      "sha256": "c5ab764dcd9dcd8dee88d2cab3e7412fb9752e3a869c0a1693839c0567d3973a"
+    },
+    {
+      "path": "apps/control/qualification-sdk-fixture/state/store.mjs",
+      "bytes": 5512,
+      "sha256": "6285aa361434f63060801446ebbea16868fbe59344a56c24e27c57403d2796a1"
+    }
+  ],
+  "unresolved": [
+    "Exact authenticated PGDG release/key/index-to-deb hashes and recursive Depends/Pre-Depends closure",
+    "Selected package build/configuration/patches and artifact-only relocation/support profile",
+    "Actual ELF interpreter, loader paths and SONAME/ABI/transitive/native-library security and license binding",
+    "Saved Node24 and Python interpreter executable provenance; complete driver materialization/installer lifecycle and license notices",
+    "Exact fresh prefix/write set plus archive/expanded/temp/disk/time/output/process/cost caps after closure, before acquisition approval",
+    "Authentication handoff, local peer containment, fresh-cluster identities and independent external supervisor; later L1 one-shot approval remains separate"
+  ],
+  "authority": {
+    "nextAction": "Obtain only missing raw metadata through a supported transfer/read route and exact vendor/platform supported-prefix profile; independently review before proposing any target acquisition",
+    "setupCommand": null,
+    "setupApprovalRequested": false,
+    "l1ApprovalRequested": false,
+    "localHostCost": "not priced or newly approved",
+    "newCloudOrProviderActions": 0,
+    "infrastructureSpendAuthorized": false,
+    "noImplicitAptInstall": true,
+    "noImplicitSourceBuild": true,
+    "noAutomaticL1AfterSetup": true,
+    "aurora": "Existing eventual selected state; no connection or change"
+  },
+  "checks": {
+    "networkReads": "PUBLIC_METADATA_ONLY",
+    "signatureAndPayloadChecks": "UNRUN",
+    "runtimeABIAndRelocation": "UNRUN",
+    "serverDatabaseDriverImports": "UNRUN",
+    "sourceCompatibility": "STATIC_ONLY"
+  },
+  "researchStop": "Metadata and exact prefix-support blockers established; no speculative launcher or setup recipe created"
+}

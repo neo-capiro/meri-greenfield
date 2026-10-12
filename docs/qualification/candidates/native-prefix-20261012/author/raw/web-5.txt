@@ -1,0 +1,148 @@
+File: rules | Debian Sources (https://sources.debian.org/src/postgresql-17/17.11-0%2Bdeb13u1/debian/rules/)
+citeturn91view0 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({"ref_id":"https://sources.debian.org/src/postgresql-17/17.11-0%2Bdeb13u1/debian/rules/","lineno":15}); Total lines: 48
+L0: cite0†DEBSOURCES L1: 
+L2: [Input: package name] [Input]
+L3: 
+L4: [Input] [Input]
+L5: 
+L6: cite1†Skip Quicknav L7: 
+L8:   * cite0†Home L9:   * cite2†Search L10:   * cite3†Documentation L11:   * cite4†Stats L12:   * cite5†About L13: 
+L14: cite0†sources / cite6†postgresql-17 / cite7†17.11-0%2Bdeb13u1 / cite8†debian / rules
+L15: ## File: rules
+L16: 
+L17: package info (click to toggle)
+L18: 
+L19: postgresql-17 17.11-0%2Bdeb13u1
+L20: 
+L21:   * links: cite9†PTS (Debian Package Tracking System)†tracker.debian.org , cite10†VCS (Version Control System)†salsa.debian.org L22:   * area: main
+L23:   * in suites: trixie
+L24:   * size: 152,232 kB
+L25:   * sloc (source lines of code): ansic: 950,172; sql: 120,655; perl: 53,008; xml: 30,905; yacc: 20,743; lex: 8,983; makefile: 6,669; sh: 4,972; cpp: 1,032; python: 588; asm: 40; sed: 3
+L26: file content (5 lines) | stat: -rwxr-xr-x 95 bytes  | cite11†parent folder | cite12†download L27: 
+L28:     cite13†1 L29:     cite14†2 L30:     cite15†3 L31:     cite16†4 L32:     cite17†5 L33: 
+L34:  |
+L35: 
+L36:     `#!/usr/bin/make -f
+L37: 
+L38:     MAJOR_VER := 17
+L39: 
+L40:     include /usr/share/postgresql-common/server/postgresql.mk
+L41:     `
+L42: Browse by prefix:   cite18†0 cite19†1 cite20†2 cite21†3 cite22†4 cite23†6 cite24†7 cite25†8 cite26†9 cite27†a cite28†b cite29†c cite30†d cite31†e cite32†f cite33†g cite34†h cite35†i cite36†j cite37†k cite38†l cite39†lib- cite40†lib1 cite41†lib2 cite42†lib3 cite43†lib6 cite44†liba cite45†libb cite46†libc cite47†libd cite48†libe cite49†libf cite50†libg cite51†libh cite52†libi cite53†libj cite54†libk cite55†libl cite56†libm cite57†libn cite58†libo cite59†libp cite60†libq cite61†libr cite62†libs cite63†libt cite64†libu cite65†libv cite66†libw cite67†libx cite68†liby cite69†libz cite70†m cite71†n cite72†o cite73†p cite74†q cite75†r cite76†s cite77†t cite78†u cite79†v cite80†w cite81†x cite82†y cite83†z |   Browse cite84†by page L43: * * *
+L44: 
+L45: Debsources — Copyright (C) 2011–2021, cite85†The Debsources developers†salsa.debian.org . License: cite86†GNU AGPLv3+†www.gnu.org .
+L46: Hosted source files are available under their own cite87†copyright and licenses†www.debian.org .
+L47: Source code: cite88†Git†salsa.debian.org . Contact: qa-debsources@lists.alioth.debian.org. Last update: Mon, 12 Oct 2026 02:20:31 -0000.
+--------------------------------------------------------------------------------
+File: control | Debian Sources (https://sources.debian.org/src/postgresql-17/17.11-0%2Bdeb13u1/debian/control/)
+citeturn91view1 [wordlim: 200] Crawled: yesterday; Content type: text/html; Source: open({"ref_id":"https://sources.debian.org/src/postgresql-17/17.11-0%2Bdeb13u1/debian/control/","lineno":15}); Total lines: 642
+L0: cite0†DEBSOURCES L1: 
+L2: [Input: package name] [Input]
+L3: 
+L4: [Input] [Input]
+L5: 
+L6: cite1†Skip Quicknav L7: 
+L8:   * cite0†Home L9:   * cite2†Search L10:   * cite3†Documentation L11:   * cite4†Stats L12:   * cite5†About L13: 
+L14: cite0†sources / cite6†postgresql-17 / cite7†17.11-0%2Bdeb13u1 / cite8†debian / control
+L15: ## File: control
+L16: 
+L17: package info (click to toggle)
+L18: 
+L19: postgresql-17 17.11-0%2Bdeb13u1
+L20: 
+L21:   * links: cite9†PTS (Debian Package Tracking System)†tracker.debian.org , cite10†VCS (Version Control System)†salsa.debian.org L22:   * area: main
+L23:   * in suites: trixie
+L24:   * size: 152,232 kB
+L25:   * sloc (source lines of code): ansic: 950,172; sql: 120,655; perl: 53,008; xml: 30,905; yacc: 20,743; lex: 8,983; makefile: 6,669; sh: 4,972; cpp: 1,032; python: 588; asm: 40; sed: 3
+L26: file content (303 lines) | stat: -rw-r--r-- 9,801 bytes  | cite11†parent folder | cite12†download L27: 
+L28:     cite13†1 L29:     cite14†2 L30:     cite15†3 L31:     cite16†4 L32:     cite17†5 L33:     cite18†6 L34:     cite19†7 L35:     cite20†8 L36:     cite21†9 L37:     cite22†10 L38:     cite23†11 L39:     cite24†12 L40:     cite25†13 L41:     cite26†14 L42:     cite27†15 L43:     cite28†16 L44:     cite29†17 L45:     cite30†18 L46:     cite31†19 L47:     cite32†20 L48:     cite33†21 L49:     cite34†22 L50:     cite35†23 L51:     cite36†24 L52:     cite37†25 L53:     cite38†26 L54:     cite39†27 L55:     cite40†28 L56:     cite41†29 L57:     cite42†30 L58:     cite43†31 L59:     cite44†32 L60:     cite45†33 L61:     cite46†34 L62:     cite47†35 L63:     cite48†36 L64:     cite49†37 L65:     cite50†38 L66:     cite51†39 L67:     cite52†40 L68:     cite53†41 L69:     cite54†42 L70:     cite55†43 L71:     cite56†44 L72:     cite57†45 L73:     cite58†46 L74:     cite59†47 L75:     cite60†48 L76:     cite61†49 L77:     cite62†50 L78:     cite63†51 L79:     cite64†52 L80:     cite65†53 L81:     cite66†54 L82:     cite67†55 L83:     cite68†56 L84:     cite69†57 L85:     cite70†58 L86:     cite71†59 L87:     cite72†60 L88:     cite73†61 L89:     cite74†62 L90:     cite75†63 L91:     cite76†64 L92:     cite77†65 L93:     cite78†66 L94:     cite79†67 L95:     cite80†68 L96:     cite81†69 L97:     cite82†70 L98:     cite83†71 L99:     cite84†72 L100:     cite85†73 L101:     cite86†74 L102:     cite87†75 L103:     cite88†76 L104:     cite89†77 L105:     cite90†78 L106:     cite91†79 L107:     cite92†80 L108:     cite93†81 L109:     cite94†82 L110:     cite95†83 L111:     cite96†84 L112:     cite97†85 L113:     cite98†86 L114:     cite99†87 L115:     cite100†88 L116:     cite101†89 L117:     cite102†90 L118:     cite103†91 L119:     cite104†92 L120:     cite105†93 L121:     cite106†94 L122:     cite107†95 L123:     cite108†96 L124:     cite109†97 L125:     cite110†98 L126:     cite111†99 L127:     cite112†100 L128:     cite113†101 L129:     cite114†102 L130:     cite115†103 L131:     cite116†104 L132:     cite117†105 L133:     cite118†106 L134:     cite119†107 L135:     cite120†108 L136:     cite121†109 L137:     cite122†110 L138:     cite123†111 L139:     cite124†112 L140:     cite125†113 L141:     cite126†114 L142:     cite127†115 L143:     cite128†116 L144:     cite129†117 L145:     cite130†118 L146:     cite131†119 L147:     cite132†120 L148:     cite133†121 L149:     cite134†122 L150:     cite135†123 L151:     cite136†124 L152:     cite137†125 L153:     cite138†126 L154:     cite139†127 L155:     cite140†128 L156:     cite141†129 L157:     cite142†130 L158:     cite143†131 L159:     cite144†132 L160:     cite145†133 L161:     cite146†134 L162:     cite147†135 L163:     cite148†136 L164:     cite149†137 L165:     cite150†138 L166:     cite151†139 L167:     cite152†140 L168:     cite153†141 L169:     cite154†142 L170:     cite155†143 L171:     cite156†144 L172:     cite157†145 L173:     cite158†146 L174:     cite159†147 L175:     cite160†148 L176:     cite161†149 L177:     cite162†150 L178:     cite163†151 L179:     cite164†152 L180:     cite165†153 L181:     cite166†154 L182:     cite167†155 L183:     cite168†156 L184:     cite169†157 L185:     cite170†158 L186:     cite171†159 L187:     cite172†160 L188:     cite173†161 L189:     cite174†162 L190:     cite175†163 L191:     cite176†164 L192:     cite177†165 L193:     cite178†166 L194:     cite179†167 L195:     cite180†168 L196:     cite181†169 L197:     cite182†170 L198:     cite183†171 L199:     cite184†172 L200:     cite185†173 L201:     cite186†174 L202:     cite187†175 L203:     cite188†176 L204:     cite189†177 L205:     cite190†178 L206:     cite191†179 L207:     cite192†180 L208:     cite193†181 L209:     cite194†182 L210:     cite195†183 L211:     cite196†184 L212:     cite197†185 L213:     cite198†186 L214:     cite199†187 L215:     cite200†188 L216:     cite201†189 L217:     cite202†190 L218:     cite203†191 L219:     cite204†192 L220:     cite205†193 L221:     cite206†194 L222:     cite207†195 L223:     cite208†196 L224:     cite209†197 L225:     cite210†198 L226:     cite211†199 L227:     cite212†200 L228:     cite213†201 L229:     cite214†202 L230:     cite215†203 L231:     cite216†204 L232:     cite217†205 L233:     cite218†206 L234:     cite219†207 L235:     cite220†208 L236:     cite221†209 L237:     cite222†210 L238:     cite223†211 L239:     cite224†212 L240:     cite225†213 L241:     cite226†214 L242:     cite227†215 L243:     cite228†216 L244:     cite229†217 L245:     cite230†218 L246:     cite231†219 L247:     cite232†220 L248:     cite233†221 L249:     cite234†222 L250:     cite235†223 L251:     cite236†224 L252:     cite237†225 L253:     cite238†226 L254:     cite239†227 L255:     cite240†228 L256:     cite241†229 L257:     cite242†230 L258:     cite243†231 L259:     cite244†232 L260:     cite245†233 L261:     cite246†234 L262:     cite247†235 L263:     cite248†236 L264:     cite249†237 L265:     cite250†238 L266:     cite251†239 L267:     cite252†240 L268:     cite253†241 L269:     cite254†242 L270:     cite255†243 L271:     cite256†244 L272:     cite257†245 L273:     cite258†246 L274:     cite259†247 L275:     cite260†248 L276:     cite261†249 L277:     cite262†250 L278:     cite263†251 L279:     cite264†252 L280:     cite265†253 L281:     cite266†254 L282:     cite267†255 L283:     cite268†256 L284:     cite269†257 L285:     cite270†258 L286:     cite271†259 L287:     cite272†260 L288:     cite273†261 L289:     cite274†262 L290:     cite275†263 L291:     cite276†264 L292:     cite277†265 L293:     cite278†266 L294:     cite279†267 L295:     cite280†268 L296:     cite281†269 L297:     cite282†270 L298:     cite283†271 L299:     cite284†272 L300:     cite285†273 L301:     cite286†274 L302:     cite287†275 L303:     cite288†276 L304:     cite289†277 L305:     cite290†278 L306:     cite291†279 L307:     cite292†280 L308:     cite293†281 L309:     cite294†282 L310:     cite295†283 L311:     cite296†284 L312:     cite297†285 L313:     cite298†286 L314:     cite299†287 L315:     cite300†288 L316:     cite301†289 L317:     cite302†290 L318:     cite303†291 L319:     cite304†292 L320:     cite305†293 L321:     cite306†294 L322:     cite307†295 L323:     cite308†296 L324:     cite309†297 L325:     cite310†298 L326:     cite311†299 L327:     cite312†300 L328:     cite313†301 L329:     cite314†302 L330:     cite315†303 L331:  |
+L332: 
+L333:     `Source: postgresql-17
+L334:     Section: database
+L335:     Priority: optional
+L336:     Maintainer: Debian PostgreSQL Maintainers <team+postgresql@tracker.debian.org>
+L337:     Uploaders:
+L338:      Martin Pitt <mpitt@debian.org>,
+L339:      Peter Eisentraut <petere@debian.org>,
+L340:      Christoph Berg <myon@debian.org>,
+L341:     Standards-Version: 4.5.0
+--------------------------------------------------------------------------------
+Index of /pub/repos/apt/pool/main/p/postgresql-17/ (https://apt.postgresql.org/pub/repos/apt/pool/main/p/postgresql-17/)
+citeturn91view2 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({"ref_id":"https://apt.postgresql.org/pub/repos/apt/pool/main/p/postgresql-17/","lineno":149}); Total lines: 1251
+L129:     cite126†postgresql-17_17.10-1.pgdg24.04+1.dsc 12-May-2026 00:02                3464
+L130:     cite127†postgresql-17_17.10-1.pgdg24.04+1_amd64.deb 12-May-2026 00:03            16906052
+L131:     cite128†postgresql-17_17.10-1.pgdg24.04+1_arm64.deb 12-May-2026 00:02            16412664
+L132:     cite129†postgresql-17_17.10-1.pgdg24.04+1_ppc64el.deb 12-May-2026 00:02            17763964
+L133:     cite130†postgresql-17_17.10-1.pgdg26.04+1.debian.tar.xz 12-May-2026 00:02               29888
+L134:     cite131†postgresql-17_17.10-1.pgdg26.04+1.dsc 12-May-2026 00:02                3458
+L135:     cite132†postgresql-17_17.10-1.pgdg26.04+1_amd64.deb 12-May-2026 00:02            17008296
+L136:     cite133†postgresql-17_17.10-1.pgdg26.04+1_arm64.deb 12-May-2026 00:02            16403664
+L137:     cite134†postgresql-17_17.10-1.pgdg26.04+1_ppc64el.deb 12-May-2026 00:02            17944408
+L138:     cite135†postgresql-17_17.10.orig.tar.bz2 12-May-2026 00:02            21664720
+L139:     cite136†postgresql-17_17.11-1.pgdg+2.debian.tar.xz 13-Aug-2026 01:50               35780
+L140:     cite137†postgresql-17_17.11-1.pgdg+2.dsc 13-Aug-2026 01:50                3270
+L141:     cite138†postgresql-17_17.11-1.pgdg+2_amd64.deb 13-Aug-2026 01:50            18211748
+L142:     cite139†postgresql-17_17.11-1.pgdg+2_arm64.deb 13-Aug-2026 01:50            17483328
+L143:     cite140†postgresql-17_17.11-1.pgdg+2_loong64.deb 13-Aug-2026 01:50             7236740
+L144:     cite141†postgresql-17_17.11-1.pgdg+2_ppc64el.deb 13-Aug-2026 01:50            18285096
+L145:     cite142†postgresql-17_17.11-1.pgdg12+2.debian.tar.xz 13-Aug-2026 01:50               35788
+L146:     cite143†postgresql-17_17.11-1.pgdg12+2.dsc 13-Aug-2026 01:50                3210
+L147:     cite144†postgresql-17_17.11-1.pgdg12+2_amd64.deb 13-Aug-2026 01:50            16646412
+L148:     cite145†postgresql-17_17.11-1.pgdg12+2_arm64.deb 13-Aug-2026 01:50            16157864
+L149:     cite146†postgresql-17_17.11-1.pgdg12+2_ppc64el.deb 13-Aug-2026 01:50            16901060
+L150:     cite147†postgresql-17_17.11-1.pgdg13+2.debian.tar.xz 13-Aug-2026 01:50               35776
+L151:     cite148†postgresql-17_17.11-1.pgdg13+2.dsc 13-Aug-2026 01:50                3278
+L152:     cite149†postgresql-17_17.11-1.pgdg13+2_amd64.deb 13-Aug-2026 01:50            16667232
+L153:     cite150†postgresql-17_17.11-1.pgdg13+2_arm64.deb 13-Aug-2026 01:50            16195080
+L154:     cite151†postgresql-17_17.11-1.pgdg13+2_loong64.deb 13-Aug-2026 01:50             6858408
+L155:     cite152†postgresql-17_17.11-1.pgdg13+2_ppc64el.deb 13-Aug-2026 01:50            16892672
+L156:     cite153†postgresql-17_17.11-1.pgdg14+2.debian.tar.xz 13-Aug-2026 01:50               35756
+L157:     cite154†postgresql-17_17.11-1.pgdg14+2.dsc 13-Aug-2026 01:50                3278
+L158:     cite155†postgresql-17_17.11-1.pgdg14+2_amd64.deb 13-Aug-2026 01:50            16674912
+L159:     cite156†postgresql-17_17.11-1.pgdg14+2_arm64.deb 13-Aug-2026 01:50            16166304
+L160:     cite157†postgresql-17_17.11-1.pgdg14+2_loong64.deb 13-Aug-2026 01:50             6883800
+L161:     cite158†postgresql-17_17.11-1.pgdg14+2_ppc64el.deb 13-Aug-2026 01:50            16927708
+L162:     cite159†postgresql-17_17.11-1.pgdg22.04+2.debian.tar.xz 13-Aug-2026 01:50               35792
+L163:     cite160†postgresql-17_17.11-1.pgdg22.04+2.dsc 13-Aug-2026 01:50                3222
+L164:     cite161†postgresql-17_17.11-1.pgdg22.04+2_amd64.deb 13-Aug-2026 01:50            18937760
+L165:     cite162†postgresql-17_17.11-1.pgdg22.04+2_arm64.deb 13-Aug-2026 01:50            18374584
+L166:     cite163†postgresql-17_17.11-1.pgdg22.04+2_ppc64el.deb 13-Aug-2026 01:50            19720144
+L167:     cite164†postgresql-17_17.11-1.pgdg24.04+2.debian.tar.xz 13-Aug-2026 01:50               35804
+L168:     cite165†postgresql-17_17.11-1.pgdg24.04+2.dsc 13-Aug-2026 01:50                3296
+L169:     cite166†postgresql-17_17.11-1.pgdg24.04+2_amd64.deb 13-Aug-2026 01:50            16949784
+L170:     cite167†postgresql-17_17.11-1.pgdg24.04+2_arm64.deb 13-Aug-2026 01:50            16463476
+L171:     cite168†postgresql-17_17.11-1.pgdg24.04+2_ppc64el.deb 13-Aug-2026 01:50            17834280
+L172:     cite169†postgresql-17_17.11-1.pgdg26.04+2.debian.tar.xz 13-Aug-2026 01:50               35788
+L173:     cite170†postgresql-17_17.11-1.pgdg26.04+2.dsc 13-Aug-2026 01:50                3290
+L174:     cite171†postgresql-17_17.11-1.pgdg26.04+2_amd64.deb 13-Aug-2026 01:50            17039248
+L175:     cite172†postgresql-17_17.11-1.pgdg26.04+2_arm64.deb 13-Aug-2026 01:50            16462356
+L176:     cite173†postgresql-17_17.11-1.pgdg26.04+2_ppc64el.deb 13-Aug-2026 01:50            17999180
+L177:     cite174†postgresql-17_17.11-1.pgdg26.10+1.debian.tar.xz 31-Aug-2026 18:47               35772
+L178:     cite175†postgresql-17_17.11-1.pgdg26.10+1.dsc 31-Aug-2026 18:47                3290
+L179:     cite176†postgresql-17_17.11-1.pgdg26.10+1_amd64.deb 31-Aug-2026 18:47            17042652
+L180:     cite177†postgresql-17_17.11-1.pgdg26.10+2.debian.tar.xz 28-Sep-2026 13:58               35804
+L181:     cite178†postgresql-17_17.11-1.pgdg26.10+2.dsc 28-Sep-2026 13:58                3290
+L182:     cite179†postgresql-17_17.11-1.pgdg26.10+2_amd64.deb 28-Sep-2026 13:58            17001156
+L183:     cite180†postgresql-17_17.11-2~20261011.0711.gab22337434..> 11-Oct-2026 08:32              127580
+L184:     cite181†postgresql-17_17.11-2~20261011.0711.gab22337434..> 11-Oct-2026 08:32                3461
+L185:     cite182†postgresql-17_17.11-2~20261011.0711.gab22337434..> 11-Oct-2026 08:32            18229060
+L186:     cite183†postgresql-17_17.11-2~20261011.0711.gab22337434..> 11-Oct-2026 08:33            17486812
+L187:     cite184†postgresql-17_17.11-2~20261011.0711.gab22337434..> 11-Oct-2026 08:33             7238552
+L188:     cite185†postgresql-17_17.11-2~20261011.0711.gab22337434..> 11-Oct-2026 08:32            18295336
+L189:     cite186†postgresql-17_17.11-2~20261011.0711.gab22337434..> 11-Oct-2026 08:32              127584
+L190:     cite187†postgresql-17_17.11-2~20261011.0711.gab22337434..> 11-Oct-2026 08:32                3401
+L191:     cite188†postgresql-17_17.11-2~20261011.0711.gab22337434..> 11-Oct-2026 08:32            16642768
+L192:     cite189†postgresql-17_17.11-2~20261011.0711.gab22337434..> 11-Oct-2026 08:32            16163236
+L193:     cite190†postgresql-17_17.11-2~20261011.0711.gab22337434..> 11-Oct-2026 08:33            16883472
+L194:     cite191†postgresql-17_17.11-2~20261011.0711.gab22337434..> 11-Oct-2026 08:32              127544
+L195:     cite192†postgresql-17_17.11-2~20261011.0711.gab22337434..> 11-Oct-2026 08:32                3469
+L196:     cite193†postgresql-17_17.11-2~20261011.0711.gab22337434..> 11-Oct-2026 08:32            16691780
+L197:     cite194†postgresql-17_17.11-2~20261011.0711.gab22337434..> 11-Oct-2026 08:32            16199600
+L198:     cite195†postgresql-17_17.11-2~20261011.0711.gab22337434..> 11-Oct-2026 08:33             6865832
+--------------------------------------------------------------------------------
+pg_createcluster(1) — postgresql-common — Debian trixie — Debian Manpages (https://manpages.debian.org/trixie/postgresql-common/pg_createcluster.1.en.html)
+citeturn91view3 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({"ref_id":"https://manpages.debian.org/trixie/postgresql-common/pg_createcluster.1.en.html","lineno":null}); Total lines: 156
+--------------------------------------------------------------------------------
+dpkg-deb(1) — dpkg — Debian trixie — Debian Manpages (https://manpages.debian.org/trixie/dpkg/dpkg-deb.1.en.html)
+citeturn91view4 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({"ref_id":"https://manpages.debian.org/trixie/dpkg/dpkg-deb.1.en.html","lineno":null}); Total lines: 186
+

@@ -1,0 +1,329 @@
+Internal Error ()
+citeturn86view0 [wordlim: 200] Source: open({"ref_id":"https://apt.postgresql.org/pub/repos/apt/dists/trixie-pgdg/17/binary-amd64/Packages","lineno":null}); Total lines: 1
+L0: URL https://apt.postgresql.org/pub/repos/apt/dists/trixie-pgdg/17/binary-amd64/Packages is not accessible via this tool.
+--------------------------------------------------------------------------------
+Internal Error ()
+citeturn86view1 [wordlim: 200] Source: open({"ref_id":"https://apt.postgresql.org/pub/repos/apt/dists/trixie-pgdg/main/binary-amd64/Packages","lineno":null}); Total lines: 1
+L0: URL https://apt.postgresql.org/pub/repos/apt/dists/trixie-pgdg/main/binary-amd64/Packages is not accessible via this tool.
+--------------------------------------------------------------------------------
+PostgreSQL: Documentation: 17: 17.3. Building and Installation with Autoconf and Make (https://www.postgresql.org/docs/17/install-make.html)
+citeturn86view2 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({"ref_id":"https://www.postgresql.org/docs/17/install-make.html","lineno":null}); Total lines: 542
+L0: September 24, 2026: cite0†PostgreSQL 19 Beta 4 Released! L1: 
+L2: cite1†Documentation → cite2†PostgreSQL 17 L3: 
+L4: Supported Versions: cite3†Current (cite4†18 ) / cite5†17 / cite6†16 L5: 
+L6: Development Versions: cite7†19 / cite8†devel L7: 
+L8: [Input]
+L9: 
+L10: [Input: Search the documentation for...]
+L11: 
+L12: 17.3. Building and Installation with Autoconf and Make
+L13: ---
+L14: cite9†Prev | cite10†Up | Chapter 17. Installation from Source Code  | cite2†Home |  cite11†Next L15: 
+L16: * * *
+L17: ## 17.3. Building and Installation with Autoconf and Make cite12†# L18: 
+L19: cite13†17.3.1. Short Version L20: cite14†17.3.2. Installation Procedure L21: cite15†17.3.3. `configure` Options L22: cite16†17.3.4. `configure` Environment Variables L23: ### 17.3.1. Short Version cite13†# L24: 
+L25:     ./configure
+L26:     make
+L27:     su
+L28:     make install
+L29:     adduser postgres
+L30:     mkdir -p /usr/local/pgsql/data
+L31:     chown postgres /usr/local/pgsql/data
+L32:     su - postgres
+L33:     /usr/local/pgsql/bin/initdb -D /usr/local/pgsql/data
+L34:     /usr/local/pgsql/bin/pg_ctl -D /usr/local/pgsql/data -l logfile start
+L35:     /usr/local/pgsql/bin/createdb test
+L36:     /usr/local/pgsql/bin/psql test
+L37: 
+L38: 
+L39: The long version is the rest of this section.
+L40: ### 17.3.2. Installation Procedure cite14†# L41: 
+L42:   1. Configuration
+L43: 
+L44: The first step of the installation procedure is to configure the source tree for your system and choose the options you would like. This is done by running the `configure` script. For a default installation simply enter:
+L45: 
+L46:     `./configure`
+L47: This script will run a number of tests to determine values for various system dependent variables and detect any quirks of your operating system, and finally will create several files in the build tree to record what it found.
+L48: You can also run `configure` in a directory outside the source tree, and then build there, if you want to keep the build directory separate from the original source files. This procedure is called a VPATH build. Here's how:
+L49: 
+L50:     `mkdir build_dir`
+L51:     `cd build_dir`
+L52:     `/path/to/source/tree/configure [options go here]`
+L53:     `make`
+L54: The default configuration will build the server and utilities, as well as all client applications and interfaces that require only a C compiler. All files will be installed under `/usr/local/pgsql` by default.
+L55: You can customize the build and installation process by supplying one or more command line options to `configure`. Typically you would customize the install location, or the set of optional features that are built. `configure` has a large number of options, which are described in cite15†Section 17.3.3 .
+L56: 
+L57: Also, `configure` responds to certain environment variables, as described in cite16†Section 17.3.4 . These provide additional ways to customize the configuration.
+L58: 
+L59:   2. Build
+L60: To start the build, type either of:
+L61: 
+L62:     `make`
+L63:     `make all`
+L64: 
+L65: 
+L66: (Remember to use GNU make.) The build will take a few minutes depending on your hardware.
+L67: 
+L68: If you want to build everything that can be built, including the documentation (HTML and man pages), and the additional modules (`contrib`), type instead:
+L69: 
+L70:     `make world`
+L71: If you want to build everything that can be built, including the additional modules (`contrib`), but without the documentation, type instead:
+L72: 
+L73:     `make world-bin`
+L74: 
+L75: 
+L76: If you want to invoke the build from another makefile rather than manually, you must unset `MAKELEVEL` or set it to zero, for instance like this:
+L77: 
+L78:     build-postgresql:
+L79:             $(MAKE) -C postgresql MAKELEVEL=0 all
+L80: 
+L81: 
+L82: Failure to do that can lead to strange error messages, typically about missing header files.
+L83:   3. Regression Tests
+L84: 
+L85: If you want to test the newly built server before you install it, you can run the regression tests at this point. The regression tests are a test suite to verify that PostgreSQL runs on your machine in the way the developers expected it to. Type:
+L86: 
+L87:     `make check`
+L88: 
+L89: 
+L90: (This won't work as root; do it as an unprivileged user.) See cite17†Chapter 31 for detailed information about interpreting the test results. You can repeat this test at any later time by issuing the same command.
+L91:   4. Installing the Files
+L92: ### Note
+L93: 
+L94: If you are upgrading an existing system be sure to read cite18†Section 18.6 , which has instructions about upgrading a cluster.
+L95: 
+L96: To install PostgreSQL enter:
+L97: 
+L98:     `make install`
+L99: 
+L100: 
+L101: This will install files into the directories that were specified in cite19†Step 1 . Make sure that you have appropriate permissions to write into that area. Normally you need to do this step as root. Alternatively, you can create the target directories in advance and arrange for appropriate permissions to be granted.
+L102: To install the documentation (HTML and man pages), enter:
+L103: 
+L104:     `make install-docs`
+L105: 
+L106: 
+L107: If you built the world above, type instead:
+L108: 
+L109:     `make install-world`
+L110: 
+L111: 
+L112: This also installs the documentation.
+L113: 
+L114: If you built the world without the documentation above, type instead:
+L115: 
+L116:     `make install-world-bin`
+L117: You can use `make install-strip` instead of `make install` to strip the executable files and libraries as they are installed. This will save some space. If you built with debugging support, stripping will effectively remove the debugging support, so it should only be done if debugging is no longer needed.
+L118: `install-strip` tries to do a reasonable job saving space, but it does not have perfect knowledge of how to strip every unneeded byte from an executable file, so if you want to save all the disk space you possibly can, you will have to do manual work.
+L119: The standard installation provides all the header files needed for client application development as well as for server-side program development, such as custom functions or data types written in C.
+L120: 
+L121: Client-only installation:  If you want to install only the client applications and interface libraries, then you can use these commands:
+L122: 
+L123:     `make -C src/bin install`
+L124:     `make -C src/include install`
+L125:     `make -C src/interfaces install`
+L126:     `make -C doc install`
+L127: `src/bin` has a few binaries for server-only use, but they are small.
+L128: 
+L129: Uninstallation:  To undo the installation use the command `make uninstall`. However, this will not remove any created directories.
+L130: Cleaning:  After the installation you can free disk space by removing the built files from the source tree with the command `make clean`. This will preserve the files made by the `configure` program, so that you can rebuild everything with `make` later on. To reset the source tree to the state in which it was distributed, use `make distclean`. If you are going to build for several platforms within the same source tree you must do this and re-configure for each platform.
+L131: (Alternatively, use a separate build tree for each platform, so that the source tree remains unmodified.)
+L132: If you perform a build and then discover that your `configure` options were wrong, or if you change anything that `configure` investigates (for example, software upgrades), then it's a good idea to do `make distclean` before reconfiguring and rebuilding. Without this, your changes in configuration choices might not propagate everywhere they need to.
+L133: ### 17.3.3. `configure` Options cite15†# L134: 
+L135: `configure`'s command line options are explained below. This list is not exhaustive (use `./configure --help` to get one that is). The options not covered here are meant for advanced use-cases such as cross-compilation, and are documented in the standard Autoconf documentation.
+L136: #### 17.3.3.1. Installation Locations cite20†# L137: These options control where `make install` will put the files. The `--prefix` option is sufficient for most cases. If you have special needs, you can customize the installation subdirectories with the other options described in this section. Beware however that changing the relative locations of the different subdirectories may render the installation non-relocatable, meaning you won't be able to move it after installation.
+L138: (The `man` and `doc` locations are not affected by this restriction.) For relocatable installs, you might want to use the `--disable-rpath` option described later.
+L139: `--prefix=`PREFIX`` cite21†# L140: 
+L141: 
+L142: Install all files under the directory `PREFIX` instead of `/usr/local/pgsql`. The actual files will be installed into various subdirectories; no files will ever be installed directly into the `PREFIX` directory.
+L143: 
+L144: `--exec-prefix=`EXEC-PREFIX`` cite22†# L145: You can install architecture-dependent files under a different prefix, `EXEC-PREFIX`, than what `PREFIX` was set to. This can be useful to share architecture-independent files between hosts. If you omit this, then `EXEC-PREFIX` is set equal to `PREFIX` and both architecture-dependent and independent files will be installed under the same tree, which is probably what you want.
+L146: 
+L147: `--bindir=`DIRECTORY`` cite23†# L148: Specifies the directory for executable programs. The default is ``EXEC-PREFIX`/bin`, which normally means `/usr/local/pgsql/bin`.
+L149: 
+L150: `--sysconfdir=`DIRECTORY`` cite24†# L151: 
+L152: 
+L153: Sets the directory for various configuration files, ``PREFIX`/etc` by default.
+L154: 
+L155: `--libdir=`DIRECTORY`` cite25†# L156: 
+L157: 
+L158: Sets the location to install libraries and dynamically loadable modules. The default is ``EXEC-PREFIX`/lib`.
+L159: 
+L160: `--includedir=`DIRECTORY`` cite26†# L161: Sets the directory for installing C and C++ header files. The default is ``PREFIX`/include`.
+L162: 
+L163: `--datarootdir=`DIRECTORY`` cite27†# L164: 
+L165: 
+L166: Sets the root directory for various types of read-only data files. This only sets the default for some of the following options. The default is ``PREFIX`/share`.
+L167: 
+L168: `--datadir=`DIRECTORY`` cite28†# L169: Sets the directory for read-only data files used by the installed programs. The default is ``DATAROOTDIR``. Note that this has nothing to do with where your database files will be placed.
+L170: 
+L171: `--localedir=`DIRECTORY`` cite29†# L172: 
+L173: 
+L174: Sets the directory for installing locale data, in particular message translation catalog files. The default is ``DATAROOTDIR`/locale`.
+L175: 
+L176: `--mandir=`DIRECTORY`` cite30†# L177: The man pages that come with PostgreSQL will be installed under this directory, in their respective `man`x`` subdirectories. The default is ``DATAROOTDIR`/man`.
+L178: 
+L179: `--docdir=`DIRECTORY`` cite31†# L180: 
+L181: 
+L182: Sets the root directory for installing documentation files, except “man” pages. This only sets the default for the following options. The default value for this option is ``DATAROOTDIR`/doc/postgresql`.
+L183: 
+L184: `--htmldir=`DIRECTORY`` cite32†# L185: The HTML-formatted documentation for PostgreSQL will be installed under this directory. The default is ``DATAROOTDIR``.
+L186: ### Note
+L187: Care has been taken to make it possible to install PostgreSQL into shared installation locations (such as `/usr/local/include`) without interfering with the namespace of the rest of the system. First, the string “`/postgresql`” is automatically appended to `datadir`, `sysconfdir`, and `docdir`, unless the fully expanded directory name already contains the string “`postgres`” or “`pgsql`”.
+L188: For example, if you choose `/usr/local` as prefix, the documentation will be installed in `/usr/local/doc/postgresql`, but if the prefix is `/opt/postgres`, then it will be in `/opt/postgres/doc`. The public C header files of the client interfaces are installed into `includedir` and are namespace-clean. The internal header files and the server header files are installed into private directories under `includedir`. See the documentation of each interface for information about how to access its header files.
+L189: Finally, a private subdirectory will also be created, if appropriate, under `libdir` for dynamically loadable modules.
+L190: #### 17.3.3.2. PostgreSQL Features cite33†# L191: 
+L192: The options described in this section enable building of various PostgreSQL features that are not built by default. Most of these are non-default only because they require additional software, as described in cite34†Section 17.1 .
+L193: 
+L194: `--enable-nls[=`LANGUAGES`]` cite35†# L195: Enables Native Language Support (NLS), that is, the ability to display a program's messages in a language other than English. `LANGUAGES` is an optional space-separated list of codes of the languages that you want supported, for example `--enable-nls='de fr'`. (The intersection between your list and the set of actually provided translations will be computed automatically.) If you do not specify a list, then all available translations are installed.
+L196: To use this option, you will need an implementation of the Gettext API.
+L197: 
+L198: `--with-perl` cite36†# L199: 
+L200: 
+L201: Build the PL/Perl server-side language.
+L202: 
+L203: `--with-python` cite37†# L204: 
+L205: 
+L206: Build the PL/Python server-side language.
+L207: 
+L208: `--with-tcl` cite38†# L209: 
+L210: 
+L211: Build the PL/Tcl server-side language.
+L212: 
+L213: `--with-tclconfig=`DIRECTORY`` cite39†# L214: Tcl installs the file `tclConfig.sh`, which contains configuration information needed to build modules interfacing to Tcl. This file is normally found automatically at a well-known location, but if you want to use a different version of Tcl you can specify the directory in which to look for `tclConfig.sh`.
+L215: 
+L216: `--with-llvm` cite40†# L217: 
+L218: 
+L219: Build with support for LLVM based JIT compilation (see cite41†Chapter 30 ). This requires the LLVM library to be installed. The minimum required version of LLVM is currently 10.
+L220: `llvm-config` will be used to find the required compilation options. `llvm-config` will be searched for in your `PATH`. If that would not yield the desired program, use `LLVM_CONFIG` to specify a path to the correct `llvm-config`. For example
+L221: 
+L222:     ./configure ... --with-llvm LLVM_CONFIG='/path/to/llvm/bin/llvm-config'
+L223: LLVM support requires a compatible `clang` compiler (specified, if necessary, using the `CLANG` environment variable), and a working C++ compiler (specified, if necessary, using the `CXX` environment variable).
+L224: 
+L225: `--with-lz4` cite42†# L226: 
+L227: 
+L228: Build with LZ4 compression support.
+L229: 
+L230: `--with-zstd` cite43†# L231: 
+L232: 
+L233: Build with Zstandard compression support.
+L234: 
+L235: `--with-ssl=`LIBRARY`` cite44†# L236: Build with support for SSL (encrypted) connections. The only `LIBRARY` supported is `openssl`. This requires the OpenSSL package to be installed. `configure` will check for the required header files and libraries to make sure that your OpenSSL installation is sufficient before proceeding.
+L237: 
+L238: `--with-openssl` cite45†# L239: 
+L240: 
+L241: Obsolete equivalent of `--with-ssl=openssl`.
+L242: 
+L243: `--with-gssapi` cite46†# L244: Build with support for GSSAPI authentication. MIT Kerberos is required to be installed for GSSAPI. On many systems, the GSSAPI system (a part of the MIT Kerberos installation) is not installed in a location that is searched by default (e.g., `/usr/include`, `/usr/lib`), so you must use the options `--with-includes` and `--with-libraries` in addition to this option. `configure` will check for the required header files and libraries to make sure that your GSSAPI installation is sufficient before proceeding.
+L245: `--with-ldap` cite47†# L246: 
+L247: 
+L248: Build with LDAP support for authentication and connection parameter lookup (see cite48†Section 32.18 and cite49†Section 20.10 for more information). On Unix, this requires the OpenLDAP package to be installed. On Windows, the default WinLDAP library is used. `configure` will check for the required header files and libraries to make sure that your OpenLDAP installation is sufficient before proceeding.
+L249: 
+L250: `--with-pam` cite50†# L251: Build with PAM (Pluggable Authentication Modules) support.
+L252: 
+L253: `--with-bsd-auth` cite51†# L254: 
+L255: 
+L256: Build with BSD Authentication support. (The BSD Authentication framework is currently only available on OpenBSD.)
+L257: 
+L258: `--with-systemd` cite52†# L259: Build with support for systemd service notifications. This improves integration if the server is started under systemd but has no impact otherwise; see cite53†Section 18.3 for more information. libsystemd and the associated header files need to be installed to use this option.
+L260: 
+L261: `--with-bonjour` cite54†# L262: 
+L263: 
+L264: Build with support for Bonjour automatic service discovery. This requires Bonjour support in your operating system. Recommended on macOS.
+L265: 
+L266: `--with-uuid=`LIBRARY`` cite55†# L267: Build the cite56†uuid-ossp module (which provides functions to generate UUIDs), using the specified UUID library. `LIBRARY` must be one of:
+L268: 
+L269:   * `bsd` to use the UUID functions found in FreeBSD and some other BSD-derived systems
+L270: 
+L271:   * `e2fs` to use the UUID library created by the `e2fsprogs` project; this library is present in most Linux systems and in macOS, and can be obtained for other platforms as well
+L272: 
+L273:   * `ossp` to use the cite57†OSSP UUID library†www.ossp.org L274: 
+L275: `--with-ossp-uuid` cite58†# L276: Obsolete equivalent of `--with-uuid=ossp`.
+L277: 
+L278: `--with-libxml` cite59†# L279: 
+L280: 
+L281: Build with libxml2, enabling SQL/XML support. Libxml2 version 2.6.23 or later is required for this feature.
+L282: To detect the required compiler and linker options, PostgreSQL will query `pkg-config`, if that is installed and knows about libxml2. Otherwise the program `xml2-config`, which is installed by libxml2, will be used if it is found. Use of `pkg-config` is preferred, because it can deal with multi-architecture installations better.
+L283: To use a libxml2 installation that is in an unusual location, you can set `pkg-config`-related environment variables (see its documentation), or set the environment variable `XML2_CONFIG` to point to the `xml2-config` program belonging to the libxml2 installation, or set the variables `XML2_CFLAGS` and `XML2_LIBS`. (If `pkg-config` is installed, then to override its idea of where libxml2 is you must either set `XML2_CONFIG` or set both `XML2_CFLAGS` and `XML2_LIBS` to nonempty strings.)
+L284: `--with-libxslt` cite60†# L285: 
+L286: 
+L287: Build with libxslt, enabling the cite61†xml2 module to perform XSL transformations of XML. `--with-libxml` must be specified as well.
+L288: 
+L289: `--with-selinux` cite62†# L290: 
+L291: 
+L292: Build with SElinux support, enabling the cite63†sepgsql extension.
+L293: #### 17.3.3.3. Anti-Features cite64†# L294: 
+L295: The options described in this section allow disabling certain PostgreSQL features that are built by default, but which might need to be turned off if the required software or system features are not available. Using these options is not recommended unless really necessary.
+L296: 
+L297: `--without-icu` cite65†# L298: 
+L299: 
+L300: Build without support for the ICU library, disabling the use of ICU collation features (see cite66†Section 23.2 ).
+L301: 
+L302: `--without-readline` cite67†# L303: Prevents use of the Readline library (and libedit as well). This option disables command-line editing and history in psql.
+L304: 
+L305: `--with-libedit-preferred` cite68†# L306: 
+L307: 
+L308: Favors the use of the BSD-licensed libedit library rather than GPL-licensed Readline. This option is significant only if you have both libraries installed; the default in that case is to use Readline.
+L309: 
+L310: `--without-zlib` cite69†# L311: 
+L312: 
+L313: Prevents use of the Zlib library. This disables support for compressed archives in pg_dump and pg_restore.
+L314: `--disable-spinlocks` cite70†# L315: 
+L316: 
+L317: Allow the build to succeed even if PostgreSQL has no CPU spinlock support for the platform. The lack of spinlock support will result in very poor performance; therefore, this option should only be used if the build aborts and informs you that the platform lacks spinlock support. If this option is required to build PostgreSQL on your platform, please report the problem to the PostgreSQL developers.
+L318: 
+L319: `--disable-atomics` cite71†# L320: Disable use of CPU atomic operations. This option does nothing on platforms that lack such operations. On platforms that do have them, this will result in poor performance. This option is only useful for debugging or making performance comparisons.
+L321: #### 17.3.3.4. Build Process Details cite72†# L322: 
+L323: `--with-includes=`DIRECTORIES`` cite73†# L324: 
+L325: 
+L326: `DIRECTORIES` is a colon-separated list of directories that will be added to the list the compiler searches for header files. If you have optional packages (such as GNU Readline) installed in a non-standard location, you have to use this option and probably also the corresponding `--with-libraries` option.
+L327: 
+L328: Example: `--with-includes=/opt/gnu/include:/usr/sup/include`.
+L329: 
+L330: `--with-libraries=`DIRECTORIES`` cite74†# L331: `DIRECTORIES` is a colon-separated list of directories to search for libraries. You will probably have to use this option (and the corresponding `--with-includes` option) if you have packages installed in non-standard locations.
+L332: 
+L333: Example: `--with-libraries=/opt/gnu/lib:/usr/sup/lib`.
+L334: 
+L335: `--with-system-tzdata=`DIRECTORY`` cite75†# L336: PostgreSQL includes its own time zone database, which it requires for date and time operations. This time zone database is in fact compatible with the IANA time zone database provided by many operating systems such as FreeBSD, Linux, and Solaris, so it would be redundant to install it again. When this option is used, the system-supplied time zone database in `DIRECTORY` is used instead of the one included in the PostgreSQL source distribution. `DIRECTORY` must be specified as an absolute path.
+L337: `/usr/share/zoneinfo` is a likely directory on some operating systems. Note that the installation routine will not detect mismatching or erroneous time zone data. If you use this option, you are advised to run the regression tests to verify that the time zone data you have pointed to works correctly with PostgreSQL.
+L338: This option is mainly aimed at binary package distributors who know their target operating system well. The main advantage of using this option is that the PostgreSQL package won't need to be upgraded whenever any of the many local daylight-saving time rules change. Another advantage is that PostgreSQL can be cross-compiled more straightforwardly if the time zone database files do not need to be built during the installation.
+L339: 
+L340: `--with-extra-version=`STRING`` cite76†# L341: Append `STRING` to the PostgreSQL version number. You can use this, for example, to mark binaries built from unreleased Git snapshots or containing custom patches with an extra version string, such as a `git describe` identifier or a distribution package release number.
+L342: 
+L343: `--disable-rpath` cite77†# L344: Do not mark PostgreSQL's executables to indicate that they should search for shared libraries in the installation's library directory (see `--libdir`). On most platforms, this marking uses an absolute path to the library directory, so that it will be unhelpful if you relocate the installation later. However, you will then need to provide some other way for the executables to find the shared libraries.
+L345: Typically this requires configuring the operating system's dynamic linker to search the library directory; see cite78†Section 17.5.1 for more detail.
+L346: #### 17.3.3.5. Miscellaneous cite79†# L347: 
+L348: It's fairly common, particularly for test builds, to adjust the default port number with `--with-pgport`. The other options in this section are recommended only for advanced users.
+L349: 
+L350: `--with-pgport=`NUMBER`` cite80†# L351: Set `NUMBER` as the default port number for server and clients. The default is 5432. The port can always be changed later on, but if you specify it here then both server and clients will have the same default compiled in, which can be very convenient. Usually the only good reason to select a non-default value is if you intend to run multiple PostgreSQL servers on the same machine.
+L352: 
+L353: `--with-krb-srvnam=`NAME`` cite81†# L354: The default name of the Kerberos service principal used by GSSAPI. `postgres` is the default. There's usually no reason to change this unless you are building for a Windows environment, in which case it must be set to upper case `POSTGRES`.
+L355: 
+L356: `--with-segsize=`SEGSIZE`` cite82†# L357: Set the segment size, in gigabytes. Large tables are divided into multiple operating-system files, each of size equal to the segment size. This avoids problems with file size limits that exist on many platforms. The default segment size, 1 gigabyte, is safe on all supported platforms. If your operating system has “largefile” support (which most do, nowadays), you can use a larger segment size. This can be helpful to reduce the number of file descriptors consumed when working with very large tables.
+L358: But be careful not to select a value larger than is supported by your platform and the file systems you intend to use. Other tools you might wish to use, such as tar, could also set limits on the usable file size. It is recommended, though not absolutely required, that this value be a power of 2. Note that changing this value breaks on-disk database compatibility, meaning you cannot use `pg_upgrade` to upgrade to a build with a different segment size.
+L359: `--with-blocksize=`BLOCKSIZE`` cite83†# L360: 
+L361: 
+L362: Set the block size, in kilobytes. This is the unit of storage and I/O within tables. The default, 8 kilobytes, is suitable for most situations; but other values may be useful in special cases. The value must be a power of 2 between 1 and 32 (kilobytes). Note that changing this value breaks on-disk database compatibility, meaning you cannot use `pg_upgrade` to upgrade to a build with a different block size.
+L363: 
+L364: `--with-wal-blocksize=`BLOCKSIZE`` cite84†# L365: Set the WAL block size, in kilobytes. This is the unit of storage and I/O within the WAL log. The default, 8 kilobytes, is suitable for most situations; but other values may be useful in special cases. The value must be a power of 2 between 1 and 64 (kilobytes). Note that changing this value breaks on-disk database compatibility, meaning you cannot use `pg_upgrade` to upgrade to a build with a different WAL block size.
+L366: #### 17.3.3.6. Developer Options cite85†# L367: 
+L368: Most of the options in this section are only of interest for developing or debugging PostgreSQL. They are not recommended for production builds, except for `--enable-debug`, which can be useful to enable detailed bug reports in the unlucky event that you encounter a bug. On platforms supporting DTrace, `--enable-dtrace` may also be reasonable to use in production.
+L369: When building an installation that will be used to develop code inside the server, it is recommended to use at least the options `--enable-debug` and `--enable-cassert`.
+L370: 
+L371: `--enable-debug` cite86†# L372: Compiles all programs and libraries with debugging symbols. This means that you can run the programs in a debugger to analyze problems. This enlarges the size of the installed executables considerably, and on non-GCC compilers it usually also disables compiler optimization, causing slowdowns. However, having the symbols available is extremely helpful for dealing with any problems that might arise. Currently, this option is recommended for production installations only if you use GCC.
+L373: But you should always have it on if you are doing development work or running a beta version.
+L374: `--enable-cassert` cite87†# L375: Enables assertion checks in the server, which test for many “cannot happen” conditions. This is invaluable for code development purposes, but the tests can slow down the server significantly. Also, having the tests turned on won't necessarily enhance the stability of your server! The assertion checks are not categorized for severity, and so what might be a relatively harmless bug will still lead to server restarts if it triggers an assertion failure.
+L376: This option is not recommended for production use, but you should have it on for development work or when running a beta version.
+L377: `--enable-tap-tests` cite88†# L378: 
+L379: 
+L380: Enable tests using the Perl TAP tools. This requires a Perl installation and the Perl module `IPC::Run`. See cite89†Section 31.4 for more information.
+L381: 
+L382: `--enable-depend` cite90†# L383: Enables automatic dependency tracking. With this option, the makefiles are set up so that all affected object files will be rebuilt when any header file is changed. This is useful if you are doing development work, but is just wasted overhead if you intend only to compile once and install. At present, this option only works with GCC.
+L384: 
+L385: `--enable-coverage` cite91†# L386: If using GCC, all programs and libraries are compiled with code coverage testing instrumentation. When run, they generate files in the build directory with code coverage metrics. See cite92†Section 31.5 for more information. This option is for use only with GCC and when doing development work.
+L387: 
+L388: `--enable-profiling` cite93†# L389: If using GCC, all programs and libraries are compiled so they can be profiled. On backend exit, a subdirectory will be created that contains the `gmon.out` file containing profile data. This option is for use only with GCC and when doing development work.
+--------------------------------------------------------------------------------
+Package: postgresql-17 | Debian Sources (https://sources.debian.org/src/postgresql-17/)
+citeturn86view3 [wordlim: 200] Crawled: yesterday; Content type: text/html; Source: open({"ref_id":"https://sources.debian.org/src/postgresql-17/","lineno":null}); Total lines: 24
+

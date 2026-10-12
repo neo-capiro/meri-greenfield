@@ -1,0 +1,51 @@
+{
+  "argv": [
+    "dpkg-query",
+    "-W",
+    "-f=${binary:Package}\t${Version}\t${db:Status-Status}\t${Architecture}\t${Depends}\n",
+    "libc6",
+    "libgcc-s1",
+    "libgssapi-krb5-2",
+    "libicu76",
+    "libldap2",
+    "libllvm19",
+    "liblz4-1",
+    "libpam0g",
+    "libpq5",
+    "libselinux1",
+    "libssl3t64",
+    "libstdc++6",
+    "libsystemd0",
+    "libuuid1",
+    "libxml2",
+    "libxslt1.1",
+    "libzstd1",
+    "locales",
+    "locales-all",
+    "postgresql-common",
+    "postgresql-client-common",
+    "ssl-cert",
+    "tzdata",
+    "zlib1g",
+    "libreadline8t64",
+    "sensible-utils",
+    "debconf"
+  ],
+  "cwd": "/workspace/meri-native-prefix-20261012",
+  "capturedAt": "2026-10-12T07:08:51.922098+00:00",
+  "exitCode": 1,
+  "timeoutSeconds": 10,
+  "scope": "READ_ONLY_INSTALLED_PACKAGE_METADATA_NOT_TARGET_EXECUTION",
+  "streams": {
+    "stdout": {
+      "path": "raw/host-dependency-query.stdout",
+      "bytes": 2274,
+      "sha256": "cb8f02ab05e6f0e02385aba2339841f9a56bbfefe81f5b24ae7b69d1c3af00a8"
+    },
+    "stderr": {
+      "path": "raw/host-dependency-query.stderr",
+      "bytes": 169,
+      "sha256": "196580329f61355f8736c2ee2bbf80e2559a18e14c6b919901dff9f7c09c4369"
+    }
+  }
+}

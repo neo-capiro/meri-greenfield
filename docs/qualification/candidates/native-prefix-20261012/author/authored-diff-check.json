@@ -1,0 +1,21 @@
+{
+  "argv": [
+    "git",
+    "diff",
+    "--cached",
+    "--check",
+    "--",
+    "docs/qualification/candidates/native-prefix-20261012/author/retrievals.json",
+    "docs/qualification/candidates/native-prefix-20261012/author/diff-check-raw-failure.json",
+    "docs/qualification/candidates/native-prefix-20261012/author/collection-notes.json",
+    "docs/qualification/candidates/native-prefix-20261012/author/host-dependency-query.json",
+    "docs/qualification/candidates/native-prefix-20261012/author/verify.py",
+    "docs/qualification/candidates/native-prefix-20261012/author/assessment.json",
+    "docs/coordination/reports/MERI-NATIVE-PREFIX-20261012.md",
+    "docs/coordination/tasks/MERI-NATIVE-PREFIX-20261012.md"
+  ],
+  "exitCode": 0,
+  "stdout": "",
+  "stderr": "",
+  "scope": "AUTHORED_TEXT_ONLY_RAW_FAILURE_RETAINED_SEPARATELY"
+}

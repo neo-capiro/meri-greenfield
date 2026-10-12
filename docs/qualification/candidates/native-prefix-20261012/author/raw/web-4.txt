@@ -1,0 +1,510 @@
+Installing and Configuring PostgreSQL (https://www.bacula.org/7.0.x-manuals/en/main/Installing_Configuring_Post.html)
+citeturn90search0 [wordlim: 200] Crawled: last month; Content type: text/html; If you use the ./configure -- with- postgresql = PostgreSQL -Directory statement for configuring Bacula, you will need PostgreSQL version 7.4 or later installed. Read more
+If you use the ./configure `--`with-postgresql=PostgreSQL-Directory statement for configuring Bacula, you will need PostgreSQL version 7.4 or later installed. NOTE! PostgreSQL versions earlier than 7.4 do not work with Bacula. If PostgreSQL is installed in the standard system location, you need only enter `--`with-postgresql since the configure program will search all the standard locations. --------------------------------------------------------------------------------
+Most useful commands for PostgreSQL (https://github.com/DevHerles/postgresql)
+citeturn90search1 [wordlim: 200] Crawled: today; Content type: text/html; Most useful commands for PostgreSQL . First, switch to the PostgreSQL user, CREATE ROLE postgres=# 3.2 Alter a role postgres=# Manage database 4.1. Create ...
+## 3. Manage roles
+
+### 3.1. Create a `role` as `SUPERUSER`
+    
+    postgres=# CREATE ROLE odoo WITH SUPERUSER CREATEDB CREATEROLE LOGIN REPLICATION INHERIT ENCRYPTED PASSWORD 'odoo';
+    CREATE ROLE
+    postgres=#
+
+### 3.2 Alter a `role`
+    
+    postgres=# ALTER ROLE odoo WITH LOGIN;
+    ALTER ROLE
+    postgres=#
+
+### 3.3. Drop a `role`
+    
+    postgres=# DROP ROLE odoo
+    postgres=#
+
+--------------------------------------------------------------------------------
+Image Layer Details - :17 (https://hub.docker.com/layers/library/postgres/17)
+citeturn90search2 [wordlim: 200] Crawled: last week; Content type: text/html; ... postgres --group postgres --mode 1777 /var/lib/postgresql # buildkit. 1.17 KB ... ENV PG_VERSION=17.11-1.pgdg13+2 . 0 B. 13. RUN /bin/sh -c set -ex; export ... Read more
+###### postgres:17
+
+2
+
+24
+
+31
+
+47
+
+0
+
+[Input]
+
+1
+
+RUN /bin/sh -c set -eux; groupadd -r postgres --gid=999; useradd -r -g postgres --uid=999 --home-dir=/var/lib/postgresql --shell=/bin/bash postgres; install --verbose --directory --owner postgres --group postgres --mode 1777 /var/lib/postgresql # buildkit
+
+1.17 KB
+
+* * *
+
+[Input]
+
+2
+
+RUN /bin/sh -c set -ex; apt-get update; apt-get install -y --no-install-recommends gnupg less ; rm -rf /var/lib/apt/lists/* # buildkit
+
+6.63 MB
+
+* * *
+
+[Input]
+
+3
+
+RUN /bin/sh -c set -eux; savedAptMark="$(apt-mark showmanual)"; apt-get update; apt-get install -y --no-install-recommends ca-certificates wget; rm -rf /var/lib/apt/lists/*; dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"; wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch"; wget -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch.asc"; export GNUPGHOME="$(mktemp -d)"; gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4; gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu; gpgconf --kill all; rm -rf "$GNUPGHOME" /usr/local/bin/gosu.asc; apt-mark auto '.*' > /dev/null; [ -z "$savedAptMark" ] || apt-mark manual $savedAptMark > /dev/null; apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; chmod +x /usr/local/bin/gosu; gosu --version; gosu nobody true # buildkit
+
+1.23 MB
+
+* * *
+
+[Input]
+
+5
+
+RUN /bin/sh -c set -eux; if [ -f /etc/dpkg/dpkg.cfg.d/docker ]; then grep -q '/usr/share/locale' /etc/dpkg/dpkg.cfg.d/docker; sed -ri '/\/usr\/share\/locale/d' /etc/dpkg/dpkg.cfg.d/docker; ! grep -q '/usr/share/locale' /etc/dpkg/dpkg.cfg.d/docker; fi; apt-get update; apt-get install -y --no-install-recommends locales; rm -rf /var/lib/apt/lists/*; echo 'en_US.UTF-8 UTF-8' >> /etc/locale.gen; locale-gen; locale -a | grep 'en_US.utf8' # buildkit
+
+8.2 MB
+
+* * *
+
+[Input]
+
+6
+
+ENV LANG=en_US.utf8
+
+0 B
+
+* * *
+
+[Input]
+
+7
+
+RUN /bin/sh -c set -eux; apt-get update; apt-get install -y --no-install-recommends libnss-wrapper xz-utils zstd ; rm -rf /var/lib/apt/lists/* # buildkit
+
+1.31 MB
+
+* * *
+
+[Input]
+
+8
+
+RUN /bin/sh -c mkdir /docker-entrypoint-initdb.d # buildkit
+
+116 B
+
+* * *
+
+[Input]
+
+9
+
+RUN /bin/sh -c set -ex; key='B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8'; export GNUPGHOME="$(mktemp -d)"; mkdir -p /usr/local/share/keyrings/; gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "$key"; gpg --batch --export --armor "$key" > /usr/local/share/keyrings/postgres.gpg.asc; gpgconf --kill all; rm -rf "$GNUPGHOME" # buildkit
+
+3.14 KB
+
+* * *
+
+[Input]
+
+10
+
+ENV PG_MAJOR=17
+
+0 B
+
+* * *
+
+[Input]
+
+11
+
+ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/lib/postgresql/17/bin
+
+0 B
+
+* * *
+
+[Input]
+
+12
+
+ENV PG_VERSION=17.11-1.pgdg13+2
+
+0 B
+
+* * *
+
+[Input]
+
+13
+
+RUN /bin/sh -c set -ex; export PYTHONDONTWRITEBYTECODE=1; dpkgArch="$(dpkg --print-architecture)"; aptRepo="[ signed-by=/usr/local/share/keyrings/postgres.gpg.asc ] http://apt.postgresql.org/pub/repos/apt trixie-pgdg main $PG_MAJOR"; case "$dpkgArch" in amd64 | arm64 | loong64 | ppc64el) echo "deb $aptRepo" > /etc/apt/sources.list.d/pgdg.list; apt-get update; ;; *) echo "deb-src $aptRepo" > /etc/apt/sources.list.d/pgdg.list; savedAptMark="$(apt-mark showmanual)"; tempDir="$(mktemp -d)"; cd "$tempDir"; apt-get update; apt-get install -y --no-install-recommends dpkg-dev; echo "deb [ trusted=yes ] file://$tempDir ./" > /etc/apt/sources.list.d/temp.list; _update_repo() { dpkg-scanpackages . 10.45 KB
+
+* * *
+
+[Input]
+
+15
+
+RUN /bin/sh -c install --verbose --directory --owner postgres --group postgres --mode 3777 /var/run/postgresql # buildkit
+
+128 B
+
+* * *
+
+[Input]
+
+16
+
+ENV PGDATA=/var/lib/postgresql/data
+
+0 B
+
+* * *
+
+[Input]
+
+17
+
+RUN /bin/sh -c install --verbose --directory --owner postgres --group postgres --mode 1777 "$PGDATA" # buildkit
+
+166 B
+
+* * *
+
+[Input]
+
+18
+
+VOLUME [/var/lib/postgresql/data]
+
+0 B
+
+* * *
+
+[Input]
+
+19
+
+--------------------------------------------------------------------------------
+high] postgresql:16 security update (https://tsn.miraclelinux.com/en/node/24707)
+citeturn90search3 [wordlim: 200] Crawled: today; Content type: text/html; Sep 18, 2026 — Versions before PostgreSQL 18.6, 17.11 , 16.15, 15.19, and 14.24 are affected. CVE-2026-14668. Type confusion regarding input of PostgreSQL ... Read more
+Heap buffer overflow in PostgreSQL to_char(timestamptz) allows the party choosing the timezone to execute arbitrary code as the operating system user running the database, via a long POSIX timezone abbreviation. Versions before PostgreSQL 18.6, 17.11, 16.15, 15.19, and 14.24 are affected.
+CVE-2026-14670
+Heap buffer overflow in PostgreSQL plperl return of a tied hash allows the function owner to execute arbitrary code as the operating system user running the database, via a crafted function body. Versions before PostgreSQL 18.6, 17.11, 16.15, 15.19, and 14.24 are affected.
+CVE-2026-14671
+Type confusion in PostgreSQL module "refint" allows an object creator to execute arbitrary code as the operating system user running the database. The fix for this emerged as a non-security bug report, and the fix appear in the git repository with subject "refint: Remove plan cache.", without a CVE number. Versions before PostgreSQL 18.6, 17.11, 16.15, 15.19, and 14.24 are affected.
+CVE-2026-14677
+Integer wraparound in PostgreSQL 32-bit builds of pltcl and plperl allows an object creator to cause the server to undersize an allocation and write out-of-bounds via crafted function bodies. This may execute arbitrary code as the operating system user running the database. CVE-2026-6473 had fixed similar problems. Versions before PostgreSQL 18.6, 17.11, 16.15, 15.19, and 14.24 are affected.
+CVE-2026-14679
+Stack buffer overflow in PostgreSQL argument name matching allows an object creator to achieve unknown impacts via OUT parameter count. The attack can write only 0x0 and 0x1 bytes. Versions before PostgreSQL 18.6, 17.11, 16.15, 15.19, and 14.24 are affected.
+CVE-2026-14680
+Type confusion with PostgreSQL "internal" data type arguments allows any user to execute arbitrary code as the operating system user running the database, via calls to functions with that argument type. Type "internal" represents a class of mutually-incompatible data structures not intended for access from SQL. The system intended to prevent such function calls, but this prevention had gaps. Versions before PostgreSQL 18.6, 17.11, 16.15, 15.19, and 14.24 are affected.
+CVE-2026-15741
+SQL injection in PostgreSQL EXTRACT() deparse allows an object owner to execute arbitrary SQL as a superuser via a hostile object definition. Attacks affect expression deparse consumers broadly, including pg_dump, psql commands like \sf, and any similar usage in non-core tools. Versions before PostgreSQL 18.6, 17.11, 16.15, 15.19, and 14.24 are affected.
+CVE-2026-15742
+Integer wraparound in PostgreSQL fuzzystrmatch allows a user to direct writes to a huge range of addresses, executing arbitrary code as the operating system user running the database, via extreme inputs to SQL function levenshtein() or levenshtein_less_equal(). Versions before PostgreSQL 18.6, 17.11, 16.15, 15.19, and 14.24 are affected.
+CVE-2026-16239
+Type confusion in PostgreSQL "portal"/cursor lifecycle allows a user to execute arbitrary code as the operating system user running the database, via re-creation of a cursor or other portal with different types. Versions before PostgreSQL 18.6, 17.11, 16.15, 15.19, and 14.24 are affected.
+CVE-2026-18408
+Untrusted data inclusion in pg_dump in PostgreSQL allows a malicious superuser of the origin server to inject arbitrary code for restore-time execution as the client operating system account running psql to restore the dump, via psql \restrict meta-command input expansion. The fix for CVE-2025-8714 introduced \restrict and \unrestrict to block this attack, but \unrestrict itself was sufficient for an attack. pg_dumpall is also affected. pg_restore is affected when used to generate a plain-format dump. Non-core use of \restrict would be affected, but we've not identified non-core use. Versions before PostgreSQL 18.6, 17.11, 16.15, 15.19, and 14.24 are affected.
+CVE-2026-19385
+Heap buffer overflow in PostgreSQL pg_dump of long function transform lists allows an object creator to execute arbitrary code as the operating system user running pg_dump, via a crafted transform list. Versions before PostgreSQL 18.6, 17.11, 16.15, 15.19, and 14.24 are affected.
+CVE-2026-6464
+The server administrator has no inherent control over the data rows, so a complete attack requires the attacker to separately acquire control of both the server and the data rows. Alternatively, an attacker controlling data rows alone might complete an attack through a coincidental error that they don't control. Versions before PostgreSQL 18.6, 17.11, 16.15, 15.19, and 14.24 are affected.
+CVE-2026-6471
+Missing authorization in PostgreSQL logical decoding allows a non-superuser holding REPLICATION privilege to dlopen any file visible to the operating system account running the server, via the choice of logical decoding plugin. This in turn runs arbitrary code as that account. Versions before PostgreSQL 18.6, 17.11, 16.15, 15.19, and 14.24 are affected.
+CVE-2026-73515
+CVE-2026-14664
+Heap buffer overflow in PostgreSQL regexp allows the query author to execute arbitrary code as the operating system user running the database, via text that would not pass encoding validation. This shares heritage with CVE-2026-2006, but this case involved unanticipated data growth when round-tripped through pg_wchar. Versions before PostgreSQL 18.6, 17.11, 16.15, 15.19, and 14.24 are affected.
+
+CVE-2026-14668
+Type confusion regarding input of PostgreSQL ctid data type selectivity estimator allows an object creator to view a calculation derived from the value of an arbitrary 4-byte span of memory, via a chosen non-ctid input. While the calculation loses precision, substantial memory value recovery appears possible. Versions before PostgreSQL 18.6, 17.11, 16.15, 15.19, and 14.24 are affected.
+
+CVE-2026-14669
+Heap buffer overflow in PostgreSQL to_char(timestamptz) allows the party choosing the timezone to execute arbitrary code as the operating system user running the database, via a long POSIX timezone abbreviation. Versions before PostgreSQL 18.6, 17.11, 16.15, 15.19, and 14.24 are affected.
+
+CVE-2026-14670
+Heap buffer overflow in PostgreSQL plperl return of a tied hash allows the function owner to execute arbitrary code as the operating system user running the database, via a crafted function body. Versions before PostgreSQL 18.6, 17.11, 16.15, 15.19, and 14.24 are affected.
+
+CVE-2026-14671
+Type confusion in PostgreSQL module "refint" allows an object creator to execute arbitrary code as the operating system user running the database. The fix for this emerged as a non-security bug report, and the fix appear in the git repository with subject "refint: Remove plan cache.", without a CVE number. Versions before PostgreSQL 18.6, 17.11, 16.15, 15.19, and 14.24 are affected.
+
+CVE-2026-14677
+Integer wraparound in PostgreSQL 32-bit builds of pltcl and plperl allows an object creator to cause the server to undersize an allocation and write out-of-bounds via crafted function bodies. This may execute arbitrary code as the operating system user running the database. CVE-2026-6473 had fixed similar problems. Versions before PostgreSQL 18.6, 17.11, 16.15, 15.19, and 14.24 are affected.
+
+CVE-2026-14679
+Stack buffer overflow in PostgreSQL argument name matching allows an object creator to achieve unknown impacts via OUT parameter count. The attack can write only 0x0 and 0x1 bytes. Versions before PostgreSQL 18.6, 17.11, 16.15, 15.19, and 14.24 are affected.
+
+CVE-2026-14680
+Type confusion with PostgreSQL "internal" data type arguments allows any user to execute arbitrary code as the operating system user running the database, via calls to functions with that argument type. Type "internal" represents a class of mutually-incompatible data structures not intended for access from SQL. The system intended to prevent such function calls, but this prevention had gaps. Versions before PostgreSQL 18.6, 17.11, 16.15, 15.19, and 14.24 are affected.
+
+CVE-2026-15741
+SQL injection in PostgreSQL EXTRACT() deparse allows an object owner to execute arbitrary SQL as a superuser via a hostile object definition. Attacks affect expression deparse consumers broadly, including pg_dump, psql commands like \sf, and any similar usage in non-core tools. Versions before PostgreSQL 18.6, 17.11, 16.15, 15.19, and 14.24 are affected.
+
+CVE-2026-15742
+Integer wraparound in PostgreSQL fuzzystrmatch allows a user to direct writes to a huge range of addresses, executing arbitrary code as the operating system user running the database, via extreme inputs to SQL function levenshtein() or levenshtein_less_equal(). Versions before PostgreSQL 18.6, 17.11, 16.15, 15.19, and 14.24 are affected.
+
+CVE-2026-16239
+Type confusion in PostgreSQL "portal"/cursor lifecycle allows a user to execute arbitrary code as the operating system user running the database, via re-creation of a cursor or other portal with different types. Versions before PostgreSQL 18.6, 17.11, 16.15, 15.19, and 14.24 are affected.
+
+CVE-2026-19385
+Heap buffer overflow in PostgreSQL pg_dump of long function transform lists allows an object creator to execute arbitrary code as the operating system user running pg_dump, via a crafted transform list. Versions before PostgreSQL 18.6, 17.11, 16.15, 15.19, and 14.24 are affected.
+
+--------------------------------------------------------------------------------
+postgresql commands (https://gist.github.com/3845549)
+citeturn90search4 [wordlim: 200] Crawled: 2 months ago; Content type: text/html; postgresql commands . GitHub Gist: instantly share code, notes, and snippets. Download ZIP postgresql commands. Create database: create database salesquote Help ...
+ | Location:
+ | 
+ | /Applications/Postgres.app/Contents/MacOS/bin/psql
+ | 
+ | JDBC Properties:
+ | 
+ | database.driverClassName=org.postgresql.Driver
+ | database.url=jdbc\:postgresql\://localhost\:5432/salesquote
+ | database.username=
+ | database.password=
+ | 
+ | Start command:
+ | 
+ | psql
+ | 
+ | Create database:
+ | 
+ | create database salesquote
+ | 
+ | Help:
+ | 
+ | \?
+ | 
+ | List Databases:
+ | 
+ | \list
+ | select * from pg_database where datistemplate = false;
+ | 
+ | List tables:
+ | 
+ | \dt
+
+--------------------------------------------------------------------------------
+PostgreSQL: Release Notes (https://www.postgresql.org/docs/release/11.11/)
+citeturn90search5 [wordlim: 200] Crawled: today; Content type: text/html; Feb 11, 2021 — Duplicate role or schema names within the same command could lead to “tuple already updated by self” errors or unique-constraint violations. Read more
+Duplicate role or schema names within the same command could lead to “tuple already updated by self” errors or unique-constraint violations.
+
+  * Flush ACL-related caches when `pg_authid` changes (Noah Misch)
+
+This change ensures that permissions-related decisions will promptly reflect the results of `ALTER ROLE ... [NO] INHERIT`.
+
+  * Prevent misprocessing of ambiguous `CREATE TABLE LIKE` clauses (Tom Lane)
+
+--------------------------------------------------------------------------------
+Postgresql database command compilation (https://gist.github.com/9ada5132813d562c841435f55c2a3dda)
+citeturn90search6 [wordlim: 200] Crawled: 2 months ago; Content type: text/html; Postgresql database command compilation . instantly share code, notes, and snippets. Download ZIP Postgresql database command compilation. Sign up for free to ...
+Skip to content 
+
+  
+
+ Search Gists 
+
+  Search Gists
+
+All gists Back to GitHub  Sign in   Sign up 
+
+  
+
+ Sign in   Sign up  
+
+You signed in with another tab or window. Reload to refresh your session. You signed out in another tab or window. Reload to refresh your session. You switched accounts on another tab or window. Reload to refresh your session.   Dismiss alert
+
+{{ message }}
+
+Instantly share code, notes, and snippets. 
+
+## No results found
+
+Learn more about clone URLs 
+
+ Clone this repository at &lt;script src=&quot;https://gist.github.com/pongsanti/9ada5132813d562c841435f55c2a3dda.js&quot;&gt;&lt;/script&gt; 
+
+  Save pongsanti/9ada5132813d562c841435f55c2a3dda to your computer and use it in GitHub Desktop.
+
+Download ZIP 
+
+Postgresql database command compilation 
+
+ Raw  
+
+ postgres_command_cheat_sheet.sh  
+
+# run sql script  
+postgres=# \i path_to_sql_file  
+
+# toggle expanded output [on|off|auto]  
+postgres=#\x auto  
+
+# list functions  
+postgres=#\df  
+
+Sign up for free to join this conversation on GitHub. Already have an account? Sign in to comment 
+
+## Footer
+
+   © 2026 GitHub, Inc. 
+
+--------------------------------------------------------------------------------
+Debian 11 Bullseye : PostgreSQL 13 : Install (https://www.server-world.info/en/note?f=1&os=Debian_11&p=postgresql)
+citeturn90search7 [wordlim: 200] Sep 13, 2021 — This article provides an example of how to install PostgreSQL 13 and configure it as a database server on Debian 11 Bullseye.--------------------------------------------------------------------------------
+akbarmohammadi70/Postgres-Cluster (https://github.com/akbarmohammadi70/Postgres-Cluster)
+citeturn90search8 [wordlim: 200] Crawled: last month; Content type: text/html; This setup consists of a high-availability PostgreSQL cluster using Patroni for automatic failover, etcd for consensus, and HAProxy for load balancing. Read more
+# PostgreSQL High Availability Cluster with Patroni, etcd, HAProxy, Keepalived, and CQRS-style Read/Write Routing
+
+This project provides an Ansible-based deployment of a highly available PostgreSQL 17 cluster using Patroni, etcd, HAProxy, and Keepalived.
+
+The main goal is to provide:
+
+--------------------------------------------------------------------------------
+Postgres : Don't wait, Innovate! - Medium (https://drunkdba.medium.com/postgres-dont-wait-innovate-6f1433e50d95)
+citeturn90search9 [wordlim: 200] Published: 2.0 years ago; Crawled: 2 days ago; Content type: text/html; In this post, I will present a straightforward installation guide for PostgreSQL 17 RC1 on Ubuntu 24.04.1 (Noble Numbat), followed by an even ... Read more
+## Get Mayur (Do not drink & database)’s stories in your inbox
+
+Join Medium for free to get updates from this writer.
+
+[Input: Enter your email]
+
+[Button: Subscribe]
+
+[Button: Subscribe]
+
+[Input]
+
+Remember me for faster sign in
+
+In this post, I will present a straightforward installation guide for PostgreSQL 17 RC1 on Ubuntu 24.04.1 (Noble Numbat), followed by an even simpler Docker installation. My aim is to keep it simple for those transitioning from Oracle.
+
+--------------------------------------------------------------------------------
+pg_createcluster(1) — postgresql-common — Debian buster (https://manpages.debian.org/buster/postgresql-common/pg_createcluster.1.en.html)
+citeturn90search10 [wordlim: 200] Crawled: today; Content type: text/html; Aug 14, 2020 — pg_createcluster creates a new PostgreSQL server cluster (i. e. a collection of databases served by a postgres(1) instance) and integrates it ... Read more
+# DESCRIPTION¶
+
+pg_createcluster creates a new PostgreSQL server cluster (i. e. a collection of databases served by a postgres(1) instance) and integrates it into the multi-version/multi-cluster architecture of the postgresql-common package.
+
+--------------------------------------------------------------------------------
+E.24. Release 13 (https://docs.postgresql.fr/13/release-13.html)
+citeturn90search11 [wordlim: 200] Crawled: today; Content type: text/html; Use the directory of the pg_upgrade program as the default --new- bindir setting when running pg_upgrade (Daniel Gustafsson)
+  * Use the directory of the pg_upgrade program as the default `--new-bindir` setting when running pg_upgrade (Daniel Gustafsson) §
+
+--------------------------------------------------------------------------------
+Awesome postgres · GitHub (https://gist.github.com/c3dbd73c4cf7d763fba3d5b3564e790c)
+citeturn90search12 [wordlim: 200] Crawled: last week; Content type: text/html; GitHub Gist: instantly share code, notes, and snippets . PostgreSQL blog aggregator: https://planet.postgresql.org/ PostgreSQL tricks: http://postgres.cz/wiki/ ...
+PostgreSQL blog aggregator: https://planet.postgresql.org/
+Search PostgreSQL mailing list: https://www.postgresql.org/list/
+Hubert depesz Lubaczewski's blog: https://www.depesz.com/
+Pavel Stěhule PostgreSQL tricks: http://postgres.cz/wiki/PostgreSQL_SQL_Tricks
+SQL formatter: http://sqlformat.darold.net/
+Postgresql data modeler: http://www.pgmodeler.com.br/
+--------------------------------------------------------------------------------
+postgresql:16 security update (https://tsn.miraclelinux.com/en/node/20685)
+citeturn90search13 [wordlim: 200] Crawled: 3 months ago; Content type: text/html; Dec 25, 2024 — Incomplete tracking in PostgreSQL of tables with row security allows a reused query to view or change different rows from those intended. CVE- ... Read more
+Incomplete tracking in PostgreSQL of tables with row security allows a reused query to view or change different rows from those intended. CVE-2023-2455 and CVE-2016-2193 fixed most interaction between row security and user ID changes. They missed cases where a subquery, WITH query, security invoker view, or SQL-language function references a table with a row-level security policy. This has the same consequences as the two earlier CVEs. --------------------------------------------------------------------------------
+PostgreSQL High-Availability Cluster (based on " ... (https://github.com/garry-t/postgresql_cluster)
+citeturn90search14 [wordlim: 200] Crawled: last week; Content type: text/html; This automated database platform enables you to create and manage production-ready, highly available PostgreSQL clusters . It simplifies the deployment process,
+# Autobase for PostgreSQL® 🐘 💖
+
+Autobase for PostgreSQL® is an open-source alternative to cloud-managed databases (DBaaS) such as Amazon RDS, Google Cloud SQL, Azure Database, and more.
+
+This automated database platform enables you to create and manage production-ready, highly available PostgreSQL clusters. It simplifies the deployment process, reduces operational costs, and makes database management accessible—even for teams without specialized expertise.
+
+--------------------------------------------------------------------------------
+Postgres REL_17_11 Release (https://www.gitclear.com/open_repos/postgres/postgres/release/REL_17_11)
+citeturn90search15 [wordlim: 200] Crawled: 6 days ago; Content type: text/html; Mirror of the official PostgreSQL GIT repository. 75 impacting commits. Clean up quoting of variable strings within replication commands
+## 75 Commits in this Release
+
+Ordered by the degree to which they evolved the repo in this version.
+
+Image
+
+Clean up quoting of variable strings within replication commands
+
+Authored June 15, 2026
+
+Image
+
+btree_gist: fix NaN handling in float4/float8 opclasses
+
+Authored July 1, 2026
+
+Image
+
+Prevent walsummarizer from getting stuck at a timeline switch
+
+Authored July 31, 2026
+
+--------------------------------------------------------------------------------
+our-postgresql-setup/postgresql-cluster-setup.sh at master (https://github.com/gocardless/our-postgresql-setup/blob/master/postgresql-cluster-setup.sh)
+citeturn90search16 [wordlim: 200] Crawled: 5 days ago; Content type: text/html; Dec 19, 2022 — PostgreSQL clustering with corosync/pacemaker test environment . This repository was archived by the. Allow replication connections from ...
+You signed in with another tab or window. Reload to refresh your session. You signed out in another tab or window. Reload to refresh your session. You switched accounts on another tab or window. Reload to refresh your session. Dismiss alert
+
+This repository was archived by the owner on Dec 19, 2022. It is now read-only.
+
+  1. gocardless
+  2. our-postgresql-setup
+
+--------------------------------------------------------------------------------
+PostgreSQL : Documentation: 13: E.13. Release 13.11 (https://postgrespro.com/docs/postgresql/13/release-13-11)
+citeturn90search17 [wordlim: 200] Crawled: today; Content type: text/html; May 11, 2023 — This could allow a user to see or modify rows that should have been invisible. The PostgreSQL Project thanks Wolfgang Walther for reporting this ... Read more
+If a set-returning SQL-language function refers to a table having row-level security policies, and it can be inlined into a calling query, those RLS policies would not get enforced properly in some cases involving re-using a cached plan under a different role. This could allow a user to see or modify rows that should have been invisible.
+
+The PostgreSQL Project thanks Wolfgang Walther for reporting this problem. (CVE-2023-2455)
+
+--------------------------------------------------------------------------------
+dnwandana/autoinstall-postgresql: Shell script auto install ... (https://github.com/dnwandana/autoinstall-postgresql)
+citeturn90search18 [wordlim: 200] Crawled: last month; Content type: text/html; This is an automatic script to install PostgreSQL 12 and PgAdmin 4 for Linux Ubuntu. This script is already tested and working in Linux Ubuntu 18.04 LTS. Read more
+# autoinstall-postgresql
+
+This is an automatic script to install PostgreSQL 12 and PgAdmin 4 for Linux Ubuntu.
+
+This script is already tested and working in Linux Ubuntu 18.04 LTS.
+
+## Installation
+
+  1. Download or clone this repo
+    
+    git clone https://github.com/dnwandana/autoinstall-postgresql.git
+    cd autoinstall-postgresql
+
+  2. Make the file `install.sh` is executable
+    
+    sudo chmod +x install.sh
+
+  3. Execute `install.sh`, this will take a minutes to finish
+    
+    ./install.sh
+
+--------------------------------------------------------------------------------
+File: rules | Debian Sources (https://sources.debian.org/src/postgresql-17/17.11-0%2Bdeb13u1/debian/rules/)
+citeturn90view0 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({"ref_id":"https://sources.debian.org/src/postgresql-17/17.11-0%2Bdeb13u1/debian/rules/","lineno":null}); Total lines: 48
+--------------------------------------------------------------------------------
+Internal Error ()
+citeturn90view1 [wordlim: 200] Source: open({"ref_id":"https://salsa.debian.org/postgresql/postgresql/-/raw/17/debian/rules","lineno":null}); Total lines: 1
+--------------------------------------------------------------------------------
+Index of /pub/repos/apt/pool/main/p/postgresql-17/ (https://apt.postgresql.org/pub/repos/apt/pool/main/p/postgresql-17/)
+citeturn90view2 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({"ref_id":"https://apt.postgresql.org/pub/repos/apt/pool/main/p/postgresql-17/","lineno":148}); Total lines: 1251
+L144:     cite141†postgresql-17_17.11-1.pgdg+2_ppc64el.deb 13-Aug-2026 01:50            18285096
+L145:     cite142†postgresql-17_17.11-1.pgdg12+2.debian.tar.xz 13-Aug-2026 01:50               35788
+L146:     cite143†postgresql-17_17.11-1.pgdg12+2.dsc 13-Aug-2026 01:50                3210
+L147:     cite144†postgresql-17_17.11-1.pgdg12+2_amd64.deb 13-Aug-2026 01:50            16646412
+L148:     cite145†postgresql-17_17.11-1.pgdg12+2_arm64.deb 13-Aug-2026 01:50            16157864
+
