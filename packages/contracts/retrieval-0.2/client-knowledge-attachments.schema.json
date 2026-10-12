@@ -1,0 +1,1067 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:client-knowledge-attachments:0.2.0",
+  "$defs": {
+    "ClientKnowledgeAttachmentScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tenantId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "userId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "clientId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uuid"
+        },
+        "conversationVersion": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "tenantId",
+        "userId",
+        "conversationId",
+        "clientId",
+        "conversationVersion"
+      ]
+    },
+    "ClientKnowledgeAttachmentContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "asOf": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "scope": {
+          "$ref": "#/$defs/ClientKnowledgeAttachmentScope"
+        }
+      },
+      "required": [
+        "asOf",
+        "scope"
+      ]
+    },
+    "AttachmentLocator": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "section": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "rowStart": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "section",
+        "rowStart",
+        "offset"
+      ]
+    },
+    "AttachmentManifestLocator": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "messageId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "attachmentIndex": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "createdAt",
+        "messageId",
+        "attachmentIndex"
+      ]
+    },
+    "AttachmentCursorPayload": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "v": {
+              "const": 1
+            },
+            "tenantId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "userId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "conversationId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "clientId": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "uuid"
+            },
+            "conversationVersion": {
+              "type": "string"
+            },
+            "query": {
+              "type": "string"
+            },
+            "mode": {
+              "const": "manifest"
+            },
+            "locator": {
+              "$ref": "#/$defs/AttachmentManifestLocator"
+            }
+          },
+          "required": [
+            "v",
+            "tenantId",
+            "userId",
+            "conversationId",
+            "clientId",
+            "conversationVersion",
+            "query",
+            "mode",
+            "locator"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "v": {
+              "const": 1
+            },
+            "tenantId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "userId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "conversationId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "clientId": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "uuid"
+            },
+            "conversationVersion": {
+              "type": "string"
+            },
+            "query": {
+              "type": "string"
+            },
+            "mode": {
+              "const": "read"
+            },
+            "attachmentId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "messageId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "originalBytesHash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "locator": {
+              "$ref": "#/$defs/AttachmentLocator"
+            }
+          },
+          "required": [
+            "v",
+            "tenantId",
+            "userId",
+            "conversationId",
+            "clientId",
+            "conversationVersion",
+            "query",
+            "mode",
+            "attachmentId",
+            "messageId",
+            "originalBytesHash",
+            "locator"
+          ]
+        }
+      ]
+    },
+    "ClientKnowledgeAttachmentRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "conversationId": {
+          "type": "string"
+        },
+        "attachmentId": {
+          "type": "string"
+        },
+        "query": {
+          "type": "string"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "section": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "rowStart": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "characterOffset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "cursor": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "conversationId"
+      ]
+    },
+    "ClientKnowledgeAttachmentInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "attachmentId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uuid"
+        },
+        "query": {
+          "type": "string"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "locator": {
+          "$ref": "#/$defs/AttachmentLocator"
+        },
+        "cursor": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/AttachmentCursorPayload"
+            }
+          ]
+        }
+      },
+      "required": [
+        "conversationId",
+        "attachmentId",
+        "query",
+        "limit",
+        "locator",
+        "cursor"
+      ]
+    },
+    "ClientKnowledgeAttachmentOutput": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "tool": {
+              "const": "read_chat_attachments"
+            },
+            "authoritativeOwner": {
+              "const": "clio_chat_attachment"
+            },
+            "currentStatus": {
+              "const": "available"
+            },
+            "generatedAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "conversationId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "clientId": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "uuid"
+            },
+            "coverage": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "mode": {
+                  "const": "manifest"
+                },
+                "total": {
+                  "type": "null"
+                },
+                "returned": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 20
+                },
+                "unavailableInPage": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 20
+                },
+                "scannedMessages": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 25
+                },
+                "paginationComplete": {
+                  "type": "boolean"
+                },
+                "complete": {
+                  "type": "boolean"
+                },
+                "contentComplete": {
+                  "const": false
+                },
+                "nextCursor": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "query": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "queryAppliesTo": {
+                  "const": "filename"
+                },
+                "note": {
+                  "const": "This is a finite metadata manifest, not file content. Follow nextCursor until paginationComplete before treating the inventory as complete."
+                }
+              },
+              "required": [
+                "mode",
+                "total",
+                "returned",
+                "unavailableInPage",
+                "scannedMessages",
+                "paginationComplete",
+                "complete",
+                "contentComplete",
+                "nextCursor",
+                "query",
+                "queryAppliesTo",
+                "note"
+              ]
+            },
+            "records": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "attachmentId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "filename": {
+                    "type": "string"
+                  },
+                  "kind": {
+                    "type": "string"
+                  },
+                  "sourceMessageId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "uploadedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "extractionStatus": {
+                    "type": "string"
+                  },
+                  "extractionReason": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "byteSize": {
+                    "type": "integer",
+                    "minimum": -2147483648,
+                    "maximum": 2147483647
+                  },
+                  "pages": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
+                    "minimum": -2147483648,
+                    "maximum": 2147483647
+                  },
+                  "originalBytesAvailable": {
+                    "type": "boolean"
+                  },
+                  "originalBytesHash": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "pattern": "^[a-f0-9]{64}$"
+                  }
+                },
+                "required": [
+                  "attachmentId",
+                  "filename",
+                  "kind",
+                  "sourceMessageId",
+                  "uploadedAt",
+                  "extractionStatus",
+                  "extractionReason",
+                  "byteSize",
+                  "pages",
+                  "originalBytesAvailable",
+                  "originalBytesHash"
+                ]
+              },
+              "maxItems": 20
+            }
+          },
+          "required": [
+            "tool",
+            "authoritativeOwner",
+            "currentStatus",
+            "generatedAt",
+            "conversationId",
+            "clientId",
+            "coverage",
+            "records"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "tool": {
+              "const": "read_chat_attachments"
+            },
+            "authoritativeOwner": {
+              "const": "clio_chat_attachment"
+            },
+            "currentStatus": {
+              "const": "available"
+            },
+            "generatedAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "conversationId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "clientId": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "uuid"
+            },
+            "source": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "attachmentId": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "sourceMessageId": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "filename": {
+                  "type": "string"
+                },
+                "sourceKind": {
+                  "type": "string"
+                },
+                "mediaType": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "byteSize": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "originalBytesHash": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "persistedExtractionStatus": {
+                  "type": "string"
+                },
+                "persistedExtractionReason": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "attachmentId",
+                "sourceMessageId",
+                "filename",
+                "sourceKind",
+                "mediaType",
+                "byteSize",
+                "originalBytesHash",
+                "persistedExtractionStatus",
+                "persistedExtractionReason"
+              ]
+            },
+            "coverage": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "mode": {
+                  "const": "section"
+                },
+                "locator": {
+                  "$ref": "#/$defs/AttachmentLocator"
+                },
+                "sectionKind": {
+                  "enum": [
+                    "page",
+                    "slide_with_notes",
+                    "sheet_rows",
+                    "text_section"
+                  ]
+                },
+                "sectionLabel": {
+                  "type": "string"
+                },
+                "sectionCount": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                "coordinates": {
+                  "oneOf": [
+                    {
+                      "type": "null"
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "page": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 9007199254740991
+                        },
+                        "selectedCharacterStart": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        "selectedCharacterEnd": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        "nativeCharacters": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        "selectedPageTruncated": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "page",
+                        "selectedCharacterStart",
+                        "selectedCharacterEnd",
+                        "nativeCharacters",
+                        "selectedPageTruncated"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "slide": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 9007199254740991
+                        },
+                        "includesSpeakerNotes": {
+                          "const": true
+                        }
+                      },
+                      "required": [
+                        "slide",
+                        "includesSpeakerNotes"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "sheet": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 9007199254740991
+                        },
+                        "sheetName": {
+                          "type": "string"
+                        },
+                        "rowStart": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 9007199254740991
+                        },
+                        "rowEnd": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        "rowCount": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        "cellCoordinatesIncluded": {
+                          "const": true
+                        }
+                      },
+                      "required": [
+                        "sheet",
+                        "sheetName",
+                        "rowStart",
+                        "rowEnd",
+                        "rowCount",
+                        "cellCoordinatesIncluded"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "section": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 9007199254740991
+                        }
+                      },
+                      "required": [
+                        "section"
+                      ]
+                    }
+                  ]
+                },
+                "characterStart": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "characterEnd": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "sectionCharacters": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "extractionStatus": {
+                  "enum": [
+                    "complete",
+                    "partial",
+                    "unreadable"
+                  ]
+                },
+                "limitation": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "matched": {
+                  "type": [
+                    "boolean",
+                    "null"
+                  ]
+                },
+                "query": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "sectionComplete": {
+                  "type": "boolean"
+                },
+                "contentComplete": {
+                  "type": "boolean"
+                },
+                "paginationComplete": {
+                  "type": "boolean"
+                },
+                "truncated": {
+                  "type": "boolean"
+                },
+                "complete": {
+                  "type": "boolean"
+                },
+                "nextCursor": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "note": {
+                  "const": "Content was decoded from the currently authorized original persisted bytes. Follow nextCursor for remaining text or typed sections; an empty or partial section is not evidence that later sections are empty."
+                }
+              },
+              "required": [
+                "mode",
+                "locator",
+                "sectionKind",
+                "sectionLabel",
+                "sectionCount",
+                "coordinates",
+                "characterStart",
+                "characterEnd",
+                "sectionCharacters",
+                "extractionStatus",
+                "limitation",
+                "matched",
+                "query",
+                "sectionComplete",
+                "contentComplete",
+                "paginationComplete",
+                "truncated",
+                "complete",
+                "nextCursor",
+                "note"
+              ]
+            },
+            "records": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "domain": {
+                    "const": "chat_attachments"
+                  },
+                  "recordId": {
+                    "type": "string"
+                  },
+                  "payload": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "attachmentId": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "title": {
+                        "type": "string"
+                      },
+                      "sourceKind": {
+                        "type": "string"
+                      },
+                      "sectionKind": {
+                        "enum": [
+                          "page",
+                          "slide_with_notes",
+                          "sheet_rows",
+                          "text_section"
+                        ]
+                      },
+                      "sectionLabel": {
+                        "type": "string"
+                      },
+                      "coordinates": {
+                        "oneOf": [
+                          {
+                            "type": "null"
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "page": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 9007199254740991
+                              },
+                              "selectedCharacterStart": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 9007199254740991
+                              },
+                              "selectedCharacterEnd": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 9007199254740991
+                              },
+                              "nativeCharacters": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 9007199254740991
+                              },
+                              "selectedPageTruncated": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": [
+                              "page",
+                              "selectedCharacterStart",
+                              "selectedCharacterEnd",
+                              "nativeCharacters",
+                              "selectedPageTruncated"
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "slide": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 9007199254740991
+                              },
+                              "includesSpeakerNotes": {
+                                "const": true
+                              }
+                            },
+                            "required": [
+                              "slide",
+                              "includesSpeakerNotes"
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "sheet": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 9007199254740991
+                              },
+                              "sheetName": {
+                                "type": "string"
+                              },
+                              "rowStart": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 9007199254740991
+                              },
+                              "rowEnd": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 9007199254740991
+                              },
+                              "rowCount": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 9007199254740991
+                              },
+                              "cellCoordinatesIncluded": {
+                                "const": true
+                              }
+                            },
+                            "required": [
+                              "sheet",
+                              "sheetName",
+                              "rowStart",
+                              "rowEnd",
+                              "rowCount",
+                              "cellCoordinatesIncluded"
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "section": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 9007199254740991
+                              }
+                            },
+                            "required": [
+                              "section"
+                            ]
+                          }
+                        ]
+                      },
+                      "characterStart": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "characterEnd": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "text": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "attachmentId",
+                      "title",
+                      "sourceKind",
+                      "sectionKind",
+                      "sectionLabel",
+                      "coordinates",
+                      "characterStart",
+                      "characterEnd",
+                      "text"
+                    ]
+                  },
+                  "provenance": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "sourceType": {
+                        "const": "ordinary_chat_attachment_original_bytes"
+                      },
+                      "sourceRecordId": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "sourceMessageId": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "conversationId": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "clientId": {
+                        "type": [
+                          "string",
+                          "null"
+                        ],
+                        "format": "uuid"
+                      },
+                      "originalBytesHash": {
+                        "type": "string",
+                        "pattern": "^[a-f0-9]{64}$"
+                      },
+                      "locator": {
+                        "$ref": "#/$defs/AttachmentLocator"
+                      },
+                      "trust": {
+                        "const": "external_untrusted"
+                      }
+                    },
+                    "required": [
+                      "sourceType",
+                      "sourceRecordId",
+                      "sourceMessageId",
+                      "conversationId",
+                      "clientId",
+                      "originalBytesHash",
+                      "locator",
+                      "trust"
+                    ]
+                  }
+                },
+                "required": [
+                  "domain",
+                  "recordId",
+                  "payload",
+                  "provenance"
+                ]
+              },
+              "maxItems": 1
+            }
+          },
+          "required": [
+            "tool",
+            "authoritativeOwner",
+            "currentStatus",
+            "generatedAt",
+            "conversationId",
+            "clientId",
+            "source",
+            "coverage",
+            "records"
+          ]
+        }
+      ]
+    }
+  }
+}
