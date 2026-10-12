@@ -1,0 +1,17 @@
+{
+  "reviewer": "Codex /root/memory_reviewer",
+  "frozen_at_utc": "2026-10-12T04:02:55.097665+00:00",
+  "base": "d7e8b620a5d44a74341610a44afdfd01987552d4",
+  "proposed_reference": "5ee46446b5f60034916f00b2a665b3e2bef9cf60",
+  "historical_reference": "f118ff55dfb96ba4b44099953e6c9724064b723d",
+  "scope": "Independent baseline source guard review only; no source edits, external actions, or native owner execution",
+  "criteria": [
+    "Only REFERENCE/comment may change; PACKAGING_CHANGES, membership, identity, authority and original tests byte-identical.",
+    "Measure all44stablemembers against actual old Git baseline and accepted PR7; pin accepted source only if all44 exact bytes match.",
+    "Replay actual baseline function with only a test-owned Linux Git adapter; retain original failure and prove exact candidate passes.",
+    "Missing or changed stable Git members, changed current worktree bytes, collector/manifest/assembler drift and rehashed source must still deny.",
+    "Original36case build suite remains35pass/1Windowsownererror; unsupported Windows Git/runtime execution remains unrun, never relabeled.",
+    "Source-only context/authority limits unchanged; no cloud/build/provider/native/image/runtime acceptance.",
+    "Exact candidate SHA/tree, raw failures, receipt and bounded cleanup recorded."
+  ]
+}
