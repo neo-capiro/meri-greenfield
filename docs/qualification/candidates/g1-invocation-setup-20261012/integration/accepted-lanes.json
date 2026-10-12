@@ -1,0 +1,30 @@
+[
+  {
+    "role": "invocation-author",
+    "commit": "9d8358ba559134d82265f07840fd537943302090"
+  },
+  {
+    "role": "invocation-reviewer",
+    "commit": "eb59a3f3e3c0ddb7f549e7063387093bf9bb66b6"
+  },
+  {
+    "role": "native-prefix-author",
+    "commit": "05b297923791e434c52aa63eca6d3752d21af54e"
+  },
+  {
+    "role": "native-prefix-reviewer",
+    "commit": "bf701db3389067de5c6aa503ff2698595b53289f"
+  },
+  {
+    "role": "supervisor-inputs-author",
+    "commit": "e58bbdf110014493b19a0186ecff2df1ddc107a7"
+  },
+  {
+    "role": "supervisor-inputs-reviewer",
+    "commit": "d6d2d7b0668f43aad93bd9fc4e2fa9df688be876"
+  },
+  {
+    "role": "root-documentation-reviewer",
+    "commit": "ec91e937d37dc06110a3fa1f75519907fd2c62b0"
+  }
+]

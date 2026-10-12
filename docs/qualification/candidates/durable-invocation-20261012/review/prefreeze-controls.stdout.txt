@@ -1,0 +1,61 @@
+✔ production control constructs real source-disabled gateway and never dispatches (23.769226ms)
+✔ actual control->dispatcher validates normalized request and records immutable completion before fixed charge (24.774657ms)
+✔ unprepared exact historical observation is ABSENT with no new row or refund (3.017163ms)
+✔ concurrent reconstructed producers retain one original ID, deadline and one physical handler (13.414326ms)
+✔ canonical whitespace replay agrees; changed raw arguments cannot borrow original identity (5.0715ms)
+✖ same run/delivery key with replacement grant/task/fence refuses rather than minting a second identity (7.688502ms)
+✔ lost prepare COMMIT acknowledgement preserves exact durable stage across owner reconstruction (4.195424ms)
+✔ lost reserve COMMIT acknowledgement preserves exact durable stage across owner reconstruction (7.157655ms)
+✔ lost marker COMMIT acknowledgement preserves exact durable stage across owner reconstruction (8.6587ms)
+✔ lost settle COMMIT acknowledgement preserves exact durable stage across owner reconstruction (18.066767ms)
+✔ UNKNOWN without completion remains held after revocation, expiry, quarantine and restart (7.806671ms)
+✔ retained valid marker reconciles historically once with full fixed charge and no result release (10.146666ms)
+✔ reserved owned namespace cannot enter legacy execute or forInvocation with an extra bypass argument (11.104476ms)
+✔ aborted before prepare makes no new transaction or authority call (1.295757ms)
+✔ cancelled parked prepare acknowledgement cannot start dispatch after late completion (14.761626ms)
+✔ abort while completion marker ACK is parked prevents automatic settlement after late ACK (11.350836ms)
+✔ expiry while completion marker ACK is parked prevents automatic settlement after late ACK (10.37516ms)
+✔ invalid-output leaves UNKNOWN without completion proof (3.303093ms)
+✔ release-denial leaves UNKNOWN without completion proof (2.846227ms)
+✔ corrupt retained raw_request_sha256 cannot authorize historical settlement (4.283736ms)
+✔ corrupt retained arguments_sha256 cannot authorize historical settlement (4.600563ms)
+✔ corrupt retained facts cannot authorize historical settlement (4.125659ms)
+✔ corrupt retained producer_key_sha256 cannot authorize historical settlement (3.868603ms)
+✖ corrupt retained completion cannot authorize historical settlement (4.766813ms)
+✔ live normalized digest must be the canonical dispatcher result, never caller-supplied reconciliation digest (6.243442ms)
+✔ unknown model liability participates in the same canonical reservation cap (2.405424ms)
+✔ control rejects outer accessor/proxy without executing injected code (0.395995ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 25
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1473.852944
+
+✖ failing tests:
+
+test at docs/qualification/candidates/durable-invocation-20261012/review/invocation-independent.test.mjs:42:1
+✖ same run/delivery key with replacement grant/task/fence refuses rather than minting a second identity (7.688502ms)
+  Error: GRANT_BINDING_IMMUTABLE
+      at refuse (file:///workspace/meri-durable-invocation-20261012/apps/gateway/budget/postgres-budget-store.mjs:4:39)
+      at file:///workspace/meri-durable-invocation-20261012/apps/gateway/budget/postgres-tool-budget.mjs:41:53
+      at async PostgresBudgetStore.transact (file:///workspace/meri-durable-invocation-20261012/apps/gateway/budget/postgres-budget-store.mjs:18:16)
+      at async TestContext.<anonymous> (file:///workspace/meri-durable-invocation-review-20261012/docs/qualification/candidates/durable-invocation-20261012/review/invocation-independent.test.mjs:46:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/durable-invocation-20261012/review/invocation-independent.test.mjs:96:105
+✖ corrupt retained completion cannot authorize historical settlement (4.766813ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-durable-invocation-review-20261012/docs/qualification/candidates/durable-invocation-20261012/review/invocation-independent.test.mjs:99:127)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }

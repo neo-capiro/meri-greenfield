@@ -1,0 +1,35 @@
+Package: postgresql-common | Debian Sources (https://sources.debian.org/src/postgresql-common/)
+citeturn93view0 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({"ref_id":"https://sources.debian.org/src/postgresql-common/","lineno":15}); Total lines: 36
+L0: cite0†DEBSOURCES L1: 
+L2: [Input: package name] [Input]
+L3: 
+L4: [Input] [Input]
+L5: 
+L6: cite1†Skip Quicknav L7: 
+L8:   * cite0†Home L9:   * cite2†Search L10:   * cite3†Documentation L11:   * cite4†Stats L12:   * cite5†About L13: 
+L14: cite0†sources / postgresql-common
+L15: ## Package: postgresql-common
+L16:   * cite6†293 (main) [forky, sid]
+L17:   * cite7†278 (main) [trixie]
+L18:   * cite8†248+deb12u1 (main) [bookworm]
+L19:   * cite9†225+deb11u1 (main) [bullseye]
+L20:   * cite10†200+deb10u5 (main) [buster]
+L21:   * cite11†181+deb9u3 (main) [stretch]
+L22:   * cite12†181+deb9u1~bpo8+1 (main) [jessie-backports]
+L23:   * cite13†165+deb8u3 (main) [jessie]
+L24:   * cite14†165+deb8u2~bpo7+1 (main) [wheezy-backports]
+L25:   * cite15†165 (main) [jessie-kfreebsd]
+L26:   * cite16†134wheezy4 (main) [wheezy]
+L27:   * cite17†113+squeeze1 (main) [squeeze]
+L28:   * cite18†94lenny1 (main) [lenny]
+L29:   * cite19†71 (main) [etch, etch-m68k]
+L30: Browse by prefix:   cite20†0 cite21†1 cite22†2 cite23†3 cite24†4 cite25†6 cite26†7 cite27†8 cite28†9 cite29†a cite30†b cite31†c cite32†d cite33†e cite34†f cite35†g cite36†h cite37†i cite38†j cite39†k cite40†l cite41†lib- cite42†lib1 cite43†lib2 cite44†lib3 cite45†lib6 cite46†liba cite47†libb cite48†libc cite49†libd cite50†libe cite51†libf cite52†libg cite53†libh cite54†libi cite55†libj cite56†libk cite57†libl cite58†libm cite59†libn cite60†libo cite61†libp cite62†libq cite63†libr cite64†libs cite65†libt cite66†libu cite67†libv cite68†libw cite69†libx cite70†liby cite71†libz cite72†m cite73†n cite74†o cite75†p cite76†q cite77†r cite78†s cite79†t cite80†u cite81†v cite82†w cite83†x cite84†y cite85†z |   Browse cite86†by page L31: * * *
+L32: 
+L33: Debsources — Copyright (C) 2011–2021, cite87†The Debsources developers†salsa.debian.org . License: cite88†GNU AGPLv3+†www.gnu.org .
+L34: Hosted source files are available under their own cite89†copyright and licenses†www.debian.org .
+L35: Source code: cite90†Git†salsa.debian.org . Contact: qa-debsources@lists.alioth.debian.org. Last update: Mon, 12 Oct 2026 02:20:31 -0000.
+--------------------------------------------------------------------------------
+Internal Error ()
+citeturn93view1 [wordlim: 200] Source: open({"ref_id":"https://sources.debian.org/src/postgresql-common/278/server/postgresql.mk/","lineno":null}); Total lines: 1
+L0: URL https://sources.debian.org/src/postgresql-common/278/server/postgresql.mk/ is not accessible via this tool.
+

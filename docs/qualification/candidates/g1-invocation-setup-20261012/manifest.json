@@ -1,0 +1,243 @@
+{
+  "selfExcluded": true,
+  "futurePublicationMetadataExcluded": true,
+  "sourceBase": "6cfb1f9a4d8acd66c5bd8d38d892d656fa3cd89e",
+  "reviewedDocumentFreeze": "5f18de1ed6980dfb77a309aa21800dadf8797b19",
+  "files": [
+    {
+      "path": "docs/coordination/reports/MERI-G1-INVOCATION-SETUP-20261012.md",
+      "bytes": 11154,
+      "sha256": "4f37d323f4c42aa987c1e7077386a7e677b2515b7ffa46a6dbd84d2dffbffd95"
+    },
+    {
+      "path": "docs/coordination/reports/MERI-G1-INVOCATION-SETUP-REVIEW-20261012.md",
+      "bytes": 5799,
+      "sha256": "8be6c37f0adb27fbf6f82dd26d972dc875cebaed7ea0d0e48c7641d05ed67675"
+    },
+    {
+      "path": "docs/coordination/tasks/MERI-G1-INVOCATION-SETUP-20261012.md",
+      "bytes": 12287,
+      "sha256": "2ae7ab3815cbc8791aa87cce932fc069f2abbaac830473c8049d42c2e1d47d78"
+    },
+    {
+      "path": "docs/plans/MERI-G1-SOURCE-TO-NATIVE.md",
+      "bytes": 33652,
+      "sha256": "9bdba1f17089a977593de6d22cb682f0ec64a221ab191234da958e4bcbe7ab72"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/accepted-lanes.json",
+      "bytes": 732,
+      "sha256": "07782062203b72382d1b917f0282edb600077f830a2d4338b7584ba21fa78a25"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/audit-integrated.py",
+      "bytes": 5615,
+      "sha256": "0ae4f5a2b05755520e36bd5eaf5c8bc1627d91fdf6b4f2f8052e6826b59f1c30"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/base-pr-refresh.json",
+      "bytes": 387,
+      "sha256": "ff300d6b4051fbe9ac6117392bc4eea528e4e89f2d2b938bfdfbbbfe3d26f385"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/final-integrity-audit.json",
+      "bytes": 1387,
+      "sha256": "33dab4d04393df30235f2bb3bfca663024190092368bf5617bedb286b4915760"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/final-integrity-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/final-integrity-audit.stdout.bin",
+      "bytes": 163,
+      "sha256": "5d136702275676efb0f54505a0b3d6fa09569eb0362f4d775aa644777a03311e"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/final-metadata-check.json",
+      "bytes": 1678,
+      "sha256": "1703315b40a1c425ab73ce753a731c43543de445febe6c44efa1ac892961ee0c"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/gateway-control-integrated.json",
+      "bytes": 1845,
+      "sha256": "464a23583b82ca2291391ee444abe4a16687f366e9ebc342e84292b749912f34"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/gateway-control-integrated.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/gateway-control-integrated.stdout.bin",
+      "bytes": 20498,
+      "sha256": "02bda5fe5560041444472135c32c1aa48b1d89328d8baea419e032ac2862d5ed"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/integrated-audit-final.json",
+      "bytes": 3213,
+      "sha256": "33015e76e2054962beddd16242bfbb9a7604b99bebe32409f887da41c8fac75e"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/integrated-audit.json",
+      "bytes": 2871,
+      "sha256": "cbbc90048befda4636127d076c61e155b108a2a2ceb1da79755e14f34f17ca6c"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/integrated-source-audit.json",
+      "bytes": 1384,
+      "sha256": "f75682102287d142b044de530cd8805756457f62525e8fa61bbce45f6117dd4f"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/integrated-source-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/integrated-source-audit.stdout.bin",
+      "bytes": 163,
+      "sha256": "f2b47382175a228e2080db14fda2bea9cef4892b5f6c0ff400c4bd3ee3ffd2f3"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/invocation-independent-integrated.json",
+      "bytes": 1737,
+      "sha256": "8c4a30256ef5eea5c7badd7ee7424e46c36574d9fc19cfbe5fa147bfabaee81d"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/invocation-independent-integrated.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/invocation-independent-integrated.stdout.bin",
+      "bytes": 4045,
+      "sha256": "2edb4aa62c63548e7f358ffaaef0c1f6e33f4f85108735c146c185401560d0fb"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/native-prefix-integrated.json",
+      "bytes": 1339,
+      "sha256": "cbbf61c581ec2090f9a09245d65490dee68533348703a3e7acfe2168b187ae5f"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/native-prefix-integrated.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/native-prefix-integrated.stdout.bin",
+      "bytes": 32479,
+      "sha256": "186b11daf5e70bf20ea4a78e897415fa4c7a0c3e7fcece0afa5eb5c948a6ce2a"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/pr-stack-ancestry.json",
+      "bytes": 1688,
+      "sha256": "83f991e492b4bc454d4cc90cd64f406d66386dd0c6bc71d9202d3f6df63d3045"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/pr-stack-observation.json",
+      "bytes": 4516,
+      "sha256": "749cc15fc07e7e15d01839ef9818639579dbf4971c6b07b7fa14e5a707e44d52"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/supervisor-inputs-integrated.json",
+      "bytes": 1418,
+      "sha256": "e9b6f975f401e474f924f6b8801bae9ab96dd4018b06061a6cc9a3df39e0ecf9"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/supervisor-inputs-integrated.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/supervisor-inputs-integrated.stdout.bin",
+      "bytes": 2126,
+      "sha256": "ab8c27da4d58b82b024bfa458c73ffe1faec5a8e8c38e8c8646233e79125921e"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/test-inputs.json",
+      "bytes": 1482,
+      "sha256": "bdc94a99321dc1a459125d08cde7033f2b3a1b96e2e8fc334456698c18d17b05"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/whitespace-authored.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/whitespace-authored.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/whitespace-checks.json",
+      "bytes": 3459,
+      "sha256": "b808486d3b583bb16f5a16d9bcb6847ddcf41697752bf0399c02e9b776c65a21"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/whitespace-full.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/whitespace-full.stdout.bin",
+      "bytes": 75257,
+      "sha256": "c2c73ea2551194c42cb4eda80b079dc923558ef24dc10844c2361597d29dd355"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/publication/initial-remote-refs.json",
+      "bytes": 997,
+      "sha256": "e16817516c1073e9f27d79d361107b067051c2c445daef54d4b252ad99f20537"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/review/audit-final-docs.py",
+      "bytes": 4476,
+      "sha256": "b69ca50e8ae322fc9a6fbde7af89bf1294d56ce6fde2255e4f77f986a601feb0"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/review/final-doc-audit.json",
+      "bytes": 4048,
+      "sha256": "87429d8ed86b5107d8cf478d85607d9c0d40776333da94cc344a873b5bf2e26f"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/review/first-freeze-doc-audit.json",
+      "bytes": 5379,
+      "sha256": "6e958c0035b36444845af692e46d4cd3ab0d71c5ac22e690092e9cb4ebec560b"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/review/first-freeze-wording-finding.json",
+      "bytes": 1008,
+      "sha256": "30792b07c9f2cb35cb60b0cb97490a77f9c3df30895ec718227dd7053121bd7f"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/review/frozen-criteria.json",
+      "bytes": 3258,
+      "sha256": "9063b4ee40e19636f635c2ad1589c6cebde4080acc2bcc00405914cf5d2df1c2"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/review/integration-claim-audit.json",
+      "bytes": 3275,
+      "sha256": "be160db36ed8061d47301547ae3760f363e0100fcaf4e55dbcfbed082c171105"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/review/prerequisite-audit.json",
+      "bytes": 5535,
+      "sha256": "bd83e68af55e7287065d77877c98942f4595293849b0658da0ded27ce3a30423"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/review/review-manifest.json",
+      "bytes": 2274,
+      "sha256": "26e139ee0aa388af97024cb4c32522199b94918990679c81a03b6fa260973277"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/review/semantic-disposition.json",
+      "bytes": 2291,
+      "sha256": "8bbee0ff2d5ae5d50724f96872a1b729ffc1ef3f60489873d2ecf6fc8be27513"
+    }
+  ]
+}

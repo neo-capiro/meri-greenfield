@@ -1,0 +1,21 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "apps/gateway/test/authority-deadline.test.mjs",
+    "apps/gateway/test/durable-tool-budget.test.mjs",
+    "apps/gateway/test/gateway.test.mjs",
+    "apps/gateway/test/memory-context-independent.test.mjs",
+    "apps/gateway/test/memory-context.test.mjs",
+    "apps/gateway/test/postgres-budget-admission.test.mjs",
+    "apps/gateway/test/postgres-tool-budget.test.mjs",
+    "apps/gateway/test/tool-budget-outcome.test.mjs",
+    "apps/gateway/test/tool-invocation-owner.test.mjs",
+    "apps/control/test/tool-invocations.test.mjs"
+  ],
+  "exit": 0,
+  "seconds": 4.26,
+  "processGroup": 99136,
+  "processGroupAbsent": true,
+  "native": false
+}

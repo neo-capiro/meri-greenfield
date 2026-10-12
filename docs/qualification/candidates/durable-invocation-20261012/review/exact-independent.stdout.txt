@@ -1,0 +1,47 @@
+✔ general budget owner cannot offer completion writer that bypasses actual dispatcher (12.877218ms)
+✔ production control constructs real source-disabled gateway and never dispatches (21.365733ms)
+✔ actual control->dispatcher validates normalized request and records immutable completion before fixed charge (21.452383ms)
+✔ unprepared exact historical observation is ABSENT with no new row or refund (3.431075ms)
+✔ concurrent reconstructed producers retain one original ID, deadline and one physical handler (12.886903ms)
+✔ canonical whitespace replay agrees; changed raw arguments cannot borrow original identity (3.462673ms)
+✔ same run/delivery key with replacement grant/task/fence refuses rather than minting a second identity (4.125399ms)
+✔ lost prepare COMMIT acknowledgement preserves exact durable stage across owner reconstruction (2.97519ms)
+✔ lost reserve COMMIT acknowledgement preserves exact durable stage across owner reconstruction (7.765768ms)
+✔ lost marker COMMIT acknowledgement preserves exact durable stage across owner reconstruction (7.740701ms)
+✔ lost settle COMMIT acknowledgement preserves exact durable stage across owner reconstruction (11.476744ms)
+✔ UNKNOWN without completion remains held after revocation, expiry, quarantine and restart (6.023841ms)
+✔ retained valid marker reconciles historically once with full fixed charge and no result release (7.282162ms)
+✔ reserved owned namespace cannot enter legacy execute or forInvocation with an extra bypass argument (2.936482ms)
+✔ aborted before prepare makes no new transaction or authority call (1.313543ms)
+✔ cancelled parked prepare acknowledgement cannot start dispatch after late completion (12.284047ms)
+✔ abort while completion marker ACK is parked prevents automatic settlement after late ACK (13.947918ms)
+✔ expiry while completion marker ACK is parked prevents automatic settlement after late ACK (6.419846ms)
+✔ original-deadline-only while completion marker ACK is parked prevents automatic settlement after late ACK (5.003368ms)
+✔ invalid-output leaves UNKNOWN without completion proof (3.312006ms)
+✔ release-denial leaves UNKNOWN without completion proof (3.4335ms)
+✔ corrupt retained raw_request_sha256 cannot authorize historical settlement (4.495394ms)
+✔ corrupt retained arguments_sha256 cannot authorize historical settlement (5.875218ms)
+✔ corrupt retained facts cannot authorize historical settlement (5.413124ms)
+✔ corrupt retained producer_key_sha256 cannot authorize historical settlement (3.971678ms)
+✔ corrupt retained completion cannot authorize historical settlement (4.192469ms)
+✔ live normalized digest must be the canonical dispatcher result, never caller-supplied reconciliation digest (4.167782ms)
+✔ unknown model liability participates in the same canonical reservation cap (2.599967ms)
+✔ control rejects outer accessor/proxy without executing injected code (0.395845ms)
+✔ cancel during live accounting first write cannot start the next accounting write (10.235379ms)
+✔ replayed preparation preserves the original deadline rather than granting a fresh request window (3.971988ms)
+✔ cancel during produced reservation count query cannot start a later reservation INSERT (2.920528ms)
+✔ cancel while connect is parked prevents later setup/domain ports (1.798532ms)
+✔ cancel while BEGIN is parked prevents later setup/domain ports (1.740535ms)
+✔ cancel while SET LOCAL statement_timeout = '5s' is parked prevents later setup/domain ports (1.515087ms)
+✔ cancel while SET LOCAL lock_timeout = '2s' is parked prevents later setup/domain ports (2.32922ms)
+✔ freshly shortened release authority deadline also bounds parked completion marker continuation (5.090579ms)
+✔ durable dispatcher options cannot substitute its private canonical budget owner (4.141143ms)
+✔ durable dispatcher rejects injected private producer before any callback (1.977721ms)
+ℹ tests 39
+ℹ suites 0
+ℹ pass 39
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1484.385288

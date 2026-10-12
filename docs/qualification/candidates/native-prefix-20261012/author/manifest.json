@@ -1,0 +1,336 @@
+{
+  "sourceBase": "6cfb1f9a4d8acd66c5bd8d38d892d656fa3cd89e",
+  "scope": "RETAINED_SOURCE_METADATA_ONLY_NOT_ARTIFACT_AUTHENTICATION",
+  "excludes": [
+    "manifest.json",
+    "verification.json",
+    "verification.stderr"
+  ],
+  "files": [
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/assessment.json",
+      "bytes": 26605,
+      "sha256": "353f595cdb19fb5cffcdd5fdd54d6248d36715f9c904f84b5d27e5be8f5c1f34"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/authored-diff-check.json",
+      "bytes": 844,
+      "sha256": "5aaf206bed9938186213445f4f908c99b0b80b3be8d89494546705e610b53dc1"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/collection-notes.json",
+      "bytes": 2465,
+      "sha256": "bf29dab6a55e302c1ac6fba30fb6b418dadf5bf9183acaa3e601e25fd0046802"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/diff-check-raw-failure.json",
+      "bytes": 81562,
+      "sha256": "1fb3ba32ac024c6b74ff3794423ceac88f9420c73d4fc7d15bd4ce881e1d28ad"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/host-dependency-query.json",
+      "bytes": 1210,
+      "sha256": "29348c282713d44cf6803c14a4ba6e2ae3a9775f7f5bb7d6255bb8be2c2f867a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/GPL-2",
+      "bytes": 17984,
+      "sha256": "edaef632cbb643e4e7a221717a6c441a4c1a7c918e6e4d56debc3d8739b233f6"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/GPL-3",
+      "bytes": 35149,
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/common-README.md",
+      "bytes": 5410,
+      "sha256": "a04b941e9d58986fa29a5bda11a707466b5a7ecf692863999fc7c1c974479810"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/common-maint-functions",
+      "bytes": 14,
+      "sha256": "d5558cd419c8d46bdc958064cb97f963d1ea793866414c025906ec15033512ed"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/common-pg-wrapper",
+      "bytes": 10481,
+      "sha256": "fc00112585bd75eb9eb6fcd11ca4cf7222acf10259a1f21eea4889536dee640a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/common-postgresql.mk",
+      "bytes": 10931,
+      "sha256": "5a7006867d14535660021a2e72b36586106713fa06e360a0b42f0236cf3c8e75"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/common-server-maint-functions",
+      "bytes": 14,
+      "sha256": "d5558cd419c8d46bdc958064cb97f963d1ea793866414c025906ec15033512ed"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/debian17-control",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/debian17-rules",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/host-dependency-query.stderr",
+      "bytes": 169,
+      "sha256": "196580329f61355f8736c2ee2bbf80e2559a18e14c6b919901dff9f7c09c4369"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/host-dependency-query.stdout",
+      "bytes": 2274,
+      "sha256": "cb8f02ab05e6f0e02385aba2339841f9a56bbfefe81f5b24ae7b69d1c3af00a8"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/npm-pg-cloudflare-1.4.1.json",
+      "bytes": 1895,
+      "sha256": "e77c9f9bd4eaef167a479e301d678913015fddbad00b7481ed85fe37ca55ed55"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/npm-pg-connection-string-2.14.1.json",
+      "bytes": 2337,
+      "sha256": "fc8c05c3fb664f515464d6cbe5d07031391bba1e81395da97da3d42b82e05ac1"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/npm-pg-int8-1.0.1.json",
+      "bytes": 1280,
+      "sha256": "01eeb961980196fd42d798d92f222dd592445f5e0558d1d1be4bd42487dd29b6"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/npm-pg-pool-3.14.0.json",
+      "bytes": 1691,
+      "sha256": "2306b78d03e80e7d89d63647ca46109cd8f1f9980a432de906e279205538106d"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/npm-pg-protocol-1.16.1.json",
+      "bytes": 1998,
+      "sha256": "8075041445d133cfa2d49d4026305e1992f78861a1d826231233238d72737fe1"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/npm-pg-types-2.2.0.json",
+      "bytes": 2635,
+      "sha256": "a9d61026999df90498f658bf0bc1e02d68818ba1aea319dcc6b17320b09a3c09"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/npm-pgpass-1.0.5.json",
+      "bytes": 2778,
+      "sha256": "753a7666f79449faed8e9c9676c6398dd43bca237c92e8fbfff27a66e116961d"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/npm-postgres-array-2.0.0.json",
+      "bytes": 2448,
+      "sha256": "7ebff4bec6658593cb9924024e9601eb7bb6f741ec12ebaac6d4079cfda114ff"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/npm-postgres-bytea-1.0.1.json",
+      "bytes": 1566,
+      "sha256": "1d9c84dd3200ad932b21fe810f78199e29d0150e00961a3208ec5098f0d60f28"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/npm-postgres-date-1.0.7.json",
+      "bytes": 2423,
+      "sha256": "ba2aee6c4888aabf22a2aa2d090e2c65b7df7aa9ee58e1eb6a910844b4296977"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/npm-postgres-interval-1.2.0.json",
+      "bytes": 2477,
+      "sha256": "8d0f3b5bc1d528f5e2811d1236dc5c887912211f512a7b3aa24f7ccc5cb1bfe4"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/npm-split2-4.2.0.json",
+      "bytes": 2865,
+      "sha256": "113447596ab7b00cc2fb5dde52ffb6c1832da1bd069f2f1077c8d2eaa5e5eda6"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/npm-xtend-4.0.2.json",
+      "bytes": 2587,
+      "sha256": "ec96a0b917e481c739fd073a20188890389ba7ec835b8e6b8e0c1f90159f9cd1"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/pg8231-metadata.json",
+      "bytes": 2393,
+      "sha256": "928cc53cd24d6e2ea6caa11d74422c9291d117d88c8cc4c1974b074f638b9d35"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/pgdg-17-Packages.bz2",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/pgdg-InRelease",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/pgdg-Sources.bz2",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/pgdg-faq.html",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/pgdg-main-Packages.bz2",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/pgdg-packaging-api.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/pgdg-signing-key.asc",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/postgres-debian.html",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/postgres17-COPYRIGHT",
+      "bytes": 1198,
+      "sha256": "3d6af92ff8a4c2cdf69afb1cf44edea727922f5cd0cf8b5f72b11cdecac8fdfd"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/postgres17-exec.c",
+      "bytes": 18773,
+      "sha256": "530d597a30f2ac12ebe917dba36cb2bc7add5825aa8262a76808a4114a413a4c"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/postgres17-install.html",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/postgres17-path.c",
+      "bytes": 27329,
+      "sha256": "99d4938b452daaaafefdb76d0ba843e32e74fcee3656e5ebf979472c386f343e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/psycopg333-LICENSE",
+      "bytes": 7652,
+      "sha256": "e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/psycopg333-install.rst",
+      "bytes": 8930,
+      "sha256": "f5f0a373afc44099feecde389f7d7593f0e4b13ef1782d2f5f697a48e602e0c8"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/psycopg333-libpq-ctypes.py",
+      "bytes": 22497,
+      "sha256": "4d69fb3e81431671a930e8193522b32c22fd8ea597da83961e577dbb7701f12f"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/psycopg333-pq-init.py",
+      "bytes": 3976,
+      "sha256": "6d3f05b1b5a02896fb0a4fb690c8ae810928f459c355d70426ec1be7448f50e5"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/psycopg333-pq-misc.py",
+      "bytes": 6727,
+      "sha256": "429e8247e5b9400b203373b926052b6580cd82fa596c5ca582e94d4a58a365e9"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/psycopg333-pypi.json",
+      "bytes": 5929,
+      "sha256": "ae7c70d4d7798ab678cf0154bb8ad772f89045934efc0c92a79c46fae19255b5"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/psycopg333-pyproject.toml",
+      "bytes": 3115,
+      "sha256": "12404eb461971f00958a80ebe4b822740b1b76624c64e2f68ef755b7111b9600"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/typing415-pypi.json",
+      "bytes": 5590,
+      "sha256": "e97e0b1087254aa1c7e8b2074c3796124dfd7d26e0f54ffcdc3a975b53047938"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/web-10.txt",
+      "bytes": 20722,
+      "sha256": "a4c871d19ae0efb99071349f8e7b081944174e9388aaa96b0299bead3798c8c1"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/web-11.txt",
+      "bytes": 17939,
+      "sha256": "926d38e5f69cede6dc0b8648bb644f37e34e2836f2a5541e603b3b0eff2f01cd"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/web-3.txt",
+      "bytes": 5129,
+      "sha256": "7c5705175158a503a9035915708655763a90507a0f741bad6adfd090ead004e7"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt",
+      "bytes": 29860,
+      "sha256": "a84fdc92209609e99728c0a3c850b9ba34dd75e3f626b9270bc23d39cd32010e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/web-5.txt",
+      "bytes": 24381,
+      "sha256": "a2c192070a846275c8a1f25234a1729029ca57c43ea54c769f88b9a906c8cba9"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/web-6.txt",
+      "bytes": 20898,
+      "sha256": "1ac6f2ea9915c740f181450519874145e61ca6a89372a2953d83c56e735a2eef"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/web-7.txt",
+      "bytes": 3789,
+      "sha256": "2058204a61eb7c304d9d6e607987a9beb718cd14d3ed8914ff4791faec7fa281"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt",
+      "bytes": 25827,
+      "sha256": "403a847ae32bdc10aac47c7b9b6700c2eeefd9ffbccd017a65293073bb1e2ab3"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt",
+      "bytes": 23913,
+      "sha256": "d27fc53cafd4275ed0a7ce286f348ae53cdaeba2b1209a03a3f627050ca41057"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt",
+      "bytes": 32826,
+      "sha256": "db0af097c3139fc529abca3b10a63a27a04d68ec0dc7aae0ae24fd706a0f844c"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/web-pool-listing.txt",
+      "bytes": 20245,
+      "sha256": "40d7bfac06c873e683e2f09aeb0f9723a377c37528bc35c0158f54c552f98362"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/retrievals.json",
+      "bytes": 21652,
+      "sha256": "df7cb2aca3fb3f453a09c50270e8b8072dca4e74bb0a6c7d5fad8b42914f7348"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/verify.py",
+      "bytes": 5695,
+      "sha256": "13931018bb3b85fe3e9ae29709299ac13d45ee4b51c8b7f6de40af2339001053"
+    },
+    {
+      "path": "docs/coordination/tasks/MERI-NATIVE-PREFIX-20261012.md",
+      "bytes": 2229,
+      "sha256": "68f2d8874c2dea9288eb52f27a3b2313298ee27d7da60308fd80e6c832325832"
+    },
+    {
+      "path": "docs/coordination/reports/MERI-NATIVE-PREFIX-20261012.md",
+      "bytes": 9384,
+      "sha256": "7b7bc7d20f8cf2ee3c3e7699087c93b3fa8db03d02bc220a73e1072ac11cbb14"
+    }
+  ]
+}

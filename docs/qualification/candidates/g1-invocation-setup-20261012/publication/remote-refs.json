@@ -1,0 +1,35 @@
+{
+  "sourceHead": "93466b65d46f338826d519c12894fa690fe96296",
+  "refs": [
+    {
+      "commit": "eb59a3f3e3c0ddb7f549e7063387093bf9bb66b6",
+      "ref": "refs/heads/review/meri-durable-invocation-20261012"
+    },
+    {
+      "commit": "bf701db3389067de5c6aa503ff2698595b53289f",
+      "ref": "refs/heads/review/meri-native-prefix-20261012"
+    },
+    {
+      "commit": "ec91e937d37dc06110a3fa1f75519907fd2c62b0",
+      "ref": "refs/heads/review/meri-supervisor-exact-inputs-20261012"
+    },
+    {
+      "commit": "9d8358ba559134d82265f07840fd537943302090",
+      "ref": "refs/heads/task/meri-durable-invocation-20261012"
+    },
+    {
+      "commit": "93466b65d46f338826d519c12894fa690fe96296",
+      "ref": "refs/heads/task/meri-g1-invocation-setup-20261012"
+    },
+    {
+      "commit": "05b297923791e434c52aa63eca6d3752d21af54e",
+      "ref": "refs/heads/task/meri-native-prefix-20261012"
+    },
+    {
+      "commit": "e58bbdf110014493b19a0186ecff2df1ddc107a7",
+      "ref": "refs/heads/task/meri-supervisor-exact-inputs-20261012"
+    }
+  ],
+  "allMatchLocalHeads": true,
+  "forced": false
+}

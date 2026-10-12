@@ -1,0 +1,3 @@
+dpkg-query: no packages found matching postgresql-common
+dpkg-query: no packages found matching postgresql-client-common
+dpkg-query: no packages found matching ssl-cert

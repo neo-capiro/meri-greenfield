@@ -1,0 +1,20 @@
+{
+  "rootFreeze": "c5af5a6ad412595aafd30bd0196198790ca18be3",
+  "status": "HOLD_DOCUMENT_WORDING_ONLY",
+  "mechanicalAudit": {
+    "passed": 25,
+    "failed": 0
+  },
+  "finding": "Report groups retained-deadline modeled settlement with two rollback-only cancellation counterexamples; clarify their different observed outcomes.",
+  "reportSentence": "The latter three did not establish physical cancellation or an extra committed effect.",
+  "evidence": {
+    "path": "docs/qualification/candidates/durable-invocation-20261012/review/retained-original-deadline.stdout.txt",
+    "bytes": 1125,
+    "sha256": "79d78316631aa2b1de0553ca74f00ac2d2ed7fe941466c43433d869ec4a5adf6",
+    "observedState": "SETTLED",
+    "expectedState": "UNKNOWN"
+  },
+  "requestedCorrection": "Distinguish rollback-only accounting UPDATE/reservation INSERT cases from automatic modeled settlement after the retained deadline; none establishes physical SQL cancellation.",
+  "sourceChangeRequired": false,
+  "nativeExecution": false
+}

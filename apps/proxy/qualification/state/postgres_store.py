@@ -84,6 +84,11 @@ class PostgresStore:
         sql = (Path(__file__).parent / "migrations/0002_tool_budget.sql").read_text(encoding="utf-8")
         return self.transact(lambda cursor: cursor.execute(sql))
 
+    def migrate_tool_invocations(self):
+        """Explicit owner upgrade after 0002; never called automatically."""
+        sql = (Path(__file__).parent / "migrations/0003_tool_invocations.sql").read_text(encoding="utf-8")
+        return self.transact(lambda cursor: cursor.execute(sql))
+
     @staticmethod
     def budget(cursor):
         cursor.execute("SELECT * FROM meri_qualification.budget WHERE id=1 FOR UPDATE")

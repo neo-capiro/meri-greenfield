@@ -1,0 +1,183 @@
+Package: postgresql-common | Debian Sources (https://sources.debian.org/src/postgresql-common/)
+citeturn92view0 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({"ref_id":"https://sources.debian.org/src/postgresql-common/","lineno":null}); Total lines: 36
+--------------------------------------------------------------------------------
+ (https://apt.postgresql.org/pub/repos/apt/dists/trixie-pgdg/InRelease)
+citeturn92view1 [wordlim: 200] Crawled: today; Content type: text/plain; Source: open({"ref_id":"https://apt.postgresql.org/pub/repos/apt/dists/trixie-pgdg/InRelease","lineno":1248}); Total lines: 2493
+L1243:  46c6643f07aa7f6bfe7118de926b86defc5087c4 20 20/Contents-ppc64el.gz
+L1244: SHA256:
+L1245:  f2fb303471c5d9abee0ec3e0739ca247412110902d8239f2098d291b0b3de2dd 4680121 main/binary-amd64/Packages
+L1246:  983c051cf0c96fb5abeec39ba77501047976416bf4835b31714b1797d8db718f 1211319 main/binary-amd64/Packages.gz
+L1247:  d3e5c2dfcac2998ddf71ef30453f1ed24796b37c5bbb37c4b1c4f3baa43087ef 921199 main/binary-amd64/Packages.bz2
+L1248:  e9787ede1a12e7498fec420d5eb00f14d6d6552784c4696b99ce3d12b8e124e1 131 main/binary-amd64/Release
+--------------------------------------------------------------------------------
+Index of /pub/repos/apt/pool/main/p/postgresql-17/ (https://apt.postgresql.org/pub/repos/apt/pool/main/p/postgresql-17/)
+citeturn92view2 [wordlim: 200] Crawled: today; Content type: text/html; Source: find({"ref_id":"https://apt.postgresql.org/pub/repos/apt/pool/main/p/postgresql-17/","pattern":"postgresql-client-17_17.11-1.pgdg13+2_amd64.deb"}); Total lines: 1251
+L149:     cite146†postgresql-17_17.11-1.pgdg12+2_ppc64el.deb 13-Aug-2026 01:50            16901060
+L150:     cite147†postgresql-17_17.11-1.pgdg13+2.debian.tar.xz 13-Aug-2026 01:50               35776
+L151:     cite148†postgresql-17_17.11-1.pgdg13+2.dsc 13-Aug-2026 01:50                3278
+L152:     cite149†postgresql-17_17.11-1.pgdg13+2_amd64.deb 13-Aug-2026 01:50            16667232
+L153:     cite150†postgresql-17_17.11-1.pgdg13+2_arm64.deb 13-Aug-2026 01:50            16195080
+L154:     cite151†postgresql-17_17.11-1.pgdg13+2_loong64.deb 13-Aug-2026 01:50             6858408
+L155:     cite152†postgresql-17_17.11-1.pgdg13+2_ppc64el.deb 13-Aug-2026 01:50            16892672
+L156:     cite153†postgresql-17_17.11-1.pgdg14+2.debian.tar.xz 13-Aug-2026 01:50               35756
+L157:     cite154†postgresql-17_17.11-1.pgdg14+2.dsc 13-Aug-2026 01:50                3278
+L158:     cite155†postgresql-17_17.11-1.pgdg14+2_amd64.deb 13-Aug-2026 01:50            16674912
+L159:     cite156†postgresql-17_17.11-1.pgdg14+2_arm64.deb 13-Aug-2026 01:50            16166304
+L160:     cite157†postgresql-17_17.11-1.pgdg14+2_loong64.deb 13-Aug-2026 01:50             6883800
+L161:     cite158†postgresql-17_17.11-1.pgdg14+2_ppc64el.deb 13-Aug-2026 01:50            16927708
+L162:     cite159†postgresql-17_17.11-1.pgdg22.04+2.debian.tar.xz 13-Aug-2026 01:50               35792
+L163:     cite160†postgresql-17_17.11-1.pgdg22.04+2.dsc 13-Aug-2026 01:50                3222
+L164:     cite161†postgresql-17_17.11-1.pgdg22.04+2_amd64.deb 13-Aug-2026 01:50            18937760
+L165:     cite162†postgresql-17_17.11-1.pgdg22.04+2_arm64.deb 13-Aug-2026 01:50            18374584
+L166:     cite163†postgresql-17_17.11-1.pgdg22.04+2_ppc64el.deb 13-Aug-2026 01:50            19720144
+L167:     cite164†postgresql-17_17.11-1.pgdg24.04+2.debian.tar.xz 13-Aug-2026 01:50               35804
+L168:     cite165†postgresql-17_17.11-1.pgdg24.04+2.dsc 13-Aug-2026 01:50                3296
+L169:     cite166†postgresql-17_17.11-1.pgdg24.04+2_amd64.deb 13-Aug-2026 01:50            16949784
+L170:     cite167†postgresql-17_17.11-1.pgdg24.04+2_arm64.deb 13-Aug-2026 01:50            16463476
+L171:     cite168†postgresql-17_17.11-1.pgdg24.04+2_ppc64el.deb 13-Aug-2026 01:50            17834280
+L172:     cite169†postgresql-17_17.11-1.pgdg26.04+2.debian.tar.xz 13-Aug-2026 01:50               35788
+L173:     cite170†postgresql-17_17.11-1.pgdg26.04+2.dsc 13-Aug-2026 01:50                3290
+L174:     cite171†postgresql-17_17.11-1.pgdg26.04+2_amd64.deb 13-Aug-2026 01:50            17039248
+L175:     cite172†postgresql-17_17.11-1.pgdg26.04+2_arm64.deb 13-Aug-2026 01:50            16462356
+L176:     cite173†postgresql-17_17.11-1.pgdg26.04+2_ppc64el.deb 13-Aug-2026 01:50            17999180
+L177:     cite174†postgresql-17_17.11-1.pgdg26.10+1.debian.tar.xz 31-Aug-2026 18:47               35772
+L178:     cite175†postgresql-17_17.11-1.pgdg26.10+1.dsc 31-Aug-2026 18:47                3290
+L179:     cite176†postgresql-17_17.11-1.pgdg26.10+1_amd64.deb 31-Aug-2026 18:47            17042652
+L180:     cite177†postgresql-17_17.11-1.pgdg26.10+2.debian.tar.xz 28-Sep-2026 13:58               35804
+L181:     cite178†postgresql-17_17.11-1.pgdg26.10+2.dsc 28-Sep-2026 13:58                3290
+L182:     cite179†postgresql-17_17.11-1.pgdg26.10+2_amd64.deb 28-Sep-2026 13:58            17001156
+L183:     cite180†postgresql-17_17.11-2~20261011.0711.gab22337434..> 11-Oct-2026 08:32              127580
+L364:     cite361†postgresql-client-17_17.10-1.pgdg13+1_amd64.deb 12-May-2026 00:02             2050552
+L365:     cite362†postgresql-client-17_17.10-1.pgdg13+1_arm64.deb 12-May-2026 00:03             1997176
+L366:     cite363†postgresql-client-17_17.10-1.pgdg13+1_loong64.deb 09-Jun-2026 15:23             2001924
+L367:     cite364†postgresql-client-17_17.10-1.pgdg13+1_ppc64el.deb 12-May-2026 00:03             2077468
+L368:     cite365†postgresql-client-17_17.10-1.pgdg14+1_amd64.deb 12-May-2026 00:02             2049340
+L369:     cite366†postgresql-client-17_17.10-1.pgdg14+1_arm64.deb 12-May-2026 00:03             1994628
+L370:     cite367†postgresql-client-17_17.10-1.pgdg14+1_loong64.deb 09-Jul-2026 15:59             2015836
+L371:     cite368†postgresql-client-17_17.10-1.pgdg14+1_ppc64el.deb 12-May-2026 00:02             2080724
+L372:     cite369†postgresql-client-17_17.10-1.pgdg22.04+1_amd64.deb 12-May-2026 00:02             2031412
+L373:     cite370†postgresql-client-17_17.10-1.pgdg22.04+1_arm64.deb 12-May-2026 00:02             1973828
+L374:     cite371†postgresql-client-17_17.10-1.pgdg22.04+1_ppc64e..> 12-May-2026 00:02             2099560
+L375:     cite372†postgresql-client-17_17.10-1.pgdg24.04+1_amd64.deb 12-May-2026 00:03             2033548
+L376:     cite373†postgresql-client-17_17.10-1.pgdg24.04+1_arm64.deb 12-May-2026 00:02             1978360
+L377:     cite374†postgresql-client-17_17.10-1.pgdg24.04+1_ppc64e..> 12-May-2026 00:02             2107152
+L378:     cite375†postgresql-client-17_17.10-1.pgdg26.04+1_amd64.deb 12-May-2026 00:02             2036728
+L379:     cite376†postgresql-client-17_17.10-1.pgdg26.04+1_arm64.deb 12-May-2026 00:02             1978160
+L380:     cite377†postgresql-client-17_17.10-1.pgdg26.04+1_ppc64e..> 12-May-2026 00:02             2130024
+L381:     cite378†postgresql-client-17_17.11-1.pgdg+2_amd64.deb 13-Aug-2026 01:50             2111272
+L382:     cite379†postgresql-client-17_17.11-1.pgdg+2_arm64.deb 13-Aug-2026 01:50             2033160
+L383:     cite380†postgresql-client-17_17.11-1.pgdg+2_loong64.deb 13-Aug-2026 01:50             2047896
+L384:     cite381†postgresql-client-17_17.11-1.pgdg+2_ppc64el.deb 13-Aug-2026 01:50             2122124
+L385:     cite382†postgresql-client-17_17.11-1.pgdg12+2_amd64.deb 13-Aug-2026 01:50             2067620
+L386:     cite383†postgresql-client-17_17.11-1.pgdg12+2_arm64.deb 13-Aug-2026 01:50             2008864
+L387:     cite384†postgresql-client-17_17.11-1.pgdg12+2_ppc64el.deb 13-Aug-2026 01:50             2094036
+L388:     cite385†postgresql-client-17_17.11-1.pgdg13+2_amd64.deb 13-Aug-2026 01:50             2069984
+L389:     cite386†postgresql-client-17_17.11-1.pgdg13+2_arm64.deb 13-Aug-2026 01:50             2016964
+L390:     cite387†postgresql-client-17_17.11-1.pgdg13+2_loong64.deb 13-Aug-2026 01:50             2021324
+L391:     cite388†postgresql-client-17_17.11-1.pgdg13+2_ppc64el.deb 13-Aug-2026 01:50             2098788
+L392:     cite389†postgresql-client-17_17.11-1.pgdg14+2_amd64.deb 13-Aug-2026 01:50             2069420
+L393:     cite390†postgresql-client-17_17.11-1.pgdg14+2_arm64.deb 13-Aug-2026 01:50             2011348
+L394:     cite391†postgresql-client-17_17.11-1.pgdg14+2_loong64.deb 13-Aug-2026 01:50             2028008
+L395:     cite392†postgresql-client-17_17.11-1.pgdg14+2_ppc64el.deb 13-Aug-2026 01:50             2101700
+L396:     cite393†postgresql-client-17_17.11-1.pgdg22.04+2_amd64.deb 13-Aug-2026 01:50             2051188
+L397:     cite394†postgresql-client-17_17.11-1.pgdg22.04+2_arm64.deb 13-Aug-2026 01:50             1992020
+L398:     cite395†postgresql-client-17_17.11-1.pgdg22.04+2_ppc64e..> 13-Aug-2026 01:50             2119648
+L399:     cite396†postgresql-client-17_17.11-1.pgdg24.04+2_amd64.deb 13-Aug-2026 01:50             2052656
+L400:     cite397†postgresql-client-17_17.11-1.pgdg24.04+2_arm64.deb 13-Aug-2026 01:50             1997216
+L401:     cite398†postgresql-client-17_17.11-1.pgdg24.04+2_ppc64e..> 13-Aug-2026 01:50             2127100
+L402:     cite399†postgresql-client-17_17.11-1.pgdg26.04+2_amd64.deb 13-Aug-2026 01:50             2055892
+L403:     cite400†postgresql-client-17_17.11-1.pgdg26.04+2_arm64.deb 13-Aug-2026 01:50             1997332
+L404:     cite401†postgresql-client-17_17.11-1.pgdg26.04+2_ppc64e..> 13-Aug-2026 01:50             2149188
+L405:     cite402†postgresql-client-17_17.11-1.pgdg26.10+1_amd64.deb 31-Aug-2026 18:47             2056476
+L406:     cite403†postgresql-client-17_17.11-1.pgdg26.10+2_amd64.deb 28-Sep-2026 13:58             2055836
+L407:     cite404†postgresql-client-17_17.11-2~20261011.0711.gab2..> 11-Oct-2026 08:32             2110540
+L408:     cite405†postgresql-client-17_17.11-2~20261011.0711.gab2..> 11-Oct-2026 08:33             2031908
+L409:     cite406†postgresql-client-17_17.11-2~20261011.0711.gab2..> 11-Oct-2026 08:33             2047932
+L410:     cite407†postgresql-client-17_17.11-2~20261011.0711.gab2..> 11-Oct-2026 08:32             2122492
+L411:     cite408†postgresql-client-17_17.11-2~20261011.0711.gab2..> 11-Oct-2026 08:32             2066776
+L412:     cite409†postgresql-client-17_17.11-2~20261011.0711.gab2..> 11-Oct-2026 08:32             2008460
+L413:     cite410†postgresql-client-17_17.11-2~20261011.0711.gab2..> 11-Oct-2026 08:33             2094440
+L414:     cite411†postgresql-client-17_17.11-2~20261011.0711.gab2..> 11-Oct-2026 08:32             2070956
+L415:     cite412†postgresql-client-17_17.11-2~20261011.0711.gab2..> 11-Oct-2026 08:32             2018568
+L416:     cite413†postgresql-client-17_17.11-2~20261011.0711.gab2..> 11-Oct-2026 08:33             2022128
+L417:     cite414†postgresql-client-17_17.11-2~20261011.0711.gab2..> 11-Oct-2026 08:33             2097176
+L418:     cite415†postgresql-client-17_17.11-2~20261011.0711.gab2..> 11-Oct-2026 08:32             2082220
+L419:     cite416†postgresql-client-17_17.11-2~20261011.0711.gab2..> 11-Oct-2026 08:33             2014456
+L420:     cite417†postgresql-client-17_17.11-2~20261011.0711.gab2..> 11-Oct-2026 08:32             2026112
+L421:     cite418†postgresql-client-17_17.11-2~20261011.0711.gab2..> 11-Oct-2026 08:33             2101320
+L422:     cite419†postgresql-client-17_17.11-2~20261011.0711.gab2..> 11-Oct-2026 08:32             2050656
+L423:     cite420†postgresql-client-17_17.11-2~20261011.0711.gab2..> 11-Oct-2026 08:32             1992080
+L424:     cite421†postgresql-client-17_17.11-2~20261011.0711.gab2..> 11-Oct-2026 08:32             2120576
+L425:     cite422†postgresql-client-17_17.11-2~20261011.0711.gab2..> 11-Oct-2026 08:32             2053656
+L426:     cite423†postgresql-client-17_17.11-2~20261011.0711.gab2..> 11-Oct-2026 08:33             1997524
+L427:     cite424†postgresql-client-17_17.11-2~20261011.0711.gab2..> 11-Oct-2026 08:32             2127960
+L428:     cite425†postgresql-client-17_17.11-2~20261011.0711.gab2..> 11-Oct-2026 08:32             2056684
+L429:     cite426†postgresql-client-17_17.11-2~20261011.0711.gab2..> 11-Oct-2026 08:32             1997944
+L430:     cite427†postgresql-client-17_17.11-2~20261011.0711.gab2..> 11-Oct-2026 08:33             2150312
+L431:     cite428†postgresql-client-17_17.11-2~20261011.0711.gab2..> 11-Oct-2026 08:32             2056532
+L432:     cite429†postgresql-client-17_17.9-1.pgdg+2_amd64.deb 10-Apr-2026 19:47             2070064
+L433:     cite430†postgresql-client-17_17.9-1.pgdg+2_arm64.deb 10-Apr-2026 19:47             2007492
+L434:     cite431†postgresql-client-17_17.9-1.pgdg+2_ppc64el.deb 10-Apr-2026 19:47             2091912
+L435:     cite432†postgresql-client-17_17.9-1.pgdg12+1_amd64.deb 24-Feb-2026 14:06             2037372
+L436:     cite433†postgresql-client-17_17.9-1.pgdg12+1_arm64.deb 24-Feb-2026 14:06             1982952
+L437:     cite434†postgresql-client-17_17.9-1.pgdg12+1_ppc64el.deb 24-Feb-2026 14:06             2066068
+L438:     cite435†postgresql-client-17_17.9-1.pgdg13+1_amd64.deb 24-Feb-2026 14:05             2042976
+L439:     cite436†postgresql-client-17_17.9-1.pgdg13+1_arm64.deb 24-Feb-2026 14:06             1990648
+L440:     cite437†postgresql-client-17_17.9-1.pgdg13+1_ppc64el.deb 24-Feb-2026 14:06             2068088
+L441:     cite438†postgresql-client-17_17.9-1.pgdg14+2_amd64.deb 10-Apr-2026 19:47             2041652
+L442:     cite439†postgresql-client-17_17.9-1.pgdg14+2_arm64.deb 10-Apr-2026 19:47             1985404
+L443:     cite440†postgresql-client-17_17.9-1.pgdg14+2_ppc64el.deb 10-Apr-2026 19:47             2071236
+L444:     cite441†postgresql-client-17_17.9-1.pgdg22.04+1_amd64.deb 24-Feb-2026 14:06             2026708
+L445:     cite442†postgresql-client-17_17.9-1.pgdg22.04+1_arm64.deb 24-Feb-2026 14:05             1968236
+L446:     cite443†postgresql-client-17_17.9-1.pgdg22.04+1_ppc64el..> 24-Feb-2026 14:05             2095048
+L447:     cite444†postgresql-client-17_17.9-1.pgdg24.04+1_amd64.deb 24-Feb-2026 14:06             2027548
+L448:     cite445†postgresql-client-17_17.9-1.pgdg24.04+1_arm64.deb 24-Feb-2026 14:06             1973580
+L449:     cite446†postgresql-client-17_17.9-1.pgdg24.04+1_ppc64el..> 24-Feb-2026 14:06             2102692
+L450:     cite447†postgresql-client-17_17.9-1.pgdg26.04+2_amd64.deb 31-Mar-2026 11:28             2030608
+L451:     cite448†postgresql-client-17_17.9-1.pgdg26.04+2_arm64.deb 31-Mar-2026 11:28             1973936
+L452:     cite449†postgresql-client-17_17.9-1.pgdg26.04+2_ppc64el..> 31-Mar-2026 11:28             2125548
+L453:     cite450†postgresql-doc-17_17.10-1.pgdg+1_all.deb 12-May-2026 00:03             2165892
+L454:     cite451†postgresql-doc-17_17.10-1.pgdg12+1_all.deb 12-May-2026 00:02             2165896
+L455:     cite452†postgresql-doc-17_17.10-1.pgdg13+1_all.deb 12-May-2026 00:02             2165752
+L456:     cite453†postgresql-doc-17_17.10-1.pgdg14+1_all.deb 12-May-2026 00:02             2165880
+L457:     cite454†postgresql-doc-17_17.10-1.pgdg22.04+1_all.deb 12-May-2026 00:02             2166092
+L458:     cite455†postgresql-doc-17_17.10-1.pgdg24.04+1_all.deb 12-May-2026 00:03             2166108
+L459:     cite456†postgresql-doc-17_17.10-1.pgdg26.04+1_all.deb 12-May-2026 00:02             2165860
+L460:     cite457†postgresql-doc-17_17.11-1.pgdg+2_all.deb 13-Aug-2026 01:50             2183496
+L461:     cite458†postgresql-doc-17_17.11-1.pgdg12+2_all.deb 13-Aug-2026 01:50             2183692
+L462:     cite459†postgresql-doc-17_17.11-1.pgdg13+2_all.deb 13-Aug-2026 01:50             2183544
+L463:     cite460†postgresql-doc-17_17.11-1.pgdg14+2_all.deb 13-Aug-2026 01:50             2183508
+L609:     cite606†postgresql-plperl-17_17.11-1.pgdg12+2_ppc64el.deb 13-Aug-2026 01:50               95156
+L610:     cite607†postgresql-plperl-17_17.11-1.pgdg13+2_amd64.deb 13-Aug-2026 01:50               94232
+L611:     cite608†postgresql-plperl-17_17.11-1.pgdg13+2_arm64.deb 13-Aug-2026 01:50               90592
+L612:     cite609†postgresql-plperl-17_17.11-1.pgdg13+2_loong64.deb 13-Aug-2026 01:50               77136
+L613:     cite610†postgresql-plperl-17_17.11-1.pgdg13+2_ppc64el.deb 13-Aug-2026 01:50               95228
+L989:     cite986†postgresql-pltcl-17_17.11-1.pgdg+2_ppc64el.deb 13-Aug-2026 01:50               51308
+L990:     cite987†postgresql-pltcl-17_17.11-1.pgdg12+2_amd64.deb 13-Aug-2026 01:50               50724
+L994:     cite991†postgresql-pltcl-17_17.11-1.pgdg13+2_arm64.deb 13-Aug-2026 01:50               49280
+L995:     cite992†postgresql-pltcl-17_17.11-1.pgdg13+2_loong64.deb 13-Aug-2026 01:50               49808
+L996:     cite993†postgresql-pltcl-17_17.11-1.pgdg13+2_ppc64el.deb 13-Aug-2026 01:50               50948
+L997:     cite994†postgresql-pltcl-17_17.11-1.pgdg14+2_amd64.deb 13-Aug-2026 01:50               50972
+L998:     cite995†postgresql-pltcl-17_17.11-1.pgdg14+2_arm64.deb 13-Aug-2026 01:50               48912
+--------------------------------------------------------------------------------
+pg_createcluster(1) — postgresql-common — Debian trixie — Debian Manpages (https://manpages.debian.org/trixie/postgresql-common/pg_createcluster.1.en.html)
+citeturn92view3 [wordlim: 200] Crawled: today; Content type: text/html; Source: find({"ref_id":"https://manpages.debian.org/trixie/postgresql-common/pg_createcluster.1.en.html","pattern":"create_main_cluster"}); Total lines: 156
+L104: cite41†create_main_cluster (Default: true) L105:     Create a main cluster when a new postgresql-NN server package is installed and no clusters exist yet.
+L106: cite42†start_conf (Default: auto) L107:     Default start.conf value to use.
+L108: cite43†data_directory (Default: /var/lib/postgresql/%v/%c) L109:     Default data directory.
+L110: cite44†waldir|xlogdir (Default: unset) --------------------------------------------------------------------------------
+dpkg-deb(1) — dpkg — Debian trixie — Debian Manpages (https://manpages.debian.org/trixie/dpkg/dpkg-deb.1.en.html)
+citeturn92view4 [wordlim: 200] Crawled: today; Content type: text/html; Source: find({"ref_id":"https://manpages.debian.org/trixie/dpkg/dpkg-deb.1.en.html","pattern":"install"}); Total lines: 186
+L24: # DESCRIPTIONcite11†¶ L25: 
+L26: dpkg-deb packs, unpacks and provides information about Debian archives.
+L27: 
+L28: Use dpkg to install and remove packages from your system.
+L29: 
+L30: You can also invoke dpkg-deb by calling dpkg with whatever options you want to pass to dpkg-deb. dpkg will spot that you wanted dpkg-deb and run it for you.
+L57: cite17†-c, --contents archive L58:     Lists the contents of the filesystem tree archive portion of the package archive. It is currently produced in the format generated by tar's verbose listing.
+L59: cite18†-x, --extract archive directory L60:     Extracts the filesystem tree from a package archive into the specified directory.
+L61: 
+L62: Note that extracting a package to the root directory will not result in a correct installation! Use dpkg to install packages.
+L161: # NOTEScite52†¶ L162: 
+L163: Do not attempt to use just dpkg-deb to install software! You must use dpkg proper to ensure that all the files are correctly placed and the package's scripts run and its status and contents recorded.
+

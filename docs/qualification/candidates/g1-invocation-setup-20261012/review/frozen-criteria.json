@@ -1,0 +1,54 @@
+{
+  "base": "6cfb1f9a4d8acd66c5bd8d38d892d656fa3cd89e",
+  "role": "Independent roadmap/report documentation review",
+  "finalRootFreeze": null,
+  "criteria": [
+    {
+      "id": "IR1",
+      "assertion": "Documentation-only integration delta on the single adopted R2 roadmap; exact final root SHA/tree and complete changed-path scope; no new execution authority."
+    },
+    {
+      "id": "IR2",
+      "assertion": "Verify PR7, PR10 through PR18 immutable heads, adjacent bases and Git ancestry against retained observations; original PR2 not re-integrated and PR8/9 preservation roles explicit; future merging separately authorized."
+    },
+    {
+      "id": "IR3",
+      "assertion": "Bind each accepted lane to exact source/packet/reviewer freezes; historical outcome read stays distinct from new produced-path reconciliation; do not mark authored source as independently accepted early."
+    },
+    {
+      "id": "IR4",
+      "assertion": "Describe actual trusted producer/control/gateway call path, stable delivery key and full original binding, raw/normalized digest distinction, replay/acknowledgement-loss refusal, no alternate liability ledger and explicit unapplied migration0003."
+    },
+    {
+      "id": "IR5",
+      "assertion": "Describe exact consequential transition: only private canonical validated completion permits UNKNOWN to SETTLED with original full charge; retain liability/no refund/retry/result-release, historical settlement and original cancellation/deadline checks; distinguish native issuer/engine/restart gaps."
+    },
+    {
+      "id": "IR6",
+      "assertion": "Prefix evidence remains HOLD_EXTERNAL_INPUT/NOT_EXECUTABLE; metadata/hash leads are not authenticated package closure or support proof; specific signed indices/trust/dependency/build-bound path profile prerequisites without speculative setup recipe or authorization."
+    },
+    {
+      "id": "IR7",
+      "assertion": "Supervisor exact two-member relay and separate original receipt/source verification/prior inventory/Git identity roles match accepted review; no private paths/bodies; unused destination and canonical timestamps correct; all native/publication/watchdog flags remain false."
+    },
+    {
+      "id": "IR8",
+      "assertion": "Original scope remains139/96/43,14 bound unavailable/82 unmapped,14 unqualified skills; public0.1/private0.2, canonical owners, Claude Agent SDK/Temporal/AI transport, Aurora and disabled sources preserved."
+    },
+    {
+      "id": "IR9",
+      "assertion": "Frozen L1 command set/bounds/authentication HOLD unchanged; no silent addition of invocation0003, real-pg tests, server restart or permissions; synthetic/offline pass distinct from native UNRUN and original Windows/placement/403 failures retained."
+    },
+    {
+      "id": "IR10",
+      "assertion": "Final report/roadmap claims agree with exact retained raw checks and references; targeted link/hash/privacy checks; no target source imports or native/network execution, and review-owned jobs reaped."
+    }
+  ],
+  "historicalRoadmap": {
+    "path": "docs/plans/MERI-G1-SOURCE-TO-NATIVE.md",
+    "bytes": 28232,
+    "sha256": "8bde7696c99883948a8eb9595cce4e43e721c390968a13b456956cfa0ca83822"
+  },
+  "nativeExecution": false,
+  "productionEdits": false
+}

@@ -1,0 +1,99 @@
+{
+  "method": "JSON data and AST parsing only; inspected sources never imported, compiled or executed",
+  "passed": 23,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "exact-nine-action-keys",
+      "passed": true
+    },
+    {
+      "name": "all-five-missing-pins-remain-none",
+      "passed": true
+    },
+    {
+      "name": "local-staging-membership",
+      "passed": true
+    },
+    {
+      "name": "local-staging-byte-identities",
+      "passed": true
+    },
+    {
+      "name": "packet-thirteen-name-rows-not-paths",
+      "passed": true
+    },
+    {
+      "name": "two-immediate-exact-pins",
+      "passed": true
+    },
+    {
+      "name": "two-immediate-members-not-staged",
+      "passed": true
+    },
+    {
+      "name": "four-current-already-verified-identities",
+      "passed": true
+    },
+    {
+      "name": "local-derivative-explicit-incompleteness",
+      "passed": true
+    },
+    {
+      "name": "original-candidate-pointers-not-invented",
+      "passed": true
+    },
+    {
+      "name": "original-receipt-pin-distinct-from-ancestor",
+      "passed": true
+    },
+    {
+      "name": "original-source-commit-tree",
+      "passed": true
+    },
+    {
+      "name": "original-verification-identity-not-invented",
+      "passed": true
+    },
+    {
+      "name": "original-records-not-in-new-packet",
+      "passed": true
+    },
+    {
+      "name": "prior-audit-reference-pin",
+      "passed": true
+    },
+    {
+      "name": "current-source-writes-prior-list-fields",
+      "passed": true
+    },
+    {
+      "name": "historical-wrapper-pin-not-inferred",
+      "passed": true
+    },
+    {
+      "name": "same-git-path-and-missing-identity-fields",
+      "passed": true
+    },
+    {
+      "name": "selected-python-known-pin",
+      "passed": true
+    },
+    {
+      "name": "proposal-selector-argument-agreement",
+      "passed": true
+    },
+    {
+      "name": "canonical-timestamps-distinct-from-private-comparison",
+      "passed": true
+    },
+    {
+      "name": "wrapper-creates-unused-destination",
+      "passed": true
+    },
+    {
+      "name": "mapping-preserves-hold",
+      "passed": true
+    }
+  ]
+}

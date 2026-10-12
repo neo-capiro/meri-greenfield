@@ -1,0 +1,36 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "/workspace/meri-durable-invocation-review-20261012/docs/qualification/candidates/durable-invocation-20261012/review/invocation-independent.test.mjs",
+    "/workspace/meri-durable-invocation-review-20261012/docs/qualification/candidates/durable-invocation-20261012/review/exposed-marker-independent.test.mjs",
+    "/workspace/meri-durable-invocation-review-20261012/docs/qualification/candidates/durable-invocation-20261012/review/private-composition-injection.test.mjs"
+  ],
+  "cwd": "/workspace/meri-g1-invocation-setup-20261012",
+  "sourceHead": "0d630acba6fe69297059acd6a6016a33238e1f57",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T07:38:15.703862+00:00",
+  "durationSeconds": 1.631,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 106354,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/invocation-independent-integrated.stdout.bin",
+      "bytes": 4045,
+      "sha256": "2edb4aa62c63548e7f358ffaaef0c1f6e33f4f85108735c146c185401560d0fb"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/invocation-independent-integrated.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

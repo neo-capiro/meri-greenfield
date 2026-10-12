@@ -1,0 +1,19 @@
+{
+  "initialDependencyFailure": "initial-baseline.stderr.txt: missing ajv; no assertions executed",
+  "reuseAttempt": {
+    "command": "cmp package-lock.json /workspace/meri-budget-outcome-review-20261012/package-lock.json && cp -a /workspace/meri-budget-outcome-review-20261012/node_modules ./node_modules",
+    "exitCode": 1,
+    "output": "cp: cannot stat '/workspace/meri-budget-outcome-review-20261012/node_modules': No such file or directory\\n"
+  },
+  "resolved": "Exact root lock compared with author worktree, then copied existing inert node_modules. No install hooks or dependency changes.",
+  "first27": {
+    "pass": 25,
+    "fail": 2,
+    "classification": [
+      "Scripted grant binding lookup ignored grant_id; replacement setup refused before target check. Added keyed retained grant/binding projections.",
+      "Invalid reviewer assumption: arbitrary within-limit completion byte change cannot be cryptographically detected without retained body/signature. Changed negative to conflicting completion invocationId; database integrity remains trusted."
+    ],
+    "originalTests": "prefreeze-original-invocation-independent.test.mjs",
+    "originalHarness": "prefreeze-original-invocation-harness.mjs"
+  }
+}

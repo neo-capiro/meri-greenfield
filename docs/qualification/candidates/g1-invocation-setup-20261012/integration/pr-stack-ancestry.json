@@ -1,0 +1,65 @@
+{
+  "checks": [
+    {
+      "pr": 7,
+      "baseAncestor": true,
+      "tree": "985e0fdafe23d68b6f2e81a092cf098d8ede3182",
+      "adjacentBaseMatchesPreviousHead": null
+    },
+    {
+      "pr": 10,
+      "baseAncestor": true,
+      "tree": "26527e06900f4c63dc81c7d394dd50e45c4febaf",
+      "adjacentBaseMatchesPreviousHead": true
+    },
+    {
+      "pr": 11,
+      "baseAncestor": true,
+      "tree": "0eef3a0166b4b95fdfdc9bd886b5157d299d02db",
+      "adjacentBaseMatchesPreviousHead": true
+    },
+    {
+      "pr": 12,
+      "baseAncestor": true,
+      "tree": "1f6ac35ad37531e790c2a19c9e310c7e618e6522",
+      "adjacentBaseMatchesPreviousHead": true
+    },
+    {
+      "pr": 13,
+      "baseAncestor": true,
+      "tree": "c3c6ee29de298fd26cbf32b43fbf43c0c92521ca",
+      "adjacentBaseMatchesPreviousHead": true
+    },
+    {
+      "pr": 14,
+      "baseAncestor": true,
+      "tree": "4584edc9cba1ee6e9f81464d47b477039994bbfb",
+      "adjacentBaseMatchesPreviousHead": true
+    },
+    {
+      "pr": 15,
+      "baseAncestor": true,
+      "tree": "fd5ac72bed31f0611e4c24a6535730ac17a14ad7",
+      "adjacentBaseMatchesPreviousHead": true
+    },
+    {
+      "pr": 16,
+      "baseAncestor": true,
+      "tree": "35e6da43d35e06701b5bde73db571b5e1e688ea8",
+      "adjacentBaseMatchesPreviousHead": true
+    },
+    {
+      "pr": 17,
+      "baseAncestor": true,
+      "tree": "bae9e77b928b4053d788aa4d5542bf6c1575644e",
+      "adjacentBaseMatchesPreviousHead": true
+    },
+    {
+      "pr": 18,
+      "baseAncestor": true,
+      "tree": "7072177eefc7a8b495625ab0c20c0e82b7c55dd8",
+      "adjacentBaseMatchesPreviousHead": true
+    }
+  ],
+  "basePr18": "6cfb1f9a4d8acd66c5bd8d38d892d656fa3cd89e"
+}

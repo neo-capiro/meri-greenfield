@@ -1,0 +1,105 @@
+{
+  "decision": "PASS_SOURCE_AND_EVIDENCE_INTEGRITY_ONLY",
+  "head": "b264e34b3f59264e3e8a46c7c006906161a9899b",
+  "base": "6cfb1f9a4d8acd66c5bd8d38d892d656fa3cd89e",
+  "originalFiles": 4430,
+  "unchangedOriginalFiles": 4423,
+  "changedOriginalPaths": [
+    "apps/gateway/budget/README.md",
+    "apps/gateway/budget/durable-tool-dispatch.mjs",
+    "apps/gateway/budget/postgres-budget-store.mjs",
+    "apps/gateway/budget/postgres-tool-budget.mjs",
+    "apps/gateway/dispatch/tool-dispatch.mjs",
+    "apps/proxy/qualification/state/postgres_store.py",
+    "docs/plans/MERI-G1-SOURCE-TO-NATIVE.md"
+  ],
+  "acceptedLanes": [
+    {
+      "role": "invocation-author",
+      "commit": "9d8358ba559134d82265f07840fd537943302090",
+      "filesMatched": 35,
+      "tree": "6788a4846dcbffed0861315242c606076a5cdd14"
+    },
+    {
+      "role": "invocation-reviewer",
+      "commit": "eb59a3f3e3c0ddb7f549e7063387093bf9bb66b6",
+      "filesMatched": 117,
+      "tree": "8bc6786f91cf05800c91a49432ff9ed49f57663c"
+    },
+    {
+      "role": "native-prefix-author",
+      "commit": "05b297923791e434c52aa63eca6d3752d21af54e",
+      "filesMatched": 68,
+      "tree": "37d59c0eced3ec760bf65f1aac8e7f4c1c2a3bd4"
+    },
+    {
+      "role": "native-prefix-reviewer",
+      "commit": "bf701db3389067de5c6aa503ff2698595b53289f",
+      "filesMatched": 18,
+      "tree": "f4c8326308a5d60e0a8c5410b1ea7d76ce2a8726"
+    },
+    {
+      "role": "supervisor-inputs-author",
+      "commit": "e58bbdf110014493b19a0186ecff2df1ddc107a7",
+      "filesMatched": 9,
+      "tree": "e8a9c5dd54cb3b206c864576b05943ddd8d6bbf5"
+    },
+    {
+      "role": "supervisor-inputs-reviewer",
+      "commit": "d6d2d7b0668f43aad93bd9fc4e2fa9df688be876",
+      "filesMatched": 8,
+      "tree": "bea4cb343ea168e8f3ef56f80c5bff9acee8ee32"
+    },
+    {
+      "role": "root-documentation-reviewer",
+      "commit": "ec91e937d37dc06110a3fa1f75519907fd2c62b0",
+      "filesMatched": 18,
+      "tree": "9bb8d97cd740a2a62ae83d16f614e1e5c9f07667"
+    }
+  ],
+  "allOriginalTestsContractsLocksMigrationsPreserved": true,
+  "frozenL1AndImagePacketsPreserved": true,
+  "captureReceipts": [
+    {
+      "label": "gateway-control-integrated",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "streamsMatched": 2
+    },
+    {
+      "label": "integrated-source-audit",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "streamsMatched": 2
+    },
+    {
+      "label": "invocation-independent-integrated",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "streamsMatched": 2
+    },
+    {
+      "label": "native-prefix-integrated",
+      "exitCode": 1,
+      "ownedProcessGroupAbsent": true,
+      "streamsMatched": 2
+    },
+    {
+      "label": "supervisor-inputs-integrated",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "streamsMatched": 2
+    }
+  ],
+  "historicalRoadmapPin": {
+    "matchesOwnBase": true,
+    "currentReplay": "281 PASS / 1 retained expected roadmap hash failure"
+  },
+  "privacyScreen": {
+    "files": 264,
+    "knownPrivateNeedles": 52,
+    "matches": 0,
+    "limitation": "Known supplied private bodies/paths and named credential markers only."
+  },
+  "nativeImportsOrExecution": false
+}

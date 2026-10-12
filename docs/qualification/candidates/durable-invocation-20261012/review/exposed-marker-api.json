@@ -1,0 +1,27 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/durable-invocation-20261012/review/exposed-marker-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-durable-invocation-review-20261012",
+  "startUnixSeconds": 1791789384.5525935,
+  "elapsedSeconds": 1.0678770542144775,
+  "exitCode": 1,
+  "ownedPidAndGroup": 98799,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "reapedDescendants": [],
+  "streams": {
+    "stdout": {
+      "path": "exposed-marker-api.stdout.txt",
+      "bytes": 1089,
+      "sha256": "9d65373f111feb9ad8445fecf57f6717f2ccdad2d352957bf823f4a0fb1d7763"
+    },
+    "stderr": {
+      "path": "exposed-marker-api.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "observedAt": "2026-10-12",
+  "url": "https://github.com/neo-capiro/meri-greenfield/pull/18",
+  "number": 18,
+  "state": "open",
+  "draft": true,
+  "merged": false,
+  "head": "task/meri-g1-owner-continuation-20261012",
+  "head_sha": "6cfb1f9a4d8acd66c5bd8d38d892d656fa3cd89e",
+  "base": "task/meri-g1-native-path-20261012",
+  "base_sha": "263d0d174f9924a6030bb1c20100ff1115ffcda0"
+}

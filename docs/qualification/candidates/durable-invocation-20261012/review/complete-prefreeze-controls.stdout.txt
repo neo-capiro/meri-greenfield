@@ -1,0 +1,67 @@
+✔ general budget owner cannot offer completion writer that bypasses actual dispatcher (17.126344ms)
+✔ production control constructs real source-disabled gateway and never dispatches (30.996776ms)
+✔ actual control->dispatcher validates normalized request and records immutable completion before fixed charge (29.156951ms)
+✔ unprepared exact historical observation is ABSENT with no new row or refund (6.821069ms)
+✔ concurrent reconstructed producers retain one original ID, deadline and one physical handler (15.008552ms)
+✔ canonical whitespace replay agrees; changed raw arguments cannot borrow original identity (3.721582ms)
+✔ same run/delivery key with replacement grant/task/fence refuses rather than minting a second identity (3.795683ms)
+✔ lost prepare COMMIT acknowledgement preserves exact durable stage across owner reconstruction (3.175721ms)
+✔ lost reserve COMMIT acknowledgement preserves exact durable stage across owner reconstruction (7.698222ms)
+✔ lost marker COMMIT acknowledgement preserves exact durable stage across owner reconstruction (11.036674ms)
+✔ lost settle COMMIT acknowledgement preserves exact durable stage across owner reconstruction (7.955694ms)
+✔ UNKNOWN without completion remains held after revocation, expiry, quarantine and restart (6.312095ms)
+✔ retained valid marker reconciles historically once with full fixed charge and no result release (7.090824ms)
+✔ reserved owned namespace cannot enter legacy execute or forInvocation with an extra bypass argument (3.00807ms)
+✔ aborted before prepare makes no new transaction or authority call (1.495797ms)
+✔ cancelled parked prepare acknowledgement cannot start dispatch after late completion (15.881043ms)
+✔ abort while completion marker ACK is parked prevents automatic settlement after late ACK (13.966265ms)
+✔ expiry while completion marker ACK is parked prevents automatic settlement after late ACK (5.964863ms)
+✖ original-deadline-only while completion marker ACK is parked prevents automatic settlement after late ACK (8.318329ms)
+✔ invalid-output leaves UNKNOWN without completion proof (5.169448ms)
+✔ release-denial leaves UNKNOWN without completion proof (3.311356ms)
+✔ corrupt retained raw_request_sha256 cannot authorize historical settlement (4.702526ms)
+✔ corrupt retained arguments_sha256 cannot authorize historical settlement (5.84328ms)
+✔ corrupt retained facts cannot authorize historical settlement (5.628407ms)
+✔ corrupt retained producer_key_sha256 cannot authorize historical settlement (4.052149ms)
+✔ corrupt retained completion cannot authorize historical settlement (4.955506ms)
+✔ live normalized digest must be the canonical dispatcher result, never caller-supplied reconciliation digest (4.581955ms)
+✔ unknown model liability participates in the same canonical reservation cap (2.543622ms)
+✔ control rejects outer accessor/proxy without executing injected code (0.371088ms)
+✔ cancel during live accounting first write cannot start the next accounting write (13.731472ms)
+✔ replayed preparation preserves the original deadline rather than granting a fresh request window (3.845679ms)
+✔ cancel during produced reservation count query cannot start a later reservation INSERT (3.563485ms)
+✔ cancel while connect is parked prevents later setup/domain ports (1.680364ms)
+✔ cancel while BEGIN is parked prevents later setup/domain ports (1.608287ms)
+✔ cancel while SET LOCAL statement_timeout = '5s' is parked prevents later setup/domain ports (2.10972ms)
+✔ cancel while SET LOCAL lock_timeout = '2s' is parked prevents later setup/domain ports (1.868778ms)
+✔ durable dispatcher options cannot substitute its private canonical budget owner (5.183249ms)
+✔ durable dispatcher rejects injected private producer before any callback (1.91631ms)
+ℹ tests 38
+ℹ suites 0
+ℹ pass 37
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1885.808198
+
+✖ failing tests:
+
+test at docs/qualification/candidates/durable-invocation-20261012/review/invocation-independent.test.mjs:84:64
+✖ original-deadline-only while completion marker ACK is parked prevents automatic settlement after late ACK (8.318329ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'SETTLED'
+  - 'UNKNOWN'
+  
+      at TestContext.<anonymous> (file:///workspace/meri-durable-invocation-review-20261012/docs/qualification/candidates/durable-invocation-20261012/review/invocation-independent.test.mjs:88:43)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'SETTLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

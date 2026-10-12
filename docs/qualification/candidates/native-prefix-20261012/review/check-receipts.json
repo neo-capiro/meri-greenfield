@@ -1,0 +1,35 @@
+{
+  "authorCommit": "05b297923791e434c52aa63eca6d3752d21af54e",
+  "sourceBase": "6cfb1f9a4d8acd66c5bd8d38d892d656fa3cd89e",
+  "scope": "OFFLINE_SOURCE_EVIDENCE_ONLY",
+  "commands": [
+    {
+      "cwd": "/workspace/meri-native-prefix-review-20261012",
+      "argv": ["python", "-I", "-B", "-S", "docs/qualification/candidates/native-prefix-20261012/review/audit-author.py", "/workspace/meri-native-prefix-20261012", "05b297923791e434c52aa63eca6d3752d21af54e"],
+      "exitCode": 0,
+      "stdout": "audit-author.stdout.json",
+      "stderr": "audit-author.stderr.txt",
+      "passed": 238,
+      "failed": 0
+    },
+    {
+      "cwd": "/workspace/meri-native-prefix-20261012",
+      "argv": ["python", "-I", "-B", "-S", "docs/qualification/candidates/native-prefix-20261012/author/verify.py"],
+      "exitCode": 0,
+      "stdout": "author-verifier.stdout.json",
+      "stderr": "author-verifier.stderr.txt",
+      "passed": 282,
+      "failed": 0
+    }
+  ],
+  "coverageCheck": {
+    "method": "Inline isolated standard-library Python compared Git changed paths with the author manifest/exclusions, original blobs, final decision and parsed original/replayed verifier JSON.",
+    "receipt": "packet-coverage.json",
+    "exitCode": 0,
+    "passed": 5,
+    "failed": 0
+  },
+  "lifecycle": "Both captured verifier commands completed in the tool invocation with exit 0; no session ID or background work remains. No target imports or native commands occurred.",
+  "metadataFailures": "official-metadata-fetch.json retains two zero-byte proxy 403 failures; signature validation unrun, no transport bypass/retry.",
+  "disposition": "ACCEPT_SOURCE_EVIDENCE; HOLD_EXTERNAL_INPUT / NOT_EXECUTABLE for setup and native work"
+}

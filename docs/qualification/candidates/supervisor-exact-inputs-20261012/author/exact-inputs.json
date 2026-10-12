@@ -1,0 +1,229 @@
+{
+  "status": "EXACT_INPUT_MAP_NATIVE_HOLD",
+  "base": "6cfb1f9a4d8acd66c5bd8d38d892d656fa3cd89e",
+  "scope": "Local Meri staging at inspection time; does not deny that a separate parent reader holds complete originals",
+  "localStagedFileCount": 11,
+  "alreadyVerifiedNoRelayNeeded": [
+    {
+      "member": "existing-run_supervised.py",
+      "localRole": "decoded original supervisor",
+      "bytes": 11124,
+      "sha256": "e37894e22b3bb290c8b8b8fb7aaf35f2d7b2868cc2d469214913953d1b4fc9df"
+    },
+    {
+      "member": "supervisor-source-review.json",
+      "bytes": 6659,
+      "sha256": "71bb9b1ae8648c51ffeccc79d78dd6134445df55aea023089ddd1f93f6aac613"
+    },
+    {
+      "member": "provenance-and-bindings.json",
+      "bytes": 15241,
+      "sha256": "983c22b7aaf0578b148579ca009c6d23603f4ab760b85936013b7e8991963c06"
+    },
+    {
+      "member": "inspect-ancestor-metadata.py",
+      "localRole": "unchanged repository source",
+      "bytes": 6297,
+      "sha256": "9514b8e8ad0aff24e1eea7e782dd32178d856011fafcb750ce2c0f9a715c6efd"
+    }
+  ],
+  "immediateMinimalRelay": [
+    {
+      "member": "candidate-hash-and-paths.json",
+      "expectedBytes": 60160,
+      "expectedSha256": "1817c1d72c2bbfafba943d0cbff4314ac210694a481565b5036a986087659d84",
+      "localStatus": "No complete member staged; only visible-candidate-differences.derived.json",
+      "neededContent": [
+        "complete executable-role before/after metadata comparison",
+        "complete opened-file identity and hash before/during/after record",
+        "complete ancestor comparison and final admission predicates"
+      ],
+      "exactOriginalJsonPointersKnown": false,
+      "reasonNotGuessingPointers": "The derivative does not preserve the original member's full object structure. Relay the exact identified member in bounded lossless chunks instead of inventing field paths.",
+      "knownDerivativePaths": [
+        "$.fullMemberPreservedOrVerified",
+        "$.actualComparisonSourceAvailable",
+        "$.reportedBooleans.executableBeforeOpenedAfterStable",
+        "$.reportedBooleans.pathIdentityAndPlainMetadataStable",
+        "$.reportedBooleans.allRecordedPathFieldsStable",
+        "$.reportedBooleans.boundedHashObservationAccepted"
+      ]
+    },
+    {
+      "member": "collect.ps1",
+      "expectedBytes": 23776,
+      "expectedSha256": "729298afadd57a97fe8325ff862d0e208befd9392b4befa5f91053dddfcd25e1",
+      "localStatus": "Not staged",
+      "neededContent": "Actual comparisons and boolean construction for the candidate-hash record, without executing or compiling the script",
+      "reason": "Visible delta arithmetic and supplied booleans cannot establish the exact original equality/acceptance predicate."
+    }
+  ],
+  "knownLocalDerivative": {
+    "file": "visible-candidate-differences.derived.json",
+    "bytes": 2946,
+    "sha256": "0d1521af3c4f3e2fa975f0ee7b381232599e95561da654bf853e0b76fd485af8",
+    "originalMemberPreservedOrVerified": false,
+    "visibleChanges": "LastAccessTime changes for root/Lib/DLLs ancestor ordinals1-3 only",
+    "cannotRecompute": "Truncated executable comparison and complete opened-handle/hash record",
+    "onlyAccessTimeChangedEverywhereEstablished": false,
+    "originalPredicateChanged": false
+  },
+  "wrapperConsumedRecords": [
+    {
+      "actionKey": "originalReceipt",
+      "exactOriginalMember": "originals/collector-command/receipt.json",
+      "expectedBytes": 1407,
+      "expectedSha256": "9b0b0633ce4f1bec0c59fa4acc8e1637f7236a1e1b87a4a5e2aae3fcbc302842",
+      "consumedJsonPaths": [
+        "$.retryAllowed",
+        "$.exitCode",
+        "$.sourceCommit",
+        "$.sourceTree",
+        "$.cwd",
+        "$.argv"
+      ],
+      "requiredValues": {
+        "retryAllowed": false,
+        "exitCode": 2,
+        "sourceCommit": "c225c4f6247c22c8906a23758477e431e3d88c15",
+        "sourceTree": "196ae19a744e40ba1a2b528daddeb42abe47ea94"
+      },
+      "argvRule": "Exactly one --output argument; its following value must equal action.originalOutput. Original cwd must equal action.repository.",
+      "availableReference": "provenance-and-bindings.json $.originalCollectorReceipt.{path,bytes,sha256}; proposal $.bindings",
+      "bodyPresentInNewZip": false,
+      "notEquivalentTo": "past-ancestor-command-receipt.json,2206bytes/SHA61650f0d9c78b4f009a51e68cd45d2e7278d4692c9307a597d1d51ceb9700510",
+      "minimalNextMetadata": "No need to resend known byte/hash pin. If original field content needs confirmation, return only the six consumed fields from this exact receipt, without public private-path values."
+    },
+    {
+      "actionKey": "sourceVerification",
+      "exactOriginalMember": "originals/source-verification.json",
+      "locationRule": "Sibling of collector-command beneath originalReceipt's originals directory",
+      "expectedBytes": null,
+      "expectedSha256": null,
+      "sourcePin": "SOURCE_VERIFICATION_SHA256=None",
+      "consumedJsonPaths": [
+        "$.files",
+        "$.files[*].path",
+        "$.files[*].bytes",
+        "$.files[*].sha256"
+      ],
+      "pathSemantics": "Repository-relative unique paths, not absolute file paths",
+      "currentBounds": {
+        "maxRows": 256,
+        "maxJsonBytes": 1048576,
+        "maxEachFileBytes": 1048576,
+        "maxAggregateFileBytes": 16777216
+      },
+      "bodyOrIdentityPresentInNewZip": false,
+      "minimalNextMetadata": "Exact original file byte count and SHA256, $.files length, row-key set and whether paths are repository-relative. Do not resend all source bodies or truncate rows.",
+      "unresolvedCount": "Prior audit says1538 tracked files; actual original $.files length/schema has not been received. If it is1538, current256-row bound is a source incompatibility requiring separate reviewed repair, not a permission gap."
+    },
+    {
+      "actionKey": "priorManifest",
+      "exactOriginalMember": null,
+      "sourcePin": "PRIOR_MANIFEST_SHA256=None",
+      "consumedJsonPaths": [
+        "$.files",
+        "$.files[*].path",
+        "$.files[*].bytes",
+        "$.files[*].sha256"
+      ],
+      "pathSemantics": "Absolute fixed-local original evidence paths, unique case-insensitively",
+      "currentBounds": {
+        "maxRows": 256,
+        "maxJsonBytes": 1048576,
+        "maxEachFileBytes": 1048576,
+        "maxAggregateFileBytes": 16777216
+      },
+      "potentialExistingSupplier": {
+        "referenceMember": "source-and-input-verification.json",
+        "referenceBytes": 42321,
+        "referenceSha256": "fbce57f071e94db5e7ceff03141fdc7bd9467e5b205965d45f93ae1fcd740400",
+        "referenceLocator": "provenance-and-bindings.json $.priorFullAuditReference",
+        "fieldWrittenByVerifiedCurrentSupervisorSource": "$.priorEvidenceFilesUnchanged[*].{path,bytes,sha256}",
+        "countFieldWrittenByVerifiedCurrentSupervisorSource": "$.priorEvidenceFileCount",
+        "bodyReceivedHere": false,
+        "coverageLimit": "The verified current source enumerates earlier output files before creating its own diagnostic destination. Historical execution source identity is unpinned; inspect the actual referenced record. Its list is not automatically all later evidence or the wrapper's $.files schema."
+      },
+      "minimalNextMetadata": "From the exact42321-byte prior audit, return $.priorEvidenceFileCount and complete $.priorEvidenceFilesUnchanged rows with the declared coverage boundary. This identifies whether an existing list can support a reviewed deterministic manifest; do not invent a new generic inventory.",
+      "newPacketManifestMismatch": "New ZIP $.files[*].name names13 packet members. It is neither $.files[*].path nor a complete list of original preserved evidence; it cannot be substituted."
+    }
+  ],
+  "executableBindings": {
+    "selectedPython": {
+      "actionKey": "selectedExecutable",
+      "knownBytes": 91648,
+      "knownSha256": "f1d8d2aa2a8ad7c74b6c6300b29cfdbcb484fc7ffad99b7fbfe1e31c048343b9",
+      "knownPrivatePathField": "NON_EXECUTABLE-proposal.json $.selectedExecutable (local semantic relay available)",
+      "versionMetadataIsDistributorTrust": false,
+      "fullIdentityPredicateLocallyRecomputed": false
+    },
+    "git": {
+      "privatePathAlreadyAvailable": [
+        "provenance-and-bindings.json $.currentGitPins.executable",
+        "provenance-and-bindings.json $.currentTrackedStatus.executable"
+      ],
+      "alreadyAvailableFields": [
+        "$.currentGitPins.arguments",
+        "$.currentGitPins.exitCode",
+        "$.currentGitPins.stdout",
+        "$.currentGitPins.stderr",
+        "$.currentGitPins.timeoutSeconds"
+      ],
+      "missingImmutableFields": [
+        "GIT_EXECUTABLE_BYTES",
+        "GIT_EXECUTABLE_SHA256"
+      ],
+      "pathConstantStillUnbound": "GIT_EXECUTABLE=None; known private path does not supply its missing identity",
+      "helperDistributorOrInstallationProvenanceEstablished": false,
+      "minimalNextMetadata": "If already recorded, provide the byte count, SHA256 and installation/distributor provenance for that SAME disclosed executable; no path rediscovery, target execution or new measurement is authorized here.",
+      "currentWrapperFileCapBytes": 1048576
+    }
+  },
+  "remainingActionFields": [
+    {
+      "field": "script",
+      "availablePrivateSource": "proposal $.diagnosticSource.path / $.argv[4]",
+      "identity": "6297bytes/SHA9514b8e8ad0aff24e1eea7e782dd32178d856011fafcb750ce2c0f9a715c6efd"
+    },
+    {
+      "field": "cwd",
+      "availablePrivateSource": "proposal $.cwd",
+      "rule": "Must equal script parent"
+    },
+    {
+      "field": "repository",
+      "availablePrivateSource": "proposal $.repository / $.argv[6]",
+      "rule": "Must equal original collector receipt $.cwd"
+    },
+    {
+      "field": "originalOutput",
+      "availablePrivateSource": "proposal $.originalOutput / $.argv[8]",
+      "rule": "Must equal the value following original collector receipt's unique --output"
+    },
+    {
+      "field": "destination",
+      "availablePrivateSource": null,
+      "rule": "A separately caller-designated and authorized unused destination PATH, disjoint from source/output/script trees. It must not pre-exist: the wrapper creates and reserves the directory with mkdir(exist_ok=False). The historical occupied destination is not reusable."
+    }
+  ],
+  "notSolvedByAnotherPacketRelay": [
+    "actual enclosing watchdog interface/ownership and full-invocation hard deadline/physical-exit qualification",
+    "specific one-action execution permission",
+    "native filesystem/pipe/runtime/distributor/loaded-closure qualification",
+    "source repair if actual original verification or executable sizes exceed current bounds"
+  ],
+  "admissionChanged": false,
+  "privateBodiesPublished": false,
+  "nativeExecution": false,
+  "g1Accepted": false,
+  "canonicalIdentityPredicates": {
+    "source": "scripts/qualification/worker_runner_inventory.py identity",
+    "includedTimestampFields": [
+      "st_mtime_ns",
+      "st_ctime_ns"
+    ],
+    "excludedTimestampField": "st_atime_ns",
+    "privateComparisonDistinct": "The derived candidate records visible LastAccessTime changes; the private collect.ps1 equality predicate remains unresolved. No canonical predicate is changed or inferred from the private aggregate booleans."
+  }
+}

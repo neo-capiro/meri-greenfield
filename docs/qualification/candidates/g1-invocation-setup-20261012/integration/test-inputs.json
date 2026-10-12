@@ -1,0 +1,34 @@
+{
+  "independentReplayEnvironment": {
+    "MERI_REVIEW_SOURCE_ROOT": "/workspace/meri-g1-invocation-setup-20261012"
+  },
+  "reviewerCommit": "eb59a3f3e3c0ddb7f549e7063387093bf9bb66b6",
+  "testAndHarnessCopiesMatchIntegrated": [
+    {
+      "path": "docs/qualification/candidates/durable-invocation-20261012/review/invocation-independent.test.mjs",
+      "bytes": 16777,
+      "sha256": "481942b2a489b5deed40da8b5c264012198436ad0eb982e29e9eb36487b3a91b"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-invocation-20261012/review/exposed-marker-independent.test.mjs",
+      "bytes": 1097,
+      "sha256": "2de4c6bbfbfdf68ce2c190f460e87d3e93be7f864569193fe4256b3d8db14208"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-invocation-20261012/review/private-composition-injection.test.mjs",
+      "bytes": 1149,
+      "sha256": "2a1aacc7109c223d23e42aa37774b65c6867bc98693bae7f783e320f8cf34687"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-invocation-20261012/review/invocation-harness.mjs",
+      "bytes": 12240,
+      "sha256": "de2589e662788859c97fd54afd37730309e90db3ed8ad067711348baf68a741a"
+    }
+  ],
+  "rootSourceDependencies": {
+    "action": "Copied existing scripts-disabled root node_modules from preserved PR18 worktree; no acquisition or hooks",
+    "canonicalLockSha256": "b2293773bf4ddc6d23425b7d718b79575384679999b86fd3caad78e6eda4a42d",
+    "lockUnchanged": true
+  },
+  "targetRuntimeArtifactsAcquired": false
+}

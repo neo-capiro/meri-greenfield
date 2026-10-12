@@ -81,7 +81,7 @@ export function createToolDispatch({ catalog, authority, budget, limits, now, ne
       context.observeAuthority(release);
       await context.retain({ current: release, normalized, result });
       const settlement = parseRawJson(await lifetime.run(signal => budget.settle({ reservationId, outcome: 'completed',
-        outputBytes: Buffer.byteLength(outputJson, 'utf8'), signal })), limits.maxResponseBytes, 'BUDGET_UNCERTAIN');
+        outputBytes: Buffer.byteLength(outputJson, 'utf8'), resultSha256: canonicalSha256(output), signal })), limits.maxResponseBytes, 'BUDGET_UNCERTAIN');
       exactKeys(settlement, ['reservationId', 'decision'], 'BUDGET_UNCERTAIN');
       if (settlement.reservationId !== reservationId || settlement.decision !== 'settled') deny('BUDGET_UNCERTAIN');
       settled = true;

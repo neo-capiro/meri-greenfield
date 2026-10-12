@@ -1,0 +1,29 @@
+{
+  "command": [
+    "python3",
+    "docs/qualification/candidates/durable-invocation-20261012/review/verify-source.py",
+    "/workspace/meri-durable-invocation-20261012",
+    "9d8358ba559134d82265f07840fd537943302090"
+  ],
+  "cwd": "/workspace/meri-durable-invocation-review-20261012",
+  "sourceRoot": null,
+  "startUnixSeconds": 1791790584.9363923,
+  "elapsedSeconds": 9.231571674346924,
+  "exitCode": 0,
+  "ownedPidAndGroup": 101573,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "reapedDescendants": [],
+  "streams": {
+    "stdout": {
+      "path": "exact-source.stdout.txt",
+      "bytes": 3264,
+      "sha256": "40c1b53b94081106d36b590a96eb39391a1f615b1c8428d6850d212606cb7375"
+    },
+    "stderr": {
+      "path": "exact-source.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

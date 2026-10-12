@@ -1,0 +1,30 @@
+✖ original-deadline-only while completion marker ACK is parked prevents automatic settlement after late ACK (41.126951ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1101.466149
+
+✖ failing tests:
+
+test at docs/qualification/candidates/durable-invocation-20261012/review/invocation-independent.test.mjs:84:64
+✖ original-deadline-only while completion marker ACK is parked prevents automatic settlement after late ACK (41.126951ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'SETTLED'
+  - 'UNKNOWN'
+  
+      at TestContext.<anonymous> (file:///workspace/meri-durable-invocation-review-20261012/docs/qualification/candidates/durable-invocation-20261012/review/invocation-independent.test.mjs:88:43)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'SETTLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

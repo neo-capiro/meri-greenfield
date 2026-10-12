@@ -1,0 +1,57 @@
+{
+  "observedAt": "2026-10-12T07:04:34.503744+00:00",
+  "method": "web read of primary official documentation; no package/payload acquisition",
+  "sources": [
+    {
+      "url": "https://www.postgresql.org/download/linux/debian/",
+      "assessment": "Official PGDG channel supports Debian trixie13 amd64 and describes apt integration. This establishes supported channel/OS architecture, not support for relocating an extracted binary distribution into an arbitrary owned prefix."
+    },
+    {
+      "url": "https://manpages.debian.org/trixie/dpkg/dpkg-deb.1.en.html",
+      "assessment": "--extract copies the filesystem tree to a requested directory, separate from dpkg installation. The manual warns extraction does not provide correct installation; parser/extraction boundaries and dependency/configuration closure remain separate. No extraction performed."
+    },
+    {
+      "url": "https://www.postgresql.org/docs/17/install-make.html",
+      "assessment": "Official source-build installation options describe prefix and warn relative subdirectory changes can make an installation non-relocatable. Source-build guidance does not attest to the exact chosen PGDG binary configuration, loaders or extensions."
+    },
+    {
+      "url": "https://wiki.postgresql.org/wiki/Apt/FAQ",
+      "assessment": "PGDG describes same Debian source and postgresql-common infrastructure and normally ships libpq from latest stable major in main. Server/client/libpq exact package constraints must be resolved, not assumed to share a major or be interchangeable."
+    },
+    {
+      "url": "https://www.psycopg.org/psycopg3/docs/basic/install.html",
+      "assessment": "Current page identifies itself as3.3.7.dev1, so its support table is not exact3.3.3 evidence. General pure-Python mode dynamically uses libpq; binary mode bundles client libraries. Exact3.3.3 backend/version/platform closure remains required."
+    },
+    {
+      "url": "https://manpages.debian.org/trixie/postgresql-common/pg_createcluster.1.en.html",
+      "assessment": "Official infrastructure documentation describes server-package default cluster creation, system configuration/HBA/log paths and potential ambient certificates. Normal package installation is outside the proposed setup-only no-init/service/credential scope."
+    },
+    {
+      "url": "https://packages.debian.org/trixie/postgresql-17",
+      "assessment": "Rendered official Debian trixie server listing identifies17.11-0+deb13u1 and broad native/infrastructure dependencies including postgresql-common, LLVM19, ICU76 and ssl-cert. This is a distinct official-channel lead, not absence of packages, an authenticated dependency closure, or supported relocated runtime."
+    },
+    {
+      "url": "https://packages.debian.org/trixie/postgresql-client-17",
+      "assessment": "Rendered official Debian client listing identifies17.11-0+deb13u1 and requires libpq5>=17.11 plus native libraries and postgresql-client-common. No .deb/source payload link followed."
+    },
+    {
+      "url": "https://apt.postgresql.org/pub/repos/apt/dists/trixie-pgdg/InRelease",
+      "assessment": "Web renderer exposes trixie-pgdg Origin and11Oct2026 Date with amd64 architecture and checksum entries. Exact raw fetch via saved environment failed403; rendered/partial output is not a verified signature or exact retained InRelease identity."
+    }
+  ],
+  "failedWebReads": [
+    {
+      "url": "https://www.postgresql.org/docs/17/install-post.html",
+      "outcome": "Tool Internal Error; no substantive evidence used"
+    },
+    {
+      "url": "https://sources.debian.org/src/postgresql-17/17.6-0%2Bdeb13u1/debian/rules/",
+      "outcome": "Not accessible via web tool; guessed-version location supplies no selected artifact or packaging evidence"
+    },
+    {
+      "url": "https://www.postgresql.org/media/keys/ACCC4CF8.asc",
+      "outcome": "Web tool Internal Error after exact-byte environment fetch failed403; no retained key or signature verification."
+    }
+  ],
+  "retention": "Paraphrases and URLs only, no full copyrighted documentation copy. Exact author package/signature records still require independent byte/hash checks. No private paths/bodies acquired."
+}
