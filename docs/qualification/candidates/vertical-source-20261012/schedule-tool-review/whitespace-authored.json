@@ -1,0 +1,33 @@
+{
+  "command": [
+    "git",
+    "diff",
+    "--check",
+    "d7bd22361f232211a6c1ec6b8d67115cfe36ebbd",
+    "HEAD",
+    "--",
+    "docs/coordination/reports/CODEX-SCHEDULE-TOOL-INTERFACE-REVIEW-20261012.md",
+    "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/audit-packet.py",
+    "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/audit-source.py",
+    "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/author-packet-audit-result.json",
+    "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/author-packet-audit.json",
+    "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/capture-reaped.py",
+    "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/criteria.json",
+    "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/dependency-setup.json",
+    "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/fixture-correction.json",
+    "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/independent-expanded.json",
+    "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/independent-initial.json",
+    "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/instruction-before.json",
+    "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/instruction-repaired.json",
+    "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/metadata-lookup-failures.json",
+    "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/original-and-author-final.json",
+    "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/source-audit-first.json",
+    "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/source-audit-result.json",
+    "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/verdict.json",
+    "packages/contracts/test/schedule-tool-independent.test.mjs"
+  ],
+  "exitCode": 0,
+  "stdout": "",
+  "stderr": "",
+  "scope": "Review-authored text; excludes retained raw .bin streams only"
+}
