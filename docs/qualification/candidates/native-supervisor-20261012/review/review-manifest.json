@@ -1,0 +1,318 @@
+{
+  "selfExcluded": "docs/qualification/candidates/native-supervisor-20261012/review/review-manifest.json",
+  "files": [
+    {
+      "path": "docs/coordination/reports/MERI-NATIVE-SUPERVISOR-REVIEW-20261012.md",
+      "bytes": 8928,
+      "sha256": "8d56ac69f9b8d62950d2ceb75e4e868f08b6c40d6803da067bdc6340e52cffc1"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/acceptance-receipt.json",
+      "bytes": 1418,
+      "sha256": "a53e3c2a7fe6532c63e372a766716221015dd7e5a3967b059b52c2ac3eaa1e31"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/current-source-analysis.json",
+      "bytes": 5861,
+      "sha256": "cfbd9cfed067fafdbd4efb016499be95685bbbcaced5d7190dcd641ffd635644"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/deadline-mutant-command.json",
+      "bytes": 597,
+      "sha256": "0834e9be545592bda5a37aaba9bd391d8a0e6cb3330222034c5ac5f5d320ec2c"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/deadline-mutant.json",
+      "bytes": 6943,
+      "sha256": "a69bedaf1eb279a948c1e5b25722b58793b4fd93199616bb64740df8d33cd73b"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/deadline-mutant.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/deadline-mutant.stdout.txt",
+      "bytes": 5119,
+      "sha256": "4502666b6dcc661ca42c67e57125287f39e268f227dbcd25b7bb17cd195f47b7"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/deadline-removal-mutant.py.txt",
+      "bytes": 7149,
+      "sha256": "76fcf710897390fb25f78ba738cfe55a243df947f19500a6b173614310e6eda9"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/final-author-command.json",
+      "bytes": 567,
+      "sha256": "d6b177f2e055a422220e36749aace599ab012dcd722a7010b7f9ed6c50a855f0"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/final-author.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/final-author.stdout.txt",
+      "bytes": 1400,
+      "sha256": "82b0977be106133c6db289bea1aa804b6bbd40a22fc6e71668fcff79c93dfd79"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/final-lifecycle-command.json",
+      "bytes": 849,
+      "sha256": "0119cacea339d1962364c44ab0a65eef8e44e496e8fd752b57c6235d339dd854"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/final-lifecycle.json",
+      "bytes": 9151,
+      "sha256": "4cdfda76db79a1d9162519c4aef9c8436c963002a8839a1dcbc918b11420cb0b"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/final-lifecycle.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/final-lifecycle.stdout.txt",
+      "bytes": 6677,
+      "sha256": "7653b7b3ecd63656e59fcfe777d09b35412afde51697c21a91b6276ead3ff33a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/final-source-audit-command.json",
+      "bytes": 876,
+      "sha256": "ce060151eace52f907e7637907ecda2f0188f2723a92d9cb5ea9de67b8f13f55"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/final-source-audit.json",
+      "bytes": 16006,
+      "sha256": "cd724b343407fcfd4f50aa5788a36134af68450b0f74dec368bf2cb72b6add7e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/final-source-audit.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/final-source-audit.stdout.txt",
+      "bytes": 12534,
+      "sha256": "e3416645bc071828e8cdc080e2c3cb8d69e16b0c9e141e66024fa480b194459b"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/first-draft-lifecycle.py.txt",
+      "bytes": 7322,
+      "sha256": "e011bdaf84b37e3159f1762aa086c08d56bf7e86a8d309e844447a040e223982"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/first-inert-command.json",
+      "bytes": 676,
+      "sha256": "a7a58513441d06108ae6300411ff533ae5bf3f8c9f079062d8466837fff42e95"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/first-inert-results.json",
+      "bytes": 6792,
+      "sha256": "a639cb18466304a357879f574518629f88f197192c143c58f98233e0106428ca"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/first-inert.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/first-inert.stdout.txt",
+      "bytes": 5012,
+      "sha256": "7ece41f45ecc5023702ddd8232417db54e47e7093e3eb4c6365699911e66e92e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/freeze-0217137-author-command.json",
+      "bytes": 566,
+      "sha256": "fb8a23591dac208b12b0e3418f782ef2ef852ebcc40db7c3c1fe34c01cba1e0b"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/freeze-0217137-author.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/freeze-0217137-author.stdout.txt",
+      "bytes": 1309,
+      "sha256": "099f0b79fc713f412fa892d00cd58cebe8e9c303e52aa193b8fb65a2b1e498a4"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/freeze-0217137-lifecycle-command.json",
+      "bytes": 858,
+      "sha256": "591e195dd7642fa9a050adea7c5f4f9b41d23bf5fa63167ec5416d713303c16e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/freeze-0217137-lifecycle-source.py.txt",
+      "bytes": 7576,
+      "sha256": "7f56c4c4cbc6907309cce5d753fe3c05bb895e30a0b813d42f9884d475cf242b"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/freeze-0217137-lifecycle.json",
+      "bytes": 8049,
+      "sha256": "7f40b3ab35b73fa58cba4330fa5fbd0044af4def47ba53947d3f4b804f296dfa"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/freeze-0217137-lifecycle.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/freeze-0217137-lifecycle.stdout.txt",
+      "bytes": 5933,
+      "sha256": "159a906ab89e1173873295eea796e9ca992a4e04bac772b5ca09ae8928507ac3"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/frozen-criteria.json",
+      "bytes": 5294,
+      "sha256": "309fb4b29201c5a0e60385c8c0f35a8d8ac888daf044959c6bfa2dd4462c62d2"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/inert-control-matrix.json",
+      "bytes": 3011,
+      "sha256": "c60483b3c58e1b6743651d2b81c44c5f40209d784cbd66a5d057902d6e78164e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/late-read-before-command.json",
+      "bytes": 790,
+      "sha256": "e180502f72ac7c1913e7a546dd733bbc0e0438a326873e885c0e4d20512ebe9a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/late-read-before.json",
+      "bytes": 8789,
+      "sha256": "b8ccc19d2d77cacd959f9dc4127d538f8c7edc1e75444215796dce7cfed84acb"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/late-read-before.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/late-read-before.stdout.txt",
+      "bytes": 6399,
+      "sha256": "067d574540574f7fb111968d0992198d67d58dbfe1989fd23a26413fb81f0d97"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/lifecycle-controls.py",
+      "bytes": 8468,
+      "sha256": "2a18cb8d351281541c91a99428e0db67b6daa525ca6f71a744ce8eea05e35af7"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/outline.json",
+      "bytes": 1015,
+      "sha256": "d2695bbfabaa303905ca6abc704076055dc37805624fa910332c4336974d1d85"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/packet-author-command.json",
+      "bytes": 629,
+      "sha256": "91d507c0d388e8b39be516dd1f3ace53fa453d63309a2d66fe07da31d75e6edd"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/packet-author.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/packet-author.stdout.txt",
+      "bytes": 1400,
+      "sha256": "82b0977be106133c6db289bea1aa804b6bbd40a22fc6e71668fcff79c93dfd79"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/packet-lifecycle-command.json",
+      "bytes": 913,
+      "sha256": "e5578f728a459b97f81adbf682b094709dbddeb7675ed718e37fab815d529c20"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/packet-lifecycle.json",
+      "bytes": 9151,
+      "sha256": "4cdfda76db79a1d9162519c4aef9c8436c963002a8839a1dcbc918b11420cb0b"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/packet-lifecycle.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/packet-lifecycle.stdout.txt",
+      "bytes": 6677,
+      "sha256": "7653b7b3ecd63656e59fcfe777d09b35412afde51697c21a91b6276ead3ff33a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/reader-status-before-command.json",
+      "bytes": 600,
+      "sha256": "fa0d809394c620b22cc3d86b2576f7bcdc92d49196966d49e913f9d467263fb5"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/reader-status-before.json",
+      "bytes": 6941,
+      "sha256": "29efb5fe4a8149f5bd0869dcff8dedd4f1e5f16c212a9a49394f27ef956b4903"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/reader-status-before.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/reader-status-before.stdout.txt",
+      "bytes": 5117,
+      "sha256": "10936cfd371e6ed59afe5b03ba933e3e3e65edbe85b23132ea2f9aa059172142"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/reader-status-repaired-command.json",
+      "bytes": 641,
+      "sha256": "ff1c3783448c33ca57b1c980afe577d4c94e11e1babd022bd304224eff47329b"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/reader-status-repaired-source.py.txt",
+      "bytes": 7576,
+      "sha256": "7f56c4c4cbc6907309cce5d753fe3c05bb895e30a0b813d42f9884d475cf242b"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/reader-status-repaired.json",
+      "bytes": 8049,
+      "sha256": "7f40b3ab35b73fa58cba4330fa5fbd0044af4def47ba53947d3f4b804f296dfa"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/reader-status-repaired.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/reader-status-repaired.stdout.txt",
+      "bytes": 5933,
+      "sha256": "159a906ab89e1173873295eea796e9ca992a4e04bac772b5ca09ae8928507ac3"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/source-audit.py",
+      "bytes": 10053,
+      "sha256": "5d948221c28197f3337aa060b37009b76ed8477e163b778ed2701d5016453478"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/source-freeze-prepacket-audit-command.json",
+      "bytes": 815,
+      "sha256": "0503ca5b0ac9de644c632e54fff69f9ba481bc78166b4e4ca293a43e4bc9535d"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/source-freeze-prepacket-audit-note.json",
+      "bytes": 342,
+      "sha256": "8205f2d6e85e53a50f8215a18732343ce217f913c63b27c32ac249cb2eb482ab"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/source-freeze-prepacket-audit.json",
+      "bytes": 11848,
+      "sha256": "36da5f07b99f9a3bca78758039fe1f9654c8a42ab8460e69f9afbc5d7e7b3733"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/source-freeze-prepacket-audit.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/review/source-freeze-prepacket-audit.stdout.txt",
+      "bytes": 9054,
+      "sha256": "d27659550d9d31d7beddc41d385fc28264b2f30041e29180caba9ed7300ebee5"
+    }
+  ],
+  "sourceFreeze": "a9d5d849fe3065ee1aec2b17806e6b6219a511c7",
+  "packetFreeze": "724850cb6cc84c8381fb52aec23b582e0e3b5872",
+  "privateOriginalBodiesIncluded": false
+}

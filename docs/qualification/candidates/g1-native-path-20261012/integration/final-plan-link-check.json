@@ -1,0 +1,67 @@
+{
+  "reviewCommit": "4da0af87d7e34e0fcdaeec2ab1c520437eaf5af4",
+  "planSha256": "9e786e216e6c43de8202d7bd407975fc70987e53bd87ff2a9fc01840de094f04",
+  "links": [
+    {
+      "target": "MERI-DEPLOYMENT.md",
+      "exists": true
+    },
+    {
+      "target": "../qualification/candidates/g1-native-path-20261012/integration/pr-stack-observation.json",
+      "exists": true
+    },
+    {
+      "target": "../qualification/candidates/g1-native-path-20261012/integration/pr-stack-ancestry.json",
+      "exists": true
+    },
+    {
+      "target": "../coordination/reports/MERI-MEMORY-SOURCE-INTEGRATION-20261012.md",
+      "exists": true
+    },
+    {
+      "target": "../../apps/control/qualification-sdk-fixture/service/control.mjs",
+      "exists": true
+    },
+    {
+      "target": "../../apps/gateway/budget/README.md",
+      "exists": true
+    },
+    {
+      "target": "../../apps/control/qualification-temporal/README.md",
+      "exists": true
+    },
+    {
+      "target": "../../apps/worker/qualification/README.md",
+      "exists": true
+    },
+    {
+      "target": "../coordination/reports/MERI-G1-RECOVERY-SANDBOX-INTEGRATION-20261012.md",
+      "exists": true
+    },
+    {
+      "target": "../coordination/reports/MERI-NATIVE-SUPERVISOR-REVIEW-20261012.md",
+      "exists": true
+    },
+    {
+      "target": "../qualification/candidates/g1-execution-options-20261012/author/image-options.json",
+      "exists": true
+    },
+    {
+      "target": "../qualification/candidates/ubuntu-source-assessment-20261012/author/obligations-54.json",
+      "exists": true
+    },
+    {
+      "target": "../coordination/reports/MERI-G1-EXECUTION-OPTIONS-20261012.md",
+      "exists": true
+    },
+    {
+      "target": "../qualification/candidates/g1-execution-options-20261012/author/execution-plan.json",
+      "exists": true
+    },
+    {
+      "target": "../../apps/gateway/test/postgres-budget.integration.mjs",
+      "exists": true
+    }
+  ],
+  "allExist": true
+}

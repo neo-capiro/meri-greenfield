@@ -1,0 +1,288 @@
+{
+  "scope": "CURRENT_PRIVATE_SOURCE_ONLY",
+  "sourceBytes": 11124,
+  "sourceSha256": "e37894e22b3bb290c8b8b8fb7aaf35f2d7b2868cc2d469214913953d1b4fc9df",
+  "historicalExecutionBindingProven": false,
+  "sourceParsedWithoutImportOrExecution": true,
+  "sourcePathOrBodyPublished": false,
+  "capabilitiesObserved": [
+    "Popen",
+    "Thread",
+    "ZipFile",
+    "check_output",
+    "close",
+    "info",
+    "join",
+    "kill",
+    "mkdir",
+    "read",
+    "read_bytes",
+    "rglob",
+    "save",
+    "verify_original_source",
+    "wait",
+    "write_bytes"
+  ],
+  "callLocations": [
+    {
+      "operation": "read_bytes",
+      "line": 15,
+      "endLine": 15
+    },
+    {
+      "operation": "write_bytes",
+      "line": 16,
+      "endLine": 16
+    },
+    {
+      "operation": "rglob",
+      "line": 19,
+      "endLine": 19
+    },
+    {
+      "operation": "info",
+      "line": 20,
+      "endLine": 20
+    },
+    {
+      "operation": "mkdir",
+      "line": 21,
+      "endLine": 21
+    },
+    {
+      "operation": "read_bytes",
+      "line": 27,
+      "endLine": 27
+    },
+    {
+      "operation": "read_bytes",
+      "line": 32,
+      "endLine": 32
+    },
+    {
+      "operation": "info",
+      "line": 35,
+      "endLine": 35
+    },
+    {
+      "operation": "read_bytes",
+      "line": 38,
+      "endLine": 38
+    },
+    {
+      "operation": "check_output",
+      "line": 41,
+      "endLine": 41
+    },
+    {
+      "operation": "check_output",
+      "line": 42,
+      "endLine": 42
+    },
+    {
+      "operation": "check_output",
+      "line": 43,
+      "endLine": 43
+    },
+    {
+      "operation": "read_bytes",
+      "line": 45,
+      "endLine": 45
+    },
+    {
+      "operation": "verify_original_source",
+      "line": 55,
+      "endLine": 55
+    },
+    {
+      "operation": "save",
+      "line": 58,
+      "endLine": 58
+    },
+    {
+      "operation": "read",
+      "line": 68,
+      "endLine": 68
+    },
+    {
+      "operation": "Popen",
+      "line": 76,
+      "endLine": 76
+    },
+    {
+      "operation": "Thread",
+      "line": 77,
+      "endLine": 77
+    },
+    {
+      "operation": "kill",
+      "line": 81,
+      "endLine": 81
+    },
+    {
+      "operation": "wait",
+      "line": 83,
+      "endLine": 83
+    },
+    {
+      "operation": "kill",
+      "line": 88,
+      "endLine": 88
+    },
+    {
+      "operation": "wait",
+      "line": 89,
+      "endLine": 89
+    },
+    {
+      "operation": "join",
+      "line": 92,
+      "endLine": 92
+    },
+    {
+      "operation": "close",
+      "line": 93,
+      "endLine": 93
+    },
+    {
+      "operation": "close",
+      "line": 93,
+      "endLine": 93
+    },
+    {
+      "operation": "write_bytes",
+      "line": 97,
+      "endLine": 97
+    },
+    {
+      "operation": "info",
+      "line": 97,
+      "endLine": 97
+    },
+    {
+      "operation": "save",
+      "line": 106,
+      "endLine": 106
+    },
+    {
+      "operation": "save",
+      "line": 116,
+      "endLine": 119
+    },
+    {
+      "operation": "verify_original_source",
+      "line": 120,
+      "endLine": 120
+    },
+    {
+      "operation": "info",
+      "line": 123,
+      "endLine": 123
+    },
+    {
+      "operation": "read_bytes",
+      "line": 124,
+      "endLine": 124
+    },
+    {
+      "operation": "info",
+      "line": 124,
+      "endLine": 124
+    },
+    {
+      "operation": "save",
+      "line": 125,
+      "endLine": 139
+    },
+    {
+      "operation": "info",
+      "line": 130,
+      "endLine": 130
+    },
+    {
+      "operation": "info",
+      "line": 131,
+      "endLine": 131
+    },
+    {
+      "operation": "info",
+      "line": 133,
+      "endLine": 133
+    },
+    {
+      "operation": "read_bytes",
+      "line": 143,
+      "endLine": 143
+    },
+    {
+      "operation": "save",
+      "line": 144,
+      "endLine": 144
+    },
+    {
+      "operation": "read_bytes",
+      "line": 145,
+      "endLine": 145
+    },
+    {
+      "operation": "ZipFile",
+      "line": 147,
+      "endLine": 147
+    },
+    {
+      "operation": "ZipFile",
+      "line": 149,
+      "endLine": 149
+    },
+    {
+      "operation": "read",
+      "line": 152,
+      "endLine": 152
+    },
+    {
+      "operation": "info",
+      "line": 153,
+      "endLine": 153
+    },
+    {
+      "operation": "write_bytes",
+      "line": 156,
+      "endLine": 156
+    }
+  ],
+  "findings": [
+    {
+      "id": "N1",
+      "finding": "Top-level source allocates a fixed destination and executes native child; safe import not supported."
+    },
+    {
+      "id": "N2",
+      "finding": "Pre/post Git, recursive evidence enumeration, complete-file hashing and packaging fall outside15second execution interval; no aggregate bound."
+    },
+    {
+      "id": "N3",
+      "finding": "Synchronous process creation, kill/wait, thread joins and stream close do not establish hard total-time preemption; additional3second waits and2seconds per reader are distinct."
+    },
+    {
+      "id": "N4",
+      "finding": "Reader-thread completion implies EOF only in absence of reader errors; missing/late EOF, live reader and output overflow must remain failure/UNKNOWN."
+    },
+    {
+      "id": "N5",
+      "finding": "Direct-child physical exit is separate from descendant teardown; source already labels descendants unqualified."
+    },
+    {
+      "id": "N6",
+      "finding": "Selected executable name derives from original receipt but current selected bytes/handle invariants are not independently pinned by this wrapper."
+    },
+    {
+      "id": "N7",
+      "finding": "Current wrapper hash is newly verified; old command receipt did not bind it, so historical execution source remains unproven."
+    },
+    {
+      "id": "N8",
+      "finding": "Supporting identity JSON filenames/bytes not supplied; reported identity/hash-refusal observations are not independently verified by this review."
+    }
+  ],
+  "proposedCriteriaStatus": "AWAITING_EXACT_ROOT_SOURCE_ALLOCATION"
+}

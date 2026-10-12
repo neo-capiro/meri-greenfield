@@ -1,0 +1,454 @@
+{
+  "candidate": "a9d5d849fe3065ee1aec2b17806e6b6219a511c7",
+  "tree": "e33df8ccc21fa59a10ae16f33463e3233ff73202",
+  "base": "e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5",
+  "changedFiles": 20,
+  "manifestMembers": 16,
+  "sources": [
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/author/run-supervised.py",
+      "bytes": 16402,
+      "sha256": "ccb6dba27ef3c2991df96c553ba21b097eeb243e4c86666b3cb8a8b7df7dfe3f"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/author/supervision.py",
+      "bytes": 7846,
+      "sha256": "418ad3d9a5537f5ab4f97ddc748ab3529e4d491919e171c52754f772d69be142"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/author/source-checks.py",
+      "bytes": 7912,
+      "sha256": "0de6b33e0d75600037133c2447ef084faa05478a993a2aa865f93096e3b8ba50"
+    }
+  ],
+  "facts": [
+    {
+      "case": "exact-candidate-head",
+      "passed": false,
+      "detail": null
+    },
+    {
+      "case": "candidate-worktree-clean",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "only-allocated-new-files",
+      "passed": true,
+      "detail": [
+        [
+          "A",
+          "docs/coordination/reports/MERI-NATIVE-SUPERVISOR-20261012.md"
+        ],
+        [
+          "A",
+          "docs/coordination/tasks/MERI-NATIVE-SUPERVISOR-20261012.md"
+        ],
+        [
+          "A",
+          "docs/qualification/candidates/native-supervisor-20261012/author/checks-final.stderr.txt"
+        ],
+        [
+          "A",
+          "docs/qualification/candidates/native-supervisor-20261012/author/checks-final.stdout.json"
+        ],
+        [
+          "A",
+          "docs/qualification/candidates/native-supervisor-20261012/author/checks-first.stderr.txt"
+        ],
+        [
+          "A",
+          "docs/qualification/candidates/native-supervisor-20261012/author/checks-first.stdout.json"
+        ],
+        [
+          "A",
+          "docs/qualification/candidates/native-supervisor-20261012/author/checks-freeze.stderr.txt"
+        ],
+        [
+          "A",
+          "docs/qualification/candidates/native-supervisor-20261012/author/checks-freeze.stdout.json"
+        ],
+        [
+          "A",
+          "docs/qualification/candidates/native-supervisor-20261012/author/checks-late-read-fix.stderr.txt"
+        ],
+        [
+          "A",
+          "docs/qualification/candidates/native-supervisor-20261012/author/checks-late-read-fix.stdout.json"
+        ],
+        [
+          "A",
+          "docs/qualification/candidates/native-supervisor-20261012/author/checks-second.stderr.txt"
+        ],
+        [
+          "A",
+          "docs/qualification/candidates/native-supervisor-20261012/author/checks-second.stdout.json"
+        ],
+        [
+          "A",
+          "docs/qualification/candidates/native-supervisor-20261012/author/checks-third.stderr.txt"
+        ],
+        [
+          "A",
+          "docs/qualification/candidates/native-supervisor-20261012/author/checks-third.stdout.json"
+        ],
+        [
+          "A",
+          "docs/qualification/candidates/native-supervisor-20261012/author/current-source-review.json"
+        ],
+        [
+          "A",
+          "docs/qualification/candidates/native-supervisor-20261012/author/freeze-receipt.json"
+        ],
+        [
+          "A",
+          "docs/qualification/candidates/native-supervisor-20261012/author/late-read-fix-receipt.json"
+        ],
+        [
+          "A",
+          "docs/qualification/candidates/native-supervisor-20261012/author/run-supervised.py"
+        ],
+        [
+          "A",
+          "docs/qualification/candidates/native-supervisor-20261012/author/source-checks.py"
+        ],
+        [
+          "A",
+          "docs/qualification/candidates/native-supervisor-20261012/author/supervision.py"
+        ]
+      ]
+    },
+    {
+      "case": "original-application-and-guards-unmodified",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "protected-original:scripts/qualification/worker_runner_capture.py",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "protected-original:scripts/qualification/worker_runner_inventory.py",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "protected-original:scripts/qualification/worker_image_build.py",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "protected-original:scripts/qualification/worker_build_binding.py",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "protected-original:docs/qualification/candidates/native-ancestor-diagnosis-20261012/inspect-ancestor-metadata.py",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "historical-author-manifest:checks-final.stderr.txt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "historical-author-manifest:checks-final.stdout.json",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "historical-author-manifest:checks-first.stderr.txt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "historical-author-manifest:checks-first.stdout.json",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "historical-author-manifest:checks-freeze.stderr.txt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "historical-author-manifest:checks-freeze.stdout.json",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "historical-author-manifest:checks-second.stderr.txt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "historical-author-manifest:checks-second.stdout.json",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "historical-author-manifest:checks-third.stderr.txt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "historical-author-manifest:checks-third.stdout.json",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "historical-author-manifest:current-source-review.json",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "historical-author-manifest:run-supervised.py",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "historical-author-manifest:source-checks.py",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "historical-author-manifest:supervision.py",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "historical-evidence-unchanged:checks-final.stderr.txt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "historical-evidence-unchanged:checks-final.stdout.json",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "historical-evidence-unchanged:checks-first.stderr.txt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "historical-evidence-unchanged:checks-first.stdout.json",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "historical-evidence-unchanged:checks-freeze.stderr.txt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "historical-evidence-unchanged:checks-freeze.stdout.json",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "historical-evidence-unchanged:checks-second.stderr.txt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "historical-evidence-unchanged:checks-second.stdout.json",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "historical-evidence-unchanged:checks-third.stderr.txt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "historical-evidence-unchanged:checks-third.stdout.json",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "historical-evidence-unchanged:current-source-review.json",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "followup-author-manifest:supervision.py",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "followup-author-manifest:source-checks.py",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "followup-author-manifest:run-supervised.py",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "followup-author-manifest:checks-late-read-fix.stdout.json",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "followup-author-manifest:checks-late-read-fix.stderr.txt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "author-combined-manifest-complete-self-exclusion",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "historical-freeze-receipt-unchanged",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "syntax-and-exact-current-bytes:run-supervised.py",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "syntax-and-exact-current-bytes:supervision.py",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "syntax-and-exact-current-bytes:source-checks.py",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "unresolved-immutable-pins-refuse",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "exact-selected-executable-pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "canonical-diagnostic-pin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "admission-does-not-use-assert",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "top-level-safe-declarations",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "cli-explicit-hold",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "refusal-before-all-future-ports",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "one-budget-no-phase-reset",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "selected-and-git-hash-before-native-verification",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "fixed-native-adapter-only",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "actual-diagnostic-uses-lifecycle",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "git-no-ambient-fallback",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "json-no-second-unbounded-path-read",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "json-brackets-growth-and-deadline",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "exact-receipt-and-private-action-binding",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "fresh-exclusive-destination-precedes-diagnostic",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "exclusive-artifact-files-and-destination-check",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "publication-not-overclaimed",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "native-admission-false",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "lifecycle-only-isolated-definitions",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "required-injected-ports-no-native-defaults",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "retained-caps-and-literal-eof",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "structured-reader-status-refusal",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "no-physical-tree-or-hard-time-claim",
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "passed": 67,
+  "failed": 1,
+  "candidateImported": false,
+  "candidateDefinitionsExecuted": false,
+  "nativeOperations": false,
+  "runtimeAccepted": false,
+  "scope": "source and AST data only; missing bindings/publication/native identity remain HOLD"
+}

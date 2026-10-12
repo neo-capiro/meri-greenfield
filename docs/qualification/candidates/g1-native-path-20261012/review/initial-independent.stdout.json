@@ -1,0 +1,808 @@
+{
+  "schema": "meri-independent-native-plan-review/1",
+  "originalCommit": "72f228b32257acd25c81e74674d5231aac7087d8",
+  "repairedCommit": "f3db1505cbd2987244875097712d78a69da190c3",
+  "PR16": "e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5",
+  "planSha256": "da59996bed741513e16ef139be5b6c4b87e00894e8f9759c42c2a9848872ba68",
+  "checks": 180,
+  "passed": 179,
+  "failed": [
+    "physical-gates-retained"
+  ],
+  "nativeCommandsExecuted": false,
+  "reviewScope": "Frozen source/documents, read-only Git and stdlib AST/data checks; not runtime acceptance",
+  "checksDetail": [
+    {
+      "name": "original-single-parent-PR16",
+      "passed": true
+    },
+    {
+      "name": "repair-single-parent-original",
+      "passed": true
+    },
+    {
+      "name": "repair-only-plan",
+      "passed": true
+    },
+    {
+      "name": "original-allocation-only",
+      "passed": true
+    },
+    {
+      "name": "original-label-defect-confirmed",
+      "passed": true
+    },
+    {
+      "name": "repair-exact-phase-labels",
+      "passed": true
+    },
+    {
+      "name": "eight-expected-PRs",
+      "passed": true
+    },
+    {
+      "name": "all-dated-open-draft-unmerged",
+      "passed": true
+    },
+    {
+      "name": "no-execution-authority-readback",
+      "passed": true
+    },
+    {
+      "name": "PR7-ancestry",
+      "passed": true
+    },
+    {
+      "name": "PR7-exact-record",
+      "passed": true
+    },
+    {
+      "name": "PR7-in-plan",
+      "passed": true
+    },
+    {
+      "name": "PR10-ancestry",
+      "passed": true
+    },
+    {
+      "name": "PR10-exact-record",
+      "passed": true
+    },
+    {
+      "name": "PR10-adjacent-base",
+      "passed": true
+    },
+    {
+      "name": "PR10-in-plan",
+      "passed": true
+    },
+    {
+      "name": "PR11-ancestry",
+      "passed": true
+    },
+    {
+      "name": "PR11-exact-record",
+      "passed": true
+    },
+    {
+      "name": "PR11-adjacent-base",
+      "passed": true
+    },
+    {
+      "name": "PR11-in-plan",
+      "passed": true
+    },
+    {
+      "name": "PR12-ancestry",
+      "passed": true
+    },
+    {
+      "name": "PR12-exact-record",
+      "passed": true
+    },
+    {
+      "name": "PR12-adjacent-base",
+      "passed": true
+    },
+    {
+      "name": "PR12-in-plan",
+      "passed": true
+    },
+    {
+      "name": "PR13-ancestry",
+      "passed": true
+    },
+    {
+      "name": "PR13-exact-record",
+      "passed": true
+    },
+    {
+      "name": "PR13-adjacent-base",
+      "passed": true
+    },
+    {
+      "name": "PR13-in-plan",
+      "passed": true
+    },
+    {
+      "name": "PR14-ancestry",
+      "passed": true
+    },
+    {
+      "name": "PR14-exact-record",
+      "passed": true
+    },
+    {
+      "name": "PR14-adjacent-base",
+      "passed": true
+    },
+    {
+      "name": "PR14-in-plan",
+      "passed": true
+    },
+    {
+      "name": "PR15-ancestry",
+      "passed": true
+    },
+    {
+      "name": "PR15-exact-record",
+      "passed": true
+    },
+    {
+      "name": "PR15-adjacent-base",
+      "passed": true
+    },
+    {
+      "name": "PR15-in-plan",
+      "passed": true
+    },
+    {
+      "name": "PR16-ancestry",
+      "passed": true
+    },
+    {
+      "name": "PR16-exact-record",
+      "passed": true
+    },
+    {
+      "name": "PR16-adjacent-base",
+      "passed": true
+    },
+    {
+      "name": "PR16-in-plan",
+      "passed": true
+    },
+    {
+      "name": "PR2-already-ancestral",
+      "passed": true
+    },
+    {
+      "name": "PR8-PR9-not-feature-stack",
+      "passed": true
+    },
+    {
+      "name": "original-link-receipt-hash-valid",
+      "passed": true
+    },
+    {
+      "name": "link:MERI-DEPLOYMENT.md",
+      "passed": true
+    },
+    {
+      "name": "link:../qualification/candidates/g1-native-path-20261012/integration/pr-stack-observation.json",
+      "passed": true
+    },
+    {
+      "name": "link:../qualification/candidates/g1-native-path-20261012/integration/pr-stack-ancestry.json",
+      "passed": true
+    },
+    {
+      "name": "link:../coordination/reports/MERI-MEMORY-SOURCE-INTEGRATION-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "link:../../apps/control/qualification-sdk-fixture/service/control.mjs",
+      "passed": true
+    },
+    {
+      "name": "link:../../apps/gateway/budget/README.md",
+      "passed": true
+    },
+    {
+      "name": "link:../../apps/control/qualification-temporal/README.md",
+      "passed": true
+    },
+    {
+      "name": "link:../../apps/worker/qualification/README.md",
+      "passed": true
+    },
+    {
+      "name": "link:../coordination/reports/MERI-G1-RECOVERY-SANDBOX-INTEGRATION-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "link:../qualification/candidates/g1-execution-options-20261012/author/image-options.json",
+      "passed": true
+    },
+    {
+      "name": "link:../qualification/candidates/ubuntu-source-assessment-20261012/author/obligations-54.json",
+      "passed": true
+    },
+    {
+      "name": "link:../coordination/reports/MERI-G1-EXECUTION-OPTIONS-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "link:../qualification/candidates/g1-execution-options-20261012/author/execution-plan.json",
+      "passed": true
+    },
+    {
+      "name": "link-count13",
+      "passed": true
+    },
+    {
+      "name": "earlier-packet14files",
+      "passed": true
+    },
+    {
+      "name": "frozen:docs/coordination/reports/MERI-G1-EXECUTION-OPTIONS-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "frozen:docs/qualification/candidates/g1-execution-options-20261012/author/execution-plan.json",
+      "passed": true
+    },
+    {
+      "name": "frozen:docs/qualification/candidates/g1-execution-options-20261012/author/image-options.json",
+      "passed": true
+    },
+    {
+      "name": "frozen:docs/qualification/candidates/g1-execution-options-20261012/author/manifest.json",
+      "passed": true
+    },
+    {
+      "name": "frozen:docs/qualification/candidates/g1-execution-options-20261012/author/proposal-corrections.json",
+      "passed": true
+    },
+    {
+      "name": "frozen:docs/qualification/candidates/g1-execution-options-20261012/author/rejected-draft-execution-plan.json",
+      "passed": true
+    },
+    {
+      "name": "frozen:docs/qualification/candidates/g1-execution-options-20261012/author/source-evidence.json",
+      "passed": true
+    },
+    {
+      "name": "frozen:docs/qualification/candidates/g1-execution-options-20261012/author/verification-initial-failed.py",
+      "passed": true
+    },
+    {
+      "name": "frozen:docs/qualification/candidates/g1-execution-options-20261012/author/verification-initial-failed.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "frozen:docs/qualification/candidates/g1-execution-options-20261012/author/verification-initial-failed.stdout.json",
+      "passed": true
+    },
+    {
+      "name": "frozen:docs/qualification/candidates/g1-execution-options-20261012/author/verification-receipt.json",
+      "passed": true
+    },
+    {
+      "name": "frozen:docs/qualification/candidates/g1-execution-options-20261012/author/verify-packet.py",
+      "passed": true
+    },
+    {
+      "name": "frozen:docs/qualification/candidates/g1-execution-options-20261012/author/verify.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "frozen:docs/qualification/candidates/g1-execution-options-20261012/author/verify.stdout.json",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:AGENTS.md",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/control/qualification-sdk-fixture/ingress/config.mjs",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/control/qualification-sdk-fixture/ingress/test/generate-certs.ps1",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/control/qualification-sdk-fixture/ingress/test/harness.mjs",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/control/qualification-sdk-fixture/service/control.mjs",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/control/qualification-sdk-fixture/service/native-evidence.mjs",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/control/qualification-sdk-fixture/service/package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/control/qualification-sdk-fixture/service/run-stop.mjs",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/control/qualification-sdk-fixture/service/s3-objects.mjs",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/control/qualification-sdk-fixture/service/test/registry-ingress.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/control/qualification-sdk-fixture/state/migrations/0001_qualification_sdk_fixture_state.sql",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/control/qualification-sdk-fixture/state/package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/control/qualification-sdk-fixture/state/registry.mjs",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/control/qualification-sdk-fixture/state/revocation.mjs",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/control/qualification-sdk-fixture/state/store.mjs",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/control/qualification-sdk-fixture/state/test/registry.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/control/qualification-sdk-fixture/state/test/revocation-postgres.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/control/qualification-temporal/README.md",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/control/qualification-temporal/activities.ts",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/control/qualification-temporal/client-options.ts",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/control/qualification-temporal/component-pins.json",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/control/qualification-temporal/deployment.fixture.json",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/control/qualification-temporal/workflow.ts",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/gateway/budget/README.md",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/gateway/budget/durable-tool-dispatch.mjs",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/gateway/budget/postgres-budget-store.mjs",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/gateway/budget/postgres-tool-budget.mjs",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/gateway/index.mjs",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/gateway/test/postgres-tool-budget.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/proxy/qualification/linux/native-runtime/README.md",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/proxy/qualification/linux/native-runtime/native_auth_probe.py",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/proxy/qualification/linux/postgres-fixture/README.md",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/proxy/qualification/linux/postgres-fixture/config.py",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/proxy/qualification/linux/postgres-fixture/docker_capture.py",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/proxy/qualification/linux/postgres-fixture/native_bootstrap.py",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/proxy/qualification/linux/postgres-fixture/run-fixture.py",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/proxy/qualification/linux/requirements.lock",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/proxy/qualification/runtime/bedrock_transport.py",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/proxy/qualification/runtime/server.py",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/proxy/qualification/state/dependencies.json",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/proxy/qualification/state/ledger.py",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/proxy/qualification/state/migrations/0001_qualification_state.sql",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/proxy/qualification/state/migrations/0002_tool_budget.sql",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/proxy/qualification/state/postgres_store.py",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/proxy/qualification/test/test_postgres_state.py",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/worker/qualification/checkpoint/native-session-files.mjs",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/worker/qualification/probes/artifacts.mjs",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/worker/qualification/probes/artifacts.py",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/worker/qualification/probes/office-export.mjs",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/worker/qualification/probes/sdk-capture-options.mjs",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/worker/qualification/probes/sdk-capture.mjs",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/worker/qualification/probes/sdk-interruption-options.mjs",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:apps/worker/qualification/probes/sdk-interruption.mjs",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:docs/COMPONENTS.md",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:docs/IMPLEMENTATION-STANDARDS.md",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:docs/coordination/reports/MERI-G1-OWNER-BUDGET-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:docs/coordination/reports/MERI-UBUNTU-SOURCE-ASSESSMENT-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:docs/handover/20261012/REMOTE-RESUME-CURRENT-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:docs/plans/MERI-DEPLOYMENT.md",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:docs/qualification/candidates/native-python-profile-20261012/author/profile-packet.json",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:docs/qualification/candidates/ubuntu-source-assessment-20261012/author/obligations-54.json",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:docs/qualification/candidates/ubuntu-source-assessment-20261012/author/package-function-assessment.json",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:infra/browser-enforcement/binding.mjs",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:infra/browser-enforcement/workflow.mjs",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:infra/browser-qualification/README.md",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:infra/browser-qualification/app.mjs",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:infra/browser-qualification/bootstrap.sh",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:infra/browser-qualification/host-evidence.py",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:infra/browser-qualification/host_evidence/config.py",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:infra/browser-qualification/js/config.mjs",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:infra/native-enforcement/lib/binding.mjs",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:infra/native-qualification/app.mjs",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:scripts/qualification/sdk-native-evidence-owner.mjs",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:scripts/qualification/sdk-stale-worker-challenge.mjs",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:scripts/qualification/worker_runner_capture.py",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:scripts/reconstruct-sdk-capture.mjs",
+      "passed": true
+    },
+    {
+      "name": "PR15-source:scripts/sdk-capture/protocol.mjs",
+      "passed": true
+    },
+    {
+      "name": "139-96-43",
+      "passed": true
+    },
+    {
+      "name": "14bound82unmapped",
+      "passed": true
+    },
+    {
+      "name": "14all-unavailable",
+      "passed": true
+    },
+    {
+      "name": "no-catalog-or-public-contract-change",
+      "passed": true
+    },
+    {
+      "name": "no-lock-migration-or-recipe-changes",
+      "passed": true
+    },
+    {
+      "name": "54-obligations-preserved",
+      "passed": true
+    },
+    {
+      "name": "54-cohorts",
+      "passed": true
+    },
+    {
+      "name": "35functions-preserved",
+      "passed": true
+    },
+    {
+      "name": "image-nonwaivable",
+      "passed": true
+    },
+    {
+      "name": "frozen-L1-not-authorized",
+      "passed": true
+    },
+    {
+      "name": "only-L1-first-permission",
+      "passed": true
+    },
+    {
+      "name": "PG-original-envelope",
+      "passed": true
+    },
+    {
+      "name": "PG-zero-provider-cloud",
+      "passed": true
+    },
+    {
+      "name": "PG-two-DBowners",
+      "passed": true
+    },
+    {
+      "name": "PG-identity-auth-cleanup-plan",
+      "passed": true
+    },
+    {
+      "name": "Python-exact20plus3",
+      "passed": true
+    },
+    {
+      "name": "Python-migration-order-reset",
+      "passed": true
+    },
+    {
+      "name": "SDK-first-migration-two-listeners",
+      "passed": true
+    },
+    {
+      "name": "test-count:state/test/registry.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "test-count:state/test/revocation-postgres.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "test-count:service/test/registry-ingress.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "Temporal-exact-owner",
+      "passed": true
+    },
+    {
+      "name": "Temporal-one-shot-and-unknown",
+      "passed": true
+    },
+    {
+      "name": "Temporal-separate-new-entry",
+      "passed": true
+    },
+    {
+      "name": "Temporal-old-example-not-rewritten",
+      "passed": true
+    },
+    {
+      "name": "Temporal-real-runtime-gap-retained",
+      "passed": true
+    },
+    {
+      "name": "worker-shared-child-owner",
+      "passed": true
+    },
+    {
+      "name": "physical-gates-retained",
+      "passed": false
+    },
+    {
+      "name": "policy-choice-documented",
+      "passed": true
+    },
+    {
+      "name": "private-evidence-distinction",
+      "passed": true
+    },
+    {
+      "name": "native-and-paid-holds",
+      "passed": true
+    }
+  ],
+  "repairedPlanLinks": [
+    {
+      "link": "MERI-DEPLOYMENT.md",
+      "resolvedPath": "docs/plans/MERI-DEPLOYMENT.md",
+      "existsAtRepairedFreeze": true
+    },
+    {
+      "link": "../qualification/candidates/g1-native-path-20261012/integration/pr-stack-observation.json",
+      "resolvedPath": "docs/qualification/candidates/g1-native-path-20261012/integration/pr-stack-observation.json",
+      "existsAtRepairedFreeze": true
+    },
+    {
+      "link": "../qualification/candidates/g1-native-path-20261012/integration/pr-stack-ancestry.json",
+      "resolvedPath": "docs/qualification/candidates/g1-native-path-20261012/integration/pr-stack-ancestry.json",
+      "existsAtRepairedFreeze": true
+    },
+    {
+      "link": "../coordination/reports/MERI-MEMORY-SOURCE-INTEGRATION-20261012.md",
+      "resolvedPath": "docs/coordination/reports/MERI-MEMORY-SOURCE-INTEGRATION-20261012.md",
+      "existsAtRepairedFreeze": true
+    },
+    {
+      "link": "../../apps/control/qualification-sdk-fixture/service/control.mjs",
+      "resolvedPath": "apps/control/qualification-sdk-fixture/service/control.mjs",
+      "existsAtRepairedFreeze": true
+    },
+    {
+      "link": "../../apps/gateway/budget/README.md",
+      "resolvedPath": "apps/gateway/budget/README.md",
+      "existsAtRepairedFreeze": true
+    },
+    {
+      "link": "../../apps/control/qualification-temporal/README.md",
+      "resolvedPath": "apps/control/qualification-temporal/README.md",
+      "existsAtRepairedFreeze": true
+    },
+    {
+      "link": "../../apps/worker/qualification/README.md",
+      "resolvedPath": "apps/worker/qualification/README.md",
+      "existsAtRepairedFreeze": true
+    },
+    {
+      "link": "../coordination/reports/MERI-G1-RECOVERY-SANDBOX-INTEGRATION-20261012.md",
+      "resolvedPath": "docs/coordination/reports/MERI-G1-RECOVERY-SANDBOX-INTEGRATION-20261012.md",
+      "existsAtRepairedFreeze": true
+    },
+    {
+      "link": "../qualification/candidates/g1-execution-options-20261012/author/image-options.json",
+      "resolvedPath": "docs/qualification/candidates/g1-execution-options-20261012/author/image-options.json",
+      "existsAtRepairedFreeze": true
+    },
+    {
+      "link": "../qualification/candidates/ubuntu-source-assessment-20261012/author/obligations-54.json",
+      "resolvedPath": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/obligations-54.json",
+      "existsAtRepairedFreeze": true
+    },
+    {
+      "link": "../coordination/reports/MERI-G1-EXECUTION-OPTIONS-20261012.md",
+      "resolvedPath": "docs/coordination/reports/MERI-G1-EXECUTION-OPTIONS-20261012.md",
+      "existsAtRepairedFreeze": true
+    },
+    {
+      "link": "../qualification/candidates/g1-execution-options-20261012/author/execution-plan.json",
+      "resolvedPath": "docs/qualification/candidates/g1-execution-options-20261012/author/execution-plan.json",
+      "existsAtRepairedFreeze": true
+    }
+  ],
+  "limitations": [
+    "GitHub open/draft/unmerged statuses are dated connector observations; no fresh remote refresh performed.",
+    "Private wrapper/ZIP/supporting JSON not independently read by this reviewer. Plan attributes current metadata to parent/root and retains HOLD; independent supervisor review is separate.",
+    "No production/source/native test or proposed command executed."
+  ]
+}

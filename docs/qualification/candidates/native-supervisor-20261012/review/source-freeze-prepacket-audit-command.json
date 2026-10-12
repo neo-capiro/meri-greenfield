@@ -1,0 +1,18 @@
+{
+  "candidate": "a9d5d849fe3065ee1aec2b17806e6b6219a511c7",
+  "argv": [
+    "python",
+    "/workspace/meri-native-supervisor-review-20261012/docs/qualification/candidates/native-supervisor-20261012/review/source-audit.py",
+    "/workspace/meri-native-supervisor-20261012",
+    "a9d5d849fe3065ee1aec2b17806e6b6219a511c7",
+    "/workspace/meri-native-supervisor-review-20261012/docs/qualification/candidates/native-supervisor-20261012/review/final-source-audit.json"
+  ],
+  "exitCode": 1,
+  "elapsedSeconds": 0.15786742699856404,
+  "harnessCompleted": true,
+  "targetNativeProcesses": 0,
+  "realThreads": 0,
+  "candidateEntryImported": false,
+  "stdoutSha256": "d27659550d9d31d7beddc41d385fc28264b2f30041e29180caba9ed7300ebee5",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

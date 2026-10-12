@@ -1,0 +1,97 @@
+{
+  "base": "e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5",
+  "scope": "PARTIAL_SOURCE_REPAIR_NATIVE_HOLD",
+  "files": [
+    {
+      "path": "checks-final.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "checks-final.stdout.json",
+      "bytes": 1309,
+      "sha256": "75c8c2c161cbd8511673a46cfa60bc972942a56afd981bdf2c099802f4a69024"
+    },
+    {
+      "path": "checks-first.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "checks-first.stdout.json",
+      "bytes": 1173,
+      "sha256": "4302059af0d7c68dcccea33b8a4381ccb38a435de18ecd293dd872f0bbd992f8"
+    },
+    {
+      "path": "checks-freeze.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "checks-freeze.stdout.json",
+      "bytes": 1309,
+      "sha256": "099f0b79fc713f412fa892d00cd58cebe8e9c303e52aa193b8fb65a2b1e498a4"
+    },
+    {
+      "path": "checks-second.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "checks-second.stdout.json",
+      "bytes": 1173,
+      "sha256": "f43c52de090b131662bc9eefdc810dcc57940d1c18eb175e6dc53f12362de731"
+    },
+    {
+      "path": "checks-third.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "checks-third.stdout.json",
+      "bytes": 1173,
+      "sha256": "80988b7f13da4504746ecfc0e4eb462592d26a37485de98e6438b21dab83f82c"
+    },
+    {
+      "path": "current-source-review.json",
+      "bytes": 4899,
+      "sha256": "ef46ae6008277558be9a51d45b65604a07c6f3565fdb2f133d7189bf57f3dcd2"
+    },
+    {
+      "path": "run-supervised.py",
+      "bytes": 16402,
+      "sha256": "ccb6dba27ef3c2991df96c553ba21b097eeb243e4c86666b3cb8a8b7df7dfe3f"
+    },
+    {
+      "path": "source-checks.py",
+      "bytes": 7231,
+      "sha256": "811ee6dc11c63ea9442c3d79e47533bc6e1ff54f039aa2b08d3426132d7734d6"
+    },
+    {
+      "path": "supervision.py",
+      "bytes": 7576,
+      "sha256": "7f56c4c4cbc6907309cce5d753fe3c05bb895e30a0b813d42f9884d475cf242b"
+    }
+  ],
+  "selfExcluded": true,
+  "authorChecksPassed": 25,
+  "actualSupervisorExecuted": false,
+  "candidateExecuted": false,
+  "diagnosticExecuted": false,
+  "realThreadsCreated": 0,
+  "nativeChildrenCreated": 0,
+  "paidCalls": 0,
+  "hardTotalProven": false,
+  "evidencePublicationVerified": false,
+  "executionAuthorized": false,
+  "g1Accepted": false,
+  "remainingBindings": [
+    "complete original evidence manifest",
+    "source verification record identity",
+    "exact Git executable identity and provenance",
+    "full candidate identity evidence predicate",
+    "qualified enclosing watchdog and final exit/time receipt",
+    "verified evidence publication preserving raw failures",
+    "one exact action authorization"
+  ]
+}

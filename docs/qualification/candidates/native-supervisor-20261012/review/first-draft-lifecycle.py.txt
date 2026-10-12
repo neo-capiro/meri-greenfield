@@ -1,0 +1,171 @@
+"""Cooperative capture for the one ancestor diagnostic; not a hard watchdog.
+
+No native defaults: the exact wrapper owns process/thread creation. A blocked
+port cannot be preempted here. An enclosing, independently qualified watchdog
+is still necessary before any native execution can be authorized.
+"""
+
+
+class Refusal(Exception):
+    pass
+
+
+class Budget:
+    """One budget from wrapper entry; reservations never extend the total."""
+
+    def __init__(self, clock):
+        self.clock = clock
+        self.started = clock()
+        self.action_end = self.started + 10.0
+        self.termination_end = self.started + 13.0
+        self.total_end = self.started + 15.0
+
+    def remaining(self, phase):
+        end = {"action": self.action_end, "termination": self.termination_end,
+               "total": self.total_end}[phase]
+        return max(0.0, min(end, self.total_end) - self.clock())
+
+    def check(self, phase):
+        if self.remaining(phase) <= 0:
+            raise Refusal("cooperative_deadline_" + phase)
+
+
+def capture(argv, cwd, budget, *, spawn, make_thread, sleep):
+    """Capture only the direct child; all effects use explicitly supplied ports.
+
+    Native spawn must set stdin=DEVNULL, stdout/stderr=PIPE, shell=False and
+    bufsize=0. The caller owns that fixed adapter. Thread construction must not
+    start it. Only a read returning exactly b'' establishes stream EOF.
+    """
+    states = {name: {"cap": cap, "buffer": bytearray(), "observed": 0,
+                     "eof": False, "settled": False, "error": None,
+                     "overflow": False}
+              for name, cap in (("stdout", 32768), ("stderr", 65536))}
+    threads, child, code = {}, None, None
+    errors, timed_out, kill_requested, physical_exit = [], False, False, False
+
+    def drain(name, stream):
+        row = states[name]
+        try:
+            while True:
+                budget.check("total")
+                content = stream.read(4096)
+                budget.check("total")
+                if type(content) is not bytes:
+                    raise Refusal("non_binary_stream")
+                if content == b"":
+                    row["eof"] = True
+                    return
+                row["observed"] += len(content)
+                room = row["cap"] - len(row["buffer"])
+                row["buffer"].extend(content[:max(0, room)])
+                if row["observed"] > row["cap"]:
+                    row["overflow"] = True
+                    return
+        except Exception as error:
+            row["error"] = type(error).__name__
+        finally:
+            row["settled"] = True
+
+    def terminate_once():
+        nonlocal kill_requested
+        if not kill_requested:
+            kill_requested = True
+            try:
+                # This port can block: no hard-time guarantee is asserted.
+                child.kill()
+            except Exception as error:
+                errors.append("kill:" + type(error).__name__)
+
+    try:
+        budget.check("action")
+        child = spawn(argv, cwd)
+        # A slow creation return must never reset the original deadline.
+        budget.check("action")
+        for name in states:
+            budget.check("action")
+            stream = getattr(child, name)
+            thread = make_thread(lambda n=name, s=stream: drain(n, s))
+            threads[name] = thread
+            thread.start()
+        while True:
+            code = child.poll()
+            if budget.remaining("action") <= 0:
+                timed_out = True
+                if code is None:
+                    terminate_once()
+                break
+            if code is not None:
+                physical_exit = True
+                break
+            if any(row["overflow"] or row["error"] for row in states.values()):
+                terminate_once()
+                break
+            if budget.remaining("action") <= 0:
+                timed_out = True
+                terminate_once()
+                break
+            sleep(min(0.01, budget.remaining("action")))
+    except Exception as error:
+        errors.append("capture:" + type(error).__name__)
+        timed_out = budget.remaining("action") <= 0
+    finally:
+        if child is not None:
+            try:
+                code = child.poll()
+                physical_exit = code is not None
+                if not physical_exit:
+                    terminate_once()
+                    remaining = budget.remaining("termination")
+                    if remaining > 0:
+                        code = child.wait(timeout=remaining)
+                        physical_exit = code is not None and child.poll() is not None
+                    if budget.remaining("termination") <= 0:
+                        errors.append("termination_reservation_expired")
+            except Exception as error:
+                errors.append("termination:" + type(error).__name__)
+            for name, thread in threads.items():
+                try:
+                    remaining = budget.remaining("total")
+                    if remaining > 0:
+                        thread.join(timeout=remaining)
+                    if thread.is_alive() or not states[name]["settled"]:
+                        errors.append("reader_unsettled:" + name)
+                except Exception as error:
+                    errors.append("drain:" + type(error).__name__)
+
+    settled = len(threads) == 2 and all(
+        row["settled"] and not threads[name].is_alive()
+        for name, row in states.items())
+    # Never inspect mutable buffers/counters while either reader is unsettled.
+    streams = None
+    if settled:
+        streams = {name: {"data": bytes(row["buffer"]), "observedBytes": row["observed"],
+                          "capBytes": row["cap"], "eof": row["eof"],
+                          "error": row["error"], "overflow": row["overflow"]}
+                   for name, row in states.items()}
+    if child is not None:
+        for name in states:
+            if name in threads and (threads[name].is_alive() or not states[name]["settled"]):
+                continue  # Closing a stream owned by a live reader may block.
+            if budget.remaining("total") <= 0:
+                errors.append("stream_close_budget_expired:" + name)
+                continue
+            try:
+                getattr(child, name).close()
+            except Exception as error:
+                errors.append("close:" + type(error).__name__)
+    within_total = budget.remaining("total") > 0
+    if not within_total:
+        errors.append("total_deadline_expired")
+    acceptable = (type(code) is int and code in (0, 2) and physical_exit and settled and within_total
+                  and not errors and not timed_out and not kill_requested
+                  and all(row["eof"] and not row["error"] and not row["overflow"]
+                          for row in states.values()))
+    return {"observationEligible": acceptable, "exitCode": code,
+            "directChildPhysicalExitObserved": physical_exit,
+            "timedOut": timed_out, "killRequested": kill_requested,
+            "readersSettled": settled, "streams": streams, "errors": errors,
+            "elapsedSeconds": budget.clock() - budget.started,
+            "cooperativeTotalSeconds": 15, "hardTotalProven": False,
+            "descendantTeardownQualified": False, "runtimeAccepted": False}

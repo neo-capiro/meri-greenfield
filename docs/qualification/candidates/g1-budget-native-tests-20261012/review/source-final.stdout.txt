@@ -1,0 +1,20 @@
+{
+  "verdict": "PASS_SOURCE_PRESERVATION",
+  "base": "e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5",
+  "commit": "e350ff3bae99ad5d2e53648c1f83f9814d6c5044",
+  "tree": "b725fbed1757e836508b85defeb02e081c3751fd",
+  "originalTrackedFiles": 3945,
+  "unchangedOriginalFiles": 3944,
+  "changedOriginalFiles": [
+    "apps/gateway/budget/README.md"
+  ],
+  "hashes": {
+    "apps/gateway/test/postgres-budget.integration.mjs": "227780eb228fd92640d11fe9f0eeecde2b1b24dfbe4702d382728b5aff69f06f",
+    "apps/gateway/test/postgres-budget-native-fixture.mjs": "a4a4cc8205668d72e15b2df46408f20172c1adc5914590b871f9ac206065f22a",
+    "apps/gateway/test/postgres-budget-child.mjs": "493834c03bec2effaf0932049ad375e3624166ddcd230e8965dac32ff04bb9e9",
+    "apps/gateway/test/postgres-budget-admission.test.mjs": "cd10701cf440379962ddb077a741ceac8f340a7d1c96dbc9ce984a89d8a3b0e4",
+    "apps/gateway/budget/README.md": "3ba32da4e2e3ffa8d0dfbf59c50d084e367a372172d463f1e100fce64d886cd2"
+  },
+  "nativeEntryExecuted": false,
+  "databaseOperations": 0
+}

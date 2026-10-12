@@ -1,0 +1,34 @@
+{
+  "command": [
+    "python",
+    "-B",
+    "docs/qualification/candidates/g1-native-path-20261012/review/review-source.py"
+  ],
+  "cwd": "/workspace/meri-g1-native-path-20261012",
+  "sourceHead": "4911caec5937701c6da1b863ab6a536d40bfa6db",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T05:50:49.661481+00:00",
+  "durationSeconds": 0.567,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 70695,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/roadmap-source.stdout.bin",
+      "bytes": 22295,
+      "sha256": "f495f363adfef2656985e02f6da7849a80c94f7270ae859d910d045facf9c2a0"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/roadmap-source.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

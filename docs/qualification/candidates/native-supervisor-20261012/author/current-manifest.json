@@ -1,0 +1,113 @@
+{
+  "kind": "current-complete-source-packet-manifest",
+  "sourceFreeze": "a9d5d849fe3065ee1aec2b17806e6b6219a511c7",
+  "selfExcluded": "docs/qualification/candidates/native-supervisor-20261012/author/current-manifest.json",
+  "files": [
+    {
+      "path": "docs/coordination/reports/MERI-NATIVE-SUPERVISOR-20261012.md",
+      "bytes": 8695,
+      "sha256": "5b0454873bcdcdb74e1736af3c54ecbbf1e9b6a929ebd5d64a93a8e6b0569280"
+    },
+    {
+      "path": "docs/coordination/tasks/MERI-NATIVE-SUPERVISOR-20261012.md",
+      "bytes": 4558,
+      "sha256": "74af007d44b00214f20aaa0b905ff2d2eb67e72d2c8ffe889b215777a1039200"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/author/checks-final.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/author/checks-final.stdout.json",
+      "bytes": 1309,
+      "sha256": "75c8c2c161cbd8511673a46cfa60bc972942a56afd981bdf2c099802f4a69024"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/author/checks-first.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/author/checks-first.stdout.json",
+      "bytes": 1173,
+      "sha256": "4302059af0d7c68dcccea33b8a4381ccb38a435de18ecd293dd872f0bbd992f8"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/author/checks-freeze.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/author/checks-freeze.stdout.json",
+      "bytes": 1309,
+      "sha256": "099f0b79fc713f412fa892d00cd58cebe8e9c303e52aa193b8fb65a2b1e498a4"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/author/checks-late-read-fix.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/author/checks-late-read-fix.stdout.json",
+      "bytes": 1400,
+      "sha256": "82b0977be106133c6db289bea1aa804b6bbd40a22fc6e71668fcff79c93dfd79"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/author/checks-second.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/author/checks-second.stdout.json",
+      "bytes": 1173,
+      "sha256": "f43c52de090b131662bc9eefdc810dcc57940d1c18eb175e6dc53f12362de731"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/author/checks-third.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/author/checks-third.stdout.json",
+      "bytes": 1173,
+      "sha256": "80988b7f13da4504746ecfc0e4eb462592d26a37485de98e6438b21dab83f82c"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/author/current-source-review.json",
+      "bytes": 4899,
+      "sha256": "ef46ae6008277558be9a51d45b65604a07c6f3565fdb2f133d7189bf57f3dcd2"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/author/freeze-receipt.json",
+      "bytes": 3038,
+      "sha256": "e07d215ee7c002fb4f96568c203fba84c8cc59944ddb1831f20ae23f1136ee80"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/author/late-read-fix-receipt.json",
+      "bytes": 1202,
+      "sha256": "5f3c76dbb399130f643aaf8347f1f813e9cb90c5be9cdf2dd97ce0856a006731"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/author/run-supervised.py",
+      "bytes": 16402,
+      "sha256": "ccb6dba27ef3c2991df96c553ba21b097eeb243e4c86666b3cb8a8b7df7dfe3f"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/author/source-checks.py",
+      "bytes": 7912,
+      "sha256": "0de6b33e0d75600037133c2447ef084faa05478a993a2aa865f93096e3b8ba50"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/author/supervision.py",
+      "bytes": 7846,
+      "sha256": "418ad3d9a5537f5ab4f97ddc748ab3529e4d491919e171c52754f772d69be142"
+    }
+  ],
+  "historicalReceiptsPreserved": [
+    "freeze-receipt.json",
+    "late-read-fix-receipt.json"
+  ],
+  "runtimeAccepted": false,
+  "nativeExecutionAuthorized": false
+}

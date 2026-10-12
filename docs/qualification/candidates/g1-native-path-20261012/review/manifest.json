@@ -1,0 +1,84 @@
+{
+  "files": [
+    {
+      "path": "docs/coordination/reports/MERI-G1-NATIVE-PATH-REVIEW-20261012.md",
+      "bytes": 10466,
+      "sha256": "248c2cdc00a010c3d8413c45efc0c130d0ec62ee8af5fa4739170127aa285ef1"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/review/independent.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/review/independent.stdout.json",
+      "bytes": 22295,
+      "sha256": "f495f363adfef2656985e02f6da7849a80c94f7270ae859d910d045facf9c2a0"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/review/initial-independent.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/review/initial-independent.stdout.json",
+      "bytes": 22099,
+      "sha256": "4a468ca97944723f1bfbad4c3689703686ee78e9c496310d2adabb7704fc2191"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/review/initial-review-source.py",
+      "bytes": 12071,
+      "sha256": "11aac5e2040fc4af318bc86f8383c2b882557456a2b4b045f03205798cd07c13"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/review/phase-reference-repair.diff",
+      "bytes": 2469,
+      "sha256": "6f58fcb8ac83cd84f9efbc391ab399fe33d6fda823a7c732ddf74b6f120048ba"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/review/review-receipt.json",
+      "bytes": 2440,
+      "sha256": "0f72480a67832776ce1d29692e68c0bf32e6035d2061dcdc34a02527e740f682"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/review/review-source.py",
+      "bytes": 12592,
+      "sha256": "6e9a9d2b30a87d8e1a9ce0db13abfef497f97613fb90c466b3fa699f0f067f09"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/review/reviewed-source.json",
+      "bytes": 5692,
+      "sha256": "59f7cffd02524b43a3f41a160e3f8e567968f8dc89edc15c16ff911414868c08"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/review/whitespace-all.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/review/whitespace-all.stdout.txt",
+      "bytes": 466,
+      "sha256": "d2af481b9e93b95b283b9abe4b12ae3041f09d70ad15b81d0a23c7b50d58a3bb"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/review/whitespace-receipt.json",
+      "bytes": 857,
+      "sha256": "be07874cb7901afc9fa22fd35df2da2750161911ac8220fc8dab13b238a7257e"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/review/whitespace-source.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/review/whitespace-source.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "excludes": [
+    "manifest.json self"
+  ],
+  "decision": "ACCEPT_SOURCE_PACKET",
+  "nativeRuntimeExecuted": false
+}

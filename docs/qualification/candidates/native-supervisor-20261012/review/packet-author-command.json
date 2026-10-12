@@ -1,0 +1,16 @@
+{
+  "candidate": "724850cb6cc84c8381fb52aec23b582e0e3b5872",
+  "sourceFreeze": "a9d5d849fe3065ee1aec2b17806e6b6219a511c7",
+  "argv": [
+    "python",
+    "/workspace/meri-native-supervisor-20261012/docs/qualification/candidates/native-supervisor-20261012/author/source-checks.py"
+  ],
+  "exitCode": 0,
+  "elapsedSeconds": 0.042597651001415215,
+  "harnessCompleted": true,
+  "targetNativeProcesses": 0,
+  "realThreads": 0,
+  "candidateEntryImported": false,
+  "stdoutSha256": "82b0977be106133c6db289bea1aa804b6bbd40a22fc6e71668fcff79c93dfd79",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

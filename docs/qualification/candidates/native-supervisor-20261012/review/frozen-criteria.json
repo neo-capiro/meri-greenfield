@@ -1,0 +1,83 @@
+{
+  "base": "e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5",
+  "authority": "Root explicit three-path allocation after review of current privatewrapper",
+  "authorOutline": "8abf3fedb6f0dbf87b3bd9af5c74969697549123",
+  "criteria": [
+    {
+      "id": "NS1",
+      "assertion": "Exactly allocated three author files and owned documentation/evidence; original capture/inventory/diagnostic/source guards and tests remain byte-identical. No generic execution API or app activation."
+    },
+    {
+      "id": "NS2",
+      "assertion": "Actual fixed ancestor-diagnostic entry composes the same reviewed lifecycle owner. Safe import/AST has no child, destination, external call or other runtime side effect. No model-controlled command, shell, retry or implicit executable substitution."
+    },
+    {
+      "id": "NS3",
+      "assertion": "Explicit current action binds selected executable raw size/hash and documented named/opened identity invariants, exact reviewed diagnostic/source closure and original receipt/repository/output facts. Missing/hash-drift/stale/foreign facts refuse; original full timestamp, regular/single-link/plain/reparse predicates remain enforced. Current identity is not historical source, distributor or DLL trust."
+    },
+    {
+      "id": "NS4",
+      "assertion": "Require explicit fresh allocated destination, validate all required ancestry before exclusive creation; occupied/unsafe/foreign destination refuses without overwrite. Preserve original evidence and only clean resources/files conclusively created by this action."
+    },
+    {
+      "id": "NS5",
+      "assertion": "One cooperative absolute15second window starts before preflight/action work;10second action,3second termination and2second drain reservations are clipped to shared remaining time. No phase/iteration/cleanup timer reset; check deadline before and after each operation and before successful result. Report any startup/OS-call limits precisely; no hard total-time guarantee from Python checks."
+    },
+    {
+      "id": "NS6",
+      "assertion": "Retain at most32768 stdout and65536 stderr raw bytes; count all observed bytes, reject any overflow without silent truncation success, prevent unbounded queues/error lists, retain bounded failure evidence. Late data cannot rewrite finalized observations."
+    },
+    {
+      "id": "NS7",
+      "assertion": "Record EOF per stream separately from thread/process completion; success needs actual expected EOF for both streams, zero read/parent/close errors, no overflow/timeout and observed direct-child exit. Exitcodealone, killACK, threadreturn or empty partialdata never qualifies."
+    },
+    {
+      "id": "NS8",
+      "assertion": "Cancellation/deadline/error trigger at most the exact owned direct-child cleanup path, bounded by remaining cleanup budget. Missing exit/EOF or failed termination remainsUNKNOWN. No borrowed/unrelated child cleanup or claim of descendant-tree death."
+    },
+    {
+      "id": "NS9",
+      "assertion": "Concrete external watchdog/API provenance is an unfulfilled runtime prerequisite. No callerboolean, selfissuedreceipt or sourcefixture can claim hard containment, selectedexecutable admission or execution authorization. Source can be accepted only with explicit runtimeHOLD."
+    },
+    {
+      "id": "NS10",
+      "assertion": "Review exact current source hashes separately from historical claims. Supporting identityJSON currently unavailable; preserve negative/refused flags, access-time distinctions and ancestry limitations. No privateoriginal source body/path in Git."
+    },
+    {
+      "id": "NS11",
+      "assertion": "Dynamic reviewer controls may execute ONLY isolated lifecycle definitions under inert injected clocks/process/streams. Never import/execute candidateentry, originalwrapper, diagnostic, Popen, Windows APIs, native binary or network/cloud/database/provider operation."
+    },
+    {
+      "id": "NS12",
+      "assertion": "Keep raw author/reviewer failures and meaningful negative/mutant evidence; verify exact final SHA/tree/allowed paths and report tested versus unrun behavior. Completion is ACCEPT_SOURCE orHOLD; runtime alwaysHOLD until separate admission."
+    }
+  ],
+  "protectedOriginals": [
+    {
+      "path": "scripts/qualification/worker_runner_capture.py",
+      "bytes": 10069,
+      "sha256": "3219d21ec7d7bfa63deb07f87125e3ffcf5b6ff5df4f2b5f87f487cb6594153c"
+    },
+    {
+      "path": "scripts/qualification/worker_runner_inventory.py",
+      "bytes": 13224,
+      "sha256": "7615e26a5d038ff2fa054cde3cdb04077def5636874f848c97e050dae9df03e9"
+    },
+    {
+      "path": "scripts/qualification/worker_image_build.py",
+      "bytes": 33030,
+      "sha256": "8e2f684b7d882a61f9042ec8bf4edd896751b0550fb7da3adbc97547ffd244b2"
+    },
+    {
+      "path": "scripts/qualification/worker_build_binding.py",
+      "bytes": 6869,
+      "sha256": "6daff67b434e78824ee211803139a417bd23c6a3bb02dc0429695d86f5e1af53"
+    },
+    {
+      "path": "docs/qualification/candidates/native-ancestor-diagnosis-20261012/inspect-ancestor-metadata.py",
+      "bytes": 6297,
+      "sha256": "9514b8e8ad0aff24e1eea7e782dd32178d856011fafcb750ce2c0f9a715c6efd"
+    }
+  ],
+  "missingSupportingIdentityJson": "Exact filenames/bytes not relayed; parent request pending; no identity acceptance inferred"
+}

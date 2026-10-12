@@ -1,0 +1,67 @@
+{
+  "scope": "ordinary Linux source checks only; no target native execution",
+  "captureCount": 10,
+  "captures": [
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/budget-fixture-contract.json",
+      "group": 77503,
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/budget-independent.json",
+      "group": 77585,
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/budget-source-preservation.json",
+      "group": 77606,
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/final-source-integrity.json",
+      "group": 77947,
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/gateway-ordinary.json",
+      "group": 77584,
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/roadmap-source.json",
+      "group": 70695,
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/root-exact-dependencies.json",
+      "group": 71713,
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/supervisor-author.json",
+      "group": 76643,
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/supervisor-independent.json",
+      "group": 76644,
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/integration/supervisor-source-audit.json",
+      "group": 76655,
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    }
+  ],
+  "allCompletedAndAbsent": true
+}

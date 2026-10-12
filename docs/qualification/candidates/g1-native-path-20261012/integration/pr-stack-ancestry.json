@@ -1,0 +1,73 @@
+{
+  "schema": "meri-source-stack-ancestry/1",
+  "allEightAncestryChecksPass": true,
+  "allSevenAdjacentBasesMatch": true,
+  "allOpenDraftUnmerged": true,
+  "mergePerformed": false,
+  "rows": [
+    {
+      "pr": 7,
+      "base": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc",
+      "head": "5ee46446b5f60034916f00b2a665b3e2bef9cf60",
+      "tree": "985e0fdafe23d68b6f2e81a092cf098d8ede3182",
+      "ancestorExit": 0,
+      "stderr": ""
+    },
+    {
+      "pr": 10,
+      "base": "5ee46446b5f60034916f00b2a665b3e2bef9cf60",
+      "head": "7ba0e9d10ebf684e162dcc7c143915afdbf00f32",
+      "tree": "26527e06900f4c63dc81c7d394dd50e45c4febaf",
+      "ancestorExit": 0,
+      "stderr": ""
+    },
+    {
+      "pr": 11,
+      "base": "7ba0e9d10ebf684e162dcc7c143915afdbf00f32",
+      "head": "5db2714b6dcbd3109c528e0afafcb654216133ca",
+      "tree": "0eef3a0166b4b95fdfdc9bd886b5157d299d02db",
+      "ancestorExit": 0,
+      "stderr": ""
+    },
+    {
+      "pr": 12,
+      "base": "5db2714b6dcbd3109c528e0afafcb654216133ca",
+      "head": "90b4dc8472da13cdee9f49cdc0b4c8306ecbdc73",
+      "tree": "1f6ac35ad37531e790c2a19c9e310c7e618e6522",
+      "ancestorExit": 0,
+      "stderr": ""
+    },
+    {
+      "pr": 13,
+      "base": "90b4dc8472da13cdee9f49cdc0b4c8306ecbdc73",
+      "head": "690bac4cd44112b161d8e02818aeae7639ce237a",
+      "tree": "c3c6ee29de298fd26cbf32b43fbf43c0c92521ca",
+      "ancestorExit": 0,
+      "stderr": ""
+    },
+    {
+      "pr": 14,
+      "base": "690bac4cd44112b161d8e02818aeae7639ce237a",
+      "head": "1e6d430cf9c239caca4198aea42a762f13021cd5",
+      "tree": "4584edc9cba1ee6e9f81464d47b477039994bbfb",
+      "ancestorExit": 0,
+      "stderr": ""
+    },
+    {
+      "pr": 15,
+      "base": "1e6d430cf9c239caca4198aea42a762f13021cd5",
+      "head": "14be9fc614568a74133b89f2b229e50c9b030322",
+      "tree": "fd5ac72bed31f0611e4c24a6535730ac17a14ad7",
+      "ancestorExit": 0,
+      "stderr": ""
+    },
+    {
+      "pr": 16,
+      "base": "14be9fc614568a74133b89f2b229e50c9b030322",
+      "head": "e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5",
+      "tree": "35e6da43d35e06701b5bde73db571b5e1e688ea8",
+      "ancestorExit": 0,
+      "stderr": ""
+    }
+  ]
+}
