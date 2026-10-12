@@ -17,7 +17,7 @@ const version=cmd=>({contractVersion:'0.1.0',artifactId:uuid(50),versionId:uuid(
 
 test('connected namespace is private0.2 with only deliberately named validators',()=>{
  assert.equal(commands.contractVersion,'0.2.0');
- const functions=['validateCommandShape','normalizeTaskCreateInput','assertTaskCreateCommand','assertTaskCreateResult','normalizeArtifactFileInput','assertArtifactFileCommand','assertArtifactFileResult','assertArtifactFileReceipt','assertArtifactFileVersion'];
+ const functions=['validateCommandShape','normalizeTaskCreateInput','assertTaskCreateCommand','assertTaskCreateResult','normalizeArtifactFileInput','assertArtifactFileCommand','assertArtifactFileResult','assertArtifactFileReceipt','assertArtifactFileVersion','normalizeMemoryProposeInput','assertMemoryProposeCommand','assertMemoryProposeResult'];
  assert.deepEqual(Object.keys(commands).sort(),['contractVersion',...functions].sort());
  for(const name of functions)assert.equal(typeof commands[name],'function');
 });
