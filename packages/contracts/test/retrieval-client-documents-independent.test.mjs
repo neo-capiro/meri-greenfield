@@ -6,11 +6,15 @@ import Ajv from 'ajv/dist/2020.js';
 import addFormats from 'ajv-formats';
 import {canonicalSha256} from '../validate.mjs';
 import {assertSubject} from '../retrieval-0.2/validate.mjs';
-import {createClientDocumentsValidators} from '../retrieval-0.2/client-documents-validation.mjs';
+import {pathToFileURL} from 'node:url';
+const source=process.env.MERI_DOCUMENT_REVIEW_SOURCE_ROOT
+  ? pathToFileURL(process.env.MERI_DOCUMENT_REVIEW_SOURCE_ROOT.replace(/\/$/,'')+'/packages/contracts/')
+  : new URL('../',import.meta.url);
+const {createClientDocumentsValidators}=await import(new URL('retrieval-0.2/client-documents-validation.mjs',source));
 
 // Synthetic independent projections, never an imported or executed producer.
 const read=p=>JSON.parse(readFileSync(new URL(p,import.meta.url)));
-const schema=read('../retrieval-0.2/client-documents.schema.json');
+const schema=JSON.parse(readFileSync(new URL('retrieval-0.2/client-documents.schema.json',source)));
 const ajv=new Ajv({strict:true,allErrors:true});addFormats(ajv);
 for(const s of [read('../meri.schema.json'),read('../retrieval-0.2/common.schema.json'),schema])ajv.addSchema(s);
 const shapes=new Map(Object.keys(schema.$defs).map(n=>[n,ajv.compile({$ref:`${schema.$id}#/$defs/${n}`})]));
@@ -19,7 +23,7 @@ const normalize=family.normalizeClientDocumentsInput, check=family.assertClientD
 const uuid=n=>`${String(n).padStart(8,'0')}-4567-4abc-8def-123456789012`;
 const T='2026-01-02T03:04:05.000Z',client='review-client',doc='document-9',fileHash='a'.repeat(64);
 const hash=s=>createHash('sha256').update(s).digest('hex');
-const encode=o=>Buffer.from(JSON.stringify(o)).toString('base64url');
+const encode=o=>'document:'+Buffer.from(JSON.stringify(o)).toString('base64url');
 const input=()=>({clientId:client,documentId:doc});
 function context(){return {binding:{tenantId:'tenant-r',actorId:'actor-r',conversationId:uuid(1),runId:uuid(2),attemptId:uuid(3),workerId:uuid(4),writerFence:7},subject:{kind:'client',entityType:'client',entityIds:[client],tenantId:'tenant-r',actorId:'actor-r',authorizationDecisionId:uuid(5),policyRevision:'policy-r',rosterVersionId:null,scopes:[{kind:'client',tenantId:'tenant-r',resourceId:client,policyRevision:'policy-r'}]}};}
 function cursor(extra={}){return {version:1,documentId:doc,clientId:client,contentHash:fileHash,query:'',section:1,offset:0,...extra};}
@@ -115,4 +119,23 @@ test('opaque metadata refuses exotic, sparse, cyclic and hidden data without mut
   const cycle={};cycle.self=cycle;
   for(const bad of [cycle,new Date(),Object.defineProperty({},'x',{value:1}),{[Symbol('x')]:1},[,,],NaN,1n]){const p=page();p.data.coverage.extractionMetadata={bad};reject(p);}
   const p=page(),before=structuredClone(p),raw=input();check(p,raw,context());assert.deepEqual(p,before);assert.deepEqual(raw,input());
+});
+test('matched query contains its literal case-insensitive match in returned evidence',()=>{
+  const raw={...input(),query:'CONTENT'},p=page();Object.assign(p.data.coverage,{query:'CONTENT',matched:true,complete:false});check(p,raw,context());
+  p.data.records[0].payload.text='A😀B\nmissing';p.data.records[0].provenance.sectionHash=hash(p.data.records[0].payload.text);reject(p,raw);
+});
+test('matched partial query cannot omit evidence while retaining a continuation claim',()=>{
+  const raw={...input(),query:'content'},p=page(),sectionHash=p.data.records[0].provenance.sectionHash;
+  Object.assign(p.data.coverage,{query:'content',matched:true,complete:false,sectionComplete:false,sectionCharacters:30,truncated:true,nextCursor:encode(cursor({query:'content',offset:12,sectionHash}))});
+  check(p,raw,context());p.data.records=[];reject(p,raw);
+});
+test('partial continuation advances UTF16 offsets, preserves section hash and denies stale extraction',()=>{
+  const p=page(),sectionHash=p.data.records[0].provenance.sectionHash;
+  Object.assign(p.data.coverage,{complete:false,sectionComplete:false,sectionCharacters:30,truncated:true,nextCursor:encode(cursor({offset:12,sectionHash}))});
+  check(p,input(),context());
+  for(const change of [c=>c.offset=11,c=>c.section=2,c=>c.clientId='other',c=>c.sectionHash='b'.repeat(64),c=>delete c.sectionHash]){const next=cursor({offset:12,sectionHash});change(next);const x=structuredClone(p);x.data.coverage.nextCursor=encode(next);reject(x);}
+});
+test('unreadable section blocks automatic traversal and never manufactures an evidence record',()=>{
+  const p=page();p.data.records=[];Object.assign(p.data.coverage,{readability:{status:'no_readable_text',method:'text',scope:'section',section:1,sectionCount:2,chars:0,note:'No readable text'},extractedSectionEmpty:true,continuationBlocked:true,missingContent:true,nextAction:'Inspect original document',explicitNextSection:2,truncated:true,complete:false,sectionCount:2,sectionCharacters:0,characterStart:0,characterEnd:0,sectionComplete:false});
+  check(p,input(),context());for(const change of [p=>delete p.data.coverage.missingContent,p=>p.data.coverage.explicitNextSection=1,p=>p.data.coverage.nextCursor=encode(cursor({section:2})),p=>p.data.coverage.complete=true]){const x=structuredClone(p);change(x);reject(x);}
 });
