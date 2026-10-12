@@ -1,0 +1,176 @@
+{
+  "source": "6e37343f7289ed8374b722d638f5d6e467f9808a",
+  "base": "e94865529c5a1e97c79893527895f0b4b73be35f",
+  "checksPassed": 62,
+  "checks": [
+    "exact reference pins",
+    "pinned bytes/hash/blob: apps/api/src/meri/meri-document-read.helpers.ts",
+    "no observed drift: apps/api/src/meri/meri-document-read.helpers.ts",
+    "pinned bytes/hash/blob: apps/api/src/meri/meri-document-read.helpers.spec.ts",
+    "no observed drift: apps/api/src/meri/meri-document-read.helpers.spec.ts",
+    "pinned bytes/hash/blob: apps/api/src/meri/meri-tools.service.ts",
+    "no observed drift: apps/api/src/meri/meri-tools.service.ts",
+    "pinned bytes/hash/blob: apps/api/src/meri/meri-tools.firmdata.spec.ts",
+    "no observed drift: apps/api/src/meri/meri-tools.firmdata.spec.ts",
+    "pinned bytes/hash/blob: apps/api/src/engagement/engagement.service.ts",
+    "no observed drift: apps/api/src/engagement/engagement.service.ts",
+    "pinned bytes/hash/blob: apps/api/src/engagement/engagement-document-read.spec.ts",
+    "no observed drift: apps/api/src/engagement/engagement-document-read.spec.ts",
+    "pinned bytes/hash/blob: apps/api/src/engagement/attachment-section-extract.ts",
+    "no observed drift: apps/api/src/engagement/attachment-section-extract.ts",
+    "pinned bytes/hash/blob: apps/api/src/engagement/attachment-section-extract.spec.ts",
+    "no observed drift: apps/api/src/engagement/attachment-section-extract.spec.ts",
+    "pinned bytes/hash/blob: apps/api/src/engagement/attachment-content.service.ts",
+    "no observed drift: apps/api/src/engagement/attachment-content.service.ts",
+    "pinned bytes/hash/blob: apps/api/src/engagement/attachment-pdf-vision.ts",
+    "no observed drift: apps/api/src/engagement/attachment-pdf-vision.ts",
+    "pinned bytes/hash/blob: apps/api/src/engagement/attachment-pdf-vision.spec.ts",
+    "no observed drift: apps/api/src/engagement/attachment-pdf-vision.spec.ts",
+    "pinned bytes/hash/blob: apps/api/src/memory/memory-wall.helpers.ts",
+    "no observed drift: apps/api/src/memory/memory-wall.helpers.ts",
+    "reference type exists: DocumentCursor",
+    "reference type exists: DocumentReadability",
+    "exact type fields: ClientDocumentCursor",
+    "exact required/optional fields: ClientDocumentCursor",
+    "exact type fields: ClientDocumentReadability",
+    "exact required/optional fields: ClientDocumentReadability",
+    "readability enum: status",
+    "readability enum: method",
+    "reference type exists: ReadinessVerdict",
+    "complete readiness machine-code vocabulary",
+    "reference type exists: AttachmentTextSection",
+    "section-kind vocabulary exact",
+    "section source vocabulary plus explicit transcript source",
+    "source uses UTF16 text slices and serialized slice cap",
+    "legacy case-folded search may change index length",
+    "document helper emits evidence only from nonblank slice",
+    "tool visibility and denied-client owners remain separate",
+    "extractor has separate outcome and provider owners",
+    "all original files unchanged",
+    "only allocated source/test/outline added",
+    "exact accepted tree",
+    "review source equals accepted author: packages/contracts/retrieval-0.2/client-documents.schema.json",
+    "review source equals accepted author: packages/contracts/retrieval-0.2/client-documents-validation.mjs",
+    "review source equals accepted author: packages/contracts/test/retrieval-client-documents.test.mjs",
+    "29 independent assertions unchanged at exact replay",
+    "first-independent raw stream hash: stdout",
+    "first-independent raw stream hash: stderr",
+    "first-independent owned process group absent",
+    "query-controls raw stream hash: stdout",
+    "query-controls raw stream hash: stderr",
+    "query-controls owned process group absent",
+    "repaired-draft raw stream hash: stdout",
+    "repaired-draft raw stream hash: stderr",
+    "repaired-draft owned process group absent",
+    "exact-freeze raw stream hash: stdout",
+    "exact-freeze raw stream hash: stderr",
+    "exact-freeze owned process group absent"
+  ],
+  "unchangedOriginalFiles": 5267,
+  "references": [
+    {
+      "path": "apps/api/src/meri/meri-document-read.helpers.ts",
+      "blob": "94cd51e8208e71c01a833445797d010fa79cfa67",
+      "sha256": "2d96116443207cfc1c5a1c21a01fa88e2ab51a32635e9b9838320acc2c350d41",
+      "bytes": 9656,
+      "observedCurrentBlob": "94cd51e8208e71c01a833445797d010fa79cfa67"
+    },
+    {
+      "path": "apps/api/src/meri/meri-document-read.helpers.spec.ts",
+      "blob": "d17f06d81d471baa42a6f992fefd94c48fdf032b",
+      "sha256": "08a4ceba43513353b2a8869e1054bc6a86bce541948385447b561af0080b8eda",
+      "bytes": 6259,
+      "observedCurrentBlob": "d17f06d81d471baa42a6f992fefd94c48fdf032b"
+    },
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194",
+      "bytes": 415704,
+      "observedCurrentBlob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea"
+    },
+    {
+      "path": "apps/api/src/meri/meri-tools.firmdata.spec.ts",
+      "blob": "cb845b2c9111a86af7c787fb28a59ea3f9e91666",
+      "sha256": "e4cc3b37ed612d388be6cec24cbe3859f47c4f4c1c147e7bd233c31acb1f65da",
+      "bytes": 85003,
+      "observedCurrentBlob": "cb845b2c9111a86af7c787fb28a59ea3f9e91666"
+    },
+    {
+      "path": "apps/api/src/engagement/engagement.service.ts",
+      "blob": "2f0fc56b2eff3526118df7a052d13e76daf020a4",
+      "sha256": "b0a12dbce2157701bafdba36bead922de2e274216de9c00a2b0c797dcbf93df0",
+      "bytes": 499454,
+      "observedCurrentBlob": "2f0fc56b2eff3526118df7a052d13e76daf020a4"
+    },
+    {
+      "path": "apps/api/src/engagement/engagement-document-read.spec.ts",
+      "blob": "aa8548bdef2c1a62c6d40141639639df2497a275",
+      "sha256": "5d0cc0a28e20f4cabe4cd20f639af93f032af724f70076570d09896bc0f18ba5",
+      "bytes": 7840,
+      "observedCurrentBlob": "aa8548bdef2c1a62c6d40141639639df2497a275"
+    },
+    {
+      "path": "apps/api/src/engagement/attachment-section-extract.ts",
+      "blob": "1497bcd0536eab009abe0a8d3d9cd363c3b386d7",
+      "sha256": "c451d27f1d746a94e0b2ca23b0d10841b05747a2925a410cfb8729eb2eeafb77",
+      "bytes": 4930,
+      "observedCurrentBlob": "1497bcd0536eab009abe0a8d3d9cd363c3b386d7"
+    },
+    {
+      "path": "apps/api/src/engagement/attachment-section-extract.spec.ts",
+      "blob": "2a1c30814b0815e4a28996ea20d8f162ba10233b",
+      "sha256": "15d415a77e60c16dc63556594dec3eb18e087df04e7c9b77c4fb341d98cb5e7f",
+      "bytes": 4087,
+      "observedCurrentBlob": "2a1c30814b0815e4a28996ea20d8f162ba10233b"
+    },
+    {
+      "path": "apps/api/src/engagement/attachment-content.service.ts",
+      "blob": "c7824bdac3141077dba7938182f6323d673ce52e",
+      "sha256": "f3dccadfa28e651ebcc01503bd8d71722aa2fc7c0c96ea519605c7d38988bd6c",
+      "bytes": 18100,
+      "observedCurrentBlob": "c7824bdac3141077dba7938182f6323d673ce52e"
+    },
+    {
+      "path": "apps/api/src/engagement/attachment-pdf-vision.ts",
+      "blob": "9dee18a757074cdf44b40463600e0daa1067de0b",
+      "sha256": "ac5a8a5406ab7e0a82a35e9f1ee05ff98cf14e7a62db8e944761cb7a08c7e944",
+      "bytes": 6245,
+      "observedCurrentBlob": "9dee18a757074cdf44b40463600e0daa1067de0b"
+    },
+    {
+      "path": "apps/api/src/engagement/attachment-pdf-vision.spec.ts",
+      "blob": "13c15a499374730cb4b0a2b84122a9366e1384e6",
+      "sha256": "c4c89082d5adeefb3e857449ab7df8388bdb44e3c16913d0f31778bcac45ea6b",
+      "bytes": 5554,
+      "observedCurrentBlob": "13c15a499374730cb4b0a2b84122a9366e1384e6"
+    },
+    {
+      "path": "apps/api/src/memory/memory-wall.helpers.ts",
+      "blob": "48b9bf4b9246baac7cd3188d012ea7638aeb8a68",
+      "sha256": "91961048fd944885b8a06d229009259cf4866a4d40338d09685b1608f29a9255",
+      "bytes": 7833,
+      "observedCurrentBlob": "48b9bf4b9246baac7cd3188d012ea7638aeb8a68"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/contracts/retrieval-0.2/client-documents.schema.json",
+      "bytes": 21288,
+      "sha256": "71dd53119af2c0226372916e3645765687e8653da2f48b60d55c1a7a75c05247"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/client-documents-validation.mjs",
+      "bytes": 12683,
+      "sha256": "a545d51cda2e8d430ebb66f739524f55fc243ac87a923ea96dc140bab50c10e9"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-client-documents.test.mjs",
+      "bytes": 18393,
+      "sha256": "035f0c1cd11e3955d2f16130be95b2ade72ac146529e541d582e725e203c95bb"
+    }
+  ],
+  "privateBodiesEmitted": false,
+  "privateSourceExecuted": false,
+  "nativeOrNetworkActions": false
+}
