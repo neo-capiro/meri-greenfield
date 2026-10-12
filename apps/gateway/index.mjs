@@ -39,3 +39,6 @@ export function createDurableSourceDisabledGateway(options) {
   return Object.freeze({ ...dispatcher, sourceEnabled: false,
     status: 'SOURCE_ONLY_DURABLE_BUDGET_NO_PRODUCTION_ADAPTERS', catalogVersion: view.catalogVersion });
 }
+
+/** Trusted application composition; this export does not activate any source. */
+export {createPostgresBudgetExecution} from './budget/postgres-tool-budget.mjs';

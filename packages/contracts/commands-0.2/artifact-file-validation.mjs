@@ -44,7 +44,7 @@ export function createArtifactFileValidators({validateShape,validatePublicShape,
       if(file.fileName===null&&(file.status!=='failed'||count!==0))fail('Found attachment filename must remain a string');
       if(file.status!=='failed'&&count!==persistedKeys.length)fail('Stored filing observation required');
       if(file.status==='saved'){
-        if(file.indexingStatus==='not_indexed'||Object.hasOwn(file,'reason'))fail('Saved filing observation contradicts source projection');
+        if(file.indexingStatus==='not_indexed')fail('Saved filing observation contradicts source projection');
       } else {
         if(!Object.hasOwn(file,'reason')||(count&&file.indexingStatus!=='not_indexed'))fail('Pending/failed filing observation requires disclosed limitation');
       }

@@ -1,0 +1,38 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/test/commands-durable-budget.test.mjs",
+    "apps/gateway/test/tool-invocation-owner.test.mjs",
+    "apps/gateway/test/tool-invocation-transaction.test.mjs",
+    "apps/gateway/test/durable-tool-budget.test.mjs",
+    "apps/gateway/test/postgres-tool-budget.test.mjs"
+  ],
+  "cwd": "/workspace/meri-command-execution-20261012",
+  "sourceHead": "0fc36aff02751f11f3d6dff76a005c1357e79f9e",
+  "sourceDiffSha256": "0c5c085339f37cfea76504c22eca08a70d68bb46ef028c64a7c1a7bc5ba64edb",
+  "sourceDiffBytes": 23706,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T22:24:31.615035+00:00",
+  "durationSeconds": 3.658,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 366673,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-author/durable-connected.stdout.bin",
+      "bytes": 7788,
+      "sha256": "0c2c9a13f917551eed4b96ab8e0ecf75eb439e24869028e89ea84227a3ae3133"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-author/durable-connected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "New actual canonical budget execution kernel and control owner; same original tool APIs exercised alongside command journal/source/accounting.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
