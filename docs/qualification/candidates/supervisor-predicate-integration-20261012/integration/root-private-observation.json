@@ -1,0 +1,137 @@
+{
+  "kind": "Root independent content-free recount of exact private observations",
+  "verifiedMembers": [
+    {
+      "name": "candidate-hash-and-paths.json",
+      "bytes": 60160,
+      "sha256": "1817c1d72c2bbfafba943d0cbff4314ac210694a481565b5036a986087659d84"
+    },
+    {
+      "name": "collect.ps1",
+      "bytes": 23776,
+      "sha256": "729298afadd57a97fe8325ff862d0e208befd9392b4befa5f91053dddfcd25e1"
+    }
+  ],
+  "roles": [
+    {
+      "role": "executable",
+      "pairs": 9,
+      "differences": [
+        {
+          "index": 0,
+          "fields": [
+            "LastAccessTime"
+          ]
+        },
+        {
+          "index": 1,
+          "fields": [
+            "LastAccessTime"
+          ]
+        },
+        {
+          "index": 2,
+          "fields": [
+            "LastAccessTime"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "root",
+      "pairs": 8,
+      "differences": [
+        {
+          "index": 0,
+          "fields": [
+            "LastAccessTime"
+          ]
+        },
+        {
+          "index": 1,
+          "fields": [
+            "LastAccessTime"
+          ]
+        },
+        {
+          "index": 2,
+          "fields": [
+            "LastAccessTime"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "Lib",
+      "pairs": 9,
+      "differences": [
+        {
+          "index": 0,
+          "fields": [
+            "LastAccessTime"
+          ]
+        },
+        {
+          "index": 1,
+          "fields": [
+            "LastAccessTime"
+          ]
+        },
+        {
+          "index": 2,
+          "fields": [
+            "LastAccessTime"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "DLLs",
+      "pairs": 9,
+      "differences": [
+        {
+          "index": 0,
+          "fields": [
+            "LastAccessTime"
+          ]
+        },
+        {
+          "index": 1,
+          "fields": [
+            "LastAccessTime"
+          ]
+        },
+        {
+          "index": 2,
+          "fields": [
+            "LastAccessTime"
+          ]
+        }
+      ]
+    }
+  ],
+  "totalPairs": 35,
+  "differentPairs": 12,
+  "openedRecordedFieldEquality": true,
+  "candidateBodyBytesRead": 91648,
+  "candidateBodySha256": "f1d8d2aa2a8ad7c74b6c6300b29cfdbcb484fc7ffad99b7fbfe1e31c048343b9",
+  "hashError": null,
+  "recordedAcceptanceTerms": {
+    "hashPresent": true,
+    "executableBeforeOpenedAfterStable": true,
+    "pathIdentityAndPlainMetadataStable": true,
+    "allRecordedPathFieldsStable": false
+  },
+  "conjunction": false,
+  "recordedAccepted": false,
+  "helperImplementationReviewed": false,
+  "missingHelper": {
+    "name": "NativeMetadata.cs",
+    "bytes": 6163,
+    "sha256": "f551d7287611b982a93eebf02e93719bfdce355609bd7ca4f9cd546ae9bf0a4c"
+  },
+  "causalAttribution": "Only recorded field differences established; actual helper internals and cause of access-time changes remain unreviewed.",
+  "privateBodiesOrPathsPublished": false,
+  "nativeExecution": false,
+  "admissionChanged": false
+}

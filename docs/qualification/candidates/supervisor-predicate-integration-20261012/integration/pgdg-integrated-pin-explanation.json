@@ -1,0 +1,27 @@
+{
+  "authorExactFreeze": "76355bfe516260ba758dee44f9fcf454e317cd71",
+  "authorExactFreezeChecks": "63/63 PASS as independently replayed",
+  "integratedReplay": {
+    "passed": 62,
+    "failed": 1,
+    "failure": "preserved: docs/plans/MERI-G1-SOURCE-TO-NATIVE.md"
+  },
+  "reason": "Only intentional root-owned canonical roadmap update changes this historical byte pin. Author evidence and verifier are untouched.",
+  "historicalBase": "15f671a65365e3401f0ce07b46deb4cf63538346",
+  "historicalBaseRoadmapMatchesExactPinnedBytesAndHash": true,
+  "currentRoadmapRequiresIndependentRootReview": true,
+  "rawFailurePreserved": true,
+  "independentReviewInitialRootInvocation": {
+    "passed": 96,
+    "failed": [
+      "exact clean author freeze",
+      "bound original source: docs/plans/MERI-G1-SOURCE-TO-NATIVE.md"
+    ],
+    "reason": "Exact-author audit was initially pointed at the integrated worktree. Its clean-head and historical roadmap assertions correctly refused that placement. Raw failure retained."
+  },
+  "correctedExactAuthorRootReplay": {
+    "passed": 98,
+    "failed": [],
+    "receipt": "pgdg-review-exact.json"
+  }
+}

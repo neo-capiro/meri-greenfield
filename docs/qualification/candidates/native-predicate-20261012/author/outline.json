@@ -1,0 +1,18 @@
+{
+  "base": "15f671a65365e3401f0ce07b46deb4cf63538346",
+  "scope": "Exact data/predicate recomputation and minimal supported adaptation proposal",
+  "sourceOwners": {
+    "privateCollector": "Supplied private evidence; unchanged",
+    "canonicalInventory": "Existing scripts/qualification/worker_runner_inventory.py; shared allocation required",
+    "wrapper": "Existing native-supervisor author run-supervised.py; shared allocation required"
+  },
+  "method": [
+    "Verify original sizes/hashes",
+    "Derive field/operator/line map without publishing source body",
+    "Recompute all complete before/after and opened-file relationships as content-free facts",
+    "Keep timing evidence and native qualification distinct",
+    "Submit minimal adaptation or explicit no-supported-change finding to root before shared edits"
+  ],
+  "targetExecution": false,
+  "privateBodiesPublished": false
+}

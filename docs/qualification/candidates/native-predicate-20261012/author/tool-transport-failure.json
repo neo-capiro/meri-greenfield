@@ -1,0 +1,7 @@
+{
+  "operation": "Start source/data privacy and preservation check process",
+  "error": "exec_command failed: CreateProcess { message: \"Rejected(\\\"Failed to create unified exec process: exec-server transport disconnected\\\")\" }",
+  "processCreated": false,
+  "sourceOrTargetFailure": false,
+  "recovery": "Next bounded pwd invocation succeeded; retry only unfinished source/data checks"
+}

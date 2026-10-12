@@ -1,0 +1,37 @@
+{
+  "command": [
+    "python",
+    "-I",
+    "-B",
+    "-S",
+    "-c",
+    "import os,runpy,sys; sys.argv=[\"docs/qualification/candidates/native-predicate-20261012/author/predicate-data.py\",os.environ[\"MERI_PRIVATE_PREDICATE_DIR\"]]; runpy.run_path(sys.argv[0],run_name=\"__main__\")"
+  ],
+  "cwd": "/workspace/meri-supervisor-predicate-20261012",
+  "sourceHead": "7f236d6b95f7d0476e55e46a6d77af36655e3a25",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T08:21:58.277314+00:00",
+  "durationSeconds": 0.033,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 110062,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/integration/predicate-author.stdout.bin",
+      "bytes": 7374,
+      "sha256": "80148ce3091645eea2ba795d901c1f22c896b5f2e2c581ec2313d96ee555196a"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/integration/predicate-author.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

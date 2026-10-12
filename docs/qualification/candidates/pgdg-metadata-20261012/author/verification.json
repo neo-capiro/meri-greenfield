@@ -1,0 +1,260 @@
+{
+  "scope": "OFFLINE_METADATA_AND_SOURCE_PRESERVATION_ONLY",
+  "passed": 63,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "artifact: docs/qualification/candidates/pgdg-metadata-20261012/author/collection-notes.json",
+      "passed": true
+    },
+    {
+      "name": "artifact: docs/qualification/candidates/pgdg-metadata-20261012/author/collection-source.py.txt",
+      "passed": true
+    },
+    {
+      "name": "artifact: docs/qualification/candidates/pgdg-metadata-20261012/author/decision-package.json",
+      "passed": true
+    },
+    {
+      "name": "artifact: docs/qualification/candidates/pgdg-metadata-20261012/author/raw/17-Packages.bz2",
+      "passed": true
+    },
+    {
+      "name": "artifact: docs/qualification/candidates/pgdg-metadata-20261012/author/raw/ACCC4CF8.asc",
+      "passed": true
+    },
+    {
+      "name": "artifact: docs/qualification/candidates/pgdg-metadata-20261012/author/raw/InRelease",
+      "passed": true
+    },
+    {
+      "name": "artifact: docs/qualification/candidates/pgdg-metadata-20261012/author/raw/Release",
+      "passed": true
+    },
+    {
+      "name": "artifact: docs/qualification/candidates/pgdg-metadata-20261012/author/raw/Release.gpg",
+      "passed": true
+    },
+    {
+      "name": "artifact: docs/qualification/candidates/pgdg-metadata-20261012/author/raw/main-Packages.bz2",
+      "passed": true
+    },
+    {
+      "name": "artifact: docs/qualification/candidates/pgdg-metadata-20261012/author/raw/main-Sources.bz2",
+      "passed": true
+    },
+    {
+      "name": "artifact: docs/qualification/candidates/pgdg-metadata-20261012/author/raw/postgresql-17_17.11-1.pgdg13+2.dsc",
+      "passed": true
+    },
+    {
+      "name": "artifact: docs/qualification/candidates/pgdg-metadata-20261012/author/retrievals.json",
+      "passed": true
+    },
+    {
+      "name": "artifact: docs/qualification/candidates/pgdg-metadata-20261012/author/verify.py",
+      "passed": true
+    },
+    {
+      "name": "artifact: docs/qualification/candidates/pgdg-metadata-20261012/author/web-fallback.json",
+      "passed": true
+    },
+    {
+      "name": "artifact: docs/coordination/tasks/MERI-PGDG-METADATA-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "artifact: docs/coordination/reports/MERI-PGDG-METADATA-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "preserved: docs/qualification/candidates/native-prefix-20261012/author/assessment.json",
+      "passed": true
+    },
+    {
+      "name": "preserved: docs/qualification/candidates/native-prefix-20261012/author/manifest.json",
+      "passed": true
+    },
+    {
+      "name": "preserved: docs/coordination/reports/MERI-NATIVE-PREFIX-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "preserved: docs/coordination/reports/MERI-NATIVE-PREFIX-REVIEW-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "preserved: docs/qualification/candidates/native-prefix-20261012/review/audit-author-result.json",
+      "passed": true
+    },
+    {
+      "name": "preserved: AGENTS.md",
+      "passed": true
+    },
+    {
+      "name": "preserved: docs/IMPLEMENTATION-STANDARDS.md",
+      "passed": true
+    },
+    {
+      "name": "preserved: docs/plans/MERI-DEPLOYMENT.md",
+      "passed": true
+    },
+    {
+      "name": "preserved: docs/plans/MERI-G1-SOURCE-TO-NATIVE.md",
+      "passed": true
+    },
+    {
+      "name": "bounded8 requests",
+      "passed": true
+    },
+    {
+      "name": "exact failure: InRelease",
+      "passed": true
+    },
+    {
+      "name": "bounded metadata: InRelease",
+      "passed": true
+    },
+    {
+      "name": "exact failure: Release",
+      "passed": true
+    },
+    {
+      "name": "bounded metadata: Release",
+      "passed": true
+    },
+    {
+      "name": "exact failure: Release.gpg",
+      "passed": true
+    },
+    {
+      "name": "bounded metadata: Release.gpg",
+      "passed": true
+    },
+    {
+      "name": "exact failure: ACCC4CF8.asc",
+      "passed": true
+    },
+    {
+      "name": "bounded metadata: ACCC4CF8.asc",
+      "passed": true
+    },
+    {
+      "name": "exact failure: main-Packages.bz2",
+      "passed": true
+    },
+    {
+      "name": "bounded metadata: main-Packages.bz2",
+      "passed": true
+    },
+    {
+      "name": "exact failure: 17-Packages.bz2",
+      "passed": true
+    },
+    {
+      "name": "bounded metadata: 17-Packages.bz2",
+      "passed": true
+    },
+    {
+      "name": "exact failure: main-Sources.bz2",
+      "passed": true
+    },
+    {
+      "name": "bounded metadata: main-Sources.bz2",
+      "passed": true
+    },
+    {
+      "name": "exact failure: postgresql-17_17.11-1.pgdg13+2.dsc",
+      "passed": true
+    },
+    {
+      "name": "bounded metadata: postgresql-17_17.11-1.pgdg13+2.dsc",
+      "passed": true
+    },
+    {
+      "name": "rendered not raw",
+      "passed": true
+    },
+    {
+      "name": "source decision",
+      "passed": true
+    },
+    {
+      "name": "no signature claim",
+      "passed": true
+    },
+    {
+      "name": "no unsupported prefix claim",
+      "passed": true
+    },
+    {
+      "name": "no setup approval or command",
+      "passed": true
+    },
+    {
+      "name": "targetPayloadAcquired",
+      "passed": true
+    },
+    {
+      "name": "targetPayloadHeadersAcquired",
+      "passed": true
+    },
+    {
+      "name": "targetMaterializedInstalledImportedExecuted",
+      "passed": true
+    },
+    {
+      "name": "hostChanged",
+      "passed": true
+    },
+    {
+      "name": "databaseOrNativeActions",
+      "passed": true
+    },
+    {
+      "name": "cloudProviderPaidActions",
+      "passed": true
+    },
+    {
+      "name": "metadata groups",
+      "passed": true
+    },
+    {
+      "name": "bounded proposed intake",
+      "passed": true
+    },
+    {
+      "name": "not target payload: https://apt.postgresql.org/pub/repos/apt/dists/trixie-pgdg/InRelease",
+      "passed": true
+    },
+    {
+      "name": "not target payload: https://apt.postgresql.org/pub/repos/apt/dists/trixie-pgdg/Release",
+      "passed": true
+    },
+    {
+      "name": "not target payload: https://apt.postgresql.org/pub/repos/apt/dists/trixie-pgdg/Release.gpg",
+      "passed": true
+    },
+    {
+      "name": "not target payload: https://www.postgresql.org/media/keys/ACCC4CF8.asc",
+      "passed": true
+    },
+    {
+      "name": "not target payload: https://apt.postgresql.org/pub/repos/apt/dists/trixie-pgdg/main/binary-amd64/Packages.bz2",
+      "passed": true
+    },
+    {
+      "name": "not target payload: https://apt.postgresql.org/pub/repos/apt/dists/trixie-pgdg/17/binary-amd64/Packages.bz2",
+      "passed": true
+    },
+    {
+      "name": "not target payload: https://apt.postgresql.org/pub/repos/apt/dists/trixie-pgdg/main/source/Sources.bz2",
+      "passed": true
+    },
+    {
+      "name": "not target payload: https://apt.postgresql.org/pub/repos/apt/pool/main/p/postgresql-17/postgresql-17_17.11-1.pgdg13+2.dsc",
+      "passed": true
+    }
+  ],
+  "setupAndRuntime": "HOLD_EXTERNAL_INPUT_NOT_EXECUTABLE"
+}

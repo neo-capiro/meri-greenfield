@@ -1,0 +1,1 @@
+{"authorCommit": "76355bfe516260ba758dee44f9fcf454e317cd71", "authorTree": "2aeb20aea7159a0ccc373a2b30dc6dc534a85c00", "passed": 96, "failed": ["exact clean author freeze", "bound original source: docs/plans/MERI-G1-SOURCE-TO-NATIVE.md"], "originalTrackedFilesPreserved": 4696}

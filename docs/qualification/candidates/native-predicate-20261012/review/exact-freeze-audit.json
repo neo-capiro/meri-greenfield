@@ -1,0 +1,133 @@
+{
+  "base": "15f671a65365e3401f0ce07b46deb4cf63538346",
+  "authorCommit": "7591d8670e53fa49876aa762b0407b8baf2c66ba",
+  "authorTree": "1e6938c6ad6db442233a0b0693daca0d70ec4eb7",
+  "authorManifestSha256": "6c79fc11362deab66dc73cf3778795f4d34b87ff9068906b33835bb954f3dda0",
+  "checks": [
+    {
+      "name": "exact-clean-author-freeze",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "ten-allocated-additions-no-existing-change",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "manifest-complete-nine-members",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "member:MERI-NATIVE-PREDICATE-20261012.md",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "member:MERI-NATIVE-PREDICATE-20261012.md",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "member:data-observation.stderr.txt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "member:data-observation.stdout.json",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "member:outline.json",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "member:predicate-data.py",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "member:predicate-map.json",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "member:tool-transport-failure.json",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "member:verification-receipt.json",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "whitespace-clean",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "known-private-path-screen-clean",
+      "passed": true,
+      "detail": {
+        "distinctValues": 27,
+        "matches": 0
+      }
+    },
+    {
+      "name": "replay:frozen-author",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "replay:frozen-independent-data",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "replay:frozen-independent-inert",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "author-replay-byte-matches-freeze",
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "passed": 18,
+  "failed": 0,
+  "runs": [
+    {
+      "label": "frozen-author",
+      "exitCode": 0,
+      "passed": 19,
+      "failed": 0,
+      "stdoutSha256": "80148ce3091645eea2ba795d901c1f22c896b5f2e2c581ec2313d96ee555196a",
+      "stderrBytes": 0
+    },
+    {
+      "label": "frozen-independent-data",
+      "exitCode": 0,
+      "passed": 25,
+      "failed": 0,
+      "stdoutSha256": "cfa12c951b923e38e47768a955188bd69676d9a0cd6430bf9c8e8f15a1708156",
+      "stderrBytes": 0
+    },
+    {
+      "label": "frozen-independent-inert",
+      "exitCode": 0,
+      "passed": 16,
+      "failed": 0,
+      "stdoutSha256": "a72a5d2bfccca93fd9c3bdc0e652d2acc6a3cd67ab9bbc6b2a151f492818d806",
+      "stderrBytes": 0
+    }
+  ],
+  "privateSourceExecuted": false,
+  "nativeExecution": false,
+  "ownedJobsRemaining": 0,
+  "scope": "Exact intermediate facts/verifier only; helper and source adaptation HOLD"
+}

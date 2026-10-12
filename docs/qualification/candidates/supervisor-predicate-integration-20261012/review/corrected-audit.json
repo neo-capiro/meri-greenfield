@@ -1,0 +1,29 @@
+{
+  "command": [
+    "python3",
+    "docs/qualification/candidates/supervisor-predicate-integration-20261012/review/audit-integration.py",
+    "/workspace/meri-supervisor-predicate-20261012",
+    "e5e851f381d14359c00cca1b5438fe13f4fadfb0"
+  ],
+  "cwd": "/workspace/meri-supervisor-predicate-integration-review-20261012",
+  "sourceRoot": null,
+  "startUnixSeconds": 1791793827.4787228,
+  "elapsedSeconds": 0.2654111385345459,
+  "exitCode": 0,
+  "ownedPidAndGroup": 110591,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "reapedDescendants": [],
+  "streams": {
+    "stdout": {
+      "path": "corrected-audit.stdout.txt",
+      "bytes": 5880,
+      "sha256": "2632fe8c79c059db21eceb0677bf8cd7dcb3293803e083e27f1dc134eb9c9989"
+    },
+    "stderr": {
+      "path": "corrected-audit.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

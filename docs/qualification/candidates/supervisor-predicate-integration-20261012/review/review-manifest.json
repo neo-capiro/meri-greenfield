@@ -1,0 +1,60 @@
+{
+  "rootFreeze": "e5e851f381d14359c00cca1b5438fe13f4fadfb0",
+  "criteriaCommit": "3a28bda224726a247702b8392e20fc2fb29760fd",
+  "verdict": "ACCEPT_DOCUMENT_INTEGRATION",
+  "files": [
+    {
+      "path": "docs/coordination/reports/MERI-SUPERVISOR-PREDICATE-INTEGRATION-REVIEW-20261012.md",
+      "bytes": 9430,
+      "sha256": "3dd00b38d890c5dc1ea73148f217bcb266ba3b59153a68ac316b15d8b822c467"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/review/audit-integration.py",
+      "bytes": 8584,
+      "sha256": "3cc86177773da239a01ff8023038153ef45e29c8361d50bd89a6c527dd063188"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/review/corrected-audit.json",
+      "bytes": 921,
+      "sha256": "9d660acbbbdc77de605fef026e6a388b29c9eb3df8a0ae0a4241605879b54b74"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/review/corrected-audit.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/review/corrected-audit.stdout.txt",
+      "bytes": 5880,
+      "sha256": "2632fe8c79c059db21eceb0677bf8cd7dcb3293803e083e27f1dc134eb9c9989"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/review/exact-audit.json",
+      "bytes": 5880,
+      "sha256": "2632fe8c79c059db21eceb0677bf8cd7dcb3293803e083e27f1dc134eb9c9989"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/review/initial-assumed-ancestry-audit.json",
+      "bytes": 5535,
+      "sha256": "aa0e9681f6fc3c8b08c71bd6d1a0e28a96e5bf83196797a2d39350f9eccc277f"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/review/initial-assumed-ancestry-audit.py",
+      "bytes": 8023,
+      "sha256": "844a560c31ef29696bc64952beeeef3ed186aeb1faaf5261cb100a8caef7d538"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/review/run-check.py",
+      "bytes": 2114,
+      "sha256": "f3f0f3d6592696ccac9ed44bd904c492f61c95a73a941b45b8da27618ddf174a"
+    }
+  ],
+  "excluded": [
+    "review-manifest.json (self)"
+  ],
+  "noPrivateInputOrTargetAccess": true,
+  "reviewFormattingCorrection": {
+    "initialGitDiffCheck": "docs/coordination/reports/MERI-SUPERVISOR-PREDICATE-INTEGRATION-REVIEW-20261012.md:50: new blank line at EOF.",
+    "correction": "Removed only extra EOF blank line before final diff check."
+  }
+}
