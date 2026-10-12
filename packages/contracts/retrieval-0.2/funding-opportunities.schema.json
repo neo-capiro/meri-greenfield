@@ -1,0 +1,2939 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:funding-opportunities:0.2.0",
+  "title": "Private unavailable funding read projections",
+  "$defs": {
+    "FundingSource": {
+      "enum": [
+        "grants_gov",
+        "sam_gov"
+      ]
+    },
+    "FundingSourceV2": {
+      "enum": [
+        "grants_gov",
+        "sam_gov",
+        "agency_forecast",
+        "dibbs",
+        "sbir_sttr",
+        "ca_portal"
+      ]
+    },
+    "FundingKind": {
+      "enum": [
+        "grant",
+        "cooperative_agreement",
+        "sources_sought",
+        "presolicitation",
+        "solicitation",
+        "combined_synopsis_solicitation",
+        "special_notice",
+        "amendment",
+        "award_notice",
+        "other"
+      ]
+    },
+    "FundingReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/FundingSource"
+        },
+        "sourceRecordId": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "source",
+        "sourceRecordId"
+      ]
+    },
+    "FundingEligibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "state": {
+          "enum": [
+            "eligible",
+            "ineligible",
+            "needs_review",
+            "unknown"
+          ]
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "state",
+        "reason"
+      ]
+    },
+    "FundingRecommendation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "machineRecommendation": {
+          "enum": [
+            "pursue",
+            "monitor",
+            "pass",
+            "needs_review"
+          ]
+        },
+        "recommendationConfidence": {
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ]
+        },
+        "primaryReason": {
+          "type": "string"
+        },
+        "primaryRisk": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "recommendedNextAction": {
+          "type": "string"
+        },
+        "reasonCodes": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "source_closed",
+              "informational_notice",
+              "not_eligible",
+              "client_profile_too_thin",
+              "eligibility_needs_review",
+              "eligibility_unknown",
+              "below_evidence_floor",
+              "strong_capability_match",
+              "moderate_capability_match",
+              "prior_agency_award_history",
+              "deadline_imminent",
+              "deadline_not_stated",
+              "no_award_history_evidence",
+              "vehicle_access_unresolved"
+            ]
+          }
+        }
+      },
+      "required": [
+        "machineRecommendation",
+        "recommendationConfidence",
+        "primaryReason",
+        "primaryRisk",
+        "recommendedNextAction",
+        "reasonCodes"
+      ]
+    },
+    "FundingDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "decision": {
+          "enum": [
+            "pursue",
+            "monitor",
+            "pass"
+          ]
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "decidedAt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "decidedByUserId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "nextAction": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "nextActionDueAt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "decision",
+        "reason",
+        "decidedAt",
+        "decidedByUserId",
+        "nextAction",
+        "nextActionDueAt"
+      ]
+    },
+    "FundingDeadline": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "dateOnly": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "timeZone": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "basis": {
+          "enum": [
+            "explicit_datetime",
+            "date_only_end_of_day",
+            "unknown"
+          ]
+        },
+        "daysRemaining": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "enum": [
+            "open",
+            "closed",
+            "unknown"
+          ]
+        },
+        "rawText": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "at",
+        "dateOnly",
+        "timeZone",
+        "basis",
+        "daysRemaining",
+        "status"
+      ]
+    },
+    "FundingBrief": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ref": {
+          "$ref": "#/$defs/FundingReference"
+        },
+        "title": {
+          "type": "string"
+        },
+        "agency": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "kind": {
+          "$ref": "#/$defs/FundingKind"
+        },
+        "isActive": {
+          "type": "boolean"
+        },
+        "isPursuable": {
+          "type": "boolean"
+        },
+        "responseDeadline": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "responseDeadlineNote": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "relevanceScore": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "eligibility": {
+          "$ref": "#/$defs/FundingEligibility"
+        },
+        "recommendation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FundingRecommendation"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "humanDecision": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FundingDecision"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "workflowStatus": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sourceUrl": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sourceUpdatedAt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "deadline": {
+          "$ref": "#/$defs/FundingDeadline"
+        }
+      },
+      "required": [
+        "ref",
+        "title",
+        "agency",
+        "kind",
+        "isActive",
+        "isPursuable",
+        "responseDeadline",
+        "responseDeadlineNote",
+        "relevanceScore",
+        "eligibility",
+        "recommendation",
+        "humanDecision",
+        "workflowStatus",
+        "sourceUrl",
+        "sourceUpdatedAt"
+      ]
+    },
+    "FundingGrantMoney": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "estimatedProgramFunding": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "awardFloor": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "awardCeiling": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "expectedAwardCount": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "costSharingRequired": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "estimatedProgramFunding",
+        "awardFloor",
+        "awardCeiling",
+        "expectedAwardCount",
+        "costSharingRequired"
+      ]
+    },
+    "FundingContractValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "estimatedValue": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "basis": {
+          "enum": [
+            "not_stated_by_source",
+            "source_backed"
+          ]
+        }
+      },
+      "required": [
+        "estimatedValue",
+        "basis"
+      ]
+    },
+    "FundingPlace": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "city": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "state": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "zip": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "country": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "city",
+        "state",
+        "zip",
+        "country"
+      ]
+    },
+    "FundingMissingField": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "impact": {
+          "type": "string"
+        },
+        "href": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "field",
+        "label",
+        "impact",
+        "href"
+      ]
+    },
+    "FundingProfileGap": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "tag": {
+          "type": "string"
+        },
+        "tone": {
+          "enum": [
+            "warn",
+            "muted"
+          ]
+        },
+        "body": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "tag",
+        "tone",
+        "body"
+      ]
+    },
+    "FundingMatchedSignal": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "signal": {
+          "type": "string"
+        },
+        "source": {
+          "enum": [
+            "capability",
+            "funding_priority"
+          ]
+        },
+        "strength": {
+          "enum": [
+            "strong",
+            "moderate",
+            "weak"
+          ]
+        },
+        "weight": {
+          "type": "number"
+        },
+        "matchedOn": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "signal",
+        "strength",
+        "matchedOn"
+      ]
+    },
+    "FundingAcquisitionEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tangoVehicleId": {
+          "type": "string"
+        },
+        "vehicleName": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "vehicleType": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "relationship": {
+          "enum": [
+            "self",
+            "parent",
+            "teaming"
+          ]
+        },
+        "recipientUei": {
+          "type": "string"
+        },
+        "orderCount": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "idvObligations": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "idvContractsValue": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lastDateToOrder": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "expired": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lastSyncedAt": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "tangoVehicleId",
+        "vehicleName",
+        "vehicleType",
+        "relationship",
+        "recipientUei",
+        "orderCount",
+        "idvObligations",
+        "idvContractsValue",
+        "lastDateToOrder",
+        "expired",
+        "lastSyncedAt"
+      ]
+    },
+    "FundingAcquisitionPosition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "state": {
+          "enum": [
+            "direct_prime_access",
+            "related_entity_access",
+            "known_teaming_route",
+            "vehicle_not_identified",
+            "no_direct_access_evidence",
+            "unknown"
+          ]
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FundingAcquisitionEvidence"
+          }
+        },
+        "summary": {
+          "type": "string"
+        },
+        "recommendedRoute": {
+          "type": "string"
+        },
+        "source": {
+          "const": "tango"
+        },
+        "freshness": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "lastSyncedAt": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "neverSynced": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "lastSyncedAt",
+            "neverSynced"
+          ]
+        }
+      },
+      "required": [
+        "state",
+        "evidence",
+        "summary",
+        "recommendedRoute",
+        "source",
+        "freshness"
+      ]
+    },
+    "FundingSummaryRead": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "state": {
+          "enum": [
+            "available",
+            "missing",
+            "link_only"
+          ]
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "totalCharacters": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "returnedCharacters": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "truncated": {
+          "type": "boolean"
+        },
+        "nextOffset": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sourceUpdatedAt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "state",
+        "offset",
+        "totalCharacters",
+        "returnedCharacters",
+        "truncated",
+        "nextOffset",
+        "sourceUpdatedAt"
+      ]
+    },
+    "FundingEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "recordRef": {
+          "type": "string"
+        },
+        "recommendationConfidence": {
+          "anyOf": [
+            {
+              "enum": [
+                "high",
+                "medium",
+                "low"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "confidenceMeaning": {
+          "const": "Canonical recommendation evidence quality, not likelihood of winning or verified eligibility."
+        },
+        "disqualifiers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "basis": {
+                "const": "canonical_eligibility"
+              },
+              "reason": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "basis",
+              "reason"
+            ]
+          },
+          "maxItems": 1
+        },
+        "missingFields": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "sourceUrl",
+              "sourceUpdatedAt",
+              "responseDeadline",
+              "placeOfPerformance",
+              "eligibleApplicantTypes",
+              "noticeText"
+            ]
+          }
+        },
+        "requirements": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "state": {
+              "enum": [
+                "not_requested",
+                "notice_body"
+              ]
+            },
+            "tool": {
+              "enum": [
+                "get_funding_opportunity_requirements",
+                "get_funding_opportunity"
+              ]
+            }
+          },
+          "required": [
+            "state",
+            "tool"
+          ]
+        }
+      },
+      "required": [
+        "recordRef",
+        "recommendationConfidence",
+        "confidenceMeaning",
+        "disqualifiers",
+        "missingFields",
+        "requirements"
+      ]
+    },
+    "FundingFacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ref": {
+          "$ref": "#/$defs/FundingReference"
+        },
+        "title": {
+          "type": "string"
+        },
+        "agency": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "kind": {
+          "$ref": "#/$defs/FundingKind"
+        },
+        "isActive": {
+          "type": "boolean"
+        },
+        "isPursuable": {
+          "type": "boolean"
+        },
+        "responseDeadline": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "responseDeadlineNote": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "relevanceScore": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "eligibility": {
+          "$ref": "#/$defs/FundingEligibility"
+        },
+        "recommendation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FundingRecommendation"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "humanDecision": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FundingDecision"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "workflowStatus": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sourceUrl": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sourceUpdatedAt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "deadline": {
+          "$ref": "#/$defs/FundingDeadline"
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sourceReference": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "subAgency": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "office": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "kindRaw": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "baseKind": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FundingKind"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "closeOrArchiveDate": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "postedDate": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "summary": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "summaryIsLink": {
+          "type": "boolean"
+        },
+        "naicsCodes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "pscCodes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "setAside": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "setAsideCode": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "setAsideDescription": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "eligibleApplicantTypes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "fundingInstrument": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "category": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "assistanceListings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "grantFunding": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FundingGrantMoney"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "contractValue": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FundingContractValue"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "placeOfPerformance": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FundingPlace"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "acquisitionPosition": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FundingAcquisitionPosition"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "missingProfileFields": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/FundingMissingField"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "matchedSignals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FundingMatchedSignal"
+          }
+        },
+        "districtKey": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "districtBasis": {
+          "anyOf": [
+            {
+              "enum": [
+                "source_place_of_performance",
+                "linked_project_site"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidence": {
+          "$ref": "#/$defs/FundingEvidence"
+        },
+        "summaryRead": {
+          "$ref": "#/$defs/FundingSummaryRead"
+        }
+      },
+      "required": [
+        "ref",
+        "title",
+        "agency",
+        "kind",
+        "isActive",
+        "isPursuable",
+        "responseDeadline",
+        "responseDeadlineNote",
+        "relevanceScore",
+        "eligibility",
+        "recommendation",
+        "humanDecision",
+        "workflowStatus",
+        "sourceUrl",
+        "sourceUpdatedAt",
+        "clientId",
+        "sourceReference",
+        "subAgency",
+        "office",
+        "status",
+        "kindRaw",
+        "baseKind",
+        "closeOrArchiveDate",
+        "postedDate",
+        "summary",
+        "summaryIsLink",
+        "naicsCodes",
+        "pscCodes",
+        "setAside",
+        "setAsideCode",
+        "setAsideDescription",
+        "eligibleApplicantTypes",
+        "fundingInstrument",
+        "category",
+        "assistanceListings",
+        "grantFunding",
+        "contractValue",
+        "placeOfPerformance",
+        "acquisitionPosition",
+        "missingProfileFields",
+        "matchedSignals",
+        "districtKey",
+        "districtBasis",
+        "evidence",
+        "summaryRead"
+      ]
+    },
+    "FundingCounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "activeGrants": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "activeContracts": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "saved": {
+          "type": "null"
+        },
+        "pursuing": {
+          "type": "null"
+        },
+        "dismissed": {
+          "type": "null"
+        },
+        "deadlinesIn30Days": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "activeGrants",
+        "activeContracts",
+        "saved",
+        "pursuing",
+        "dismissed",
+        "deadlinesIn30Days"
+      ]
+    },
+    "FundingFreshness": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/FundingSourceV2"
+        },
+        "state": {
+          "enum": [
+            "current",
+            "degraded",
+            "stale",
+            "never_synced",
+            "initial_partial",
+            "error_cached",
+            "unavailable",
+            "not_enabled",
+            "unknown"
+          ]
+        },
+        "recordCount": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "activeRecordCount": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lastSyncedAt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "latestAttemptAt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lastSuccessAt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "source",
+        "state",
+        "recordCount",
+        "activeRecordCount",
+        "lastSyncedAt"
+      ]
+    },
+    "FundingSearchCriteria": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": 2
+        },
+        "mode": {
+          "const": "matched"
+        },
+        "clientId": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        },
+        "query": {
+          "type": "string"
+        },
+        "queryMatch": {
+          "enum": [
+            "keywords",
+            "phrase"
+          ]
+        },
+        "keywordTerms": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FundingSource"
+          },
+          "maxItems": 2
+        },
+        "types": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "lifecycle": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "active",
+              "closed",
+              "post_award"
+            ]
+          },
+          "maxItems": 3
+        },
+        "deadlineWindow": {
+          "const": "any"
+        },
+        "deadlineFrom": {
+          "type": "null"
+        },
+        "deadlineTo": {
+          "type": "null"
+        },
+        "sort": {
+          "const": "deadline"
+        },
+        "direction": {
+          "const": "asc"
+        },
+        "page": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000
+        },
+        "pageSize": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "agencies": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "sectors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "naicsCodes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "pscCodes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "setAsideCodes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "eligibility": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "posted": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "geography": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "applicantTypes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "funding": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "costShare": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "methods": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "disbursement": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "grantPrerequisites": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "codes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "mode",
+        "clientId",
+        "query",
+        "sources",
+        "types",
+        "lifecycle",
+        "deadlineWindow",
+        "deadlineFrom",
+        "deadlineTo",
+        "sort",
+        "direction",
+        "page",
+        "pageSize",
+        "agencies",
+        "sectors",
+        "naicsCodes",
+        "pscCodes",
+        "setAsideCodes",
+        "eligibility",
+        "posted",
+        "geography",
+        "applicantTypes",
+        "funding",
+        "costShare",
+        "methods",
+        "disbursement",
+        "grantPrerequisites",
+        "codes"
+      ]
+    },
+    "FundingSearchData": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "clientId": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        },
+        "counts": {
+          "$ref": "#/$defs/FundingCounts"
+        },
+        "freshness": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FundingFreshness"
+          }
+        },
+        "emptyReason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "emptyExplanation": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "missingProfileFields": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/FundingProfileGap"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "criteria": {
+          "$ref": "#/$defs/FundingSearchCriteria"
+        },
+        "total": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "totalIsCapped": {
+          "type": "boolean"
+        },
+        "page": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000
+        },
+        "pageSize": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "opportunities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FundingFacts"
+          },
+          "maxItems": 5
+        },
+        "hasMore": {
+          "type": "boolean"
+        },
+        "nextPage": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 2,
+              "maximum": 10001
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "coverage": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "sources": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/FundingSource"
+              },
+              "maxItems": 2
+            },
+            "pageCoversMatchedResults": {
+              "type": "boolean"
+            },
+            "totalIsCapped": {
+              "type": "boolean"
+            },
+            "explanation": {
+              "type": "string"
+            },
+            "procurementForecasts": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "state": {
+                  "const": "separate_tool"
+                },
+                "tool": {
+                  "const": "search_procurement_forecasts"
+                }
+              },
+              "required": [
+                "state",
+                "tool"
+              ]
+            }
+          },
+          "required": [
+            "sources",
+            "pageCoversMatchedResults",
+            "totalIsCapped",
+            "explanation",
+            "procurementForecasts"
+          ]
+        }
+      },
+      "required": [
+        "clientId",
+        "counts",
+        "freshness",
+        "emptyReason",
+        "emptyExplanation",
+        "missingProfileFields",
+        "criteria",
+        "total",
+        "totalIsCapped",
+        "page",
+        "pageSize",
+        "generatedAt",
+        "opportunities",
+        "hasMore",
+        "nextPage",
+        "coverage"
+      ]
+    },
+    "FundingClientContextData": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "clientId": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        },
+        "counts": {
+          "$ref": "#/$defs/FundingCounts"
+        },
+        "freshness": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FundingFreshness"
+          }
+        },
+        "emptyReason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "emptyExplanation": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "missingProfileFields": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/FundingProfileGap"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "nextDeadline": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FundingDeadline"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "topGrants": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FundingBrief"
+          },
+          "maxItems": 5
+        },
+        "topContracts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FundingBrief"
+          },
+          "maxItems": 5
+        }
+      },
+      "required": [
+        "clientId",
+        "counts",
+        "freshness",
+        "emptyReason",
+        "emptyExplanation",
+        "missingProfileFields",
+        "nextDeadline",
+        "topGrants",
+        "topContracts"
+      ]
+    },
+    "FundingRequirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "attachmentId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "requirementType": {
+          "type": "string"
+        },
+        "statement": {
+          "type": "string"
+        },
+        "sourceExcerpt": {
+          "type": "string"
+        },
+        "excerptStart": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "excerptEnd": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "sourcePage": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "fileName": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "extractionMethod": {
+          "type": "string"
+        },
+        "extractionModel": {
+          "type": "string"
+        },
+        "confidence": {
+          "type": "string"
+        },
+        "reviewStatus": {
+          "enum": [
+            "pending",
+            "accepted",
+            "rejected"
+          ]
+        },
+        "supersededAt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "attachmentId",
+        "requirementType",
+        "statement",
+        "sourceExcerpt",
+        "excerptStart",
+        "excerptEnd",
+        "sourcePage",
+        "fileName",
+        "extractionMethod",
+        "extractionModel",
+        "confidence",
+        "reviewStatus",
+        "supersededAt"
+      ]
+    },
+    "FundingRequirementsData": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "const": "sam_gov"
+        },
+        "sourceRecordId": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        },
+        "requirements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FundingRequirement"
+          },
+          "maxItems": 25
+        },
+        "coverage": {
+          "enum": [
+            "available",
+            "no_documents",
+            "no_text",
+            "read_none_found"
+          ]
+        },
+        "coverageExplanation": {
+          "type": "string"
+        },
+        "documentTextStatus": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "fileName": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "status": {
+                "type": "string"
+              },
+              "explanation": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "fileName",
+              "status",
+              "explanation"
+            ]
+          }
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "pagination": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "offset": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 25
+            },
+            "total": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "hasMore": {
+              "type": "boolean"
+            },
+            "nextOffset": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "offset",
+            "limit",
+            "total",
+            "hasMore",
+            "nextOffset"
+          ]
+        }
+      },
+      "required": [
+        "source",
+        "sourceRecordId",
+        "requirements",
+        "coverage",
+        "coverageExplanation",
+        "documentTextStatus",
+        "generatedAt",
+        "pagination"
+      ]
+    },
+    "FundingLandscapeSource": {
+      "enum": [
+        "program_element",
+        "budget_movement",
+        "client_facility",
+        "congressional_district",
+        "legislation",
+        "hearing",
+        "regulation",
+        "committee",
+        "acquisition_personnel",
+        "reviewed_relationship",
+        "client_priority"
+      ]
+    },
+    "FundingLandscapeItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/FundingLandscapeSource"
+        },
+        "sourceId": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "basis": {
+          "enum": [
+            "source_backed",
+            "inferred"
+          ]
+        },
+        "matchedOn": {
+          "type": "string"
+        },
+        "evidenceRef": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "asOf": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "source",
+        "sourceId",
+        "label",
+        "basis",
+        "matchedOn",
+        "evidenceRef",
+        "asOf"
+      ]
+    },
+    "FundingLandscapeData": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "fingerprint": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "coverage": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "available": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 11
+            },
+            "wired": {
+              "const": 3
+            },
+            "declared": {
+              "const": 11
+            }
+          },
+          "required": [
+            "available",
+            "wired",
+            "declared"
+          ]
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "source": {
+                "$ref": "#/$defs/FundingLandscapeSource"
+              },
+              "state": {
+                "enum": [
+                  "available",
+                  "empty",
+                  "not_wired",
+                  "denied"
+                ]
+              },
+              "itemCount": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "explanation": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "source",
+              "state",
+              "itemCount",
+              "explanation"
+            ]
+          },
+          "maxItems": 11
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FundingLandscapeItem"
+          },
+          "maxItems": 40
+        }
+      },
+      "required": [
+        "fingerprint",
+        "coverage",
+        "sources",
+        "items"
+      ]
+    },
+    "FundingTruncation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "collection": {
+          "enum": [
+            "topGrants",
+            "topContracts",
+            "items"
+          ]
+        },
+        "kept": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "collection",
+        "kept",
+        "total"
+      ]
+    },
+    "FundingSearchInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "clientId": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        },
+        "source": {
+          "type": "string"
+        },
+        "query": {
+          "type": "string"
+        },
+        "page": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100000
+        },
+        "pageSize": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "activeState": {
+          "enum": [
+            "active",
+            "closed",
+            "all"
+          ]
+        }
+      },
+      "required": [
+        "clientId"
+      ]
+    },
+    "FundingSearchOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "search_funding_opportunities"
+        },
+        "state": {
+          "enum": [
+            "available",
+            "disabled",
+            "denied",
+            "not_found",
+            "unsupported_source",
+            "invalid_request"
+          ]
+        },
+        "explanation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "asOf": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "data": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FundingSearchData"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "truncated": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FundingTruncation"
+          },
+          "maxItems": 2,
+          "minItems": 1
+        }
+      },
+      "required": [
+        "tool",
+        "state",
+        "explanation",
+        "asOf",
+        "data"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "data": {
+                "$ref": "#/$defs/FundingSearchData"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "data": {
+                "type": "null"
+              },
+              "truncated": false
+            }
+          }
+        }
+      ]
+    },
+    "FundingRequirementsInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "clientId": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        },
+        "source": {
+          "type": "string"
+        },
+        "sourceRecordId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 25
+        }
+      },
+      "required": [
+        "clientId",
+        "source",
+        "sourceRecordId"
+      ]
+    },
+    "FundingRequirementsOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "get_funding_opportunity_requirements"
+        },
+        "state": {
+          "enum": [
+            "available",
+            "disabled",
+            "denied",
+            "not_found",
+            "unsupported_source",
+            "invalid_request"
+          ]
+        },
+        "explanation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "asOf": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "data": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FundingRequirementsData"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "truncated": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FundingTruncation"
+          },
+          "maxItems": 2,
+          "minItems": 1
+        }
+      },
+      "required": [
+        "tool",
+        "state",
+        "explanation",
+        "asOf",
+        "data"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "data": {
+                "$ref": "#/$defs/FundingRequirementsData"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "data": {
+                "type": "null"
+              },
+              "truncated": false
+            }
+          }
+        }
+      ]
+    },
+    "FundingOpportunityInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "clientId": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        },
+        "source": {
+          "type": "string"
+        },
+        "sourceRecordId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "summaryOffset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100000000
+        },
+        "summaryLimit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12000
+        }
+      },
+      "required": [
+        "clientId",
+        "source",
+        "sourceRecordId"
+      ]
+    },
+    "FundingOpportunityOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "get_funding_opportunity"
+        },
+        "state": {
+          "enum": [
+            "available",
+            "disabled",
+            "denied",
+            "not_found",
+            "unsupported_source",
+            "invalid_request"
+          ]
+        },
+        "explanation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "asOf": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "data": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FundingFacts"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "truncated": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FundingTruncation"
+          },
+          "maxItems": 2,
+          "minItems": 1
+        }
+      },
+      "required": [
+        "tool",
+        "state",
+        "explanation",
+        "asOf",
+        "data"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "data": {
+                "$ref": "#/$defs/FundingFacts"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "data": {
+                "type": "null"
+              },
+              "truncated": false
+            }
+          }
+        }
+      ]
+    },
+    "FundingClientContextInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "clientId": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        }
+      },
+      "required": [
+        "clientId"
+      ]
+    },
+    "FundingClientContextOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "get_opportunity_client_context"
+        },
+        "state": {
+          "enum": [
+            "available",
+            "disabled",
+            "denied",
+            "not_found",
+            "unsupported_source",
+            "invalid_request"
+          ]
+        },
+        "explanation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "asOf": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "data": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FundingClientContextData"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "truncated": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FundingTruncation"
+          },
+          "maxItems": 2,
+          "minItems": 1
+        }
+      },
+      "required": [
+        "tool",
+        "state",
+        "explanation",
+        "asOf",
+        "data"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "data": {
+                "$ref": "#/$defs/FundingClientContextData"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "data": {
+                "type": "null"
+              },
+              "truncated": false
+            }
+          }
+        }
+      ]
+    },
+    "FundingGovernmentLandscapeInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "clientId": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        },
+        "source": {
+          "type": "string"
+        },
+        "sourceRecordId": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "clientId",
+        "source",
+        "sourceRecordId"
+      ]
+    },
+    "FundingGovernmentLandscapeOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "get_opportunity_government_landscape"
+        },
+        "state": {
+          "enum": [
+            "available",
+            "disabled",
+            "denied",
+            "not_found",
+            "unsupported_source",
+            "invalid_request"
+          ]
+        },
+        "explanation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "asOf": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "data": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FundingLandscapeData"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "truncated": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FundingTruncation"
+          },
+          "maxItems": 2,
+          "minItems": 1
+        }
+      },
+      "required": [
+        "tool",
+        "state",
+        "explanation",
+        "asOf",
+        "data"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "data": {
+                "$ref": "#/$defs/FundingLandscapeData"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "data": {
+                "type": "null"
+              },
+              "truncated": false
+            }
+          }
+        }
+      ]
+    }
+  }
+}
