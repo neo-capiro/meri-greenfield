@@ -1,0 +1,22 @@
+{
+  "observedBetween": [
+    "2026-10-12 21:54:51 UTC",
+    "2026-10-12 21:54:52 UTC"
+  ],
+  "url": "https://github.com/neo-capiro/meri-greenfield/pull/37",
+  "head": "task/meri-backend-execution-20261012",
+  "headSha": "8746763006fd824df7c0419921073ba1a65b2a7a",
+  "base": "task/meri-backend-next-20261012",
+  "baseSha": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "state": "open",
+  "draft": true,
+  "merged": false,
+  "manifest": {
+    "members": 1026,
+    "sha256": "6b6a8228d18acaa322a8f9ff80fff8c75fc2fd5a3392613a5b2988069715beab"
+  },
+  "independentReview": "5357dc276189213d2a06fb83c8952abaf29e5319",
+  "sourceVerdict": "ACCEPT_SOURCE",
+  "runtimeVerdict": "HOLD",
+  "scope": "Verified sealed source/evidence candidate. The following receipt-only commit cannot contain its own hash; final remote head is verified separately."
+}
