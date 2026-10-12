@@ -27,10 +27,18 @@ export function createPostgresAnalysisExecutor(options){
   const identity=raw=>JSON.stringify({operation:trusted.descriptor.operation,arguments:{intentSha256:requestHash(input(raw))}});
   const delivery=call=>JSON.stringify({...trusted.producerContext,deliveryId:call.deliveryId});
   const ack=(raw,id,decision)=>{if(typeof raw!=='string'||Buffer.byteLength(raw)>trusted.limits.maxResponseBytes)fail('ANALYSIS_BUDGET_RECEIPT');const receipt=v.snapshot(JSON.parse(raw));own(receipt,['reservationId','decision']);if(receipt.reservationId!==id||receipt.decision!==decision)fail('ANALYSIS_BUDGET_RECEIPT');};
-  const durable=createPostgresBudgetExecution({pool,allocationJson,authority,limits:trusted.limits,now,requestIdentity:identity,
+  function failure(cause,observation,call){
+    if(!observation.reservationStarted)return cause;
+    const code=observation.dispatchStarted?'ANALYSIS_EFFECT_UNKNOWN':observation.reservationAcknowledged?'ANALYSIS_BUDGET_SETTLEMENT_UNKNOWN':'ANALYSIS_BUDGET_RESERVATION_UNKNOWN';
+    const result=observation.result??null;
+    return Object.assign(new Error(code),{code,cause,uncertainty:{requestSha256:requestHash(call),reservationId:observation.reservationId??null,binding:v.snapshot(trusted.context.binding),reservationAcknowledged:observation.reservationAcknowledged===true,dispatchStarted:observation.dispatchStarted===true,settlementAcknowledged:observation.settlementAcknowledged===true,outputReceiptSha256:observation.outputReceiptSha256??null,resultSha256:result?canonicalSha256(result):null,outputs:result?v.snapshot(result.outputs):null,inspectionStatus:'pending',publicationStatus:'pending'}});
+  }
+  // Per-call observations outlive a raced waiter, not the owned native operation.
+  // They establish no stop/retry authority and never become a second ledger.
+  const compose=observation=>createPostgresBudgetExecution({pool,allocationJson,authority,limits:trusted.limits,now,requestIdentity:identity,
     createExecutor:ports=>({async execute(raw,credential,signal){
       const call=input(raw),requestSha256=requestHash(call),ctx=trusted.context;
-      let deadlineMs=ctx.deadlineMs,current,selection,reservationId,reservationStarted=false,reserved=false,dispatchStarted=false,settlementAcknowledged=false,outputReceiptSha256=null,result=null;
+      let deadlineMs=ctx.deadlineMs,current,selection,reservationId,result=null;
       const active=abort=>{if(signal?.aborted||abort?.aborted||!Number.isSafeInteger(now())||now()>=deadlineMs)fail('ANALYSIS_DEADLINE');};
       const narrow=value=>{if(!Number.isSafeInteger(value))fail('ANALYSIS_BUDGET_DEADLINE');deadlineMs=Math.min(deadlineMs,value);active();};
       async function authorize(){
@@ -44,32 +52,31 @@ export function createPostgresAnalysisExecutor(options){
       }
       const boundary=createSandboxAnalysisBoundary({validatePublicShape:validateShape,canonicalSha256,now,
         verifyAdmission:async value=>{active(value.signal);const proof=v.snapshot(await verifyAdmission(value));active(value.signal);narrow(proof.expiresAtMs);return proof;},
-        port:{async execute(value){active(value.signal);dispatchStarted=true;const receipt=v.snapshot(await port.execute(value));active(value.signal);outputReceiptSha256=canonicalSha256(receipt);return receipt;}}});
+        port:{async execute(value){active(value.signal);observation.dispatchStarted=true;const receipt=v.snapshot(await port.execute(value));active(value.signal);observation.outputReceiptSha256=canonicalSha256(receipt);return receipt;}}});
       try{
         await authorize();if(ctx.deadlineMs>deadlineMs)fail('ANALYSIS_IMMUTABLE_DEADLINE_EXCEEDS_AUTHORITY');
-        reservationId=newReservationId();reservationStarted=true;
-        ack(await ports.budget.reserve({reservationId,binding:ctx.binding,operation:trusted.descriptor.operation,argumentsSha256:requestSha256,budgets:current.claims.budgets,claims:current.claims,deadlineMs,limitDeadline:narrow,signal}),reservationId,'reserved');reserved=true;active();
+        reservationId=newReservationId();observation.reservationId=reservationId;observation.reservationStarted=true;
+        ack(await ports.budget.reserve({reservationId,binding:ctx.binding,operation:trusted.descriptor.operation,argumentsSha256:requestSha256,budgets:current.claims.budgets,claims:current.claims,deadlineMs,limitDeadline:narrow,signal}),reservationId,'reserved');observation.reservationAcknowledged=true;active();
         // The native intent is immutable. Never rewrite a prior admission hash to fit
         // a shorter persisted run window discovered while reserving.
         if(ctx.deadlineMs>deadlineMs)fail('ANALYSIS_IMMUTABLE_DEADLINE_EXCEEDS_AUTHORITY');
         const observed=await boundary.execute({...call.request.content,binding:ctx.binding,scopes:ctx.scopes,deadlineMs:ctx.deadlineMs,maxBytes:ctx.maxBytes,admission:ctx.analysisAdmission},{signal});
         // Detach verified output tuples before any later authority/accounting await.
-        result=v.assertArtifactOutput('run_analysis',observed,call.request,ctx);active();
+        result=v.assertArtifactOutput('run_analysis',observed,call.request,ctx);observation.result=v.snapshot(result);active();
         await authorize();
         if(Buffer.byteLength(JSON.stringify(result))>trusted.limits.maxResponseBytes)fail('ANALYSIS_RESPONSE_LIMIT');
         const outputBytes=result.outputs.reduce((sum,x)=>sum+x.object.bytes,0);
-        ack(await ports.budget.settle({reservationId,outcome:'completed',outputBytes,resultSha256:canonicalSha256(result),deadlineMs,signal}),reservationId,'settled');settlementAcknowledged=true;active();
+        ack(await ports.budget.settle({reservationId,outcome:'completed',outputBytes,resultSha256:canonicalSha256(result),deadlineMs,signal}),reservationId,'settled');observation.settlementAcknowledged=true;active();
         await authorize();return v.snapshot(result);
       }catch(cause){
-        if(!reservationStarted)throw cause;
-        const code=dispatchStarted?'ANALYSIS_EFFECT_UNKNOWN':reserved?'ANALYSIS_BUDGET_SETTLEMENT_UNKNOWN':'ANALYSIS_BUDGET_RESERVATION_UNKNOWN';
-        throw Object.assign(new Error(code),{code,cause,uncertainty:{requestSha256,reservationId:reservationId??null,binding:v.snapshot(ctx.binding),reservationAcknowledged:reserved,dispatchStarted,settlementAcknowledged,outputReceiptSha256,resultSha256:result?canonicalSha256(result):null,outputs:result?v.snapshot(result.outputs):null,inspectionStatus:'pending',publicationStatus:'pending'}});
+        throw failure(cause,observation,call);
       }
     }})});
+  const durable=compose({});
   function admitted(value){if(!sourceEnabled)fail('UNAVAILABLE');const call=input(value);return {raw:JSON.stringify(call),delivery:delivery(call)};}
   return Object.freeze({sourceEnabled,bindTrustedGrant:durable.bindTrustedGrant,
     prepareInvocation(value,signal){const call=admitted(value);return durable.prepareInvocation(call.delivery,call.raw,signal);},
-    execute(value,credential,signal){const call=admitted(value);return durable.executeOwned(call.raw,credential,call.delivery,signal);},
+    execute(value,credential,signal){const call=admitted(value),observation={};return compose(observation).executeOwned(call.raw,credential,call.delivery,signal).catch(cause=>{if(cause.uncertainty)throw cause;throw failure(cause,observation,input(call.raw));});},
     reconcileInvocation(value){const call=input(value);return durable.reconcileInvocation(delivery(call),JSON.stringify(call));},
   });
 }
