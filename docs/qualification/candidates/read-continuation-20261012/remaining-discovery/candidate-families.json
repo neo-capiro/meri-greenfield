@@ -59,7 +59,7 @@
         "bills": "At most100 stored bills; fields id/congress/billType/billNumber/title/policyArea?/latestActionText?/latestActionDate?/url?/sponsor/committee?/peCodeCount; link nullable {type,confidence,evidence,status}; budgetPackage nullable {name,fiscalYear,track,stage}. Exact owner projection must be followed, including nullable storage types and fallback versioned links.",
         "contractors": "Missing award table returns {data:[],todo}; normal returns namedPrimes/data/evidence/evidenceNote/todo:null. Data rows contractorName/amount/awards/source plus attribution; SQL top10. Named primes top25 with contractorName/location?/contractMethod?/totalCostM?/fy?/sourceUrl?/pageNumber?/publisher?/attribution. Evidence keeps governmentExhibit and federalAwards separate.",
         "money": "24-month award window; federalAwards amountM/count and accepted_direct/candidate/unmatched_dollars buckets. Government R-3 exhibit money remains compatibility-table provenance, not canonical money or award obligations. Unmatched zeros are response bucket values, not exhaustive attribution proof.",
-        "reportLanguage": "ProvisionItem fields id/committee/fy/heading/text/pageStart?/pageEnd?/actionType?/sourceUrl?/matchBasis/reviewStatus/confidence/matchScope/attributionCaveat?. Exact matchScope pe_specific|program_level. Accepted and pending links retained; accepted program match branch. Dedup strongest match basis; sorted by source review/basis/FY, final cap50. Empty and program-level-only caveats from helper; no report absence proof.",
+        "reportLanguage": "ProvisionItem fields id/committee/fy/heading/text/pageStart?/pageEnd?/actionType?/sourceUrl?/matchBasis/reviewStatus/confidence/matchScope/attributionCaveat?. Exact matchScope pe_specific|program_level. Exposed reviewStatus accepted and candidate links retained; accepted program match branch. Dedup strongest match basis; sorted by source review/basis/FY, final cap50. Empty and program-level-only caveats from helper; no report absence proof.",
         "wrapperEnvelopes": "Report language: tool/generatedAt/peCode/provisions and optional note. Bills: tool/generatedAt/bills, NO peCode echo. Contractors: tool/generatedAt plus spread result, NO peCode echo."
       },
       "effectsAndAuthority": {
@@ -69,7 +69,7 @@
       "qualificationLimits": [
         "Author must trace schema scalar/nulls and exact inline response fields, not copy implementation.",
         "Missing-table response is supported source envelope, not a missing DTO.",
-        "Award obligations versus exhibit values and accepted/pending attribution stay distinct.",
+        "Award obligations versus exhibit values and accepted/candidate attribution stay distinct.",
         "No canonical snapshot/funding accuracy qualification inherited from a shape."
       ],
       "sourceContractRecommendation": "READY_FOR_AUTHOR_AND_INDEPENDENT_REVIEW",
