@@ -1,0 +1,37 @@
+✔ raw input and normalized selection are separate closed definitions (4.672443ms)
+✔ complete unscoped card has26 projection fields and no fabricated envelope (8.366696ms)
+✔ clientName is optional serialization; other25 fields are required (5.30872ms)
+✔ stored empty text/null fields remain valid unscoped projections (0.354874ms)
+✔ nullable UUID fields and stored widths are exact (1.213624ms)
+✔ parallel count race allows total0 with rows and total larger than page (0.431138ms)
+✔ negative/unsafe count and duplicate identity refuse (0.753382ms)
+✔ selected limit binds returned rows but never creates complete-page inference (1.78993ms)
+✔ selected status filter applies, no default status filter is invented (0.662666ms)
+✔ priority admits full signed storedInt32, not fractions or unbounded numbers (1.433495ms)
+✔ deadline is canonical UTC SQLDATE, created/updated/generated finite instants (1.926226ms)
+✔ deadline sort uses nulls last and descending priority only within ties (0.865611ms)
+✔ priority sort uses deadline ascending only within priority ties (0.544018ms)
+✔ shared nested DTOs preserve all optional fields without proof upgrades (0.349305ms)
+✔ unscoped source has no linked proof/native completion/task or authority fields (1.854898ms)
+✔ source enums/JSONcasts are admitted as closed transport, not unrestricted storedJSON (0.774514ms)
+✔ legacy permissive coercion remains outside inherited strict raw admission (0.674845ms)
+✔ unscoped exact identity and cursor are refused even null (0.340712ms)
+✔ trusted client name resolution maps exactrawreference and no model identity (0.533903ms)
+✔ UUID spelling may normalize, but raw UUID cannot be rebound (0.19958ms)
+✔ context and raw authority are closed, no runtime authorization invented (0.688795ms)
+✔ nonempty scoped family runs actual canonical content/provenance validation (11.991444ms)
+✔ scoped name resolution validates returned UUID and full originalbinding (5.46193ms)
+✔ scoped mode retains canonical recommendation/evidence/coverage negatives (2.778036ms)
+✔ opaque scoped cursor gets only inherited applied/page checks, no fake authentication (1.132242ms)
+✔ result mode substitution refuses (0.786352ms)
+✔ both branches return detached validated data (0.726272ms)
+✔ canonical snapshot rejects hostile getters/proxies before old validator introspection (0.319631ms)
+✔ existing canonical partial binding remains unchanged and unavailable (0.379701ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1940.592759
