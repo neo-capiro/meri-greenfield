@@ -1,0 +1,284 @@
+{
+  "scope": "INDEPENDENT_IMMUTABLE_PACKET_AND_REPAIR_ONLY",
+  "authorCommit": "4c3b35c9d0c1709bfeb61280474c7186d516a618",
+  "authorTree": "8b5130e26fb304d94706f86079fbe12197510818",
+  "sourceCommit": "788c0419c9489dfdd4906a50b59661595a072713",
+  "authorManifestSha256": "cc2a7b1f05ee925ad4d120a98aa8c6e6bc2cc3f28997608d7c97c4d25802f0d0",
+  "authorManifestMembers": 16,
+  "passed": 68,
+  "failed": 0,
+  "checks": [
+    {
+      "check": "author manifest expected SHA256",
+      "pass": true
+    },
+    {
+      "check": "exact 16 unique members",
+      "pass": true
+    },
+    {
+      "check": "source binding",
+      "pass": true
+    },
+    {
+      "check": "author member docs/coordination/reports/CODEX-ENTITY-CANDIDATES-AUTHOR-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/dependencies.json",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/focused-initial.json",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/focused-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/focused-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/focused-name-uniqueness-repair.json",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/focused-name-uniqueness-repair.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/focused-name-uniqueness-repair.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/initial-author-test.mjs",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/name-uniqueness-repair.json",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/outline.json",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/reference-identities.json",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/state-helper-dependency.json",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/verification.json",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/verify.py",
+      "pass": true
+    },
+    {
+      "check": "author source unchanged packages/contracts/retrieval-0.2/entity-candidates-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "author source unchanged packages/contracts/retrieval-0.2/entity-candidates.schema.json",
+      "pass": true
+    },
+    {
+      "check": "author source unchanged packages/contracts/test/retrieval-entity-candidates.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "author source unchanged packages/contracts/retrieval-0.2/state-bill-identity.mjs",
+      "pass": true
+    },
+    {
+      "check": "schema unchanged by repair",
+      "pass": true
+    },
+    {
+      "check": "exact name-only production repair",
+      "pass": true
+    },
+    {
+      "check": "original author test retained",
+      "pass": true
+    },
+    {
+      "check": "original assertions retained with single fixture correction",
+      "pass": true
+    },
+    {
+      "check": "one additive author regression",
+      "pass": true
+    },
+    {
+      "check": "independent failing controls unchanged before repair",
+      "pass": true
+    },
+    {
+      "check": "author pin frozen apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "check": "author pin observed apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "check": "author pair no drift apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "check": "author pin frozen apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "check": "author pin observed apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "check": "author pair no drift apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "check": "author pin frozen packages/shared/src/index.ts",
+      "pass": true
+    },
+    {
+      "check": "author pin observed packages/shared/src/index.ts",
+      "pass": true
+    },
+    {
+      "check": "author pair no drift packages/shared/src/index.ts",
+      "pass": true
+    },
+    {
+      "check": "metadata only",
+      "pass": true
+    },
+    {
+      "check": "author completed focused-initial",
+      "pass": true
+    },
+    {
+      "check": "author capture producer focused-initial",
+      "pass": true
+    },
+    {
+      "check": "author exact dirty source before commit focused-initial",
+      "pass": true
+    },
+    {
+      "check": "author raw docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/focused-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "author raw docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/focused-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "author count focused-initial",
+      "pass": true
+    },
+    {
+      "check": "author completed focused-name-uniqueness-repair",
+      "pass": true
+    },
+    {
+      "check": "author capture producer focused-name-uniqueness-repair",
+      "pass": true
+    },
+    {
+      "check": "author exact dirty source before commit focused-name-uniqueness-repair",
+      "pass": true
+    },
+    {
+      "check": "author raw docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/focused-name-uniqueness-repair.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "author raw docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/focused-name-uniqueness-repair.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "author count focused-name-uniqueness-repair",
+      "pass": true
+    },
+    {
+      "check": "author offline report 41/41",
+      "pass": true
+    },
+    {
+      "check": "review completed independent-first",
+      "pass": true
+    },
+    {
+      "check": "review raw docs/qualification/candidates/read-continuation-20261012/entity-candidates-review/independent-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "review raw docs/qualification/candidates/read-continuation-20261012/entity-candidates-review/independent-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "review count independent-first",
+      "pass": true
+    },
+    {
+      "check": "review completed name-duplicates-before",
+      "pass": true
+    },
+    {
+      "check": "review raw docs/qualification/candidates/read-continuation-20261012/entity-candidates-review/name-duplicates-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "review raw docs/qualification/candidates/read-continuation-20261012/entity-candidates-review/name-duplicates-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "review count name-duplicates-before",
+      "pass": true
+    },
+    {
+      "check": "review completed repaired-family",
+      "pass": true
+    },
+    {
+      "check": "review raw docs/qualification/candidates/read-continuation-20261012/entity-candidates-review/repaired-family.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "review raw docs/qualification/candidates/read-continuation-20261012/entity-candidates-review/repaired-family.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "review count repaired-family",
+      "pass": true
+    },
+    {
+      "check": "owned group remains absent independent-first.json",
+      "pass": true
+    },
+    {
+      "check": "owned group remains absent repaired-family.json",
+      "pass": true
+    },
+    {
+      "check": "owned group remains absent source-audit.json",
+      "pass": true
+    },
+    {
+      "check": "owned group remains absent name-duplicates-before.json",
+      "pass": true
+    }
+  ]
+}
