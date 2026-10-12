@@ -64,7 +64,7 @@ def structural_errors(document, registry):
         original = original_by_id.get(r['id'])
         if not original or (r['originalLocator'], r['originalRequirement']) != (original['locator'], original['requirement']):
             errors.append('originalRequirement')
-        if r['status'] != ('completed-source' if r['id'] == 'G0' else 'pending') or r['qualifiedRuntime'] is not False:
+        if r['status'] != ('completed-source' if r['id'] in {'W00', 'G0'} else 'pending') or r['qualifiedRuntime'] is not False:
             errors.append('wholeGatePromotion')
         if not all(isinstance(r[k], str) and r[k].strip() for k in ['owner', 'remaining', 'nextParallelSourceOrMetadataWork', 'decisionOrExternalPrerequisite', 'completedSourceComponents']):
             errors.append('missingActionableOwnerOrGap')
@@ -92,7 +92,7 @@ check(all('disabled/shadow' in r['optionalDisposition'] for r in joined['require
 check(boundary['gateStates'] == {'G0': 'accepted discovery', 'G1': 'OPEN', **{f'G{i}': 'unentered' for i in range(2, 8)}}, 'exact G0-G7 states')
 
 by_id = {r['id']: r for r in receipts['receipts']}
-check(len(by_id) == 20, '20 distinct receipt records')
+check(len(by_id) == len(receipts['receipts']) and len(by_id) >= 20, 'unique original and added discovery receipt records')
 source_ids = []
 for r in receipts['receipts']:
     if 'identity' not in r:
@@ -104,6 +104,11 @@ for r in receipts['receipts']:
     source_ids.append(ident)
 check(source_ids == data(P + 'source-identities.json')['records'], 'source identity ledger exactly matches receipt links')
 check(joined['originalIndex'] == by_id['plan-index']['identity'], 'original index identity')
+rows_by_id = {r['id']: r for r in joined['requirements']}
+w00_receipt_paths = {by_id[r]['identity']['path'] for r in rows_by_id['W00']['sourceReceiptIds'] if 'identity' in by_id[r]}
+check({'docs/coordination/reports/CODEX-G0-DISCOVERY.md', 'docs/coordination/reports/CODEX-R2-ADOPTION.md'} <= w00_receipt_paths, 'W00 completed discovery has exact prior acceptance and adopted plan receipts')
+check(not rows_by_id['W00']['reportedRuntimeReceiptIds'] and 'native-reported' not in rows_by_id['W00']['sourceReceiptIds'], 'later native observations do not reopen discovery')
+check(all('unrun' not in rows_by_id[k]['remaining'].lower() for k in ['REL-07', 'REL-08']), 'optional other-owner execution not globally asserted unrun')
 check(by_id['combined-review']['identity']['ref'] == 'd0b181e312b797e0fe181c16be814da23e126767', 'exact accepted independent source verdict')
 accepted_report = raw(by_id['combined-review']['identity']['ref'], by_id['combined-review']['identity']['path']).decode()
 check('**ACCEPT_SOURCE**' in accepted_report and boundary['acceptedRead']['source'] in accepted_report, 'verdict covers exact accepted source')
@@ -164,7 +169,7 @@ for entry in manifest['members']:
     check((len(value), sha(value)) == (entry['bytes'], entry['sha256']), 'manifest ' + entry['path'].removeprefix(P))
 verify = data(P + 'verification.json')
 check(sha(raw(CANDIDATE, P + 'verify.stdout')) == verify['stdoutSha256'] and sha(raw(CANDIDATE, P + 'verify.stderr')) == verify['stderrSha256'] and sha(raw(CANDIDATE, P + 'verify.py')) == verify['verifierSha256'], 'author verification source and raw streams bound')
-check(verify['exitCode'] == 0 and verify['result']['checks'] == 751 and json.loads(raw(CANDIDATE, P + 'verify.stdout')) == verify['result'], 'author751 checks receipt only not rerun')
+check(verify['exitCode'] == 0 and isinstance(verify['result']['checks'], int) and verify['result']['checks'] >= 751 and json.loads(raw(CANDIDATE, P + 'verify.stdout')) == verify['result'], 'author documentary checks receipt matches raw output; not rerun')
 
 negative = []
 def refuse(name, mutate, expected):
@@ -178,12 +183,13 @@ refuse('duplicate requirement', lambda d, r: d['requirements'].append(copy.deepc
 refuse('change governing requirement', lambda d, r: d['requirements'][0].__setitem__('originalRequirement', 'reduced scope'), 'originalRequirement')
 refuse('promote source to runtime', lambda d, r: d['requirements'][1].__setitem__('qualifiedRuntime', True), 'wholeGatePromotion')
 refuse('close G1 with component passes', lambda d, r: next(x for x in d['requirements'] if x['id'] == 'G1').__setitem__('status', 'completed-source'), 'wholeGatePromotion')
+refuse('reopen accepted W00 discovery', lambda d, r: next(x for x in d['requirements'] if x['id'] == 'W00').__setitem__('status', 'pending'), 'wholeGatePromotion')
 refuse('remove accountable owner', lambda d, r: d['requirements'][1].__setitem__('owner', ''), 'missingActionableOwnerOrGap')
 refuse('invent receipt pointer', lambda d, r: d['requirements'][1]['sourceReceiptIds'].append('not-supplied'), 'danglingReceipt')
 refuse('promote native reported pass', lambda d, r: next(x for x in r['receipts'] if x['id'] == 'native-reported').__setitem__('qualifiedRuntimeByThisLane', True), 'promotedParentReport')
 refuse('forge parent report local identity', lambda d, r: next(x for x in r['receipts'] if x['id'] == 'shipping-reported').__setitem__('identity', {}), 'promotedParentReport')
-check(all(x['pass'] for x in negative), 'nine independent negative controls refuse promotion or loss')
+check(all(x['pass'] for x in negative), 'ten independent negative controls refuse promotion or loss')
 
-result = {'verdict': 'PASS' if all(c['pass'] for c in checks) else 'FAIL', 'candidate': CANDIDATE, 'tree': git('rev-parse', CANDIDATE + '^{tree}').decode().strip(), 'checksPassed': sum(c['pass'] for c in checks), 'checksTotal': len(checks), 'originalBlobsPreserved': unchanged, 'originalBlobs': len(before), 'authorManifestMembers': len(member_paths), 'negativeControls': negative, 'checks': checks, 'limits': ['Only local immutable Git and retained JSON bytes read.', 'No author generator/verifier or project/native code executed.', 'Frontend origin blob correspondence verified against author retained connector identities, without a new remote fetch or full raw suite audit.', 'Native and shipping remain parent-reported; G1 OPEN/G2-G7 unentered.']}
+result = {'verdict': 'PASS' if all(c['pass'] for c in checks) else 'FAIL', 'candidate': CANDIDATE, 'tree': git('rev-parse', CANDIDATE + '^{tree}').decode().strip(), 'checksPassed': sum(c['pass'] for c in checks), 'checksTotal': len(checks), 'originalBlobsPreserved': unchanged, 'originalBlobs': len(before), 'authorManifestMembers': len(member_paths), 'receiptRecords': len(by_id), 'negativeControls': negative, 'checks': checks, 'limits': ['Only local immutable Git and retained JSON bytes read.', 'No author generator/verifier or project/native code executed.', 'Frontend origin blob correspondence verified against author retained connector identities, without a new remote fetch or full raw suite audit.', 'Native and shipping remain parent-reported; G1 OPEN/G2-G7 unentered.']}
 print(json.dumps(result, indent=2))
 sys.exit(0 if result['verdict'] == 'PASS' else 1)
