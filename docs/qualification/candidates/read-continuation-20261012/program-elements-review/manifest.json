@@ -1,0 +1,171 @@
+{
+  "source": "1f7ad5726541f0ab5a103b9e0b2152c260350dbd",
+  "authorPacket": "790638e4908429f190dd6414814ee872145fa289",
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-PROGRAM-ELEMENTS-REVIEW-20261012.md",
+      "bytes": 6954,
+      "sha256": "a0a9eb70ec95c2a0bae5fb4b26882d600f0ba9de15a5f6c78d52ef79ce10cacb"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-review/audit-result.json",
+      "bytes": 8070,
+      "sha256": "2674c2d166f4145739d86563db72880f2af1a16156914b61896e96ed0f678185"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-review/audit.py",
+      "bytes": 2774,
+      "sha256": "7c656814d4e47e4cda909dc088ce37b02c810c5e50845e561b9b8897966a8885"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-review/author-packet-audit-initial.json",
+      "bytes": 20757,
+      "sha256": "e9719c349f4ebbf71a0d76dc942518ad27e711be256d63a3efce703e3ab019bc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-review/author-packet-audit.json",
+      "bytes": 20757,
+      "sha256": "aaee6612411fce4cac8eb56cd5780164929dd199c65c6c479d4cc029d9890b52"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-review/branch-repaired-findings.json",
+      "bytes": 5034,
+      "sha256": "c35a999c953fe7836b0d1d7ace1a76869ea326f313797fcf66fddfebdbbd639a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-review/branch-repaired-independent.json",
+      "bytes": 1402,
+      "sha256": "639c314e7b4855435187af1d96c2148020e6178210d701a817fc1361160c14ff"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-review/branch-repaired-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-review/branch-repaired-independent.stdout.bin",
+      "bytes": 45985,
+      "sha256": "200680e7f980fcd90c5e53cd6651662b39db1f7d40aa0224d61226ced24e9134"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-review/capture-reaped.py",
+      "bytes": 3388,
+      "sha256": "e0eda6c30be9041846623c04ea10e0392677bfa0fd9c340b19559f35c69de8e3"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-review/claim-shape-edges.json",
+      "bytes": 1485,
+      "sha256": "6c9a27cc14dacc8c050313eb95fe6839d27d148885de64205bd260082da30d5f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-review/claim-shape-edges.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-review/claim-shape-edges.stdout.bin",
+      "bytes": 3590,
+      "sha256": "7d16ccefdeb7c59d08cf1c55c75c7d09f48dfa3037432be1570e99452922d186"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-review/correlation-edge-cases.json",
+      "bytes": 1553,
+      "sha256": "8d678cc1d5c5515f0e74ff491ca679599b0df6dc463e5326c3934c059ca4ce24"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-review/correlation-edge-cases.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-review/correlation-edge-cases.stdout.bin",
+      "bytes": 7634,
+      "sha256": "6cbb113b029ffd6740a113fbb7c663d798d19ffd76984696b07ab487be7dfafb"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-review/correlation-repaired-independent.json",
+      "bytes": 1411,
+      "sha256": "6c4045a86f835b7b7819818dbcddfe5b9e7c1d69db9c9f2ae8a2517ecede1379"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-review/correlation-repaired-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-review/correlation-repaired-independent.stdout.bin",
+      "bytes": 8386,
+      "sha256": "d6256f0b94f9deecd3fd856be60a876535ae65758e91668cabb8b8bb3b5f03c8"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-review/criteria.json",
+      "bytes": 4345,
+      "sha256": "333b598b3e4d87624db0f1f2ab797847734a47e915366eccb6dd416b4361ffaf"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-review/dependency-copy.json",
+      "bytes": 386,
+      "sha256": "a7af0e37ca607b730b419caa7bd05a840d75ca50906f7c809c823c2bce93bdb2"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-review/diagnostics.json",
+      "bytes": 637,
+      "sha256": "aa9670c9e1ea927a440d3ea2f149da87ad6faa5f3f196c54b57c7f41955b3231"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-review/final-independent.json",
+      "bytes": 1381,
+      "sha256": "e574760f7c2d852e611d5663f79e48bdc4d13aa888497e5535b8d33d0ccfb0f3"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-review/final-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-review/final-independent.stdout.bin",
+      "bytes": 5961,
+      "sha256": "ed0e8e4215bc312195f20277464c3e06f6976520ec7ae5cb66568b969174bdff"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-review/initial-findings.json",
+      "bytes": 918,
+      "sha256": "d68a17f1e9845c07b8e91f0ba430cbf9f9ec5032f981d92f287f2bba68ca9090"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-review/initial-independent.json",
+      "bytes": 1386,
+      "sha256": "67e4125921e1443feb640822da212c77837aa972b0bc7c79ccde502e0252db8f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-review/initial-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-review/initial-independent.stdout.bin",
+      "bytes": 28683,
+      "sha256": "71a5de110a00e2ecb69b8b0d247f7dc0e32a8fef7ef9951f7a427c8c8ff8804c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-review/reference-identities.json",
+      "bytes": 10610,
+      "sha256": "7eabdcb29daa2f526a519ada84b0169deffab41bafac02f4ab19d0a15172bd24"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-review/source-facts.json",
+      "bytes": 2069,
+      "sha256": "8fec1b2e6ec08e51a5284dab7807acdb622d811c1c45ae3ff8180c8a03615b49"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-review/verify-author-packet.py",
+      "bytes": 2321,
+      "sha256": "d352f9209d4ecbd93fbe45e6a153423b9e4cf2c3fb60373bf03e75ed923415d7"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-program-elements-independent.test.mjs",
+      "bytes": 25734,
+      "sha256": "ef21e62a6db0a7ebcfe9b69f43b36ab3daaa7ce412ed745648dd0aab52b11a4b"
+    }
+  ]
+}

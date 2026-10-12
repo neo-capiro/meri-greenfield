@@ -1,7 +1,7 @@
 from pathlib import Path
 import subprocess,hashlib,json,sys
 r=Path(__file__).resolve().parents[5];e=Path(__file__).resolve().parent
-candidate=sys.argv[1];base='ede7b56845816d38d0bbffab5a657aaa4f978739';checks=[]
+candidate=subprocess.check_output(['git','rev-parse',sys.argv[1]],cwd=r,text=True).strip();base='ede7b56845816d38d0bbffab5a657aaa4f978739';checks=[]
 def git(*a):return subprocess.check_output(['git',*a],cwd=r)
 def check(name,okay):
  checks.append({'name':name,'pass':bool(okay)})
