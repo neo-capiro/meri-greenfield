@@ -5,8 +5,8 @@
   "members": [
     {
       "path": "docs/coordination/reports/CODEX-PUBLIC-WEB-AUTHOR-20261012.md",
-      "bytes": 8974,
-      "sha256": "18516aaa3d7958c770a7a0a7b393cea8c2b0c92e16ef3304217632994f263177"
+      "bytes": 8960,
+      "sha256": "371323dfed3a9d7694dafa0d9f0ff138ec245a5d68f4eab855b2a264d9b20fb1"
     },
     {
       "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/capture-reaped.py",
