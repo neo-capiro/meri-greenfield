@@ -1,11 +1,12 @@
 /** Local immutable registry listing; authorization/release remain dispatcher-owned. */
 import {types} from 'node:util';
 import {canonicalSha256,validateShape as validatePublicShape} from '../../../../packages/contracts/validate.mjs';
-import {assertSubject,assertDatasetMetadataOutput,validateDatasetMetadataShape} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {assertSubject,resolveOperationContract,validateShape} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {assertPublicDomainDatasetRegistry} from '../../../../packages/contracts/retrieval-0.2/public-domain-registry.mjs';
 import {snapshotOperationData} from '../../../../packages/contracts/retrieval-0.2/operation-contracts.mjs';
 import {deny,safeFailure} from '../../dispatch/operation-result.mjs';
 const operation=Object.freeze({id:'list_global_datasets',version:'0.2.0'});
+const contract=resolveOperationContract(operation);
 const aborted=Object.getOwnPropertyDescriptor(AbortSignal.prototype,'aborted').get;
 // A function/AbortSignal-bearing interface cannot be copied as JSON. Inspect only
 // own data descriptors here; canonical snapshot admission owns all JSON subtrees.
@@ -26,8 +27,8 @@ export function createDatasetMetadataHandler(options) {
     try {
       const supplied=fields(call,['input','request','authority','argumentsSha256'],['signal']);
       const {input,request,authority,argumentsSha256}=snapshotOperationData({input:supplied.input,request:supplied.request,authority:supplied.authority,argumentsSha256:supplied.argumentsSha256});
-      validateDatasetMetadataShape('DatasetMetadataListInput',input);
-      validateDatasetMetadataShape('DatasetMetadataListInput',request);
+      validateShape('DatasetMetadataListInput',input);
+      validateShape('DatasetMetadataListInput',request);
       if(typeof argumentsSha256!=='string'||argumentsSha256!==canonicalSha256(input))deny('INVALID_ARGUMENTS');
       validatePublicShape('RunBinding',authority.binding);validatePublicShape('CapabilityClaims',authority.claims);
       assertSubject(authority.subject,authority.binding);
@@ -44,7 +45,7 @@ export function createDatasetMetadataHandler(options) {
       };
       const stamp=active();
       const result={tool:operation.id,generatedAt:new Date(stamp).toISOString(),datasets:registry.listDatasetMetadata()};
-      assertDatasetMetadataOutput(operation.id,result,request);
+      contract.assertOutput(result,{request});
       const output=JSON.stringify({binding:authority.binding,subject:authority.subject,operation,argumentsSha256,result});
       active();return output;
     } catch(error) {throw safeFailure(error);}

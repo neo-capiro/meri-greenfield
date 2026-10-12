@@ -2,14 +2,14 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
-import {resolveOperationContract,validateDatasetMetadataShape,assertDatasetMetadataOutput} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {resolveOperationContract,validateShape} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {createPublicDomainDatasetRegistry} from '../../../packages/contracts/retrieval-0.2/public-domain-registry.mjs';
 import {createDatasetMetadataHandler} from '../sources/dataset-metadata/handler.mjs';
 import {createSourceDisabledGateway} from '../index.mjs';
 import {fixture,NOW,uuid,limits} from './fixtures.mjs';
 const operation={id:'list_global_datasets',version:'0.2.0'};
 const requestJson=JSON.stringify({operation,arguments:{}});
-const registry=createPublicDomainDatasetRegistry({canonicalSha256,validateMetadata:validateDatasetMetadataShape});
+const registry=createPublicDomainDatasetRegistry({canonicalSha256,validateMetadata:validateShape});
 function local() {
  const f=fixture(),contract=resolveOperationContract(operation),descriptor=contract.descriptor;
  f.state.grants=[...descriptor.requiredGrants];
@@ -24,7 +24,7 @@ function local() {
 }
 const refuses=async(p,code)=>assert.rejects(p,error=>error.message===code);
 
-test('actual registry/handler/canonical contract/authority/dispatch returns exact12datasets88fields',async()=>{const f=local(),raw=await f.run(),out=JSON.parse(raw);assert.deepEqual(Object.keys(out).sort(),['argumentsSha256','binding','operation','result','subject']);assert.deepEqual(out.result.datasets,registry.listDatasetMetadata());assert.equal(out.result.datasets.length,12);assert.equal(out.result.datasets.reduce((n,d)=>n+d.fields.length,0),88);assert.deepEqual(out.operation,operation);assert.deepEqual(out.binding,f.binding);assert.deepEqual(out.subject,f.subject);assert.equal(out.argumentsSha256,canonicalSha256({}));assertDatasetMetadataOutput(operation.id,out.result,{});assert.equal(f.calls.filter(x=>x==='policy').length,4);assert.equal(f.calls.filter(x=>x==='handler').length,1);assert.equal(f.calls.filter(x=>x==='reserve').length,1);assert.equal(f.calls.filter(x=>x==='settle').length,1);assert.equal(f.calls.includes('uncertain'),false);});
+test('actual registry/handler/canonical contract/authority/dispatch returns exact12datasets88fields',async()=>{const f=local(),raw=await f.run(),out=JSON.parse(raw);assert.deepEqual(Object.keys(out).sort(),['argumentsSha256','binding','operation','result','subject']);assert.deepEqual(out.result.datasets,registry.listDatasetMetadata());assert.equal(out.result.datasets.length,12);assert.equal(out.result.datasets.reduce((n,d)=>n+d.fields.length,0),88);assert.deepEqual(out.operation,operation);assert.deepEqual(out.binding,f.binding);assert.deepEqual(out.subject,f.subject);assert.equal(out.argumentsSha256,canonicalSha256({}));f.contract.assertOutput(out.result,{request:{}});assert.equal(f.calls.filter(x=>x==='policy').length,4);assert.equal(f.calls.filter(x=>x==='handler').length,1);assert.equal(f.calls.filter(x=>x==='reserve').length,1);assert.equal(f.calls.filter(x=>x==='settle').length,1);assert.equal(f.calls.includes('uncertain'),false);});
 test('generatedAt means injected local construction time and adds no sourcehealth facts',async()=>{const f=local(),out=JSON.parse(await f.run());assert.equal(out.result.generatedAt,new Date(NOW).toISOString());assert.deepEqual(Object.keys(out.result).sort(),['datasets','generatedAt','tool']);assert.equal(registry.projectionSha256,'f9b4dd84165011700f47f4a3f454226b80b4199bdb35436f72c30f7c2d2ff2b4');});
 test('reservation and settlement carry actual normalized/result hashes and exact bytes',async()=>{const f=local(),raw=await f.run(),out=JSON.parse(raw);assert.equal(f.state.reservation.argumentsSha256,canonicalSha256({}));assert.deepEqual(f.state.reservation.operation,operation);assert.equal(f.state.settlement.resultSha256,canonicalSha256(out));assert.equal(f.state.settlement.outputBytes,Buffer.byteLength(raw));});
 test('registry remains immutable and returned result detaches from its sole provider',async()=>{const f=local(),out=JSON.parse(await f.run());assert.ok(Object.isFrozen(registry.listDatasetMetadata()));assert.ok(Object.isFrozen(registry.listDatasetMetadata()[0].fields[0]));const original=registry.listDatasetMetadata()[0].key;out.result.datasets[0].key='mutated';assert.equal(registry.listDatasetMetadata()[0].key,original);});
