@@ -1,0 +1,26 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "docs/qualification/candidates/native-ancestor-diagnosis-20261012/review/independent_controls.py"
+  ],
+  "cwd": "/workspace/meri-native-ancestor-diagnosis-review-20261012",
+  "startUnixSeconds": 1791775902.3868833,
+  "elapsedSeconds": 0.1644434928894043,
+  "exitCode": 0,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "fixtureRoot": null,
+  "streams": {
+    "stdout": {
+      "path": "final-dc4-independent16.stdout.txt",
+      "bytes": 111,
+      "sha256": "b6ff4195adb341a857f44e872ee61f73cd237aa5fd096856565ca05badec464e"
+    },
+    "stderr": {
+      "path": "final-dc4-independent16.stderr.txt",
+      "bytes": 1779,
+      "sha256": "0e77652fce65eae85ad88ab24d56981a4ad3779f0e5f0fcba43e722dfe2cb55f"
+    }
+  }
+}

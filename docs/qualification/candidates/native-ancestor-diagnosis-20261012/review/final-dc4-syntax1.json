@@ -1,0 +1,26 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "docs/qualification/candidates/native-ancestor-diagnosis-20261012/review/syntax_controls.py"
+  ],
+  "cwd": "/workspace/meri-native-ancestor-diagnosis-review-20261012",
+  "startUnixSeconds": 1791775902.5811512,
+  "elapsedSeconds": 0.11415791511535645,
+  "exitCode": 0,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "fixtureRoot": null,
+  "streams": {
+    "stdout": {
+      "path": "final-dc4-syntax1.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stderr": {
+      "path": "final-dc4-syntax1.stderr.txt",
+      "bytes": 215,
+      "sha256": "29257dd0b5408b05aaba0dc11fe5a9af7108c80a0433a1e05dd592b80a31cd26"
+    }
+  }
+}
