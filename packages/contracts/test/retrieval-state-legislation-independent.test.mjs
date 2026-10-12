@@ -223,3 +223,54 @@ test('state independent: hostile nested output does not invoke user code', () =>
   refuse(legislator, single({matches: [match({committees: proxy})]}));
   assert.equal(called, 0);
 });
+
+test('state independent: absent, null and blank optional text all omit normalized selectors', () => {
+  for (const [id, limit, keys] of [[bills, 20, ['query', 'state', 'session', 'status']], [legislator, 5, ['query', 'state']]]) {
+    for (const value of [null, '', ' \t\u00a0 '])
+      assert.deepEqual(v.normalizeStateLegislationInput(id, Object.fromEntries(keys.map(key => [key, value]))),
+        {input: {limit}, metadata: {}});
+    for (const key of keys)
+      for (const value of [42, true, [], {}]) assert.throws(() => v.normalizeStateLegislationInput(id, {[key]: value}));
+  }
+});
+
+test('state independent: detached result edits cannot affect caller nested JSON', () => {
+  const original = single({matches: [match({committees: [{name: 'Synthetic', roles: ['member']}]})]});
+  const output = check(legislator, original);
+  assert.notEqual(output.matches, original.matches);
+  assert.notEqual(output.matches[0].committees, original.matches[0].committees);
+  output.matches[0].committees[0].roles.push('observer');
+  assert.deepEqual(original.matches[0].committees[0].roles, ['member']);
+  const shape = v.validateStateLegislationShape('StateLegislatorMatch', original.matches[0]);
+  assert.notEqual(shape, original.matches[0]);
+  assert.deepEqual(shape, original.matches[0]);
+});
+
+test('state bills independent: exact maximum page and safe count ceiling', () => {
+  const data = Array.from({length: 50}, (_, i) => bill({id: `synthetic-${i}`}));
+  check(bills, billPage({total: Number.MAX_SAFE_INTEGER, data}), {limit: 50});
+  refuse(bills, billPage({total: Number.MAX_SAFE_INTEGER + 1}), {});
+  refuse(bills, billPage({data: [...data, bill({id: 'extra'})]}), {limit: 50});
+});
+
+test('state legislator independent: eight candidates retain exact observed count and note', () => {
+  const rows = Array.from({length: 8}, (_, i) => ambiguous({id: `synthetic-${i}`}));
+  const note = '"Synthetic" matches 8 state legislators — ask the user which (by state/chamber/district) before attributing anything to them.';
+  const page = multiple({ambiguousLegislator: rows, note});
+  check(legislator, page, {query: 'Synthetic', limit: 8});
+  refuse(legislator, page, {query: 'Synthetic', limit: 7});
+  refuse(legislator, multiple({ambiguousLegislator: [...rows, ambiguous({id: 'extra'})], note}), {query: 'Synthetic', limit: 8});
+  refuse(legislator, multiple({note: '"Synthetic" matches 7 state legislators.'}));
+  check(legislator, absent({note: 'No state legislator matched "Synthetic" in XX. Say so explicitly — do not fabricate a legislator.'}), {query: 'Synthetic', state: ' xx '});
+});
+
+test('state legislator independent: ambiguous projection required fields and nullable storage types', () => {
+  for (const key of Object.keys(ambiguous())) {
+    const row = ambiguous(); delete row[key];
+    refuse(legislator, multiple({ambiguousLegislator: [row, ambiguous({id: 'other'})]}));
+  }
+  check(legislator, single({matches: [match({id: '', name: '', state: '', chamber: '', district: '', party: ''})]}));
+  for (const active of [null, 0, 'false']) refuse(legislator, single({matches: [match({active})]}));
+  for (const field of ['chamber', 'district', 'party'])
+    for (const value of [1, true, {}, []]) refuse(legislator, single({matches: [match({[field]: value})]}));
+});
