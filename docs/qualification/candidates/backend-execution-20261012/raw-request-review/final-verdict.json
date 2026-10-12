@@ -1,0 +1,90 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "scope": "31rawrequestadvertisementrepair only",
+  "base": "7e128127e666242102ed83b6c10afc1e5b7fd3f8",
+  "candidate": "ea94aff840424843b4b6efbfc21fb9d195f7ff54",
+  "candidateTree": "65f1dd893e48a20dff4aefae6f7e9d45982fc6b1",
+  "independentTests": {
+    "passed": 192,
+    "failed": 0
+  },
+  "preservationAudit": {
+    "passed": 275,
+    "failed": 0
+  },
+  "originalRootEvidence": {
+    "validExamples": 31,
+    "advertisementRefusals": 22
+  },
+  "correctedIndependentBaseline": {
+    "passed": 109,
+    "failed": 52
+  },
+  "ownedProcessReceipts": [
+    {
+      "receipt": "factory-trace.json",
+      "pgid": 332532,
+      "absent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "baseline-corrected.json",
+      "pgid": 331787,
+      "absent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "repair-audit-details.json",
+      "pgid": 334234,
+      "absent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "baseline.json",
+      "pgid": 331110,
+      "absent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "repair-audit-final.json",
+      "pgid": 335317,
+      "absent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "canonical-repair.json",
+      "pgid": 333064,
+      "absent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "repair-audit-order-fixed.json",
+      "pgid": 335735,
+      "absent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "repair-audit.json",
+      "pgid": 333934,
+      "absent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "repair-audit-scope-final.json",
+      "pgid": 335907,
+      "absent": true,
+      "timedOut": false,
+      "killRequired": false
+    }
+  ],
+  "runtimeAccepted": false,
+  "combinedIntegrationAcceptedByThisReview": false
+}

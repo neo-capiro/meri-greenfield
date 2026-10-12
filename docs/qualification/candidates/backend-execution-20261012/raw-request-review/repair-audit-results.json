@@ -283,7 +283,7 @@
     },
     {
       "name": "Only allocated input definition change list_global_datasets",
-      "passed": false
+      "passed": true
     },
     {
       "name": "Only allocated input definition change get_representation",
@@ -471,7 +471,7 @@
     },
     {
       "name": "Only allocated input definition change query_action_items",
-      "passed": false
+      "passed": true
     },
     {
       "name": "Only allocated descriptor input ID change mail.read_thread",
@@ -531,7 +531,7 @@
     },
     {
       "name": "Only allocated descriptor input ID change query_action_items",
-      "passed": false
+      "passed": true
     },
     {
       "name": "Only allocated descriptor input ID change lookup_client_registry",
@@ -1272,9 +1272,25 @@
     {
       "name": "Raw evidence hash docs/qualification/candidates/backend-execution-20261012/raw-request-review/canonical-repair.stderr.bin",
       "passed": true
+    },
+    {
+      "name": "Full original139selected96deferred43 retained",
+      "passed": true
+    },
+    {
+      "name": "Original IDs and selection dispositions unchanged",
+      "passed": true
+    },
+    {
+      "name": "All31original inventory records unchanged by this repair",
+      "passed": true
+    },
+    {
+      "name": "All84composed descriptors retain null handlers and unavailable state",
+      "passed": true
     }
   ],
-  "passed": 268,
-  "failed": 3,
+  "passed": 275,
+  "failed": 0,
   "runtimeAccepted": false
 }
