@@ -134,3 +134,11 @@ test('summary keeps opaque nonempty output and UTF16 selector truncation without
  assert.equal(resolve(SUMMARY).normalizeInput({clientName:'😀'.repeat(150)}).input.clientName.length,200);
  check(SUMMARY);assert.throws(()=>check(SUMMARY,{...output(SUMMARY),data:''}));assert.throws(()=>check(SUMMARY,{...output(SUMMARY),searchedEntireDataset:true}));
 });
+
+test('entity output callback receives effective Congress and cannot rebind a direct bill candidate',()=>{
+ const row={entityType:'bill',canonicalIdType:'billId',canonicalId:'hr7-119',display:'Synthetic bill',matchedBy:'bill-id',congress:119,sponsorName:null,sponsorBioguideId:null,latestActionText:null,latestActionDate:null};
+ const page={tool:ENTITY,generatedAt:T,matchesFound:1,matches:[row]};
+ check(ENTITY,page,{query:'H.R. 7'},{defaultCongress:119});assert.throws(()=>check(ENTITY,page,{query:'H.R. 7'},{defaultCongress:118}));
+ // Effective context is a correlation input, not proof of current source authority.
+ check(ENTITY,page,{query:'hr7-119'},{defaultCongress:118});
+});
