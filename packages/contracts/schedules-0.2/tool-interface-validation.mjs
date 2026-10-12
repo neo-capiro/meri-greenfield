@@ -7,6 +7,10 @@ const STEM=Object.freeze({schedule_task:'ScheduleTask',list_scheduled_tasks:'Lis
 const LIMITS=Object.freeze(['maxCostMicrousd','maxRuntimeSeconds','retryLimit']);
 const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 const uuid=(a,b)=>a.toLowerCase()===b.toLowerCase();
+function wireInstant(value) {
+  const ms=Date.parse(value);
+  if(!Number.isSafeInteger(ms)||new Date(ms).toISOString()!==value)denySchedule('SCHEDULE_TOOL_RESULT');
+}
 
 export function createScheduleToolValidators({validateShape,schema}) {
   if(typeof validateShape!=='function'||schema?.$id!==SCHEDULE_TOOL_SCHEMA_ID)denySchedule('SCHEDULE_TOOL_CONFIGURATION');
@@ -74,6 +78,15 @@ export function createScheduleToolValidators({validateShape,schema}) {
         if(row.inspection===null) {if(row.inspectionState!=='unavailable')denySchedule('SCHEDULE_TOOL_RESULT');}
         else {
           if(row.inspectionState!=='observed'||!same(row.inspection.projection,row.projection)||row.inspection.projectionSha256!==canonicalSha256(row.projection))denySchedule('SCHEDULE_TOOL_RESULT');
+          const i=row.inspection,t=i.temporal;
+          if(t.scheduleId!==row.projection.temporalScheduleId)denySchedule('SCHEDULE_TOOL_RESULT');
+          wireInstant(i.observedAt);wireInstant(t.createdAt);if(t.lastUpdatedAt!==null)wireInstant(t.lastUpdatedAt);
+          for(const [key,items]of [['nextActions',t.nextActionTimes],['recentActions',t.recentActions],['runningActions',t.runningActions]]) {
+            const coverage=i.coverage[key];
+            if(coverage.returned!==items.length||coverage.returned!==Math.min(coverage.observed,100)||coverage.omitted!==coverage.observed-coverage.returned)denySchedule('SCHEDULE_TOOL_RESULT');
+          }
+          for(const date of t.nextActionTimes)wireInstant(date);
+          for(const action of t.recentActions){wireInstant(action.scheduledAt);wireInstant(action.takenAt);}
           observed+=row.inspection.temporal.recentActions.length;
         }
       }
@@ -81,6 +94,7 @@ export function createScheduleToolValidators({validateShape,schema}) {
       if(h.executions.length>p.input.historyLimit||c.returned!==h.executions.length||c.observedReferences!==observed||c.omitted!==observed-c.returned)denySchedule('SCHEDULE_TOOL_RESULT');
       const refs=rows.flatMap(r=>r.inspection?.temporal.recentActions.map(a=>a.workflow)??[]).slice(0,p.input.historyLimit);
       if(h.executions.length!==refs.length||h.executions.some((r,i)=>r.workflowId!==refs[i].workflowId||r.runId!==refs[i].firstExecutionRunId))denySchedule('SCHEDULE_TOOL_RESULT');
+      for(const run of h.executions){wireInstant(run.startTime);if(run.closeTime!==null)wireInstant(run.closeTime);}
     }
     return out;
   }
