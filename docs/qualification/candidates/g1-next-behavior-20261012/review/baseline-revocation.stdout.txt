@@ -1,0 +1,601 @@
+✖ independent owner registry provides standalone revokeRun (1.848818ms)
+✖ independent exact current interrupt revokes without checkpoint or run rewrite (2.28949ms)
+✖ independent exact current resume revokes without checkpoint or run rewrite (0.722556ms)
+✖ independent idempotent revoked readback issues no second UPDATE (0.854934ms)
+✖ independent expired exact current binding may be invalidated without time extension (0.827974ms)
+✖ independent future admission at locked DB clock refuses (0.659111ms)
+✖ independent stale A cannot revoke current B (0.599621ms)
+✖ independent mismatched tenant context cannot revoke (0.55866ms)
+✖ independent mismatched actor context cannot revoke (0.606291ms)
+✖ independent mismatched conversation context cannot revoke (0.768274ms)
+✖ independent mismatched canonicalRun context cannot revoke (0.63215ms)
+✖ independent mismatched session context cannot revoke (0.420192ms)
+✖ independent mismatched grant context cannot revoke (0.412279ms)
+✖ independent mismatched mapping context cannot revoke (0.392009ms)
+✖ independent mismatched task context cannot revoke (0.387131ms)
+✖ independent mismatched worker context cannot revoke (0.346932ms)
+✖ independent mismatched attemptId context cannot revoke (0.420592ms)
+✖ independent mismatched fence context cannot revoke (0.404057ms)
+✖ independent mismatched policy context cannot revoke (0.473772ms)
+✖ independent mismatched source context cannot revoke (0.386951ms)
+✖ independent mismatched image context cannot revoke (0.340482ms)
+✖ independent mismatched skills context cannot revoke (0.340962ms)
+✖ independent mismatched expiry context cannot revoke (0.341773ms)
+✖ independent mismatched admission context cannot revoke (0.422234ms)
+✖ independent mismatched namespace context cannot revoke (0.397387ms)
+✖ independent mismatched trusted peerId cannot revoke (0.405449ms)
+✖ independent mismatched trusted credentialId cannot revoke (0.390447ms)
+✖ independent inconsistent locked grant run_uuid refuses (0.606371ms)
+✖ independent inconsistent locked grant session_id refuses (0.369325ms)
+✖ independent inconsistent locked grant mapping_id refuses (0.321723ms)
+✖ independent inconsistent locked grant task_arn refuses (0.315595ms)
+✖ independent inconsistent locked grant attempt_id refuses (0.368323ms)
+✖ independent inconsistent locked grant worker_id refuses (0.537387ms)
+✖ independent inconsistent locked grant peer_id refuses (0.535144ms)
+✖ independent inconsistent locked grant credential_id refuses (0.431769ms)
+✖ independent inconsistent locked grant policy_revision refuses (0.460953ms)
+✖ independent inconsistent locked grant phase refuses (0.326681ms)
+✖ independent inconsistent locked grant admitted_at_ms refuses (0.515875ms)
+✖ independent inconsistent locked grant expires_at_ms refuses (0.516686ms)
+✖ independent unknown current run or grant refuses without mutation (0.599822ms)
+✖ independent source transaction COMMIT ambiguity propagates without automatic retry (0.380342ms)
+✖ independent database boundary failure never reaches later effect (0.467082ms)
+✖ independent caller mutation across first await cannot retarget revocation (0.370747ms)
+✖ independent accessor context denied without effect (0.579551ms)
+✖ independent proxy context denied without traps or transaction (0.403186ms)
+ℹ tests 45
+ℹ suites 0
+ℹ pass 0
+ℹ fail 45
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 489.02142
+
+✖ failing tests:
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:32:1
+✖ independent owner registry provides standalone revokeRun (1.848818ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:32:76)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:33:43
+✖ independent exact current interrupt revokes without checkpoint or run rewrite (2.28949ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:33:203)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:33:43
+✖ independent exact current resume revokes without checkpoint or run rewrite (0.722556ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:33:203)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:34:1
+✖ independent idempotent revoked readback issues no second UPDATE (0.854934ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:34:108)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:35:1
+✖ independent expired exact current binding may be invalidated without time extension (0.827974ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:35:216)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:36:1
+✖ independent future admission at locked DB clock refuses (0.659111ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:36:159)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:37:1
+✖ independent stale A cannot revoke current B (0.599621ms)
+  TypeError: h.registry.revokeRun is not a function
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:37:112)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:39:60
+✖ independent mismatched tenant context cannot revoke (0.55866ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:39:189)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:39:60
+✖ independent mismatched actor context cannot revoke (0.606291ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:39:189)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:39:60
+✖ independent mismatched conversation context cannot revoke (0.768274ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:39:189)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:39:60
+✖ independent mismatched canonicalRun context cannot revoke (0.63215ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:39:189)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:39:60
+✖ independent mismatched session context cannot revoke (0.420192ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:39:189)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:39:60
+✖ independent mismatched grant context cannot revoke (0.412279ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:39:189)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:39:60
+✖ independent mismatched mapping context cannot revoke (0.392009ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:39:189)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:39:60
+✖ independent mismatched task context cannot revoke (0.387131ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:39:189)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:39:60
+✖ independent mismatched worker context cannot revoke (0.346932ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:39:189)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:39:60
+✖ independent mismatched attemptId context cannot revoke (0.420592ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:39:189)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:39:60
+✖ independent mismatched fence context cannot revoke (0.404057ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:39:189)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:39:60
+✖ independent mismatched policy context cannot revoke (0.473772ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:39:189)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:39:60
+✖ independent mismatched source context cannot revoke (0.386951ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:39:189)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:39:60
+✖ independent mismatched image context cannot revoke (0.340482ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:39:189)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:39:60
+✖ independent mismatched skills context cannot revoke (0.340962ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:39:189)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:39:60
+✖ independent mismatched expiry context cannot revoke (0.341773ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:39:189)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:39:60
+✖ independent mismatched admission context cannot revoke (0.422234ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:39:189)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:39:60
+✖ independent mismatched namespace context cannot revoke (0.397387ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:39:189)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:40:44
+✖ independent mismatched trusted peerId cannot revoke (0.405449ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:40:174)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:40:44
+✖ independent mismatched trusted credentialId cannot revoke (0.390447ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:40:174)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:41:178
+✖ independent inconsistent locked grant run_uuid refuses (0.606371ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:41:375)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:41:178
+✖ independent inconsistent locked grant session_id refuses (0.369325ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:41:375)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:41:178
+✖ independent inconsistent locked grant mapping_id refuses (0.321723ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:41:375)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:41:178
+✖ independent inconsistent locked grant task_arn refuses (0.315595ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:41:375)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:41:178
+✖ independent inconsistent locked grant attempt_id refuses (0.368323ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:41:375)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:41:178
+✖ independent inconsistent locked grant worker_id refuses (0.537387ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:41:375)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:41:178
+✖ independent inconsistent locked grant peer_id refuses (0.535144ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:41:375)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:41:178
+✖ independent inconsistent locked grant credential_id refuses (0.431769ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:41:375)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:41:178
+✖ independent inconsistent locked grant policy_revision refuses (0.460953ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:41:375)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:41:178
+✖ independent inconsistent locked grant phase refuses (0.326681ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:41:375)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:41:178
+✖ independent inconsistent locked grant admitted_at_ms refuses (0.515875ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:41:375)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:41:178
+✖ independent inconsistent locked grant expires_at_ms refuses (0.516686ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:41:375)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:42:1
+✖ independent unknown current run or grant refuses without mutation (0.599822ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:42:176)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:43:1
+✖ independent source transaction COMMIT ambiguity propagates without automatic retry (0.380342ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:43:159)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:44:1
+✖ independent database boundary failure never reaches later effect (0.467082ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:44:239)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:45:1
+✖ independent caller mutation across first await cannot retarget revocation (0.370747ms)
+  TypeError: registry.revokeRun is not a function
+      at Object.revoke (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:30:174)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:45:345)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:46:1
+✖ independent accessor context denied without effect (0.579551ms)
+  TypeError: h.registry.revokeRun is not a function
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:46:262)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:47:1
+✖ independent proxy context denied without traps or transaction (0.403186ms)
+  TypeError: h.registry.revokeRun is not a function
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs:47:314)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
