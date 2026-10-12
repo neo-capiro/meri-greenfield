@@ -1,0 +1,21 @@
+{
+  "scope": "SETUP_ONLY_NO_PRODUCT_EFFECT",
+  "diagnostics": [
+    {
+      "commandClass": "git show",
+      "reason": "Initial abbreviated metadata revision queried in wrong repository; corrected repository used.",
+      "rawRetained": false
+    },
+    {
+      "commandClass": "git show",
+      "reason": "Pinned private service path initially queried against Meri rather than Capiro; corrected repository used.",
+      "rawRetained": false
+    },
+    {
+      "commandClass": "git sparse-checkout add --no-cone",
+      "reason": "Unsupported option exit129; corrected add without option succeeded.",
+      "rawRetained": false
+    }
+  ],
+  "note": "These are factual summaries of transient setup errors, not reconstructed raw receipts."
+}

@@ -1,0 +1,61 @@
+{
+  "checkedAt": "2026-10-12T22:29:35.989701+00:00",
+  "scope": "ONLY_OWNED_CAPTURE_GROUPS_NO_SIGNALS_SENT",
+  "groups": [
+    {
+      "receipt": "artifact-saved-reason-negative.json",
+      "pgid": 359423,
+      "absent": true,
+      "originalRecordedAbsent": true
+    },
+    {
+      "receipt": "budget-connected.json",
+      "pgid": 362167,
+      "absent": true,
+      "originalRecordedAbsent": true
+    },
+    {
+      "receipt": "candidate-focused.json",
+      "pgid": 367604,
+      "absent": true,
+      "originalRecordedAbsent": true
+    },
+    {
+      "receipt": "capability-output-negative.json",
+      "pgid": 361346,
+      "absent": true,
+      "originalRecordedAbsent": true
+    },
+    {
+      "receipt": "durable-connected.json",
+      "pgid": 366673,
+      "absent": true,
+      "originalRecordedAbsent": true
+    },
+    {
+      "receipt": "exact-composition.json",
+      "pgid": 368596,
+      "absent": true,
+      "originalRecordedAbsent": true
+    },
+    {
+      "receipt": "initial-connected.json",
+      "pgid": 361220,
+      "absent": true,
+      "originalRecordedAbsent": true
+    },
+    {
+      "receipt": "source-audit-final.json",
+      "pgid": 370573,
+      "absent": true,
+      "originalRecordedAbsent": true
+    },
+    {
+      "receipt": "source-audit.json",
+      "pgid": 368808,
+      "absent": true,
+      "originalRecordedAbsent": true
+    }
+  ],
+  "allAbsent": true
+}
