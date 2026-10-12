@@ -1,0 +1,335 @@
+{
+  "failures": [
+    {
+      "path": "raw/vex/CVE-2026-8927.json",
+      "beforeBytes": 25421,
+      "expectedGitBlob": "b4603fcc0b8ed39b50655f81469efca0cc67b518",
+      "observedGitBlob": "be6c4c2d56ff1fb4a2db26926f0f0c8ea56d5add",
+      "cause": "apply_patch serialization appended one LF; exact body recovered only after hash proof",
+      "corrected": true
+    },
+    {
+      "path": "raw/vex/CVE-2026-24882.json",
+      "beforeBytes": 71928,
+      "expectedGitBlob": "846a5eec76099c69479bbe919ef7a8add227003d",
+      "observedGitBlob": "59903e7a965c59687dfdd01466cda51d58b03dd9",
+      "cause": "apply_patch serialization appended one LF; exact body recovered only after hash proof",
+      "corrected": true
+    },
+    {
+      "path": "raw/vex/CVE-2026-39314.json",
+      "beforeBytes": 73054,
+      "expectedGitBlob": "976415c7a122e3f4ec2592c06e517920e6d2e62d",
+      "observedGitBlob": "b2222e9ab4394a47fe61e7e8cf198f75f0843efa",
+      "cause": "apply_patch serialization appended one LF; exact body recovered only after hash proof",
+      "corrected": true
+    },
+    {
+      "path": "raw/vex/CVE-2026-105326.json",
+      "beforeBytes": 60006,
+      "expectedGitBlob": "443e78613317281109758e0c94743bd21fc25d9c",
+      "observedGitBlob": "5166dc5393eec581d8be28ea80707a9e7bdfba90",
+      "cause": "apply_patch serialization appended one LF; exact body recovered only after hash proof",
+      "corrected": true
+    },
+    {
+      "path": "raw/vex/CVE-2026-85091.json",
+      "beforeBytes": 32577,
+      "expectedGitBlob": "2902bd0177fcd649dd86acd9c1a9ccbf06da229d",
+      "observedGitBlob": "766795075666553b63ef91caea80be936e827dce",
+      "cause": "apply_patch serialization appended one LF; exact body recovered only after hash proof",
+      "corrected": true
+    },
+    {
+      "path": "raw/vex/CVE-2026-86143.json",
+      "beforeBytes": 22571,
+      "expectedGitBlob": "b7e6ac8efef199f526a0385dffe0b9403d4ecaaf",
+      "observedGitBlob": "ea58346a6b3c06dbba5ae380c4463cadcb6e60b8",
+      "cause": "apply_patch serialization appended one LF; exact body recovered only after hash proof",
+      "corrected": true
+    },
+    {
+      "path": "raw/vex/CVE-2025-68471.json",
+      "beforeBytes": 93824,
+      "expectedGitBlob": "c91d6e0555ef1d75f142bdf2d5d6b1937e4aa275",
+      "observedGitBlob": "b362efde4fabf1bdf5cd5ccdf36444726b896fc5",
+      "cause": "apply_patch serialization appended one LF; exact body recovered only after hash proof",
+      "corrected": true
+    },
+    {
+      "path": "raw/vex/CVE-2026-93990.json",
+      "beforeBytes": 240130,
+      "expectedGitBlob": "053d3514a251c9220d2cfbf52fbc99e3e107d0bd",
+      "observedGitBlob": "6bff51e76928f45a6a9df1370d9713e37314be6a",
+      "cause": "apply_patch serialization appended one LF; exact body recovered only after hash proof",
+      "corrected": true
+    },
+    {
+      "path": "raw/vex/CVE-2026-86142.json",
+      "beforeBytes": 22403,
+      "expectedGitBlob": "f1cc764a1c1203d4c368c9de070200d84cafc845",
+      "observedGitBlob": "2e03a57c0c11e012e12f71ca60daecb6fb39bd35",
+      "cause": "apply_patch serialization appended one LF; exact body recovered only after hash proof",
+      "corrected": true
+    },
+    {
+      "path": "raw/vex/CVE-2026-74860.json",
+      "beforeBytes": 22667,
+      "expectedGitBlob": "1ff879065253618524f2f1d6436fd5bfd97c47b5",
+      "observedGitBlob": "a9558ea0f3f287fa9f06abe0a174f6eeaa9fd3a8",
+      "cause": "apply_patch serialization appended one LF; exact body recovered only after hash proof",
+      "corrected": true
+    },
+    {
+      "path": "raw/vex/CVE-2024-52616.json",
+      "beforeBytes": 113046,
+      "expectedGitBlob": "f45527781c39f31490443e292d172f3a1a9573e1",
+      "observedGitBlob": "7585781a0a72d5879d9fcc9a7716cfaf5896b3a8",
+      "cause": "apply_patch serialization appended one LF; exact body recovered only after hash proof",
+      "corrected": true
+    },
+    {
+      "path": "raw/vex/CVE-2026-39316.json",
+      "beforeBytes": 71366,
+      "expectedGitBlob": "49a3c0e566e7764dbca59d9e281f69c7d5700b41",
+      "observedGitBlob": "8a0fd3dfe6767e8dc446fd10151c18ef8e83b7eb",
+      "cause": "apply_patch serialization appended one LF; exact body recovered only after hash proof",
+      "corrected": true
+    },
+    {
+      "path": "raw/vex/CVE-2026-86137.json",
+      "beforeBytes": 22559,
+      "expectedGitBlob": "30e014f698460945fc10550a00a01e3670dca371",
+      "observedGitBlob": "038f29485413defbad3a80d1bad57ecc9d863e7f",
+      "cause": "apply_patch serialization appended one LF; exact body recovered only after hash proof",
+      "corrected": true
+    },
+    {
+      "path": "raw/vex/CVE-2025-68468.json",
+      "beforeBytes": 93905,
+      "expectedGitBlob": "d7c228e2446978c407d576438150d3216546c527",
+      "observedGitBlob": "a57cbfbe436d95946424c1f353f5fa224f9acfc9",
+      "cause": "apply_patch serialization appended one LF; exact body recovered only after hash proof",
+      "corrected": true
+    },
+    {
+      "path": "raw/vex/CVE-2026-24401.json",
+      "beforeBytes": 110474,
+      "expectedGitBlob": "0125854756e7af4572dcb56f845c8dedd715f3fb",
+      "observedGitBlob": "6cbad24aff6bb6f2ac4b0084027119d83fc8388d",
+      "cause": "apply_patch serialization appended one LF; exact body recovered only after hash proof",
+      "corrected": true
+    },
+    {
+      "path": "raw/vex/CVE-2026-86141.json",
+      "beforeBytes": 22682,
+      "expectedGitBlob": "fb7c97067d46a1f493ae3b70c2e58853f15b8fbc",
+      "observedGitBlob": "a39b7a61e97fc8f0a1555b4f9b2045462465c790",
+      "cause": "apply_patch serialization appended one LF; exact body recovered only after hash proof",
+      "corrected": true
+    },
+    {
+      "path": "raw/vex/CVE-2026-34980.json",
+      "beforeBytes": 71571,
+      "expectedGitBlob": "64cf022af0e00820813c8184ae7dc5a5e8fc5bde",
+      "observedGitBlob": "25ce8e0d0d2773e7524a6e9938c222fee11f4854",
+      "cause": "apply_patch serialization appended one LF; exact body recovered only after hash proof",
+      "corrected": true
+    },
+    {
+      "path": "raw/vex/CVE-2026-107161.json",
+      "beforeBytes": 33433,
+      "expectedGitBlob": "fe36962bea9bb1fcfb895242f1ad5d7091d58b63",
+      "observedGitBlob": "c532653c83c55434a4c3a2057d62d0ca8dad72d7",
+      "cause": "apply_patch serialization appended one LF; exact body recovered only after hash proof",
+      "corrected": true
+    },
+    {
+      "path": "raw/vex/CVE-2026-86139.json",
+      "beforeBytes": 23046,
+      "expectedGitBlob": "52247f6ae45c503e2c64ea5747a4ad47dd7b683c",
+      "observedGitBlob": "d572cf38d37c15c5dbdf27e64cd66415e9faa86c",
+      "cause": "apply_patch serialization appended one LF; exact body recovered only after hash proof",
+      "corrected": true
+    },
+    {
+      "path": "raw/vex/CVE-2026-86144.json",
+      "beforeBytes": 22597,
+      "expectedGitBlob": "32a56864fc6c852ebcf3f033c46bbc7382b86521",
+      "observedGitBlob": "edb875e6022981ddd9956bcf2ff89b6e8458a480",
+      "cause": "apply_patch serialization appended one LF; exact body recovered only after hash proof",
+      "corrected": true
+    },
+    {
+      "path": "raw/vex/CVE-2026-87875.json",
+      "beforeBytes": 59614,
+      "expectedGitBlob": "f2b365cdc1cb84a874544a447bef3a489d206d4d",
+      "observedGitBlob": "819b3375cf68b031dc4c15ddf0217435315b7ae9",
+      "cause": "apply_patch serialization appended one LF; exact body recovered only after hash proof",
+      "corrected": true
+    },
+    {
+      "path": "raw/vex/CVE-2026-8924.json",
+      "beforeBytes": 26278,
+      "expectedGitBlob": "64c83de1c26eb28729e664d0aacaa14ef5f8b552",
+      "observedGitBlob": "1c75d15dd42b8133993d61781d6e44d7172afb18",
+      "cause": "apply_patch serialization appended one LF; exact body recovered only after hash proof",
+      "corrected": true
+    },
+    {
+      "path": "raw/vex/CVE-2026-77214.json",
+      "beforeBytes": 238162,
+      "expectedGitBlob": "9e53638f405242998009e0c02c59f0f11b54ecc9",
+      "observedGitBlob": "772781051ce9e535d632c10d6c4d7a1d33d0ee9b",
+      "cause": "apply_patch serialization appended one LF; exact body recovered only after hash proof",
+      "corrected": true
+    },
+    {
+      "path": "raw/vex/CVE-2026-34979.json",
+      "beforeBytes": 70654,
+      "expectedGitBlob": "c65167db9f3cbf833df5801cded8c790671eba52",
+      "observedGitBlob": "c76e8c468ea01bbef4ff5ae1e34250828e5fb85a",
+      "cause": "apply_patch serialization appended one LF; exact body recovered only after hash proof",
+      "corrected": true
+    },
+    {
+      "path": "raw/vex/CVE-2026-41079.json",
+      "beforeBytes": 71240,
+      "expectedGitBlob": "a641f2404d7ac94ef86c2dd4970556004d4fb088",
+      "observedGitBlob": "f52cd05fea71d8a416bded59347cb791dccab49e",
+      "cause": "apply_patch serialization appended one LF; exact body recovered only after hash proof",
+      "corrected": true
+    },
+    {
+      "path": "raw/vex/CVE-2026-18495.json",
+      "beforeBytes": 98054,
+      "expectedGitBlob": "c2a968a488c067f4e62f13c1e4d0f46dfdf0cb21",
+      "observedGitBlob": "45b52868bacd2ee7a4791cc7c9dbe8f99c9b9bb6",
+      "cause": "apply_patch serialization appended one LF; exact body recovered only after hash proof",
+      "corrected": true
+    },
+    {
+      "path": "raw/vex/CVE-2026-86138.json",
+      "beforeBytes": 22315,
+      "expectedGitBlob": "523f9d9b5a5500f9c2a20cf7d98c4f5095bc22b3",
+      "observedGitBlob": "7879ca1f9464dd4d224a76bf79bc7cac8e8236b3",
+      "cause": "apply_patch serialization appended one LF; exact body recovered only after hash proof",
+      "corrected": true
+    },
+    {
+      "path": "raw/vex/CVE-2026-86140.json",
+      "beforeBytes": 22294,
+      "expectedGitBlob": "da41896161810c1363fee4925d1235eb064b644a",
+      "observedGitBlob": "22e51a60439c1de7c40ca27bfe1352ee4cbdb207",
+      "cause": "apply_patch serialization appended one LF; exact body recovered only after hash proof",
+      "corrected": true
+    },
+    {
+      "path": "raw/vex/CVE-2026-87876.json",
+      "beforeBytes": 59580,
+      "expectedGitBlob": "6eaace3af3287b724f4c826c5e74074c80c7f6c8",
+      "observedGitBlob": "e21fdb1da408d7d063674e35716bec7d1f88ea77",
+      "cause": "apply_patch serialization appended one LF; exact body recovered only after hash proof",
+      "corrected": true
+    },
+    {
+      "path": "raw/vex/CVE-2026-57062.json",
+      "beforeBytes": 83122,
+      "expectedGitBlob": "d6122fafc209c5f593edaf5fd83571910fe0f029",
+      "observedGitBlob": "bea03a4d56fec0b8a6db55c7ed559baadc1a1ac1",
+      "cause": "apply_patch serialization appended one LF; exact body recovered only after hash proof",
+      "corrected": true
+    },
+    {
+      "path": "raw/vex/CVE-2026-76781.json",
+      "beforeBytes": 22591,
+      "expectedGitBlob": "fd584035f8be4a4238f00213bd71035653e59b37",
+      "observedGitBlob": "17165c872a68fda235fdc91d1dc26e1df7e7389b",
+      "cause": "apply_patch serialization appended one LF; exact body recovered only after hash proof",
+      "corrected": true
+    },
+    {
+      "path": "raw/vex/CVE-2026-8286.json",
+      "beforeBytes": 25158,
+      "expectedGitBlob": "da7b34c9cfeb297edd6b9bfef1a3a3c5db99d86e",
+      "observedGitBlob": "44a46759e2bd15bbf9fdb521aa1f68b278853cd3",
+      "cause": "apply_patch serialization appended one LF; exact body recovered only after hash proof",
+      "corrected": true
+    },
+    {
+      "path": "raw/vex/CVE-2026-58055.json",
+      "beforeBytes": 28498,
+      "expectedGitBlob": "473e1e32a20447d57af681863c9602ab6fbb7d40",
+      "observedGitBlob": "759904e907b3189213755619d80dcd1596adc249",
+      "cause": "apply_patch serialization appended one LF; exact body recovered only after hash proof",
+      "corrected": true
+    },
+    {
+      "path": "raw/vex/CVE-2025-68276.json",
+      "beforeBytes": 94049,
+      "expectedGitBlob": "a7c80248993e417024778bdf6cbd522e82e27777",
+      "observedGitBlob": "83da98856db56c6a7513642dadd05f52dc01f00f",
+      "cause": "apply_patch serialization appended one LF; exact body recovered only after hash proof",
+      "corrected": true
+    },
+    {
+      "path": "raw/vex/CVE-2026-78410.json",
+      "beforeBytes": 51254,
+      "expectedGitBlob": "36fc8f425fada3edfc472ead5b1949a817de2e70",
+      "observedGitBlob": "ad626e021e8ec46e765205c70d2f5acddddd9678",
+      "cause": "apply_patch serialization appended one LF; exact body recovered only after hash proof",
+      "corrected": true
+    },
+    {
+      "path": "raw/vex/CVE-2026-78408.json",
+      "beforeBytes": 51358,
+      "expectedGitBlob": "080c1da2c0c4c383a69321d12f2e2e140a694ed4",
+      "observedGitBlob": "022b9d5cc57bbcb07e4ca9237369bf7bcbf94d94",
+      "cause": "apply_patch serialization appended one LF; exact body recovered only after hash proof",
+      "corrected": true
+    },
+    {
+      "path": "raw/vex/CVE-2026-76642.json",
+      "beforeBytes": 51097,
+      "expectedGitBlob": "cd0a1c751a61915704ceb2c6d8e04cd4da9f2b59",
+      "observedGitBlob": "c5ebd4213c2d97b5c11f1439b981d8051e56a035",
+      "cause": "apply_patch serialization appended one LF; exact body recovered only after hash proof",
+      "corrected": true
+    },
+    {
+      "path": "raw/vex/CVE-2026-78409.json",
+      "beforeBytes": 51222,
+      "expectedGitBlob": "a8bd298e6432742bb369cbddba23cb97549caef3",
+      "observedGitBlob": "a90d02634a3de6e4fd2cf98ff530feca37454042",
+      "cause": "apply_patch serialization appended one LF; exact body recovered only after hash proof",
+      "corrected": true
+    }
+  ],
+  "parserFailures": [
+    {
+      "command": "initial exact-body serialization check",
+      "exit": 1,
+      "stderr": "TypeError: string indices must be integers, not str",
+      "reason": "author treated receipt object as its rows array; corrected indexing; no source bodies modified on this failed attempt"
+    },
+    {
+      "command": "derive-assessment.py first attempt",
+      "exit": 1,
+      "stderr": "ValueError: missing package libreoffice-uno-libs-private",
+      "reason": "Incorrect author-assumed Ubuntu package name. Actual dependency metadata names uno-libs-private; corrected to actual package and reran successfully."
+    },
+    {
+      "command": "dependent summary attempted after first derivation failure",
+      "exit": 1,
+      "stderr": "FileNotFoundError: obligations-54.json",
+      "reason": "Derived file absent because preceding author derivation failed; not an upstream runtime failure."
+    },
+    {
+      "command": "git diff --cached --check first attempt",
+      "exit": "not individually captured; grouped shell returned final command status",
+      "stderr": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/web-read-results.txt:87: new blank line at EOF.",
+      "reason": "Removed author-added extra final blank line from composed tool-response log; source JSON bodies unchanged."
+    }
+  ],
+  "notUpstreamFailure": true
+}

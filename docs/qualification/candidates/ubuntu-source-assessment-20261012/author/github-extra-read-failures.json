@@ -1,0 +1,11 @@
+{
+  "gccBlobFetch": {
+    "content": [
+      {
+        "type": "text",
+        "text": "tool call error: tool call failed for `codex_apps/github.fetch`\n\nCaused by:\n    Transport closed"
+      }
+    ],
+    "isError": true
+  }
+}

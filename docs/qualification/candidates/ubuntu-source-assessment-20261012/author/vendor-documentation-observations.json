@@ -1,0 +1,28 @@
+{
+  "dateUtc": "2026-10-12",
+  "vex": {
+    "url": "https://documentation.ubuntu.com/security/security-updates/vex/",
+    "observations": [
+      "Canonical identifies canonical/ubuntu-security-notices/vex as an official VEX publication route.",
+      "The published mapping converts deferred / Vulnerable, fix deferred to under_investigation; the broad VEX status must not be read as absence of a known vulnerability.",
+      "needs-triage also maps to under_investigation, so retain status_notes and original web observations.",
+      "The status is scoped to exact named package and release; source/architecture mismatches do not close obligations."
+    ],
+    "license": "CC-BY-SA-3.0"
+  },
+  "archiveTrust": {
+    "url": "https://documentation.ubuntu.com/security/software-integrity/image-verification/",
+    "archive2018Fingerprint": "F6ECB3762474EDA9D21B7022871920D1991BC93C",
+    "officialPublicKeyringUrl": "https://archive.ubuntu.com/ubuntu/project/ubuntu-archive-keyring.gpg",
+    "keyringDownloaded": false,
+    "keyAuthentication": "UNRUN",
+    "signatureVerification": "UNRUN",
+    "reason": "ASCII keyserver read proxy403 and supported web fallback inaccessible; no package installation or binary keyring download performed."
+  },
+  "snapshot": {
+    "url": "https://ubuntu.com/server/docs/how-to/software/snapshot-service/",
+    "proposedTimestamp": "20261012T000000Z",
+    "retrieved": false,
+    "priorFailureEvidence": "docs/qualification/candidates/linux-alternatives-20261012/upstream/snapshot-fetch-results.json"
+  }
+}

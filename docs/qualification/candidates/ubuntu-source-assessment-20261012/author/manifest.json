@@ -1,0 +1,456 @@
+{
+  "baseCommit": "1e6d430cf9c239caca4198aea42a762f13021cd5",
+  "scope": "metadata-only source assessment, NOT_EXECUTABLE",
+  "files": [
+    {
+      "path": "apps/worker/qualification/Dockerfile",
+      "bytes": 18786,
+      "sha256": "3f86ae7ca55e8bbfb2814f1b335b7df8159daf9b5008df60f1165ba879c40f36"
+    },
+    {
+      "path": "apps/worker/qualification/requirements.lock.txt",
+      "bytes": 1383,
+      "sha256": "47bb048b9750b074c7d33faba9f9c3873b7b461eaa4360bf57cb08d4f55c9765"
+    },
+    {
+      "path": "docs/coordination/reports/MERI-UBUNTU-SOURCE-ASSESSMENT-20261012.md",
+      "bytes": 11140,
+      "sha256": "68828ccde9e262723dc8bc959f00788ee75b441beea8b859c73861485cd09580"
+    },
+    {
+      "path": "docs/qualification/candidates/image-patch-20261012/upstream/upstream-matrix.json",
+      "bytes": 90619,
+      "sha256": "4235a8074c314e497071afc8858eeaf26d7adf43d6afd89ba8f3fd322a1e7ad5"
+    },
+    {
+      "path": "docs/qualification/candidates/linux-alternatives-20261012/upstream/alternative-obligations.json",
+      "bytes": 82836,
+      "sha256": "b42ae87376c323ee1cda70c96875285f385a0cb439d15238f41e66cf369ca0b2"
+    },
+    {
+      "path": "docs/qualification/candidates/linux-alternatives-20261012/upstream/composition-proposals.json",
+      "bytes": 39002,
+      "sha256": "56f1a38321a132ae3e9e93a6c27c4039e42d841033ea71630eb4ffb15a0bc791"
+    },
+    {
+      "path": "docs/qualification/candidates/linux-alternatives-20261012/upstream/exact-alpha-archive-observations.json",
+      "bytes": 2321,
+      "sha256": "38a4c829a5382df57941b06cd8267051a99eeee2d31b1926216136b381c4709c"
+    },
+    {
+      "path": "docs/qualification/candidates/linux-alternatives-20261012/upstream/metadata-transport/resolute-security-inrelease.body.bin",
+      "bytes": 137403,
+      "sha256": "d1483ad1c40d1717e07f3ab3cd2da72ceb5a05c8a3cb1e901f33b1ec5906e21d"
+    },
+    {
+      "path": "docs/qualification/candidates/linux-alternatives-20261012/upstream/metadata-transport/resolute-updates-inrelease.body.bin",
+      "bytes": 137401,
+      "sha256": "7762b0a6d034133a7b208a68ff17efaf8b2e7ed8cea8f33f47bc248661bca137"
+    },
+    {
+      "path": "docs/qualification/candidates/linux-alternatives-20261012/upstream/metadata-transport/resolute-updates-main-Packages.xz",
+      "bytes": 734484,
+      "sha256": "f9986740287e4f9d9e8b7919678d1c82654b0d80c5b04f4973911246656cfd1a"
+    },
+    {
+      "path": "docs/qualification/candidates/linux-alternatives-20261012/upstream/metadata-transport/resolute-updates-universe-Packages.xz",
+      "bytes": 323208,
+      "sha256": "581c14b018730daad83c80b39525c739f5368737488fdf7701811d8723fc3c9e"
+    },
+    {
+      "path": "docs/qualification/candidates/linux-alternatives-20261012/upstream/snapshot-fetch-results.json",
+      "bytes": 2743,
+      "sha256": "1a4abb61b7b88cfbaa48f0f964bd21f5c17987363cc7dc3a1d1b99c119d0f239"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/additional-metadata-read-results.json",
+      "bytes": 1008,
+      "sha256": "c40b7f225314551bec2ed86ae1d220032395427251a3643a52cb3cf668c9b790"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/authoring-failures.json",
+      "bytes": 14788,
+      "sha256": "a0be18e8c653b91b7497a121a97f0b82366a20c221f01dc3369fa89dcc18206f"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/base-main-selected-packages.json",
+      "bytes": 58388,
+      "sha256": "60bcd321b73a13c422e57bc89db7abcb90862b364f50ba7f451c9c2dc9d9f12e"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/bounded-metadata-read-results.json",
+      "bytes": 1087,
+      "sha256": "b2d1946055105178089bb930104d059f932844d0061a3b0a1dcdfd7f269b5eb8"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/derive-assessment.py",
+      "bytes": 10091,
+      "sha256": "7becfd4b3ddc8004e8802c057ad8a439bc60b16301e8d3a73a718f769f4d460d"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/derive.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/derive.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/functional-and-bundled-requirements.json",
+      "bytes": 6927,
+      "sha256": "260f12469d0b044558a2da16cfbf2e652dfc964e8ba0579c8ffd902299b7ee2f"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/github-extra-read-failures.json",
+      "bytes": 230,
+      "sha256": "f40d4d1fb8af4fa0b2c71bd4fb4fbbc9ae0aa4bfb543e238f42c330b4bde7fa2"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/initial-transport.json",
+      "bytes": 1591,
+      "sha256": "6bc682dbffaa234cfaa7cedc54e562393f2ed6a8927f949c5729bdc4453ea51a"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/obligations-54.json",
+      "bytes": 112138,
+      "sha256": "b92134c9ee84095e451bbfcd5b11309de532542fe8ea6c2683da372d08b1d693"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/package-function-assessment.json",
+      "bytes": 73553,
+      "sha256": "0c57ab26195d02b82f0408253480ff394169ebd4d5e3626e86494d2618219df5"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/python-metadata-assessment.json",
+      "bytes": 8917,
+      "sha256": "3e9349f9355f749554ad8442e27d57e676ec485da7833e86de997cd17a969390"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/VEX-LICENSE.txt",
+      "bytes": 20137,
+      "sha256": "23ee78c8bae49cf08ea2f0c84945c66b987ebe4520881fb51b3dad4fb43d07c2"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/gcc-vex-complete.body",
+      "bytes": 7647008,
+      "sha256": "61c5d08e70a7ea11482ece24c7ed29fc6b35a7a3074d72c5ffb7fab68d191447"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/gcc-vex-raw.body",
+      "bytes": 2500001,
+      "sha256": "9bf537e3382ab819fe475202c6181644c70dddb513664981ef0a831a1f962be2"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/gnutls88647-tracker.body.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/gnutls95210-tracker.body.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/pypi-XlsxWriter-3.2.9.json",
+      "bytes": 4914,
+      "sha256": "c523e5201c685344d9553e47c79517de4df8b7d82e254d930c0d048db4d3c2ad"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/pypi-et_xmlfile-2.0.0.json",
+      "bytes": 4816,
+      "sha256": "807b439c620d04dc8b1680d18d462233b4c4711d11a32a2e6d74b47949af9bf0"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/pypi-lxml-6.1.3.json",
+      "bytes": 155078,
+      "sha256": "1f03dafdc0bd6c308a1e69aff7caef27f6d7c586eadd34e02229703a8541fe61"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/pypi-openpyxl-3.1.5.json",
+      "bytes": 4748,
+      "sha256": "6a922b57aebf0a54ec276b48bab917fa6684a5822e2d40a465972098d46be12e"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/pypi-pypdf-6.20.0.json",
+      "bytes": 9370,
+      "sha256": "44e95321cb75cfa6aeeb279c5a0e39523af5558c0665b09ea0e20a39e591b3a7"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/pypi-python-docx-1.2.0.json",
+      "bytes": 4072,
+      "sha256": "7dc6149fa5a8f34d922a1bfe6730be72bbb889bd879cba60776dccd597fac775"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/pypi-typing_extensions-4.16.0.json",
+      "bytes": 5631,
+      "sha256": "2140da00d62dde967f52d0be0ae28444f1d6a3fe603f52c83c23988c32122d5a"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/resolute-base-inrelease.body",
+      "bytes": 135549,
+      "sha256": "45f95ce276cdba3e41870516a130e03c58b8b7a79e9546b0efe9e526d255740c"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/resolute-base-main-packages.body",
+      "bytes": 1480032,
+      "sha256": "ed9ac41cb263efaecc5a06a0742dc56570e2fb5ff94c4f2e4b2fbdcddd73cf24"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/resolute-base-universe-packages.body",
+      "bytes": 15960824,
+      "sha256": "1587be86d66d38542325215e0e109f75bd695c8f24d793ace2762038a6ad581e"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/resolute-security-main-packages.body",
+      "bytes": 599716,
+      "sha256": "e094f77d426124a877938e72c211e6e726a5fd4dea9fd260ba5f7ef85f1d4144"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/resolute-security-universe-packages.body",
+      "bytes": 200948,
+      "sha256": "58f52e78c1589500550cb76e7eb06b94e473786347649cb86165f7635e730331"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/tiff52490-page.body.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/tracker-readme.body.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/ubuntu-archive-2018-key.body",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/vex/CVE-2024-52616.json",
+      "bytes": 113045,
+      "sha256": "7bd84686c6968ea5cb3542614edff07c7c409d67d902043402d2a3ce2c087274"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/vex/CVE-2025-68276.json",
+      "bytes": 94048,
+      "sha256": "7dab36e12ea42d633f41d8899ddb4e172a7257af00b32de7cdcce9a86f507b22"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/vex/CVE-2025-68468.json",
+      "bytes": 93904,
+      "sha256": "969d0b4a9eb93af1a0ae09cab99c539ac46694337d12ed19454e13cf1e8f66a5"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/vex/CVE-2025-68471.json",
+      "bytes": 93823,
+      "sha256": "07be8cbfdbc742181c9bcf6179cedc04a6cce56b24f53ffb41b53770dd711e10"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/vex/CVE-2026-105326.json",
+      "bytes": 60005,
+      "sha256": "8af8a160855f93abd412f45be854d3bc0bbd58dc92860a5a6b4bebcdd930f091"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/vex/CVE-2026-107161.json",
+      "bytes": 33432,
+      "sha256": "20f0864d1405cde2e605ae28828331cf879540d619ff85246f6c5db9e1b8ebad"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/vex/CVE-2026-18495.json",
+      "bytes": 98053,
+      "sha256": "a372656d53980e46916157cc354fa93b89f837fee021eb8babecd2c197a0f1df"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/vex/CVE-2026-24401.json",
+      "bytes": 110473,
+      "sha256": "779d43b4aaeaaa646f6908cef4a86d2fe4b5c5a130a399f70fa8754b5a6fd6f3"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/vex/CVE-2026-24882.json",
+      "bytes": 71927,
+      "sha256": "95236a050bbab3d4efa1e8242afc979cadd6c5b58621305f08ef64646c966061"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/vex/CVE-2026-34979.json",
+      "bytes": 70653,
+      "sha256": "9844410483156986d73b546c9581ccf2c145847d897b38408b0a2b0fa737efbd"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/vex/CVE-2026-34980.json",
+      "bytes": 71570,
+      "sha256": "f259ed752be5e271b9ae436cb21c837a96aff5ed1400bd62c358f4527c95b7a7"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/vex/CVE-2026-39314.json",
+      "bytes": 73053,
+      "sha256": "8c3e3a32d5cc392e41aa84e96f288ce2d1b43f0c991a8cd7f0bce011cdddeb33"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/vex/CVE-2026-39316.json",
+      "bytes": 71365,
+      "sha256": "3b081346c690e920c7dfcd252440bdd13e2d0faff0b275b12cf98a01b1caeaf0"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/vex/CVE-2026-41079.json",
+      "bytes": 71239,
+      "sha256": "dac3e1b12f230263783345dcdd47bcdc527f5b3c107390bee7a7517bacf131b5"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/vex/CVE-2026-57062.json",
+      "bytes": 83121,
+      "sha256": "643fd2050515cceb936259a08002891642f7ea98e1177ec54bd54cc67710664d"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/vex/CVE-2026-58055.json",
+      "bytes": 28497,
+      "sha256": "bcd3793086624161f8499845c294acf3a6ae9f2cf3cb3f85fc7b5898f9146132"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/vex/CVE-2026-74860.json",
+      "bytes": 22666,
+      "sha256": "f40218ff1392d30fff8293b6437995b740ced9b8631cebb3069ba605b4b4bc86"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/vex/CVE-2026-76642.json",
+      "bytes": 51096,
+      "sha256": "f8d96fc24980cac8de9dea97da695ba9cb1b6eae94119c632c270461de65c856"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/vex/CVE-2026-76781.json",
+      "bytes": 22590,
+      "sha256": "f1a3a4eb4721b65743be43a99f493d00ebee3269d53b90e12f6fa93c42c03731"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/vex/CVE-2026-77214.json",
+      "bytes": 238161,
+      "sha256": "9113059f29c7d43962d58a7c79e68f81432db758572a9edb57d0677ab381b6d1"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/vex/CVE-2026-78408.json",
+      "bytes": 51357,
+      "sha256": "42b662677670780f42f747c2ff73de22d723db87740f74002287645fee791772"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/vex/CVE-2026-78409.json",
+      "bytes": 51221,
+      "sha256": "9947dcbd253365180dbe246cf8c8e389610422d426146095bfe2c3ee8ec7e20e"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/vex/CVE-2026-78410.json",
+      "bytes": 51253,
+      "sha256": "79903a3b1b5e5294982e9cc460289783c4d5113239ee4703310ad890a2525649"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/vex/CVE-2026-8286.json",
+      "bytes": 25157,
+      "sha256": "c4f765e0f12c77a4b8a672556e1aefa19a3a761cc26e2e7428cedf4fb065f58a"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/vex/CVE-2026-85091.json",
+      "bytes": 32576,
+      "sha256": "add41f6cf715969aa627be34a4e07af2551610090bb8ef616126c8cb66f5b6e6"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/vex/CVE-2026-86137.json",
+      "bytes": 22558,
+      "sha256": "212bd0ebb4af3c9e3018ecde5f3a5174ca4038cea828fec62421ebc6edee631c"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/vex/CVE-2026-86138.json",
+      "bytes": 22314,
+      "sha256": "561491f307b5db4c3e78976bebe1f4c7a628da52764c9cf80a80b82632013659"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/vex/CVE-2026-86139.json",
+      "bytes": 23045,
+      "sha256": "7bb025f4b00966658d5c4584bc584b0480e64a1df0d11bff6e4aeb4ba49a0668"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/vex/CVE-2026-86140.json",
+      "bytes": 22293,
+      "sha256": "f1ab58239da4f1fa3797b68d8e6e3fc97e584d0b64234eaf7b3c05d0482855be"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/vex/CVE-2026-86141.json",
+      "bytes": 22681,
+      "sha256": "74fca3c9f8a2fe38e0c652112d7374d8ad0e197fa334ba0ed09c898ba49d859c"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/vex/CVE-2026-86142.json",
+      "bytes": 22402,
+      "sha256": "bc6a2c1af2cb47a0675f8de84c625069c0fc5b767e46cff8e070e8df7ff7068c"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/vex/CVE-2026-86143.json",
+      "bytes": 22570,
+      "sha256": "55126bec72b4e5563564d463a2069fd3a56ac30d93c82d347489eec84e3e59fe"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/vex/CVE-2026-86144.json",
+      "bytes": 22596,
+      "sha256": "6751789272f492ea3494ebaa83d4d49674eca8287d81d47834e2613e90677f0b"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/vex/CVE-2026-87875.json",
+      "bytes": 59613,
+      "sha256": "ec57a69d13079d8c6e8961613626617d2ae0e6856f67700b652bdea4fe683a26"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/vex/CVE-2026-87876.json",
+      "bytes": 59579,
+      "sha256": "0edef88879fa7fb6230f59efefafcd718b35cc6fe8ec1d2b8633889bfb2fa4a2"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/vex/CVE-2026-8924.json",
+      "bytes": 26277,
+      "sha256": "3ae077429f5167a7e008e27cc86a37f238c46dea8e13b4ca729875678e300c3b"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/vex/CVE-2026-8927.json",
+      "bytes": 25420,
+      "sha256": "da1c2f7d45bc45467d149638667965effaa4c36137b6d749fb1a0f9754376ac8"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/raw/vex/CVE-2026-93990.json",
+      "bytes": 240129,
+      "sha256": "f80b6706c0fc632619d328afd89abd4ab8cede2fef345a69c7ed01e9ecd4d9fc"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/security-and-key-read-results.json",
+      "bytes": 1509,
+      "sha256": "dffdcf059ebc8dc7987117c3912422e646c4c353503f9aebb3fa5fab2840ac53"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/source-prerequisites.json",
+      "bytes": 4947,
+      "sha256": "835252bc5c4c92d17e227b13d14220d67f5258d6f7a681911d822880ecf9dbf2"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/universe-metadata-read-results.json",
+      "bytes": 547,
+      "sha256": "584ad3747169f7e4ad2097957ced2a6a391af06393b9cab630df57f01383d73f"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/vendor-documentation-observations.json",
+      "bytes": 1541,
+      "sha256": "2c21b2bfb2d106f1474392e5d5586c96b759ac58b2e16d16eac055ba339f5503"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/verify-packet.py",
+      "bytes": 6238,
+      "sha256": "d947513634aa6b1b6a6dee01a857cc9e3574096a31bf4e52e35f77cd7db5494d"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/vex-read-results.json",
+      "bytes": 81074,
+      "sha256": "9726698bb81277a57181a2bb73d7985f3a4a3e896c630f46ced4e4cd7fb8f68e"
+    },
+    {
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/web-read-results.txt",
+      "bytes": 8859,
+      "sha256": "f1f6ff1bf3770312b4eaed5058a25e0e8af1e75234fc941e5712295d5da1af6b"
+    }
+  ]
+}

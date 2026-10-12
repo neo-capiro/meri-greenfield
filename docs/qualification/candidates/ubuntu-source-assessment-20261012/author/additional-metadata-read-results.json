@@ -1,0 +1,28 @@
+[
+  {
+    "name": "resolute-base-main-packages",
+    "url": "https://archive.ubuntu.com/ubuntu/dists/resolute/main/binary-amd64/Packages.xz",
+    "maxBytes": 1600000,
+    "timeoutSeconds": 8,
+    "startedUtc": "2026-10-12T04:24:25.282486+00:00",
+    "declaredLength": "1480032",
+    "httpStatus": 200,
+    "result": "READ",
+    "bytes": 1480032,
+    "sha256": "ed9ac41cb263efaecc5a06a0742dc56570e2fb5ff94c4f2e4b2fbdcddd73cf24",
+    "path": "raw/resolute-base-main-packages.body"
+  },
+  {
+    "name": "gcc-vex-complete",
+    "url": "https://raw.githubusercontent.com/canonical/ubuntu-security-notices/6609070af95e04758e8895a14e22e292b8ebc587/vex/cve/2026/CVE-2026-95619.json",
+    "maxBytes": 7800000,
+    "timeoutSeconds": 8,
+    "startedUtc": "2026-10-12T04:24:25.844301+00:00",
+    "declaredLength": "7647008",
+    "httpStatus": 200,
+    "result": "READ",
+    "bytes": 7647008,
+    "sha256": "61c5d08e70a7ea11482ece24c7ed29fc6b35a7a3074d72c5ffb7fab68d191447",
+    "path": "raw/gcc-vex-complete.body"
+  }
+]
