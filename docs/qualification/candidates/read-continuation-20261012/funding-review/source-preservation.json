@@ -1,0 +1,184 @@
+{
+  "base": "e94865529c5a1e97c79893527895f0b4b73be35f",
+  "initialSource": "c7e6b15ecd99f5a185cb3826f9b471d2438854c8",
+  "acceptedSource": "256248fee5be45e5f203bbc74cc5b0c0e2f738f7",
+  "originalPaths": 5267,
+  "originalChanged": [],
+  "sourceFiles": [
+    {
+      "path": "packages/contracts/retrieval-0.2/funding-opportunities.schema.json",
+      "bytes": 62966,
+      "sha256": "0d31594c3aaecd707da722cfb8cd951e7f42802c13c86805aaedb9397dc9d56b"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/funding-opportunities-validation.mjs",
+      "bytes": 5097,
+      "sha256": "ec4e6124c3587b772a901a788282c3275e81e429b7af1e3199d2b0532313808b"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/funding-envelope-validation.mjs",
+      "bytes": 10887,
+      "sha256": "8606b31647d1ff627cf5a7ba8b41e1cfc236a23d38028d2e210b21e15f0b51f5"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/funding-requirements-validation.mjs",
+      "bytes": 2331,
+      "sha256": "7ac1c0f69ec55f30004ff125f6eddc2f9c8dae1d007e405f425bdd1898e73491"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-funding-opportunities.test.mjs",
+      "bytes": 22082,
+      "sha256": "fc76f013f242ab4342252ac4043f533af5667f14053d085d9dbcb67c1d1ecba3"
+    }
+  ],
+  "changedInitialAuthorTestLines": [
+    33,
+    53
+  ],
+  "checks": [
+    {
+      "name": "all original paths exactly preserved",
+      "pass": true
+    },
+    {
+      "name": "exactly five allocated family files added",
+      "pass": true
+    },
+    {
+      "name": "old tests and public/dependency/registry files unchanged",
+      "pass": true
+    },
+    {
+      "name": "working exact source packages/contracts/retrieval-0.2/funding-opportunities.schema.json",
+      "pass": true
+    },
+    {
+      "name": "working exact source packages/contracts/retrieval-0.2/funding-opportunities-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "working exact source packages/contracts/retrieval-0.2/funding-envelope-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "working exact source packages/contracts/retrieval-0.2/funding-requirements-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "working exact source packages/contracts/test/retrieval-funding-opportunities.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "envelope module unchanged across repair",
+      "pass": true
+    },
+    {
+      "name": "schema repair only adds named SAM UUID definition",
+      "pass": true
+    },
+    {
+      "name": "requirements repair exactly additive four-line guard",
+      "pass": true
+    },
+    {
+      "name": "factory repair exactly additive available-path guard",
+      "pass": true
+    },
+    {
+      "name": "all original author test lines preserved except schema hash and corrected stale fixture",
+      "pass": true
+    },
+    {
+      "name": "original schema hash assertion updated only literal",
+      "pass": true
+    },
+    {
+      "name": "22 pinned identities without observed drift",
+      "pass": true
+    },
+    {
+      "name": "candidate-first expected tests",
+      "pass": true
+    },
+    {
+      "name": "candidate-first physical cleanup",
+      "pass": true
+    },
+    {
+      "name": "candidate-first exact stream candidate-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "candidate-first exact stream candidate-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "candidate-expanded expected tests",
+      "pass": true
+    },
+    {
+      "name": "candidate-expanded physical cleanup",
+      "pass": true
+    },
+    {
+      "name": "candidate-expanded exact stream candidate-expanded.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "candidate-expanded exact stream candidate-expanded.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "requirement-short-page expected tests",
+      "pass": true
+    },
+    {
+      "name": "requirement-short-page physical cleanup",
+      "pass": true
+    },
+    {
+      "name": "requirement-short-page exact stream requirement-short-page.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "requirement-short-page exact stream requirement-short-page.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "landscape-invalid-id expected tests",
+      "pass": true
+    },
+    {
+      "name": "landscape-invalid-id physical cleanup",
+      "pass": true
+    },
+    {
+      "name": "landscape-invalid-id exact stream landscape-invalid-id.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "landscape-invalid-id exact stream landscape-invalid-id.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "repaired-independent expected tests",
+      "pass": true
+    },
+    {
+      "name": "repaired-independent physical cleanup",
+      "pass": true
+    },
+    {
+      "name": "repaired-independent exact stream repaired-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "repaired-independent exact stream repaired-independent.stderr.bin",
+      "pass": true
+    }
+  ],
+  "passed": 35,
+  "failed": 0,
+  "privateProducerExecuted": false,
+  "runtimeAccepted": false
+}
