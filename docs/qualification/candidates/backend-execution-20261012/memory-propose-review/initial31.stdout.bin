@@ -1,0 +1,39 @@
+✔ memory proposal independent: exact private factory and canonical schema reuse (1.593134ms)
+✔ memory proposal independent: omitted/null/blank defaults are explicit personal intent (1.774897ms)
+✔ memory proposal independent: personal aliases and firm normalization preserve logical key (0.47265ms)
+✔ memory proposal independent: unknown scope never silently falls back (0.584498ms)
+✔ memory proposal independent: content trim retains interior content and rejects empty (0.708965ms)
+✔ memory proposal independent: UTF16 content ceiling rejects overflow without truncation (0.905261ms)
+✔ memory proposal independent: UTF16 logical key ceiling and nullable key (0.511519ms)
+✔ memory proposal independent: finite fractional TTL survives and only upper cap applies (0.463396ms)
+✔ memory proposal independent: wrong typed or nonfinite TTL refuses without coercion (0.490216ms)
+✔ memory proposal independent: trusted client scope correlation accepts case aliases (0.516216ms)
+✔ memory proposal independent: missing client intent refuses rather than personal fallback (0.294974ms)
+✔ memory proposal independent: client hint never overrides selected context on any scope (0.514853ms)
+✔ memory proposal independent: nonclient intent does not carry client memory destination (0.240542ms)
+✔ memory proposal independent: raw source or authority attributes remain excluded (0.547513ms)
+✔ memory proposal independent: context is required exact and typed without implicit authority (0.2926ms)
+✔ memory proposal independent: every public binding coordinate is exact (3.767952ms)
+✔ memory proposal independent: public action/version/shape and attachments cannot be bypassed (1.269197ms)
+✔ memory proposal independent: same tenant scopes are structural and not an invented union rule (0.398489ms)
+✔ memory proposal independent: direct arguments must already be normalized (1.140704ms)
+✔ memory proposal independent: client command requires exact selected UUID and canonical case (0.608124ms)
+✔ memory proposal independent: direct command cannot omit required normalized members (0.615244ms)
+✔ memory proposal independent: all three scopes accept only pending observation (2.999598ms)
+✔ memory proposal independent: exact pending result has no saved or persisted proof fields (1.813325ms)
+✔ memory proposal independent: digest uses entire immutable command not only arguments (1.458171ms)
+✔ memory proposal independent: digest also binds a valid changed original context (1.541476ms)
+✔ memory proposal independent: canonical public proposal integrity still owns approvals (1.438992ms)
+✔ memory proposal independent: normalizer detaches context and caller arguments (0.248013ms)
+✔ memory proposal independent: command result validation returns detached admitted data (0.499882ms)
+✔ memory proposal independent: no ambient clock access or storage-key derivation (0.380662ms)
+✔ memory proposal independent: accessor proxy coercion and toJSON never execute (0.963408ms)
+✔ memory proposal independent: symbols hidden fields prototypes cycles and undefined refuse (0.191538ms)
+ℹ tests 31
+ℹ suites 0
+ℹ pass 31
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 358.534836
