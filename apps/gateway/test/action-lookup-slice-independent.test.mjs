@@ -3,12 +3,22 @@ import assert from 'node:assert/strict';
 import {canonicalSha256,validateShape} from '../../../packages/contracts/validate.mjs';
 import {createTaskLookupDelivery,createPostgresTaskLookupStore} from '../../control/task-lookup/index.mjs';
 import {actionLookupSlice} from './action-lookup-slice-fixture.mjs';
+import {input as evalInput,sign,options as evalOptions,capture} from '../../../evals/task-lookup/test/fixtures.mjs';
+import {freezeCorpus} from '../../../evals/task-lookup/corpus.mjs';
+import {scoreObservations} from '../../../evals/task-lookup/score.mjs';
 const clone=x=>structuredClone(x),tick=()=>new Promise(r=>setImmediate(r));
 const id=n=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
 const one=map=>{assert.equal(map.size,1);return [...map.values()][0];};
 function loseLookupCommit(f,ordinal){let commits=0;const connect=f.sql.pool.connect;f.sql.pool.connect=async()=>{const c=await connect();const query=c.query;return{...c,async query(sql,args){const result=await query(sql,args);if(sql==='COMMIT'&&++commits===ordinal)throw Error('synthetic lookup ACK loss after committed state');return result;}};};}
 function reader(f,authorize){return createTaskLookupDelivery({gateway:f.h.enabledGateway(),store:createPostgresTaskLookupStore({pool:f.sql.pool}),clock:()=>f.h.f.state.now,authorize});}
 const freshAllow=(f,assertCall=()=>{})=>async call=>{assertCall(call);return{authorized:true,bindingSha256:call.binding.bindingSha256,expiresAtMs:f.h.f.state.now+1000};};
+function evaluation(f){
+ const raw=evalInput(),c=raw.cases[0];c.context={binding:clone(f.c.context.binding),clientResolution:{reference:f.c.context.selectedClientId,clientId:f.c.context.selectedClientId}};
+ c.request={...f.c.request,clientId:f.c.context.selectedClientId};c.scopes=clone(f.c.context.scopes);raw.sources[0].asOf=new Date(f.h.f.state.now).toISOString();sign(raw);
+ const frozen=freezeCorpus(raw,evalOptions(raw)),observed=capture(frozen),o=observed.observations[0];observed.run.startedAt=observed.run.completedAt=o.startedAt=o.completedAt=new Date(f.h.f.state.now).toISOString();
+ // Replace fixture observations with actual captured callbacks/failure below.
+ o.authorization=[];o.failure=null;return{frozen,observed,o};
+}
 
 test('slice independent: real SQL transitions and canonical accounting precede public delivery',async()=>{const f=await actionLookupSlice(),out=await f.lookup();assert.equal(f.http.length,1);assert.equal(one(f.h.state().reservations).state,'SETTLED');assert.equal(f.h.state().budget.consumed_micro_usd,'10');assert.equal(one(f.sql.lookups).state,'RESULT');assert.ok(f.sql.calls.some(c=>c.sql.startsWith('INSERT INTO meri_task_lookup.lookups')));assert.ok(f.sql.calls.some(c=>c.sql.includes("state='DISPATCHING'")));assert.ok(f.sql.calls.some(c=>c.sql.includes("state='RESULT'")));assert.ok(f.h.commands.some(c=>c.sql.startsWith('UPDATE meri_qualification.budget SET')));assert.deepEqual(out.events.map(e=>e.type),['tool.started','tool.completed']);out.events.forEach(e=>validateShape('UIEvent',e));assert.equal(out.acceptedTasks,false);assert.equal(out.classification,'recommendations');assert.equal(Object.hasOwn(out,'observation'),false);});
 test('slice independent: model cannot inject alias client, authority or supplied result identity',async()=>{for(const extra of [{clientId:'Alias'},{clientId:id(999)},{selectedClientId:id(999)},{context:{}},{resultReference:id(999)},{binding:{}},{command:{}}]){const f=await actionLookupSlice();Object.assign(f.c.request,extra);await assert.rejects(f.lookup());assert.equal(f.http.length,0);assert.equal(f.sql.calls.length,0);assert.equal(f.h.state().produced.size,0);}});
@@ -23,3 +33,22 @@ test('slice independent: marker ambiguity keeps liability until explicit account
 for(const [ordinal,stage]of [[1,'claim'],[2,'dispatch marker']])test(`slice independent: committed ${stage} lost ACK cannot reach HTTP`,async()=>{const f=await actionLookupSlice();loseLookupCommit(f,ordinal);await assert.rejects(f.lookup(),e=>e.outcome==='UNKNOWN');await assert.rejects(f.lookup(),/LOOKUP_REPLAY/);assert.equal(f.http.length,0);assert.equal(f.h.state().produced.size,0);assert.equal(one(f.sql.lookups).record,null);});
 test('slice independent: committed result lost ACK is read-recoverable but never automatically redispatched',async()=>{const f=await actionLookupSlice();loseLookupCommit(f,3);await assert.rejects(f.lookup(),e=>e.outcome==='UNKNOWN');assert.equal(one(f.sql.lookups).state,'RESULT');const out=await f.read();assert.equal(out.classification,'recommendations');assert.equal(out.resultSha256,canonicalSha256(out.observation));await assert.rejects(f.lookup(),/LOOKUP_REPLAY/);assert.equal(f.http.length,1);assert.equal(f.h.state().budget.consumed_micro_usd,'10');});
 test('slice independent: cancellation while marker commit acknowledgement parks prevents later settlement/result ports',async()=>{const f=await actionLookupSlice(),gate=f.h.parkCommit('marker'),signal=new AbortController();const pending=f.lookup(signal.signal);await gate.ready;signal.abort();await assert.rejects(pending,/CANCELLED/);gate.resume();await tick();await tick();assert.equal(f.http.length,1);assert.equal(one(f.h.state().reservations).state,'UNKNOWN');assert.equal(f.h.state().budget.consumed_micro_usd,'0');assert.equal(one(f.sql.lookups).record,null);assert.equal(f.sql.calls.some(c=>c.sql.includes("state='RESULT'")),false);});
+
+test('slice independent: scorer consumes actual denied recovered-read callback and exception, never a denial label alone',async()=>{
+ const f=await actionLookupSlice(),e=evaluation(f);await f.lookup();f.trace.length=0;f.h.f.state.revoked=true;const calls=f.sql.calls.length;
+ await assert.rejects(f.read(),error=>{e.o.failure={code:error.code,outcome:error.outcome};return error.code==='ACCESS_DENIED';});
+ e.o.authorization=f.trace.map(row=>({...clone(row),error:null}));e.o.traceSha256=canonicalSha256({authorization:e.o.authorization,failure:e.o.failure});
+ assert.equal(f.sql.calls.length,calls);assert.equal(f.http.length,1);assert.equal(one(f.h.state().reservations).state,'SETTLED');
+ const scored=scoreObservations(e.frozen,e.observed);assert.equal(scored.counts.passed,1);assert.equal(scored.qualification.runtimeQualified,false);assert.equal(scored.qualification.qualifiedRealRequests,0);
+ const noFailure=clone(e.observed);noFailure.observations[0].failure=null;assert.deepEqual(scoreObservations(e.frozen,noFailure).rows[0].reasons,['EVAL_DENIAL_NOT_OBSERVED']);
+ const noCallback=clone(e.observed);noCallback.observations[0].authorization=[];assert.deepEqual(scoreObservations(e.frozen,noCallback).rows[0].reasons,['EVAL_DENIAL_NOT_OBSERVED']);
+});
+test('slice independent: marker uncertainty remains a failed evaluation and retained liability, not a synthetic denied pass',async()=>{
+ const f=await actionLookupSlice(),e=evaluation(f);f.h.loseStage('marker');
+ await assert.rejects(f.lookup(),error=>{e.o.failure={code:error.code,outcome:error.outcome};return error.outcome==='UNKNOWN';});
+ e.o.status='failed';e.o.reason='ACTUAL_LOOKUP_OUTCOME_UNKNOWN';e.o.traceSha256=canonicalSha256({authorization:e.o.authorization,failure:e.o.failure});
+ assert.equal(one(f.h.state().reservations).state,'UNKNOWN');assert.equal(f.h.state().budget.consumed_micro_usd,'0');assert.equal(one(f.sql.lookups).record,null);
+ const scored=scoreObservations(e.frozen,e.observed);assert.equal(scored.counts.passed,0);assert.equal(scored.counts.failed,1);assert.equal(scored.qualification.runtimeQualified,false);
+ const relabelled=clone(e.observed);relabelled.observations[0].status='denied';assert.deepEqual(scoreObservations(e.frozen,relabelled).rows[0].reasons,['EVAL_DENIAL_NOT_OBSERVED']);
+ await assert.rejects(f.lookup(),/LOOKUP_REPLAY/);assert.equal(f.http.length,1);
+});
