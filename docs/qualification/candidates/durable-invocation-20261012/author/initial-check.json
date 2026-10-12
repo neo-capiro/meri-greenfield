@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "apps/gateway/test/tool-invocation-owner.test.mjs",
+    "apps/gateway/test/durable-tool-budget.test.mjs"
+  ],
+  "exit": 0,
+  "seconds": 1.773,
+  "processGroup": 98828,
+  "processGroupAbsent": true,
+  "native": false
+}
