@@ -107,6 +107,8 @@ export function createPublicWebValidators({validateShape, schema}) {
       if (page.results.length > input.limit) fail('Public-web result limit mismatch');
     } else {
       if (page.text.length > input.maxChars) fail('Public-web text limit mismatch');
+      if (page.truncated && (page.text.length !== input.maxChars ||
+          page.kind !== 'pdf' && !page.text.endsWith('...'))) fail('Public-web truncated prefix window mismatch');
       if (page.kind === 'pdf' && (page.truncated !== (page.totalChars > input.maxChars) ||
           !page.truncated && page.totalChars !== page.text.length)) fail('PDF truncation mismatch');
       // final URL can legitimately differ after redirects. Neither syntax nor

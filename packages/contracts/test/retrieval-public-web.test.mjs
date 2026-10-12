@@ -73,7 +73,7 @@ test('HTML exact untrusted owner, raw-byte hash syntax and coverage',()=>{
  for(const mutate of [p=>p.trust='trusted',p=>p.authoritativeOwner='tenant',p=>p.currentStatus='verified',p=>p.contentHash='A'.repeat(64),p=>p.contentHash='a'.repeat(63),p=>p.coverage.locator.characterEnd--,p=>p.coverage.locator.characterStart=1,p=>p.coverage.locator.url+='other',p=>p.coverage.complete=false,p=>p.coverage.truncated=true]){const p=html();mutate(p);assert.throws(()=>check(scrape,p));}
 });
 test('HTML truncated unknown totals and complete empty text remain distinct',()=>{
- check(scrape,html('',false));check(scrape,html('partial',true));
+ check(scrape,html('',false));check(scrape,html('x'.repeat(3997)+'...',true));
  const p=html('partial',true);p.totalChars=7;assert.throws(()=>check(scrape,p));const full=html();full.totalChars=null;assert.throws(()=>check(scrape,full));
 });
 test('HTML title is nullable unbounded source text, no invented title length limit',()=>{
@@ -99,7 +99,7 @@ test('PDF exact fields preserve zero pages and differ from HTML',()=>{
  const h=html();h.pages=0;assert.throws(()=>check(scrape,h));
 });
 test('PDF totalChars is full normalized extraction count, not displayed length when truncated',()=>{
- const p=pdf('partial',4001);check(scrape,p);assert.notEqual(p.totalChars,p.text.length);
+ const p=pdf('x'.repeat(3997)+'...',4001);check(scrape,p);assert.notEqual(p.totalChars,p.text.length);
  for(const mutate of [p=>p.totalChars=3,p=>p.truncated=false,p=>p.coverage.complete=true,p=>p.totalChars=4000]){const q=structuredClone(p);mutate(q);assert.throws(()=>check(scrape,q));}
  const full=pdf('partial',8);assert.throws(()=>check(scrape,full));
 });
