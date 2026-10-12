@@ -116,3 +116,9 @@ test('concurrent rejected delivery cannot steal pending call effect identity',as
   assert.equal(error?.code,'ARTIFACT_EFFECT_UNKNOWN');assert.equal(typeof error.versionId,'string');
   assert.equal(t.state.committed,0);assert.equal(t.state.generated,1);assert.equal(t.db.state().budget.consumed_micro_usd,'0');assert.equal(t.reservation().state,'UNKNOWN');
 });
+for(const phase of ['marker','settle'])test(`outer cancellation during ${phase} preserves already confirmed version commit`,async()=>{
+  const t=setup(),controller=new AbortController();await t.bind();const gate=t.db.parkCommit(phase),pending=t.owner().execute(t.call,t.db.credential,controller.signal);await gate.ready;controller.abort();
+  let error;try{await pending;}catch(e){error=e;}finally{gate.resume();await new Promise(resolve=>setImmediate(resolve));}
+  assert.equal(error?.code,'ARTIFACT_EFFECT_UNKNOWN');assert.equal(t.state.records.size,1);assert.equal(error.versionCommitted,true,'correlated commit ACK was already accepted before budget.settle');assert.equal(error.cause.message,'CANCELLED');
+  assert.equal(error.budgetSettlementUnknown,true);assert.equal((await t.owner().reconcileInvocation(t.call)).stage,'SETTLED');assert.equal(t.db.state().budget.consumed_micro_usd,'13');assert.equal(t.state.generated,1);
+});
