@@ -23,7 +23,7 @@ const ASOF = '2026-10-12T12:34:56.000Z';
 const options = () => ({ asOf: ASOF });
 const input = id => [OPS[0], OPS[3]].includes(id) ? { clientId: CLIENT } : { clientId: CLIENT, source: 'sam_gov', sourceRecordId: RECORD };
 const normalize = (id, value = input(id), context = options()) => family.normalizeFundingOpportunitiesInput(id, value, context);
-const envelope = (id, state = 'disabled', data = null) => ({ tool: id, state, explanation: 'Synthetic source refusal; no absence or current authority established.', asOf: ASOF, data });
+const envelope = (id, state = 'disabled', data = null) => ({ tool: id, state, explanation: state === 'denied' ? 'Not available for this client.' : 'Synthetic source refusal; no absence or current authority established.', asOf: ASOF, data });
 const output = (id, value, request = input(id), context = options()) => family.assertFundingOpportunitiesOutput(id, value, request, context);
 const clone = value => JSON.parse(JSON.stringify(value));
 
@@ -44,6 +44,7 @@ for (const id of OPS) {
     }
     assert.throws(() => output(id, envelope(id, 'available')));
     assert.throws(() => output(id, envelope(id, 'unavailable')));
+    assert.throws(() => output(id, { ...envelope(id, 'denied'), explanation: 'This client exists but has a private wall.' }));
     assert.throws(() => output(id, { ...envelope(id), complete: true }));
   });
   test(`${id}: exact operation and trusted instant binding`, () => {
@@ -218,4 +219,84 @@ test('client context keeps grant and contract collections separate and preserves
   row.humanDecision = { decision: 'monitor', reason: null, decidedAt: null, decidedByUserId: null, nextAction: null, nextActionDueAt: null };
   data.topContracts = [row]; assert.doesNotThrow(() => contextOutput(data));
   data.topGrants = [brief()]; assert.throws(() => contextOutput(data));
+});
+
+function facts(source = 'sam_gov') {
+  const sam = source === 'sam_gov';
+  return { ...brief(source), clientId: CLIENT, sourceReference: null, subAgency: null, office: null, status: null, kindRaw: null, baseKind: null, closeOrArchiveDate: null, postedDate: null,
+    summary: 'A😀B', summaryIsLink: false, naicsCodes: [], pscCodes: [], setAside: null, setAsideCode: null, setAsideDescription: null, eligibleApplicantTypes: [], fundingInstrument: null, category: null, assistanceListings: [],
+    grantFunding: sam ? null : { estimatedProgramFunding: 1000000.25, awardFloor: 1000, awardCeiling: 25000.75, expectedAwardCount: null, costSharingRequired: null },
+    contractValue: sam ? { estimatedValue: null, basis: 'not_stated_by_source' } : null,
+    placeOfPerformance: null, acquisitionPosition: null, missingProfileFields: null, matchedSignals: [], districtKey: null, districtBasis: null,
+    evidence: { recordRef: `${source}:${RECORD}`, recommendationConfidence: null, confidenceMeaning: 'Canonical recommendation evidence quality, not likelihood of winning or verified eligibility.', disqualifiers: [],
+      missingFields: ['sourceUrl', 'sourceUpdatedAt', 'responseDeadline', 'placeOfPerformance', ...(!sam ? ['eligibleApplicantTypes'] : [])], requirements: { state: sam ? 'not_requested' : 'notice_body', tool: sam ? OPS[1] : OPS[2] } },
+    summaryRead: { state: 'available', offset: 0, totalCharacters: 4, returnedCharacters: 4, truncated: false, nextOffset: null, sourceUpdatedAt: null } };
+}
+function detailOutput(data, request = input(OPS[2])) { return output(OPS[2], envelope(OPS[2], 'available', data), request); }
+function searchData(rows = []) {
+  const criteria = { schemaVersion: 2, mode: 'matched', clientId: CLIENT, query: '', sources: ['grants_gov', 'sam_gov'], types: [], lifecycle: ['active'], deadlineWindow: 'any', deadlineFrom: null, deadlineTo: null, sort: 'deadline', direction: 'asc', page: 1, pageSize: 5 };
+  for (const key of ['agencies','sectors','naicsCodes','pscCodes','setAsideCodes','eligibility','posted','geography','applicantTypes','funding','costShare','methods','disbursement','grantPrerequisites','codes']) criteria[key] = [];
+  return { clientId: CLIENT, counts: counts(), freshness: [], emptyReason: null, emptyExplanation: null, missingProfileFields: null, criteria, total: rows.length, totalIsCapped: false, page: 1, pageSize: 5,
+    generatedAt: '2026-10-12T12:34:58.000Z', opportunities: rows, hasMore: false, nextPage: null,
+    coverage: { sources: ['grants_gov', 'sam_gov'], pageCoversMatchedResults: false, totalIsCapped: false, explanation: 'Synthetic queried scope only.', procurementForecasts: { state: 'separate_tool', tool: 'search_procurement_forecasts' } } };
+}
+function searchOutput(data, request = input(OPS[0])) { return output(OPS[0], envelope(OPS[0], 'available', data), request); }
+
+test('detail binds exact client/source/record and disclosed source update identity', () => {
+  const data = facts(); assert.doesNotThrow(() => detailOutput(data));
+  for (const patch of [{ clientId: RECORD }, { ref: { source: 'sam_gov', sourceRecordId: CLIENT } }, { sourceUpdatedAt: ASOF }]) assert.throws(() => detailOutput({ ...data, ...patch }));
+  assert.throws(() => detailOutput({ ...data, rawProviderPayload: {} }));
+});
+test('detail UTF-16 paging and beyond-end clamp preserve the original full text length', () => {
+  const data = facts(); data.summary = '😀'; data.summaryRead = { ...data.summaryRead, offset: 1, returnedCharacters: 2, truncated: true, nextOffset: 3 };
+  assert.doesNotThrow(() => detailOutput(data, { ...input(OPS[2]), summaryOffset: 1, summaryLimit: 2 }));
+  data.summaryRead.returnedCharacters = 1; assert.throws(() => detailOutput(data, { ...input(OPS[2]), summaryOffset: 1, summaryLimit: 2 }));
+  data.summary = ''; data.summaryRead = { ...data.summaryRead, offset: 4, returnedCharacters: 0, truncated: true, nextOffset: null };
+  assert.doesNotThrow(() => detailOutput(data, { ...input(OPS[2]), summaryOffset: 100 }));
+  data.summaryRead.offset = 100; assert.throws(() => detailOutput(data, { ...input(OPS[2]), summaryOffset: 100 }));
+});
+test('detail grant program totals and individual ceilings stay distinct from contract estimates', () => {
+  const grant = facts('grants_gov'), request = { ...input(OPS[2]), source: 'grants_gov' };
+  assert.doesNotThrow(() => detailOutput(grant, request));
+  assert.notEqual(grant.grantFunding.estimatedProgramFunding, grant.grantFunding.awardCeiling);
+  grant.contractValue = { estimatedValue: 25000.75, basis: 'source_backed' }; assert.throws(() => detailOutput(grant, request));
+  const contract = facts(); contract.grantFunding = facts('grants_gov').grantFunding; assert.throws(() => detailOutput(contract));
+  contract.grantFunding = null; contract.contractValue.estimatedValue = 0; assert.throws(() => detailOutput(contract));
+  contract.contractValue.basis = 'source_backed'; assert.doesNotThrow(() => detailOutput(contract));
+});
+test('detail missing facts and eligibility evidence cannot be promoted to verified eligibility or win likelihood', () => {
+  const data = facts(); data.eligibility = { state: 'ineligible', reason: 'Synthetic canonical restriction.' };
+  assert.throws(() => detailOutput(data));
+  data.evidence.disqualifiers = [{ basis: 'canonical_eligibility', reason: data.eligibility.reason }]; assert.doesNotThrow(() => detailOutput(data));
+  data.evidence.disqualifiers[0].reason = 'Unrelated reason'; assert.throws(() => detailOutput(data));
+  const absent = facts(); absent.evidence.missingFields.pop(); assert.throws(() => detailOutput(absent));
+  const promoted = facts(); promoted.evidence.confidenceMeaning = 'Verified eligibility and predicted award likelihood.'; assert.throws(() => detailOutput(promoted));
+});
+test('search successful raw projection uses its own generation clock and exact request criteria', () => {
+  const data = searchData([facts()]); assert.doesNotThrow(() => searchOutput(data));
+  assert.notEqual(data.generatedAt, ASOF);
+  for (const patch of [{ clientId: RECORD }, { query: 'hidden filter' }, { sources: ['sam_gov'] }, { lifecycle: ['closed'] }, { agencies: ['agency'] }, { queryMatch: 'keywords' }]) {
+    assert.throws(() => searchOutput({ ...data, criteria: { ...data.criteria, ...patch } }));
+  }
+  const alien = clone(data); alien.opportunities[0].clientId = RECORD; assert.throws(() => searchOutput(alien));
+});
+test('search effective page10000 binds after shared clamp and can report nextPage10001', () => {
+  const data = searchData(); data.page = data.criteria.page = 10000; data.total = 50001; data.hasMore = true; data.nextPage = 10001;
+  assert.doesNotThrow(() => searchOutput(data, { clientId: CLIENT, page: 100000 }));
+  data.criteria.page = 100000; assert.throws(() => searchOutput(data, { clientId: CLIENT, page: 100000 }));
+});
+test('search five-row cap, null totals and truncation do not imply complete source coverage', () => {
+  const data = searchData(Array.from({ length: 5 }, () => facts())); data.total = null; data.hasMore = true; data.nextPage = 2;
+  assert.doesNotThrow(() => searchOutput(data));
+  data.coverage.pageCoversMatchedResults = true; assert.throws(() => searchOutput(data));
+  data.coverage.pageCoversMatchedResults = false; data.opportunities.push(facts()); assert.throws(() => searchOutput(data));
+  const capped = searchData(); capped.totalIsCapped = capped.coverage.totalIsCapped = true; capped.coverage.pageCoversMatchedResults = true;
+  assert.throws(() => searchOutput(capped));
+});
+test('context asOf is an inert exact input, not a getter, inherited value or model-selected timestamp', () => {
+  let hits = 0; const context = {};
+  Object.defineProperty(context, 'asOf', { enumerable: true, get() { hits++; return ASOF; } });
+  assert.throws(() => normalize(OPS[0], input(OPS[0]), context)); assert.equal(hits, 0);
+  assert.throws(() => normalize(OPS[0], input(OPS[0]), Object.create({ asOf: ASOF })));
+  assert.throws(() => normalize(OPS[0], input(OPS[0]), { asOf: ASOF, authorized: true }));
 });
