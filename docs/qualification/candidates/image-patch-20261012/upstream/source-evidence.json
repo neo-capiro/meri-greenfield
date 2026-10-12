@@ -1,0 +1,90 @@
+{
+  "base": {
+    "commit": "90b4dc8472da13cdee9f49cdc0b4c8306ecbdc73",
+    "tree": "1f6ac35ad37531e790c2a19c9e310c7e618e6522"
+  },
+  "canonicalRegistryChange": false,
+  "oldImageDigest": "sha256:8d1ec09aa78f47a11019089dacde93289fc66a39f55bd4357e59eeb25d9b52ac",
+  "oldImageLaunch": "FORBIDDEN",
+  "preservedSources": [
+    {
+      "bytes": 6582,
+      "commit": "90b4dc8472da13cdee9f49cdc0b4c8306ecbdc73",
+      "path": "AGENTS.md",
+      "sha256": "a0650949b74e5aee709bd8b3c9d480f95f5b898778ac8f7b3927eb54b141437a"
+    },
+    {
+      "bytes": 11082,
+      "commit": "90b4dc8472da13cdee9f49cdc0b4c8306ecbdc73",
+      "path": "docs/IMPLEMENTATION-STANDARDS.md",
+      "sha256": "d4f10f964ee207187abacd967649a1cfc9bdd468072dc01f859268f08b719959"
+    },
+    {
+      "bytes": 86848,
+      "commit": "90b4dc8472da13cdee9f49cdc0b4c8306ecbdc73",
+      "path": "docs/plans/MERI-DEPLOYMENT.md",
+      "sha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388"
+    },
+    {
+      "bytes": 8930,
+      "commit": "90b4dc8472da13cdee9f49cdc0b4c8306ecbdc73",
+      "path": "docs/COMPONENTS.md",
+      "sha256": "d41dae59bf7b350a3a2c8c95bad55a3f571e1220060bea3f52798f8f9f98f3a7"
+    },
+    {
+      "bytes": 18786,
+      "commit": "90b4dc8472da13cdee9f49cdc0b4c8306ecbdc73",
+      "path": "apps/worker/qualification/Dockerfile",
+      "sha256": "3f86ae7ca55e8bbfb2814f1b335b7df8159daf9b5008df60f1165ba879c40f36"
+    },
+    {
+      "bytes": 36019,
+      "commit": "90b4dc8472da13cdee9f49cdc0b4c8306ecbdc73",
+      "path": "apps/worker/qualification/component-pins.json",
+      "sha256": "2f2c5d52fbee23bbdb206456235664b9dbbdf5c3526ccc065d499ed0a61f5aed"
+    },
+    {
+      "bytes": 17854,
+      "commit": "90b4dc8472da13cdee9f49cdc0b4c8306ecbdc73",
+      "path": "docs/coordination/reports/CODEX-IMAGE-REMEDIATION-20261011.md",
+      "sha256": "98b4b885a22251329e24427920f2180e678257194437311c478632672dcf73ff"
+    },
+    {
+      "bytes": 49134,
+      "commit": "90b4dc8472da13cdee9f49cdc0b4c8306ecbdc73",
+      "path": "docs/coordination/reports/W02-08-VENDOR-COMPARISON.json",
+      "sha256": "1462261eeccc1d79ae52e8e1c2e41a03bbd1881d3ad3e0e873fed70e84c57735"
+    },
+    {
+      "bytes": 22464,
+      "commit": "90b4dc8472da13cdee9f49cdc0b4c8306ecbdc73",
+      "path": "docs/coordination/reports/CODEX-G1-SDK-SECURITY-ADMISSION-DISCOVERY.md",
+      "sha256": "80d82fc0cf6e8f40987099734741ffaf25a4789de26245376c14eca6d6e61e69"
+    },
+    {
+      "bytes": 6948,
+      "commit": "90b4dc8472da13cdee9f49cdc0b4c8306ecbdc73",
+      "path": "docs/qualification/candidates/critical-applicability-20261012/official-observations.json",
+      "sha256": "33a09e064cbc2da5ff7e80709e29b891e37d689f9556f95478b37784f38d98ef"
+    },
+    {
+      "bytes": 1815,
+      "commit": "90b4dc8472da13cdee9f49cdc0b4c8306ecbdc73",
+      "path": "docs/qualification/candidates/critical-applicability-20261012/applicability-proposals.json",
+      "sha256": "4be6d2fe6d9c45ed59eaa9bd2023306e56e143b29eb95577166eb3a2551ae7e5"
+    },
+    {
+      "bytes": 59680,
+      "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+      "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+    },
+    {
+      "bytes": 66474,
+      "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+      "path": "docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json",
+      "sha256": "b32216ba93c2ce480fb1cc9d44d6f738f4279b10410fce294cf6c3e7de6fbcd6"
+    }
+  ],
+  "sourceFilesChanged": false
+}
