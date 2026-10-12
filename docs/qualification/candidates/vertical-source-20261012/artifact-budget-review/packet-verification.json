@@ -1,0 +1,197 @@
+{
+  "checks": 47,
+  "passed": 47,
+  "failed": 0,
+  "rows": [
+    {
+      "path": "apps/artifacts/test/postgres-service-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-ARTIFACT-BUDGET-REVIEW-20261012.md",
+      "pass": true
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-ARTIFACT-BUDGET-REVIEW-20261012.md",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/audit-final.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/audit.py",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/authored-whitespace.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/baseline.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/boundary-before-independent.test.mjs.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/boundary-before.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/boundary-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/boundary-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation-facts.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation-facts.stderr.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation-facts.stdout.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation-finding.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation-independent.test.mjs.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation-postgres-service.mjs.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation.stderr.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cancellation.stdout.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/cleanup.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/concurrency-fixture-correction.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/final.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/final.stderr.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/final.stdout.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/first-fixture-correction.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/first-independent.test.mjs.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/first.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/first.stderr.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/first.stdout.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/repaired.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/setup-notes.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/source-preservation.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/verify-packet.py",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/version-ack-before-postgres-service.mjs.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/version-ack-before.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/version-ack-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/version-ack-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/version-ack-finding.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/whitespace.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/whitespace.stderr.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review/whitespace.stdout.bin",
+      "pass": true
+    },
+    {
+      "path": "apps/artifacts/postgres-service.mjs",
+      "pass": true
+    },
+    {
+      "path": "apps/artifacts/test/artifact-postgres-service.test.mjs",
+      "pass": true
+    }
+  ],
+  "source": "a73b65dc05b7554c0592bec22d940ef781344dd6",
+  "manifestSha256": "8183c0c16a416f33adf456481be68575fc616678cc05d39f2194375e3ed7db81"
+}
