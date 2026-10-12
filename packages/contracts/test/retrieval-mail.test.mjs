@@ -133,7 +133,7 @@ test('concrete catalog preserves every ledger ID/boundary and fourteen unavailab
   const ledger=JSON.parse(readFileSync(new URL('../../../docs/coordination/r2/capabilities.json',import.meta.url)));
   assert.deepEqual(c.originals.map(({id,disposition,boundary})=>({id,disposition,boundary})),ledger.records.map(r=>({id:r.fields.ID,disposition:r.acceptedScope.disposition,boundary:r.acceptedScope.boundary})));
   assert.equal(c.originals.length,139);assert.equal(c.originals.filter(r=>r.disposition==='selected').length,96);assert.equal(c.originals.filter(r=>r.disposition==='deferred').length,43);
-  assert.equal(c.operations.length,63);assert.equal(c.originals.filter(r=>r.state==='mapped').length,62);
+  assert.equal(c.operations.length,67);assert.equal(c.originals.filter(r=>r.state==='mapped').length,66);
   assert.deepEqual(c.originals.filter(r=>r.state==='mapped' && ['list_emails','search_emails','get_email_thread'].includes(r.id)).map(r=>r.id),['list_emails','search_emails','get_email_thread']);
   assert.equal(c.operations[0].availability,'unimplemented');assert.equal(c.operations[0].qualification,'pending');assert.equal(c.operations[0].handler,null);
 });

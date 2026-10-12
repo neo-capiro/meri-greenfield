@@ -1,0 +1,632 @@
+{
+  "passed": 151,
+  "failed": 0,
+  "baseOriginalFiles": 6528,
+  "sourceFreeze": "dabe2b50d94f0b12ef983292a1c18e1ef35d4675",
+  "sourceFiles": [
+    {
+      "path": "packages/contracts/retrieval-0.2/florida-budget.schema.json",
+      "bytes": 10656,
+      "sha256": "338f182a21716ec38778d8728509f87ed9fbaaf82c70d29ee7d3297e1673f8db",
+      "blob": "a64b15509a795685c625fd9709b37ae6c70842d9"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/florida-budget-validation.mjs",
+      "bytes": 7290,
+      "sha256": "386e8ccde7b2cdbba9743e2f6d0218ff8ef3d8b54d2364b5b7d4861ae387b9eb",
+      "blob": "91af87c65481cfbdf405206dbb487efdfed337a1"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-florida-budget.test.mjs",
+      "bytes": 18156,
+      "sha256": "fce74bf830de78ea0e42e76aa2e090b8060742c4eb9d63c59dda5fe208ed086e",
+      "blob": "edc58370bcfb81ab9166f5199ad95767f5e7cbc1"
+    }
+  ],
+  "checks": [
+    {
+      "check": "apps/api/src/meri/meri-tools.service.ts frozen bytes/hash",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-tools.service.ts frozen blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-tools.service.ts observed bytes/hash",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-tools.service.ts observed blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-tools.service.ts no drift",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/keywords/keyword-meri.controller.ts frozen bytes/hash",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/keywords/keyword-meri.controller.ts frozen blob",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/keywords/keyword-meri.controller.ts observed bytes/hash",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/keywords/keyword-meri.controller.ts observed blob",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/keywords/keyword-meri.controller.ts no drift",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/editorial/evidence.service.ts frozen bytes/hash",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/editorial/evidence.service.ts frozen blob",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/editorial/evidence.service.ts observed bytes/hash",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/editorial/evidence.service.ts observed blob",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/editorial/evidence.service.ts no drift",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/research/research.service.ts frozen bytes/hash",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/research/research.service.ts frozen blob",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/research/research.service.ts observed bytes/hash",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/research/research.service.ts observed blob",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/research/research.service.ts no drift",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/reports/report.service.ts frozen bytes/hash",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/reports/report.service.ts frozen blob",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/reports/report.service.ts observed bytes/hash",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/reports/report.service.ts observed blob",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/reports/report.service.ts no drift",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/folders/folder-tracker.service.ts frozen bytes/hash",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/folders/folder-tracker.service.ts frozen blob",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/folders/folder-tracker.service.ts observed bytes/hash",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/folders/folder-tracker.service.ts observed blob",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/folders/folder-tracker.service.ts no drift",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/keywords/internal-workflow.controller.ts frozen bytes/hash",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/keywords/internal-workflow.controller.ts frozen blob",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/keywords/internal-workflow.controller.ts observed bytes/hash",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/keywords/internal-workflow.controller.ts observed blob",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/keywords/internal-workflow.controller.ts no drift",
+      "pass": true
+    },
+    {
+      "check": "apps/api/prisma/migrations/20280914030000_legiwatch_news_fiscal/migration.sql frozen bytes/hash",
+      "pass": true
+    },
+    {
+      "check": "apps/api/prisma/migrations/20280914030000_legiwatch_news_fiscal/migration.sql frozen blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/prisma/migrations/20280914030000_legiwatch_news_fiscal/migration.sql observed bytes/hash",
+      "pass": true
+    },
+    {
+      "check": "apps/api/prisma/migrations/20280914030000_legiwatch_news_fiscal/migration.sql observed blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/prisma/migrations/20280914030000_legiwatch_news_fiscal/migration.sql no drift",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/prisma/migrations/20260914030000_legiwatch_news_editorial/migration.sql frozen bytes/hash",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/prisma/migrations/20260914030000_legiwatch_news_editorial/migration.sql frozen blob",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/prisma/migrations/20260914030000_legiwatch_news_editorial/migration.sql observed bytes/hash",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/prisma/migrations/20260914030000_legiwatch_news_editorial/migration.sql observed blob",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/prisma/migrations/20260914030000_legiwatch_news_editorial/migration.sql no drift",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/legiwatch-phase8.ts frozen bytes/hash",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/legiwatch-phase8.ts frozen blob",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/legiwatch-phase8.ts observed bytes/hash",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/legiwatch-phase8.ts observed blob",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/legiwatch-phase8.ts no drift",
+      "pass": true
+    },
+    {
+      "check": "apps/api/prisma/schema.prisma frozen bytes/hash",
+      "pass": true
+    },
+    {
+      "check": "apps/api/prisma/schema.prisma frozen blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/prisma/schema.prisma observed bytes/hash",
+      "pass": true
+    },
+    {
+      "check": "apps/api/prisma/schema.prisma observed blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/prisma/schema.prisma no drift",
+      "pass": true
+    },
+    {
+      "check": "eleven independently repinned source pairs",
+      "pass": true
+    },
+    {
+      "check": "exact source freeze packages/contracts/retrieval-0.2/florida-budget.schema.json",
+      "pass": true
+    },
+    {
+      "check": "exact source freeze packages/contracts/retrieval-0.2/florida-budget-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact source freeze packages/contracts/test/retrieval-florida-budget.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "all tracked changes are additions in allocated paths",
+      "pass": true
+    },
+    {
+      "check": "all untracked changes are allocated evidence",
+      "pass": true
+    },
+    {
+      "check": "every original tracked file unchanged",
+      "pass": true
+    },
+    {
+      "check": "original test prefix preserved after exact fixture and two assertion corrections",
+      "pass": true
+    },
+    {
+      "check": "unchanged regression client UUID identity survives",
+      "pass": true
+    },
+    {
+      "check": "unchanged regression validated Florida output is detached",
+      "pass": true
+    },
+    {
+      "check": "focused-initial expected exit",
+      "pass": true
+    },
+    {
+      "check": "focused-initial clean source capture",
+      "pass": true
+    },
+    {
+      "check": "focused-initial bounded cleanup",
+      "pass": true
+    },
+    {
+      "check": "focused-initial current group absent",
+      "pass": true
+    },
+    {
+      "check": "focused-initial .bin stream hash",
+      "pass": true
+    },
+    {
+      "check": "focused-initial .bin stream hash",
+      "pass": true
+    },
+    {
+      "check": "focused-binding-repair expected exit",
+      "pass": true
+    },
+    {
+      "check": "focused-binding-repair clean source capture",
+      "pass": true
+    },
+    {
+      "check": "focused-binding-repair bounded cleanup",
+      "pass": true
+    },
+    {
+      "check": "focused-binding-repair current group absent",
+      "pass": true
+    },
+    {
+      "check": "focused-binding-repair .bin stream hash",
+      "pass": true
+    },
+    {
+      "check": "focused-binding-repair .bin stream hash",
+      "pass": true
+    },
+    {
+      "check": "client-cutoff-before expected exit",
+      "pass": true
+    },
+    {
+      "check": "client-cutoff-before clean source capture",
+      "pass": true
+    },
+    {
+      "check": "client-cutoff-before bounded cleanup",
+      "pass": true
+    },
+    {
+      "check": "client-cutoff-before current group absent",
+      "pass": true
+    },
+    {
+      "check": "client-cutoff-before .bin stream hash",
+      "pass": true
+    },
+    {
+      "check": "client-cutoff-before .bin stream hash",
+      "pass": true
+    },
+    {
+      "check": "focused-client-repair expected exit",
+      "pass": true
+    },
+    {
+      "check": "focused-client-repair clean source capture",
+      "pass": true
+    },
+    {
+      "check": "focused-client-repair bounded cleanup",
+      "pass": true
+    },
+    {
+      "check": "focused-client-repair current group absent",
+      "pass": true
+    },
+    {
+      "check": "focused-client-repair .bin stream hash",
+      "pass": true
+    },
+    {
+      "check": "focused-client-repair .bin stream hash",
+      "pass": true
+    },
+    {
+      "check": "output-alias-before expected exit",
+      "pass": true
+    },
+    {
+      "check": "output-alias-before clean source capture",
+      "pass": true
+    },
+    {
+      "check": "output-alias-before bounded cleanup",
+      "pass": true
+    },
+    {
+      "check": "output-alias-before current group absent",
+      "pass": true
+    },
+    {
+      "check": "output-alias-before .bin stream hash",
+      "pass": true
+    },
+    {
+      "check": "output-alias-before .bin stream hash",
+      "pass": true
+    },
+    {
+      "check": "focused-output-repair expected exit",
+      "pass": true
+    },
+    {
+      "check": "focused-output-repair clean source capture",
+      "pass": true
+    },
+    {
+      "check": "focused-output-repair bounded cleanup",
+      "pass": true
+    },
+    {
+      "check": "focused-output-repair current group absent",
+      "pass": true
+    },
+    {
+      "check": "focused-output-repair .bin stream hash",
+      "pass": true
+    },
+    {
+      "check": "focused-output-repair .bin stream hash",
+      "pass": true
+    },
+    {
+      "check": "focused-definition-alignment expected exit",
+      "pass": true
+    },
+    {
+      "check": "focused-definition-alignment clean source capture",
+      "pass": true
+    },
+    {
+      "check": "focused-definition-alignment bounded cleanup",
+      "pass": true
+    },
+    {
+      "check": "focused-definition-alignment current group absent",
+      "pass": true
+    },
+    {
+      "check": "focused-definition-alignment .bin stream hash",
+      "pass": true
+    },
+    {
+      "check": "focused-definition-alignment .bin stream hash",
+      "pass": true
+    },
+    {
+      "check": "minimal copied dependency ajv",
+      "pass": true
+    },
+    {
+      "check": "minimal copied dependency ajv-formats",
+      "pass": true
+    },
+    {
+      "check": "minimal copied dependency canonicalize",
+      "pass": true
+    },
+    {
+      "check": "minimal copied dependency fast-uri",
+      "pass": true
+    },
+    {
+      "check": "minimal copied dependency fast-deep-equal",
+      "pass": true
+    },
+    {
+      "check": "minimal copied dependency json-schema-traverse",
+      "pass": true
+    },
+    {
+      "check": "minimal copied dependency require-from-string",
+      "pass": true
+    },
+    {
+      "check": "packet docs/coordination/reports/CODEX-FLORIDA-BUDGET-AUTHOR-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "packet docs/qualification/candidates/read-continuation-20261012/florida-budget-author/audit.py",
+      "pass": true
+    },
+    {
+      "check": "packet docs/qualification/candidates/read-continuation-20261012/florida-budget-author/authored-whitespace-check.json",
+      "pass": true
+    },
+    {
+      "check": "packet docs/qualification/candidates/read-continuation-20261012/florida-budget-author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "check": "packet docs/qualification/candidates/read-continuation-20261012/florida-budget-author/client-cutoff-before.json",
+      "pass": true
+    },
+    {
+      "check": "packet docs/qualification/candidates/read-continuation-20261012/florida-budget-author/client-cutoff-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet docs/qualification/candidates/read-continuation-20261012/florida-budget-author/client-cutoff-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "packet docs/qualification/candidates/read-continuation-20261012/florida-budget-author/dependency-provenance.json",
+      "pass": true
+    },
+    {
+      "check": "packet docs/qualification/candidates/read-continuation-20261012/florida-budget-author/failure-notes.json",
+      "pass": true
+    },
+    {
+      "check": "packet docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-binding-repair.json",
+      "pass": true
+    },
+    {
+      "check": "packet docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-binding-repair.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-binding-repair.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "packet docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-client-repair.json",
+      "pass": true
+    },
+    {
+      "check": "packet docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-client-repair.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-client-repair.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "packet docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-definition-alignment.json",
+      "pass": true
+    },
+    {
+      "check": "packet docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-definition-alignment.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-definition-alignment.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "packet docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-initial.json",
+      "pass": true
+    },
+    {
+      "check": "packet docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "packet docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-output-repair.json",
+      "pass": true
+    },
+    {
+      "check": "packet docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-output-repair.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-output-repair.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "packet docs/qualification/candidates/read-continuation-20261012/florida-budget-author/outline.json",
+      "pass": true
+    },
+    {
+      "check": "packet docs/qualification/candidates/read-continuation-20261012/florida-budget-author/output-alias-before.json",
+      "pass": true
+    },
+    {
+      "check": "packet docs/qualification/candidates/read-continuation-20261012/florida-budget-author/output-alias-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet docs/qualification/candidates/read-continuation-20261012/florida-budget-author/output-alias-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "packet docs/qualification/candidates/read-continuation-20261012/florida-budget-author/reference-identities.json",
+      "pass": true
+    },
+    {
+      "check": "packet docs/qualification/candidates/read-continuation-20261012/florida-budget-author/source-audit-bbc823e.json",
+      "pass": true
+    },
+    {
+      "check": "packet docs/qualification/candidates/read-continuation-20261012/florida-budget-author/source-audit.json",
+      "pass": true
+    },
+    {
+      "check": "packet docs/qualification/candidates/read-continuation-20261012/florida-budget-author/whitespace-check.json",
+      "pass": true
+    },
+    {
+      "check": "packet docs/qualification/candidates/read-continuation-20261012/florida-budget-author/whitespace-check.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet docs/qualification/candidates/read-continuation-20261012/florida-budget-author/whitespace-check.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "packet packages/contracts/retrieval-0.2/florida-budget-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "packet packages/contracts/retrieval-0.2/florida-budget.schema.json",
+      "pass": true
+    },
+    {
+      "check": "packet packages/contracts/test/retrieval-florida-budget.test.mjs",
+      "pass": true
+    }
+  ]
+}

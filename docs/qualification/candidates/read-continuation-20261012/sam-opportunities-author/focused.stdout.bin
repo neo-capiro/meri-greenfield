@@ -1,0 +1,32 @@
+/workspace/meri-read-continuation-20261012/packages/contracts/node_modules/ajv/dist/compile/util.js:174
+        throw new Error(msg);
+              ^
+
+Error: strict mode: "prefixItems" is 2-tuple, but minItems or maxItems/items are not specified or different at path "#/properties/notes"
+    at checkStrictMode (/workspace/meri-read-continuation-20261012/packages/contracts/node_modules/ajv/dist/compile/util.js:174:15)
+    at checkStrictTuple (/workspace/meri-read-continuation-20261012/packages/contracts/node_modules/ajv/dist/vocabularies/applicator/items.js:46:40)
+    at validateTuple (/workspace/meri-read-continuation-20261012/packages/contracts/node_modules/ajv/dist/vocabularies/applicator/items.js:24:5)
+    at Object.code (/workspace/meri-read-continuation-20261012/packages/contracts/node_modules/ajv/dist/vocabularies/applicator/prefixItems.js:9:46)
+    at keywordCode (/workspace/meri-read-continuation-20261012/packages/contracts/node_modules/ajv/dist/compile/validate/index.js:464:13)
+    at /workspace/meri-read-continuation-20261012/packages/contracts/node_modules/ajv/dist/compile/validate/index.js:222:17
+    at CodeGen.code (/workspace/meri-read-continuation-20261012/packages/contracts/node_modules/ajv/dist/compile/codegen/index.js:439:13)
+    at CodeGen.block (/workspace/meri-read-continuation-20261012/packages/contracts/node_modules/ajv/dist/compile/codegen/index.js:568:18)
+    at iterateKeywords (/workspace/meri-read-continuation-20261012/packages/contracts/node_modules/ajv/dist/compile/validate/index.js:219:9)
+    at groupKeywords (/workspace/meri-read-continuation-20261012/packages/contracts/node_modules/ajv/dist/compile/validate/index.js:200:13)
+
+Node.js v24.19.0
+✖ packages/contracts/test/retrieval-sam-opportunities.test.mjs (127.216436ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 134.525091
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-sam-opportunities.test.mjs:1:1
+✖ packages/contracts/test/retrieval-sam-opportunities.test.mjs (127.216436ms)
+  'test failed'

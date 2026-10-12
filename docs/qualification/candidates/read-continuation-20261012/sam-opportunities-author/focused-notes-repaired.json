@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-sam-opportunities.test.mjs"
+  ],
+  "cwd": "/workspace/meri-sam-opportunities-20261012",
+  "sourceHead": "02bac2139b13dec288b5ca2c19edc3be85e2c6b2",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T18:55:33.382227+00:00",
+  "durationSeconds": 0.316,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 261000,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused-notes-repaired.stdout.bin",
+      "bytes": 2850,
+      "sha256": "207ff92a7ec2fb82829eb5d4ad6c02753fb5211bc56dc497538e748045adf50f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused-notes-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Preserved strict-Ajv variable-tuple compilation failure; represent same two exact note arrays with enum, test fixture lookup updated, assertions unchanged.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,151 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "base": "c1c9bfde7dd466a0474589a224a99b44277adbc9",
+  "source": "dabe2b50d94f0b12ef983292a1c18e1ef35d4675",
+  "authorPacket": "e37a72402f8b4b7167e7efac9c4845caf5acef07",
+  "exclusions": [
+    "manifest.json self-reference"
+  ],
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-FLORIDA-BUDGET-REVIEW-20261012.md",
+      "bytes": 6349,
+      "sha256": "9f4aa21194428870a70e0a89cd1620d7e5bafc44b8cb8839974f5808455f6aa1"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-florida-budget-independent.test.mjs",
+      "bytes": 12326,
+      "sha256": "c65de8cb9815b1198cabf952b350333d0caccc6fa8c6f739f2b08c8d5bbb83db"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/.gitattributes",
+      "bytes": 50,
+      "sha256": "1bee6826ab8565b1a50079d470700a548e73e2363ea12450cf37ea13454b9eba"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/audit.json",
+      "bytes": 7571,
+      "sha256": "08056f19c729b52de38ab15615d471eed11f8bf2f1c5b2ab56d8d7e848ec7c2a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/audit.py",
+      "bytes": 4002,
+      "sha256": "c41f9ab5ba42f6222b4747b885b8a5537d00eb411db8071a9ff6daa2bd5298a4"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/criteria.md",
+      "bytes": 4056,
+      "sha256": "7981859189e62c7cdafebaf3ef1d296bace7728e50809cb3fff9d9395548c356"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/dependencies.json",
+      "bytes": 1615,
+      "sha256": "f2fbbb5f1ea6ca83aa2a56e2cef1d0e93090927da179c5daaee2aa58efcf2e08"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/final-focused.json",
+      "bytes": 1384,
+      "sha256": "c5e1faba0c8e4184695d3a3f8fbcbe00c923d9ff05287f4c07ddb932657c068c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/final-focused.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/final-focused.stdout.bin",
+      "bytes": 5162,
+      "sha256": "ecda800a240d898225894e8b8982c80179f51e155cfa1d5fe71c8408e3936ed3"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/independent-before-repair.json",
+      "bytes": 1340,
+      "sha256": "e4c39b6665fd7bbecc7fbb1a9771225351e9f50e128af7d51bff0f999b5b99eb"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/independent-before-repair.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/independent-before-repair.stdout.bin",
+      "bytes": 5422,
+      "sha256": "ed265ffdb9b2b7380e5284d73e09a6332549e03a6d6dd5ab68a137593af67924"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/initial-control-identities.json",
+      "bytes": 959,
+      "sha256": "55460ada697acbff0a33798637d8f6c343d3088941da7a2da154f521526eebb1"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/initial-controls.test.mjs",
+      "bytes": 12321,
+      "sha256": "3eb05f90ef8b71f9c12e0e44223a7e39cf1a0768597484851e50677fcaed7ad6"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/initial-source/florida-budget-validation.mjs",
+      "bytes": 7112,
+      "sha256": "5d4722a7c45ea59aa78335d738db3b2c641d173537f0c9702e89cc9f5c653980"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/initial-source/florida-budget.schema.json",
+      "bytes": 10656,
+      "sha256": "338f182a21716ec38778d8728509f87ed9fbaaf82c70d29ee7d3297e1673f8db"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/packet-audit.json",
+      "bytes": 10520,
+      "sha256": "8953aea0d9bd190604c34b4ae13c06ad333ff39259f02fd6857a708ba5fd98ab"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/packet-audit.py",
+      "bytes": 3791,
+      "sha256": "d69ede6ebefc6d89ba28cfaadc373e230706706387797817132b531170e70d44"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/packet-verification.json",
+      "bytes": 1341,
+      "sha256": "9605d84c69403b8295d67e9a9fea0e1f9dd0919f0a5743825da181025502164a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/packet-verification.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/packet-verification.stdout.bin",
+      "bytes": 115,
+      "sha256": "480de2951b2443a313f9c484d618aa707c21ed918ac0d7edb335f6009b355b5b"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/reference-identities.json",
+      "bytes": 8444,
+      "sha256": "e813f6100fca22ef0b4f9550b863b66f4f5401fdcf9ae32a59432f66793621b9"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/source-audit.json",
+      "bytes": 1371,
+      "sha256": "3a591a106cc6561d8115b8e2747985524c7d400e4a5908e351fc4281d006e1f7"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/source-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/source-audit.stdout.bin",
+      "bytes": 154,
+      "sha256": "a3bfd04b26d89062a8e52f8aa5edb39753a2deabd675ef95ab366b0b0a33eba0"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/source-findings.json",
+      "bytes": 2943,
+      "sha256": "2a709ebf6011a8535f1ff6f1b070bce7337016980304bf9fc89f8f06b329eb63"
+    }
+  ]
+}

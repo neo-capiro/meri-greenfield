@@ -9,6 +9,7 @@ import {CATALOG_OPERATION_BINDINGS as bindings} from '../retrieval-0.2/catalog-v
 import {createSourceDisabledGateway} from '../../../apps/gateway/index.mjs';
 import {fixture,limits,NOW,uuid} from '../../../apps/gateway/test/fixtures.mjs';
 
+const observedIds=["search_public_web", "scrape_web_page", "search_sam_opportunities", "get_florida_budget_project"];
 const ids=['get_state_bill_status','search_state_floor_votes','query_regulatory_dockets','find_contacts','resolve_entity','search_tracked_bills','query_intelligence'];
 const [STATUS,VOTES,DOCKETS,CONTACTS,ENTITY,TRACKED,SUMMARY]=ids;
 const ev=new URL('../../../docs/qualification/candidates/read-continuation-20261012/civic-integration-review/',import.meta.url);
@@ -33,12 +34,12 @@ function output(id){const common={tool:id,generatedAt:T};switch(id){
 const check=(id,page=output(id),req=request(id),ctx=context(id))=>resolve(id).assertOutput(page,{...ctx,request:req});
 
 test('all original139 rows,56 descriptors and callback implementations survive seven exact additions',()=>{
- assertCatalog(catalog);assert.equal(catalog.operations.length,63);assert.equal(bindings.length,63);
- assert.deepEqual(catalog.operations.filter(d=>!ids.includes(d.operation.id)),oldCatalog.operations);
+ assertCatalog(catalog);assert.equal(catalog.operations.length,67);assert.equal(bindings.length,67);
+ assert.deepEqual(catalog.operations.filter(d=>!ids.includes(d.operation.id)&&!observedIds.includes(d.operation.id)),oldCatalog.operations);
  assert.equal(catalog.originals.length,139);assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);assert.equal(catalog.originals.filter(x=>x.disposition==='deferred').length,43);
- assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,62);assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.replacement===null).length,34);
- for(const old of oldCatalog.originals)assert.deepEqual(catalog.originals.find(x=>x.id===old.id),ids.includes(old.id)?{...old,state:'mapped',replacement:{id:old.id,version:'0.2.0'}}:old);
- const serialized=JSON.parse(JSON.stringify(bindings.filter(x=>!ids.includes(x.id)),(k,v)=>typeof v==='function'?{source:v.toString()}:v));assert.deepEqual(serialized,oldBindings);
+ assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,66);assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.replacement===null).length,30);
+ for(const old of oldCatalog.originals)assert.deepEqual(catalog.originals.find(x=>x.id===old.id),(ids.includes(old.id)||observedIds.includes(old.id))?{...old,state:'mapped',replacement:{id:old.id,version:'0.2.0'}}:old);
+ const serialized=JSON.parse(JSON.stringify(bindings.filter(x=>!ids.includes(x.id)&&!observedIds.includes(x.id)),(k,v)=>typeof v==='function'?{source:v.toString()}:v));assert.deepEqual(serialized,oldBindings);
  assert.equal(catalog.originals.find(x=>x.id==='query_action_items').replacement,null);
  for(const id of ['query_global_data','save_memory','create_task','create_word','schedule_task','run_analysis'])assert.throws(()=>resolve(id));
 });
@@ -86,7 +87,7 @@ for(const id of ids){
  });
 }
 
-test('production gateway rejects all63 before any authority/budget port and has no activation option',async()=>{
+test('production gateway rejects all67 before any authority/budget port and has no activation option',async()=>{
  const f=fixture(),options={authorityPorts:f.ports,budget:f.budget,limits,now:()=>NOW,newId:()=>uuid('8')},gateway=createSourceDisabledGateway(options);
  assert.equal(gateway.sourceEnabled,false);assert.deepEqual(await gateway.discover(),[]);
  for(const row of catalog.operations)await assert.rejects(gateway.execute(JSON.stringify({operation:row.operation,arguments:ids.includes(row.operation.id)?request(row.operation.id):{}}),'synthetic'),/UNAVAILABLE/);

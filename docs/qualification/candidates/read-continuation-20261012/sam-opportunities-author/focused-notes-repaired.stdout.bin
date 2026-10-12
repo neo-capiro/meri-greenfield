@@ -1,0 +1,43 @@
+✔ single canonical family and definitions (1.924012ms)
+✔ effective defaults and optional null selectors (2.169772ms)
+✔ downstream second trim and UTF16 clipping survive (0.554463ms)
+✔ legacy finite numeric conversion truncation and clamp preserved (0.56535ms)
+✔ typed wrong scalar and unrecognized selectors refuse (0.41272ms)
+✔ all trusted context fields required and closed (0.41243ms)
+✔ normalization is detached and frozen with explicit nonqualification (0.413321ms)
+✔ separate count may be below rows and empty results do not prove absence (4.584982ms)
+✔ all fourteen nullable projected fields and opaque strings retained (1.185673ms)
+✔ storage bounds use Unicode code points, description uses UTF16 (1.081416ms)
+✔ description excerpt admits split surrogate but refuses normalization drift (0.748476ms)
+✔ active and NAICS filter bind without title-only query inference (0.757098ms)
+✔ PK and notice identities are unique and query limit is bound (0.729527ms)
+✔ posted timestamps ordered among finite dates, no generatedAt freshness rule (0.486241ms)
+✔ empty health is the defensive unavailable branch (0.446871ms)
+✔ recordCount null precedes state and timestamp (6.513641ms)
+✔ null timestamp reason is independent of state neverSynced flag (2.51861ms)
+✔ invalid and blank health timestamps preserve unknown reason and null hours (0.288454ms)
+✔ finite noncanonical raw health timestamp is retained unchanged (0.191768ms)
+✔ all eight noncurrent states precede stale classification (0.888686ms)
+✔ 48-hour threshold exact and just-below boundary (0.369805ms)
+✔ future health date clamps zero without false unhealthy status (0.25278ms)
+✔ three clocks may reverse and have separately bound health/status arithmetic (0.307031ms)
+✔ derived health flags cannot be substituted (0.65204ms)
+✔ optional health dates and independent counts are not conflated (0.386091ms)
+✔ health sources and fields are closed with at most one SAM observation (0.622957ms)
+✔ notes are exact inert guidance and reason-conditioned (0.301523ms)
+✔ off and shadow forbid structured deadline while enforce requires it (1.111821ms)
+✔ null enforced deadline carries only unknown facts (0.508784ms)
+✔ explicit deadline is open at equality and closes immediately afterward (1.557981ms)
+✔ deadline lineage basis timezone rawText and day substitution refuse (0.848565ms)
+✔ final timestamp and projected date admission are canonical, not current authority (0.554003ms)
+✔ outputs and all nested rows detach original caller data (0.300071ms)
+✔ canonical inert JSON refuses getter and proxy without running traps (0.353562ms)
+✔ closed output excludes POC/current authority and hidden metadata (0.588395ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 237.213767

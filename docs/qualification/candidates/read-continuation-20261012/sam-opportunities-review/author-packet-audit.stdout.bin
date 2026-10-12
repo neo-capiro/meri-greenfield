@@ -1,0 +1,384 @@
+{
+  "scope": "INDEPENDENT_IMMUTABLE_AUTHOR_PACKET_ONLY",
+  "authorCommit": "6414cdae5324b43e612b1176e7096cbeb8b50636",
+  "authorTree": "7c13f80d3212291609cbf1db9d16bffadf24b8bb",
+  "sourceCommit": "02bac2139b13dec288b5ca2c19edc3be85e2c6b2",
+  "manifestSha256": "6c68639043c921db30280a74ec81cc5734a43b1004ae9943d03cfcddf1a60de6",
+  "manifestMembers": 25,
+  "passed": 93,
+  "failed": 0,
+  "checks": [
+    {
+      "check": "manifest expected hash",
+      "pass": true
+    },
+    {
+      "check": "25 unique packet members",
+      "pass": true
+    },
+    {
+      "check": "manifest binds reviewed source",
+      "pass": true
+    },
+    {
+      "check": "member docs/coordination/reports/CODEX-SAM-OPPORTUNITIES-AUTHOR-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/audit-packet.py",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/cleanup.json",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused-notes-repaired.json",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused-notes-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused-notes-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused.json",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/health-metadata.jsonl",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/inspect-source.cjs",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/metadata-audit.json",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/metadata-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/metadata-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/note-identities.json",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/outline.md",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/read-metadata.jsonl",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/reference-identities.json",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/selected-model-fields.json",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/verify-manifest.py",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/wrapper-metadata.jsonl",
+      "pass": true
+    },
+    {
+      "check": "member packages/contracts/retrieval-0.2/sam-opportunities-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "member packages/contracts/retrieval-0.2/sam-opportunities.schema.json",
+      "pass": true
+    },
+    {
+      "check": "member packages/contracts/test/retrieval-sam-opportunities.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "complete author lane coverage with declared exclusions",
+      "pass": true
+    },
+    {
+      "check": "packet source unchanged packages/contracts/retrieval-0.2/sam-opportunities.schema.json",
+      "pass": true
+    },
+    {
+      "check": "packet source unchanged packages/contracts/retrieval-0.2/sam-opportunities-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "packet source unchanged packages/contracts/test/retrieval-sam-opportunities.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "validator byte-identical to first source",
+      "pass": true
+    },
+    {
+      "check": "only equivalent exact notes schema repair",
+      "pass": true
+    },
+    {
+      "check": "every author assertion unchanged; fixture lookup only",
+      "pass": true
+    },
+    {
+      "check": "private metadata only",
+      "pass": true
+    },
+    {
+      "check": "nine author reference pairs",
+      "pass": true
+    },
+    {
+      "check": "reference fd8765ec01d292013758606204f2c9d886cd31c1:apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "check": "reference 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace:apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "check": "reference unchanged apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "check": "reference fd8765ec01d292013758606204f2c9d886cd31c1:apps/api/src/program-element/program-element-read.service.ts",
+      "pass": true
+    },
+    {
+      "check": "reference 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace:apps/api/src/program-element/program-element-read.service.ts",
+      "pass": true
+    },
+    {
+      "check": "reference unchanged apps/api/src/program-element/program-element-read.service.ts",
+      "pass": true
+    },
+    {
+      "check": "reference fd8765ec01d292013758606204f2c9d886cd31c1:apps/api/src/funding-opportunities/meri-opportunity-tools.adapter.ts",
+      "pass": true
+    },
+    {
+      "check": "reference 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace:apps/api/src/funding-opportunities/meri-opportunity-tools.adapter.ts",
+      "pass": true
+    },
+    {
+      "check": "reference unchanged apps/api/src/funding-opportunities/meri-opportunity-tools.adapter.ts",
+      "pass": true
+    },
+    {
+      "check": "reference fd8765ec01d292013758606204f2c9d886cd31c1:apps/api/src/funding-opportunities/funding-opportunity-v2-search.service.ts",
+      "pass": true
+    },
+    {
+      "check": "reference 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace:apps/api/src/funding-opportunities/funding-opportunity-v2-search.service.ts",
+      "pass": true
+    },
+    {
+      "check": "reference unchanged apps/api/src/funding-opportunities/funding-opportunity-v2-search.service.ts",
+      "pass": true
+    },
+    {
+      "check": "reference fd8765ec01d292013758606204f2c9d886cd31c1:packages/shared/src/funding-opportunities-v2.ts",
+      "pass": true
+    },
+    {
+      "check": "reference 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace:packages/shared/src/funding-opportunities-v2.ts",
+      "pass": true
+    },
+    {
+      "check": "reference unchanged packages/shared/src/funding-opportunities-v2.ts",
+      "pass": true
+    },
+    {
+      "check": "reference fd8765ec01d292013758606204f2c9d886cd31c1:packages/shared/src/schedule/deadline.ts",
+      "pass": true
+    },
+    {
+      "check": "reference 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace:packages/shared/src/schedule/deadline.ts",
+      "pass": true
+    },
+    {
+      "check": "reference unchanged packages/shared/src/schedule/deadline.ts",
+      "pass": true
+    },
+    {
+      "check": "reference fd8765ec01d292013758606204f2c9d886cd31c1:apps/api/src/common/meri-evidence-accuracy-flags.ts",
+      "pass": true
+    },
+    {
+      "check": "reference 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace:apps/api/src/common/meri-evidence-accuracy-flags.ts",
+      "pass": true
+    },
+    {
+      "check": "reference unchanged apps/api/src/common/meri-evidence-accuracy-flags.ts",
+      "pass": true
+    },
+    {
+      "check": "reference fd8765ec01d292013758606204f2c9d886cd31c1:apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "check": "reference 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace:apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "check": "reference unchanged apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "check": "reference fd8765ec01d292013758606204f2c9d886cd31c1:apps/api/src/funding-opportunities/meri-sam-source-freshness.spec.ts",
+      "pass": true
+    },
+    {
+      "check": "reference 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace:apps/api/src/funding-opportunities/meri-sam-source-freshness.spec.ts",
+      "pass": true
+    },
+    {
+      "check": "reference unchanged apps/api/src/funding-opportunities/meri-sam-source-freshness.spec.ts",
+      "pass": true
+    },
+    {
+      "check": "author source receipt focused",
+      "pass": true
+    },
+    {
+      "check": "author completion focused",
+      "pass": true
+    },
+    {
+      "check": "author capture identity focused",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "author group currently absent focused",
+      "pass": true
+    },
+    {
+      "check": "author source receipt focused-notes-repaired",
+      "pass": true
+    },
+    {
+      "check": "author completion focused-notes-repaired",
+      "pass": true
+    },
+    {
+      "check": "author capture identity focused-notes-repaired",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused-notes-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused-notes-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "author group currently absent focused-notes-repaired",
+      "pass": true
+    },
+    {
+      "check": "author source receipt metadata-audit",
+      "pass": true
+    },
+    {
+      "check": "author completion metadata-audit",
+      "pass": true
+    },
+    {
+      "check": "author capture identity metadata-audit",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/metadata-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/metadata-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "author group currently absent metadata-audit",
+      "pass": true
+    },
+    {
+      "check": "initial strict-Ajv compilation failure retained",
+      "pass": true
+    },
+    {
+      "check": "repaired 35 passing controls retained",
+      "pass": true
+    },
+    {
+      "check": "author metadata62/62 originals6528",
+      "pass": true
+    },
+    {
+      "check": "author packet36/36",
+      "pass": true
+    },
+    {
+      "check": "independent test byte-identical pre-candidate",
+      "pass": true
+    },
+    {
+      "check": "review capture complete independent-first",
+      "pass": true
+    },
+    {
+      "check": "review raw docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/independent-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "review raw docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/independent-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "review capture complete source-audit",
+      "pass": true
+    },
+    {
+      "check": "review raw docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/source-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "review raw docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/source-audit.stderr.bin",
+      "pass": true
+    }
+  ]
+}

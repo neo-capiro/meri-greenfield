@@ -1,0 +1,37 @@
+{
+  "base": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+  "families": [
+    {
+      "family": "public-web",
+      "base": "c1c9bfde7dd466a0474589a224a99b44277adbc9",
+      "source": "c7d2bb344d56552d271c3f8d508b99cb8e2bb970",
+      "sourceTree": "b7e8366162a549f0c4a567a1f43698bb97f9c9a8",
+      "packet": "8edcfe8673072bcc925bc332e5a584b800ca5042",
+      "review": "4e6733e7eb971bd71afb9a50817f0993ee02c228",
+      "verdict": "ACCEPT_SOURCE",
+      "runtimeAccepted": false
+    },
+    {
+      "family": "sam-opportunities",
+      "base": "c1c9bfde7dd466a0474589a224a99b44277adbc9",
+      "source": "02bac2139b13dec288b5ca2c19edc3be85e2c6b2",
+      "sourceTree": "e38ab9d7dd189d7ea23deaeb4adb40bc7b5627ed",
+      "packet": "6414cdae5324b43e612b1176e7096cbeb8b50636",
+      "review": "ae179ffc40e15a893cfaaa58d07caa6b0c5b2953",
+      "verdict": "ACCEPT_SOURCE",
+      "runtimeAccepted": false
+    },
+    {
+      "family": "florida-budget",
+      "base": "c1c9bfde7dd466a0474589a224a99b44277adbc9",
+      "source": "dabe2b50d94f0b12ef983292a1c18e1ef35d4675",
+      "sourceTree": "83c708d207dc36f9bc8c7b9339636ac6143ab962",
+      "packet": "e37a72402f8b4b7167e7efac9c4845caf5acef07",
+      "review": "495cf95f842023c856716698a7effc62e98d30ac",
+      "verdict": "ACCEPT_SOURCE",
+      "runtimeAccepted": false
+    }
+  ],
+  "unintegratedPendingReview": [],
+  "runtimeAccepted": false
+}
