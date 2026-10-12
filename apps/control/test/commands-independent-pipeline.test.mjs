@@ -54,3 +54,12 @@ for(const port of ['credentials','approval','connect','insert','http'])test(`abo
  const pending=f.make().execute(f.value,'synthetic',controller.signal);await entered.promise;controller.abort();
  await assert.rejects(pending);const before=f.state.effects;parked.resolve();await nextTurn();await nextTurn();assert.equal(f.state.effects,before);assert.equal(f.calls.includes('complete'),false);
 });
+test('late cleanup connection after original cleanup deadline cannot start another transaction',async()=>{
+ const f=fixture(),parked=Promise.withResolvers(),entered=Promise.withResolvers();
+ f.state.hooks.http=()=>{throw Error('source effect acknowledgement lost');};
+ f.state.hooks.connect=()=>{if(f.state.effects){entered.resolve();return parked.promise;}};
+ const pending=f.make().execute(f.value,'synthetic');await entered.promise;await assert.rejects(pending,/OUTCOME_UNKNOWN/);
+ const stopped=f.calls.length;parked.resolve();await nextTurn();await nextTurn();
+ assert.deepEqual(f.calls.slice(stopped).filter(x=>x!=='release'),[],'only release of a late borrowed connection is permitted');
+ assert.equal(f.state.sqlRows[0].state,'CLAIMED');
+});
