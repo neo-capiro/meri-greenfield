@@ -1,0 +1,37 @@
+{
+  "scope": "private-source AST/data only; no private bodies published",
+  "typescriptVersion": "5.9.3",
+  "passed": 6,
+  "failed": 1,
+  "labelsSha256": "57904ff747c1827fe672f9174a41ddfb7d182ecb086e07c6787d0dade0d613f4",
+  "checks": [
+    {
+      "name": "RuleStatusMissingNote exact static producer policy",
+      "passed": true
+    },
+    {
+      "name": "RuleStatusMissingDeadlineNote exact static producer policy",
+      "passed": true
+    },
+    {
+      "name": "RuleStatusStateCoverage exact static producer policy",
+      "passed": true
+    },
+    {
+      "name": "five exact shared labels",
+      "passed": true
+    },
+    {
+      "name": "comment accepting stages",
+      "passed": true
+    },
+    {
+      "name": "shared switch source names",
+      "passed": true
+    },
+    {
+      "name": "schema type groups match independently inspected switch",
+      "passed": false
+    }
+  ]
+}
