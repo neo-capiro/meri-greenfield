@@ -1,0 +1,96 @@
+{
+  "groups": [
+    {
+      "receipt": "accepted-test-audit.json",
+      "receiptSha256": "bdd74080f0a06888e18452079f5f0073618c1c661d3b481c4771dc0d5e275d39",
+      "group": 253137,
+      "reportedAbsent": true,
+      "currentlyAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "baseline.json",
+      "receiptSha256": "d0d6a906e7902a35cc3faa8235996dd1a924e6bc01b85ac4ab0899d1a49313b7",
+      "group": 249521,
+      "reportedAbsent": true,
+      "currentlyAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "candidate.json",
+      "receiptSha256": "fb7be08df9437575ea644b237823f19b1cd0acadbcfdb18c489abeb99b01dbab",
+      "group": 251022,
+      "reportedAbsent": true,
+      "currentlyAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "complete-audit.json",
+      "receiptSha256": "b37bbe6d65d21aaf566f984117545b3f868c88b8babd4849999959c35cc6b02f",
+      "group": 251604,
+      "reportedAbsent": true,
+      "currentlyAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "corrected-candidate.json",
+      "receiptSha256": "c8a4f079be09f8ec9938bf8518fbe1c1f43b43481bfcd7ded0db3d1040ddfae5",
+      "group": 251370,
+      "reportedAbsent": true,
+      "currentlyAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "family-test-audit.json",
+      "receiptSha256": "d174df695f3b544aa7781197b29e5ae2557327aa9cf62fdc17b111df74483afc",
+      "group": 252731,
+      "reportedAbsent": true,
+      "currentlyAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "final-audit.json",
+      "receiptSha256": "413d619b42b2ea5f9fcdb54537a0b217774554c52e7ae921dffc857d077af6a9",
+      "group": 258733,
+      "reportedAbsent": true,
+      "currentlyAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "root-receipts.json",
+      "receiptSha256": "cbaca63d2dcf83df4887887897dff9e728178dc1d6743c745bfdc29d3849b356",
+      "group": 258876,
+      "reportedAbsent": true,
+      "currentlyAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "source-audit.json",
+      "receiptSha256": "1fe37452b0c9527927e2349c6e46bb5ee0e4461734446099b924bd216077d9ce",
+      "group": 251057,
+      "reportedAbsent": true,
+      "currentlyAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "state-expectation-audit.json",
+      "receiptSha256": "197b72153a929ce1c5b93ba704ed0db96fdf74d180d7fb7ee61b182755104a25",
+      "group": 254637,
+      "reportedAbsent": true,
+      "currentlyAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    }
+  ],
+  "allAbsent": true,
+  "scope": "LOCAL_REVIEW_CHECKS_ONLY_NO_NATIVE_TASK_CLAIM"
+}

@@ -1,9 +1,9 @@
 {
   "base": "c1c9bfde7dd466a0474589a224a99b44277adbc9",
-  "candidate": "520325559e052029440e63d96e6b5ce23a8d5c72",
-  "candidateTree": "a66f9a837b92e9bb27f43aafaff28f35c4d84ddc",
-  "checkCount": 161,
-  "passed": 161,
+  "candidate": "fcf0d0bff20c4ed1b81d0896ce71403b592d27fc",
+  "candidateTree": "074b322f8aa6e4c1f0500278030a678f1d5e2ef3",
+  "checkCount": 162,
+  "passed": 162,
   "failed": 0,
   "baseFileCount": 6528,
   "unchangedOriginalFiles": 6509,
@@ -454,8 +454,8 @@
     {
       "name": "test after hash packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
       "passed": true,
-      "actual": "f465114ebd12f58bdda4c261a072d96769a0e7ec769b7dfd53eed544f8886c79",
-      "expected": "f465114ebd12f58bdda4c261a072d96769a0e7ec769b7dfd53eed544f8886c79"
+      "actual": "9f1c3a23d6d2aeb5e62949e2cdfcaade08bd05691aad43e58b483009bed8f501",
+      "expected": "9f1c3a23d6d2aeb5e62949e2cdfcaade08bd05691aad43e58b483009bed8f501"
     },
     {
       "name": "replacement count packages/contracts/test/retrieval-read-continuation-independent.test.mjs \"get_representation\"",
@@ -495,6 +495,12 @@
     },
     {
       "name": "replacement count packages/contracts/test/retrieval-read-continuation-independent.test.mjs all56",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-read-continuation-independent.test.mjs   for(const id of ['get_research_evidence','get_state_bill_status','search_state_floor_votes','search_sam_opportunities'])assert.throws(()=>resolve(id));",
       "passed": true,
       "actual": 1,
       "expected": 1

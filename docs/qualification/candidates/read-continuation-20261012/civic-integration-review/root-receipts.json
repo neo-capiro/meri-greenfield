@@ -1,0 +1,41 @@
+{
+  "command": [
+    "python3",
+    "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/verify-root-receipts.py",
+    "fcf0d0bff20c4ed1b81d0896ce71403b592d27fc",
+    "focused-canonical",
+    "focused-state-mapping",
+    "combined-first",
+    "combined-final",
+    "public-distribution",
+    "source-audit-final",
+    "family-packets"
+  ],
+  "cwd": "/workspace/meri-civic-integration-review-20261012",
+  "sourceHead": "5aedecfc934e0fdc705835d76364156708c6516b",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T18:46:26.681435+00:00",
+  "durationSeconds": 0.115,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 258876,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/root-receipts.stdout.bin",
+      "bytes": 27255,
+      "sha256": "77bceb3584d5960baf94d48ce3e5e463568031a2e610fcd0f16d2a5c95e89bed"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/root-receipts.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
