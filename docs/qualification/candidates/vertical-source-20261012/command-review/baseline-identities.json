@@ -1,0 +1,62 @@
+{
+  "base": "e5fb3963de787bbd7b7663316c368f15814897da",
+  "baseTree": "bce9582cf4a2a3aef37f4d46edeb9638ce3e53a5",
+  "baseEntries": 8678,
+  "sources": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 6582,
+      "sha256": "a0650949b74e5aee709bd8b3c9d480f95f5b898778ac8f7b3927eb54b141437a"
+    },
+    {
+      "path": "docs/IMPLEMENTATION-STANDARDS.md",
+      "bytes": 11082,
+      "sha256": "d4f10f964ee207187abacd967649a1cfc9bdd468072dc01f859268f08b719959"
+    },
+    {
+      "path": "packages/contracts/meri.schema.json",
+      "bytes": 50043,
+      "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b"
+    },
+    {
+      "path": "packages/contracts/validate.mjs",
+      "bytes": 3311,
+      "sha256": "c2449fd55300b31bdc1e829b5d918a531f1c4b2c675085a5b4707726ddd36d10"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/validate.mjs",
+      "bytes": 2313,
+      "sha256": "04fab019c1e8282b64d5bac3599256abb5e89033b197a02cbb6e13bb25f53e09"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/task-create-validation.mjs",
+      "bytes": 3951,
+      "sha256": "5d90523200ed2d8589bd893075ff7ddb42a112b29b9c717bc81e72dd0370ada4"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/artifact-file-validation.mjs",
+      "bytes": 5641,
+      "sha256": "56d5bdfdfe4876d3a0e6157226516a193e6ad75a9bf0b7e258cb3b2d044c0c04"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/memory-propose-validation.mjs",
+      "bytes": 3523,
+      "sha256": "9bfc1ef293f5c073286a0519ee3a480dde3fb607c0b3c42c7781c3711b0dd52e"
+    },
+    {
+      "path": "packages/runtime/operation-lifetime.mjs",
+      "bytes": 2595,
+      "sha256": "10730af13c7cf29623fc7e8c836262b02f01e3436ac6e1488d263ec6ed19b52f"
+    },
+    {
+      "path": "apps/control/tool-invocations.mjs",
+      "bytes": 2738,
+      "sha256": "96bb3dd5b64a64fd59ac57fda8bd1198ad32bf0401d8e4f9447ffb9301e7e70c"
+    },
+    {
+      "path": "apps/gateway/budget/postgres-tool-budget.mjs",
+      "bytes": 12279,
+      "sha256": "4f3d3336e2cdf01785cecd0ea22aeccea1e5c9a8d773b20492f8cd5fefb06ed4"
+    }
+  ]
+}
