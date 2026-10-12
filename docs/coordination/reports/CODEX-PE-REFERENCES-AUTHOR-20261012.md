@@ -147,3 +147,20 @@ Captures used the existing Linux subreaper helper. PGIDs184728,185209,185243,
 tracked diff hashes do not cover then-untracked files; exact copied source
 snapshots and the final commit bind the corresponding receipts. Independent
 review and immutable-source replay follow; source acceptance does not close G1.
+
+## Immutable author closeout
+
+Source freeze `c9770ef235ae220159500b12bd1ab885f9ba9b45`, tree
+`c06472d82474b129799169f01b0de7f83129f463`, passed30/30 on the exact-source
+replay. PGID187214 was absent afterward, no timeout or kill. All5,730 original
+Git file identities are unchanged; the four-file SHA256 manifest matches the
+source tree. Ten private reference identities match both immutable pins.
+Whitespace checks passed before source commit. Source and evidence are confined
+to the allocated new paths; no tests, source modules, schemas or failure evidence
+from earlier lanes were rewritten. Independent prefreeze32/32 passed; final
+independent source acceptance remains reviewer-owned.
+
+No SQL, DB, provider, model, service, native/runtime or cloud execution occurred.
+No publication/merge, source enablement, inventory count update or runtime
+acceptance is claimed. Remaining work is canonical root registration and
+separate current authority/source-adapter/runtime qualification.
