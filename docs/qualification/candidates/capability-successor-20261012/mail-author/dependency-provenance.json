@@ -1,0 +1,162 @@
+{
+  "source": "Existing accepted preinstalled trees physically copied; no installation or hooks",
+  "donorRoot": "/workspace/meri-source-continuation-20261012",
+  "locks": [
+    {
+      "path": "package.json",
+      "candidate": {
+        "bytes": 1936,
+        "sha256": "42f84c0309a87d043a4023f657a6b1932ac5c1ca9e51eca8874e33085cb64d98"
+      },
+      "donor": {
+        "bytes": 1936,
+        "sha256": "42f84c0309a87d043a4023f657a6b1932ac5c1ca9e51eca8874e33085cb64d98"
+      },
+      "identical": true
+    },
+    {
+      "path": "package-lock.json",
+      "candidate": {
+        "bytes": 12067,
+        "sha256": "b2293773bf4ddc6d23425b7d718b79575384679999b86fd3caad78e6eda4a42d"
+      },
+      "donor": {
+        "bytes": 12067,
+        "sha256": "b2293773bf4ddc6d23425b7d718b79575384679999b86fd3caad78e6eda4a42d"
+      },
+      "identical": true
+    },
+    {
+      "path": "packages/contracts/package.json",
+      "candidate": {
+        "bytes": 1291,
+        "sha256": "5ffd1042ab28e234a4803344f34a882bd0695580914d21136e7c13e43c7ddbe7"
+      },
+      "donor": {
+        "bytes": 1291,
+        "sha256": "5ffd1042ab28e234a4803344f34a882bd0695580914d21136e7c13e43c7ddbe7"
+      },
+      "identical": true
+    },
+    {
+      "path": "packages/contracts/package-lock.json",
+      "candidate": {
+        "bytes": 24995,
+        "sha256": "dae8c670bb76b9c570f174d8749a8c59179cf865d5d6ec83b64a67bb5b2b06a6"
+      },
+      "donor": {
+        "bytes": 24995,
+        "sha256": "dae8c670bb76b9c570f174d8749a8c59179cf865d5d6ec83b64a67bb5b2b06a6"
+      },
+      "identical": true
+    }
+  ],
+  "selectedInstalledMetadata": [
+    {
+      "path": "node_modules/ajv/package.json",
+      "name": "ajv",
+      "version": "8.20.0",
+      "candidate": {
+        "bytes": 4405,
+        "sha256": "1f9033ee5a6515e7d76938b7072941862d1ed228a6879cc7fe10cdeb75107989"
+      },
+      "donor": {
+        "bytes": 4405,
+        "sha256": "1f9033ee5a6515e7d76938b7072941862d1ed228a6879cc7fe10cdeb75107989"
+      }
+    },
+    {
+      "path": "node_modules/ajv-formats/package.json",
+      "name": "ajv-formats",
+      "version": "3.0.1",
+      "candidate": {
+        "bytes": 1897,
+        "sha256": "402fb4bcfa457f0226813f3976ac42839dd619907c075c108efba8600d7edb69"
+      },
+      "donor": {
+        "bytes": 1897,
+        "sha256": "402fb4bcfa457f0226813f3976ac42839dd619907c075c108efba8600d7edb69"
+      }
+    },
+    {
+      "path": "node_modules/canonicalize/package.json",
+      "name": "canonicalize",
+      "version": "5.1.0",
+      "candidate": {
+        "bytes": 1553,
+        "sha256": "ca7454aac0f76429b5d56bbc3bd61fa706fb1088a19f45d64cf38e055fbf4670"
+      },
+      "donor": {
+        "bytes": 1553,
+        "sha256": "ca7454aac0f76429b5d56bbc3bd61fa706fb1088a19f45d64cf38e055fbf4670"
+      }
+    },
+    {
+      "path": "packages/contracts/node_modules/ajv/package.json",
+      "name": "ajv",
+      "version": "8.20.0",
+      "candidate": {
+        "bytes": 4405,
+        "sha256": "1f9033ee5a6515e7d76938b7072941862d1ed228a6879cc7fe10cdeb75107989"
+      },
+      "donor": {
+        "bytes": 4405,
+        "sha256": "1f9033ee5a6515e7d76938b7072941862d1ed228a6879cc7fe10cdeb75107989"
+      }
+    },
+    {
+      "path": "packages/contracts/node_modules/ajv-formats/package.json",
+      "name": "ajv-formats",
+      "version": "3.0.1",
+      "candidate": {
+        "bytes": 1897,
+        "sha256": "402fb4bcfa457f0226813f3976ac42839dd619907c075c108efba8600d7edb69"
+      },
+      "donor": {
+        "bytes": 1897,
+        "sha256": "402fb4bcfa457f0226813f3976ac42839dd619907c075c108efba8600d7edb69"
+      }
+    },
+    {
+      "path": "packages/contracts/node_modules/canonicalize/package.json",
+      "name": "canonicalize",
+      "version": "5.1.0",
+      "candidate": {
+        "bytes": 1553,
+        "sha256": "ca7454aac0f76429b5d56bbc3bd61fa706fb1088a19f45d64cf38e055fbf4670"
+      },
+      "donor": {
+        "bytes": 1553,
+        "sha256": "ca7454aac0f76429b5d56bbc3bd61fa706fb1088a19f45d64cf38e055fbf4670"
+      }
+    },
+    {
+      "path": "packages/contracts/node_modules/typescript/package.json",
+      "name": "typescript",
+      "version": "5.9.3",
+      "candidate": {
+        "bytes": 3620,
+        "sha256": "822ef7ca6452205657b6288b066481ecf508bfbf43455d715cf7d3ec457561e6"
+      },
+      "donor": {
+        "bytes": 3620,
+        "sha256": "822ef7ca6452205657b6288b066481ecf508bfbf43455d715cf7d3ec457561e6"
+      }
+    },
+    {
+      "path": "packages/contracts/node_modules/esbuild/package.json",
+      "name": "esbuild",
+      "version": "0.28.2",
+      "candidate": {
+        "bytes": 3980,
+        "sha256": "9d0bc453f4e791553c4cc2298ba023b409241fd9801e494741666eb0f6051490"
+      },
+      "donor": {
+        "bytes": 3980,
+        "sha256": "9d0bc453f4e791553c4cc2298ba023b409241fd9801e494741666eb0f6051490"
+      }
+    }
+  ],
+  "donorMutated": false,
+  "nodeModulesCommitted": false
+}

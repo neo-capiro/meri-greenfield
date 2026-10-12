@@ -1,0 +1,27 @@
+{
+  "base": "5b1b5985bc73cbfe901c17e65acf9fd50b3d7e33",
+  "sourceCommit": "8c4ec8dc2a9caad8640eb9f4741f5de2d7696887",
+  "sourceTree": "24115292d908255c5f794fe216040158c0fdd955",
+  "files": [
+    {
+      "path": "apps/gateway/dispatch/mail-read-context.mjs",
+      "bytes": 5498,
+      "sha256": "1e119feb08b84a267bbd486f9c0608228828a5ddeba15e7698c17808938ce41f"
+    },
+    {
+      "path": "apps/gateway/dispatch/operation-context.mjs",
+      "bytes": 2327,
+      "sha256": "c4d0cc29a81bfb57a518d6518a60c282181db0dacf99a145b18b0b8842bc2e56"
+    },
+    {
+      "path": "apps/gateway/dispatch/tool-dispatch.mjs",
+      "bytes": 7502,
+      "sha256": "fc6b4df92d492da1b170e77df974cf3d9a405dec0baaf06f2285bd3c37e9146a"
+    },
+    {
+      "path": "apps/gateway/test/mail-context.test.mjs",
+      "bytes": 23710,
+      "sha256": "b7c110e3abe9315aec4a2f290266e90142cf258efd3d7d4ba0a2a5f8ec0003c7"
+    }
+  ]
+}

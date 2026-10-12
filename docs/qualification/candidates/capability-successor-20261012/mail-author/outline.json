@@ -1,0 +1,18 @@
+{
+  "baseCommit": "5b1b5985bc73cbfe901c17e65acf9fd50b3d7e33",
+  "branch": "task/meri-mail-successor-20261012",
+  "scope": "Mail list/search trusted retained-page composition only; no live source or storage implementation",
+  "ownedProduction": ["apps/gateway/dispatch/mail-read-context.mjs", "apps/gateway/dispatch/operation-context.mjs", "apps/gateway/dispatch/tool-dispatch.mjs"],
+  "ownedTests": ["apps/gateway/test/mail-context.test.mjs"],
+  "outline": [
+    "Preserve exact original dispatcher/context source and negative baseline; use root's canonical mail-candidates/1 metadata without registry/schema changes.",
+    "Normalize once through the existing operation contract. Reuse that immutable input for authority, retained selection keys and actual handler calls.",
+    "Keep mail retained context cohesive: raw JSON load/retain receipts, exact RunBinding/operation/policy/stable-subject/selection keys, digest, fresh checkedAt and finite unexpired non-extended lifetime; no copied filter digest or new state store. Root clarified existing first-page decision-ID rotation stays supported; full subject equality remains solely the unchanged prior/current PAGE validator rule.",
+    "Load only offset-positive prior pages before reservation/effect. Retain only canonically validated nextOffset pages after release authority, before existing settlement/final authority. Preserve full authorizationDecisionId equality.",
+    "Exercise list/search traversal and substitution, unknown pagination, corrupt/stale/shortened receipts, cancellation/parked ports/revocation and UNKNOWN accounting on the actual dispatcher. Preserve all original assertions and memory API/semantics.",
+    "Run focused and original gateway/contracts checks offline, archive exact commands/results/hashes; freeze only allocated paths, no publication or native actions."
+  ],
+  "dependencyProvenance": "Physically copy existing root and contracts node_modules from /workspace/meri-source-continuation-20261012; no installation, lifecycle scripts or dependency execution beyond ordinary source tests; donor trees unchanged.",
+  "limits": "45-minute author turn; bounded/reaped ordinary tests; existing dispatch lifetime bounds each synthetic port; tests settle their deferred promises.",
+  "unrun": ["retained storage durability/transport security", "mail provider/source access", "native runtime and G1 qualification", "skill admission and subject/window resolution"]
+}

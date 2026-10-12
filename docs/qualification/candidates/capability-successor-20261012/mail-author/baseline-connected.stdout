@@ -1,0 +1,39 @@
+✖ mail.list_messages: three pages consume trusted prior results and one canonical normalization per call (2.762658ms)
+✖ mail.search_messages: three pages consume trusted prior results and one canonical normalization per call (0.360622ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 932.72827
+
+✖ failing tests:
+
+test at apps/gateway/test/mail-context.test.mjs:93:3
+✖ mail.list_messages: three pages consume trusted prior results and one canonical normalization per call (2.762658ms)
+  GatewayDenied: GATEWAY_CONFIGURATION
+      at deny (file:///workspace/meri-mail-successor-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+      at assertOperationArguments (file:///workspace/meri-mail-successor-20261012/apps/gateway/dispatch/operation-context.mjs:10:41)
+      at Object.execute (file:///workspace/meri-mail-successor-20261012/apps/gateway/dispatch/tool-dispatch.mjs:35:5)
+      at Object.execute (file:///workspace/meri-mail-successor-20261012/apps/gateway/test/mail-context.test.mjs:88:70)
+      at TestContext.<anonymous> (file:///workspace/meri-mail-successor-20261012/apps/gateway/test/mail-context.test.mjs:97:39)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+
+test at apps/gateway/test/mail-context.test.mjs:93:3
+✖ mail.search_messages: three pages consume trusted prior results and one canonical normalization per call (0.360622ms)
+  GatewayDenied: GATEWAY_CONFIGURATION
+      at deny (file:///workspace/meri-mail-successor-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+      at assertOperationArguments (file:///workspace/meri-mail-successor-20261012/apps/gateway/dispatch/operation-context.mjs:10:41)
+      at Object.execute (file:///workspace/meri-mail-successor-20261012/apps/gateway/dispatch/tool-dispatch.mjs:35:5)
+      at Object.execute (file:///workspace/meri-mail-successor-20261012/apps/gateway/test/mail-context.test.mjs:88:70)
+      at TestContext.<anonymous> (file:///workspace/meri-mail-successor-20261012/apps/gateway/test/mail-context.test.mjs:97:39)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
