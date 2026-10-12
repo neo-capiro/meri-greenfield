@@ -3,7 +3,7 @@ import { canonicalSha256 } from '../../../packages/contracts/validate.mjs';
 import { validateShape } from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import { prepareMemoryReadContext } from './memory-read-context.mjs';
 import { prepareMailReadContext } from './mail-read-context.mjs';
-import { prepareActionReadContext } from './action-read-context.mjs';
+import { normalizeActionReadRequest, prepareActionReadContext } from './action-read-context.mjs';
 import { deny } from './operation-result.mjs';
 
 export function assertOperationArguments(entry, request) {
@@ -29,10 +29,12 @@ export async function prepareOperationContext({ entry, request, identity, author
     catch { deny('INVALID_ARGUMENTS'); }
     if (!normalized || canonicalSha256(normalized.input) !== normalized.argumentsSha256) deny('INVALID_ARGUMENTS');
   }
+  if (profile === 'actions-complete/1') normalized = normalizeActionReadRequest({ entry, request, identity });
   const authority = await authorize(normalized?.input ?? request);
   if (canonicalSha256(authority.binding) !== canonicalSha256(identity.claims.binding) ||
       authority.policyRevision !== identity.claims.policyRevision) deny('ACCESS_DENIED');
-  if (profile === 'actions-complete/1') return prepareActionReadContext({ request, authority });
+  if (profile === 'actions-complete/1') return Object.freeze({
+    ...prepareActionReadContext({ request, authority }), normalized });
   if (profile === 'portfolio-evidence/1') return Object.freeze({ authority,
     options: (current = authority) => ({binding:current.binding, subject:current.subject}),
     observeAuthority() {}, async retain() {},
