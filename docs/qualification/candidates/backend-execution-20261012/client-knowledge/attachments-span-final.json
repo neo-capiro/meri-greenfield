@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-client-knowledge-attachments.test.mjs"
+  ],
+  "cwd": "/workspace/meri-client-knowledge-20261012",
+  "sourceHead": "4ecc4dfc6cbc683d901daf6a0761927d9f3831eb",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "e0eda6c30be9041846623c04ea10e0392677bfa0fd9c340b19559f35c69de8e3",
+  "startedAt": "2026-10-12T21:02:50.261309+00:00",
+  "durationSeconds": 0.422,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 318070,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-span-final.stdout.bin",
+      "bytes": 1076,
+      "sha256": "3f860c40d69459ddab80fe23a16562912cbafb1409939f2102c15478836237ae"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-span-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Unique label identifies initial or repaired focused Florida source verification; prior receipts are preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

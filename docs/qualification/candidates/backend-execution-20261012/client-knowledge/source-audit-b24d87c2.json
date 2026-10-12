@@ -1,0 +1,1101 @@
+{
+  "sourceHead": "b24d87c2ad2e13d9d9f83bf5328a1328fd03762f",
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "passed": 273,
+  "total": 273,
+  "checks": [
+    {
+      "label": "readable apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "label": "drift observation apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/embeddings/client-kb.service.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/embeddings/client-kb.service.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/embeddings/client-kb.service.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/embeddings/client-kb.service.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/embeddings/client-kb.service.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/embeddings/client-kb.service.ts",
+      "pass": true
+    },
+    {
+      "label": "drift observation apps/api/src/embeddings/client-kb.service.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/embeddings/client-kb.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/embeddings/client-kb.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/embeddings/client-kb.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/embeddings/client-kb.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/embeddings/client-kb.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/embeddings/client-kb.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "drift observation apps/api/src/embeddings/client-kb.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/memory/memory-graph.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/memory/memory-graph.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/memory/memory-graph.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/memory/memory-graph.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/memory/memory-graph.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/memory/memory-graph.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "drift observation apps/api/src/memory/memory-graph.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/memory/memory-wall.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/memory/memory-wall.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/memory/memory-wall.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/memory/memory-wall.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/memory/memory-wall.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/memory/memory-wall.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "drift observation apps/api/src/memory/memory-wall.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "preserved missing locator apps/api/src/memory/memory-recall-policy.ts",
+      "pass": true
+    },
+    {
+      "label": "preserved missing locator apps/api/src/memory/memory-recall-policy.ts",
+      "pass": true
+    },
+    {
+      "label": "drift observation apps/api/src/memory/memory-recall-policy.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/meri/meri-chat-attachment-read.service.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/meri/meri-chat-attachment-read.service.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/meri/meri-chat-attachment-read.service.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/meri/meri-chat-attachment-read.service.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/meri/meri-chat-attachment-read.service.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/meri/meri-chat-attachment-read.service.ts",
+      "pass": true
+    },
+    {
+      "label": "drift observation apps/api/src/meri/meri-chat-attachment-read.service.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/meri/meri-chat-attachment-read-scope.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/meri/meri-chat-attachment-read-scope.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/meri/meri-chat-attachment-read-scope.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/meri/meri-chat-attachment-read-scope.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/meri/meri-chat-attachment-read-scope.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/meri/meri-chat-attachment-read-scope.ts",
+      "pass": true
+    },
+    {
+      "label": "drift observation apps/api/src/meri/meri-chat-attachment-read-scope.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/meri/meri-client-context.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/meri/meri-client-context.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/meri/meri-client-context.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/meri/meri-client-context.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/meri/meri-client-context.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/meri/meri-client-context.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "drift observation apps/api/src/meri/meri-client-context.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/meri/meri-memory-content.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/meri/meri-memory-content.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/meri/meri-memory-content.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/meri/meri-memory-content.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/meri/meri-memory-content.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/meri/meri-memory-content.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "drift observation apps/api/src/meri/meri-memory-content.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/meri/meri-data-search.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/meri/meri-data-search.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/meri/meri-data-search.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/meri/meri-data-search.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/meri/meri-data-search.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/meri/meri-data-search.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "drift observation apps/api/src/meri/meri-data-search.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/retrieval/retrieval-v2.types.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/retrieval/retrieval-v2.types.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/retrieval/retrieval-v2.types.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/retrieval/retrieval-v2.types.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/retrieval/retrieval-v2.types.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/retrieval/retrieval-v2.types.ts",
+      "pass": true
+    },
+    {
+      "label": "drift observation apps/api/src/retrieval/retrieval-v2.types.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/meri/meri-context-plane.service.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/meri/meri-context-plane.service.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/meri/meri-context-plane.service.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/meri/meri-context-plane.service.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/meri/meri-context-plane.service.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/meri/meri-context-plane.service.ts",
+      "pass": true
+    },
+    {
+      "label": "drift observation apps/api/src/meri/meri-context-plane.service.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "label": "drift observation apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/memory/memory-recall-suppression.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/memory/memory-recall-suppression.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/memory/memory-recall-suppression.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/memory/memory-recall-suppression.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/memory/memory-recall-suppression.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/memory/memory-recall-suppression.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "drift observation apps/api/src/memory/memory-recall-suppression.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/memory/memory-recall-content.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/memory/memory-recall-content.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/memory/memory-recall-content.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/memory/memory-recall-content.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/memory/memory-recall-content.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/memory/memory-recall-content.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "drift observation apps/api/src/memory/memory-recall-content.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "readable packages/meriv2-core/src/memory/governance.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes packages/meriv2-core/src/memory/governance.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob packages/meriv2-core/src/memory/governance.ts",
+      "pass": true
+    },
+    {
+      "label": "readable packages/meriv2-core/src/memory/governance.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes packages/meriv2-core/src/memory/governance.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob packages/meriv2-core/src/memory/governance.ts",
+      "pass": true
+    },
+    {
+      "label": "drift observation packages/meriv2-core/src/memory/governance.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/retrieval/adapters/governed-memory-eligibility.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/retrieval/adapters/governed-memory-eligibility.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/retrieval/adapters/governed-memory-eligibility.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/retrieval/adapters/governed-memory-eligibility.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/retrieval/adapters/governed-memory-eligibility.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/retrieval/adapters/governed-memory-eligibility.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "drift observation apps/api/src/retrieval/adapters/governed-memory-eligibility.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/retrieval/adapters/institutional-knowledge-retrieval.adapter.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/retrieval/adapters/institutional-knowledge-retrieval.adapter.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/retrieval/adapters/institutional-knowledge-retrieval.adapter.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/retrieval/adapters/institutional-knowledge-retrieval.adapter.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/retrieval/adapters/institutional-knowledge-retrieval.adapter.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/retrieval/adapters/institutional-knowledge-retrieval.adapter.ts",
+      "pass": true
+    },
+    {
+      "label": "drift observation apps/api/src/retrieval/adapters/institutional-knowledge-retrieval.adapter.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/retrieval/adapters/monday-managed-mcp.adapter.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/retrieval/adapters/monday-managed-mcp.adapter.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/retrieval/adapters/monday-managed-mcp.adapter.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/retrieval/adapters/monday-managed-mcp.adapter.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/retrieval/adapters/monday-managed-mcp.adapter.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/retrieval/adapters/monday-managed-mcp.adapter.ts",
+      "pass": true
+    },
+    {
+      "label": "drift observation apps/api/src/retrieval/adapters/monday-managed-mcp.adapter.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/retrieval/adapters/monday-board-scope.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/retrieval/adapters/monday-board-scope.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/retrieval/adapters/monday-board-scope.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/retrieval/adapters/monday-board-scope.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/retrieval/adapters/monday-board-scope.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/retrieval/adapters/monday-board-scope.ts",
+      "pass": true
+    },
+    {
+      "label": "drift observation apps/api/src/retrieval/adapters/monday-board-scope.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/clients/client-capabilities.service.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/clients/client-capabilities.service.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/clients/client-capabilities.service.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/clients/client-capabilities.service.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/clients/client-capabilities.service.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/clients/client-capabilities.service.ts",
+      "pass": true
+    },
+    {
+      "label": "drift observation apps/api/src/clients/client-capabilities.service.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/clients/client-people.service.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/clients/client-people.service.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/clients/client-people.service.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/clients/client-people.service.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/clients/client-people.service.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/clients/client-people.service.ts",
+      "pass": true
+    },
+    {
+      "label": "drift observation apps/api/src/clients/client-people.service.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/clients/client-facilities.service.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/clients/client-facilities.service.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/clients/client-facilities.service.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/clients/client-facilities.service.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/clients/client-facilities.service.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/clients/client-facilities.service.ts",
+      "pass": true
+    },
+    {
+      "label": "drift observation apps/api/src/clients/client-facilities.service.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/clients/client-advocacy-matter.service.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/clients/client-advocacy-matter.service.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/clients/client-advocacy-matter.service.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/clients/client-advocacy-matter.service.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/clients/client-advocacy-matter.service.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/clients/client-advocacy-matter.service.ts",
+      "pass": true
+    },
+    {
+      "label": "drift observation apps/api/src/clients/client-advocacy-matter.service.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/engagement/engagement.service.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/engagement/engagement.service.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/engagement/engagement.service.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/engagement/engagement.service.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/engagement/engagement.service.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/engagement/engagement.service.ts",
+      "pass": true
+    },
+    {
+      "label": "drift observation apps/api/src/engagement/engagement.service.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/engagement/engagement-access.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/engagement/engagement-access.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/engagement/engagement-access.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/engagement/engagement-access.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/engagement/engagement-access.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/engagement/engagement-access.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "drift observation apps/api/src/engagement/engagement-access.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/clients/client-hierarchy.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/clients/client-hierarchy.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/clients/client-hierarchy.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/clients/client-hierarchy.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/clients/client-hierarchy.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/clients/client-hierarchy.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "drift observation apps/api/src/clients/client-hierarchy.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/knowledge/knowledge.types.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/knowledge/knowledge.types.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/knowledge/knowledge.types.ts",
+      "pass": true
+    },
+    {
+      "label": "readable apps/api/src/knowledge/knowledge.types.ts",
+      "pass": true
+    },
+    {
+      "label": "reference bytes apps/api/src/knowledge/knowledge.types.ts",
+      "pass": true
+    },
+    {
+      "label": "reference blob apps/api/src/knowledge/knowledge.types.ts",
+      "pass": true
+    },
+    {
+      "label": "drift observation apps/api/src/knowledge/knowledge.types.ts",
+      "pass": true
+    },
+    {
+      "label": "all 7677 base paths unchanged",
+      "pass": true
+    },
+    {
+      "label": "exclusive allocated paths",
+      "pass": true
+    },
+    {
+      "label": "independent tests untouched",
+      "pass": true
+    },
+    {
+      "label": "canonical inert boundary client-knowledge-attachments-validation.mjs",
+      "pass": true
+    },
+    {
+      "label": "no private/runtime imports client-knowledge-attachments-validation.mjs",
+      "pass": true
+    },
+    {
+      "label": "detached result return client-knowledge-attachments-validation.mjs",
+      "pass": true
+    },
+    {
+      "label": "canonical inert boundary client-knowledge-memory-validation.mjs",
+      "pass": true
+    },
+    {
+      "label": "no private/runtime imports client-knowledge-memory-validation.mjs",
+      "pass": true
+    },
+    {
+      "label": "detached result return client-knowledge-memory-validation.mjs",
+      "pass": true
+    },
+    {
+      "label": "canonical inert boundary client-knowledge-monday-validation.mjs",
+      "pass": true
+    },
+    {
+      "label": "no private/runtime imports client-knowledge-monday-validation.mjs",
+      "pass": true
+    },
+    {
+      "label": "detached result return client-knowledge-monday-validation.mjs",
+      "pass": true
+    },
+    {
+      "label": "canonical inert boundary client-knowledge-profile-validation.mjs",
+      "pass": true
+    },
+    {
+      "label": "no private/runtime imports client-knowledge-profile-validation.mjs",
+      "pass": true
+    },
+    {
+      "label": "detached result return client-knowledge-profile-validation.mjs",
+      "pass": true
+    },
+    {
+      "label": "canonical inert boundary client-knowledge-search-validation.mjs",
+      "pass": true
+    },
+    {
+      "label": "no private/runtime imports client-knowledge-search-validation.mjs",
+      "pass": true
+    },
+    {
+      "label": "detached result return client-knowledge-search-validation.mjs",
+      "pass": true
+    },
+    {
+      "label": "150 profile scalar fields retained",
+      "pass": true
+    },
+    {
+      "label": "complete scalar model ClientFacility",
+      "pass": true
+    },
+    {
+      "label": "complete scalar model ClientSubmissionHistory",
+      "pass": true
+    },
+    {
+      "label": "complete scalar model Client",
+      "pass": true
+    },
+    {
+      "label": "complete scalar model ClientCapability",
+      "pass": true
+    },
+    {
+      "label": "complete scalar model MailThread",
+      "pass": true
+    },
+    {
+      "label": "complete scalar model EngagementTask",
+      "pass": true
+    },
+    {
+      "label": "complete scalar model ClientPerson",
+      "pass": true
+    },
+    {
+      "label": "bounded captured exit memory-initial.json",
+      "pass": true
+    },
+    {
+      "label": "raw output docs/qualification/candidates/backend-execution-20261012/client-knowledge/memory-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "label": "raw output docs/qualification/candidates/backend-execution-20261012/client-knowledge/memory-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "label": "owned group still absent 310494",
+      "pass": true
+    },
+    {
+      "label": "bounded captured exit profile-initial.json",
+      "pass": true
+    },
+    {
+      "label": "raw output docs/qualification/candidates/backend-execution-20261012/client-knowledge/profile-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "label": "raw output docs/qualification/candidates/backend-execution-20261012/client-knowledge/profile-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "label": "owned group still absent 311975",
+      "pass": true
+    },
+    {
+      "label": "bounded captured exit search-initial.json",
+      "pass": true
+    },
+    {
+      "label": "raw output docs/qualification/candidates/backend-execution-20261012/client-knowledge/search-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "label": "raw output docs/qualification/candidates/backend-execution-20261012/client-knowledge/search-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "label": "owned group still absent 305597",
+      "pass": true
+    },
+    {
+      "label": "bounded captured exit monday-strict-repair.json",
+      "pass": true
+    },
+    {
+      "label": "raw output docs/qualification/candidates/backend-execution-20261012/client-knowledge/monday-strict-repair.stdout.bin",
+      "pass": true
+    },
+    {
+      "label": "raw output docs/qualification/candidates/backend-execution-20261012/client-knowledge/monday-strict-repair.stderr.bin",
+      "pass": true
+    },
+    {
+      "label": "owned group still absent 307423",
+      "pass": true
+    },
+    {
+      "label": "bounded captured exit monday-initial.json",
+      "pass": true
+    },
+    {
+      "label": "raw output docs/qualification/candidates/backend-execution-20261012/client-knowledge/monday-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "label": "raw output docs/qualification/candidates/backend-execution-20261012/client-knowledge/monday-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "label": "owned group still absent 307308",
+      "pass": true
+    },
+    {
+      "label": "bounded captured exit attachments-initial.json",
+      "pass": true
+    },
+    {
+      "label": "raw output docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "label": "raw output docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "label": "owned group still absent 309049",
+      "pass": true
+    },
+    {
+      "label": "bounded captured exit monday-page-repair.json",
+      "pass": true
+    },
+    {
+      "label": "raw output docs/qualification/candidates/backend-execution-20261012/client-knowledge/monday-page-repair.stdout.bin",
+      "pass": true
+    },
+    {
+      "label": "raw output docs/qualification/candidates/backend-execution-20261012/client-knowledge/monday-page-repair.stderr.bin",
+      "pass": true
+    },
+    {
+      "label": "owned group still absent 310125",
+      "pass": true
+    },
+    {
+      "label": "bounded captured exit all-six-candidate.json",
+      "pass": true
+    },
+    {
+      "label": "raw output docs/qualification/candidates/backend-execution-20261012/client-knowledge/all-six-candidate.stdout.bin",
+      "pass": true
+    },
+    {
+      "label": "raw output docs/qualification/candidates/backend-execution-20261012/client-knowledge/all-six-candidate.stderr.bin",
+      "pass": true
+    },
+    {
+      "label": "owned group still absent 315960",
+      "pass": true
+    },
+    {
+      "label": "bounded captured exit attachments-fixture-repair.json",
+      "pass": true
+    },
+    {
+      "label": "raw output docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-fixture-repair.stdout.bin",
+      "pass": true
+    },
+    {
+      "label": "raw output docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-fixture-repair.stderr.bin",
+      "pass": true
+    },
+    {
+      "label": "owned group still absent 309174",
+      "pass": true
+    },
+    {
+      "label": "bounded captured exit attachments-coordinate-repair.json",
+      "pass": true
+    },
+    {
+      "label": "raw output docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-coordinate-repair.stdout.bin",
+      "pass": true
+    },
+    {
+      "label": "raw output docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-coordinate-repair.stderr.bin",
+      "pass": true
+    },
+    {
+      "label": "owned group still absent 313035",
+      "pass": true
+    },
+    {
+      "label": "bounded captured exit search-scope-repair.json",
+      "pass": true
+    },
+    {
+      "label": "raw output docs/qualification/candidates/backend-execution-20261012/client-knowledge/search-scope-repair.stdout.bin",
+      "pass": true
+    },
+    {
+      "label": "raw output docs/qualification/candidates/backend-execution-20261012/client-knowledge/search-scope-repair.stderr.bin",
+      "pass": true
+    },
+    {
+      "label": "owned group still absent 308032",
+      "pass": true
+    },
+    {
+      "label": "bounded captured exit memory-limitation-repair.json",
+      "pass": true
+    },
+    {
+      "label": "raw output docs/qualification/candidates/backend-execution-20261012/client-knowledge/memory-limitation-repair.stdout.bin",
+      "pass": true
+    },
+    {
+      "label": "raw output docs/qualification/candidates/backend-execution-20261012/client-knowledge/memory-limitation-repair.stderr.bin",
+      "pass": true
+    },
+    {
+      "label": "owned group still absent 315040",
+      "pass": true
+    }
+  ],
+  "scope": "OFFLINE_SOURCE_ONLY"
+}
