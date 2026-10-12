@@ -1,0 +1,185 @@
+{
+  "schema": "meri-independent-review-manifest/1",
+  "base": "ede7b56845816d38d0bbffab5a657aaa4f978739",
+  "canonicalSource": "fecf97a4a8b742c6c09b781d3b799816e8b548e4",
+  "rootReceipts": "9e8a6c8a2fe66d7b62813fd74163904fddaaf186",
+  "verdict": "ACCEPT_SOURCE",
+  "selfExcluded": true,
+  "entries": [
+    {
+      "path": "docs/coordination/reports/CODEX-BACKEND-NEXT-REVIEW-20261012.md",
+      "bytes": 5173,
+      "sha256": "3fb43c41e39a81d767dd294e4b761a29e13e6a8c235988d4bd40accc031e5ca1"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-review/.gitattributes",
+      "bytes": 50,
+      "sha256": "1bee6826ab8565b1a50079d470700a548e73e2363ea12450cf37ea13454b9eba"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-review/audit-packets.py",
+      "bytes": 2168,
+      "sha256": "7766e19045732998cb6b897bb99f7cb3fe7558c87c45bb115dde946d858c946a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-review/audit-root-receipts.py",
+      "bytes": 4339,
+      "sha256": "5d1de0e1e71587ad77645c87f835e5450bcd355294eb5797101fe52abe920b3a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-review/audit-source.py",
+      "bytes": 5824,
+      "sha256": "ebd519592687fd5b9e90a327a88bf23567f4ac86c15d04c537f694d3bd105452"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-review/audit-summary.json",
+      "bytes": 4903,
+      "sha256": "caa1cf819ecd9339cfd4a71339d99253d3e933bc2728f1375f70ac0bb98bff7e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-review/baseline-assessment.json",
+      "bytes": 1207,
+      "sha256": "5796801c6d184dec6401d20f2a8a76df2b42a54025a3d70695dafa7e6c42fb42"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-review/baseline-bindings.json",
+      "bytes": 33324,
+      "sha256": "7deaad27d7df50d640eb3b9fe5c795b7e473425ad9f3a8c678eac5d58caf155f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-review/baseline-catalog.json",
+      "bytes": 242133,
+      "sha256": "5c8a6ad710a9a48156dfabd0954d7d5c6150cd0720af014449a63d954838e218"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-review/candidate-fixture-correction.json",
+      "bytes": 1122,
+      "sha256": "d63a3f37e75e4d21dc32f0c086774f9016e436dee2ebf4ff95f47fb86c36ae78"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-review/candidate-fixture-preimage.mjs",
+      "bytes": 14863,
+      "sha256": "f4aed5a2dfc8051e3c35b7145d5da89f0479b38d86562ef9ff934edf33c36e68"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-review/criteria.md",
+      "bytes": 2604,
+      "sha256": "a0aaa4719ed7d62ae57542bade886282fcfea84f36f706fe173409449927370e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-review/dependencies.json",
+      "bytes": 1861,
+      "sha256": "01d80ac377127e18dab51f41e95669ee3011000b9bc25fcc5a9458061c5d6d11"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-review/exact-candidate.json",
+      "bytes": 1313,
+      "sha256": "b3e1328b315abf3c5df98a5cb0de01170c301c64a88459ef31d466734080fd77"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-review/exact-candidate.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-review/exact-candidate.stdout.bin",
+      "bytes": 13475,
+      "sha256": "8cd3a04d144a2a514dc68947ea5986ce7dcd3d1ea11c327e0352cf4242bf38a2"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-review/final-closure.json",
+      "bytes": 3013,
+      "sha256": "dd7877f1ed3a1e70c1b6d0089e935ea32b646c9b60490f78a47bd0c453bcd8fe"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-review/fixture-corrected.json",
+      "bytes": 1316,
+      "sha256": "e639ce0678ce735ad2a8ae6e83892e8cd5fa03013d7f75cadb69b0c4769a26e1"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-review/fixture-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-review/fixture-corrected.stdout.bin",
+      "bytes": 3166,
+      "sha256": "27051a7da52d1df5248b6749cd91f2a86dd6a504c14592a4111aff2f03473833"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-review/fixture-correction.json",
+      "bytes": 671,
+      "sha256": "dc41809aa7b8008e4fcd35ca78932915691c5fe07448bf76821b592b97919d95"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-review/original-baseline.json",
+      "bytes": 1317,
+      "sha256": "b8a1540adc025ecf2a6333c8031e10faa685b68e1018fd62ea6265d4c930556e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-review/original-baseline.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-review/original-baseline.stdout.bin",
+      "bytes": 30295,
+      "sha256": "5e05641fea9bdbb397c9764eb257de2fff7fd957a40364ef8d0310649d8d3be0"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-review/packet-audit.json",
+      "bytes": 1400,
+      "sha256": "5c93f9d7daf43c390c249850a781b043f8bf43a77c8b4c3ef6bbcf1610e50df2"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-review/packet-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-review/packet-audit.stdout.bin",
+      "bytes": 143609,
+      "sha256": "e30c90966d7ca048cf99de25fa158e5d8985a41b133b0d7b8a038955d4200f14"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-review/root-receipt-audit.json",
+      "bytes": 1416,
+      "sha256": "f63fcf0f03fa38f1dde7f36158f2b0f631770baa789aeec6f4b851aef9f5446a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-review/root-receipt-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-review/root-receipt-audit.stdout.bin",
+      "bytes": 9370,
+      "sha256": "b218f403675329ef3b8a3c88c41cea99ece51e389d7e7185f119b48a3f62511c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-review/source-audit.json",
+      "bytes": 1400,
+      "sha256": "0941e443e1be9d58c3810bd05ce47bdba357c499e3eba58315c34e86515553f1"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-review/source-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-review/source-audit.stdout.bin",
+      "bytes": 1181285,
+      "sha256": "4cfbbb89da15c5c2487546881943aeecd88dc61dc1cea95eb86c3ca0f71f18f5"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-backend-next-independent.test.mjs",
+      "bytes": 15101,
+      "sha256": "a0e91db09215e1f4722efe1e603c7ff032890ff14dcd350ad18625bbdfd5fa3c"
+    }
+  ]
+}
