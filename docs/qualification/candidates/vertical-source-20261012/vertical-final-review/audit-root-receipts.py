@@ -23,10 +23,10 @@ for label,path,expectExit in [('initial',prefix+'combined-source-check.json',1),
  for s in m['streams']:
   b=blob(packet,s['path']);ck(label+' stream bytes '+s['path'],len(b)==s['bytes'] and hashlib.sha256(b).hexdigest()==s['sha256']);streams.append(b)
  stdout=streams[0].decode('utf-8',errors='strict')
- counts={k:int(re.findall(r'^# '+k+r' (\d+)$',stdout,re.M)[-1]) for k in ['tests','pass','fail','cancelled','skipped']}
+ counts={k:int(re.findall(r'^(?:#|ℹ) '+k+r' (\d+)$',stdout,re.M)[-1]) for k in ['tests','pass','fail','cancelled','skipped']}
  if label=='initial':ck('preserved initial4881/4904 failure',counts=={'tests':4904,'pass':4881,'fail':23,'cancelled':0,'skipped':0})
  elif label=='public':
-  ck('public7 tests plus generation and types',counts=={'tests':7,'pass':7,'fail':0,'cancelled':0,'skipped':0} and 'check:generated' in stdout and 'check:types' in stdout)
+  ck('public7 tests plus generation and types',counts=={'tests':7,'pass':7,'fail':0,'cancelled':0,'skipped':0} and 'check:generated' in stdout and 'typecheck' in stdout)
   pfx=b'packages/contracts/';before=tree(m['sourceHead']);after=tree(candidate)
   protected=[p for p in before if p.startswith(pfx+b'dist/') or p in [pfx+b'meri.schema.json',pfx+b'validate.mjs',pfx+b'package.json',pfx+b'package-lock.json']]
   ck('public receipt remains byte-applicable',all(after.get(p)==before[p] for p in protected))
