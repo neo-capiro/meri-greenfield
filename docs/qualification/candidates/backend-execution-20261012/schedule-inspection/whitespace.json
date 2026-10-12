@@ -24,5 +24,20 @@
   ],
   "authoredExitCode": 2,
   "authoredOutput": "packages/runtime/operation-lifetime.mjs:54: new blank line at EOF.\n",
-  "disposition": "Preserve exact raw test failure output; do not normalize evidence. Two whitespace-only blank lines in before-failure stdout."
+  "disposition": "Raw failing stdout has two whitespace-only lines. Exact root-owned shared dependency has trailing blank line at EOF. Both are preserved; exclusive author source/task/report check excludes only root-owned shared dependency.",
+  "exclusiveAuthorCommand": [
+    "git",
+    "diff",
+    "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+    "HEAD",
+    "--check",
+    "--",
+    "apps/control/schedules/temporal-inspection.mjs",
+    "apps/control/test/temporal-inspection.test.mjs",
+    "packages/contracts/schedules-0.2",
+    "docs/coordination/tasks/CODEX-SCHEDULE-INSPECTION-20261012.md",
+    "docs/coordination/reports/CODEX-SCHEDULE-INSPECTION-20261012.md"
+  ],
+  "exclusiveAuthorExitCode": 0,
+  "exclusiveAuthorOutput": ""
 }

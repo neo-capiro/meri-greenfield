@@ -14,8 +14,8 @@
     },
     {
       "path": "docs/coordination/reports/CODEX-SCHEDULE-INSPECTION-20261012.md",
-      "bytes": 6598,
-      "sha256": "b6ca1334f967a1dcb494b3ae18852cc1a33473e93592af6192a38d53a6bb813a"
+      "bytes": 6795,
+      "sha256": "fe1705ec557dc26be5cbd9f755fb10402f097f92e7a2569d775ec3b757ff7d78"
     },
     {
       "path": "docs/coordination/tasks/CODEX-SCHEDULE-INSPECTION-20261012.md",
@@ -154,8 +154,8 @@
     },
     {
       "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/whitespace.json",
-      "bytes": 929,
-      "sha256": "01f6e9de182a878b472b4b2dceb417eee6264133fe20868e1c943ea927cd126b"
+      "bytes": 1520,
+      "sha256": "627eded6eb4a5e2a108883a11a40764404235107cd38d4dc3b19c101edb45631"
     },
     {
       "path": "packages/contracts/schedules-0.2/inspection-validation.mjs",
