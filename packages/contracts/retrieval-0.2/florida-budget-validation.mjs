@@ -115,7 +115,7 @@ export function createFloridaBudgetValidators({ validateShape, schema }) {
     newestFirst(result.documents); newestFirst(result.events);
     // No cross-array equality: independently read windows can legitimately differ.
     // Opaque JSON observations are not validated as invented money/award DTOs.
-    return value;
+    return page;
   }
 
   function classifyResult(id, value) {
