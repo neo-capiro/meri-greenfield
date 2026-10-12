@@ -47,3 +47,28 @@ test('normalized digest describes complete intent including immutable artifact v
  assert.notEqual(canonicalSha256(n.input),canonicalSha256(t.validators.normalizeCommandToolInput('artifact.file',bad,{commandContext:t.f.context}).input));
  assert.throws(()=>t.validators.normalizeCommandToolInput('artifact.file',bad,{commandContext:t.f.context,command:t.f.command}));
 });
+
+const registryRoot=process.env.MERI_COMMAND_REGISTRY_ROOT;
+const {pathToFileURL}=await import('node:url');
+const canonical=await import(registryRoot?pathToFileURL(registryRoot+'/packages/contracts/retrieval-0.2/validate.mjs'):new URL('../retrieval-0.2/validate.mjs',import.meta.url));
+const {createSourceDisabledGateway}=await import(registryRoot?pathToFileURL(registryRoot+'/apps/gateway/index.mjs'):new URL('../../../apps/gateway/index.mjs',import.meta.url));
+for(const [native,action] of [['create_task','task.create'],['update_task','task.update'],['save_memory','memory.propose'],['save_chat_attachments','artifact.file']]){
+ test(`canonical ${native} uses actual raw schema and command normalizer/output callbacks`,async()=>{
+  const t=setup(action),contract=canonical.resolveOperationContract({id:native,version:'0.2.0'}),options={commandContext:t.f.context,command:t.f.command,proposal:t.f.proposal};
+  assert.equal(contract.binding.action,action);assert.equal(contract.binding.group,'command-tools');assert.deepEqual(contract.binding.contextKeys,['commandContext','command','proposal']);
+  assert.equal(contract.binding.input,t.requestShape);assert.equal(contract.binding.output,t.outputShape);assert.equal(contract.descriptor.inputSchema.id,`urn:meri:commands:tool-interface:0.2.0#/$defs/${t.requestShape}`);
+  canonical.validateShape(t.requestShape,t.raw);const n=contract.normalizeInput(t.raw,options);assert.deepEqual(n.input,{arguments:t.f.command.arguments,attachments:t.f.command.attachments});assert.deepEqual(n.request,t.raw);
+  assert.deepEqual(contract.assertOutput({status:'approval_required',proposal:t.f.proposal},{...options,request:t.raw}),{status:'approval_required',proposal:t.f.proposal});
+  const observed=await t.f.make().execute(t.f.value,'synthetic');assert.deepEqual(contract.assertOutput(observed,{...options,request:t.raw}),observed);
+  assert.throws(()=>contract.normalizeInput({...t.raw,approved:true},options));assert.throws(()=>contract.normalizeInput(t.raw,{...options,authority:true}));
+  assert.throws(()=>contract.assertOutput({status:'absent',outcome:null},{...options,request:t.raw}));
+  assert.throws(()=>canonical.resolveOperationContract({id:native,version:'0.1.0'}));
+ });
+ test(`canonical ${native} production gateway remains unavailable before authority/budget`,async()=>{
+  const t=setup(action),contract=canonical.resolveOperationContract({id:native,version:'0.2.0'});
+  assert.equal(contract.descriptor.handler,null);assert.equal(contract.descriptor.availability,'unimplemented');assert.equal(contract.descriptor.qualification,'pending');assert.equal(contract.descriptor.retry.maxRetries,0);
+  const gateway=createSourceDisabledGateway({authorityPorts:t.f.ports,budget:t.f.budget,limits:{maxRequestMs:500,maxRequestBytes:65536,maxResponseBytes:65536,maxArgumentBytes:65536,maxCleanupMs:30,maxBudgetAckBytes:4096,maxFactBytes:65536},now:()=>t.f.state.now,newId:()=>id(30)});
+  await assert.rejects(gateway.execute(JSON.stringify({operation:{id:native,version:'0.2.0'},arguments:t.raw}),'synthetic'),/UNAVAILABLE/);
+  assert.deepEqual(t.f.calls,[]);assert.equal(t.f.state.effects,0);assert.equal(gateway.sourceEnabled,false);
+ });
+}
