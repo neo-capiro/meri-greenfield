@@ -1,0 +1,34 @@
+{
+  "sourceHead": "1f7ad5726541f0ab5a103b9e0b2152c260350dbd",
+  "schemaId": "urn:meri:retrieval:program-elements:0.2.0",
+  "factory": "createProgramElementValidators({validateShape,schema})",
+  "normalizer": "normalizeProgramElementInput(operation, raw, context)",
+  "assertOutput": "assertProgramElementOutput(operation, result, raw, context)",
+  "contextKeys": [
+    "evidenceAccuracyMode"
+  ],
+  "contextDefinition": "ProgramElementContext",
+  "definitions": {
+    "search_program_elements": {
+      "Request": "ProgramElementSearchRequest",
+      "Input": "ProgramElementSearchInput",
+      "Output": "ProgramElementSearchOutput"
+    },
+    "get_program_element": {
+      "Request": "ProgramElementDetailRequest",
+      "Input": "ProgramElementDetailInput",
+      "Output": "ProgramElementDetailOutput"
+    },
+    "get_pe_budget_timeline": {
+      "Request": "ProgramElementTimelineRequest",
+      "Input": "ProgramElementTimelineInput",
+      "Output": "ProgramElementTimelineOutput"
+    }
+  },
+  "authority": false,
+  "sourceEnabled": false,
+  "runtimeQualified": false,
+  "rawDecimalWire": "New lossless Meri decimal-string|null adapter prerequisite; legacy serialization unproven",
+  "return": "Detached canonical inert admitted result",
+  "rootIntegrationPending": true
+}
