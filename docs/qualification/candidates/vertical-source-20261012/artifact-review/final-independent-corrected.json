@@ -1,0 +1,38 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/artifact-execution-independent.test.mjs",
+    "packages/contracts/test/artifact-execution-independent-general.test.mjs",
+    "apps/artifacts/test/artifact-service-independent.test.mjs",
+    "apps/artifacts/test/artifact-adapters-independent.test.mjs",
+    "apps/artifacts/test/artifact-process-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-artifact-execution-review-20261012",
+  "sourceHead": "a6652cbf2d57c7528e255b5734ffadd155463074",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T22:29:27.564902+00:00",
+  "durationSeconds": 1.932,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 370383,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/final-independent-corrected.stdout.bin",
+      "bytes": 6411,
+      "sha256": "dc19a428ab7122855cd758da4cb9e59b5c58d0614a4d1d31f10f9df1da0902cc"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/final-independent-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
