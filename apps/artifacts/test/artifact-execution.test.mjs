@@ -138,4 +138,13 @@ test('failed generation retains cause and budget reconciliation identity',async(
 test('CRC-invalid PNG remains an explicit refusal, without fixing or fetching the asset',async()=>fixture(async({service,store})=>{
   const bad=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aR2kAAAAASUVORK5CYII=','base64'),c=context();c.assets=[{id:'bad',object:await store.objects.put({objectId:randomUUID(),bytes:bad,scopes:c.scopes,requestSha256:'fixture'})}];
   await assert.rejects(service.create({...word,content:{blocks:[{kind:'image',assetId:'bad',widthInches:1,heightInches:1}]}},c),/ARTIFACT_PROCESS_FAILED/);
+  await assert.rejects(service.create({...slides,content:{slides:[{title:'Bad image',image:{kind:'image',assetId:'bad',widthInches:1,heightInches:1}}]}},c),/ARTIFACT_PROCESS_FAILED/);
+}));
+test('pandas arithmetic refuses integers outside safe output range instead of signed wraparound',async()=>fixture(async({service})=>{
+  const request={operation:'run_analysis',format:'zip',title:'Range',content:{tables:[{name:'data',columns:['v'],rows:[[9007199254740991]]}],source:'data',steps:[{kind:'derive',name:'product',left:'v',operator:'multiply',right:2048}]}};
+  await assert.rejects(service.create(request,context()),/ARTIFACT_PROCESS_FAILED/);
+}));
+test('pandas aggregates refuse numeric overflow instead of wrapping',async()=>fixture(async({service})=>{
+  const request={operation:'run_analysis',format:'zip',title:'Range',content:{tables:[{name:'data',columns:['v'],rows:[[9007199254740991],[9007199254740991]]}],source:'data',steps:[{kind:'aggregate',groupBy:[],column:'v',function:'sum',name:'sum'}]}};
+  await assert.rejects(service.create(request,context()),/ARTIFACT_PROCESS_FAILED/);
 }));

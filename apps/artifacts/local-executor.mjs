@@ -17,6 +17,11 @@ export function createLocalArtifactExecutor({pythonExecutable,nodeExecutable,ppt
       const generationRequest=request.format==='pdf'?{...request,format:'docx'}:request;
       const input=Buffer.from(JSON.stringify({request:generationRequest,maxBytes,base:base?{request:base.request,base64:base.bytes.toString('base64')}:null,assets:assets.map(a=>({id:a.id,base64:a.bytes.toString('base64')}))}));if(input.length>16777216)throw error('ARTIFACT_INPUT_LIMIT');
       const presentation=request.format==='pptx';
+      if(presentation&&assets.length){
+        const validation=await runArtifactProcess(pythonExecutable,['-I','-B',join(here,'python/entry.py'),'--validate-assets'],{cwd:dir,input,signal,deadlineMs:Math.min(deadlineMs,Date.now()+timeoutMs)});
+        const manifest=JSON.parse(validation.stdout.toString('utf8'));
+        if(!manifest||Object.keys(manifest).join()!=='assets'||!Array.isArray(manifest.assets)||manifest.assets.length!==assets.length||manifest.assets.some((entry,index)=>entry.id!==assets[index].id||entry.sha256!==sha(assets[index].bytes)||entry.bytes!==assets[index].bytes.length))throw error('ARTIFACT_ASSET_VALIDATION_MISMATCH');
+      }
       const run=await runArtifactProcess(presentation?nodeExecutable:pythonExecutable,presentation?['--max-old-space-size=256',join(here,'presentation.mjs'),pptxModulePath]:['-I','-B',join(here,'python/entry.py')],{cwd:dir,input,signal,deadlineMs:Math.min(deadlineMs,Date.now()+timeoutMs)});receipt=run.receipt;
       const output=join(dir,'artifact.'+generationRequest.format),stat=await lstat(output);if(!stat.isFile()||stat.isSymbolicLink()||stat.size>maxBytes)throw error('ARTIFACT_OUTPUT_LIMIT');
       let bytes=await readFile(output),inspection=JSON.parse(run.stdout.toString('utf8'));
