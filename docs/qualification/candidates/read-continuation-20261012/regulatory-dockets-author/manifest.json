@@ -1,0 +1,70 @@
+{
+  "sourceFreeze": "57e09ebfda15d6057bdf4bfb7fc84b4061eac03f",
+  "report": "docs/coordination/reports/CODEX-REGULATORY-DOCKETS-AUTHOR-20261012.md",
+  "exclusions": [
+    "manifest.json self reference",
+    "verification.json derived output"
+  ],
+  "files": [
+    {
+      "path": "docs/coordination/reports/CODEX-REGULATORY-DOCKETS-AUTHOR-20261012.md",
+      "bytes": 5607,
+      "sha256": "9599d2c742c88b6bf25b6103ff59ac377592935fc65cd57bdacf69ba810678d5"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-author/build-schema.py",
+      "bytes": 1826,
+      "sha256": "e2dc74a71009712849bedb4f41d940d6b890f965f150fb739643f8e39eed5351"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-author/focused-initial-source.patch",
+      "bytes": 22869,
+      "sha256": "1b45c888c2f68cf9168a81178cd4e8b4e84e4304e8dea526db4a69c900c17b3e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-author/focused-initial.json",
+      "bytes": 1321,
+      "sha256": "d3d55dfce2bf2b992caa273ac0b7be4c1de2d6d5b72eec0a3d7b25aadb70d415"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-author/focused-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-author/focused-initial.stdout.bin",
+      "bytes": 2098,
+      "sha256": "e184b2265a261e9fb195b8dd7199e93cb8f8a542755b8e7372c841970f508a01"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-author/inspect-references.cjs",
+      "bytes": 8362,
+      "sha256": "c8d1663313bb8bb03ab9d3060d45198f2b424b65146a53a94dffad2fd9eae371"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-author/outline.json",
+      "bytes": 2343,
+      "sha256": "eac35b2f87865aff33463dbc21f5535e6578bf9a3721da24045c35eaa331fcef"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-author/reference-identities.json",
+      "bytes": 6947,
+      "sha256": "abe5e85ce804c8596bba8f3546a9a9bd1db4da64f78b862728153726e06a3a64"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-author/source-preservation.json",
+      "bytes": 1689,
+      "sha256": "bfab49ec1f1ebd27725fcbdd9a1020a570188a9db17cc3f3aca52b697772434c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-author/verify.py",
+      "bytes": 3539,
+      "sha256": "13a6c267560d57ff48da99ac0846a97a9629448a34f179688b339da8b62fa783"
+    }
+  ]
+}
