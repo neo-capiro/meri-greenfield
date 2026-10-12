@@ -1,0 +1,152 @@
+{
+  "scope": "Read-only receipt audit; original author bytes retained by their owner",
+  "passed": 5,
+  "failed": 0,
+  "receipts": [
+    {
+      "receipt": "docs/qualification/candidates/read-continuation-20261012/bill-text-author/root-source-check.json",
+      "receiptBytes": 1344,
+      "receiptSha256": "39429e9aff5e6df27f2393dc74904b172d5f5394c186552085a0058ca6fa0588",
+      "sourceHead": "0bdd1ce12b9263ad522e87e5f6f5105dee16dade",
+      "sourceDiffBytes": 0,
+      "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "boundCandidate": "0bdd1ce12b9263ad522e87e5f6f5105dee16dade",
+      "exactDiffBinding": true,
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "testCounts": [
+        "\u2139 tests 952",
+        "\u2139 pass 952",
+        "\u2139 fail 0"
+      ],
+      "streams": [
+        {
+          "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-author/root-source-check.stdout.bin",
+          "bytes": 89197,
+          "sha256": "4437ae7a08931675f097c3be28c1151f193706cffa16558e342fd5fd17000dca"
+        },
+        {
+          "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-author/root-source-check.stderr.bin",
+          "bytes": 208,
+          "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+        }
+      ]
+    },
+    {
+      "receipt": "docs/qualification/candidates/read-continuation-20261012/bill-text-author/public-distribution.json",
+      "receiptBytes": 1422,
+      "receiptSha256": "6cc711a96e6e741fcdabd20af5551c1f1304c6eb078cfbdd8dfddf4d49088d6f",
+      "sourceHead": "0bdd1ce12b9263ad522e87e5f6f5105dee16dade",
+      "sourceDiffBytes": 0,
+      "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "boundCandidate": "0bdd1ce12b9263ad522e87e5f6f5105dee16dade",
+      "exactDiffBinding": true,
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "testCounts": [
+        "\u2139 tests 7",
+        "\u2139 pass 7",
+        "\u2139 fail 0"
+      ],
+      "streams": [
+        {
+          "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-author/public-distribution.stdout.bin",
+          "bytes": 2046,
+          "sha256": "737cacb67e12860b4e7758827fce4cbf5c99574946d78a34dbaf6278d489a9fe"
+        },
+        {
+          "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-author/public-distribution.stderr.bin",
+          "bytes": 1040,
+          "sha256": "cbbd466f3bf458f7f516c133ea486c1aada38d325ec9a80b698c26da8c18237f"
+        }
+      ]
+    },
+    {
+      "receipt": "docs/qualification/candidates/read-continuation-20261012/bill-text-author/repaired-root-check.json",
+      "receiptBytes": 1374,
+      "receiptSha256": "a88baf0b5a6fa000ef4af7c737c2ee6ae76d6dfed71a37ee286123cae7dba261",
+      "sourceHead": "7caaac302ac90090cd34f9f23cda78eb0a0de69e",
+      "sourceDiffBytes": 0,
+      "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "boundCandidate": "7caaac302ac90090cd34f9f23cda78eb0a0de69e",
+      "exactDiffBinding": true,
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "testCounts": [
+        "\u2139 tests 954",
+        "\u2139 pass 954",
+        "\u2139 fail 0"
+      ],
+      "streams": [
+        {
+          "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-author/repaired-root-check.stdout.bin",
+          "bytes": 89371,
+          "sha256": "fec7c1c3c8b871c202f13aff3db193ff6b2688d3166c053448f6120917371127"
+        },
+        {
+          "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-author/repaired-root-check.stderr.bin",
+          "bytes": 208,
+          "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+        }
+      ]
+    },
+    {
+      "receipt": "docs/qualification/candidates/read-continuation-20261012/bill-text-author/final-root-check.json",
+      "receiptBytes": 1379,
+      "receiptSha256": "8f2843f8189c9d2dde39d7e7967bb0e62f1956ecbbbf4128b144c4d3cc4356be",
+      "sourceHead": "4980080fc19315559de322e9010f16db7f4fea23",
+      "sourceDiffBytes": 0,
+      "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "boundCandidate": "4980080fc19315559de322e9010f16db7f4fea23",
+      "exactDiffBinding": true,
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "testCounts": [
+        "\u2139 tests 955",
+        "\u2139 pass 955",
+        "\u2139 fail 0"
+      ],
+      "streams": [
+        {
+          "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-author/final-root-check.stdout.bin",
+          "bytes": 89522,
+          "sha256": "16191c04211c83fd918665f2a9ae4a7727a61703af8b600cad992fa67d11c737"
+        },
+        {
+          "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-author/final-root-check.stderr.bin",
+          "bytes": 208,
+          "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+        }
+      ]
+    },
+    {
+      "receipt": "docs/qualification/candidates/read-continuation-20261012/bill-text-author/revision-uuid-repaired.json",
+      "receiptBytes": 1348,
+      "receiptSha256": "cc795bac2521adedaff7790204da4a0dd68a064d43a79c934d88f5f557a7b20d",
+      "sourceHead": "4980080fc19315559de322e9010f16db7f4fea23",
+      "sourceDiffBytes": 2301,
+      "sourceDiffSha256": "b673d9974dab4cffa9f0d2d8613f462cc8f21bd426d7aeda0709fefb9ac816e6",
+      "boundCandidate": "079c9fd8c88375f55d6f3d5cadd16763c98e63c7",
+      "exactDiffBinding": true,
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "testCounts": [
+        "\u2139 tests 28",
+        "\u2139 pass 28",
+        "\u2139 fail 0"
+      ],
+      "streams": [
+        {
+          "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-author/revision-uuid-repaired.stdout.bin",
+          "bytes": 2880,
+          "sha256": "e712d06fd30864dc1ac4d38590ba72d5e9c760679666083a9a3557b4bcdf930b"
+        },
+        {
+          "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-author/revision-uuid-repaired.stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,226 @@
+{
+  "source": "079c9fd8c88375f55d6f3d5cadd16763c98e63c7",
+  "sourceTree": "292208a5a5909a8be5713b8560673383ea635fcb",
+  "scope": "SOURCE_AND_EVIDENCE_ONLY",
+  "receiptCount": 11,
+  "passed": 54,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "exact source pin",
+      "passed": true
+    },
+    {
+      "name": "only five allocated additive source files",
+      "passed": true
+    },
+    {
+      "name": "every original tracked file preserved",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/retrieval-0.2/bill-text.schema.json: exact reviewed bytes",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/retrieval-0.2/bill-text-validation.mjs: exact reviewed bytes",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/retrieval-0.2/bill-text-cursor.mjs: exact reviewed bytes",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/retrieval-0.2/congressional-identity.mjs: exact reviewed bytes",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/test/retrieval-bill-text.test.mjs: exact reviewed bytes",
+      "passed": true
+    },
+    {
+      "name": "canonical shared helper dependency unchanged",
+      "passed": true
+    },
+    {
+      "name": "private schema namespace",
+      "passed": true
+    },
+    {
+      "name": "schemas use closed envelopes",
+      "passed": true
+    },
+    {
+      "name": "CongressBillSearchInput: no model authority fields",
+      "passed": true
+    },
+    {
+      "name": "BillTextReadInput: no model authority fields",
+      "passed": true
+    },
+    {
+      "name": "single canonical resolver imported",
+      "passed": true
+    },
+    {
+      "name": "canonical JSON snapshot imported in both modules",
+      "passed": true
+    },
+    {
+      "name": "validator: no I/O or SDK imports",
+      "passed": true
+    },
+    {
+      "name": "cursor: no I/O or SDK imports",
+      "passed": true
+    },
+    {
+      "name": "unavailable metadata sourceConnected:false",
+      "passed": true
+    },
+    {
+      "name": "unavailable metadata producerQualified:false",
+      "passed": true
+    },
+    {
+      "name": "unavailable metadata absenceEvidence:false",
+      "passed": true
+    },
+    {
+      "name": "unavailable metadata currentPointerQualified:false",
+      "passed": true
+    },
+    {
+      "name": "date-format-before.json: bounded clean source-only process",
+      "passed": true
+    },
+    {
+      "name": "date-format-before.json: stdout byte identity",
+      "passed": true
+    },
+    {
+      "name": "date-format-before.json: stderr byte identity",
+      "passed": true
+    },
+    {
+      "name": "independent-expanded.json: bounded clean source-only process",
+      "passed": true
+    },
+    {
+      "name": "independent-expanded.json: stdout byte identity",
+      "passed": true
+    },
+    {
+      "name": "independent-expanded.json: stderr byte identity",
+      "passed": true
+    },
+    {
+      "name": "independent-final.json: bounded clean source-only process",
+      "passed": true
+    },
+    {
+      "name": "independent-final.json: stdout byte identity",
+      "passed": true
+    },
+    {
+      "name": "independent-final.json: stderr byte identity",
+      "passed": true
+    },
+    {
+      "name": "independent-first.json: bounded clean source-only process",
+      "passed": true
+    },
+    {
+      "name": "independent-first.json: stdout byte identity",
+      "passed": true
+    },
+    {
+      "name": "independent-first.json: stderr byte identity",
+      "passed": true
+    },
+    {
+      "name": "independent-fixtures-corrected.json: bounded clean source-only process",
+      "passed": true
+    },
+    {
+      "name": "independent-fixtures-corrected.json: stdout byte identity",
+      "passed": true
+    },
+    {
+      "name": "independent-fixtures-corrected.json: stderr byte identity",
+      "passed": true
+    },
+    {
+      "name": "output-uuid-before.json: bounded clean source-only process",
+      "passed": true
+    },
+    {
+      "name": "output-uuid-before.json: stdout byte identity",
+      "passed": true
+    },
+    {
+      "name": "output-uuid-before.json: stderr byte identity",
+      "passed": true
+    },
+    {
+      "name": "selector-before.json: bounded clean source-only process",
+      "passed": true
+    },
+    {
+      "name": "selector-before.json: stdout byte identity",
+      "passed": true
+    },
+    {
+      "name": "selector-before.json: stderr byte identity",
+      "passed": true
+    },
+    {
+      "name": "selector-repaired.json: bounded clean source-only process",
+      "passed": true
+    },
+    {
+      "name": "selector-repaired.json: stdout byte identity",
+      "passed": true
+    },
+    {
+      "name": "selector-repaired.json: stderr byte identity",
+      "passed": true
+    },
+    {
+      "name": "source-audit-repaired.json: bounded clean source-only process",
+      "passed": true
+    },
+    {
+      "name": "source-audit-repaired.json: stdout byte identity",
+      "passed": true
+    },
+    {
+      "name": "source-audit-repaired.json: stderr byte identity",
+      "passed": true
+    },
+    {
+      "name": "source-audit.json: bounded clean source-only process",
+      "passed": true
+    },
+    {
+      "name": "source-audit.json: stdout byte identity",
+      "passed": true
+    },
+    {
+      "name": "source-audit.json: stderr byte identity",
+      "passed": true
+    },
+    {
+      "name": "uuid-repaired-final.json: bounded clean source-only process",
+      "passed": true
+    },
+    {
+      "name": "uuid-repaired-final.json: stdout byte identity",
+      "passed": true
+    },
+    {
+      "name": "uuid-repaired-final.json: stderr byte identity",
+      "passed": true
+    }
+  ]
+}

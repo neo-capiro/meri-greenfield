@@ -1,0 +1,20 @@
+# Independent bill-text source review
+
+**ACCEPT_SOURCE** for `079c9fd8c88375f55d6f3d5cadd16763c98e63c7`, tree `292208a5a5909a8be5713b8560673383ea635fcb`: the private `search_congress_bills` / `read_bill_text` DTO factory, schema and cursor decoder. Shared congressional resolver bytes match dependency `621346846`; this review adds no production source. Criteria were frozen at `ac306bd` before candidate receipt. Catalog binding and runtime/source activation are not accepted here.
+
+The exact candidate passes **78/78 independent controls**, **45/45 immutable-source metadata assertions**, and **54/54 source/preservation/capture assertions**. All eleven process receipts present at that audit confirm physical owned-group absence. Five author receipts were independently byte/hash/diff-bound: full checks952/952 at original source,954/954 after selector repair,955/955 after date admission; public distribution7/7 at original source; final UUID repair28/28 focused. The broad checks preceded the final narrow UUID-schema repair; exact final source has the independent78 plus author28, not a claimed final broad replay.
+
+Search tests distinguish metadata/direct/text branches, separate count races, pre-trimming returned+omitted counts, mixed-version passage cursors, exact request filters and the10500 `JSON.stringify` UTF-16 ceiling. Read tests cover generic stored UUID versus cursor-v4, byte-canonical base64url including whitespace JSON, stale revision/hash/version, offsets, EOF, surrogate boundaries, six locator windows, rendered framing, untrusted text and incomplete excerpt coverage. Hostile getters, prototypes, cyclic/nonfinite JSON and model-supplied authority are refused without executing hooks.
+
+Failures and corrections remain intact:
+
+- Review metadata checker44/1: its allowlist omitted the pure `billId` parameter; exact original checker retained, corrected45/45.
+- Pre-candidate fixture replay46/15: placeholder wire notes, guessed `resolvedBy`, internal tokenizer shape and a false atomic-count assumption were corrected against exact references. Original file/streams remain. Corrected61/61; no source weakening.
+- Author-discovered selector gaps independently reproduced62/2 on `0bdd1ce`; unchanged controls passed64/64 after `7caaac3`. `activeSince` constrains **latestActionDate**, correcting earlier discovery prose that said updateDate. Direct/text branches ignore this metadata-only selector.
+- Root-approved date admission independently reproduced76/1, then77/77 at `4980080`. Successful metadata uses ISO date or an explicit-zone date-time, avoiding host-local parsing.
+- Author-discovered output UUID overrestriction independently reproduced77/1, then78/78 at final `079c9fd`. Generic stored UUIDs remain compatible; cursor-v4 refusal stays unchanged.
+- Earlier returned-only interpretation of search continuation was corrected in `count-correction.json`: `listed` is captured before trimming. Original history remains.
+
+Deliberate admission limits are explicit: typed integers replace permissive scalar coercion; the hard10500 serialized limit can refuse a giant final group that the old producer leaves; returned continuation version must agree even without an explicit version selector. Lowercase64 hashes follow the pinned persistence writer's SHA256/hex convention (contentHash from rawContent, extractionHash from extractedText), not a claimed CHAR64 database constraint or proof of stored-row provenance. Metadata/table fields and all original files, public0.1, private0.2 registry/catalog and the139/96/43 scope are preserved.
+
+**HOLD** remains for catalog integration, actual current-pointer/data provenance, query tokenizer/rank/content agreement, database consistency, source authorization/entitlement, gateway release and runtime execution. No private implementation was copied/imported/executed; no native, SQL, provider or model calls occurred. Evidence: `docs/qualification/candidates/read-continuation-20261012/bill-text-review/`; final manifest binds this report, reviewer test and preserved raw failures.
