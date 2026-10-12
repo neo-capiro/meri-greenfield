@@ -1,0 +1,56 @@
+✔ independent hostile operation selector refusal before coercion: public-data (2.094247ms)
+✖ independent hostile shape selector refusal before coercion: public-data (0.880273ms)
+✔ independent hostile operation selector refusal before coercion: state-legislation (0.822887ms)
+✖ independent hostile shape selector refusal before coercion: state-legislation (0.255394ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 2
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1354.68046
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-read-continuation-independent.test.mjs:262:3
+✖ independent hostile shape selector refusal before coercion: public-data (0.880273ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  10 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/meri-read-continuation-integration-review-20261012/packages/contracts/test/retrieval-read-continuation-independent.test.mjs:268:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 10,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-read-continuation-independent.test.mjs:262:3
+✖ independent hostile shape selector refusal before coercion: state-legislation (0.255394ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  10 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/meri-read-continuation-integration-review-20261012/packages/contracts/test/retrieval-read-continuation-independent.test.mjs:268:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 10,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,36 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-name-pattern",
+    "hostile.*selector",
+    "packages/contracts/test/retrieval-read-continuation-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-read-continuation-integration-review-20261012",
+  "sourceHead": "3abf648ccebd88e0758c64cd9ee1eec36269d7f2",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T16:51:33.554227+00:00",
+  "durationSeconds": 1.419,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 162724,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/integration-review/selector-after-first-repair.stdout.bin",
+      "bytes": 2495,
+      "sha256": "871c7ab7d01a494a4ebbc7d05630f1ab38c7ca9d9d4f1082557e159f2a10f043"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/integration-review/selector-after-first-repair.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
