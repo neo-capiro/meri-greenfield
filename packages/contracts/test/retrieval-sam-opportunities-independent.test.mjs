@@ -142,3 +142,7 @@ test('independent SAM: canonical resolver binds context and immutable argument d
  const catalog={operations:[{operation:{id,version:'0.2.0'},handler:null,status:'unavailable'}]},resolver=createOperationContracts({catalog,bindings:[binding],validators:v,assertCatalog(){},canonicalSha256});
  const contract=resolver.resolveOperationContract({id,version:'0.2.0'}),request={query:' Synthetic '},n=contract.normalizeInput(request,context);assert.equal(n.argumentsSha256,canonicalSha256(n.input));assert.ok(Object.isFrozen(n.request));assert.ok(Object.isFrozen(n.input));contract.assertOutput(result(),{request:n.request,...context});assert.throws(()=>contract.assertOutput(result(),context));assert.equal(contract.descriptor.handler,null);
 });
+
+test('independent SAM: finite raw health date spellings are parsed, not rewritten as trusted instants',()=>{
+ for(const lastSyncedAt of ['2026-10-12','2026-10-12T02:00:00+02:00']){const p=result();p.sourceFreshness[0].lastSyncedAt=lastSyncedAt;check(p);assert.equal(p.sourceFreshness[0].lastSyncedAt,lastSyncedAt);}
+});
