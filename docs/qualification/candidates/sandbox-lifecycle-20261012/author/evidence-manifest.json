@@ -218,6 +218,11 @@
       "sha256": "1f215a902903f6d143d47d72b260cf0d05304294aaa09f3e037be1dafc65799c"
     },
     {
+      "path": "packet-hygiene.json",
+      "bytes": 354,
+      "sha256": "7d7ac1ae4e933c5020a23e243183fa8c7fa9d0a34d81532c1ebb87f15ddeaf90"
+    },
+    {
       "path": "public-distribution.json",
       "bytes": 1410,
       "sha256": "89892c11f7079d1f6158904237f51527e5607ab54caddddce376b76208d6755f"
@@ -231,6 +236,11 @@
       "path": "public-distribution.stdout.bin",
       "bytes": 2043,
       "sha256": "21346074759b755a8964363d5131446cd7e3f5a1c827ab2fed6e4563cc5482e9"
+    },
+    {
+      "path": "raw-evidence-whitespace.stdout.bin",
+      "bytes": 2754,
+      "sha256": "5639d8ccd769b6ac2d44fb2ae64a63583bcd487b478be65f5ef7a5536eaf402c"
     },
     {
       "path": "reviewer-baseline-offline-command.json",
