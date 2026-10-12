@@ -1,0 +1,43 @@
+{
+  "status": "HOLD",
+  "candidate": "27cc7469620ae3526ed8cdcea01e0507d5322883",
+  "actual": "Explicit pageSize=1 permits two records in healthy/degraded pages.",
+  "basis": "Pinned managed Monday adapter normal slice and degraded first-page slice both honor explicit page size; absent and cursor-only window remains separate.",
+  "check": {
+    "command": [
+      "node",
+      "--test",
+      "packages/contracts/test/retrieval-client-knowledge-monday-independent.test.mjs",
+      "packages/contracts/test/retrieval-client-knowledge-monday.test.mjs"
+    ],
+    "cwd": "/workspace/meri-client-knowledge-review-20261012",
+    "sourceHead": "ac013547967b1dd155a334beab9621de0750707f",
+    "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "sourceDiffBytes": 0,
+    "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+    "startedAt": "2026-10-12T20:47:42.486263+00:00",
+    "durationSeconds": 0.266,
+    "exitCode": 1,
+    "timedOut": false,
+    "ownedPidAndPgid": 309933,
+    "ownedProcessGroupAbsent": true,
+    "ownedGroupKillRequired": false,
+    "reapedDescendants": [],
+    "streams": [
+      {
+        "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/monday-initial.stdout.bin",
+        "bytes": 3078,
+        "sha256": "b0dca267a92c133c6c2b82fceec4ef8057ccc21a2da9204555bb270dd5d94ebe"
+      },
+      {
+        "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/monday-initial.stderr.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ],
+    "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+    "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+  },
+  "requestedRepair": "Require records.length <= normalized nonnull pageSize; preserve absent/cursor-only behavior.",
+  "productionEdited": false
+}

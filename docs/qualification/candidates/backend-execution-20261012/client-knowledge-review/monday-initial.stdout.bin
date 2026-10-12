@@ -1,0 +1,51 @@
+✔ Monday reuses existing coverage schema and exposes one exact operation (1.75001ms)
+✔ omitted page size differs from explicit null and preserves requireComplete (0.959893ms)
+✔ source numeric conversion clamps and truncates explicit page sizes (0.323997ms)
+✔ cursor opts into paging and selectors retain UTF16 caps (0.19966ms)
+✔ client UUID is wrapper-owned syntax but model authority and unknown fields refuse (0.369816ms)
+✔ managed row supports omitted untyped provider fields and inert opaque values (3.106127ms)
+✔ item and subitem provenance are exact without inventing parent visibility (0.853542ms)
+✔ record identity and client correlation prevent substitutions and duplicate IDs (1.505713ms)
+✔ status is nullable or trimmed source text with no provider status enum (1.591442ms)
+✔ URL is nullable or source-accepted Monday tenant URL without generic trust claim (1.229548ms)
+✔ wrapper status correlates first source and domains remain Monday (0.424147ms)
+✖ explicit requested page size bounds even degraded result records (1.94307ms)
+✔ unavailable and empty source observations never acquire absence flags (0.393612ms)
+✔ current source actor is only an observation until adapter authority is qualified (0.374773ms)
+✔ Monday result is detached and getters/proxies never execute (0.361713ms)
+✔ Monday normalized complete/page distinction and Number string semantics (6.695533ms)
+✔ Monday requires UUID and bounded trimmed selectors (0.562045ms)
+✔ Monday full provider JSON fields stay inert without invented scalar types (25.543228ms)
+✔ Monday parent and provenance binding preserves subitems (0.863929ms)
+✔ Monday current status echoes first coverage source including unavailable (0.570317ms)
+✔ Monday client, record, domain and duplicate substitutions fail (2.40904ms)
+✔ Monday invalid cursors remain bounded request data awaiting source refusal (0.426111ms)
+✔ Monday source-only data detaches and rejects getters (0.585139ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 22
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 190.975421
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-client-knowledge-monday-independent.test.mjs:19:1
+✖ explicit requested page size bounds even degraded result records (1.94307ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-client-knowledge-review-20261012/packages/contracts/test/retrieval-client-knowledge-monday-independent.test.mjs:19:119)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }

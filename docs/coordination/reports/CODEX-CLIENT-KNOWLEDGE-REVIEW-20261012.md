@@ -15,3 +15,7 @@ First combined run42/44 retained two reviewer expectation issues: ignored numeri
 The 21 primary source/policy/schema reference pairs are hash-pinned and unchanged. This is a partial reference inventory while the remaining four operations are traced. Source imports only the canonical inert snapshot helper. KB score >0.2 and UTF-16 same-text excerpts remain candidate retrieval, not confidence or completeness proof. Query embeddings and stored tenant/wall reads are runtime dependencies, never exercised here. Graph labels/connections are opaque, unescaped source text; numeric summary counts reflect the pre-cap connections but do not authenticate edges or grant current authority.
 
 The initial import-regex discovery failure is recorded without retaining its overbroad token output. Import extraction now uses TypeScript ImportDeclaration nodes only. No private implementation is imported or executed. Full author packet audit remains pending.
+
+## Monday initial failure
+
+HOLD at `27cc7469`: 22/23 combined controls passed. The unchanged independent explicit-page-size negative accepted two records for pageSize=1, although both normal and partial-first-page producer slices honor that bound. No generic coverage completeness/count relation was inferred from the shared declared DTO. The raw failure is preserved; the author has supplied a narrow repair for exact replay.
