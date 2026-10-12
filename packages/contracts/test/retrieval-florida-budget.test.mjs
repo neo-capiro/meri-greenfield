@@ -80,7 +80,7 @@ test('scope substitutions reject session, folder, client and jurisdiction change
  assert.throws(()=>v.normalizeInput(id,req,context({folderId:'else',sessionKey:'2026'})));
 });
 test('empty response is selected data with no completeness or absence inference',()=>{
- const p=output();assert.equal(check(p),p);assert.equal(v.classifyResult(id,p).absenceEvidence,false);
+ const p=output();assert.deepEqual(check(p),p);assert.notStrictEqual(check(p),p);assert.equal(v.classifyResult(id,p).absenceEvidence,false);
  for(const key of ['complete','total','hasMore','awardedAmount']){const q=output();q.result[key]=0;assert.throws(()=>check(q));}
 });
 test('full projected arrays preserve opaque JSON and nullable fields',()=>{
