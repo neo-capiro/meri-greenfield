@@ -1,6 +1,6 @@
 # Gateway budget native-test source review — 2026-10-12
 
-Reviewer: gateway_reviewer. Exact base: PR16 `e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5`. Isolated branch `review/meri-g1-budget-native-tests-20261012`. Current verdict: **HOLD** pending original child-group deadline repair. The earlier ACCEPT_SOURCE_TESTS for `e350ff3bae99ad5d2e53648c1f83f9814d6c5044` at review `a16b9c4540c9c4cc78610e0c9cf93a52ac964192` is superseded and retained. Native execution, admission and G1 remain HOLD.
+Reviewer: gateway_reviewer. Exact base: PR16 `e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5`. Isolated branch `review/meri-g1-budget-native-tests-20261012`. Final verdict: **ACCEPT_SOURCE_TESTS** for repaired author `ea7b0bae9b630f750f7f329a144f3cc34f959b00`, tree `eafd8e2f1a66c1809fe5e505cf87d04038cce4a9`. Earlier e350ff3 acceptance at `a16b9c4540c9c4cc78610e0c9cf93a52ac964192`, its subsequent HOLD and all evidence remain preserved. Native execution, host/action admission and G1 remain **HOLD**.
 
 ## Scope and implementation outline
 
@@ -45,7 +45,7 @@ The explicit future packet must establish host/executable/library provenance, fr
 
 The suite supplies no production outcome API, no automatic replay reconciliation, no real network-ack-loss proof, no server restart/WAL/power-loss proof, no global-cap native result, and no claim of runtime invocation persistence. All native SQL, three-process contention, Pool connect/driver eviction and native cleanup remain UNRUN. Child close/TERM/KILL source guards still require an independently admitted external watchdog; JavaScript timers and assertions do not establish physical task teardown. Existing Aurora choice, SDK/Temporal ownership, all fourteen disabled descriptors, first L1 action packet and G1 HOLD remain unchanged.
 
-## Exact-source result and reproducible checks
+## Initial exact-source result (superseded by the final repaired result below)
 
 Criteria commit `fc01f7a` preceded author freeze. Original independent failures and tests were committed at `1a2882e`; source preservation/native discovery controls followed at `967b44c`. Both original parser failures are repaired by explicit string validation. The unchanged independent suite now passes 12/12. The static child barrier repair rejects early close, owns its ready timer until barrier completion, and waits for close/EOF; distinct-grant contention and exact aggregate accounting assertions are present. No native behavior was sampled to reach this verdict.
 
@@ -74,3 +74,29 @@ The accepted change is useful future native test preparation with explicit parti
 ## Post-review original-group-deadline finding
 
 Immediately after the initial final report commit, root identified a remaining static admission gap in e350ff3: the group cutoff is fixed before preparing/binding the three payloads, but fork and send check only the broader global work cutoff. If preparation or an earlier fork consumes the original 30-second group window, later child effects can still begin. A short timer after starting the effect is not equivalent to refusing admission before it. Root requested a narrow guard before each fork and each send using the original, unextended group deadline. Earlier passing offline/syntax receipts and manifest remain preserved and do not close this missing assertion. No native failure reproduction is claimed. Final acceptance is blocked until exact repair and independent offline/source guard replay.
+
+## Final repaired source acceptance
+
+Root also required each child reservation payload to carry `min(original reserve deadline, original group deadline)`, so delayed IPC/lock admission reuses the canonical database-clock check. The exact ea7b0ba diff adds this clipping, one local group guard before each fork and each individual send, and an immediate readiness-rejection observer for partial-launch cleanup. It never resets the group deadline. No production API changed. An already-started transaction can still finish/commit late; the canonical store samples database time after its aggregate lock. These test-source guards do not establish physical query cancellation or prevent every late commit.
+
+The original e350ff3 source readback fails the new static controls: first 1 PASS / 3 FAIL, then 1 PASS / 4 FAIL after the separate child-deadline assertion was added. These are source-text negative controls, not native runtime reproductions. They read the exact retained Git object and never evaluate the integration entry. All original assertions remain. The original four-case version is preserved at review `44f23a3`. The source was then inspected at exact repaired commit and replayed:
+
+| Final check | Result |
+| --- | --- |
+| Original independent admission + additive group source guards | 17/17 PASS (12 + 5) |
+| Author offline admission/source | 34/34 PASS |
+| Repaired integration syntax | PASS; original four-module syntax receipts retained, unchanged helper/child hashes verified |
+| Source preservation/discovery/whitespace | PASS; 3944/3945 originals unchanged, only budget README changed |
+| Native cases | 9 UNRUN; zero Pool connections/SQL/native child-mode/integration-entry executions |
+
+Final source hashes are retained in `review/repaired-source.stdout.txt`: integration `85c5b91c6424397c8d85f49770717ca459df2a247905690b539194ef88285693`; offline test `92c1325c0951378b6de3256ae7e7b474fea19679fab6a1276841035fd5bc372e`; helper and child remain the hashes recorded above. `review/manifest.json` is the immutable earlier acceptance manifest; `review/manifest-final.json` binds the repaired source and complete superseding evidence.
+
+Final portable offline replay from the repository containing these review files:
+
+```sh
+MERI_REVIEW_SOURCE_ROOT="$SOURCE_ROOT" node --test docs/qualification/candidates/g1-budget-native-tests-20261012/review/admission-independent.test.mjs docs/qualification/candidates/g1-budget-native-tests-20261012/review/group-deadline-source.test.mjs
+node --test "$SOURCE_ROOT/apps/gateway/test/postgres-budget-admission.test.mjs"
+python3 -I -B -S docs/qualification/candidates/g1-budget-native-tests-20261012/review/verify-source.py "$SOURCE_ROOT" ea7b0bae9b630f750f7f329a144f3cc34f959b00
+```
+
+For the preservation verifier, SOURCE_ROOT must be the clean exact author checkout. The independent tests also support the parent's integrated source root. Across all phases, fourteen bounded local check process groups are confirmed absent with no timeout/kill/orphan descendant to reap. No native process cleanup is claimed. All previous raw failures, passing receipts and the superseded acceptance/HOLD history are retained. The repaired test source is accepted for integration; actual fresh host/action admission and all native/G1 results remain HOLD.

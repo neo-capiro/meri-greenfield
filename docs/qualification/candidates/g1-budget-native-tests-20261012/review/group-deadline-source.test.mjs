@@ -1,4 +1,4 @@
-// Source-only assertions. Never imports/evaluates the integration entry or forks a child.
+// Source-only assertions. Never evaluates the integration entry or starts database-test child mode.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -25,4 +25,7 @@ test('early launch refusal cannot leave unhandled readiness rejection',()=>{
   assert.match(source,/record\.ready\.catch\(\(\)=>\{\}\);/);
   assert.match(source,/record\.done\.catch\(\(\)=>\{\}\);/);
   assert.match(source,/child\.once\('close',\(\)=>reject\(Error\('CHILD_CLOSED_BEFORE_READY'\)\)\)/);
+});
+test('delayed child admission carries original group cutoff to canonical DB clock guard',()=>{
+  assert.match(source,/reserve:\{\.\.\.s\.reserve,reservationId:randomUUID\(\),deadlineMs:Math\.min\(s\.reserve\.deadlineMs,deadline\)\}/);
 });

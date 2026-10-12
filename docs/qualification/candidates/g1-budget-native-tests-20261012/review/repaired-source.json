@@ -1,0 +1,31 @@
+{
+  "command": [
+    "python3",
+    "-I",
+    "-B",
+    "-S",
+    "docs/qualification/candidates/g1-budget-native-tests-20261012/review/verify-source.py",
+    "/workspace/meri-g1-budget-native-tests-20261012",
+    "ea7b0bae9b630f750f7f329a144f3cc34f959b00"
+  ],
+  "cwd": "/workspace/meri-g1-budget-native-tests-review-20261012",
+  "startUnixSeconds": 1791785009.2977586,
+  "elapsedSeconds": 0.1142575740814209,
+  "exitCode": 0,
+  "ownedPidAndGroup": 77170,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "reapedDescendants": [],
+  "streams": {
+    "stdout": {
+      "path": "repaired-source.stdout.txt",
+      "bytes": 1025,
+      "sha256": "471aa65c11091e11ed56564448c7241eb433ad761918a7afb1e0df5ec33fb8b8"
+    },
+    "stderr": {
+      "path": "repaired-source.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}
