@@ -1,0 +1,410 @@
+{
+  "source": "7e128127e666242102ed83b6c10afc1e5b7fd3f8",
+  "rows": [
+    {
+      "id": "query_outreach",
+      "group": "outreach-query",
+      "rawDefinition": "OutreachQueryRequest",
+      "internalDefinition": "OutreachQueryInput",
+      "module": "packages/contracts/retrieval-0.2/outreach-query-validation.mjs",
+      "sha256": "b0a1eb8f5be0cb05a6fab05d1336162c050ad717d7c07d733eaead1239c62994",
+      "lines": [
+        96,
+        120
+      ],
+      "trace": "Read exact admission call, context check, normalization and subsequent normalized shape validation; not inferred from definition naming"
+    },
+    {
+      "id": "search_program_elements",
+      "group": "program-elements",
+      "rawDefinition": "ProgramElementSearchRequest",
+      "internalDefinition": "ProgramElementSearchInput",
+      "module": "packages/contracts/retrieval-0.2/program-elements-validation.mjs",
+      "sha256": "be665df6472a07b10042f21e3c95f2cfc3a838042d45a7ac6d7b0ceefeced311",
+      "lines": [
+        100,
+        104
+      ],
+      "trace": "Read exact admission call, context check, normalization and subsequent normalized shape validation; not inferred from definition naming"
+    },
+    {
+      "id": "get_program_element",
+      "group": "program-elements",
+      "rawDefinition": "ProgramElementDetailRequest",
+      "internalDefinition": "ProgramElementDetailInput",
+      "module": "packages/contracts/retrieval-0.2/program-elements-validation.mjs",
+      "sha256": "be665df6472a07b10042f21e3c95f2cfc3a838042d45a7ac6d7b0ceefeced311",
+      "lines": [
+        100,
+        104
+      ],
+      "trace": "Read exact admission call, context check, normalization and subsequent normalized shape validation; not inferred from definition naming"
+    },
+    {
+      "id": "get_pe_budget_timeline",
+      "group": "program-elements",
+      "rawDefinition": "ProgramElementTimelineRequest",
+      "internalDefinition": "ProgramElementTimelineInput",
+      "module": "packages/contracts/retrieval-0.2/program-elements-validation.mjs",
+      "sha256": "be665df6472a07b10042f21e3c95f2cfc3a838042d45a7ac6d7b0ceefeced311",
+      "lines": [
+        100,
+        104
+      ],
+      "trace": "Read exact admission call, context check, normalization and subsequent normalized shape validation; not inferred from definition naming"
+    },
+    {
+      "id": "search_public_web",
+      "group": "public-web",
+      "rawDefinition": "PublicWebSearchRequest",
+      "internalDefinition": "PublicWebSearchInput",
+      "module": "packages/contracts/retrieval-0.2/public-web-validation.mjs",
+      "sha256": "52dbdc869bdfa02dde58aea07bdc2f4e28b8cb7a1de47a17967310641b766596",
+      "lines": [
+        84,
+        100
+      ],
+      "trace": "Read exact admission call, context check, normalization and subsequent normalized shape validation; not inferred from definition naming"
+    },
+    {
+      "id": "scrape_web_page",
+      "group": "public-web",
+      "rawDefinition": "PublicWebPageRequest",
+      "internalDefinition": "PublicWebPageInput",
+      "module": "packages/contracts/retrieval-0.2/public-web-validation.mjs",
+      "sha256": "52dbdc869bdfa02dde58aea07bdc2f4e28b8cb7a1de47a17967310641b766596",
+      "lines": [
+        84,
+        100
+      ],
+      "trace": "Read exact admission call, context check, normalization and subsequent normalized shape validation; not inferred from definition naming"
+    },
+    {
+      "id": "search_sam_opportunities",
+      "group": "sam-opportunities",
+      "rawDefinition": "SamOpportunitiesRequest",
+      "internalDefinition": "SamOpportunitiesInput",
+      "module": "packages/contracts/retrieval-0.2/sam-opportunities-validation.mjs",
+      "sha256": "048e15c68213ca83ad4f3ca0b42ba2dc1a9c24fd71a7c893c42cdd700c0b809a",
+      "lines": [
+        51,
+        59
+      ],
+      "trace": "Read exact admission call, context check, normalization and subsequent normalized shape validation; not inferred from definition naming"
+    },
+    {
+      "id": "get_florida_budget_project",
+      "group": "florida-budget",
+      "rawDefinition": "FloridaBudgetRequest",
+      "internalDefinition": "FloridaBudgetInput",
+      "module": "packages/contracts/retrieval-0.2/florida-budget-validation.mjs",
+      "sha256": "386e8ccde7b2cdbba9743e2f6d0218ff8ef3d8b54d2364b5b7d4861ae387b9eb",
+      "lines": [
+        36,
+        66
+      ],
+      "trace": "Read exact admission call, context check, normalization and subsequent normalized shape validation; not inferred from definition naming"
+    },
+    {
+      "id": "get_state_bill_status",
+      "group": "state-status-votes",
+      "rawDefinition": "StateBillStatusRequest",
+      "internalDefinition": "StateBillStatusInput",
+      "module": "packages/contracts/retrieval-0.2/state-status-votes-validation.mjs",
+      "sha256": "43587a404705d7a589000c0bd228beb74be4880c12ebc71c17ca5fca93cfeaa1",
+      "lines": [
+        49,
+        66
+      ],
+      "trace": "Read exact admission call, context check, normalization and subsequent normalized shape validation; not inferred from definition naming"
+    },
+    {
+      "id": "search_state_floor_votes",
+      "group": "state-status-votes",
+      "rawDefinition": "StateFloorVotesRequest",
+      "internalDefinition": "StateFloorVotesInput",
+      "module": "packages/contracts/retrieval-0.2/state-status-votes-validation.mjs",
+      "sha256": "43587a404705d7a589000c0bd228beb74be4880c12ebc71c17ca5fca93cfeaa1",
+      "lines": [
+        49,
+        66
+      ],
+      "trace": "Read exact admission call, context check, normalization and subsequent normalized shape validation; not inferred from definition naming"
+    },
+    {
+      "id": "find_contacts",
+      "group": "tenant-contacts",
+      "rawDefinition": "TenantContactsRequest",
+      "internalDefinition": "TenantContactsInput",
+      "module": "packages/contracts/retrieval-0.2/tenant-contacts-validation.mjs",
+      "sha256": "793b0880b4a1a8cf4d77ad39ee857b1222289d732a7ba9704b4acbae06989767",
+      "lines": [
+        15,
+        23
+      ],
+      "trace": "Read exact admission call, context check, normalization and subsequent normalized shape validation; not inferred from definition naming"
+    },
+    {
+      "id": "resolve_entity",
+      "group": "entity-candidates",
+      "rawDefinition": "EntityCandidatesRequest",
+      "internalDefinition": "EntityCandidatesInput",
+      "module": "packages/contracts/retrieval-0.2/entity-candidates-validation.mjs",
+      "sha256": "2ef046fa6166f5e9011c89081a5f58b0413b0a5ee2d1bd12bbdc8c580f723090",
+      "lines": [
+        31,
+        51
+      ],
+      "trace": "Read exact admission call, context check, normalization and subsequent normalized shape validation; not inferred from definition naming"
+    },
+    {
+      "id": "search_tracked_bills",
+      "group": "tracked-bills",
+      "rawDefinition": "TrackedBillsRequest",
+      "internalDefinition": "TrackedBillsInput",
+      "module": "packages/contracts/retrieval-0.2/tracked-bills-validation.mjs",
+      "sha256": "697ba30c8cfbf7c02e5b815104e909fd2183633891ccc835373d568e44b6bc67",
+      "lines": [
+        15,
+        32
+      ],
+      "trace": "Read exact admission call, context check, normalization and subsequent normalized shape validation; not inferred from definition naming"
+    },
+    {
+      "id": "get_committee_roster",
+      "group": "legislative-directory",
+      "rawDefinition": "CommitteeRosterRequest",
+      "internalDefinition": "CommitteeRosterInput",
+      "module": "packages/contracts/retrieval-0.2/legislative-directory-validation.mjs",
+      "sha256": "c41959f5b8cbee875ecee37f42c9085ef2adde0314f6dbbdcfe2617d3674f6d1",
+      "lines": [
+        26,
+        47
+      ],
+      "trace": "Read exact admission call, context check, normalization and subsequent normalized shape validation; not inferred from definition naming"
+    },
+    {
+      "id": "list_members",
+      "group": "legislative-directory",
+      "rawDefinition": "MemberListRequest",
+      "internalDefinition": "MemberListInput",
+      "module": "packages/contracts/retrieval-0.2/legislative-directory-validation.mjs",
+      "sha256": "c41959f5b8cbee875ecee37f42c9085ef2adde0314f6dbbdcfe2617d3674f6d1",
+      "lines": [
+        26,
+        47
+      ],
+      "trace": "Read exact admission call, context check, normalization and subsequent normalized shape validation; not inferred from definition naming"
+    },
+    {
+      "id": "get_pe_contractors",
+      "group": "pe-references",
+      "rawDefinition": "PeContractorsRequest",
+      "internalDefinition": "PeContractorsInput",
+      "module": "packages/contracts/retrieval-0.2/pe-references-validation.mjs",
+      "sha256": "211b26a73ad790d8c794779a1ca543df4992a380512c40277cbf0ede3689f4f1",
+      "lines": [
+        15,
+        19
+      ],
+      "trace": "Read exact admission call, context check, normalization and subsequent normalized shape validation; not inferred from definition naming"
+    },
+    {
+      "id": "get_pe_bills",
+      "group": "pe-references",
+      "rawDefinition": "PeBillsRequest",
+      "internalDefinition": "PeBillsInput",
+      "module": "packages/contracts/retrieval-0.2/pe-references-validation.mjs",
+      "sha256": "211b26a73ad790d8c794779a1ca543df4992a380512c40277cbf0ede3689f4f1",
+      "lines": [
+        15,
+        19
+      ],
+      "trace": "Read exact admission call, context check, normalization and subsequent normalized shape validation; not inferred from definition naming"
+    },
+    {
+      "id": "get_pe_report_language",
+      "group": "pe-references",
+      "rawDefinition": "PeReportLanguageRequest",
+      "internalDefinition": "PeReportLanguageInput",
+      "module": "packages/contracts/retrieval-0.2/pe-references-validation.mjs",
+      "sha256": "211b26a73ad790d8c794779a1ca543df4992a380512c40277cbf0ede3689f4f1",
+      "lines": [
+        15,
+        19
+      ],
+      "trace": "Read exact admission call, context check, normalization and subsequent normalized shape validation; not inferred from definition naming"
+    },
+    {
+      "id": "get_state_rule_status",
+      "group": "rule-status",
+      "rawDefinition": "RuleStatusRequest",
+      "internalDefinition": "RuleStatusInput",
+      "module": "packages/contracts/retrieval-0.2/rule-status-validation.mjs",
+      "sha256": "2f866b0fb92a525dcb305dffec05c4870abe42879e6771078dcffd0d567103fb",
+      "lines": [
+        24,
+        34
+      ],
+      "trace": "Read exact admission call, context check, normalization and subsequent normalized shape validation; not inferred from definition naming"
+    },
+    {
+      "id": "get_certification_status",
+      "group": "certification-status",
+      "rawDefinition": "CertificationStatusRequest",
+      "internalDefinition": "CertificationStatusInput",
+      "module": "packages/contracts/retrieval-0.2/certification-status-validation.mjs",
+      "sha256": "122dbd5c095a4c791dcd7c02a2941bbf4e3656d2653bf8d4893ba07cf5ab0f62",
+      "lines": [
+        18,
+        20
+      ],
+      "trace": "Read exact admission call, context check, normalization and subsequent normalized shape validation; not inferred from definition naming"
+    },
+    {
+      "id": "search_sec_filings",
+      "group": "disclosures",
+      "rawDefinition": "DisclosuresSecRequest",
+      "internalDefinition": "DisclosuresSecInput",
+      "module": "packages/contracts/retrieval-0.2/disclosures-validation.mjs",
+      "sha256": "bc3a2884e72ac84de87658e6b540398e7ba20e24ea512bdf9254acafe0b91da1",
+      "lines": [
+        43,
+        72
+      ],
+      "trace": "Read exact admission call, context check, normalization and subsequent normalized shape validation; not inferred from definition naming"
+    },
+    {
+      "id": "search_fara_registrations",
+      "group": "disclosures",
+      "rawDefinition": "DisclosuresFaraRequest",
+      "internalDefinition": "DisclosuresFaraInput",
+      "module": "packages/contracts/retrieval-0.2/disclosures-validation.mjs",
+      "sha256": "bc3a2884e72ac84de87658e6b540398e7ba20e24ea512bdf9254acafe0b91da1",
+      "lines": [
+        43,
+        72
+      ],
+      "trace": "Read exact admission call, context check, normalization and subsequent normalized shape validation; not inferred from definition naming"
+    },
+    {
+      "id": "search_lda_filings",
+      "group": "disclosures",
+      "rawDefinition": "DisclosuresLdaRequest",
+      "internalDefinition": "DisclosuresLdaInput",
+      "module": "packages/contracts/retrieval-0.2/disclosures-validation.mjs",
+      "sha256": "bc3a2884e72ac84de87658e6b540398e7ba20e24ea512bdf9254acafe0b91da1",
+      "lines": [
+        43,
+        72
+      ],
+      "trace": "Read exact admission call, context check, normalization and subsequent normalized shape validation; not inferred from definition naming"
+    },
+    {
+      "id": "get_bill_status",
+      "group": "federal-legislation",
+      "rawDefinition": "FederalBillStatusRequest",
+      "internalDefinition": "FederalBillStatusInput",
+      "module": "packages/contracts/retrieval-0.2/federal-legislation-validation.mjs",
+      "sha256": "935b6a8054df8cb5f53a0eb6adce3b1564d22a552ef1f29e537d6f8855da76b9",
+      "lines": [
+        29,
+        41
+      ],
+      "trace": "Read exact admission call, context check, normalization and subsequent normalized shape validation; not inferred from definition naming"
+    },
+    {
+      "id": "search_floor_votes",
+      "group": "federal-legislation",
+      "rawDefinition": "FederalFloorVotesRequest",
+      "internalDefinition": "FederalFloorVotesInput",
+      "module": "packages/contracts/retrieval-0.2/federal-legislation-validation.mjs",
+      "sha256": "935b6a8054df8cb5f53a0eb6adce3b1564d22a552ef1f29e537d6f8855da76b9",
+      "lines": [
+        29,
+        41
+      ],
+      "trace": "Read exact admission call, context check, normalization and subsequent normalized shape validation; not inferred from definition naming"
+    },
+    {
+      "id": "search_state_bills",
+      "group": "state-legislation",
+      "rawDefinition": "StateBillSearchRequest",
+      "internalDefinition": "StateBillSearchInput",
+      "module": "packages/contracts/retrieval-0.2/state-legislation-validation.mjs",
+      "sha256": "4688259e8c9741f65c03810bb4dae6f34adb4b09dc0bc7e5d78f29a7103ef023",
+      "lines": [
+        19,
+        33
+      ],
+      "trace": "Read exact admission call, context check, normalization and subsequent normalized shape validation; not inferred from definition naming"
+    },
+    {
+      "id": "get_state_legislator",
+      "group": "state-legislation",
+      "rawDefinition": "StateLegislatorRequest",
+      "internalDefinition": "StateLegislatorInput",
+      "module": "packages/contracts/retrieval-0.2/state-legislation-validation.mjs",
+      "sha256": "4688259e8c9741f65c03810bb4dae6f34adb4b09dc0bc7e5d78f29a7103ef023",
+      "lines": [
+        19,
+        33
+      ],
+      "trace": "Read exact admission call, context check, normalization and subsequent normalized shape validation; not inferred from definition naming"
+    },
+    {
+      "id": "query_economic_data",
+      "group": "public-data",
+      "rawDefinition": "PublicEconomicRequest",
+      "internalDefinition": "PublicEconomicInput",
+      "module": "packages/contracts/retrieval-0.2/public-data-validation.mjs",
+      "sha256": "23adf109a1a7cb4144a1081a809c048d1aa7c9da37d3be32efc84b2a51f100b4",
+      "lines": [
+        30,
+        56
+      ],
+      "trace": "Read exact admission call, context check, normalization and subsequent normalized shape validation; not inferred from definition naming"
+    },
+    {
+      "id": "search_federal_grants",
+      "group": "public-data",
+      "rawDefinition": "PublicGrantRequest",
+      "internalDefinition": "PublicGrantInput",
+      "module": "packages/contracts/retrieval-0.2/public-data-validation.mjs",
+      "sha256": "23adf109a1a7cb4144a1081a809c048d1aa7c9da37d3be32efc84b2a51f100b4",
+      "lines": [
+        30,
+        56
+      ],
+      "trace": "Read exact admission call, context check, normalization and subsequent normalized shape validation; not inferred from definition naming"
+    },
+    {
+      "id": "search_federal_awards",
+      "group": "public-data",
+      "rawDefinition": "PublicAwardRequest",
+      "internalDefinition": "PublicAwardInput",
+      "module": "packages/contracts/retrieval-0.2/public-data-validation.mjs",
+      "sha256": "23adf109a1a7cb4144a1081a809c048d1aa7c9da37d3be32efc84b2a51f100b4",
+      "lines": [
+        30,
+        56
+      ],
+      "trace": "Read exact admission call, context check, normalization and subsequent normalized shape validation; not inferred from definition naming"
+    },
+    {
+      "id": "lookup_client_registry",
+      "group": "client-registry",
+      "rawDefinition": "ClientRegistryRequest",
+      "internalDefinition": "ClientRegistryInput",
+      "module": "packages/contracts/retrieval-0.2/client-registry-validation.mjs",
+      "sha256": "0a563f5a91bb91d883e5dd354fddf11df788dc8ec449f9007cc9f9f00ad1b24e",
+      "lines": [
+        6,
+        22
+      ],
+      "trace": "Read exact admission call, context check, normalization and subsequent normalized shape validation; not inferred from definition naming"
+    }
+  ],
+  "groups": 18,
+  "privateProducerBodiesReadOrImported": false
+}
