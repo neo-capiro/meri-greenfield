@@ -1,0 +1,52 @@
+{
+  "schemaId": "urn:meri:schedules:tool-interface:0.2.0",
+  "factory": "createScheduleToolValidators({validateShape,schema})",
+  "methods": {
+    "normalizeInput": "(operation,raw,context) -> {input,metadata}",
+    "assertResult": "(operation,value,raw,context) -> detached frozen result",
+    "prepare": "(operation,raw,context) -> private immutable resolved plan",
+    "requestDefinition": "(operation) -> model-facing Request definition",
+    "inputDefinition": "(operation) -> internal normalized Input definition",
+    "outputDefinition": "(operation) -> result definition"
+  },
+  "contextKeys": [
+    "scheduleContext"
+  ],
+  "operations": [
+    {
+      "operation": "schedule_task",
+      "request": "ScheduleTaskRequest",
+      "input": "ScheduleTaskInput",
+      "output": "ScheduleMutationOutput",
+      "context": "ScheduleMutationContext"
+    },
+    {
+      "operation": "list_scheduled_tasks",
+      "request": "ListScheduledTasksRequest",
+      "input": "ListScheduledTasksInput",
+      "output": "ListScheduledTasksOutput",
+      "context": "ScheduleListContext"
+    },
+    {
+      "operation": "cancel_scheduled_task",
+      "request": "CancelScheduledTaskRequest",
+      "input": "CancelScheduledTaskInput",
+      "output": "ScheduleMutationOutput",
+      "context": "ScheduleMutationContext"
+    },
+    {
+      "operation": "update_scheduled_task",
+      "request": "UpdateScheduledTaskRequest",
+      "input": "UpdateScheduledTaskInput",
+      "output": "ScheduleMutationOutput",
+      "context": "ScheduleMutationContext"
+    }
+  ],
+  "application": {
+    "module": "apps/control/schedules/tool-interface.mjs",
+    "factory": "createScheduleToolInterface({lifecycle,validators,authorize,clock})",
+    "method": "execute({operation,request,context,signal})"
+  },
+  "trustedResolution": "Application-owned current context binds request hash, task instruction hash/task/template, destination and effective limits, current projection/generation, caller, clock/deadline and optional full-intent approval. No model authority fields. Context is correlation, not proof of current policy or resolver provenance.",
+  "activation": "Unavailable pending canonical registration, actual trusted producers and runtime qualification; no catalog edited."
+}

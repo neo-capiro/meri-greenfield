@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-name-pattern=approval binds exact reviewed instruction",
+    "packages/contracts/test/schedule-tool-interface.test.mjs"
+  ],
+  "cwd": "/workspace/meri-schedule-tool-interface-20261012",
+  "sourceHead": "366f2283f6a3cc56d8e8218a47ccb09fd1c8599d",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "845f3924ad4b66ef71ab09872bedc2cd012334b0ae16c2a7e7f1d798b614855a",
+  "startedAt": "2026-10-12T22:40:50.100356+00:00",
+  "durationSeconds": 0.519,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 377155,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/instruction-negative.stdout.bin",
+      "bytes": 2114,
+      "sha256": "718ce7129b7601646a08e5f72ec0a90073e8ec0824ff8eb3463f46df6087dad1"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/instruction-negative.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Unique label identifies initial or repaired backend integration test verification; prior receipts are preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

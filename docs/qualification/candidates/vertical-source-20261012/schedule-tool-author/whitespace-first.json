@@ -1,0 +1,14 @@
+{
+  "command": [
+    "git",
+    "diff",
+    "--cached",
+    "--check"
+  ],
+  "exitCode": 2,
+  "stdoutBytes": 548,
+  "stderrBytes": 0,
+  "stdoutSha256": "83ed25efec5b613ac3effc774b801f5fa8476f4000b783e856b0eca34fc759ee",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "classification": "raw failure output preserved byte-for-byte; authored text checked separately if raw whitespace fails"
+}
