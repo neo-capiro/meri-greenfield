@@ -6,20 +6,11 @@ import { PostgresStore } from '../state/store.mjs';
 import { createS3CheckpointStore } from './checkpoint-store.mjs';
 import { createFixtureServiceHandlers } from './handlers.mjs';
 import { createS3FixtureObjects } from './s3-objects.mjs';
+import { createRunStop } from './run-stop.mjs';
 
 const fail = () => { throw new Error('FIXTURE_CONTROL_CONFIGURATION'); };
-const unsettled = () => { throw new Error('FIXTURE_CONTROL_UNSETTLED'); };
 const keys = new Set(['database', 'evidenceInspector', 'bucket', 'kmsKeyArn',
   'region', 'objectClient', 'bind', 'tls', 'limits', 'now']);
-
-async function settle(pending) {
-  let timer;
-  try {
-    await Promise.race([Promise.allSettled(pending), new Promise((_, reject) => {
-      timer = setTimeout(() => reject(new Error('FIXTURE_CONTROL_UNSETTLED')), 60000);
-    })]);
-  } finally { clearTimeout(timer); }
-}
 
 /**
  * The owner admits/replaces runs through the returned registry before/after
@@ -39,23 +30,20 @@ export function createFixtureControl(options) {
     ...(objectClient === undefined ? {} : { client: objectClient }) });
   let ingress;
   let registry;
-  const inFlight = new Set();
+  let runStop;
   try {
     registry = new FixtureRegistry(database);
+    runStop = createRunStop({ registry, ...(now === undefined ? {} : { now }) });
     const checkpointStore = createS3CheckpointStore({ objects, evidenceInspector,
       ...(now === undefined ? {} : { now }) });
     const handlers = createFixtureServiceHandlers({ registry, checkpointStore,
       ...(now === undefined ? {} : { now }) });
     const trackedHandlers = Object.fromEntries(Object.entries(handlers).map(([name, handler]) =>
-      [name, input => {
-        const operation = Promise.resolve().then(() => handler(input));
-        inFlight.add(operation);
-        return operation.finally(() => inFlight.delete(operation));
-      }]));
+      [name, input => runStop.track(handler, input)]));
     ingress = createFixtureIngress({ bind, tls, limits, handlers: trackedHandlers,
       ...(now === undefined ? {} : { now }),
       resolveCredential: ({ fingerprintSha256, operation, signal }) => {
-        if (signal.aborted) fail();
+        if (signal.aborted || runStop.isClosing()) fail();
         return registry.resolveCertificate({ fingerprintSha256, operation });
       } });
   } catch (error) {
@@ -67,12 +55,12 @@ export function createFixtureControl(options) {
   let released = false;
   function close() {
     if (released) return Promise.resolve();
+    runStop.closeAdmission();
     if (closing === null) closing = (async () => {
       await ingress.close();
       // Closing sockets aborts cooperative work but does not prove its outcome.
       // Keep the object client available if any handler remains unsettled.
-      if (inFlight.size) await settle([...inFlight]);
-      if (inFlight.size) unsettled();
+      await runStop.settleForClose();
       objects.close();
       released = true;
     })().finally(() => { if (!released) closing = null; });
@@ -89,7 +77,8 @@ export function createFixtureControl(options) {
     }
   }
   return Object.freeze({ registry, start, close,
+    stopRun: runStop.stopRun, runStatus: runStop.runStatus,
     address: () => ingress.address(),
     activeConnections: () => ingress.activeConnections(),
-    activeOperations: () => inFlight.size });
+    activeOperations: runStop.activeOperations });
 }

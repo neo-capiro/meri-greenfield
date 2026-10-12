@@ -146,3 +146,40 @@ A failure, cancellation or expiry during the reconciliation read preserves the
 original `CommitUncertain`. Invalid/foreign readback preserves typed uncertainty
 with the existing `FIXTURE_SERVICE_REFUSED` code. Neither outcome is evidence
 that a dispatched publication rolled back or can be safely retried.
+
+## Explicit trusted owner stop
+
+The actual control composition exposes `stopRun({context, peer})` and
+`runStatus({context, peer})`. Both accept closed, inert canonical owner input,
+never worker-selected cancellation authority. `stopRun` closes a process-local
+gate for that exact full context/peer binding and aborts its tracked handler
+signals synchronously, before asking the existing registry to persist revocation.
+A stale A or wrong peer/pin/actor binding cannot cancel current B work. Requests
+already resolving credentials encounter the same gate before entering handlers.
+The original registry remains available unchanged; it alone decides durable
+currentness and revocation.
+
+The same stop promise is retained across repeat and reentrant calls. It returns
+the canonical revocation receipt only after matching handlers settle with no
+unresolved publication uncertainty. Waiting is bounded by the original cleanup
+cutoff and60 seconds; it never extends that cutoff. An elapsed cleanup cutoff
+refuses new revocation dispatch but leaves the local gate closed. The raw registry
+still permits its separately documented exact expired-context revocation. An
+already-issued late revocation stays tracked after the owner wait expires; no
+retry, rollback or physical task-stop claim follows from timeout.
+
+`runStatus` returns a frozen, content-free snapshot with exactly four fields:
+`stopRequested`, `revocation`, `activeOperations`, `publicationUncertain`.
+Revocation is NOT_REQUESTED, PENDING, REVOKED, ALREADY_REVOKED, FAILED or UNCERTAIN.
+Handler publication and revocation `CommitUncertain` remain visible after the
+promise settles. This is process-local owner bookkeeping, not a durable ledger
+or restart recovery. Canonical owner readback remains through the raw registry;
+no automatic reconciliation, uncertainty-clearing or retry is added here.
+
+`close()` synchronously closes local admission and cancels tracked handlers,
+then closes ingress and waits for tracked work. It refuses clean object-client
+release while work or unknown-commit liability remains. It does not enumerate
+or revoke all database runs: the owner must explicitly stop every admitted run.
+The source contains no deployed broker/Temporal caller, credential issuance,
+native task-stop adapter or crash-recovery completion path. These remain G1
+requirements; local stop/status does not qualify them.
