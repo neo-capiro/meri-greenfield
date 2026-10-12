@@ -1,0 +1,315 @@
+✔ initial identity: capability expiry immediately bounds the next parked authority port (26.635292ms)
+✔ before reservation: capability expiry immediately bounds the next parked authority port (23.131725ms)
+✔ before reservation: run before business immediately bounds the next parked authority port (23.625312ms)
+✔ before reservation: run before source immediately bounds the next parked authority port (22.05809ms)
+✔ before effect: capability expiry immediately bounds the next parked authority port (22.820767ms)
+✔ before effect: run before business immediately bounds the next parked authority port (22.11145ms)
+✔ before effect: run before source immediately bounds the next parked authority port (21.00646ms)
+✔ before release: capability expiry immediately bounds the next parked authority port (22.123167ms)
+✔ before release: run before business immediately bounds the next parked authority port (22.601539ms)
+✔ before release: run before source immediately bounds the next parked authority port (23.079404ms)
+✔ after settlement: capability expiry immediately bounds the next parked authority port (23.219538ms)
+✔ after settlement: run before business immediately bounds the next parked authority port (22.980195ms)
+✔ after settlement: run before source immediately bounds the next parked authority port (22.835143ms)
+✔ an initial capability completing after cancellation cannot start current-run lookup (20.341358ms)
+✔ stale or invalid deadline facts fail closed before the subsequent port (1.924043ms)
+✔ a capability issuance timestamp that cannot become an epoch time cannot dispatch (0.268915ms)
+✔ command authority reuses all four fresh ports and publishes validated deadlines (5.728443ms)
+✖ command authority refuses tool.read before later ports (1.711144ms)
+✖ command authority refuses command.propose before later ports (0.454374ms)
+✖ command authority refuses artifact.publish before later ports (0.36568ms)
+✖ original authority still requires tool.read when no action is configured (0.394033ms)
+✖ fixed command authority cannot be changed through caller configuration (0.398329ms)
+✖ command authority retains revoked refusal (0.430557ms)
+✖ command authority retains expired refusal (0.357737ms)
+✖ command authority retains stale-fence refusal (0.468695ms)
+✖ command authority retains source-disabled refusal (0.710398ms)
+✔ capability expiry is published before a parked command run fact (0.337307ms)
+✔ new authority factory does not activate the production gateway (6.675778ms)
+✔ production catalog exposes no tools, has no activation override, performs zero effects (18.316643ms)
+✔ external object/proxy/getter/toJSON and thrown proxy are never inspected (0.307212ms)
+✔ invalid canonical domain arguments refuse before reservation or handler (3.409176ms)
+✔ raw authority injection is rejected before any trusted port or effect (0.449425ms)
+✔ a mismatched trusted catalog cannot dispatch a substituted or raw SQL operation (0.356637ms)
+✔ actual federal defaults precede canonical digest and resource reservation (5.882055ms)
+✔ canonical raw federal output without qualified lineage cannot be released (2.144134ms)
+✔ the original run deadline stops parked business/source lookup before any reservation (42.658919ms)
+✔ expiry, wrong audience, stale fence, missing grants and disabled source refuse (3.966845ms)
+✔ revocation during reservation prevents handler and preserves uncertain reservation (1.309399ms)
+✔ replacement during source-policy lookup is rejected by the final current-run read (0.752041ms)
+✔ revocation during handler or settlement never releases the result (3.102715ms)
+✔ malformed or oversized raw output and foreign lineage cannot escape (3.991062ms)
+✔ uncertain/malformed budget acknowledgements never dispatch or refund (0.618049ms)
+✔ deadline validates before allocation, shrinks absolutely and closes owned timer/listener (0.238969ms)
+✔ timeout suppresses late work without claiming physical stop or refund (21.591758ms)
+✔ configuration and import allocate no live resource (0.483988ms)
+✔ a deadline shortened during the handler bounds parked settlement and preserves uncertainty (21.880804ms)
+ℹ tests 46
+ℹ suites 0
+ℹ pass 37
+ℹ fail 9
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3331.277566
+
+✖ failing tests:
+
+test at apps/gateway/test/command-authority.test.mjs:36:3
+✖ command authority refuses tool.read before later ports (1.711144ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + Comparison {}
+  - Comparison {
+  -   code: 'ACCESS_DENIED'
+  - }
+  
+      at async TestContext.<anonymous> (file:///workspace/meri-vertical-source-20261012/apps/gateway/test/command-authority.test.mjs:37:31)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: GatewayDenied: ACCESS_DENIED
+        at deny (file:///workspace/meri-vertical-source-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+        at Object.check (file:///workspace/meri-vertical-source-20261012/apps/gateway/authorization/current-tool-authority.mjs:90:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///workspace/meri-vertical-source-20261012/apps/gateway/test/command-authority.test.mjs:37:31)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    expected: { code: 'ACCESS_DENIED' },
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/command-authority.test.mjs:36:3
+✖ command authority refuses command.propose before later ports (0.454374ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + Comparison {}
+  - Comparison {
+  -   code: 'ACCESS_DENIED'
+  - }
+  
+      at async TestContext.<anonymous> (file:///workspace/meri-vertical-source-20261012/apps/gateway/test/command-authority.test.mjs:37:31)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: GatewayDenied: ACCESS_DENIED
+        at deny (file:///workspace/meri-vertical-source-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+        at Object.check (file:///workspace/meri-vertical-source-20261012/apps/gateway/authorization/current-tool-authority.mjs:90:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///workspace/meri-vertical-source-20261012/apps/gateway/test/command-authority.test.mjs:37:31)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    expected: { code: 'ACCESS_DENIED' },
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/command-authority.test.mjs:36:3
+✖ command authority refuses artifact.publish before later ports (0.36568ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + Comparison {}
+  - Comparison {
+  -   code: 'ACCESS_DENIED'
+  - }
+  
+      at async TestContext.<anonymous> (file:///workspace/meri-vertical-source-20261012/apps/gateway/test/command-authority.test.mjs:37:31)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: GatewayDenied: ACCESS_DENIED
+        at deny (file:///workspace/meri-vertical-source-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+        at Object.check (file:///workspace/meri-vertical-source-20261012/apps/gateway/authorization/current-tool-authority.mjs:90:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///workspace/meri-vertical-source-20261012/apps/gateway/test/command-authority.test.mjs:37:31)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    expected: { code: 'ACCESS_DENIED' },
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/command-authority.test.mjs:42:1
+✖ original authority still requires tool.read when no action is configured (0.394033ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + Comparison {}
+  - Comparison {
+  -   code: 'ACCESS_DENIED'
+  - }
+  
+      at async TestContext.<anonymous> (file:///workspace/meri-vertical-source-20261012/apps/gateway/test/command-authority.test.mjs:45:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: GatewayDenied: ACCESS_DENIED
+        at deny (file:///workspace/meri-vertical-source-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+        at Object.check (file:///workspace/meri-vertical-source-20261012/apps/gateway/authorization/current-tool-authority.mjs:90:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///workspace/meri-vertical-source-20261012/apps/gateway/test/command-authority.test.mjs:45:3)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    expected: { code: 'ACCESS_DENIED' },
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/command-authority.test.mjs:49:1
+✖ fixed command authority cannot be changed through caller configuration (0.398329ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + Comparison {}
+  - Comparison {
+  -   code: 'GATEWAY_CONFIGURATION'
+  - }
+  
+      at TestContext.<anonymous> (file:///workspace/meri-vertical-source-20261012/apps/gateway/test/command-authority.test.mjs:51:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: GatewayDenied: GATEWAY_CONFIGURATION
+        at deny (file:///workspace/meri-vertical-source-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+        at createCommandAuthority (file:///workspace/meri-vertical-source-20261012/apps/gateway/index.mjs:11:111)
+        at assert.throws.code (file:///workspace/meri-vertical-source-20261012/apps/gateway/test/command-authority.test.mjs:51:23)
+        at getActual (node:assert:611:5)
+        at strict.throws (node:assert:759:24)
+        at TestContext.<anonymous> (file:///workspace/meri-vertical-source-20261012/apps/gateway/test/command-authority.test.mjs:51:10)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1382:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+        at Test.postRun (node:internal/test_runner/test:1522:19),
+    expected: { code: 'GATEWAY_CONFIGURATION' },
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/command-authority.test.mjs:60:3
+✖ command authority retains revoked refusal (0.430557ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + Comparison {}
+  - Comparison {
+  -   code: 'ACCESS_DENIED'
+  - }
+  
+      at async TestContext.<anonymous> (file:///workspace/meri-vertical-source-20261012/apps/gateway/test/command-authority.test.mjs:66:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: GatewayDenied: ACCESS_DENIED
+        at deny (file:///workspace/meri-vertical-source-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+        at Object.check (file:///workspace/meri-vertical-source-20261012/apps/gateway/authorization/current-tool-authority.mjs:90:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///workspace/meri-vertical-source-20261012/apps/gateway/test/command-authority.test.mjs:66:5)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    expected: { code: 'ACCESS_DENIED' },
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/command-authority.test.mjs:60:3
+✖ command authority retains expired refusal (0.357737ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + Comparison {}
+  - Comparison {
+  -   code: 'ACCESS_DENIED'
+  - }
+  
+      at async TestContext.<anonymous> (file:///workspace/meri-vertical-source-20261012/apps/gateway/test/command-authority.test.mjs:66:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: GatewayDenied: ACCESS_DENIED
+        at deny (file:///workspace/meri-vertical-source-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+        at Object.check (file:///workspace/meri-vertical-source-20261012/apps/gateway/authorization/current-tool-authority.mjs:90:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///workspace/meri-vertical-source-20261012/apps/gateway/test/command-authority.test.mjs:66:5)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    expected: { code: 'ACCESS_DENIED' },
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/command-authority.test.mjs:60:3
+✖ command authority retains stale-fence refusal (0.468695ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + Comparison {}
+  - Comparison {
+  -   code: 'ACCESS_DENIED'
+  - }
+  
+      at async TestContext.<anonymous> (file:///workspace/meri-vertical-source-20261012/apps/gateway/test/command-authority.test.mjs:66:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: GatewayDenied: ACCESS_DENIED
+        at deny (file:///workspace/meri-vertical-source-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+        at Object.check (file:///workspace/meri-vertical-source-20261012/apps/gateway/authorization/current-tool-authority.mjs:90:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///workspace/meri-vertical-source-20261012/apps/gateway/test/command-authority.test.mjs:66:5)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    expected: { code: 'ACCESS_DENIED' },
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/command-authority.test.mjs:60:3
+✖ command authority retains source-disabled refusal (0.710398ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + Comparison {}
+  - Comparison {
+  -   code: 'ACCESS_DENIED'
+  - }
+  
+      at async TestContext.<anonymous> (file:///workspace/meri-vertical-source-20261012/apps/gateway/test/command-authority.test.mjs:66:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: GatewayDenied: ACCESS_DENIED
+        at deny (file:///workspace/meri-vertical-source-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+        at Object.check (file:///workspace/meri-vertical-source-20261012/apps/gateway/authorization/current-tool-authority.mjs:90:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///workspace/meri-vertical-source-20261012/apps/gateway/test/command-authority.test.mjs:66:5)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    expected: { code: 'ACCESS_DENIED' },
+    operator: 'rejects',
+    diff: 'simple'
+  }

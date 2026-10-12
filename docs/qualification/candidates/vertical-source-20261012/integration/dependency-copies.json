@@ -1,0 +1,15 @@
+{
+  "owner": "root",
+  "donor": "/workspace/meri-read-continuation-20261012/packages/contracts/node_modules",
+  "destination": "/workspace/meri-vertical-source-20261012/node_modules",
+  "packages": [
+    "ajv",
+    "ajv-formats",
+    "canonicalize",
+    "fast-deep-equal",
+    "fast-uri",
+    "json-schema-traverse",
+    "require-from-string"
+  ],
+  "installed": false
+}
