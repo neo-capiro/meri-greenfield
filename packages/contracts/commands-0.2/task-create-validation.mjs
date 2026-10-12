@@ -22,14 +22,15 @@ export function createTaskCreateValidators({validateShape,validatePublicShape,ca
   function normalizeTaskCreateInput(request,options) {
     const raw=snapshotOperationData(request),context=contextData(options);validateShape('TaskCreateRaw',raw);
     const title=raw.title.trim();if(!title||title.length>240)fail('Task title exceeds admitted bounds');
-    const reference=raw.clientId===undefined||raw.clientId===null?null:raw.clientId.trim();
+    const reference=raw.clientId===undefined||raw.clientId===null?null:(raw.clientId.trim()||null);
     let clientId=null;
     if(reference!==null){
       if(!reference||reference.length>80||!context.clientResolution||reference!==context.clientResolution.reference)fail('Task client resolution mismatch');
       clientId=context.clientResolution.clientId.toLowerCase();
       if(UUID.test(reference)&&reference.toLowerCase()!==clientId)fail('Task UUID selector substitution');
     } else if(context.clientResolution!==null)fail('Unexpected client resolution');
-    const dueDate=raw.dueDate===undefined||raw.dueDate===null?null:dueDay(raw.dueDate.length===10?`${raw.dueDate}T00:00:00.000Z`:raw.dueDate);
+    const date=raw.dueDate===undefined||raw.dueDate===null?null:(raw.dueDate.trim()||null);
+    const dueDate=date===null?null:dueDay(date.length===10?`${date}T00:00:00.000Z`:date);
     const input={title,clientId,dueDate};validateShape('TaskCreateArguments',input);return input;
   }
   function assertTaskCreateCommand(value,options) {
