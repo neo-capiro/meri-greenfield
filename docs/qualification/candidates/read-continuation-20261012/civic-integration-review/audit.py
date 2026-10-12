@@ -47,7 +47,7 @@ for family in freezes['families']:
   check('accepted source bytes '+path,blob(CANDIDATE,path)==blob(exact,path))
  if name=='tenant-contacts':
   check('contact repair accepted',family.get('repairReviewPending'),False)
-  check('contact repair review object',len(git('rev-parse',family['repairReview']).decode().strip()),40)
+  check('contact repair review object',len(git('rev-parse',family['repairReview']).decode().strip()) if family.get('repairReview') else None,40)
 for path in ['packages/contracts/test/retrieval-civic-integration-independent.test.mjs']:
  check('frozen reviewer controls tracked',path in tree('HEAD'))
 sourcefiles={p:digest(blob(CANDIDATE,p)) for p in candidate if p.startswith('packages/contracts/retrieval-0.2/') and (p not in base or p in canonical)}

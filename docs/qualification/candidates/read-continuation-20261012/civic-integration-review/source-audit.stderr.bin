@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/workspace/meri-civic-integration-review-20261012/docs/qualification/candidates/read-continuation-20261012/civic-integration-review/audit.py", line 50, in <module>
+    check('contact repair review object',len(git('rev-parse',family['repairReview']).decode().strip()),40)
+                                                             ~~~~~~^^^^^^^^^^^^^^^^
+KeyError: 'repairReview'
