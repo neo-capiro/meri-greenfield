@@ -1,0 +1,282 @@
+{
+  "sourceHead": "ca506ba1591b35eae5d389e551787017328eea73",
+  "scope": "SOURCE_METADATA_ONLY_NO_RUNTIME_ADMISSION",
+  "originalFiles": 8678,
+  "originalPreserved": 8672,
+  "allowedOriginalChanges": [
+    "apps/gateway/authorization/current-tool-authority.mjs",
+    "apps/gateway/budget/postgres-tool-budget.mjs",
+    "apps/gateway/budget/tool-budget-dispatch.mjs",
+    "apps/gateway/index.mjs",
+    "packages/contracts/commands-0.2/artifact-file-validation.mjs",
+    "packages/contracts/test/command-artifact-file.test.mjs"
+  ],
+  "checks": [
+    {
+      "check": "only six expressly allocated existing paths changed",
+      "passed": true
+    },
+    {
+      "check": "public0.1 unchanged",
+      "passed": true
+    },
+    {
+      "check": "original migrations/locks untouched",
+      "passed": true
+    },
+    {
+      "check": "source catalog unchanged",
+      "passed": true
+    },
+    {
+      "check": "authority dependency exact root freeze",
+      "passed": true
+    },
+    {
+      "check": "gateway preserves root public authority entry",
+      "passed": true
+    },
+    {
+      "check": "pinned apps/api/src/meri/meri-tools.service.ts",
+      "passed": true
+    },
+    {
+      "check": "observed apps/api/src/meri/meri-tools.service.ts",
+      "passed": true
+    },
+    {
+      "check": "unchanged apps/api/src/meri/meri-tools.service.ts",
+      "passed": true
+    },
+    {
+      "check": "pinned apps/api/src/meri/meri.controller.ts",
+      "passed": true
+    },
+    {
+      "check": "observed apps/api/src/meri/meri.controller.ts",
+      "passed": true
+    },
+    {
+      "check": "unchanged apps/api/src/meri/meri.controller.ts",
+      "passed": true
+    },
+    {
+      "check": "pinned apps/api/src/meri/tool-service-secret.guard.ts",
+      "passed": true
+    },
+    {
+      "check": "observed apps/api/src/meri/tool-service-secret.guard.ts",
+      "passed": true
+    },
+    {
+      "check": "unchanged apps/api/src/meri/tool-service-secret.guard.ts",
+      "passed": true
+    },
+    {
+      "check": "pinned apps/api/src/engagement/engagement.controller.ts",
+      "passed": true
+    },
+    {
+      "check": "observed apps/api/src/engagement/engagement.controller.ts",
+      "passed": true
+    },
+    {
+      "check": "unchanged apps/api/src/engagement/engagement.controller.ts",
+      "passed": true
+    },
+    {
+      "check": "pinned apps/api/src/engagement/engagement.service.ts",
+      "passed": true
+    },
+    {
+      "check": "observed apps/api/src/engagement/engagement.service.ts",
+      "passed": true
+    },
+    {
+      "check": "unchanged apps/api/src/engagement/engagement.service.ts",
+      "passed": true
+    },
+    {
+      "check": "pinned apps/api/src/engagement/research-portfolio-task-access.ts",
+      "passed": true
+    },
+    {
+      "check": "observed apps/api/src/engagement/research-portfolio-task-access.ts",
+      "passed": true
+    },
+    {
+      "check": "unchanged apps/api/src/engagement/research-portfolio-task-access.ts",
+      "passed": true
+    },
+    {
+      "check": "pinned apps/api/src/auth/roles.guard.ts",
+      "passed": true
+    },
+    {
+      "check": "observed apps/api/src/auth/roles.guard.ts",
+      "passed": true
+    },
+    {
+      "check": "unchanged apps/api/src/auth/roles.guard.ts",
+      "passed": true
+    },
+    {
+      "check": "pinned apps/api/src/tenant/tenant-context.middleware.ts",
+      "passed": true
+    },
+    {
+      "check": "observed apps/api/src/tenant/tenant-context.middleware.ts",
+      "passed": true
+    },
+    {
+      "check": "unchanged apps/api/src/tenant/tenant-context.middleware.ts",
+      "passed": true
+    },
+    {
+      "check": "pinned apps/api/src/memory/memory-candidate.service.ts",
+      "passed": true
+    },
+    {
+      "check": "observed apps/api/src/memory/memory-candidate.service.ts",
+      "passed": true
+    },
+    {
+      "check": "unchanged apps/api/src/memory/memory-candidate.service.ts",
+      "passed": true
+    },
+    {
+      "check": "pinned apps/api/src/memory/internal-memory.controller.ts",
+      "passed": true
+    },
+    {
+      "check": "observed apps/api/src/memory/internal-memory.controller.ts",
+      "passed": true
+    },
+    {
+      "check": "unchanged apps/api/src/memory/internal-memory.controller.ts",
+      "passed": true
+    },
+    {
+      "check": "pinned apps/api/src/meri/meri-client-filing.service.ts",
+      "passed": true
+    },
+    {
+      "check": "observed apps/api/src/meri/meri-client-filing.service.ts",
+      "passed": true
+    },
+    {
+      "check": "unchanged apps/api/src/meri/meri-client-filing.service.ts",
+      "passed": true
+    },
+    {
+      "check": "pinned apps/api/src/meri/meri-client-filing.service.spec.ts",
+      "passed": true
+    },
+    {
+      "check": "observed apps/api/src/meri/meri-client-filing.service.spec.ts",
+      "passed": true
+    },
+    {
+      "check": "unchanged apps/api/src/meri/meri-client-filing.service.spec.ts",
+      "passed": true
+    },
+    {
+      "check": "pinned apps/api/prisma/schema.prisma",
+      "passed": true
+    },
+    {
+      "check": "observed apps/api/prisma/schema.prisma",
+      "passed": true
+    },
+    {
+      "check": "unchanged apps/api/prisma/schema.prisma",
+      "passed": true
+    },
+    {
+      "check": "syntax apps/control/commands/approval-context.mjs",
+      "passed": true
+    },
+    {
+      "check": "syntax apps/control/commands/durable-executor.mjs",
+      "passed": true
+    },
+    {
+      "check": "syntax apps/control/commands/executor.mjs",
+      "passed": true
+    },
+    {
+      "check": "syntax apps/control/commands/intent.mjs",
+      "passed": true
+    },
+    {
+      "check": "syntax apps/control/commands/postgres-command-journal.mjs",
+      "passed": true
+    },
+    {
+      "check": "syntax apps/control/commands/protocol.mjs",
+      "passed": true
+    },
+    {
+      "check": "syntax apps/control/commands/source-http.mjs",
+      "passed": true
+    },
+    {
+      "check": "syntax apps/control/commands/source-projection.mjs",
+      "passed": true
+    },
+    {
+      "check": "syntax apps/control/test/commands-artifact-compatibility.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "syntax apps/control/test/commands-durable-budget.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "syntax apps/control/test/commands-execution.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "syntax apps/control/test/commands-fixture.mjs",
+      "passed": true
+    },
+    {
+      "check": "syntax apps/gateway/budget/tool-budget-execution.mjs",
+      "passed": true
+    },
+    {
+      "check": "syntax packages/contracts/commands-0.2/execution-boundary.mjs",
+      "passed": true
+    },
+    {
+      "check": "syntax packages/contracts/commands-0.2/execution-intent.mjs",
+      "passed": true
+    },
+    {
+      "check": "syntax packages/contracts/commands-0.2/task-update-validation.mjs",
+      "passed": true
+    },
+    {
+      "check": "no package to application dependency packages/contracts/commands-0.2/execution-intent.mjs",
+      "passed": true
+    },
+    {
+      "check": "no package to application dependency packages/contracts/commands-0.2/execution-boundary.mjs",
+      "passed": true
+    },
+    {
+      "check": "journal migration source only single table",
+      "passed": true
+    },
+    {
+      "check": "no private source implementation introduced",
+      "passed": true
+    },
+    {
+      "check": "whitespace diff",
+      "passed": true
+    }
+  ],
+  "passed": 66,
+  "total": 66
+}
