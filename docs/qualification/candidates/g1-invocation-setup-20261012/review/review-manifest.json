@@ -1,0 +1,55 @@
+{
+  "rootFreeze": "5f18de1ed6980dfb77a309aa21800dadf8797b19",
+  "rootTree": "75d8fb65c546507a9ba9acad24f99800e46ed15c",
+  "verdict": "ACCEPT_SOURCE_DOCUMENTATION_ONLY",
+  "selfExcluded": true,
+  "files": [
+    {
+      "path": "docs/coordination/reports/MERI-G1-INVOCATION-SETUP-REVIEW-20261012.md",
+      "bytes": 5799,
+      "sha256": "8be6c37f0adb27fbf6f82dd26d972dc875cebaed7ea0d0e48c7641d05ed67675"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/review/audit-final-docs.py",
+      "bytes": 4476,
+      "sha256": "b69ca50e8ae322fc9a6fbde7af89bf1294d56ce6fde2255e4f77f986a601feb0"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/review/final-doc-audit.json",
+      "bytes": 4048,
+      "sha256": "87429d8ed86b5107d8cf478d85607d9c0d40776333da94cc344a873b5bf2e26f"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/review/first-freeze-doc-audit.json",
+      "bytes": 5379,
+      "sha256": "6e958c0035b36444845af692e46d4cd3ab0d71c5ac22e690092e9cb4ebec560b"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/review/first-freeze-wording-finding.json",
+      "bytes": 1008,
+      "sha256": "30792b07c9f2cb35cb60b0cb97490a77f9c3df30895ec718227dd7053121bd7f"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/review/frozen-criteria.json",
+      "bytes": 3258,
+      "sha256": "9063b4ee40e19636f635c2ad1589c6cebde4080acc2bcc00405914cf5d2df1c2"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/review/integration-claim-audit.json",
+      "bytes": 3275,
+      "sha256": "be160db36ed8061d47301547ae3760f363e0100fcaf4e55dbcfbed082c171105"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/review/prerequisite-audit.json",
+      "bytes": 5535,
+      "sha256": "bd83e68af55e7287065d77877c98942f4595293849b0658da0ded27ce3a30423"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/review/semantic-disposition.json",
+      "bytes": 2291,
+      "sha256": "8bbee0ff2d5ae5d50724f96872a1b729ffc1ef3f60489873d2ecf6fc8be27513"
+    }
+  ],
+  "nativeExecution": false,
+  "runtimeAccepted": false
+}

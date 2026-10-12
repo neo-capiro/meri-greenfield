@@ -1,0 +1,59 @@
+{
+  "rootFreeze": "5f18de1ed6980dfb77a309aa21800dadf8797b19",
+  "verdict": "ACCEPT_SOURCE_DOCUMENTATION_ONLY",
+  "criteria": [
+    {
+      "id": "IR1",
+      "disposition": "PASS",
+      "basis": "Independent final roadmap/report reading, accepted lane reports, and retained offline checks described in reviewer report"
+    },
+    {
+      "id": "IR2",
+      "disposition": "PASS",
+      "basis": "Independent final roadmap/report reading, accepted lane reports, and retained offline checks described in reviewer report"
+    },
+    {
+      "id": "IR3",
+      "disposition": "PASS",
+      "basis": "Independent final roadmap/report reading, accepted lane reports, and retained offline checks described in reviewer report"
+    },
+    {
+      "id": "IR4",
+      "disposition": "PASS",
+      "basis": "Independent final roadmap/report reading, accepted lane reports, and retained offline checks described in reviewer report"
+    },
+    {
+      "id": "IR5",
+      "disposition": "PASS",
+      "basis": "Independent final roadmap/report reading, accepted lane reports, and retained offline checks described in reviewer report"
+    },
+    {
+      "id": "IR6",
+      "disposition": "PASS",
+      "basis": "Independent final roadmap/report reading, accepted lane reports, and retained offline checks described in reviewer report"
+    },
+    {
+      "id": "IR7",
+      "disposition": "PASS",
+      "basis": "Independent final roadmap/report reading, accepted lane reports, and retained offline checks described in reviewer report"
+    },
+    {
+      "id": "IR8",
+      "disposition": "PASS",
+      "basis": "Independent final roadmap/report reading, accepted lane reports, and retained offline checks described in reviewer report"
+    },
+    {
+      "id": "IR9",
+      "disposition": "PASS",
+      "basis": "Independent final roadmap/report reading, accepted lane reports, and retained offline checks described in reviewer report"
+    },
+    {
+      "id": "IR10",
+      "disposition": "PASS",
+      "basis": "Independent final roadmap/report reading, accepted lane reports, and retained offline checks described in reviewer report"
+    }
+  ],
+  "resolvedFinding": "first-freeze-wording-finding.json; corrected report-only at final root freeze",
+  "nativeExecution": false,
+  "runtimeAccepted": false
+}

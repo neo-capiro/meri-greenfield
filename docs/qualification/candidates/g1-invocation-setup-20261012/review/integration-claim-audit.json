@@ -1,0 +1,124 @@
+{
+  "rootFreeze": "5f18de1ed6980dfb77a309aa21800dadf8797b19",
+  "rootTree": "75d8fb65c546507a9ba9acad24f99800e46ed15c",
+  "checks": [
+    {
+      "name": "exact-seven-existing-changes",
+      "passed": true,
+      "detail": [
+        "apps/gateway/budget/README.md",
+        "apps/gateway/budget/durable-tool-dispatch.mjs",
+        "apps/gateway/budget/postgres-budget-store.mjs",
+        "apps/gateway/budget/postgres-tool-budget.mjs",
+        "apps/gateway/dispatch/tool-dispatch.mjs",
+        "apps/proxy/qualification/state/postgres_store.py",
+        "docs/plans/MERI-G1-SOURCE-TO-NATIVE.md"
+      ]
+    },
+    {
+      "name": "lane-frozen-blobs:invocation-author",
+      "passed": true,
+      "detail": {
+        "commit": "9d8358ba559134d82265f07840fd537943302090",
+        "netChangedFilesCompared": 35,
+        "mismatches": []
+      }
+    },
+    {
+      "name": "lane-frozen-blobs:invocation-reviewer",
+      "passed": true,
+      "detail": {
+        "commit": "eb59a3f3e3c0ddb7f549e7063387093bf9bb66b6",
+        "netChangedFilesCompared": 117,
+        "mismatches": []
+      }
+    },
+    {
+      "name": "lane-frozen-blobs:native-prefix-author",
+      "passed": true,
+      "detail": {
+        "commit": "05b297923791e434c52aa63eca6d3752d21af54e",
+        "netChangedFilesCompared": 68,
+        "mismatches": []
+      }
+    },
+    {
+      "name": "lane-frozen-blobs:native-prefix-reviewer",
+      "passed": true,
+      "detail": {
+        "commit": "bf701db3389067de5c6aa503ff2698595b53289f",
+        "netChangedFilesCompared": 18,
+        "mismatches": []
+      }
+    },
+    {
+      "name": "lane-frozen-blobs:supervisor-inputs-author",
+      "passed": true,
+      "detail": {
+        "commit": "e58bbdf110014493b19a0186ecff2df1ddc107a7",
+        "netChangedFilesCompared": 9,
+        "mismatches": []
+      }
+    },
+    {
+      "name": "lane-frozen-blobs:supervisor-inputs-reviewer",
+      "passed": true,
+      "detail": {
+        "commit": "d6d2d7b0668f43aad93bd9fc4e2fa9df688be876",
+        "netChangedFilesCompared": 8,
+        "mismatches": []
+      }
+    },
+    {
+      "name": "retained-stream-receipt:gateway-control-integrated",
+      "passed": true,
+      "detail": {
+        "exitCode": 0,
+        "streams": 2
+      }
+    },
+    {
+      "name": "retained-stream-receipt:invocation-independent-integrated",
+      "passed": true,
+      "detail": {
+        "exitCode": 0,
+        "streams": 2
+      }
+    },
+    {
+      "name": "retained-stream-receipt:native-prefix-integrated",
+      "passed": true,
+      "detail": {
+        "exitCode": 1,
+        "streams": 2
+      }
+    },
+    {
+      "name": "retained-stream-receipt:supervisor-inputs-integrated",
+      "passed": true,
+      "detail": {
+        "exitCode": 0,
+        "streams": 2
+      }
+    },
+    {
+      "name": "full-whitespace-failure-and-authored-pass-retained",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "only-report-correction-after-first-freeze",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "clean-final-root",
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "passed": 14,
+  "failed": 0,
+  "method": "Git blob identities and retained raw receipt hashing only; no test/source target execution",
+  "nativeExecution": false
+}

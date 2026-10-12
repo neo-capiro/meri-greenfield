@@ -1,0 +1,168 @@
+{
+  "base": "6cfb1f9a4d8acd66c5bd8d38d892d656fa3cd89e",
+  "rootFreeze": "5f18de1ed6980dfb77a309aa21800dadf8797b19",
+  "rootParent": "c5af5a6ad412595aafd30bd0196198790ca18be3",
+  "rootTree": "75d8fb65c546507a9ba9acad24f99800e46ed15c",
+  "documentAnchors": [
+    {
+      "path": "docs/plans/MERI-G1-SOURCE-TO-NATIVE.md",
+      "bytes": 33652,
+      "sha256": "9bdba1f17089a977593de6d22cb682f0ec64a221ab191234da958e4bcbe7ab72"
+    },
+    {
+      "path": "docs/coordination/reports/MERI-G1-INVOCATION-SETUP-20261012.md",
+      "bytes": 11154,
+      "sha256": "4f37d323f4c42aa987c1e7077386a7e677b2515b7ffa46a6dbd84d2dffbffd95"
+    }
+  ],
+  "method": "Offline Git metadata, JSON, hashing and local link reads only",
+  "checks": [
+    {
+      "name": "exact-root-head",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "final-freeze-documentation-only",
+      "passed": true,
+      "detail": [
+        [
+          "M",
+          "docs/coordination/reports/MERI-G1-INVOCATION-SETUP-20261012.md"
+        ]
+      ]
+    },
+    {
+      "name": "frozen-input:docs/plans/MERI-DEPLOYMENT.md",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "frozen-input:docs/coordination/r2/capabilities.json",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "frozen-input:docs/coordination/r2/skills.json",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "frozen-input:packages/contracts/retrieval-0.2/catalog.json",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "frozen-input:docs/qualification/candidates/g1-execution-options-20261012/author/execution-plan.json",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "exact-frozen-bytes:docs/plans/MERI-G1-SOURCE-TO-NATIVE.md",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "local-links:docs/plans/MERI-G1-SOURCE-TO-NATIVE.md",
+      "passed": true,
+      "detail": {
+        "checked": 26,
+        "missing": []
+      }
+    },
+    {
+      "name": "exact-frozen-bytes:docs/coordination/reports/MERI-G1-INVOCATION-SETUP-20261012.md",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "local-links:docs/coordination/reports/MERI-G1-INVOCATION-SETUP-20261012.md",
+      "passed": true,
+      "detail": {
+        "checked": 6,
+        "missing": []
+      }
+    },
+    {
+      "name": "ancestry-and-roadmap:PR7",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "ancestry-and-roadmap:PR10",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "ancestry-and-roadmap:PR11",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "ancestry-and-roadmap:PR12",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "ancestry-and-roadmap:PR13",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "ancestry-and-roadmap:PR14",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "ancestry-and-roadmap:PR15",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "ancestry-and-roadmap:PR16",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "ancestry-and-roadmap:PR17",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "ancestry-and-roadmap:PR18",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "historical-roadmap-baseline-preserved",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "prefix-only-historical-roadmap-failure-retained",
+      "passed": true,
+      "detail": [
+        {
+          "name": "frozen source: docs/plans/MERI-G1-SOURCE-TO-NATIVE.md",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "name": "prefix-original282-pass-retained",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "final-doc-whitespace",
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "passed": 25,
+  "failed": 0,
+  "nativeExecution": false,
+  "targetImported": false,
+  "runtimeAccepted": false,
+  "ownedJobsRemaining": 0
+}
