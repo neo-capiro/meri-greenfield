@@ -15,8 +15,8 @@
   "files": [
     {
       "path": "docs/coordination/reports/CODEX-INTELLIGENCE-SUMMARY-AUTHOR-20261012.md",
-      "bytes": 4391,
-      "sha256": "5cacbc66d5945904b6238244c3f15e7cd0989cbe9e11a6e087800bc6011c5ad9"
+      "bytes": 4486,
+      "sha256": "fb16e946d83fa74be8c04162d851238240777e671200a767436b9c2d6272f07a"
     },
     {
       "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/audit-packet.py",
@@ -32,6 +32,11 @@
       "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/cleanup.json",
       "bytes": 199,
       "sha256": "05abc1784fcfa50d52ba818dcd68a06cab4ed823b78293c1c83a515a1019ae8a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/documentation-correction.json",
+      "bytes": 557,
+      "sha256": "a0e78b592f20454ea41cfb506e95a83c737777379d468eb0227a506e8e6327b4"
     },
     {
       "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/focused.json",
@@ -105,8 +110,8 @@
     },
     {
       "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/source-findings.json",
-      "bytes": 2716,
-      "sha256": "57d962a1a098cbd63c600ee2970d1873e18f5076cee808a639fc43fa5d14c2c6"
+      "bytes": 3228,
+      "sha256": "e60633b29fc45fbb42ddf7e7b4bdc1a5d24efde0cd11f082b2510d8bf15ef2a9"
     },
     {
       "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/verify-manifest.py",
@@ -128,5 +133,6 @@
       "bytes": 7247,
       "sha256": "fac48b362c5b813eabcbb687f1e5d127fdfe2053beb408ffa0c43aacdc96c889"
     }
-  ]
+  ],
+  "preservedInitialPacket": "f5082ffd85964268c539852aae4a13ed7a5a1dec"
 }

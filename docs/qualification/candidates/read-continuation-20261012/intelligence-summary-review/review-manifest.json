@@ -1,12 +1,33 @@
 {
   "source": "d48c9620e30c3686217095cb45b24f1b0c8218a2",
+  "authorPacket": "e46b425fd68a106e67dc5afdebf611ec33b201ea",
   "verdict": "ACCEPT_SOURCE",
   "scope": "standalone private family only; runtime remains HOLD",
   "members": [
     {
       "path": "docs/coordination/reports/CODEX-INTELLIGENCE-SUMMARY-REVIEW-20261012.md",
-      "bytes": 4996,
-      "sha256": "400c793127e2a29e52489555be7498a5bfc1c806258c917f3f9a2d9d6715736e"
+      "bytes": 5876,
+      "sha256": "24da4090eabe32c2d9b3a1af52ff9ef46dfc8c21ec4b35a7fb8ac6afb0a4b4fd"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-review/audit-author-final.json",
+      "bytes": 1412,
+      "sha256": "a6ea18c17973cff35efdd6708331bfea196c7c0935e339af8246add616da889c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-review/audit-author-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-review/audit-author-final.stdout.bin",
+      "bytes": 6784,
+      "sha256": "beb9ad66a1952f841b35b6c7829e6fbc86036f2b91a613112a400db9536ec3d3"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-review/audit-author.py",
+      "bytes": 2962,
+      "sha256": "e47cd40195ed54d56372678f15b56724d0657fd5ad07c2f24166b99f7c51e617"
     },
     {
       "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-review/audit-final.py",
@@ -27,6 +48,11 @@
       "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-review/audit-source.stdout.bin",
       "bytes": 4789,
       "sha256": "69ed9b44f6265e752f3dd22ab040186a5e6698db9119db4793226429ed73b848"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-review/author-packet-binding.json",
+      "bytes": 686,
+      "sha256": "eeff1b826db254f5b60dbe157c3523b8ba8ce62819cdef260b137516ad000aa4"
     },
     {
       "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-review/capture-reaped.py",

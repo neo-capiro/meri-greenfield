@@ -71,8 +71,8 @@
       "family": "intelligence-summary",
       "base": "c1c9bfde7dd466a0474589a224a99b44277adbc9",
       "source": "d48c9620e30c3686217095cb45b24f1b0c8218a2",
-      "packet": "f5082ffd85964268c539852aae4a13ed7a5a1dec",
-      "review": "dbb18623e8fe185b6dc17efeed491ab799352f9c",
+      "packet": "e46b425fd68a106e67dc5afdebf611ec33b201ea",
+      "review": "b538e67909d2dd7296a2af8313d7a2e049170dff",
       "operations": [
         "query_intelligence"
       ],
@@ -81,5 +81,6 @@
     }
   ],
   "unintegratedPendingReview": [],
-  "canonicalSource": "a35a8323024b37ebb245f1a3c67084c19ef2f0c3"
+  "canonicalSource": "1c1fc211b5032487dbbec27531fd301e7030e5f1",
+  "initialCanonicalSource": "a35a8323024b37ebb245f1a3c67084c19ef2f0c3"
 }
