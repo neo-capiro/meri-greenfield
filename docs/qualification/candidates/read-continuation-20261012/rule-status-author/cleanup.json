@@ -1,0 +1,10 @@
+{
+  "observedAt": "2026-10-12T17:27:39.821719+00:00",
+  "scope": "READ_ONLY_OWNED_GROUP_ABSENCE",
+  "groups": [
+    189033,
+    189468
+  ],
+  "remaining": [],
+  "allReceiptGroupsExited": true
+}

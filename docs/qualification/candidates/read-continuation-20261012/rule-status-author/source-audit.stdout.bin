@@ -1,0 +1,23 @@
+{
+  "scope": "OFFLINE_SOURCE_REFERENCE_PRESERVATION",
+  "base": "2aa0a33bdaf36af1224cfdb840bc493e53cea9f3",
+  "candidate": "95442b40d006e48e2215d6acec09fd7f029a2b9b",
+  "passed": 6085,
+  "total": 6085,
+  "referenceFiles": 9,
+  "privateDefinitions": 321,
+  "sourceFiles": [
+    {
+      "path": "packages/contracts/retrieval-0.2/rule-status.schema.json",
+      "bytes": 12001,
+      "sha256": "6668f39d0fad44005df43d29f2e0824c8137e6abafb208a1747350b54fc2b43a"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/rule-status-validation.mjs",
+      "bytes": 6189,
+      "sha256": "2f866b0fb92a525dcb305dffec05c4870abe42879e6771078dcffd0d567103fb"
+    }
+  ],
+  "failed": [],
+  "checksSha256": "dfb340f47f424511bf96d80a033be4e5bc2ec32ae30526027a9a37478343e459"
+}
