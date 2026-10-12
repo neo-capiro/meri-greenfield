@@ -1,0 +1,12 @@
+import {execFileSync} from 'node:child_process';
+import {writeFileSync} from 'node:fs';
+import {canonicalSha256 as hash} from '../../../../../packages/contracts/validate.mjs';
+const base='e5fb3963de787bbd7b7663316c368f15814897da';
+const read=p=>execFileSync('git',['show',base+':'+p],{encoding:'utf8'});
+const catalog=JSON.parse(read('packages/contracts/retrieval-0.2/catalog.json'));
+const code=read('packages/contracts/retrieval-0.2/catalog-validation.mjs');
+const {CATALOG_OPERATION_BINDINGS:bindings}=await import('data:text/javascript;base64,'+Buffer.from(code).toString('base64'));
+const data=x=>JSON.parse(JSON.stringify(x,(_k,v)=>typeof v==='function'?{source:v.toString()}:v));
+const result={base,operations:catalog.operations.map(x=>({id:x.operation.id,sha256:hash(x)})),bindings:bindings.map(x=>({id:x.id,sha256:hash(data(x))})),originals:catalog.originals,oldPortfolioLimitation:'get_research_evidence is a separate pending Clio/portfolio scope issue and is not covered by this binding.'};
+writeFileSync(new URL('./pr37-identities.json',import.meta.url),JSON.stringify(result,null,2)+'\n');
+console.log(JSON.stringify({operations:result.operations.length,bindings:result.bindings.length,originals:result.originals.length}));
