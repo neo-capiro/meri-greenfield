@@ -1,0 +1,263 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "scope": "31rawrequestadvertisementrepair only",
+  "candidate": "ea94aff840424843b4b6efbfc21fb9d195f7ff54",
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-RAW-REQUEST-ADVERTISEMENT-REVIEW-20261012.md",
+      "bytes": 5014,
+      "sha256": "65521caee9dd105af458f01f952fcfe1d7b0a5e3b8e54bee8024ee2f5e438ed9"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-RAW-REQUEST-ADVERTISEMENT-REVIEW-20261012.md",
+      "bytes": 2142,
+      "sha256": "3e2b3f6669746d82f8b3b8faa8ed0c1c53acb8825124a769d74cfa316d6e5ca4"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/admission-trace.json",
+      "bytes": 17226,
+      "sha256": "00339ea7cda064220f531976547ffa48c13ac483a8e165210f048c97564a0710"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/audit-before-order-correction.mjs.txt",
+      "bytes": 5727,
+      "sha256": "b2350af1b1fdb825ef12c57892496f4898551504008f0391eb4220598ebe1dc9"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/audit-before-scope-clarification.mjs.txt",
+      "bytes": 5150,
+      "sha256": "90dea01410f6581b649ac2d3da405745001d51b63a0ebc8f725aafb215a79e0c"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/audit-order-correction.json",
+      "bytes": 511,
+      "sha256": "97adcecab2be85a02f1fb4157e6b89160530782826e34143e756c5ff95dae1bd"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/audit-output-collision.json",
+      "bytes": 330,
+      "sha256": "9c2e6975b6233b33cddb2968f10b5a2f975253d81808b7f999149c70c806bc3a"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/audit-repair-original.mjs.txt",
+      "bytes": 5142,
+      "sha256": "802b27feb070e693ca0537ca0f747f78313b3a37e9b147f1f73015b69cbc70e7"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/audit-repair.mjs",
+      "bytes": 6628,
+      "sha256": "7091ccdbe7434439b9bfa0fa1459d19b25da4346eb00290cbba6739cc29b1f85"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/baseline-corrected.json",
+      "bytes": 1319,
+      "sha256": "07634b1c853b6b418d6b0a12f064bad28893a667089aa5e5851fcde9e552a44a"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/baseline-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/baseline-corrected.stdout.bin",
+      "bytes": 69877,
+      "sha256": "96bdcb15724cfe0e717aba31f4c558a85e1b6cf92b831b955d79d1027fd7a72e"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/baseline.json",
+      "bytes": 1299,
+      "sha256": "041d951c69a76c22a906501dccc0e1629e3361bc805656f4a54fff6f728481a1"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/baseline.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/baseline.stdout.bin",
+      "bytes": 72050,
+      "sha256": "78904f98cf882d211ebf30e63b62df12014d5a1977200aca39acfae1906330fb"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/canonical-repair.json",
+      "bytes": 1315,
+      "sha256": "68479df5192a7ceb585d87b38ec4b3afd0b22bd1aad7161fb31ff6f38d7426e5"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/canonical-repair.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/canonical-repair.stdout.bin",
+      "bytes": 13967,
+      "sha256": "a19e37a2dd527eed4ae95e0ac2668d8e7a502dfa0fb4ccf3673aae911e7e1159"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/composed-scope-exceptions.json",
+      "bytes": 1274,
+      "sha256": "365db0202b3d48f894cd3c3bd3f76d6ab0a2510c89c021b3eeb66308c145a055"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/criteria.json",
+      "bytes": 735,
+      "sha256": "ce1b38ce9c4307ebf991028e7477f468916a163526697f1f61971fb418c96215"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/factory-trace.json",
+      "bytes": 1366,
+      "sha256": "7b2c3ada6e314607c8cf4aba1f909af5bcd4ec4e8b6cebcbb0ccddd45efd4d08"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/factory-trace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/factory-trace.stdout.bin",
+      "bytes": 2634,
+      "sha256": "ff30cdbef6eb14dcc9042a2cc490d33f2682d99ae74af2070b6847147ff9db61"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/final-verdict.json",
+      "bytes": 2045,
+      "sha256": "f494b57b590addaa98830a97cdab1f69756679cff94769bfe2e160b92f858c34"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/fixture-corrections.json",
+      "bytes": 721,
+      "sha256": "51dfb944c31c4bcd7224b8d84714adccb77165876bbd385deb080215b646aa26"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/initial-independent.test.mjs.txt",
+      "bytes": 9704,
+      "sha256": "223e02e1a07c73665efe65cf1540e671b2b150b8fb33fd8d0e525071ba6bae0a"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/repair-audit-before-order-correction.json",
+      "bytes": 41412,
+      "sha256": "c36ab99296dc16a610d190f4ea31fd730015412e603d649afcf8b6081adba1ea"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/repair-audit-before-scope-clarification.json",
+      "bytes": 41413,
+      "sha256": "d940005a4cd9747834c612ddfb7bb3d2de8b3c41868f7f963a581d8ff70e6747"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/repair-audit-details.json",
+      "bytes": 1329,
+      "sha256": "00ce7233d5752e96de266cc92e41bac060e4038d12cf3bf56947fee9f611093d"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/repair-audit-details.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/repair-audit-details.stdout.bin",
+      "bytes": 107,
+      "sha256": "fd79c7126ec15c04f4b65d125ffc8c47d349e5c8517edae9bb925fb0cae8ebf4"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/repair-audit-final.json",
+      "bytes": 1325,
+      "sha256": "965e8e13e0d4c9ac3c503f3c3a47a686c3972f28793006b8203035fdbf34f27d"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/repair-audit-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/repair-audit-final.stdout.bin",
+      "bytes": 107,
+      "sha256": "708bf52188c7fc28a25ce1c4fd22261197cd14771099bfd6c79965f400d89705"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/repair-audit-order-fixed.json",
+      "bytes": 1337,
+      "sha256": "35c6740cadd5d15aefbf2def19165dcfccb0e30857183e1e37a1cb1fe91e0195"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/repair-audit-order-fixed.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/repair-audit-order-fixed.stdout.bin",
+      "bytes": 107,
+      "sha256": "b140ed33422b07fb8d49f81c8202a343a1ab4690528e0eb2392da913679355df"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/repair-audit-results.json",
+      "bytes": 41836,
+      "sha256": "2dfda80cdc715486b08349e8a4c0c1c773f66368ece0522261e6144c48ad7b68"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/repair-audit-scope-final.json",
+      "bytes": 1337,
+      "sha256": "d039484936b72ad002716acb5d0f3bdeba791c4a443e1ee747778cc4e5435ae6"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/repair-audit-scope-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/repair-audit-scope-final.stdout.bin",
+      "bytes": 107,
+      "sha256": "b88d901c2789b7e9ae9a5b963793b682913832ae3baf29d13275f989317193ec"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/repair-audit.json",
+      "bytes": 1313,
+      "sha256": "a6943ed67c064d4586b4ea3c621beaa107b95b443339d14af2e408331cf462ed"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/repair-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/repair-audit.stdout.bin",
+      "bytes": 107,
+      "sha256": "fd79c7126ec15c04f4b65d125ffc8c47d349e5c8517edae9bb925fb0cae8ebf4"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/review-only-sequence.json",
+      "bytes": 655,
+      "sha256": "47e1b22b12ff6a1e642ed4e8988d3210986a62cd8ae7159af1dd528f42c6bdbb"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/setup.json",
+      "bytes": 204,
+      "sha256": "75244d7d61714b92c31fc0d8c86291c0bd9c6dcc9a0c0bb722d2beb3b3e1366e"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/whitespace.json",
+      "bytes": 161,
+      "sha256": "1561669158eaa1abcad6637baeb77ad91351b9df340bf61ebf27d6257b27b2bf"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/whitespace.stdout.bin",
+      "bytes": 1028,
+      "sha256": "d0a3a56d7d281789d5d219b82918cebfc3faa9df6dbab86d8c1d1a097b68377d"
+    },
+    {
+      "path": "packages/contracts/test/raw-request-advertisement-independent.test.mjs",
+      "bytes": 12317,
+      "sha256": "269ac7c0db0a26a65c634bc103645eb00b236798997a91d0f0021a3b05477ede"
+    }
+  ],
+  "selfExcluded": true
+}

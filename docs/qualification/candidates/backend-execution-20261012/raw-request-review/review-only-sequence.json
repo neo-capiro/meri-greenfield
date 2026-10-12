@@ -1,0 +1,14 @@
+{
+  "base": "7e128127e666242102ed83b6c10afc1e5b7fd3f8",
+  "throughAcceptance": "960676b291bf2e4f1458dfe611c65023f4020fd3",
+  "orderedCommits": [
+    "6edc8b44200258052e83532bb1ea26701e730bcc",
+    "348c32b5463aca3f03c36497df3b25b6fc1fcd39",
+    "27b3bca6fffde7ba4e27e124c0a3dcec6d4994da",
+    "d7ab32dd082a147d6ca73a0d8ff0fd532152d336",
+    "21c1425edccd50271ab9d5ef35691809ba1766da",
+    "8d3edb3bab0e8b94c0d9bbcd44d6e8982157bc38",
+    "960676b291bf2e4f1458dfe611c65023f4020fd3"
+  ],
+  "instruction": "Integrate these review-only commits in order; append final manifest commit announced separately. Whole composed root source already belongs to root."
+}
