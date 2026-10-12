@@ -36,15 +36,50 @@
       ],
       "rootRepair": "1e31f94bb8e399eede1f28609cb241b87e356b62",
       "rootAuthorTestCorrection": "e890cff6d1110a1d29bd5dec0b7f340db0e41f06",
-      "repairReviewPending": true,
+      "repairReviewPending": false,
       "base": "a3e946c1fa264ae7b33205f5b87804ee1ef75773",
       "sourceTree": "2a84b8964b23b4ebd178bfe619376680b9a21f6f",
+      "runtimeAccepted": false,
+      "repairReview": "d887323a596be014ffc864b7243ccdd85ddba023"
+    },
+    {
+      "family": "entity-candidates",
+      "source": "788c0419c9489dfdd4906a50b59661595a072713",
+      "packet": "4c3b35c9d0c1709bfeb61280474c7186d516a618",
+      "review": "6f840ae192596e7dcf913cd749dd2db2bf681162",
+      "operations": [
+        "resolve_entity"
+      ],
+      "exactExistingPrerequisite": "e721b6f815e68df80d598f9ff1d8127a190ae62a",
+      "base": "a3e946c1fa264ae7b33205f5b87804ee1ef75773",
+      "sourceTree": "cc42292346660c99160b1f98725804e59e92a8ad",
       "runtimeAccepted": false
+    },
+    {
+      "family": "tracked-bills",
+      "source": "e020f4ff2af3c23412adf2fd634f8362140eeb51",
+      "packet": "076c4a437eb717cbc1dd8541f76f141c0a6d1b2d",
+      "review": "575d0cd2e8444c6821576f37b3e3091583c3e320",
+      "operations": [
+        "search_tracked_bills"
+      ],
+      "base": "a3e946c1fa264ae7b33205f5b87804ee1ef75773",
+      "sourceTree": "4339a033ca9d43096f838c89caa02b1e5c93e59d",
+      "runtimeAccepted": false
+    },
+    {
+      "family": "intelligence-summary",
+      "base": "c1c9bfde7dd466a0474589a224a99b44277adbc9",
+      "source": "d48c9620e30c3686217095cb45b24f1b0c8218a2",
+      "packet": "f5082ffd85964268c539852aae4a13ed7a5a1dec",
+      "review": "dbb18623e8fe185b6dc17efeed491ab799352f9c",
+      "operations": [
+        "query_intelligence"
+      ],
+      "runtimeAccepted": false,
+      "sourceTree": "ec6f6d798d428578219aa6f3e4fa9493ae204d92"
     }
   ],
-  "unintegratedPendingReview": [
-    "resolve_entity",
-    "search_tracked_bills",
-    "query_intelligence"
-  ]
+  "unintegratedPendingReview": [],
+  "canonicalSource": "a35a8323024b37ebb245f1a3c67084c19ef2f0c3"
 }

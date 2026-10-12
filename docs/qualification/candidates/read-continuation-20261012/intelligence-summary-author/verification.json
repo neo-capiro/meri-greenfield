@@ -1,0 +1,143 @@
+{
+  "checks": 34,
+  "passed": 34,
+  "failed": 0,
+  "results": [
+    {
+      "name": "unique safe relative members",
+      "pass": true
+    },
+    {
+      "name": "member:docs/coordination/reports/CODEX-INTELLIGENCE-SUMMARY-AUTHOR-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/audit-packet.py",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/cleanup.json",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/focused.json",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/focused.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/focused.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/inspect-references-before.cjs.txt",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/inspect-references.cjs",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/metadata-audit-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/metadata-audit-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/metadata-audit-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/metadata-audit.json",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/metadata-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/metadata-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/outline.md",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/reference-identities-before.json",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/reference-identities.json",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/source-findings.json",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/verify-manifest.py",
+      "pass": true
+    },
+    {
+      "name": "member:packages/contracts/retrieval-0.2/intelligence-summary-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "member:packages/contracts/retrieval-0.2/intelligence-summary.schema.json",
+      "pass": true
+    },
+    {
+      "name": "member:packages/contracts/test/retrieval-intelligence-summary.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "complete packet membership",
+      "pass": true
+    },
+    {
+      "name": "owned exit:focused",
+      "pass": true
+    },
+    {
+      "name": "raw:docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/focused.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw:docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/focused.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned exit:metadata-audit",
+      "pass": true
+    },
+    {
+      "name": "raw:docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/metadata-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw:docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/metadata-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned exit:metadata-audit-repaired",
+      "pass": true
+    },
+    {
+      "name": "raw:docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/metadata-audit-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw:docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/metadata-audit-repaired.stderr.bin",
+      "pass": true
+    }
+  ]
+}
