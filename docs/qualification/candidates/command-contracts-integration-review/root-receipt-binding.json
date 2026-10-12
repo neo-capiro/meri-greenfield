@@ -1,0 +1,25 @@
+{
+  "scope": "READ_ONLY_ROOT_RECEIPT_BINDING_NO_EXECUTION",
+  "source": "5fca98580c5d93c9f9aa4a3ed518e926e087846c",
+  "receipt": {
+    "path": "docs/qualification/candidates/read-continuation-20261012/command-contracts-integration/focused.json",
+    "bytes": 1509,
+    "sha256": "7edfe3ba636536ddd4dc8e09a82eebfbe6cec241b813e36e4091a9b3b2d4228b"
+  },
+  "sourceHead": "5fca98580c5d93c9f9aa4a3ed518e926e087846c",
+  "sourceDiffBytes": 0,
+  "exitCode": 0,
+  "ownedProcessGroupAbsent": true,
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/command-contracts-integration/focused.stdout.bin",
+      "bytes": 9931,
+      "sha256": "2df807ee5418786ff2cae83b2820ac2eedea1869bfebcbb684d7a4d25a646cee"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/command-contracts-integration/focused.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

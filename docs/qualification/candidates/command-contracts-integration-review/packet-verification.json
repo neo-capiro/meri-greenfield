@@ -1,0 +1,114 @@
+{
+  "scope": "OFFLINE_PACKET_VERIFICATION_ONLY",
+  "sourceCommit": "5fca98580c5d93c9f9aa4a3ed518e926e087846c",
+  "manifestSha256": "67de0ea0f314ff4702528403bb22acafa1af98e9b52481367dd5318a3b16d1bb",
+  "memberCount": 16,
+  "passed": 26,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "unique safe member names",
+      "passed": true
+    },
+    {
+      "name": "exact allocated packet membership",
+      "passed": true
+    },
+    {
+      "name": "exact source binding",
+      "passed": true
+    },
+    {
+      "name": "docs/coordination/reports/CODEX-COMMAND-CONTRACTS-INTEGRATION-REVIEW-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/command-contracts-integration-review/audit-integration.py",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/command-contracts-integration-review/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/command-contracts-integration-review/cleanup.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/command-contracts-integration-review/connected-first.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/command-contracts-integration-review/connected-first.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/command-contracts-integration-review/connected-first.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/command-contracts-integration-review/criteria-amendment.md",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/command-contracts-integration-review/criteria.md",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/command-contracts-integration-review/dependencies.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/command-contracts-integration-review/root-receipt-binding.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/command-contracts-integration-review/source-audit.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/command-contracts-integration-review/source-audit.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/command-contracts-integration-review/source-audit.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/command-contracts-integration-review/verify-packet.py",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/test/command-contracts-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "connected-first successful bounded capture",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/command-contracts-integration-review/connected-first.stdout.bin receipt binding",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/command-contracts-integration-review/connected-first.stderr.bin receipt binding",
+      "passed": true
+    },
+    {
+      "name": "source-audit successful bounded capture",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/command-contracts-integration-review/source-audit.stdout.bin receipt binding",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/command-contracts-integration-review/source-audit.stderr.bin receipt binding",
+      "passed": true
+    },
+    {
+      "name": "owned cleanup recorded",
+      "passed": true
+    }
+  ]
+}
