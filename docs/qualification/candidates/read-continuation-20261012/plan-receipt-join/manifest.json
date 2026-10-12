@@ -1,0 +1,149 @@
+{
+  "schema": "meri.governing-receipt-join.manifest/1",
+  "base": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+  "excluded": [
+    "this manifest (self hash)"
+  ],
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-PLAN-RECEIPT-JOIN-20261012.md",
+      "bytes": 13311,
+      "sha256": "9ce48b843326d287c2dc7f10b8e0a9e8c2258d430dc376fb82af662f80da5ff8"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-PLAN-RECEIPT-JOIN-20261012.md",
+      "bytes": 2262,
+      "sha256": "5a3f2471a9c2569e8c468e505978890f3f06d9b8f1e993643e6dc8156526197a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/before-pr35-update.json",
+      "bytes": 320,
+      "sha256": "17ce069c04f7dea3d1de07c55504dddb6c2b0b41645b6545a0a244c0ddfa2bfb"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/boundaries.json",
+      "bytes": 2944,
+      "sha256": "10d426c161f4feb2a9dedca09be165fdd58371d86e77a78092c500a4b6bd0cb4"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/build.py",
+      "bytes": 35212,
+      "sha256": "30ee4b6a934474bbaed8f509cf25cbd2ea0ceea8c6ac982af4a0de34cbf94f6f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/build.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/build.stdout",
+      "bytes": 154,
+      "sha256": "61e6d49639257220f3c333af335062c0d9f0fab73dd94748532bca68f2177a7e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/collection-notes.json",
+      "bytes": 1113,
+      "sha256": "ef6961883c22194792eae273bebe2eafe8b696ef4a88a8c9511b03c21385ba84"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/frontend/PR14-metadata.json",
+      "bytes": 4225,
+      "sha256": "daf86c455877a5906714d05450fa456f07166e0522fb4e88c2d6df9ce764ca2e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/frontend/README.md",
+      "bytes": 7019,
+      "sha256": "d8c6ce22486dba4135d739717de87595bc331190b1b7ba7b7fac75b0146671cd"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/frontend/REMAINING.md",
+      "bytes": 3116,
+      "sha256": "4b071cee1d28f7a77ddefb32116070b245fe991a9d2030eb533750f6e47d4e55"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/frontend/SOURCE.json",
+      "bytes": 2875,
+      "sha256": "bbcfb1e16c1e8fb0004cd48da35b6389c194f6ddbab75081cc91cc909cb97db6"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/frontend/STATUS.json",
+      "bytes": 6172,
+      "sha256": "db073f0e85e0aa810cf1cf276827a049e3ba010b545b2e58193cd5a3c5f4fe7e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/frontend/initial-extra-newline.README.md",
+      "bytes": 7020,
+      "sha256": "b13cf040bab18e15f0e4913ca4a7852f74288f9b4db131a61d5e4d54ff35ac68"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/frontend/initial-extra-newline.REMAINING.md",
+      "bytes": 3117,
+      "sha256": "e4ac3880cd5bf55863a6be215bef6bc484fcaf496b05d2882860e93e079d57ca"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/frontend/initial-extra-newline.SOURCE.json",
+      "bytes": 2876,
+      "sha256": "cf5cb4024fa15e02e13474beb609ed0992e7a87d870cacf7a2c3eb6ff9d443fd"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/frontend/initial-extra-newline.STATUS.json",
+      "bytes": 6173,
+      "sha256": "c8e557d742f3ac9a5e527d81524ecee3ea682bd005e7ec0eb54057c18fde5630"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/frontend/initial-extra-newline.publication-review.md",
+      "bytes": 6334,
+      "sha256": "a4d78975e0cc56c18b31ce21716b03f6ff1a0b177da6412f9103288959d9c631"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/frontend/materialization-failure.json",
+      "bytes": 2180,
+      "sha256": "e77798eef31d8e7fb5afa0f2096544a9657a612eeb54f3b03bb24c0b9aefd8e7"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/frontend/origins.json",
+      "bytes": 1516,
+      "sha256": "7d89aee62fc80379394e623762349d1f634c19852ab4e1a86be04dad47688258"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/frontend/publication-review.md",
+      "bytes": 6333,
+      "sha256": "572abdd0c74defa89c24b29fa4c5496b6eeb87ebb2256ee42e3dc6ab8947f0e5"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/receipts.json",
+      "bytes": 17527,
+      "sha256": "78622e6d3c0e854cb1c337db8eb91e001c70fa8157df40b834db15f5b498174f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/requirements.json",
+      "bytes": 78910,
+      "sha256": "c94e19c0b7dc8fdbfe54bd3255e24603120f6e48b525c8d48dcfa142cbcbe5b3"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/source-identities.json",
+      "bytes": 4796,
+      "sha256": "a647115b21c456d10a69c6e8feea281e994e3d51de91c4de0e542a726e64a4a4"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/verification.json",
+      "bytes": 752,
+      "sha256": "d98c5efc410a3a481ce5e7c8b3f4f26e8f921ea93cc4f42e2a797c0fbdd8cf1c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/verify.py",
+      "bytes": 4527,
+      "sha256": "465bb4e494d10024fa0cbe7971714ad6b782d1512c89b152b25ae6b8ceb30d16"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/verify.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/verify.stdout",
+      "bytes": 194,
+      "sha256": "23805cdfcb1eb645bb7b7ee77e1c36800e0fb9fe634f1b5ba67d4b957ec3dc89"
+    }
+  ]
+}

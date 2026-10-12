@@ -1,0 +1,206 @@
+{
+  "createdUTC": "2026-10-12T17:49:51.098873+00:00",
+  "branch": "integration/capiro-followup-20261012",
+  "baseEvidenceCommit": "fd1176790a6fb31b7ae68587f965a22d4145d8a2",
+  "frozenShippingSource": "d5dd0be9bf5ad7800e648ff1421ce047523288b3",
+  "selectedFindings": [
+    "MS02",
+    "MS03",
+    "MS04",
+    "MS05",
+    "CR-07",
+    "CR-11",
+    "OWI-F02",
+    "PROS-F03",
+    "CP-03"
+  ],
+  "selectedFindingCount": 9,
+  "remainingOutsideGroup": 18,
+  "status": "NINE_SOURCE_REPAIRS_INDEPENDENTLY_REVIEWED_COMBINED_LOCAL_GATES_PASSED",
+  "combinedQualification": "PASSED_ON_EXACT_SOURCE_WITH_RECORDED_SETUP_FAILURE_RESOLVED",
+  "scopePolicy": "Preserve per-row/facet criteria; do not replace337rows with a blanket status.",
+  "nativeOrCloudActions": [],
+  "reviewCorrections": [
+    "Calendar URL date/view survives verified client remount",
+    "Failed signature reread cannot create stale current preview",
+    "Failed deletion-review read revokes stale file actions",
+    "Background replacement read cannot satisfy explicit deletion recovery"
+  ],
+  "updatedUTC": "2026-10-12T19:08:22.797609+00:00",
+  "qualifiedSource": "ee01be3b2c5c64a53744994ae4ad0d992a111054",
+  "checks": {
+    "rootTests": 58,
+    "transportTests": 21,
+    "portfolioUnitTests": 1243,
+    "capiroUnitTests": 110,
+    "elementsTests": 15,
+    "modulesBrowserTests": 182,
+    "portfolioMeriBrowserTests": 1051,
+    "lintErrors": 0,
+    "lintWarningsInherited": 76,
+    "architectureSignals": 416,
+    "architectureReviewed": 392,
+    "architectureInheritedUnreviewed": 24,
+    "architectureBlocking": 0
+  },
+  "productionBuildId": "YeRpCYwLZ8c5jqEhEYTc5",
+  "initialElementsAttempt": {
+    "passed": 12,
+    "failed": 3,
+    "reason": "Required fresh SSR receipt absent from initial invocation",
+    "resolved": "Prepared exact-source SSR artifact and receipt;15/15 passed without source change"
+  },
+  "nativeAcceptance": "UNRUN; finite prerequisites in evidence/triage/STAGING-CHECKS.json",
+  "fullRowAcceptance": "NO_NEW_FULL_ROW_ACCEPTANCE",
+  "gates": {
+    "clean-install": {
+      "exitCode": 0,
+      "durationSeconds": 16.25774260799517,
+      "command": [
+        "npm",
+        "ci",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund",
+        "--cache",
+        "/tmp/capiro-p1-npm-cache"
+      ],
+      "sourceChanged": false,
+      "receipt": "evidence/integration/final-ee01be3/clean-install-exit.json"
+    },
+    "check": {
+      "exitCode": 0,
+      "durationSeconds": 111.8304986410003,
+      "command": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "sourceChanged": false,
+      "receipt": "evidence/integration/final-ee01be3/check-exit.json"
+    },
+    "elements": {
+      "exitCode": 1,
+      "durationSeconds": 4.632067520004057,
+      "command": [
+        "npm",
+        "run",
+        "check:elements"
+      ],
+      "sourceChanged": false,
+      "receipt": "evidence/integration/final-ee01be3/elements-exit.json"
+    },
+    "elements-prepared": {
+      "exitCode": 0,
+      "durationSeconds": 6.866156928001146,
+      "command": [
+        "env",
+        "MERI_ELEMENTS_SSR_RECEIPT=/tmp/capiro-followup-elements-ee01be3/receipt.json",
+        "MERI_ELEMENTS_SSR_RECEIPT_SHA256=4bc214f49da8778dc757340cba197566d30945090ba8d2658d20fd269a1d31e6",
+        "MERI_ELEMENTS_SSR_CAPTURE_ROOT=/tmp/capiro-followup-elements-runtime-ee01be3",
+        "npm",
+        "run",
+        "check:elements"
+      ],
+      "sourceChanged": false,
+      "receipt": "evidence/integration/final-ee01be3/elements-prepared-exit.json"
+    },
+    "build": {
+      "exitCode": 0,
+      "durationSeconds": 56.781239021001966,
+      "command": [
+        "env",
+        "NEXT_TELEMETRY_DISABLED=1",
+        "npm",
+        "run",
+        "build"
+      ],
+      "sourceChanged": false,
+      "receipt": "evidence/integration/final-ee01be3/build-exit.json"
+    },
+    "production": {
+      "exitCode": 0,
+      "durationSeconds": 6.743974375996913,
+      "command": [
+        "env",
+        "PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium",
+        "npm",
+        "run",
+        "test:production",
+        "--",
+        "/tmp/capiro-followup-qualification/final-ee01be3/production-artifacts"
+      ],
+      "sourceChanged": false,
+      "receipt": "evidence/integration/final-ee01be3/production-exit.json"
+    },
+    "modules": {
+      "exitCode": 0,
+      "durationSeconds": 262.1844644840021,
+      "command": [
+        "env",
+        "CAPIRO_QA_CHROMIUM_EXECUTABLE=/usr/bin/chromium",
+        "npm",
+        "run",
+        "test:browser:modules",
+        "--workspace",
+        "@capiro/web",
+        "--",
+        "--workers=1",
+        "--timeout=60000",
+        "--retries=0",
+        "--output=/tmp/capiro-followup-qualification/final-ee01be3/modules-artifacts"
+      ],
+      "sourceChanged": false,
+      "receipt": "evidence/integration/final-ee01be3/modules-exit.json",
+      "stats": {
+        "startTime": "2026-10-12T18:27:05.534Z",
+        "duration": 261349.237,
+        "expected": 182,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      }
+    },
+    "portfolio": {
+      "exitCode": 0,
+      "durationSeconds": 2183.915174652997,
+      "command": [
+        "env",
+        "PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium",
+        "npm",
+        "run",
+        "test:browser",
+        "--",
+        "--workers=3",
+        "--timeout=60000",
+        "--retries=0",
+        "--output=/tmp/capiro-followup-qualification/final-ee01be3/portfolio-artifacts"
+      ],
+      "sourceChanged": false,
+      "receipt": "evidence/integration/final-ee01be3/portfolio-exit.json",
+      "stats": {
+        "startTime": "2026-10-12T18:31:34.997Z",
+        "duration": 2182915.166,
+        "expected": 1051,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      }
+    }
+  },
+  "browserTimeoutPolicy": {
+    "modules": {
+      "workers": 1,
+      "casesAt60000ms": 182,
+      "retries": 0
+    },
+    "portfolioMeri": {
+      "workers": 3,
+      "defaultMs": 60000,
+      "casesAt60000ms": 1047,
+      "existingSlowCasesAt180000ms": 4,
+      "retries": 0,
+      "assertionsAndSlowDeclarationsUnchanged": true
+    }
+  }
+}

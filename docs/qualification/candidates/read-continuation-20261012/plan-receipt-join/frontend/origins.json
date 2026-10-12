@@ -1,0 +1,32 @@
+{
+  "repo": "neo-capiro/capiro-frontend",
+  "ref": "7aca86e7d64cfdb85d09d424a07e6186339fc24c",
+  "route": "supported GitHub fetch_file connector; decoded UTF-8 source metadata only",
+  "files": {
+    "README.md": {
+      "url": "https://github.com/neo-capiro/capiro-frontend/blob/7aca86e7d64cfdb85d09d424a07e6186339fc24c/docs/followup-20261012/README.md",
+      "blob": "0ff96f893f902ae3ec413022097abd97b2547aff",
+      "encoding": "utf-8"
+    },
+    "STATUS.json": {
+      "url": "https://github.com/neo-capiro/capiro-frontend/blob/7aca86e7d64cfdb85d09d424a07e6186339fc24c/docs/followup-20261012/STATUS.json",
+      "blob": "c7ea49b501fdfa559c323d30f72c77de7019a9da",
+      "encoding": "utf-8"
+    },
+    "SOURCE.json": {
+      "url": "https://github.com/neo-capiro/capiro-frontend/blob/7aca86e7d64cfdb85d09d424a07e6186339fc24c/docs/followup-20261012/SOURCE.json",
+      "blob": "b4e9dd132b354566e162380b9985bc2fcc71d943",
+      "encoding": "utf-8"
+    },
+    "REMAINING.md": {
+      "url": "https://github.com/neo-capiro/capiro-frontend/blob/7aca86e7d64cfdb85d09d424a07e6186339fc24c/docs/followup-20261012/REMAINING.md",
+      "blob": "717d69635fad777e13d31435dbe9f522ace7131a",
+      "encoding": "utf-8"
+    },
+    "publication-review.md": {
+      "url": "https://github.com/neo-capiro/capiro-frontend/blob/7aca86e7d64cfdb85d09d424a07e6186339fc24c/docs/followup-20261012/evidence/final-publication-review/report.md",
+      "blob": "de522fdbf34e6629e3471a38825fdd7e91ed380b",
+      "encoding": "utf-8"
+    }
+  }
+}

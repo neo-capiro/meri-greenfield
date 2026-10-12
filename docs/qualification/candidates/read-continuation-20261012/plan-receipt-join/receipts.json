@@ -1,0 +1,317 @@
+{
+  "base": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+  "clockObservation": "2026-10-12 20:14:23 UTC",
+  "clockMeaning": "Tool clock after supported frontend reads and local PR35 review/publication receipt intake. Shipping started at19:42:46 is a dated parent observation; its state was not re-queried and no terminal conclusion follows. Exact frontend per-call times not captured.",
+  "receipts": [
+    {
+      "id": "plan-index",
+      "provenance": "committed report/source inspected locally; underlying raw qualification not rerun or fully re-audited here",
+      "identity": {
+        "ref": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+        "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/normative-id-ledger.json",
+        "gitBlob": "642845e74f716d5bf8377e84250b52dcccc4686a",
+        "bytes": 63609,
+        "sha256": "3b2f81a369f7b090538f1bace1f2969ebeac4cb8ab41334d45b1f62d72a1df1a"
+      },
+      "supportedClaim": "Exactly53 original W/R/REL/RG/G identifiers and locators, accepted as metadata in PR34.",
+      "limit": "Not an individual product-completion acceptance."
+    },
+    {
+      "id": "g0",
+      "provenance": "committed report/source inspected locally; underlying raw qualification not rerun or fully re-audited here",
+      "identity": {
+        "ref": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+        "path": "docs/coordination/DECISIONS.md",
+        "gitBlob": "fd58ed15daa8d3a093893e49e901f28570c91f51",
+        "bytes": 24662,
+        "sha256": "8d5238335bbc9e68b58cbe083bd275dc24938eb7d13dc8d047342b8f37a819ae"
+      },
+      "supportedClaim": "D012 accepted G0 discovery; D011 recorded96/43 batch scope; D014 separate frontend.",
+      "limit": "No G1/live authorization; later explicit decisions govern over historical examples."
+    },
+    {
+      "id": "read-source",
+      "provenance": "committed report/source inspected locally; underlying raw qualification not rerun or fully re-audited here",
+      "identity": {
+        "ref": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+        "path": "docs/coordination/reports/CODEX-OBSERVED-READS-INTEGRATION-REVIEW-20261012.md",
+        "gitBlob": "9032b07453f783cdc405862b02349dad7fd1e3f3",
+        "bytes": 6726,
+        "sha256": "daa8c7fece2343c9338cc2b1cdee53b70fd3c689c697f14eb9000adcafb9a695"
+      },
+      "supportedClaim": "Accepted753566b,67typed unavailable/66mapped/30pending; root755focused2817expanded,27 independent; public unchanged.",
+      "limit": "Pure contracts/correlation and disabled gateway; no actual handler/source/runtime. Counts overlap, never benchmark denominators."
+    },
+    {
+      "id": "read-catalog",
+      "provenance": "committed report/source inspected locally; underlying raw qualification not rerun or fully re-audited here",
+      "identity": {
+        "ref": "753566baf2d230ed241941dcdeca41625277cb1d",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "gitBlob": "420c7dcb5ff8422cc67cf0336fec50f8d25313dc",
+        "bytes": 242133,
+        "sha256": "5c8a6ad710a9a48156dfabd0954d7d5c6150cd0720af014449a63d954838e218"
+      },
+      "supportedClaim": "139original96selected43deferred; all67 handlers null.",
+      "limit": "Canonical unavailable mappings, not data or workflow parity."
+    },
+    {
+      "id": "command-source",
+      "provenance": "committed report/source inspected locally; underlying raw qualification not rerun or fully re-audited here",
+      "identity": {
+        "ref": "a838c3819ca01798d9175a1d07bef1eb81355808",
+        "path": "docs/coordination/reports/CODEX-COMMAND-CONTRACTS-INTEGRATION-20261012.md",
+        "gitBlob": "272a41589524b33f931352b24047f016b0d95655",
+        "bytes": 7016,
+        "sha256": "fded336448fece04bbbea753848dc95b8dd040ede2ec420815c1934f4e7cae3f"
+      },
+      "supportedClaim": "Acceptedbdbb146 payloads +5fca985 private loader;107 root focused and143 independent combined controls.",
+      "limit": "No executor/current rights/approval/storage/reconciliation or native mapping added."
+    },
+    {
+      "id": "contracts",
+      "provenance": "committed report/source inspected locally; underlying raw qualification not rerun or fully re-audited here",
+      "identity": {
+        "ref": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+        "path": "docs/coordination/reports/CODEX-REL02-CANONICAL-COMPOSITION-ACCEPTANCE-20261011.md",
+        "gitBlob": "c7178bbfa9ac6efade9b40a710669abea872bd2c",
+        "bytes": 6423,
+        "sha256": "9a4b8cb85aedbdaa235588cdbb39dc5e075871b616327d69e906aa546c3dc117"
+      },
+      "supportedClaim": "Independently accepted shared private schema/factory composition and raw schema pin boundaries.",
+      "limit": "Source only; REL02 and dependent runtime remain open."
+    },
+    {
+      "id": "skills",
+      "provenance": "committed report/source inspected locally; underlying raw qualification not rerun or fully re-audited here",
+      "identity": {
+        "ref": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+        "path": "docs/SKILL-CONTRACT.md",
+        "gitBlob": "785c2fb5ae9472345bd9c54adf86a7ee829542ed",
+        "bytes": 5772,
+        "sha256": "fbba378db2dc95e26996c26620c599ffaf69386ff495ee83fefa56d06ae2f3f7"
+      },
+      "supportedClaim": "Invocation/manifest/continuity foundation; fourteen exact intents retained.",
+      "limit": "Each original executable skill, complete source/evidence rubric and execution remains pending; ordinary questions remain lightweight."
+    },
+    {
+      "id": "runtime-source",
+      "provenance": "committed report/source inspected locally; underlying raw qualification not rerun or fully re-audited here",
+      "identity": {
+        "ref": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+        "path": "docs/coordination/reports/MERI-G1-NATIVE-PATH-20261012.md",
+        "gitBlob": "4a5597ece389b46a50a69f357c9198fc200f6cc0",
+        "bytes": 11833,
+        "sha256": "e35867ce3fd1ed758daae8c87cea4bbd987fff95d5963ff4877fa85b010b277d"
+      },
+      "supportedClaim": "Accepted source-only supervisor/budget/Temporal/checkpoint preparation with explicit native holds.",
+      "limit": "Dated source gaps may be superseded by newer owner evidence; old14/82 catalog counts are historical. Not latest native state."
+    },
+    {
+      "id": "benchmark",
+      "provenance": "committed report/source inspected locally; underlying raw qualification not rerun or fully re-audited here",
+      "identity": {
+        "ref": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+        "path": "docs/ROUTING-EVALUATION.md",
+        "gitBlob": "fab563ae2e8f3185d4506dbcb023a07e9900bccf",
+        "bytes": 4222,
+        "sha256": "b908086bb036a0bbe04572975ed9d04e180770a2c333c68bfe7fef360a200add"
+      },
+      "supportedClaim": "Adopted trace/oracle/held-out protocol; its frozen dataset is empty and RG outcomes unmeasured.",
+      "limit": "Need current dataset/owner receipts, not synthetic substitutions; paid allowance remainder unknown."
+    },
+    {
+      "id": "scope",
+      "provenance": "committed report/source inspected locally; underlying raw qualification not rerun or fully re-audited here",
+      "identity": {
+        "ref": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+        "path": "docs/coordination/reports/CODEX-SCOPE-AUTHORITY-20261012.md",
+        "gitBlob": "141fd339cf03df73d6333f77461d671a66be7c6a",
+        "bytes": 11712,
+        "sha256": "d5395a245829d1834c38525597ca3ef4aef0c484eb8dcf3d00f6c2ed3e62ae2e"
+      },
+      "supportedClaim": "43 deferrals preserved; D011 batch record; four covered-family tensions.",
+      "limit": "Underlying primary approval transcript/per-row rationale not located; no reclassification and no product-duty deletion."
+    },
+    {
+      "id": "image-history",
+      "provenance": "committed report/source inspected locally; underlying raw qualification not rerun or fully re-audited here",
+      "identity": {
+        "ref": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+        "path": "docs/coordination/reports/MERI-G1-EXECUTION-OPTIONS-20261012.md",
+        "gitBlob": "b012bf5f2ba967ed461010917451befa80dd8ca2",
+        "bytes": 14285,
+        "sha256": "7744a806437ac0ae3dfdb5417203327acd1530a943026c0cba3f5a123cece819"
+      },
+      "supportedClaim": "Dated54-obligation image/source routes preserve all required functions and blocked old digest.",
+      "limit": "Not a current build result; new SDK image owner reports progress separately. No scan waiver or executable admission."
+    },
+    {
+      "id": "pe-source",
+      "provenance": "committed report/source inspected locally; underlying raw qualification not rerun or fully re-audited here",
+      "identity": {
+        "ref": "3b06986d2f2dd2b89d17acff97c1fc1091aab85b",
+        "path": "docs/coordination/reports/CODEX-PROGRAM-ELEMENTS-REVIEW-20261012.md",
+        "gitBlob": "e7d4e8595acafb346db324bbe5d3246449a1d9a3",
+        "bytes": 6954,
+        "sha256": "a0a9eb70ec95c2a0bae5fb4b26882d600f0ba9de15a5f6c78d52ef79ce10cacb"
+      },
+      "supportedClaim": "Family acceptance of1f7ad5726541f0ab5a103b9e0b2152c260350dbd; exact projected PE semantics and ownership repair.",
+      "limit": "Does not accept combined catalog candidate or actual source access."
+    },
+    {
+      "id": "combined-source",
+      "provenance": "committed report/source inspected locally; underlying raw qualification not rerun or fully re-audited here",
+      "identity": {
+        "ref": "fecf97a4a8b742c6c09b781d3b799816e8b548e4",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "gitBlob": "1f261f8e3fef9f4c90b68f826eb1e7bab5b1fc2f",
+        "bytes": 253882,
+        "sha256": "39eb9e4fd4015f19ae975882374ef11ac14b7eb6df91b24884e563ab031d3a2a"
+      },
+      "supportedClaim": "Exact accepted source71typed/70mapped/26pending, all unavailable/null; independent combined review and final receipts now available.",
+      "limit": "Source acceptance only; supersedes67/66/30 mapping counts, not runtime or full product criteria."
+    },
+    {
+      "id": "combined-review",
+      "provenance": "committed report/source inspected locally; underlying raw qualification not rerun or fully re-audited here",
+      "identity": {
+        "ref": "d0b181e312b797e0fe181c16be814da23e126767",
+        "path": "docs/coordination/reports/CODEX-BACKEND-NEXT-REVIEW-20261012.md",
+        "gitBlob": "00b33cee2b3557ea223f161e500d973ecc2a23c7",
+        "bytes": 5173,
+        "sha256": "3fb43c41e39a81d767dd294e4b761a29e13e6a8c235988d4bd40accc031e5ca1"
+      },
+      "supportedClaim": "ACCEPT_SOURCE fecf97a4;29independent/7429source/795packet/52receipt checks; root3196expanded/public7generation-types/7690source1192packet.",
+      "limit": "Source only; no adapters/current rights/native/deployment. Original failures retained; counts overlap."
+    },
+    {
+      "id": "backend-publication",
+      "provenance": "committed report/source inspected locally; underlying raw qualification not rerun or fully re-audited here",
+      "identity": {
+        "ref": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+        "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-integration/publication-receipt.json",
+        "gitBlob": "24a0cd7ef1c1a74a2c08c247ce3ef07e939a1288",
+        "bytes": 1069,
+        "sha256": "aaefc3696a6aec9a446b013fb286fa0fb41ecd26fe0e055f72b09df16fa71b5a"
+      },
+      "supportedClaim": "Committed receipt records draftPR35/sourcefecf97a4/reviewd0b181e3 and packetc7a1e074 at20:12:01Z; parent reports receipt-bearing finalhead1f7bf122.",
+      "limit": "This lane reads the local immutable receipt; no independent remote refresh or merge. Source-only verdict."
+    },
+    {
+      "id": "frontend",
+      "provenance": "supported GitHub metadata GET; exact decoded committed file bytes independently match returned Git blob IDs; reviewed report claims, not rerun tests or full raw-evidence audit",
+      "repository": "neo-capiro/capiro-frontend",
+      "publication": "7aca86e7d64cfdb85d09d424a07e6186339fc24c",
+      "source": "ee01be3b2c5c64a53744994ae4ad0d992a111054",
+      "files": [
+        {
+          "path": "frontend/README.md",
+          "url": "https://github.com/neo-capiro/capiro-frontend/blob/7aca86e7d64cfdb85d09d424a07e6186339fc24c/docs/followup-20261012/README.md",
+          "gitBlob": "0ff96f893f902ae3ec413022097abd97b2547aff",
+          "bytes": 7019,
+          "sha256": "d8c6ce22486dba4135d739717de87595bc331190b1b7ba7b7fac75b0146671cd"
+        },
+        {
+          "path": "frontend/STATUS.json",
+          "url": "https://github.com/neo-capiro/capiro-frontend/blob/7aca86e7d64cfdb85d09d424a07e6186339fc24c/docs/followup-20261012/STATUS.json",
+          "gitBlob": "c7ea49b501fdfa559c323d30f72c77de7019a9da",
+          "bytes": 6172,
+          "sha256": "db073f0e85e0aa810cf1cf276827a049e3ba010b545b2e58193cd5a3c5f4fe7e"
+        },
+        {
+          "path": "frontend/SOURCE.json",
+          "url": "https://github.com/neo-capiro/capiro-frontend/blob/7aca86e7d64cfdb85d09d424a07e6186339fc24c/docs/followup-20261012/SOURCE.json",
+          "gitBlob": "b4e9dd132b354566e162380b9985bc2fcc71d943",
+          "bytes": 2875,
+          "sha256": "bbcfb1e16c1e8fb0004cd48da35b6389c194f6ddbab75081cc91cc909cb97db6"
+        },
+        {
+          "path": "frontend/REMAINING.md",
+          "url": "https://github.com/neo-capiro/capiro-frontend/blob/7aca86e7d64cfdb85d09d424a07e6186339fc24c/docs/followup-20261012/REMAINING.md",
+          "gitBlob": "717d69635fad777e13d31435dbe9f522ace7131a",
+          "bytes": 3116,
+          "sha256": "4b071cee1d28f7a77ddefb32116070b245fe991a9d2030eb533750f6e47d4e55"
+        },
+        {
+          "path": "frontend/publication-review.md",
+          "url": "https://github.com/neo-capiro/capiro-frontend/blob/7aca86e7d64cfdb85d09d424a07e6186339fc24c/docs/followup-20261012/evidence/final-publication-review/report.md",
+          "gitBlob": "de522fdbf34e6629e3471a38825fdd7e91ed380b",
+          "bytes": 6333,
+          "sha256": "572abdd0c74defa89c24b29fa4c5496b6eeb87ebb2256ee42e3dc6ab8947f0e5"
+        }
+      ],
+      "supportedClaim": "Nine findings/eleven facets repaired; committed reports say1432 combined checks,182 Modules+1051 Portfolio/Meri browser,15 Elements,one build and bounded standalone smoke passed. Initial Elements12/3 failure retained.",
+      "limit": "18 findings open;337 native Portfolio rows unaccepted; live sign-in/native persistence/provider/full visual-accessibility acceptance absent. These337 are not Meri139native IDs. No aggregate sum with earlier81browser46unit reported cohort.",
+      "shippingSource": "d5dd0be9bf5ad7800e648ff1421ce047523288b3",
+      "shippingEvidence": "fd1176790a6fb31b7ae68587f965a22d4145d8a2"
+    },
+    {
+      "id": "native-reported",
+      "provenance": "parent-reported observation in delegated task/messages; immutable underlying receipt not supplied or independently verified",
+      "reportedOn": "2026-10-12",
+      "claims": {
+        "baselineCasesPassed": 33,
+        "budgetCasesPassed": 9,
+        "invocationCasesPassed": 12
+      },
+      "missing": [
+        "exact source/harness/runtime/dependency/host identities",
+        "original command and clocks, raw exit/results/skips/failures",
+        "actual DB/auth/isolation/resource scope",
+        "cleanup/absence and independent acceptance receipt",
+        "which original criterion each case demonstrates"
+      ],
+      "qualifiedRuntimeByThisLane": false
+    },
+    {
+      "id": "sdk-image-reported",
+      "provenance": "parent-reported observation in delegated task/messages; immutable underlying receipt not supplied or independently verified",
+      "reportedOn": "2026-10-12",
+      "claims": {
+        "cacheCleanupReportedGB": 30.6,
+        "image": "pending",
+        "buildFootprintOptimization": "underway"
+      },
+      "missing": [
+        "exact supported recipe/context/image digest",
+        "final build result, scan/applicability/bundled closure, license/ABI/source acceptance",
+        "native launch authority and runtime qualification"
+      ],
+      "qualifiedRuntimeByThisLane": false
+    },
+    {
+      "id": "shipping-reported",
+      "provenance": "parent-reported observation in delegated task/messages; immutable underlying receipt not supplied or independently verified",
+      "reportedOn": "2026-10-12",
+      "claims": {
+        "buildId": "18b3316a-9403-40f9-807b-3ddf24c40d7b",
+        "startedUTC": "2026-10-12T19:42:46Z",
+        "reportedState": "second frontend build started; no image acceptance",
+        "sourceBinding": "not independently supplied for this build ID"
+      },
+      "missing": [
+        "terminal receipt",
+        "exactsource/context/image digest and source-to-image binding",
+        "scan/provenance/acceptance, deployed source/readbacks if subsequently authorized"
+      ],
+      "qualifiedRuntimeByThisLane": false
+    },
+    {
+      "id": "frontend-earlier-cohort",
+      "provenance": "parent-reported observation in delegated task/messages; immutable underlying receipt not supplied or independently verified",
+      "reportedOn": "2026-10-12",
+      "claims": {
+        "source": "ee01be3b2c5c64a53744994ae4ad0d992a111054",
+        "independentBrowserPass": 81,
+        "unitPass": 46,
+        "openFindings": 18,
+        "nativePortfolioRowsUnaccepted": 337
+      },
+      "missing": [
+        "exact earlier cohort receipt and relationship to full committed local suites; do not add overlapping counts"
+      ],
+      "qualifiedRuntimeByThisLane": false
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "python3",
+    "-I",
+    "-B",
+    "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/verify.py"
+  ],
+  "exitCode": 0,
+  "result": {
+    "status": "PASS",
+    "checks": 751,
+    "requirements": 53,
+    "fullRuntimeCriteriaPromoted": 0,
+    "productTestsRun": false,
+    "nativeActions": false,
+    "baseline": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4"
+  },
+  "stdoutSha256": "23805cdfcb1eb645bb7b7ee77e1c36800e0fb9fe634f1b5ba67d4b957ec3dc89",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "verifierSha256": "465bb4e494d10024fa0cbe7971714ad6b782d1512c89b152b25ae6b8ceb30d16",
+  "originalProductTests": "UNRUN",
+  "runtimeActions": "UNRUN",
+  "sourceChanged": false
+}

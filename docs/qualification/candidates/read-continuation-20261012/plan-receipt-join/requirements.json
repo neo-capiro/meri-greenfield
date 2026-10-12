@@ -1,0 +1,1378 @@
+{
+  "base": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+  "originalIndex": {
+    "ref": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+    "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/normative-id-ledger.json",
+    "gitBlob": "642845e74f716d5bf8377e84250b52dcccc4686a",
+    "bytes": 63609,
+    "sha256": "3b2f81a369f7b090538f1bace1f2969ebeac4cb8ab41334d45b1f62d72a1df1a"
+  },
+  "interpretation": "Exactly53 indexed requirements, not705-row semantic audit. Requirement-level pending can contain completed source components or reported limited runtime checks. No whole criterion promoted by component counts.",
+  "requirements": [
+    {
+      "id": "W00",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 176
+      },
+      "originalRequirement": "| W00 Discovery and scope | Codex, read-only Hermes support | Access to environment | Source inventory; selected/deferred capability ledger; account/repository decision; pinned Meri Figma baseline and shared-shell decision; REL-01 baseline/trace plan |",
+      "originalRecordSha256": "2f2b6111ec0ac0504721d931d1bde4fd777178a456d8679c8c2e3d0ec43981e5",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "G0 discovery and PR34 authority/requirements metadata accepted.",
+      "sourceReceiptIds": [
+        "g0",
+        "plan-index",
+        "scope",
+        "frontend",
+        "native-reported"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [
+        "native-reported"
+      ],
+      "remaining": "Current owner receipts and any remaining source/design/discovery gaps still need exact joins.",
+      "owner": "integration + source/design owners",
+      "nextParallelSourceOrMetadataWork": "Bind latest external-owner receipts to existing inventory and unresolved source boundaries.",
+      "decisionOrExternalPrerequisite": "Obtain current receipts; four authority tensions remain visible without reclassifying.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "W01",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 177
+      },
+      "originalRequirement": "| W01 Shared contracts | Codex with one Hermes session | W00 | Versioned catalog, typed operations, skill invocation/manifests, normalized evidence, events, proposals and artifact/checkpoint schemas; REL-02; fixture and UI control/state mappings |",
+      "originalRecordSha256": "df77a6709f04f0b64afd50769a982955fadee8b24527a2d821a11e71d03b9b43",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Accepted public/private schema boundaries, canonical unavailable read contracts and command payload loader.",
+      "sourceReceiptIds": [
+        "read-source",
+        "command-source",
+        "contracts",
+        "combined-source",
+        "skills",
+        "combined-review",
+        "backend-publication"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "Complete operation handlers/descriptions/fixture joins and fourteen executable manifests; new70/26 mapping source is accepted, still unavailable.",
+      "owner": "contract integration owner",
+      "nextParallelSourceOrMetadataWork": "Use accepted PR35 dependencies; assign remaining26 closed input/result contract slices.",
+      "decisionOrExternalPrerequisite": "Accepted dependency freeze and exact owner interface; no new architecture decision required.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "W02",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 178
+      },
+      "originalRequirement": "| W02 Runtime qualification | A | W00–W01 | SDK/Fargate/browser/model-proxy spike, native discovery compatibility and Temporal production-topology decision; REL-05 runtime-only checkpoint, not its later end-to-end acceptance |",
+      "originalRecordSha256": "a559394283e92a743034749a542ec19679629ac4fe124464a9df92b15670c483",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Runtime/proxy/checkpoint/budget source exists; native33/9/12 passes reported.",
+      "sourceReceiptIds": [
+        "runtime-source",
+        "native-reported",
+        "sdk-image-reported",
+        "image-history"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [
+        "native-reported"
+      ],
+      "remaining": "Actual complete SDK/model-proxy/discovery/A-B/browser/artifact qualification and supported image admission.",
+      "owner": "native RC1/runtime + image/security owners",
+      "nextParallelSourceOrMetadataWork": "Reconcile33/9/12 raw receipts; finish reviewed image closure and source footprint changes separately.",
+      "decisionOrExternalPrerequisite": "Missing immutable native receipts; patched supported image and exact separately authorized action packet.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "W03",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 179
+      },
+      "originalRequirement": "| W03 Isolated foundation | A | W02 | New CDK stacks, OIDC CI roles, persistence, networking, secrets, deployment/runbooks |",
+      "originalRecordSha256": "a10977538c44b1b96cf5728a7015e3bbedf5be35ecb66fcc47c76c11cd940853",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Separate stack source and existing Aurora decision preserved.",
+      "sourceReceiptIds": [
+        "g0",
+        "runtime-source",
+        "shipping-reported"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "Qualified deployed isolated foundation, restricted identities, network/storage/Temporal and runbooks.",
+      "owner": "shipping/platform + security owners",
+      "nextParallelSourceOrMetadataWork": "Prepare exact configuration/migration/resource/cost diff for selected Aurora and standalone environment.",
+      "decisionOrExternalPrerequisite": "Existing Aurora is selected; no new RDS. Explicit authority for actual changes remains separate.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "W04",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 180
+      },
+      "originalRequirement": "| W04 Authorization and reads | B | W01/REL-02; W03 for live integration | Two-tenant and within-tenant fixtures; exact/search/evidence adapters; memory read; source coverage/freshness/paging; REL-03 and REL-06 |",
+      "originalRecordSha256": "ea1c63384fe861dcdbb0ea781a327fd788dc7f7c786606c47a313ae2f921d103",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "71 typed unavailable reads and shared declared scope/evidence checks accepted.",
+      "sourceReceiptIds": [
+        "read-source",
+        "read-catalog",
+        "contracts",
+        "scope",
+        "combined-source",
+        "combined-review",
+        "backend-publication"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "Real source handlers/nonowner roles/current rights, exact/search/full reads and source coverage.",
+      "owner": "gateway/source owners",
+      "nextParallelSourceOrMetadataWork": "Implement one authorized adapter boundary against actual frozen contracts, then each selected domain; preserve incomplete/denied outcomes.",
+      "decisionOrExternalPrerequisite": "Source principal/view/interface and current policy/grants; runtime approval not conferred by DTO.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "W05",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 181
+      },
+      "originalRequirement": "| W05 Durable runs | A | W02–W03 | Broker ownership/fencing, SDK SessionStore, file checkpoints, events, approvals and schedules |",
+      "originalRecordSha256": "a837456cac28263a7276a9d83ceb500aa8661116321e288ed8630200452891ec",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Temporal recovery, session/file and fence source exists; native state controls reported passing.",
+      "sourceReceiptIds": [
+        "runtime-source",
+        "native-reported",
+        "skills"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [
+        "native-reported"
+      ],
+      "remaining": "Durable production conversation/run/event/approval/schedule handlers and true SDK A/B restore/stale rejection.",
+      "owner": "control/Temporal + native owners",
+      "nextParallelSourceOrMetadataWork": "Complete source persistence/reconciliation and schedule lifecycle against accepted contracts; join actual native receipts.",
+      "decisionOrExternalPrerequisite": "Exact current runtime/state source, identity, compatible history/checkpoint format and execution admission.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "W06",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 182
+      },
+      "originalRequirement": "| W06 Workspace interface | C | W01/REL-02; W05 for integration | Figma-mapped AI Elements screens and responsive states; explicit skill ID/version/scope/dates; real streaming, history, stop/steer/resume/fork, approvals, files, evidence and schedules; three mode buttons; REL-04 |",
+      "originalRecordSha256": "9e3d840a8d16017b3c0e9a7b385d6eca524525bb1ffb714f0ce3f41b66df5bd7",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Current frontend owner packet binds nine repaired findings and passing bounded local qualification.",
+      "sourceReceiptIds": [
+        "frontend",
+        "skills",
+        "contracts"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "Full Meri controls/screens/state/live event/skill/schedule/artifact integration;18 source/design findings and native rows remain separately scoped.",
+      "owner": "capiro-frontend + backend event/identity owners",
+      "nextParallelSourceOrMetadataWork": "Continue original18 findings in frontend lane; map Meri-specific controls to real backend services without borrowing unrelated Portfolio completion.",
+      "decisionOrExternalPrerequisite": "Source freeze and actual service/origin/identity contracts; current337Portfolio rows are not Meri scope denominator.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "W07",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 183
+      },
+      "originalRequirement": "| W07 Artifacts and browser | C, sequential scoped tickets | W02; W04–W06 for authorized integration | Native files, render/revise/download workflow; public browsing, then qualified authenticated work |",
+      "originalRecordSha256": "4ec0bb11f5a0c9708ea9bf81c14ab49b0fd6cb591d8d07d03952a76adf30b93e",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Artifact/browser adoption and source scaffold; command file-payload validation accepted.",
+      "sourceReceiptIds": [
+        "command-source",
+        "skills",
+        "image-history",
+        "sdk-image-reported",
+        "frontend"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "Native DOCX/XLSX/PPTX/PDF/edit/render/inspect/revise/version/download and scoped browser integration.",
+      "owner": "artifact + native browser + frontend owners",
+      "nextParallelSourceOrMetadataWork": "Write original artifact skill/rubric and publication/version handlers against existing libraries; retain all formats and scope.",
+      "decisionOrExternalPrerequisite": "Supported patched runtime/parsers/fonts plus actual byte/render inspection; browser/renderer/egress admission.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "W08",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 184
+      },
+      "originalRequirement": "| W08 Selected mutations | B | W04 passes; W05 | Memory proposals, tasks and artifact filing with approval, idempotency and receipts |",
+      "originalRecordSha256": "05d1dc1f91985e175976c48022fb722731991859fcaa89f47446964596508681",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Memory policy and task/artifact payload contracts accepted.",
+      "sourceReceiptIds": [
+        "command-source",
+        "scope",
+        "g0"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "Real immutable proposal/current-rights/expiry/idempotent command execution and truthful outcome reconciliation.",
+      "owner": "command/gateway + source transaction owners",
+      "nextParallelSourceOrMetadataWork": "Implement trusted producer/transaction interfaces and retain failed/persisted-pending distinctions.",
+      "decisionOrExternalPrerequisite": "Canonical ordinary-task rights/effective destination scope; resolved admin memory exception is not reopened.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "W09",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 185
+      },
+      "originalRequirement": "| W09 Independent verification | D | Starts with W01; expands as packages land | Held-out RG suite and oracle checks, adversarial policy suite, UI behavior/visual/accessibility, browser/artifact/recovery/load evidence; independent REL-06/REL-09 acceptance |",
+      "originalRecordSha256": "3fca9a8d98f0a4a83f2cb981462c74687b3fc7e985daa3bd4190a410c9673c05",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Independent source reviews, benchmark protocol and frontend bounded checks exist.",
+      "sourceReceiptIds": [
+        "benchmark",
+        "read-source",
+        "frontend",
+        "native-reported"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [
+        "native-reported"
+      ],
+      "remaining": "Original real-work/isolation/artifact/recovery/load/fullUI gates and core held-out RG evidence.",
+      "owner": "independent QA + component owners",
+      "nextParallelSourceOrMetadataWork": "Prepare labelled rubric/oracle and case ownership with fixed denominators; join exact native/UI receipts.",
+      "decisionOrExternalPrerequisite": "Approved75 real-request location/owner and qualified baseline; no synthetic replacement.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "W10",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 186
+      },
+      "originalRequirement": "| W10 Staging candidate | Codex; D verifies | W03–W09 accepted | Immutable candidate deployed and complete release evidence |",
+      "originalRecordSha256": "b89ac0d96e44feff18f069abcd4655c7a30c111bc34342266ff2c1a2d4b2bec6",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Immutable source publications exist, not a qualified staging deployment.",
+      "sourceReceiptIds": [
+        "shipping-reported",
+        "sdk-image-reported",
+        "frontend",
+        "runtime-source"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "All dependencies plus exact staged image/config/source, full acceptance, restore/rollback/retention/history compatibility.",
+      "owner": "release/shipping + independent reviewer",
+      "nextParallelSourceOrMetadataWork": "Prepare source-to-image/candidate receipt matrix and gated runbook; keep current build result unknown.",
+      "decisionOrExternalPrerequisite": "Terminal image/provenance/security acceptance and authorized staging action.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "W11",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 187
+      },
+      "originalRequirement": "| W11 Controlled release | Codex | W10; release authorization | Internal allowlist, bounded tenant canary, production rollout and rollback evidence |",
+      "originalRecordSha256": "deeff379a6494e24a898adb373215dc3efffaffb13d661e077359c7909d3bbcb",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Release/allowlist/rollback requirements retained.",
+      "sourceReceiptIds": [
+        "g0",
+        "benchmark",
+        "shipping-reported"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "Internal and bounded tenant canary with measured quality/latency/cost and explicit exact-candidate release.",
+      "owner": "release owner + independent QA",
+      "nextParallelSourceOrMetadataWork": "Prepare finite canary criteria, independent kill switches and rollback ownership.",
+      "decisionOrExternalPrerequisite": "W10 acceptance then explicit release authority; active build does not satisfy either.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "R-01",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 218
+      },
+      "originalRequirement": "| R-01 | Canonical catalog and typed operations: one source for schemas, adapters, descriptions, availability, authority and eval mappings; no fixed total count, giant free-text query operation or raw SQL exposure | Catalog/handler drift checks, distinct operation examples, selected/deferred/replacement mapping, unavailable-recipe lint |",
+      "originalRecordSha256": "67e7c9fc11ec703a897dbff48fed5d028cdef04e73d00d9409ed0ae54f195d09",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Canonical catalog and closed schema callbacks source accepted; no second registry.",
+      "sourceReceiptIds": [
+        "read-source",
+        "read-catalog",
+        "combined-source",
+        "command-source",
+        "combined-review",
+        "backend-publication"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "Remaining mappings and actual handler/availability/eval composition under current source authority.",
+      "owner": "contract/gateway owner",
+      "nextParallelSourceOrMetadataWork": "Integrate independently accepted71/70/26 source in order and close remaining selected interfaces; retain full139 mapping boundary.",
+      "decisionOrExternalPrerequisite": "Combined source review is accepted; real handlers require separate qualifications.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "R-02",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 219
+      },
+      "originalRequirement": "| R-02 | Server-bound scope/entity identity: bind current actor/tenant/client or authorized portfolio, grants and entity IDs; validate model/UI scope requests; reauthorize every read/write/publication | Same-name clients, pronouns/follow-ups, denied IDs, portfolio/client/personal distinctions, revocation and within-tenant fixtures |",
+      "originalRecordSha256": "648c44edd8b86615afa31a7416eb550c602f5b68c116508c25af56a83eb72bb5",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Trusted context DTO/correlation/current-grant source boundaries exist.",
+      "sourceReceiptIds": [
+        "contracts",
+        "read-source",
+        "native-reported",
+        "scope"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [
+        "native-reported"
+      ],
+      "remaining": "Actual actor/tenant/client/portfolio/mail grant binding and reauthorization at every use/publication/replay.",
+      "owner": "identity/gateway + source owners",
+      "nextParallelSourceOrMetadataWork": "Bind canonical identity and policy services; add real same-name/denied/revoked stored-context fixtures.",
+      "decisionOrExternalPrerequisite": "Current identity/principal/policy receipts; native state pass alone is insufficient.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "R-03",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 220
+      },
+      "originalRequirement": "| R-03 | Calendar/FY/version windows: calendar periods, relative durations and fiscal years are distinct; normalize timezone, inclusive start/exclusive end, document version and funding stage | This/last week, Monday/Sunday policy, DST, month/year boundaries, last seven days, fiscal-year rollover and conflicting version/stage fixtures |",
+      "originalRecordSha256": "d42de6b61d0768b656a4a46fc4d179ae7102e4c9e19bf81ecf36f49899cdad74",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Typed window/FY/version and domain observation boundaries exist.",
+      "sourceReceiptIds": [
+        "contracts",
+        "read-source",
+        "pe-source"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "Trusted calendar/timezone/FY/version resolver and actual boundary/comparability behavior.",
+      "owner": "retrieval/window + domain owners",
+      "nextParallelSourceOrMetadataWork": "Close resolver semantics for calendar versus duration, week policy,DST,FY/stage/version without ambient model authority.",
+      "decisionOrExternalPrerequisite": "Owner choices only for unresolved consequential calendar/fiscal policies; domain known contracts proceed.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "R-04",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 221
+      },
+      "originalRequirement": "| R-04 | Candidate search/exact query/source-read distinction: hybrid candidate discovery where useful; typed authoritative counts/status/history/comparisons; full decisive passage reads | Search coverage versus enumerated counts; late-body match; multi-source history; bill version/status and PE identity/budget-stage truth |",
+      "originalRecordSha256": "4c5573411f6f5eea19788ca03c17faf67cb2d72f049b087b8b74d6ab897a78ad",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Exact/candidate/full-read contract separation and domain DTOs accepted.",
+      "sourceReceiptIds": [
+        "read-source",
+        "contracts",
+        "pe-source",
+        "combined-source",
+        "combined-review",
+        "backend-publication"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "Actual query/source reads and authoritative count/status/history/comparison; no absence from excerpts.",
+      "owner": "retrieval/source adapter owners",
+      "nextParallelSourceOrMetadataWork": "Implement authentic full-read and exact adapter interfaces; keep PE Decimal/stage/mode and source policies intact.",
+      "decisionOrExternalPrerequisite": "Qualified source grants/snapshot/interfaces and domain oracle evidence.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "R-05",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 222
+      },
+      "originalRequirement": "| R-05 | Normalized evidence/coverage/freshness/paging: consistent envelopes, explicit status and method, authorized citations, source versions, filters and continuation | Partial/unavailable/stale/empty/truncated fixtures; no absence claim from incomplete coverage; exact-version evidence continuity |",
+      "originalRecordSha256": "d663b5e399aac596ea907fe5126f37d573b90194c271e8b854cbd471e4ecdf1d",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Normalized coverage/freshness/continuation/lineage consistency accepted.",
+      "sourceReceiptIds": [
+        "read-source",
+        "contracts"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "Authentic source snapshots/cursors/versions/citations and true complete enumeration.",
+      "owner": "retrieval/source adapter owners",
+      "nextParallelSourceOrMetadataWork": "Compose same-version decisive reads and source-specific continuation with truthful partial/error results.",
+      "decisionOrExternalPrerequisite": "Actual producer/snapshot proof; hash syntax and reported dates are not authenticity.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "R-06",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 223
+      },
+      "originalRequirement": "| R-06 | Native SDK discovery and proxy compatibility: small measured default surface and authorized domain discovery through pinned supported model/runtime/proxy | End-to-end reference/stream/header/compaction/resume compatibility; adversarial catalog recall; observed token/call/latency evidence |",
+      "originalRecordSha256": "ef37aa8f4320744029e7e4aa204b67554ddb664c7c9567a0cd08059a78693a99",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Catalog resolution and source proxy/discovery scaffolding accepted.",
+      "sourceReceiptIds": [
+        "read-source",
+        "runtime-source",
+        "native-reported",
+        "sdk-image-reported"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [
+        "native-reported"
+      ],
+      "remaining": "Native pinned SDK deferred discovery through actual model/proxy, references/stream/header/compaction/resume.",
+      "owner": "SDK/proxy native owner",
+      "nextParallelSourceOrMetadataWork": "Bind actual discovery traces and adversarial required-tool recall to exact catalog.",
+      "decisionOrExternalPrerequisite": "Admitted supported image/model/proxy and authorized bounded runtime action; native33/9/12 not discovery proof.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "R-07",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 224
+      },
+      "originalRequirement": "| R-07 | Explicit skill invocation and executable manifest: selected ID/version plus typed scope/dates; manifest pins required evidence, allowed operations, approval constraints, completion and budget | Submit/steer/reconnect/resume/fork fixtures, manifest validation, active-version migration policy and required-source completion checks |",
+      "originalRecordSha256": "e7bb768c5d686d74bfa5289f5dcb1a7c73d40464cc894bd8a178d66bbcff1f79",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Invocation/version/manifest pin and continuity structure exists.",
+      "sourceReceiptIds": [
+        "skills",
+        "frontend",
+        "contracts"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "Executable manifest resolver and true submit/steer/reconnect/resume/fork identity/completion across UI/runtime.",
+      "owner": "control/skills + frontend owners",
+      "nextParallelSourceOrMetadataWork": "Write original manifests and lifecycle producer/consumer fixtures; retain required sources even across mixed domains.",
+      "decisionOrExternalPrerequisite": "Reviewed operation availability/dependencies; no activation from synthetic manifest.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "R-08",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 225
+      },
+      "originalRequirement": "| R-08 | Scoped original skills including Commitments: preserve the 14 quick-action workflow intents as proposed v1 selections; qualify their promises; ordinary questions remain lightweight | Skill-by-skill expected evidence/output rubric; Commitments proof/owner/date/ambiguity/dedup/coverage fixtures; no forbidden source widening |",
+      "originalRecordSha256": "7bbf86fd900163e0956887b0bf403d426f8ffc63adccbff602a72f2a1752d7ba",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Fourteen quick-action IDs and required Commitments rubric constraints preserved.",
+      "sourceReceiptIds": [
+        "skills",
+        "scope",
+        "benchmark"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "Original fourteen skills/prose and individual promised evidence/output/completion qualifications.",
+      "owner": "skills/domain + independent QA",
+      "nextParallelSourceOrMetadataWork": "Author original scoped skills/rubrics; prioritize Commitments and meeting-brief/drafting product outcome without legacy code.",
+      "decisionOrExternalPrerequisite": "Approved source scopes and operation dependencies; native ID deferral cannot delete product drafting.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "R-09",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 226
+      },
+      "originalRequirement": "| R-09 | Complexity budget and bounded recovery: budget follows requested work and evidence, not a domain keyword; direct known-ID lookup avoids unnecessary discovery; recovery follows diagnosed failure | Simple versus comprehensive paired fixtures; no blind repeated search; explicit partial/clarify/block outcomes; enforced runtime/token/tool budgets |",
+      "originalRecordSha256": "c10ae4532bae25e9c7cc7a3bec0b5ea435fafad9fc455648592ed729603bb494",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Budget/fence/admission/recovery source;9 budget+12 invocation cases reported passing.",
+      "sourceReceiptIds": [
+        "runtime-source",
+        "native-reported",
+        "benchmark"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [
+        "native-reported"
+      ],
+      "remaining": "Measured task-complexity budgets, actual runtime/token/tool enforcement and purposeful failure recovery.",
+      "owner": "runtime/budget owner",
+      "nextParallelSourceOrMetadataWork": "Join real engine invocation/settlement receipts; implement trusted issuance/reconciliation and paired simple/comprehensive tests.",
+      "decisionOrExternalPrerequisite": "Unreconciled paid allowance prohibits calls; host/test passes do not establish tenant global budget/runtime enforcement.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "R-10",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 227
+      },
+      "originalRequirement": "| R-10 | End-to-end trace/oracle diagnostics: correlated route, arguments, result coverage, evidence read and final claims; correct-tool and correct-evidence runs localize failure | Replayable redacted traces, failure taxonomy, original/oracle comparisons and per-stage timings/costs |",
+      "originalRecordSha256": "5ddc513bc3c1c0016f028f0ebf7e65ba0bb691098de111a36f60f4e2cdbf9ee2",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Trace/oracle/scoring protocol adopted.",
+      "sourceReceiptIds": [
+        "benchmark"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "75 real seed ->200 labelled held-out cases with actual traces, gold evidence, per-stage timings/cost.",
+      "owner": "benchmark owner + independent QA",
+      "nextParallelSourceOrMetadataWork": "Freeze grouping/gold labels/denominators and redaction/trace schema before model tuning.",
+      "decisionOrExternalPrerequisite": "Approved real-request location/owner and authorized snapshots; preserve original60-task gate.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "R-11",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 228
+      },
+      "originalRequirement": "| R-11 | Optional Decisions routing benchmark: bounded choice/predicate/score advice, multi-source coverage, abstention/fallback, no authority or argument generation | SDK baseline first, paired held-out shadow trials, calibrated confidence, outage/timeout tests and independent adoption decision |",
+      "originalRecordSha256": "147036f8c04d7bbfbd3b0738ea1639eaf6fb23e43278d8db5d3b8df265dc968a",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Optional advisory boundary documented, no mandatory second loop.",
+      "sourceReceiptIds": [
+        "benchmark"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "Qualified baseline then paired supported Decisions shadow calibration/fallback/latency/adoption.",
+      "owner": "evaluation owner",
+      "nextParallelSourceOrMetadataWork": "Prepare bounded choice/abstention/fallback fixtures without enabling provider.",
+      "decisionOrExternalPrerequisite": "Optional stays disabled/shadow; no current provider authority or invented promotion.",
+      "optional": true,
+      "optionalDisposition": "disabled/shadow pending baseline and own adoption; not mandatory or permanently excluded"
+    },
+    {
+      "id": "R-12",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 229
+      },
+      "originalRequirement": "| R-12 | Optional calibrated JEV evidence benchmark: task-specific passage relevance/claim support/client-fit improvement with abstention; no unsupported tool-router integration | Human-labelled gold data, withheld-evidence/authoritative-state safeguards, calibration plots, error slices and fallback tests |",
+      "originalRecordSha256": "c1ef9159ff075010e90f2c8a8e44ead6127f0f51b0e340239498bfaa9cd5af52",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Optional evidence-judge boundary documented.",
+      "sourceReceiptIds": [
+        "benchmark"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "Task-specific human labels/calibration/abstention and required-evidence protection before JEV adoption.",
+      "owner": "evaluation/domain QA owner",
+      "nextParallelSourceOrMetadataWork": "Prepare passage/claim/client-fit gold rubric without replacing authoritative reads.",
+      "decisionOrExternalPrerequisite": "Optional after baseline; freeze task-specific threshold before any authorized shadow scoring.",
+      "optional": true,
+      "optionalDisposition": "disabled/shadow pending baseline and own adoption; not mandatory or permanently excluded"
+    },
+    {
+      "id": "REL-01",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 308
+      },
+      "originalRequirement": "| REL-01 Traces and baseline | Codex + B/D scoped sessions; `docs/RETRIEVAL-AUDIT.md`, `evals/` baseline fixtures | W00; read-only current-Meri trace/source access where available | 75-case initial set, failure taxonomy, deployed settings, source snapshots, oracle protocol and measured budgets; inaccessible production traces explicitly blocked | R-09/R-10; RG-09 |",
+      "originalRecordSha256": "da0f8de298839f055b82282508e46e504765e2c369ba5a62d43cc19246f5907f",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Inventory/protocol source and current report joins exist.",
+      "sourceReceiptIds": [
+        "benchmark",
+        "plan-index"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "Approved real75 seed, deployed settings and observed baseline/oracles missing.",
+      "owner": "benchmark owner",
+      "nextParallelSourceOrMetadataWork": "Obtain dataset owner/location and freeze real case provenance.",
+      "decisionOrExternalPrerequisite": "No real-data/provider access inferred.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "REL-02",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 309
+      },
+      "originalRequirement": "| REL-02 Contracts and catalog | Codex + one B session; `packages/contracts/`, catalog/retrieval/skill docs | W00 discovery accepted; W01 contract ownership allocated; REL-01 inventory findings (REL-02 contributes to W01 completion) | Frozen typed operations, scope/window/evidence/skill contracts, handler/schema/description mapping and unavailable-recipe checks | R-01–R-05/R-07; RG-02/RG-07 |",
+      "originalRecordSha256": "b4cf180b32b865b3a20f5acaa654dfad39c577d24fe5fb2f46d2868ba3efc08c",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Canonical private read and command payload composition accepted.",
+      "sourceReceiptIds": [
+        "read-source",
+        "command-source",
+        "combined-source",
+        "combined-review",
+        "backend-publication"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "Complete native mapping/handler/description/fixture and skill contract joins.",
+      "owner": "contract integration",
+      "nextParallelSourceOrMetadataWork": "Use accepted combined source and assign remaining26 closed interfaces.",
+      "decisionOrExternalPrerequisite": "Exact independent acceptance before dependent integration.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "REL-03",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 310
+      },
+      "originalRequirement": "| REL-03 Retrieval adapters | B; `apps/gateway/` source adapters, scoped fixture files | Accepted REL-02; W03 for live source checks | Independently written exact/search/read adapters with coverage/freshness/paging; memory/client/portfolio and selected domain truth fixtures | R-02–R-05; RG-02–RG-05/RG-07/RG-12 |",
+      "originalRecordSha256": "d1b36bcb52f1a9f48b4dc45657b1ee87e87432844a72be859e22507715b7b1cc",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Many source contracts and normalization semantics accepted.",
+      "sourceReceiptIds": [
+        "read-source",
+        "contracts",
+        "pe-source"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "Actual authorized exact/search/read adapters and domain truth, not only DTOs.",
+      "owner": "gateway/source adapters",
+      "nextParallelSourceOrMetadataWork": "Implement and independently review narrowly scoped trusted adapters under frozen policy.",
+      "decisionOrExternalPrerequisite": "Restricted source interface/role, W03 for live checks.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "REL-04",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 311
+      },
+      "originalRequirement": "| REL-04 Skills and UI identity | C; `apps/web/`, `packages/skills/`, owned manifests/UI ledger | Accepted REL-02; W05 for resume/fork integration | Typed explicit invocation, original scoped skills, Commitments, required evidence/completion, calendar/portfolio/memory regressions and Playwright checks | R-03/R-07/R-08; RG-02/RG-06/RG-12 |",
+      "originalRecordSha256": "973c80db415124f3a843e5af5945f3eff767e80ceed1567e7609f919365d00e7",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Typed invocation/manifest foundation plus current frontend source evidence.",
+      "sourceReceiptIds": [
+        "skills",
+        "frontend"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "Original14skills, executable source/completion policy and real lifecycle UI.",
+      "owner": "skills/control/frontend",
+      "nextParallelSourceOrMetadataWork": "Implement original manifest+rubric and explicit selected identity/event flow.",
+      "decisionOrExternalPrerequisite": "Accepted REL02 and durable resume/fork dependencies.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "REL-05",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 312
+      },
+      "originalRequirement": "| REL-05 SDK discovery and loop | A; `apps/worker/`, trusted proxy integration; Codex owns catalog shared changes | Runtime checkpoint: accepted REL-02 and W02 spike environment ready. Final end-to-end checkpoint: accepted REL-03/04 and W03/W05 integration | Runtime-only discovery/proxy evidence contributes to W02 before W03. Later lightweight baseline, budgets/recovery, resume/compaction and adversarial integration evidence qualify under W09 | R-01/R-06/R-09/R-10; RG-01/RG-08/RG-09/RG-12 |",
+      "originalRecordSha256": "becdc40e5c488b7ac203e3076c2bf1451a98a12690ed7d849e528da4fc91ce30",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "SDK/proxy/runtime source; limited native state suites reported.",
+      "sourceReceiptIds": [
+        "runtime-source",
+        "native-reported",
+        "sdk-image-reported"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [
+        "native-reported"
+      ],
+      "remaining": "Runtime-only G1 discovery checkpoint AND later W09 full integration remain distinct.",
+      "owner": "native/runtime/proxy",
+      "nextParallelSourceOrMetadataWork": "Collect actual discovery/proxy traces first; later integrate adapters/skills/durability.",
+      "decisionOrExternalPrerequisite": "Supported admitted runtime and independent exact evidence; do not require later integration to start runtime checkpoint.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "REL-06",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 313
+      },
+      "originalRequirement": "| REL-06 Benchmark and domain truth | D with scoped B evidence support; `evals/`, `docs/ROUTING-EVALUATION.md` | REL-01; accepted REL-03/04/05 baseline | Expanded 200-case frozen suite and held-out labels, exact domain truth, oracle diagnostics, baseline result manifest and independent adjudication | R-01–R-10; RG-01–RG-09/RG-12 |",
+      "originalRecordSha256": "b2f2e31fc8553e1b6da1d06f9d7b31cb36c38425246122604cc251cd6dd4d85e",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Evaluation protocol and source checks exist.",
+      "sourceReceiptIds": [
+        "benchmark",
+        "frontend"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "200-case frozen core benchmark, domain/oracle baseline and independent adjudication.",
+      "owner": "independent benchmark QA",
+      "nextParallelSourceOrMetadataWork": "Prepare gold snapshots/rubrics; run only after qualified baseline and authority.",
+      "decisionOrExternalPrerequisite": "REL01 plus accepted integrated REL03/04/05; actual real data owner.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "REL-07",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 314
+      },
+      "originalRequirement": "| REL-07 Optional Decisions shadow | B/A scoped new adapter; separate D review | Accepted REL-06 baseline; actual API availability | One bounded advisor, multi-source/abstention/fallback fixtures, paired held-out improvement and latency evidence; adopt or remain disabled | R-11; RG-09/RG-10 |",
+      "originalRecordSha256": "c103b5051dc7de7c13ad43c03ede486f4eaccba2fc0de3703341eec13fa95981",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Optional boundary preserved.",
+      "sourceReceiptIds": [
+        "benchmark"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "Paired Decisions shadow/adoption unrun.",
+      "owner": "optional evaluation",
+      "nextParallelSourceOrMetadataWork": "Prepare abstention/mixed-family/fallback design; leave disabled.",
+      "decisionOrExternalPrerequisite": "Qualified REL06 and separately authorized supported API.",
+      "optional": true,
+      "optionalDisposition": "disabled/shadow pending baseline and own adoption; not mandatory or permanently excluded"
+    },
+    {
+      "id": "REL-08",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 315
+      },
+      "originalRequirement": "| REL-08 Optional JEV shadow | B scoped trusted judge adapter; separate D review | Accepted REL-06 baseline; task/model availability | Labelled evidence calibration, required-evidence safeguards, paired quality/latency evidence; adopt or remain disabled | R-12; RG-09/RG-11 |",
+      "originalRecordSha256": "3fed09dafcf0e8be030acc543ddaeab3e6b283994c6b26d6c7d2c81efe5dcf3b",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Optional boundary preserved.",
+      "sourceReceiptIds": [
+        "benchmark"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "Labelled JEV evidence shadow/calibration unrun.",
+      "owner": "optional evaluation",
+      "nextParallelSourceOrMetadataWork": "Prepare separate task-specific judge rubric; leave disabled.",
+      "decisionOrExternalPrerequisite": "Qualified REL06 and task/model availability/authority.",
+      "optional": true,
+      "optionalDisposition": "disabled/shadow pending baseline and own adoption; not mandatory or permanently excluded"
+    },
+    {
+      "id": "REL-09",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 316
+      },
+      "originalRequirement": "| REL-09 Integration and canary | Codex; D reviews exact candidate | Pre-staging checkpoint: accepted REL-03–REL-06, W04–W08 and prior W09 checks; promoted optional services only. Canary checkpoint: W10 accepted, then W11 authorization | Pre-staging trace/reconnect/revocation/full-read/RG evidence completes W09 for W10. Post-staging immutable candidate and bounded canary evidence complete the ticket under W11; canary is not a W09 prerequisite | R-01–R-12 as applicable; RG-01–RG-12 as applicable |",
+      "originalRecordSha256": "6801e55e344aebb238863e6492daedd273a6ed155d8166a1e289b5ab32e50b43",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Source releases/reviews exist; active frontend build only reported.",
+      "sourceReceiptIds": [
+        "read-source",
+        "command-source",
+        "shipping-reported",
+        "frontend"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "Pre-staging W09 integration then W10 candidate then W11 canary; none closed.",
+      "owner": "release/integration + QA",
+      "nextParallelSourceOrMetadataWork": "Bind source/image/runtime/catalog/skills/contracts/migrations and exact compatibility.",
+      "decisionOrExternalPrerequisite": "No canary prerequisite circularity; release action approval after candidate ready.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "G0",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 377
+      },
+      "originalRequirement": "| G0 Discovery | Real account/repository/region/identity/source decisions; selected capability/data inventory; pinned Figma/UI/shell decision; current deployment/session evidence preserved; REL-01 audit/baseline plan; no guessed target |",
+      "originalRecordSha256": "9ebac8db73e6cbfb871931b1b1a15a553b6cae50cc214f4fad6e085061728fbe",
+      "status": "completed-source",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "D012 accepted discovery; current requirement/authority documentary index independently accepted.",
+      "sourceReceiptIds": [
+        "g0",
+        "plan-index",
+        "scope"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "No remaining G0 criterion reopened by this packet; current implementation work belongs to later gates.",
+      "owner": "integration owner",
+      "nextParallelSourceOrMetadataWork": "Preserve exact accepted discovery and update dated projections only.",
+      "decisionOrExternalPrerequisite": "No runtime or source-access authority follows.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "G1",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 378
+      },
+      "originalRequirement": "| G1 Qualification | Pinned SDK/runtime/UI/browser/Office/Temporal components; Fargate sandbox, actual-proxy native discovery (RG-08), interrupt/resume/checkpoint/egress spike; accepted REL-02 contracts; Temporal persistence/authentication/TLS/backup/upgrade design; measured cohort budgets frozen |",
+      "originalRecordSha256": "f9cd4e42b49a361fde69e3f8f1e197cabf103a5945dccdaaf687e26cfd148387",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Offline runtime source plus parent-reported33baseline/9budget/12invocation passes.",
+      "sourceReceiptIds": [
+        "runtime-source",
+        "native-reported",
+        "sdk-image-reported",
+        "image-history"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [
+        "native-reported"
+      ],
+      "remaining": "All actual runner/image/task-auth/budget/A-B/browser/renderer/egress/cleanup/artifact obligations.",
+      "owner": "native runtime/security + image owners",
+      "nextParallelSourceOrMetadataWork": "Bind immutable native receipts; complete SDK image and exact remaining native qualification packets.",
+      "decisionOrExternalPrerequisite": "Supported patched image; native evidence/current host authority; no new paid allowance.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "G2",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 379
+      },
+      "originalRequirement": "| G2 Isolated development | New stack deployed with source connections disabled; seeded identity/policy fixtures; task capabilities, restricted IAM/network paths, encryption, and conversation ownership pass |",
+      "originalRecordSha256": "f97b6f7f6e199b5add0c4c6cad23959f6157a3ab6567757ea260ed7ecefae74a",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Identity/source contract preparation exists.",
+      "sourceReceiptIds": [
+        "g0",
+        "runtime-source",
+        "frontend"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "Qualified isolated foundation/current identity/principals and real permission checks under adopted plan.",
+      "owner": "platform/control/identity owners",
+      "nextParallelSourceOrMetadataWork": "Prepare actual identity/roles/storage/configuration contracts and deployment evidence.",
+      "decisionOrExternalPrerequisite": "G1 acceptance and authorized environment changes; existing Aurora chosen.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "G3",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 380
+      },
+      "originalRequirement": "| G3 Read-only data | One client and memory, then all agreed domains; exact/search/full-evidence/coverage/freshness/paging, calendar/FY/version and authority fixtures (RG-02–RG-05/RG-07); measured revocation deadline and tenant/within-tenant policy checks pass |",
+      "originalRecordSha256": "cdb2dc1285dc739aa40106307921551121621bcff4cb6a8105d7ff9ec053b464",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Typed source/policy/coverage contracts source accepted.",
+      "sourceReceiptIds": [
+        "read-source",
+        "contracts",
+        "scope",
+        "benchmark"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "All selected source authorized reads and stored-context revocation within agreed numeric bound.",
+      "owner": "gateway/source/security + QA",
+      "nextParallelSourceOrMetadataWork": "Prepare two-tenant/within-tenant and full-source coverage fixtures; exact reads then evidence.",
+      "decisionOrExternalPrerequisite": "Restricted live access/current grants; agree maximum revocation deadline before gate (target<=30s).",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "G4",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 381
+      },
+      "originalRequirement": "| G4 Execution workspace | SDK baseline plus Figma-mapped UI/artifact/browser integration; selected skill ID/version/manifest and evidence completion (RG-06); native discovery/reconnect/full-read/recovery (RG-08/RG-12); real walkthroughs, worker loss, approval wait, cancellation and fencing pass |",
+      "originalRecordSha256": "2a7a606235329d4d4713d14eb56abff0237df403e0f23637777af99f9cc0c4b6",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Artifact/browser/durability source prep; frontend local views passed in bounded scope.",
+      "sourceReceiptIds": [
+        "frontend",
+        "runtime-source",
+        "sdk-image-reported",
+        "skills"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "Full gate defined by original R2 row, including required artifacts/workflows/UI/recovery integration.",
+      "owner": "artifact/control/frontend/native + QA",
+      "nextParallelSourceOrMetadataWork": "Inspect original gate obligations and bind native bytes/render/revision/recovery/UI receipts.",
+      "decisionOrExternalPrerequisite": "Admitted image/parsers/browser and current source/identity dependencies.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "G5",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 382
+      },
+      "originalRequirement": "| G5 Selected commands | Immutable proposals, approval expiry, current authorization, revocation, idempotent outcomes and receipts pass; repeated delivery creates zero duplicate mutations |",
+      "originalRecordSha256": "3c7efd765efa6c8d474501545a5426e3d12a55c4a336b3204a54cd3d44f77a57",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Task/artifact command payloads and memory policy accepted as source.",
+      "sourceReceiptIds": [
+        "command-source",
+        "native-reported",
+        "scope"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [
+        "native-reported"
+      ],
+      "remaining": "Actual proposals/current rights/expiry/revocation/idempotent source outcomes and zero duplicates.",
+      "owner": "command/source transaction + QA",
+      "nextParallelSourceOrMetadataWork": "Implement governed execution adapters and persistent outcome reconciliation, then real bounded fixtures.",
+      "decisionOrExternalPrerequisite": "Accepted G3/W05 dependencies and explicit mutation authority.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "G6",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 383
+      },
+      "originalRequirement": "| G6 Staging | Exact immutable candidate passes original full suite, frozen reliability benchmark (core RG-01–RG-09/RG-12), Figma/UI/visual/accessibility, retention/deletion, rollback/restore/workflow compatibility; RG-10/RG-11 additionally pass only for promoted optional services |",
+      "originalRecordSha256": "6d1ed492bfe416cb269caf362eca3ee558af545073137a9ff98856262549c70a",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Source publications and local checks exist.",
+      "sourceReceiptIds": [
+        "shipping-reported",
+        "frontend",
+        "benchmark",
+        "sdk-image-reported"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "Exact immutable staged candidate passes original+coreRG+UI/retention/restore/rollback/compatibility suite.",
+      "owner": "release/shipping + independent QA",
+      "nextParallelSourceOrMetadataWork": "Bind exact source-to-image and staging corpus without promoting current build-start message.",
+      "decisionOrExternalPrerequisite": "G2-G5/package dependencies and separately authorized staging; optional gates only if promoted.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "G7",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 384
+      },
+      "originalRequirement": "| G7 Controlled release | Internal users, then bounded tenant allowlist; observe routing/evidence/task quality/latency/cost/error; optional services have independent bypass; release owner authorizes the exact candidate before broader rollout |",
+      "originalRecordSha256": "0ed7b8fb036d2002cb90f7d02c3f399662216b1b813bb7968ff100dcc25a3b5a",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Release criteria and preservation boundaries exist.",
+      "sourceReceiptIds": [
+        "g0",
+        "benchmark",
+        "shipping-reported"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "Internal then bounded tenant release with measured results and owner authorization.",
+      "owner": "release owner + QA",
+      "nextParallelSourceOrMetadataWork": "Prepare exact allowlist/kill switch/rollback and observation packet.",
+      "decisionOrExternalPrerequisite": "G6 acceptance then exact-candidate release authorization; no blanket approval inferred.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "RG-01",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 432
+      },
+      "originalRequirement": "| RG-01 | Accepted route on at least 95% of held-out cases | Score allowed source/tool paths and all required families, including expected clarification; a route need not use one identical call sequence |",
+      "originalRecordSha256": "72906ff730282598d1b44a4dd84a2cb30595b9841b7c0d6b108d46b996cb8c1e",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Catalog source selection controls",
+      "sourceReceiptIds": [
+        "read-source",
+        "benchmark"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "Held-out accepted-route>=95%, all required families/clarifications",
+      "owner": "independent QA + relevant component owner",
+      "nextParallelSourceOrMetadataWork": "Freeze accepted route labels and required families; qualify actual SDK results",
+      "decisionOrExternalPrerequisite": "Qualified exact baseline and actual gate-specific corpus/receipts; source-test totals are not gate denominators.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "RG-02",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 433
+      },
+      "originalRequirement": "| RG-02 | 100% deterministic subject/window/FY/version fixtures pass | Server-bound scope/entity IDs; normalized calendar/timezone, relative duration, funding stage and evidence version |",
+      "originalRecordSha256": "c948cb2cc8ecd4125761e9884e2fc74932b1567824d937471edcdf195ca9edeb",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Scope/window/version validators",
+      "sourceReceiptIds": [
+        "contracts",
+        "read-source",
+        "pe-source",
+        "benchmark"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "100% deterministic subject/timezone/FY/stage/version fixture qualification",
+      "owner": "independent QA + relevant component owner",
+      "nextParallelSourceOrMetadataWork": "Bind trusted resolvers and same-name/DST/FY/version cases to real services",
+      "decisionOrExternalPrerequisite": "Qualified exact baseline and actual gate-specific corpus/receipts; source-test totals are not gate denominators.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "RG-03",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 434
+      },
+      "originalRequirement": "| RG-03 | Labelled answer-bearing evidence Recall@10 at least 95% on frozen discovery retrieval units with at most 10 gold records | Define unit/source/candidate pool; retain all gold labels and report denominators/source slices. Cases with more than 10 required records use completeness/paging RG-05/RG-12; exact lookup/counts use RG-04 |",
+      "originalRecordSha256": "b8ea24e93a203272d3ba69e0e188f3dea7eb06ef684d992a6b5f2d3236b5e7aa",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Candidate-result DTOs",
+      "sourceReceiptIds": [
+        "read-source",
+        "benchmark"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "Recall@10>=95% frozen atomic<=10gold units; never shrink gold set",
+      "owner": "independent QA + relevant component owner",
+      "nextParallelSourceOrMetadataWork": "Freeze full gold labels and candidate pools; larger enumerations remain completeness cases",
+      "decisionOrExternalPrerequisite": "Qualified exact baseline and actual gate-specific corpus/receipts; source-test totals are not gate denominators.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "RG-04",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 435
+      },
+      "originalRequirement": "| RG-04 | 100% deterministic count/status/comparison fixtures pass | Authorized source snapshots, exact filters, bill/document version, PE identity/FY/stage and comparison consistency |",
+      "originalRecordSha256": "2afd80640ce1b53021bad42bd1c15cc7208a42325a8ec5c85049f8c99faa4cad",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Domain count/status/comparison contracts",
+      "sourceReceiptIds": [
+        "read-source",
+        "pe-source",
+        "benchmark"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "100% authoritative snapshot exact-count/status/comparison cases",
+      "owner": "independent QA + relevant component owner",
+      "nextParallelSourceOrMetadataWork": "Prepare exact authorized domain oracles including PE fiscal/Decimal semantics",
+      "decisionOrExternalPrerequisite": "Qualified exact baseline and actual gate-specific corpus/receipts; source-test totals are not gate denominators.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "RG-05",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 436
+      },
+      "originalRequirement": "| RG-05 | Zero false absence claims on partial, unavailable or stale cases | Complete coverage or a clear limitation; empty candidate search does not prove no matching records |",
+      "originalRecordSha256": "c4e180bb61e41bf49176250f4b7fe9b2187fd4d3da5bc40f9ab27bc87152a1f8",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Incomplete/empty/denied/unavailable consistency controls",
+      "sourceReceiptIds": [
+        "read-source",
+        "benchmark"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "Zero false absence on partial/stale/unavailable real workflows",
+      "owner": "independent QA + relevant component owner",
+      "nextParallelSourceOrMetadataWork": "Exercise source failure/paging/full-read completion and final answer assertions",
+      "decisionOrExternalPrerequisite": "Qualified exact baseline and actual gate-specific corpus/receipts; source-test totals are not gate denominators.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "RG-06",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 437
+      },
+      "originalRequirement": "| RG-06 | 100% selected skill ID/version and required evidence/completion fixtures pass | Includes client/portfolio/relationship/memory collisions and Commitments; replay, steer, reconnect, resume and fork preserve or explicitly version the contract |",
+      "originalRecordSha256": "05105e98c85dcd87ed3028dc72d6e376c8d4ff4585f813d7670e6467c289a800",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Fourteen selected skill identifiers and structural continuity",
+      "sourceReceiptIds": [
+        "skills",
+        "frontend",
+        "benchmark"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "100% all14 identity/version/evidence/completion and lifecycle fixtures",
+      "owner": "independent QA + relevant component owner",
+      "nextParallelSourceOrMetadataWork": "Implement original manifests and run end-to-end required evidence/completion",
+      "decisionOrExternalPrerequisite": "Qualified exact baseline and actual gate-specific corpus/receipts; source-test totals are not gate denominators.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "RG-07",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 438
+      },
+      "originalRequirement": "| RG-07 | Zero unauthorized disclosure/mutation in the qualification suite | Cross-tenant and within-tenant boundaries; current grants, memory/mailbox walls, stored context, citations, files and revoked access |",
+      "originalRecordSha256": "ce03a4aaf8ce9dcee26e2558814ac0903cd7cd60f06f3a169757ffce41c8d9d2",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Policy/context/fence source controls and reported native state checks",
+      "sourceReceiptIds": [
+        "contracts",
+        "native-reported",
+        "frontend",
+        "benchmark"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [
+        "native-reported"
+      ],
+      "remaining": "Zero unauthorized disclosure/mutation, original100adversarial and stored-context rights",
+      "owner": "independent QA + relevant component owner",
+      "nextParallelSourceOrMetadataWork": "Bind real principals/grants, revoked stored artifacts/context and multi-tenant case receipts",
+      "decisionOrExternalPrerequisite": "Qualified exact baseline and actual gate-specific corpus/receipts; source-test totals are not gate denominators.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "RG-08",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 439
+      },
+      "originalRequirement": "| RG-08 | Native discovery actual-proxy compatibility and adversarial catalog recall suite pass | Known required capabilities found or an explicit supported fallback invoked; reference/header/stream/compaction/resume behavior and authorization at execution verified |",
+      "originalRecordSha256": "137004bd9f9e9dc01181f1ece2099724dd4d5569da26ca437cc0c7f431c059eb",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "SDK/proxy preparation and catalog unavailable guard",
+      "sourceReceiptIds": [
+        "runtime-source",
+        "native-reported",
+        "sdk-image-reported"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [
+        "native-reported"
+      ],
+      "remaining": "Actual proxy tool references/schema loading/stream/compaction/resume and adversarial recall",
+      "owner": "independent QA + relevant component owner",
+      "nextParallelSourceOrMetadataWork": "Obtain exact supported runtime/proxy traces; state tests alone do not cover discovery",
+      "decisionOrExternalPrerequisite": "Qualified exact baseline and actual gate-specific corpus/receipts; source-test totals are not gate denominators.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "RG-09",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 440
+      },
+      "originalRequirement": "| RG-09 | Proposed warm simple-lookup answer p95 at most 15 seconds; optional-router incremental p95 at most 500 ms and total p95 regression at most 10% | Measure and freeze actual benchmark cohort/load before qualification; unsupported beta or exceeded optional budget uses the baseline. Retain all original performance targets; this does not relax a stricter overlapping ordinary-answer target |",
+      "originalRecordSha256": "9bd86264d781c53727de856b590090ea8a73d3f1c56a14f3959107f7e7d91a4c",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Declared budget limits and reported9budget/12invocation controls",
+      "sourceReceiptIds": [
+        "native-reported",
+        "benchmark"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [
+        "native-reported"
+      ],
+      "remaining": "Measured warm lookup p95<=15s; preserve stricter original cohort if applicable; optional<=500ms and<=10%regression",
+      "owner": "independent QA + relevant component owner",
+      "nextParallelSourceOrMetadataWork": "Freeze distinct warm/cold/ack cohorts/load, time complete answers and all retries",
+      "decisionOrExternalPrerequisite": "Qualified exact baseline and actual gate-specific corpus/receipts; source-test totals are not gate denominators.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "RG-10",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 441
+      },
+      "originalRequirement": "| RG-10 | Optional classifier reduces held-out routing errors by at least 25% relatively, with no material coverage/argument regression | Paired sufficiently powered labelled cases, confidence intervals and human adjudication; low baseline error or insufficient data can require more cases; latency must also pass RG-09 |",
+      "originalRecordSha256": "0fa16a012eee042e97a8296e9bb7899fbcc9cc6f74a09d9d8292008178ed3613",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Optional Decisions boundary only",
+      "sourceReceiptIds": [
+        "benchmark"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": ">=25%relative held-out route improvement with confidence/coverage/latency",
+      "owner": "independent QA + relevant component owner",
+      "nextParallelSourceOrMetadataWork": "Keep disabled; prepare paired sufficiently powered benchmark after baseline",
+      "decisionOrExternalPrerequisite": "Qualified exact baseline and actual gate-specific corpus/receipts; source-test totals are not gate denominators.",
+      "optional": true,
+      "optionalDisposition": "disabled/shadow pending baseline and own adoption; not mandatory or permanently excluded"
+    },
+    {
+      "id": "RG-11",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 442
+      },
+      "originalRequirement": "| RG-11 | Optional JEV improves labelled evidence quality with calibrated abstention and no required-evidence loss | Freeze task-specific improvement/calibration/adoption thresholds before shadow scoring; report relevant/support/client-fit separately; authoritative facts and mandatory reads remain protected |",
+      "originalRecordSha256": "3df5389e2ad8f0a1135623fd34fc39f353853a768a578f79ce28adf04a50b2f7",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Optional JEV boundary only",
+      "sourceReceiptIds": [
+        "benchmark"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "Frozen task-specific human-label calibration/improvement, abstention and no required-evidence loss",
+      "owner": "independent QA + relevant component owner",
+      "nextParallelSourceOrMetadataWork": "Keep disabled; establish promotion rubric before shadow scoring",
+      "decisionOrExternalPrerequisite": "Qualified exact baseline and actual gate-specific corpus/receipts; source-test totals are not gate denominators.",
+      "optional": true,
+      "optionalDisposition": "disabled/shadow pending baseline and own adoption; not mandatory or permanently excluded"
+    },
+    {
+      "id": "RG-12",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 443
+      },
+      "originalRequirement": "| RG-12 | Replay/reconnect/revocation/full-evidence-read/coverage-completeness contract suite passes | No stale discovered authorization; session/files/source versions pinned; decisive passage actually read; partial outcomes and continuation preserved |",
+      "originalRecordSha256": "cd5d7ef436e2229f6a9db2c44b6d401ff64c3a4985013c689216d2360e8ea2c0",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Declared lineage/continuity/coverage source; limited native controls reported",
+      "sourceReceiptIds": [
+        "read-source",
+        "native-reported",
+        "frontend",
+        "skills",
+        "benchmark"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [
+        "native-reported"
+      ],
+      "remaining": "Actual reconnect/replay/revocation/full-decisive-read/completeness behavior",
+      "owner": "independent QA + relevant component owner",
+      "nextParallelSourceOrMetadataWork": "Join versioned source evidence to real lifecycle persistence and revoked access tests",
+      "decisionOrExternalPrerequisite": "Qualified exact baseline and actual gate-specific corpus/receipts; source-test totals are not gate denominators.",
+      "optional": false,
+      "optionalDisposition": null
+    }
+  ]
+}
