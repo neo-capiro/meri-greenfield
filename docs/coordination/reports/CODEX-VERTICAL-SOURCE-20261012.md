@@ -31,6 +31,8 @@ All 8,678 original PR37 entries remain: 8,641 exact and 37 declared deltas, comp
 
 All recorded local tests use inert service/SQL/native ports where required. They establish source behavior only. Capture receipts bind commit, source diff, raw hashes, timeout and owned process-group cleanup; no successful synthetic check closes a native or runtime gate.
 
+Final independent review seal: `6b24d79d9531a956404688e06695fa73f1912008`, 62/62 manifest members verified and 386/386 final metadata checks. [Draft PR38](https://github.com/neo-capiro/meri-greenfield/pull/38) is stacked on PR37. The publication manifest and receipts remain source-only evidence.
+
 ## Remaining boundaries
 
 - Qualified identity, credentials, current authority, approval producers, durable metadata storage and real database/Temporal recovery remain required. No migrations have been applied. Existing Aurora remains selected.

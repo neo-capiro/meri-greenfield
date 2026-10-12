@@ -1,0 +1,14 @@
+{
+  "url": "https://github.com/neo-capiro/meri-greenfield/pull/38",
+  "number": 38,
+  "base": "task/meri-backend-execution-20261012",
+  "baseSha": "e5fb3963de787bbd7b7663316c368f15814897da",
+  "head": "task/meri-vertical-source-20261012",
+  "observedHeadSha": "01fa82febc76ca9ceffe6ba079196727366f88cc",
+  "draft": true,
+  "state": "open",
+  "merged": false,
+  "sourceFreeze": "441613b0432bf8c84c8acb33e237e6595b6170c7",
+  "review": "6b24d79d9531a956404688e06695fa73f1912008",
+  "scope": "Initial draft creation receipt; final packet publication follows. No merge/runtime/source activation."
+}
