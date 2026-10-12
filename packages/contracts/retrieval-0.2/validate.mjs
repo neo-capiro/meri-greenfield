@@ -1,3 +1,6 @@
+import { createPublicWebValidators } from './public-web-validation.mjs';
+import { createSamOpportunitiesValidators } from './sam-opportunities-validation.mjs';
+import { createFloridaBudgetValidators } from './florida-budget-validation.mjs';
 import { createStateStatusVotesValidators } from './state-status-votes-validation.mjs';
 import { createRegulatoryDocketsValidators } from './regulatory-dockets-validation.mjs';
 import { createTenantContactsValidators } from './tenant-contacts-validation.mjs';
@@ -39,7 +42,7 @@ import addFormats from 'ajv-formats';
 import { canonicalSha256 } from '../validate.mjs';
 
 export const contractVersion = '0.2.0';
-const groups = ['common', 'catalog', 'retrieval', 'skill', 'mail', 'meeting-source', 'operational-reads', 'federal-market', 'data-search', 'memory-proposals', 'client-registry', 'research-portfolio', 'business-development', 'funding-opportunities', 'client-documents', 'public-data', 'district-nexus', 'state-legislation', 'public-reports', 'disclosures', 'acquisition-personnel', 'federal-legislation', 'bill-text', 'legislative-directory', 'pe-references', 'rule-status', 'certification-status', 'stored-intelligence', 'dataset-metadata', 'facility-representation', 'state-status-votes', 'regulatory-dockets', 'tenant-contacts', 'entity-candidates', 'tracked-bills', 'intelligence-summary'];
+const groups = ['common', 'catalog', 'retrieval', 'skill', 'mail', 'meeting-source', 'operational-reads', 'federal-market', 'data-search', 'memory-proposals', 'client-registry', 'research-portfolio', 'business-development', 'funding-opportunities', 'client-documents', 'public-data', 'district-nexus', 'state-legislation', 'public-reports', 'disclosures', 'acquisition-personnel', 'federal-legislation', 'bill-text', 'legislative-directory', 'pe-references', 'rule-status', 'certification-status', 'stored-intelligence', 'dataset-metadata', 'facility-representation', 'state-status-votes', 'regulatory-dockets', 'tenant-contacts', 'entity-candidates', 'tracked-bills', 'intelligence-summary', 'public-web', 'sam-opportunities', 'florida-budget'];
 const schemaBytes = groups.map(group => readFileSync(new URL(`./${group}.schema.json`, import.meta.url)));
 const schemas = schemaBytes.map(raw => JSON.parse(raw));
 const ajv = new Ajv({ strict: true, allErrors: true });
@@ -246,6 +249,10 @@ const entityCandidatesValidators = createEntityCandidatesValidators({validateSha
 const trackedBillsValidators = createTrackedBillsValidators({validateShape, assertSubject, canonicalSha256});
 const intelligenceSummaryValidators = createIntelligenceSummaryValidators({validateShape, schema: schemas[groups.indexOf('intelligence-summary')]});
 
+const publicWebValidators = createPublicWebValidators({validateShape, schema: schemas[groups.indexOf('public-web')]});
+const samOpportunitiesValidators = createSamOpportunitiesValidators({validateShape, schema: schemas[groups.indexOf('sam-opportunities')]});
+const floridaBudgetValidators = createFloridaBudgetValidators({validateShape, schema: schemas[groups.indexOf('florida-budget')]});
+
 export function assertSkillManifest(manifest, catalog) {
   validateShape('SkillManifest', manifest); assertCatalog(catalog);
   unique(manifest.requiredSources.map(source => `${source.sourceId}:${source.purpose}`), 'required skill source');
@@ -289,4 +296,5 @@ export const {resolveOperationContract} = createOperationContracts({catalog: sou
     ...fundingOpportunitiesValidators, ...clientDocumentsValidators, ...publicDataValidators, ...districtNexusValidators, ...stateLegislationValidators, ...publicReportsValidators,
     ...disclosuresValidators, ...acquisitionPersonnelValidators, ...federalLegislationValidators, ...billTextValidators,
     ...legislativeDirectoryValidators, ...peReferenceValidators, ...ruleStatusValidators, ...certificationStatusValidators, ...storedIntelligenceValidators, ...datasetMetadataValidators, ...facilityRepresentationValidators,
-    ...stateStatusVotesValidators, ...regulatoryDocketsValidators, ...tenantContactsValidators, ...entityCandidatesValidators, ...trackedBillsValidators, ...intelligenceSummaryValidators})});
+    ...stateStatusVotesValidators, ...regulatoryDocketsValidators, ...tenantContactsValidators, ...entityCandidatesValidators, ...trackedBillsValidators, ...intelligenceSummaryValidators,
+    ...publicWebValidators, ...samOpportunitiesValidators, floridaBudgetValidators})});

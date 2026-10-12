@@ -1,0 +1,25 @@
+{
+  "observedAt": "2026-10-12T19:12:30.155426+00:00",
+  "refs": {
+    "task/meri-state-status-votes-20261012": "314f3c35e5277e89ce44f243ee60d07049eb96b6",
+    "review/meri-state-status-votes-20261012": "1e5cf3d01c464f9955f8d1a43dee8218be71c784",
+    "task/meri-regulatory-dockets-20261012": "6d0ce36bed11605d49f97c363ee0ce29657a6293",
+    "review/meri-regulatory-dockets-20261012": "8f190990f32d3f83540057e76c7bfbc200bd2d4a",
+    "task/meri-tenant-contacts-20261012": "62aafb3ad8bef0bc6520c82ed3bb6ff2a75a630c",
+    "review/meri-tenant-contacts-20261012": "d887323a596be014ffc864b7243ccdd85ddba023",
+    "task/meri-entity-candidates-20261012": "4c3b35c9d0c1709bfeb61280474c7186d516a618",
+    "review/meri-entity-candidates-20261012": "6f840ae192596e7dcf913cd749dd2db2bf681162",
+    "task/meri-tracked-bills-20261012": "076c4a437eb717cbc1dd8541f76f141c0a6d1b2d",
+    "review/meri-tracked-bills-20261012": "575d0cd2e8444c6821576f37b3e3091583c3e320",
+    "task/meri-intelligence-summary-20261012": "e46b425fd68a106e67dc5afdebf611ec33b201ea",
+    "review/meri-intelligence-summary-20261012": "b538e67909d2dd7296a2af8313d7a2e049170dff",
+    "task/meri-public-web-contracts-20261012": "8edcfe8673072bcc925bc332e5a584b800ca5042",
+    "review/meri-public-web-contracts-20261012": "4e6733e7eb971bd71afb9a50817f0993ee02c228",
+    "task/meri-sam-opportunities-20261012": "6414cdae5324b43e612b1176e7096cbeb8b50636",
+    "review/meri-sam-opportunities-20261012": "ae179ffc40e15a893cfaaa58d07caa6b0c5b2953"
+  },
+  "exitCode": 0,
+  "stdout": "",
+  "stderr": "To https://github.com/neo-capiro/meri-greenfield.git\n * [new branch]      task/meri-sam-opportunities-20261012 -> task/meri-sam-opportunities-20261012\n * [new branch]      review/meri-sam-opportunities-20261012 -> review/meri-sam-opportunities-20261012\n",
+  "purpose": "Preserve original accepted family author/reviewer refs and failure ancestry; no merge or activation."
+}

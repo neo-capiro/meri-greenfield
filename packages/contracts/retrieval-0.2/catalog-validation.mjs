@@ -12,6 +12,22 @@ const searched = result => ({input: result.input, metadata: {clientScope: result
 const federal = result => ({input: result.query, metadata: {queryScope: result.queryScope, clientScope: result.clientScope}});
 
 export const CATALOG_OPERATION_BINDINGS = Object.freeze([
+  Object.freeze({id: 'search_public_web', nativeId: 'search_public_web', group: 'public-web', input: 'PublicWebSearchInput', output: 'PublicWebSearchOutput', version: '0.2.0',
+    contextKeys: Object.freeze([]),
+    normalize: (v, request, context, binding) => (v.normalizePublicWebInput(binding.id, request, clock(context, binding.contextKeys))),
+    outputAssert: (v, page, request, context, binding) => v.assertPublicWebOutput(binding.id, page, request, clock(context, binding.contextKeys))}),
+  Object.freeze({id: 'scrape_web_page', nativeId: 'scrape_web_page', group: 'public-web', input: 'PublicWebPageInput', output: 'PublicWebPageOutput', version: '0.2.0',
+    contextKeys: Object.freeze([]),
+    normalize: (v, request, context, binding) => (v.normalizePublicWebInput(binding.id, request, clock(context, binding.contextKeys))),
+    outputAssert: (v, page, request, context, binding) => v.assertPublicWebOutput(binding.id, page, request, clock(context, binding.contextKeys))}),
+  Object.freeze({id: 'search_sam_opportunities', nativeId: 'search_sam_opportunities', group: 'sam-opportunities', input: 'SamOpportunitiesInput', output: 'SamOpportunitiesOutput', version: '0.2.0',
+    contextKeys: Object.freeze(["asOf", "evidenceAccuracyMode", "sourceStatusAsOf", "sourceHealthAsOf"]),
+    normalize: (v, request, context, binding) => (v.normalizeSamOpportunitiesInput(binding.id, request, clock(context, binding.contextKeys))),
+    outputAssert: (v, page, request, context, binding) => v.assertSamOpportunitiesOutput(binding.id, page, request, clock(context, binding.contextKeys))}),
+  Object.freeze({id: 'get_florida_budget_project', nativeId: 'get_florida_budget_project', group: 'florida-budget', input: 'FloridaBudgetInput', output: 'FloridaBudgetOutput', version: '0.2.0',
+    contextKeys: Object.freeze(["asOf", "effectiveScope", "clientResolution"]),
+    normalize: (v, request, context, binding) => (v.floridaBudgetValidators.normalizeInput(binding.id, request, clock(context, binding.contextKeys))),
+    outputAssert: (v, page, request, context, binding) => v.floridaBudgetValidators.assertResult(binding.id, page, request, clock(context, binding.contextKeys))}),
   Object.freeze({id: 'get_state_bill_status', nativeId: 'get_state_bill_status', group: 'state-status-votes', input: 'StateBillStatusInput', output: 'StateBillStatusOutput', version: '0.2.0',
     contextKeys: Object.freeze([]),
     normalize: (v, request, context, binding) => (v.normalizeStateStatusVotesInput(binding.id, request, clock(context, binding.contextKeys))),
