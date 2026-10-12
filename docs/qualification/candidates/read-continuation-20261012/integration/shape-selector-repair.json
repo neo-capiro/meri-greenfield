@@ -1,0 +1,36 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-public-data.test.mjs",
+    "packages/contracts/test/retrieval-state-legislation.test.mjs",
+    "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs"
+  ],
+  "cwd": "/workspace/meri-read-continuation-20261012",
+  "sourceHead": "4aaba8adeef8543548bfed15cf82b26e1afcc6bd",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T16:52:08.473207+00:00",
+  "durationSeconds": 1.974,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 163188,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/integration/shape-selector-repair.stdout.bin",
+      "bytes": 8895,
+      "sha256": "0fb2ddd686f8f9f27f927d37e561e278f5b46484dcfab70ee6cfd9afaa1727cd"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/integration/shape-selector-repair.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
