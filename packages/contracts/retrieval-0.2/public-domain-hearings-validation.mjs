@@ -65,6 +65,7 @@ export function createPublicDomainHearingsValidators({validateShape,schema}){
    const privateSource=['tenant_hearing_relevance','intel_hearing_record_briefs','intel_hearing_record_reconciliation'].includes(prov.sourceTable);
    if(privateSource?prov.tenantId!==ctx.tenantId:Object.hasOwn(prov,'tenantId'))fail('Hearing declared tenant provenance differs');
    if(fragment){
+    if(Object.hasOwn(p,'id')&&p.id!==prov.sourceRecordId)fail('Hearing fragment copied identity differs');
     if(p.contentHash!==prov.contentHash||p.text.length!==p.characterEnd-p.characterStart||p.characterStart!==(p.chunk-1)*2000||p.characterEnd!==Math.min(p.characterStart+2000,p.totalCharacters)||p.chunkCount!==Math.ceil(p.totalCharacters/2000)||p.chunk>p.chunkCount||p.title.length>240||p.originalKind!==null&&p.originalKind.length>80||p.sourceUrl!==null&&p.sourceUrl.length>1000)fail('Hearing JSON fragment bounds differ');
     for(const key of attribution)if(typeof p[key]==='string'&&p[key].length>240)fail('Hearing fragment attribution exceeds source bound');
    }else if(JSON.stringify(p).length>6500||hash(JSON.stringify(p))!==prov.contentHash)fail('Whole hearing JSON/hash projection differs');
@@ -74,6 +75,8 @@ export function createPublicDomainHearingsValidators({validateShape,schema}){
     if((fragment?p.originalKind:p.kind)!==kind||!prov.sourceKey.startsWith(prefix+':'))fail('Ordinary hearing payload/source family differs');
     if(p.id!==undefined&&p.id!==prov.sourceRecordId)fail('Hearing source record identity differs');
     if(!fragment){
+     const expectedKey=prefix+':'+p.id+(p.kind==='official_transcript_chunk'?':'+String(p.characterStart/6000).padStart(10,'0'):'');
+     if(prov.sourceKey!==expectedKey)fail('Whole hearing source key differs from projected identity');
      const hearing=p.kind==='hearing'?p.id:p.hearingId;if(hearing!==prov.hearingId)fail('Hearing payload event differs');
      if(p.kind==='client_hearing_relevance'&&input.clientId!==null&&p.clientId!==input.clientId)fail('Hearing relevance selected client differs');
      if(p.kind==='official_transcript_chunk'){

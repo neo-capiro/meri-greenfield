@@ -1,0 +1,62 @@
+✔ one exact read with full envelope and no generatedAt invention (5.645987ms)
+✔ hostile operation/definition selectors are never coerced (0.207562ms)
+✔ caller scope hints never contain trusted tenant/resolution or page-size control (0.61911ms)
+✔ nullable selectors preserve wrapper clipping and downstream second query trim (0.437388ms)
+✔ committeeName wins alias and irrelevant recordId is dropped in ordinary mode (0.218589ms)
+✔ finite historical timestamp requires published mode and normalizes canonical ISO (0.730468ms)
+✔ client names need resolution and UUIDs cannot rebind (0.549596ms)
+✔ missing exact selectors can return explicit unsupported evidence, not empty-complete (0.543096ms)
+✔ all five ordinary payload variants preserve nulls and unconstrained stored scalar labels (8.419035ms)
+✔ ordinary full JSON hash proves local consistency only and cannot be substituted (0.734073ms)
+✔ official SQL chunks count Unicode code points while JS string length differs (3.377547ms)
+✔ empty official text can retain a zero-count source chunk (0.367632ms)
+✔ exact hearing selector binds both payload and provenance (0.711739ms)
+✔ private relevance requires tenant provenance and selected client correlation (0.540302ms)
+✔ public ordinary evidence cannot acquire private tenant provenance (0.342775ms)
+✔ final hearing coverage remains degraded/incomplete even when pagination is done (0.455575ms)
+✔ coverage counts, queried domains and observability cannot diverge (0.853042ms)
+✔ unavailable source never manufactures retained records (0.286892ms)
+✔ one evidence chunk per page is retained (0.426792ms)
+✔ hasMore and final truncation differ through governed merge (0.548795ms)
+✔ JSON fragments retain UTF16 exact bounds and full-source hash declaration (0.82519ms)
+✔ split surrogates remain valid fragment data, never parsed as a complete record (0.290887ms)
+✔ fragment attribution lengths and content hash agree without whole-record reconstruction (0.53197ms)
+✔ published exact version retains source evidence and current/asOf distinction (0.918521ms)
+✔ published historical cutoff forbids newer observed version (0.313601ms)
+✔ private reviewed brief preserves separate source authority and binds selected client (2.93398ms)
+✔ brief local content hash is verified without current grant proof (0.422986ms)
+✔ private reconciliation is owner evidence and may have no client observation (0.648976ms)
+✔ private historical run may be superseded but cannot predate creation (0.720933ms)
+✔ published/private JSON fragments do not pretend inherited decoder accepts next cursor (0.365109ms)
+✔ pure source normalization frozen and returned nested evidence detached (0.34635ms)
+✔ inert boundary rejects getters/cycles with no hook execution (0.342064ms)
+✔ imported boundary and checks need no ambient current time (0.402696ms)
+✖ private fragment retains copied exact record ID when present (0.908866ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 33
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 356.634725
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-public-domain-hearings.test.mjs:80:1
+✖ private fragment retains copied exact record ID when present (0.908866ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-public-legal-20261012/packages/contracts/test/retrieval-public-domain-hearings.test.mjs:80:462)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
