@@ -107,8 +107,8 @@ for (const id of [GAO, CRS]) {
   });
   test(`${id}: nullable date wire representation`, () => {
     const key = id === GAO ? 'publishDate' : 'date';
-    assert.doesNotThrow(() => check(id, result(id, [{ ...row(id), [key]: NOW }])));
-    for (const value of ['2026-10-12', '2026-02-30T00:00:00.000Z', new Date(NOW)]) assert.throws(() => check(id, result(id, [{ ...row(id), [key]: value }])));
+    assert.doesNotThrow(() => check(id, result(id, [{ ...row(id), [key]: '2026-10-12T00:00:00.000Z' }])));
+    for (const value of [NOW, '2026-10-12', '2026-02-30T00:00:00.000Z', new Date(NOW)]) assert.throws(() => check(id, result(id, [{ ...row(id), [key]: value }])));
   });
 }
 test('GAO: reportType exact filter and declared nullable Int', () => {
@@ -120,4 +120,25 @@ test('GAO: reportType exact filter and declared nullable Int', () => {
 test('CRS: active-only source selection is not an invented projected flag', () => {
   assert.throws(() => check(CRS, result(CRS, [{ ...crsRow(), active: true }])));
   assert.doesNotThrow(() => check(CRS, result(CRS, [{ ...crsRow(), authors: [' raw author ', ''], pdfUrl: 'stored opaque URL', htmlUrl: '' }])));
+});
+test('CBO: stored signed Int and falsey zero filter preserve source rules', () => {
+  for (const congress of [-2147483648, -1, 2147483647]) assert.doesNotThrow(() => check(CBO, result(CBO, [{ ...cboRow(), congress }]), { congress }));
+  assert.equal(Object.hasOwn(normalize(CBO, { congress: 0 }).input, 'congress'), false);
+  for (const congress of [false, null, '119', 1.5, -2147483649, 2147483648]) assert.throws(() => normalize(CBO, { congress }));
+});
+test('CBO: truncation can retain note-label whitespace dropped from actual bill filter', () => {
+  const billId = 'H'.repeat(39) + ' X';
+  assert.equal(normalize(CBO, { billId }).input.billId, 'h'.repeat(39));
+  assert.doesNotThrow(() => check(CBO, cboEmpty(`No CBO cost estimate on record for ${'H'.repeat(39)} . Say so explicitly — do not estimate or guess a score.`), { billId }));
+});
+for (const id of OPS) test(`${id}: unique rows, chronological order and truthful metadata scope`, () => {
+  const field = id === CBO ? 'pubDate' : id === GAO ? 'publishDate' : 'date';
+  assert.throws(() => check(id, result(id, [row(id), row(id)])));
+  const recent = { ...row(id), [field]: '2026-10-12T00:00:00.000Z' };
+  const older = { ...row(id), id: 'old', [field]: '2026-10-11T00:00:00.000Z' };
+  assert.doesNotThrow(() => check(id, result(id, [recent, older])));
+  assert.throws(() => check(id, result(id, [older, recent])));
+  const normalized = normalize(id);
+  for (const flag of ['authoritative', 'sourceConnected', 'producerQualified', 'absenceEvidence']) assert.equal(normalized.metadata[flag], false);
+  assert.equal(normalized.metadata.countScope, id === CBO ? 'returned-window' : 'separate-local-count');
 });
