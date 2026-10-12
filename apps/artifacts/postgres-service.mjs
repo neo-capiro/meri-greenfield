@@ -36,7 +36,9 @@ export function createPostgresArtifactService(options){
     const receipt=v.snapshot(JSON.parse(raw));own(receipt,['reservationId','decision']);
     if(receipt.reservationId!==id||receipt.decision!==decision)fail('ARTIFACT_BUDGET_RECEIPT');
   };
-  const durable=createPostgresBudgetExecution({pool,allocationJson,authority,limits:trusted.limits,now,requestIdentity,
+  // Each execute gets its own observation closure. The outer canonical lifetime can
+  // reject before the inner service catches cancellation; do not lose effect identity.
+  const compose=observation=>createPostgresBudgetExecution({pool,allocationJson,authority,limits:trusted.limits,now,requestIdentity,
     createExecutor:ports=>({async execute(raw,credential,signal){
       const call=input(raw),requestSha256=v.hash(intent(call));
       let current,selection,ticketId,committed,outputBytes=null;
@@ -63,9 +65,9 @@ export function createPostgresArtifactService(options){
       const budget={
         async reserve(value){
           active();if(!current||!same(value.binding,trusted.context.binding)||value.requestSha256!==requestSha256)fail('ARTIFACT_BUDGET_BINDING');
-          ticketId=newReservationId();
+          ticketId=newReservationId();observation.ticketId=ticketId;observation.reservationStarted=true;
           ack(await ports.budget.reserve({reservationId:ticketId,binding:value.binding,operation:trusted.descriptor.operation,argumentsSha256:requestSha256,budgets:current.claims.budgets,claims:current.claims,deadlineMs:Math.min(value.deadlineMs,deadlineMs),limitDeadline:narrow,signal:value.signal}),ticketId,'reserved');
-          active();return {ticketId,binding:value.binding,requestSha256,maxBytes,deadlineMs};
+          observation.reservationAcknowledged=true;active();return {ticketId,binding:value.binding,requestSha256,maxBytes,deadlineMs};
         },
         async settle(value){
           active();if(value.ticketId!==ticketId||value.requestSha256!==requestSha256)fail('ARTIFACT_BUDGET_BINDING');
@@ -73,23 +75,37 @@ export function createPostgresArtifactService(options){
           // or given a fabricated completed/failed-settled accounting receipt.
           if(value.outcome!=='completed'||!committed)fail('ARTIFACT_FAILED_ACCOUNTING_UNKNOWN');
           if(value.bytes!==committed.version.object.bytes||value.bytes>maxBytes)fail('ARTIFACT_OUTPUT_LIMIT');
-          ack(await ports.budget.settle({reservationId:ticketId,outcome:'completed',outputBytes:value.bytes,resultSha256:v.hash(committed),deadlineMs,signal:value.signal}),ticketId,'settled');
+          observation.settlementStarted=true;ack(await ports.budget.settle({reservationId:ticketId,outcome:'completed',outputBytes:value.bytes,resultSha256:v.hash(committed),deadlineMs,signal:value.signal}),ticketId,'settled');observation.settlementAcknowledged=true;
           active();return {ticketId,requestSha256,bytes:value.bytes,outcome:value.outcome,status:'settled'};
         },
       };
       // Completion is the immutable committed storage record, not proof of delivery.
-      const versionPort={read:(...args)=>versions.read(...args),async commit(value,abort){active();const record=v.snapshot(value);if(record.requestSha256!==requestSha256||record.version.object.bytes>maxBytes)fail('ARTIFACT_BUDGET_BINDING');const receipt=await versions.commit(value,abort);active();committed=record;return receipt;}};
+      const versionPort={read:(...args)=>versions.read(...args),async commit(value,abort){active();const record=v.snapshot(value);if(record.requestSha256!==requestSha256||record.version.object.bytes>maxBytes)fail('ARTIFACT_BUDGET_BINDING');observation.versionCommitStarted=true;const receipt=await versions.commit(value,abort);active();committed=record;return receipt;}};
+      const objectPort={get:(...args)=>objects.get(...args),put(...args){active();observation.writeStarted=true;return objects.put(...args);}};
       const executePort={async execute(value){active();const result=await executor.execute({...value,maxBytes:Math.min(value.maxBytes,maxBytes),deadlineMs:Math.min(value.deadlineMs,deadlineMs)});active();outputBytes=result.bytes?.length;if(!Number.isSafeInteger(outputBytes)||outputBytes>maxBytes)fail('ARTIFACT_OUTPUT_LIMIT');return result;}};
-      const service=createArtifactService({validators:v,authorize:authorizeArtifact,budget,versions:versionPort,objects,executor:executePort,now,ids});
+      const service=createArtifactService({validators:v,authorize:authorizeArtifact,budget,versions:versionPort,objects:objectPort,executor:executePort,now,ids:()=>{const allocated=v.snapshot(ids());observation.versionId=allocated.versionId;return allocated;}});
       const result=await (call.baseVersionId===null?service.create(call.request,trusted.context,{signal}):service.revise(call.baseVersionId,call.request,trusted.context,{signal}));
+      observation.versionCommitted=true;
       try{active();if(Buffer.byteLength(JSON.stringify(result))>trusted.limits.maxResponseBytes)fail('ARTIFACT_RESPONSE_LIMIT');return result;}
       catch(cause){throw Object.assign(new Error('ARTIFACT_EFFECT_UNKNOWN'),{code:'ARTIFACT_EFFECT_UNKNOWN',cause,versionId:result.version.versionId,versionCommitted:true});}
     }})});
+  const durable=compose({});
   function admitted(value){if(!sourceEnabled)fail('UNAVAILABLE');const call=input(value);return {raw:JSON.stringify(call),delivery:delivery(call)};}
   return Object.freeze({sourceEnabled,
     bindTrustedGrant:durable.bindTrustedGrant,
     prepareInvocation(value,signal){const call=admitted(value);return durable.prepareInvocation(call.delivery,call.raw,signal);},
-    execute(value,credential,signal){const call=admitted(value);return durable.executeOwned(call.raw,credential,call.delivery,signal);},
+    execute(value,credential,signal){
+      const call=admitted(value),observation={},requestSha256=v.hash(intent(input(call.raw)));
+      return compose(observation).executeOwned(call.raw,credential,call.delivery,signal).catch(cause=>{
+        if(cause.code?.startsWith('ARTIFACT_'))throw cause;
+        if(!observation.reservationStarted&&!observation.writeStarted)throw cause;
+        const code=observation.writeStarted?'ARTIFACT_EFFECT_UNKNOWN':observation.reservationAcknowledged?'ARTIFACT_BUDGET_SETTLEMENT_UNKNOWN':'ARTIFACT_BUDGET_RESERVATION_UNKNOWN';
+        throw Object.assign(new Error(code),{code,cause,versionId:observation.versionId??null,versionCommitted:observation.versionCommitted===true,
+          budget:{ticketId:observation.ticketId??null,requestSha256,binding:v.snapshot(trusted.context.binding)},
+          budgetReservationUnknown:observation.reservationAcknowledged!==true,budgetSettlementUnknown:observation.reservationStarted===true&&observation.settlementAcknowledged!==true,
+          uncertainty:v.snapshot({writeStarted:observation.writeStarted===true,versionCommitStarted:observation.versionCommitStarted===true,reservationAcknowledged:observation.reservationAcknowledged===true,settlementAcknowledged:observation.settlementAcknowledged===true})});
+      });
+    },
     reconcileInvocation(value){const call=input(value);return durable.reconcileInvocation(delivery(call),JSON.stringify(call));},
   });
 }

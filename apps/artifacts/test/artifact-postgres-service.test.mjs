@@ -123,3 +123,14 @@ test('oversized released metadata reports committed effect uncertainty rather th
   const t=fixture();await t.ready();await assert.rejects(t.create({limits:{maxRequestMs:9000,maxResponseBytes:512}}).execute(t.call,t.b.credential),error=>error.code==='ARTIFACT_EFFECT_UNKNOWN'&&error.versionCommitted===true&&error.cause.code==='ARTIFACT_RESPONSE_LIMIT');
   assert.equal(t.state.commits,1);assert.equal(t.b.state().budget.consumed_micro_usd,'10');assert.equal((await t.create().reconcileInvocation(t.call)).stage,'SETTLED');
 });
+for(const method of ['put','commit'])test(`outer cancellation during ${method} preserves version/effect identity`,async()=>{
+  const t=fixture();await t.ready();let enter,release;const entered=new Promise(r=>{enter=r;}),gate=new Promise(r=>{release=r;});const owner=method==='put'?t.options.objects:t.options.versions,original=owner[method];
+  owner[method]=async function(...args){const result=await original.apply(this,args);enter();await gate;return result;};const controller=new AbortController(),pending=t.run(t.call,controller.signal);await entered;controller.abort();
+  try{await assert.rejects(pending,e=>e.code==='ARTIFACT_EFFECT_UNKNOWN'&&typeof e.versionId==='string'&&e.cause.message==='CANCELLED');}finally{release();await new Promise(r=>setImmediate(r));}
+  assert.equal([...t.b.state().reservations.values()][0].state,'UNKNOWN');assert.equal([...t.b.state().produced.values()][0].completion,null);if(method==='put')assert.equal(t.state.commits,0);
+});
+for(const phase of ['reserve','marker','settle'])test(`outer cancellation during ${phase} discloses accounting uncertainty without retry`,async()=>{
+  const t=fixture();await t.ready();const gate=t.b.parkCommit(phase),controller=new AbortController(),pending=t.run(t.call,controller.signal);await gate.ready;controller.abort();
+  try{await assert.rejects(pending,e=>e.code===(phase==='reserve'?'ARTIFACT_BUDGET_RESERVATION_UNKNOWN':'ARTIFACT_EFFECT_UNKNOWN')&&e.cause.message==='CANCELLED');}finally{gate.resume();await new Promise(r=>setImmediate(r));}
+  assert.equal(t.state.generations,phase==='reserve'?0:1);assert.equal(t.b.state().produced.size,1);
+});
