@@ -1,0 +1,32 @@
+{
+  "sourceFreezes": [
+    {
+      "commit": "82376401bbfbb1e301bf7e1a5b23b04e49197033",
+      "author": "19PASS",
+      "independent": "four service findings: MIME/format, timer, swallowed budget uncertainty; raw review packet owned by independent reviewer"
+    },
+    {
+      "commit": "2201e315373196e7cbc475ecfff4ae68ca5a15cc",
+      "author": "26PASS/1FAIL invalid PNG fixture; CRC evidence retained",
+      "repair": "f854c998 fixture-only; original PNG remains refusal control"
+    },
+    {
+      "commit": "f8f06c7e8e549cc36280734364ac50b968085177",
+      "author": "30PASS",
+      "repair": "exact retained metadata + explicit budget uncertainty"
+    },
+    {
+      "commit": "d971d9651f9f427f2f9811de2604a64b9fc76e3f",
+      "author": "32PASS",
+      "independent": "repairs pandas overflow and PPT PNG acceptance; original6PASS/2FAIL retained by reviewer"
+    },
+    {
+      "commit": "814ecf1baa1b5890545576a0815257199505103a",
+      "author": "34PASS",
+      "contractDelta": "closed inspection detail and general output API; synthetic TXT fixture updated only to legal declared details"
+    }
+  ],
+  "preservedOriginalTests": "All original test assertions preserved except documented strengthened DEADLINE assertion now additionally requires budget uncertainty and original cause; fixture PNG/detail corrections retained in Git preimages.",
+  "toolEditFailure": "One apply_patch request rejected duplicate delete/add target before any files changed; corrected as update.",
+  "earlierMetadataCapture": "Initial terminal-only metadata read printed oversized package license fields and was truncated; retained installed-metadata.json is a separate later bounded derivative, not claimed as that original command receipt."
+}

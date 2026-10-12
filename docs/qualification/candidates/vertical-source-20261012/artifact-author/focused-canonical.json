@@ -1,0 +1,17 @@
+{
+  "source": "814ecf1baa1b5890545576a0815257199505103a",
+  "argv": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "apps/artifacts/test/artifact-execution.test.mjs"
+  ],
+  "exitCode": 0,
+  "timeout": false,
+  "durationSeconds": 6.493,
+  "group": 369225,
+  "groupAbsent": true,
+  "stdoutSha256": "b3869554d1fd03f05c4b40d2742d31f080245bc74aa9740d6b2ae33028594792",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiff": ""
+}

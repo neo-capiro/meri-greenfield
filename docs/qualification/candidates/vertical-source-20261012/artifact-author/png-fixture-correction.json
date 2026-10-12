@@ -1,0 +1,29 @@
+{
+  "originalSource": "2201e315373196e7cbc475ecfff4ae68ca5a15cc",
+  "failure": "focused-second:26PASS/1FAIL",
+  "originalSha256": "7ddda91894d66fe8de310857fde06ad6dd0e9ab34ceefd43dc8ccf46b4550218",
+  "chunks": [
+    {
+      "chunk": "IHDR",
+      "declaredCRC": 3038514178,
+      "actualCRC": 3038514178,
+      "valid": true
+    },
+    {
+      "chunk": "IDAT",
+      "declaredCRC": 4019865449,
+      "actualCRC": 4020414299,
+      "valid": false
+    },
+    {
+      "chunk": "IEND",
+      "declaredCRC": 2923585666,
+      "actualCRC": 2923585666,
+      "valid": true
+    }
+  ],
+  "replacementSha256": "7dc741fb359e1d86552016ead244887fab86138ffed432b70983551ce9695341",
+  "replacementBytes": 79,
+  "producer": "installed Pillow12.3.0 Image.new RGB2x2 (0,64,128); no external image",
+  "scope": "Only fixture PNG bytes changed. All image assertions and production unchanged."
+}

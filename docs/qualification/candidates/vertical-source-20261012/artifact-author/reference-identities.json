@@ -1,0 +1,74 @@
+[
+  {
+    "path": "AGENTS.md",
+    "commit": "e5fb3963de787bbd7b7663316c368f15814897da",
+    "bytes": 6582,
+    "sha256": "a0650949b74e5aee709bd8b3c9d480f95f5b898778ac8f7b3927eb54b141437a"
+  },
+  {
+    "path": "docs/IMPLEMENTATION-STANDARDS.md",
+    "commit": "e5fb3963de787bbd7b7663316c368f15814897da",
+    "bytes": 11082,
+    "sha256": "d4f10f964ee207187abacd967649a1cfc9bdd468072dc01f859268f08b719959"
+  },
+  {
+    "path": "docs/COMPONENTS.md",
+    "commit": "e5fb3963de787bbd7b7663316c368f15814897da",
+    "bytes": 8930,
+    "sha256": "d41dae59bf7b350a3a2c8c95bad55a3f571e1220060bea3f52798f8f9f98f3a7"
+  },
+  {
+    "path": "docs/plans/MERI-DEPLOYMENT.md",
+    "commit": "e5fb3963de787bbd7b7663316c368f15814897da",
+    "bytes": 86848,
+    "sha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388"
+  },
+  {
+    "path": "docs/CAPABILITY-SCOPE.md",
+    "commit": "e5fb3963de787bbd7b7663316c368f15814897da",
+    "bytes": 43968,
+    "sha256": "b222e0c4614d52dc1d1c0e22e557cf47e2c6bea0fc4929aad42ad7f6194174c6"
+  },
+  {
+    "path": "docs/coordination/r2/skills.json",
+    "commit": "e5fb3963de787bbd7b7663316c368f15814897da",
+    "bytes": 25018,
+    "sha256": "bfd0b14953b858d351a58a778f435f2d546c1a420050ee6c31ae5e489f1f17b6"
+  },
+  {
+    "path": "packages/contracts/meri.schema.json",
+    "commit": "e5fb3963de787bbd7b7663316c368f15814897da",
+    "bytes": 50043,
+    "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b"
+  },
+  {
+    "path": "packages/contracts/commands-0.2/artifact-file.schema.json",
+    "commit": "e5fb3963de787bbd7b7663316c368f15814897da",
+    "bytes": 3494,
+    "sha256": "9c51a6777683990384467ab1c62acb07500411e6c08d5b89a0e8182513d91537"
+  },
+  {
+    "path": "packages/contracts/commands-0.2/artifact-file-validation.mjs",
+    "commit": "e5fb3963de787bbd7b7663316c368f15814897da",
+    "bytes": 5641,
+    "sha256": "56d5bdfdfe4876d3a0e6157226516a193e6ad75a9bf0b7e258cb3b2d044c0c04"
+  },
+  {
+    "path": "packages/runtime/operation-lifetime.mjs",
+    "commit": "e5fb3963de787bbd7b7663316c368f15814897da",
+    "bytes": 2595,
+    "sha256": "10730af13c7cf29623fc7e8c836262b02f01e3436ac6e1488d263ec6ed19b52f"
+  },
+  {
+    "path": "docs/SKILL-CONTRACT.md",
+    "commit": "e5fb3963de787bbd7b7663316c368f15814897da",
+    "bytes": 5772,
+    "sha256": "fbba378db2dc95e26996c26620c599ffaf69386ff495ee83fefa56d06ae2f3f7"
+  },
+  {
+    "path": "packages/contracts/retrieval-0.2/skill.schema.json",
+    "commit": "e5fb3963de787bbd7b7663316c368f15814897da",
+    "bytes": 9072,
+    "sha256": "146a78397cf72fbb899769fe23a83ab609fd8d67803f543ab5a76dba7a37ee7e"
+  }
+]
