@@ -1,0 +1,30 @@
+{
+  "base": "ede7b56845816d38d0bbffab5a657aaa4f978739",
+  "baselineUnchangedPaths": 7186,
+  "packets": [
+    {
+      "reference": "79efba457f41ce436b91f76741dac783ba82010b",
+      "manifest": "docs/qualification/candidates/read-continuation-20261012/scope-authority/manifest.json",
+      "members": 17,
+      "sha256": "8070ae350b1ce67bbd2f082e27677d5789c63f27e2ccfea73f07672324361e6c",
+      "exactPacketFiles": 18
+    },
+    {
+      "reference": "6a3770bf4368f5b111dd588848c7bc0f45885837",
+      "manifest": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/manifest.json",
+      "members": 30,
+      "sha256": "c6de0a94f194a4ebb28524a3b3a6ec8d6124343f9155628e76f4773fdffd8f88",
+      "exactPacketFiles": 30
+    },
+    {
+      "reference": "9d2c846e1dd681cd0dfb5e3c20337db3c96b9e18",
+      "manifest": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/manifest.json",
+      "members": 28,
+      "sha256": "5efd9d565101d015d470e768009f039944d2a182b07a59ca6fa41e7a6228b3fc",
+      "exactPacketFiles": 28
+    }
+  ],
+  "verdict": "ACCEPT_METADATA",
+  "implementationAuditComplete": false,
+  "runtimeAccepted": false
+}
