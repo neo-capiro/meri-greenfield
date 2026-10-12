@@ -1,0 +1,12 @@
+{
+  "verdict": "PASS",
+  "passed": 23,
+  "total": 23,
+  "members": 21,
+  "manifest": {
+    "path": "docs/qualification/candidates/governing-receipts-review-20261012/manifest.json",
+    "bytes": 4935,
+    "sha256": "3260fd6e1d56c49b04f7a84bd94a5a4acb46462a74a002893ce5fd637afdba14"
+  },
+  "runtimeAcceptance": false
+}
