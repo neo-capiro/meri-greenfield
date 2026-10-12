@@ -1,0 +1,31 @@
+{
+  "scope": "Only owned completed metadata-check groups",
+  "groups": [
+    {
+      "label": "metadata-audit",
+      "pidAndPgid": 253888,
+      "absent": true
+    },
+    {
+      "label": "metadata-verify",
+      "pidAndPgid": 254168,
+      "absent": true
+    },
+    {
+      "label": "metadata-final",
+      "pidAndPgid": 255944,
+      "absent": true
+    },
+    {
+      "label": "diff-check",
+      "pidAndPgid": 256168,
+      "absent": true
+    },
+    {
+      "label": "staged-diff-check",
+      "pidAndPgid": 256699,
+      "absent": true
+    }
+  ],
+  "allAbsent": true
+}

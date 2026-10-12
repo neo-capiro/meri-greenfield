@@ -1,0 +1,33 @@
+{
+  "command": [
+    "python",
+    "docs/qualification/candidates/read-continuation-20261012/command-source-next/verify-metadata.py"
+  ],
+  "cwd": "/workspace/meri-command-source-next-20261012",
+  "sourceHead": "c1c9bfde7dd466a0474589a224a99b44277adbc9",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T18:40:50.423426+00:00",
+  "durationSeconds": 0.468,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 254168,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/command-source-next/metadata-verify.stdout.bin",
+      "bytes": 170,
+      "sha256": "b262d66debc1287cc2a39519c4bb20a2f7ebda91b9405be935fe3d00467d24fa"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/command-source-next/metadata-verify.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Repair metadata-checker numeric-separator assumption only; initial188/189 and exact checker retained.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

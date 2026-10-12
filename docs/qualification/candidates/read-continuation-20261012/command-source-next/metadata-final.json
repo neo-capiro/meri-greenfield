@@ -1,0 +1,33 @@
+{
+  "command": [
+    "python",
+    "docs/qualification/candidates/read-continuation-20261012/command-source-next/verify-metadata.py"
+  ],
+  "cwd": "/workspace/meri-command-source-next-20261012",
+  "sourceHead": "c1c9bfde7dd466a0474589a224a99b44277adbc9",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T18:42:41.007648+00:00",
+  "durationSeconds": 0.467,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 255944,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/command-source-next/metadata-final.stdout.bin",
+      "bytes": 170,
+      "sha256": "f9cf68f9e1dbb1be4847b31f4304dbbdf1c3a92925925767404c58aaa2f85fa5"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/command-source-next/metadata-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Final metadata description audit adds exact C0/C1 range characterization; all earlier raw outcomes preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

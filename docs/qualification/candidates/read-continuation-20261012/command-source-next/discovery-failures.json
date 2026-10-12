@@ -1,0 +1,36 @@
+[
+  {
+    "stage": "initial report lookup",
+    "exitCode": 2,
+    "reason": "Prior report absent in new sparse/base checkout; read successfully from preserved prior worktree",
+    "safeDiagnostic": "sed: cannot read docs/coordination/reports/CODEX-COMMAND-CONTRACT-DISCOVERY-20261012.md: No such file or directory",
+    "notProductFailure": true
+  },
+  {
+    "stage": "guessed runtime guard path",
+    "path": "apps/api/src/engagement/runtime/engagement-service-runtime.boundary.ts",
+    "gitObjectMissing": true,
+    "resolution": "Actual guardEngagementServiceRuntime lives in governed-engagement.factory.ts159\u2013177",
+    "notMissingAuthorizerProof": true
+  },
+  {
+    "stage": "initial metadata audit",
+    "passed": 188,
+    "failed": 1,
+    "reason": "Checker required decimal spelling12000/4000; pinned source uses numeric separators. Scalar numeric values already traced correctly by AST.",
+    "repair": "Ignore numeric separators in this single source metadata check; preserve initial checker, checks JSON and raw stdout/receipt. No source/fact correction.",
+    "ownedPgid": 253888,
+    "groupAbsent": true
+  },
+  {
+    "stage": "intermediate metadata interpretation correction",
+    "initialDescription": "C0/C1/DEL rejection (correct)",
+    "failedProbe": "Checking presence of0x80 and0x9f returned false; author briefly narrowed description to C0/DEL without examining equivalent range spelling.",
+    "exactPredicateMeaning": "cp below0x20 or cp>=0x7f and cp<0xa0, except TAB/LF/CR. This includes C1.",
+    "preserved": [
+      "artifact-boundaries.initial.json",
+      "artifact-boundaries.intermediate-narrowing.json"
+    ],
+    "repair": "Original correct C0/C1/DEL description restored before freeze; add exact range audit. No private execution or product edit."
+  }
+]

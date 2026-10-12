@@ -1,0 +1,94 @@
+{
+  "kind": "LEGACY_PROTOCOL_METADATA_AND_NEW_MERI_RECOMMENDATION",
+  "references": [
+    "apps/clio-sandbox/src/run.ts18\u201356/94\u2013133",
+    "apps/clio-sandbox/src/server.ts55\u2013104",
+    "MeriToolsService.runAnalysis2339\u20132464"
+  ],
+  "rawTool": {
+    "required": {
+      "code": "string"
+    },
+    "optional": {
+      "datasets": "{name:string,rows:object[]}[]",
+      "purpose": "string"
+    },
+    "wrapper": "Non-string code becomes empty and refuses; preserves nonempty original code; filters datasets to string name+array rows then first8. purpose has no observed output echo. Tenant-keyed20/hour in-memory throttle, not durable per-user budget."
+  },
+  "httpRequest": {
+    "fields": [
+      "code:string",
+      "datasets?:SandboxDataset[]",
+      "timeoutMs?:number declared type"
+    ],
+    "dataset": [
+      "name:string",
+      "rows?:Record<string,unknown>[]",
+      "text?:string",
+      "format?:csv|json|txt"
+    ],
+    "admission": "code nonblank <=40000UTF16, <=8 datasets; name nonempty; rows array or nonempty text; format json/txt retained else csv; validator sets timeout35000 ignoring caller timeout",
+    "notEstablished": "No row-element closed schema, name uniqueness, input version/digest, caller task/fence, result authority or hostile object admission demonstrated by these declarations."
+  },
+  "httpAdmission": {
+    "route": "POST /run",
+    "bodyBytes": 8388608,
+    "statusCodes": [
+      200,
+      400,
+      401,
+      404,
+      413,
+      429,
+      500
+    ],
+    "auth": "Legacy configured bearer comparison; not a Meri task-bound capability",
+    "concurrencyDefault": 2,
+    "maxQueue": 20,
+    "effects": "HTTP transport invokes separate sandbox; not imported/executed here"
+  },
+  "outcome": {
+    "required": [
+      "ok:boolean",
+      "exitCode:number|null",
+      "timedOut:boolean",
+      "durationMs:number",
+      "stdout:string",
+      "stderr:string",
+      "results:unknown|null",
+      "images:{filename:string,dataBase64:string}[]",
+      "warnings:string[]"
+    ],
+    "declaredBounds": {
+      "wallTimeoutMs": 35000,
+      "datasetRows": 5000,
+      "stdChars": 64000,
+      "resultsBytes": 5242880,
+      "images": 6,
+      "imageBytes": 2097152
+    },
+    "limitQualification": "These are source declarations, not evidence measured sandbox limits or native watchdog behavior."
+  },
+  "wrapperProjection": {
+    "variants": [
+      "{tool,generatedAt,ok:false,error} for disabled/rate/transport failure",
+      "{tool,generatedAt,ok,exitCode,timedOut,durationMs,stdout,stderr?,results,chartCount,artifacts?}"
+    ],
+    "stdoutChars": 12000,
+    "failureStderrChars": 4000,
+    "httpTimeoutMs": 45000,
+    "warnings": "Not projected by wrapper",
+    "artifacts": "Transient image metadata includes filename/base64/codeSha256; does not establish durable ArtifactVersion",
+    "effects": [
+      "HTTP sandbox request",
+      "tenant auditLog write with code hash/dataset names/outcome; failure logged",
+      "in-memory rate allocation"
+    ]
+  },
+  "newContractRecommendation": {
+    "request": "Canonical RunBinding + immutable code ObjectReference/digest + delivered input ObjectReferences + exact environment identity + caller-owned deadline/cancellation/budget. Those are NEW Meri trusted-context requirements, not legacy fields. No second agent loop.",
+    "result": "Bounded JSON result value (unknown is not permission for arbitrary prototypes), byte-pinned outputs as ArtifactVersion, execution status/duration/exit/output truncation and inspection evidence. Failed/timed-out may have outputs; do not infer ok/exit correlations without defined new protocol.",
+    "reuse": "Existing authority/lifetime/durable budget and adopted sandbox owner; no copied harness/server implementation.",
+    "admission": "A pure schema/proposal boundary can proceed; execution, egress, watchdog, task identity, input delivery, sandbox and native validation remain gated."
+  }
+}

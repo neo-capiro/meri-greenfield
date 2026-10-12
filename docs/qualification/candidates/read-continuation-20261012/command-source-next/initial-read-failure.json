@@ -1,0 +1,7 @@
+{
+  "command": "Read standards and prior report at new sparse worktree",
+  "exitCode": 2,
+  "stderr": "sed: cannot read prior CODEX-COMMAND-CONTRACT-DISCOVERY-20261012.md at this base",
+  "consequence": "No production/source failure. Prior report is read from preserved dedicated prior worktree; sparse/base content is not assumed deleted.",
+  "rawOutputPreserved": "tool transcript"
+}

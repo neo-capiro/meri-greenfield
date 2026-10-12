@@ -1,0 +1,766 @@
+{
+  "scope": "STATIC_METADATA_ONLY; no private module execution, database, renderer or sandbox run",
+  "base": "c1c9bfde7dd466a0474589a224a99b44277adbc9",
+  "references": 42,
+  "baseTrackedFiles": 6528,
+  "checks": [
+    {
+      "name": "apps/api/src/meri/meri-tools.service.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-tools.service.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-tools.service.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-memory.helpers.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-memory.helpers.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-memory.helpers.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/memory/memory-candidate.service.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/memory/memory-candidate.service.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/memory/memory-candidate.service.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/memory/governed-memory-candidate.service.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/memory/governed-memory-candidate.service.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/memory/governed-memory-candidate.service.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-client-filing.service.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-client-filing.service.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-client-filing.service.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-client-filing.service.spec.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-client-filing.service.spec.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-client-filing.service.spec.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/engagement/engagement.service.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/engagement/engagement.service.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/engagement/engagement.service.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/engagement/research-portfolio-task-access.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/engagement/research-portfolio-task-access.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/engagement/research-portfolio-task-access.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/engagement/engagement-access.helpers.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/engagement/engagement-access.helpers.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/engagement/engagement-access.helpers.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-action-proposal.service.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-action-proposal.service.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-action-proposal.service.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-action-proposal.service.spec.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-action-proposal.service.spec.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-action-proposal.service.spec.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-approval.service.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-approval.service.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-approval.service.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-actions.helpers.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-actions.helpers.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-actions.helpers.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-policy-pack.service.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-policy-pack.service.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-policy-pack.service.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-action-logical-outcome.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-action-logical-outcome.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-action-logical-outcome.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-schedule.helpers.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-schedule.helpers.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-schedule.helpers.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-tools.schedule-controls.spec.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-tools.schedule-controls.spec.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-tools.schedule-controls.spec.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-schedule-execution-boundary.spec.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-schedule-execution-boundary.spec.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-schedule-execution-boundary.spec.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-docgen.helpers.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-docgen.helpers.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-docgen.helpers.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-text-artifact-receipt.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-text-artifact-receipt.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-text-artifact-receipt.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-text-artifact-current-proposal.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-text-artifact-current-proposal.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-text-artifact-current-proposal.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-analysis-provenance.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-analysis-provenance.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-analysis-provenance.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "packages/shared/src/index.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "packages/shared/src/index.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "packages/shared/src/index.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/schema.prisma:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/schema.prisma:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/schema.prisma:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-docgen.helpers.spec.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-docgen.helpers.spec.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-docgen.helpers.spec.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-text-artifact.helpers.spec.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-text-artifact.helpers.spec.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-text-artifact.helpers.spec.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-document-artifact.spec.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-document-artifact.spec.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-document-artifact.spec.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-artifact-integrity.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-artifact-integrity.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-artifact-integrity.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-artifact-integrity.spec.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-artifact-integrity.spec.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-artifact-integrity.spec.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-analysis-artifact.controller.spec.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-analysis-artifact.controller.spec.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-analysis-artifact.controller.spec.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/clio-sandbox/src/run.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/clio-sandbox/src/run.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/clio-sandbox/src/run.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/clio-sandbox/src/server.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/clio-sandbox/src/server.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/clio-sandbox/src/server.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/engagement/engagement.controller.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/engagement/engagement.controller.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/engagement/engagement.controller.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/engagement/engagement.module.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/engagement/engagement.module.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/engagement/engagement.module.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/engagement/governed-engagement.factory.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/engagement/governed-engagement.factory.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/engagement/governed-engagement.factory.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/engagement/runtime/engagement-runtime-policy.service.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/engagement/runtime/engagement-runtime-policy.service.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/engagement/runtime/engagement-runtime-policy.service.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/auth/roles.guard.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/auth/roles.guard.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/auth/roles.guard.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/auth/roles.guard.spec.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/auth/roles.guard.spec.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/auth/roles.guard.spec.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/tenant/tenant-context.middleware.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/tenant/tenant-context.middleware.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/tenant/tenant-context.middleware.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/tenant/tenant-context.middleware.spec.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/tenant/tenant-context.middleware.spec.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/tenant/tenant-context.middleware.spec.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/app.module.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/app.module.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/app.module.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/prisma/prisma.service.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/prisma/prisma.service.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/prisma/prisma.service.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "normalizer constant MAX_DOC_TITLE",
+      "passed": true
+    },
+    {
+      "name": "normalizer constant MAX_SECTIONS",
+      "passed": true
+    },
+    {
+      "name": "normalizer constant MAX_PARAGRAPHS",
+      "passed": true
+    },
+    {
+      "name": "normalizer constant MAX_BULLETS",
+      "passed": true
+    },
+    {
+      "name": "normalizer constant MAX_TABLES",
+      "passed": true
+    },
+    {
+      "name": "normalizer constant MAX_TABLE_ROWS",
+      "passed": true
+    },
+    {
+      "name": "normalizer constant MAX_TABLE_COLS",
+      "passed": true
+    },
+    {
+      "name": "normalizer constant MAX_SHEETS",
+      "passed": true
+    },
+    {
+      "name": "normalizer constant MAX_SLIDES",
+      "passed": true
+    },
+    {
+      "name": "normalizer constant MAX_CELL_CHARS",
+      "passed": true
+    },
+    {
+      "name": "normalizer constant MAX_IMAGES_PER_BLOCK",
+      "passed": true
+    },
+    {
+      "name": "text bound1MiB",
+      "passed": true
+    },
+    {
+      "name": "image bound3MiB chars",
+      "passed": true
+    },
+    {
+      "name": "text surrogate replacement refused",
+      "passed": true
+    },
+    {
+      "name": "text fatal UTF8 and BOM preservation",
+      "passed": true
+    },
+    {
+      "name": "text allowed control exceptions",
+      "passed": true
+    },
+    {
+      "name": "sheet width is max(headers,1)",
+      "passed": true
+    },
+    {
+      "name": "sheet casefold dedup",
+      "passed": true
+    },
+    {
+      "name": "no copied artifact implementation file",
+      "passed": true
+    },
+    {
+      "name": "sandbox declared WALL_TIMEOUT_MS",
+      "passed": true
+    },
+    {
+      "name": "sandbox declared MAX_CODE_CHARS",
+      "passed": true
+    },
+    {
+      "name": "sandbox declared MAX_DATASETS",
+      "passed": true
+    },
+    {
+      "name": "sandbox declared MAX_DATASET_ROWS",
+      "passed": true
+    },
+    {
+      "name": "sandbox declared MAX_STD_CHARS",
+      "passed": true
+    },
+    {
+      "name": "sandbox declared MAX_IMAGES",
+      "passed": true
+    },
+    {
+      "name": "sandbox ignores caller timeout in normalized request",
+      "passed": true
+    },
+    {
+      "name": "sandbox outcome warnings declared",
+      "passed": true
+    },
+    {
+      "name": "sandbox input8MiB",
+      "passed": true
+    },
+    {
+      "name": "sandbox queue20",
+      "passed": true
+    },
+    {
+      "name": "sandbox overload429",
+      "passed": true
+    },
+    {
+      "name": "analysis tenant keyed",
+      "passed": true
+    },
+    {
+      "name": "analysis20 per hour declaration",
+      "passed": true
+    },
+    {
+      "name": "analysis45s wrapper timeout",
+      "passed": true
+    },
+    {
+      "name": "analysis output stdout12000/stderr4000",
+      "passed": false
+    },
+    {
+      "name": "artifact native receipt SHA/length comparison",
+      "passed": true
+    },
+    {
+      "name": "artifact current client gate source",
+      "passed": true
+    },
+    {
+      "name": "artifact selected bytes authority enum",
+      "passed": true
+    },
+    {
+      "name": "engagement current tenant task routes",
+      "passed": true
+    },
+    {
+      "name": "engagement class minimum role",
+      "passed": true
+    },
+    {
+      "name": "actual governed service DI",
+      "passed": true
+    },
+    {
+      "name": "factory does not add task wrappers",
+      "passed": true
+    },
+    {
+      "name": "runtime guard exists, not presumed absent",
+      "passed": true
+    },
+    {
+      "name": "RP-specific task guard called",
+      "passed": true
+    },
+    {
+      "name": "ordinary task owner nullable default",
+      "passed": true
+    },
+    {
+      "name": "task creator server actor",
+      "passed": true
+    },
+    {
+      "name": "RP guard early return for other sources",
+      "passed": true
+    },
+    {
+      "name": "RP exact actor checks",
+      "passed": true
+    },
+    {
+      "name": "RP artifact authorizer kept",
+      "passed": true
+    },
+    {
+      "name": "exact public action enumeration",
+      "passed": true
+    },
+    {
+      "name": "all eleven selected operations covered",
+      "passed": true
+    },
+    {
+      "name": "reuse canonical ObjectReference",
+      "passed": true
+    },
+    {
+      "name": "reuse canonical ArtifactVersion",
+      "passed": true
+    },
+    {
+      "name": "reuse canonical Command",
+      "passed": true
+    },
+    {
+      "name": "reuse canonical ApprovalProposal",
+      "passed": true
+    },
+    {
+      "name": "reuse canonical ApprovalDecision",
+      "passed": true
+    },
+    {
+      "name": "reuse canonical CommandExecutionRequest",
+      "passed": true
+    },
+    {
+      "name": "reuse canonical CommandReceipt",
+      "passed": true
+    },
+    {
+      "name": "reuse canonical ScheduleProjection",
+      "passed": true
+    },
+    {
+      "name": "memory exception not reopened",
+      "passed": true
+    },
+    {
+      "name": "public schedule is projection not action",
+      "passed": true
+    },
+    {
+      "name": "all changed paths exclusively owned",
+      "passed": true
+    },
+    {
+      "name": "no product diff",
+      "passed": true
+    },
+    {
+      "name": "no base tracked deletion",
+      "passed": true
+    }
+  ],
+  "passed": 188,
+  "failed": 1
+}

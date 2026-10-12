@@ -1,0 +1,68 @@
+{
+  "kind": "STATIC_CALLER_AND_POLICY_TRACE_NOT_AUTHORIZATION_ADMISSION",
+  "chain": [
+    {
+      "owner": "TenantContextMiddleware",
+      "role": "authenticated tenant/user/role context; membership/offboarding and impersonation context; global app registration; no current client-wall assertion established by this metadata"
+    },
+    {
+      "owner": "EngagementController",
+      "role": "@Roles standard_user under rank-based RolesGuard; POST tasks/PATCH tasks/:id with CurrentTenant; DTO validation"
+    },
+    {
+      "owner": "EngagementModule",
+      "role": "injects governed factory, not directly raw EngagementService"
+    },
+    {
+      "owner": "createGovernedEngagementService/guardEngagementServiceRuntime",
+      "role": "generation/persistence/runtime wrappers exist, but createTask/updateTask absent from RUNTIME_ACTION_BY_METHOD; no additional ordinary task guard demonstrated"
+    },
+    {
+      "owner": "MeriToolsService.createEngagementTask/updateEngagementTask",
+      "role": "Meri proposal-execution path calls EngagementService; create optional client resolver is tenant/nonarchived lookup; update selects task by ID; immutable tool proposal policy is distinct from current task authority"
+    },
+    {
+      "owner": "EngagementService",
+      "role": "tenant transaction; create persists supplied nullable linkage/owner and ctx.userId as creator; update fetches task then invokes RP-specific access helper before updating"
+    },
+    {
+      "owner": "assertOwnedResearchPortfolioTask",
+      "role": "returns immediately for ordinary sourceType; RP subtype requires tenant,creator,owner equal actor plus portfolio artifact authorization; RP owner reassignment denied"
+    },
+    {
+      "owner": "PrismaService.withTenant",
+      "role": "tenant transaction/GUC boundary, not proof of deployed RLS, current client visibility or ordinary owner policy"
+    }
+  ],
+  "dtos": {
+    "create": [
+      "clientId?:UUID",
+      "meetingId?:UUID",
+      "contactId?:UUID",
+      "mailThreadId?:UUID",
+      "title:string1..240",
+      "description?:string",
+      "ownerUserId?:UUID",
+      "dueDate?:date-string"
+    ],
+    "update": [
+      "title?:string1..240",
+      "description?:string|null",
+      "ownerUserId?:UUID|null",
+      "dueDate?:date-string|null",
+      "status?:todo|in_progress|done|blocked|canceled"
+    ],
+    "selectedMeriCreate": "only title/clientId/dueDate advertised; description consumed internally but unadvertised; owner not auto-set to actor (null default)",
+    "selectedMeriUpdate": "taskId required, title/status/dueDate optional; at least one accepted patch; do not expose full direct REST DTO silently"
+  },
+  "proposedPrivateAPI": {
+    "normalizeTaskCreate": "(raw,{binding,resolvedClientId?}) -> {title,clientId:null|UUID,dueDate:null|UTCISO}; new private strict date/bounds admission must explicitly state differences; no current-grant boolean supplied by model",
+    "assertTaskCreateResult": "(request,domainResult,{binding}) -> detached validated domain receipt; id,title,status,dueDate,clientId,createdAt matched where observable; existing CommandReceipt carries immutable command and execution outcome",
+    "executionOwner": "Trusted current task authorizer in governed gateway/source adapter, selected centrally; shape validator grants nothing"
+  },
+  "centralDecision": {
+    "question": "For ordinary non-RP tasks, should current minimum-role + tenant semantics be retained, or must creator/assignee/current client-wall permission constrain create/update and unassigned/clientless tasks? Identify canonical source/control authorizer and impersonation rule.",
+    "consequence": "Do not infer creator-only, assignee-only or tenant-wide mutation permission. Pure task.create payload/result schema is ready; execution must remain unavailable until owner policy is explicit. Task.update additionally needs public action allocation.",
+    "notClaimed": "This trace is not a security vulnerability finding or an exhaustive audit of deployed routes/RLS."
+  }
+}
