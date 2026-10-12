@@ -1,0 +1,36 @@
+✔ complete action independent: exact factory and both modes preserve defaults (4.160393ms)
+✔ complete action independent: strict prior raw admission preserved intentionally (0.833493ms)
+✔ complete action independent: exact identity and any cursor presence require client (0.61163ms)
+✔ complete action independent: context is exact and required even for tenant-only mode (0.397167ms)
+✔ complete action independent: alias requires exact trusted resolver fact (0.599221ms)
+✔ complete action independent: UUID spelling cannot select different resolved client (0.353992ms)
+✔ complete action independent: full raw card supports optional clientName and empty stored text (3.152378ms)
+✔ complete action independent: unscoped count is independent concurrent count not rows length (0.749927ms)
+✔ complete action independent: actual row cap follows admitted limit (4.206894ms)
+✔ complete action independent: raw page cannot acquire coverage or foreign wrapper proof (1.301125ms)
+✔ complete action independent: raw card identities use actual UUID columns (0.623788ms)
+✔ complete action independent: raw duplicate identities refuse without deduplicating (0.275634ms)
+✔ complete action independent: unscoped rows may span clients and have unlinked source refs (0.463918ms)
+✔ complete action independent: signed Int32 priority has no inferred nonnegative budget (0.808295ms)
+✔ complete action independent: deadline follows DATE midnight and timestamps canonical instants (1.133734ms)
+✔ complete action independent: deadline sorting is nullslast then priority and no ID tie (0.526572ms)
+✔ complete action independent: priority sorting is descending then deadline nullslast (0.623687ms)
+✔ complete action independent: selected status correlates but no lifecycle completion inference (0.89843ms)
+✔ complete action independent: all raw projected fields required except actual omitted clientName (2.905927ms)
+✔ complete action independent: shared declared nested types admit notes and optional audience flags (0.707504ms)
+✔ complete action independent: exact scoped page delegates original canonical controls (9.432938ms)
+✔ complete action independent: scoped alias uses resolved UUID page rather than raw name (1.007444ms)
+✔ complete action independent: scoped result cannot change any original binding coordinate (2.936163ms)
+✔ complete action independent: inherited opaque continuation stays unqualified (0.989547ms)
+✔ complete action independent: exact scoped identity and proof substitution refuse (2.764926ms)
+✔ complete action independent: result and normalization detach nested input data (0.730128ms)
+✔ complete action independent: getters proxies coercion and toJSON have no effects (0.492681ms)
+✔ complete action independent: cycles symbols nonenumerable prototypes and undefined refuse (0.175935ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1968.674569
