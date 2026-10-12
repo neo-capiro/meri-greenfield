@@ -8,3 +8,7 @@ test('durable dispatcher options cannot substitute its private canonical budget 
  try{gateway=h.enabledGateway({owner:injected});}catch{return;}
  await assert.rejects(gateway.execute(requestJson,h.credential,h.json()),'caller owner override must be refused');assert.equal(effects,0);assert.equal(h.f.calls.includes('handler'),false);
 });
+
+test('durable dispatcher rejects injected private producer before any callback',()=>{
+ const h=harness();let called=0;assert.throws(()=>h.enabledGateway({producer:{prepare(){called++;throw Error('private');},bind(){called++;throw Error('private');}}}),/GATEWAY_CONFIGURATION/);assert.equal(called,0);assert.equal(h.commands.length,0);
+});

@@ -34,11 +34,11 @@ export function harness() {
     grant:{grant_id:invocation.grantId,run_id:q.runId,attempt:q.attempt,worker_arn:q.workerArn,fence:q.fence,policy_revision:q.policyRevision,
       capability_sha256:invocation.capabilitySha256,state:'ACTIVE',expires_at:new Date(NOW+10000)},allocation:null,grantBinding:null,reservations:new Map(),produced:new Map(),model:[],grants:new Map(),bindings:new Map()};
   state.grants.set(state.grant.grant_id,state.grant);
-  let chain=Promise.resolve(),clock=NOW,lose=false,failQuery=null,park=null,stageLoss=null,stagePark=null;
+  let chain=Promise.resolve(),clock=NOW,lose=false,failQuery=null,park=null,stageLoss=null,stagePark=null,connectPark=null,setupPark=null;
   const commands=[],releases=[];
-  const pool={async connect(){let local,unlock,stage='read';return {
+  const pool={async connect(){if(connectPark){const p=connectPark;connectPark=null;p.reached();await p.wait;}let local,unlock,stage='read';return {
     async query(sql,p=[]){
-      commands.push({sql,p});const rows=values=>({rows:values,rowCount:values.length});
+      commands.push({sql,p});if(setupPark&&sql===setupPark.sql){const parked=setupPark;setupPark=null;parked.reached();await parked.wait;}const rows=values=>({rows:values,rowCount:values.length});
       if(failQuery&&sql.includes(failQuery))throw Error('SYNTHETIC_QUERY_FAILURE');
       if(sql==='BEGIN'||sql.startsWith('SET LOCAL'))return rows([]);
       if(sql.includes('budget WHERE id=1 FOR UPDATE')){const previous=chain;chain=new Promise(r=>{unlock=r;});await previous;local=structuredClone(state);return rows([local.budget]);}
@@ -77,6 +77,7 @@ export function harness() {
   const settle=()=>owner().forInvocation(json()).settle({reservationId:uuid('7'),outcome:'completed',outputBytes:7});
   return {f,invocation,allocation,enabledGateway,producer,context,delivery,controller,expected,pool,owner,gateway,reserve,settle,commands,releases,credential,json,operations:catalog.operations,
     state:()=>state,row:()=>state.reservations.get(invocation.invocationId),setClock:value=>{clock=value;f.state.now=value;},loseCommit:()=>{lose=true;},
+    parkSetup(sql){let resume,reached;const ready=new Promise(r=>{reached=r;});const wait=new Promise(r=>{resume=r;});if(sql==='connect')connectPark={wait,reached};else setupPark={sql,wait,reached};return {ready,resume};},
     loseStage:value=>{stageLoss=value;},
     parkCommit(stage){let resume,reached;const ready=new Promise(r=>{reached=r;});const wait=new Promise(r=>{resume=r;});stagePark={stage,wait,reached};return {ready,resume};},
     failAt:pattern=>{failQuery=pattern;},bind:()=>owner().bindTrustedGrant(json()),

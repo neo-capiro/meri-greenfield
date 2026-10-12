@@ -81,9 +81,9 @@ test('cancelled parked prepare acknowledgement cannot start dispatch after late 
  const {h,c}=await setup();const gate=h.parkCommit('prepare'),a=new AbortController();const promise=c.execute(requestJson,h.credential,deliveryId,a.signal);const rejected=assert.rejects(promise);await gate.ready;a.abort();await rejected;gate.resume();await new Promise(r=>setImmediate(r));
  assert.equal(h.state().produced.size,1);assert.equal(h.state().reservations.size,0);assert.equal(h.f.calls.length,0);assert.equal(handlerCount(h),0);
 });
-for(const cause of ['abort','expiry'])test(`${cause} while completion marker ACK is parked prevents automatic settlement after late ACK`,async()=>{
+for(const cause of ['abort','expiry','original-deadline-only'])test(`${cause} while completion marker ACK is parked prevents automatic settlement after late ACK`,async()=>{
  const {h,c}=await setup();const gate=h.parkCommit('marker'),a=new AbortController();const promise=c.execute(requestJson,h.credential,deliveryId,a.signal);const rejected=assert.rejects(promise);await gate.ready;
- if(cause==='abort')a.abort();else h.setClock(NOW+20000);
+ if(cause==='abort')a.abort();else h.setClock(cause==='expiry'?NOW+20000:Number(produced(h).deadline_ms)+1);
  gate.resume();await rejected;await new Promise(r=>setImmediate(r));
  assert.ok(produced(h).completion);assert.equal(reserved(h).state,'UNKNOWN');assert.equal(settleCount(h),0);assert.equal(handlerCount(h),1);
  const result=await (await h.controller()).reconcile(requestJson,deliveryId);assert.equal(result.stage,'SETTLED');assert.equal(settleCount(h),1);
@@ -133,4 +133,11 @@ test('cancel during produced reservation count query cannot start a later reserv
  const promise=c.execute(requestJson,h.credential,deliveryId,a.signal),rejected=assert.rejects(promise);await gate.ready;a.abort();const atCancel=h.commands.length;gate.resume();await rejected;await new Promise(r=>setImmediate(r));
  assert.equal(h.commands.slice(atCancel).filter(x=>x.sql.startsWith('INSERT INTO meri_qualification.tool_reservations')).length,0,'reservation INSERT started after cancellation');
  assert.equal(h.state().reservations.size,0);assert.equal(handlerCount(h),0);
+});
+
+for(const stage of ['connect','BEGIN',"SET LOCAL statement_timeout = '5s'","SET LOCAL lock_timeout = '2s'"])test(`cancel while ${stage} is parked prevents later setup/domain ports`,async()=>{
+ const {h,c}=await setup();const gate=h.parkSetup(stage),a=new AbortController();
+ const promise=c.execute(requestJson,h.credential,deliveryId,a.signal),rejected=assert.rejects(promise);await gate.ready;a.abort();const atCancel=h.commands.length;await rejected;gate.resume();await new Promise(r=>setImmediate(r));await new Promise(r=>setImmediate(r));
+ const later=h.commands.slice(atCancel).map(x=>x.sql);assert.ok(later.every(sql=>sql==='ROLLBACK'),`unexpected later port: ${JSON.stringify(later)}`);
+ assert.equal(h.state().produced.size,0);assert.equal(h.state().reservations.size,0);assert.equal(handlerCount(h),0);
 });
