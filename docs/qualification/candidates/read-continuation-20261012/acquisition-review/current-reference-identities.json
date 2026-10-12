@@ -1,0 +1,64 @@
+{
+  "projectionPolicyCommit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+  "inventoryIdentityCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "references": [
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "bytes": 415704,
+      "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194",
+      "differsFromInventory": false
+    },
+    {
+      "path": "apps/api/prisma/schema.prisma",
+      "blob": "cdf1923217edae6e7624993796a5671922b61ac0",
+      "bytes": 968034,
+      "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0",
+      "differsFromInventory": false
+    },
+    {
+      "path": "apps/api/src/acquisition-personnel/acquisition-personnel-read.service.ts",
+      "blob": "a7e6cca69e56327f54c164d698db03a399fbb614",
+      "bytes": 45580,
+      "sha256": "dde4b6ce8e8b0445a275ea781b6eb068b428cb93777efcb936c3432ac20d2940",
+      "differsFromInventory": true
+    },
+    {
+      "path": "apps/api/src/acquisition-personnel/dto/list-personnel.dto.ts",
+      "blob": "70da3a164210d0024a7dc0a5cc6ec771c2619632",
+      "bytes": 3382,
+      "sha256": "69cf487f34702c3c337509b8c9d1f14976613b664282684d4585ed47321b613f",
+      "differsFromInventory": true
+    },
+    {
+      "path": "apps/api/src/acquisition-personnel/dto/person-detail.dto.ts",
+      "blob": "f3ab73cff7f8c802c935ce47d20b1003e52e479f",
+      "bytes": 793,
+      "sha256": "ec0e55cf7556aedef11d10db4be54bcadc066080526501dee6add17d30722efc",
+      "differsFromInventory": true
+    },
+    {
+      "path": "apps/api/src/meri/meri.controller.ts",
+      "blob": "598e9146e5568349f213cbd548de0213113dc924",
+      "bytes": 44992,
+      "sha256": "c9562a30e6a67ed75eaf74850d1e4d67c133f040035fb4df8ac80605a3123586",
+      "differsFromInventory": false
+    },
+    {
+      "path": "apps/api/src/auth/roles.guard.ts",
+      "blob": "60fbbc8a1de21962a95af60842d25087f58a612d",
+      "bytes": 2703,
+      "sha256": "18e23d68f96a565b1994131b9affe7e4463e47e4979f22d897c7beaf450e6aa9",
+      "differsFromInventory": false
+    },
+    {
+      "path": "packages/shared/src/index.ts",
+      "blob": "62eb32931826f77abd985bc142f6a65adad6a23a",
+      "bytes": 273389,
+      "sha256": "1a713331de044768f7bd8631db4762a08a3c3541a1bbc064c67bbff46fc9a75f",
+      "differsFromInventory": false
+    }
+  ],
+  "sourceExecuted": false,
+  "privateBodiesPublished": false
+}
