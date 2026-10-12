@@ -1,0 +1,114 @@
+{
+  "commands": [
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "--config",
+        "/workspace/meri-l1-host-review-20261012/docs/qualification/candidates/g1-l1-host-20261012/review/docker-client-config-empty",
+        "--host",
+        "unix:///var/run/docker.sock",
+        "version",
+        "--format",
+        "{{json .Server}}"
+      ],
+      "startedAt": "2026-10-12T06:24:01.922035+00:00",
+      "elapsedSeconds": 0.032267,
+      "exitCode": 0,
+      "timeout": false,
+      "ownedClientPid": 83282,
+      "ownedClientReaped": true,
+      "metadataOnly": true,
+      "streams": [
+        {
+          "file": "docker-version.stdout.bin",
+          "bytes": 792,
+          "sha256": "efa58a91d6502cf4468bfa9a411ee5ffa0f4ac532a06812bad126369ffb4558b",
+          "postCaptureSizeWithin32KiB": true
+        },
+        {
+          "file": "docker-version.stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "postCaptureSizeWithin32KiB": true
+        }
+      ]
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "--config",
+        "/workspace/meri-l1-host-review-20261012/docs/qualification/candidates/g1-l1-host-20261012/review/docker-client-config-empty",
+        "--host",
+        "unix:///var/run/docker.sock",
+        "info",
+        "--format",
+        "{\"serverVersion\":{{json .ServerVersion}},\"images\":{{json .Images}},\"containers\":{{json .Containers}},\"containersRunning\":{{json .ContainersRunning}},\"securityOptions\":{{json .SecurityOptions}},\"cgroupVersion\":{{json .CgroupVersion}},\"cpus\":{{json .NCPU}},\"memoryTotal\":{{json .MemTotal}}}"
+      ],
+      "startedAt": "2026-10-12T06:24:01.954337+00:00",
+      "elapsedSeconds": 0.066156,
+      "exitCode": 0,
+      "timeout": false,
+      "ownedClientPid": 83299,
+      "ownedClientReaped": true,
+      "metadataOnly": true,
+      "streams": [
+        {
+          "file": "docker-info.stdout.bin",
+          "bytes": 197,
+          "sha256": "41c035a3f5dcdff0aac5e17c4e64fea9e58ca226e49eb60401d76de2b7c35516",
+          "postCaptureSizeWithin32KiB": true
+        },
+        {
+          "file": "docker-info.stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "postCaptureSizeWithin32KiB": true
+        }
+      ]
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "--config",
+        "/workspace/meri-l1-host-review-20261012/docs/qualification/candidates/g1-l1-host-20261012/review/docker-client-config-empty",
+        "--host",
+        "unix:///var/run/docker.sock",
+        "image",
+        "ls",
+        "--all",
+        "--digests",
+        "--no-trunc",
+        "--format",
+        "{{.ID}}"
+      ],
+      "startedAt": "2026-10-12T06:24:02.020518+00:00",
+      "elapsedSeconds": 0.015895,
+      "exitCode": 0,
+      "timeout": false,
+      "ownedClientPid": 83332,
+      "ownedClientReaped": true,
+      "metadataOnly": true,
+      "streams": [
+        {
+          "file": "docker-images.stdout.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "postCaptureSizeWithin32KiB": true
+        },
+        {
+          "file": "docker-images.stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "postCaptureSizeWithin32KiB": true
+        }
+      ]
+    }
+  ],
+  "socket": "explicit local unix:///var/run/docker.sock",
+  "config": "task-owned empty config, sanitized client environment",
+  "noDaemonMutation": true,
+  "noContainerOrImageLifecycleAction": true,
+  "noDatabaseConnection": true,
+  "noNativeNamespaceExecution": true,
+  "limits": "5-second per-command wait; metadata output post-checked32KiB; no claim of admitted external watchdog"
+}

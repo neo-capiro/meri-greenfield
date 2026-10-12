@@ -1,0 +1,688 @@
+{
+  "authorCommit": "20f51409673a0bdae1a5a3de99e2cda41d5b549b",
+  "authorTree": "775b14505d415ca7a178f10409f9c1def1b9b983",
+  "base": "263d0d174f9924a6030bb1c20100ff1115ffcda0",
+  "criteriaCommit": "8495d7e17c6f16984b11723b89b4d2da4acfc34f",
+  "checks": [
+    {
+      "check": "exact author head",
+      "pass": true
+    },
+    {
+      "check": "author worktree clean",
+      "pass": true
+    },
+    {
+      "check": "exclusive documentation/evidence paths only",
+      "pass": true
+    },
+    {
+      "check": "production source and locks preserved",
+      "pass": true
+    },
+    {
+      "check": "manifest entry unique and allocated docs/coordination/tasks/MERI-G1-L1-HOST-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "manifest hash docs/coordination/tasks/MERI-G1-L1-HOST-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "manifest entry unique and allocated docs/coordination/reports/MERI-G1-L1-HOST-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "manifest hash docs/coordination/reports/MERI-G1-L1-HOST-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "manifest entry unique and allocated docs/qualification/candidates/g1-l1-host-20261012/author/cached-package-policy.json",
+      "pass": true
+    },
+    {
+      "check": "manifest hash docs/qualification/candidates/g1-l1-host-20261012/author/cached-package-policy.json",
+      "pass": true
+    },
+    {
+      "check": "manifest entry unique and allocated docs/qualification/candidates/g1-l1-host-20261012/author/collection-notes.json",
+      "pass": true
+    },
+    {
+      "check": "manifest hash docs/qualification/candidates/g1-l1-host-20261012/author/collection-notes.json",
+      "pass": true
+    },
+    {
+      "check": "manifest entry unique and allocated docs/qualification/candidates/g1-l1-host-20261012/author/discover-host.py",
+      "pass": true
+    },
+    {
+      "check": "manifest hash docs/qualification/candidates/g1-l1-host-20261012/author/discover-host.py",
+      "pass": true
+    },
+    {
+      "check": "manifest entry unique and allocated docs/qualification/candidates/g1-l1-host-20261012/author/host-metadata.json",
+      "pass": true
+    },
+    {
+      "check": "manifest hash docs/qualification/candidates/g1-l1-host-20261012/author/host-metadata.json",
+      "pass": true
+    },
+    {
+      "check": "manifest entry unique and allocated docs/qualification/candidates/g1-l1-host-20261012/author/isolation-and-caches.json",
+      "pass": true
+    },
+    {
+      "check": "manifest hash docs/qualification/candidates/g1-l1-host-20261012/author/isolation-and-caches.json",
+      "pass": true
+    },
+    {
+      "check": "manifest entry unique and allocated docs/qualification/candidates/g1-l1-host-20261012/author/metadata-commands.json",
+      "pass": true
+    },
+    {
+      "check": "manifest hash docs/qualification/candidates/g1-l1-host-20261012/author/metadata-commands.json",
+      "pass": true
+    },
+    {
+      "check": "manifest entry unique and allocated docs/qualification/candidates/g1-l1-host-20261012/author/node-driver-resolution-metadata.json",
+      "pass": true
+    },
+    {
+      "check": "manifest hash docs/qualification/candidates/g1-l1-host-20261012/author/node-driver-resolution-metadata.json",
+      "pass": true
+    },
+    {
+      "check": "manifest entry unique and allocated docs/qualification/candidates/g1-l1-host-20261012/author/raw/apt-cached-policy.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest hash docs/qualification/candidates/g1-l1-host-20261012/author/raw/apt-cached-policy.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest entry unique and allocated docs/qualification/candidates/g1-l1-host-20261012/author/raw/apt-cached-policy.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest hash docs/qualification/candidates/g1-l1-host-20261012/author/raw/apt-cached-policy.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest entry unique and allocated docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-context.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest hash docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-context.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest entry unique and allocated docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-context.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest hash docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-context.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest entry unique and allocated docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-images.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest hash docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-images.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest entry unique and allocated docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-images.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest hash docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-images.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest entry unique and allocated docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-info.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest hash docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-info.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest entry unique and allocated docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-info.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest hash docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-info.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest entry unique and allocated docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-version.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest hash docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-version.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest entry unique and allocated docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-version.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest hash docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-version.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest entry unique and allocated docs/qualification/candidates/g1-l1-host-20261012/author/raw/dpkg-postgresql.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest hash docs/qualification/candidates/g1-l1-host-20261012/author/raw/dpkg-postgresql.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest entry unique and allocated docs/qualification/candidates/g1-l1-host-20261012/author/raw/dpkg-postgresql.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest hash docs/qualification/candidates/g1-l1-host-20261012/author/raw/dpkg-postgresql.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest entry unique and allocated docs/qualification/candidates/g1-l1-host-20261012/author/resource-metadata.json",
+      "pass": true
+    },
+    {
+      "check": "manifest hash docs/qualification/candidates/g1-l1-host-20261012/author/resource-metadata.json",
+      "pass": true
+    },
+    {
+      "check": "manifest entry unique and allocated docs/qualification/candidates/g1-l1-host-20261012/author/setup-packet.json",
+      "pass": true
+    },
+    {
+      "check": "manifest hash docs/qualification/candidates/g1-l1-host-20261012/author/setup-packet.json",
+      "pass": true
+    },
+    {
+      "check": "manifest entry unique and allocated docs/qualification/candidates/g1-l1-host-20261012/author/source-requirements.json",
+      "pass": true
+    },
+    {
+      "check": "manifest hash docs/qualification/candidates/g1-l1-host-20261012/author/source-requirements.json",
+      "pass": true
+    },
+    {
+      "check": "manifest entry unique and allocated docs/qualification/candidates/g1-l1-host-20261012/author/verify-packet.py",
+      "pass": true
+    },
+    {
+      "check": "manifest hash docs/qualification/candidates/g1-l1-host-20261012/author/verify-packet.py",
+      "pass": true
+    },
+    {
+      "check": "manifest covers all changed files except explicit receipt/self exclusions",
+      "pass": true
+    },
+    {
+      "check": "manifest remains source only",
+      "pass": true
+    },
+    {
+      "check": "verification receipt hash manifest.json",
+      "pass": true
+    },
+    {
+      "check": "verification receipt hash setup-packet.json",
+      "pass": true
+    },
+    {
+      "check": "verification receipt hash host-metadata.json",
+      "pass": true
+    },
+    {
+      "check": "verification receipt hash metadata-commands.json",
+      "pass": true
+    },
+    {
+      "check": "verification receipt hash verify.stdout.json",
+      "pass": true
+    },
+    {
+      "check": "verification receipt hash verify.stderr.txt",
+      "pass": true
+    },
+    {
+      "check": "metadata derivative and producer limitation explicit",
+      "pass": true
+    },
+    {
+      "check": "canonical source hash AGENTS.md",
+      "pass": true
+    },
+    {
+      "check": "canonical source hash docs/IMPLEMENTATION-STANDARDS.md",
+      "pass": true
+    },
+    {
+      "check": "canonical source hash docs/plans/MERI-DEPLOYMENT.md",
+      "pass": true
+    },
+    {
+      "check": "canonical source hash apps/proxy/qualification/state/dependencies.json",
+      "pass": true
+    },
+    {
+      "check": "canonical source hash apps/proxy/qualification/state/postgres_store.py",
+      "pass": true
+    },
+    {
+      "check": "canonical source hash apps/proxy/qualification/test/test_postgres_state.py",
+      "pass": true
+    },
+    {
+      "check": "canonical source hash apps/control/qualification-sdk-fixture/state/package.json",
+      "pass": true
+    },
+    {
+      "check": "canonical source hash apps/control/qualification-sdk-fixture/state/package-lock.json",
+      "pass": true
+    },
+    {
+      "check": "canonical source hash apps/control/qualification-sdk-fixture/state/store.mjs",
+      "pass": true
+    },
+    {
+      "check": "canonical source hash docs/qualification/candidates/g1-execution-options-20261012/author/execution-plan.json",
+      "pass": true
+    },
+    {
+      "check": "selected environment metadata agrees",
+      "pass": true
+    },
+    {
+      "check": "independent PATH absence postgres",
+      "pass": true
+    },
+    {
+      "check": "independent PATH absence initdb",
+      "pass": true
+    },
+    {
+      "check": "independent PATH absence pg_ctl",
+      "pass": true
+    },
+    {
+      "check": "independent PATH absence psql",
+      "pass": true
+    },
+    {
+      "check": "independent PATH absence pg_config",
+      "pass": true
+    },
+    {
+      "check": "no target runtime or namespace probe claim",
+      "pass": true
+    },
+    {
+      "check": "no current psycopg3",
+      "pass": true
+    },
+    {
+      "check": "httpx exact metadata agreement",
+      "pass": true
+    },
+    {
+      "check": "exact primary metadata command count",
+      "pass": true
+    },
+    {
+      "check": "dpkg-postgresql completed read only",
+      "pass": true
+    },
+    {
+      "check": "dpkg-postgresql stdout raw hash",
+      "pass": true
+    },
+    {
+      "check": "dpkg-postgresql stderr raw hash",
+      "pass": true
+    },
+    {
+      "check": "dpkg metadata only",
+      "pass": true
+    },
+    {
+      "check": "docker-version completed read only",
+      "pass": true
+    },
+    {
+      "check": "docker-version stdout raw hash",
+      "pass": true
+    },
+    {
+      "check": "docker-version stderr raw hash",
+      "pass": true
+    },
+    {
+      "check": "docker-version explicit local endpoint and private empty config",
+      "pass": true
+    },
+    {
+      "check": "docker-version read-only verb",
+      "pass": true
+    },
+    {
+      "check": "docker-info completed read only",
+      "pass": true
+    },
+    {
+      "check": "docker-info stdout raw hash",
+      "pass": true
+    },
+    {
+      "check": "docker-info stderr raw hash",
+      "pass": true
+    },
+    {
+      "check": "docker-info explicit local endpoint and private empty config",
+      "pass": true
+    },
+    {
+      "check": "docker-info read-only verb",
+      "pass": true
+    },
+    {
+      "check": "docker-images completed read only",
+      "pass": true
+    },
+    {
+      "check": "docker-images stdout raw hash",
+      "pass": true
+    },
+    {
+      "check": "docker-images stderr raw hash",
+      "pass": true
+    },
+    {
+      "check": "docker-images explicit local endpoint and private empty config",
+      "pass": true
+    },
+    {
+      "check": "docker-images read-only verb",
+      "pass": true
+    },
+    {
+      "check": "docker-context completed read only",
+      "pass": true
+    },
+    {
+      "check": "docker-context stdout raw hash",
+      "pass": true
+    },
+    {
+      "check": "docker-context stderr raw hash",
+      "pass": true
+    },
+    {
+      "check": "docker-context explicit local endpoint and private empty config",
+      "pass": true
+    },
+    {
+      "check": "docker-context read-only verb",
+      "pass": true
+    },
+    {
+      "check": "independent Docker counter/version agreement",
+      "pass": true
+    },
+    {
+      "check": "daemon has no cached images/container targets",
+      "pass": true
+    },
+    {
+      "check": "apt stdout hash",
+      "pass": true
+    },
+    {
+      "check": "apt stderr hash",
+      "pass": true
+    },
+    {
+      "check": "empty apt candidates and warning preserved",
+      "pass": true
+    },
+    {
+      "check": "L1 remains non-executable without relocation/launcher",
+      "pass": true
+    },
+    {
+      "check": "no invented server artifact or installer",
+      "pass": true
+    },
+    {
+      "check": "local peer containment unproven",
+      "pass": true
+    },
+    {
+      "check": "setup separate from later L1",
+      "pass": true
+    },
+    {
+      "check": "L1 no provider/cloud/Aurora/newRDS authority",
+      "pass": true
+    },
+    {
+      "check": "packet preserves work720s/cleanup900s",
+      "pass": true
+    },
+    {
+      "check": "packet preserves stdout8MiB/stderr1MiB",
+      "pass": true
+    },
+    {
+      "check": "packet preserves two synthetic databases",
+      "pass": true
+    },
+    {
+      "check": "packet preserves bootstrap",
+      "pass": true
+    },
+    {
+      "check": "packet preserves No database initialization/start/SQL",
+      "pass": true
+    },
+    {
+      "check": "packet preserves no trust exception",
+      "pass": true
+    },
+    {
+      "check": "installer side effects explicitly outside setup authority",
+      "pass": true
+    },
+    {
+      "check": "exact setup resource/cost caps unresolved rather than invented",
+      "pass": true
+    }
+  ],
+  "checkCount": 125,
+  "sourceDisposition": "ACCEPT_SOURCE_EVIDENCE_ONLY",
+  "runtimeAdmission": "HOLD_NOT_EXECUTABLE",
+  "authorFiles": [
+    {
+      "path": "docs/coordination/reports/MERI-G1-L1-HOST-20261012.md",
+      "bytes": 7034,
+      "sha256": "604957145d0badde2d7c9083b0199a00dfd501eb69fb368e2ec32f64e6cb72e6",
+      "gitBlob": "116fea85d63cee4024460a9674bc1f9e9b024271"
+    },
+    {
+      "path": "docs/coordination/tasks/MERI-G1-L1-HOST-20261012.md",
+      "bytes": 1864,
+      "sha256": "75a4e296fd7961a6e6a8f4b5eac180b46efbff89506e39fa00013f9f0cf27ddd",
+      "gitBlob": "59a4228f41e3fa3d0359e777a3b30a00e9d38add"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/cached-package-policy.json",
+      "bytes": 558,
+      "sha256": "e32a02b67f5a27db9a413263f3efc8bbc1c9194736345966494782d74b02b933",
+      "gitBlob": "bb47d76afd9fc7fa641fe66c1b56fe0b62d56c95"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/collection-notes.json",
+      "bytes": 1403,
+      "sha256": "909d10a6c1cf24cf5de2c874fd2a8da9b883e1a43bddd0490ba6900806050e2c",
+      "gitBlob": "f1f5fd9e42748a87d2e94d5a2855d1749b10d4d8"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/discover-host.py",
+      "bytes": 5533,
+      "sha256": "926a39ffcd608b78eac9b0e35a8d0e456fa680add90de30790ca599f8b3492a9",
+      "gitBlob": "504631cc1e0bdc0c0f875b017cf7076f3f323d8e"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/host-metadata.json",
+      "bytes": 6244,
+      "sha256": "6205761a4acf8f75b501cef7b8c2a17412dc73d5bac8214ec3a75688619df96e",
+      "gitBlob": "86be025e988a5023e9348fcf190587288f5070b6"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/isolation-and-caches.json",
+      "bytes": 2467,
+      "sha256": "89287c90675b39ae5800af6a5c9d37ce7f9fe55bae79c26c6ead3ab2c5d78384",
+      "gitBlob": "2bb4c2b7c10dde19a0cc31cea99c3194e81fafd1"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/manifest.json",
+      "bytes": 5608,
+      "sha256": "e01f4fa22d8bab57b1c173df7f3ad225983200f14c84895f06c9d6812c37357b",
+      "gitBlob": "89ca23354a35f0f770b568020dda90712e395905"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/metadata-commands.json",
+      "bytes": 4949,
+      "sha256": "5b2efb85438ad98c68c1d089236ad04161edb57cef5f1b370b0f1ada89d335f3",
+      "gitBlob": "44acf5edf171e1601921e3c37d98011dd815e949"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/node-driver-resolution-metadata.json",
+      "bytes": 1047,
+      "sha256": "2908869e534a9f9dc534a7f070dec8d672d3d7ddae58905eb958c6bb03e8cb73",
+      "gitBlob": "3ac3e92a133bd175b86fd41bd9e123cc7071f01a"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/raw/apt-cached-policy.stderr.bin",
+      "bytes": 92,
+      "sha256": "1148b3dba8ac2fde54dee12293653b1672d9a3922e081bdf08e11601a687db61",
+      "gitBlob": "14c112afde94a3b67c257dc998bb907f0613e896"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/raw/apt-cached-policy.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-context.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-context.stdout.bin",
+      "bytes": 75,
+      "sha256": "16a17082f67634f8eb3fd4f4c34526371aaa6de287a66c4e141a4d91c9d368ef",
+      "gitBlob": "fd0ae50176ccba4593f311d48b30982bbdaaafb0"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-images.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-images.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-info.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-info.stdout.bin",
+      "bytes": 398,
+      "sha256": "b4e12b19c7e43ef0a1c6d4c04ebfa9cee49835fd870cd39237bb09a56b1fdd1f",
+      "gitBlob": "e180542c9ee6da79436aab8de8e5338135e92c19"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-version.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-version.stdout.bin",
+      "bytes": 1012,
+      "sha256": "72ed632ba67bedf12e3311e92fbf7054a961b5f2df27dd677dbdcd849caaa7f5",
+      "gitBlob": "5fe7b049413d7dc004f5f3c0105b8c429b397dd6"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/raw/dpkg-postgresql.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/raw/dpkg-postgresql.stdout.bin",
+      "bytes": 179,
+      "sha256": "0de33abd4331841e3bf5a61564fde54491ed832517111d629216c916283de251",
+      "gitBlob": "c227c9a2285698d2a52636d0207d779b2a850cbb"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/resource-metadata.json",
+      "bytes": 1129,
+      "sha256": "f41a1dae83f8f3bff71b2940ff94f00499bd0324f732c2d06593ca25d7cbb687",
+      "gitBlob": "afe0ce2816b0e93a6adea64a31aa68d2b0d9b541"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/setup-packet.json",
+      "bytes": 9446,
+      "sha256": "745539e8d862dbcd62d8e8d10efbb8e0c48bd14166741515262f748017df8eb2",
+      "gitBlob": "013008da65719704c77a4c4dc8ff8479589dcddb"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/source-requirements.json",
+      "bytes": 2120,
+      "sha256": "367894bb34a8f151dcb29d569ba8b15688907129afb36d7c12ccdf76aed57f4d",
+      "gitBlob": "d148ceee707a7fcc616c6770ed9ef59b82433149"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/verification-receipt.json",
+      "bytes": 1802,
+      "sha256": "25bd65fa74d146dc1a3b5bebf82c36ed33be6b55062ea22c4e8a5cfe800705f1",
+      "gitBlob": "60dd4d17de2eead9fb2f0d7dd5578ac3f33228d2"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/verify-packet.py",
+      "bytes": 4831,
+      "sha256": "01aa682ccc7b11bc72c549c3975eddba129d72678f21b2e3d212f7e0fc19f5b8",
+      "gitBlob": "722c8e6811573df83e914e1130037246bb699638"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/verify.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/verify.stdout.json",
+      "bytes": 7827,
+      "sha256": "a172c4bb91de0ae8bbe42e86bcc75d1052becea62e3ebd4f2976ff7c7543a397",
+      "gitBlob": "e75a81ba32e4946fe725177ef6fbff5c161923bd"
+    }
+  ],
+  "notNativeQualification": true
+}
