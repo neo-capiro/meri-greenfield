@@ -34,7 +34,7 @@ export function createClientKnowledgeSearchValidators({validateShape, schema}) {
       // Preserve raw client string truthiness, exact kind and non-floored numeric LIMIT.
       input = {query, clientId: raw.clientId || null,
         kind: kinds.includes(raw.kind) ? raw.kind : null,
-        limit: Math.min(20, Math.max(1, raw.limit ?? 8))};
+        limit: Math.min(20, Math.max(1, typeof raw.limit === 'number' ? raw.limit : 8))};
     } else {
       const parsed = typeof raw.depth === 'number' ? raw.depth : Number.parseInt(raw.depth ?? '', 10);
       input = {seed: optional(raw.seed, 120), clientId: optional(raw.clientId, 80),
@@ -79,6 +79,7 @@ export function createClientKnowledgeSearchValidators({validateShape, schema}) {
         const ids = new Set();
         for (const node of page.nodes) {
           if (!node.id.startsWith(`${node.type}:`) || ids.has(node.id)) fail('Knowledge graph node identity mismatch');
+          if (input.clientId && node.type === 'client' && node.id !== `client:${input.clientId}`) fail('Scoped graph contains another client node');
           ids.add(node.id);
         }
         const suffix = `${input.seed ? ` within ${input.depth} hop(s) of ${input.seed}` : ''}. Edges tagged [fact]=from firm data, [mention]=from analyst notes.`;
