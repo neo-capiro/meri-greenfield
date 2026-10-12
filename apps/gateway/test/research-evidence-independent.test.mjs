@@ -68,3 +68,12 @@ test('independent eager-body response handoff abort still cancels acquired body'
  const fetchImpl=async()=>{fetches++;return new Response(new ReadableStream({pull(){entered.resolve();return pending.promise;},cancel(){cancelled++;}}),{headers:{'content-type':'application/json'}});};
  const execution=f.call(f.create({fetchImpl}),f.raw,controller.signal);await entered.promise;controller.abort();await assert.rejects(execution,/CANCELLED/);pending.resolve();await new Promise(r=>setImmediate(r));assert.equal(fetches,1);assert.equal(f.calls.includes('settle'),false);assert.equal(cancelled,1);
 });
+test('independent memory adapter eager-response handoff retains cancellation ownership',async()=>{
+ const {createMemoryProposalHttpAdapter}=await import('../sources/memory-proposals/http-adapter.mjs');
+ const f=fixture(),controller=new AbortController(),entered=Promise.withResolvers(),pending=Promise.withResolvers();let cancelled=0,fetches=0;
+ const adapter=createMemoryProposalHttpAdapter({origin:'https://memory.invalid',now:()=>NOW,maxResponseBytes:65536,maxRequestMs:1000,
+ getCredentials:async()=>({binding:clone(f.binding),bearerToken:'SYNTHETIC',serviceSecret:'SYNTHETIC',expiresAtMs:NOW+5000}),
+ fetchImpl:async()=>{fetches++;return new Response(new ReadableStream({pull(){entered.resolve();return pending.promise;},cancel(){cancelled++;}}),{headers:{'content-type':'application/json'}});}});
+ const execution=adapter.read({input:{clientId:null,cursor:null,limit:5},authority:{binding:f.binding,subject:f.subject,claims:f.claims,policyRevision:f.claims.policyRevision,deadlineMs:NOW+1000},signal:controller.signal});
+ await entered.promise;controller.abort();await assert.rejects(execution,/CANCELLED/);pending.resolve();await new Promise(r=>setImmediate(r));assert.equal(fetches,1);assert.equal(cancelled,1);
+});
