@@ -1,0 +1,192 @@
+{
+  "helperIdentity": {
+    "member": "NativeMetadata.cs",
+    "bytes": 6163,
+    "sha256": "f551d7287611b982a93eebf02e93719bfdce355609bd7ca4f9cd546ae9bf0a4c"
+  },
+  "sourceOnly": true,
+  "same": {
+    "lines": [
+      68,
+      69
+    ],
+    "fieldCount": 13,
+    "operator": "Conjunction of exact field equalities",
+    "includesAccessTime": true,
+    "omits": [
+      "Path",
+      "ReparsePoint",
+      "SymbolicLink",
+      "IdentityKind"
+    ],
+    "derivedFlags": "ReparsePoint derives from Attributes and SymbolicLink from ReparseTag, which Same compares",
+    "nullArgumentsHandled": false
+  },
+  "query": {
+    "lines": [
+      45,
+      46,
+      47,
+      48,
+      49,
+      50
+    ],
+    "api": "GetFileInformationByHandleEx",
+    "buffer": "AllocHGlobal followed by native call and copy; FreeHGlobal in finally",
+    "errors": "Failed native query raises Win32Exception; no deadline/cancellation in this function"
+  },
+  "open": {
+    "lines": [
+      52,
+      54,
+      55,
+      56,
+      57
+    ],
+    "api": "CreateFileW",
+    "fixedFlags": [
+      "0x00200000 OPEN_REPARSE_POINT",
+      "0x02000000 BACKUP_SEMANTICS"
+    ],
+    "readModeAdditionalFlag": "0x40000000 OVERLAPPED",
+    "creationDisposition": "3 OPEN_EXISTING",
+    "metadataMode": {
+      "desiredAccess": "0x80 READ_ATTRIBUTES",
+      "shareMask": 7,
+      "overlapped": false
+    },
+    "hashMode": {
+      "desiredAccess": "0x80000000 GENERIC_READ",
+      "shareMask": 1,
+      "overlapped": true
+    },
+    "invalidHandle": "Capture Win32 error, dispose invalid handle, throw Win32Exception",
+    "limit": "No cancellation/deadline inside synchronous open"
+  },
+  "fromHandle": {
+    "lines": [
+      59,
+      60,
+      61,
+      62,
+      63,
+      64,
+      65
+    ],
+    "queries": [
+      {
+        "class": 0,
+        "bytes": 40
+      },
+      {
+        "class": 1,
+        "bytes": 24
+      },
+      {
+        "class": 9,
+        "bytes": 8
+      },
+      {
+        "class": 18,
+        "bytes": 24
+      }
+    ],
+    "decode": "Fixed offsets using BitConverter; volume identifier and 128-bit file identifier recorded",
+    "consistencyCheck": "Basic attributes must equal attribute-tag attributes",
+    "pathField": "Supplied label, not a resolved final path measurement",
+    "nativeAbiQualified": false
+  },
+  "named": {
+    "line": 67,
+    "sequence": [
+      "Open metadata-only handle",
+      "FromHandle",
+      "Dispose via using"
+    ],
+    "plainPathAuthority": "Helper returns metadata; collector separately applies path/drive/ancestor and plain-kind checks",
+    "deadline": "No local timer or token; caller stopwatch checks do not interrupt this call"
+  },
+  "hash": {
+    "lines": [
+      71,
+      72,
+      73,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79,
+      80,
+      81,
+      82,
+      83,
+      84,
+      85,
+      86,
+      88,
+      89,
+      90
+    ],
+    "timerStartsBeforeOpen": true,
+    "initialRefusals": [
+      "Directory",
+      "ReparsePoint",
+      "DeletePending",
+      "Size <= 0",
+      "Size > maxBytes"
+    ],
+    "noSingleLinkRefusal": "LinkCount participates in Same but this helper does not require exactly one link; canonical plain() still does",
+    "usingOrder": [
+      "SafeFileHandle",
+      "FileStream",
+      "IncrementalHash",
+      "CancellationTokenSource"
+    ],
+    "bufferBytes": 65536,
+    "read": "ReadAsync with cancellation token, synchronously waited through GetAwaiter/GetResult",
+    "preReadTimeout": "Stopwatch elapsed >= timeoutMilliseconds refuses before each read",
+    "readCount": "Zero breaks; positive bytes increment total; total above maxBytes or initial Size refuses before digest append",
+    "afterEof": [
+      "Named(path) while original handle remains open",
+      "FromHandle(original handle)",
+      "Final stopwatch timeout refusal"
+    ],
+    "openedStable": "Same(opened-before,opened-after) and BytesRead equals initial Size",
+    "namedMatchesOpened": "Same(opened-before,named-during)",
+    "readShareOnlyField": "Constant default true documenting chosen open flags; not independent enforcement evidence",
+    "normalUnwindOrder": [
+      "CancellationTokenSource.Dispose",
+      "IncrementalHash.Dispose",
+      "FileStream.Dispose",
+      "SafeFileHandle.Dispose"
+    ],
+    "exceptions": "Propagate to collector after structured using unwinding; there is no catch/retry in Hash",
+    "deadlineLimitations": [
+      "Cancellation source is created after open/metadata/stream setup with the full timeout, not the stopwatch remainder",
+      "Synchronous open/query and awaited read may block past the requested time",
+      "No post-read check before positive-byte digest work or EOF follow-up metadata",
+      "Final timeout check precedes digest result construction and all disposal; no post-disposal acceptance check",
+      "Per-pass collector stopwatch is independent of Hash timer; no complete invocation hard bound"
+    ],
+    "physicalExitOrHardBoundEstablished": false
+  },
+  "observedConsequence": {
+    "pairedEntries": 35,
+    "sameFailedPairs": 12,
+    "uniqueChangedPaths": 3,
+    "failedField": "LastAccessTime",
+    "allRolesFailAllFields": true,
+    "allExecutableNamedOpenedPairsPass": true,
+    "boundedHashObservationAccepted": false,
+    "osCauseOfAccessTimeChangeEstablished": false
+  },
+  "ownership": {
+    "privateHelper": "Existing private evidence implementation; unchanged and not copied to product",
+    "canonicalFix": "Public inventory hash_file cooperative deadline propagation; not a replacement equality rule",
+    "alreadyRepaired": "Supervisor lifecycle stream caps/EOF/error/settlement and reserved writer deadline/readback composition remain unchanged"
+  },
+  "nativeAdmission": false,
+  "accessTimeWaiver": false,
+  "privateBodiesPublished": false
+}

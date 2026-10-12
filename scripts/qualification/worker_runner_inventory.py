@@ -55,25 +55,38 @@ def plain(path, fs, directory=False):
     return info
 
 
-def ancestors(path, fs):
+def ancestors(path, fs, *, clock=None, end=None):
+    """Check each ancestor, optionally refusing expired returned observations."""
+    if (clock is None) != (end is None):
+        raise ValueError('runner ancestor deadline pair required')
     path = Path(path)
     if not path.is_absolute() or '..' in path.parts or str(path).startswith('\\\\'):
         raise ValueError('absolute local runner path required')
     for parent in reversed((path, *path.parents)):
+        if clock is not None:
+            check_deadline(end, clock)
         plain(parent, fs, directory=True)
+        if clock is not None:
+            check_deadline(end, clock)
 
 
 def hash_file(path, *, fs, clock, end, cap, allow_empty=False):
     """Stream bytes without retaining contents; bind the opened and named file."""
     check_deadline(end, clock)
     path = Path(path)
-    ancestors(path.parent, fs)
+    ancestors(path.parent, fs, clock=clock, end=end)
+    check_deadline(end, clock)
     before = plain(path, fs)
+    check_deadline(end, clock)
     if not (0 if allow_empty else 1) <= before.st_size <= cap:
         raise ValueError('runner file byte bound')
+    check_deadline(end, clock)
     fd = fs.open_read(path)
     try:
+        # A late returned descriptor is still owned and must reach finally.
+        check_deadline(end, clock)
         opened = fs.fstat(fd)
+        check_deadline(end, clock)
         # Windows lstat/fstat permission/attribute representations may differ.
         # Keep each API's metadata independently stable and bind the same file.
         if (opened.st_dev, opened.st_ino, opened.st_size, opened.st_nlink) != (
@@ -84,19 +97,29 @@ def hash_file(path, *, fs, clock, end, cap, allow_empty=False):
         while True:
             check_deadline(end, clock)
             chunk = fs.read(fd, 65536)
+            check_deadline(end, clock)
             if not chunk:
                 break
             count += len(chunk)
             if count > cap or count > before.st_size:
                 raise ValueError('runner growing file refused')
             digest.update(chunk)
-        if identity(fs.fstat(fd)) != identity(opened):
+        check_deadline(end, clock)
+        opened_after = fs.fstat(fd)
+        check_deadline(end, clock)
+        if identity(opened_after) != identity(opened):
             raise ValueError('runner file changed while reading')
     finally:
+        # Cleanup may finish late; it never authorizes another observation.
         fs.close(fd)
-    if identity(plain(path, fs)) != identity(before) or count != before.st_size:
+    check_deadline(end, clock)
+    after = plain(path, fs)
+    check_deadline(end, clock)
+    if identity(after) != identity(before) or count != before.st_size:
         raise ValueError('runner named file changed')
-    return {'path': str(path), 'bytes': count, 'sha256': digest.hexdigest()}
+    result = {'path': str(path), 'bytes': count, 'sha256': digest.hexdigest()}
+    check_deadline(end, clock)
+    return result
 
 
 def selected_paths(executable, prefix, repository, helper_names, *, fs, clock, end, limits):
