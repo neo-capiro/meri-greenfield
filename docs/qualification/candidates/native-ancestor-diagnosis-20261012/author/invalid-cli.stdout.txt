@@ -1,0 +1,1 @@
+{"buildAuthorized": false, "childProcesses": 0, "collectorExecuted": false, "fileBodiesRead": 0, "filesystemWrites": 0, "observation": null, "reason": "invalid_arguments", "runnerQualified": false, "runtimeAccepted": false, "status": "DIAGNOSTIC_REFUSED"}

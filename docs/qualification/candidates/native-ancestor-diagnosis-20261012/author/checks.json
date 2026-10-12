@@ -1,0 +1,58 @@
+{
+  "checks": [
+    {
+      "label": "author synthetic controls",
+      "exitCode": 0,
+      "passed": 11,
+      "failed": 0
+    },
+    {
+      "label": "actual isolated Linux refusal",
+      "exitCode": 2,
+      "expected": true
+    },
+    {
+      "label": "help",
+      "exitCode": 0
+    },
+    {
+      "label": "invalid CLI suppresses input",
+      "exitCode": 2,
+      "expected": true
+    }
+  ],
+  "rawEvidence": {
+    "help.stderr.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "help.stdout.txt": {
+      "bytes": 573,
+      "sha256": "00bafc96e13d9267505ae945a20b2c45aa4553850274986b77c979f28efb33a5"
+    },
+    "initial-tests.stderr.txt": {
+      "bytes": 110,
+      "sha256": "770a5a7cfd5ed30408387c611037fc3fb16dc0c5873dba409dd6aae6c67d7bb1"
+    },
+    "initial-tests.stdout.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "invalid-cli.stderr.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "invalid-cli.stdout.txt": {
+      "bytes": 256,
+      "sha256": "6e31e037987ba470571d58f9676734c6d40cb46c9c3aa9687eb34e843ddc6624"
+    },
+    "wrong-host.stderr.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "wrong-host.stdout.txt": {
+      "bytes": 277,
+      "sha256": "ab736e95fd7ca4db25e5662a24f58a5cbe4e6ed23d62d9151d74c06b9722eb25"
+    }
+  }
+}
