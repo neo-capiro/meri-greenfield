@@ -1,0 +1,26 @@
+✔ fixed public command factory uses canonical current authority, full binding and scopes (6.008701ms)
+✔ public command factory refuses an activation or capability override (0.391649ms)
+✔ existing read default remains read-only and command factory remains command-only (1.03141ms)
+✔ command authority refuses revoked (0.329235ms)
+✔ command authority refuses expired (0.391238ms)
+✔ command authority refuses future issue (0.318309ms)
+✔ command authority refuses nonrepresentable issue (0.252619ms)
+✔ command authority refuses stale task fence (0.40602ms)
+✔ command authority refuses wrong policy (0.474403ms)
+✔ command authority refuses wrong actor (0.776967ms)
+✔ command authority refuses wrong scopes (0.427041ms)
+✔ command authority refuses missing grant (0.404528ms)
+✔ command authority refuses source disabled (0.587633ms)
+✔ command authority refuses stale decision (0.378949ms)
+✔ short authority deadline bounds parked currentRun and ignores late completion (21.552795ms)
+✔ short authority deadline bounds parked authorizeBusiness and ignores late completion (20.438449ms)
+✔ short authority deadline bounds parked authorizeSources and ignores late completion (21.133775ms)
+✔ late verified capability after explicit cancellation cannot begin current-run lookup (0.59842ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2477.823291

@@ -1,0 +1,44 @@
+diff --git a/apps/gateway/authorization/current-tool-authority.mjs b/apps/gateway/authorization/current-tool-authority.mjs
+index 5eed1731..d5a03019 100644
+--- a/apps/gateway/authorization/current-tool-authority.mjs
++++ b/apps/gateway/authorization/current-tool-authority.mjs
+@@ -10,9 +10,10 @@ const freeze = value => {
+   return value;
+ };
+ 
+-export function createCurrentToolAuthority({ ports, now, maxFactBytes }) {
++export function createCurrentToolAuthority({ ports, now, maxFactBytes, capabilityAction = 'tool.read' }) {
+   if (!ports || PORTS.some(name => typeof ports[name] !== 'function') ||
+-      typeof now !== 'function' || !Number.isSafeInteger(maxFactBytes) || maxFactBytes < 1) deny('GATEWAY_CONFIGURATION');
++      typeof now !== 'function' || !Number.isSafeInteger(maxFactBytes) || maxFactBytes < 1 ||
++      !['tool.read', 'command.execute'].includes(capabilityAction)) deny('GATEWAY_CONFIGURATION');
+   const active = (signal, deadlineMs) => {
+     if (signal?.aborted || now() >= deadlineMs) deny('ACCESS_DENIED');
+   };
+@@ -27,7 +28,7 @@ export function createCurrentToolAuthority({ ports, now, maxFactBytes }) {
+       const claims = parseRawJson(await ports.verifyCapability(credential, { signal }), maxFactBytes, 'ACCESS_DENIED');
+       validateShape('CapabilityClaims', claims);
+       const issuedAt = Date.parse(claims.issuedAt); const expiresAt = Date.parse(claims.expiresAt);
+-      if (claims.audience !== 'meri-gateway' || !claims.actions.includes('tool.read') ||
++      if (claims.audience !== 'meri-gateway' || !claims.actions.includes(capabilityAction) ||
+           !Number.isSafeInteger(issuedAt) || !Number.isSafeInteger(expiresAt) || issuedAt > now() || expiresAt <= now() ||
+           claims.scopes.some(scope => scope.tenantId !== claims.binding.tenantId || scope.policyRevision !== claims.policyRevision)) deny('ACCESS_DENIED');
+       active(signal, expiresAt);
+diff --git a/apps/gateway/index.mjs b/apps/gateway/index.mjs
+index 17bc6bf5..5308f12d 100644
+--- a/apps/gateway/index.mjs
++++ b/apps/gateway/index.mjs
+@@ -6,6 +6,13 @@ import { createCurrentToolAuthority } from './authorization/current-tool-authori
+ import { createToolDispatch } from './dispatch/tool-dispatch.mjs';
+ import { deny } from './dispatch/operation-result.mjs';
+ 
++/** Shared fresh authority only; this does not register or execute a command. */
++export function createCommandAuthority(options) {
++  if (!options || Object.keys(options).some(key => !['authorityPorts', 'now', 'maxFactBytes'].includes(key))) deny('GATEWAY_CONFIGURATION');
++  const { authorityPorts, now, maxFactBytes } = options;
++  return createCurrentToolAuthority({ ports: authorityPorts, now, maxFactBytes, capabilityAction: 'command.execute' });
++}
++
+ export function createSourceDisabledGateway(options) {
+   if (!options || Object.keys(options).some(key => !['authorityPorts', 'budget', 'limits', 'now', 'newId'].includes(key))) deny('GATEWAY_CONFIGURATION');
+   const { authorityPorts, budget, limits, now, newId } = options;
