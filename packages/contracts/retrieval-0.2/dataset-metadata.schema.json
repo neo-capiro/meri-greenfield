@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:dataset-metadata:0.2.0",
+  "$defs": {
+    "DatasetMetadataListInput": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "DatasetMetadataField": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "string",
+            "number",
+            "boolean",
+            "date",
+            "timestamp",
+            "string[]"
+          ]
+        },
+        "description": {
+          "type": "string"
+        },
+        "filterable": {
+          "type": "boolean"
+        },
+        "groupable": {
+          "type": "boolean"
+        },
+        "aggregatable": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "type",
+        "description",
+        "filterable",
+        "groupable",
+        "aggregatable"
+      ],
+      "additionalProperties": false
+    },
+    "DatasetMetadataSummary": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "supportsAsOf": {
+          "type": "boolean"
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DatasetMetadataField"
+          }
+        }
+      },
+      "required": [
+        "key",
+        "description",
+        "supportsAsOf",
+        "fields"
+      ],
+      "additionalProperties": false
+    },
+    "DatasetMetadataListOutput": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "list_global_datasets"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-"
+        },
+        "datasets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DatasetMetadataSummary"
+          }
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "datasets"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
