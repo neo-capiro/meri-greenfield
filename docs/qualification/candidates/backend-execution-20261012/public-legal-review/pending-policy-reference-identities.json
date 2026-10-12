@@ -1,0 +1,113 @@
+{
+  "scope": "Policy/context source and interface inspection only; DDL members pinned pending full column audit. No acceptance of pending four operations.",
+  "references": [
+    {
+      "path": "apps/intel-api/src/tracker/reports/report.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 15398,
+          "sha256": "bde15d5d3bc45437ac915f64bcea3b9242e74a644d25a157dd301ae9f24c83c2",
+          "blob": "9ca4b418dc3085b8f2397f1d192ba4bcd469db13"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 15398,
+          "sha256": "bde15d5d3bc45437ac915f64bcea3b9242e74a644d25a157dd301ae9f24c83c2",
+          "blob": "9ca4b418dc3085b8f2397f1d192ba4bcd469db13"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/intel-api/src/tracker/folders/folder-tracker.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 31547,
+          "sha256": "94c30c05db367ce4dfe7b526d1ed6d8693c157321fac70a3cf83c6a858ecedac",
+          "blob": "54d6b4d39312ee00a39a07d586225a67663562aa"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 31547,
+          "sha256": "94c30c05db367ce4dfe7b526d1ed6d8693c157321fac70a3cf83c6a858ecedac",
+          "blob": "54d6b4d39312ee00a39a07d586225a67663562aa"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/intel-api/src/tracker/keywords/keyword-rule.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 18633,
+          "sha256": "fc56b23146338711645744cb4787a1d9b0d8c6ce189082c3cc289f4833cf68f8",
+          "blob": "306eff20a66e20e091839fbcfbbe1de68a00e808"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 18633,
+          "sha256": "fc56b23146338711645744cb4787a1d9b0d8c6ce189082c3cc289f4833cf68f8",
+          "blob": "306eff20a66e20e091839fbcfbbe1de68a00e808"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "packages/shared/src/legislative-research.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 13892,
+          "sha256": "1ca1772ecb3ac924660f41eb181bf252c4d7989747287af7e238402491295826",
+          "blob": "ce3c93ae310885884a20f0a169062a9378dcdfb0"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 13892,
+          "sha256": "1ca1772ecb3ac924660f41eb181bf252c4d7989747287af7e238402491295826",
+          "blob": "ce3c93ae310885884a20f0a169062a9378dcdfb0"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/prisma/migrations/20280913030000_legiwatch_research_evidence/migration.sql",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 6134,
+          "sha256": "8765717e8721622753a2edd0271104c7187e4f3d86ade2eb42ead30974124754",
+          "blob": "c5f88b11c13178a14c31ec4da16e7e7d39da2a5b"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 6134,
+          "sha256": "8765717e8721622753a2edd0271104c7187e4f3d86ade2eb42ead30974124754",
+          "blob": "c5f88b11c13178a14c31ec4da16e7e7d39da2a5b"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/intel-api/prisma/migrations/20260914030000_legiwatch_news_editorial/migration.sql",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 5034,
+          "sha256": "d5022a966dda0a942d3f71bbb5f850a8876e3f8c9e2b2a0269244bf9c898d30d",
+          "blob": "80fb35d806012b6b92d9853a33e1532ac23e20ed"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 5034,
+          "sha256": "d5022a966dda0a942d3f71bbb5f850a8876e3f8c9e2b2a0269244bf9c898d30d",
+          "blob": "80fb35d806012b6b92d9853a33e1532ac23e20ed"
+        }
+      ],
+      "unchanged": true
+    }
+  ]
+}
