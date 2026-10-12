@@ -1,0 +1,39 @@
+
+> @meri/qualification-temporal@0.0.0 test:recovery
+> node --test recovery.test.mjs
+
+✔ new actual workflow preserves source-only result and fixes all activities to one attempt (46.322729ms)
+✔ failed admission invokes explicit cleanup in a noncancellable scope and retains original error (7.609732ms)
+✔ unknown replacement does not dispatch guessed cleanup or retry (6.044354ms)
+✔ cleanup refusal remains visible instead of reporting a clean cancelled result (5.216714ms)
+✔ construction has no trusted effects and requires a retirement provider (5.18071ms)
+✔ effectful configuration and role-bearing workflow argument are refused before capabilities (0.151577ms)
+✔ activity module imports supported JS APIs and no Worker/native driver (0.615343ms)
+✖ compiled workflow reaches actual activity factory, canonical control/registry and verified checkpoint protocol (3.485737ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 7
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 647.372277
+
+✖ failing tests:
+
+test at recovery.test.mjs:80:1
+✖ compiled workflow reaches actual activity factory, canonical control/registry and verified checkpoint protocol (3.485737ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/meri-temporal-recovery-20261012/apps/control/qualification-temporal/apps/control/qualification-sdk-fixture/service/test/fake-s3.mjs' imported from /workspace/meri-temporal-recovery-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/control-harness.mjs
+      at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+      at moduleResolve (node:internal/modules/esm/resolve:865:10)
+      at defaultResolve (node:internal/modules/esm/resolve:992:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+      at #resolve (node:internal/modules/esm/loader:683:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+      at node:internal/modules/esm/loader:632:32
+      at TracingChannel.tracePromise (node:diagnostics_channel:362:14) {
+    code: 'ERR_MODULE_NOT_FOUND',
+    url: 'file:///workspace/meri-temporal-recovery-20261012/apps/control/qualification-temporal/apps/control/qualification-sdk-fixture/service/test/fake-s3.mjs'
+  }
