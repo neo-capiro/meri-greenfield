@@ -1,0 +1,32 @@
+{
+  "sourceCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "observedCommit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+  "references": [
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "bytes": 415704,
+      "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194",
+      "observedBlob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/prisma/schema.prisma",
+      "blob": "cdf1923217edae6e7624993796a5671922b61ac0",
+      "bytes": 968034,
+      "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0",
+      "observedBlob": "cdf1923217edae6e7624993796a5671922b61ac0",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-cbo-tool.spec.ts",
+      "blob": "30a58daf21f0cc6fb90e73cd7237d7732c21d8ef",
+      "bytes": 1746,
+      "sha256": "8e939595d3b1e7615d2afd4c405c4eb31966278b5af4e613ac84525a13410cc2",
+      "observedBlob": "30a58daf21f0cc6fb90e73cd7237d7732c21d8ef",
+      "unchanged": true
+    }
+  ],
+  "privateBodiesPublished": false,
+  "sourceExecuted": false
+}
