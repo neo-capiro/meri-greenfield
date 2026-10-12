@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "/usr/bin/apt-cache",
+    "policy",
+    "postgresql-17",
+    "postgresql-client-17",
+    "postgresql-common",
+    "python3-psycopg",
+    "python3-psycopg-binary"
+  ],
+  "operation": "Read cached package metadata only; no refresh/download/install",
+  "exitCode": 0,
+  "elapsedSeconds": 0.02574426900173421,
+  "stdout": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stderr": {
+    "bytes": 92,
+    "sha256": "1148b3dba8ac2fde54dee12293653b1672d9a3922e081bdf08e11601a687db61"
+  }
+}

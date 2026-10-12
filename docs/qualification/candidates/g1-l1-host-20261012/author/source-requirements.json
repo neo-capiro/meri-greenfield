@@ -1,0 +1,56 @@
+{
+  "baseCommit": "263d0d174f9924a6030bb1c20100ff1115ffcda0",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 6582,
+      "sha256": "a0650949b74e5aee709bd8b3c9d480f95f5b898778ac8f7b3927eb54b141437a"
+    },
+    {
+      "path": "docs/IMPLEMENTATION-STANDARDS.md",
+      "bytes": 11082,
+      "sha256": "d4f10f964ee207187abacd967649a1cfc9bdd468072dc01f859268f08b719959"
+    },
+    {
+      "path": "docs/plans/MERI-DEPLOYMENT.md",
+      "bytes": 86848,
+      "sha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388"
+    },
+    {
+      "path": "apps/proxy/qualification/state/dependencies.json",
+      "bytes": 2783,
+      "sha256": "50cb8b2050c9708031c127ce05a79716d1ec692260162ece5292437cdd11df80"
+    },
+    {
+      "path": "apps/proxy/qualification/state/postgres_store.py",
+      "bytes": 4729,
+      "sha256": "2914bc050535bf88cf1f297252f8b8771d3df5b4ceb303aa9f35ec1409389b9b"
+    },
+    {
+      "path": "apps/proxy/qualification/test/test_postgres_state.py",
+      "bytes": 20024,
+      "sha256": "53b81e46edc3562a365836281ad8885665b039f95a7b130603b3b972ca688ad7"
+    },
+    {
+      "path": "apps/control/qualification-sdk-fixture/state/package.json",
+      "bytes": 378,
+      "sha256": "e6ff93a2cfdf3ca49b19b0e40b72bf065a6b885951370b293cdcb861401629e6"
+    },
+    {
+      "path": "apps/control/qualification-sdk-fixture/state/package-lock.json",
+      "bytes": 5739,
+      "sha256": "c5ab764dcd9dcd8dee88d2cab3e7412fb9752e3a869c0a1693839c0567d3973a"
+    },
+    {
+      "path": "apps/control/qualification-sdk-fixture/state/store.mjs",
+      "bytes": 5512,
+      "sha256": "6285aa361434f63060801446ebbea16868fbe59344a56c24e27c57403d2796a1"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-execution-options-20261012/author/execution-plan.json",
+      "bytes": 36920,
+      "sha256": "caefeacf2310a8fd11dbd3ac5976a824bb0ffe33e0183a0a01ddc776e14c1f1d"
+    }
+  ],
+  "interpretation": "psycopg3.3.3 is an exact source guard; historical dependency file is Windows-only; Node24+pg8.23.1 and original L1 remain unchanged. No Linux artifact or execution authority established."
+}

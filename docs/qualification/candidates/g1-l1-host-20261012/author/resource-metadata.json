@@ -1,0 +1,37 @@
+{
+  "observationOnly": true,
+  "workspace": {
+    "blockSize": 4096,
+    "totalBytes": 33770192896,
+    "availableToCallerBytes": 20460302336,
+    "freeInodes": 1501963
+  },
+  "currentCgroupMetadata": [
+    {
+      "path": "/sys/fs/cgroup/memory.max",
+      "text": "17179869184",
+      "bytes": 12,
+      "sha256": "c42316e609a7bc837c19fd213e9c8bb81b92613a194f5dab1f8cbc0efabb8f9b"
+    },
+    {
+      "path": "/sys/fs/cgroup/memory.high",
+      "text": "max",
+      "bytes": 4,
+      "sha256": "dbe7218fd3953d71eac340668b850fe4b57278326a462a0cf0ad506efbf8b02e"
+    },
+    {
+      "path": "/sys/fs/cgroup/cpu.max",
+      "text": "400000 100000",
+      "bytes": 14,
+      "sha256": "bd8ea316d63ccab47af9329b4b4b427cb510d04fe500195f5aa332d211d9fd3f"
+    },
+    {
+      "path": "/sys/fs/cgroup/pids.max",
+      "text": "max",
+      "bytes": 4,
+      "sha256": "dbe7218fd3953d71eac340668b850fe4b57278326a462a0cf0ad506efbf8b02e"
+    }
+  ],
+  "reservationOrCapacityApproval": false,
+  "limits": "Point-in-time metadata for caller/workspace; not an exclusive resource reservation, supported isolation or future free-space guarantee."
+}

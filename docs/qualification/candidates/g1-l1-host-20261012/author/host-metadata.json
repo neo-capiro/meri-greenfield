@@ -1,0 +1,223 @@
+{
+  "platform": "Linux",
+  "machine": "x86_64",
+  "kernel": "6.18.44",
+  "uid": 1000,
+  "gid": 1000,
+  "pythonInterpreterForMetadata": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+  "binaries": [
+    {
+      "name": "postgres",
+      "path": null,
+      "targetRuntimeProbeExecuted": false,
+      "readOnlyMetadataCommandExecuted": false
+    },
+    {
+      "name": "initdb",
+      "path": null,
+      "targetRuntimeProbeExecuted": false,
+      "readOnlyMetadataCommandExecuted": false
+    },
+    {
+      "name": "pg_ctl",
+      "path": null,
+      "targetRuntimeProbeExecuted": false,
+      "readOnlyMetadataCommandExecuted": false
+    },
+    {
+      "name": "pg_controldata",
+      "path": null,
+      "targetRuntimeProbeExecuted": false,
+      "readOnlyMetadataCommandExecuted": false
+    },
+    {
+      "name": "psql",
+      "path": null,
+      "targetRuntimeProbeExecuted": false,
+      "readOnlyMetadataCommandExecuted": false
+    },
+    {
+      "name": "pg_config",
+      "path": null,
+      "targetRuntimeProbeExecuted": false,
+      "readOnlyMetadataCommandExecuted": false
+    },
+    {
+      "name": "docker",
+      "path": "/usr/local/bin/docker",
+      "mode": "-rwxr-xr-x",
+      "size": 43556144,
+      "isSymlink": false,
+      "targetRuntimeProbeExecuted": false,
+      "readOnlyMetadataCommandExecuted": true
+    },
+    {
+      "name": "bwrap",
+      "path": "/usr/bin/bwrap",
+      "mode": "-rwxr-xr-x",
+      "size": 80248,
+      "isSymlink": false,
+      "sha256": "573236e5328ac2ebb08f59ae3a9805b4f8d12bdef14be8af4450d5463294985f",
+      "targetRuntimeProbeExecuted": false,
+      "readOnlyMetadataCommandExecuted": false
+    },
+    {
+      "name": "unshare",
+      "path": "/usr/bin/unshare",
+      "mode": "-rwxr-xr-x",
+      "size": 92792,
+      "isSymlink": false,
+      "sha256": "e7d3961bd874d5a4fe531efe6feb61b358b8000bd8c5fe91c5f1bdd9af81a002",
+      "targetRuntimeProbeExecuted": false,
+      "readOnlyMetadataCommandExecuted": false
+    },
+    {
+      "name": "python",
+      "path": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+      "mode": "lrwxrwxrwx",
+      "size": 10,
+      "isSymlink": true,
+      "targetRuntimeProbeExecuted": false,
+      "readOnlyMetadataCommandExecuted": false
+    },
+    {
+      "name": "python3",
+      "path": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+      "mode": "lrwxrwxrwx",
+      "size": 10,
+      "isSymlink": true,
+      "targetRuntimeProbeExecuted": false,
+      "readOnlyMetadataCommandExecuted": false
+    },
+    {
+      "name": "node",
+      "path": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "mode": "-rwxr-xr-x",
+      "size": 125989464,
+      "isSymlink": false,
+      "targetRuntimeProbeExecuted": false,
+      "readOnlyMetadataCommandExecuted": false
+    }
+  ],
+  "knownPaths": [
+    {
+      "path": "/usr/lib/postgresql",
+      "exists": false
+    },
+    {
+      "path": "/usr/local/pgsql",
+      "exists": false
+    },
+    {
+      "path": "/opt/postgresql",
+      "exists": false
+    },
+    {
+      "path": "/usr/bin/postgres",
+      "exists": false
+    },
+    {
+      "path": "/usr/bin/initdb",
+      "exists": false
+    },
+    {
+      "path": "/usr/bin/pg_ctl",
+      "exists": false
+    },
+    {
+      "path": "/usr/bin/psql",
+      "exists": false
+    },
+    {
+      "path": "/var/run/docker.sock",
+      "exists": true,
+      "mode": "srw-rw----",
+      "uid": 65534,
+      "gid": 1000,
+      "bytes": 0,
+      "isSymlink": false
+    },
+    {
+      "path": "/proc/self/ns/user",
+      "exists": true,
+      "mode": "lrwxrwxrwx",
+      "uid": 1000,
+      "gid": 1000,
+      "bytes": 0,
+      "isSymlink": true,
+      "linkTarget": "user:[4026532659]"
+    },
+    {
+      "path": "/proc/self/ns/mnt",
+      "exists": true,
+      "mode": "lrwxrwxrwx",
+      "uid": 1000,
+      "gid": 1000,
+      "bytes": 0,
+      "isSymlink": true,
+      "linkTarget": "mnt:[4026532656]"
+    },
+    {
+      "path": "/proc/self/ns/net",
+      "exists": true,
+      "mode": "lrwxrwxrwx",
+      "uid": 1000,
+      "gid": 1000,
+      "bytes": 0,
+      "isSymlink": true,
+      "linkTarget": "net:[4026531833]"
+    },
+    {
+      "path": "/proc/self/ns/pid",
+      "exists": true,
+      "mode": "lrwxrwxrwx",
+      "uid": 1000,
+      "gid": 1000,
+      "bytes": 0,
+      "isSymlink": true,
+      "linkTarget": "pid:[4026532200]"
+    }
+  ],
+  "processStatus": {
+    "Uid": "1000\t1000\t1000\t1000",
+    "Gid": "1000\t1000\t1000\t1000",
+    "NSpid": "82840",
+    "CapInh": "0000000000000000",
+    "CapPrm": "0000000000000000",
+    "CapEff": "0000000000000000",
+    "CapBnd": "0000000000000000",
+    "CapAmb": "0000000000000000",
+    "NoNewPrivs": "1",
+    "Seccomp": "2",
+    "Seccomp_filters": "1"
+  },
+  "pythonDistributions": {
+    "psycopg": {
+      "installedDistributionVersion": null,
+      "packageImported": false
+    },
+    "psycopg-binary": {
+      "installedDistributionVersion": null,
+      "packageImported": false
+    },
+    "psycopg2": {
+      "installedDistributionVersion": null,
+      "packageImported": false
+    },
+    "psycopg2-binary": {
+      "installedDistributionVersion": null,
+      "packageImported": false
+    },
+    "httpx": {
+      "installedDistributionVersion": "0.28.1",
+      "packageImported": false
+    }
+  },
+  "osRelease": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+  "namespaceProbesExecuted": false,
+  "scanScope": "PATH and enumerated conventional paths only; no claim of exhaustive filesystem absence",
+  "targetRuntimeBinariesExecuted": false,
+  "discoveryExecutionScope": "Ordinary Python stdlib metadata reader, dpkg-query and Docker read-only metadata commands executed; no PostgreSQL/server/namespace/native qualification binary or probe executed.",
+  "pythonMetadataVersion": "3.12.14",
+  "identityScope": "One metadata process observation, not a stable/exclusive host, user-namespace, process-tree or runtime admission binding."
+}

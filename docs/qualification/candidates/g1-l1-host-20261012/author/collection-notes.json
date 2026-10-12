@@ -1,0 +1,10 @@
+{
+  "hostMetadataClassification": "DERIVED_FROM_INITIAL_METADATA_READS",
+  "changesAfterInitialRead": [
+    "Renamed binaries[].executed to targetRuntimeProbeExecuted and targetBinariesExecuted to targetRuntimeBinariesExecuted to distinguish forbidden target probes from permitted metadata-tool execution.",
+    "Added Docker readOnlyMetadataCommandExecuted, execution-scope text, Python interpreter metadata version and scope caveat. No observed binary, package, kernel, namespace or process value was changed."
+  ],
+  "producerBinding": "discover-host.py is retained source with clarified field names, not claimed as hash-pinned original producer of the initial structured document. Original command argv/stream sizes/hashes are independently preserved in metadata-commands.json and raw/. No Docker query was repeated for relabeling.",
+  "supplementaryReads": "Read-only Python stdlib filesystem/package metadata populated isolation-and-caches.json, node-driver-resolution-metadata.json, resource-metadata.json; apt-cache policy has separate exact argv/raw stream/hash receipt. No project package imported.",
+  "rawFailure": "apt-cache policy empty stdout and permission warning retained; no cache/config permission bypass or retry. Preliminary known-path ls returned2 for missing optional locations; subsequent structured metadata records exact absent paths without assuming absence beyond scope."
+}

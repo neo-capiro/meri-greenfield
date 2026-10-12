@@ -1,0 +1,33 @@
+{
+  "method": "Read package.json at bounded Node ancestor candidate paths; Node/package code not invoked.",
+  "candidates": [
+    {
+      "path": "/workspace/meri-g1-owner-continuation-20261012/apps/control/qualification-sdk-fixture/state/node_modules/pg/package.json",
+      "exists": false
+    },
+    {
+      "path": "/workspace/meri-g1-owner-continuation-20261012/apps/control/qualification-sdk-fixture/node_modules/pg/package.json",
+      "exists": false
+    },
+    {
+      "path": "/workspace/meri-g1-owner-continuation-20261012/apps/control/node_modules/pg/package.json",
+      "exists": false
+    },
+    {
+      "path": "/workspace/meri-g1-owner-continuation-20261012/apps/node_modules/pg/package.json",
+      "exists": false
+    },
+    {
+      "path": "/workspace/meri-g1-owner-continuation-20261012/node_modules/pg/package.json",
+      "exists": false
+    },
+    {
+      "path": "/workspace/node_modules/pg/package.json",
+      "exists": false
+    },
+    {
+      "path": "/node_modules/pg/package.json",
+      "exists": false
+    }
+  ]
+}
