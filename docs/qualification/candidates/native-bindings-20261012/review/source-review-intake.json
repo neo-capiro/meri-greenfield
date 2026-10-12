@@ -1,0 +1,50 @@
+{
+  "role": "Current private supervisor source-review record; not original collector source-verification or complete prior manifest",
+  "verifiedRecord": {
+    "bytes": 6659,
+    "sha256": "71bb9b1ae8648c51ffeccc79d78dd6134445df55aea023089ddd1f93f6aac613",
+    "serialization": "CRLF; no final newline",
+    "matchesExpected": true
+  },
+  "actualCurrentWrapper": {
+    "bytes": 11124,
+    "sha256": "e37894e22b3bb290c8b8b8fb7aaf35f2d7b2868cc2d469214913953d1b4fc9df",
+    "matchesRecord": true
+  },
+  "historicalReceiptPinsWrapperSourceHash": false,
+  "reportedSupervisorReceipt": {
+    "bytes": 2206,
+    "sha256": "61650f0d9c78b4f009a51e68cd45d2e7278d4692c9307a597d1d51ceb9700510",
+    "actualOriginalReceiptBytesIndependentlyAvailable": false
+  },
+  "reportedFacts": {
+    "elapsedSecondsIncludingDrain": 0.172,
+    "exitCode": 2,
+    "externalExecutionDeadlineSeconds": 15,
+    "terminationWaitSeconds": 3,
+    "drainJoinSecondsPerStream": 2,
+    "stdoutCapBytes": 32768,
+    "stderrCapBytes": 65536,
+    "timedOut": false,
+    "overflow": false,
+    "killRequested": false,
+    "directChildPhysicalExitVerified": true,
+    "streamsAtEof": true,
+    "readerErrors": [],
+    "parentError": null,
+    "collectorRerun": false,
+    "previousDiagnosticRerun": false,
+    "retryAllowed": false,
+    "descendantTeardownQualified": false
+  },
+  "qualificationCount": 5,
+  "cannotSupply": [
+    "original originals/source-verification.json",
+    "complete prior evidence manifest",
+    "Git executable hash or size",
+    "full candidate hash predicate",
+    "historical supervisor execution source identity"
+  ],
+  "nativeReplayPerformed": false,
+  "privateBodiesOrPathsCopied": false
+}
