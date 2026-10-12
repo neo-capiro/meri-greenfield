@@ -80,7 +80,14 @@ export function createPostgresArtifactService(options){
         },
       };
       // Completion is the immutable committed storage record, not proof of delivery.
-      const versionPort={read:(...args)=>versions.read(...args),async commit(value,abort){active();const record=v.snapshot(value);if(record.requestSha256!==requestSha256||record.version.object.bytes>maxBytes)fail('ARTIFACT_BUDGET_BINDING');observation.versionCommitStarted=true;const receipt=await versions.commit(value,abort);active();committed=record;return receipt;}};
+      const versionPort={read:(...args)=>versions.read(...args),async commit(value,abort){
+        active();const record=v.snapshot(value);if(record.requestSha256!==requestSha256||record.version.object.bytes>maxBytes)fail('ARTIFACT_BUDGET_BINDING');
+        observation.versionCommitStarted=true;const receipt=v.snapshot(await versions.commit(value,abort));active();committed=record;
+        // Observe the accepted service's exact ACK predicate; do not turn a started
+        // or malformed acknowledgement into a confirmed immutable version.
+        if(Object.keys(receipt).sort().join()==='requestSha256,status,versionId,versionSha256'&&['committed','duplicate'].includes(receipt.status)&&receipt.versionId===record.version.versionId&&receipt.requestSha256===requestSha256&&receipt.versionSha256===v.hash(record.version))observation.versionCommitted=true;
+        return receipt;
+      }};
       const objectPort={get:(...args)=>objects.get(...args),put(...args){active();observation.writeStarted=true;return objects.put(...args);}};
       const executePort={async execute(value){active();const result=await executor.execute({...value,maxBytes:Math.min(value.maxBytes,maxBytes),deadlineMs:Math.min(value.deadlineMs,deadlineMs)});active();outputBytes=result.bytes?.length;if(!Number.isSafeInteger(outputBytes)||outputBytes>maxBytes)fail('ARTIFACT_OUTPUT_LIMIT');return result;}};
       const service=createArtifactService({validators:v,authorize:authorizeArtifact,budget,versions:versionPort,objects:objectPort,executor:executePort,now,ids:()=>{const allocated=v.snapshot(ids());observation.versionId=allocated.versionId;return allocated;}});

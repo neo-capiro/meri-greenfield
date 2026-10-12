@@ -134,3 +134,7 @@ for(const phase of ['reserve','marker','settle'])test(`outer cancellation during
   try{await assert.rejects(pending,e=>e.code===(phase==='reserve'?'ARTIFACT_BUDGET_RESERVATION_UNKNOWN':'ARTIFACT_EFFECT_UNKNOWN')&&e.cause.message==='CANCELLED');}finally{gate.resume();await new Promise(r=>setImmediate(r));}
   assert.equal(t.state.generations,phase==='reserve'?0:1);assert.equal(t.b.state().produced.size,1);
 });
+for(const phase of ['marker','settle'])test(`outer cancellation during ${phase} preserves confirmed version acknowledgement`,async()=>{
+  const t=fixture();await t.ready();const gate=t.b.parkCommit(phase),controller=new AbortController(),pending=t.run(t.call,controller.signal);await gate.ready;controller.abort();
+  try{await assert.rejects(pending,e=>e.code==='ARTIFACT_EFFECT_UNKNOWN'&&e.versionCommitted===true&&t.records.has(e.versionId));}finally{gate.resume();await new Promise(r=>setImmediate(r));}
+});
