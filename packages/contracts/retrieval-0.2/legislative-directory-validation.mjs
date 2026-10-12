@@ -109,6 +109,7 @@ export function createLegislativeDirectoryValidators({validateShape, schema}) {
   function assertLegislativeDirectoryOutput(id, value, request, options = {}) {
     const {input} = normalizeLegislativeDirectoryInput(id, request, options), page = snapshotOperationData(value);
     validateShape(definition(id, 'Output'), page);
+    if (new Set(page.members.map(row => row.id)).size !== page.members.length) fail('Duplicate directory member identity');
     const stamp = Date.parse(page.generatedAt);
     if (!Number.isFinite(stamp) || new Date(stamp).toISOString() !== page.generatedAt) fail('Noncanonical directory generatedAt');
     assertions[id](page, input);
