@@ -1,0 +1,739 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:disclosures:0.2.0",
+  "$comment": "Private frozen stored-source projections. Empty policy context; authorization stays in the gateway. Independent counts are observations, not snapshot totals or completeness. Description summaries are not full text; LDA finite number/null amounts do not preserve exact Decimal provenance. Unspecified string/array ceilings are Meri transport admission, not backend storage bounds.",
+  "$defs": {
+    "DisclosuresSecRequest": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "companyName": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "formType": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cik": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "limit": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "DisclosuresSecInput": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "maxLength": 240
+        },
+        "formType": {
+          "type": "string",
+          "maxLength": 20
+        },
+        "cik": {
+          "type": "string",
+          "maxLength": 20
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        }
+      },
+      "required": [
+        "limit"
+      ],
+      "additionalProperties": false
+    },
+    "DisclosuresFaraRequest": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "registrantName": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "registrant": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "foreignPrincipal": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "country": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "limit": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "DisclosuresFaraInput": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "maxLength": 240
+        },
+        "registrantName": {
+          "type": "string",
+          "maxLength": 240
+        },
+        "foreignPrincipal": {
+          "type": "string",
+          "maxLength": 240
+        },
+        "country": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "status": {
+          "type": "string",
+          "maxLength": 20
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        }
+      },
+      "required": [
+        "limit"
+      ],
+      "additionalProperties": false
+    },
+    "DisclosuresLdaRequest": {
+      "type": "object",
+      "properties": {
+        "clientName": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "query": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "registrantName": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "registrant": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "issueCode": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "issue": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "limit": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "year": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "page": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "DisclosuresLdaInput": {
+      "type": "object",
+      "properties": {
+        "clientName": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "registrantName": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "issueCode": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "year": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        },
+        "page": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      "required": [
+        "limit",
+        "page"
+      ],
+      "additionalProperties": false
+    },
+    "DisclosuresSecRow": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "cik": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "companyName": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "formType": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "accessionNumber": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "filingDate": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 64
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 300
+        },
+        "url": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "cik",
+        "companyName",
+        "formType",
+        "accessionNumber",
+        "filingDate",
+        "description",
+        "url"
+      ],
+      "additionalProperties": false
+    },
+    "DisclosuresFaraRow": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "registrationNumber": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "registrantName": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "foreignPrincipal": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "country": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "registrationDate": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "maxLength": 64
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 300
+        }
+      },
+      "required": [
+        "id",
+        "registrationNumber",
+        "registrantName",
+        "foreignPrincipal",
+        "country",
+        "status",
+        "registrationDate",
+        "description"
+      ],
+      "additionalProperties": false
+    },
+    "DisclosuresLdaRow": {
+      "type": "object",
+      "properties": {
+        "filingUuid": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "filingType": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "filingYear": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "filingPeriod": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "income": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "expenses": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "dtPosted": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "maxLength": 64
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "registrantId": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": -2147483648,
+              "maximum": 2147483647
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "registrantName": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": -2147483648,
+              "maximum": 2147483647
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "clientName": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "clientState": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "issueCodes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 1048576
+          },
+          "maxItems": 10000
+        }
+      },
+      "required": [
+        "filingUuid",
+        "filingType",
+        "filingYear",
+        "filingPeriod",
+        "income",
+        "expenses",
+        "dtPosted",
+        "registrantId",
+        "registrantName",
+        "clientId",
+        "clientName",
+        "clientState",
+        "issueCodes"
+      ],
+      "additionalProperties": false
+    },
+    "DisclosuresSecOutput": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "search_sec_filings"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 64
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DisclosuresSecRow"
+          },
+          "maxItems": 50
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "total",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "DisclosuresFaraOutput": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "search_fara_registrations"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 64
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DisclosuresFaraRow"
+          },
+          "maxItems": 50
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "total",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "DisclosuresLdaOutput": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "search_lda_filings"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 64
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DisclosuresLdaRow"
+          },
+          "maxItems": 50
+        },
+        "page": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "total",
+        "data",
+        "page",
+        "limit"
+      ],
+      "additionalProperties": false
+    },
+    "DisclosuresContext": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    }
+  }
+}
