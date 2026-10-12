@@ -1,3 +1,4 @@
+import {verticalOperationIds} from './vertical-source-expectations.mjs';
 // Exact declared expected deltas to immutable historical snapshots.
 import assert from 'node:assert/strict';
 // No field is ignored; old callbacks, hashes, outputs and behavior still compare.
@@ -46,6 +47,7 @@ export function expectedExistingBinding(row) {
   return result;
 }
 export function expectedExistingOriginal(row) {
+  if(verticalOperationIds.includes(row.id))return {...row,state:'mapped',replacement:{id:row.id,version:'0.2.0'}};
   if(row.id==='query_action_items')return {...row,state:'mapped',replacement:fullActionReference};
   if(addedOperations.includes(row.id))return {...row,state:'mapped',replacement:{id:row.id,version:'0.2.0'}};
   return row;
