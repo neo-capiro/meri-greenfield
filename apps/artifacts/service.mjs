@@ -1,9 +1,8 @@
 import {createHash} from 'node:crypto';
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
+import {ARTIFACT_MIME_TYPES as mime,artifactFilename as filenameFor} from '../../packages/contracts/artifacts-0.2/artifact-formats.mjs';
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const fail=code=>{throw Object.assign(new Error(code),{code});};
-const mime={docx:'application/vnd.openxmlformats-officedocument.wordprocessingml.document',txt:'text/plain; charset=utf-8',xlsx:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',pptx:'application/vnd.openxmlformats-officedocument.presentationml.presentation',pdf:'application/pdf',zip:'application/zip'};
-const filenameFor=request=>(request.title.replace(/[^A-Za-z0-9._ -]/g,'_').replace(/^\.+/,'').trim().slice(0,120)||'artifact')+'.'+request.format;
 const closed=(value,keys)=>{if(!value||Array.isArray(value)||Object.keys(value).sort().join()!==keys.sort().join())fail('ARTIFACT_PORT_SHAPE');};
 export function createArtifactService({validators:v,authorize,budget,versions,objects,executor,now,ids}){
   if(![authorize,now,ids,budget?.reserve,budget?.settle,versions?.read,versions?.commit,objects?.put,objects?.get,executor?.execute].every(x=>typeof x==='function'))fail('ARTIFACT_CONFIGURATION');
@@ -15,7 +14,7 @@ export function createArtifactService({validators:v,authorize,budget,versions,ob
     return record;
   }
   function inspectBytes(value,bytes,format){
-    const inspection=v.snapshot(value);closed(inspection,['sha256','bytes','format','nativeOpened','rendered','recalculated','members','details']);
+    let inspection;try{inspection=v.inspection(value);}catch(cause){throw Object.assign(new Error('ARTIFACT_INSPECTION_MISMATCH'),{code:'ARTIFACT_INSPECTION_MISMATCH',cause});}closed(inspection,['sha256','bytes','format','nativeOpened','rendered','recalculated','members','details']);
     if(inspection.sha256!==sha(bytes)||inspection.bytes!==bytes.length||inspection.format!==format||inspection.nativeOpened!==false||inspection.rendered!==false||inspection.recalculated!==false||!Array.isArray(inspection.members)||!inspection.members.every(x=>typeof x==='string')||!inspection.details||typeof inspection.details!=='object'||Array.isArray(inspection.details))fail('ARTIFACT_INSPECTION_MISMATCH');return inspection;
   }
   function operation(context,signal){return createOperationLifetime({deadlineMs:context.deadlineMs,now,signal,errorFactory:code=>Object.assign(new Error(code),{code:'ARTIFACT_'+code})});}
@@ -31,6 +30,8 @@ export function createArtifactService({validators:v,authorize,budget,versions,ob
   }
   async function generate(baseVersionId,requestValue,contextValue,{signal}={}){
     const request=v.request(requestValue),context=v.context(contextValue);
+    if(request.format==='sandbox')fail('ANALYSIS_SANDBOX_DISPATCH_REQUIRED');
+    if(context.analysisAdmission)fail('IRRELEVANT_ANALYSIS_ADMISSION');
     const intent={request,context,baseVersionId},requestSha256=v.hash(intent),allocation=v.snapshot(ids());
     closed(allocation,['artifactId','versionId','objectId']);
     for(const id of Object.values(allocation))if(typeof id!=='string'||!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id))fail('ARTIFACT_ID');
