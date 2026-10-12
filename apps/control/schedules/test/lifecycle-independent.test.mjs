@@ -319,3 +319,9 @@ test('independent lifecycle: SDK future status fallback remains UNKNOWN rather t
     startTime: new Date('2026-10-12T00:00:00.000Z'), closeTime: undefined }) });
   const out = await h.list(); assert.deepEqual(out.originalRuns.executions[0].status, { name: 'UNKNOWN', code: 99 });
 });
+
+for (const port of ['authorize', 'ownerList', 'workflowDescribe']) test(`independent lifecycle: list sanitizes private ${port} error`, async () => {
+  const h = harness({ [port]() { throw Error('CREDENTIAL-CANARY'); } });
+  await assert.rejects(h.list(), error => !String(error).includes('CREDENTIAL-CANARY'));
+  assert.equal(h.closed(), 0);
+});
