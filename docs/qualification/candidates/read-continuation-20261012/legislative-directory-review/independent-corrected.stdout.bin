@@ -1,0 +1,42 @@
+✔ get_committee_roster: immutable request snapshot and empty metadata (6.30166ms)
+✔ get_committee_roster: authority and unknown model fields denied (0.946923ms)
+✔ get_committee_roster: getters and proxies remain inert in request output and context (0.672141ms)
+✔ get_committee_roster: non-JSON cycles prototypes and sparse values deny (1.467756ms)
+✔ get_committee_roster: unknown operation and definition selectors never coerce (0.274873ms)
+✔ get_committee_roster: exact envelope and canonical wire timestamps (25.122475ms)
+✔ get_committee_roster: member identity uniqueness and mandatory fields (2.048519ms)
+✔ list_members: immutable request snapshot and empty metadata (2.486808ms)
+✔ list_members: authority and unknown model fields denied (0.365059ms)
+✔ list_members: getters and proxies remain inert in request output and context (0.321373ms)
+✔ list_members: non-JSON cycles prototypes and sparse values deny (0.168203ms)
+✔ list_members: unknown operation and definition selectors never coerce (0.124527ms)
+✔ list_members: exact envelope and canonical wire timestamps (6.392236ms)
+✔ list_members: member identity uniqueness and mandatory fields (0.742166ms)
+✔ list: exact state names and territory abbreviations normalize (0.288734ms)
+✔ list: source numeric-string finite clamp and null/default semantics (0.374333ms)
+✔ list: recognized chamber lowercases and unknown chamber is omitted (0.26611ms)
+✔ list: exact missing and unknown-state refusal envelopes (0.530177ms)
+✔ list: source UTF-16 cut precedes invalid-state note without guessed aliases (0.195714ms)
+✔ list: count input bound filter and note are all bound (0.539541ms)
+✔ list: stored null freeform and signed districts remain source-compatible (0.953282ms)
+✔ list: chamber-only senate can return nullable state and a single senator (0.360011ms)
+✔ roster: source selector trim caps case and disclosed overflow refusal (0.277898ms)
+✔ roster: all missing or invalid selector refusals retain exact note (0.471839ms)
+✔ roster: no-match and ambiguity use the exact same unresolved envelope (0.376626ms)
+✔ roster: case-sensitive federal code and case-insensitive state id lineage (0.657178ms)
+✔ roster: normalized-name match is not guessed name-resolution proof (0.51894ms)
+✔ roster: leadership exact row equality and first matching role (0.981215ms)
+✔ roster: role vocabulary permits Unicode dashes and excludes invented offices (0.57857ms)
+✔ roster: federal signed rank order and null999 boundary (0.428935ms)
+✔ roster: state role selection preserves source order and null ranking (0.63242ms)
+✔ roster: unknown stored party side district role and nulls are retained (0.45932ms)
+✔ roster: uncapped source members and empty roster notes remain exact (3.004085ms)
+✔ canonical resolver: original request digest snapshot and forbidden context (1.842649ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 215.40611

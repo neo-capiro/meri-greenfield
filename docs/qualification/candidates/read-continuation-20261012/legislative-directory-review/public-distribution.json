@@ -1,0 +1,39 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "check:contracts:distribution"
+  ],
+  "cwd": "/workspace/meri-legislative-directory-review-20261012",
+  "sourceHead": "c24af4120abc301cb86a16df38c321a40bb7c527",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T17:22:53.128262+00:00",
+  "durationSeconds": 2.758,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 187466,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 187621,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/public-distribution.stdout.bin",
+      "bytes": 1192,
+      "sha256": "e62a07eac3f71e0d7826d5b16c04b7a3d24f49da12343d421a5f6fc524dd16fe"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/public-distribution.stderr.bin",
+      "bytes": 1744,
+      "sha256": "33d64e243918a1cb07483bc9f9bb3dd8141eab74c1642cca1ba6d0a226da517a"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

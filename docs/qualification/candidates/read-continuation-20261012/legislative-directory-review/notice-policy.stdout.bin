@@ -1,0 +1,38 @@
+{
+  "scope": "data-only pinned notice equality; private strings not published",
+  "passed": 5,
+  "failed": 0,
+  "typescriptVersion": "5.9.3",
+  "checks": [
+    {
+      "name": "DirectorySelectionNote",
+      "bytes": 146,
+      "sha256": "35f6adf86c69111189bbd3eb68b6c03e5ea79a64b1786a3a829a358c93c36803",
+      "exactPinnedStaticPolicy": true
+    },
+    {
+      "name": "DirectoryStateNote",
+      "bytes": 103,
+      "sha256": "492c72bd412ed909b26bff04dd92d6d98f4170c317670bf9492503b7930c81b7",
+      "exactPinnedStaticPolicy": true
+    },
+    {
+      "name": "DirectoryEmptyRosterNote",
+      "bytes": 107,
+      "sha256": "80436a77437a60f768d357f025428ef6233be3ece2bf1a27a2f9afe6558e25f1",
+      "exactPinnedStaticPolicy": true
+    },
+    {
+      "name": "DirectoryFederalRosterNote",
+      "bytes": 234,
+      "sha256": "3fb0c9ae457fce365840b4e5dfee013f14943fb6011e3e983053cfa8a8e98bbb",
+      "exactPinnedStaticPolicy": true
+    },
+    {
+      "name": "DirectoryMemberSelectionNote",
+      "bytes": 117,
+      "sha256": "e5e9defccc37fdca4c77c2fbb31968af1ce27c4c8a24e2f503d2b2ace9ebc3e3",
+      "exactPinnedStaticPolicy": true
+    }
+  ]
+}

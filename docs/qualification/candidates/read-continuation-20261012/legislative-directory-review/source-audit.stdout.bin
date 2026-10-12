@@ -1,0 +1,355 @@
+{
+  "verdict": "PASS_SOURCE_AUDIT_ONLY",
+  "base": "2aa0a33bdaf36af1224cfdb840bc493e53cea9f3",
+  "source": "c511b4bf6ee3f30674f3bd7badae79df82a61aab",
+  "packet": "62a9f7e3c71d12a2e9e6e3ad4b9d361f3be9d257",
+  "passed": 81,
+  "failed": 0,
+  "originalsPreserved": 5730,
+  "referenceFiles": 10,
+  "authorManifestMembers": 23,
+  "sourceFiles": [
+    {
+      "path": "packages/contracts/retrieval-0.2/legislative-directory.schema.json",
+      "bytes": 15111,
+      "sha256": "24c14bfb6a68ee9bb0699663f14a6348196ab069e35034a801fe1766cd3698fb"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/legislative-directory-validation.mjs",
+      "bytes": 8511,
+      "sha256": "c41959f5b8cbee875ecee37f42c9085ef2adde0314f6dbbdcfe2617d3674f6d1"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-legislative-directory.test.mjs",
+      "bytes": 16607,
+      "sha256": "ef4f48813b9290bd6be4553bd37bcc379d5c1f7d2ac3af4563b44c4227f6e86a"
+    }
+  ],
+  "checks": [
+    {
+      "check": "all original files preserved",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/retrieval-0.2/legislative-directory.schema.json exact source freeze",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/retrieval-0.2/legislative-directory.schema.json packet has unchanged source",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/retrieval-0.2/legislative-directory-validation.mjs exact source freeze",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/retrieval-0.2/legislative-directory-validation.mjs packet has unchanged source",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-legislative-directory.test.mjs exact source freeze",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-legislative-directory.test.mjs packet has unchanged source",
+      "passed": true
+    },
+    {
+      "check": "original author test prefix untouched",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-tools.service.ts:fd8765e",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-tools.service.ts:4be13b0",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-tools.service.ts no drift",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-tools.list-members.spec.ts:fd8765e",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-tools.list-members.spec.ts:4be13b0",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-tools.list-members.spec.ts no drift",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-committee-roster-representation-tool.spec.ts:fd8765e",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-committee-roster-representation-tool.spec.ts:4be13b0",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-committee-roster-representation-tool.spec.ts no drift",
+      "passed": true
+    },
+    {
+      "check": "apps/api/prisma/schema.prisma:fd8765e",
+      "passed": true
+    },
+    {
+      "check": "apps/api/prisma/schema.prisma:4be13b0",
+      "passed": true
+    },
+    {
+      "check": "apps/api/prisma/schema.prisma no drift",
+      "passed": true
+    },
+    {
+      "check": "packages/shared/src/index.ts:fd8765e",
+      "passed": true
+    },
+    {
+      "check": "packages/shared/src/index.ts:4be13b0",
+      "passed": true
+    },
+    {
+      "check": "packages/shared/src/index.ts no drift",
+      "passed": true
+    },
+    {
+      "check": "packages/shared/src/us-states.ts:fd8765e",
+      "passed": true
+    },
+    {
+      "check": "packages/shared/src/us-states.ts:4be13b0",
+      "passed": true
+    },
+    {
+      "check": "packages/shared/src/us-states.ts no drift",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/common/us-states.ts:fd8765e",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/common/us-states.ts:4be13b0",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/common/us-states.ts no drift",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri.controller.ts:fd8765e",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri.controller.ts:4be13b0",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri.controller.ts no drift",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/tool-service-secret.guard.ts:fd8765e",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/tool-service-secret.guard.ts:4be13b0",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/tool-service-secret.guard.ts no drift",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/auth/roles.guard.ts:fd8765e",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/auth/roles.guard.ts:4be13b0",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/auth/roles.guard.ts no drift",
+      "passed": true
+    },
+    {
+      "check": "exact56 state vocabulary values",
+      "passed": true
+    },
+    {
+      "check": "new schema definitions do not collide",
+      "passed": true
+    },
+    {
+      "check": "author manifest declares23 members",
+      "passed": true
+    },
+    {
+      "check": "author manifest docs/coordination/reports/CODEX-LEGISLATIVE-DIRECTORY-AUTHOR-20261012.md",
+      "passed": true
+    },
+    {
+      "check": "author manifest docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "check": "author manifest docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/cleanup.json",
+      "passed": true
+    },
+    {
+      "check": "author manifest docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/duplicate-before.json",
+      "passed": true
+    },
+    {
+      "check": "author manifest docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/duplicate-before.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "author manifest docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/duplicate-before.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "author manifest docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/focused-first.json",
+      "passed": true
+    },
+    {
+      "check": "author manifest docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/focused-first.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "author manifest docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/focused-first.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "author manifest docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/focused-repaired.json",
+      "passed": true
+    },
+    {
+      "check": "author manifest docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/focused-repaired.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "author manifest docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/focused-repaired.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "author manifest docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/integration-interface.json",
+      "passed": true
+    },
+    {
+      "check": "author manifest docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/outline.md",
+      "passed": true
+    },
+    {
+      "check": "author manifest docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/reference-identities.json",
+      "passed": true
+    },
+    {
+      "check": "author manifest docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/source-audit.json",
+      "passed": true
+    },
+    {
+      "check": "author manifest docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/source-audit.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "author manifest docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/source-audit.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "author manifest docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/verify-source.py",
+      "passed": true
+    },
+    {
+      "check": "author manifest docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/whitespace.json",
+      "passed": true
+    },
+    {
+      "check": "author manifest packages/contracts/retrieval-0.2/legislative-directory-validation.mjs",
+      "passed": true
+    },
+    {
+      "check": "author manifest packages/contracts/retrieval-0.2/legislative-directory.schema.json",
+      "passed": true
+    },
+    {
+      "check": "author manifest packages/contracts/test/retrieval-legislative-directory.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "independent-first owned group absent",
+      "passed": true
+    },
+    {
+      "check": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/independent-first.stdout.bin exact stream",
+      "passed": true
+    },
+    {
+      "check": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/independent-first.stderr.bin exact stream",
+      "passed": true
+    },
+    {
+      "check": "independent-corrected owned group absent",
+      "passed": true
+    },
+    {
+      "check": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/independent-corrected.stdout.bin exact stream",
+      "passed": true
+    },
+    {
+      "check": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/independent-corrected.stderr.bin exact stream",
+      "passed": true
+    },
+    {
+      "check": "full-root owned group absent",
+      "passed": true
+    },
+    {
+      "check": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/full-root.stdout.bin exact stream",
+      "passed": true
+    },
+    {
+      "check": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/full-root.stderr.bin exact stream",
+      "passed": true
+    },
+    {
+      "check": "public-distribution owned group absent",
+      "passed": true
+    },
+    {
+      "check": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/public-distribution.stdout.bin exact stream",
+      "passed": true
+    },
+    {
+      "check": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/public-distribution.stderr.bin exact stream",
+      "passed": true
+    },
+    {
+      "check": "public-distribution-corrected owned group absent",
+      "passed": true
+    },
+    {
+      "check": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/public-distribution-corrected.stdout.bin exact stream",
+      "passed": true
+    },
+    {
+      "check": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/public-distribution-corrected.stderr.bin exact stream",
+      "passed": true
+    },
+    {
+      "check": "source module has one shared inert admission owner",
+      "passed": true
+    },
+    {
+      "check": "public/canonical registry/locks unchanged",
+      "passed": true
+    }
+  ],
+  "runtimeAccepted": false
+}
