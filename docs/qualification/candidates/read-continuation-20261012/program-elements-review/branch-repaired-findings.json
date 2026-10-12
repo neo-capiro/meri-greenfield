@@ -1,0 +1,137 @@
+{
+  "source": "956d281e",
+  "tests": 58,
+  "pass": 26,
+  "fail": 32,
+  "findings": [
+    {
+      "test": "search nullable residual claims preserve stored empty axes",
+      "observation": "positive projection rejected / baseline blocked"
+    },
+    {
+      "test": "search fully unavailable money retains null model claim",
+      "observation": "positive projection rejected / baseline blocked"
+    },
+    {
+      "test": "source-derived raw claims cannot substitute year amount",
+      "observation": "missing expected refusal"
+    },
+    {
+      "test": "detail cycle anchor must echo programElement cycle",
+      "observation": "missing expected refusal"
+    },
+    {
+      "test": "top current claim must match emitted current year claim",
+      "observation": "missing expected refusal"
+    },
+    {
+      "test": "null year claim cannot conceal a valid integer year",
+      "observation": "missing expected refusal"
+    },
+    {
+      "test": "enactment and vehicle fields cannot contradict stage",
+      "observation": "missing expected refusal"
+    },
+    {
+      "test": "enforced semantics cannot invent enactment or amount",
+      "observation": "missing expected refusal"
+    },
+    {
+      "test": "search funding label cannot contradict derived model claim",
+      "observation": "positive projection rejected / baseline blocked"
+    },
+    {
+      "test": "search funding warning cannot be rewritten as complete coverage",
+      "observation": "positive projection rejected / baseline blocked"
+    },
+    {
+      "test": "search request stage cannot emit a comparison direction",
+      "observation": "positive projection rejected / baseline blocked"
+    },
+    {
+      "test": "search total cannot be less than rows from same COUNT window",
+      "observation": "positive projection rejected / baseline blocked"
+    },
+    {
+      "test": "trusted source identity does not arise from arbitrary exhibit pair",
+      "observation": "missing expected refusal"
+    },
+    {
+      "test": "search explicit line type outranks appropriation",
+      "observation": "positive projection rejected / baseline blocked"
+    },
+    {
+      "test": "lineage cannot reference only foreign endpoints",
+      "observation": "missing expected refusal"
+    },
+    {
+      "test": "timeline current field cannot contradict request ladder",
+      "observation": "missing expected refusal"
+    },
+    {
+      "test": "timeline cycle must match emitted global cycle FY",
+      "observation": "missing expected refusal"
+    },
+    {
+      "test": "timeline null request cannot be classified present",
+      "observation": "missing expected refusal"
+    },
+    {
+      "test": "timeline actual track absence cannot claim not applicable",
+      "observation": "missing expected refusal"
+    },
+    {
+      "test": "timeline conflicts cannot include zero or duplicate observations",
+      "observation": "missing expected refusal"
+    },
+    {
+      "test": "timeline provenance observation dates must be finite canonical serialized times",
+      "observation": "missing expected refusal"
+    },
+    {
+      "test": "outyear missing mark cannot invent active process or authorization gap",
+      "observation": "missing expected refusal"
+    },
+    {
+      "test": "timeline arbitrary declared cycle cannot replace actual mark-bearing FY",
+      "observation": "missing expected refusal"
+    },
+    {
+      "test": "timeline current delta must equal same-row signed amount difference",
+      "observation": "missing expected refusal"
+    },
+    {
+      "test": "forecast fields are one nullable prediction projection rather than partial fabricated data",
+      "observation": "missing expected refusal"
+    },
+    {
+      "test": "milestone projected unique type cannot be duplicated with different ID",
+      "observation": "missing expected refusal"
+    },
+    {
+      "test": "milestones preserve observed planned-date ordering without collation assumptions",
+      "observation": "missing expected refusal"
+    },
+    {
+      "test": "raw year FY and source firstSeenFY respect signed stored Int range",
+      "observation": "missing expected refusal"
+    },
+    {
+      "test": "search total includes skipped rows when populated page uses same COUNT window",
+      "observation": "positive projection rejected / baseline blocked"
+    },
+    {
+      "test": "search residual claims cannot contradict their retained labeled money",
+      "observation": "positive projection rejected / baseline blocked"
+    },
+    {
+      "test": "search comparable pair uses enacted-FY request rather than newest request",
+      "observation": "missing expected refusal"
+    },
+    {
+      "test": "search same-year current direction describes actual sign, without money authority",
+      "observation": "positive projection rejected / baseline blocked"
+    }
+  ],
+  "note": "Search negatives are blocked by residual nullable-claim schema omission; no semantic pass claimed. Others independently expose contradictory accepted claims on admitted baselines."
+}
