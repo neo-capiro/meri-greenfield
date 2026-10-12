@@ -1,0 +1,33 @@
+{
+  "command": [
+    "node",
+    "docs/qualification/candidates/read-continuation-20261012/bill-text-review/source-audit.cjs"
+  ],
+  "cwd": "/workspace/meri-bill-text-review-20261012",
+  "sourceHead": "ac306bd2fe020951f99f73da9228deb9084b01c1",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T17:05:20.371635+00:00",
+  "durationSeconds": 0.416,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 171558,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/source-audit-repaired.stdout.bin",
+      "bytes": 4546,
+      "sha256": "a8dffba2d8def4bafc95824e74e7022891bcee811cdc377fe61668c1f346832b"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/source-audit-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Reviewer metadata-only allowlist omitted pure billId argument; exact signature reread, old checker and44/1 receipt preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
