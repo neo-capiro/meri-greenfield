@@ -1,0 +1,38 @@
+{
+  "base": "ede7b56845816d38d0bbffab5a657aaa4f978739",
+  "families": [
+    {
+      "family": "outreach-query",
+      "base": "4c40fb4c35d716dcd1e3b09ec29647ccca5a1326",
+      "source": "51a296e7d4a1f3ecc2f2f844e3baeeb11f70962f",
+      "sourceTree": "c8bccc24fefd239707389df8114157411dca4807",
+      "packet": "b73c2994080cb9c03647f4ddf07f8057e37b71d3",
+      "review": "ec3e54045fcdf62941629e2ed7b4f40455ed04c4",
+      "verdict": "ACCEPT_SOURCE",
+      "runtimeAccepted": false
+    }
+  ],
+  "components": [
+    {
+      "component": "private-command-contracts",
+      "source": "5fca98580c5d93c9f9aa4a3ed518e926e087846c",
+      "packet": "d710e9c62a6455a5f512646ef3014117498aa99c",
+      "publication": "a838c3819ca01798d9175a1d07bef1eb81355808",
+      "review": "97de9c3fb44284dffc5ac88c8265057bfdf967fc",
+      "verdict": "ACCEPT_SOURCE",
+      "runtimeAccepted": false
+    },
+    {
+      "component": "pe-reference-detachment",
+      "source": "8dcc6e13f360c15d9ba0f7c9fbd3419f1318afe3",
+      "packet": "cb5310d34cddd13d04b2233c937f271b5b4713d1",
+      "review": "d42163c7de42aa39010d29be9c3fdd2693343084",
+      "verdict": "ACCEPT_SOURCE",
+      "runtimeAccepted": false
+    }
+  ],
+  "unintegratedPendingReview": [
+    "program-elements"
+  ],
+  "runtimeAccepted": false
+}
