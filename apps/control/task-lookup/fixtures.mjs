@@ -1,0 +1,19 @@
+import {prepare,canonicalSha256} from './binding.mjs';
+export const NOW=1900000000000;
+export const id=n=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
+export function fixture(){
+ const binding={tenantId:'tenant',actorId:'actor',conversationId:id(1),runId:id(2),attemptId:id(3),workerId:id(4),writerFence:1};
+ const scopes=[{tenantId:'tenant',kind:'client',resourceId:id(9),policyRevision:'p1'}];
+ const context={lookupId:id(10),resultReference:id(11),requestId:id(12),binding,scopes,selectedClientId:id(9),deliveryJson:JSON.stringify({context:{binding},producer:{namespace:'fixture',executionId:'task'},deliveryId:'lookup'}),slots:{started:{eventId:id(13),sequence:1},terminal:{eventId:id(14),sequence:2}},deadlineMs:NOW+1000};
+ const request={limit:20},calls=[],state={record:null,now:NOW},r=(b,state)=>({lookupId:b.context.lookupId,bindingSha256:b.bindingSha256,state});
+ const store={async claim(b,e){calls.push('claim');if(state.claimed)throw Object.assign(Error('replay'),{code:'LOOKUP_REPLAY'});state.claimed=true;return r(b,'CLAIMED');},async markDispatching(b){calls.push('marker');return r(b,'DISPATCHING');},async complete(b,record){calls.push('complete');state.record=record;return r(b,'RESULT');},async recordError(b,e){calls.push('error');return r(b,'ERROR');},async read(){calls.push('read');return state.record;}};
+ const authorize=async q=>{calls.push(q.phase);return {authorized:true,bindingSha256:q.binding.bindingSha256,expiresAtMs:NOW+1000};};
+ const gateway={async executeOwned(raw){calls.push('gateway');return JSON.stringify(envelope(prepare(request,context,NOW)));}};
+ return {request,context,state,calls,store,authorize,gateway,clock:()=>state.now,readContext:{currentBinding:{...binding,attemptId:id(20),writerFence:2},scopes,deadlineMs:NOW+1000}};
+}
+export function envelope(b){
+ const selection={clientId:b.context.selectedClientId.toLowerCase(),actionItemId:null,status:null,sort:'deadline',page:1,limit:b.request.arguments.limit??20,cursorApplied:false},scopes=b.context.scopes;
+ const subject={kind:'client',entityType:'client',entityIds:[selection.clientId],tenantId:b.context.binding.tenantId,actorId:b.context.binding.actorId,authorizationDecisionId:id(30),policyRevision:'p1',scopes,rosterVersionId:null};
+ const result={kind:'action-item-client-scoped-page',contractVersion:'0.2.0',operation:{id:'query_action_items',version:'0.2.0'},requestId:id(31),traceId:id(32),binding:b.context.binding,subject,window:{basis:'unbounded'},argumentsSha256:canonicalSha256(selection),appliedFilters:[],generatedAt:new Date(NOW).toISOString(),sources:[{sourceId:'action_recommendation',authority:'authoritative',snapshotVersionId:null,adapterVersion:'0.2.0',status:'partial',synchronizedAt:null,asOf:null,retrievedAt:new Date(NOW).toISOString(),freshness:'unknown'}],coverage:{sourcesRequested:['action_recommendation'],sourcesChecked:['action_recommendation'],sourcesUnavailable:[],enumeration:'unknown',enumerableTotal:null,returnedCount:0,truncated:false,historySupport:'bounded',limitations:['Synthetic source observation only']},selection,order:'deadline-asc_nulls-last_priority-desc_id-asc-owner-unconfirmed',snapshotVersionId:null,clientId:selection.clientId,scope:{actionItemId:null,status:null,sort:'deadline',page:1,limit:selection.limit,cursorApplied:false},total:0,returned:0,actions:[],pageCoverage:{sourceStatus:'healthy',sourceReason:null,complete:true,partial:false,paginationComplete:true,hasMore:false,nextCursor:null,totalIsExactForScope:true,absenceSupported:false,note:'No full-source absence inference'},continuation:{cursor:null,requiredReads:[],remainingSources:[]},evidenceReady:false,negativeAssertion:{kind:'none'}};
+ return {binding:b.context.binding,subject,operation:{id:'actions.query',version:'0.2.0'},argumentsSha256:b.argumentsSha256,result};
+}
