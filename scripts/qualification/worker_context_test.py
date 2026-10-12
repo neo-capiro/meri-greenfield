@@ -39,7 +39,7 @@ class WorkerContextTests(unittest.TestCase):
         path.parent.mkdir()
         path.write_text("synthetic excluded")
         result = m.assemble_context(self.out)
-        self.assertEqual(len(result["members"]), 53)
+        self.assertEqual(len(result["members"]), 57)
         sources = {row["sourcePath"] for row in result["members"]}
         self.assertNotIn("scripts/qualification/sdk-stale-worker-challenge.mjs", sources)
         self.assertIn(m.QUALIFICATION + "checkpoint/resume-admission.mjs", sources)
@@ -159,7 +159,7 @@ class WorkerContextTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "byte drift"):
             m.verify_context(self.out)
         member.write_bytes(raw)
-        self.assertEqual(len(m.verify_context(self.out)["members"]), 53)
+        self.assertEqual(len(m.verify_context(self.out)["members"]), 57)
 
     def test_extra_directory_and_output_file_refused(self):
         m.assemble_context(self.out)
@@ -237,7 +237,7 @@ class WorkerContextTests(unittest.TestCase):
                     self.assertIn(relocated, image_members, f"{source} -> {specifier}")
         with patch.object(m, "ROOT", PROJECT_ROOT):
             actual = m.assemble_context(self.out)
-            self.assertEqual(len(actual["members"]), 53)
+            self.assertEqual(len(actual["members"]), 57)
             self.assertEqual(actual, m.verify_context(self.out))
 
 
