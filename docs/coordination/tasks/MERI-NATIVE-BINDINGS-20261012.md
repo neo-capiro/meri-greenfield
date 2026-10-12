@@ -61,3 +61,9 @@ remain separate. A writer source pass cannot admit the wrapper or G1.
 Root must allocate the proposed helper and wrapper composition before edits.
 Reviewer freezes independent substitution, short-write, late-return, deadline,
 partial-preservation, fsync/readback and membership controls before final source.
+
+Root approved the exact reserved writer and wrapper composition. Root also
+approved adding only `--no-optional-locks`, `core.fsmonitor=false` and
+`core.untrackedCache=false` to the existing fixed Git arguments, retaining full
+untracked-file checking and existing submodule semantics. Native helper identity
+and all missing pins remain unresolved; this is a source-only hardening.

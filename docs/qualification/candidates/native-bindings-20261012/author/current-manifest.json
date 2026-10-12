@@ -1,0 +1,103 @@
+{
+  "base": "263d0d174f9924a6030bb1c20100ff1115ffcda0",
+  "files": [
+    {
+      "path": "docs/coordination/reports/MERI-NATIVE-BINDINGS-20261012.md",
+      "bytes": 7372,
+      "sha256": "c83471325405a048f66cd630131dfbb04b9d35abb38ef1a9bdac95fe51283cae"
+    },
+    {
+      "path": "docs/coordination/tasks/MERI-NATIVE-BINDINGS-20261012.md",
+      "bytes": 4361,
+      "sha256": "6c0c3abf38a8a5a80450ff8fb17a61ef545b64b90a6df6fe4c2bda7803b88af1"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/author/binding-review.json",
+      "bytes": 4124,
+      "sha256": "26fcfb52b996d61ef8aecc884923abce649eeed3935cf749feacc29bc5b2a0fc"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/author/checks-final-clock-repair.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/author/checks-final-clock-repair.stdout.json",
+      "bytes": 2067,
+      "sha256": "6f56178745df5613201a2b300d3a7b8f7c366589e7ab7a1ad937f4c51e904176"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/author/checks-first.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/author/checks-first.stdout.json",
+      "bytes": 2067,
+      "sha256": "3c99bc313838a36935811bf7b35d32e08178917ef29a11559000ea15eac9e2d9"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/author/checks-freeze.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/author/checks-freeze.stdout.json",
+      "bytes": 2122,
+      "sha256": "142e3cc482db8bdffbda246c0f23d0aacb38a1619b6b476f27fcc03f761a753d"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/author/checks-port-deadline-repair.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/author/checks-port-deadline-repair.stdout.json",
+      "bytes": 2067,
+      "sha256": "344baa25ab532dc2c827d0ae043ef33b3174995fcd87535b603ce172ace1eaf2"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/author/evidence-writer.py",
+      "bytes": 8831,
+      "sha256": "8715d7999e4c9d7ab1422f7360a6a9cff5053da57687dacda861ef69d5e42afc"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/author/historical-location-check.stderr.txt",
+      "bytes": 504,
+      "sha256": "69c7835d9b03230268ccd576110f8e5da1cab26b4be0a73fcf8b77a2f209016e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/author/historical-location-check.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/author/source-checks.py",
+      "bytes": 9859,
+      "sha256": "d8f27ee4801d63b5b2de4c2bed26e30d924a23acd688614202af3cd9619e6e70"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/author/run-supervised.py",
+      "bytes": 16775,
+      "sha256": "380dfc349ac5283f49b7d8a8360a4dc9d7c2a43516361d1d1c387290620ec595"
+    }
+  ],
+  "selfExcluded": true,
+  "authorChecksPassed": 47,
+  "independentDraftWriterChecksPassed": 156,
+  "independentFinalSourceReviewPending": true,
+  "onlyChangedPreviouslyTrackedPath": "docs/qualification/candidates/native-supervisor-20261012/author/run-supervised.py",
+  "historicalLocationCheck": {
+    "exitCode": 1,
+    "reason": "exclusive-evidence-allocation implementation location intentionally superseded; unchanged historical source assertion preserved"
+  },
+  "nativeEntryImported": false,
+  "NativeWritesExecuted": false,
+  "nativeFileOperations": 0,
+  "nativeProcesses": 0,
+  "missingPinsRemainNone": true,
+  "privateBodiesPublished": false,
+  "nativePublicationQualified": false,
+  "runtimeAccepted": false,
+  "g1Accepted": false
+}

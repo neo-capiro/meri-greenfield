@@ -1,0 +1,101 @@
+{
+  "status": "PARTIAL_SOURCE_CONTINUATION_NATIVE_HOLD",
+  "verifiedPrivateRecords": [
+    {
+      "role": "current supervisor source review",
+      "member": "supervisor-source-review.json",
+      "bytes": 6659,
+      "sha256": "71bb9b1ae8648c51ffeccc79d78dd6134445df55aea023089ddd1f93f6aac613",
+      "serialization": "reconstructed CRLF, no final newline; exact hash independently matched",
+      "privateBodyPublished": false
+    },
+    {
+      "role": "reported provenance and receipt bindings",
+      "member": "provenance-and-bindings.json",
+      "bytes": 15241,
+      "sha256": "983c22b7aaf0578b148579ca009c6d23603f4ab760b85936013b7e8991963c06",
+      "serialization": "reconstructed CRLF, no final newline; exact hash independently matched",
+      "privateBodyPublished": false
+    }
+  ],
+  "manifestRelay": {
+    "bytes": 2245,
+    "sha256": "e8aae481a5f8f2fab356068dff1a33cc9c67ce9207d3841d5ca27f4a18f9dd4f",
+    "originalManifestBytesEstablished": false,
+    "listedMembers": 13,
+    "selfExcluded": true,
+    "parentReportedZipMembers": 14,
+    "completeOriginalEvidenceManifestEstablished": false
+  },
+  "unavailableIdentityInputs": [
+    {
+      "member": "candidate-hash-and-paths.json",
+      "reportedBytes": 60160,
+      "reportedSha256": "1817c1d72c2bbfafba943d0cbff4314ac210694a481565b5036a986087659d84",
+      "completeRelayVerifiedHere": false,
+      "limit": "Root reports a visibly truncated relay; no complete byte or predicate claim."
+    },
+    {
+      "member": "collect.ps1",
+      "reportedBytes": 23776,
+      "reportedSha256": "729298afadd57a97fe8325ff862d0e208befd9392b4befa5f91053dddfcd25e1",
+      "completeRelayVerifiedHere": false,
+      "limit": "Exact comparison source has been requested by root; no predicate change before reading it."
+    }
+  ],
+  "distinctReceiptRoles": [
+    {
+      "role": "original collector refusal receipt",
+      "bytes": 1407,
+      "sha256": "9b0b0633ce4f1bec0c59fa4acc8e1637f7236a1e1b87a4a5e2aae3fcbc302842",
+      "bodyVerifiedHere": false
+    },
+    {
+      "role": "prior ancestor diagnostic command receipt",
+      "bytes": 2206,
+      "sha256": "61650f0d9c78b4f009a51e68cd45d2e7278d4692c9307a597d1d51ceb9700510",
+      "bodyNestedInVerifiedReview": true,
+      "historicalWrapperHashPinned": false
+    },
+    {
+      "role": "prior full audit reference, not original collector source-verification",
+      "member": "source-and-input-verification.json",
+      "bytes": 42321,
+      "sha256": "fbce57f071e94db5e7ceff03141fdc7bd9467e5b205965d45f93ae1fcd740400",
+      "bodyVerifiedHere": false,
+      "substitutedForOriginalSourceVerification": false
+    }
+  ],
+  "gitObservations": {
+    "absoluteExecutablePathReportedPrivately": true,
+    "executableBytesEstablished": false,
+    "executableSha256Established": false,
+    "reportedHead": "c225c4f6247c22c8906a23758477e431e3d88c15",
+    "reportedTree": "196ae19a744e40ba1a2b528daddeb42abe47ea94",
+    "reportedTrackedStatusEmpty": true,
+    "reportedStatusExcludesUntracked": true,
+    "reportedStatusIgnoresSubmodules": true,
+    "full1538SourceFileHashAuditRepeated": false,
+    "currentWrapperCompleteWorktreeCheckReplaced": false
+  },
+  "remainingCompositionInputs": [
+    "exact original collector source-verification bytes/schema/hash and full row membership",
+    "complete reviewed original evidence manifest and immutable hash",
+    "actual Git executable bytes/hash and helper provenance",
+    "complete candidate hash record and actual comparison predicate source",
+    "review of any full1538-row source verification against current256-row bound, without reduced coverage",
+    "fresh private action/destination binding and exact enclosing watchdog interface/ownership",
+    "separate specific one-action execution authorization and returned native evidence"
+  ],
+  "admission": {
+    "privateBodiesPublished": false,
+    "oldPinsFilled": false,
+    "identityPredicatesRelaxed": false,
+    "candidateExecuted": false,
+    "diagnosticExecuted": false,
+    "nativePublicationQualified": false,
+    "executionAuthorized": false,
+    "runtimeAccepted": false,
+    "g1Accepted": false
+  }
+}
