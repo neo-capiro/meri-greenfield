@@ -1,0 +1,38 @@
+{
+  "previousFreeze": "0217137304aa80dab662a4e98b934b30a9742cbc",
+  "change": "Record returned-byte facts before refusing a late read; preserve all deadline/EOF/retention gates",
+  "authorChecksPassed": 27,
+  "files": [
+    {
+      "path": "supervision.py",
+      "bytes": 7846,
+      "sha256": "418ad3d9a5537f5ab4f97ddc748ab3529e4d491919e171c52754f772d69be142"
+    },
+    {
+      "path": "source-checks.py",
+      "bytes": 7912,
+      "sha256": "0de6b33e0d75600037133c2447ef084faa05478a993a2aa865f93096e3b8ba50"
+    },
+    {
+      "path": "run-supervised.py",
+      "bytes": 16402,
+      "sha256": "ccb6dba27ef3c2991df96c553ba21b097eeb243e4c86666b3cb8a8b7df7dfe3f"
+    },
+    {
+      "path": "checks-late-read-fix.stdout.json",
+      "bytes": 1400,
+      "sha256": "82b0977be106133c6db289bea1aa804b6bbd40a22fc6e71668fcff79c93dfd79"
+    },
+    {
+      "path": "checks-late-read-fix.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "targetImports": 0,
+  "nativeChildrenCreated": 0,
+  "realThreadsCreated": 0,
+  "actualSupervisorExecuted": false,
+  "runtimeAccepted": false,
+  "priorFreezeAndFailureEvidencePreserved": true
+}

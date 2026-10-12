@@ -1,0 +1,75 @@
+{
+  "status": "HOLD_CURRENT_SUPERVISOR",
+  "scope": "READ_ONLY_SOURCE_REVIEW",
+  "reportedPrivateZip": {
+    "bytes": 39189,
+    "members": 14,
+    "sha256": "6b5a503b242def09dec995110ae8e645fb3413cf4659b4df81a1a9d493499ee0",
+    "verifiedBy": "parent root reader, not this author"
+  },
+  "currentSupervisor": {
+    "bytes": 11124,
+    "sha256": "e37894e22b3bb290c8b8b8fb7aaf35f2d7b2868cc2d469214913953d1b4fc9df",
+    "verifiedHereAfterHtmlOperatorDecoding": true,
+    "historicalExecutionSourceHashEstablished": false,
+    "rawRelayBytes": 11140,
+    "rawRelaySha256": "d367b8a6d7706877ece6596fbef093a96bfe16efcf0676486aa2573cb273575b",
+    "privateBodiesPublished": false,
+    "imported": false,
+    "compiled": false,
+    "executed": false
+  },
+  "proposalRelay": {
+    "reportedOriginalSha256": "bfcff952c6f16e0e317fb130d75126c3a9499964ef597e20e5bfa50eaf2f1412",
+    "localLfDerivativeBytes": 4154,
+    "localLfDerivativeSha256": "e769081cdc6d86224fec977edc65e01710f973b4ddcb5ff5c9150686cb5ce598",
+    "originalBytesVerifiedHere": false
+  },
+  "findings": [
+    {
+      "id": "TOTAL_TIME",
+      "lines": [41, 42, 43, 64, 76, 83, 89, 92, 93],
+      "observation": "15 seconds bounds a cooperative post-Popen polling interval. Popen starts after deadline creation but cannot be preempted by that polling. Three Git commands each allow15seconds before and after; recursive prior hashing, selected source hashing and packaging have no aggregate deadline. Termination can wait3seconds twice; joins allow2seconds per stream; close and other native/filesystem operations can block.",
+      "required": "One total action budget including preflight, execution, termination, drain and evidence; separately qualified enclosing watchdog for blocked native operations. No hard-total claim from Python clock alone."
+    },
+    {
+      "id": "STREAM_SETTLEMENT",
+      "lines": [66, 70, 71, 72, 92, 93, 105, 110],
+      "observation": "Retained stdout32768/stderr65536 caps exist. Reader completion is used as EOF proxy and parse additionally requires no reader errors. No explicit per-stream EOF; post-join still-live readers may mutate buffers/counters while snapshot/close proceeds. Read errors do not interrupt the polling child immediately.",
+      "required": "Explicit per-stream EOF, errors and immutable settled snapshot; overflow/read-error cancellation; no success after missing EOF or physical exit, no blocking close while a reader owns its stream."
+    },
+    {
+      "id": "SELECTED_EXECUTABLE",
+      "lines": [26, 29, 55],
+      "observation": "argv selects old original receipt executable, not the new explicit candidate. No executable byte count/hash or named/opened current identity is bound.",
+      "required": "A separately reviewed private action binding selects the exact candidate, validates executable hash/size and meaningful identity evidence, and retains repository/original-output from the preserved original receipt."
+    },
+    {
+      "id": "FRESH_DESTINATION",
+      "lines": [7, 19, 21, 22, 159],
+      "observation": "Fixed destination is occupied according to the parent. mkdir(exist_ok=False) fails safely when occupied, but allocates before ancestry checks and recursive prior evidence reads have no explicit membership/bounds. Archive is fixed too.",
+      "required": "Bind a distinct caller-owned fresh destination; validate ancestry before exclusive allocation; never overwrite originals or infer a new fallback path. Preserve a fixed reviewed prior evidence list rather than recursively discovering arbitrary files."
+    },
+    {
+      "id": "ADMISSION_AND_IMPORT",
+      "lines": [21, 25, 28, 34, 41, 42, 43, 127, 129],
+      "observation": "Module import performs filesystem writes and later child execution. Twenty-two asserts guard acceptance and preservation; optimized Python can remove them.",
+      "required": "No work on import; explicit handled refusal checks. No execution CLI becomes authorized by source acceptance."
+    },
+    {
+      "id": "IDENTITY_LIMITS",
+      "lines": [48, 51, 52, 127],
+      "observation": "Original output-parent bracket includes dev/inode/mode/attributes/size/mtime/ctime but not atime. Parent reports separate candidate hash/bracket evidence with complete-field instability; its exact predicate/source and full supporting JSON are not yet relayed.",
+      "required": "Preserve existing guards; request exact supporting predicate before changing any criterion. Distinguish identity/security fields and read-sensitive timestamps in reporting only. Do not claim full bracket stability, distributor trust, loaded closure or hostile reverted-mutation resistance."
+    }
+  ],
+  "admission": {
+    "sourceRepairAccepted": false,
+    "executionProfileAccepted": false,
+    "diagnosticAuthorized": false,
+    "collectorRetryAllowed": false,
+    "runtimeAccepted": false,
+    "buildAccepted": false,
+    "g1Accepted": false
+  }
+}
