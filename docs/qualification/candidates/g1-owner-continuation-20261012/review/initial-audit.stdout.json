@@ -1,0 +1,1 @@
+{"targetCommit": "159a7dd3b5fbd9ed2cc05dc96c450ed5c7b4585e", "targetTree": "c4dfe17dab25529efe4198dc143accde8e1b9302", "planSha256": "8bde7696c99883948a8eb9595cce4e43e721c390968a13b456956cfa0ca83822", "passed": 283, "failed": ["plan added text no private absolute paths or body fences"], "verdict": "HOLD"}

@@ -1,0 +1,26 @@
+{
+  "scope": "Independent narrow canonical source-to-native plan delta review; no additional host discovery or runtime actions",
+  "targetCommit": "159a7dd3b5fbd9ed2cc05dc96c450ed5c7b4585e",
+  "baseCommit": "263d0d174f9924a6030bb1c20100ff1115ffcda0",
+  "frozenAt": "2026-10-12T06:49:02.824414+00:00",
+  "outline": [
+    "Read exact canonical plan delta and accepted budget/native/host reports with relevant implementation.",
+    "Verify each changed factual claim and local link against immutable source/evidence, including stack ancestry,139-capability scope and unresolved owners.",
+    "Verify original L1/image packets and execution permissions are unchanged; retain discrepancies and return exact ACCEPT_SOURCE or HOLD."
+  ],
+  "criteria": [
+    "Budget owner historical read API does not imply reconciliation mutation, deployed transport, live DB evidence or runtime acceptance.",
+    "Native writer identity/flags/private relay semantics match exact accepted source; no native execution or producer readiness is invented.",
+    "Host absence/setup-only findings match accepted evidence, with no launcher, auth exception, supported isolation or action approval inferred.",
+    "Local links resolve, named commits exist and stack ancestry observations match Git; source hashes are not runtime proof.",
+    "139 original capabilities /96 selected/43 deferred scope and canonical14 bound unavailable/82 unmapped remain; no reduction to fixtures.",
+    "Frozen original L1/image packets and security/spend/private-data boundaries remain unchanged; no private source bodies copied."
+  ],
+  "forbidden": [
+    "host/daemon probes",
+    "native or database execution",
+    "installation",
+    "cloud/provider/customer/security actions",
+    "edits outside allocated review evidence"
+  ]
+}

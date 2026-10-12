@@ -1,0 +1,9 @@
+{
+  "kind": "REVIEW_CHECKER_ASSERTION_DEFECT",
+  "source": "exec tool chunk e89544, final review manifest sanity check",
+  "exitCode": 1,
+  "output": "Traceback (most recent call last):\n  File \"<stdin>\", line 6, in <module>\nAssertionError\n",
+  "failedAssertion": "config.json bytes == b'{}'",
+  "cause": "Reviewer checker assumed no trailing newline in the already retained empty JSON object. File parses to empty object; this is not an author or runtime failure. All prior manifest rows verified before this final assertion.",
+  "correction": "Assert parsed JSON is {} and bind exact retained bytes/hash; correct cleanup receipt byte description. No metadata query or target operation rerun."
+}

@@ -1,0 +1,184 @@
+{
+  "sourceHead": "26b7d52e2418491593d74a1d18147cfad902eac5",
+  "base": "263d0d174f9924a6030bb1c20100ff1115ffcda0",
+  "originalFiles": 4198,
+  "unchangedOriginalFiles": 4193,
+  "changedOriginalPaths": [
+    "apps/gateway/budget/README.md",
+    "apps/gateway/budget/durable-tool-dispatch.mjs",
+    "apps/gateway/budget/postgres-tool-budget.mjs",
+    "docs/plans/MERI-G1-SOURCE-TO-NATIVE.md",
+    "docs/qualification/candidates/native-supervisor-20261012/author/run-supervised.py"
+  ],
+  "allOriginalTestsContractsLocksMigrationsPreserved": true,
+  "frozenL1AndImagePacketsPreserved": true,
+  "exactAcceptedSource": [
+    {
+      "path": "apps/gateway/budget/README.md",
+      "authorCommit": "028b1134e373734caea036ee5c38d35b20428d8b",
+      "bytes": 11637,
+      "sha256": "662b0ce1975338bc73ded780af8b8d84335ad70779a8091467d45d6c2bce02fb"
+    },
+    {
+      "path": "apps/gateway/budget/durable-tool-dispatch.mjs",
+      "authorCommit": "028b1134e373734caea036ee5c38d35b20428d8b",
+      "bytes": 2766,
+      "sha256": "17d791d9b4803dfbfd67e30befd3818a7d3bc82464b2e00a385a4619bf0fc9a6"
+    },
+    {
+      "path": "apps/gateway/budget/postgres-tool-budget.mjs",
+      "authorCommit": "028b1134e373734caea036ee5c38d35b20428d8b",
+      "bytes": 10790,
+      "sha256": "6d2d76ace7edf38bd2c0559fc62b069b00d0f80b7e187db7347974998c48f6e0"
+    },
+    {
+      "path": "apps/gateway/budget/tool-budget-outcome.mjs",
+      "authorCommit": "028b1134e373734caea036ee5c38d35b20428d8b",
+      "bytes": 3638,
+      "sha256": "d5148557646a228160fc080efd40da6b110bebb6a2264b4180a9c6f5a018e3a7"
+    },
+    {
+      "path": "apps/gateway/test/tool-budget-outcome.test.mjs",
+      "authorCommit": "028b1134e373734caea036ee5c38d35b20428d8b",
+      "bytes": 14319,
+      "sha256": "fb85247c9b1e8ba97ca0fe318094eb10f0130d5977b923a70954f6b318585ae4"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/author/run-supervised.py",
+      "authorCommit": "74f9692047be50beb8c59a0b0d7833f0cb682c76",
+      "bytes": 16775,
+      "sha256": "380dfc349ac5283f49b7d8a8360a4dc9d7c2a43516361d1d1c387290620ec595"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/author/evidence-writer.py",
+      "authorCommit": "74f9692047be50beb8c59a0b0d7833f0cb682c76",
+      "bytes": 8831,
+      "sha256": "8715d7999e4c9d7ab1422f7360a6a9cff5053da57687dacda861ef69d5e42afc"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/author/source-checks.py",
+      "authorCommit": "74f9692047be50beb8c59a0b0d7833f0cb682c76",
+      "bytes": 9859,
+      "sha256": "d8f27ee4801d63b5b2de4c2bed26e30d924a23acd688614202af3cd9619e6e70"
+    }
+  ],
+  "currentManifests": [
+    {
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/author/source-manifest.json",
+      "membersMatched": 4,
+      "bytes": 1074,
+      "sha256": "d35b387aec3a32d30af90c11aca24b1aa3a6c5d5a6290cffeca6a9696cec1353"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/review/manifest.json",
+      "membersMatched": 25,
+      "bytes": 4863,
+      "sha256": "26fb62f4a640563f95a843adbfbf0e32aae7a13d7478500cc9fca2e90e2a9bf3"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/author/current-manifest.json",
+      "membersMatched": 16,
+      "bytes": 4333,
+      "sha256": "2267f56d8cca1b67d5ba7c299901575c2d152d1c1bb0d2492b7758d318380285"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/review-manifest.json",
+      "membersMatched": 55,
+      "bytes": 12507,
+      "sha256": "b2aec8728ac915b18075006350980e98ac1e67600307bb08534bf4429ca511c0"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/manifest.json",
+      "membersMatched": 25,
+      "bytes": 5608,
+      "sha256": "e01f4fa22d8bab57b1c173df7f3ad225983200f14c84895f06c9d6812c37357b"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/manifest.json",
+      "membersMatched": 23,
+      "bytes": 5189,
+      "sha256": "585486566818b897316236b478f11d76d6f291501140895268d810b1bf0f83e3"
+    }
+  ],
+  "rootSourceCheckReceipts": [
+    {
+      "label": "budget-independent",
+      "sourceHead": "f85c0ea98539d91fb8fc599b414e8362bf35ce3a",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "streamsMatched": 2
+    },
+    {
+      "label": "exact-root-dependencies",
+      "sourceHead": "bf373d345ce35ae22e80d76cbf73a8bae254ce16",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "streamsMatched": 2
+    },
+    {
+      "label": "gateway-offline",
+      "sourceHead": "f85c0ea98539d91fb8fc599b414e8362bf35ce3a",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "streamsMatched": 2
+    },
+    {
+      "label": "historical-supervisor-author",
+      "sourceHead": "991025b99e9c8144cc37c4166e828e126f4cef0f",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "streamsMatched": 2
+    },
+    {
+      "label": "host-packet-offline",
+      "sourceHead": "991025b99e9c8144cc37c4166e828e126f4cef0f",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "streamsMatched": 2
+    },
+    {
+      "label": "integrated-source-audit-corrected",
+      "sourceHead": "159a7dd3b5fbd9ed2cc05dc96c450ed5c7b4585e",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "streamsMatched": 2
+    },
+    {
+      "label": "integrated-source-audit",
+      "sourceHead": "159a7dd3b5fbd9ed2cc05dc96c450ed5c7b4585e",
+      "exitCode": 1,
+      "ownedProcessGroupAbsent": true,
+      "streamsMatched": 2
+    },
+    {
+      "label": "native-writer-author",
+      "sourceHead": "df2f008f025588a93e35e1123f4ee430f5344e39",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "streamsMatched": 2
+    },
+    {
+      "label": "native-writer-independent",
+      "sourceHead": "2ed714159c2da447bd69b6c9340382818a8f5b3e",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "streamsMatched": 2
+    }
+  ],
+  "independentPlanReview": {
+    "verdict": "ACCEPT_SOURCE",
+    "checksPassed": 284,
+    "planHashMatched": true,
+    "reviewManifestMembersMatched": 15
+  },
+  "boundedPrivacyScreen": {
+    "files": 228,
+    "knownPrivateNeedles": 52,
+    "matches": 0,
+    "excluded": "Drive-root-only strings identify no personal location; original overly broad failure retained.",
+    "limitation": "Known supplied private values/bodies and named credential markers only; not a universal secret guarantee."
+  },
+  "nativeImportsOrExecution": false,
+  "decision": "PASS_SOURCE_AND_EVIDENCE_INTEGRITY_ONLY",
+  "historicalManifests": "Bind historical freezes, not the superseding wrapper/plan; retained unchanged."
+}

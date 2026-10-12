@@ -1,0 +1,30 @@
+✔ actual disabled gateway exposes exact ABSENT observation with zero ledger mutation (14.683597ms)
+✔ UNKNOWN returns immutable bounded accounting through actual owner composition (23.349628ms)
+✔ SETTLED returns immutable bounded accounting through actual owner composition (6.650926ms)
+✔ canonical lost reserve acknowledgement retained across fresh readback without replay (7.906581ms)
+✔ canonical lost settle acknowledgement retained across fresh readback without replay (6.58015ms)
+✔ historical original A remains inspectable after expiry/revocation/quarantine and replacement B (6.49373ms)
+✔ ABSENT is a snapshot; same existing trusted invocation may become UNKNOWN after later reservation (8.948966ms)
+✔ read acknowledgement uncertainty and ordinary query failure release no success receipt or writes (16.27725ms)
+✔ read serialized behind actual canonical reservation boundary sees committed UNKNOWN (11.700187ms)
+✔ parallel observations do not alter or settle liability (46.245595ms)
+✔ all canonical descriptor execute paths remain unavailable before further transaction/authority work (86.7568ms)
+✔ ABSENT requires retained allocation and original grant binding (18.39575ms)
+✔ UNKNOWN requires retained allocation and original grant binding (21.769806ms)
+✔ raw expected/invocation objects cannot execute getters or proxy reflection (15.374503ms)
+✔ closed invalid expectations deny before scripted connection work (15.610028ms)
+✔ operation/argument mismatch cannot expose an existing outcome (12.3277ms)
+✔ tenant actor conversation run and allocation substitution cannot read other scope (34.241421ms)
+✔ historical grant correlation rejects task attempt fence policy capability and grant substitutions (37.0646ms)
+✔ retained allocation and grant-binding duplicate columns cannot disagree with facts (21.1927ms)
+✔ reservation duplicate identities and full original facts cannot disagree (21.29958ms)
+✔ UNKNOWN rejects charge/output/time fields inconsistent with retained liability (29.646663ms)
+✔ SETTLED refuses malformed amounts, output overflow, missing or unordered timestamps (29.631559ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1821.216838

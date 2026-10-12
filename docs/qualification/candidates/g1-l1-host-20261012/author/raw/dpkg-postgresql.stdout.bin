@@ -1,0 +1,5 @@
+libpq5:amd64	17.11-0+deb13u1	installed
+postgresql-15-pllua		not-installed
+postgresql-17-pllua		not-installed
+postgresql-pgmp		not-installed
+python3-psycopg2	2.9.10-1+b1	installed

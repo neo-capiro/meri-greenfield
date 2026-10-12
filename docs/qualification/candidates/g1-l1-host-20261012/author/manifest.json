@@ -1,0 +1,137 @@
+{
+  "baseCommit": "263d0d174f9924a6030bb1c20100ff1115ffcda0",
+  "files": [
+    {
+      "path": "docs/coordination/tasks/MERI-G1-L1-HOST-20261012.md",
+      "bytes": 1864,
+      "sha256": "75a4e296fd7961a6e6a8f4b5eac180b46efbff89506e39fa00013f9f0cf27ddd"
+    },
+    {
+      "path": "docs/coordination/reports/MERI-G1-L1-HOST-20261012.md",
+      "bytes": 7034,
+      "sha256": "604957145d0badde2d7c9083b0199a00dfd501eb69fb368e2ec32f64e6cb72e6"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/cached-package-policy.json",
+      "bytes": 558,
+      "sha256": "e32a02b67f5a27db9a413263f3efc8bbc1c9194736345966494782d74b02b933"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/collection-notes.json",
+      "bytes": 1403,
+      "sha256": "909d10a6c1cf24cf5de2c874fd2a8da9b883e1a43bddd0490ba6900806050e2c"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/discover-host.py",
+      "bytes": 5533,
+      "sha256": "926a39ffcd608b78eac9b0e35a8d0e456fa680add90de30790ca599f8b3492a9"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/host-metadata.json",
+      "bytes": 6244,
+      "sha256": "6205761a4acf8f75b501cef7b8c2a17412dc73d5bac8214ec3a75688619df96e"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/isolation-and-caches.json",
+      "bytes": 2467,
+      "sha256": "89287c90675b39ae5800af6a5c9d37ce7f9fe55bae79c26c6ead3ab2c5d78384"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/metadata-commands.json",
+      "bytes": 4949,
+      "sha256": "5b2efb85438ad98c68c1d089236ad04161edb57cef5f1b370b0f1ada89d335f3"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/node-driver-resolution-metadata.json",
+      "bytes": 1047,
+      "sha256": "2908869e534a9f9dc534a7f070dec8d672d3d7ddae58905eb958c6bb03e8cb73"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/raw/apt-cached-policy.stderr.bin",
+      "bytes": 92,
+      "sha256": "1148b3dba8ac2fde54dee12293653b1672d9a3922e081bdf08e11601a687db61"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/raw/apt-cached-policy.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-context.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-context.stdout.bin",
+      "bytes": 75,
+      "sha256": "16a17082f67634f8eb3fd4f4c34526371aaa6de287a66c4e141a4d91c9d368ef"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-images.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-images.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-info.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-info.stdout.bin",
+      "bytes": 398,
+      "sha256": "b4e12b19c7e43ef0a1c6d4c04ebfa9cee49835fd870cd39237bb09a56b1fdd1f"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-version.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-version.stdout.bin",
+      "bytes": 1012,
+      "sha256": "72ed632ba67bedf12e3311e92fbf7054a961b5f2df27dd677dbdcd849caaa7f5"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/raw/dpkg-postgresql.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/raw/dpkg-postgresql.stdout.bin",
+      "bytes": 179,
+      "sha256": "0de33abd4331841e3bf5a61564fde54491ed832517111d629216c916283de251"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/resource-metadata.json",
+      "bytes": 1129,
+      "sha256": "f41a1dae83f8f3bff71b2940ff94f00499bd0324f732c2d06593ca25d7cbb687"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/setup-packet.json",
+      "bytes": 9446,
+      "sha256": "745539e8d862dbcd62d8e8d10efbb8e0c48bd14166741515262f748017df8eb2"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/source-requirements.json",
+      "bytes": 2120,
+      "sha256": "367894bb34a8f151dcb29d569ba8b15688907129afb36d7c12ccdf76aed57f4d"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/verify-packet.py",
+      "bytes": 4831,
+      "sha256": "01aa682ccc7b11bc72c549c3975eddba129d72678f21b2e3d212f7e0fc19f5b8"
+    }
+  ],
+  "excluded": [
+    "manifest.json self",
+    "verify.stdout.json",
+    "verify.stderr.txt",
+    "verification-receipt.json"
+  ],
+  "runtimeAdmission": "HOLD_NOT_EXECUTABLE"
+}

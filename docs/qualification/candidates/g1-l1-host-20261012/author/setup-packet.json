@@ -1,0 +1,131 @@
+{
+  "schema": "meri-l1-host-setup/1",
+  "baseCommit": "263d0d174f9924a6030bb1c20100ff1115ffcda0",
+  "decision": "NO_VIABLE_ALREADY_PRESENT_L1_RUNTIME_ESTABLISHED",
+  "executionAdmission": "HOLD_NOT_EXECUTABLE",
+  "launcherCreated": false,
+  "relocationProposed": false,
+  "observations": {
+    "serverBinariesOnPath": false,
+    "serverBinariesAtConventionalPaths": false,
+    "scope": "PATH and enumerated conventional locations only; not exhaustive filesystem absence.",
+    "installedClientLibrary": "libpq5:amd6417.11-0+deb13u1",
+    "installedSystemDriver": "python3-psycopg2 2.9.10-1+b1; wrong API for fixed psycopg3.3.3 source",
+    "currentPython": "3.12.14",
+    "currentPythonPsycopg3": null,
+    "currentPythonHttpx": "0.28.1",
+    "rootStateNodePgResolutionMetadataFound": false,
+    "dockerServer": "28.4.0",
+    "dockerLocalImages": 0,
+    "dockerContainers": 0,
+    "cachedImageDigests": [],
+    "dockerRootlessOrExclusiveIsolationProven": false,
+    "namespaceBehaviorProbed": false,
+    "aptCandidateMetadataResolved": false
+  },
+  "supportedRoute": {
+    "placement": "Same selected saved Linux environment only",
+    "kind": "Separately approved non-container native runtime materialization after immutable Linux source/dependency closure",
+    "serverVersionSelected": null,
+    "serverArtifactSha256": null,
+    "driverRequirement": "psycopg3.3.3 from canonical PostgresStore; exact Linux/Python artifact/backend closure pending",
+    "nodeRequirement": "Node>=24<25 and pg8.23.1 exact existing lock; actual host runtime/dependency provenance pending",
+    "historicalWindowsArtifactsReusable": false,
+    "targetPrefix": null,
+    "installerCommand": null,
+    "sourceRecipeReady": false,
+    "whyNoLauncher": "No server runtime or required driver resolution, no cached image, no qualified authentication/isolation/enclosing supervisor. Generic scaffolding would not be executable admission."
+  },
+  "nextSourceWorkWithinExistingAuthority": [
+    "Resolve exact supported Linux x86_64 PostgreSQL server/admin-client artifact versions, authenticated source/channel/package hashes, complete dependencies, licenses/security/ABI and actual bytes/limits; metadata first, no download/install now.",
+    "Bind a Linux-compatible psycopg3.3.3 backend to selected admitted interpreter and libpq/native closure; historical cp311-win_amd64 wheel is inapplicable. Bind current Node24/pg8.23.1 lock/dependency provenance and synthetic TLS fixture generation source.",
+    "Prepare exact same-environment host ownership/isolation and password-handoff source proposal; current constructors omit passwords although both stores support them. Do not introduce broad/loopback trust, ambient credentials or a library-support claim without evidence.",
+    "Propose the exact lifecycle/supervisor allocation only once executable identities, supported isolation, authenticated artifacts and action paths are known; preserve original t0 and explicit physical cleanup evidence."
+  ],
+  "separateFutureApprovals": [
+    {
+      "id": "SETUP_ONLY",
+      "status": "NOT_REQUESTED_AS_EXECUTABLE_ACTION_PENDING_EXACT_BYTES",
+      "needs": [
+        "Authenticated complete Linux artifact manifest and verifier/license/security/ABI decision",
+        "Owner-bound new isolated prefix in this saved environment; exact installer argv and absolute paths, write set, byte/time/output caps and cleanup",
+        "Explicit approval to acquire/materialize only those exact bytes/dependencies; no package manager/global/security/capability change inferred",
+        "No database initialization/start/SQL, no container, namespace probe, credentials/certificates/HBA changes or L1 tests under setup-only authority",
+        "Before materialization, independently inspect exact installer/postinstall behavior and prove no automatic service start, initdb, role/credential creation or HBA/security mutation; generic apt install is not admitted. Prefer reviewed artifact-only materialization where it can supply supported complete runtime closure."
+      ],
+      "downloadBytes": null,
+      "incrementalCostUsd": null,
+      "existingHostCost": "Unestimated; not claimed free"
+    },
+    {
+      "id": "ISOLATION_AUTH_AND_LIFECYCLE",
+      "status": "MISSING_SOURCE_BINDINGS_AND_SEPARATE_ACTION_AUTHORITY",
+      "needs": [
+        "Supported saved-environment isolation/peer-containment proof or separately scoped permitted probe; current namespace IDs/sysctls/bwrap/Docker metadata do not establish support",
+        "Exact password credential handoff and any required narrowly scoped harness edits reviewed by canonical owner; no trust exception selected",
+        "Platform-specific external supervisor/process ownership/stream limits and descendant/port absence; no target runtime used for metadata discovery"
+      ]
+    },
+    {
+      "id": "L1_EXECUTION",
+      "status": "NOT_AUTHORIZED",
+      "needs": [
+        "Exact fresh PGDATA/system_identifier/PostgreSQL executable+utilities+native libraries/driver/PID creation/listener/database/role identities and empty schemas",
+        "One owned local cluster; two synthetic databases/owners plus distinct bootstrap identity; one PG listener, two loopback TLS listeners, one transient non-listening negative socket",
+        "Exact original L1 commands/migration ordering, synthetic cert/input/output paths and authenticated private channel; no automatic additional budget tests",
+        "One original work720s/cleanup900s envelope, each original command once, stdout8MiB/stderr1MiB per command, external owned cleanup and positive absence before deleting only new owned data/secrets"
+      ],
+      "providerCalls": 0,
+      "providerUsd": 0,
+      "newCloudResources": 0,
+      "cloudInfrastructureActions": 0,
+      "newRdsAllowed": false,
+      "auroraConnectionAllowed": false,
+      "existingHostCost": "Unestimated; future setup/download cost not approved"
+    }
+  ],
+  "excludedAlternatives": [
+    "No relocation or use of another computer/server",
+    "No automatic Docker fallback: zero cached images; pull/launch and containerization would require separate supported immutable-image/action/security review and change the original container-free L1 scope",
+    "No old rejected worker image or historical Postgres fixture pin admitted",
+    "No namespace/capability/HBA/security relaxation to make qualification run"
+  ],
+  "evidenceBoundaries": [
+    "Docker metadata API success proves only access to the queried local socket and its reported state; no launch/isolation capability or daemon trust established.",
+    "Visible5CPU/18882699264B are reported capacity, not reserved/admitted resources.",
+    "Current caller has zero capability masks, NoNewPrivs1/Seccomp2; this neither proves namespace operations work nor authorizes changing restrictions.",
+    "APT metadata query returned no candidate data and a permission warning. It was not bypassed or converted into a package pin. Top-level archive cache has no.deb files; protected partial content was not inspected.",
+    "No database/service/process namespace was created; no target PostgreSQL/native/version binary invoked. Read-only Python metadata, dpkg-query, apt-cache and Docker metadata commands did execute."
+  ],
+  "sameEnvironmentSetupChoices": [
+    {
+      "id": "NATIVE_PREFIX",
+      "decision": "Preferred source-preparation route to preserve non-container L1. Exact immutable Linux artifacts and dependencies materialized into one new owner-bound prefix; no initdb/service/SQL/namespace/credential actions.",
+      "currentlyViable": false,
+      "missing": "No reviewed vendor artifact/version/hash/signature/dependency closure or prefix-specific loader/isolation proof exists; do not invent a command."
+    },
+    {
+      "id": "PLATFORM_PROVISIONED_NATIVE_BINARIES",
+      "decision": "Platform owner may supply already supported server/admin binaries and locked drivers in this saved environment after exact install/write/rollback review.",
+      "currentlyViable": false,
+      "missing": "No such prepared runtime exists. Any installer that auto-creates a PostgreSQL cluster/role or starts a service is outside setup-only scope and cannot be used without separate explicit authority."
+    }
+  ],
+  "resourceAndCostBindingsRequiredBeforeSetup": {
+    "observedCapacitySource": "resource-metadata.json",
+    "archiveDownloadBytes": null,
+    "expandedRuntimeBytes": null,
+    "temporaryExtractionBytes": null,
+    "persistentPrefixBytes": null,
+    "diskHeadroomBytes": null,
+    "setupSeconds": null,
+    "peakMemoryBytes": null,
+    "cpuQuota": null,
+    "stdoutStderrBytes": null,
+    "networkAcquisitionCostUsd": null,
+    "providerCalls": 0,
+    "newCloudResources": 0,
+    "reason": "Derive finite exact caps from authenticated artifact/dependency manifests and selected installation method before approval; visible capacity is not a reservation. Stop if artifact closure cannot fit approved caps; never expand automatically.",
+    "cleanup": "Before setup, bind one fresh local prefix and temporary/output paths plus original clocks; remove only owned incomplete materialization after confirming no owned installer/descendant remains. Preserve raw failure/hashes/receipt, no shared package/cache cleanup. Setup must leave zero running services and no initialized DB. Successful prefix persistence requires explicit approved retention/cleanup owner; later L1 owns separate ephemeral data/secret cleanup."
+  }
+}

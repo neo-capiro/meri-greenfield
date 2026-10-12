@@ -1,0 +1,59 @@
+{
+  "startedAt": "2026-10-12T06:56:26.103082+00:00",
+  "refs": [
+    {
+      "branch": "task/meri-budget-outcome-20261012",
+      "head": "028b1134e373734caea036ee5c38d35b20428d8b",
+      "tree": "2a1e21e38a568965270ca5c3982173991b234c9d"
+    },
+    {
+      "branch": "review/meri-budget-outcome-20261012",
+      "head": "5657a16b8589f587fab5a979bcdac973a9e2f221",
+      "tree": "3d5e39db6cb1b80129ab36c2cef8e9161e1a9a36"
+    },
+    {
+      "branch": "task/meri-native-bindings-20261012",
+      "head": "74f9692047be50beb8c59a0b0d7833f0cb682c76",
+      "tree": "d3c0e8a8b0940b3173b9d01f9df134ac148847f3"
+    },
+    {
+      "branch": "review/meri-native-bindings-20261012",
+      "head": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "tree": "df2d58bd6ab6b21a8dfac06290f7ce8b5f691208"
+    },
+    {
+      "branch": "task/meri-l1-host-20261012",
+      "head": "20f51409673a0bdae1a5a3de99e2cda41d5b549b",
+      "tree": "775b14505d415ca7a178f10409f9c1def1b9b983"
+    },
+    {
+      "branch": "review/meri-l1-host-20261012",
+      "head": "ea0efc5a37f8148cfb4db674d4a6dcc61bc7ab12",
+      "tree": "a643d559fd9d1ff467d28a216ea9ffadfa6d9ab0"
+    },
+    {
+      "branch": "review/meri-g1-plan-delta-20261012",
+      "head": "a401e32a3fea7a615582fa3ee484cb84f662539e",
+      "tree": "2f415e22231e9dd5809f76f27932233ea2aa05da"
+    },
+    {
+      "branch": "task/meri-g1-owner-continuation-20261012",
+      "head": "cdb6a585716a1daba36bdaaa8ea6903c7595b3e5",
+      "tree": "f8ed0f6a3ecc49325b06825d9deb21dddfb08690"
+    }
+  ],
+  "exitCode": 0,
+  "force": false,
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/publication/branch-push.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/publication/branch-push.stderr.bin",
+      "bytes": 793,
+      "sha256": "1828c4b0a224f716c9364162c28af5f350b3f2c8aaccd43ab0db73b1a62d9086"
+    }
+  ]
+}

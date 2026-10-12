@@ -1,0 +1,71 @@
+{
+  "inspectionOnly": true,
+  "pythonSystemPackageMetadata": [
+    {
+      "Package": "python3-psycopg2",
+      "Version": "2.9.10-1+b1",
+      "Architecture": "amd64",
+      "Status": "install ok installed"
+    }
+  ],
+  "selectedRootNodeResolutionAndSystemPythonPaths": [
+    {
+      "path": "/usr/lib/python3/dist-packages/psycopg2",
+      "exists": true
+    },
+    {
+      "path": "/usr/lib/python3/dist-packages/psycopg2-2.9.10.egg-info",
+      "exists": true
+    },
+    {
+      "path": "/workspace/meri-g1-owner-continuation-20261012/apps/control/qualification-sdk-fixture/state/node_modules/pg/package.json",
+      "exists": false
+    },
+    {
+      "path": "/workspace/meri-g1-owner-continuation-20261012/apps/control/qualification-sdk-fixture/node_modules/pg/package.json",
+      "exists": false
+    },
+    {
+      "path": "/workspace/meri-g1-owner-continuation-20261012/apps/control/node_modules/pg/package.json",
+      "exists": false
+    },
+    {
+      "path": "/workspace/meri-g1-owner-continuation-20261012/apps/node_modules/pg/package.json",
+      "exists": false
+    },
+    {
+      "path": "/workspace/meri-g1-owner-continuation-20261012/node_modules/pg/package.json",
+      "exists": false
+    },
+    {
+      "path": "/workspace/node_modules/pg/package.json",
+      "exists": false
+    },
+    {
+      "path": "/node_modules/pg/package.json",
+      "exists": false
+    }
+  ],
+  "noPackageImportedOrInstalled": true,
+  "canonicalPythonRequirement": "psycopg3.3.3; existing dependency packet explicitly Windows-only",
+  "canonicalNodeRequirement": "pg8.23.1; Node>=24<25",
+  "pythonClassTestCounts": {
+    "PricingTests": 3,
+    "PostgresTests": 20
+  },
+  "nodeSourceDeclarationCounts": {
+    "apps/control/qualification-sdk-fixture/service/test/registry-ingress.test.mjs": {
+      "topLevelTestDeclarations": 1,
+      "sha256": "8a98b32b8a7253cf040126f4f29c04a650a56aa5202f779b0f1f61425437c23c"
+    },
+    "apps/control/qualification-sdk-fixture/state/test/registry.test.mjs": {
+      "topLevelTestDeclarations": 6,
+      "sha256": "0835d0845e4d8f5e8e6a6dbd197fc4abd5b008d93a36463838bccfd4fcf4d4ad"
+    },
+    "apps/control/qualification-sdk-fixture/state/test/revocation-postgres.test.mjs": {
+      "topLevelTestDeclarations": 3,
+      "sha256": "a834e4d59f473686dc6230e4f88409719ae62b3fd160682da9b058d0a5637a7b"
+    }
+  },
+  "authentication": "Store APIs admit passwords but frozen L1 harness constructors omit them; no supported passfile plumbing or contained-host trust admission established"
+}

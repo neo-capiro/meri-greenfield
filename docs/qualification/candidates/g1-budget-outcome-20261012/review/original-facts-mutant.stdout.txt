@@ -1,0 +1,25 @@
+✖ reservation duplicate identities and full original facts cannot disagree (50.902577ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1644.894389
+
+✖ failing tests:
+
+test at docs/qualification/candidates/g1-budget-outcome-20261012/review/outcome-independent.test.mjs:89:1
+✖ reservation duplicate identities and full original facts cannot disagree (50.902577ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-budget-outcome-review-20261012/docs/qualification/candidates/g1-budget-outcome-20261012/review/outcome-independent.test.mjs:91:72)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }

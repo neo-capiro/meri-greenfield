@@ -1,0 +1,389 @@
+{
+  "base": "263d0d174f9924a6030bb1c20100ff1115ffcda0",
+  "sourceHeadBeforeMetadataCommit": "26b7d52e2418491593d74a1d18147cfad902eac5",
+  "files": [
+    {
+      "path": "apps/gateway/budget/README.md",
+      "bytes": 11637,
+      "sha256": "662b0ce1975338bc73ded780af8b8d84335ad70779a8091467d45d6c2bce02fb"
+    },
+    {
+      "path": "apps/gateway/budget/durable-tool-dispatch.mjs",
+      "bytes": 2766,
+      "sha256": "17d791d9b4803dfbfd67e30befd3818a7d3bc82464b2e00a385a4619bf0fc9a6"
+    },
+    {
+      "path": "apps/gateway/budget/postgres-tool-budget.mjs",
+      "bytes": 10790,
+      "sha256": "6d2d76ace7edf38bd2c0559fc62b069b00d0f80b7e187db7347974998c48f6e0"
+    },
+    {
+      "path": "apps/gateway/budget/tool-budget-outcome.mjs",
+      "bytes": 3638,
+      "sha256": "d5148557646a228160fc080efd40da6b110bebb6a2264b4180a9c6f5a018e3a7"
+    },
+    {
+      "path": "apps/gateway/test/tool-budget-outcome.test.mjs",
+      "bytes": 14319,
+      "sha256": "fb85247c9b1e8ba97ca0fe318094eb10f0130d5977b923a70954f6b318585ae4"
+    },
+    {
+      "path": "docs/coordination/reports/MERI-G1-OWNER-CONTINUATION-20261012.md",
+      "bytes": 15973,
+      "sha256": "3b3fbb92133b6d8738a3b6da1c62a8416b063cb01e20d7ee7cd89e7063d5030f"
+    },
+    {
+      "path": "docs/coordination/tasks/MERI-G1-OWNER-CONTINUATION-20261012.md",
+      "bytes": 6574,
+      "sha256": "54336424defde3ac4699ea12ade609fd68052ae9f3b3e548c527de1db239f03e"
+    },
+    {
+      "path": "docs/plans/MERI-G1-SOURCE-TO-NATIVE.md",
+      "bytes": 28232,
+      "sha256": "8bde7696c99883948a8eb9595cce4e43e721c390968a13b456956cfa0ca83822"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/author/source-manifest.json",
+      "bytes": 1074,
+      "sha256": "d35b387aec3a32d30af90c11aca24b1aa3a6c5d5a6290cffeca6a9696cec1353"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/review/manifest.json",
+      "bytes": 4863,
+      "sha256": "26fb62f4a640563f95a843adbfbf0e32aae7a13d7478500cc9fca2e90e2a9bf3"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/manifest.json",
+      "bytes": 5608,
+      "sha256": "e01f4fa22d8bab57b1c173df7f3ad225983200f14c84895f06c9d6812c37357b"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/manifest.json",
+      "bytes": 5189,
+      "sha256": "585486566818b897316236b478f11d76d6f291501140895268d810b1bf0f83e3"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/audit-first.py.txt",
+      "bytes": 6464,
+      "sha256": "514fde63d63c09b81f5ee693768865587cec56a23839c08fb4cb4b366633993c"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/audit-integrated.py",
+      "bytes": 7646,
+      "sha256": "fbb5b45b7d866639190a43bd110f19f32f5dafef74882552afca9f21cc7a635a"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/base-pr-refresh.json",
+      "bytes": 465,
+      "sha256": "6c57384f86fce277b8ac077af49e880f7b5594779f589ef2e2ab5b415082c691"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/budget-independent.json",
+      "bytes": 1424,
+      "sha256": "0acda9b42bbee3da0ae0246cfeac772f3ec7ee65a27ef77f1b10101ec2a11ff1"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/budget-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/budget-independent.stdout.bin",
+      "bytes": 2271,
+      "sha256": "8f6c314113986047adba08c6842ce76ccac916c619bc2cf1e2febbf7be5ba47e"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/candidate-visible-differences.json",
+      "bytes": 2946,
+      "sha256": "0d1521af3c4f3e2fa975f0ee7b381232599e95561da654bf853e0b76fd485af8"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/exact-root-dependencies.json",
+      "bytes": 1350,
+      "sha256": "5f6d4420f038fd2627c206a11e546cbad5819d3eb7cf526b7406eefea7d63724"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/exact-root-dependencies.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/exact-root-dependencies.stdout.bin",
+      "bytes": 25,
+      "sha256": "87ce98749cbda0c632c25e9c4963c21076562a49f92ed1e744dbc6bafbc85f82"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/final-integrity-audit.json",
+      "bytes": 1374,
+      "sha256": "1f791b7ae086c0de33bf24491fdf6fb3f153e9fbb655469aa132820831ca5e35"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/final-integrity-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/final-integrity-audit.stdout.bin",
+      "bytes": 191,
+      "sha256": "7a422265df14941e9b7844f49282fb179ac1d26755b3f249ba7f7ae5d3525ec2"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/final-metadata-check.json",
+      "bytes": 1931,
+      "sha256": "38f2389eba43593de43217b56aab30b7a87ff7075cda5993b53d3edc4e64795f"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/gateway-offline.json",
+      "bytes": 1687,
+      "sha256": "72b0dc1803b37d194c4d7e71b324b70cb28c7c3c086c18c32fec67ea0efa48e2"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/gateway-offline.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/gateway-offline.stdout.bin",
+      "bytes": 17153,
+      "sha256": "298753cbb94a61903057abf5b66135f05570d820331772296dc5823430a52ff8"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/historical-supervisor-author.json",
+      "bytes": 1385,
+      "sha256": "9c6c082e8566fd09a18e851d78821c91c3392f9925c0ebeef22922fa43c92962"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/historical-supervisor-author.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/historical-supervisor-author.stdout.bin",
+      "bytes": 1400,
+      "sha256": "82b0977be106133c6db289bea1aa804b6bbd40a22fc6e71668fcff79c93dfd79"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/host-packet-offline.json",
+      "bytes": 1317,
+      "sha256": "e0f2fce2e1b51afc5d126c5c670b32150814a603e3c6638e3ccd6682350b0f23"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/host-packet-offline.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/host-packet-offline.stdout.bin",
+      "bytes": 7827,
+      "sha256": "a172c4bb91de0ae8bbe42e86bcc75d1052becea62e3ebd4f2976ff7c7543a397"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/integrated-audit-final.json",
+      "bytes": 6728,
+      "sha256": "35c7bdccc43965017ab450454197f16cd7c6c708dd832539cd942bd1237feebe"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/integrated-audit.json",
+      "bytes": 6149,
+      "sha256": "a445629ba320448ebe9c48642b11e25920d5b86491dd0af2b02942ef97cab07b"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/integrated-source-audit-corrected.json",
+      "bytes": 1363,
+      "sha256": "894a47119e36a3a1aa0e8be61d65475b7d8f6c21c98ad17c60ca895afb15c9d6"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/integrated-source-audit-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/integrated-source-audit-corrected.stdout.bin",
+      "bytes": 191,
+      "sha256": "067793f5a3a469ec60dbb1636cfad3795761306e40268b30d21b5a99cb84d3ac"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/integrated-source-audit.json",
+      "bytes": 1343,
+      "sha256": "b4a19d14c301cba16e266a24ebe289f5fd145aa7d6fc06f27ffbaad53eaace60"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/integrated-source-audit.stderr.bin",
+      "bytes": 482,
+      "sha256": "11d9084e6edfcad05c280830c4d9bb547a1d09ef589ee177dd96845207f8e535"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/integrated-source-audit.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/native-writer-author.json",
+      "bytes": 1324,
+      "sha256": "80307043ac0542895d1244514912bd6299585db0bd3c47415f4e41630096755a"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/native-writer-author.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/native-writer-author.stdout.bin",
+      "bytes": 2122,
+      "sha256": "142e3cc482db8bdffbda246c0f23d0aacb38a1619b6b476f27fcc03f761a753d"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/native-writer-independent-results.json",
+      "bytes": 17903,
+      "sha256": "b36663acc7ea729c8fc473dab0e6c971e399c06d619516bafc103e561a0f358d"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/native-writer-independent.json",
+      "bytes": 1544,
+      "sha256": "371dabe9f581f572919df88296f43e0f0530b794714a60af4e9910df34ca63b3"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/native-writer-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/native-writer-independent.stdout.bin",
+      "bytes": 13469,
+      "sha256": "64c62f8f3ad1e9340ac54dfb41dee5a747b7acf84f4c6f7c417f0c601996db69"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/pr-stack-ancestry.json",
+      "bytes": 1557,
+      "sha256": "a248a0a91999d22a9edb0f72f439c708b0e70293b31fde987ae4bd025f0fb6e7"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/pr-stack-observation.json",
+      "bytes": 4081,
+      "sha256": "86c3ba6714d0f9fd18e54ac36a3519499997bced6df7e7051c8ca106cf7343fa"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/privacy-screen-correction.json",
+      "bytes": 986,
+      "sha256": "1233ca6f683de8d9b29409c912f26df6d376c08816fdf3689c811d12452c5b00"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/private-relay-intake.json",
+      "bytes": 857,
+      "sha256": "b5f38f66b14844ca74e7f53054d6f015ee3991e2b6cf10096215a143530bdacb"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/REPORT.md",
+      "bytes": 6981,
+      "sha256": "cf16f2ecb2b85edb8030ae4e6ce1be96542af3806e60f34deda9731e096347a4"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/acceptance-receipt.json",
+      "bytes": 1272,
+      "sha256": "5c4dc75cf35c59a6422df1a97ba37c9f3acca5baf7fed4a044b6401a80ef3084"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/audit-plan.py",
+      "bytes": 8856,
+      "sha256": "2539992832563241dce020a361374026070904964a6efa5a557e8358dcc646de"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/audit-result.json",
+      "bytes": 94046,
+      "sha256": "e7ee41f3c5ad66255da9706046cb8d9852f51063e0f37d42c9d2a45c73567945"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/audit.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/audit.stdout.json",
+      "bytes": 258,
+      "sha256": "76219389cb2ac82b0269bd3ba7536be7c95b98b6f1e68873c1f4dba88fc34a0b"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/checker-correction.json",
+      "bytes": 530,
+      "sha256": "807e52a847fba209c150f8fab84bff2cb05a9ec5b054711e8975fd53cf7e7d18"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/frozen-criteria.json",
+      "bytes": 1788,
+      "sha256": "41ff63d33bd4cfd1d2821b8350c7d976dcd5d3a487b330703466899dfef8b530"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/initial-audit-plan.py",
+      "bytes": 8843,
+      "sha256": "ec5abf2c993f36d05e7f23497fcb8630a228fa038cfcbffbb172c62b663613c4"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/initial-audit-result.json",
+      "bytes": 94104,
+      "sha256": "573cc3393422ff85678f2bacb4f7219e7565d4c6fe0e01ba85cb92218ddbf72f"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/initial-audit.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/initial-audit.stdout.json",
+      "bytes": 307,
+      "sha256": "97b81cb34ab4d00698c0e734a08194af30c358f74225dddb1e5a7761e3110090"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/manifest.json",
+      "bytes": 3507,
+      "sha256": "4e69688d473c5a5b09be31ba48d06df9f0fc95648ee3b03d0e611f9984a6822b"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/raw-diff-whitespace.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/raw-diff-whitespace.stdout.txt",
+      "bytes": 2758,
+      "sha256": "2fe7af71c9a6e1b01b2a960efb0ce074c818acfaf325e008d75da8d2019e0ba1"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/reviewed-plan.diff",
+      "bytes": 26340,
+      "sha256": "6477cdade49093a3e6e2d871eebaee416c84b50e7ce19d62e775d8c4ae2a3416"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/author/current-manifest.json",
+      "bytes": 4333,
+      "sha256": "2267f56d8cca1b67d5ba7c299901575c2d152d1c1bb0d2492b7758d318380285"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/author/evidence-writer.py",
+      "bytes": 8831,
+      "sha256": "8715d7999e4c9d7ab1422f7360a6a9cff5053da57687dacda861ef69d5e42afc"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/author/source-checks.py",
+      "bytes": 9859,
+      "sha256": "d8f27ee4801d63b5b2de4c2bed26e30d924a23acd688614202af3cd9619e6e70"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/review-manifest.json",
+      "bytes": 12507,
+      "sha256": "b2aec8728ac915b18075006350980e98ac1e67600307bb08534bf4429ca511c0"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/author/run-supervised.py",
+      "bytes": 16775,
+      "sha256": "380dfc349ac5283f49b7d8a8360a4dc9d7c2a43516361d1d1c387290620ec595"
+    }
+  ],
+  "selfExcluded": "docs/qualification/candidates/g1-owner-continuation-20261012/manifest.json",
+  "scope": "Root integration/report/current plan and its independent review, six lane manifests and exact accepted source. Publication receipts are separately bound later.",
+  "runtimeAcceptance": false
+}

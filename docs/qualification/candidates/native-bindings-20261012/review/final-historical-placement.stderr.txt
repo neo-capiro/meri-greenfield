@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/workspace/meri-native-bindings-20261012/docs/qualification/candidates/native-supervisor-20261012/author/source-checks.py", line 174, in <module>
+    need(b"destination.mkdir(exist_ok=False)" in wrapper and b'.open("xb")' in wrapper,
+  File "/workspace/meri-native-bindings-20261012/docs/qualification/candidates/native-supervisor-20261012/author/source-checks.py", line 91, in need
+    raise AssertionError(label)
+AssertionError: exclusive-evidence-allocation

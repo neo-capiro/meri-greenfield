@@ -1,0 +1,33 @@
+{
+  "recordedAt": "2026-10-12T06:53:33.936757+00:00",
+  "criteriaCommit": "32c90b4222de2f5f8cec308c25d23e833cdd0ba6",
+  "reviewedCommit": "159a7dd3b5fbd9ed2cc05dc96c450ed5c7b4585e",
+  "reviewedTree": "c4dfe17dab25529efe4198dc143accde8e1b9302",
+  "planSha256": "8bde7696c99883948a8eb9595cce4e43e721c390968a13b456956cfa0ca83822",
+  "verdict": "ACCEPT_SOURCE",
+  "requiredChanges": [],
+  "checks": {
+    "passed": 284,
+    "failed": 0,
+    "exitCode": 0,
+    "localLinks": 20,
+    "frozenLaneFiles": 169
+  },
+  "command": [
+    "python",
+    "-I",
+    "-B",
+    "docs/qualification/candidates/g1-owner-continuation-20261012/review/audit-plan.py"
+  ],
+  "initialCheckerFailurePreserved": true,
+  "newNativeHostDaemonDatabaseActions": 0,
+  "sourceOrPlanEdited": false,
+  "runtimeAdmission": "HOLD",
+  "cleanup": "All ordinary read-only Git/file commands completed synchronously; no target process or background job created.",
+  "whitespace": {
+    "canonicalPlanExitCode": 0,
+    "wholeReviewExitCode": 2,
+    "cause": "Raw unified-diff blank context lines retain their required space prefix, also echoed in the retained diagnostic. Exact evidence preserved; no canonical source/documentation whitespace failure.",
+    "reviewExcludingRawDiffAndItsDiagnosticExitCode": 0
+  }
+}

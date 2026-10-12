@@ -1,0 +1,84 @@
+{
+  "reviewedCommit": "159a7dd3b5fbd9ed2cc05dc96c450ed5c7b4585e",
+  "files": [
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/REPORT.md",
+      "bytes": 6981,
+      "sha256": "cf16f2ecb2b85edb8030ae4e6ce1be96542af3806e60f34deda9731e096347a4"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/acceptance-receipt.json",
+      "bytes": 1272,
+      "sha256": "5c4dc75cf35c59a6422df1a97ba37c9f3acca5baf7fed4a044b6401a80ef3084"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/audit-plan.py",
+      "bytes": 8856,
+      "sha256": "2539992832563241dce020a361374026070904964a6efa5a557e8358dcc646de"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/audit-result.json",
+      "bytes": 94046,
+      "sha256": "e7ee41f3c5ad66255da9706046cb8d9852f51063e0f37d42c9d2a45c73567945"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/audit.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/audit.stdout.json",
+      "bytes": 258,
+      "sha256": "76219389cb2ac82b0269bd3ba7536be7c95b98b6f1e68873c1f4dba88fc34a0b"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/checker-correction.json",
+      "bytes": 530,
+      "sha256": "807e52a847fba209c150f8fab84bff2cb05a9ec5b054711e8975fd53cf7e7d18"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/frozen-criteria.json",
+      "bytes": 1788,
+      "sha256": "41ff63d33bd4cfd1d2821b8350c7d976dcd5d3a487b330703466899dfef8b530"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/initial-audit-plan.py",
+      "bytes": 8843,
+      "sha256": "ec5abf2c993f36d05e7f23497fcb8630a228fa038cfcbffbb172c62b663613c4"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/initial-audit-result.json",
+      "bytes": 94104,
+      "sha256": "573cc3393422ff85678f2bacb4f7219e7565d4c6fe0e01ba85cb92218ddbf72f"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/initial-audit.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/initial-audit.stdout.json",
+      "bytes": 307,
+      "sha256": "97b81cb34ab4d00698c0e734a08194af30c358f74225dddb1e5a7761e3110090"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/raw-diff-whitespace.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/raw-diff-whitespace.stdout.txt",
+      "bytes": 2758,
+      "sha256": "2fe7af71c9a6e1b01b2a960efb0ce074c818acfaf325e008d75da8d2019e0ba1"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/reviewed-plan.diff",
+      "bytes": 26340,
+      "sha256": "6477cdade49093a3e6e2d871eebaee416c84b50e7ce19d62e775d8c4ae2a3416"
+    }
+  ],
+  "excluded": [
+    "manifest.json self"
+  ],
+  "runtimeAdmission": "HOLD"
+}

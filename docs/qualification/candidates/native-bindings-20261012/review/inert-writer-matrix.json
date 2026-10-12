@@ -1,0 +1,66 @@
+{
+  "status": "frozen before writer implementation",
+  "groups": [
+    {
+      "id": "valid-reserved-slot",
+      "assertion": "Exact safe finite artifacts, exact owner, full writes/fsync/readback/two matching membership snapshots => source observation only; runtime flags false."
+    },
+    {
+      "id": "unsafe-preflight",
+      "assertion": "Wrong bytes type/member name/path traversal/casefold alias/too many members/oversize/invalid owner/expired budget refuse before open."
+    },
+    {
+      "id": "borrowed-or-substituted-directory",
+      "assertion": "Wrong dev/inode or unsafe/link/reparse directory refuses; later owner swap fails without deleting borrowed files."
+    },
+    {
+      "id": "short-write",
+      "assertion": "Progressive valid short counts complete exact data under same deadline; zero/negative/bool/oversized count or error refuses, preserves partial bytes."
+    },
+    {
+      "id": "open-late",
+      "assertion": "Owned descriptor returned after deadline is retained for exact cleanup, never writes data or retries."
+    },
+    {
+      "id": "write-late",
+      "assertion": "Late write records partial owned effects, refuses next write/readback/publication; cleanup cannot reset budget."
+    },
+    {
+      "id": "flush-fsync-close",
+      "assertion": "Each error or late return denies source observation; owned partial evidence stays and no removal port exists."
+    },
+    {
+      "id": "readback",
+      "assertion": "Wrong length/hash, growth/shrink/replacement, failed or late canonical hash refuse under same deadline."
+    },
+    {
+      "id": "membership",
+      "assertion": "Missing/extra/duplicate/foreign/casefold/symlink/hardlink members or unstable directory/file metadata refuse."
+    },
+    {
+      "id": "late-final-snapshot",
+      "assertion": "Expiry during/between/after final scans denies success; no deadline recreation."
+    },
+    {
+      "id": "bounded-enumeration",
+      "assertion": "Extra or too many entries stops at finite bound; enumeration close errors deny and do not trigger unrelated cleanup."
+    },
+    {
+      "id": "reentry",
+      "assertion": "Second invocation on occupied files refuses exclusive-open, cannot overwrite or treat previous partial files as owned."
+    },
+    {
+      "id": "actual-composition",
+      "assertion": "Wrapper invokes only allocated writer after actual capture using original budget; unreachable missingpins guard retained; all old lifecycle/test bytes unchanged."
+    },
+    {
+      "id": "immutable-packet",
+      "assertion": "Exact final source/receipt hashes and pathdiff; prior failure/source snapshots preserved; no private paths/body or guessed pins."
+    },
+    {
+      "id": "native-exclusion",
+      "assertion": "Only allowed isolated definitions with fake ports; no candidate/native module import/execution and no filesystem/native acceptance claim."
+    }
+  ],
+  "nativeExecutionAuthorized": false
+}

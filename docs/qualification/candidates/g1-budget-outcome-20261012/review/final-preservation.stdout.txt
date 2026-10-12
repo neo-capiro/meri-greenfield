@@ -1,0 +1,36 @@
+{
+  "verdict": "PASS_SOURCE_PRESERVATION",
+  "base": "263d0d174f9924a6030bb1c20100ff1115ffcda0",
+  "commit": "028b1134e373734caea036ee5c38d35b20428d8b",
+  "tree": "2a1e21e38a568965270ca5c3982173991b234c9d",
+  "originalTrackedFiles": 4198,
+  "unchangedOriginalFiles": 4195,
+  "changedOriginalFiles": [
+    "apps/gateway/budget/README.md",
+    "apps/gateway/budget/durable-tool-dispatch.mjs",
+    "apps/gateway/budget/postgres-tool-budget.mjs"
+  ],
+  "files": {
+    "apps/gateway/budget/README.md": {
+      "bytes": 11637,
+      "sha256": "662b0ce1975338bc73ded780af8b8d84335ad70779a8091467d45d6c2bce02fb"
+    },
+    "apps/gateway/budget/durable-tool-dispatch.mjs": {
+      "bytes": 2766,
+      "sha256": "17d791d9b4803dfbfd67e30befd3818a7d3bc82464b2e00a385a4619bf0fc9a6"
+    },
+    "apps/gateway/budget/postgres-tool-budget.mjs": {
+      "bytes": 10790,
+      "sha256": "6d2d76ace7edf38bd2c0559fc62b069b00d0f80b7e187db7347974998c48f6e0"
+    },
+    "apps/gateway/budget/tool-budget-outcome.mjs": {
+      "bytes": 3638,
+      "sha256": "d5148557646a228160fc080efd40da6b110bebb6a2264b4180a9c6f5a018e3a7"
+    },
+    "apps/gateway/test/tool-budget-outcome.test.mjs": {
+      "bytes": 14319,
+      "sha256": "fb85247c9b1e8ba97ca0fe318094eb10f0130d5977b923a70954f6b318585ae4"
+    }
+  },
+  "nativeOrDatabaseExecution": false
+}

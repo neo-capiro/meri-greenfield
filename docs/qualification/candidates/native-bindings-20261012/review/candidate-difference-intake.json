@@ -1,0 +1,20 @@
+{
+  "scope": "Metadata-only intake of parent visible-difference derivative; not a complete original candidate record",
+  "derivativeBytes": 2946,
+  "derivativeSha256": "0d1521af3c4f3e2fa975f0ee7b381232599e95561da654bf853e0b76fd485af8",
+  "claimedOriginalBytes": 60160,
+  "claimedOriginalSha256": "1817c1d72c2bbfafba943d0cbff4314ac210694a481565b5036a986087659d84",
+  "relayHasLiteralTruncationMarker": true,
+  "fullMemberPreservedOrVerified": false,
+  "actualComparisonSourceAvailable": false,
+  "visibleChangedFieldCount": 9,
+  "reportedBooleans": {
+    "executableBeforeOpenedAfterStable": true,
+    "pathIdentityAndPlainMetadataStable": true,
+    "allRecordedPathFieldsStable": false,
+    "boundedHashObservationAccepted": false
+  },
+  "inference": "Visible access-time changes alone do not prove the complete record has no other differences or establish causality. Original rejection retained; no timestamp semantics changed.",
+  "nativeAcceptance": false,
+  "privateBodiesOrPathsCopied": false
+}

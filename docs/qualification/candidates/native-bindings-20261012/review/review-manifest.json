@@ -1,0 +1,282 @@
+{
+  "selfExcluded": "docs/qualification/candidates/native-bindings-20261012/review/review-manifest.json",
+  "files": [
+    {
+      "path": "docs/coordination/reports/MERI-NATIVE-BINDINGS-REVIEW-20261012.md",
+      "bytes": 9764,
+      "sha256": "d95cc266a9123e3fc914a3bd8076a34f260c9e032929e9d2080fcec111c88069"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/acceptance-receipt.json",
+      "bytes": 1370,
+      "sha256": "2c9bc479f4963e7c7948aaac4a56676f42450eddea3cdbcc41489ca5c982d5b8"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/after-clock-writer-draft.py.txt",
+      "bytes": 8584,
+      "sha256": "5029299f68598e027c887a8d1102d6469e7c3f2903511504b36813591b2476fe"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/candidate-difference-intake.json",
+      "bytes": 1000,
+      "sha256": "5257e0ace68484205c9051222ef8ec9a2a2806c9f7c9e35ab59ea7614bd8298e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-author-command.json",
+      "bytes": 559,
+      "sha256": "445f08dd39e74b7759a02c689afc4f1a000da0fb268ab0e0a5fef37981554a8b"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-author.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-author.stdout.txt",
+      "bytes": 2122,
+      "sha256": "142e3cc482db8bdffbda246c0f23d0aacb38a1619b6b476f27fcc03f761a753d"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-clock-before-command.json",
+      "bytes": 712,
+      "sha256": "f1191308f848434622614508d6b7e9b35a0741e8b39fd6f6a650ecd701da4073"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-clock-before.json",
+      "bytes": 17351,
+      "sha256": "f99fd5e671a0466fb5fe690254fd3884080371658e70b3daf6b4bd8c353fa590"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-clock-before.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-clock-before.stdout.txt",
+      "bytes": 13057,
+      "sha256": "b49519308884ad9e60084a9cbc7c7699e81c3611ca373eb3374fbc50c2ed30f3"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-historical-placement-command.json",
+      "bytes": 563,
+      "sha256": "dc9f239b5c9384a79b82b20f6290d46a3b5b1423342fb0cad25ac023f6458468"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-historical-placement.stderr.txt",
+      "bytes": 504,
+      "sha256": "69c7835d9b03230268ccd576110f8e5da1cab26b4be0a73fcf8b77a2f209016e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-historical-placement.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-lifecycle-command.json",
+      "bytes": 833,
+      "sha256": "eecd084361da5fae5c35054704b0c5a9191f4ea079595d520b8b69075c221fe4"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-lifecycle.json",
+      "bytes": 9151,
+      "sha256": "4cdfda76db79a1d9162519c4aef9c8436c963002a8839a1dcbc918b11420cb0b"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-lifecycle.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-lifecycle.stdout.txt",
+      "bytes": 6677,
+      "sha256": "7653b7b3ecd63656e59fcfe777d09b35412afde51697c21a91b6276ead3ff33a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-source-audit-command.json",
+      "bytes": 803,
+      "sha256": "a19d943ef14ed37378414e973a1e2236f9ac35cb54c5ec893dddf633eebe1c42"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-source-audit.json",
+      "bytes": 9948,
+      "sha256": "06b2e50323509ca788ccdc63f39992bede5095f904de6690ce90b9b831263fd1"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-source-audit.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-source-audit.stdout.txt",
+      "bytes": 7708,
+      "sha256": "8cbc4419d2a2674764d3410c5a2f46dc1c621708952e3933bd971280203c006b"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-writer-command.json",
+      "bytes": 833,
+      "sha256": "9f60105d1006abe5489818d18b76c5117c56bf5231874a25001835de88959146"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-writer.json",
+      "bytes": 17903,
+      "sha256": "b36663acc7ea729c8fc473dab0e6c971e399c06d619516bafc103e561a0f358d"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-writer.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-writer.stdout.txt",
+      "bytes": 13469,
+      "sha256": "64c62f8f3ad1e9340ac54dfb41dee5a747b7acf84f4c6f7c417f0c601996db69"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/first-writer-command.json",
+      "bytes": 715,
+      "sha256": "2cf69a8eab0bea37296512d056a68e17c456cda24f2392661abbcacbe10847df"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/first-writer-controls.json",
+      "bytes": 17155,
+      "sha256": "3e1d5d46ce43e16aaf8f3b06daffa7655a893da65ef1b44330577815aab2650b"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/first-writer-controls.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/first-writer-controls.stdout.txt",
+      "bytes": 12921,
+      "sha256": "91d2e6c118ae0fe25578ab24c95785f6035bbd663992370579965922c95fc94f"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/first-writer-draft.py.txt",
+      "bytes": 8608,
+      "sha256": "77ee4a3969a7b69a6b673ab5a746181762fe9d1676677d4a3bc5fce5c0cdf267"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/frozen-criteria.json",
+      "bytes": 5275,
+      "sha256": "ac48c352698ef35f9372cd7a449af3c68f149ef0af8b152075d7e6b218c68b24"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/historical-placement-check-command.json",
+      "bytes": 600,
+      "sha256": "33062e2b695b4bf0407719d023780036b2235b69f3a80efd7dfe49bd93ee9201"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/historical-placement-check.stderr.txt",
+      "bytes": 504,
+      "sha256": "69c7835d9b03230268ccd576110f8e5da1cab26b4be0a73fcf8b77a2f209016e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/historical-placement-check.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/inert-storage.py",
+      "bytes": 6147,
+      "sha256": "5bae3b3da3f07dcd7fafaa2617d0e3ae499030b0b545cf98f9cef4c9ed36c454"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/inert-writer-matrix.json",
+      "bytes": 2921,
+      "sha256": "88cfabc1645ae0ab19f721af5e26703d3a29c1761bffa513ea0bb36cb7cbacff"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/late-enter-before-command.json",
+      "bytes": 715,
+      "sha256": "562e207838e51458dea48fd2aa02a17979e1aeada3793767345b51ae060575f6"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/late-enter-before.json",
+      "bytes": 17905,
+      "sha256": "24dc650fe08e1bd013b23c2d25a745669a951481152fce1ccc527cccc5beeac4"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/late-enter-before.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/late-enter-before.stdout.txt",
+      "bytes": 13471,
+      "sha256": "136d50b53c60b17baee19f90d712d56122ec15c3b65c4f3f55cdfce88f496bae"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/late-fstat-before-command.json",
+      "bytes": 717,
+      "sha256": "23516e4722d81b1580deb45b9c3a97b03b1a9638e9e3bcf18befeea95c16b446"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/late-fstat-before.json",
+      "bytes": 17457,
+      "sha256": "33a5adce27dc9e57e59269c4447394e054a5713c75038d2849fe6ded5c0b1a7f"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/late-fstat-before.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/late-fstat-before.stdout.txt",
+      "bytes": 13135,
+      "sha256": "86ef0f5c6413971fa526061710be4d59e9631bda130d78550644f739406a7999"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/packet-integrity.json",
+      "bytes": 3887,
+      "sha256": "ca1c80bcc24b375df74e9c9025c48a85de73acf670545260cc4b2c1998249a58"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/port-boundary-repaired-command.json",
+      "bytes": 726,
+      "sha256": "5e9c22154e51fb1f33cd1211aeef4e56b9067b7ffa8e2858091de6d2b3801991"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/port-boundary-repaired-draft.py.txt",
+      "bytes": 8831,
+      "sha256": "8715d7999e4c9d7ab1422f7360a6a9cff5053da57687dacda861ef69d5e42afc"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/port-boundary-repaired.json",
+      "bytes": 17903,
+      "sha256": "b36663acc7ea729c8fc473dab0e6c971e399c06d619516bafc103e561a0f358d"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/port-boundary-repaired.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/port-boundary-repaired.stdout.txt",
+      "bytes": 13469,
+      "sha256": "64c62f8f3ad1e9340ac54dfb41dee5a747b7acf84f4c6f7c417f0c601996db69"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/provenance-intake.json",
+      "bytes": 1757,
+      "sha256": "b531be32d98ac968eedfb164d4f6e9fe7997bb215262c885fae9a14d7017a0b6"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/source-audit.py",
+      "bytes": 8026,
+      "sha256": "524377dcb3a8a91c12558b30daea2029578a254bf22d5bccefacb85a12715f82"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/source-review-intake.json",
+      "bytes": 1681,
+      "sha256": "c8d8e5170aab73499710bb87495bbe4c14a511193d0fdfcac87f453ec94c1884"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/writer-controls.py",
+      "bytes": 6777,
+      "sha256": "f3a20d290ba3a226e4b1cbbce5a55381f934efccb83a511a107ebb497f60a0bb"
+    }
+  ],
+  "authorFreeze": "74f9692047be50beb8c59a0b0d7833f0cb682c76",
+  "privateOriginalBodiesIncluded": false
+}

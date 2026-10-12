@@ -1,0 +1,30 @@
+✔ actual disabled gateway exposes exact ABSENT observation with zero ledger mutation (15.954596ms)
+✔ UNKNOWN returns immutable bounded accounting through actual owner composition (9.035826ms)
+✔ SETTLED returns immutable bounded accounting through actual owner composition (8.754495ms)
+✔ canonical lost reserve acknowledgement retained across fresh readback without replay (6.372971ms)
+✔ canonical lost settle acknowledgement retained across fresh readback without replay (6.425649ms)
+✔ historical original A remains inspectable after expiry/revocation/quarantine and replacement B (5.867212ms)
+✔ ABSENT is a snapshot; same existing trusted invocation may become UNKNOWN after later reservation (9.187925ms)
+✔ read acknowledgement uncertainty and ordinary query failure release no success receipt or writes (13.001025ms)
+✔ read serialized behind actual canonical reservation boundary sees committed UNKNOWN (10.299553ms)
+✔ parallel observations do not alter or settle liability (13.576178ms)
+✔ all canonical descriptor execute paths remain unavailable before further transaction/authority work (43.8453ms)
+✔ ABSENT requires retained allocation and original grant binding (10.966263ms)
+✔ UNKNOWN requires retained allocation and original grant binding (11.290519ms)
+✔ raw expected/invocation objects cannot execute getters or proxy reflection (11.240474ms)
+✔ closed invalid expectations deny before scripted connection work (14.325872ms)
+✔ operation/argument mismatch cannot expose an existing outcome (8.81199ms)
+✔ tenant actor conversation run and allocation substitution cannot read other scope (19.275829ms)
+✔ historical grant correlation rejects task attempt fence policy capability and grant substitutions (34.516674ms)
+✔ retained allocation and grant-binding duplicate columns cannot disagree with facts (18.661708ms)
+✔ reservation duplicate identities and full original facts cannot disagree (19.78979ms)
+✔ UNKNOWN rejects charge/output/time fields inconsistent with retained liability (30.463714ms)
+✔ SETTLED refuses malformed amounts, output overflow, missing or unordered timestamps (29.032747ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1264.174699

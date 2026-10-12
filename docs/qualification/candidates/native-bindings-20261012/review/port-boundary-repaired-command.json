@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "python",
+    "/workspace/meri-native-bindings-review-20261012/docs/qualification/candidates/native-bindings-20261012/review/writer-controls.py",
+    "/workspace/meri-native-bindings-review-20261012/docs/qualification/candidates/native-bindings-20261012/review/port-boundary-repaired-draft.py.txt",
+    "/workspace/meri-native-bindings-review-20261012/docs/qualification/candidates/native-bindings-20261012/review/port-boundary-repaired.json"
+  ],
+  "exitCode": 0,
+  "elapsedSeconds": 0.045885636001912644,
+  "sourceSha256": "8715d7999e4c9d7ab1422f7360a6a9cff5053da57687dacda861ef69d5e42afc",
+  "harnessCompleted": true,
+  "nativeProcesses": 0,
+  "nativeFilesystemOperations": 0,
+  "targetImported": false
+}

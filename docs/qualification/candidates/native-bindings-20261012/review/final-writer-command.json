@@ -1,0 +1,17 @@
+{
+  "freeze": "74f9692047be50beb8c59a0b0d7833f0cb682c76",
+  "argv": [
+    "python",
+    "/workspace/meri-native-bindings-review-20261012/docs/qualification/candidates/native-bindings-20261012/review/writer-controls.py",
+    "/workspace/meri-native-bindings-20261012/docs/qualification/candidates/native-bindings-20261012/author/evidence-writer.py",
+    "/workspace/meri-native-bindings-review-20261012/docs/qualification/candidates/native-bindings-20261012/review/final-writer.json"
+  ],
+  "exitCode": 0,
+  "elapsedSeconds": 0.04502265300106956,
+  "harnessCompleted": true,
+  "targetImported": false,
+  "nativeProcesses": 0,
+  "nativeFilesystemOperations": 0,
+  "stdoutSha256": "64c62f8f3ad1e9340ac54dfb41dee5a747b7acf84f4c6f7c417f0c601996db69",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

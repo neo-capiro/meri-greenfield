@@ -1,0 +1,12 @@
+{
+  "initialAudit": "integrated-source-audit.json",
+  "initialExitCode": 1,
+  "preservedOriginalChecker": "audit-first.py.txt",
+  "cause": "The first checker treated the drive-root-only string as a private personal path. Both plain and JSON-escaped forms already occurred in the accepted PR17 wrapper.",
+  "matchedForms": [
+    {"bytes": 3, "sha256": "28f709d79730058e2a461518e34126da18ceda07729e792c92f7ca1251e730bf", "driveRootOnly": true, "sameMatchInAcceptedBase": true},
+    {"bytes": 4, "sha256": "77a21ec4f7934cdbc4269ff2ab4f278e14019f4accb244e3afcc6452684a9592", "driveRootOnly": true, "sameMatchInAcceptedBase": true}
+  ],
+  "correction": "Exclude only an exact drive-root string from personal-path needles. Retain every longer exact supplied path, complete private bodies and credential marker checks. No candidate, private packet, admission predicate or historical failure changed.",
+  "scope": "Read-only local source privacy audit; no target native import or execution."
+}
