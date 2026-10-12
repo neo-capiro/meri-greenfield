@@ -1,0 +1,12 @@
+# Independent federal legislation review criteria before source
+
+Basebcf36777b6f3fab94bec144c129e9143c18c8857. Source-only get_bill_status / search_floor_votes. Own independent test/report/federal-legislation-review only; production repair belongs to author and shared integration to root. Pinned/private source read/hash/schema metadata only, no bodies imported/executed/published.
+
+1. Canonical inert request/output/context admission must reject hostile getters/proxies/non-string operation coercion/extra authority fields without effects.
+2. Trace bill designation parser/currentCongress owner and defaults exactly; current-time congress cannot be silently guessed. Existing bill IDs, registration/status helpers and typed selectors must compose canonical owners without duplicate resolver/authority engine.
+3. Preserve missing/unresolved/absent/found bill branches, original owner/status marker meanings, nullable fields, currentStatus versus stored status/label and notes. These labels do not prove freshness or grant access.
+4. Trace action/floor-vote/governing-rule query bounds, ordering and independent-read races. Rule linkage, duplicate identities and opaque partyTotals are constrained only where actual projection/model supports it. No sum/roll-result/freshness/completeness inference.
+5. Floor vote member no-match/ambiguity/resolved branches retain exact conditional fields; canonical-ID lookup has precedence, name ambiguity is not auto-selected; numeric/chamber/bill/query filters retain actual fallback and null behavior. votesFound means returned length, not total. MemberVotes conditional records must correlate to presence of selected/resolved member without inventing identity data absent from projection.
+6. Preserve scalar/null/zero/signed storage bounds, UTF16 normalization, date/time behavior and unknown enums as pinned owners define. Distinguish Meri transport admission from legacy coercion.
+7. Current actor/tenant/role/source entitlement, lookup/resolver/source side effects and cancellation remain separate trusted runtime owner obligations. No gateway/source enablement, runtime/native/SQL/provider actions.
+8. Preserve failed controls and exact preimages/raw streams; replay unchanged controls on exact freeze. Audit all original files/public contracts/catalog/locks/runtime remain unchanged; physical local owned group cleanup. Return exact ACCEPT_SOURCE/HOLD and review-only commit sequence.
