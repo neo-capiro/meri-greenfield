@@ -1,0 +1,44 @@
+✔ actual canonical pipeline retires A then atomically admits B and verifies the original checkpoint (82.72879ms)
+✔ foreign Temporal namespace denies before retirement or replacement (15.965593ms)
+✔ foreign Temporal workflowId denies before retirement or replacement (14.220112ms)
+✔ foreign Temporal workflowRunId denies before retirement or replacement (21.195541ms)
+✔ foreign Temporal taskQueue denies before retirement or replacement (13.390647ms)
+✔ foreign Temporal workflowType denies before retirement or replacement (13.878198ms)
+✔ foreign Temporal activityId denies before retirement or replacement (16.007566ms)
+✔ foreign Temporal activityType denies before retirement or replacement (13.197006ms)
+✔ foreign Temporal retry-attempt denies before retirement or replacement (12.858257ms)
+✔ foreign Temporal local-activity denies before retirement or replacement (12.588091ms)
+✔ worker-selected run UUID and extra authority fields refuse before any trusted call (28.700625ms)
+✔ effectful workflow input is rejected without invoking a getter or proxy trap (12.852138ms)
+✔ retirement foreign-task cannot mutate registry (14.326271ms)
+✔ retirement foreign-binding cannot mutate registry (16.988929ms)
+✔ retirement future-observation cannot mutate registry (12.866029ms)
+✔ retirement stale-observation cannot mutate registry (16.860506ms)
+✔ retirement future-stop cannot mutate registry (24.971395ms)
+✔ missing retirement capability fails construction before replacement (11.249712ms)
+✔ no committed checkpoint refuses canonical replacement and never loads data (1.494424ms)
+✔ wrong committed receipt refuses and cannot substitute another checkpoint (10.614258ms)
+✔ duplicate delivery cannot dispatch a second replacement or load (24.696813ms)
+✔ aborted retirement completion cannot dispatch replacement (10.90264ms)
+✔ expired retirement completion cannot dispatch replacement or reset deadline (12.199037ms)
+✔ uncertain replacement acknowledgement holds without retry, transport or guessed cancellation (14.190677ms)
+✔ cancel known replaced B consumes actual stopRun and durably revokes B only (35.17077ms)
+✔ cancellation releases a parked retirement wait before borrowed port completes (9.58351ms)
+✔ original phase deadline releases a parked retirement wait without a fresh port (33.760323ms)
+✔ cancelled pending replacement remains unknown without load or guessed revoke after late acknowledgement (10.824694ms)
+✔ restart cannot repeat the completed exact A-to-B replacement (24.763504ms)
+✔ expired original A remains historical lineage while fresh B can recover exact committed checkpoint (27.909507ms)
+✔ compiled real workflow consumes actual factory and SQL/wire pipeline with explicit retry/cancellation options (212.281307ms)
+✔ compiled workflow preserves actual unknown replacement without dispatching cleanup (16.650591ms)
+✔ compiled workflow invokes real stopRun for known B after failed checkpoint transport (16.74293ms)
+✔ unqualified heartbeat timeout undefined holds before retirement (8.445051ms)
+✔ unqualified heartbeat timeout 0 holds before retirement (9.122217ms)
+✔ unqualified heartbeat timeout 5001 holds before retirement (8.554505ms)
+ℹ tests 36
+ℹ suites 0
+ℹ pass 36
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1784.596432

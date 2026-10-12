@@ -1,0 +1,50 @@
+
+> @meri/qualification-temporal@0.0.0 check
+> npm run typecheck && npm test
+
+
+> @meri/qualification-temporal@0.0.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> @meri/qualification-temporal@0.0.0 test
+> node --test compatibility.test.mjs recovery.test.mjs
+
+✔ package.json pins the five exact @temporalio 1.24.0 packages and the exact compiler/types (1.87191ms)
+✔ package-lock.json locks the same exact versions with sha512 integrity (0.442814ms)
+✔ component-pins.json records the exact server pins (exact equality, not regex) (0.15312ms)
+✔ component-pins.json agrees with package.json, lock and the postgres candidates (0.228173ms)
+✔ the fixture server block is byte-identical to the pinned component digests (0.236084ms)
+✔ installed WorkerDeploymentOptions requires defaultVersioningBehavior when versioning is on (0.530587ms)
+✔ installed TLSConfig / connection options expose the exact TLS + JWT fields (0.42573ms)
+✔ installed VersioningBehavior / WorkerDeploymentVersion have the exact members (0.232309ms)
+✔ installed workflow API exposes the deterministic constructs the fixture uses (0.471538ms)
+✔ client-options.ts uses real client/worker option types and a TS application-worker builder (0.537507ms)
+✔ workflow.ts has a finite three-stage loop, bounded continuation, and cancel observation (0.43974ms)
+✔ activities.ts uses the real activity context and stays inert (0.301803ms)
+✔ negative-types.ts carries the required negative fixtures and positive controls (0.265598ms)
+✔ the base five-role fixture is well-formed and validates cleanly (0.890006ms)
+✔ every prohibited boundary case is rejected with its expected rule (8.552151ms)
+✔ the fixture typechecks cleanly with the pinned compiler (all negative directives used) (1502.96771ms)
+✔ expected-diagnostic: a missing defaultVersioningBehavior fails, a correct one compiles (2737.359138ms)
+✔ offline stubbed workflow: planContinuation encodes the bounded continuation policy (77.74503ms)
+✔ actual workflow control flow with stubs: continuation 0 continues once, continuation 1 completes (26.863939ms)
+✔ actual workflow control flow with stubs: cancellation at sleep3 stops before continuation (8.839403ms)
+✔ actual workflow control flow with stubs: cancellation at checkpoint3 stops before continuation (10.236962ms)
+✔ actual workflow control flow with stubs: cancellation at publish stops before continuation (8.178952ms)
+✔ new actual workflow preserves source-only result and fixes all activities to one attempt (45.35245ms)
+✔ failed admission invokes explicit cleanup in a noncancellable scope and retains original error (6.597216ms)
+✔ unknown replacement does not dispatch guessed cleanup or retry (4.905456ms)
+✔ cleanup refusal remains visible instead of reporting a clean cancelled result (4.669712ms)
+✔ construction has no trusted effects and requires a retirement provider (5.115441ms)
+✔ effectful configuration is refused before capabilities (0.158008ms)
+✔ activity module imports supported JS APIs and no Worker/native driver (0.664938ms)
+✔ compiled workflow reaches actual activity factory, canonical control/registry and verified checkpoint protocol (149.147666ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 30
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4664.536568

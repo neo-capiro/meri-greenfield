@@ -1,0 +1,8 @@
+{
+  "originalSourceSha256": "539b6216a4d34e647e0ec9037fef5814d86d10ffd0a1207c128b54711982adc3",
+  "mutantSha256": "3e4bcd47cf3af2a27b9996b0112a141d3caaa8575d2664ea52197cf194087515",
+  "originalSourceChanged": false,
+  "mutation": "Force hold(uncertain) to erase uncertain classification; import URLs only rewritten to preserve exact candidate dependencies",
+  "importSpecifiersRebound": 8,
+  "nativeExecution": false
+}

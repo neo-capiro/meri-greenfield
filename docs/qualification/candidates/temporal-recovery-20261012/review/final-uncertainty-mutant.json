@@ -1,0 +1,32 @@
+{
+  "command": [
+    "env",
+    "TEMPORAL_RECOVERY_SOURCE_ROOT=/workspace/meri-temporal-recovery-20261012",
+    "TEMPORAL_RECOVERY_ACTIVITY_MODULE=docs/qualification/candidates/temporal-recovery-20261012/review/uncertainty-mutant.runtime.mjs",
+    "node",
+    "--test",
+    "--test-name-pattern",
+    "uncertain replacement|cancelled pending replacement|compiled workflow preserves",
+    "docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-temporal-recovery-review-20261012",
+  "startUnixSeconds": 1791781662.5418422,
+  "elapsedSeconds": 1.0721874237060547,
+  "exitCode": 1,
+  "ownedPidAndGroup": 61890,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "reapedDescendants": [],
+  "streams": {
+    "stdout": {
+      "path": "final-uncertainty-mutant.stdout.txt",
+      "bytes": 3602,
+      "sha256": "73b0cc7dc81fdda3a455023f0c3966f6b65ce0fdaf50d0131802622f79d597f5"
+    },
+    "stderr": {
+      "path": "final-uncertainty-mutant.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}
