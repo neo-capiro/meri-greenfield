@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-name-pattern=instrumented factory admission",
+    "packages/contracts/test/raw-request-advertisement-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-raw-request-review-20261012",
+  "sourceHead": "d7ab32dd082a147d6ca73a0d8ff0fd532152d336",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T21:28:43.736091+00:00",
+  "durationSeconds": 1.974,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 332532,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/factory-trace.stdout.bin",
+      "bytes": 2634,
+      "sha256": "ff30cdbef6eb14dcc9042a2cc490d33f2682d99ae74af2070b6847147ff9db61"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/factory-trace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
