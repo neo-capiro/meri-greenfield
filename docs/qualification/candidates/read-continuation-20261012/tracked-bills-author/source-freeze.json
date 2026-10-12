@@ -27,10 +27,22 @@
     237686,
     237854,
     237989,
-    238520
+    238520,
+    245395,
+    245492
   ],
   "sourceAccepted": false,
   "independentReview": "PENDING",
   "sourceEnabled": false,
-  "runtime": "UNRUN"
+  "runtime": "UNRUN",
+  "whitespaceChecks": {
+    "before": {
+      "exitCode": 2,
+      "scope": "unchanged raw failure output"
+    },
+    "after": {
+      "exitCode": 0,
+      "repair": "exact two raw stdout scoped binary attributes, no byte mutation"
+    }
+  }
 }

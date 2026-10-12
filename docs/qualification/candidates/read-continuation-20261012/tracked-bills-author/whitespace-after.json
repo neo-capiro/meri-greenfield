@@ -1,0 +1,35 @@
+{
+  "command": [
+    "git",
+    "diff",
+    "a3e946c1fa264ae7b33205f5b87804ee1ef75773",
+    "--check"
+  ],
+  "cwd": "/workspace/meri-tracked-bills-20261012",
+  "sourceHead": "30141883ca1bb77598f34fd8329c7f4bd4cd7338",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T18:25:35.928817+00:00",
+  "durationSeconds": 0.017,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 245492,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/whitespace-after.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/whitespace-after.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Scoped attributes preserve two exact raw failure streams as binary; source/docs whitespace checks remain active.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

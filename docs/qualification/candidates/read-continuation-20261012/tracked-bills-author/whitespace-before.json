@@ -1,0 +1,35 @@
+{
+  "command": [
+    "git",
+    "diff",
+    "a3e946c1fa264ae7b33205f5b87804ee1ef75773",
+    "--check"
+  ],
+  "cwd": "/workspace/meri-tracked-bills-20261012",
+  "sourceHead": "30141883ca1bb77598f34fd8329c7f4bd4cd7338",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T18:25:22.039378+00:00",
+  "durationSeconds": 0.016,
+  "exitCode": 2,
+  "timedOut": false,
+  "ownedPidAndPgid": 245395,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/whitespace-before.stdout.bin",
+      "bytes": 298,
+      "sha256": "e7bc64752923974d3bf105cd04822db6d9ab6ffc55a4a6dc5669672296ebd40b"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/whitespace-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Preserve final diff-check failure on unchanged raw Node assertion output before scoped binary evidence attributes.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

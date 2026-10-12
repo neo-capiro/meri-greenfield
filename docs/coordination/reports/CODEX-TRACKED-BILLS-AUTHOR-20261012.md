@@ -111,3 +111,11 @@ match committed source byte-for-byte. Metadata audit43/43 PASS; four pinned/curr
 source references unchanged and6,110 base files byte-identical. Owned group238520
 absent, no timeout/kill. All checks are focused source or metadata; no current
 source authority, native runtime or deployment acceptance is claimed.
+
+Evidence-only closeout: the final diff check failed on two trailing-space lines
+in unchanged raw Node assertion output. The exact failure was captured as
+whitespace-before (Git exit2), including its own raw diagnostic. Scoped
+.gitattributes marks only those two raw stdout files -text/-diff; no failed
+stdout bytes were rewritten. Source/docs whitespace checking remains active.
+whitespace-after passes exit0. Owned groups245395/245492 absent, no timeout/kill.
+Source e020f4f is unchanged; packet3014188 remains preserved.

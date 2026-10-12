@@ -1,11 +1,17 @@
 {
   "sourceCommit": "e020f4ff2af3c23412adf2fd634f8362140eeb51",
+  "preservedInitialPacket": "30141883ca1bb77598f34fd8329c7f4bd4cd7338",
   "scope": "SOURCE_ONLY_AUTHOR_PACKET_INDEPENDENT_REVIEW_PENDING",
   "files": [
     {
       "path": "docs/coordination/reports/CODEX-TRACKED-BILLS-AUTHOR-20261012.md",
-      "bytes": 7233,
-      "sha256": "4e6742eb947f7fbe3e8ddfdb601fdf1bc93e63e2e2ebe0c30b7c89f425bccb01"
+      "bytes": 7757,
+      "sha256": "881ad2b2e2919ee0773c15faea59f04a81c420386cf43518f176d637d48fc7d6"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/.gitattributes",
+      "bytes": 177,
+      "sha256": "75bd107afa785831374e61249493670ee20f3b074c682d7c70f13f4f12692ad9"
     },
     {
       "path": "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/alias-regression-before-repair.json",
@@ -124,13 +130,43 @@
     },
     {
       "path": "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/source-freeze.json",
-      "bytes": 754,
-      "sha256": "4301f0df295edff87baaf491d4c5d1acfe98b84955e7acba1c7870de54f9a6da"
+      "bytes": 1021,
+      "sha256": "f9ed8938edddb74da7fad59d2fcd69b808481cbdf683e26caa88a7eff400d789"
     },
     {
       "path": "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/verify-metadata.py",
       "bytes": 3649,
       "sha256": "948ae9617ed83f95e884a1e297f904b10b536635fc51c1951ef7f81941741756"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/whitespace-after.json",
+      "bytes": 1343,
+      "sha256": "592374d24806d5601da1fb4fb840dcea25bd3c3409262dc6cce81e628b693899"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/whitespace-after.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/whitespace-after.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/whitespace-before.json",
+      "bytes": 1349,
+      "sha256": "420241630eb3fe23c74dfccc76f9a03062b897c8b314a2ff0772aaea3d9c3d15"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/whitespace-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/whitespace-before.stdout.bin",
+      "bytes": 298,
+      "sha256": "e7bc64752923974d3bf105cd04822db6d9ab6ffc55a4a6dc5669672296ebd40b"
     }
   ]
 }
