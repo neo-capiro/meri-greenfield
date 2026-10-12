@@ -1,0 +1,7 @@
+{
+  "firstResult": "268pass/3fail",
+  "rawCountsRetained": "repair-audit.stdout.bin",
+  "cause": "Audit JSON path collided with capture receipt label; capture overwrote detailed check JSON after child returned.",
+  "correction": "Distinct repair-audit-results.json output path; same assertions rerun.",
+  "sourceChanged": false
+}
