@@ -1,0 +1,33 @@
+✔ all15 production operations remain unavailable and zero-effect (10.921129ms)
+✔ actual resolver to current authority to dispatcher validates a nonempty recommendation (30.850612ms)
+✔ clientless and malformed raw arguments refuse before reserve or handler (6.384301ms)
+✔ model authority injection refuses before every trusted port (1.442587ms)
+✔ stale task, expired credential, absent grant and disabled source stop prior to reservation (3.489583ms)
+✔ revocation while reserving prevents effect and preserves uncertain hold (1.725222ms)
+✔ opaque cursor and exact action requests reach effect only as canonical selections (4.195273ms)
+✔ full foreign run and authorization lineage never escapes even for valid family data (28.092327ms)
+✔ source proof, fabricated evidence and recommendation completion fail through dispatch (16.475554ms)
+✔ reported recommendation outcome is accepted only as noncompletion (2.385634ms)
+✔ revocation during effect or settlement never releases a result (8.103505ms)
+✔ uncertain acknowledgements stop before effects or output and never refund (3.441881ms)
+✔ cancelled parked effect/settlement cannot start a later authorization or release (13.071209ms)
+✔ freshly shortened release authority bounds parked settlement with no late release (31.303081ms)
+✔ independent literal recommendation and outcome source proofs satisfy unchanged family (19.88099ms)
+✔ partial binding preserves every original row and fourteen descriptors (5.993655ms)
+✔ canonical binding defaults, raw ownership and digest use existing selection (1.146703ms)
+✔ client-less, missing actor and shape/coercion attempts refuse (1.77059ms)
+✔ hostile objects never invoke accessor/proxy/toJSON and unknown context refuses (0.51854ms)
+✔ opaque cursor boundary and page disclosure remain bounded but unqualified (4.87148ms)
+✔ catalog mutants cannot promote partial parity, aliases, availability or source pins (45.23317ms)
+✔ bound pages preserve recommendation semantics for a reported outcome (5.670871ms)
+✔ exact proof and content substitutions fail through canonical resolver (8.906682ms)
+✔ unlinked evidence and forged linked source owner fail despite valid row digest (3.047979ms)
+✔ bounded page completeness never becomes source evidence, history or absence proof (6.524412ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1643.354175

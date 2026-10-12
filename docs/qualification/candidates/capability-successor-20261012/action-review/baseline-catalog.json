@@ -1,0 +1,21 @@
+{
+  "base": "5b1b5985bc73cbfe901c17e65acf9fd50b3d7e33",
+  "originalsSha256": "882261fff56d57e131b21cd62048bf3d680dc9fcb43febd560cc4c93db0b6227",
+  "originalOperationsSha256": "3f45cd6013bce1ac09c593a5a50fb14b34a0946b0312726a8fffa3b966e08db2",
+  "originalIds": [
+    "mail.read_thread",
+    "mail.list_messages",
+    "mail.search_messages",
+    "meeting.list_upcoming_meetings",
+    "meeting.read_client_meetings",
+    "meeting.query_debriefs",
+    "query_tasks",
+    "search_capiro_data",
+    "search_federal_contract_awards",
+    "search_federal_subawards",
+    "search_contract_vehicles",
+    "search_procurement_forecasts",
+    "get_district_federal_market",
+    "memory.list_own_proposals"
+  ]
+}

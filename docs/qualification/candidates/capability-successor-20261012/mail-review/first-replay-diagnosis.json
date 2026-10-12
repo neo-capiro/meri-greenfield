@@ -1,0 +1,11 @@
+{
+  "candidate": "8c4ec8dc2a9caad8640eb9f4741f5de2d7696887",
+  "testCommit": "3f73f3b",
+  "result": {"passed":42,"failed":3},
+  "findings": [
+    {"case":"model context and malformed input","disposition":"Reviewer assertion correction","reason":"Offset-positive without asOf passes shape validation but canonical normalization refuses after identity verification. Capability/run calls are legitimate; policy, reservation and effects must remain absent."},
+    {"case":"raw context proxy","disposition":"Reviewer fixture correction","reason":"An async trusted port resolving a Proxy accesses then through JavaScript Promise assimilation before returning the port result. This is outside parseRawJson. Test field accessors on ordinary returned objects and direct Proxy/context-config admission instead; preserve the failure."},
+    {"case":"revocation after retain","disposition":"Reviewer assertion correction","reason":"Current flow notices revocation at final authorization after budget.settle acknowledges historical completed work. Settled liability must remain settled; refusal does not create a retry, refund or require UNKNOWN after successful settlement."}
+  ],
+  "productionRepairRequested": false
+}

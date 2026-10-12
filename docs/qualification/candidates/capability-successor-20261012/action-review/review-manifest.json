@@ -1,0 +1,114 @@
+{
+  "base": "5b1b5985bc73cbfe901c17e65acf9fd50b3d7e33",
+  "acceptedAuthor": "59a2b629cda0d3838ec1b5235d2a8d64aadf3402",
+  "decision": "ACCEPT_SOURCE",
+  "independentChecks": {
+    "baseline": {
+      "passed": 1,
+      "failed": 24
+    },
+    "exactFreeze": {
+      "passed": 25,
+      "failed": 0
+    },
+    "preservation": {
+      "passed": 44,
+      "failed": 0
+    }
+  },
+  "sourceEnabled": false,
+  "runtimeAccepted": false,
+  "manifestSelfExcluded": true,
+  "files": [
+    {
+      "path": "docs/coordination/reports/CODEX-CAPABILITY-ACTION-REVIEW-20261012.md",
+      "bytes": 10614,
+      "sha256": "e150f40d0f063ea240215c9f0939533efca9fc089027e167f955dcd565b9609f"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+      "bytes": 8008,
+      "sha256": "82f8f8a796b5f6131609b091c32ce8720b982e5e78f9a0d0036b03e429f5b3e6"
+    },
+    {
+      "path": "apps/gateway/test/action-item-context-independent.test.mjs",
+      "bytes": 9572,
+      "sha256": "9c21d92f8c4318be40d7015156e9bacf3a41cb803f835723f17ad1a7cd27add2"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-review/.gitattributes",
+      "bytes": 50,
+      "sha256": "c6f6dd8f4ac51495ea461a4feb6857c7a1ecbc4ab64841ab2f62ef4d6daf1778"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-review/audit-preservation.py",
+      "bytes": 4836,
+      "sha256": "6d7052ce7eb74673301da69df222c81cabec0e7f8fd7cf16422d28c256d5e87f"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-review/baseline-catalog.json",
+      "bytes": 700,
+      "sha256": "6b633c84f05c80a2d7efe8bd8fe6ed722bc75b314c5488a020c260f9ea84746b"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-review/baseline.json",
+      "bytes": 836,
+      "sha256": "436ecf9996c732f9de95519f1b7298893592a695136ca98568b912027ed4c7c1"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-review/baseline.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-review/baseline.stdout.txt",
+      "bytes": 32118,
+      "sha256": "2f89a67d3288a9b7b0b35b87bca2759beb51125e94b9be2a583dcd65dc691716"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-review/controls-before-freeze.json",
+      "bytes": 957,
+      "sha256": "ca64fdec5d9c3ecdee6eb1543731f8eb4d7520d2ec0478a00f81037b52623fc3"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-review/exact-freeze.json",
+      "bytes": 842,
+      "sha256": "548fe1bf2922717fc741f21e1f6b7d845bf6d6970a8597b0b95ca765042f3a60"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-review/exact-freeze.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-review/exact-freeze.stdout.txt",
+      "bytes": 2440,
+      "sha256": "942d7c302624274c1c1f43a36123037c8217bc89c530e3063f63070eb2646ed6"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs",
+      "bytes": 6525,
+      "sha256": "047d23dd48ad94e04780c0445cc92f841b6f641b2fb86c75e4271f12b31f0740"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-review/preservation.json",
+      "bytes": 826,
+      "sha256": "8dc607b0d590001ce0ef4c1f4e44ca0952b78ea13bf80fd2fabb8cb6ce4fe337"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-review/preservation.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-review/preservation.stdout.txt",
+      "bytes": 3952,
+      "sha256": "888f6225d9c95275b9d3f293ce946c9bb4663d2daf7e8c363c4c1b877c1bde0d"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-review/run-check.py",
+      "bytes": 2114,
+      "sha256": "f3f0f3d6592696ccac9ed44bd904c492f61c95a73a941b45b8da27618ddf174a"
+    }
+  ]
+}

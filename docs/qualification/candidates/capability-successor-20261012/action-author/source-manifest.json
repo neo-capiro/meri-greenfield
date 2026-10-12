@@ -1,0 +1,52 @@
+{
+  "base": "5b1b5985bc73cbfe901c17e65acf9fd50b3d7e33",
+  "source": [
+    {
+      "path": "apps/gateway/test/action-item-context.test.mjs",
+      "bytes": 10862,
+      "sha256": "6bdfc88307475915cac5395d837059c4dda0a8bc6ea389abe22bbf8a380105b8"
+    },
+    {
+      "path": "apps/gateway/test/memory-context-independent.test.mjs",
+      "bytes": 18682,
+      "sha256": "33f6578edc8f8b5c9b480e22ec5d1b566d3ea51e628762776f0132aab7f608e8"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "bytes": 13059,
+      "sha256": "66b852422060cbde0411c49001cb818666d369aacf804a5d9fcd871203e64d96"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog.json",
+      "bytes": 81945,
+      "sha256": "65b586ef1070100a77fe490ddb6b8f3dce1555b7b9602132bd644d223390b8d8"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+      "bytes": 6419,
+      "sha256": "d1f992dc627e00659bdd6aab07823520bfd1058a231da72bf214f81149d36428"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+      "bytes": 13615,
+      "sha256": "f43b9037e42f63b629e8116160fbec242bd955caaa82bfbfa276462b928b2d94"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-mail.test.mjs",
+      "bytes": 30019,
+      "sha256": "fa61de3bcf5d5ba2a3a756e05e341d56ac26073fb874afc565b70dde29f51c4f"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-memory-binding.test.mjs",
+      "bytes": 13500,
+      "sha256": "584de88a49f7f0300b727a1068f83a420ea0df297eecb166ec823c21e636ef5e"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-operational-reads.test.mjs",
+      "bytes": 31267,
+      "sha256": "5a9dde9741b011eda749813af06c0398aad160b7675bd6cce5f4a93c7019196c"
+    }
+  ],
+  "nativeRuntimeAcceptance": false,
+  "sourceEnabled": false
+}

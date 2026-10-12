@@ -1,0 +1,4 @@
+# Raw command streams are immutable evidence, including whitespace failures.
+# Authored source, tests, reports and JSON remain subject to whitespace checks.
+**/*.stdout* -whitespace
+**/*.stderr* -whitespace

@@ -1,0 +1,120 @@
+✔ mail independent: canonical list three-page continuation (36.100085ms)
+✔ mail independent: canonical search three-page continuation (15.477615ms)
+✔ mail independent: stable key retains exact full page and immutable snapshots (6.966997ms)
+✔ mail independent: first-page current decision IDs may rotate (3.044444ms)
+✔ mail independent: full previous/current page decision mismatch still refuses (5.77058ms)
+✔ mail independent: terminal or unknown total 0 never retains invented continuation (2.086655ms)
+✔ mail independent: terminal or unknown total 1 never retains invented continuation (2.03011ms)
+✔ mail independent: terminal or unknown total null never retains invented continuation (2.009279ms)
+✖ mail independent: model context and malformed input refuse before trusted ports (2.552184ms)
+✔ mail independent: missing context ports refuse without reservation or handler (0.822767ms)
+✔ mail independent: retained missing refuses before budget/effect (3.31472ms)
+✔ mail independent: retained digest refuses before budget/effect (3.836524ms)
+✔ mail independent: retained keyBinding refuses before budget/effect (3.264224ms)
+✔ mail independent: retained keyOperation refuses before budget/effect (3.647911ms)
+✔ mail independent: retained keyPolicy refuses before budget/effect (3.062772ms)
+✔ mail independent: retained keySubject refuses before budget/effect (2.892887ms)
+✔ mail independent: retained keySelection refuses before budget/effect (3.473309ms)
+✔ mail independent: retained staleReceipt refuses before budget/effect (3.045245ms)
+✔ mail independent: retained futureReceipt refuses before budget/effect (3.030273ms)
+✔ mail independent: retained expired refuses before budget/effect (2.824134ms)
+✔ mail independent: retained futureRecorded refuses before budget/effect (4.162615ms)
+✔ mail independent: retained extended refuses before budget/effect (3.408832ms)
+✔ mail independent: retained extra refuses before budget/effect (3.173869ms)
+✔ mail independent: rehashed retained anchor cannot bypass canonical continuation (3.239858ms)
+✔ mail independent: rehashed retained pageDecision cannot bypass canonical continuation (4.622785ms)
+✔ mail independent: rehashed retained nextOffset cannot bypass canonical continuation (3.538056ms)
+✔ mail independent: rehashed retained selection cannot bypass canonical continuation (4.07343ms)
+✔ mail independent: rehashed retained window cannot bypass canonical continuation (3.27477ms)
+✖ mail independent: raw context objects/proxies never invoke accessors (8.463927ms)
+✔ mail independent: retained acknowledgment receiptDigest suppresses settlement (2.468369ms)
+✔ mail independent: retained acknowledgment receiptKey suppresses settlement (2.613727ms)
+✔ mail independent: retained acknowledgment stale suppresses settlement (2.610783ms)
+✔ mail independent: retained acknowledgment extra suppresses settlement (2.967198ms)
+✔ mail independent: retained acknowledgment oversized suppresses settlement (2.951645ms)
+✔ mail independent: revoked authority after load never releases (4.639481ms)
+✖ mail independent: revoked authority after retain never releases (2.922211ms)
+✔ mail independent: revoked authority after settle never releases (2.458915ms)
+✔ mail independent: fresh release deadline bounds parked load (45.39841ms)
+✔ mail independent: cancellation bounds parked load (3.938527ms)
+✔ mail independent: fresh release deadline bounds parked retain (43.525777ms)
+✔ mail independent: cancellation bounds parked retain (3.330834ms)
+✔ mail independent: fresh release deadline bounds parked settle (42.953026ms)
+✔ mail independent: cancellation bounds parked settle (3.011906ms)
+✔ mail independent: budget-shortened lifetime bounds retained expiry (2.694278ms)
+✔ mail independent: source-disabled canonical catalog never reaches supplied ports (5.65073ms)
+ℹ tests 45
+ℹ suites 0
+ℹ pass 42
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1469.047933
+
+✖ failing tests:
+
+test at apps/gateway/test/mail-context-independent.test.mjs:105:1
+✖ mail independent: model context and malformed input refuse before trusted ports (2.552184ms)
+  AssertionError [ERR_ASSERTION]: {"offset":1}
+  + actual - expected
+  
+  + [
+  +   'capability',
+  +   'run'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:107:52)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 'capability', 'run' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/mail-context-independent.test.mjs:137:1
+✖ mail independent: raw context objects/proxies never invoke accessors (8.463927ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /^GatewayDenied: (INVALID_ARGUMENTS|ACCESS_DENIED|INVALID_RESULT|DEADLINE|CANCELLED|BUDGET_UNCERTAIN|GATEWAY_CONFIGURATION|RESOURCE_LIMIT)$/. Input:
+  
+  'GatewayDenied: INTERNAL_ERROR'
+  
+      at async denied (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:68:46)
+      at async TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:141:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: GatewayDenied: INTERNAL_ERROR
+        at safeFailure (file:///workspace/meri-mail-successor-20261012/apps/gateway/dispatch/operation-result.mjs:55:10)
+        at Object.execute (file:///workspace/meri-mail-successor-20261012/apps/gateway/dispatch/tool-dispatch.mjs:100:13)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async denied (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:68:46)
+        at async TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:141:5)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    expected: /^GatewayDenied: (INVALID_ARGUMENTS|ACCESS_DENIED|INVALID_RESULT|DEADLINE|CANCELLED|BUDGET_UNCERTAIN|GATEWAY_CONFIGURATION|RESOURCE_LIMIT)$/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/mail-context-independent.test.mjs:151:47
+✖ mail independent: revoked authority after retain never releases (2.922211ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:155:30)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

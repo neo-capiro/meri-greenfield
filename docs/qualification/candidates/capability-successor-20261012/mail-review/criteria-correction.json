@@ -1,0 +1,13 @@
+{
+  "supersedes": "frozen-criteria.json MAIL2 and all-authority-stage decision-ID pin interpretations in MAIL3/MAIL6",
+  "authority": "Root clarified existing mail semantics before author freeze and before independent test implementation",
+  "criteria": [
+    "First-page current authority decisions may rotate when stable subject/binding/policy agree; preserve that behavior.",
+    "Retained key follows stable-subject convention excluding authorizationDecisionId; exact retained previousPage preserves its full subject.",
+    "Canonical mail output validator must still reject a previous/current PAGE subject mismatch including authorizationDecisionId; no exception, rewrite or stable-only substitution in the retained page.",
+    "Preserve all other frozen criteria and original failure evidence."
+  ],
+  "initialCriteriaCommit": "e53844c",
+  "newApprovalSemantics": false,
+  "runtimeAccepted": false
+}

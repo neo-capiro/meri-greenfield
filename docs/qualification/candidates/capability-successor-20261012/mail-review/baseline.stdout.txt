@@ -1,0 +1,617 @@
+✖ mail independent: canonical list three-page continuation (3.066547ms)
+✖ mail independent: canonical search three-page continuation (0.362816ms)
+✖ mail independent: stable key retains exact full page and immutable snapshots (0.448253ms)
+✖ mail independent: first-page current decision IDs may rotate (0.451278ms)
+✖ mail independent: full previous/current page decision mismatch still refuses (0.345629ms)
+✖ mail independent: terminal or unknown total 0 never retains invented continuation (0.306841ms)
+✖ mail independent: terminal or unknown total 1 never retains invented continuation (0.280101ms)
+✖ mail independent: terminal or unknown total null never retains invented continuation (0.175504ms)
+✔ mail independent: model context and malformed input refuse before trusted ports (2.514227ms)
+✔ mail independent: missing context ports refuse without reservation or handler (0.311468ms)
+✖ mail independent: retained missing refuses before budget/effect (0.222474ms)
+✖ mail independent: retained digest refuses before budget/effect (0.225249ms)
+✖ mail independent: retained keyBinding refuses before budget/effect (0.145899ms)
+✖ mail independent: retained keyOperation refuses before budget/effect (0.130346ms)
+✖ mail independent: retained keyPolicy refuses before budget/effect (0.126701ms)
+✖ mail independent: retained keySubject refuses before budget/effect (0.1195ms)
+✖ mail independent: retained keySelection refuses before budget/effect (0.174613ms)
+✖ mail independent: retained staleReceipt refuses before budget/effect (0.217267ms)
+✖ mail independent: retained futureReceipt refuses before budget/effect (0.129365ms)
+✖ mail independent: retained expired refuses before budget/effect (0.118918ms)
+✖ mail independent: retained futureRecorded refuses before budget/effect (0.118589ms)
+✖ mail independent: retained extended refuses before budget/effect (0.208063ms)
+✖ mail independent: retained extra refuses before budget/effect (0.153371ms)
+✖ mail independent: rehashed retained anchor cannot bypass canonical continuation (0.245569ms)
+✖ mail independent: rehashed retained pageDecision cannot bypass canonical continuation (0.121563ms)
+✖ mail independent: rehashed retained nextOffset cannot bypass canonical continuation (0.235815ms)
+✖ mail independent: rehashed retained selection cannot bypass canonical continuation (0.202875ms)
+✖ mail independent: rehashed retained window cannot bypass canonical continuation (0.16664ms)
+✖ mail independent: raw context objects/proxies never invoke accessors (0.213551ms)
+✖ mail independent: retained acknowledgment receiptDigest suppresses settlement (0.784849ms)
+✖ mail independent: retained acknowledgment receiptKey suppresses settlement (0.2263ms)
+✖ mail independent: retained acknowledgment stale suppresses settlement (0.199129ms)
+✖ mail independent: retained acknowledgment extra suppresses settlement (0.197787ms)
+✖ mail independent: retained acknowledgment oversized suppresses settlement (0.353751ms)
+✖ mail independent: revoked authority after load never releases (0.303576ms)
+✖ mail independent: revoked authority after retain never releases (0.23969ms)
+✔ mail independent: revoked authority after settle never releases (0.135473ms)
+✖ mail independent: fresh release deadline bounds parked load (0.323406ms)
+✖ mail independent: cancellation bounds parked load (0.122534ms)
+✖ mail independent: fresh release deadline bounds parked retain (701.789905ms)
+✖ mail independent: cancellation bounds parked retain (701.33562ms)
+✖ mail independent: fresh release deadline bounds parked settle (701.111777ms)
+✖ mail independent: cancellation bounds parked settle (701.088902ms)
+✖ mail independent: budget-shortened lifetime bounds retained expiry (0.734684ms)
+✔ mail independent: source-disabled canonical catalog never reaches supplied ports (4.69261ms)
+ℹ tests 45
+ℹ suites 0
+ℹ pass 4
+ℹ fail 41
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3933.172213
+
+✖ failing tests:
+
+test at apps/gateway/test/mail-context-independent.test.mjs:70:37
+✖ mail independent: canonical list three-page continuation (3.066547ms)
+  GatewayDenied: GATEWAY_CONFIGURATION
+      at deny (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+      at assertOperationArguments (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-context.mjs:10:41)
+      at Object.execute (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:35:5)
+      at TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:72:79)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+
+test at apps/gateway/test/mail-context-independent.test.mjs:70:37
+✖ mail independent: canonical search three-page continuation (0.362816ms)
+  GatewayDenied: GATEWAY_CONFIGURATION
+      at deny (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+      at assertOperationArguments (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-context.mjs:10:41)
+      at Object.execute (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:35:5)
+      at TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:72:79)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at apps/gateway/test/mail-context-independent.test.mjs:80:1
+✖ mail independent: stable key retains exact full page and immutable snapshots (0.448253ms)
+  GatewayDenied: GATEWAY_CONFIGURATION
+      at deny (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+      at assertOperationArguments (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-context.mjs:10:41)
+      at Object.execute (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:35:5)
+      at seeded (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:63:65)
+      at TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:81:17)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at apps/gateway/test/mail-context-independent.test.mjs:90:1
+✖ mail independent: first-page current decision IDs may rotate (0.451278ms)
+  GatewayDenied: GATEWAY_CONFIGURATION
+      at deny (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+      at assertOperationArguments (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-context.mjs:10:41)
+      at Object.execute (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:35:5)
+      at TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:91:79)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/gateway/test/mail-context-independent.test.mjs:95:1
+✖ mail independent: full previous/current page decision mismatch still refuses (0.345629ms)
+  GatewayDenied: GATEWAY_CONFIGURATION
+      at deny (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+      at assertOperationArguments (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-context.mjs:10:41)
+      at Object.execute (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:35:5)
+      at seeded (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:63:65)
+      at TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:96:17)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at apps/gateway/test/mail-context-independent.test.mjs:100:31
+✖ mail independent: terminal or unknown total 0 never retains invented continuation (0.306841ms)
+  GatewayDenied: GATEWAY_CONFIGURATION
+      at deny (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+      at assertOperationArguments (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-context.mjs:10:41)
+      at Object.execute (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:35:5)
+      at TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:101:79)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/gateway/test/mail-context-independent.test.mjs:100:31
+✖ mail independent: terminal or unknown total 1 never retains invented continuation (0.280101ms)
+  GatewayDenied: GATEWAY_CONFIGURATION
+      at deny (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+      at assertOperationArguments (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-context.mjs:10:41)
+      at Object.execute (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:35:5)
+      at TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:101:79)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/gateway/test/mail-context-independent.test.mjs:100:31
+✖ mail independent: terminal or unknown total null never retains invented continuation (0.175504ms)
+  GatewayDenied: GATEWAY_CONFIGURATION
+      at deny (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+      at assertOperationArguments (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-context.mjs:10:41)
+      at Object.execute (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:35:5)
+      at TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:101:79)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/gateway/test/mail-context-independent.test.mjs:122:55
+✖ mail independent: retained missing refuses before budget/effect (0.222474ms)
+  GatewayDenied: GATEWAY_CONFIGURATION
+      at deny (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+      at assertOperationArguments (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-context.mjs:10:41)
+      at Object.execute (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:35:5)
+      at seeded (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:63:65)
+      at TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:123:17)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at apps/gateway/test/mail-context-independent.test.mjs:122:55
+✖ mail independent: retained digest refuses before budget/effect (0.225249ms)
+  GatewayDenied: GATEWAY_CONFIGURATION
+      at deny (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+      at assertOperationArguments (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-context.mjs:10:41)
+      at Object.execute (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:35:5)
+      at seeded (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:63:65)
+      at TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:123:17)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at apps/gateway/test/mail-context-independent.test.mjs:122:55
+✖ mail independent: retained keyBinding refuses before budget/effect (0.145899ms)
+  GatewayDenied: GATEWAY_CONFIGURATION
+      at deny (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+      at assertOperationArguments (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-context.mjs:10:41)
+      at Object.execute (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:35:5)
+      at seeded (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:63:65)
+      at TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:123:17)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at apps/gateway/test/mail-context-independent.test.mjs:122:55
+✖ mail independent: retained keyOperation refuses before budget/effect (0.130346ms)
+  GatewayDenied: GATEWAY_CONFIGURATION
+      at deny (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+      at assertOperationArguments (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-context.mjs:10:41)
+      at Object.execute (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:35:5)
+      at seeded (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:63:65)
+      at TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:123:17)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at apps/gateway/test/mail-context-independent.test.mjs:122:55
+✖ mail independent: retained keyPolicy refuses before budget/effect (0.126701ms)
+  GatewayDenied: GATEWAY_CONFIGURATION
+      at deny (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+      at assertOperationArguments (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-context.mjs:10:41)
+      at Object.execute (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:35:5)
+      at seeded (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:63:65)
+      at TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:123:17)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at apps/gateway/test/mail-context-independent.test.mjs:122:55
+✖ mail independent: retained keySubject refuses before budget/effect (0.1195ms)
+  GatewayDenied: GATEWAY_CONFIGURATION
+      at deny (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+      at assertOperationArguments (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-context.mjs:10:41)
+      at Object.execute (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:35:5)
+      at seeded (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:63:65)
+      at TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:123:17)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at apps/gateway/test/mail-context-independent.test.mjs:122:55
+✖ mail independent: retained keySelection refuses before budget/effect (0.174613ms)
+  GatewayDenied: GATEWAY_CONFIGURATION
+      at deny (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+      at assertOperationArguments (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-context.mjs:10:41)
+      at Object.execute (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:35:5)
+      at seeded (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:63:65)
+      at TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:123:17)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at apps/gateway/test/mail-context-independent.test.mjs:122:55
+✖ mail independent: retained staleReceipt refuses before budget/effect (0.217267ms)
+  GatewayDenied: GATEWAY_CONFIGURATION
+      at deny (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+      at assertOperationArguments (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-context.mjs:10:41)
+      at Object.execute (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:35:5)
+      at seeded (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:63:65)
+      at TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:123:17)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at apps/gateway/test/mail-context-independent.test.mjs:122:55
+✖ mail independent: retained futureReceipt refuses before budget/effect (0.129365ms)
+  GatewayDenied: GATEWAY_CONFIGURATION
+      at deny (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+      at assertOperationArguments (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-context.mjs:10:41)
+      at Object.execute (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:35:5)
+      at seeded (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:63:65)
+      at TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:123:17)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at apps/gateway/test/mail-context-independent.test.mjs:122:55
+✖ mail independent: retained expired refuses before budget/effect (0.118918ms)
+  GatewayDenied: GATEWAY_CONFIGURATION
+      at deny (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+      at assertOperationArguments (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-context.mjs:10:41)
+      at Object.execute (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:35:5)
+      at seeded (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:63:65)
+      at TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:123:17)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at apps/gateway/test/mail-context-independent.test.mjs:122:55
+✖ mail independent: retained futureRecorded refuses before budget/effect (0.118589ms)
+  GatewayDenied: GATEWAY_CONFIGURATION
+      at deny (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+      at assertOperationArguments (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-context.mjs:10:41)
+      at Object.execute (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:35:5)
+      at seeded (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:63:65)
+      at TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:123:17)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at apps/gateway/test/mail-context-independent.test.mjs:122:55
+✖ mail independent: retained extended refuses before budget/effect (0.208063ms)
+  GatewayDenied: GATEWAY_CONFIGURATION
+      at deny (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+      at assertOperationArguments (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-context.mjs:10:41)
+      at Object.execute (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:35:5)
+      at seeded (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:63:65)
+      at TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:123:17)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at apps/gateway/test/mail-context-independent.test.mjs:122:55
+✖ mail independent: retained extra refuses before budget/effect (0.153371ms)
+  GatewayDenied: GATEWAY_CONFIGURATION
+      at deny (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+      at assertOperationArguments (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-context.mjs:10:41)
+      at Object.execute (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:35:5)
+      at seeded (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:63:65)
+      at TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:123:17)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at apps/gateway/test/mail-context-independent.test.mjs:126:79
+✖ mail independent: rehashed retained anchor cannot bypass canonical continuation (0.245569ms)
+  GatewayDenied: GATEWAY_CONFIGURATION
+      at deny (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+      at assertOperationArguments (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-context.mjs:10:41)
+      at Object.execute (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:35:5)
+      at seeded (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:63:65)
+      at TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:127:17)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at apps/gateway/test/mail-context-independent.test.mjs:126:79
+✖ mail independent: rehashed retained pageDecision cannot bypass canonical continuation (0.121563ms)
+  GatewayDenied: GATEWAY_CONFIGURATION
+      at deny (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+      at assertOperationArguments (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-context.mjs:10:41)
+      at Object.execute (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:35:5)
+      at seeded (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:63:65)
+      at TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:127:17)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at apps/gateway/test/mail-context-independent.test.mjs:126:79
+✖ mail independent: rehashed retained nextOffset cannot bypass canonical continuation (0.235815ms)
+  GatewayDenied: GATEWAY_CONFIGURATION
+      at deny (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+      at assertOperationArguments (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-context.mjs:10:41)
+      at Object.execute (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:35:5)
+      at seeded (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:63:65)
+      at TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:127:17)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at apps/gateway/test/mail-context-independent.test.mjs:126:79
+✖ mail independent: rehashed retained selection cannot bypass canonical continuation (0.202875ms)
+  GatewayDenied: GATEWAY_CONFIGURATION
+      at deny (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+      at assertOperationArguments (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-context.mjs:10:41)
+      at Object.execute (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:35:5)
+      at seeded (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:63:65)
+      at TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:127:17)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at apps/gateway/test/mail-context-independent.test.mjs:126:79
+✖ mail independent: rehashed retained window cannot bypass canonical continuation (0.16664ms)
+  GatewayDenied: GATEWAY_CONFIGURATION
+      at deny (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+      at assertOperationArguments (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-context.mjs:10:41)
+      at Object.execute (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:35:5)
+      at seeded (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:63:65)
+      at TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:127:17)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at apps/gateway/test/mail-context-independent.test.mjs:137:1
+✖ mail independent: raw context objects/proxies never invoke accessors (0.213551ms)
+  GatewayDenied: GATEWAY_CONFIGURATION
+      at deny (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+      at assertOperationArguments (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-context.mjs:10:41)
+      at Object.execute (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:35:5)
+      at seeded (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:63:65)
+      at TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:138:82)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at apps/gateway/test/mail-context-independent.test.mjs:145:78
+✖ mail independent: retained acknowledgment receiptDigest suppresses settlement (0.784849ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:148:74)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/mail-context-independent.test.mjs:145:78
+✖ mail independent: retained acknowledgment receiptKey suppresses settlement (0.2263ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:148:74)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/mail-context-independent.test.mjs:145:78
+✖ mail independent: retained acknowledgment stale suppresses settlement (0.199129ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:148:74)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/mail-context-independent.test.mjs:145:78
+✖ mail independent: retained acknowledgment extra suppresses settlement (0.197787ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:148:74)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/mail-context-independent.test.mjs:145:78
+✖ mail independent: retained acknowledgment oversized suppresses settlement (0.353751ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:148:74)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/mail-context-independent.test.mjs:151:47
+✖ mail independent: revoked authority after load never releases (0.303576ms)
+  GatewayDenied: GATEWAY_CONFIGURATION
+      at deny (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+      at assertOperationArguments (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-context.mjs:10:41)
+      at Object.execute (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:35:5)
+      at seeded (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:63:65)
+      at TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:152:32)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at apps/gateway/test/mail-context-independent.test.mjs:151:47
+✖ mail independent: revoked authority after retain never releases (0.23969ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:155:30)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/mail-context-independent.test.mjs:174:80
+✖ mail independent: fresh release deadline bounds parked load (0.323406ms)
+  GatewayDenied: GATEWAY_CONFIGURATION
+      at deny (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+      at assertOperationArguments (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-context.mjs:10:41)
+      at Object.execute (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:35:5)
+      at seeded (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:63:65)
+      at parkedCase (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:159:32)
+      at TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:174:182)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+
+test at apps/gateway/test/mail-context-independent.test.mjs:174:80
+✖ mail independent: cancellation bounds parked load (0.122534ms)
+  GatewayDenied: GATEWAY_CONFIGURATION
+      at deny (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+      at assertOperationArguments (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-context.mjs:10:41)
+      at Object.execute (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:35:5)
+      at seeded (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:63:65)
+      at parkedCase (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:159:32)
+      at TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:174:182)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+
+test at apps/gateway/test/mail-context-independent.test.mjs:174:80
+✖ mail independent: fresh release deadline bounds parked retain (701.789905ms)
+  Error: port not entered
+      at Timeout.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:166:97)
+      at listOnTimeout (node:internal/timers:635:17)
+      at process.processTimers (node:internal/timers:571:7)
+
+test at apps/gateway/test/mail-context-independent.test.mjs:174:80
+✖ mail independent: cancellation bounds parked retain (701.33562ms)
+  Error: port not entered
+      at Timeout.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:166:97)
+      at listOnTimeout (node:internal/timers:635:17)
+      at process.processTimers (node:internal/timers:571:7)
+
+test at apps/gateway/test/mail-context-independent.test.mjs:174:80
+✖ mail independent: fresh release deadline bounds parked settle (701.111777ms)
+  Error: port not entered
+      at Timeout.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:166:97)
+      at listOnTimeout (node:internal/timers:635:17)
+      at process.processTimers (node:internal/timers:571:7)
+
+test at apps/gateway/test/mail-context-independent.test.mjs:174:80
+✖ mail independent: cancellation bounds parked settle (701.088902ms)
+  Error: port not entered
+      at Timeout.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:166:97)
+      at listOnTimeout (node:internal/timers:635:17)
+      at process.processTimers (node:internal/timers:571:7)
+
+test at apps/gateway/test/mail-context-independent.test.mjs:176:1
+✖ mail independent: budget-shortened lifetime bounds retained expiry (0.734684ms)
+  GatewayDenied: GATEWAY_CONFIGURATION
+      at deny (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+      at assertOperationArguments (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/operation-context.mjs:10:41)
+      at Object.execute (file:///workspace/meri-mail-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:35:5)
+      at TestContext.<anonymous> (file:///workspace/meri-mail-context-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:177:95)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

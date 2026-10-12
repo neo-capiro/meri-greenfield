@@ -1,0 +1,35 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "sourceCommit": "8c4ec8dc2a9caad8640eb9f4741f5de2d7696887",
+  "sourceTree": "24115292d908255c5f794fe216040158c0fdd955",
+  "base": "5b1b5985bc73cbfe901c17e65acf9fd50b3d7e33",
+  "independentChecks": {
+    "passed": 48,
+    "failed": 0
+  },
+  "sourcePreservationChecks": {
+    "passed": 19,
+    "failed": 0
+  },
+  "fullGateway": {
+    "passed": 281,
+    "failed": 1,
+    "failure": "Existing memory-profile characterization; root metadata already adds two mail profiles; action author owns intentional expectation update"
+  },
+  "retainedBaseline": {
+    "passed": 4,
+    "failed": 41,
+    "reason": "Base dispatcher does not support canonical mail profile"
+  },
+  "retainedFirstCandidate": {
+    "passed": 42,
+    "failed": 3,
+    "reason": "Reviewer fixture assumptions documented in first-replay-diagnosis.json; corrected separately"
+  },
+  "nativeRuntimeAccepted": false,
+  "sourceEnabled": false,
+  "privateDataAccess": false,
+  "ownedDependencySymlinkRemoved": true,
+  "noOwnedJobsRemain": true,
+  "authorDocumentationFreeze": "Not needed for this exact four-file source acceptance; record separately when available"
+}

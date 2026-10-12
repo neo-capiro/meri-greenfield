@@ -1,0 +1,16 @@
+[
+  {
+    "lock": "package-lock.json",
+    "sha256": "b2293773bf4ddc6d23425b7d718b79575384679999b86fd3caad78e6eda4a42d",
+    "source": "/workspace/meri-source-continuation-20261012/node_modules",
+    "scriptsRun": false,
+    "installed": false
+  },
+  {
+    "lock": "packages/contracts/package-lock.json",
+    "sha256": "dae8c670bb76b9c570f174d8749a8c59179cf865d5d6ec83b64a67bb5b2b06a6",
+    "source": "/workspace/meri-source-continuation-20261012/packages/contracts/node_modules",
+    "scriptsRun": false,
+    "installed": false
+  }
+]

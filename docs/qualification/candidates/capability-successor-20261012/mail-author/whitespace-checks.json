@@ -1,0 +1,69 @@
+{
+  "rerunReason": "Retain exact staged raw-output whitespace failure; separately check authored source/document bytes without altering failed output.",
+  "checks": [
+    {
+      "command": [
+        "git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "exitCode": 2,
+      "scope": "full-staged-raw",
+      "streams": [
+        {
+          "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/full-staged-raw.stdout",
+          "bytes": 256,
+          "sha256": "fc9426f107cefd77356c81f383884ae64c761d6563124a14c3b5fdeccd84f53c"
+        },
+        {
+          "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/full-staged-raw.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--cached",
+        "--check",
+        "--",
+        ".",
+        ":(exclude,glob)**/*.bin"
+      ],
+      "exitCode": 0,
+      "scope": "authored-whitespace",
+      "streams": [
+        {
+          "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/authored-whitespace.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/authored-whitespace.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--cached",
+        "--check",
+        "--",
+        ".",
+        ":(exclude,glob)**/*.bin",
+        ":(exclude,glob)**/*.stdout",
+        ":(exclude,glob)**/*.stderr"
+      ],
+      "exitCode": 0,
+      "scope": "final authored source excluding all preserved raw streams",
+      "stdout": "",
+      "stderr": ""
+    }
+  ]
+}

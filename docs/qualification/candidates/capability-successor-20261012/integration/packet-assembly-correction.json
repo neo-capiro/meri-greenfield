@@ -1,0 +1,9 @@
+{
+  "stage": "packet assembly after source acceptance",
+  "initialExitCode": 1,
+  "initialAssumption": "integration-review/review-manifest.json uses files",
+  "actualMemberKey": "members",
+  "correction": "Use the exact declared members array and verify every member byte/hash.",
+  "productSourceChanged": false,
+  "testsChanged": false
+}

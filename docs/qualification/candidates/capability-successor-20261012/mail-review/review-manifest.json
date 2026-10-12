@@ -1,0 +1,112 @@
+{
+  "sourceCommit": "8c4ec8dc2a9caad8640eb9f4741f5de2d7696887",
+  "verdict": "ACCEPT_SOURCE",
+  "selfExcluded": true,
+  "files": [
+    {
+      "path": "docs/coordination/reports/CODEX-CAPABILITY-MAIL-REVIEW-20261012.md",
+      "bytes": 7413,
+      "sha256": "ebf44242be7d789081f98e9594aa05010baaba67b788c045464c63c8b10c7548"
+    },
+    {
+      "path": "apps/gateway/test/mail-context-independent.test.mjs",
+      "bytes": 22299,
+      "sha256": "86b23271d637b7fdc867acd2174e00ec65326e11d6dc9261bc69afc5f3faf046"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-review/authored-whitespace.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-review/authored-whitespace.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-review/baseline.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-review/baseline.stdout.txt",
+      "bytes": 45507,
+      "sha256": "54cf47eb0eb792a2581955f781ccf87a407e816e3246a04c817bee31b27d75c5"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-review/candidate-corrected.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-review/candidate-corrected.stdout.txt",
+      "bytes": 4321,
+      "sha256": "828095d792270eef39c56fbf0b01b703bc0dff3106a382ccc5142b6eb4d645c7"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-review/candidate-first.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-review/candidate-first.stdout.txt",
+      "bytes": 7409,
+      "sha256": "96a4196cc1b4783c7b0631090152429aae5b4567f934e9a1e9a34d73bfc71c49"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-review/criteria-correction.json",
+      "bytes": 906,
+      "sha256": "32d8b20d7871c69b10e6a1a2580fe03522cac2f93f3be549f73488e0288b6720"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-review/final-review.json",
+      "bytes": 1156,
+      "sha256": "7f36ba305d820bb843d7bb992279d843aad8f0826bbed1fd5ddb4530e1101dc7"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-review/first-replay-diagnosis.json",
+      "bytes": 1208,
+      "sha256": "ea9b2731a49f52488bb3d1e4f0a857bca47264cca73c2466b256972fd65185f3"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-review/frozen-criteria.json",
+      "bytes": 3248,
+      "sha256": "18678463ef2bd513448736502e27e8ce69608896fe19644965593ffd18b093e4"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-review/gateway-full-receipt.json",
+      "bytes": 801,
+      "sha256": "ed496349d8c2054855b4139d56648f9f68186bb1fdfb42317b548d3e3defc781"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-review/gateway-full.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-review/gateway-full.stdout.txt",
+      "bytes": 25631,
+      "sha256": "bb77a8ffb350e2e62220edd48f25081647e07dbd078bd8a88dade584aed94b64"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-review/packet-hygiene.json",
+      "bytes": 306,
+      "sha256": "c849563b4747e35e0525e812a5ff33788464ca458728ee395bcb6d66d2f6efdc"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-review/packet-whitespace.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-review/packet-whitespace.stdout.txt",
+      "bytes": 2486,
+      "sha256": "3e49ee981f38a98f21965418b52b4b8e531c57792d3c1db750f33191e8cc8881"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-review/source-preservation.json",
+      "bytes": 3082,
+      "sha256": "582286d7e735508b68262a242191ccd0b0df016ad98490388662a6bb09bbd9cd"
+    }
+  ]
+}

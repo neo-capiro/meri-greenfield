@@ -1,0 +1,23 @@
+{
+  "status": "PASS_SOURCE_PRESERVATION_ONLY",
+  "sourceHead": "6d2b0b0b2b53a7c229a84a7a44bf8feb9b1140f6",
+  "base": "2f06feccca731d6cd388612cd568185ecc29668f",
+  "planSha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388",
+  "workbookSha256": "3d281d7a1a9a1eaf4fe520dde8e46e2abedac82f6b771041a613c1cfb0df25ec",
+  "ledger": {
+    "originals": 139,
+    "selected": 96,
+    "deferred": 43,
+    "mappedUnavailable": 14,
+    "unmappedSelected": 82,
+    "typedUnavailableOperations": 15,
+    "partialBindingsWithinUnmapped": [
+      "query_action_items"
+    ]
+  },
+  "originalDescriptorsSha256": "50d5baa13482e07e7e65bfcf88212aef7e1e41169719b9caf83a96246a000b92",
+  "originalRowsSha256": "74208a71fccd5403609980a19a51505dc566826c4e56449451306d39db2f18e9",
+  "runtime": "UNRUN_SEPARATE_OWNER",
+  "sourceConnectivity": false,
+  "gate": "G1_OPEN_G2_G7_UNENTERED"
+}

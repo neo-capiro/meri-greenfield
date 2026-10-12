@@ -1,0 +1,26 @@
+{
+  "decision": "PASS_RETAINED_PACKET_BYTES",
+  "packets": [
+    {
+      "packet": "action-author/source-manifest.json",
+      "members": 9,
+      "sha256": "483c69dbfdf0a0923841d157134586547052b13af1bbe5dc94d9c88115b0435b"
+    },
+    {
+      "packet": "action-review/review-manifest.json",
+      "members": 18,
+      "sha256": "e576968285469afdda161c654edf1da7babede9e2ce44638f53dc64153c3d310"
+    },
+    {
+      "packet": "mail-author/manifest.json",
+      "members": 32,
+      "sha256": "3ebb848a5a4c4bab3d6078b7d30e928c376bdf51b963a119ecb5c5846cb8e5dc"
+    },
+    {
+      "packet": "mail-review/review-manifest.json",
+      "members": 21,
+      "sha256": "c78b33e93150ac82f2f5b036874740da06fbd323c12b47c850af3fddce8efc34"
+    }
+  ],
+  "runtimeAccepted": false
+}

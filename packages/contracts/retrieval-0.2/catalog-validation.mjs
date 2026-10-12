@@ -16,9 +16,11 @@ export const CATALOG_OPERATION_BINDINGS = Object.freeze([
     normalize: (v, request, context, binding) => ({input: v.assertMailThreadInput(request)}),
     outputAssert: (v, page, request, context, binding) => v.assertMailThreadSourcePage(page, request)}),
   Object.freeze({id: 'mail.list_messages', nativeId: 'list_emails', group: 'mail', input: 'MailListInput', output: 'MailCandidateSourcePage', version: '0.2.0',
+    dispatchProfile: 'mail-candidates/1',
     normalize: (v, request, context, binding) => ({input: v.assertMailListInput(request, clock(context, ['nowMs']))}),
     outputAssert: (v, page, request, context, binding) => v.assertMailCandidateSourcePage(page, request, binding.id, clock(context, ['nowMs', 'previousPage']))}),
   Object.freeze({id: 'mail.search_messages', nativeId: 'search_emails', group: 'mail', input: 'MailSearchInput', output: 'MailCandidateSourcePage', version: '0.2.0',
+    dispatchProfile: 'mail-candidates/1',
     normalize: (v, request, context, binding) => ({input: v.assertMailSearchInput(request, clock(context, ['nowMs']))}),
     outputAssert: (v, page, request, context, binding) => v.assertMailCandidateSourcePage(page, request, binding.id, clock(context, ['nowMs', 'previousPage']))}),
   Object.freeze({id: 'meeting.list_upcoming_meetings', nativeId: 'list_upcoming_meetings', group: 'meeting-source', input: 'MeetingUpcomingInput', output: 'MeetingUpcomingPage', version: '0.2.0',
@@ -56,6 +58,14 @@ export const CATALOG_OPERATION_BINDINGS = Object.freeze([
     contextKeys: Object.freeze(['subject', 'previous']),
     normalize: (v, request, context, binding) => ({input: v.normalizeMemoryProposalInput(request, context)}),
     outputAssert: (v, page, request, context, binding) => v.assertMemoryProposalReadResult(page, request, clock(context, binding.contextKeys))}),
+  Object.freeze({id: 'query_action_items', nativeId: 'query_action_items', nativeCoverage: 'partial', group: 'operational-reads', input: 'ActionItemReadInput', output: 'ActionItemClientScopedPage', version: '0.2.0',
+    normalize: (v, request, context, binding) => {
+      if (typeof context.actorId !== 'string' || !context.actorId) fail('Explicit trusted actorId required');
+      const result = v.assertActionItemReadInput(request, clock(context, ['actorId']));
+      if (result.mode !== 'client_scoped') fail('Unscoped action-item mode remains unqualified');
+      return selected(result);
+    },
+    outputAssert: (v, page, request, context, binding) => v.assertActionItemClientScopedPage(page, request, clock(context, ['actorId']))}),
 ]);
 
 export function createCatalogValidators({validateShape, schemaRecords}) {
@@ -119,7 +129,11 @@ function assertCatalog(catalog) {
     for (const binding of CATALOG_OPERATION_BINDINGS) {
       const operation = operations.get(key({id: binding.id, version: binding.version}));
       const original = catalog.originals.find(row => row.id === binding.nativeId);
-      if (!operation || !original || original.state !== 'mapped' ||
+      if (!operation || !original) fail('Registered preservation mapping mismatch');
+      if (binding.nativeCoverage === 'partial') {
+        if (original.state !== 'pending' || original.replacement !== null || operation.aliases.length !== 0)
+          fail('Partial native coverage cannot claim a replacement or compatibility alias');
+      } else if (original.state !== 'mapped' ||
           key(original.replacement ?? {}) !== key(operation.operation)) fail('Registered preservation mapping mismatch');
       if (operation.handler !== null || operation.availability !== 'unimplemented' ||
           operation.qualification !== 'pending' || operation.retry.maxRetries !== 0 ||

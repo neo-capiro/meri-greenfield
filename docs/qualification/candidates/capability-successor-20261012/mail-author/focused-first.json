@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "apps/gateway/test/mail-context.test.mjs"
+  ],
+  "cwd": "/workspace/meri-mail-successor-20261012",
+  "exitCode": 0,
+  "timedOut": false,
+  "elapsedSeconds": 1.4198684719958692,
+  "reaped": true,
+  "streams": {
+    "stdout": {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/focused-first.stdout",
+      "bytes": 4150,
+      "sha256": "2b80b0b4bffad3d89e8cb76068affc8611273730353a726a2cbfd0289d275a8f"
+    },
+    "stderr": {
+      "path": "docs/qualification/candidates/capability-successor-20261012/mail-author/focused-first.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}
