@@ -1,0 +1,20 @@
+{
+  "failures": [
+    {
+      "operation": "initial report apply_patch",
+      "error": "apply_patch verification failed: invalid patch: multiple operations target same report path",
+      "effect": "No file mutation; replaced report in one subsequent write."
+    },
+    {
+      "operation": "initial optional license path read",
+      "exitCode": 2,
+      "error": "Glob docs/qualification/candidates/image-patch-20261012/licenses/*.md did not match; other requested source reads returned.",
+      "effect": "No mutation; continued against actual JSON and report evidence."
+    },
+    {
+      "operation": "public-source body retention check",
+      "error": "apply_patch add-file serialization added one trailing newline",
+      "effect": "Removed exactly one added newline after checking tool-returned content lengths; original Git blob matches verified for all three GitHub fetch_file artifacts."
+    }
+  ]
+}

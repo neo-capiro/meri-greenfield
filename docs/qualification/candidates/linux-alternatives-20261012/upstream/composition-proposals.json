@@ -1,0 +1,851 @@
+{
+  "baseCommit": "690bac4cd44112b161d8e02818aeae7639ce237a",
+  "executionAdmission": "NOT_EXECUTABLE",
+  "options": [
+    {
+      "architecture": "linux/amd64",
+      "codename": "resolute",
+      "directPackageMapping": [
+        {
+          "currentName": "ca-certificates",
+          "currentVersion": "20250419",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "ca-certificates",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "python3",
+          "currentVersion": "3.13.5-1",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "python3",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "python3-venv",
+          "currentVersion": "3.13.5-1",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "python3-venv",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libreoffice-core",
+          "currentVersion": "4:25.2.3-2+deb13u8",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [
+            "4:26.2.6.3-0ubuntu0.26.04.2"
+          ],
+          "proposedName": "libreoffice-core-nogui",
+          "reason": "Native Writer/Calc/Impress headless conversion and spreadsheet recalc retained; exact module set must solve together.",
+          "role": "FUNCTION_PRESERVED_REQUIRES_ARTIFACT_PARITY"
+        },
+        {
+          "currentName": "libreoffice-writer",
+          "currentVersion": "4:25.2.3-2+deb13u8",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [
+            "4:26.2.6.3-0ubuntu0.26.04.2"
+          ],
+          "proposedName": "libreoffice-writer-nogui",
+          "reason": "Native Writer/Calc/Impress headless conversion and spreadsheet recalc retained; exact module set must solve together.",
+          "role": "FUNCTION_PRESERVED_REQUIRES_ARTIFACT_PARITY"
+        },
+        {
+          "currentName": "libreoffice-calc",
+          "currentVersion": "4:25.2.3-2+deb13u8",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [
+            "4:26.2.6.3-0ubuntu0.26.04.2"
+          ],
+          "proposedName": "libreoffice-calc-nogui",
+          "reason": "Native Writer/Calc/Impress headless conversion and spreadsheet recalc retained; exact module set must solve together.",
+          "role": "FUNCTION_PRESERVED_REQUIRES_ARTIFACT_PARITY"
+        },
+        {
+          "currentName": "libreoffice-impress",
+          "currentVersion": "4:25.2.3-2+deb13u8",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [
+            "4:26.2.6.3-0ubuntu0.26.04.2"
+          ],
+          "proposedName": "libreoffice-impress-nogui",
+          "reason": "Native Writer/Calc/Impress headless conversion and spreadsheet recalc retained; exact module set must solve together.",
+          "role": "FUNCTION_PRESERVED_REQUIRES_ARTIFACT_PARITY"
+        },
+        {
+          "currentName": "fonts-liberation",
+          "currentVersion": "1:2.1.5-3",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "fonts-liberation",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "fonts-dejavu-core",
+          "currentVersion": "2.37-8",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "fonts-dejavu-core",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "fonts-noto-core",
+          "currentVersion": "20201225-2",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "fonts-noto-core",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "fonts-crosextra-carlito",
+          "currentVersion": "20230309-2",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "fonts-crosextra-carlito",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "fonts-crosextra-caladea",
+          "currentVersion": "20200211-2",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "fonts-crosextra-caladea",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "poppler-utils",
+          "currentVersion": "25.03.0-5+deb13u4",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [
+            "26.01.0-2ubuntu0.2"
+          ],
+          "proposedName": "poppler-utils",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libnss3",
+          "currentVersion": "2:3.110-1+deb13u4",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "libnss3",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libnspr4",
+          "currentVersion": "2:4.36-1",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "libnspr4",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libatk1.0-0t64",
+          "currentVersion": "2.56.2-1+deb13u2",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "libatk1.0-0t64",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libatk-bridge2.0-0t64",
+          "currentVersion": "2.56.2-1+deb13u2",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "libatk-bridge2.0-0t64",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libcups2t64",
+          "currentVersion": "2.4.10-3+deb13u2",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [
+            "2.4.16-1ubuntu1.3"
+          ],
+          "proposedName": "libcups2t64",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libdrm2",
+          "currentVersion": "2.4.124-2",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "libdrm2",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libxkbcommon0",
+          "currentVersion": "1.7.0-2",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "libxkbcommon0",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libxcomposite1",
+          "currentVersion": "1:0.4.6-1",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "libxcomposite1",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libxdamage1",
+          "currentVersion": "1:1.1.6-1+b2",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "libxdamage1",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libxfixes3",
+          "currentVersion": "1:6.0.0-2+b4",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "libxfixes3",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libxrandr2",
+          "currentVersion": "2:1.5.4-1+b3",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "libxrandr2",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libgbm1",
+          "currentVersion": "25.0.7-2+deb13u1",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "libgbm1",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libpango-1.0-0",
+          "currentVersion": "1.56.3-1",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "libpango-1.0-0",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libcairo2",
+          "currentVersion": "1.18.4-1+b1",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "libcairo2",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libasound2t64",
+          "currentVersion": "1.2.14-1+deb13u1",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "libasound2t64",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libatspi2.0-0t64",
+          "currentVersion": "2.56.2-1+deb13u2",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "libatspi2.0-0t64",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libx11-6",
+          "currentVersion": "2:1.8.12-1",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "libx11-6",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libxcb1",
+          "currentVersion": "1.17.0-2+b1",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "libxcb1",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libxext6",
+          "currentVersion": "2:1.3.4-1+b3",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "libxext6",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libglib2.0-0t64",
+          "currentVersion": "2.84.4-3~deb13u5",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "libglib2.0-0t64",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libexpat1",
+          "currentVersion": "2.8.3-1~deb13u1",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [
+            "2.7.4-1ubuntu0.2"
+          ],
+          "proposedName": "libexpat1",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libtiff6",
+          "currentVersion": "4.7.0-3+deb13u3",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [
+            "4.7.0-3ubuntu5"
+          ],
+          "proposedName": "libtiff6",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        }
+      ],
+      "id": "ubuntu-26.04",
+      "immutablePinCompleteness": "PARTIAL: OCI manifests and published Node/Python identities obtained; complete authenticated package/installed/bundled closure unavailable",
+      "layersDownloaded": 0,
+      "lxmlSelection": "UNDECIDED: compatible PyPI wheel exists but embedded parser security not closed; evaluate same-release lxml source build against vendor shared parsers only after separate supported-build proposal, or owner-approved distro python3-lxml API qualification. Neither is implemented.",
+      "lxmlWheelMetadata": {
+        "downloaded": false,
+        "filename": "lxml-6.1.3-cp314-cp314-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl",
+        "securityAdmitted": false,
+        "sha256": "a7eb78ba28b187e1e9203a55c60fcf70df2d22cb205fe6d51b9383d6097419f0",
+        "size": 5245991,
+        "uploadedUtc": "2026-09-02T14:49:14.154819Z",
+        "url": "https://files.pythonhosted.org/packages/e9/44/27e3cee3dcdb3b7bc09727b642bdbfcd098490ea77df04611db9060d7722/lxml-6.1.3-cp314-cp314-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl",
+        "yanked": false
+      },
+      "node": {
+        "downloaded": false,
+        "publishedTarXzSha256": "fd8e59d5a511510f6a298afb548f18c7d2b1be404d8b4a27d94fbe49f56cb2d6",
+        "releaseSignatureVerified": false,
+        "version": "24.21.0"
+      },
+      "ociAmd64ManifestDigest": "sha256:88a381d5b5eeb2b35d3ad70925a362c37ce569daf43ede89ff818ec20e4d3794",
+      "ociIndexDigest": "sha256:f144425ff09be612d6d9ad965196e9cdc23dae1f42110a8a11a3e9a8198759f7",
+      "ociTag": "resolute-20260927",
+      "officialImageSourceCommit": "97b63f1d28d5d0c4a7374bfa87241a49f984ed04",
+      "playwright": {
+        "browserAssetSha256": "a24546e0e6c763bf864861ce50498f38783663e24cd2af2a16798c25dc3a9489",
+        "chromiumRevision": "1247",
+        "chromiumVersion": "155.0.8059.12",
+        "explicitPlatformSupportInExactArchive": true,
+        "gitHead": "e8149b8257d32dcf8f72573ecc43e72439da7080",
+        "mcp": "0.0.83",
+        "nativeDependencies": [
+          "libasound2t64",
+          "libatk-bridge2.0-0t64",
+          "libatk1.0-0t64",
+          "libatspi2.0-0t64",
+          "libcairo2",
+          "libcups2t64",
+          "libdbus-1-3",
+          "libdrm2",
+          "libgbm1",
+          "libglib2.0-0t64",
+          "libnspr4",
+          "libnss3",
+          "libpango-1.0-0",
+          "libx11-6",
+          "libxcb1",
+          "libxcomposite1",
+          "libxdamage1",
+          "libxext6",
+          "libxfixes3",
+          "libxkbcommon0",
+          "libxrandr2"
+        ],
+        "playwrightCore": "1.64.0-alpha-1790635538000",
+        "runtimeABIQualification": "UNRUN"
+      },
+      "preference": 1,
+      "pythonMinor": "3.14",
+      "repositoryPlan": {
+        "allowedSuites": [
+          "resolute",
+          "resolute-updates",
+          "resolute-security"
+        ],
+        "components": [
+          "main",
+          "universe"
+        ],
+        "dependencySolver": "UNRUN",
+        "packagePayloadsDownloaded": 0,
+        "proposedSnapshotTime": "20261012T000000Z",
+        "signatureAuthentication": "UNRUN",
+        "snapshotRetrieved": false
+      },
+      "securityAdmission": "HOLD",
+      "status": "SUPPORTED_PLATFORM_COMPOSITION_PROPOSED"
+    },
+    {
+      "architecture": "linux/amd64",
+      "codename": "noble",
+      "directPackageMapping": [
+        {
+          "currentName": "ca-certificates",
+          "currentVersion": "20250419",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "ca-certificates",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "python3",
+          "currentVersion": "3.13.5-1",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [
+            "3.12.3-0ubuntu2.1"
+          ],
+          "proposedName": "python3",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "python3-venv",
+          "currentVersion": "3.13.5-1",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [
+            "3.12.3-0ubuntu2.1"
+          ],
+          "proposedName": "python3-venv",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libreoffice-core",
+          "currentVersion": "4:25.2.3-2+deb13u8",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [
+            "4:24.2.7-0ubuntu0.24.04.7"
+          ],
+          "proposedName": "libreoffice-core-nogui",
+          "reason": "Native Writer/Calc/Impress headless conversion and spreadsheet recalc retained; exact module set must solve together.",
+          "role": "FUNCTION_PRESERVED_REQUIRES_ARTIFACT_PARITY"
+        },
+        {
+          "currentName": "libreoffice-writer",
+          "currentVersion": "4:25.2.3-2+deb13u8",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [
+            "4:24.2.7-0ubuntu0.24.04.7"
+          ],
+          "proposedName": "libreoffice-writer-nogui",
+          "reason": "Native Writer/Calc/Impress headless conversion and spreadsheet recalc retained; exact module set must solve together.",
+          "role": "FUNCTION_PRESERVED_REQUIRES_ARTIFACT_PARITY"
+        },
+        {
+          "currentName": "libreoffice-calc",
+          "currentVersion": "4:25.2.3-2+deb13u8",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [
+            "4:24.2.7-0ubuntu0.24.04.7"
+          ],
+          "proposedName": "libreoffice-calc-nogui",
+          "reason": "Native Writer/Calc/Impress headless conversion and spreadsheet recalc retained; exact module set must solve together.",
+          "role": "FUNCTION_PRESERVED_REQUIRES_ARTIFACT_PARITY"
+        },
+        {
+          "currentName": "libreoffice-impress",
+          "currentVersion": "4:25.2.3-2+deb13u8",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [
+            "4:24.2.7-0ubuntu0.24.04.7"
+          ],
+          "proposedName": "libreoffice-impress-nogui",
+          "reason": "Native Writer/Calc/Impress headless conversion and spreadsheet recalc retained; exact module set must solve together.",
+          "role": "FUNCTION_PRESERVED_REQUIRES_ARTIFACT_PARITY"
+        },
+        {
+          "currentName": "fonts-liberation",
+          "currentVersion": "1:2.1.5-3",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "fonts-liberation",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "fonts-dejavu-core",
+          "currentVersion": "2.37-8",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "fonts-dejavu-core",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "fonts-noto-core",
+          "currentVersion": "20201225-2",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "fonts-noto-core",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "fonts-crosextra-carlito",
+          "currentVersion": "20230309-2",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "fonts-crosextra-carlito",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "fonts-crosextra-caladea",
+          "currentVersion": "20200211-2",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "fonts-crosextra-caladea",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "poppler-utils",
+          "currentVersion": "25.03.0-5+deb13u4",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [
+            "24.02.0-1ubuntu9.10"
+          ],
+          "proposedName": "poppler-utils",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libnss3",
+          "currentVersion": "2:3.110-1+deb13u4",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "libnss3",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libnspr4",
+          "currentVersion": "2:4.36-1",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "libnspr4",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libatk1.0-0t64",
+          "currentVersion": "2.56.2-1+deb13u2",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "libatk1.0-0t64",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libatk-bridge2.0-0t64",
+          "currentVersion": "2.56.2-1+deb13u2",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "libatk-bridge2.0-0t64",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libcups2t64",
+          "currentVersion": "2.4.10-3+deb13u2",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [
+            "2.4.7-1.2ubuntu7.14"
+          ],
+          "proposedName": "libcups2t64",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libdrm2",
+          "currentVersion": "2.4.124-2",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "libdrm2",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libxkbcommon0",
+          "currentVersion": "1.7.0-2",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "libxkbcommon0",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libxcomposite1",
+          "currentVersion": "1:0.4.6-1",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "libxcomposite1",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libxdamage1",
+          "currentVersion": "1:1.1.6-1+b2",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "libxdamage1",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libxfixes3",
+          "currentVersion": "1:6.0.0-2+b4",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "libxfixes3",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libxrandr2",
+          "currentVersion": "2:1.5.4-1+b3",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "libxrandr2",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libgbm1",
+          "currentVersion": "25.0.7-2+deb13u1",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "libgbm1",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libpango-1.0-0",
+          "currentVersion": "1.56.3-1",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "libpango-1.0-0",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libcairo2",
+          "currentVersion": "1.18.4-1+b1",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "libcairo2",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libasound2t64",
+          "currentVersion": "1.2.14-1+deb13u1",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "libasound2t64",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libatspi2.0-0t64",
+          "currentVersion": "2.56.2-1+deb13u2",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "libatspi2.0-0t64",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libx11-6",
+          "currentVersion": "2:1.8.12-1",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "libx11-6",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libxcb1",
+          "currentVersion": "1.17.0-2+b1",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "libxcb1",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libxext6",
+          "currentVersion": "2:1.3.4-1+b3",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "libxext6",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libglib2.0-0t64",
+          "currentVersion": "2.84.4-3~deb13u5",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [],
+          "proposedName": "libglib2.0-0t64",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libexpat1",
+          "currentVersion": "2.8.3-1~deb13u1",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [
+            "2.6.1-2ubuntu0.6"
+          ],
+          "proposedName": "libexpat1",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        },
+        {
+          "currentName": "libtiff6",
+          "currentVersion": "4.7.0-3+deb13u3",
+          "immutableSelectedVersion": null,
+          "observedUpdatePocketVersions": [
+            "4.5.1+git230720-4ubuntu2.5"
+          ],
+          "proposedName": "libtiff6",
+          "reason": "Candidate preserves this required direct dependency; same-suite resolution and exact runtime verification still required.",
+          "role": "RETAIN_REQUIRED_BEHAVIOR"
+        }
+      ],
+      "id": "ubuntu-24.04",
+      "immutablePinCompleteness": "PARTIAL: OCI manifests and published Node/Python identities obtained; complete authenticated package/installed/bundled closure unavailable",
+      "layersDownloaded": 0,
+      "lxmlSelection": "UNDECIDED: compatible PyPI wheel exists but embedded parser security not closed; evaluate same-release lxml source build against vendor shared parsers only after separate supported-build proposal, or owner-approved distro python3-lxml API qualification. Neither is implemented.",
+      "lxmlWheelMetadata": {
+        "downloaded": false,
+        "filename": "lxml-6.1.3-cp312-cp312-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl",
+        "securityAdmitted": false,
+        "sha256": "909f4e927bb051f7740d6367285fc60cdcfdaf0258c2dba4ff5ba7eadadc250c",
+        "size": 5244675,
+        "uploadedUtc": "2026-09-02T14:47:47.635154Z",
+        "url": "https://files.pythonhosted.org/packages/0a/20/e022dbc6b4753a9bc9fc5fb28a27163430c1731b9913997f6544c1b2518c/lxml-6.1.3-cp312-cp312-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl",
+        "yanked": false
+      },
+      "node": {
+        "downloaded": false,
+        "publishedTarXzSha256": "fd8e59d5a511510f6a298afb548f18c7d2b1be404d8b4a27d94fbe49f56cb2d6",
+        "releaseSignatureVerified": false,
+        "version": "24.21.0"
+      },
+      "ociAmd64ManifestDigest": "sha256:f610ab94648195aa356059f5b41d6085c9d4d903c072430cdd1af7bdb646106b",
+      "ociIndexDigest": "sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55",
+      "ociTag": "noble-20260917",
+      "officialImageSourceCommit": "ab7012ab5b3136a47103c5453cb27d07445ac13d",
+      "playwright": {
+        "browserAssetSha256": "a24546e0e6c763bf864861ce50498f38783663e24cd2af2a16798c25dc3a9489",
+        "chromiumRevision": "1247",
+        "chromiumVersion": "155.0.8059.12",
+        "explicitPlatformSupportInExactArchive": true,
+        "gitHead": "e8149b8257d32dcf8f72573ecc43e72439da7080",
+        "mcp": "0.0.83",
+        "nativeDependencies": [
+          "libasound2t64",
+          "libatk-bridge2.0-0t64",
+          "libatk1.0-0t64",
+          "libatspi2.0-0t64",
+          "libcairo2",
+          "libcups2t64",
+          "libdbus-1-3",
+          "libdrm2",
+          "libgbm1",
+          "libglib2.0-0t64",
+          "libnspr4",
+          "libnss3",
+          "libpango-1.0-0",
+          "libx11-6",
+          "libxcb1",
+          "libxcomposite1",
+          "libxdamage1",
+          "libxext6",
+          "libxfixes3",
+          "libxkbcommon0",
+          "libxrandr2"
+        ],
+        "playwrightCore": "1.64.0-alpha-1790635538000",
+        "runtimeABIQualification": "UNRUN"
+      },
+      "preference": 2,
+      "pythonMinor": "3.12",
+      "repositoryPlan": {
+        "allowedSuites": [
+          "noble",
+          "noble-updates",
+          "noble-security"
+        ],
+        "components": [
+          "main",
+          "universe"
+        ],
+        "dependencySolver": "UNRUN",
+        "packagePayloadsDownloaded": 0,
+        "proposedSnapshotTime": "20261012T000000Z",
+        "signatureAuthentication": "UNRUN",
+        "snapshotRetrieved": false
+      },
+      "securityAdmission": "HOLD",
+      "status": "SUPPORTED_PLATFORM_COMPOSITION_PROPOSED"
+    }
+  ],
+  "ownerDecision": "Choose Ubuntu26.04 source preparation or retain Debian13 awaiting vendor fixes; research does not authorize architecture/component change or execution.",
+  "retainedOption": {
+    "id": "retain-debian13",
+    "reason": "Existing reviewed source/build context remains preserved; no new stable Debian release exists and held54 obligations remain open. Await maintained Trixie vendor fixes/adjudications, including bundled copies.",
+    "status": "NO_RECIPE_CHANGE"
+  },
+  "unsupportedShortcuts": [
+    "Do not mix Debian or Ubuntu suites",
+    "Do not remove required Chromium, Office, PDF, Python or fonts behavior",
+    "Do not treat newer version numbers, absent scans, missing vendor pages, disabled daemons, or local tests as CVE closure",
+    "Do not apply homegrown security patches or claim upstream commits are released supported distro fixes",
+    "Do not adopt MCR root/sandbox-off defaults, host IPC or SYS_ADMIN examples as Meri authority"
+  ]
+}

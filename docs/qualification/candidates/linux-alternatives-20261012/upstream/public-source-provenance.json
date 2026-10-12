@@ -1,0 +1,34 @@
+{
+  "dateUtc": "2026-10-12",
+  "sources": [
+    {
+      "file": "official-ubuntu-library.txt",
+      "url": "https://github.com/docker-library/official-images/blob/master/library/ubuntu",
+      "gitBlob": "ce38f84575e08dbd70db4778db526df67856d405"
+    },
+    {
+      "file": "playwright-v1.64.0-Dockerfile.resolute.txt",
+      "url": "https://github.com/microsoft/playwright/blob/v1.64.0/utils/docker/Dockerfile.resolute",
+      "scope": "Comparison only; not selected worker recipe"
+    },
+    {
+      "file": "playwright-v1.64.0-nativeDeps.ts.txt",
+      "url": "https://github.com/microsoft/playwright/blob/v1.64.0/packages/playwright-core/src/server/registry/nativeDeps.ts",
+      "scope": "Comparison only; exact alpha is authoritative for retained package"
+    },
+    {
+      "file": "node-v24.21.0-BUILDING.md",
+      "url": "https://github.com/nodejs/node/blob/v24.21.0/BUILDING.md"
+    },
+    {
+      "file": "playwright-alpha-nativeDeps.ts.txt",
+      "url": "https://github.com/microsoft/playwright/blob/e8149b8257d32dcf8f72573ecc43e72439da7080/packages/playwright-core/src/server/registry/nativeDeps.ts",
+      "gitBlob": "1a75f17cb92d7e84469267c3454b61fc02f5abc6"
+    },
+    {
+      "file": "playwright-alpha-hostPlatform.ts.txt",
+      "url": "https://github.com/microsoft/playwright/blob/e8149b8257d32dcf8f72573ecc43e72439da7080/packages/utils/hostPlatform.ts",
+      "gitBlob": "d633ca383aee28493d4fb882064103d7a4a807a5"
+    }
+  ]
+}

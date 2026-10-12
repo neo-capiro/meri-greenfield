@@ -1,0 +1,27 @@
+{
+  "retrievedUtc": "2026-10-12T03:50:53.465979+00:00",
+  "rows": [
+    {
+      "url": "https://registry-1.docker.io/v2/library/ubuntu/manifests/sha256:88a381d5b5eeb2b35d3ad70925a362c37ce569daf43ede89ff818ec20e4d3794",
+      "bytes": 1392,
+      "sha256": "88a381d5b5eeb2b35d3ad70925a362c37ce569daf43ede89ff818ec20e4d3794",
+      "dockerContentDigest": "sha256:88a381d5b5eeb2b35d3ad70925a362c37ce569daf43ede89ff818ec20e4d3794",
+      "expectedDigest": "sha256:88a381d5b5eeb2b35d3ad70925a362c37ce569daf43ede89ff818ec20e4d3794",
+      "digestMatches": true,
+      "error": null,
+      "path": "metadata-transport/resolute-20260927-amd64-manifest.body.json",
+      "layerBytesDownloaded": 0
+    },
+    {
+      "url": "https://registry-1.docker.io/v2/library/ubuntu/manifests/sha256:f610ab94648195aa356059f5b41d6085c9d4d903c072430cdd1af7bdb646106b",
+      "bytes": 424,
+      "sha256": "f610ab94648195aa356059f5b41d6085c9d4d903c072430cdd1af7bdb646106b",
+      "dockerContentDigest": "sha256:f610ab94648195aa356059f5b41d6085c9d4d903c072430cdd1af7bdb646106b",
+      "expectedDigest": "sha256:f610ab94648195aa356059f5b41d6085c9d4d903c072430cdd1af7bdb646106b",
+      "digestMatches": true,
+      "error": null,
+      "path": "metadata-transport/noble-20260917-amd64-manifest.body.json",
+      "layerBytesDownloaded": 0
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "retrievedUtc": "2026-10-12T03:52:58.964130+00:00",
+  "scope": "bounded compressed public package metadata, no .deb or runtime binaries",
+  "rows": [
+    {
+      "url": "https://archive.ubuntu.com/ubuntu/dists/resolute-updates/main/binary-amd64/Packages.xz",
+      "error": null,
+      "bytes": 734484,
+      "sha256": "f9986740287e4f9d9e8b7919678d1c82654b0d80c5b04f4973911246656cfd1a",
+      "expectedSha256": "f9986740287e4f9d9e8b7919678d1c82654b0d80c5b04f4973911246656cfd1a",
+      "expectedBytes": 734484,
+      "path": "metadata-transport/resolute-updates-main-Packages.xz",
+      "inReleaseHashMatch": true,
+      "signatureVerified": false
+    },
+    {
+      "url": "https://archive.ubuntu.com/ubuntu/dists/resolute-updates/universe/binary-amd64/Packages.xz",
+      "error": null,
+      "bytes": 323208,
+      "sha256": "581c14b018730daad83c80b39525c739f5368737488fdf7701811d8723fc3c9e",
+      "expectedSha256": "581c14b018730daad83c80b39525c739f5368737488fdf7701811d8723fc3c9e",
+      "expectedBytes": 323208,
+      "path": "metadata-transport/resolute-updates-universe-Packages.xz",
+      "inReleaseHashMatch": true,
+      "signatureVerified": false
+    },
+    {
+      "url": "https://archive.ubuntu.com/ubuntu/dists/noble-updates/main/binary-amd64/Packages.xz",
+      "error": null,
+      "bytes": 1374764,
+      "sha256": "9c100243ebb3cb006f80a7f122dc53fe84ab3818e3ca0f76ffb1a338b6e71a60",
+      "expectedSha256": "9c100243ebb3cb006f80a7f122dc53fe84ab3818e3ca0f76ffb1a338b6e71a60",
+      "expectedBytes": 1374764,
+      "path": "metadata-transport/noble-updates-main-Packages.xz",
+      "inReleaseHashMatch": true,
+      "signatureVerified": false
+    },
+    {
+      "url": "https://archive.ubuntu.com/ubuntu/dists/noble-updates/universe/binary-amd64/Packages.xz",
+      "error": null,
+      "bytes": 1702144,
+      "sha256": "7b284890643bd864ce6ccf1dcd5491300afa80d589c13f8b98ffd4717b65be0c",
+      "expectedSha256": "7b284890643bd864ce6ccf1dcd5491300afa80d589c13f8b98ffd4717b65be0c",
+      "expectedBytes": 1702144,
+      "path": "metadata-transport/noble-updates-universe-Packages.xz",
+      "inReleaseHashMatch": true,
+      "signatureVerified": false
+    }
+  ]
+}
