@@ -1,0 +1,38 @@
+{
+  "authorFreeze": "417e9942bd3e8decd1a5ed40760228e263107ed6",
+  "excluded": [
+    "This follow-up MANIFEST.json (self recursion)"
+  ],
+  "members": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/facility-representation-review/author-packet-followup/VERIFICATION.md",
+      "bytes": 1553,
+      "sha256": "6268cb07f3d4d2cbee13e02e4718f75e9600c5f48b2c6f8216f24ffe970385a0"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/facility-representation-review/author-packet-followup/initial-lookup-note.md",
+      "bytes": 578,
+      "sha256": "0f368c370f58b5392c92a38bb02e607ee7a45cc9168183c8494d33baf10f9933"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/facility-representation-review/author-packet-followup/verify.py",
+      "bytes": 4497,
+      "sha256": "e98d5d71b5246e657cc21090697a9774eb3b5d4613097ad490b6c82cbe8988a2"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/facility-representation-review/author-packet-followup.json",
+      "bytes": 1411,
+      "sha256": "6c51a21d719190664a690b122263fec621dc4ef8507e912c5de1bfd3ce79c4bd"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/facility-representation-review/author-packet-followup.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/facility-representation-review/author-packet-followup.stdout.bin",
+      "bytes": 7019,
+      "sha256": "75cf267b273e791d827e201eab72c8e9b59e518765995054f6efb9f8f3525e5f"
+    }
+  ]
+}
