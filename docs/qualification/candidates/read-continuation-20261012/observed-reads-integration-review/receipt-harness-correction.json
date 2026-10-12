@@ -1,0 +1,6 @@
+{
+  "sourceDefect": false,
+  "initialPassed": 42,
+  "initialFailed": 1,
+  "reason": "Public package script is typecheck, not reviewer-assumed check:types. Exact raw stdout includes typecheck and tsc --noEmit --strict; preserve successful actual execution and tighten match to actual compiler command. No producer/test execution repeated."
+}
