@@ -8,6 +8,7 @@ BASE = '1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8'
 SOURCE = 'ea94aff840424843b4b6efbfc21fb9d195f7ff54'
 target = sys.argv[1]
 manifest_ref = sys.argv[2] if len(sys.argv) > 2 else target
+expected_test_files = int(sys.argv[3]) if len(sys.argv) > 3 else 19
 prefix = 'docs/qualification/candidates/backend-execution-20261012/integration/'
 
 def git(*args):
@@ -28,8 +29,8 @@ def same(label, actual, expected):
 
 manifest = json.loads(blob(manifest_ref, prefix + 'test-expectation-updates.json'))
 same('manifest original base', manifest['base'], BASE)
-same('19 explicit old test paths', len(manifest['changes']), 19)
-same('19 unique old test paths', len({row['path'] for row in manifest['changes']}), 19)
+same('explicit old test path count', len(manifest['changes']), expected_test_files)
+same('unique old test path count', len({row['path'] for row in manifest['changes']}), expected_test_files)
 for row in manifest['changes']:
     path = row['path']
     original = blob(BASE, path).decode()

@@ -1,0 +1,7 @@
+{
+  "trigger": "Root broad4251/4254 at f9e0471c: two local dependency-layout failures plus an obsolete pending-action mapping expectation.",
+  "additionalAllocatedOriginal": "packages/contracts/test/retrieval-operational-reads.test.mjs",
+  "permittedChange": "Replace only the old native query_action_items pending/null expectation and descriptive test title with explicit mapped actions.query@0.2.0 assertions; preserve old partial descriptor, aliases, unavailable handlers, public0.1 and skill refusal controls.",
+  "requiredEvidence": "Exact twentieth forward/inverse patch, before/after hashes, unchanged production ea94aff and preserved original19 audit plus failed broad receipt.",
+  "authority": "Root follow-up reporting the4251/4254 result allocated this narrow test expectation repair to memory_author. No reviewer production edit or runtime change."
+}
