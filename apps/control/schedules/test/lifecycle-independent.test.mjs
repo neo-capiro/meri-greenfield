@@ -299,9 +299,10 @@ test('independent lifecycle: current read authority failure never becomes unavai
 test('independent lifecycle: invalid description identity does not become a missing-record assertion', async () => {
   const h = harness({ describe: () => ({ ...description(), scheduleId: 'wrong-schedule' }) });
   // Refusal may be an unavailable observation, but never released wrong identity or absence evidence.
-  try {
-    const out = await h.list(); assert.equal(out.rows[0].inspection, null);
-    assert.equal(out.rows[0].inspectionState, 'unavailable'); assert.equal(out.coverage.complete, false);
-    assert.equal(out.originalRuns.executions.length, 0);
-  } catch (error) { assert.equal(error instanceof Error, true); }
+  let out;
+  try { out = await h.list(); }
+  catch (error) { assert.equal(error instanceof Error, true); return; }
+  assert.equal(out.rows[0].inspection, null);
+  assert.equal(out.rows[0].inspectionState, 'unavailable'); assert.equal(out.coverage.complete, false);
+  assert.equal(out.originalRuns.executions.length, 0);
 });
