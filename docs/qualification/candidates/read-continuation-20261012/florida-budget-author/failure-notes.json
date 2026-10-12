@@ -1,0 +1,52 @@
+{
+  "initialFocused": {
+    "source": "86e3ce07f8d57369049bdf8ebe0fc2149cd1eb3f",
+    "passed": 26,
+    "failed": 1,
+    "classification": "Author fixture binding setup, not production validator defect",
+    "cause": "Test-only outputAssert binding passed canonical resolver context.request into the strictly closed family context. Existing real bindings filter only declared keys before invoking family validators.",
+    "repair": "Test binding applies declared contextKeys projection; every existing assertion and test name unchanged. Family source unchanged.",
+    "replay": "focused-binding-repair",
+    "preserved": "Initial commit and focused-initial raw streams/receipt retained."
+  },
+  "readOnlyDiscoveryDiagnostic": {
+    "message": "sed: cannot read packages/contracts/retrieval-0.2/binding-validation.mjs: No such file or directory",
+    "resolution": "Canonical assertSubject is in validate.mjs; read actual owner instead. No fabricated helper or source change.",
+    "captureLimit": "Tool-output transcription; individual sed status not retained because later shell read succeeded."
+  },
+  "cappedClientUuid": {
+    "preimageSource": "b32c64b388c98975f9230e1c453013863cb214d6",
+    "counterexampleCommit": "5691a6a456a8134326f3b65bb47d1f23a36aacda",
+    "before": "client-cutoff-before: expected-rejection fails1/1; owned group absent",
+    "cause": "Wrapper trims then slices80; resolver trims again before UUID detection. Capped trailing whitespace bypassed the initial UUID-only identity guard.",
+    "repair": "bbc823e7c176194128901542d9c56d7c2cd3104e changes only guard classification/comparison to reference.trim(); exact receipt selector stays unchanged.",
+    "after": "focused-client-repair passes28/28 including unchanged counterexample; owned group absent"
+  },
+  "detachedOutput": {
+    "preimageSource": "bbc823e7c176194128901542d9c56d7c2cd3104e",
+    "discoveredBy": "Root source review; independent reviewer later reproduced 29 pass/1 fail at exact preimage.",
+    "counterexampleCommit": "9ba91b44589e27340d5d62977a743350e5c57389",
+    "before": "output-alias-before: expected detached identity fails1/1; group263781 absent",
+    "cause": "assertResult validated the detached page but returned the original mutable value.",
+    "repair": "3532908507ac51dd15702b2d71dae62b75773274 returns page; original positive identity assertion deliberately corrected to deep equality plus different identity; appended counterexample unchanged.",
+    "after": "focused-output-repair passes29/29; group263911 absent"
+  },
+  "normalizedDefinitionAlignment": {
+    "source": "dabe2b50d94f0b12ef983292a1c18e1ef35d4675",
+    "rootDecision": "inputDefinition identifies normalized FloridaBudgetInput consistently with established catalog boundary; normalizeInput still admits FloridaBudgetRequest and applies defaults.",
+    "change": "Original definition assertion deliberately updated and additive raw-versus-normalized regression preserved. No request narrowing from this metadata correction.",
+    "after": "focused-definition-alignment passes30/30; group264107 absent",
+    "remainingLimit": "Future SDK/model raw-request schema exposure is unqualified; no operation enabled."
+  },
+  "rawWhitespace": {
+    "command": [
+      "git",
+      "diff",
+      "--cached",
+      "--check"
+    ],
+    "exitCode": 2,
+    "cause": "Preserved failed Node assertion output has two whitespace-only lines in output-alias-before.stdout.bin at16 and52. Raw bytes are not normalized.",
+    "packetAssembly": "First manifest assembly stopped at its whitespace-success assertion; no manifest was written. Failure stdout/stderr and exit receipt retained; authored-text check follows separately."
+  }
+}

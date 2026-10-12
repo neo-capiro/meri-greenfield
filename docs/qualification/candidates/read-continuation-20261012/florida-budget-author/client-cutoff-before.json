@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-name-pattern=client UUID identity survives",
+    "packages/contracts/test/retrieval-florida-budget.test.mjs"
+  ],
+  "cwd": "/workspace/meri-florida-budget-20261012",
+  "sourceHead": "5691a6a456a8134326f3b65bb47d1f23a36aacda",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "e0eda6c30be9041846623c04ea10e0392677bfa0fd9c340b19559f35c69de8e3",
+  "startedAt": "2026-10-12T19:02:50.434139+00:00",
+  "durationSeconds": 0.266,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 263157,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/client-cutoff-before.stdout.bin",
+      "bytes": 1013,
+      "sha256": "f7e6b82902f960f14a276f7d8cda00304540b63755d3fbdcb6b74a2d4ebadbed"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/client-cutoff-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Unique label identifies initial or repaired focused Florida source verification; prior receipts are preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

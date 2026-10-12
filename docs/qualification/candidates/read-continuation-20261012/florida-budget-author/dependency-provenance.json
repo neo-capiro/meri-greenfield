@@ -1,0 +1,15 @@
+{
+  "donor": "/workspace/meri-read-continuation-20261012/node_modules",
+  "packages": [
+    "fast-uri",
+    "fast-deep-equal",
+    "canonicalize",
+    "ajv-formats",
+    "ajv",
+    "require-from-string",
+    "json-schema-traverse"
+  ],
+  "installation": false,
+  "hooks": false,
+  "donorMutated": false
+}
