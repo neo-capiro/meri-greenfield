@@ -1,0 +1,12 @@
+{
+  "full": {
+    "exitCode": 2,
+    "stdoutBytes": 1094,
+    "stdoutSha256": "63e3440a5ec531c17b4dbaa2b198abb5471fca865c0cbe432ba926aeec9bfe32"
+  },
+  "authored": {
+    "exitCode": 0,
+    "stdoutBytes": 0
+  },
+  "rawFailuresPreserved": true
+}
