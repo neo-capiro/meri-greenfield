@@ -1,9 +1,40 @@
 # Public data reads: independent discovery and review
 
-Initial discovery conclusion: **sufficient frozen interface evidence for source-only
-contract authoring**, with the qualifications below. No candidate is accepted yet.
-Reviewer base: `e94865529c5a1e97c79893527895f0b4b73be35f`; criteria commit
-`2f5af2e` precedes root's production authoring. Root owns all production changes.
+**ACCEPT_SOURCE** for root candidate `31093cd5b6aaaf246a870eb4f473a6639cc2a7df`,
+tree `d3e75ff6046a0e1b51aeb4c3644c7670b94f1d22`: the economic, grants and legacy
+awards schema, validator factory and date-consistency module. Root owns production;
+this review changes only independent tests and review documentation/evidence.
+Canonical loader/catalog/gateway integration is not part of this verdict. All
+source adapters remain unavailable and native/runtime acceptance remains **HOLD**.
+Reviewer base `e94865529c5a1e97c79893527895f0b4b73be35f`, frozen criteria `2f5af2e`
+and adversarial matrix `bbe0c5c` precede inspection of the candidate.
+
+Independent controls pass **59/59**; read-only reference, source preservation and
+receipt audit passes **80/80**. The original author receipt independently verifies
+**27/27** at the exact candidate. Test-only Ajv compilation uses the candidate
+factory and existing canonical inert JSON admission; it does not substitute for
+later canonical dispatch integration. Raw streams and receipts remain in
+[public-data-review](../../qualification/candidates/read-continuation-20261012/public-data-review/).
+Every owned process group is confirmed absent; no cleanup failure occurred. The
+full whitespace check exits 2 on two whitespace-only lines in the original raw
+failure stream; that result and those bytes are preserved. The authored-file
+check passes with only raw stdout/stderr excluded. No shared attributes or checks
+were changed by this reviewer.
+
+The first independent replay was **57/58**, caused by an expectation of exact
+legacy Unicode normalization: uppercasing `ßß` produces `SSSS`, which the new
+normalized state schema refuses. The owner explicitly confirmed narrower typed
+admission: reject post-uppercase overflow of the two-character state or 16-character
+PE bound, without a second truncation or an ASCII-only policy. No valid geographic
+or PE selector regression was identified. The original test and raw failure are
+preserved in `independent-first.test.mjs.txt` and `independent-first.*`; the final
+controls characterize this disclosed restriction and separately accept expansion
+within the typed bounds. This is an intentional compatibility limit, **not** exact
+legacy behavior for arbitrary Unicode. Census state is plain Prisma `String`, not
+a database length constraint; award PE storage is `@db.VarChar(16)`. Malformed
+selector scalar/year refusal is likewise stricter than legacy permissive coercion.
+See `compatibility-decision.json`; no production repair or output-type relaxation
+was made to pass this review.
 
 Twelve exact path/blob/size/SHA references are recorded in
 [reference-identities.json](../../qualification/candidates/read-continuation-20261012/public-data-review/reference-identities.json).
@@ -40,7 +71,9 @@ error projection, not a fabricated empty success.
 status (30) and limit 1–50/default20. It returns the frozen `FederalGrant`
 projection, generatedAt/asOf sharing one instant, and a separately observed
 count. It has no offset continuation. Monetary values are nullable floats,
-URLs nullable strings, and eligibility an array of strings. Title summaries
+URLs nullable strings, and eligibility an array of strings. The exact Prisma
+`@db.Date` annotation supports UTC-midnight serialization of open/close dates;
+`FederalAward.id` has `@db.Uuid`. Title summaries
 are limited to 240 UTF-16 units. Query data and count use separate `withSystem`
 calls; their combination proves no atomic snapshot or authoritative absence.
 
@@ -84,7 +117,7 @@ null and cannot be filled from actionDate. Synchronization time is not award
 signing or source modification time. All explanatory strings remain reported
 text, not authority.
 
-Catalog binding, independent candidate controls and a final exact source verdict
-are pending. Source connectivity remains disabled. No runtime, native fixture,
+Catalog binding and its independent integrated review remain pending. Source
+connectivity remains disabled; this family verdict does not activate a handler. No runtime, native fixture,
 service/database/provider/model/cloud action or customer data access is authorized
 by this discovery; G1 remains OPEN and G2–G7 unentered.
