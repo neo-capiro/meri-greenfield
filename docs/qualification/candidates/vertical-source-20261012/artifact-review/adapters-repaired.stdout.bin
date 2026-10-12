@@ -1,0 +1,16 @@
+✔ independent real TXT keeps Unicode and exact CRLF bytes (56.924721ms)
+✔ independent real DOCX retains ordered paragraphs, bullets and table cells (127.002873ms)
+✔ independent real XLSX separates literal cells from formulas and discloses cache (180.995076ms)
+✔ independent real PPTX retains editable text, table and speaker notes (93.791941ms)
+✔ independent real analysis computes totals from nontrivial input (261.241332ms)
+✔ independent real analysis refuses ambiguous null join keys (261.951677ms)
+✔ independent integer arithmetic cannot silently wrap positive finite inputs negative (340.011835ms)
+✔ independent PPTX refuses PNG whose IDAT CRC is invalid (100.880649ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1506.703823

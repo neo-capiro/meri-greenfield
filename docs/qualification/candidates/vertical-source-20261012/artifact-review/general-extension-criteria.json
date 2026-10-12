@@ -1,0 +1,14 @@
+{
+  "sourceBeforeExtension": "d971d9651f9f427f2f9811de2604a64b9fc76e3f",
+  "criteria": [
+    "closed raw caller branches exclude trusted admission fields",
+    "program/input immutable exact tuples and unique safe output names",
+    "full current binding/intent/image/admission correlation",
+    "trusted scopes cannot collapse to same-tenant checks",
+    "unavailable ports refuse before program execution",
+    "general receipt cannot masquerade as committed ArtifactVersion",
+    "detached output and original request preservation",
+    "typed local subset and general native gates remain separate"
+  ],
+  "execution": "Inert injected ports only for general boundary. Existing fixed local artifact adapters remain source-only tests."
+}
