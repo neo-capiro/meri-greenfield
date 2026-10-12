@@ -1,0 +1,31 @@
+{
+  "command": [
+    "npm",
+    "ci",
+    "--ignore-scripts",
+    "--offline",
+    "--no-audit",
+    "--no-fund",
+    "--cache",
+    "/tmp/meri-gateway-review-npm-cache-20261012"
+  ],
+  "cwd": "/workspace/meri-trusted-memory-context-review-20261012",
+  "startUnixSeconds": 1791773415.6031609,
+  "elapsedSeconds": 2.6752891540527344,
+  "exitCode": 0,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "fixtureRoot": null,
+  "streams": {
+    "stdout": {
+      "path": "npm-cached-offline.stdout.txt",
+      "bytes": 25,
+      "sha256": "87ce98749cbda0c632c25e9c4963c21076562a49f92ed1e744dbc6bafbc85f82"
+    },
+    "stderr": {
+      "path": "npm-cached-offline.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

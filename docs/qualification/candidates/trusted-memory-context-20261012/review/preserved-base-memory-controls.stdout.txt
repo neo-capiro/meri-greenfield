@@ -1,0 +1,674 @@
+✖ independent: canonical memory profile alone is selected; actual14 stay unavailable (2.704224ms)
+✖ independent: first page uses fresh server-selected client and canonical normalized input (4.263877ms)
+✖ independent: canonical continuation consumes retained raw request/page and advances (0.657467ms)
+✖ independent: all invalid model shape/context inputs fail before trusted ports (1.170098ms)
+✔ independent: client selector cannot override server subject before effects (1.155216ms)
+✖ independent: decision IDs rotate while stable authority remains required (0.601874ms)
+✔ independent: stable subject drift at authority stage 2 never releases (0.541124ms)
+✔ independent: stable subject drift at authority stage 3 never releases (0.356706ms)
+✔ independent: stable subject drift at authority stage 4 never releases (0.540222ms)
+✔ independent: stable subject drift at authority stage 5 never releases (0.52519ms)
+✔ independent: absent retained context or context ports cannot invent continuation (0.849526ms)
+✖ independent: retained context rejects tenant (0.344968ms)
+✖ independent: retained context rejects actor (0.331057ms)
+✖ independent: retained context rejects conversation (0.311859ms)
+✖ independent: retained context rejects run (0.436846ms)
+✖ independent: retained context rejects attempt (0.386511ms)
+✖ independent: retained context rejects worker (0.444177ms)
+✖ independent: retained context rejects fence (0.310426ms)
+✖ independent: retained context rejects policy (0.450918ms)
+✖ independent: retained context rejects operation (0.365769ms)
+✖ independent: retained context rejects version (0.297558ms)
+✖ independent: retained context rejects subject (0.278839ms)
+✖ independent: retained context rejects cursor (0.376636ms)
+✖ independent: retained context rejects digest (0.255735ms)
+✖ independent: retained context rejects staleRead (0.23317ms)
+✖ independent: retained context rejects futureRead (0.345079ms)
+✖ independent: retained context rejects futureRecord (0.287992ms)
+✖ independent: retained context rejects expired (0.261873ms)
+✖ independent: retained context rejects beyondAuthority (0.264718ms)
+✖ independent: retained context rejects extra (0.234693ms)
+✖ independent: retained context rejects limit (0.561594ms)
+✖ independent: retained context rejects poisonedCursor (0.322485ms)
+✖ independent: retained context rejects invalidPage (0.248033ms)
+✖ independent: envelope and raw DTO reject operation (0.566431ms)
+✖ independent: envelope and raw DTO reject arguments (0.540452ms)
+✖ independent: envelope and raw DTO reject binding (0.501514ms)
+✖ independent: envelope and raw DTO reject subject (0.377708ms)
+✖ independent: envelope and raw DTO reject extra (0.295114ms)
+✖ independent: envelope and raw DTO reject missing (0.359481ms)
+✖ independent: envelope and raw DTO reject approved (0.436286ms)
+✖ independent: envelope and raw DTO reject actor (0.351788ms)
+✖ independent: envelope and raw DTO reject restricted (0.429996ms)
+✖ independent: envelope and raw DTO reject coverage (0.288553ms)
+✖ independent: retain receipt rejects decision (0.409235ms)
+✖ independent: retain receipt rejects keySha256 (0.282414ms)
+✖ independent: retain receipt rejects previousSha256 (0.386121ms)
+✖ independent: retain receipt rejects checkedAtMs (0.319591ms)
+✖ independent: release revocation prevents retain, final revocation prevents release (0.783027ms)
+✖ independent: fresh shortened authority bounds parked load and late completion (0.40616ms)
+✖ independent: fresh shortened authority bounds parked retain and late completion (101.383035ms)
+✖ independent: fresh shortened authority bounds parked settle and late completion (100.363255ms)
+ℹ tests 51
+ℹ suites 0
+ℹ pass 6
+ℹ fail 45
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1168.134851
+
+✖ failing tests:
+
+test at apps/gateway/test/memory-context-independent.test.mjs:97:1
+✖ independent: canonical memory profile alone is selected; actual14 stay unavailable (2.704224ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + []
+  - [
+  -   [
+  -     'memory.list_own_proposals',
+  -     'memory-proposals/1'
+  -   ]
+  - ]
+  
+      at TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:99:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [],
+    expected: [ [ 'memory.list_own_proposals', 'memory-proposals/1' ] ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/memory-context-independent.test.mjs:110:1
+✖ independent: first page uses fresh server-selected client and canonical normalized input (4.263877ms)
+  GatewayDenied: INVALID_ARGUMENTS
+      at safeFailure (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at Object.execute (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:86:13)
+      at async TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:112:27)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/gateway/test/memory-context-independent.test.mjs:120:1
+✖ independent: canonical continuation consumes retained raw request/page and advances (0.657467ms)
+  GatewayDenied: INVALID_ARGUMENTS
+      at safeFailure (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at Object.execute (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:86:13)
+      at async seeded (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:88:3)
+      at async TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:121:11)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/gateway/test/memory-context-independent.test.mjs:130:1
+✖ independent: all invalid model shape/context inputs fail before trusted ports (1.170098ms)
+  AssertionError [ERR_ASSERTION]: {"subject":{}}
+  + actual - expected
+  
+  + [
+  +   'capability',
+  +   'run'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:133:51)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 'capability', 'run' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/memory-context-independent.test.mjs:143:1
+✖ independent: decision IDs rotate while stable authority remains required (0.601874ms)
+  GatewayDenied: INVALID_ARGUMENTS
+      at safeFailure (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at Object.execute (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:86:13)
+      at async TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:145:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/gateway/test/memory-context-independent.test.mjs:174:59
+✖ independent: retained context rejects tenant (0.344968ms)
+  GatewayDenied: INVALID_ARGUMENTS
+      at safeFailure (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at Object.execute (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:86:13)
+      at async seeded (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:88:3)
+      at async TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:175:11)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/gateway/test/memory-context-independent.test.mjs:174:59
+✖ independent: retained context rejects actor (0.331057ms)
+  GatewayDenied: INVALID_ARGUMENTS
+      at safeFailure (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at Object.execute (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:86:13)
+      at async seeded (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:88:3)
+      at async TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:175:11)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/gateway/test/memory-context-independent.test.mjs:174:59
+✖ independent: retained context rejects conversation (0.311859ms)
+  GatewayDenied: INVALID_ARGUMENTS
+      at safeFailure (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at Object.execute (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:86:13)
+      at async seeded (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:88:3)
+      at async TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:175:11)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/gateway/test/memory-context-independent.test.mjs:174:59
+✖ independent: retained context rejects run (0.436846ms)
+  GatewayDenied: INVALID_ARGUMENTS
+      at safeFailure (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at Object.execute (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:86:13)
+      at async seeded (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:88:3)
+      at async TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:175:11)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/gateway/test/memory-context-independent.test.mjs:174:59
+✖ independent: retained context rejects attempt (0.386511ms)
+  GatewayDenied: INVALID_ARGUMENTS
+      at safeFailure (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at Object.execute (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:86:13)
+      at async seeded (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:88:3)
+      at async TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:175:11)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/gateway/test/memory-context-independent.test.mjs:174:59
+✖ independent: retained context rejects worker (0.444177ms)
+  GatewayDenied: INVALID_ARGUMENTS
+      at safeFailure (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at Object.execute (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:86:13)
+      at async seeded (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:88:3)
+      at async TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:175:11)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/gateway/test/memory-context-independent.test.mjs:174:59
+✖ independent: retained context rejects fence (0.310426ms)
+  GatewayDenied: INVALID_ARGUMENTS
+      at safeFailure (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at Object.execute (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:86:13)
+      at async seeded (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:88:3)
+      at async TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:175:11)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/gateway/test/memory-context-independent.test.mjs:174:59
+✖ independent: retained context rejects policy (0.450918ms)
+  GatewayDenied: INVALID_ARGUMENTS
+      at safeFailure (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at Object.execute (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:86:13)
+      at async seeded (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:88:3)
+      at async TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:175:11)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/gateway/test/memory-context-independent.test.mjs:174:59
+✖ independent: retained context rejects operation (0.365769ms)
+  GatewayDenied: INVALID_ARGUMENTS
+      at safeFailure (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at Object.execute (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:86:13)
+      at async seeded (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:88:3)
+      at async TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:175:11)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/gateway/test/memory-context-independent.test.mjs:174:59
+✖ independent: retained context rejects version (0.297558ms)
+  GatewayDenied: INVALID_ARGUMENTS
+      at safeFailure (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at Object.execute (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:86:13)
+      at async seeded (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:88:3)
+      at async TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:175:11)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/gateway/test/memory-context-independent.test.mjs:174:59
+✖ independent: retained context rejects subject (0.278839ms)
+  GatewayDenied: INVALID_ARGUMENTS
+      at safeFailure (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at Object.execute (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:86:13)
+      at async seeded (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:88:3)
+      at async TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:175:11)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/gateway/test/memory-context-independent.test.mjs:174:59
+✖ independent: retained context rejects cursor (0.376636ms)
+  GatewayDenied: INVALID_ARGUMENTS
+      at safeFailure (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at Object.execute (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:86:13)
+      at async seeded (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:88:3)
+      at async TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:175:11)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/gateway/test/memory-context-independent.test.mjs:174:59
+✖ independent: retained context rejects digest (0.255735ms)
+  GatewayDenied: INVALID_ARGUMENTS
+      at safeFailure (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at Object.execute (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:86:13)
+      at async seeded (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:88:3)
+      at async TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:175:11)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/gateway/test/memory-context-independent.test.mjs:174:59
+✖ independent: retained context rejects staleRead (0.23317ms)
+  GatewayDenied: INVALID_ARGUMENTS
+      at safeFailure (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at Object.execute (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:86:13)
+      at async seeded (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:88:3)
+      at async TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:175:11)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/gateway/test/memory-context-independent.test.mjs:174:59
+✖ independent: retained context rejects futureRead (0.345079ms)
+  GatewayDenied: INVALID_ARGUMENTS
+      at safeFailure (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at Object.execute (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:86:13)
+      at async seeded (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:88:3)
+      at async TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:175:11)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/gateway/test/memory-context-independent.test.mjs:174:59
+✖ independent: retained context rejects futureRecord (0.287992ms)
+  GatewayDenied: INVALID_ARGUMENTS
+      at safeFailure (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at Object.execute (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:86:13)
+      at async seeded (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:88:3)
+      at async TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:175:11)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/gateway/test/memory-context-independent.test.mjs:174:59
+✖ independent: retained context rejects expired (0.261873ms)
+  GatewayDenied: INVALID_ARGUMENTS
+      at safeFailure (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at Object.execute (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:86:13)
+      at async seeded (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:88:3)
+      at async TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:175:11)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/gateway/test/memory-context-independent.test.mjs:174:59
+✖ independent: retained context rejects beyondAuthority (0.264718ms)
+  GatewayDenied: INVALID_ARGUMENTS
+      at safeFailure (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at Object.execute (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:86:13)
+      at async seeded (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:88:3)
+      at async TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:175:11)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/gateway/test/memory-context-independent.test.mjs:174:59
+✖ independent: retained context rejects extra (0.234693ms)
+  GatewayDenied: INVALID_ARGUMENTS
+      at safeFailure (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at Object.execute (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:86:13)
+      at async seeded (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:88:3)
+      at async TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:175:11)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/gateway/test/memory-context-independent.test.mjs:174:59
+✖ independent: retained context rejects limit (0.561594ms)
+  GatewayDenied: INVALID_ARGUMENTS
+      at safeFailure (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at Object.execute (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:86:13)
+      at async seeded (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:88:3)
+      at async TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:175:11)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/gateway/test/memory-context-independent.test.mjs:174:59
+✖ independent: retained context rejects poisonedCursor (0.322485ms)
+  GatewayDenied: INVALID_ARGUMENTS
+      at safeFailure (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at Object.execute (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:86:13)
+      at async seeded (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:88:3)
+      at async TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:175:11)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/gateway/test/memory-context-independent.test.mjs:174:59
+✖ independent: retained context rejects invalidPage (0.248033ms)
+  GatewayDenied: INVALID_ARGUMENTS
+      at safeFailure (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at Object.execute (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:86:13)
+      at async seeded (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:88:3)
+      at async TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:175:11)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/gateway/test/memory-context-independent.test.mjs:186:58
+✖ independent: envelope and raw DTO reject operation (0.566431ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:188:106)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/memory-context-independent.test.mjs:186:58
+✖ independent: envelope and raw DTO reject arguments (0.540452ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:188:106)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/memory-context-independent.test.mjs:186:58
+✖ independent: envelope and raw DTO reject binding (0.501514ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:188:106)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/memory-context-independent.test.mjs:186:58
+✖ independent: envelope and raw DTO reject subject (0.377708ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:188:106)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/memory-context-independent.test.mjs:186:58
+✖ independent: envelope and raw DTO reject extra (0.295114ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:188:106)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/memory-context-independent.test.mjs:186:58
+✖ independent: envelope and raw DTO reject missing (0.359481ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:188:106)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/memory-context-independent.test.mjs:186:58
+✖ independent: envelope and raw DTO reject approved (0.436286ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:188:106)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/memory-context-independent.test.mjs:186:58
+✖ independent: envelope and raw DTO reject actor (0.351788ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:188:106)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/memory-context-independent.test.mjs:186:58
+✖ independent: envelope and raw DTO reject restricted (0.429996ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:188:106)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/memory-context-independent.test.mjs:186:58
+✖ independent: envelope and raw DTO reject coverage (0.288553ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:188:106)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/memory-context-independent.test.mjs:191:76
+✖ independent: retain receipt rejects decision (0.409235ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:193:26)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/memory-context-independent.test.mjs:191:76
+✖ independent: retain receipt rejects keySha256 (0.282414ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:193:26)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/memory-context-independent.test.mjs:191:76
+✖ independent: retain receipt rejects previousSha256 (0.386121ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:193:26)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/memory-context-independent.test.mjs:191:76
+✖ independent: retain receipt rejects checkedAtMs (0.319591ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:193:26)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/memory-context-independent.test.mjs:196:1
+✖ independent: release revocation prevents retain, final revocation prevents release (0.783027ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:201:28)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/memory-context-independent.test.mjs:205:48
+✖ independent: fresh shortened authority bounds parked load and late completion (0.40616ms)
+  GatewayDenied: INVALID_ARGUMENTS
+      at safeFailure (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at Object.execute (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:86:13)
+      at async seeded (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:88:3)
+      at async TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:206:27)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/gateway/test/memory-context-independent.test.mjs:205:48
+✖ independent: fresh shortened authority bounds parked retain and late completion (101.383035ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  +   aborted: undefined,
+  -   aborted: true,
+      completed: true,
+  +   failure: 'INVALID_ARGUMENTS',
+  +   parked: false
+  -   failure: 'DEADLINE',
+  -   parked: true
+    }
+  
+      at TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:217:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { completed: true, failure: 'INVALID_ARGUMENTS', aborted: undefined, parked: false },
+    expected: { completed: true, failure: 'DEADLINE', aborted: true, parked: true },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/memory-context-independent.test.mjs:205:48
+✖ independent: fresh shortened authority bounds parked settle and late completion (100.363255ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  +   aborted: undefined,
+  -   aborted: true,
+      completed: true,
+  +   failure: 'INVALID_ARGUMENTS',
+  +   parked: false
+  -   failure: 'DEADLINE',
+  -   parked: true
+    }
+  
+      at TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:217:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { completed: true, failure: 'INVALID_ARGUMENTS', aborted: undefined, parked: false },
+    expected: { completed: true, failure: 'DEADLINE', aborted: true, parked: true },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
