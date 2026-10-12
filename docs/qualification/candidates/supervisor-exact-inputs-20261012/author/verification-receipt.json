@@ -1,0 +1,13 @@
+{
+  "dataAstCheckExitCode": 0,
+  "dataAstPassed": 23,
+  "dataAstFailed": 0,
+  "dataAstStderrBytes": 0,
+  "privatePathValuesScanned": 27,
+  "privatePathValueLeaks": [],
+  "trackedSourceUnchangedFromBase": true,
+  "gitDiffCheckExitCode": 0,
+  "sourceImportsOrExecution": false,
+  "targetExecution": false,
+  "admissionChanged": false
+}
