@@ -1,0 +1,40 @@
+✖ saved original bytes may retain an extraction limitation reason (8.993194ms)
+✔ saved extraction limitation never permits not_indexed or partial persistence (4.6685ms)
+✔ saved reason remains inert typed data without extra readiness claims (3.25878ms)
+✔ saved reason cannot change exact immutable object identity (0.873714ms)
+✖ a saved reason is preserved in the detached admitted result (0.670168ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 3
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 562.098624
+
+✖ failing tests:
+
+test at packages/contracts/test/commands-execution-independent-filing.test.mjs:16:1
+✖ saved original bytes may retain an extraction limitation reason (8.993194ms)
+  Error: Saved filing observation contradicts source projection
+      at fail (file:///workspace/meri-command-execution-review-20261012/packages/contracts/commands-0.2/artifact-file-validation.mjs:3:28)
+      at assertArtifactFileResult (file:///workspace/meri-command-execution-review-20261012/packages/contracts/commands-0.2/artifact-file-validation.mjs:47:78)
+      at check (file:///workspace/meri-command-execution-review-20261012/packages/contracts/test/commands-execution-independent-filing.test.mjs:14:23)
+      at TestContext.<anonymous> (file:///workspace/meri-command-execution-review-20261012/packages/contracts/test/commands-execution-independent-filing.test.mjs:19:22)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+
+test at packages/contracts/test/commands-execution-independent-filing.test.mjs:38:1
+✖ a saved reason is preserved in the detached admitted result (0.670168ms)
+  Error: Saved filing observation contradicts source projection
+      at fail (file:///workspace/meri-command-execution-review-20261012/packages/contracts/commands-0.2/artifact-file-validation.mjs:3:28)
+      at assertArtifactFileResult (file:///workspace/meri-command-execution-review-20261012/packages/contracts/commands-0.2/artifact-file-validation.mjs:47:78)
+      at TestContext.<anonymous> (file:///workspace/meri-command-execution-review-20261012/packages/contracts/test/commands-execution-independent-filing.test.mjs:40:18)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

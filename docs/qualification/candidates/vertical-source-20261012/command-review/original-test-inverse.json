@@ -1,0 +1,9 @@
+{
+  "path": "packages/contracts/test/command-artifact-file.test.mjs",
+  "base": "e5fb3963de787bbd7b7663316c368f15814897da",
+  "source": "ca506ba1591b35eae5d389e551787017328eea73",
+  "beforeSha256": "6701fa89be4249742ce6a2c74ee8767acfa5a4e28d206c19609e7275fa1ef925",
+  "afterSha256": "87ecc32b4cf448b33fa209b5646e4d6d19f45598f6ef89b558d1544669fca427",
+  "removedLiteral": ",x=>x.reason='contradiction'",
+  "reason": "Native saved truncated-extraction projection legitimately retains reason; all other original assertions remain."
+}

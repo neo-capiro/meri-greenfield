@@ -1,0 +1,713 @@
+{
+  "authorPacket": "5a8d11399d8a4b65a5b04d73f9f22e5de54a157f",
+  "source": "ca506ba1591b35eae5d389e551787017328eea73",
+  "manifestSha256": "002ae59f62c2fdac36bbf1f4c02802385713095c3e881d6b2c4ed9347a4c5b10",
+  "authorMembers": 62,
+  "captureGroups": [
+    {
+      "capture": "docs/qualification/candidates/vertical-source-20261012/command-review/candidate-independent.json",
+      "pgid": 369106,
+      "recordedAbsent": true,
+      "freshAbsent": true,
+      "exitCode": 0
+    },
+    {
+      "capture": "docs/qualification/candidates/vertical-source-20261012/command-review/source-audit-initial.json",
+      "pgid": 370920,
+      "recordedAbsent": true,
+      "freshAbsent": true,
+      "exitCode": 1
+    },
+    {
+      "capture": "docs/qualification/candidates/vertical-source-20261012/command-review/filing-before.json",
+      "pgid": 357478,
+      "recordedAbsent": true,
+      "freshAbsent": true,
+      "exitCode": 1
+    },
+    {
+      "capture": "docs/qualification/candidates/vertical-source-20261012/command-review/cleanup-prefreeze.json",
+      "pgid": 362707,
+      "recordedAbsent": true,
+      "freshAbsent": true,
+      "exitCode": 1
+    },
+    {
+      "capture": "docs/qualification/candidates/vertical-source-20261012/command-review/update-prefreeze.json",
+      "pgid": 364250,
+      "recordedAbsent": true,
+      "freshAbsent": true,
+      "exitCode": 0
+    },
+    {
+      "capture": "docs/qualification/candidates/vertical-source-20261012/command-review/source-audit-final.json",
+      "pgid": 371013,
+      "recordedAbsent": true,
+      "freshAbsent": true,
+      "exitCode": 0
+    },
+    {
+      "capture": "docs/qualification/candidates/vertical-source-20261012/command-review/journal-repair-prefreeze.json",
+      "pgid": 360022,
+      "recordedAbsent": true,
+      "freshAbsent": true,
+      "exitCode": 0
+    },
+    {
+      "capture": "docs/qualification/candidates/vertical-source-20261012/command-review/durable-recovery-final.json",
+      "pgid": 369699,
+      "recordedAbsent": true,
+      "freshAbsent": true,
+      "exitCode": 0
+    },
+    {
+      "capture": "docs/qualification/candidates/vertical-source-20261012/command-review/command-authority-final.json",
+      "pgid": 359309,
+      "recordedAbsent": true,
+      "freshAbsent": true,
+      "exitCode": 0
+    },
+    {
+      "capture": "docs/qualification/candidates/vertical-source-20261012/command-review/pipeline-prefreeze.json",
+      "pgid": 361448,
+      "recordedAbsent": true,
+      "freshAbsent": true,
+      "exitCode": 0
+    },
+    {
+      "capture": "docs/qualification/candidates/vertical-source-20261012/command-review/journal-prefreeze.json",
+      "pgid": 358209,
+      "recordedAbsent": true,
+      "freshAbsent": true,
+      "exitCode": 1
+    },
+    {
+      "capture": "docs/qualification/candidates/vertical-source-20261012/command-review/transport-budget-prefreeze.json",
+      "pgid": 364832,
+      "recordedAbsent": true,
+      "freshAbsent": true,
+      "exitCode": 0
+    },
+    {
+      "capture": "docs/qualification/candidates/vertical-source-20261012/command-review/durable-prefreeze.json",
+      "pgid": 368556,
+      "recordedAbsent": true,
+      "freshAbsent": true,
+      "exitCode": 0
+    },
+    {
+      "capture": "docs/qualification/candidates/vertical-source-20261012/command-review/cleanup-prefreeze-reached.json",
+      "pgid": 363087,
+      "recordedAbsent": true,
+      "freshAbsent": true,
+      "exitCode": 1
+    },
+    {
+      "capture": "docs/qualification/candidates/vertical-source-20261012/command-author/capability-output-negative.json",
+      "pgid": 361346,
+      "recordedAbsent": true,
+      "freshAbsent": true,
+      "exitCode": 1
+    },
+    {
+      "capture": "docs/qualification/candidates/vertical-source-20261012/command-author/candidate-focused.json",
+      "pgid": 367604,
+      "recordedAbsent": true,
+      "freshAbsent": true,
+      "exitCode": 0
+    },
+    {
+      "capture": "docs/qualification/candidates/vertical-source-20261012/command-author/exact-composition.json",
+      "pgid": 368596,
+      "recordedAbsent": true,
+      "freshAbsent": true,
+      "exitCode": 0
+    },
+    {
+      "capture": "docs/qualification/candidates/vertical-source-20261012/command-author/artifact-saved-reason-negative.json",
+      "pgid": 359423,
+      "recordedAbsent": true,
+      "freshAbsent": true,
+      "exitCode": 1
+    },
+    {
+      "capture": "docs/qualification/candidates/vertical-source-20261012/command-author/source-audit-final.json",
+      "pgid": 370573,
+      "recordedAbsent": true,
+      "freshAbsent": true,
+      "exitCode": 0
+    },
+    {
+      "capture": "docs/qualification/candidates/vertical-source-20261012/command-author/budget-connected.json",
+      "pgid": 362167,
+      "recordedAbsent": true,
+      "freshAbsent": true,
+      "exitCode": 0
+    },
+    {
+      "capture": "docs/qualification/candidates/vertical-source-20261012/command-author/durable-connected.json",
+      "pgid": 366673,
+      "recordedAbsent": true,
+      "freshAbsent": true,
+      "exitCode": 0
+    },
+    {
+      "capture": "docs/qualification/candidates/vertical-source-20261012/command-author/initial-connected.json",
+      "pgid": 361220,
+      "recordedAbsent": true,
+      "freshAbsent": true,
+      "exitCode": 1
+    },
+    {
+      "capture": "docs/qualification/candidates/vertical-source-20261012/command-author/source-audit.json",
+      "pgid": 368808,
+      "recordedAbsent": true,
+      "freshAbsent": true,
+      "exitCode": 0
+    }
+  ],
+  "checks": [
+    {
+      "check": "source binding",
+      "pass": true
+    },
+    {
+      "check": "all62 author members",
+      "pass": true
+    },
+    {
+      "check": "author member apps/control/commands/README.md",
+      "pass": true
+    },
+    {
+      "check": "author member apps/control/commands/approval-context.mjs",
+      "pass": true
+    },
+    {
+      "check": "author member apps/control/commands/durable-executor.mjs",
+      "pass": true
+    },
+    {
+      "check": "author member apps/control/commands/executor.mjs",
+      "pass": true
+    },
+    {
+      "check": "author member apps/control/commands/intent.mjs",
+      "pass": true
+    },
+    {
+      "check": "author member apps/control/commands/migrations/0001_commands.sql",
+      "pass": true
+    },
+    {
+      "check": "author member apps/control/commands/postgres-command-journal.mjs",
+      "pass": true
+    },
+    {
+      "check": "author member apps/control/commands/protocol.mjs",
+      "pass": true
+    },
+    {
+      "check": "author member apps/control/commands/source-http.mjs",
+      "pass": true
+    },
+    {
+      "check": "author member apps/control/commands/source-projection.mjs",
+      "pass": true
+    },
+    {
+      "check": "author member apps/control/test/commands-artifact-compatibility.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "author member apps/control/test/commands-durable-budget.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "author member apps/control/test/commands-execution.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "author member apps/control/test/commands-fixture.mjs",
+      "pass": true
+    },
+    {
+      "check": "author member apps/gateway/authorization/current-tool-authority.mjs",
+      "pass": true
+    },
+    {
+      "check": "author member apps/gateway/budget/postgres-tool-budget.mjs",
+      "pass": true
+    },
+    {
+      "check": "author member apps/gateway/budget/tool-budget-dispatch.mjs",
+      "pass": true
+    },
+    {
+      "check": "author member apps/gateway/budget/tool-budget-execution.mjs",
+      "pass": true
+    },
+    {
+      "check": "author member apps/gateway/index.mjs",
+      "pass": true
+    },
+    {
+      "check": "author member docs/coordination/reports/CODEX-COMMAND-EXECUTION-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "author member docs/coordination/tasks/CODEX-COMMAND-EXECUTION-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/vertical-source-20261012/command-author/.gitattributes",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/vertical-source-20261012/command-author/artifact-saved-reason-negative.json",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/vertical-source-20261012/command-author/artifact-saved-reason-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/vertical-source-20261012/command-author/artifact-saved-reason-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/vertical-source-20261012/command-author/audit-source.py",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/vertical-source-20261012/command-author/budget-connected.json",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/vertical-source-20261012/command-author/budget-connected.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/vertical-source-20261012/command-author/budget-connected.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/vertical-source-20261012/command-author/candidate-focused.json",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/vertical-source-20261012/command-author/candidate-focused.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/vertical-source-20261012/command-author/candidate-focused.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/vertical-source-20261012/command-author/capability-output-negative.json",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/vertical-source-20261012/command-author/capability-output-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/vertical-source-20261012/command-author/capability-output-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/vertical-source-20261012/command-author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/vertical-source-20261012/command-author/cleanup-final.json",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/vertical-source-20261012/command-author/durable-connected.json",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/vertical-source-20261012/command-author/durable-connected.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/vertical-source-20261012/command-author/durable-connected.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/vertical-source-20261012/command-author/exact-composition.json",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/vertical-source-20261012/command-author/exact-composition.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/vertical-source-20261012/command-author/exact-composition.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/vertical-source-20261012/command-author/initial-connected.json",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/vertical-source-20261012/command-author/initial-connected.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/vertical-source-20261012/command-author/initial-connected.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/vertical-source-20261012/command-author/reference-identities.json",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/vertical-source-20261012/command-author/setup-diagnostics.json",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/vertical-source-20261012/command-author/source-audit-final.json",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/vertical-source-20261012/command-author/source-audit-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/vertical-source-20261012/command-author/source-audit-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/vertical-source-20261012/command-author/source-audit-results.json",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/vertical-source-20261012/command-author/source-audit.json",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/vertical-source-20261012/command-author/source-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/vertical-source-20261012/command-author/source-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "author member packages/contracts/commands-0.2/artifact-file-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "author member packages/contracts/commands-0.2/execution-boundary.mjs",
+      "pass": true
+    },
+    {
+      "check": "author member packages/contracts/commands-0.2/execution-intent.mjs",
+      "pass": true
+    },
+    {
+      "check": "author member packages/contracts/commands-0.2/task-update-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "author member packages/contracts/commands-0.2/task-update.schema.json",
+      "pass": true
+    },
+    {
+      "check": "author member packages/contracts/test/command-artifact-file.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "author member packages/contracts/test/commands-task-update.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "fresh group absence candidate-independent.json:369106",
+      "pass": true
+    },
+    {
+      "check": "raw receipt candidate-independent.json:docs/qualification/candidates/vertical-source-20261012/command-review/candidate-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw receipt candidate-independent.json:docs/qualification/candidates/vertical-source-20261012/command-review/candidate-independent.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "fresh group absence source-audit-initial.json:370920",
+      "pass": true
+    },
+    {
+      "check": "raw receipt source-audit-initial.json:docs/qualification/candidates/vertical-source-20261012/command-review/source-audit-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw receipt source-audit-initial.json:docs/qualification/candidates/vertical-source-20261012/command-review/source-audit-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "fresh group absence filing-before.json:357478",
+      "pass": true
+    },
+    {
+      "check": "raw receipt filing-before.json:docs/qualification/candidates/vertical-source-20261012/command-review/filing-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw receipt filing-before.json:docs/qualification/candidates/vertical-source-20261012/command-review/filing-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "fresh group absence cleanup-prefreeze.json:362707",
+      "pass": true
+    },
+    {
+      "check": "raw receipt cleanup-prefreeze.json:docs/qualification/candidates/vertical-source-20261012/command-review/cleanup-prefreeze.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw receipt cleanup-prefreeze.json:docs/qualification/candidates/vertical-source-20261012/command-review/cleanup-prefreeze.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "fresh group absence update-prefreeze.json:364250",
+      "pass": true
+    },
+    {
+      "check": "raw receipt update-prefreeze.json:docs/qualification/candidates/vertical-source-20261012/command-review/update-prefreeze.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw receipt update-prefreeze.json:docs/qualification/candidates/vertical-source-20261012/command-review/update-prefreeze.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "fresh group absence source-audit-final.json:371013",
+      "pass": true
+    },
+    {
+      "check": "raw receipt source-audit-final.json:docs/qualification/candidates/vertical-source-20261012/command-review/source-audit-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw receipt source-audit-final.json:docs/qualification/candidates/vertical-source-20261012/command-review/source-audit-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "fresh group absence journal-repair-prefreeze.json:360022",
+      "pass": true
+    },
+    {
+      "check": "raw receipt journal-repair-prefreeze.json:docs/qualification/candidates/vertical-source-20261012/command-review/journal-repair-prefreeze.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw receipt journal-repair-prefreeze.json:docs/qualification/candidates/vertical-source-20261012/command-review/journal-repair-prefreeze.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "fresh group absence durable-recovery-final.json:369699",
+      "pass": true
+    },
+    {
+      "check": "raw receipt durable-recovery-final.json:docs/qualification/candidates/vertical-source-20261012/command-review/durable-recovery-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw receipt durable-recovery-final.json:docs/qualification/candidates/vertical-source-20261012/command-review/durable-recovery-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "fresh group absence command-authority-final.json:359309",
+      "pass": true
+    },
+    {
+      "check": "raw receipt command-authority-final.json:docs/qualification/candidates/vertical-source-20261012/command-review/command-authority-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw receipt command-authority-final.json:docs/qualification/candidates/vertical-source-20261012/command-review/command-authority-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "fresh group absence pipeline-prefreeze.json:361448",
+      "pass": true
+    },
+    {
+      "check": "raw receipt pipeline-prefreeze.json:docs/qualification/candidates/vertical-source-20261012/command-review/pipeline-prefreeze.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw receipt pipeline-prefreeze.json:docs/qualification/candidates/vertical-source-20261012/command-review/pipeline-prefreeze.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "fresh group absence journal-prefreeze.json:358209",
+      "pass": true
+    },
+    {
+      "check": "raw receipt journal-prefreeze.json:docs/qualification/candidates/vertical-source-20261012/command-review/journal-prefreeze.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw receipt journal-prefreeze.json:docs/qualification/candidates/vertical-source-20261012/command-review/journal-prefreeze.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "fresh group absence transport-budget-prefreeze.json:364832",
+      "pass": true
+    },
+    {
+      "check": "raw receipt transport-budget-prefreeze.json:docs/qualification/candidates/vertical-source-20261012/command-review/transport-budget-prefreeze.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw receipt transport-budget-prefreeze.json:docs/qualification/candidates/vertical-source-20261012/command-review/transport-budget-prefreeze.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "fresh group absence durable-prefreeze.json:368556",
+      "pass": true
+    },
+    {
+      "check": "raw receipt durable-prefreeze.json:docs/qualification/candidates/vertical-source-20261012/command-review/durable-prefreeze.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw receipt durable-prefreeze.json:docs/qualification/candidates/vertical-source-20261012/command-review/durable-prefreeze.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "fresh group absence cleanup-prefreeze-reached.json:363087",
+      "pass": true
+    },
+    {
+      "check": "raw receipt cleanup-prefreeze-reached.json:docs/qualification/candidates/vertical-source-20261012/command-review/cleanup-prefreeze-reached.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw receipt cleanup-prefreeze-reached.json:docs/qualification/candidates/vertical-source-20261012/command-review/cleanup-prefreeze-reached.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "fresh group absence capability-output-negative.json:361346",
+      "pass": true
+    },
+    {
+      "check": "raw receipt capability-output-negative.json:docs/qualification/candidates/vertical-source-20261012/command-author/capability-output-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw receipt capability-output-negative.json:docs/qualification/candidates/vertical-source-20261012/command-author/capability-output-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "fresh group absence candidate-focused.json:367604",
+      "pass": true
+    },
+    {
+      "check": "raw receipt candidate-focused.json:docs/qualification/candidates/vertical-source-20261012/command-author/candidate-focused.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw receipt candidate-focused.json:docs/qualification/candidates/vertical-source-20261012/command-author/candidate-focused.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "fresh group absence exact-composition.json:368596",
+      "pass": true
+    },
+    {
+      "check": "raw receipt exact-composition.json:docs/qualification/candidates/vertical-source-20261012/command-author/exact-composition.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw receipt exact-composition.json:docs/qualification/candidates/vertical-source-20261012/command-author/exact-composition.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "fresh group absence artifact-saved-reason-negative.json:359423",
+      "pass": true
+    },
+    {
+      "check": "raw receipt artifact-saved-reason-negative.json:docs/qualification/candidates/vertical-source-20261012/command-author/artifact-saved-reason-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw receipt artifact-saved-reason-negative.json:docs/qualification/candidates/vertical-source-20261012/command-author/artifact-saved-reason-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "fresh group absence source-audit-final.json:370573",
+      "pass": true
+    },
+    {
+      "check": "raw receipt source-audit-final.json:docs/qualification/candidates/vertical-source-20261012/command-author/source-audit-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw receipt source-audit-final.json:docs/qualification/candidates/vertical-source-20261012/command-author/source-audit-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "fresh group absence budget-connected.json:362167",
+      "pass": true
+    },
+    {
+      "check": "raw receipt budget-connected.json:docs/qualification/candidates/vertical-source-20261012/command-author/budget-connected.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw receipt budget-connected.json:docs/qualification/candidates/vertical-source-20261012/command-author/budget-connected.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "fresh group absence durable-connected.json:366673",
+      "pass": true
+    },
+    {
+      "check": "raw receipt durable-connected.json:docs/qualification/candidates/vertical-source-20261012/command-author/durable-connected.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw receipt durable-connected.json:docs/qualification/candidates/vertical-source-20261012/command-author/durable-connected.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "fresh group absence initial-connected.json:361220",
+      "pass": true
+    },
+    {
+      "check": "raw receipt initial-connected.json:docs/qualification/candidates/vertical-source-20261012/command-author/initial-connected.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw receipt initial-connected.json:docs/qualification/candidates/vertical-source-20261012/command-author/initial-connected.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "fresh group absence source-audit.json:368808",
+      "pass": true
+    },
+    {
+      "check": "raw receipt source-audit.json:docs/qualification/candidates/vertical-source-20261012/command-author/source-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw receipt source-audit.json:docs/qualification/candidates/vertical-source-20261012/command-author/source-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "author immutable141 replay",
+      "pass": true
+    },
+    {
+      "check": "metadata followup no executable delta",
+      "pass": true
+    }
+  ],
+  "passed": 135,
+  "failed": 0
+}

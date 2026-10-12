@@ -1,0 +1,113 @@
+{
+  "scope": "Only reviewer-owned local test processes/dependency copies",
+  "captureGroups": [
+    {
+      "capture": "candidate-independent.json",
+      "pgid": 369106,
+      "absent": true
+    },
+    {
+      "capture": "source-audit-initial.json",
+      "pgid": 370920,
+      "absent": true
+    },
+    {
+      "capture": "filing-before.json",
+      "pgid": 357478,
+      "absent": true
+    },
+    {
+      "capture": "cleanup-prefreeze.json",
+      "pgid": 362707,
+      "absent": true
+    },
+    {
+      "capture": "update-prefreeze.json",
+      "pgid": 364250,
+      "absent": true
+    },
+    {
+      "capture": "source-audit-final.json",
+      "pgid": 371013,
+      "absent": true
+    },
+    {
+      "capture": "journal-repair-prefreeze.json",
+      "pgid": 360022,
+      "absent": true
+    },
+    {
+      "capture": "durable-recovery-final.json",
+      "pgid": 369699,
+      "absent": true
+    },
+    {
+      "capture": "packet-audit-final.json",
+      "pgid": 372024,
+      "absent": true
+    },
+    {
+      "capture": "command-authority-final.json",
+      "pgid": 359309,
+      "absent": true
+    },
+    {
+      "capture": "pipeline-prefreeze.json",
+      "pgid": 361448,
+      "absent": true
+    },
+    {
+      "capture": "journal-prefreeze.json",
+      "pgid": 358209,
+      "absent": true
+    },
+    {
+      "capture": "transport-budget-prefreeze.json",
+      "pgid": 364832,
+      "absent": true
+    },
+    {
+      "capture": "durable-prefreeze.json",
+      "pgid": 368556,
+      "absent": true
+    },
+    {
+      "capture": "cleanup-prefreeze-reached.json",
+      "pgid": 363087,
+      "absent": true
+    }
+  ],
+  "ownedGroupsAbsent": true,
+  "dependencyCopiesRemoved": [
+    {
+      "name": "fast-uri",
+      "symlink": false
+    },
+    {
+      "name": "fast-deep-equal",
+      "symlink": false
+    },
+    {
+      "name": "canonicalize",
+      "symlink": false
+    },
+    {
+      "name": "ajv-formats",
+      "symlink": false
+    },
+    {
+      "name": "ajv",
+      "symlink": false
+    },
+    {
+      "name": "require-from-string",
+      "symlink": false
+    },
+    {
+      "name": "json-schema-traverse",
+      "symlink": false
+    }
+  ],
+  "donorUntouched": true,
+  "noNativePhysicalTeardownClaim": true
+}
