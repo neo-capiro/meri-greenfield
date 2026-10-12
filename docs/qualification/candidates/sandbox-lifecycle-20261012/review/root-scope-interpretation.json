@@ -1,0 +1,27 @@
+{
+  "received_at_utc": "2026-10-12T04:55:50.770809+00:00",
+  "authority": "Explicit root scope direction after initial discovery freeze f590648",
+  "scope": "Existing opt-in qualification runtime-to-probe supervisor and browser/Office owned-resource watchdog/teardown repair. No fabricated product lifecycle/authority DTO or product artifact publication API.",
+  "interpretations": {
+    "SL1": "Require actual runtime.mjs and allocated browser/Office call paths to use the reviewed supervisor; an unused helper is insufficient.",
+    "SL2": "Require exact owned child/process-group/profile and separate qualification run A/B cleanup isolation. Product full RunBinding authorization remains a separate unqualified Temporal/runtime lane.",
+    "SL3": "Require immutable launch/cleanup identity/configuration and reject untrusted broad process/path ownership. Do not introduce new authority schemas.",
+    "SL4": "Require bounded existing probe and cleanup lifetimes including parked startup/close/streams and late events; task capability refresh remains outside this source slice.",
+    "SL8": "Preserve original Office export path/identity/format/verdict/readback controls and ensure supervisor failure cannot emit successful evidence. Product artifact publishing remains unqualified.",
+    "SL9": "Office protocol records/terminal result must remain bound to successful inspection and cleanup; cloud delivery and product publication authority remain UNRUN."
+  },
+  "unchanged_requirements": [
+    "No late successful output or continuing unowned effects after cancellation/deadline",
+    "Exact scoped owned-resource cleanup; borrowed/unrelated resources untouched",
+    "No kill request or timeout relabelled physical death",
+    "Preserve original tests, probes, negative evidence and schema/dependency boundaries",
+    "Safe import, no native/process/browser/cloud execution in review",
+    "Central source-packaging allocation before added imports become supported image content"
+  ],
+  "remaining_unentered_product_gates": [
+    "Task A/B current authority and Temporal recovery",
+    "Browser authentication/side-effect approval",
+    "Canonical ArtifactVersion authorization/publication/revocation",
+    "Actual browser/renderer sandbox and physical descendant teardown"
+  ]
+}

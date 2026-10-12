@@ -39,3 +39,16 @@ remain preserved. No native process, browser, renderer, database, Docker, cloud,
 model, provider or customer-data operation is authorized by this review. The
 next step is to inspect the author's root-allocated entry/interface proposal,
 then independently replay the exact frozen source with bounded local controls.
+
+## Explicit qualification-only scope decision
+
+After initial discovery, root narrowed this lane to repair existing opt-in
+qualification probe supervision and browser/Office owned-resource cleanup.
+`root-scope-interpretation.json` binds the criterion interpretations. No new
+product authority DTO, RunBinding wrapper or publication API is required here.
+The actual runtime-to-probe call path must use the repair; exact cross-run
+process/profile ownership and honest physical cleanup uncertainty remain
+mandatory. Original Office export verification/protocol owns evidence output.
+Product task A/B authorization, Temporal recovery and ArtifactVersion publishing
+remain separate unqualified gates. Additional image imports require central
+finite source-list allocation before packaging can be claimed supported.
