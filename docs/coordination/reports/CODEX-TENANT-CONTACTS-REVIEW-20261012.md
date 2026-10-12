@@ -1,3 +1,13 @@
+# Canonical contact repair follow-up
+
+**ACCEPT_SOURCE** for root repair `1e31f94bb8e399eede1f28609cb241b87e356b62`, with author-test correction `e890cff6d1110a1d29bd5dec0b7f340db0e41f06`. The schema now uses `urn:meri:retrieval:tenant-contacts:0.2.0`; both result branches return their validated detached snapshot. The narrow byte audit confirms exactly those changes.
+
+Three new unchanged controls first reproduced **34 pass / 3 fail** on original `0aba55ef`: normal and refusal outputs retained caller identity, and the schema namespace was noncanonical. The first repaired replay preserved **61 pass / 2 fail**, because the original independent and author tests asserted the previous same-reference API. Those assertions were explicitly superseded with deep-value preservation; new nested detachment controls remain unchanged. The final focused replay passed **63/63** (37 independent plus 26 author), no skips. All three owned process groups were absent and every raw failure remains retained.
+
+This intentionally changes returned reference identity. It does not change projected values, selectors, authorization, timestamps, count semantics or source availability. The earlier verdict below covered the standalone DTO; it did not establish canonical composition. The canonical follow-up manifest is authoritative for current review files; the original manifest and verifier remain historical and are verified against `5e5d6abe11091fda90dd07b2701b8b2e85e1b718`. Broad/public and runtime checks were not repeated in this lane. Current authority, source connectivity and all native/G1 gates remain **HOLD**.
+
+---
+
 # Independent tenant-contact review
 
 **ACCEPT_SOURCE** for `0aba55ef096a68a3cfd92f770783dec3fddfea22`, tree

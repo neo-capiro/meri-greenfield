@@ -1,0 +1,163 @@
+✔ contacts independent: selectorless defaults and null/blank selectors (5.404004ms)
+✔ contacts independent: finite legacy number/string clamp and fallback are retained (1.106503ms)
+✔ contacts independent: raw admission ceilings are explicit rather than source caps (1.036648ms)
+✔ contacts independent: post-truncation trims differ from client reference (0.283085ms)
+✔ contacts independent: UTF16 split boundary and lowercase expansion preserved (0.368213ms)
+✔ contacts independent: normalization preserves input case except domain and never mutates request (0.297608ms)
+✔ contacts independent: unknown aliases and model authorization fields are excluded (0.684799ms)
+✔ contacts independent: context is closed for both functions (0.376015ms)
+✔ contacts independent: refusal cannot carry a normal envelope or contacts (0.992773ms)
+✔ contacts independent: selectors require normal envelope even for an empty returned window (2.277073ms)
+✔ contacts independent: exact supplied query/domain bind matchedOn fields (0.715545ms)
+✔ contacts independent: resolved client UUID is not forced equal to input alias or a UUID version (0.467753ms)
+✔ contacts independent: selected-client presence is required, current visibility is not inferred (0.706732ms)
+✔ contacts independent: client-derived domain is an unreturned source assertion (0.503327ms)
+✔ contacts independent: OR within tenant never becomes a client AND domain AND query filter (0.300832ms)
+✔ contacts independent: no client and all predicate columns NULL cannot match a search (0.630338ms)
+✔ contacts independent: nine projected fields required with six nullable values (0.910879ms)
+✔ contacts independent: raw string values are not email phone enum or normalized-name formats (0.23986ms)
+✔ contacts independent: contact IDs and authority/coverage extensions never appear (1.448297ms)
+✔ contacts independent: repeated name/email rows remain legitimate window rows (0.25904ms)
+✔ contacts independent: supplied limits constrain returned rows without implying total (0.271337ms)
+✔ contacts independent: blank normalized email has no history but name can still be on profile (0.769947ms)
+✔ contacts independent: mail count and nullable mail/calendar dates do not imply each other (0.202364ms)
+✔ contacts independent: counts are safe nonnegative integers (0.475334ms)
+✔ contacts independent: returned history descends with ties and null last (0.384658ms)
+✔ contacts independent: no timestamp bound against generatedAt or ambient now is invented (0.238579ms)
+✔ contacts independent: date aliases invalid calendars and noncanonical strings refuse (0.6054ms)
+✔ contacts independent: onProfile needs client and some normalized identity but not invented truth (0.297667ms)
+✔ contacts independent: source note counts the returned rows and missing profiles (0.680242ms)
+✔ contacts independent: source guidance cannot grant profile update or execution options (0.460242ms)
+✔ contacts independent: getters proxies coercion and toJSON hooks stay inert (0.39215ms)
+✔ contacts independent: cycles sparse arrays hidden keys and prototypes refuse (0.416126ms)
+✖ contacts independent: output validation preserves original data (1.81568ms)
+✔ contacts independent: disclosed date wire admission excludes expanded native Date years (0.762546ms)
+✔ contacts canonical follow-up: normal result is detached from caller mutation (0.309936ms)
+✔ contacts canonical follow-up: refusal result and empty contacts are detached (0.149655ms)
+✔ contacts canonical follow-up: schema uses canonical Meri namespace (0.248844ms)
+✔ empty and null selectors normalize to explicit nullable values and refusal (5.206186ms)
+✔ explicit empty context only, model authority and lookup scopes rejected (1.912846ms)
+✔ lookup references remain selectors; domain lowercases but query preserves case (0.212649ms)
+✔ text limits are UTF16 and second trim follows truncation for domain/query (0.386701ms)
+✔ number/string limits clamp finitely while unrelated scalar types refuse (1.291302ms)
+✔ declared transport ceilings are refused without changing effective source caps (0.55916ms)
+✔ refusal and normal variants cannot substitute for one another (2.103402ms)
+✔ normal unlinked page has exact query echo and null client projection (1.479625ms)
+✔ linked name selector admits resolved ID and nullable raced client name (0.568635ms)
+✔ unreturned derived domain is accepted only with selected client (1.068786ms)
+✔ linked-client OR permits unrelated email/domain without claiming source link (0.381173ms)
+✔ SQL NULL cannot match sole domain or query predicates (0.765892ms)
+✔ nonstandard address and stored scalars are preserved without invented formats (0.300532ms)
+✔ every contact has exactly the nine projected fields (2.995503ms)
+✔ all stored contact and history scalar types are closed (1.619054ms)
+✔ history only exists when trimmed stored email supplies lookup identity (0.735936ms)
+✔ message count does not invent available mail timestamps or latest meeting truth (0.184758ms)
+✔ returned last contact descends with nulls last and equal timestamps allowed (0.628896ms)
+✔ source Date ISO serializations refuse impossible dates and offset substitutions (0.768395ms)
+✔ duplicate name/email projections are legitimate since row IDs are omitted (0.216526ms)
+✔ returned window never exceeds requested or absolute cap (2.985318ms)
+✔ profile assertion requires linked client and a nonblank name or email (0.422214ms)
+✔ notes count only returned rows and missing-profile rows including empty linked page (0.366962ms)
+✔ whole output remains closed and cannot grant profile mutation or coverage (0.895245ms)
+✔ direct raw/options/result admission never invokes getters, proxies or coercion (0.640543ms)
+✖ symbol, hidden and array root data refuse; inputs are not mutated (1.236008ms)
+ℹ tests 63
+ℹ suites 0
+ℹ pass 61
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 224.23864
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-tenant-contacts-independent.test.mjs:51:1
+✖ contacts independent: output validation preserves original data (1.81568ms)
+  AssertionError [ERR_ASSERTION]: Values have same structure but are not reference-equal:
+  
+  {
+    clientId: null,
+    clientName: null,
+    contacts: [
+      {
+        email: 'stored text',
+        lastContact: null,
+        messageCount: 0,
+        name: 'Synthetic correspondent',
+        onProfile: false,
+        organization: null,
+        phone: null,
+        source: 'synthetic future source',
+        title: null
+      }
+    ],
+    generatedAt: '2026-10-12T12:00:00.000Z',
+    matchedOn: {
+      domain: null,
+      linkedClient: false,
+      query: 'Synthetic'
+    },
+    note: '1 correspondent(s) found from synced mail and calendar.',
+    tool: 'find_contacts'
+  }
+  
+      at TestContext.<anonymous> (file:///workspace/meri-tenant-contacts-review-20261012/packages/contracts/test/retrieval-tenant-contacts-independent.test.mjs:51:154)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { tool: 'find_contacts', generatedAt: '2026-10-12T12:00:00.000Z', clientId: null, clientName: null, matchedOn: { domain: null, query: 'Synthetic', linkedClient: false }, contacts: [ [Object] ], note: '1 correspondent(s) found from synced mail and calendar.' },
+    expected: { tool: 'find_contacts', generatedAt: '2026-10-12T12:00:00.000Z', clientId: null, clientName: null, matchedOn: { domain: null, query: 'Synthetic', linkedClient: false }, contacts: [ [Object] ], note: '1 correspondent(s) found from synced mail and calendar.' },
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-tenant-contacts.test.mjs:137:1
+✖ symbol, hidden and array root data refuse; inputs are not mutated (1.236008ms)
+  AssertionError [ERR_ASSERTION]: Values have same structure but are not reference-equal:
+  
+  {
+    clientId: null,
+    clientName: null,
+    contacts: [
+      {
+        email: 'synthetic@example.invalid',
+        lastContact: null,
+        messageCount: 0,
+        name: null,
+        onProfile: false,
+        organization: null,
+        phone: null,
+        source: 'synthetic',
+        title: null
+      }
+    ],
+    generatedAt: '2026-10-12T00:00:00.000Z',
+    matchedOn: {
+      domain: null,
+      linkedClient: false,
+      query: 'synthetic'
+    },
+    note: '1 correspondent(s) found from synced mail and calendar.',
+    tool: 'find_contacts'
+  }
+  
+      at TestContext.<anonymous> (file:///workspace/meri-tenant-contacts-review-20261012/packages/contracts/test/retrieval-tenant-contacts.test.mjs:140:50)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { tool: 'find_contacts', generatedAt: '2026-10-12T00:00:00.000Z', clientId: null, clientName: null, matchedOn: { domain: null, query: 'synthetic', linkedClient: false }, contacts: [ [Object] ], note: '1 correspondent(s) found from synced mail and calendar.' },
+    expected: { tool: 'find_contacts', generatedAt: '2026-10-12T00:00:00.000Z', clientId: null, clientName: null, matchedOn: { domain: null, query: 'synthetic', linkedClient: false }, contacts: [ [Object] ], note: '1 correspondent(s) found from synced mail and calendar.' },
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
