@@ -1,0 +1,36 @@
+{
+  "command": [
+    "env",
+    "PYTHON=python3",
+    "node",
+    "--test",
+    "apps/worker/qualification/probes/image-inventory.test.mjs"
+  ],
+  "cwd": "/workspace/meri-inventory-fixture-repair-20261012",
+  "sourceHead": "690bac4cd44112b161d8e02818aeae7639ce237a",
+  "sourceDiffSha256": "84c1cb4facf5520def600dc1898b4cbdf57fbea668acfb46958e96b403d60395",
+  "sourceDiffBytes": 2905,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T03:41:44.428861+00:00",
+  "durationSeconds": 4.33,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 35102,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/inventory-fixture-repair-20261012/author/repaired-suite.stdout.bin",
+      "bytes": 2507,
+      "sha256": "c8bbf24410882abce67c865072d4bb6117323a5d7dadbbba1fc6215070660160"
+    },
+    {
+      "path": "docs/qualification/candidates/inventory-fixture-repair-20261012/author/repaired-suite.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Repair only repeated-scan setup by precreating excluded output; append size-only metadata regression while preserving all original assertions.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

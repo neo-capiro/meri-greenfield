@@ -1,0 +1,16 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "--test-name-pattern=directory sizes remain captured",
+    "/tmp/meri-inventory-size-control-j5goo0sq/image-inventory.test.mjs"
+  ],
+  "exitCode": 1,
+  "expectedExitCode": 1,
+  "result": "NEGATIVE_CONTROL_REJECTED",
+  "mutation": "Only _identity directory/file st_size is replaced with zero in a temporary copy.",
+  "mutantSha256": "dbea6d6f3385c43769a67aba3f435c21ba891a8b07134dd1a776bcb3da5884c1",
+  "productionSha256": "c7d682e67b5b3064947c92bebdce785aa04c3e00238fc8fb769d4a828479de58",
+  "temporaryCopyRemoved": true
+}

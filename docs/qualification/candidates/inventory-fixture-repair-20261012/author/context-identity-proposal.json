@@ -1,0 +1,12 @@
+{
+  "status": "SOURCE_ONLY_NOT_ADMISSION",
+  "members": 53,
+  "totalBytes": 996428,
+  "contextManifestSha256": "0f9cc23fb20d3d292fc5f2759a570ec5b022a5b9068d17ac545251803f73e903",
+  "testSha256": "845473b633ded89e8c94d1fe59637cee87418a7c0a2cdc3d2fe131971961b1b3",
+  "testBytes": 27407,
+  "assemblerSha256": "48f065d0ad61f98ba571c89dcd62141e6f8c9b272f0d371331d74a0dabf87851",
+  "productionProbeSha256": "c7d682e67b5b3064947c92bebdce785aa04c3e00238fc8fb769d4a828479de58",
+  "twoAssembliesByteIdentical": true,
+  "temporaryContextsRemoved": true
+}

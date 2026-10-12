@@ -1,0 +1,36 @@
+{
+  "command": [
+    "env",
+    "PYTHON=python3",
+    "node",
+    "--test",
+    "apps/worker/qualification/probes/image-inventory.test.mjs"
+  ],
+  "cwd": "/workspace/meri-inventory-fixture-repair-20261012",
+  "sourceHead": "690bac4cd44112b161d8e02818aeae7639ce237a",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T03:40:57.379063+00:00",
+  "durationSeconds": 4.129,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 34930,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/inventory-fixture-repair-20261012/author/baseline-original.stdout.bin",
+      "bytes": 6670,
+      "sha256": "2b891d9abc522533a5d8046f78e4145bc3665867da3cb3797fcafa46bc3fd1ff"
+    },
+    {
+      "path": "docs/qualification/candidates/inventory-fixture-repair-20261012/author/baseline-original.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
