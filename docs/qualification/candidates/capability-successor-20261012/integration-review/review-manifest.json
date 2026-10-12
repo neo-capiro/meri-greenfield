@@ -1,0 +1,149 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "sourceCommit": "6d2b0b0b2b53a7c229a84a7a44bf8feb9b1140f6",
+  "sourceTree": "63e61fd05f4d02b1734ad82c467124db62c7759c",
+  "rootReceiptCommit": "e38dc366d66ba7f285402c4365fd465fa29f8833",
+  "checks": {
+    "independentFocused": {
+      "pass": 127,
+      "fail": 0
+    },
+    "independentAuditInitial": {
+      "pass": 157,
+      "fail": 3,
+      "cause": "Reviewer summary-parser prefix assumption; exact initial source/raw failure retained"
+    },
+    "independentAuditCorrected": {
+      "pass": 160,
+      "fail": 0
+    },
+    "rootCombined": {
+      "pass": 637,
+      "fail": 0
+    },
+    "rootPublic": {
+      "pass": 7,
+      "fail": 0
+    }
+  },
+  "runtimeAccepted": false,
+  "sourceConnectivityEnabled": false,
+  "selfExcluded": true,
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-CAPABILITY-INTEGRATION-REVIEW-20261012.md",
+      "bytes": 5333,
+      "sha256": "348a53c6d54cd1f317a0c1ec9aad4fc7ae37758d2f8d3cb6e022560460eedf12"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/audit-correction.json",
+      "bytes": 608,
+      "sha256": "2fd98a29ff1817173763973c2b7385a1f48ef899b6bd78f175b9806cb1c0c75f"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/audit-integration-first.py.txt",
+      "bytes": 12139,
+      "sha256": "4a965f497100ee6dc9c9ae4e1b2e7b358df3abf6704e044a448749a64a3d0237"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/audit-integration.py",
+      "bytes": 12177,
+      "sha256": "5550cb0923e46a3d3c1c31931bab138e015dd944c355731f4ea221d625b49f8c"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/authored-whitespace.json",
+      "bytes": 1284,
+      "sha256": "102ddc73cf8c5da3e293161d1a89b38097ad0196a0503d7ccafccc4257f9e374"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/authored-whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/authored-whitespace.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/cleanup.json",
+      "bytes": 570,
+      "sha256": "a77554070aa592175f415c0bc5485235e7e1516f9e21c45523cc29e95bf47103"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/criteria.json",
+      "bytes": 2041,
+      "sha256": "e648cb1d2844cd80a6a616bc000effffece9b8319e1e61e940ceb56aa00ce98a"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/dependency-access.json",
+      "bytes": 454,
+      "sha256": "b3c080e83d0899e35b5f3df6792635791151fa3f5816d895becc2e1a167d7c41"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/final-whitespace.json",
+      "bytes": 1310,
+      "sha256": "5d85439a8554b0b08c56518cdd31414de8e92d1f110a3230761ea727eec8227e"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/final-whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/final-whitespace.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/focused-connected.json",
+      "bytes": 1544,
+      "sha256": "7d65599dcee1a32da70df66b3a87ab193c64a9bfd1f9f5a80548df047b6b3791"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/focused-connected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/focused-connected.stdout.bin",
+      "bytes": 10687,
+      "sha256": "064c0e847f652f5fda9d57aa0d1e82e777f67d89b6ce8406e88d1d9f94b50ad6"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/independent-audit-corrected.json",
+      "bytes": 1372,
+      "sha256": "c63c68231af9175a1dc036bedaeb267b3e430843e23fe3692f187f6c188850c9"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/independent-audit-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/independent-audit-corrected.stdout.bin",
+      "bytes": 25409,
+      "sha256": "01ae2d022377f332f09fc5b92b1a94264e7f4dd2e1f1da35044cdb7480f048b2"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/independent-audit.json",
+      "bytes": 1352,
+      "sha256": "6215d52571db0deeff7203339fb9624aab82673dcaaa35ce27747874ede590b7"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/independent-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration-review/independent-audit.stdout.bin",
+      "bytes": 25412,
+      "sha256": "0a02338c4a22ebaf25635c778cb1e34b12d29ad8a8af3f6d619d06b3659c835b"
+    }
+  ]
+}

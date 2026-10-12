@@ -1,0 +1,27 @@
+{
+  "prepCommit": "5b1b5985bc73cbfe901c17e65acf9fd50b3d7e33",
+  "reviewCommit": "6d2b0b0b2b53a7c229a84a7a44bf8feb9b1140f6",
+  "reviewTree": "63e61fd05f4d02b1734ad82c467124db62c7759c",
+  "baseRc1": "2f06feccca731d6cd388612cd568185ecc29668f",
+  "criteriaSentBeforeFreeze": true,
+  "correctionBeforeFreeze": "Full decision-ID equality belongs to previous/current PAGE continuity. Across authority stages stable-subject equality permits first-page decision rotation. Test both cases separately.",
+  "checks": [
+    "Exact integrated source/tree and separate action/mail ACCEPT_SOURCE receipts",
+    "RC1 branch/tag/ref identities and runtime/proxy/worker/qualification/infra paths preserved",
+    "139 original rows and14 original descriptors unchanged",
+    "15 unavailable typed operations,14 mapped originals,82 pending, query_action_items partial with native row pending/null/no aliases",
+    "Public0.1/private0.2 distribution/schema/locks/dependencies unchanged",
+    "Action canonical normalization/digest/trusted actor/source proof/recommendation-only output and clientless refusal",
+    "Mail connected trusted retained pages bind selection/anchor/full page subject/policy/identity, with first-page authority decision rotation retained",
+    "Canonical deadline/cancellation/parked-port/revocation/release and UNKNOWN budget semantics preserved",
+    "Original memory and other operation paths preserved",
+    "No enabled manifest/source/adapter/new loop/DTO/invented subject/window authority",
+    "Inspect exact-head broad root receipts; replay focused connected and decision-rotation controls after root completes heavy checks",
+    "Raw failures, whitespace and historical cleanup FAIL preserved; no PID1 cleanup or runtime action"
+  ],
+  "scope": "Independent integration review only; no production edits or native runtime/setup/services",
+  "ownPaths": [
+    "docs/qualification/candidates/capability-successor-20261012/integration-review/**",
+    "docs/coordination/reports/CODEX-CAPABILITY-INTEGRATION-REVIEW-20261012.md"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "firstRun": {
+    "passed": 157,
+    "failed": 3,
+    "receipt": "independent-audit.json",
+    "sourceSnapshot": "audit-integration-first.py.txt"
+  },
+  "cause": "Reviewer parser assumed Node TAP # summary; saved output uses Node spec reporter Unicode information prefix. All three actual saved summaries already show their expected tests/pass and zero fail.",
+  "fix": "Parse exact anchored summary rows accepting Node TAP or spec prefix. No product or test change, no evidence rewrite.",
+  "replayReason": "Correct the independent evidence parser; retain original source and failed replay verbatim."
+}

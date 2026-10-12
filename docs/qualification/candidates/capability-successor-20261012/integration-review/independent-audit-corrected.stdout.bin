@@ -1,0 +1,732 @@
+{
+  "reviewedSource": "6d2b0b0b2b53a7c229a84a7a44bf8feb9b1140f6",
+  "reviewedTree": "63e61fd05f4d02b1734ad82c467124db62c7759c",
+  "rootReceiptCommit": "e38dc366d66ba7f285402c4365fd465fa29f8833",
+  "base": "2f06feccca731d6cd388612cd568185ecc29668f",
+  "passed": 160,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "exact-source-tree",
+      "pass": true
+    },
+    {
+      "name": "review-worktree-source-head",
+      "pass": true
+    },
+    {
+      "name": "tracked-source-worktree-clean",
+      "pass": true
+    },
+    {
+      "name": "exact-existing-file-change-scope",
+      "pass": true
+    },
+    {
+      "name": "no-deletion-rename",
+      "pass": true
+    },
+    {
+      "name": "exact-five-production-files",
+      "pass": true
+    },
+    {
+      "name": "accepted-lane-production-bytes:packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "accepted-lane-production-bytes:packages/contracts/retrieval-0.2/catalog.json",
+      "pass": true
+    },
+    {
+      "name": "accepted-lane-production-bytes:apps/gateway/dispatch/mail-read-context.mjs",
+      "pass": true
+    },
+    {
+      "name": "accepted-lane-production-bytes:apps/gateway/dispatch/operation-context.mjs",
+      "pass": true
+    },
+    {
+      "name": "accepted-lane-production-bytes:apps/gateway/dispatch/tool-dispatch.mjs",
+      "pass": true
+    },
+    {
+      "name": "protected-runtime-public-schema-sdk-ledger-plan-identical",
+      "pass": true
+    },
+    {
+      "name": "all-original-row-objects-and-order",
+      "pass": true
+    },
+    {
+      "name": "all-original-row-literal-bytes",
+      "pass": true
+    },
+    {
+      "name": "all-original14-descriptor-literal-bytes-and-order",
+      "pass": true
+    },
+    {
+      "name": "exact-capability-counts",
+      "pass": true
+    },
+    {
+      "name": "all-typed-operations-remain-unavailable",
+      "pass": true
+    },
+    {
+      "name": "partial-action-original-pending-null-without-alias",
+      "pass": true
+    },
+    {
+      "name": "sole-explicit-partial-binding",
+      "pass": true
+    },
+    {
+      "name": "two-explicit-mail-dispatch-profiles",
+      "pass": true
+    },
+    {
+      "name": "preserved-local-ref:refs/heads/release/meri-rc1-20261012",
+      "pass": true
+    },
+    {
+      "name": "preserved-local-ref:refs/heads/task/meri-native-helper-integration-20261012",
+      "pass": true
+    },
+    {
+      "name": "preserved-local-ref:refs/tags/meri-rc1-20261012",
+      "pass": true
+    },
+    {
+      "name": "preserved-local-ref:refs/tags/meri-rc1-20261012^{}",
+      "pass": true
+    },
+    {
+      "name": "preserved-local-ref:refs/remotes/origin/main",
+      "pass": true
+    },
+    {
+      "name": "root-receipt-commit-additions-only-in-integration",
+      "pass": true
+    },
+    {
+      "name": "root-receipt-tree",
+      "pass": true
+    },
+    {
+      "name": "root-receipt-exact-source:combined-source",
+      "pass": true
+    },
+    {
+      "name": "root-receipt-success-cleanup:combined-source",
+      "pass": true
+    },
+    {
+      "name": "root-receipt-capture-binding:combined-source",
+      "pass": true
+    },
+    {
+      "name": "root-stream-bytes:docs/qualification/candidates/capability-successor-20261012/integration/combined-source.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "root-stream-bytes:docs/qualification/candidates/capability-successor-20261012/integration/combined-source.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "root-receipt-exact-source:public-distribution",
+      "pass": true
+    },
+    {
+      "name": "root-receipt-success-cleanup:public-distribution",
+      "pass": true
+    },
+    {
+      "name": "root-receipt-capture-binding:public-distribution",
+      "pass": true
+    },
+    {
+      "name": "root-stream-bytes:docs/qualification/candidates/capability-successor-20261012/integration/public-distribution.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "root-stream-bytes:docs/qualification/candidates/capability-successor-20261012/integration/public-distribution.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "root-receipt-exact-source:preservation",
+      "pass": true
+    },
+    {
+      "name": "root-receipt-success-cleanup:preservation",
+      "pass": true
+    },
+    {
+      "name": "root-receipt-capture-binding:preservation",
+      "pass": true
+    },
+    {
+      "name": "root-stream-bytes:docs/qualification/candidates/capability-successor-20261012/integration/preservation.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "root-stream-bytes:docs/qualification/candidates/capability-successor-20261012/integration/preservation.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "root-receipt-exact-source:remote-preservation",
+      "pass": true
+    },
+    {
+      "name": "root-receipt-success-cleanup:remote-preservation",
+      "pass": true
+    },
+    {
+      "name": "root-receipt-capture-binding:remote-preservation",
+      "pass": true
+    },
+    {
+      "name": "root-stream-bytes:docs/qualification/candidates/capability-successor-20261012/integration/remote-preservation.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "root-stream-bytes:docs/qualification/candidates/capability-successor-20261012/integration/remote-preservation.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "root-receipt-exact-source:final-whitespace",
+      "pass": true
+    },
+    {
+      "name": "root-receipt-success-cleanup:final-whitespace",
+      "pass": true
+    },
+    {
+      "name": "root-receipt-capture-binding:final-whitespace",
+      "pass": true
+    },
+    {
+      "name": "root-stream-bytes:docs/qualification/candidates/capability-successor-20261012/integration/final-whitespace.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "root-stream-bytes:docs/qualification/candidates/capability-successor-20261012/integration/final-whitespace.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "root-receipt-exact-source:retained-packets",
+      "pass": true
+    },
+    {
+      "name": "root-receipt-success-cleanup:retained-packets",
+      "pass": true
+    },
+    {
+      "name": "root-receipt-capture-binding:retained-packets",
+      "pass": true
+    },
+    {
+      "name": "root-stream-bytes:docs/qualification/candidates/capability-successor-20261012/integration/retained-packets.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "root-stream-bytes:docs/qualification/candidates/capability-successor-20261012/integration/retained-packets.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "root-broad-tap637-pass-zero-fail",
+      "pass": true
+    },
+    {
+      "name": "root-public-tap7-pass-zero-fail",
+      "pass": true
+    },
+    {
+      "name": "remote-receipt-exact-five-refs",
+      "pass": true
+    },
+    {
+      "name": "lane-manifest-exact-count:action-author/source-manifest.json",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:apps/gateway/test/action-item-context.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:apps/gateway/test/memory-context-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:packages/contracts/retrieval-0.2/catalog.json",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:packages/contracts/test/retrieval-action-item-binding.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:packages/contracts/test/retrieval-mail.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:packages/contracts/test/retrieval-memory-binding.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:packages/contracts/test/retrieval-operational-reads.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "lane-manifest-exact-count:action-review/review-manifest.json",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/coordination/reports/CODEX-CAPABILITY-ACTION-REVIEW-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:packages/contracts/test/retrieval-action-item-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:apps/gateway/test/action-item-context-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/action-review/.gitattributes",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/action-review/audit-preservation.py",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/action-review/baseline-catalog.json",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/action-review/baseline.json",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/action-review/baseline.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/action-review/baseline.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/action-review/controls-before-freeze.json",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/action-review/exact-freeze.json",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/action-review/exact-freeze.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/action-review/exact-freeze.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/action-review/preservation.json",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/action-review/preservation.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/action-review/preservation.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/action-review/run-check.py",
+      "pass": true
+    },
+    {
+      "name": "lane-manifest-exact-count:mail-author/manifest.json",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/coordination/reports/CODEX-CAPABILITY-MAIL-AUTHOR-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-author/authored-whitespace.stderr",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-author/authored-whitespace.stdout",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-author/baseline/operation-context.mjs",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-author/baseline/tool-dispatch.mjs",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-author/baseline-connected.json",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-author/baseline-connected.stderr",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-author/baseline-connected.stdout",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-author/capture-check.py",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-author/connected-after.json",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-author/connected-after.stderr",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-author/connected-after.stdout",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-author/dependency-provenance.json",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-author/focused-first.json",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-author/focused-first.stderr",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-author/focused-first.stdout",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-author/full-staged-raw.stderr",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-author/full-staged-raw.stdout",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-author/gateway-source.json",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-author/gateway-source.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-author/gateway-source.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-author/outline.json",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-author/public-distribution.json",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-author/public-distribution.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-author/public-distribution.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-author/root-source.json",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-author/root-source.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-author/root-source.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-author/source-freeze.json",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-author/verify-packet.py",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-author/whitespace-checks.json",
+      "pass": true
+    },
+    {
+      "name": "lane-manifest-exact-count:mail-review/review-manifest.json",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/coordination/reports/CODEX-CAPABILITY-MAIL-REVIEW-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:apps/gateway/test/mail-context-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-review/authored-whitespace.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-review/authored-whitespace.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-review/baseline.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-review/baseline.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-review/candidate-corrected.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-review/candidate-corrected.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-review/candidate-first.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-review/candidate-first.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-review/criteria-correction.json",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-review/final-review.json",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-review/first-replay-diagnosis.json",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-review/frozen-criteria.json",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-review/gateway-full-receipt.json",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-review/gateway-full.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-review/gateway-full.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-review/packet-hygiene.json",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-review/packet-whitespace.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-review/packet-whitespace.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "lane-preserved-member:docs/qualification/candidates/capability-successor-20261012/mail-review/source-preservation.json",
+      "pass": true
+    },
+    {
+      "name": "independent-lane-acceptance:action-review/review-manifest.json",
+      "pass": true
+    },
+    {
+      "name": "independent-lane-acceptance:mail-review/review-manifest.json",
+      "pass": true
+    },
+    {
+      "name": "historical-cleanup-failure-not-erased",
+      "pass": true
+    },
+    {
+      "name": "historical-whitespace-exit2-preserved",
+      "pass": true
+    },
+    {
+      "name": "historical-whitespace-stream:docs/qualification/candidates/capability-successor-20261012/integration/raw-whitespace-before-attributes.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "historical-whitespace-stream:docs/qualification/candidates/capability-successor-20261012/integration/raw-whitespace-before-attributes.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "scoped-raw-whitespace-rules-only",
+      "pass": true
+    },
+    {
+      "name": "whitespace-attribute:docs/qualification/candidates/capability-successor-20261012/integration-review/focused-connected.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "whitespace-attribute:docs/qualification/candidates/capability-successor-20261012/integration-review/audit-integration.py",
+      "pass": true
+    },
+    {
+      "name": "whitespace-attribute:apps/gateway/dispatch/mail-read-context.mjs",
+      "pass": true
+    },
+    {
+      "name": "whitespace-attribute:docs/CAPABILITY-CATALOG.md",
+      "pass": true
+    },
+    {
+      "name": "independent-focused-source-cleanup",
+      "pass": true
+    },
+    {
+      "name": "independent-focused-stream:docs/qualification/candidates/capability-successor-20261012/integration-review/focused-connected.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "independent-focused-stream:docs/qualification/candidates/capability-successor-20261012/integration-review/focused-connected.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "independent-focused127",
+      "pass": true
+    },
+    {
+      "name": "first-page-rotation-and-page-mismatch-controls-present",
+      "pass": true
+    }
+  ],
+  "ledger": {
+    "originals": 139,
+    "selected": 96,
+    "deferred": 43,
+    "mapped": 14,
+    "pendingSelected": 82,
+    "typedOperations": 15
+  },
+  "rootReceipts": [
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration/combined-source.json",
+      "bytes": 3253,
+      "sha256": "589a66f65137bdd36c7a28b347528174b422bf561052076404491461de1e62f5",
+      "sourceHead": "6d2b0b0b2b53a7c229a84a7a44bf8feb9b1140f6",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration/public-distribution.json",
+      "bytes": 1429,
+      "sha256": "dc1020531c4727db1da32d0584d2d2508476351597078a6af2c84d052f0d09e7",
+      "sourceHead": "6d2b0b0b2b53a7c229a84a7a44bf8feb9b1140f6",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration/preservation.json",
+      "bytes": 1310,
+      "sha256": "5950ff9e071d246c5e4b04ea14c68543600040b1fb624fa5b4c427de7251fdc9",
+      "sourceHead": "6d2b0b0b2b53a7c229a84a7a44bf8feb9b1140f6",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration/remote-preservation.json",
+      "bytes": 1454,
+      "sha256": "f0a3241d7b00fe599e015048b830a119173892bff0da0849a7c6ab2df0c90a57",
+      "sourceHead": "6d2b0b0b2b53a7c229a84a7a44bf8feb9b1140f6",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration/final-whitespace.json",
+      "bytes": 1287,
+      "sha256": "be1598f58272b9726a36676002bbaf586813d1c6c2bbed8c28c051ca0c3a1c21",
+      "sourceHead": "6d2b0b0b2b53a7c229a84a7a44bf8feb9b1140f6",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration/retained-packets.json",
+      "bytes": 1319,
+      "sha256": "8d2c185b7652e17a684a7110369c94e423eb5020d6af264d34b9c6d2e101d1ae",
+      "sourceHead": "6d2b0b0b2b53a7c229a84a7a44bf8feb9b1140f6",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    }
+  ],
+  "laneManifests": [
+    {
+      "manifest": "docs/qualification/candidates/capability-successor-20261012/action-author/source-manifest.json",
+      "members": 9,
+      "sha256": "483c69dbfdf0a0923841d157134586547052b13af1bbe5dc94d9c88115b0435b"
+    },
+    {
+      "manifest": "docs/qualification/candidates/capability-successor-20261012/action-review/review-manifest.json",
+      "members": 18,
+      "sha256": "e576968285469afdda161c654edf1da7babede9e2ce44638f53dc64153c3d310"
+    },
+    {
+      "manifest": "docs/qualification/candidates/capability-successor-20261012/mail-author/manifest.json",
+      "members": 32,
+      "sha256": "3ebb848a5a4c4bab3d6078b7d30e928c376bdf51b963a119ecb5c5846cb8e5dc"
+    },
+    {
+      "manifest": "docs/qualification/candidates/capability-successor-20261012/mail-review/review-manifest.json",
+      "members": 21,
+      "sha256": "c78b33e93150ac82f2f5b036874740da06fbd323c12b47c850af3fddce8efc34"
+    }
+  ],
+  "runtimeAccepted": false,
+  "historicalCleanup": "FAIL_EXITED_ZOMBIES_ADOPTED_BY_PID1_RETAINED_NO_CLEANUP_ATTEMPT"
+}
