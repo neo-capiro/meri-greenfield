@@ -1,0 +1,11 @@
+{
+  "base": "e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5",
+  "status": "INTAKE_PENDING_NOT_CRITERIA_FREEZE",
+  "reviewer": "Codex /root/memory_reviewer",
+  "expectedCurrentWrapper": {"bytes": 11124, "sha256": "e37894e22b3bb290c8b8b8fb7aaf35f2d7b2868cc2d469214913953d1b4fc9df"},
+  "expectedRelayArchive": {"bytes": 39189, "members": 14, "sha256": "6b5a503b242def09dec995110ae8e645fb3413cf4659b4df81a1a9d493499ee0"},
+  "historicalExecutionWrapperBinding": "NOT_PROVEN",
+  "allowedVerification": ["read local source/data", "AST inspection", "hash and identity metadata comparison", "inert-port controls after exact root scope allocation"],
+  "prohibited": ["download or retrieve relay", "import or execute supervisor/candidate/diagnostic", "native process or runtime execution", "network/cloud/database/provider/paid-model action", "private original source bodies or paths in Git"],
+  "next": "Read locally retained exact source and JSON filenames supplied by author, then freeze criteria against root-allocated scope"
+}

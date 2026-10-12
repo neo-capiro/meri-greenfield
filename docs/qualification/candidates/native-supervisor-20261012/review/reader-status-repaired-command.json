@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "python3",
+    "-I",
+    "-B",
+    "-S",
+    "/workspace/meri-native-supervisor-review-20261012/docs/qualification/candidates/native-supervisor-20261012/review/lifecycle-controls.py",
+    "/workspace/meri-native-supervisor-review-20261012/docs/qualification/candidates/native-supervisor-20261012/review/reader-status-repaired-source.py.txt",
+    "/workspace/meri-native-supervisor-review-20261012/docs/qualification/candidates/native-supervisor-20261012/review/reader-status-repaired.json"
+  ],
+  "exitCode": 0,
+  "processReaped": true,
+  "scope": "AST-isolated lifecycle only; explicit inertports; no native operations"
+}
