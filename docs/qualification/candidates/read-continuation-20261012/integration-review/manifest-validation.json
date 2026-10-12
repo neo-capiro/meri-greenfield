@@ -1,0 +1,11 @@
+{
+  "scope": "OFFLINE_PACKET_INTEGRITY",
+  "memberCount": 52,
+  "passed": 52,
+  "failed": 0,
+  "manifestSha256": "1cf9c95520e7fae092ec9dda9b37b6f2458c6342c21730f66abb82d362c3571c",
+  "allRecordedStreamsVerified": true,
+  "allRecordedProcessGroupsClosed": true,
+  "jsonParse": "PASS",
+  "reviewOnlyHistoricalCommits": 10
+}

@@ -1,0 +1,16 @@
+{
+  "command": [
+    "git",
+    "diff",
+    "--check",
+    "e7a07f5^",
+    "--",
+    "docs/coordination/reports/CODEX-READ-CONTINUATION-INTEGRATION-REVIEW-20261012.md",
+    "packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+    "docs/qualification/candidates/read-continuation-20261012/integration-review/verify-source.py"
+  ],
+  "exitCode": 0,
+  "stdoutBytes": 0,
+  "stderrBytes": 0,
+  "rawFailureStreamsExcludedFromWhitespaceRewrite": true
+}
