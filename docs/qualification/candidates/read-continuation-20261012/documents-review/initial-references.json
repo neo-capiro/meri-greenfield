@@ -1,0 +1,49 @@
+{
+  "pin": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "observedCurrent": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+  "references": [
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194",
+      "bytes": 415704,
+      "observedCurrentBlob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-document-read.helpers.ts",
+      "blob": "94cd51e8208e71c01a833445797d010fa79cfa67",
+      "sha256": "2d96116443207cfc1c5a1c21a01fa88e2ab51a32635e9b9838320acc2c350d41",
+      "bytes": 9656,
+      "observedCurrentBlob": "94cd51e8208e71c01a833445797d010fa79cfa67",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-document-read.helpers.spec.ts",
+      "blob": "d17f06d81d471baa42a6f992fefd94c48fdf032b",
+      "sha256": "08a4ceba43513353b2a8869e1054bc6a86bce541948385447b561af0080b8eda",
+      "bytes": 6259,
+      "observedCurrentBlob": "d17f06d81d471baa42a6f992fefd94c48fdf032b",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/engagement/attachment-pdf-vision.ts",
+      "blob": "9dee18a757074cdf44b40463600e0daa1067de0b",
+      "sha256": "ac5a8a5406ab7e0a82a35e9f1ee05ff98cf14e7a62db8e944761cb7a08c7e944",
+      "bytes": 6245,
+      "observedCurrentBlob": "9dee18a757074cdf44b40463600e0daa1067de0b",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/memory/memory-wall.helpers.ts",
+      "blob": "48b9bf4b9246baac7cd3188d012ea7638aeb8a68",
+      "sha256": "91961048fd944885b8a06d229009259cf4866a4d40338d09685b1608f29a9255",
+      "bytes": 7833,
+      "observedCurrentBlob": "48b9bf4b9246baac7cd3188d012ea7638aeb8a68",
+      "unchanged": true
+    }
+  ],
+  "privateBodiesPublished": false,
+  "privateSourceExecuted": false,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+}
