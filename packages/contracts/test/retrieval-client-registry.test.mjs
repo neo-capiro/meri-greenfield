@@ -61,6 +61,11 @@ test('registry rows preserve null versus omitted and reject extra private fields
 
 test('registry scalar projection preserves numeric IDs and bounded descriptions', () => {
   assertClientRegistryResult({...result(), ldaExactMatch: {...lda(), description: 'x'.repeat(200), latestFilingYear: 2026}});
+  assertClientRegistryResult({...result(), ldaExactMatch: {...lda(), description: '🧭'.repeat(100)}});
+  for (const branch of ['ldaExactMatch', 'ldaCandidates']) {
+    const row = {...lda(), description: '🧭'.repeat(101)};
+    assert.throws(() => assertClientRegistryResult({...result(), [branch]: branch === 'ldaCandidates' ? [row] : row}), /UTF-16/);
+  }
   for (const change of [{ldaClientId: '12'}, {totalFilings: 1.5}, {latestFilingYear: '2026'},
     {description: 'x'.repeat(201)}, {state: 4}])
     assert.throws(() => assertClientRegistryResult({...result(), ldaExactMatch: {...lda(), ...change}}));

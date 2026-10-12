@@ -24,6 +24,11 @@ export function createClientRegistryValidators({validateShape}) {
 
   function assertClientRegistryResult(value) {
     validateShape('ClientRegistryResult', value);
+    // JSON Schema counts Unicode code points; the frozen projection truncates
+    // JavaScript strings by UTF-16 code units, including surrogate pairs.
+    const rows = [...value.ldaCandidates, ...(value.ldaExactMatch === null ? [] : [value.ldaExactMatch])];
+    if (rows.some(row => row.description !== null && row.description.length > 200))
+      throw new Error('Client registry description exceeds 200 UTF-16 code units');
     const ids = new Set(value.ldaCandidates.map(row => row.ldaClientId));
     if (ids.size !== value.ldaCandidates.length)
       throw new Error('Duplicate client registry candidate identity');
