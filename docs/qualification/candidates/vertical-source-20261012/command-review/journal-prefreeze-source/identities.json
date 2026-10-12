@@ -1,0 +1,21 @@
+{
+  "sourceCommit": null,
+  "status": "uncommitted prefreeze snapshot, not exact author commit",
+  "files": [
+    {
+      "path": "apps/control/commands/protocol.mjs",
+      "bytes": 1587,
+      "sha256": "762eaa1a5af0907bfb6f82c6e2dfbb9a2e7e1fb549b7f68f533d8daee1940e3d"
+    },
+    {
+      "path": "apps/control/commands/postgres-command-journal.mjs",
+      "bytes": 4442,
+      "sha256": "3e5c5a83ad2e1c7466b1837d4f83d6c7112695baee62f51fabc083e215d1a29b"
+    },
+    {
+      "path": "apps/control/commands/approval-context.mjs",
+      "bytes": 1617,
+      "sha256": "2d8c60f3c782295e8cab335c701fabc8a4d33287b7ca939246bf698985bd4073"
+    }
+  ]
+}
