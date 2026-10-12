@@ -1,0 +1,97 @@
+{
+  "phase": "prefreeze review, author source still evolving",
+  "sourceSha256": "2e250e7e393acc7113e22cdd203dd9a2120df02700439394410a1da1b5671d7b",
+  "findings": [
+    {
+      "id": "New Meri:N-001",
+      "group": "ui",
+      "additionalGroups": null,
+      "requirement": {
+        "ID": "N-001",
+        "Category": "Workspace and conversations",
+        "Feature or requirement": "Standalone Meri application",
+        "What it does": "New independent repository, UI, database, storage, configuration and deployment stack; existing Meri stays available during qualification.",
+        "Scope status": "Planned v1",
+        "Implementation responsibility": "Next.js / React / AI Elements + application event adapter",
+        "Source references": "Deployment \u00a71 Figma contract, \u00a74 W06; Greenfield \u00b655\u201358; prototype routes home/answer/scope/history/search"
+      }
+    },
+    {
+      "id": "New Meri:N-028",
+      "group": "ui",
+      "additionalGroups": null,
+      "requirement": {
+        "ID": "N-028",
+        "Category": "Conversation management and preferences",
+        "Feature or requirement": "Delete conversation",
+        "What it does": "Remove conversation access and apply the configured retention/deletion policy.",
+        "Scope status": "Design-only contract",
+        "Implementation responsibility": "New application state, AI Elements/shadcn controls",
+        "Source references": "Figma routes preferences/notifications/help/rename/archived/delete/conversation-states; Deployment UI-SPEC/UI-COVERAGE classification"
+      }
+    },
+    {
+      "id": "New Meri:N-033",
+      "group": "ui",
+      "additionalGroups": null,
+      "requirement": {
+        "ID": "N-033",
+        "Category": "Conversation management and preferences",
+        "Feature or requirement": "Authorized conversation export",
+        "What it does": "Export only eligible messages as Markdown; requires exact export/retention contract.",
+        "Scope status": "Design-only contract",
+        "Implementation responsibility": "New application state, AI Elements/shadcn controls",
+        "Source references": "Figma routes preferences/notifications/help/rename/archived/delete/conversation-states; Deployment UI-SPEC/UI-COVERAGE classification"
+      }
+    },
+    {
+      "id": "New Meri:N-084",
+      "group": "artifacts",
+      "additionalGroups": null,
+      "requirement": {
+        "ID": "N-084",
+        "Category": "Schedules and automation",
+        "Feature or requirement": "Recurring research and drafting",
+        "What it does": "Run authorized recurring tasks using Temporal schedules.",
+        "Scope status": "Planned v1",
+        "Implementation responsibility": "Temporal Schedules + narrow qualified source-event endpoint",
+        "Source references": "Greenfield \u00b692\u201397; prototype routes schedules/schedule-editor/schedule-detail/schedule-history; Deployment \u00a76\u20138"
+      }
+    },
+    {
+      "id": "Deployment work:REL-05",
+      "group": "durability",
+      "additionalGroups": null,
+      "requirement": {
+        "Ticket ID": "REL-05",
+        "Phase": "SDK runtime",
+        "Work": "Use one Claude loop and native deferred discovery through the actual proxy. Bound simple work, delegation, retries and recovery.",
+        "Owner": "Hermes runtime",
+        "Dependencies": "REL-02. Runtime-only checkpoint contributes to W02. Full integration follows REL-03/REL-04 under W09.",
+        "Requirement IDs": "R-06, R-09",
+        "Qualification gates": "RG-01, RG-08, RG-09, RG-12",
+        "Completion evidence": "Proxy/discovery report and warm/cold timing",
+        "State": "Gap check pending",
+        "Rollout guidance": "Do not add another production planner loop."
+      }
+    },
+    {
+      "id": "Deployment work:REL-09",
+      "group": "security",
+      "additionalGroups": null,
+      "requirement": {
+        "Ticket ID": "REL-09",
+        "Phase": "Integration/release",
+        "Work": "Merge reviewed increments, rerun impacted original and reliability gates, canary allowlisted tenants and exercise bypass/rollback. Publish evidence and handover.",
+        "Owner": "Codex + Hermes reviewer/ops",
+        "Dependencies": "REL-06. Pre-staging completes W09 for W10. Canary follows W10 and release authorization under W11. REL-07/08 only if enabled.",
+        "Requirement IDs": "R-01 through R-12 as enabled",
+        "Qualification gates": "Core RG gates plus optional gates if enabled",
+        "Completion evidence": "Immutable candidate, canary receipts and rollback drill",
+        "State": "Gap check pending",
+        "Rollout guidance": "Continue existing deployment sequence. Optional experiments do not block core."
+      }
+    }
+  ],
+  "consequence": "Source text and unknown status retained, but primary group alone omits cross-cutting ownership/receipt links. Requested explicit additionalGroups; no implementation acceptance claim."
+}

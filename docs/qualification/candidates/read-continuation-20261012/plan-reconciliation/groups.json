@@ -1,0 +1,292 @@
+[
+  {
+    "id": "scope",
+    "title": "Discovery, source inventory and authority",
+    "owner": "integration + source owners",
+    "evidence": [
+      "docs/coordination/DECISIONS.md",
+      "docs/coordination/reports/CODEX-R2-ADOPTION.md"
+    ],
+    "implementedOrAcceptedEvidence": "G0 discovery accepted;139 native rows96 selected43 deferred; R2 adopted; full plan not replaced by catalog.",
+    "remainingRequirement": "Finish item-level product/adapter/workflow receipt joins; retain all plan requirements and recorded scope distinctions.",
+    "status": "G0 discovery accepted; full delivery pending",
+    "runtimeQualified": false,
+    "runtimeBoundary": "No whole-plan product/runtime PASS established; G1 OPEN, G2-G7 unentered. Other-owner current receipts not inspected."
+  },
+  {
+    "id": "catalog",
+    "title": "Typed retrieval boundaries and canonical mappings",
+    "owner": "backend source/gateway",
+    "evidence": [
+      "@READ:packages/contracts/retrieval-0.2/catalog.json",
+      "@READ:packages/contracts/retrieval-0.2/validate.mjs"
+    ],
+    "implementedOrAcceptedEvidence": "Exact accepted-source candidate has67 typed unavailable operations,66 mapped originals,30 selected pending; one action-item partial remains pending.",
+    "remainingRequirement": "Real handlers, trusted context producers, source access/policy and domain behavior qualification;30 full mappings remain. No catalog count proves139 product parity.",
+    "status": "partial-source; product qualification pending",
+    "runtimeQualified": false,
+    "runtimeBoundary": "No whole-plan product/runtime PASS established; G1 OPEN, G2-G7 unentered. Other-owner current receipts not inspected."
+  },
+  {
+    "id": "evidence",
+    "title": "Evidence, exact/search/full-read, windows and lineage",
+    "owner": "backend retrieval + source owners",
+    "evidence": [
+      "docs/RETRIEVAL-CONTRACT.md",
+      "docs/coordination/reports/CODEX-REL02-CANONICAL-COMPOSITION-ACCEPTANCE-20261011.md"
+    ],
+    "implementedOrAcceptedEvidence": "Private schema/consistency/normalization and declared lineage source components exist and were independently accepted.",
+    "remainingRequirement": "Calendar/FY/version resolver, actual full reads, authentic snapshots/cursors/citations, source completeness and current authorization need production composition and actual evidence.",
+    "status": "partial-source; product qualification pending",
+    "runtimeQualified": false,
+    "runtimeBoundary": "No whole-plan product/runtime PASS established; G1 OPEN, G2-G7 unentered. Other-owner current receipts not inspected."
+  },
+  {
+    "id": "skills",
+    "title": "Original skills, coworker tasks and fourteen intents",
+    "owner": "skills/backend + frontend + independent domain QA",
+    "evidence": [
+      "docs/SKILL-CONTRACT.md",
+      "docs/coordination/r2/skills.json",
+      "packages/contracts/retrieval-0.2/skill.schema.json"
+    ],
+    "implementedOrAcceptedEvidence": "Versioned invocation/manifest structure and continuity validators exist;14 names explicitly preserved pending.",
+    "remainingRequirement": "Original executable manifests/prose, required-evidence completion, Commitments rubric, real task execution and lifecycle integration for each14; drafting/meeting briefs remain required even if legacy command ID deferred.",
+    "status": "source contract foundation; all14 workflow execution qualifications pending",
+    "runtimeQualified": false,
+    "runtimeBoundary": "No whole-plan product/runtime PASS established; G1 OPEN, G2-G7 unentered. Other-owner current receipts not inspected."
+  },
+  {
+    "id": "ui",
+    "title": "Conversation/chat/coworker interface and preferences",
+    "owner": "capiro-frontend owner + backend event/identity owners",
+    "evidence": [
+      "docs/coordination/reports/CODEX-FRONTEND-RUNTIME-CLOSEOUT.md",
+      "docs/UI-SPEC.md",
+      "docs/UI-COVERAGE.md",
+      "docs/coordination/DECISIONS.md"
+    ],
+    "implementedOrAcceptedEvidence": "D014 assigns frontend separately; dated Home/shared-shell evidence cites28c300093c0886018c49df8764a8e6fac44819eb; public transport/producer source preserved.",
+    "remainingRequirement": "Obtain current owner freeze and per-control/frame/state receipts for all screens, chat, attachments, history, approval, artifact/schedule controls, visual/accessibility; dated Home does not close60 UI states.",
+    "status": "dated partial source/UI evidence; current external-owner completion unknown-by-this-lane",
+    "runtimeQualified": false,
+    "runtimeBoundary": "No whole-plan product/runtime PASS established; G1 OPEN, G2-G7 unentered. Other-owner current receipts not inspected."
+  },
+  {
+    "id": "sdk",
+    "title": "Single SDK loop, discovery, specialists and trusted proxy",
+    "owner": "native RC1/runtime + proxy owners",
+    "evidence": [
+      "docs/plans/MERI-G1-SOURCE-TO-NATIVE.md",
+      "docs/coordination/reports/MERI-G1-NATIVE-PATH-20261012.md"
+    ],
+    "implementedOrAcceptedEvidence": "Source-only runtime/proxy/checkpoint/admission components and offline controls preserved.",
+    "remainingRequirement": "Actual pinned supported runtime/proxy tool-reference/schema loading/streaming/compaction/resume; task auth expiry revocation durable budgets; native owner current receipt required. No model call authorized.",
+    "status": "partial-source; product qualification pending",
+    "runtimeQualified": false,
+    "runtimeBoundary": "No whole-plan product/runtime PASS established; G1 OPEN, G2-G7 unentered. Other-owner current receipts not inspected."
+  },
+  {
+    "id": "durability",
+    "title": "Temporal, checkpoints, interruption, recovery and writer fences",
+    "owner": "Temporal/control + native owners",
+    "evidence": [
+      "apps/control/qualification-temporal/recovery-activities.mjs",
+      "apps/control/qualification-temporal/recovery-workflow.ts",
+      "apps/worker/qualification/checkpoint/native-session-files.mjs",
+      "docs/coordination/reports/MERI-G1-NATIVE-PATH-20261012.md"
+    ],
+    "implementedOrAcceptedEvidence": "Qualification source includes recovery activities/workflow and session/file boundaries. Old PR15 statement of only synthetic activities is superseded by later source, not by runtime proof.",
+    "remainingRequirement": "Genuine SDK A/B native checkpoints, persisted files/history, interrupted approval, stale writer rejection, restart/replay and zero duplicate effects; exact recovery<=2min gate remains.",
+    "status": "partial-source; product qualification pending",
+    "runtimeQualified": false,
+    "runtimeBoundary": "No whole-plan product/runtime PASS established; G1 OPEN, G2-G7 unentered. Other-owner current receipts not inspected."
+  },
+  {
+    "id": "schedules",
+    "title": "Schedules and event-trigger lifecycle",
+    "owner": "Temporal/control + frontend + source owners",
+    "evidence": [
+      "docs/plans/MERI-DEPLOYMENT.md",
+      "docs/plans/Meri_Greenfield_Agent_Plan.docx"
+    ],
+    "implementedOrAcceptedEvidence": "Temporal is selected durable scheduler; relevant contracts/qualification source do not establish complete product CRUD.",
+    "remainingRequirement": "Create/inspect/edit/pause/resume/cancel/history, timezone/retry/destination/budget, per-run authority and revocation disable; current product handler receipt unknown-by-this-lane.",
+    "status": "planned required behavior; complete handler implementation unknown-by-this-lane",
+    "runtimeQualified": false,
+    "runtimeBoundary": "No whole-plan product/runtime PASS established; G1 OPEN, G2-G7 unentered. Other-owner current receipts not inspected."
+  },
+  {
+    "id": "memory",
+    "title": "Governed Institutional Memory and current review policy",
+    "owner": "memory source/gateway + command owner",
+    "evidence": [
+      "packages/contracts/retrieval-0.2/memory-review-policy.mjs",
+      "docs/decisions/MEMORY-ADMIN-SELF-APPROVAL-20261012.md",
+      "docs/SKILL-CONTRACT.md"
+    ],
+    "implementedOrAcceptedEvidence": "Read/proposal/review source boundaries; explicit administrator self-approval exception already approved.",
+    "remainingRequirement": "Trusted eligibility/grants/legal holds/supersession/audit, fresh recall after resume, actual command outcomes; never revive resolved approval-policy conflict or enable handlers.",
+    "status": "partial-source; product qualification pending",
+    "runtimeQualified": false,
+    "runtimeBoundary": "No whole-plan product/runtime PASS established; G1 OPEN, G2-G7 unentered. Other-owner current receipts not inspected."
+  },
+  {
+    "id": "commands",
+    "title": "Governed tasks, memory actions and artifact filing",
+    "owner": "command integration + source owners",
+    "evidence": [
+      "@CMD:packages/contracts/commands-0.2/artifact-file-validation.mjs",
+      "@LOADER:packages/contracts/commands-0.2/validate.mjs"
+    ],
+    "implementedOrAcceptedEvidence": "Accepted standalone payload source bdbb146 and loader5fca985; parent reports independent143 controls.",
+    "remainingRequirement": "Payload validation is not transaction execution: trusted producers, current authority/expiry, durable idempotency and uncertain outcome reconciliation, receipts and actual restricted source adapter remain separate.",
+    "status": "partial-source; product qualification pending",
+    "runtimeQualified": false,
+    "runtimeBoundary": "No whole-plan product/runtime PASS established; G1 OPEN, G2-G7 unentered. Other-owner current receipts not inspected."
+  },
+  {
+    "id": "artifacts",
+    "title": "Native file drafting, edits, previews, provenance and filing",
+    "owner": "worker artifact + trusted publication + frontend owners",
+    "evidence": [
+      "docs/COMPONENTS.md",
+      "docs/coordination/reports/MERI-G1-EXECUTION-OPTIONS-20261012.md"
+    ],
+    "implementedOrAcceptedEvidence": "Upstream library adoption/pin and source-only preparation exist; native benchmark is unrun here.",
+    "remainingRequirement": "DOCX/XLSX/PPTX/PDF/HTML/code/CSV/notebook/ZIP workflows, original skills/templates, byte and render inspection, formulas/totals, exact immutable versions/downloads, revisions and source-derived access; current owner product receipts needed.",
+    "status": "partial-source; product qualification pending",
+    "runtimeQualified": false,
+    "runtimeBoundary": "No whole-plan product/runtime PASS established; G1 OPEN, G2-G7 unentered. Other-owner current receipts not inspected."
+  },
+  {
+    "id": "uploads",
+    "title": "Upload, parse/OCR and source-scoped ingestion",
+    "owner": "artifact ingestion + frontend owners",
+    "evidence": [
+      "docs/COMPONENTS.md",
+      "docs/UI-SPEC.md"
+    ],
+    "implementedOrAcceptedEvidence": "Required supported parsers/limits and UI/source contracts are documented.",
+    "remainingRequirement": "Actual MIME/size/page/processing enforcement, cancellation, corrupt/encrypted files, scoped extraction/citations and provenance; no parser or upload service qualification asserted.",
+    "status": "partial source requirements; actual product implementation unknown-by-this-lane",
+    "runtimeQualified": false,
+    "runtimeBoundary": "No whole-plan product/runtime PASS established; G1 OPEN, G2-G7 unentered. Other-owner current receipts not inspected."
+  },
+  {
+    "id": "browser",
+    "title": "Qualified Playwright browser and renderer isolation",
+    "owner": "native browser + security + artifact owners",
+    "evidence": [
+      "docs/coordination/DECISIONS.md",
+      "docs/coordination/reports/MERI-G1-EXECUTION-OPTIONS-20261012.md"
+    ],
+    "implementedOrAcceptedEvidence": "D005 browser-host exception and source-only probe/admission work exist; no general host switch or sandbox waiver.",
+    "remainingRequirement": "Patched admitted host/image, browser AND renderer sandbox, scoped auth/profile/uploads/downloads, egress/watchdog/teardown, cancellation/restart/revocation; each authenticated workflow separately qualified.",
+    "status": "partial-source; product qualification pending",
+    "runtimeQualified": false,
+    "runtimeBoundary": "No whole-plan product/runtime PASS established; G1 OPEN, G2-G7 unentered. Other-owner current receipts not inspected."
+  },
+  {
+    "id": "security",
+    "title": "Identity, authorization, budget, egress and runtime enforcement",
+    "owner": "identity/gateway/security + runtime owners",
+    "evidence": [
+      "docs/coordination/DECISIONS.md",
+      "docs/coordination/reports/MERI-G1-NATIVE-PATH-20261012.md",
+      "apps/gateway/budget/README.md",
+      "apps/gateway/test/postgres-budget.integration.mjs"
+    ],
+    "implementedOrAcceptedEvidence": "Current-grant/binding/budget/fence source guards and actual-pg test source exist; schemas do not confer authority.",
+    "remainingRequirement": "Admitted real principals, short capability issuer/expiry/revocation, nonowner source access, denied paths, durable accounting and actual engine tests;100 adversarial+within-tenant/stored-context gates; no benchmark dollars invented.",
+    "status": "partial-source; product qualification pending",
+    "runtimeQualified": false,
+    "runtimeBoundary": "No whole-plan product/runtime PASS established; G1 OPEN, G2-G7 unentered. Other-owner current receipts not inspected."
+  },
+  {
+    "id": "retention",
+    "title": "Retention/deletion, revoked old content and backup restore",
+    "owner": "control/storage/security + frontend owners",
+    "evidence": [
+      "docs/plans/MERI-DEPLOYMENT.md",
+      "docs/plans/Meri_Greenfield_Agent_Plan.docx"
+    ],
+    "implementedOrAcceptedEvidence": "Requirement explicitly covers transcripts, UI events, uploads, browser state, snapshots, previews, artifacts and telemetry.",
+    "remainingRequirement": "Per-store lifecycle implementation, caches/exports deletion, legal holds, backup expiry/restore and revoked stored-content denial receipts needed; implementation unknown-by-this-lane.",
+    "status": "required behavior; current implementation unknown-by-this-lane",
+    "runtimeQualified": false,
+    "runtimeBoundary": "No whole-plan product/runtime PASS established; G1 OPEN, G2-G7 unentered. Other-owner current receipts not inspected."
+  },
+  {
+    "id": "benchmark",
+    "title": "Real tasks, reliability/oracles, domain truth, load and QA",
+    "owner": "independent QA + benchmark source owner",
+    "evidence": [
+      "docs/ROUTING-EVALUATION.md",
+      "docs/coordination/reports/CODEX-R2-ADOPTION.md"
+    ],
+    "implementedOrAcceptedEvidence": "Protocol and gates adopted; frozen documentary baseline says real dataset empty/unmeasured. Local contract counts are not benchmark task counts.",
+    "remainingRequirement": "Approved75 real requests ->>=200 labelled split/oracles; original>=60tasks90%completion95%facts,100 isolation,100%source/control/recovery,95%artifact rubric,10runs2s ack90s fresh;8s original/15s RG cohorts distinct. Obtain current dataset/results owner receipt.",
+    "status": "partial-source; product qualification pending",
+    "runtimeQualified": false,
+    "runtimeBoundary": "No whole-plan product/runtime PASS established; G1 OPEN, G2-G7 unentered. Other-owner current receipts not inspected."
+  },
+  {
+    "id": "optional",
+    "title": "Optional Decisions/JEV evaluation",
+    "owner": "independent evaluation owner",
+    "evidence": [
+      "docs/ROUTING-EVALUATION.md",
+      "docs/plans/MERI-DEPLOYMENT.md"
+    ],
+    "implementedOrAcceptedEvidence": "Optional disabled/shadow until independent adoption; no extra planner or authority.",
+    "remainingRequirement": "After qualified baseline, actual availability+labelled paired/calibrated evidence; RG10>=25%relative improvement and latency; RG11 task-specific frozen thresholds. Never blocks passing core while disabled.",
+    "status": "optional; unqualified, disabled/shadow",
+    "runtimeQualified": false,
+    "runtimeBoundary": "No whole-plan product/runtime PASS established; G1 OPEN, G2-G7 unentered. Other-owner current receipts not inspected."
+  },
+  {
+    "id": "deployment",
+    "title": "Image provenance, infrastructure, lifecycle, staging and release",
+    "owner": "shipping/release + platform/security owners",
+    "evidence": [
+      "docs/coordination/reports/MERI-IMAGE-UPSTREAM-REVIEW-20261012.md",
+      "docs/coordination/reports/MERI-PGDG-METADATA-20261012.md",
+      "docs/handover/20261012/REMOTE-RESUME-CURRENT-20261012.md",
+      "docs/coordination/reports/MERI-G1-NATIVE-PATH-20261012.md"
+    ],
+    "implementedOrAcceptedEvidence": "Existing Aurora selected; source-only image54-obligation/prefix/runtime evidence preserved. No supported fully patched executable candidate established in this lane.",
+    "remainingRequirement": "Current native/shipping receipt; supported authenticated image/library closure and runtime admission; exact authority/cost; staged candidate, retention/restore/rollback/in-flight compatibility, internal+tenant canary. G1OPEN, G2-G7unentered; no new RDS/network changes.",
+    "status": "partial-source; product qualification pending",
+    "runtimeQualified": false,
+    "runtimeBoundary": "No whole-plan product/runtime PASS established; G1 OPEN, G2-G7 unentered. Other-owner current receipts not inspected."
+  },
+  {
+    "id": "process",
+    "title": "Independent authorship/review, preservation and delivery controls",
+    "owner": "integration owner",
+    "evidence": [
+      "AGENTS.md",
+      "docs/IMPLEMENTATION-STANDARDS.md",
+      "docs/coordination/DECISIONS.md"
+    ],
+    "implementedOrAcceptedEvidence": "Independent source author/reviewer paths, immutable freezes and failures used throughout. Later continuation supersedes historical no-Hermes text; no launch authority added.",
+    "remainingRequirement": "Per-candidate current accepted evidence/compatibility/publication; do not merge preserved unreviewed candidates or duplicate PR2; bounded owned cleanup and no destructive rollback.",
+    "status": "partial-source; product qualification pending",
+    "runtimeQualified": false,
+    "runtimeBoundary": "No whole-plan product/runtime PASS established; G1 OPEN, G2-G7 unentered. Other-owner current receipts not inspected."
+  },
+  {
+    "id": "unresolved",
+    "title": "Requirement indexed but semantic implementation join not established",
+    "owner": "integration assigns exact component owner",
+    "evidence": [
+      "docs/plans/MERI-DEPLOYMENT.md"
+    ],
+    "implementedOrAcceptedEvidence": "Exact original requirement retained; no inferred implementation absence or completion.",
+    "remainingRequirement": "Obtain item-specific source/handler/workflow/runtime receipt and independently reconcile; group association alone is not proof.",
+    "status": "unknown-by-this-lane",
+    "runtimeQualified": false,
+    "runtimeBoundary": "No whole-plan product/runtime PASS established; G1 OPEN, G2-G7 unentered. Other-owner current receipts not inspected."
+  }
+]

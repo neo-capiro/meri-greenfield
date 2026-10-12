@@ -1,0 +1,8 @@
+{
+  "events": [
+    {"kind":"missing optional local directory","observed":"rg: .agents: No such file or directory (os error2)","command":"rg --files docs .agents; filtered inventory after AGENTS read","resolution":"No repository .agents directory materialized or listed; followed AGENTS and implementation standards. No skill invented.","captureLimit":"Tool output transcription, not separately byte-captured raw stderr."},
+    {"kind":"bounded read-only diagnostic failure","observed":"IndexError: list index out of range","exitCode":1,"cause":"Diagnostic line-range printer requested CAPABILITY-SCOPE lines through195 although file ends at191; prior printed lines and catalog counts were successful.","resolution":"No source mutation; structural parsing in reconcile.py uses located lines and exact records instead of out-of-range indexing.","captureLimit":"Tool output transcription; complete raw tool stream was not archived and no fabricated original byte hash is asserted."},
+    {"kind":"expected catalog mapping difference","observed":"Full originals arrays differ between basecff71e1 and latest753566b","resolution":"Selected mappings advanced. The scope-relevant43 deferred records are exactly equal; the verifier checks them explicitly."}
+  ],
+  "processes":"Only foreground, awaited Git/Python/std-lib reads; the retained reconcile child was reaped by subprocess.run. No daemon, native qualification or background worker launched. No claim about unrelated owners' processes."
+}

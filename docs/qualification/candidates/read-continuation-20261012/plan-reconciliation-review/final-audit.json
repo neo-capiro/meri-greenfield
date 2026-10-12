@@ -1,0 +1,60 @@
+{
+  "decision": "ACCEPT_METADATA",
+  "base": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+  "scope": "79efba457f41ce436b91f76741dac783ba82010b",
+  "plan": "6a3770bf4368f5b111dd588848c7bc0f45885837",
+  "originalTrackedFiles": 6947,
+  "originalChanged": [],
+  "onlyAllocatedPaths": true,
+  "runtimeAcceptance": false,
+  "itemLevelImplementationAuditComplete": false,
+  "checks": {
+    "independentMetadata": 2232,
+    "independentMetadataFailed": 0,
+    "additionalPlanPacketHashes": 30,
+    "additionalPlanPacketFailed": 0
+  },
+  "cleanup": [
+    {
+      "label": "scope-independent",
+      "pgid": 281637,
+      "absentAtFinalAudit": true,
+      "directChildReaped": true,
+      "timeout": false,
+      "kill": false
+    },
+    {
+      "label": "scope-corrected",
+      "pgid": 282177,
+      "absentAtFinalAudit": true,
+      "directChildReaped": true,
+      "timeout": false,
+      "kill": false
+    },
+    {
+      "label": "plan-exact",
+      "pgid": 284438,
+      "absentAtFinalAudit": true,
+      "directChildReaped": true,
+      "timeout": false,
+      "kill": false
+    },
+    {
+      "label": "plan-corrected",
+      "pgid": 285101,
+      "absentAtFinalAudit": true,
+      "directChildReaped": true,
+      "timeout": false,
+      "kill": false
+    },
+    {
+      "label": "plan-final",
+      "pgid": 285859,
+      "absentAtFinalAudit": true,
+      "directChildReaped": true,
+      "timeout": false,
+      "kill": false
+    }
+  ],
+  "whitespaceExit": 0
+}

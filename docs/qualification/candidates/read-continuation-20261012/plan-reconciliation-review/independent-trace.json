@@ -1,0 +1,278 @@
+{
+  "base": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+  "references": [
+    {
+      "commit": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "AGENTS.md",
+      "blob": "fe8cefa588409d8562f0e6d939a6da7d120c0d87",
+      "bytes": 6582,
+      "sha256": "a0650949b74e5aee709bd8b3c9d480f95f5b898778ac8f7b3927eb54b141437a",
+      "locators": "governing repository scope and gate instructions"
+    },
+    {
+      "commit": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/IMPLEMENTATION-STANDARDS.md",
+      "blob": "7f680395e07d1114667a800f3f8ed77010a3eac2",
+      "bytes": 11082,
+      "sha256": "d4f10f964ee207187abacd967649a1cfc9bdd468072dc01f859268f08b719959",
+      "locators": "ownership, modularity, canonical components, meaningful verification"
+    },
+    {
+      "commit": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/plans/MERI-DEPLOYMENT.md",
+      "blob": "c9849375e463e88a064b256f715db7858cd369df",
+      "bytes": 86848,
+      "sha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388",
+      "locators": "R2 lines7-22,170-192,212-233,302-326,371-447"
+    },
+    {
+      "commit": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/plans/Meri_Greenfield_Agent_Plan.docx",
+      "blob": "bda0a5741732b0b2a305f211818eb1f3f2890cff",
+      "bytes": 57656,
+      "sha256": "80a96320bde810214127919ddfe14659e3efd44d7ee7f6ae57d51527bc814ad7",
+      "locators": "word/document.xml paragraph indices0-based10,202,205,207,222,226-249"
+    },
+    {
+      "commit": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/handover/20261012/inputs/Meri_Greenfield_Agent_Plan.original.docx",
+      "blob": "bda0a5741732b0b2a305f211818eb1f3f2890cff",
+      "bytes": 57656,
+      "sha256": "80a96320bde810214127919ddfe14659e3efd44d7ee7f6ae57d51527bc814ad7",
+      "locators": "immutable original duplicate"
+    },
+    {
+      "commit": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/handover/20261012/inputs/Meri_Codex_Hermes_Deployment_Plan.original.md",
+      "blob": "f94c599701d5f10e75f554b49550ef63044f2257",
+      "bytes": 44322,
+      "sha256": "948f5fa6b3d76f1e6df72496f85d7e09d25cc397bc0f8e1efe0ab58fe0eda560",
+      "locators": "original deployment background before R2"
+    },
+    {
+      "commit": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+      "blob": "084c0150bc0fc1dfe99858402dabc14caa48ab82",
+      "bytes": 127877,
+      "sha256": "3d281d7a1a9a1eaf4fe520dde8e46e2abedac82f6b771041a613c1cfb0df25ec",
+      "locators": "ten sheets;705 data rows;18Overview formulas not recalculated"
+    },
+    {
+      "commit": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/plans/revisions/20261010-R2/inventory-stored-cells.json",
+      "blob": "749abe0c9a38aa1c7fa6bfc233b76456f54994d1",
+      "bytes": 927872,
+      "sha256": "15b706f14aeef9b5a142d35ffdf2f7ee03b946ab665ff789de6da84202e89191",
+      "locators": "retained stored-cell export"
+    },
+    {
+      "commit": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/plans/revisions/20261010-R2/manifest.json",
+      "blob": "0210582185e479306555597d37e0f2ffcb82c7db",
+      "bytes": 2312,
+      "sha256": "3af1bd511c4eff3bbb43c728808046c872768cf47da7ea6a83262bd95211cbe5",
+      "locators": "checksummed source inputs and sheet counts"
+    },
+    {
+      "commit": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/coordination/DECISIONS.md",
+      "blob": "fd58ed15daa8d3a093893e49e901f28570c91f51",
+      "bytes": 24662,
+      "sha256": "8d5238335bbc9e68b58cbe083bd275dc24938eb7d13dc8d047342b8f37a819ae",
+      "locators": "D011,D012,D013 and current override context"
+    },
+    {
+      "commit": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/CAPABILITY-SCOPE.md",
+      "blob": "4b14019d20630731ade648b7ae74fa50787daa2b",
+      "bytes": 43968,
+      "sha256": "b222e0c4614d52dc1d1c0e22e557cf47e2c6bea0fc4929aad42ad7f6194174c6",
+      "locators": "accepted139row classifications;required capabilities beyondregistry"
+    },
+    {
+      "commit": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/coordination/r2/skills.json",
+      "blob": "842611cf4916b00486bf555034f8e50b74d2c456",
+      "bytes": 25018,
+      "sha256": "bfd0b14953b858d351a58a778f435f2d546c1a420050ee6c31ae5e489f1f17b6",
+      "locators": "14 original quick-action intents;no executed manifests claimed"
+    },
+    {
+      "commit": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "packages/contracts/retrieval-0.2/catalog.json",
+      "blob": "117c1696f9988b7e95f672bac7413a0e43aba0d4",
+      "bytes": 230127,
+      "sha256": "b40aa7b795083ab4e4a13e7df36ea9cc7e1356c12f7fd11a57594bf2b4d5133a",
+      "locators": "base63typed/62mapped/34pending;43deferred nativeIDs"
+    },
+    {
+      "commit": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5",
+      "path": "docs/coordination/DECISIONS.md",
+      "blob": "64fc779a777d6d128860cfd6ee766b7d5d1825bb",
+      "bytes": 16919,
+      "sha256": "b2aef79714a5d5f965ee7daffc8245ca84f0e3768de9d89a2ea711439fef79e8",
+      "locators": "D011 original recording of human batch96/43 approval;primary chat not present"
+    },
+    {
+      "commit": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b",
+      "path": "docs/CAPABILITY-SCOPE.md",
+      "blob": "4b14019d20630731ade648b7ae74fa50787daa2b",
+      "bytes": 43968,
+      "sha256": "b222e0c4614d52dc1d1c0e22e557cf47e2c6bea0fc4929aad42ad7f6194174c6",
+      "locators": "all139 classifications accepted;proposed row labels retained as provenance"
+    },
+    {
+      "commit": "e14564e6ca4747fe97cf911ede3c816a295ba59c",
+      "path": "docs/coordination/reports/CODEX-R2-ADOPTION.md",
+      "blob": "c0436b3578b634f0441b7557a64571f21dba2761",
+      "bytes": 5774,
+      "sha256": "8ea4fc14c75747d27cb5ceb51a41551f71618c92cb89ca6113027aef56a7d0f5",
+      "locators": "R2 incremental adoption and workbook-label/native-scope distinction"
+    }
+  ],
+  "deferredIds": [
+    "add_research_portfolio_review_note",
+    "apply_legiwatch_suggestion",
+    "build_opportunity_action_plan",
+    "compare_florida_budget_amounts",
+    "compare_funding_opportunities",
+    "compare_legislative_versions",
+    "confirm_memory",
+    "correct_memory",
+    "create_client",
+    "create_meeting_brief",
+    "create_research_portfolio_bookmark",
+    "create_research_portfolio_snapshot",
+    "draft_policy_memo",
+    "explain_opportunity_match",
+    "find_path_to",
+    "forget_memory",
+    "get_business_development_brief",
+    "get_legiwatch_review",
+    "get_pe_buyer_workspace",
+    "get_research_portfolio_analytics",
+    "get_research_portfolio_bookmarks",
+    "get_research_portfolio_fit",
+    "get_research_portfolio_imports",
+    "get_research_portfolio_operations",
+    "get_research_portfolio_reviews",
+    "get_research_portfolio_rules",
+    "manage_research_portfolio",
+    "prepare_legiwatch_briefing",
+    "prepare_research_portfolio_brief",
+    "prepare_research_portfolio_meeting",
+    "preview_legiwatch_relevance",
+    "reply_email",
+    "request_research_portfolio_output",
+    "resolve_business_development_source",
+    "save_business_development_brief",
+    "save_legislative_research",
+    "save_legiwatch_relevance",
+    "save_note",
+    "save_research_portfolio_output_to_client",
+    "send_email",
+    "update_client_profile",
+    "update_research_portfolio_change_state",
+    "watch_research_portfolio"
+  ],
+  "requirementIds": {
+    "R": [
+      "R-01",
+      "R-02",
+      "R-03",
+      "R-04",
+      "R-05",
+      "R-06",
+      "R-07",
+      "R-08",
+      "R-09",
+      "R-10",
+      "R-11",
+      "R-12"
+    ],
+    "REL": [
+      "REL-01",
+      "REL-02",
+      "REL-03",
+      "REL-04",
+      "REL-05",
+      "REL-06",
+      "REL-07",
+      "REL-08",
+      "REL-09"
+    ],
+    "RG": [
+      "RG-01",
+      "RG-02",
+      "RG-03",
+      "RG-04",
+      "RG-05",
+      "RG-06",
+      "RG-07",
+      "RG-08",
+      "RG-09",
+      "RG-10",
+      "RG-11",
+      "RG-12"
+    ],
+    "W": [
+      "W00",
+      "W01",
+      "W02",
+      "W03",
+      "W04",
+      "W05",
+      "W06",
+      "W07",
+      "W08",
+      "W09",
+      "W10",
+      "W11"
+    ]
+  },
+  "namedWorkflows": [
+    "quick_skill.research_company",
+    "quick_skill.relationship_brief",
+    "quick_skill.client_changes",
+    "quick_skill.portfolio_changes",
+    "quick_skill.portfolio_overlap",
+    "quick_skill.mail_history",
+    "quick_skill.meeting_prep",
+    "quick_skill.commitments_audit",
+    "quick_skill.funding_opportunity_match",
+    "quick_skill.pe_deep_dive",
+    "quick_skill.bill_watch",
+    "quick_skill.hearing_watch",
+    "quick_skill.representation_lookup",
+    "quick_skill.regulatory_docket_brief"
+  ],
+  "findings": [
+    {
+      "id": "authority",
+      "finding": "D011 explicitly records human batch96/43 approval, reinforced by c558 CAPABILITY-SCOPE all139 classification statement. These are repository decision records; primary human chat transcript not available here."
+    },
+    {
+      "id": "scope",
+      "finding": "Original DOCX permits selected/deferred v1 mapping and separately estimated full139 parity. Complete original plan and complete legacy139 parity are different scopes; no change is selected by this review."
+    },
+    {
+      "id": "required-product",
+      "finding": "Nativecreate_meeting_brief/draft_policy_memo deferral does not remove required drafting, original SDK skill intent, meeting brief/artifact pilot, schedules, governedmemory or other noninventory product requirements."
+    },
+    {
+      "id": "r2",
+      "finding": "R2 workbook inventory labels remain distinct from D011 ledger; D013 and adoption explicitly retain96/43. Four covered-family deferredIDs deserve explicit reconciliation, not silentpromotion or assumedhumanreclassification."
+    },
+    {
+      "id": "currentness",
+      "finding": "MERI-G1-SOURCE-TO-NATIVE top14/82 count is historical relative tobase63 and accepted753566b67. Snapshot dates/commits govern counts; other-owner completion cannot be inferred from local absence."
+    }
+  ],
+  "readOnlyDiagnosticFailures": [
+    {
+      "path": "docs/DECISIONS.md",
+      "reason": "Incorrect assumed path;Git refused. Correct docs/coordination/DECISIONS.md subsequently read;not evidence of missing authority."
+    }
+  ],
+  "scope": "metadata_only_no_private_source_bodies_no_runtime_or_scope_change"
+}

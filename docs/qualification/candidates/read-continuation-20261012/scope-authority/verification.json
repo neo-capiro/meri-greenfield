@@ -1,0 +1,1257 @@
+{
+  "passed": 312,
+  "failed": 0,
+  "base": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+  "originalFilesPreserved": 6947,
+  "referenceCount": 32,
+  "checks": [
+    {
+      "check": "reference bytes 753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+      "pass": true
+    },
+    {
+      "check": "reference bytes cff71e1ba8ca8dea8970ad0c778b580a73f84815:packages/contracts/retrieval-0.2/catalog.json",
+      "pass": true
+    },
+    {
+      "check": "reference bytes 7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+      "pass": true
+    },
+    {
+      "check": "reference bytes c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+      "pass": true
+    },
+    {
+      "check": "reference bytes cff71e1ba8ca8dea8970ad0c778b580a73f84815:docs/CAPABILITY-SCOPE.md",
+      "pass": true
+    },
+    {
+      "check": "reference bytes cff71e1ba8ca8dea8970ad0c778b580a73f84815:docs/CAPABILITIES.json",
+      "pass": true
+    },
+    {
+      "check": "reference bytes e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/r2/capabilities.json",
+      "pass": true
+    },
+    {
+      "check": "reference bytes e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+      "pass": true
+    },
+    {
+      "check": "reference bytes 3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+      "pass": true
+    },
+    {
+      "check": "reference bytes c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+      "pass": true
+    },
+    {
+      "check": "reference bytes e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+      "pass": true
+    },
+    {
+      "check": "reference bytes cff71e1ba8ca8dea8970ad0c778b580a73f84815:docs/plans/Meri_Greenfield_Agent_Plan.docx",
+      "pass": true
+    },
+    {
+      "check": "reference bytes cff71e1ba8ca8dea8970ad0c778b580a73f84815:docs/handover/20261012/inputs/Meri_Greenfield_Agent_Plan.original.docx",
+      "pass": true
+    },
+    {
+      "check": "reference bytes cff71e1ba8ca8dea8970ad0c778b580a73f84815:docs/plans/archive/MERI-DEPLOYMENT-20261009-before-figma.md",
+      "pass": true
+    },
+    {
+      "check": "reference bytes cff71e1ba8ca8dea8970ad0c778b580a73f84815:docs/plans/archive/MERI-DEPLOYMENT-20261010-before-R2.md",
+      "pass": true
+    },
+    {
+      "check": "reference bytes cff71e1ba8ca8dea8970ad0c778b580a73f84815:docs/handover/20261012/inputs/Meri_Codex_Hermes_Deployment_Plan.original.md",
+      "pass": true
+    },
+    {
+      "check": "reference bytes cff71e1ba8ca8dea8970ad0c778b580a73f84815:docs/plans/MERI-DEPLOYMENT.md",
+      "pass": true
+    },
+    {
+      "check": "reference bytes cff71e1ba8ca8dea8970ad0c778b580a73f84815:docs/plans/revisions/20261010-R2/Meri_Codex_Hermes_Deployment_Plan-R2.md",
+      "pass": true
+    },
+    {
+      "check": "reference bytes cff71e1ba8ca8dea8970ad0c778b580a73f84815:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+      "pass": true
+    },
+    {
+      "check": "reference bytes cff71e1ba8ca8dea8970ad0c778b580a73f84815:docs/plans/revisions/20261010-R2/manifest.json",
+      "pass": true
+    },
+    {
+      "check": "reference bytes cff71e1ba8ca8dea8970ad0c778b580a73f84815:docs/handover/20261012/inputs/manifest.json",
+      "pass": true
+    },
+    {
+      "check": "reference bytes cff71e1ba8ca8dea8970ad0c778b580a73f84815:docs/handover/20261011/Meri_Greenfield_Engineering_Handover_2026-10-11.docx",
+      "pass": true
+    },
+    {
+      "check": "reference bytes cff71e1ba8ca8dea8970ad0c778b580a73f84815:docs/handover/20261011/Meri_Greenfield_Engineering_Handover_2026-10-11.md",
+      "pass": true
+    },
+    {
+      "check": "reference bytes cff71e1ba8ca8dea8970ad0c778b580a73f84815:docs/handover/20261012/REMOTE-RESUME-CURRENT-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "reference bytes cff71e1ba8ca8dea8970ad0c778b580a73f84815:AGENTS.md",
+      "pass": true
+    },
+    {
+      "check": "reference bytes cff71e1ba8ca8dea8970ad0c778b580a73f84815:docs/IMPLEMENTATION-STANDARDS.md",
+      "pass": true
+    },
+    {
+      "check": "reference bytes cff71e1ba8ca8dea8970ad0c778b580a73f84815:docs/coordination/DECISIONS.md",
+      "pass": true
+    },
+    {
+      "check": "reference bytes cff71e1ba8ca8dea8970ad0c778b580a73f84815:docs/coordination/reports/CODEX-G0-DISCOVERY.md",
+      "pass": true
+    },
+    {
+      "check": "reference bytes cff71e1ba8ca8dea8970ad0c778b580a73f84815:docs/handover/20261011/CONTINUATION-INSTRUCTIONS.md",
+      "pass": true
+    },
+    {
+      "check": "reference bytes cff71e1ba8ca8dea8970ad0c778b580a73f84815:docs/handover/20261011/REFERENCE-INDEX.md",
+      "pass": true
+    },
+    {
+      "check": "reference bytes cff71e1ba8ca8dea8970ad0c778b580a73f84815:docs/handover/20261012/CONTEXT-INDEX.json",
+      "pass": true
+    },
+    {
+      "check": "reference bytes cff71e1ba8ca8dea8970ad0c778b580a73f84815:docs/decisions/MEMORY-ADMIN-SELF-APPROVAL-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "all43 unique IDs",
+      "pass": true
+    },
+    {
+      "check": "18 read25 write",
+      "pass": true
+    },
+    {
+      "check": "honest authority manage_research_portfolio",
+      "pass": true
+    },
+    {
+      "check": "honest authority get_research_portfolio_analytics",
+      "pass": true
+    },
+    {
+      "check": "honest authority create_research_portfolio_snapshot",
+      "pass": true
+    },
+    {
+      "check": "honest authority request_research_portfolio_output",
+      "pass": true
+    },
+    {
+      "check": "honest authority save_research_portfolio_output_to_client",
+      "pass": true
+    },
+    {
+      "check": "honest authority watch_research_portfolio",
+      "pass": true
+    },
+    {
+      "check": "honest authority update_research_portfolio_change_state",
+      "pass": true
+    },
+    {
+      "check": "honest authority get_research_portfolio_bookmarks",
+      "pass": true
+    },
+    {
+      "check": "honest authority create_research_portfolio_bookmark",
+      "pass": true
+    },
+    {
+      "check": "honest authority get_research_portfolio_fit",
+      "pass": true
+    },
+    {
+      "check": "honest authority get_research_portfolio_reviews",
+      "pass": true
+    },
+    {
+      "check": "honest authority add_research_portfolio_review_note",
+      "pass": true
+    },
+    {
+      "check": "honest authority get_research_portfolio_rules",
+      "pass": true
+    },
+    {
+      "check": "honest authority get_research_portfolio_imports",
+      "pass": true
+    },
+    {
+      "check": "honest authority get_research_portfolio_operations",
+      "pass": true
+    },
+    {
+      "check": "honest authority prepare_research_portfolio_brief",
+      "pass": true
+    },
+    {
+      "check": "honest authority prepare_research_portfolio_meeting",
+      "pass": true
+    },
+    {
+      "check": "honest authority find_path_to",
+      "pass": true
+    },
+    {
+      "check": "honest authority get_legiwatch_review",
+      "pass": true
+    },
+    {
+      "check": "honest authority compare_florida_budget_amounts",
+      "pass": true
+    },
+    {
+      "check": "honest authority prepare_legiwatch_briefing",
+      "pass": true
+    },
+    {
+      "check": "honest authority compare_legislative_versions",
+      "pass": true
+    },
+    {
+      "check": "honest authority save_legislative_research",
+      "pass": true
+    },
+    {
+      "check": "honest authority preview_legiwatch_relevance",
+      "pass": true
+    },
+    {
+      "check": "honest authority save_legiwatch_relevance",
+      "pass": true
+    },
+    {
+      "check": "honest authority apply_legiwatch_suggestion",
+      "pass": true
+    },
+    {
+      "check": "honest authority create_meeting_brief",
+      "pass": true
+    },
+    {
+      "check": "honest authority draft_policy_memo",
+      "pass": true
+    },
+    {
+      "check": "honest authority save_note",
+      "pass": true
+    },
+    {
+      "check": "honest authority send_email",
+      "pass": true
+    },
+    {
+      "check": "honest authority reply_email",
+      "pass": true
+    },
+    {
+      "check": "honest authority confirm_memory",
+      "pass": true
+    },
+    {
+      "check": "honest authority correct_memory",
+      "pass": true
+    },
+    {
+      "check": "honest authority forget_memory",
+      "pass": true
+    },
+    {
+      "check": "honest authority get_pe_buyer_workspace",
+      "pass": true
+    },
+    {
+      "check": "honest authority create_client",
+      "pass": true
+    },
+    {
+      "check": "honest authority update_client_profile",
+      "pass": true
+    },
+    {
+      "check": "honest authority explain_opportunity_match",
+      "pass": true
+    },
+    {
+      "check": "honest authority compare_funding_opportunities",
+      "pass": true
+    },
+    {
+      "check": "honest authority build_opportunity_action_plan",
+      "pass": true
+    },
+    {
+      "check": "honest authority get_business_development_brief",
+      "pass": true
+    },
+    {
+      "check": "honest authority resolve_business_development_source",
+      "pass": true
+    },
+    {
+      "check": "honest authority save_business_development_brief",
+      "pass": true
+    },
+    {
+      "check": "reconciliation latest139 originals unique",
+      "pass": true
+    },
+    {
+      "check": "reconciliation 96 selected43 deferred",
+      "pass": true
+    },
+    {
+      "check": "reconciliation all43 deferred records exact across base and latest",
+      "pass": true
+    },
+    {
+      "check": "reconciliation workbook native ID header",
+      "pass": true
+    },
+    {
+      "check": "reconciliation workbook139 native IDs",
+      "pass": true
+    },
+    {
+      "check": "reconciliation manage_research_portfolio exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation manage_research_portfolio unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation manage_research_portfolio R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation manage_research_portfolio exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation manage_research_portfolio null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_research_portfolio_analytics exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_research_portfolio_analytics unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_research_portfolio_analytics R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_research_portfolio_analytics exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_research_portfolio_analytics null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation create_research_portfolio_snapshot exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation create_research_portfolio_snapshot unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation create_research_portfolio_snapshot R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation create_research_portfolio_snapshot exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation create_research_portfolio_snapshot null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation request_research_portfolio_output exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation request_research_portfolio_output unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation request_research_portfolio_output R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation request_research_portfolio_output exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation request_research_portfolio_output null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation save_research_portfolio_output_to_client exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation save_research_portfolio_output_to_client unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation save_research_portfolio_output_to_client R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation save_research_portfolio_output_to_client exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation save_research_portfolio_output_to_client null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation watch_research_portfolio exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation watch_research_portfolio unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation watch_research_portfolio R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation watch_research_portfolio exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation watch_research_portfolio null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation update_research_portfolio_change_state exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation update_research_portfolio_change_state unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation update_research_portfolio_change_state R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation update_research_portfolio_change_state exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation update_research_portfolio_change_state null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_research_portfolio_bookmarks exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_research_portfolio_bookmarks unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_research_portfolio_bookmarks R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_research_portfolio_bookmarks exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_research_portfolio_bookmarks null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation create_research_portfolio_bookmark exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation create_research_portfolio_bookmark unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation create_research_portfolio_bookmark R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation create_research_portfolio_bookmark exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation create_research_portfolio_bookmark null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_research_portfolio_fit exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_research_portfolio_fit unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_research_portfolio_fit R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_research_portfolio_fit exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_research_portfolio_fit null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_research_portfolio_reviews exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_research_portfolio_reviews unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_research_portfolio_reviews R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_research_portfolio_reviews exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_research_portfolio_reviews null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation add_research_portfolio_review_note exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation add_research_portfolio_review_note unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation add_research_portfolio_review_note R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation add_research_portfolio_review_note exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation add_research_portfolio_review_note null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_research_portfolio_rules exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_research_portfolio_rules unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_research_portfolio_rules R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_research_portfolio_rules exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_research_portfolio_rules null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_research_portfolio_imports exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_research_portfolio_imports unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_research_portfolio_imports R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_research_portfolio_imports exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_research_portfolio_imports null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_research_portfolio_operations exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_research_portfolio_operations unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_research_portfolio_operations R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_research_portfolio_operations exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_research_portfolio_operations null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation prepare_research_portfolio_brief exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation prepare_research_portfolio_brief unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation prepare_research_portfolio_brief R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation prepare_research_portfolio_brief exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation prepare_research_portfolio_brief null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation prepare_research_portfolio_meeting exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation prepare_research_portfolio_meeting unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation prepare_research_portfolio_meeting R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation prepare_research_portfolio_meeting exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation prepare_research_portfolio_meeting null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation find_path_to exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation find_path_to unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation find_path_to R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation find_path_to exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation find_path_to null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_legiwatch_review exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_legiwatch_review unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_legiwatch_review R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_legiwatch_review exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_legiwatch_review null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation compare_florida_budget_amounts exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation compare_florida_budget_amounts unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation compare_florida_budget_amounts R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation compare_florida_budget_amounts exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation compare_florida_budget_amounts null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation prepare_legiwatch_briefing exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation prepare_legiwatch_briefing unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation prepare_legiwatch_briefing R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation prepare_legiwatch_briefing exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation prepare_legiwatch_briefing null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation compare_legislative_versions exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation compare_legislative_versions unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation compare_legislative_versions R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation compare_legislative_versions exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation compare_legislative_versions null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation save_legislative_research exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation save_legislative_research unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation save_legislative_research R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation save_legislative_research exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation save_legislative_research null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation preview_legiwatch_relevance exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation preview_legiwatch_relevance unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation preview_legiwatch_relevance R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation preview_legiwatch_relevance exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation preview_legiwatch_relevance null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation save_legiwatch_relevance exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation save_legiwatch_relevance unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation save_legiwatch_relevance R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation save_legiwatch_relevance exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation save_legiwatch_relevance null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation apply_legiwatch_suggestion exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation apply_legiwatch_suggestion unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation apply_legiwatch_suggestion R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation apply_legiwatch_suggestion exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation apply_legiwatch_suggestion null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation create_meeting_brief exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation create_meeting_brief unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation create_meeting_brief R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation create_meeting_brief exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation create_meeting_brief null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation draft_policy_memo exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation draft_policy_memo unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation draft_policy_memo R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation draft_policy_memo exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation draft_policy_memo null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation save_note exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation save_note unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation save_note R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation save_note exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation save_note null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation send_email exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation send_email unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation send_email R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation send_email exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation send_email null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation reply_email exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation reply_email unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation reply_email R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation reply_email exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation reply_email null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation confirm_memory exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation confirm_memory unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation confirm_memory R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation confirm_memory exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation confirm_memory null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation correct_memory exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation correct_memory unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation correct_memory R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation correct_memory exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation correct_memory null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation forget_memory exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation forget_memory unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation forget_memory R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation forget_memory exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation forget_memory null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_pe_buyer_workspace exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_pe_buyer_workspace unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_pe_buyer_workspace R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_pe_buyer_workspace exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_pe_buyer_workspace null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation create_client exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation create_client unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation create_client R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation create_client exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation create_client null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation update_client_profile exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation update_client_profile unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation update_client_profile R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation update_client_profile exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation update_client_profile null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation explain_opportunity_match exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation explain_opportunity_match unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation explain_opportunity_match R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation explain_opportunity_match exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation explain_opportunity_match null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation compare_funding_opportunities exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation compare_funding_opportunities unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation compare_funding_opportunities R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation compare_funding_opportunities exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation compare_funding_opportunities null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation build_opportunity_action_plan exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation build_opportunity_action_plan unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation build_opportunity_action_plan R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation build_opportunity_action_plan exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation build_opportunity_action_plan null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_business_development_brief exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_business_development_brief unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_business_development_brief R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_business_development_brief exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation get_business_development_brief null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation resolve_business_development_source exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation resolve_business_development_source unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation resolve_business_development_source R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation resolve_business_development_source exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation resolve_business_development_source null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation save_business_development_brief exact proposal reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation save_business_development_brief unchanged accepted row",
+      "pass": true
+    },
+    {
+      "check": "reconciliation save_business_development_brief R2 retained disposition/reason",
+      "pass": true
+    },
+    {
+      "check": "reconciliation save_business_development_brief exact workbook cells",
+      "pass": true
+    },
+    {
+      "check": "reconciliation save_business_development_brief null replacement and deferred state",
+      "pass": true
+    },
+    {
+      "check": "reconciliation DOCX paragraph11",
+      "pass": true
+    },
+    {
+      "check": "reconciliation DOCX paragraph91",
+      "pass": true
+    },
+    {
+      "check": "reconciliation DOCX paragraph206",
+      "pass": true
+    },
+    {
+      "check": "reconciliation DOCX paragraph208",
+      "pass": true
+    },
+    {
+      "check": "reconciliation DOCX paragraph212",
+      "pass": true
+    },
+    {
+      "check": "reconciliation DOCX paragraph223",
+      "pass": true
+    },
+    {
+      "check": "reconciliation originalDOCX exact duplicate",
+      "pass": true
+    },
+    {
+      "check": "reconciliation originalFigma plan exact duplicate",
+      "pass": true
+    },
+    {
+      "check": "reconciliation R2 plan exact duplicate",
+      "pass": true
+    },
+    {
+      "check": "only allocated additions",
+      "pass": true
+    },
+    {
+      "check": "all original tracked files unchanged",
+      "pass": true
+    },
+    {
+      "check": "no product source edits",
+      "pass": true
+    },
+    {
+      "check": "reconcile succeeded and child reaped",
+      "pass": true
+    },
+    {
+      "check": "retained stdout",
+      "pass": true
+    },
+    {
+      "check": "retained stderr",
+      "pass": true
+    }
+  ]
+}

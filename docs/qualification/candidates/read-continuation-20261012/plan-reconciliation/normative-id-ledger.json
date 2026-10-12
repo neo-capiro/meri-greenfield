@@ -1,0 +1,1047 @@
+{
+  "requirements": [
+    {
+      "id": "W00",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 176
+      },
+      "requirement": "| W00 Discovery and scope | Codex, read-only Hermes support | Access to environment | Source inventory; selected/deferred capability ledger; account/repository decision; pinned Meri Figma baseline and shared-shell decision; REL-01 baseline/trace plan |",
+      "group": "scope",
+      "implementation": "G0 discovery accepted; full delivery pending",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "integration + source owners",
+      "evidence": [
+        "docs/coordination/DECISIONS.md",
+        "docs/coordination/reports/CODEX-R2-ADOPTION.md"
+      ],
+      "blockerOrNextReceipt": "Finish item-level product/adapter/workflow receipt joins; retain all plan requirements and recorded scope distinctions."
+    },
+    {
+      "id": "W01",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 177
+      },
+      "requirement": "| W01 Shared contracts | Codex with one Hermes session | W00 | Versioned catalog, typed operations, skill invocation/manifests, normalized evidence, events, proposals and artifact/checkpoint schemas; REL-02; fixture and UI control/state mappings |",
+      "group": "catalog",
+      "implementation": "partial-source; product qualification pending",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "backend source/gateway",
+      "evidence": [
+        "@READ:packages/contracts/retrieval-0.2/catalog.json",
+        "@READ:packages/contracts/retrieval-0.2/validate.mjs"
+      ],
+      "blockerOrNextReceipt": "Real handlers, trusted context producers, source access/policy and domain behavior qualification;30 full mappings remain. No catalog count proves139 product parity."
+    },
+    {
+      "id": "W02",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 178
+      },
+      "requirement": "| W02 Runtime qualification | A | W00–W01 | SDK/Fargate/browser/model-proxy spike, native discovery compatibility and Temporal production-topology decision; REL-05 runtime-only checkpoint, not its later end-to-end acceptance |",
+      "group": "sdk",
+      "implementation": "partial-source; product qualification pending",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "native RC1/runtime + proxy owners",
+      "evidence": [
+        "docs/plans/MERI-G1-SOURCE-TO-NATIVE.md",
+        "docs/coordination/reports/MERI-G1-NATIVE-PATH-20261012.md"
+      ],
+      "blockerOrNextReceipt": "Actual pinned supported runtime/proxy tool-reference/schema loading/streaming/compaction/resume; task auth expiry revocation durable budgets; native owner current receipt required. No model call authorized."
+    },
+    {
+      "id": "W03",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 179
+      },
+      "requirement": "| W03 Isolated foundation | A | W02 | New CDK stacks, OIDC CI roles, persistence, networking, secrets, deployment/runbooks |",
+      "group": "deployment",
+      "implementation": "partial-source; product qualification pending",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "shipping/release + platform/security owners",
+      "evidence": [
+        "docs/coordination/reports/MERI-IMAGE-UPSTREAM-REVIEW-20261012.md",
+        "docs/coordination/reports/MERI-PGDG-METADATA-20261012.md",
+        "docs/handover/20261012/REMOTE-RESUME-CURRENT-20261012.md",
+        "docs/coordination/reports/MERI-G1-NATIVE-PATH-20261012.md"
+      ],
+      "blockerOrNextReceipt": "Current native/shipping receipt; supported authenticated image/library closure and runtime admission; exact authority/cost; staged candidate, retention/restore/rollback/in-flight compatibility, internal+tenant canary. G1OPEN, G2-G7unentered; no new RDS/network changes."
+    },
+    {
+      "id": "W04",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 180
+      },
+      "requirement": "| W04 Authorization and reads | B | W01/REL-02; W03 for live integration | Two-tenant and within-tenant fixtures; exact/search/evidence adapters; memory read; source coverage/freshness/paging; REL-03 and REL-06 |",
+      "group": "evidence",
+      "implementation": "partial-source; product qualification pending",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "backend retrieval + source owners",
+      "evidence": [
+        "docs/RETRIEVAL-CONTRACT.md",
+        "docs/coordination/reports/CODEX-REL02-CANONICAL-COMPOSITION-ACCEPTANCE-20261011.md"
+      ],
+      "blockerOrNextReceipt": "Calendar/FY/version resolver, actual full reads, authentic snapshots/cursors/citations, source completeness and current authorization need production composition and actual evidence."
+    },
+    {
+      "id": "W05",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 181
+      },
+      "requirement": "| W05 Durable runs | A | W02–W03 | Broker ownership/fencing, SDK SessionStore, file checkpoints, events, approvals and schedules |",
+      "group": "durability",
+      "implementation": "partial-source; product qualification pending",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "Temporal/control + native owners",
+      "evidence": [
+        "apps/control/qualification-temporal/recovery-activities.mjs",
+        "apps/control/qualification-temporal/recovery-workflow.ts",
+        "apps/worker/qualification/checkpoint/native-session-files.mjs",
+        "docs/coordination/reports/MERI-G1-NATIVE-PATH-20261012.md"
+      ],
+      "blockerOrNextReceipt": "Genuine SDK A/B native checkpoints, persisted files/history, interrupted approval, stale writer rejection, restart/replay and zero duplicate effects; exact recovery<=2min gate remains."
+    },
+    {
+      "id": "W06",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 182
+      },
+      "requirement": "| W06 Workspace interface | C | W01/REL-02; W05 for integration | Figma-mapped AI Elements screens and responsive states; explicit skill ID/version/scope/dates; real streaming, history, stop/steer/resume/fork, approvals, files, evidence and schedules; three mode buttons; REL-04 |",
+      "group": "ui",
+      "implementation": "dated partial source/UI evidence; current external-owner completion unknown-by-this-lane",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "capiro-frontend owner + backend event/identity owners",
+      "evidence": [
+        "docs/coordination/reports/CODEX-FRONTEND-RUNTIME-CLOSEOUT.md",
+        "docs/UI-SPEC.md",
+        "docs/UI-COVERAGE.md",
+        "docs/coordination/DECISIONS.md"
+      ],
+      "blockerOrNextReceipt": "Obtain current owner freeze and per-control/frame/state receipts for all screens, chat, attachments, history, approval, artifact/schedule controls, visual/accessibility; dated Home does not close60 UI states."
+    },
+    {
+      "id": "W07",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 183
+      },
+      "requirement": "| W07 Artifacts and browser | C, sequential scoped tickets | W02; W04–W06 for authorized integration | Native files, render/revise/download workflow; public browsing, then qualified authenticated work |",
+      "group": "artifacts",
+      "implementation": "partial-source; product qualification pending",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "worker artifact + trusted publication + frontend owners",
+      "evidence": [
+        "docs/COMPONENTS.md",
+        "docs/coordination/reports/MERI-G1-EXECUTION-OPTIONS-20261012.md"
+      ],
+      "blockerOrNextReceipt": "DOCX/XLSX/PPTX/PDF/HTML/code/CSV/notebook/ZIP workflows, original skills/templates, byte and render inspection, formulas/totals, exact immutable versions/downloads, revisions and source-derived access; current owner product receipts needed.",
+      "additionalGroups": [
+        "browser",
+        "uploads"
+      ]
+    },
+    {
+      "id": "W08",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 184
+      },
+      "requirement": "| W08 Selected mutations | B | W04 passes; W05 | Memory proposals, tasks and artifact filing with approval, idempotency and receipts |",
+      "group": "commands",
+      "implementation": "partial-source; product qualification pending",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "command integration + source owners",
+      "evidence": [
+        "@CMD:packages/contracts/commands-0.2/artifact-file-validation.mjs",
+        "@LOADER:packages/contracts/commands-0.2/validate.mjs"
+      ],
+      "blockerOrNextReceipt": "Payload validation is not transaction execution: trusted producers, current authority/expiry, durable idempotency and uncertain outcome reconciliation, receipts and actual restricted source adapter remain separate."
+    },
+    {
+      "id": "W09",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 185
+      },
+      "requirement": "| W09 Independent verification | D | Starts with W01; expands as packages land | Held-out RG suite and oracle checks, adversarial policy suite, UI behavior/visual/accessibility, browser/artifact/recovery/load evidence; independent REL-06/REL-09 acceptance |",
+      "group": "benchmark",
+      "implementation": "partial-source; product qualification pending",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "independent QA + benchmark source owner",
+      "evidence": [
+        "docs/ROUTING-EVALUATION.md",
+        "docs/coordination/reports/CODEX-R2-ADOPTION.md"
+      ],
+      "blockerOrNextReceipt": "Approved75 real requests ->>=200 labelled split/oracles; original>=60tasks90%completion95%facts,100 isolation,100%source/control/recovery,95%artifact rubric,10runs2s ack90s fresh;8s original/15s RG cohorts distinct. Obtain current dataset/results owner receipt."
+    },
+    {
+      "id": "W10",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 186
+      },
+      "requirement": "| W10 Staging candidate | Codex; D verifies | W03–W09 accepted | Immutable candidate deployed and complete release evidence |",
+      "group": "deployment",
+      "implementation": "partial-source; product qualification pending",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "shipping/release + platform/security owners",
+      "evidence": [
+        "docs/coordination/reports/MERI-IMAGE-UPSTREAM-REVIEW-20261012.md",
+        "docs/coordination/reports/MERI-PGDG-METADATA-20261012.md",
+        "docs/handover/20261012/REMOTE-RESUME-CURRENT-20261012.md",
+        "docs/coordination/reports/MERI-G1-NATIVE-PATH-20261012.md"
+      ],
+      "blockerOrNextReceipt": "Current native/shipping receipt; supported authenticated image/library closure and runtime admission; exact authority/cost; staged candidate, retention/restore/rollback/in-flight compatibility, internal+tenant canary. G1OPEN, G2-G7unentered; no new RDS/network changes."
+    },
+    {
+      "id": "W11",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 187
+      },
+      "requirement": "| W11 Controlled release | Codex | W10; release authorization | Internal allowlist, bounded tenant canary, production rollout and rollback evidence |",
+      "group": "deployment",
+      "implementation": "partial-source; product qualification pending",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "shipping/release + platform/security owners",
+      "evidence": [
+        "docs/coordination/reports/MERI-IMAGE-UPSTREAM-REVIEW-20261012.md",
+        "docs/coordination/reports/MERI-PGDG-METADATA-20261012.md",
+        "docs/handover/20261012/REMOTE-RESUME-CURRENT-20261012.md",
+        "docs/coordination/reports/MERI-G1-NATIVE-PATH-20261012.md"
+      ],
+      "blockerOrNextReceipt": "Current native/shipping receipt; supported authenticated image/library closure and runtime admission; exact authority/cost; staged candidate, retention/restore/rollback/in-flight compatibility, internal+tenant canary. G1OPEN, G2-G7unentered; no new RDS/network changes."
+    },
+    {
+      "id": "R-01",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 218
+      },
+      "requirement": "| R-01 | Canonical catalog and typed operations: one source for schemas, adapters, descriptions, availability, authority and eval mappings; no fixed total count, giant free-text query operation or raw SQL exposure | Catalog/handler drift checks, distinct operation examples, selected/deferred/replacement mapping, unavailable-recipe lint |",
+      "group": "catalog",
+      "implementation": "partial-source; product qualification pending",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "backend source/gateway",
+      "evidence": [
+        "@READ:packages/contracts/retrieval-0.2/catalog.json",
+        "@READ:packages/contracts/retrieval-0.2/validate.mjs"
+      ],
+      "blockerOrNextReceipt": "Real handlers, trusted context producers, source access/policy and domain behavior qualification;30 full mappings remain. No catalog count proves139 product parity."
+    },
+    {
+      "id": "R-02",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 219
+      },
+      "requirement": "| R-02 | Server-bound scope/entity identity: bind current actor/tenant/client or authorized portfolio, grants and entity IDs; validate model/UI scope requests; reauthorize every read/write/publication | Same-name clients, pronouns/follow-ups, denied IDs, portfolio/client/personal distinctions, revocation and within-tenant fixtures |",
+      "group": "security",
+      "implementation": "partial-source; product qualification pending",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "identity/gateway/security + runtime owners",
+      "evidence": [
+        "docs/coordination/DECISIONS.md",
+        "docs/coordination/reports/MERI-G1-NATIVE-PATH-20261012.md",
+        "apps/gateway/budget/README.md",
+        "apps/gateway/test/postgres-budget.integration.mjs"
+      ],
+      "blockerOrNextReceipt": "Admitted real principals, short capability issuer/expiry/revocation, nonowner source access, denied paths, durable accounting and actual engine tests;100 adversarial+within-tenant/stored-context gates; no benchmark dollars invented."
+    },
+    {
+      "id": "R-03",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 220
+      },
+      "requirement": "| R-03 | Calendar/FY/version windows: calendar periods, relative durations and fiscal years are distinct; normalize timezone, inclusive start/exclusive end, document version and funding stage | This/last week, Monday/Sunday policy, DST, month/year boundaries, last seven days, fiscal-year rollover and conflicting version/stage fixtures |",
+      "group": "evidence",
+      "implementation": "partial-source; product qualification pending",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "backend retrieval + source owners",
+      "evidence": [
+        "docs/RETRIEVAL-CONTRACT.md",
+        "docs/coordination/reports/CODEX-REL02-CANONICAL-COMPOSITION-ACCEPTANCE-20261011.md"
+      ],
+      "blockerOrNextReceipt": "Calendar/FY/version resolver, actual full reads, authentic snapshots/cursors/citations, source completeness and current authorization need production composition and actual evidence."
+    },
+    {
+      "id": "R-04",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 221
+      },
+      "requirement": "| R-04 | Candidate search/exact query/source-read distinction: hybrid candidate discovery where useful; typed authoritative counts/status/history/comparisons; full decisive passage reads | Search coverage versus enumerated counts; late-body match; multi-source history; bill version/status and PE identity/budget-stage truth |",
+      "group": "evidence",
+      "implementation": "partial-source; product qualification pending",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "backend retrieval + source owners",
+      "evidence": [
+        "docs/RETRIEVAL-CONTRACT.md",
+        "docs/coordination/reports/CODEX-REL02-CANONICAL-COMPOSITION-ACCEPTANCE-20261011.md"
+      ],
+      "blockerOrNextReceipt": "Calendar/FY/version resolver, actual full reads, authentic snapshots/cursors/citations, source completeness and current authorization need production composition and actual evidence."
+    },
+    {
+      "id": "R-05",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 222
+      },
+      "requirement": "| R-05 | Normalized evidence/coverage/freshness/paging: consistent envelopes, explicit status and method, authorized citations, source versions, filters and continuation | Partial/unavailable/stale/empty/truncated fixtures; no absence claim from incomplete coverage; exact-version evidence continuity |",
+      "group": "evidence",
+      "implementation": "partial-source; product qualification pending",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "backend retrieval + source owners",
+      "evidence": [
+        "docs/RETRIEVAL-CONTRACT.md",
+        "docs/coordination/reports/CODEX-REL02-CANONICAL-COMPOSITION-ACCEPTANCE-20261011.md"
+      ],
+      "blockerOrNextReceipt": "Calendar/FY/version resolver, actual full reads, authentic snapshots/cursors/citations, source completeness and current authorization need production composition and actual evidence."
+    },
+    {
+      "id": "R-06",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 223
+      },
+      "requirement": "| R-06 | Native SDK discovery and proxy compatibility: small measured default surface and authorized domain discovery through pinned supported model/runtime/proxy | End-to-end reference/stream/header/compaction/resume compatibility; adversarial catalog recall; observed token/call/latency evidence |",
+      "group": "sdk",
+      "implementation": "partial-source; product qualification pending",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "native RC1/runtime + proxy owners",
+      "evidence": [
+        "docs/plans/MERI-G1-SOURCE-TO-NATIVE.md",
+        "docs/coordination/reports/MERI-G1-NATIVE-PATH-20261012.md"
+      ],
+      "blockerOrNextReceipt": "Actual pinned supported runtime/proxy tool-reference/schema loading/streaming/compaction/resume; task auth expiry revocation durable budgets; native owner current receipt required. No model call authorized."
+    },
+    {
+      "id": "R-07",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 224
+      },
+      "requirement": "| R-07 | Explicit skill invocation and executable manifest: selected ID/version plus typed scope/dates; manifest pins required evidence, allowed operations, approval constraints, completion and budget | Submit/steer/reconnect/resume/fork fixtures, manifest validation, active-version migration policy and required-source completion checks |",
+      "group": "skills",
+      "implementation": "source contract foundation; all14 workflow execution qualifications pending",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "skills/backend + frontend + independent domain QA",
+      "evidence": [
+        "docs/SKILL-CONTRACT.md",
+        "docs/coordination/r2/skills.json",
+        "packages/contracts/retrieval-0.2/skill.schema.json"
+      ],
+      "blockerOrNextReceipt": "Original executable manifests/prose, required-evidence completion, Commitments rubric, real task execution and lifecycle integration for each14; drafting/meeting briefs remain required even if legacy command ID deferred."
+    },
+    {
+      "id": "R-08",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 225
+      },
+      "requirement": "| R-08 | Scoped original skills including Commitments: preserve the 14 quick-action workflow intents as proposed v1 selections; qualify their promises; ordinary questions remain lightweight | Skill-by-skill expected evidence/output rubric; Commitments proof/owner/date/ambiguity/dedup/coverage fixtures; no forbidden source widening |",
+      "group": "skills",
+      "implementation": "source contract foundation; all14 workflow execution qualifications pending",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "skills/backend + frontend + independent domain QA",
+      "evidence": [
+        "docs/SKILL-CONTRACT.md",
+        "docs/coordination/r2/skills.json",
+        "packages/contracts/retrieval-0.2/skill.schema.json"
+      ],
+      "blockerOrNextReceipt": "Original executable manifests/prose, required-evidence completion, Commitments rubric, real task execution and lifecycle integration for each14; drafting/meeting briefs remain required even if legacy command ID deferred."
+    },
+    {
+      "id": "R-09",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 226
+      },
+      "requirement": "| R-09 | Complexity budget and bounded recovery: budget follows requested work and evidence, not a domain keyword; direct known-ID lookup avoids unnecessary discovery; recovery follows diagnosed failure | Simple versus comprehensive paired fixtures; no blind repeated search; explicit partial/clarify/block outcomes; enforced runtime/token/tool budgets |",
+      "group": "sdk",
+      "implementation": "partial-source; product qualification pending",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "native RC1/runtime + proxy owners",
+      "evidence": [
+        "docs/plans/MERI-G1-SOURCE-TO-NATIVE.md",
+        "docs/coordination/reports/MERI-G1-NATIVE-PATH-20261012.md"
+      ],
+      "blockerOrNextReceipt": "Actual pinned supported runtime/proxy tool-reference/schema loading/streaming/compaction/resume; task auth expiry revocation durable budgets; native owner current receipt required. No model call authorized."
+    },
+    {
+      "id": "R-10",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 227
+      },
+      "requirement": "| R-10 | End-to-end trace/oracle diagnostics: correlated route, arguments, result coverage, evidence read and final claims; correct-tool and correct-evidence runs localize failure | Replayable redacted traces, failure taxonomy, original/oracle comparisons and per-stage timings/costs |",
+      "group": "benchmark",
+      "implementation": "partial-source; product qualification pending",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "independent QA + benchmark source owner",
+      "evidence": [
+        "docs/ROUTING-EVALUATION.md",
+        "docs/coordination/reports/CODEX-R2-ADOPTION.md"
+      ],
+      "blockerOrNextReceipt": "Approved75 real requests ->>=200 labelled split/oracles; original>=60tasks90%completion95%facts,100 isolation,100%source/control/recovery,95%artifact rubric,10runs2s ack90s fresh;8s original/15s RG cohorts distinct. Obtain current dataset/results owner receipt."
+    },
+    {
+      "id": "R-11",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 228
+      },
+      "requirement": "| R-11 | Optional Decisions routing benchmark: bounded choice/predicate/score advice, multi-source coverage, abstention/fallback, no authority or argument generation | SDK baseline first, paired held-out shadow trials, calibrated confidence, outage/timeout tests and independent adoption decision |",
+      "group": "optional",
+      "implementation": "optional; unqualified, disabled/shadow",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "independent evaluation owner",
+      "evidence": [
+        "docs/ROUTING-EVALUATION.md",
+        "docs/plans/MERI-DEPLOYMENT.md"
+      ],
+      "blockerOrNextReceipt": "After qualified baseline, actual availability+labelled paired/calibrated evidence; RG10>=25%relative improvement and latency; RG11 task-specific frozen thresholds. Never blocks passing core while disabled."
+    },
+    {
+      "id": "R-12",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 229
+      },
+      "requirement": "| R-12 | Optional calibrated JEV evidence benchmark: task-specific passage relevance/claim support/client-fit improvement with abstention; no unsupported tool-router integration | Human-labelled gold data, withheld-evidence/authoritative-state safeguards, calibration plots, error slices and fallback tests |",
+      "group": "optional",
+      "implementation": "optional; unqualified, disabled/shadow",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "independent evaluation owner",
+      "evidence": [
+        "docs/ROUTING-EVALUATION.md",
+        "docs/plans/MERI-DEPLOYMENT.md"
+      ],
+      "blockerOrNextReceipt": "After qualified baseline, actual availability+labelled paired/calibrated evidence; RG10>=25%relative improvement and latency; RG11 task-specific frozen thresholds. Never blocks passing core while disabled."
+    },
+    {
+      "id": "REL-01",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 308
+      },
+      "requirement": "| REL-01 Traces and baseline | Codex + B/D scoped sessions; `docs/RETRIEVAL-AUDIT.md`, `evals/` baseline fixtures | W00; read-only current-Meri trace/source access where available | 75-case initial set, failure taxonomy, deployed settings, source snapshots, oracle protocol and measured budgets; inaccessible production traces explicitly blocked | R-09/R-10; RG-09 |",
+      "group": "benchmark",
+      "implementation": "partial-source; product qualification pending",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "independent QA + benchmark source owner",
+      "evidence": [
+        "docs/ROUTING-EVALUATION.md",
+        "docs/coordination/reports/CODEX-R2-ADOPTION.md"
+      ],
+      "blockerOrNextReceipt": "Approved75 real requests ->>=200 labelled split/oracles; original>=60tasks90%completion95%facts,100 isolation,100%source/control/recovery,95%artifact rubric,10runs2s ack90s fresh;8s original/15s RG cohorts distinct. Obtain current dataset/results owner receipt."
+    },
+    {
+      "id": "REL-02",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 309
+      },
+      "requirement": "| REL-02 Contracts and catalog | Codex + one B session; `packages/contracts/`, catalog/retrieval/skill docs | W00 discovery accepted; W01 contract ownership allocated; REL-01 inventory findings (REL-02 contributes to W01 completion) | Frozen typed operations, scope/window/evidence/skill contracts, handler/schema/description mapping and unavailable-recipe checks | R-01–R-05/R-07; RG-02/RG-07 |",
+      "group": "catalog",
+      "implementation": "partial-source; product qualification pending",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "backend source/gateway",
+      "evidence": [
+        "@READ:packages/contracts/retrieval-0.2/catalog.json",
+        "@READ:packages/contracts/retrieval-0.2/validate.mjs"
+      ],
+      "blockerOrNextReceipt": "Real handlers, trusted context producers, source access/policy and domain behavior qualification;30 full mappings remain. No catalog count proves139 product parity."
+    },
+    {
+      "id": "REL-03",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 310
+      },
+      "requirement": "| REL-03 Retrieval adapters | B; `apps/gateway/` source adapters, scoped fixture files | Accepted REL-02; W03 for live source checks | Independently written exact/search/read adapters with coverage/freshness/paging; memory/client/portfolio and selected domain truth fixtures | R-02–R-05; RG-02–RG-05/RG-07/RG-12 |",
+      "group": "evidence",
+      "implementation": "partial-source; product qualification pending",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "backend retrieval + source owners",
+      "evidence": [
+        "docs/RETRIEVAL-CONTRACT.md",
+        "docs/coordination/reports/CODEX-REL02-CANONICAL-COMPOSITION-ACCEPTANCE-20261011.md"
+      ],
+      "blockerOrNextReceipt": "Calendar/FY/version resolver, actual full reads, authentic snapshots/cursors/citations, source completeness and current authorization need production composition and actual evidence."
+    },
+    {
+      "id": "REL-04",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 311
+      },
+      "requirement": "| REL-04 Skills and UI identity | C; `apps/web/`, `packages/skills/`, owned manifests/UI ledger | Accepted REL-02; W05 for resume/fork integration | Typed explicit invocation, original scoped skills, Commitments, required evidence/completion, calendar/portfolio/memory regressions and Playwright checks | R-03/R-07/R-08; RG-02/RG-06/RG-12 |",
+      "group": "skills",
+      "implementation": "source contract foundation; all14 workflow execution qualifications pending",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "skills/backend + frontend + independent domain QA",
+      "evidence": [
+        "docs/SKILL-CONTRACT.md",
+        "docs/coordination/r2/skills.json",
+        "packages/contracts/retrieval-0.2/skill.schema.json"
+      ],
+      "blockerOrNextReceipt": "Original executable manifests/prose, required-evidence completion, Commitments rubric, real task execution and lifecycle integration for each14; drafting/meeting briefs remain required even if legacy command ID deferred.",
+      "additionalGroups": [
+        "ui"
+      ]
+    },
+    {
+      "id": "REL-05",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 312
+      },
+      "requirement": "| REL-05 SDK discovery and loop | A; `apps/worker/`, trusted proxy integration; Codex owns catalog shared changes | Runtime checkpoint: accepted REL-02 and W02 spike environment ready. Final end-to-end checkpoint: accepted REL-03/04 and W03/W05 integration | Runtime-only discovery/proxy evidence contributes to W02 before W03. Later lightweight baseline, budgets/recovery, resume/compaction and adversarial integration evidence qualify under W09 | R-01/R-06/R-09/R-10; RG-01/RG-08/RG-09/RG-12 |",
+      "group": "sdk",
+      "implementation": "partial-source; product qualification pending",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "native RC1/runtime + proxy owners",
+      "evidence": [
+        "docs/plans/MERI-G1-SOURCE-TO-NATIVE.md",
+        "docs/coordination/reports/MERI-G1-NATIVE-PATH-20261012.md"
+      ],
+      "blockerOrNextReceipt": "Actual pinned supported runtime/proxy tool-reference/schema loading/streaming/compaction/resume; task auth expiry revocation durable budgets; native owner current receipt required. No model call authorized.",
+      "checkpoints": {
+        "runtimeOnly": "G1/W02 pending actual native/proxy receipt",
+        "endToEnd": "after REL03/04,W03/W05; pending"
+      }
+    },
+    {
+      "id": "REL-06",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 313
+      },
+      "requirement": "| REL-06 Benchmark and domain truth | D with scoped B evidence support; `evals/`, `docs/ROUTING-EVALUATION.md` | REL-01; accepted REL-03/04/05 baseline | Expanded 200-case frozen suite and held-out labels, exact domain truth, oracle diagnostics, baseline result manifest and independent adjudication | R-01–R-10; RG-01–RG-09/RG-12 |",
+      "group": "benchmark",
+      "implementation": "partial-source; product qualification pending",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "independent QA + benchmark source owner",
+      "evidence": [
+        "docs/ROUTING-EVALUATION.md",
+        "docs/coordination/reports/CODEX-R2-ADOPTION.md"
+      ],
+      "blockerOrNextReceipt": "Approved75 real requests ->>=200 labelled split/oracles; original>=60tasks90%completion95%facts,100 isolation,100%source/control/recovery,95%artifact rubric,10runs2s ack90s fresh;8s original/15s RG cohorts distinct. Obtain current dataset/results owner receipt."
+    },
+    {
+      "id": "REL-07",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 314
+      },
+      "requirement": "| REL-07 Optional Decisions shadow | B/A scoped new adapter; separate D review | Accepted REL-06 baseline; actual API availability | One bounded advisor, multi-source/abstention/fallback fixtures, paired held-out improvement and latency evidence; adopt or remain disabled | R-11; RG-09/RG-10 |",
+      "group": "optional",
+      "implementation": "optional; unqualified, disabled/shadow",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "independent evaluation owner",
+      "evidence": [
+        "docs/ROUTING-EVALUATION.md",
+        "docs/plans/MERI-DEPLOYMENT.md"
+      ],
+      "blockerOrNextReceipt": "After qualified baseline, actual availability+labelled paired/calibrated evidence; RG10>=25%relative improvement and latency; RG11 task-specific frozen thresholds. Never blocks passing core while disabled."
+    },
+    {
+      "id": "REL-08",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 315
+      },
+      "requirement": "| REL-08 Optional JEV shadow | B scoped trusted judge adapter; separate D review | Accepted REL-06 baseline; task/model availability | Labelled evidence calibration, required-evidence safeguards, paired quality/latency evidence; adopt or remain disabled | R-12; RG-09/RG-11 |",
+      "group": "optional",
+      "implementation": "optional; unqualified, disabled/shadow",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "independent evaluation owner",
+      "evidence": [
+        "docs/ROUTING-EVALUATION.md",
+        "docs/plans/MERI-DEPLOYMENT.md"
+      ],
+      "blockerOrNextReceipt": "After qualified baseline, actual availability+labelled paired/calibrated evidence; RG10>=25%relative improvement and latency; RG11 task-specific frozen thresholds. Never blocks passing core while disabled."
+    },
+    {
+      "id": "REL-09",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 316
+      },
+      "requirement": "| REL-09 Integration and canary | Codex; D reviews exact candidate | Pre-staging checkpoint: accepted REL-03–REL-06, W04–W08 and prior W09 checks; promoted optional services only. Canary checkpoint: W10 accepted, then W11 authorization | Pre-staging trace/reconnect/revocation/full-read/RG evidence completes W09 for W10. Post-staging immutable candidate and bounded canary evidence complete the ticket under W11; canary is not a W09 prerequisite | R-01–R-12 as applicable; RG-01–RG-12 as applicable |",
+      "group": "deployment",
+      "implementation": "partial-source; product qualification pending",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "shipping/release + platform/security owners",
+      "evidence": [
+        "docs/coordination/reports/MERI-IMAGE-UPSTREAM-REVIEW-20261012.md",
+        "docs/coordination/reports/MERI-PGDG-METADATA-20261012.md",
+        "docs/handover/20261012/REMOTE-RESUME-CURRENT-20261012.md",
+        "docs/coordination/reports/MERI-G1-NATIVE-PATH-20261012.md"
+      ],
+      "blockerOrNextReceipt": "Current native/shipping receipt; supported authenticated image/library closure and runtime admission; exact authority/cost; staged candidate, retention/restore/rollback/in-flight compatibility, internal+tenant canary. G1OPEN, G2-G7unentered; no new RDS/network changes.",
+      "checkpoints": {
+        "preStaging": "W09/W10 pending",
+        "canary": "W11 after staging and exact release authorization; pending"
+      }
+    },
+    {
+      "id": "G0",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 377
+      },
+      "requirement": "| G0 Discovery | Real account/repository/region/identity/source decisions; selected capability/data inventory; pinned Figma/UI/shell decision; current deployment/session evidence preserved; REL-01 audit/baseline plan; no guessed target |",
+      "group": "optional",
+      "implementation": "accepted discovery only",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not a runtime gate",
+      "originalScope": "",
+      "owner": "independent evaluation owner",
+      "evidence": [
+        "docs/ROUTING-EVALUATION.md",
+        "docs/plans/MERI-DEPLOYMENT.md"
+      ],
+      "blockerOrNextReceipt": "After qualified baseline, actual availability+labelled paired/calibrated evidence; RG10>=25%relative improvement and latency; RG11 task-specific frozen thresholds. Never blocks passing core while disabled."
+    },
+    {
+      "id": "G1",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 378
+      },
+      "requirement": "| G1 Qualification | Pinned SDK/runtime/UI/browser/Office/Temporal components; Fargate sandbox, actual-proxy native discovery (RG-08), interrupt/resume/checkpoint/egress spike; accepted REL-02 contracts; Temporal persistence/authentication/TLS/backup/upgrade design; measured cohort budgets frozen |",
+      "group": "benchmark",
+      "implementation": "OPEN",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "HOLD",
+      "originalScope": "",
+      "owner": "independent QA + benchmark source owner",
+      "evidence": [
+        "docs/ROUTING-EVALUATION.md",
+        "docs/coordination/reports/CODEX-R2-ADOPTION.md"
+      ],
+      "blockerOrNextReceipt": "Approved75 real requests ->>=200 labelled split/oracles; original>=60tasks90%completion95%facts,100 isolation,100%source/control/recovery,95%artifact rubric,10runs2s ack90s fresh;8s original/15s RG cohorts distinct. Obtain current dataset/results owner receipt."
+    },
+    {
+      "id": "G2",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 379
+      },
+      "requirement": "| G2 Isolated development | New stack deployed with source connections disabled; seeded identity/policy fixtures; task capabilities, restricted IAM/network paths, encryption, and conversation ownership pass |",
+      "group": "ui",
+      "implementation": "unentered",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "UNRUN",
+      "originalScope": "",
+      "owner": "capiro-frontend owner + backend event/identity owners",
+      "evidence": [
+        "docs/coordination/reports/CODEX-FRONTEND-RUNTIME-CLOSEOUT.md",
+        "docs/UI-SPEC.md",
+        "docs/UI-COVERAGE.md",
+        "docs/coordination/DECISIONS.md"
+      ],
+      "blockerOrNextReceipt": "Obtain current owner freeze and per-control/frame/state receipts for all screens, chat, attachments, history, approval, artifact/schedule controls, visual/accessibility; dated Home does not close60 UI states."
+    },
+    {
+      "id": "G3",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 380
+      },
+      "requirement": "| G3 Read-only data | One client and memory, then all agreed domains; exact/search/full-evidence/coverage/freshness/paging, calendar/FY/version and authority fixtures (RG-02–RG-05/RG-07); measured revocation deadline and tenant/within-tenant policy checks pass |",
+      "group": "benchmark",
+      "implementation": "unentered",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "UNRUN",
+      "originalScope": "",
+      "owner": "independent QA + benchmark source owner",
+      "evidence": [
+        "docs/ROUTING-EVALUATION.md",
+        "docs/coordination/reports/CODEX-R2-ADOPTION.md"
+      ],
+      "blockerOrNextReceipt": "Approved75 real requests ->>=200 labelled split/oracles; original>=60tasks90%completion95%facts,100 isolation,100%source/control/recovery,95%artifact rubric,10runs2s ack90s fresh;8s original/15s RG cohorts distinct. Obtain current dataset/results owner receipt."
+    },
+    {
+      "id": "G4",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 381
+      },
+      "requirement": "| G4 Execution workspace | SDK baseline plus Figma-mapped UI/artifact/browser integration; selected skill ID/version/manifest and evidence completion (RG-06); native discovery/reconnect/full-read/recovery (RG-08/RG-12); real walkthroughs, worker loss, approval wait, cancellation and fencing pass |",
+      "group": "benchmark",
+      "implementation": "unentered",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "UNRUN",
+      "originalScope": "",
+      "owner": "independent QA + benchmark source owner",
+      "evidence": [
+        "docs/ROUTING-EVALUATION.md",
+        "docs/coordination/reports/CODEX-R2-ADOPTION.md"
+      ],
+      "blockerOrNextReceipt": "Approved75 real requests ->>=200 labelled split/oracles; original>=60tasks90%completion95%facts,100 isolation,100%source/control/recovery,95%artifact rubric,10runs2s ack90s fresh;8s original/15s RG cohorts distinct. Obtain current dataset/results owner receipt."
+    },
+    {
+      "id": "G5",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 382
+      },
+      "requirement": "| G5 Selected commands | Immutable proposals, approval expiry, current authorization, revocation, idempotent outcomes and receipts pass; repeated delivery creates zero duplicate mutations |",
+      "group": "commands",
+      "implementation": "unentered",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "UNRUN",
+      "originalScope": "",
+      "owner": "command integration + source owners",
+      "evidence": [
+        "@CMD:packages/contracts/commands-0.2/artifact-file-validation.mjs",
+        "@LOADER:packages/contracts/commands-0.2/validate.mjs"
+      ],
+      "blockerOrNextReceipt": "Payload validation is not transaction execution: trusted producers, current authority/expiry, durable idempotency and uncertain outcome reconciliation, receipts and actual restricted source adapter remain separate."
+    },
+    {
+      "id": "G6",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 383
+      },
+      "requirement": "| G6 Staging | Exact immutable candidate passes original full suite, frozen reliability benchmark (core RG-01–RG-09/RG-12), Figma/UI/visual/accessibility, retention/deletion, rollback/restore/workflow compatibility; RG-10/RG-11 additionally pass only for promoted optional services |",
+      "group": "retention",
+      "implementation": "unentered",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "UNRUN",
+      "originalScope": "",
+      "owner": "control/storage/security + frontend owners",
+      "evidence": [
+        "docs/plans/MERI-DEPLOYMENT.md",
+        "docs/plans/Meri_Greenfield_Agent_Plan.docx"
+      ],
+      "blockerOrNextReceipt": "Per-store lifecycle implementation, caches/exports deletion, legal holds, backup expiry/restore and revoked stored-content denial receipts needed; implementation unknown-by-this-lane."
+    },
+    {
+      "id": "G7",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 384
+      },
+      "requirement": "| G7 Controlled release | Internal users, then bounded tenant allowlist; observe routing/evidence/task quality/latency/cost/error; optional services have independent bypass; release owner authorizes the exact candidate before broader rollout |",
+      "group": "security",
+      "implementation": "unentered",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "UNRUN",
+      "originalScope": "",
+      "owner": "identity/gateway/security + runtime owners",
+      "evidence": [
+        "docs/coordination/DECISIONS.md",
+        "docs/coordination/reports/MERI-G1-NATIVE-PATH-20261012.md",
+        "apps/gateway/budget/README.md",
+        "apps/gateway/test/postgres-budget.integration.mjs"
+      ],
+      "blockerOrNextReceipt": "Admitted real principals, short capability issuer/expiry/revocation, nonowner source access, denied paths, durable accounting and actual engine tests;100 adversarial+within-tenant/stored-context gates; no benchmark dollars invented."
+    },
+    {
+      "id": "RG-01",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 432
+      },
+      "requirement": "| RG-01 | Accepted route on at least 95% of held-out cases | Score allowed source/tool paths and all required families, including expected clarification; a route need not use one identical call sequence |",
+      "group": "benchmark",
+      "implementation": "unmeasured product qualification; local validators are not this gate",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "independent QA + benchmark source owner",
+      "evidence": [
+        "docs/ROUTING-EVALUATION.md",
+        "docs/coordination/reports/CODEX-R2-ADOPTION.md"
+      ],
+      "blockerOrNextReceipt": "Approved75 real requests ->>=200 labelled split/oracles; original>=60tasks90%completion95%facts,100 isolation,100%source/control/recovery,95%artifact rubric,10runs2s ack90s fresh;8s original/15s RG cohorts distinct. Obtain current dataset/results owner receipt."
+    },
+    {
+      "id": "RG-02",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 433
+      },
+      "requirement": "| RG-02 | 100% deterministic subject/window/FY/version fixtures pass | Server-bound scope/entity IDs; normalized calendar/timezone, relative duration, funding stage and evidence version |",
+      "group": "benchmark",
+      "implementation": "unmeasured product qualification; local validators are not this gate",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "independent QA + benchmark source owner",
+      "evidence": [
+        "docs/ROUTING-EVALUATION.md",
+        "docs/coordination/reports/CODEX-R2-ADOPTION.md"
+      ],
+      "blockerOrNextReceipt": "Approved75 real requests ->>=200 labelled split/oracles; original>=60tasks90%completion95%facts,100 isolation,100%source/control/recovery,95%artifact rubric,10runs2s ack90s fresh;8s original/15s RG cohorts distinct. Obtain current dataset/results owner receipt."
+    },
+    {
+      "id": "RG-03",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 434
+      },
+      "requirement": "| RG-03 | Labelled answer-bearing evidence Recall@10 at least 95% on frozen discovery retrieval units with at most 10 gold records | Define unit/source/candidate pool; retain all gold labels and report denominators/source slices. Cases with more than 10 required records use completeness/paging RG-05/RG-12; exact lookup/counts use RG-04 |",
+      "group": "benchmark",
+      "implementation": "unmeasured product qualification; local validators are not this gate",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "independent QA + benchmark source owner",
+      "evidence": [
+        "docs/ROUTING-EVALUATION.md",
+        "docs/coordination/reports/CODEX-R2-ADOPTION.md"
+      ],
+      "blockerOrNextReceipt": "Approved75 real requests ->>=200 labelled split/oracles; original>=60tasks90%completion95%facts,100 isolation,100%source/control/recovery,95%artifact rubric,10runs2s ack90s fresh;8s original/15s RG cohorts distinct. Obtain current dataset/results owner receipt."
+    },
+    {
+      "id": "RG-04",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 435
+      },
+      "requirement": "| RG-04 | 100% deterministic count/status/comparison fixtures pass | Authorized source snapshots, exact filters, bill/document version, PE identity/FY/stage and comparison consistency |",
+      "group": "benchmark",
+      "implementation": "unmeasured product qualification; local validators are not this gate",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "independent QA + benchmark source owner",
+      "evidence": [
+        "docs/ROUTING-EVALUATION.md",
+        "docs/coordination/reports/CODEX-R2-ADOPTION.md"
+      ],
+      "blockerOrNextReceipt": "Approved75 real requests ->>=200 labelled split/oracles; original>=60tasks90%completion95%facts,100 isolation,100%source/control/recovery,95%artifact rubric,10runs2s ack90s fresh;8s original/15s RG cohorts distinct. Obtain current dataset/results owner receipt."
+    },
+    {
+      "id": "RG-05",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 436
+      },
+      "requirement": "| RG-05 | Zero false absence claims on partial, unavailable or stale cases | Complete coverage or a clear limitation; empty candidate search does not prove no matching records |",
+      "group": "benchmark",
+      "implementation": "unmeasured product qualification; local validators are not this gate",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "independent QA + benchmark source owner",
+      "evidence": [
+        "docs/ROUTING-EVALUATION.md",
+        "docs/coordination/reports/CODEX-R2-ADOPTION.md"
+      ],
+      "blockerOrNextReceipt": "Approved75 real requests ->>=200 labelled split/oracles; original>=60tasks90%completion95%facts,100 isolation,100%source/control/recovery,95%artifact rubric,10runs2s ack90s fresh;8s original/15s RG cohorts distinct. Obtain current dataset/results owner receipt."
+    },
+    {
+      "id": "RG-06",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 437
+      },
+      "requirement": "| RG-06 | 100% selected skill ID/version and required evidence/completion fixtures pass | Includes client/portfolio/relationship/memory collisions and Commitments; replay, steer, reconnect, resume and fork preserve or explicitly version the contract |",
+      "group": "benchmark",
+      "implementation": "unmeasured product qualification; local validators are not this gate",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "independent QA + benchmark source owner",
+      "evidence": [
+        "docs/ROUTING-EVALUATION.md",
+        "docs/coordination/reports/CODEX-R2-ADOPTION.md"
+      ],
+      "blockerOrNextReceipt": "Approved75 real requests ->>=200 labelled split/oracles; original>=60tasks90%completion95%facts,100 isolation,100%source/control/recovery,95%artifact rubric,10runs2s ack90s fresh;8s original/15s RG cohorts distinct. Obtain current dataset/results owner receipt."
+    },
+    {
+      "id": "RG-07",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 438
+      },
+      "requirement": "| RG-07 | Zero unauthorized disclosure/mutation in the qualification suite | Cross-tenant and within-tenant boundaries; current grants, memory/mailbox walls, stored context, citations, files and revoked access |",
+      "group": "benchmark",
+      "implementation": "unmeasured product qualification; local validators are not this gate",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "independent QA + benchmark source owner",
+      "evidence": [
+        "docs/ROUTING-EVALUATION.md",
+        "docs/coordination/reports/CODEX-R2-ADOPTION.md"
+      ],
+      "blockerOrNextReceipt": "Approved75 real requests ->>=200 labelled split/oracles; original>=60tasks90%completion95%facts,100 isolation,100%source/control/recovery,95%artifact rubric,10runs2s ack90s fresh;8s original/15s RG cohorts distinct. Obtain current dataset/results owner receipt."
+    },
+    {
+      "id": "RG-08",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 439
+      },
+      "requirement": "| RG-08 | Native discovery actual-proxy compatibility and adversarial catalog recall suite pass | Known required capabilities found or an explicit supported fallback invoked; reference/header/stream/compaction/resume behavior and authorization at execution verified |",
+      "group": "benchmark",
+      "implementation": "unmeasured product qualification; local validators are not this gate",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "independent QA + benchmark source owner",
+      "evidence": [
+        "docs/ROUTING-EVALUATION.md",
+        "docs/coordination/reports/CODEX-R2-ADOPTION.md"
+      ],
+      "blockerOrNextReceipt": "Approved75 real requests ->>=200 labelled split/oracles; original>=60tasks90%completion95%facts,100 isolation,100%source/control/recovery,95%artifact rubric,10runs2s ack90s fresh;8s original/15s RG cohorts distinct. Obtain current dataset/results owner receipt."
+    },
+    {
+      "id": "RG-09",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 440
+      },
+      "requirement": "| RG-09 | Proposed warm simple-lookup answer p95 at most 15 seconds; optional-router incremental p95 at most 500 ms and total p95 regression at most 10% | Measure and freeze actual benchmark cohort/load before qualification; unsupported beta or exceeded optional budget uses the baseline. Retain all original performance targets; this does not relax a stricter overlapping ordinary-answer target |",
+      "group": "benchmark",
+      "implementation": "unmeasured product qualification; local validators are not this gate",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "independent QA + benchmark source owner",
+      "evidence": [
+        "docs/ROUTING-EVALUATION.md",
+        "docs/coordination/reports/CODEX-R2-ADOPTION.md"
+      ],
+      "blockerOrNextReceipt": "Approved75 real requests ->>=200 labelled split/oracles; original>=60tasks90%completion95%facts,100 isolation,100%source/control/recovery,95%artifact rubric,10runs2s ack90s fresh;8s original/15s RG cohorts distinct. Obtain current dataset/results owner receipt."
+    },
+    {
+      "id": "RG-10",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 441
+      },
+      "requirement": "| RG-10 | Optional classifier reduces held-out routing errors by at least 25% relatively, with no material coverage/argument regression | Paired sufficiently powered labelled cases, confidence intervals and human adjudication; low baseline error or insufficient data can require more cases; latency must also pass RG-09 |",
+      "group": "optional",
+      "implementation": "unmeasured product qualification; local validators are not this gate",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "independent evaluation owner",
+      "evidence": [
+        "docs/ROUTING-EVALUATION.md",
+        "docs/plans/MERI-DEPLOYMENT.md"
+      ],
+      "blockerOrNextReceipt": "After qualified baseline, actual availability+labelled paired/calibrated evidence; RG10>=25%relative improvement and latency; RG11 task-specific frozen thresholds. Never blocks passing core while disabled."
+    },
+    {
+      "id": "RG-11",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 442
+      },
+      "requirement": "| RG-11 | Optional JEV improves labelled evidence quality with calibrated abstention and no required-evidence loss | Freeze task-specific improvement/calibration/adoption thresholds before shadow scoring; report relevant/support/client-fit separately; authoritative facts and mandatory reads remain protected |",
+      "group": "optional",
+      "implementation": "unmeasured product qualification; local validators are not this gate",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "independent evaluation owner",
+      "evidence": [
+        "docs/ROUTING-EVALUATION.md",
+        "docs/plans/MERI-DEPLOYMENT.md"
+      ],
+      "blockerOrNextReceipt": "After qualified baseline, actual availability+labelled paired/calibrated evidence; RG10>=25%relative improvement and latency; RG11 task-specific frozen thresholds. Never blocks passing core while disabled."
+    },
+    {
+      "id": "RG-12",
+      "locator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 443
+      },
+      "requirement": "| RG-12 | Replay/reconnect/revocation/full-evidence-read/coverage-completeness contract suite passes | No stale discovered authorization; session/files/source versions pinned; decisive passage actually read; partial outcomes and continuation preserved |",
+      "group": "benchmark",
+      "implementation": "unmeasured product qualification; local validators are not this gate",
+      "sourceAcceptance": "component-only evidence; individual semantic implementation join pending",
+      "runtimeQualification": "not-established-by-this-lane",
+      "originalScope": "",
+      "owner": "independent QA + benchmark source owner",
+      "evidence": [
+        "docs/ROUTING-EVALUATION.md",
+        "docs/coordination/reports/CODEX-R2-ADOPTION.md"
+      ],
+      "blockerOrNextReceipt": "Approved75 real requests ->>=200 labelled split/oracles; original>=60tasks90%completion95%facts,100 isolation,100%source/control/recovery,95%artifact rubric,10runs2s ack90s fresh;8s original/15s RG cohorts distinct. Obtain current dataset/results owner receipt."
+    }
+  ]
+}

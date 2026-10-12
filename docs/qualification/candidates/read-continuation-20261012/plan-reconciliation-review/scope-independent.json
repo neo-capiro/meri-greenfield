@@ -1,0 +1,11 @@
+{
+  "exitCode": 1,
+  "durationSeconds": 0.5137843470001826,
+  "pid": 281637,
+  "processGroupAbsent": true,
+  "directChildReaped": true,
+  "timeout": false,
+  "kill": false,
+  "stdoutSha256": "05122177d9cb499e1941349b26f9d43235f77312239a12f080ad4aff74b4d4e8",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

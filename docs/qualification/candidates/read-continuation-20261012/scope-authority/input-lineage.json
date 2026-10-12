@@ -1,0 +1,130 @@
+{
+  "inputs": [
+    {
+      "reference": "cff71e1ba8ca8dea8970ad0c778b580a73f84815:docs/plans/Meri_Greenfield_Agent_Plan.docx",
+      "available": true,
+      "firstAdditionHistory": [
+        "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3 2026-10-09T14:53:12-04:00 Bootstrap independent Meri repository and reviewed contracts 0.1.0"
+      ]
+    },
+    {
+      "reference": "cff71e1ba8ca8dea8970ad0c778b580a73f84815:docs/handover/20261012/inputs/Meri_Greenfield_Agent_Plan.original.docx",
+      "available": true,
+      "firstAdditionHistory": [
+        "5ee46446b5f60034916f00b2a665b3e2bef9cf60 2026-10-11T21:06:09-04:00 Freeze accepted 13-operation catalog and exact handover context inputs"
+      ]
+    },
+    {
+      "reference": "cff71e1ba8ca8dea8970ad0c778b580a73f84815:docs/plans/archive/MERI-DEPLOYMENT-20261009-before-figma.md",
+      "available": true,
+      "firstAdditionHistory": [
+        "6ee913a236f8c50ec82b654bc34ce8d5b5ca4545 2026-10-09T20:54:16-04:00 docs: adopt standalone Meri Figma plan and independent UI entry"
+      ]
+    },
+    {
+      "reference": "cff71e1ba8ca8dea8970ad0c778b580a73f84815:docs/plans/archive/MERI-DEPLOYMENT-20261010-before-R2.md",
+      "available": true,
+      "firstAdditionHistory": [
+        "e14564e6ca4747fe97cf911ede3c816a295ba59c 2026-10-10T12:26:22-04:00 docs: reconcile R2 tooling inventory and qualification gates"
+      ]
+    },
+    {
+      "reference": "cff71e1ba8ca8dea8970ad0c778b580a73f84815:docs/handover/20261012/inputs/Meri_Codex_Hermes_Deployment_Plan.original.md",
+      "available": true,
+      "firstAdditionHistory": [
+        "5ee46446b5f60034916f00b2a665b3e2bef9cf60 2026-10-11T21:06:09-04:00 Freeze accepted 13-operation catalog and exact handover context inputs"
+      ]
+    },
+    {
+      "reference": "cff71e1ba8ca8dea8970ad0c778b580a73f84815:docs/plans/MERI-DEPLOYMENT.md",
+      "available": true,
+      "firstAdditionHistory": [
+        "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3 2026-10-09T14:53:12-04:00 Bootstrap independent Meri repository and reviewed contracts 0.1.0"
+      ]
+    },
+    {
+      "reference": "cff71e1ba8ca8dea8970ad0c778b580a73f84815:docs/plans/revisions/20261010-R2/Meri_Codex_Hermes_Deployment_Plan-R2.md",
+      "available": true,
+      "firstAdditionHistory": [
+        "e14564e6ca4747fe97cf911ede3c816a295ba59c 2026-10-10T12:26:22-04:00 docs: reconcile R2 tooling inventory and qualification gates"
+      ]
+    },
+    {
+      "reference": "cff71e1ba8ca8dea8970ad0c778b580a73f84815:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+      "available": true,
+      "firstAdditionHistory": [
+        "e14564e6ca4747fe97cf911ede3c816a295ba59c 2026-10-10T12:26:22-04:00 docs: reconcile R2 tooling inventory and qualification gates"
+      ]
+    },
+    {
+      "reference": "cff71e1ba8ca8dea8970ad0c778b580a73f84815:docs/plans/revisions/20261010-R2/manifest.json",
+      "available": true,
+      "firstAdditionHistory": [
+        "e14564e6ca4747fe97cf911ede3c816a295ba59c 2026-10-10T12:26:22-04:00 docs: reconcile R2 tooling inventory and qualification gates"
+      ]
+    },
+    {
+      "reference": "cff71e1ba8ca8dea8970ad0c778b580a73f84815:docs/handover/20261012/inputs/manifest.json",
+      "available": true,
+      "firstAdditionHistory": [
+        "5ee46446b5f60034916f00b2a665b3e2bef9cf60 2026-10-11T21:06:09-04:00 Freeze accepted 13-operation catalog and exact handover context inputs"
+      ]
+    },
+    {
+      "reference": "cff71e1ba8ca8dea8970ad0c778b580a73f84815:docs/handover/20261011/Meri_Greenfield_Engineering_Handover_2026-10-11.docx",
+      "available": true,
+      "firstAdditionHistory": [
+        "d0c36aaa8cf10aa63a8c50e54ef110ac4758b600 2026-10-11T17:39:39-04:00 Reconcile G1 qualification source and trusted SDK evidence wiring"
+      ]
+    },
+    {
+      "reference": "cff71e1ba8ca8dea8970ad0c778b580a73f84815:docs/handover/20261011/Meri_Greenfield_Engineering_Handover_2026-10-11.md",
+      "available": true,
+      "firstAdditionHistory": [
+        "d0c36aaa8cf10aa63a8c50e54ef110ac4758b600 2026-10-11T17:39:39-04:00 Reconcile G1 qualification source and trusted SDK evidence wiring"
+      ]
+    }
+  ],
+  "docxScopeLocators": {
+    "xml": "word/document.xml",
+    "indexConvention": "1-based every descendant w:p, including table paragraphs and empty paragraphs; no filtered-body indexing",
+    "paragraphs": [
+      {
+        "oneBasedAllParagraphIndex": 11,
+        "paragraphSha256": "5e64cabe47400bc82b01da601d775299851caf04a280cbdc16709e062c3b96d9",
+        "textRetained": false
+      },
+      {
+        "oneBasedAllParagraphIndex": 91,
+        "paragraphSha256": "26baf6dacb3379e6ecee508d528b923ea87b06af5f44eaa000582335e0e7cf6d",
+        "textRetained": false
+      },
+      {
+        "oneBasedAllParagraphIndex": 206,
+        "paragraphSha256": "fefce6197e35f22052445a321697cbf39974c1a827550dba5bc7613db254ae35",
+        "textRetained": false
+      },
+      {
+        "oneBasedAllParagraphIndex": 208,
+        "paragraphSha256": "38a8c0677e46fb8f5ed46bb0aa44e5f7c7a5a766f10f79ae853b2a9284df5933",
+        "textRetained": false
+      },
+      {
+        "oneBasedAllParagraphIndex": 212,
+        "paragraphSha256": "8fd301571064afe28c3ec8c6225fb1b70066ccb63c0d23df417edba131203c5f",
+        "textRetained": false
+      },
+      {
+        "oneBasedAllParagraphIndex": 223,
+        "paragraphSha256": "400ac0fff0c726ca66b307b7027009dba4d5d97478c674ebdecc59235e4b7cee",
+        "textRetained": false
+      }
+    ]
+  },
+  "rawPrivateBodiesRetained": false,
+  "formulasRecalculated": false,
+  "missing": [
+    "No earlier pre-R2 capability workbook was found among tracked paths; its exact filename or byte identity was not established.",
+    "Underlying human chat approval described by D011 was not found as an exported transcript or signed row-level decision artifact."
+  ]
+}

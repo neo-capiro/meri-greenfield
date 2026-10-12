@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "publication": {
+    "pr": 34,
+    "url": "https://github.com/neo-capiro/meri-greenfield/pull/34",
+    "state": "open",
+    "draft": true,
+    "merged": false,
+    "base": "task/meri-observed-reads-20261012",
+    "baseSha": "ede7b56845816d38d0bbffab5a657aaa4f978739",
+    "head": "task/meri-plan-reconciliation-20261012",
+    "headSha": "c05dcbc29ba4d7eb93f98c51749495ff88cda34c",
+    "observedAt": "2026-10-12T19:44:00Z"
+  },
+  "scopeAuthority": "79efba457f41ce436b91f76741dac783ba82010b",
+  "wholePlan": "6a3770bf4368f5b111dd588848c7bc0f45885837",
+  "independentReview": "9d2c846e1dd681cd0dfb5e3c20337db3c96b9e18",
+  "packetCommit": "c05dcbc29ba4d7eb93f98c51749495ff88cda34c",
+  "packetManifest": {
+    "members": 81,
+    "sha256": "94ad8cb8cc9384fcb68aa2cfd1f44d0e56a73a88080f4ee9379423651d569a8d"
+  },
+  "verdict": "ACCEPT_METADATA",
+  "implementationAuditComplete": false,
+  "runtimeAccepted": false,
+  "receiptExcludedFromFrozenManifest": true
+}

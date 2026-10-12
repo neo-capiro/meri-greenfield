@@ -1,0 +1,104 @@
+{
+  "workbookRows": 705,
+  "sheetCounts": [
+    {
+      "sheet": "Overview",
+      "dataRows": 0,
+      "storedRows": 36
+    },
+    {
+      "sheet": "New Meri",
+      "dataRows": 322,
+      "storedRows": 325
+    },
+    {
+      "sheet": "SDK coverage",
+      "dataRows": 48,
+      "storedRows": 51
+    },
+    {
+      "sheet": "Current native tools",
+      "dataRows": 139,
+      "storedRows": 142
+    },
+    {
+      "sheet": "Current workflows",
+      "dataRows": 93,
+      "storedRows": 96
+    },
+    {
+      "sheet": "UI states",
+      "dataRows": 60,
+      "storedRows": 63
+    },
+    {
+      "sheet": "Routing audit",
+      "dataRows": 10,
+      "storedRows": 13
+    },
+    {
+      "sheet": "Tool contracts",
+      "dataRows": 12,
+      "storedRows": 15
+    },
+    {
+      "sheet": "Qualification",
+      "dataRows": 12,
+      "storedRows": 15
+    },
+    {
+      "sheet": "Deployment work",
+      "dataRows": 9,
+      "storedRows": 12
+    }
+  ],
+  "r2LineCount": 665,
+  "allIndexedMarkdownLines": 2889,
+  "docxXmlParagraphs": 315,
+  "docxNonemptyParagraphs": 307,
+  "namedIds": {
+    "W": 12,
+    "R-": 12,
+    "REL-": 9,
+    "G": 8,
+    "RG-": 12
+  },
+  "quickSkills": [
+    "quick_skill.research_company",
+    "quick_skill.relationship_brief",
+    "quick_skill.client_changes",
+    "quick_skill.portfolio_changes",
+    "quick_skill.portfolio_overlap",
+    "quick_skill.mail_history",
+    "quick_skill.meeting_prep",
+    "quick_skill.commitments_audit",
+    "quick_skill.funding_opportunity_match",
+    "quick_skill.pe_deep_dive",
+    "quick_skill.bill_watch",
+    "quick_skill.hearing_watch",
+    "quick_skill.representation_lookup",
+    "quick_skill.regulatory_docket_brief"
+  ],
+  "newMeriCategories": {
+    "Workspace and conversations": 24,
+    "Conversation management and preferences": 19,
+    "Agent work environment": 20,
+    "Run controls and durability": 20,
+    "Schedules and automation": 12,
+    "Authorized data coverage": 31,
+    "Retrieval and evidence": 14,
+    "Institutional Memory": 17,
+    "Approvals and selected source commands": 18,
+    "Uploads and input handling": 14,
+    "Artifact creation": 25,
+    "Artifact lifecycle and quality": 20,
+    "Browser work": 12,
+    "Qualified browser and optional integrations": 7,
+    "Security, identity and operational controls": 23,
+    "Delivery and release requirements": 22,
+    "Deferred or unselected scope": 12,
+    "Routing and retrieval reliability": 12
+  },
+  "completionClaim": false,
+  "noProductOrRuntimeChecksExecuted": true
+}

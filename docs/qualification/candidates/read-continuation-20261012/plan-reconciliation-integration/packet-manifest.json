@@ -1,0 +1,421 @@
+{
+  "base": "ede7b56845816d38d0bbffab5a657aaa4f978739",
+  "contentFreeze": "fa61fa24a1fbabb53b407bd0f8a479e412456755",
+  "scopeAuthority": "79efba457f41ce436b91f76741dac783ba82010b",
+  "wholePlan": "6a3770bf4368f5b111dd588848c7bc0f45885837",
+  "independentReview": "9d2c846e1dd681cd0dfb5e3c20337db3c96b9e18",
+  "verdict": "ACCEPT_METADATA",
+  "implementationAuditComplete": false,
+  "runtimeAccepted": false,
+  "excludes": [
+    "packet-manifest.json self-reference",
+    "later publication receipt"
+  ],
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-PLAN-RECONCILIATION-20261012.md",
+      "bytes": 18918,
+      "sha256": "1f5751dde4aaabdf8e95c139c79486415e3a01c0c393f59ec936c972b4ce956d"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-PLAN-RECONCILIATION-INTEGRATION-20261012.md",
+      "bytes": 3582,
+      "sha256": "40d860b07f1ea6effc8f5758fcf3e32b22d870230f451054fc887e9a18c5e74b"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-PLAN-RECONCILIATION-REVIEW-20261012.md",
+      "bytes": 6477,
+      "sha256": "913fd184442dc31dc0f967409e974ff934559b233fe9f558b5c0c898640c19e7"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-SCOPE-AUTHORITY-20261012.md",
+      "bytes": 11712,
+      "sha256": "d5395a245829d1834c38525597ca3ef4aef0c484eb8dcf3d00f6c2ed3e62ae2e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-integration/integration-audit.json",
+      "bytes": 1179,
+      "sha256": "4b8c4845c4fe10f78f41d1ec17ded496ad9b11d0cf4beadf0b2d8f98f7447f2e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/audit-initial.py.txt",
+      "bytes": 7552,
+      "sha256": "7aab17982de67738df1d7f31f5095524c605a293b21f781403840de84df4c018"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/audit-pre-blank-paragraph-fix.py.txt",
+      "bytes": 14451,
+      "sha256": "30db4545a94ec0b0781ae3727aaadd31e8c49c1eddbe892915f1097ca39507bb"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/audit-pre-cell-join-fix.py.txt",
+      "bytes": 14531,
+      "sha256": "5ff59da6a59071df6adb053f5202d6505099e04469f2348e2b0c454f018baa7c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/audit.py",
+      "bytes": 15173,
+      "sha256": "20c7cc371a4f8c774e8984e18b491212eca51ce412c2a7202ff29f158b668f25"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/criteria.md",
+      "bytes": 2024,
+      "sha256": "847871ba5f4ee06cb744b04337905842e78c710e5aa3b0acbdaac1404ca73b87"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/draft-crosscutting-links.json",
+      "bytes": 4930,
+      "sha256": "5d32c06c272a097985045c4c18cbb35f077614bd50f166058c63de57cc48d02a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/draft-null-operation-identities.json",
+      "bytes": 11512,
+      "sha256": "834af143af56f6df562e669ea5670301ff9ccfc8b43d189cb856b7a09d5ee9c9"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/final-audit.json",
+      "bytes": 1460,
+      "sha256": "5c0ec1f7d839da1c424ca5719d0dabdd72a66e59140a77d406bacfe8172f2a92"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/independent-trace.json",
+      "bytes": 10439,
+      "sha256": "66b57919b20d9f6f1c39aa146203fb0651968a344609c6a6b68786ce181de393"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/manifest.json",
+      "bytes": 6964,
+      "sha256": "5efd9d565101d015d470e768009f039944d2a182b07a59ca6fa41e7a6228b3fc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/plan-corrected.json",
+      "bytes": 346,
+      "sha256": "96ef5d7d254b1cf15aa1770c185d78ddcb69375c213debb5684e089c18402384"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/plan-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/plan-corrected.stdout.bin",
+      "bytes": 221072,
+      "sha256": "ac37198e95f6965686a30494d248ec98d7eac4973122c416b500e7d228861962"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/plan-exact.json",
+      "bytes": 346,
+      "sha256": "91ce55bd7314ea401d8db4ffb9ba3a9d8c483d8532a79253d6300f1356370406"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/plan-exact.stderr.bin",
+      "bytes": 696,
+      "sha256": "7eb8314285c311b9da839ed3747c8b9707fe9030fb20822c15ad67b9f4e665e2"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/plan-exact.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/plan-final.json",
+      "bytes": 346,
+      "sha256": "17dc54843882f38c973a9d1a4baf2f3357349372f65b46cf6d6dbf4f80108adc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/plan-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/plan-final.stdout.bin",
+      "bytes": 220825,
+      "sha256": "83834299dfa4cff40d959a64828c6442ce104252f5cd442d2a4ee138526f5298"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/plan-packet-audit.json",
+      "bytes": 4836,
+      "sha256": "fc4aae5a105c81ba337f4352118a344cff94e964efd26cd5f35a5251fc46f68c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/review-diagnostics.json",
+      "bytes": 2882,
+      "sha256": "852a0c73f6bf5c7eda07a06af8cd1fd62cac172d00ea7a5cc948c5986a793227"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/scope-corrected.json",
+      "bytes": 346,
+      "sha256": "5acf2720a2683d8215d80bc16a6e759fe04c26b76a2c6e08741fb27d8915d9a4"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/scope-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/scope-corrected.stdout.bin",
+      "bytes": 40269,
+      "sha256": "e3bc235a2bfe5ab263681255673ab992fb7186a2544d1a1d2e785244e7a1740c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/scope-independent.json",
+      "bytes": 346,
+      "sha256": "cfa70213497cd2940eb15649220f2a515f14e3ee949db9544eae72320c520a69"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/scope-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/scope-independent.stdout.bin",
+      "bytes": 40313,
+      "sha256": "05122177d9cb499e1941349b26f9d43235f77312239a12f080ad4aff74b4d4e8"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/setup-failure.json",
+      "bytes": 516,
+      "sha256": "9e65c3ac3a06f9a08a34103328296df988c144d327cbaee308ea2c6a493942e1"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/binding-repair-failed.build-ledger.py.txt",
+      "bytes": 29328,
+      "sha256": "58d7e9c0ff6695624e0b845960d1bcbf1d75493071e36a04129003c5cbea4b05"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/binding-repair-failed.build.stderr",
+      "bytes": 2415,
+      "sha256": "98576ee301734f38105dd1aa9f5b7305bd31cce9b8ce91634e9506f00e8c5c43"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/binding-repair-failed.build.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/binding-repair-failed.verify.py.txt",
+      "bytes": 5189,
+      "sha256": "c876a731e0835bc02d6f40b4d19afcb61751cb06b21b9246fa529903986cc342"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/binding-repair-failed.verify.stderr",
+      "bytes": 1388,
+      "sha256": "ba1bad3dbff4dc8f5d99aef9910b60e23fadb9bed02623b0548e623e30db0ff8"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/binding-repair-failed.verify.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/build-ledger.before-review.py.txt",
+      "bytes": 28075,
+      "sha256": "2881d845940b218045424597f3dd5cc3ef8d474b9dfcd788319679359a9983ed"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/build-ledger.initial.py.txt",
+      "bytes": 26274,
+      "sha256": "6526ee6552b4cd8411a54f78858b4eca09c43cd85c028db8c8850903002cc43a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/build-ledger.py",
+      "bytes": 29619,
+      "sha256": "36b51f72f33a478788edebf87d9ea21b6e11df94050d504144e34e9d130b3e4d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/build.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/build.stdout",
+      "bytes": 146,
+      "sha256": "8bfa3d51f74f01f4a6bbeb6df23b4fc4be7cba007912666ef91ab2ef61aa2eb5"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/checks.json",
+      "bytes": 897,
+      "sha256": "b58508129e8e9bbd7633dc0251e492786188931ee296369fb504f12031f3fa27"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/coverage-summary.json",
+      "bytes": 2511,
+      "sha256": "c29220d6682588fec853e76d5a57040152c84c0725073403cc20576882de2216"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/current-source-boundary.before-review.json",
+      "bytes": 11512,
+      "sha256": "834af143af56f6df562e669ea5670301ff9ccfc8b43d189cb856b7a09d5ee9c9"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/current-source-boundary.json",
+      "bytes": 13219,
+      "sha256": "5affc70b413e4b51d7e9c357f8ed9b7a25334dc764227642714673c004638b77"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/groups.json",
+      "bytes": 18832,
+      "sha256": "c5b76a0467ac3dc232da561c795b39b1ebdde8b848dd9662a1b561b233014835"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/initial-receipt.json",
+      "bytes": 290,
+      "sha256": "e70ffdbac937f87418249da2659ca9d1cc5bac166c33fb4a7302e4dae92602e4"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/initial.stderr",
+      "bytes": 1471,
+      "sha256": "c6ccd7d1d175e0dd991ed5d49da066b1005ef3b16ae86e12cc3d0a9c19fa4b7a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/initial.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/manifest.json",
+      "bytes": 7211,
+      "sha256": "c6de0a94f194a4ebb28524a3b3a6ec8d6124343f9155628e76f4773fdffd8f88"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/normative-id-ledger.json",
+      "bytes": 63609,
+      "sha256": "3b2f81a369f7b090538f1bace1f2969ebeac4cb8ab41334d45b1f62d72a1df1a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/original-docx-coverage.json",
+      "bytes": 422991,
+      "sha256": "0bead7f84aa3969b9a6be1189480c3ed71d1bcb1f7de7eb11f3f940861d4846f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/plan-line-coverage.json",
+      "bytes": 3734317,
+      "sha256": "7078743fa420f4c3da0fb3577b4a37590aa00ca3dfef617b164ce1293565ace3"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/review-corrections.json",
+      "bytes": 1132,
+      "sha256": "1c7fa317f20e2ea2de828d00abbdb8d639aa853f53587bf43081a8b89d72cb6f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/review-projection-failure.json",
+      "bytes": 343,
+      "sha256": "9ab75cc0905805352aff0331d59f608d081608ef13fcb64df66ab51358631620"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/source-identities.json",
+      "bytes": 16649,
+      "sha256": "69789404551f2fdb6d1cf1e9922b8077cb07373227cfd68867105fc86ec08112"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/verify.py",
+      "bytes": 5441,
+      "sha256": "2aba06043a176785cff0fe554580e9795f62cf29280e2799d6f9aee69cbf772a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/verify.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/verify.stdout",
+      "bytes": 138,
+      "sha256": "ab9a3ae983992b3a9063c5732c74da8f936600a8c5713faf913b79e3380ff577"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/workbook-requirements.json",
+      "bytes": 1936486,
+      "sha256": "7a38f3dce53cb637d50a6aa67db5ba40d2641e6cbdf02d141708ac3d28f9d65d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/scope-authority/authority-timeline.json",
+      "bytes": 4703,
+      "sha256": "4a38022a45866c3484d6956b01d0f776da062cc25872e8d141cc316dbb0832c5"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/scope-authority/deferred-ledger.json",
+      "bytes": 172574,
+      "sha256": "29f5ab62752ec6998bafd5c0ebfd891057dc7ad038f0ea83cc6119c96ac59f2e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/scope-authority/input-lineage.json",
+      "bytes": 5828,
+      "sha256": "4974c84de142f5b0be34f26f50f889a8ecf0004ec14bcb9e4d7e6dfdef565cf6"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/scope-authority/manifest.json",
+      "bytes": 4143,
+      "sha256": "8070ae350b1ce67bbd2f082e27677d5789c63f27e2ccfea73f07672324361e6c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/scope-authority/missing-evidence.json",
+      "bytes": 2698,
+      "sha256": "3d67bf4bab91a9f34a96fb3fcfb2a3e415744b3ce5f500e8fd6b52e0e96652ea"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/scope-authority/offline-checks.json",
+      "bytes": 23802,
+      "sha256": "5f8e4840246867b9c9824658aeb9a546f35a7b715dd1984f8bdf5c3fd45d32a9"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/scope-authority/outline.json",
+      "bytes": 1090,
+      "sha256": "a95fadeceba8cbdbf22a2adc3bb147735ab3b97084e5457a2dc601060777e7cb"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/scope-authority/packet-verification.json",
+      "bytes": 38905,
+      "sha256": "801bb7a2efd4eeca7437b4d10d5d70acad9f713f0f26d641c9d497a00fb2145c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/scope-authority/reconcile-initial.json",
+      "bytes": 489,
+      "sha256": "9c56eca502245f051dd47084b69c699747f6287f703df8aaa2a3159aad1066eb"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/scope-authority/reconcile-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/scope-authority/reconcile-initial.stdout.bin",
+      "bytes": 50,
+      "sha256": "2f6526c60d8974c3daf5fd12299bbd72cb414de3d224d6ad0707218dcf6a9c8c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/scope-authority/reconcile.py",
+      "bytes": 12860,
+      "sha256": "85e36abf95603b483bdf110f2a819047d65adb152c8386ef4511c038ead0fce0"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/scope-authority/reference-identities.json",
+      "bytes": 14721,
+      "sha256": "b566e6179982dd2a32169ac401ae433bc469a3c148e15ca528fa8cafe6196c89"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/scope-authority/research-diagnostics.json",
+      "bytes": 1490,
+      "sha256": "0f8bd0986ff8e926a531d96a727310230b92e2c52a31c09fd4ede5d326f360ee"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/scope-authority/verification.json",
+      "bytes": 36375,
+      "sha256": "d8255c710e5e8c176e1a199667c25d3dcb3d642a948557efec5e0e57080c5dcb"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/scope-authority/verification.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/scope-authority/verify.py",
+      "bytes": 2837,
+      "sha256": "3768c3feffbeacf6a3415ae0541e984e3a44ba600ab9baa18608f3259295b8b1"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/scope-authority/whitespace.json",
+      "bytes": 125,
+      "sha256": "90d6db45b4ae48bb7cbce757d56dcf5ec2fec58c5f401fd8a185aa49fe50bf2d"
+    }
+  ]
+}

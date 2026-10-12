@@ -1,0 +1,391 @@
+{
+  "base": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+  "files": [
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/handover/20261012/inputs/.gitattributes",
+      "blob": "dfdddd1b439c3e97cf1662fb6dfcbf18fe1044be",
+      "bytes": 19,
+      "sha256": "e3fe8bb0ba5abc68294605fc2f49e2f10718ab664f08dde9bf14186b1f5abca4"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/handover/20261012/inputs/AWS_Shipper_Return.original.txt",
+      "blob": "b956b01eaaf178064453c4a57cdbf87677a1ece2",
+      "bytes": 18923,
+      "sha256": "1347f16d39867c9edfe1581d6a8cabfb5ab1c391e595d4d1b9e2e80e79ef9804"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/handover/20261012/inputs/Meri_Codex_Hermes_Deployment_Plan.original.md",
+      "blob": "f94c599701d5f10e75f554b49550ef63044f2257",
+      "bytes": 44322,
+      "sha256": "948f5fa6b3d76f1e6df72496f85d7e09d25cc397bc0f8e1efe0ab58fe0eda560"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/handover/20261012/inputs/Meri_Greenfield_Agent_Plan.original.docx",
+      "blob": "bda0a5741732b0b2a305f211818eb1f3f2890cff",
+      "bytes": 57656,
+      "sha256": "80a96320bde810214127919ddfe14659e3efd44d7ee7f6ae57d51527bc814ad7"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/handover/20261012/inputs/Mode_Toggle_Reference.original.png",
+      "blob": "a8663dc6c7380839f9188e89c259ad71b4aeecc0",
+      "bytes": 19255,
+      "sha256": "5f26f5f242e57c9557f2940e572fc94e241572b132305afe6e4897b9f4505fe1"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/handover/20261012/inputs/Shared_Frontend_Handoff.original.md",
+      "blob": "514c49d3d5cd4c6dcd8d834ba5baa97713808500",
+      "bytes": 18193,
+      "sha256": "79e65d2f1ef597a045315553dd11e4ec9f78bf648ccb6fcd229f4742a9808581"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/handover/20261012/inputs/manifest.json",
+      "blob": "53458a1ad4d72561a2b3707cc7ba7bb13e896e20",
+      "bytes": 2504,
+      "sha256": "7b5f9e6bba6e18c5e5c75fcf40a547dcb834d30d2cdff371e30f2a0f07e5e594"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/plans/MERI-DEPLOYMENT.md",
+      "blob": "c9849375e463e88a064b256f715db7858cd369df",
+      "bytes": 86848,
+      "sha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/plans/MERI-G1-SOURCE-TO-NATIVE.md",
+      "blob": "24c1ff7dd88ec7eace14646bedcc966aad454d5d",
+      "bytes": 38565,
+      "sha256": "c457027091b54a9373494feda828e0f1827ebc68c92bb4d686b7123a771fe516"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/plans/Meri_Greenfield_Agent_Plan.docx",
+      "blob": "bda0a5741732b0b2a305f211818eb1f3f2890cff",
+      "bytes": 57656,
+      "sha256": "80a96320bde810214127919ddfe14659e3efd44d7ee7f6ae57d51527bc814ad7"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/plans/archive/MERI-DEPLOYMENT-20261009-before-figma.md",
+      "blob": "b04f7130c53fc3e6111b06305828e669db49b9e3",
+      "bytes": 34216,
+      "sha256": "f2412671f68e9bcaab3bde6304294d56bf7b3194626697afbc2969abb5526c03"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/plans/archive/MERI-DEPLOYMENT-20261010-before-R2.md",
+      "blob": "f94c599701d5f10e75f554b49550ef63044f2257",
+      "bytes": 44322,
+      "sha256": "948f5fa6b3d76f1e6df72496f85d7e09d25cc397bc0f8e1efe0ab58fe0eda560"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+      "blob": "084c0150bc0fc1dfe99858402dabc14caa48ab82",
+      "bytes": 127877,
+      "sha256": "3d281d7a1a9a1eaf4fe520dde8e46e2abedac82f6b771041a613c1cfb0df25ec"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/plans/revisions/20261010-R2/Meri_Codex_Hermes_Deployment_Plan-R2.md",
+      "blob": "c9849375e463e88a064b256f715db7858cd369df",
+      "bytes": 86848,
+      "sha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/plans/revisions/20261010-R2/inventory-stored-cells.json",
+      "blob": "749abe0c9a38aa1c7fa6bfc233b76456f54994d1",
+      "bytes": 927872,
+      "sha256": "15b706f14aeef9b5a142d35ffdf2f7ee03b946ab665ff789de6da84202e89191"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/plans/revisions/20261010-R2/manifest.json",
+      "blob": "0210582185e479306555597d37e0f2ffcb82c7db",
+      "bytes": 2312,
+      "sha256": "3af1bd511c4eff3bbb43c728808046c872768cf47da7ea6a83262bd95211cbe5"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "AGENTS.md",
+      "blob": "fe8cefa588409d8562f0e6d939a6da7d120c0d87",
+      "bytes": 6582,
+      "sha256": "a0650949b74e5aee709bd8b3c9d480f95f5b898778ac8f7b3927eb54b141437a"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/IMPLEMENTATION-STANDARDS.md",
+      "blob": "7f680395e07d1114667a800f3f8ed77010a3eac2",
+      "bytes": 11082,
+      "sha256": "d4f10f964ee207187abacd967649a1cfc9bdd468072dc01f859268f08b719959"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/coordination/DECISIONS.md",
+      "blob": "fd58ed15daa8d3a093893e49e901f28570c91f51",
+      "bytes": 24662,
+      "sha256": "8d5238335bbc9e68b58cbe083bd275dc24938eb7d13dc8d047342b8f37a819ae"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/handover/20261011/CONTINUATION-INSTRUCTIONS.md",
+      "blob": "4d07982667a31f21c0d0b497a62932c6392a9036",
+      "bytes": 13012,
+      "sha256": "37cdc0af9397bd53d7f4e91c6ef7d727508d238056447bd789dc5695f150748f"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/handover/20261012/REMOTE-RESUME-CURRENT-20261012.md",
+      "blob": "41dd06647389d79e613165f635f5a262ad0ecacd",
+      "bytes": 59176,
+      "sha256": "d2a3abb69b6e54bf1e81940f2f44cf4d77cd18dbbafbb7c1665af19fa57b33a8"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/handover/20261012/CONTEXT-INDEX.json",
+      "blob": "83034020fe5c3c3c4a79e01305a6f3ba614ab7d7",
+      "bytes": 8487,
+      "sha256": "64491730fb678c688ffa295d175e8123193cb932dc9a6a9178fbdbca11196bf0"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/handover/20261012/SOURCE-SNAPSHOTS.json",
+      "blob": "41089f41280d89f5c25d87b2a9685181964ee56c",
+      "bytes": 2715,
+      "sha256": "1017587401a4c5c4dcab5b5001e97423788a83376f20efd1f8ec8c476d29dfe5"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/SKILL-CONTRACT.md",
+      "blob": "785c2fb5ae9472345bd9c54adf86a7ee829542ed",
+      "bytes": 5772,
+      "sha256": "fbba378db2dc95e26996c26620c599ffaf69386ff495ee83fefa56d06ae2f3f7"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/RETRIEVAL-CONTRACT.md",
+      "blob": "091624d1fb63192114ffaa1a4ef53ca687842efd",
+      "bytes": 17775,
+      "sha256": "2e2609c8b7ead0f7558b0fac29b4be01dbfc89769286dfaa561a8f1153eeb64c"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/ROUTING-EVALUATION.md",
+      "blob": "fab563ae2e8f3185d4506dbcb023a07e9900bccf",
+      "bytes": 4222,
+      "sha256": "b908086bb036a0bbe04572975ed9d04e180770a2c333c68bfe7fef360a200add"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/UI-SPEC.md",
+      "blob": "fa9d0009d725d15c4b46064ac01614192c1a1e5d",
+      "bytes": 39228,
+      "sha256": "56cf670707cc99efc38c9edb671f5d2332f95b1a6b276017058f6dfc9d881e95"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/UI-COVERAGE.md",
+      "blob": "172c1b95da15c62f38dd1977467bc81442c910f1",
+      "bytes": 44985,
+      "sha256": "9c216a6b62c8fa95122475c489265839183c42ad02a1ecf5c3bbee73355e25d9"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/SOURCE-INVENTORY.md",
+      "blob": "eaa92b7a5ae9ec869654b1571624da64a0d4c45f",
+      "bytes": 22537,
+      "sha256": "fdbb75b28e3724a4bbf1e76d868bebe0a4e8924fb96cb37be6b8b4dce6356e05"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/COMPONENTS.md",
+      "blob": "65e2b07f6c73012357b620fcedc5eecd44e8ea76",
+      "bytes": 8930,
+      "sha256": "d41dae59bf7b350a3a2c8c95bad55a3f571e1220060bea3f52798f8f9f98f3a7"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/coordination/r2/skills.json",
+      "blob": "842611cf4916b00486bf555034f8e50b74d2c456",
+      "bytes": 25018,
+      "sha256": "bfd0b14953b858d351a58a778f435f2d546c1a420050ee6c31ae5e489f1f17b6"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/coordination/reports/CODEX-FRONTEND-RUNTIME-CLOSEOUT.md",
+      "blob": "db81395c766095365807661eaa7b60755d049c5a",
+      "bytes": 7918,
+      "sha256": "9324ade94072411e7e7a048638c33d80ddac3e2d66796d7735031117d4c30b78"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/coordination/reports/CODEX-R2-ADOPTION.md",
+      "blob": "c0436b3578b634f0441b7557a64571f21dba2761",
+      "bytes": 5774,
+      "sha256": "8ea4fc14c75747d27cb5ceb51a41551f71618c92cb89ca6113027aef56a7d0f5"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/coordination/reports/CODEX-REL02-CANONICAL-COMPOSITION-ACCEPTANCE-20261011.md",
+      "blob": "c7178bbfa9ac6efade9b40a710669abea872bd2c",
+      "bytes": 6423,
+      "sha256": "9a4b8cb85aedbdaa235588cdbb39dc5e075871b616327d69e906aa546c3dc117"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/coordination/reports/MERI-G1-NATIVE-PATH-20261012.md",
+      "blob": "4a5597ece389b46a50a69f357c9198fc200f6cc0",
+      "bytes": 11833,
+      "sha256": "e35867ce3fd1ed758daae8c87cea4bbd987fff95d5963ff4877fa85b010b277d"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/coordination/reports/MERI-G1-EXECUTION-OPTIONS-20261012.md",
+      "blob": "b012bf5f2ba967ed461010917451befa80dd8ca2",
+      "bytes": 14285,
+      "sha256": "7744a806437ac0ae3dfdb5417203327acd1530a943026c0cba3f5a123cece819"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/coordination/reports/MERI-PGDG-METADATA-20261012.md",
+      "blob": "c046372b3f091e73511812f3e16a4991a6f47120",
+      "bytes": 4602,
+      "sha256": "9528d1504fba3d977347f6494cbd8f313571494abcd601a6fb05b832acee5c26"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/coordination/reports/MERI-IMAGE-UPSTREAM-REVIEW-20261012.md",
+      "blob": "2adea90b5449e4342127b3dd73cfa13bdc0805df",
+      "bytes": 10488,
+      "sha256": "feb992734cd527bf11fb40f3ddfbec052ee54d312f29e7bb8fa8328342cee094"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/decisions/MEMORY-ADMIN-SELF-APPROVAL-20261012.md",
+      "blob": "35aa3a22e4fca429c431078bd325f0cd96ee328f",
+      "bytes": 5769,
+      "sha256": "54d41f5eb09a6625e1f4fd241a144a619ba326f7420629b0f4b4bff823b4c8b0"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "packages/contracts/retrieval-0.2/skill.schema.json",
+      "blob": "73da0d331097e739373722b6b0bf1984f0d45c1f",
+      "bytes": 9072,
+      "sha256": "146a78397cf72fbb899769fe23a83ab609fd8d67803f543ab5a76dba7a37ee7e"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "packages/contracts/retrieval-0.2/memory-review-policy.mjs",
+      "blob": "2cb6b2afc194f70bf75e2e39170f61bf6b5980ea",
+      "bytes": 8319,
+      "sha256": "088d64a80ea10eaad4e9c6bd6028fb128a96d79f5ce7af3c60a314fa13894ff8"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "apps/control/qualification-temporal/recovery-activities.mjs",
+      "blob": "9b46aa51cea26f281402fe0fb26b199f4107ead9",
+      "bytes": 12344,
+      "sha256": "539b6216a4d34e647e0ec9037fef5814d86d10ffd0a1207c128b54711982adc3"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "apps/control/qualification-temporal/recovery-workflow.ts",
+      "blob": "cb85e4f3a2c532cb44aeb6745b8bc26956114538",
+      "bytes": 1403,
+      "sha256": "f720e4eaf3d064fd34f82638b2663946667b0b83527628241622d2f5f1457057"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "apps/worker/qualification/checkpoint/native-session-files.mjs",
+      "blob": "ac138c990adeae889c1a4624acab523324669c37",
+      "bytes": 12049,
+      "sha256": "543e05c230bf614cd5cf73f2d69877f1311ec0faf9d7ca205429161a75b842e1"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "apps/gateway/budget/README.md",
+      "blob": "452552ef8df3b8fbaf26774af02de9bf9c3e35c6",
+      "bytes": 17448,
+      "sha256": "33b6bf03a1c71a8b9f5217ed840e3a88f91aa1ee0cd9a05b8f14d04a1eadc469"
+    },
+    {
+      "ref": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "apps/gateway/test/postgres-budget.integration.mjs",
+      "blob": "55bb55fa82c20028f5f1f4050b0fff360b75c175",
+      "bytes": 13079,
+      "sha256": "85c5b91c6424397c8d85f49770717ca459df2a247905690b539194ef88285693"
+    },
+    {
+      "ref": "79efba457f41ce436b91f76741dac783ba82010b",
+      "path": "docs/coordination/reports/CODEX-SCOPE-AUTHORITY-20261012.md",
+      "blob": "141fd339cf03df73d6333f77461d671a66be7c6a",
+      "bytes": 11712,
+      "sha256": "d5395a245829d1834c38525597ca3ef4aef0c484eb8dcf3d00f6c2ed3e62ae2e"
+    },
+    {
+      "ref": "ab637c786bb344719bb096630314949b4b99e657",
+      "path": "docs/coordination/reports/CODEX-OBSERVED-READS-INTEGRATION-REVIEW-20261012.md",
+      "blob": "9032b07453f783cdc405862b02349dad7fd1e3f3",
+      "bytes": 6726,
+      "sha256": "daa8c7fece2343c9338cc2b1cdee53b70fd3c689c697f14eb9000adcafb9a695"
+    },
+    {
+      "ref": "97de9c3fb44284dffc5ac88c8265057bfdf967fc",
+      "path": "docs/coordination/reports/CODEX-COMMAND-CONTRACTS-INTEGRATION-REVIEW-20261012.md",
+      "blob": "80ead7663a447824236cf591e16c1a4449adb827",
+      "bytes": 3867,
+      "sha256": "04a5a9719d21cd4d97184b5f0aaf4d31ac3f9f27eb58a4aa0750de1d8fbff94d"
+    },
+    {
+      "ref": "753566baf2d230ed241941dcdeca41625277cb1d",
+      "path": "packages/contracts/retrieval-0.2/catalog.json",
+      "blob": "420c7dcb5ff8422cc67cf0336fec50f8d25313dc",
+      "bytes": 242133,
+      "sha256": "5c8a6ad710a9a48156dfabd0954d7d5c6150cd0720af014449a63d954838e218"
+    },
+    {
+      "ref": "753566baf2d230ed241941dcdeca41625277cb1d",
+      "path": "packages/contracts/retrieval-0.2/validate.mjs",
+      "blob": "b52a9b20262927b1bfaa154ec6eef6f97812a4ba",
+      "bytes": 25397,
+      "sha256": "f8d15b6b431ec0581d3a2d18bdc170a1b55c32c90039ea2610ad22456de956df"
+    },
+    {
+      "ref": "753566baf2d230ed241941dcdeca41625277cb1d",
+      "path": "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "blob": "3bb58b11210fae95629dfcc42b9955d356b462e5",
+      "bytes": 40297,
+      "sha256": "0af30ce3b6e5b078f1ae400873131276e19e2776950dc25e7d15ef7a16155500"
+    },
+    {
+      "ref": "bdbb14603cfab0d52d483956f7f1a7e373abb3cb",
+      "path": "packages/contracts/commands-0.2/artifact-file-validation.mjs",
+      "blob": "3b883350b3435a7a5b08ad458c2d32068c47a9c9",
+      "bytes": 5641,
+      "sha256": "56d5bdfdfe4876d3a0e6157226516a193e6ad75a9bf0b7e258cb3b2d044c0c04"
+    },
+    {
+      "ref": "5fca98580c5d93c9f9aa4a3ed518e926e087846c",
+      "path": "packages/contracts/commands-0.2/validate.mjs",
+      "blob": "36d51b5e784dacd8fc0b9d8b1823935039ba09c8",
+      "bytes": 2069,
+      "sha256": "6e9c32ed42d304bddeedd8b42851a895e52bc1767ecacc4b88e8001c75e22692"
+    }
+  ],
+  "unavailableRequestedPaths": [],
+  "missingOriginals": [
+    {
+      "item": "pre-R2 capability workbook",
+      "status": "not found among original/plans files in this exact Meri Git tree; not a claim of global absence; R2 workbook available"
+    }
+  ],
+  "readBoundary": "Metadata pins are not a claim that all historical source/evidence bodies were manually read. No remote refresh."
+}
