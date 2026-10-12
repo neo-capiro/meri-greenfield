@@ -140,7 +140,8 @@ def read_json(path, budget, inventory, fs):
 
 
 def fixed_git(repository, args, budget, capture):
-    result = capture([GIT_EXECUTABLE, "-C", repository, *args], repository, budget,
+    result = capture([GIT_EXECUTABLE, "--no-optional-locks", "-c", "core.fsmonitor=false",
+                      "-c", "core.untrackedCache=false", "-C", repository, *args], repository, budget,
                      spawn=native_spawn, make_thread=native_thread, sleep=time.sleep)
     require(result["observationEligible"] and result["exitCode"] == 0, "original_git_verification_failed")
     return result["streams"]["stdout"]["data"].decode("ascii").strip()
@@ -188,11 +189,13 @@ def verify_prior(manifest, budget, inventory, fs):
     return records
 
 
-def run_supervised(action, *, lifecycle, inventory):
+def run_supervised(action, *, lifecycle, inventory, evidence_writer):
     """Unadmitted concrete native composition; NEVER invoke under this task.
 
     lifecycle is the exact sibling source; inventory is the unchanged canonical
-    scripts/qualification/worker_runner_inventory.py module. These are explicit
+    scripts/qualification/worker_runner_inventory.py module; evidence_writer is
+    the reviewed native-bindings/author/evidence-writer.py reserved-slot writer.
+    These are explicit
     composition dependencies, not target-selected modules or caller booleans.
     The caller must first qualify a real enclosing watchdog and approve the exact
     private action. This function alone cannot enforce that external boundary.
@@ -286,15 +289,15 @@ def run_supervised(action, *, lifecycle, inventory):
                "cooperativeTotalSeconds": 15, "hardTotalProven": False,
                "externalFinalTimeAndExitReceiptRequired": True,
                "evidencePublicationVerified": False,
-               "publicationHold": "exclusive raw writes lack verified final readback and membership"}
+               "publicationHold": "native publication unqualified; final observations returned to external owner"}
     artifacts["command-receipt.json"] = (json.dumps(receipt, ensure_ascii=True, indent=2) + "\n").encode("ascii")
-    for name, raw in artifacts.items():
-        budget.check("total")
-        require(inventory.identity(inventory.plain(destination, fs, directory=True))[:2] == owned,
-                "owned_destination_substituted")
-        with (destination / name).open("xb") as handle:
-            handle.write(raw)
-        budget.check("total")
+    publication = evidence_writer.write_reserved(
+        destination, owned, artifacts, budget=budget, inventory=inventory, fs=fs,
+        writes=evidence_writer.NativeWrites())
+    # This returned observation is deliberately outside the written receipt:
+    # a file cannot certify its own final readback/membership after its write.
+    # The enclosing owner must preserve the final result and physical exit.
+    receipt["publicationObservation"] = publication
     # Packaging/upload is a separate future bounded action; never extend this15s.
     return receipt
 
