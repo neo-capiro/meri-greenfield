@@ -13,7 +13,7 @@ const instant = value => {
 export function createStateLegislationValidators({validateShape, schema}) {
   if (typeof validateShape !== 'function' || !schema?.$defs) fail('State legislation validator configuration');
   const definition = (id, kind) => {
-    if (!Object.hasOwn(families, id)) fail('Unknown state legislation operation');
+    if (typeof id !== 'string' || !Object.hasOwn(families, id)) fail('Unknown state legislation operation');
     return `${families[id]}${kind}`;
   };
   function normalizeStateLegislationInput(id, request, options = {}) {

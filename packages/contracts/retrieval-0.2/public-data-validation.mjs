@@ -14,7 +14,7 @@ const limit = value => {
 export function createPublicDataValidators({validateShape, schema}) {
   if (typeof validateShape !== 'function' || !schema?.$defs) fail('Public-data validator configuration');
   const definition = (id, kind) => {
-    if (!Object.hasOwn(families, id)) fail('Unknown public-data operation');
+    if (typeof id !== 'string' || !Object.hasOwn(families, id)) fail('Unknown public-data operation');
     return `${families[id]}${kind}`;
   };
   function policy(id, options) {

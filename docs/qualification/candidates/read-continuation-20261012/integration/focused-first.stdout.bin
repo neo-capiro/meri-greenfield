@@ -1,0 +1,45 @@
+✔ reviewed continuation preserves139 originals and the exact prior21 descriptors (8.204998ms)
+✔ canonical continuation routes normalized selection and exact context: search_funding_opportunities (6.42266ms)
+✔ canonical continuation pins unavailable schemas and rejects promotion: search_funding_opportunities (23.790062ms)
+✔ canonical continuation routes normalized selection and exact context: get_funding_opportunity_requirements (2.745325ms)
+✔ canonical continuation pins unavailable schemas and rejects promotion: get_funding_opportunity_requirements (16.441763ms)
+✔ canonical continuation routes normalized selection and exact context: get_funding_opportunity (7.692708ms)
+✔ canonical continuation pins unavailable schemas and rejects promotion: get_funding_opportunity (14.914067ms)
+✔ canonical continuation routes normalized selection and exact context: get_opportunity_client_context (2.288869ms)
+✔ canonical continuation pins unavailable schemas and rejects promotion: get_opportunity_client_context (14.626335ms)
+✔ canonical continuation routes normalized selection and exact context: get_opportunity_government_landscape (2.076059ms)
+✔ canonical continuation pins unavailable schemas and rejects promotion: get_opportunity_government_landscape (17.495655ms)
+✔ canonical continuation routes normalized selection and exact context: read_client_documents (9.151139ms)
+✔ canonical continuation pins unavailable schemas and rejects promotion: read_client_documents (16.499579ms)
+✔ canonical continuation routes normalized selection and exact context: query_economic_data (3.60041ms)
+✔ canonical continuation pins unavailable schemas and rejects promotion: query_economic_data (14.294677ms)
+✔ canonical continuation routes normalized selection and exact context: search_federal_grants (18.534216ms)
+✔ canonical continuation pins unavailable schemas and rejects promotion: search_federal_grants (23.36904ms)
+✔ canonical continuation routes normalized selection and exact context: search_federal_awards (2.350361ms)
+✔ canonical continuation pins unavailable schemas and rejects promotion: search_federal_awards (13.129366ms)
+✔ canonical continuation routes normalized selection and exact context: get_district_nexus_context (4.785289ms)
+✔ canonical continuation pins unavailable schemas and rejects promotion: get_district_nexus_context (13.761015ms)
+✔ canonical continuation routes normalized selection and exact context: get_district_nexus_changes (2.749591ms)
+✔ canonical continuation pins unavailable schemas and rejects promotion: get_district_nexus_changes (13.022645ms)
+✔ canonical continuation routes normalized selection and exact context: search_state_bills (1.755408ms)
+✔ canonical continuation pins unavailable schemas and rejects promotion: search_state_bills (27.620162ms)
+✔ canonical continuation routes normalized selection and exact context: get_state_legislator (1.929179ms)
+✔ canonical continuation pins unavailable schemas and rejects promotion: get_state_legislator (36.049982ms)
+✔ canonical continuation routes normalized selection and exact context: search_cbo_cost_estimates (2.072263ms)
+✔ canonical continuation pins unavailable schemas and rejects promotion: search_cbo_cost_estimates (33.536205ms)
+✔ canonical continuation routes normalized selection and exact context: search_gao_reports (1.806905ms)
+✔ canonical continuation pins unavailable schemas and rejects promotion: search_gao_reports (31.404213ms)
+✔ canonical continuation routes normalized selection and exact context: search_crs_reports (1.120453ms)
+✔ canonical continuation pins unavailable schemas and rejects promotion: search_crs_reports (14.300014ms)
+✔ funding callback strips resolver request and enforces trusted observation clock (1.775307ms)
+✔ policy context is mandatory for grants/awards and excluded from model arguments (1.012812ms)
+✔ document/district callbacks require complete current lineage including output binding (2.019464ms)
+✔ all new callbacks preserve canonical inert admission without getter effects (1.187284ms)
+ℹ tests 37
+ℹ suites 0
+ℹ pass 37
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1998.78254

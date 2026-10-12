@@ -1,0 +1,47 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "check:contracts:distribution"
+  ],
+  "cwd": "/workspace/meri-read-continuation-20261012",
+  "sourceHead": "d34b1544aa448006786cbe341f1ea276eb9256f6",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T16:47:29.239808+00:00",
+  "durationSeconds": 7.188,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 159775,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 159929,
+      "status": 0
+    },
+    {
+      "pid": 160086,
+      "status": 0
+    },
+    {
+      "pid": 160119,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/integration/public-distribution.stdout.bin",
+      "bytes": 2044,
+      "sha256": "7a4a2b84b4d239ddb68d8c19d83a408b6d72963bfe543bda46d19659ed9339df"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/integration/public-distribution.stderr.bin",
+      "bytes": 1040,
+      "sha256": "cbbd466f3bf458f7f516c133ea486c1aada38d325ec9a80b698c26da8c18237f"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
