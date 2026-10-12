@@ -1,0 +1,18 @@
+{
+  "reviewedFreeze": "07ac4c756c7b313d2f698c32c62de5a7321358a9",
+  "reviewRole": "native_supervisor_author independent scope reviewer",
+  "findings": [
+    {
+      "id": "scope-wording-derivation",
+      "problem": "Blanket calculations exclusion conflicted with current annual derivation acknowledged by API.",
+      "repair": "Narrow exclusion to analytics/fit recomputation; keep annual current derivation explicit and any retained-only replacement separately specified."
+    },
+    {
+      "id": "review-lane-selection",
+      "problem": "Exact review-ID selection needed an explicit source seam because existing list is lane-partitioned.",
+      "repair": "Name current-policy exact-ID adapter or qualified complete lane coverage; no absence claim from default/incomplete lane."
+    }
+  ],
+  "originalsPreserved": "Original report/API and192/192 metadata receipt remain in immutable07ac4c75; findings are semantic review notes, not failed product tests.",
+  "productionChanges": false
+}

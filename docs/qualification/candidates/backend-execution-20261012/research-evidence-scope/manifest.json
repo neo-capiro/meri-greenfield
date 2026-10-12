@@ -9,8 +9,8 @@
   "members": [
     {
       "path": "docs/coordination/reports/CODEX-RESEARCH-EVIDENCE-SCOPE-20261012.md",
-      "bytes": 11036,
-      "sha256": "65dfd8cb2e6269bd8a5c3fd7865394ea586b5d9f2cef39b6bf65de58e2987f2e"
+      "bytes": 11641,
+      "sha256": "8d4f04c67b2cd77b6fa159be81d9fdca0c25e320ff136da5b65e8aa583db49a1"
     },
     {
       "path": "docs/coordination/tasks/CODEX-RESEARCH-EVIDENCE-SCOPE-20261012.md",
@@ -19,8 +19,8 @@
     },
     {
       "path": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope/api-proposal.json",
-      "bytes": 6000,
-      "sha256": "bb6a468c6b357d1fe7b1b2f3d1304278153639324e78172c9d3cb38dc4333e48"
+      "bytes": 6651,
+      "sha256": "b03a4b01596040cd87e44ccd581184fa1e7acbddf3d2b696f846299f081d4443"
     },
     {
       "path": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope/authority-and-reuse-identities.json",
@@ -31,6 +31,11 @@
       "path": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope/collect-identities.py",
       "bytes": 5789,
       "sha256": "38a31c931ae6a5161dcc8ade8216df071de1fe7e55e1d99e8d3ed4b339893afd"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope/independent-findings.json",
+      "bytes": 993,
+      "sha256": "a34c75ba49b9d23d07064274b2455838ff6b65200e732f0c44e8497171fe756e"
     },
     {
       "path": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope/read-limitations.json",
