@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "packages/contracts/test/retrieval-legislative-directory.test.mjs"
+  ],
+  "cwd": "/workspace/meri-legislative-directory-20261012",
+  "sourceHead": "c511b4bf6ee3f30674f3bd7badae79df82a61aab",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T17:14:54.933474+00:00",
+  "durationSeconds": 0.315,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 177403,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/focused-repaired.stdout.bin",
+      "bytes": 2766,
+      "sha256": "57a80f69089d08f95818c61370a1da5e6b0e1d9b8633376f826b05f92a0817b2"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/focused-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Added source-key identity predicate; replay all original tests and retained duplicate regression",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
