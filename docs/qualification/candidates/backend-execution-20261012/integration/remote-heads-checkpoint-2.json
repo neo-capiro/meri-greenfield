@@ -1,5 +1,4 @@
 {
-  "observedAt": "2026-10-12T21:26:00Z",
   "method": "git ls-remote origin exact refs; successful read-only remote check from authorized source donor worktree",
   "refs": {
     "main": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc",
@@ -8,5 +7,10 @@
     "task/meri-backend-next-20261012": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
     "task/meri-backend-execution-20261012": "1b95bcc16cdb681931212d8f87c0797c7f8c2759"
   },
-  "mainMerged": false
+  "mainMerged": false,
+  "observedWithinUtc": [
+    "2026-10-12T21:24:56Z",
+    "2026-10-12T21:27:23Z"
+  ],
+  "timingNote": "Tool read was between clock receipts; no exact command timestamp captured."
 }

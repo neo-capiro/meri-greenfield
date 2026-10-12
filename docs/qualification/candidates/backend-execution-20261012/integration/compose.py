@@ -41,6 +41,9 @@ assert all(group in accepted and accepted[group]['verdict'] == 'ACCEPT_SOURCE' f
 for group, *_ in families:
     path = contracts / (group + '.schema.json')
     assert hashlib.sha256(path.read_bytes()).hexdigest() == accepted[group]['schemaSha256'], group
+    for dependency in accepted[group].get('dependencySchemas', []):
+        path = contracts / (dependency['group'] + '.schema.json')
+        assert hashlib.sha256(path.read_bytes()).hexdigest() == dependency['sha256'], dependency['group']
 
 loader = contracts / 'validate.mjs'
 text = loader.read_text()

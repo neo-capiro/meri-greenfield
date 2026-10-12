@@ -1,3 +1,16 @@
+import { createClientKnowledgeSearchValidators } from './client-knowledge-search-validation.mjs';
+import { createClientKnowledgeMondayValidators } from './client-knowledge-monday-validation.mjs';
+import { createClientKnowledgeAttachmentValidators } from './client-knowledge-attachments-validation.mjs';
+import { createClientKnowledgeMemoryValidators } from './client-knowledge-memory-validation.mjs';
+import { createClientKnowledgeProfileValidators } from './client-knowledge-profile-validation.mjs';
+import { createResearchLegalCandidatesValidators } from './research-legal-candidates-validation.mjs';
+import { createPublicDomainQueryValidators } from './public-domain-query-validation.mjs';
+import { createResearchLegalLegislationValidators } from './research-legal-legislation-validation.mjs';
+import { createActionItemsCompleteValidators } from './action-items-complete-validation.mjs';
+import { createResearchLegalNewsValidators } from './research-legal-news-validation.mjs';
+import { createPublicDomainHearingsValidators } from './public-domain-hearings-validation.mjs';
+import { createPublicDomainDatasetRegistry } from './public-domain-registry.mjs';
+import { validateShape as validatePublicShape } from '../validate.mjs';
 import { createOutreachQueryValidators } from './outreach-query-validation.mjs';
 import { createProgramElementValidators } from './program-elements-validation.mjs';
 import { createPublicWebValidators } from './public-web-validation.mjs';
@@ -44,7 +57,7 @@ import addFormats from 'ajv-formats';
 import { canonicalSha256 } from '../validate.mjs';
 
 export const contractVersion = '0.2.0';
-const groups = ['common', 'catalog', 'retrieval', 'skill', 'mail', 'meeting-source', 'operational-reads', 'federal-market', 'data-search', 'memory-proposals', 'client-registry', 'research-portfolio', 'business-development', 'funding-opportunities', 'client-documents', 'public-data', 'district-nexus', 'state-legislation', 'public-reports', 'disclosures', 'acquisition-personnel', 'federal-legislation', 'bill-text', 'legislative-directory', 'pe-references', 'rule-status', 'certification-status', 'stored-intelligence', 'dataset-metadata', 'facility-representation', 'state-status-votes', 'regulatory-dockets', 'tenant-contacts', 'entity-candidates', 'tracked-bills', 'intelligence-summary', 'public-web', 'sam-opportunities', 'florida-budget', 'outreach-query', 'program-elements'];
+const groups = ['common', 'catalog', 'retrieval', 'skill', 'mail', 'meeting-source', 'operational-reads', 'federal-market', 'data-search', 'memory-proposals', 'client-registry', 'research-portfolio', 'business-development', 'funding-opportunities', 'client-documents', 'public-data', 'district-nexus', 'state-legislation', 'public-reports', 'disclosures', 'acquisition-personnel', 'federal-legislation', 'bill-text', 'legislative-directory', 'pe-references', 'rule-status', 'certification-status', 'stored-intelligence', 'dataset-metadata', 'facility-representation', 'state-status-votes', 'regulatory-dockets', 'tenant-contacts', 'entity-candidates', 'tracked-bills', 'intelligence-summary', 'public-web', 'sam-opportunities', 'florida-budget', 'outreach-query', 'program-elements', 'client-knowledge-search', 'client-knowledge-monday', 'client-knowledge-attachments', 'client-knowledge-memory', 'client-knowledge-profile', 'research-legal-candidates', 'public-domain-query', 'research-legal-legislation', 'action-items-complete', 'research-legal-news', 'public-domain-hearings', 'public-domain-hearing-records'];
 const schemaBytes = groups.map(group => readFileSync(new URL(`./${group}.schema.json`, import.meta.url)));
 const schemas = schemaBytes.map(raw => JSON.parse(raw));
 const ajv = new Ajv({ strict: true, allErrors: true });
@@ -258,6 +271,19 @@ const floridaBudgetValidators = createFloridaBudgetValidators({validateShape, sc
 const outreachQueryValidators = createOutreachQueryValidators({validateShape, schema: schemas[groups.indexOf('outreach-query')]});
 const programElementValidators = createProgramElementValidators({validateShape, schema: schemas[groups.indexOf('program-elements')]});
 
+export const publicDomainDatasetRegistry = createPublicDomainDatasetRegistry({canonicalSha256, validateMetadata: validateShape});
+const clientKnowledgeSearchValidators = createClientKnowledgeSearchValidators({validateShape, schema: schemas[groups.indexOf('client-knowledge-search')]});
+const clientKnowledgeMondayValidators = createClientKnowledgeMondayValidators({validateShape, schema: schemas[groups.indexOf('client-knowledge-monday')]});
+const clientKnowledgeAttachmentValidators = createClientKnowledgeAttachmentValidators({validateShape, schema: schemas[groups.indexOf('client-knowledge-attachments')]});
+const clientKnowledgeMemoryValidators = createClientKnowledgeMemoryValidators({validateShape, schema: schemas[groups.indexOf('client-knowledge-memory')]});
+const clientKnowledgeProfileValidators = createClientKnowledgeProfileValidators({validateShape, schema: schemas[groups.indexOf('client-knowledge-profile')]});
+const researchLegalCandidatesValidators = createResearchLegalCandidatesValidators({validateShape, schema: schemas[groups.indexOf('research-legal-candidates')]});
+const publicDomainQueryValidators = createPublicDomainQueryValidators({validateShape, schema: schemas[groups.indexOf('public-domain-query')], canonicalSha256, datasetRegistry: publicDomainDatasetRegistry});
+const researchLegalLegislationValidators = createResearchLegalLegislationValidators({validateShape, schema: schemas[groups.indexOf('research-legal-legislation')]});
+const actionItemsCompleteValidators = createActionItemsCompleteValidators({validateShape, validatePublicShape, canonicalSha256, assertActionItemReadInput, assertActionItemClientScopedPage});
+const researchLegalNewsValidators = createResearchLegalNewsValidators({validateShape, schema: schemas[groups.indexOf('research-legal-news')]});
+const publicDomainHearingsValidators = createPublicDomainHearingsValidators({validateShape, schema: schemas[groups.indexOf('public-domain-hearings')]});
+
 export function assertSkillManifest(manifest, catalog) {
   validateShape('SkillManifest', manifest); assertCatalog(catalog);
   unique(manifest.requiredSources.map(source => `${source.sourceId}:${source.purpose}`), 'required skill source');
@@ -303,4 +329,5 @@ export const {resolveOperationContract} = createOperationContracts({catalog: sou
     ...legislativeDirectoryValidators, ...peReferenceValidators, ...ruleStatusValidators, ...certificationStatusValidators, ...storedIntelligenceValidators, ...datasetMetadataValidators, ...facilityRepresentationValidators,
     ...stateStatusVotesValidators, ...regulatoryDocketsValidators, ...tenantContactsValidators, ...entityCandidatesValidators, ...trackedBillsValidators, ...intelligenceSummaryValidators,
     ...publicWebValidators, ...samOpportunitiesValidators, floridaBudgetValidators,
-    ...outreachQueryValidators, ...programElementValidators})});
+    ...outreachQueryValidators, ...programElementValidators,
+    clientKnowledgeSearchValidators, clientKnowledgeMondayValidators, clientKnowledgeAttachmentValidators, clientKnowledgeMemoryValidators, clientKnowledgeProfileValidators, ...researchLegalCandidatesValidators, ...publicDomainQueryValidators, ...researchLegalLegislationValidators, ...actionItemsCompleteValidators, ...researchLegalNewsValidators, ...publicDomainHearingsValidators})});
