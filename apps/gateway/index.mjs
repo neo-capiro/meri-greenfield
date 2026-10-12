@@ -6,6 +6,13 @@ import { createCurrentToolAuthority } from './authorization/current-tool-authori
 import { createToolDispatch } from './dispatch/tool-dispatch.mjs';
 import { deny } from './dispatch/operation-result.mjs';
 
+/** Shared fresh authority only; this does not register or execute a command. */
+export function createCommandAuthority(options) {
+  if (!options || Object.keys(options).some(key => !['authorityPorts', 'now', 'maxFactBytes'].includes(key))) deny('GATEWAY_CONFIGURATION');
+  const { authorityPorts, now, maxFactBytes } = options;
+  return createCurrentToolAuthority({ ports: authorityPorts, now, maxFactBytes, capabilityAction: 'command.execute' });
+}
+
 export function createSourceDisabledGateway(options) {
   if (!options || Object.keys(options).some(key => !['authorityPorts', 'budget', 'limits', 'now', 'newId'].includes(key))) deny('GATEWAY_CONFIGURATION');
   const { authorityPorts, budget, limits, now, newId } = options;
