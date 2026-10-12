@@ -1,0 +1,35 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "docs/qualification/candidates/read-continuation-20261012/entity-candidates-review/audit.py",
+    "788c0419c9489dfdd4906a50b59661595a072713"
+  ],
+  "cwd": "/workspace/meri-entity-candidates-review-20261012",
+  "sourceHead": "67852f3c1ac87e9ba0fe5b8a18b5263ffe7b2f65",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T18:25:50.020962+00:00",
+  "durationSeconds": 0.215,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 245604,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/entity-candidates-review/source-audit.stdout.bin",
+      "bytes": 6812,
+      "sha256": "04335a8773458c031a089e83a836501974daab180f7db69deae560d3ddccf1a6"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/entity-candidates-review/source-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

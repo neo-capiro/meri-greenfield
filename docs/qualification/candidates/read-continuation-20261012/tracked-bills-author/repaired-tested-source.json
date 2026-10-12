@@ -1,0 +1,21 @@
+{
+  "capture": "repaired-focused.json",
+  "note": "Explicit identities for unchanged new files exercised in27pass capture; capture git diff excludes untracked files.",
+  "files": [
+    {
+      "path": "packages/contracts/retrieval-0.2/tracked-bills.schema.json",
+      "bytes": 4920,
+      "sha256": "726efeaa4fd06c37790e05da94380f95e1ab97c694d0d8d5ada60a1579ee4cf5"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/tracked-bills-validation.mjs",
+      "bytes": 3527,
+      "sha256": "697ba30c8cfbf7c02e5b815104e909fd2183633891ccc835373d568e44b6bc67"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-tracked-bills.test.mjs",
+      "bytes": 12094,
+      "sha256": "9666aeec7f29e93f20cb530decb7303b4219554da5c452f64c5ea06bce1a8b96"
+    }
+  ]
+}

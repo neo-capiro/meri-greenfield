@@ -1,0 +1,96 @@
+✔ independent entity: exact definitions and closed operation selector (1.113445ms)
+✔ independent entity: missing optional selectors omitted and query has second trim (3.800228ms)
+✔ independent entity: legacy scalar clamp is retained without complex coercion (0.904411ms)
+✔ independent entity: unsupported types remain empty outcomes and never aliases (2.231979ms)
+✔ independent entity: lowercase expansion preserves unsupported type semantics (0.348204ms)
+✔ independent entity: defaultCongress is mandatory positiveInt32 trusted context on every branch (0.926524ms)
+✔ independent entity: missing-query and nonempty-zero notes are exact (1.007226ms)
+✔ independent entity: returned count is exact and constrained by normalized limit (1.101688ms)
+✔ independent entity: five exact variants retain their required projections (5.030149ms)
+✔ independent entity: stored scalars and current flags have no invented enums or positive-only Int (0.622918ms)
+✔ independent entity: raw bill congress/state/session are not fabricated ID consistency rules (0.521184ms)
+✔ independent entity: direct member/committee IDs correlate case normalization and discriminator (0.56453ms)
+✔ independent entity: canonical federal grammar uses trusted default and explicit suffix override (0.589808ms)
+✔ independent entity: approved state syntax helper correlates canonical keys without live lookup (0.519472ms)
+✔ independent entity: raw state designation match does not claim latest-session authority (0.195173ms)
+✔ independent entity: crosswalk allows dynamic suffixes and repeat canonical candidates (0.495196ms)
+✔ independent entity: crosswalk phase has no committee or federal-bill adapter (0.343908ms)
+✔ independent entity: syntax alone cannot prohibit fallbacks after a missing direct row (0.177236ms)
+✔ independent entity: phase mixing is refused (0.351489ms)
+✔ independent entity: name search requires Latin letters and supported name families (0.427483ms)
+✔ independent entity: name family order and current-first apply within each group only (0.725672ms)
+✔ independent entity: supplied supported type restricts every candidate family (0.706173ms)
+✔ independent entity: both bill dates are SQLDate UTC midnight and nullable (0.69718ms)
+✔ independent entity: generatedAt is serialization metadata, not freshness authority (0.246901ms)
+✔ independent entity: canonicalIdType and closed projection cannot substitute (0.709738ms)
+✔ independent entity: normalized selection and nested helper metadata are immutable copies (0.361234ms)
+✔ independent entity: defaultCongress does not read ambient clock (0.17301ms)
+✔ independent entity: getters proxies cycles and hidden fields do not execute (0.33201ms)
+✔ independent entity: operation and shape names refuse hostile coercion (0.328264ms)
+✖ independent entity: name-query identities cannot repeat within member (0.621575ms)
+✖ independent entity: name-query identities cannot repeat within committee (0.71084ms)
+✖ independent entity: name-query identities cannot repeat within state_legislator (0.276547ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 29
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 218.576674
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-entity-candidates-independent.test.mjs:169:107
+✖ independent entity: name-query identities cannot repeat within member (0.621575ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-entity-candidates-review-20261012/packages/contracts/test/retrieval-entity-candidates-independent.test.mjs:170:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-entity-candidates-independent.test.mjs:169:107
+✖ independent entity: name-query identities cannot repeat within committee (0.71084ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-entity-candidates-review-20261012/packages/contracts/test/retrieval-entity-candidates-independent.test.mjs:170:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-entity-candidates-independent.test.mjs:169:107
+✖ independent entity: name-query identities cannot repeat within state_legislator (0.276547ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-entity-candidates-review-20261012/packages/contracts/test/retrieval-entity-candidates-independent.test.mjs:170:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }

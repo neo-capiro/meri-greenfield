@@ -1,0 +1,24 @@
+{
+  "fullCommand": [
+    "git",
+    "diff",
+    "--cached",
+    "--check"
+  ],
+  "fullExit": 2,
+  "fullStdoutSha256": "64fa6c87dd1d943a9fc62862c62617a2e437a7123bb863441abdc3a441417293",
+  "fullStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "reason": "Eight original test-run stdout whitespace lines retained without normalization. All non-binary authored paths pass.",
+  "authoredCommand": [
+    "git",
+    "diff",
+    "--cached",
+    "--check",
+    "--",
+    ".",
+    ":(exclude)**/*.bin"
+  ],
+  "authoredExit": 0,
+  "authoredStdout": "",
+  "authoredStderr": ""
+}

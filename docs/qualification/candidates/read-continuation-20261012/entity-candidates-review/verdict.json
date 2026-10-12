@@ -1,0 +1,36 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "source": "788c0419c9489dfdd4906a50b59661595a072713",
+  "sourceTree": "cc42292346660c99160b1f98725804e59e92a8ad",
+  "originalSource": "49db57c9259f0180fad4f619bf745e541d935db9",
+  "originalDefect": "Name-query duplicate (entityType,canonicalId) admitted; three preserved independent failures",
+  "originalIndependent": {
+    "passed": 29,
+    "failed": 3,
+    "total": 32
+  },
+  "repairedFocused": {
+    "passed": 60,
+    "failed": 0,
+    "independent": 33,
+    "author": 27
+  },
+  "sourceAudit": {
+    "passed": 49,
+    "failed": 0,
+    "originalFiles": 6110,
+    "referencePairs": 8
+  },
+  "authorPacketAudit": {
+    "passed": 68,
+    "failed": 0,
+    "authorCommit": "4c3b35c9d0c1709bfeb61280474c7186d516a618",
+    "manifestMembers": 16,
+    "manifestSha256": "cc2a7b1f05ee925ad4d120a98aa8c6e6bc2cc3f28997608d7c97c4d25802f0d0"
+  },
+  "sourceConnectivity": false,
+  "runtimeAcceptance": false,
+  "canonicalIntegration": "ROOT_OWNED_NOT_IMPLEMENTED_IN_THIS_LANE",
+  "broadPublicNativeProviderSQL": "UNRUN_OUTSIDE_SCOPE",
+  "ownedGroupsAbsent": true
+}

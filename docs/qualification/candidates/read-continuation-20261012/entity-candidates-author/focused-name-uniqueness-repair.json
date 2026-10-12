@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-entity-candidates.test.mjs"
+  ],
+  "cwd": "/workspace/meri-entity-candidates-20261012",
+  "sourceHead": "49db57c9259f0180fad4f619bf745e541d935db9",
+  "sourceDiffSha256": "af0ec954860e39b5bc2e4943c84bc1a8219a167ca3e2b3d35bf01d65cf31ec9f",
+  "sourceDiffBytes": 3262,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T18:23:06.640000+00:00",
+  "durationSeconds": 0.315,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 238156,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/focused-name-uniqueness-repair.stdout.bin",
+      "bytes": 2549,
+      "sha256": "0a1f2c6e6b69c45235e1518cf5d8f82b3bedf9f3d614fa36c10d119faa79da42"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/focused-name-uniqueness-repair.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Independent32-case replay retained29pass/3fail for impossible duplicate name identities. Apply name-phase-only uniqueness; preserve crosswalk duplicates and original test preimage; fix one conflicting-ID synthetic positive fixture without removing assertions.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

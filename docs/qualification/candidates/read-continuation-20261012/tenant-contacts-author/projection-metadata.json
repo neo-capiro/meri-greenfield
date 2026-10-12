@@ -1,0 +1,65 @@
+{
+  "operation": "find_contacts",
+  "storedFields": {
+    "EngagementContact": {
+      "fullName": "String?",
+      "email": "String?",
+      "phone": "String?",
+      "title": "String?",
+      "organization": "String?",
+      "source": "String",
+      "clientId": "String?"
+    },
+    "Client": {
+      "id": "String",
+      "name": "String",
+      "website": "String?"
+    },
+    "ClientPerson": {
+      "name": "String",
+      "email": "String?"
+    },
+    "MailMessage": {
+      "fromEmail": "String?",
+      "receivedAt": "DateTime?"
+    },
+    "MeetingAttendee": {
+      "email": "String?",
+      "createdAt": "DateTime",
+      "meeting": "Meeting"
+    },
+    "Meeting": {
+      "startsAt": "DateTime"
+    }
+  },
+  "normalization": {
+    "text": "optionalString trim then UTF16 slice200; domain additionally trim/lowercase; query additionally trim; client selector unchanged reference",
+    "limit": "finite numeric/string Number, trunc, clamp1..100, fallback25"
+  },
+  "predicateScope": "tenant AND (linked client OR domain suffix OR query fullName/email); no client-only guarantee",
+  "historyScope": "tenant and normalized fromEmail/email; mail latest receivedAt, count separate; meeting attendee latest createdAt then its meeting.startsAt; maximum available date, not latest all meetings",
+  "profileScope": "selected client people normalized nonblank exact name/email sets; no client means empty sets",
+  "unreturnedFacts": [
+    "contact row ID and linked clientId",
+    "client website and profile people",
+    "mail/history source identities and timestamps before maximum selection"
+  ],
+  "receiptTruth": "No contact ID, total, cursor, completeness, current authorization or profile mutation permission.",
+  "narrowing": [
+    "Closed typed scalar requests; raw text16384 Unicode-code-point and raw limit-string128 transport ceilings",
+    "Finite source Date.toISOString serialization",
+    "Nonnegative safe integer counts"
+  ],
+  "inspectionErrors": [
+    {
+      "path": "packages/contracts/retrieval-0.2/certification-status-validation.mjs",
+      "reason": "Assumed prior family absent at exact base; reused existing disclosures family convention instead.",
+      "raw": "Interactive transcript only; no manufactured file capture."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-certification-status.test.mjs",
+      "reason": "Same absent family test at exact base.",
+      "raw": "Interactive transcript only."
+    }
+  ]
+}

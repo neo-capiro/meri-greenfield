@@ -1,0 +1,50 @@
+{
+  "integrationBase": "c1c9bfde7dd466a0474589a224a99b44277adbc9",
+  "families": [
+    {
+      "family": "state-status-votes",
+      "source": "a25516ae8d2c44638800e492e439e212098dc750",
+      "packet": "314f3c35e5277e89ce44f243ee60d07049eb96b6",
+      "review": "1e5cf3d01c464f9955f8d1a43dee8218be71c784",
+      "operations": [
+        "get_state_bill_status",
+        "search_state_floor_votes"
+      ],
+      "base": "a3e946c1fa264ae7b33205f5b87804ee1ef75773",
+      "sourceTree": "f7942b8aa8e3011336bc56cc568ddd0e7c4d52cf",
+      "runtimeAccepted": false
+    },
+    {
+      "family": "regulatory-dockets",
+      "source": "57e09ebfda15d6057bdf4bfb7fc84b4061eac03f",
+      "packet": "6d0ce36bed11605d49f97c363ee0ce29657a6293",
+      "review": "8f190990f32d3f83540057e76c7bfbc200bd2d4a",
+      "operations": [
+        "query_regulatory_dockets"
+      ],
+      "base": "a3e946c1fa264ae7b33205f5b87804ee1ef75773",
+      "sourceTree": "485860a7d9b2d4cf1e9f19a45c00cd80213ca088",
+      "runtimeAccepted": false
+    },
+    {
+      "family": "tenant-contacts",
+      "source": "0aba55ef096a68a3cfd92f770783dec3fddfea22",
+      "packet": "62aafb3ad8bef0bc6520c82ed3bb6ff2a75a630c",
+      "review": "5e5d6abe11091fda90dd07b2701b8b2e85e1b718",
+      "operations": [
+        "find_contacts"
+      ],
+      "rootRepair": "1e31f94bb8e399eede1f28609cb241b87e356b62",
+      "rootAuthorTestCorrection": "e890cff6d1110a1d29bd5dec0b7f340db0e41f06",
+      "repairReviewPending": true,
+      "base": "a3e946c1fa264ae7b33205f5b87804ee1ef75773",
+      "sourceTree": "2a84b8964b23b4ebd178bfe619376680b9a21f6f",
+      "runtimeAccepted": false
+    }
+  ],
+  "unintegratedPendingReview": [
+    "resolve_entity",
+    "search_tracked_bills",
+    "query_intelligence"
+  ]
+}

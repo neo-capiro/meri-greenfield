@@ -1,0 +1,53 @@
+{
+  "scope": "Explicit parent-authorized disposable CDK cache removal only",
+  "worktree": "/workspace/meri-reference-integration-review-20261012",
+  "branch": "review/meri-reference-integration-20261012",
+  "head": "812ccee78d8916b61bf7d0408eeccb41a0e14c97",
+  "ownership": "Completed review authored by memory_reviewer; exact branch confirmed",
+  "removed": [
+    {
+      "path": "/workspace/meri-reference-integration-review-20261012/node_modules/aws-cdk",
+      "package": "aws-cdk",
+      "version": "2.1145.0",
+      "packageJsonSha256": "e11fc2819979c9d7ca647d0d4773aca927310f1b89dc921bc76736e62617d423",
+      "regularFiles": 331,
+      "logicalBytes": 25777833,
+      "allocatedBytes": 26779648
+    },
+    {
+      "path": "/workspace/meri-reference-integration-review-20261012/node_modules/aws-cdk-lib",
+      "package": "aws-cdk-lib",
+      "version": "2.273.0",
+      "packageJsonSha256": "0d52a9f827fd09cde3e17e9de00aff11d1e6bbbf7d93ea498d44673153e7608f",
+      "regularFiles": 7578,
+      "logicalBytes": 137858618,
+      "allocatedBytes": 158789632
+    },
+    {
+      "path": "/workspace/meri-reference-integration-review-20261012/node_modules/constructs",
+      "package": "constructs",
+      "version": "10.8.1",
+      "packageJsonSha256": "2494c6c26191f27f179eb9e4149144fa71206d2975a4f87d9df30c3429bee8c8",
+      "regularFiles": 26,
+      "logicalBytes": 930146,
+      "allocatedBytes": 1007616
+    }
+  ],
+  "before": {
+    "total": 33770192896,
+    "used": 31817261056,
+    "free": 218169344
+  },
+  "after": {
+    "total": 33770192896,
+    "used": 31625371648,
+    "free": 410058752
+  },
+  "freeByteDeltaObserved": 191889408,
+  "concurrentWorkspaceChangesPossible": true,
+  "sourceLogsManifestsLocksPreserved": true,
+  "gitHeadAndStatusUnchanged": true,
+  "donorUntouched": "/workspace/meri-read-continuation-20261012",
+  "otherWorktrees": "No removals; ownership not confirmed, one listed worktree already lacks these packages",
+  "time": "2026-10-12T18:23:24.589428+00:00"
+}

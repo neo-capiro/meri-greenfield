@@ -1,0 +1,139 @@
+✔ contacts independent: selectorless defaults and null/blank selectors (4.284122ms)
+✔ contacts independent: finite legacy number/string clamp and fallback are retained (0.819523ms)
+✔ contacts independent: raw admission ceilings are explicit rather than source caps (0.999182ms)
+✔ contacts independent: post-truncation trims differ from client reference (0.189314ms)
+✔ contacts independent: UTF16 split boundary and lowercase expansion preserved (0.314053ms)
+✔ contacts independent: normalization preserves input case except domain and never mutates request (0.363616ms)
+✔ contacts independent: unknown aliases and model authorization fields are excluded (0.654804ms)
+✔ contacts independent: context is closed for both functions (0.29909ms)
+✔ contacts independent: refusal cannot carry a normal envelope or contacts (0.983168ms)
+✔ contacts independent: selectors require normal envelope even for an empty returned window (1.779816ms)
+✔ contacts independent: exact supplied query/domain bind matchedOn fields (0.820544ms)
+✔ contacts independent: resolved client UUID is not forced equal to input alias or a UUID version (0.449696ms)
+✔ contacts independent: selected-client presence is required, current visibility is not inferred (1.114255ms)
+✔ contacts independent: client-derived domain is an unreturned source assertion (0.380602ms)
+✔ contacts independent: OR within tenant never becomes a client AND domain AND query filter (0.217077ms)
+✔ contacts independent: no client and all predicate columns NULL cannot match a search (0.548065ms)
+✔ contacts independent: nine projected fields required with six nullable values (0.769367ms)
+✔ contacts independent: raw string values are not email phone enum or normalized-name formats (0.191087ms)
+✔ contacts independent: contact IDs and authority/coverage extensions never appear (0.755957ms)
+✔ contacts independent: repeated name/email rows remain legitimate window rows (0.188904ms)
+✔ contacts independent: supplied limits constrain returned rows without implying total (0.267432ms)
+✔ contacts independent: blank normalized email has no history but name can still be on profile (0.905091ms)
+✔ contacts independent: mail count and nullable mail/calendar dates do not imply each other (0.202946ms)
+✔ contacts independent: counts are safe nonnegative integers (0.660984ms)
+✔ contacts independent: returned history descends with ties and null last (0.344258ms)
+✔ contacts independent: no timestamp bound against generatedAt or ambient now is invented (0.138709ms)
+✔ contacts independent: date aliases invalid calendars and noncanonical strings refuse (1.995471ms)
+✔ contacts independent: onProfile needs client and some normalized identity but not invented truth (0.387282ms)
+✔ contacts independent: source note counts the returned rows and missing profiles (0.408654ms)
+✔ contacts independent: source guidance cannot grant profile update or execution options (0.382986ms)
+✔ contacts independent: getters proxies coercion and toJSON hooks stay inert (0.404818ms)
+✔ contacts independent: cycles sparse arrays hidden keys and prototypes refuse (0.246981ms)
+✔ contacts independent: output validation preserves original data (0.303817ms)
+✔ contacts independent: disclosed date wire admission excludes expanded native Date years (0.44551ms)
+✖ contacts canonical follow-up: normal result is detached from caller mutation (1.139904ms)
+✖ contacts canonical follow-up: refusal result and empty contacts are detached (0.3793ms)
+✖ contacts canonical follow-up: schema uses canonical Meri namespace (0.262645ms)
+ℹ tests 37
+ℹ suites 0
+ℹ pass 34
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 189.513979
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-tenant-contacts-independent.test.mjs:53:1
+✖ contacts canonical follow-up: normal result is detached from caller mutation (1.139904ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" not to be reference-equal to "expected":
+  
+  {
+    clientId: null,
+    clientName: null,
+    contacts: [
+      {
+        email: 'stored text',
+        lastContact: null,
+        messageCount: 0,
+        name: 'Synthetic correspondent',
+        onProfile: false,
+        organization: null,
+        phone: null,
+        source: 'synthetic future source',
+        title: null
+      }
+    ],
+    generatedAt: '2026-10-12T12:00:00.000Z',
+    matchedOn: {
+      domain: null,
+      linkedClient: false,
+      query: 'Synthetic'
+    },
+    note: '1 correspondent(s) found from synced mail and calendar.',
+    tool: 'find_contacts'
+  }
+  
+      at TestContext.<anonymous> (file:///workspace/meri-tenant-contacts-review-20261012/packages/contracts/test/retrieval-tenant-contacts-independent.test.mjs:53:165)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { tool: 'find_contacts', generatedAt: '2026-10-12T12:00:00.000Z', clientId: null, clientName: null, matchedOn: { domain: null, query: 'Synthetic', linkedClient: false }, contacts: [ [Object] ], note: '1 correspondent(s) found from synced mail and calendar.' },
+    expected: { tool: 'find_contacts', generatedAt: '2026-10-12T12:00:00.000Z', clientId: null, clientName: null, matchedOn: { domain: null, query: 'Synthetic', linkedClient: false }, contacts: [ [Object] ], note: '1 correspondent(s) found from synced mail and calendar.' },
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-tenant-contacts-independent.test.mjs:54:1
+✖ contacts canonical follow-up: refusal result and empty contacts are detached (0.3793ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" not to be reference-equal to "expected":
+  
+  {
+    contacts: [],
+    generatedAt: '2026-10-12T12:00:00.000Z',
+    note: 'Pass a clientId, a domain, or a query — find_contacts will not dump the whole contact table.',
+    tool: 'find_contacts'
+  }
+  
+      at TestContext.<anonymous> (file:///workspace/meri-tenant-contacts-review-20261012/packages/contracts/test/retrieval-tenant-contacts-independent.test.mjs:54:140)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { tool: 'find_contacts', generatedAt: '2026-10-12T12:00:00.000Z', contacts: [], note: 'Pass a clientId, a domain, or a query — find_contacts will not dump the whole contact table.' },
+    expected: { tool: 'find_contacts', generatedAt: '2026-10-12T12:00:00.000Z', contacts: [], note: 'Pass a clientId, a domain, or a query — find_contacts will not dump the whole contact table.' },
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-tenant-contacts-independent.test.mjs:55:1
+✖ contacts canonical follow-up: schema uses canonical Meri namespace (0.262645ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /^urn:meri:/. Input:
+  
+  'https://meri.invalid/retrieval/0.2/tenant-contacts.schema.json'
+  
+      at TestContext.<anonymous> (file:///workspace/meri-tenant-contacts-review-20261012/packages/contracts/test/retrieval-tenant-contacts-independent.test.mjs:55:87)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'https://meri.invalid/retrieval/0.2/tenant-contacts.schema.json',
+    expected: /^urn:meri:/,
+    operator: 'match',
+    diff: 'simple'
+  }

@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-entity-candidates.test.mjs"
+  ],
+  "cwd": "/workspace/meri-entity-candidates-20261012",
+  "sourceHead": "e721b6f815e68df80d598f9ff1d8127a190ae62a",
+  "sourceDiffSha256": "f62e38b6377e922a9667448a3c55b5ae927577b6c6ef67482f253946cd2326e0",
+  "sourceDiffBytes": 31005,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T18:20:09.074603+00:00",
+  "durationSeconds": 0.265,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 237297,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/focused-initial.stdout.bin",
+      "bytes": 2440,
+      "sha256": "a0f0e559d8008bbc5db09279d3febb4b5428945a36ba8a7aea1ddeaab0daf1bc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/focused-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

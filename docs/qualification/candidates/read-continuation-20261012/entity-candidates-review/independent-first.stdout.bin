@@ -1,0 +1,37 @@
+✔ independent entity: exact definitions and closed operation selector (1.269974ms)
+✔ independent entity: missing optional selectors omitted and query has second trim (4.223341ms)
+✔ independent entity: legacy scalar clamp is retained without complex coercion (1.026162ms)
+✔ independent entity: unsupported types remain empty outcomes and never aliases (2.393765ms)
+✔ independent entity: lowercase expansion preserves unsupported type semantics (0.335091ms)
+✔ independent entity: defaultCongress is mandatory positiveInt32 trusted context on every branch (0.881783ms)
+✔ independent entity: missing-query and nonempty-zero notes are exact (1.033333ms)
+✔ independent entity: returned count is exact and constrained by normalized limit (1.436798ms)
+✔ independent entity: five exact variants retain their required projections (6.143505ms)
+✔ independent entity: stored scalars and current flags have no invented enums or positive-only Int (0.796182ms)
+✔ independent entity: raw bill congress/state/session are not fabricated ID consistency rules (0.467893ms)
+✔ independent entity: direct member/committee IDs correlate case normalization and discriminator (1.334963ms)
+✔ independent entity: canonical federal grammar uses trusted default and explicit suffix override (0.612383ms)
+✔ independent entity: approved state syntax helper correlates canonical keys without live lookup (0.681298ms)
+✔ independent entity: raw state designation match does not claim latest-session authority (0.232805ms)
+✔ independent entity: crosswalk allows dynamic suffixes and repeat canonical candidates (0.473721ms)
+✔ independent entity: crosswalk phase has no committee or federal-bill adapter (0.271884ms)
+✔ independent entity: syntax alone cannot prohibit fallbacks after a missing direct row (0.198463ms)
+✔ independent entity: phase mixing is refused (0.320147ms)
+✔ independent entity: name search requires Latin letters and supported name families (0.421972ms)
+✔ independent entity: name family order and current-first apply within each group only (0.830715ms)
+✔ independent entity: supplied supported type restricts every candidate family (0.744884ms)
+✔ independent entity: both bill dates are SQLDate UTC midnight and nullable (1.474155ms)
+✔ independent entity: generatedAt is serialization metadata, not freshness authority (0.411016ms)
+✔ independent entity: canonicalIdType and closed projection cannot substitute (0.822983ms)
+✔ independent entity: normalized selection and nested helper metadata are immutable copies (0.340969ms)
+✔ independent entity: defaultCongress does not read ambient clock (0.182689ms)
+✔ independent entity: getters proxies cycles and hidden fields do not execute (0.374751ms)
+✔ independent entity: operation and shape names refuse hostile coercion (0.304814ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 231.849847

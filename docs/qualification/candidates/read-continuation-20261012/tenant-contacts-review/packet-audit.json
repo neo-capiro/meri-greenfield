@@ -1,0 +1,33 @@
+{
+  "command": [
+    "python3",
+    "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/audit-packet.py"
+  ],
+  "cwd": "/workspace/meri-tenant-contacts-review-20261012",
+  "sourceHead": "f1b20c7cfec2b83f46effdd2938d91441baf43cc",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T18:14:52.402663+00:00",
+  "durationSeconds": 0.216,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 236429,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/packet-audit.stdout.bin",
+      "bytes": 11679,
+      "sha256": "5c83cf1862cef7b441e121741d9e06127dd5d8e383913db71e908424c6b79335"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/packet-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

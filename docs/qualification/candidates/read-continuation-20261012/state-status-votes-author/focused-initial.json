@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-state-status-votes.test.mjs"
+  ],
+  "cwd": "/workspace/meri-state-status-votes-20261012",
+  "sourceHead": "a3e946c1fa264ae7b33205f5b87804ee1ef75773",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T18:00:40.901668+00:00",
+  "durationSeconds": 0.215,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 223125,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/focused-initial.stdout.bin",
+      "bytes": 2182,
+      "sha256": "d92cfd70990768ea5df45a5602d10c7cc4536352a53f169829d21f4405a779ce"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/focused-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

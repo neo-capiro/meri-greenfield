@@ -1,0 +1,12 @@
+# Independent tracked-bills criteria before candidate
+
+Exact base a3e946c1fa264ae7b33205f5b87804ee1ef75773; dedicated review branch/worktree; operation search_tracked_bills only. Reviewer owns new independent test, this evidence directory and distinct report. No production/shared/schema/registry/loader edits.
+
+1. Pin wrapper, tenant-tracking owner, global bill projection/model and visibility/HTTP policies at fd8765ec01d292013758606204f2c9d886cd31c1 versus observed4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace. Publish metadata/hashes/derived facts only; never copy/import/execute private implementation.
+2. Trace required client selector trim/80UTF16 and actual visibility helper UUID/name branches. Any trusted canonical client context must be explicit, closed, inert and request-correlated; no model-supplied resolution/tenant/actor flags or synthetic proof. No client-name resolver or current authorization engine in pure contracts.
+3. Preserve raw wrapper shape, exact selected-client echo, total==returned tracking rows, optional versus nullable fields from actual model/wire, global bill enrichment null semantics. A missing enrichment is not absence of a legislative bill.
+4. No invented50 cap, pagination, hasMore, full legislative relevance/completeness guarantee. Preserve outer creation-time descending order and ties; do not invent latestAction sort, tracking count corpus total, title clipping or unique linked bill IDs beyond real schema.
+5. Nested identifier must correlate with selected tracking billId. Preserve full nullable text/date/status/action/subject/sponsor projection; source SQL aggregate/string and date semantics must be traced rather than guessed. Unknown strings/numeric IDs not constrained by guessed canonical grammar.
+6. Existing inert JSON owner handles effectful getters/proxies/symbols/coercion/extra keys. Distinct definitions and strict Ajv compatibility; source module import has no runtime effects, private imports or ambient current authority.
+7. Freeze independent controls before exact candidate acceptance; preserve raw failures/meaningful negative source preimages and unchanged assertions. Focused family checks only, no broad/public/native/provider/SQL/customer/model/cloud/frontend calls or installations. Minimal exact existing7-package data copy allowed, no install/hooks.
+8. Exact candidate/source/reference/base preservation audit, owned subreaper process-group cleanup, explicit ACCEPT_SOURCE/HOLD with reviewer-only ordered commits, metadata-only limitations and unavailable runtime gates.

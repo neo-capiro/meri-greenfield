@@ -1,0 +1,32 @@
+{
+  "authorMetadata": "314f3c35e5277e89ce44f243ee60d07049eb96b6",
+  "authorManifestSha256": "8efe10b6389ee222f1691cda9ad122d3b2b3c4789789e4f2b745d8061f0f4a11",
+  "verifiedMembers": 24,
+  "allPassed": true,
+  "members": [
+    "docs/coordination/reports/CODEX-STATE-STATUS-VOTES-AUTHOR-20261012.md",
+    "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/capture-reaped.py",
+    "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/dependency-copy-failure.json",
+    "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/focused-initial.json",
+    "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/focused-initial.stderr.bin",
+    "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/focused-initial.stdout.bin",
+    "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/focused-schema-repair.json",
+    "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/focused-schema-repair.stderr.bin",
+    "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/focused-schema-repair.stdout.bin",
+    "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/initial-source/retrieval-state-status-votes.test.mjs",
+    "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/initial-source/state-bill-identity.mjs",
+    "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/initial-source/state-status-votes-validation.mjs",
+    "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/initial-source/state-status-votes.schema.json",
+    "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/initial-source.json",
+    "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/outline.json",
+    "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/reference-identities.json",
+    "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/root-source-check.json",
+    "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/root-source-check.stderr.bin",
+    "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/root-source-check.stdout.bin",
+    "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/verification.json",
+    "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/verify.py",
+    "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/whitespace-raw.stderr.bin",
+    "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/whitespace-raw.stdout.bin",
+    "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/whitespace.json"
+  ]
+}

@@ -1,0 +1,61 @@
+// Read-only AST/type metadata; private source is never imported or executed.
+const {execFileSync}=require('node:child_process');
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const root=path.resolve(__dirname,'../../../../..'),ts=require(path.join(root,'packages/contracts/node_modules/typescript'));
+const frozen='fd8765ec01d292013758606204f2c9d886cd31c1',observed='4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace';
+const paths=['apps/api/src/meri/meri-tools.service.ts','apps/api/prisma/schema.prisma','apps/api/src/engagement/engagement-access.helpers.ts','packages/shared/src/index.ts','apps/api/src/meri/meri.controller.ts','apps/api/src/auth/roles.guard.ts','apps/api/src/meri/meri-tool-request-control.ts','apps/api/src/meri/tool-service-secret.guard.ts'];
+const git=(...args)=>execFileSync('git',args,{cwd:'/workspace/capirov2',maxBuffer:4000000});
+const sha=b=>crypto.createHash('sha256').update(b).digest('hex');
+const checks=[],references=[],sources={};const check=(name,pass)=>checks.push({name,pass:!!pass});
+for(const file of paths){const a=git('show',`${frozen}:${file}`),b=git('show',`${observed}:${file}`);const identity=commit=>({blob:git('rev-parse',`${commit}:${file}`).toString().trim(),bytes:(commit===frozen?a:b).length,sha256:sha(commit===frozen?a:b)});references.push({path:file,frozen:identity(frozen),observed:identity(observed),unchanged:a.equals(b)});sources[file]=a.toString();check('no drift: '+file,a.equals(b));}
+const parse=file=>ts.createSourceFile(file,sources[file],ts.ScriptTarget.Latest,true);
+const walk=(n,f)=>{f(n);ts.forEachChild(n,c=>walk(c,f));};
+const ref=n=>!n?null:ts.isIdentifier(n)?n.text:n.kind===ts.SyntaxKind.ThisKeyword?'this':ts.isPropertyAccessExpression(n)?`${ref(n.expression)}.${n.name.text}`:null;
+const nodes=(n,p)=>{const out=[];walk(n,x=>{if(p(x))out.push(x);});return out;};
+const find=(file,name)=>{const n=nodes(file,x=>(ts.isMethodDeclaration(x)||ts.isFunctionDeclaration(x))&&x.name?.text===name)[0];if(!n)throw Error('Missing expected symbol');return n;};
+const calls=n=>nodes(n,ts.isCallExpression),objects=n=>nodes(n,ts.isObjectLiteralExpression).map(x=>x.properties.map(p=>p.name?.text||'[spread]'));
+const literal=n=>ts.isStringLiteral(n)?n.text:ts.isNumericLiteral(n)?Number(n.text):ref(n);
+const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+const svc=parse(paths[0]),method=find(svc,'findContacts'),visible=find(svc,'ensureClientVisible');const mc=calls(method);
+check('client reference, domain and query cap200',same(mc.filter(n=>ref(n.expression)==='optionalString').map(n=>n.arguments.map(literal)),[['input','clientId',200],['input','domain',200],['input','query',200]]));
+check('limit clamp1..100 default25',mc.some(n=>ref(n.expression)==='clampInt'&&same(n.arguments.map(literal),['input.limit',1,100,25])));
+check('source receives trusted TenantContext separately',method.parameters[0].type.typeName.text==='TenantContext'&&method.parameters.length===2);
+check('optional client visibility resolution and tenant-scoped reads',mc.some(n=>ref(n.expression)==='this.ensureClientVisible')&&mc.some(n=>ref(n.expression)==='this.prisma.withTenant'));
+check('contact where is tenant AND OR list',objects(method).some(v=>same(v,['tenantId','OR'])));
+check('source contains exact refusal and normal envelopes',objects(method).some(v=>same(v,['tool','generatedAt','contacts','note']))&&objects(method).some(v=>same(v,['tool','generatedAt','clientId','clientName','matchedOn','contacts','note'])));
+const contactKeys=['name','email','phone','title','organization','lastContact','messageCount','source','onProfile'];
+check('exact nine-field contact projection without source ID',objects(method).some(v=>same(v,contactKeys)));
+check('contact initial window uses limit and updatedAt order',nodes(method,ts.isPropertyAssignment).some(n=>n.name.text==='take'&&ref(n.initializer)==='limit')&&nodes(method,ts.isPropertyAssignment).some(n=>n.name.text==='updatedAt'&&literal(n.initializer)==='desc'));
+check('tenant and normalized email govern mail and meeting reads',objects(method).filter(v=>same(v,['tenantId','fromEmail'])).length===2&&objects(method).some(v=>same(v,['tenantId','email'])));
+check('latest mail date and latest attendee creation are distinct owners',nodes(method,ts.isPropertyAssignment).some(n=>n.name.text==='receivedAt'&&literal(n.initializer)==='desc')&&nodes(method,ts.isPropertyAssignment).some(n=>n.name.text==='createdAt'&&literal(n.initializer)==='desc')&&objects(method).some(v=>same(v,['startsAt'])));
+check('row history count and meeting query are separate',mc.some(n=>ref(n.expression)==='tx.mailMessage.count')&&mc.some(n=>ref(n.expression)==='tx.meetingAttendee.findFirst'));
+const sort=mc.find(n=>ref(n.expression)==='contacts.sort');
+check('source ordering uses string localeCompare, null empty fallback',!!sort&&calls(sort).some(n=>ts.isPropertyAccessExpression(n.expression)&&n.expression.name.text==='localeCompare')&&nodes(sort,ts.isStringLiteral).filter(n=>n.text==='').length===2);
+check('profile assertion checks both normalized identity keys',(()=>{const n=nodes(method,ts.isPropertyAssignment).find(n=>n.name.text==='onProfile');return calls(n).some(c=>ref(c.expression)==='existingEmails.has')&&calls(n).some(c=>ref(c.expression)==='existingNames.has')&&nodes(n,ts.isBinaryExpression).filter(x=>x.operatorToken.kind===ts.SyntaxKind.AmpersandAmpersandToken).length===2;})());
+check('client lookup supports UUID and exact case-insensitive name resolution',calls(visible).some(n=>ref(n.expression)==='UUID_RE.test')&&calls(visible).some(n=>ref(n.expression)==='tx.client.findMany')&&objects(visible).some(v=>same(v,['equals','mode'])));
+const access=parse(paths[2]),owners=nodes(access,ts.isFunctionDeclaration).map(n=>n.name?.text).filter(Boolean);
+check('separate owned mail/calendar helpers not invoked by this producer',!mc.some(n=>owners.includes(ref(n.expression))));
+check('selected method contains no mutating/provider call',!mc.some(n=>/fetch|\.create$|\.update$|\.delete$|\.upsert$|\.executeRaw/.test(ref(n.expression)||'')));
+const modelFields={};
+function model(name){const m=sources[paths[1]].match(new RegExp('model '+name+'\\s*\\{([\\s\\S]*?)\\n\\}'));if(!m)throw Error('Missing source model');const f=Object.fromEntries(m[1].split('\n').map(l=>l.trim().match(/^(\w+)\s+(\S+)/)).filter(Boolean).map(a=>[a[1],a[2]]));return{body:m[1],fields:f};}
+const selected={EngagementContact:['fullName','email','phone','title','organization','source'],Client:['id','name','website','people'],ClientPerson:['name','email'],MailMessage:['fromEmail','receivedAt'],MeetingAttendee:['email','createdAt','meeting'],Meeting:['startsAt']};
+for(const [name,keys]of Object.entries(selected)){const m=model(name);modelFields[name]=Object.fromEntries(keys.map(k=>[k,m.fields[k]]));}
+check('contact five text columns nullable and source nonnull String',same(modelFields.EngagementContact,{fullName:'String?',email:'String?',phone:'String?',title:'String?',organization:'String?',source:'String'}));
+check('client native UUID and nullable website',/\bid\s+String\s+[^\n]*@db\.Uuid/.test(model('Client').body)&&modelFields.Client.name==='String'&&modelFields.Client.website==='String?');
+check('profile name/email and mail nullable scalar types',same(modelFields.ClientPerson,{name:'String',email:'String?'})&&same(modelFields.MailMessage,{fromEmail:'String?',receivedAt:'DateTime?'}));
+check('attendee and meeting scalar types preserve distinct selected meeting',same(modelFields.MeetingAttendee,{email:'String?',createdAt:'DateTime',meeting:'Meeting'})&&modelFields.Meeting.startsAt==='DateTime');
+// Compare only immutable note hashes/templates against the public candidate; emit no private text.
+const productSchema=JSON.parse(fs.readFileSync(path.join(root,'packages/contracts/retrieval-0.2/tenant-contacts.schema.json')));
+const refusal=nodes(method,ts.isPropertyAssignment).filter(n=>n.name.text==='note'&&ts.isStringLiteral(n.initializer))[0]?.initializer.text;
+check('refusal source literal hash matches public schema',typeof refusal==='string'&&sha(refusal)===sha(productSchema.$defs.TenantContactsRefusal.properties.note.const));
+const candidate=ts.createSourceFile('public-candidate.mjs',fs.readFileSync(path.join(root,'packages/contracts/retrieval-0.2/tenant-contacts-validation.mjs'),'utf8'),ts.ScriptTarget.Latest,true);
+const sourceNote=nodes(method,ts.isPropertyAssignment).find(n=>n.name.text==='note'&&ts.isConditionalExpression(n.initializer)).initializer;
+const candidateNote=nodes(candidate,ts.isVariableDeclaration).find(n=>n.name?.text==='note').initializer;
+const templateParts=n=>ts.isTemplateExpression(n)?[n.head.text,...n.templateSpans.map(s=>s.literal.text)]:null;
+check('linked result note source template matches public candidate',same(templateParts(sourceNote.whenTrue),templateParts(candidateNote.whenTrue)));
+check('unlinked result note source template matches public candidate',same(templateParts(sourceNote.whenFalse),templateParts(candidateNote.whenFalse)));
+const policy=parse(paths[4]);const pc=calls(policy);
+check('controller role/tenant boundary persists',pc.some(n=>ref(n.expression)==='Roles'&&n.arguments.some(a=>literal(a)==='standard_user'))&&pc.some(n=>ref(n.expression)==='CurrentTenant')&&pc.some(n=>ref(n.expression)==='UseGuards'&&n.arguments.some(a=>ref(a)==='RolesGuard')));
+check('shared active request control persists',calls(find(svc,'executeScoped')).some(n=>ref(n.expression)==='assertMeriToolRequestActive'));
+const result={frozen,observed,references,projectedContactKeys:contactKeys,selectedModelFields:modelFields,sourceLocator:{path:paths[0],symbol:'findContacts',start:svc.getLineAndCharacterOfPosition(method.getStart()).line+1,end:svc.getLineAndCharacterOfPosition(method.end).line+1},privateBodiesPublished:false,privateSourceExecuted:false,checks:checks.length,passed:checks.filter(x=>x.pass).length,failed:checks.filter(x=>!x.pass).length,results:checks};
+process.stdout.write(JSON.stringify(result,null,2)+'\n');process.exitCode=result.failed?1:0;

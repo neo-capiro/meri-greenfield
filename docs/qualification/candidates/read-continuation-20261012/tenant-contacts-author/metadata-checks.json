@@ -1,0 +1,147 @@
+{
+  "scope": "OFFLINE_SOURCE_METADATA_ONLY",
+  "checks": 34,
+  "passed": 34,
+  "failed": 0,
+  "baseFilesByteIdentical": 6110,
+  "references": 4,
+  "drift": 0,
+  "details": [
+    {
+      "label": "pinned:apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "label": "observed:apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "label": "no drift:apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "label": "pinned:apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "label": "observed:apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "label": "no drift:apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "label": "pinned:apps/api/src/engagement/engagement-access.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "observed:apps/api/src/engagement/engagement-access.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "no drift:apps/api/src/engagement/engagement-access.helpers.ts",
+      "pass": true
+    },
+    {
+      "label": "pinned:packages/shared/src/index.ts",
+      "pass": true
+    },
+    {
+      "label": "observed:packages/shared/src/index.ts",
+      "pass": true
+    },
+    {
+      "label": "no drift:packages/shared/src/index.ts",
+      "pass": true
+    },
+    {
+      "label": "EngagementContact.fullName",
+      "pass": true
+    },
+    {
+      "label": "EngagementContact.email",
+      "pass": true
+    },
+    {
+      "label": "EngagementContact.phone",
+      "pass": true
+    },
+    {
+      "label": "EngagementContact.title",
+      "pass": true
+    },
+    {
+      "label": "EngagementContact.organization",
+      "pass": true
+    },
+    {
+      "label": "EngagementContact.source",
+      "pass": true
+    },
+    {
+      "label": "EngagementContact.clientId",
+      "pass": true
+    },
+    {
+      "label": "Client.id",
+      "pass": true
+    },
+    {
+      "label": "Client.name",
+      "pass": true
+    },
+    {
+      "label": "Client.website",
+      "pass": true
+    },
+    {
+      "label": "ClientPerson.name",
+      "pass": true
+    },
+    {
+      "label": "ClientPerson.email",
+      "pass": true
+    },
+    {
+      "label": "MailMessage.fromEmail",
+      "pass": true
+    },
+    {
+      "label": "MailMessage.receivedAt",
+      "pass": true
+    },
+    {
+      "label": "MeetingAttendee.email",
+      "pass": true
+    },
+    {
+      "label": "MeetingAttendee.createdAt",
+      "pass": true
+    },
+    {
+      "label": "MeetingAttendee.meeting",
+      "pass": true
+    },
+    {
+      "label": "Meeting.startsAt",
+      "pass": true
+    },
+    {
+      "label": "nine required closed contact fields",
+      "pass": true
+    },
+    {
+      "label": "closed empty context",
+      "pass": true
+    },
+    {
+      "label": "selected pending unavailable",
+      "pass": true
+    },
+    {
+      "label": "all base files unchanged",
+      "pass": true
+    }
+  ]
+}

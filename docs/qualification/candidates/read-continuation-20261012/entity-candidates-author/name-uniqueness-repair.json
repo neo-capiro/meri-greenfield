@@ -1,0 +1,10 @@
+{
+  "originalSource": "49db57c9259f0180fad4f619bf745e541d935db9",
+  "independentCounterexampleCommit": "93eca51e6d1f6dab59585a1376f5980442db8d63",
+  "independentOriginal": "29 pass / 3 fail of32: duplicate member, committee and state_legislator name rows were incorrectly admitted.",
+  "sourceReason": "Each name family uses unjoined findMany on a table with canonical ID primary key. Crosswalk rows may independently point at the same canonical ID and are not deduplicated.",
+  "repair": "Name phase only, unique exact (entityType,canonicalId). No case folding, cross-family uniqueness or crosswalk deduplication.",
+  "authorFixtureCorrection": "One current-first positive fixture gave the same member ID both true/false isCurrent; change only second ID to B000001. Existing assertion retained. Add separate name-negative/crosswalk-positive regression.",
+  "originalAuthorTestSha256": "d00fd49a046de8c0cf4dd09be9bb481685d9816cb5e76023f2d774ed08a40de8",
+  "originalAuthorTestPreimage": "initial-author-test.mjs"
+}

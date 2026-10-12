@@ -1,0 +1,336 @@
+{
+  "source": "0aba55ef096a68a3cfd92f770783dec3fddfea22",
+  "sourceTree": "2a84b8964b23b4ebd178bfe619376680b9a21f6f",
+  "base": "a3e946c1fa264ae7b33205f5b87804ee1ef75773",
+  "initialPacket": "15969416f8ba0b6f4cc9b6bb44237946a3a38ab7",
+  "finalPacket": "62aafb3ad8bef0bc6520c82ed3bb6ff2a75a630c",
+  "sourceIdentities": [
+    {
+      "path": "packages/contracts/retrieval-0.2/tenant-contacts.schema.json",
+      "blob": "4729a6b5b17d0710b18a216da2d213a53d266f52",
+      "bytes": 5501,
+      "sha256": "401cf35dcb570393cd239e548feaac6b143c4adcfe6e52cd913588fee9e8a934"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/tenant-contacts-validation.mjs",
+      "blob": "f4583db5ae8e5c5349a1190c9b749b44b9b6f952",
+      "bytes": 4247,
+      "sha256": "f37700031b97356093da2d2d95d79d62246618f2707fd0afdb9d238db5ec6818"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-tenant-contacts.test.mjs",
+      "blob": "16938abfc93f13e7c6a50d1565d925f15143ac02",
+      "bytes": 11515,
+      "sha256": "da9c5abbfeffc839167dab80bffac080e2b11428205457b3c9091c6d0daf851f"
+    }
+  ],
+  "manifestIdentities": [
+    {
+      "commit": "15969416f8ba0b6f4cc9b6bb44237946a3a38ab7",
+      "bytes": 3425,
+      "sha256": "a430539e66dffa5cbf20c6164c7b4c1a3beb3327987075032d1a647072685d95",
+      "members": 14
+    },
+    {
+      "commit": "62aafb3ad8bef0bc6520c82ed3bb6ff2a75a630c",
+      "bytes": 3497,
+      "sha256": "d2ed52dc8882e21c103aa7999a0aac6ae33f6a4177e5305f8d873205778adba2",
+      "members": 14
+    }
+  ],
+  "originalBlobsPreserved": 6110,
+  "checks": 72,
+  "passed": 72,
+  "failed": 0,
+  "results": [
+    {
+      "name": "exact source tree",
+      "pass": true
+    },
+    {
+      "name": "all6110 original blobs unchanged",
+      "pass": true
+    },
+    {
+      "name": "only three new product paths and author report",
+      "pass": true
+    },
+    {
+      "name": "review working source matches candidate",
+      "pass": true
+    },
+    {
+      "name": "packet product source unchanged:15969416f8ba0b6f4cc9b6bb44237946a3a38ab7",
+      "pass": true
+    },
+    {
+      "name": "packet product source unchanged:62aafb3ad8bef0bc6520c82ed3bb6ff2a75a630c",
+      "pass": true
+    },
+    {
+      "name": "clarification report/manifest only",
+      "pass": true
+    },
+    {
+      "name": "14 safe unique author members:15969416f8ba0b6f4cc9b6bb44237946a3a38ab7",
+      "pass": true
+    },
+    {
+      "name": "author member:15969416:docs/coordination/reports/CODEX-TENANT-CONTACTS-AUTHOR-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "author member:15969416:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "author member:15969416:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/initial-focused.json",
+      "pass": true
+    },
+    {
+      "name": "author member:15969416:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/initial-focused.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author member:15969416:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/initial-focused.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author member:15969416:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/initial-tested-source.json",
+      "pass": true
+    },
+    {
+      "name": "author member:15969416:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/metadata-audit.json",
+      "pass": true
+    },
+    {
+      "name": "author member:15969416:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/metadata-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author member:15969416:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/metadata-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author member:15969416:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/metadata-checks.json",
+      "pass": true
+    },
+    {
+      "name": "author member:15969416:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/projection-metadata.json",
+      "pass": true
+    },
+    {
+      "name": "author member:15969416:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/reference-identities.json",
+      "pass": true
+    },
+    {
+      "name": "author member:15969416:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/source-freeze.json",
+      "pass": true
+    },
+    {
+      "name": "author member:15969416:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/verify-metadata.py",
+      "pass": true
+    },
+    {
+      "name": "exact packet membership:15969416f8ba0b6f4cc9b6bb44237946a3a38ab7",
+      "pass": true
+    },
+    {
+      "name": "14 safe unique author members:62aafb3ad8bef0bc6520c82ed3bb6ff2a75a630c",
+      "pass": true
+    },
+    {
+      "name": "author member:62aafb3a:docs/coordination/reports/CODEX-TENANT-CONTACTS-AUTHOR-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "author member:62aafb3a:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "author member:62aafb3a:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/initial-focused.json",
+      "pass": true
+    },
+    {
+      "name": "author member:62aafb3a:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/initial-focused.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author member:62aafb3a:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/initial-focused.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author member:62aafb3a:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/initial-tested-source.json",
+      "pass": true
+    },
+    {
+      "name": "author member:62aafb3a:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/metadata-audit.json",
+      "pass": true
+    },
+    {
+      "name": "author member:62aafb3a:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/metadata-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author member:62aafb3a:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/metadata-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author member:62aafb3a:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/metadata-checks.json",
+      "pass": true
+    },
+    {
+      "name": "author member:62aafb3a:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/projection-metadata.json",
+      "pass": true
+    },
+    {
+      "name": "author member:62aafb3a:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/reference-identities.json",
+      "pass": true
+    },
+    {
+      "name": "author member:62aafb3a:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/source-freeze.json",
+      "pass": true
+    },
+    {
+      "name": "author member:62aafb3a:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/verify-metadata.py",
+      "pass": true
+    },
+    {
+      "name": "exact packet membership:62aafb3ad8bef0bc6520c82ed3bb6ff2a75a630c",
+      "pass": true
+    },
+    {
+      "name": "latest manifest preserves initial packet identity",
+      "pass": true
+    },
+    {
+      "name": "initial untracked test source identities cover exact three files",
+      "pass": true
+    },
+    {
+      "name": "explicit initially tested identity:packages/contracts/retrieval-0.2/tenant-contacts.schema.json",
+      "pass": true
+    },
+    {
+      "name": "explicit initially tested identity:packages/contracts/retrieval-0.2/tenant-contacts-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "explicit initially tested identity:packages/contracts/test/retrieval-tenant-contacts.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "author bounded exit:initial-focused",
+      "pass": true
+    },
+    {
+      "name": "author capture source state:initial-focused",
+      "pass": true
+    },
+    {
+      "name": "author same subreaper:initial-focused",
+      "pass": true
+    },
+    {
+      "name": "author raw stream:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/initial-focused.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author raw stream:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/initial-focused.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author bounded exit:metadata-audit",
+      "pass": true
+    },
+    {
+      "name": "author capture source state:metadata-audit",
+      "pass": true
+    },
+    {
+      "name": "author same subreaper:metadata-audit",
+      "pass": true
+    },
+    {
+      "name": "author raw stream:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/metadata-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author raw stream:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/metadata-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author actual26/26",
+      "pass": true
+    },
+    {
+      "name": "independent33 metadata assertions pass",
+      "pass": true
+    },
+    {
+      "name": "author reference independently pinned:apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "author reference independently pinned:apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "name": "author reference independently pinned:apps/api/src/engagement/engagement-access.helpers.ts",
+      "pass": true
+    },
+    {
+      "name": "author reference independently pinned:packages/shared/src/index.ts",
+      "pass": true
+    },
+    {
+      "name": "independent exact product source:independent-first",
+      "pass": true
+    },
+    {
+      "name": "independent bounded owned exit:independent-first",
+      "pass": true
+    },
+    {
+      "name": "independent raw stream:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/independent-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "independent raw stream:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/independent-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "independent actual count:independent-first",
+      "pass": true
+    },
+    {
+      "name": "independent exact product source:independent-date-boundary",
+      "pass": true
+    },
+    {
+      "name": "independent bounded owned exit:independent-date-boundary",
+      "pass": true
+    },
+    {
+      "name": "independent raw stream:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/independent-date-boundary.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "independent raw stream:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/independent-date-boundary.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "independent actual count:independent-date-boundary",
+      "pass": true
+    },
+    {
+      "name": "sole canonical JSON import",
+      "pass": true
+    },
+    {
+      "name": "no network/native/dynamic module owner in family",
+      "pass": true
+    }
+  ],
+  "scope": "SOURCE_ONLY_NOT_CURRENT_AUTHORITY_OR_RUNTIME"
+}

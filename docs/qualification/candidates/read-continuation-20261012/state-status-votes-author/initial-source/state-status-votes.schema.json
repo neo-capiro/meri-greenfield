@@ -1,0 +1,604 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:state-status-votes:0.2.0",
+  "title": "Private stored state bill status and vote projections; validation grants no source authority",
+  "$defs": {
+    "MissingStateBillNote": {
+      "const": "Provide a state bill id (\"tx-2025-hb1234\") or designation (\"TX HB 1234\")."
+    },
+    "NoStateVotesNote": {
+      "const": "No state roll-call vote on record matches that. Say so explicitly \u2014 do not infer a vote outcome or tally. Member-level filtering is not available for state votes yet."
+    },
+    "NoBillVotesNote": {
+      "const": "No recorded roll-call vote on this bill. Do NOT infer that it passed or failed a chamber from the absence of a vote."
+    },
+    "DeadStateBillNote": {
+      "const": "The legislative session adjourned sine die before this bill reached a terminal outcome \u2014 it is dead absent a special session, not merely \"pending.\""
+    },
+    "StateBillStatusRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "billId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "query": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "state": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": []
+    },
+    "StateFloorVotesRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "billId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "state": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "query": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "chamber": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "limit": {
+          "type": [
+            "number",
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": []
+    },
+    "StateBillStatusInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "billId": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        }
+      },
+      "required": []
+    },
+    "StateFloorVotesInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "billId": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "query": {
+          "type": "string"
+        },
+        "chamber": {
+          "type": "string"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 25
+        }
+      },
+      "required": [
+        "limit"
+      ]
+    },
+    "StateStatusAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "text": {
+          "type": "string"
+        },
+        "chamber": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "importance": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": -2147483648,
+              "maximum": 2147483647
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "date",
+        "text",
+        "chamber",
+        "importance"
+      ]
+    },
+    "StateStatusVote": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "chamber": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "motion": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "date": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "yeas": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "nays": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "nv": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "absent": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "passed": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "sourceUrl": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "chamber",
+        "motion",
+        "date",
+        "yeas",
+        "nays",
+        "nv",
+        "absent",
+        "passed",
+        "sourceUrl"
+      ]
+    },
+    "StateFloorVote": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "billKey": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "chamber": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "motion": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "date": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "yeas": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "nays": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "nv": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "absent": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "passed": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "sourceUrl": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "billKey",
+        "chamber",
+        "motion",
+        "date",
+        "yeas",
+        "nays",
+        "nv",
+        "absent",
+        "passed",
+        "sourceUrl"
+      ]
+    },
+    "StateStatusCompanion": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "relatedBillKey": {
+          "type": "string",
+          "minLength": 1
+        },
+        "linkType": {
+          "type": "string"
+        },
+        "identifier": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "statusLabel": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "relatedBillKey",
+        "linkType",
+        "identifier",
+        "status"
+      ]
+    },
+    "StateBillStatusUnresolved": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "get_state_bill_status"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "found": {
+          "const": false
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "found",
+        "note"
+      ]
+    },
+    "StateBillStatusAbsent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "get_state_bill_status"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "billId": {
+          "type": "string"
+        },
+        "found": {
+          "const": false
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "billId",
+        "found",
+        "note"
+      ]
+    },
+    "StateBillStatusFound": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "get_state_bill_status"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "billId": {
+          "type": "string"
+        },
+        "found": {
+          "const": true
+        },
+        "state": {
+          "type": "string"
+        },
+        "session": {
+          "type": "string"
+        },
+        "identifier": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "status": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "statusLabel": {
+          "type": "string"
+        },
+        "statusAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "latestAction": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "text": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "date": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "text",
+            "date"
+          ]
+        },
+        "sponsor": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "party": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "count": {
+              "type": "integer",
+              "minimum": -2147483648,
+              "maximum": 2147483647
+            }
+          },
+          "required": [
+            "name",
+            "party",
+            "count"
+          ]
+        },
+        "recentActions": {
+          "type": "array",
+          "maxItems": 15,
+          "items": {
+            "$ref": "#/$defs/StateStatusAction"
+          }
+        },
+        "votes": {
+          "type": "array",
+          "maxItems": 15,
+          "items": {
+            "$ref": "#/$defs/StateStatusVote"
+          }
+        },
+        "companions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/StateStatusCompanion"
+          }
+        },
+        "url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "billId",
+        "found",
+        "state",
+        "session",
+        "identifier",
+        "title",
+        "status",
+        "statusAt",
+        "latestAction",
+        "sponsor",
+        "recentActions",
+        "votes",
+        "companions",
+        "url"
+      ]
+    },
+    "StateBillStatusOutput": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/StateBillStatusUnresolved"
+        },
+        {
+          "$ref": "#/$defs/StateBillStatusAbsent"
+        },
+        {
+          "$ref": "#/$defs/StateBillStatusFound"
+        }
+      ]
+    },
+    "StateFloorVotesOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "search_state_floor_votes"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "votesFound": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 25
+        },
+        "votes": {
+          "type": "array",
+          "maxItems": 25,
+          "items": {
+            "$ref": "#/$defs/StateFloorVote"
+          }
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "votesFound",
+        "votes"
+      ]
+    }
+  }
+}

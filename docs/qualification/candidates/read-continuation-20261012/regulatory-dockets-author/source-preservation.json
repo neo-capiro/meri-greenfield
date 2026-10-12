@@ -1,0 +1,38 @@
+{
+  "base": "a3e946c1fa264ae7b33205f5b87804ee1ef75773",
+  "outline": "96604969426a93e51f4f3d3f3ed1b6ca9a1244fd",
+  "sourceFreeze": "57e09ebfda15d6057bdf4bfb7fc84b4061eac03f",
+  "sourceTree": "485860a7d9b2d4cf1e9f19a45c00cd80213ca088",
+  "originalBlobs": 6110,
+  "allOriginalBlobsUnchanged": true,
+  "added": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-author/outline.json",
+      "blob": "364f6e0326bf53efe71423cc0aa05d257fecb2ea",
+      "bytes": 2343,
+      "sha256": "eac35b2f87865aff33463dbc21f5535e6578bf9a3721da24045c35eaa331fcef"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/regulatory-dockets-validation.mjs",
+      "blob": "9955d6f2c26c3575cc5e63f580ff0dbc09690815",
+      "bytes": 5349,
+      "sha256": "f9e8cf5f48c15b52590ba4ab5f7ad24efea0064f5b03c719a186fe0c552de1d7"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/regulatory-dockets.schema.json",
+      "blob": "221bd2bab9bc6bcaa5c810c1a3a2680ca18922b2",
+      "bytes": 3639,
+      "sha256": "67780fed6830f53dbb4fa0f76a681666b426a41408046f5c778be3efdb810654"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-regulatory-dockets.test.mjs",
+      "blob": "cf8b1f55be3fb76c5f1b35a28be580371ddcf0a8",
+      "bytes": 12615,
+      "sha256": "9735c10f9a99e8cc717ff199ebf39b587520fabb9536caabfa89f8a49c026a64"
+    }
+  ],
+  "captureHelperSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "dependencies": "Read-only use of root-authorized shared dependency symlinks; no install or mutation",
+  "broadChecks": "UNRUN in this lane at root direction; root owns later combined checks",
+  "runtimeAccepted": false
+}
