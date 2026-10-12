@@ -1,0 +1,167 @@
+{
+  "schemaVersion": 1,
+  "baseCommit": "15f671a65365e3401f0ce07b46deb4cf63538346",
+  "baseTree": "843ee186aa3af6d84b09948b92f399a78c3f2ba3",
+  "decision": "HOLD_EXTERNAL_INPUT",
+  "executionStatus": "NOT_EXECUTABLE",
+  "priorAuthor": "05b297923791e434c52aa63eca6d3752d21af54e",
+  "priorReview": "bf701db3389067de5c6aa503ff2698595b53289f",
+  "preservedSourceBindings": [
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/assessment.json",
+      "bytes": 26605,
+      "sha256": "353f595cdb19fb5cffcdd5fdd54d6248d36715f9c904f84b5d27e5be8f5c1f34"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/manifest.json",
+      "bytes": 14334,
+      "sha256": "eb897c2abfa084bdfd386ffed02d3c03044cdbd070f98266c68497ffc3eaddaa"
+    },
+    {
+      "path": "docs/coordination/reports/MERI-NATIVE-PREFIX-20261012.md",
+      "bytes": 9384,
+      "sha256": "7b7bc7d20f8cf2ee3c3e7699087c93b3fa8db03d02bc220a73e1072ac11cbb14"
+    },
+    {
+      "path": "docs/coordination/reports/MERI-NATIVE-PREFIX-REVIEW-20261012.md",
+      "bytes": 7134,
+      "sha256": "52412fdb2eacf24593c23238ded78fe37a0224f5c750d9276ed31cd77afa732a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/review/audit-author-result.json",
+      "bytes": 46384,
+      "sha256": "9e12a32568fc42d997175285018c7c03c5565fde2e1794c64891f840311244e9"
+    },
+    {
+      "path": "AGENTS.md",
+      "bytes": 6582,
+      "sha256": "a0650949b74e5aee709bd8b3c9d480f95f5b898778ac8f7b3927eb54b141437a"
+    },
+    {
+      "path": "docs/IMPLEMENTATION-STANDARDS.md",
+      "bytes": 11082,
+      "sha256": "d4f10f964ee207187abacd967649a1cfc9bdd468072dc01f859268f08b719959"
+    },
+    {
+      "path": "docs/plans/MERI-DEPLOYMENT.md",
+      "bytes": 86848,
+      "sha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388"
+    },
+    {
+      "path": "docs/plans/MERI-G1-SOURCE-TO-NATIVE.md",
+      "bytes": 33652,
+      "sha256": "9bdba1f17089a977593de6d22cb682f0ec64a221ab191234da958e4bcbe7ab72"
+    }
+  ],
+  "researchDelta": {
+    "rawAttempts": 8,
+    "rawProxy403": 8,
+    "rawResponseBytes": 0,
+    "newSupportedRoute": "Detached Release plus Release.gpg attempted without proxy/config changes; still403",
+    "webFallback": "Release and Release.gpg render, key/Sources/dsc inaccessible. Saved tool result is not exact origin bytes and has not been reconstructed into signed files.",
+    "signatureVerification": "UNRUN_MISSING_RAW_INPUTS_AND_TRUST",
+    "newBuildOrPrefixSupport": "NONE_ESTABLISHED",
+    "furtherRetrievalStopped": true
+  },
+  "selectedLead": {
+    "channel": "PGDG trixie-pgdg amd64",
+    "serverAndClientVersion": "17.11-1.pgdg13+2",
+    "packages": [
+      {
+        "name": "postgresql-17",
+        "version": "17.11-1.pgdg13+2",
+        "url": "https://apt.postgresql.org/pub/repos/apt/pool/main/p/postgresql-17/postgresql-17_17.11-1.pgdg13+2_amd64.deb",
+        "listedBytes": 16667232,
+        "sha256": null,
+        "status": "POOL_LISTING_ONLY_NOT_AUTHENTICATED"
+      },
+      {
+        "name": "postgresql-client-17",
+        "version": "17.11-1.pgdg13+2",
+        "url": "https://apt.postgresql.org/pub/repos/apt/pool/main/p/postgresql-17/postgresql-client-17_17.11-1.pgdg13+2_amd64.deb",
+        "listedBytes": 2069984,
+        "sha256": null,
+        "status": "POOL_LISTING_ONLY_NOT_AUTHENTICATED"
+      }
+    ],
+    "status": "INHERITED_LISTING_LEADS_NOT_REVALIDATED_AUTHENTICATED_OR_ACQUIRED"
+  },
+  "externalDecisionPackage": {
+    "decision": "Arrange one bounded metadata-only evidence handoff using an already supported external transfer route; do not change this environment network policy or request target setup approval.",
+    "destination": "Fresh unambiguous evidence-only intake allocated by root; exact local path bound before transfer. No system/prefix/PGDATA write.",
+    "rawMetadataGroups": [
+      {
+        "id": "signed-release",
+        "choice": "ONE alternative: exact InRelease OR exact matching Release plus Release.gpg",
+        "urls": [
+          "https://apt.postgresql.org/pub/repos/apt/dists/trixie-pgdg/InRelease",
+          "https://apt.postgresql.org/pub/repos/apt/dists/trixie-pgdg/Release",
+          "https://apt.postgresql.org/pub/repos/apt/dists/trixie-pgdg/Release.gpg"
+        ],
+        "required": "Original bytes; capture origin/time/status/content length and SHA256. Rendered11Oct2026 date is a lead, not verified freshness. A fresh release is acceptable only as a new coherent freeze, never mixed with old indices."
+      },
+      {
+        "id": "signing-key-and-trust",
+        "urls": [
+          "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
+        ],
+        "required": "Original key bytes plus independently accepted official fingerprint/trust provenance and validity/revocation check; do not invent a fingerprint or trust an arbitrary supplied key solely because it verifies."
+      },
+      {
+        "id": "main-amd64-index",
+        "urls": [
+          "https://apt.postgresql.org/pub/repos/apt/dists/trixie-pgdg/main/binary-amd64/Packages.bz2"
+        ],
+        "required": "Bytes must match the authenticated release SHA256 and size; retain exact selected binary stanzas and all package relationship fields."
+      },
+      {
+        "id": "major17-amd64-index",
+        "urls": [
+          "https://apt.postgresql.org/pub/repos/apt/dists/trixie-pgdg/17/binary-amd64/Packages.bz2"
+        ],
+        "required": "Same authenticated release binding; major component may resolve libpq choices, no guessed component precedence."
+      },
+      {
+        "id": "source-index",
+        "urls": [
+          "https://apt.postgresql.org/pub/repos/apt/dists/trixie-pgdg/main/source/Sources.bz2"
+        ],
+        "required": "Same authenticated release binding; exact source version/directory/Checksums-Sha256/build dependencies, no source tarball acquisition."
+      },
+      {
+        "id": "selected-dsc",
+        "urls": [
+          "https://apt.postgresql.org/pub/repos/apt/pool/main/p/postgresql-17/postgresql-17_17.11-1.pgdg13+2.dsc"
+        ],
+        "required": "Attempted metadata location only;403 establishes neither current existence nor content. Obtain only if selected Sources binds this exact version/path/hash/size. No package/archive/header acquisition."
+      }
+    ],
+    "maxRawMetadataMembers": 7,
+    "maxTotalMembersIncludingProvenanceAndSupportProfile": 9,
+    "maxDecodedTransferBytes": 4194304,
+    "maxIndividualMetadataBytes": 1500000,
+    "boundsMeaning": "Proposed metadata intake ceilings, not observed archive/installed sizes, granted transfer authority, or a complete dependency closure. Stop if exceeded; do not split or expand automatically.",
+    "provenanceMember": "JSON with each member name, original URL, capture UTC, exact byte count/SHA256 and retrieval status; immutable release selection and independently accepted key trust reference.",
+    "supportProfileMember": "Exact package/source-bound maintainer or accountable platform evidence for artifact-only use on this saved Debian13 amd64 host: complete retained tree/direct bin paths, compiled paths/patches, ELF interpreter/DT_NEEDED/RPATH/RUNPATH/SONAME closure, extensions/share/config/locale/tzdata, and lifecycle excluding maintainer scripts/service/initdb/HBA/roles/credentials. An unbound mirror, generic extraction recipe or approval alone does not establish support.",
+    "memberSafety": "Fixed manifest; no executables, package payload/header, wheel, source/runtime archive, private credentials or customer data; no archive path traversal/symlink materialization. Indices and .dsc are metadata only.",
+    "cost": "No provider/cloud action or infrastructure spend; external transfer route cost not inferred or authorized.",
+    "onReceipt": "Check shape/bytes/hashes and original release signature/key trust; bind indices/source, then derive exact dependency alternatives and remaining authenticated Debian13 metadata requirements. Review exact prefix support independently. Do not acquire target artifacts or execute any target.",
+    "onFailure": "Retain exact failure/rejected evidence; no bypass, substituted key/version, mixed release, guessed closure or automatic setup.",
+    "cleanup": "Only evidence files created by the approved transfer owner; preserve failures and immutable prior packets. No target process or service cleanup is needed because none is started."
+  },
+  "nextSetupDecision": {
+    "status": "DEFERRED_UNTIL_EVIDENCE",
+    "setupApprovalRequested": false,
+    "setupCommand": null,
+    "reason": "Even authenticated PGDG metadata alone does not substantiate supported artifact-only prefix/loader/lifecycle closure. Missing support must be supplied or the accountable owner must separately choose and review a supported provisioning method; no apt/source-build/relocation choice made here.",
+    "remainingClosure": "Exact selected build records and recursively authenticated Depends/Pre-Depends including Debian13 packages; actual host library/interpreter provenance, ABI/security/license closure; admitted materialization/write/resource/cost bounds and later L1 auth/containment/supervision remain separate."
+  },
+  "targetPayloadAcquired": false,
+  "targetPayloadHeadersAcquired": false,
+  "targetMaterializedInstalledImportedExecuted": false,
+  "hostChanged": false,
+  "databaseOrNativeActions": false,
+  "cloudProviderPaidActions": false,
+  "sourceScopeUnchanged": "139 originals/96 selected/43 deferred;14 bound unavailable/82 selected unmapped;14 unqualified skills; public0.1/private0.2; Aurora and disabled source connectivity; G1 OPEN remain.",
+  "processes": "All ordinary metadata calls completed; no owned background or target process"
+}
