@@ -40,6 +40,14 @@ test('all four lanes are required, duplicate identical observation allowed, miss
   assert.equal(missing.wire.length,4);assert.equal(missing.calls.includes('settle'),false);
   const moved=setup();moved.pages[3]=[{...review(),revision:5}];await assert.rejects(moved.create().execute(request(moved.raw),'synthetic'));assert.equal(moved.calls.includes('settle'),false);
 });
+test('UUID selectors normalize accepted uppercase spelling before exact source selection', async () => {
+  const f=setup(), result=JSON.parse(await f.create().execute(request({...f.raw,recordId:recordId.toUpperCase()}),'synthetic'));
+  assert.equal(result.data.id,recordId);
+  const selected=setup('snapshot');selected.subject.entityIds=[portfolioId.toUpperCase()];
+  const snapshot=JSON.parse(await selected.create().execute(request(selected.raw),'synthetic'));
+  assert.equal(snapshot.data.portfolioId,portfolioId);
+  assert.equal(selected.wire[0].url,`https://source.example.invalid/research-portfolios/${portfolioId}/snapshots/${recordId}`);
+});
 test('foreign tenant, Portfolio, conflicting stance and incomplete snapshots refuse', async () => {
   for (const kind of ['tenant','portfolio','stance','snapshot-parent','snapshot-missing','continuity-count']) {
     const f=setup(kind.startsWith('snapshot')?'snapshot':kind.startsWith('continuity')?'current_continuity':'review');
