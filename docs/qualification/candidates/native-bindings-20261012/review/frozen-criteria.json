@@ -1,0 +1,89 @@
+{
+  "base": "263d0d174f9924a6030bb1c20100ff1115ffcda0",
+  "rootTask": "MERI-G1-OWNER-CONTINUATION-20261012",
+  "status": "review criteria frozen before implementation; writer allocation pending",
+  "criteria": [
+    {
+      "id": "NB1",
+      "assertion": "Exact base263d0d174 and author allocation; only allocated wrapper composition and new native-bindings evidence/module paths may change; old source freezes/manifests/failures/tests remain immutable in history and unrelated files remain byte-identical."
+    },
+    {
+      "id": "NB2",
+      "assertion": "Separate relayed serialization derivatives from verified original bytes: record actual bytes/hash and claimed member size/hash independently; truncated or incomplete JSON is missing evidence, never verified by label."
+    },
+    {
+      "id": "NB3",
+      "assertion": "Do not substitute priorFullAuditReference/source-and-input-verification.json for the original originals/source-verification.json or infer full prior evidence membership from an unrelated manifest. Each role needs exact complete membership, semantic binding and immutable pin."
+    },
+    {
+      "id": "NB4",
+      "assertion": "Git path alone cannot establish executable size/hash/provenance. Current selected executable observation remains distinct from old wrapper execution identity, qualified bounded hashing, source custody, distributor/DLL closure and original full identity predicates."
+    },
+    {
+      "id": "NB5",
+      "assertion": "Preserve negative full timestamp/bracket flags; inspect actual comparison source when available before interpreting access-time differences. Never relax canonical regular-file/single-link/reparse/device/fileID/content/mutation or per-API timestamp stability."
+    },
+    {
+      "id": "NB6",
+      "assertion": "New writer, if allocated, owns only exact already-reserved directory and explicitly created files; no allocation of unrelated resources, overwrite, deletion, retry or cleanup of borrowed/uncertain resources. Preserve partial raw output on every failure."
+    },
+    {
+      "id": "NB7",
+      "assertion": "Writer validation is bounded before effects: fixed safe member names, exact bytes, finite byte/member limits and exact directory ownership. Meaningful mutation/casefold/extra/symlink/hardlink controls must remain denied."
+    },
+    {
+      "id": "NB8",
+      "assertion": "Check full writes including short/zero/error returns, flush/fsync, close, canonical bounded hash/readback and final complete membership plus file/directory identity brackets. Never equate hash metadata or successful write ACK with verified publication."
+    },
+    {
+      "id": "NB9",
+      "assertion": "One pre-existing cooperative deadline covers writer operations and final return. No timer reset, further write after expiry, silently unbounded read/listing, late-success or missing close-error handling. Real blocking-call bounds and startup remain external-watchdog HOLD."
+    },
+    {
+      "id": "NB10",
+      "assertion": "Actual wrapper entry composes reviewed writer; no disconnected scaffold. Missing private records/Git/hash/native policy inputs still refuse before effects; source-only observation cannot set runtime/build/G1/hardTotal/native-publication flags true."
+    },
+    {
+      "id": "NB11",
+      "assertion": "Tests execute only explicitly permitted isolated new definitions with inert fake filesystem/streams/clock ports; no target module imports, real candidate/native processes/threads/Windows APIs/network/DB. Candidate wrapper guards stay AST/source-only unless separately allocated for inert isolation."
+    },
+    {
+      "id": "NB12",
+      "assertion": "Freeze exact source and packet commits, preserve original/raw failed checks and mutants, audit complete manifests and changed paths, report explicit ACCEPT_SOURCE/HOLD with native gates and no inferred execution authority."
+    }
+  ],
+  "originalAnchors": [
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/author/run-supervised.py",
+      "bytes": 16402,
+      "sha256": "ccb6dba27ef3c2991df96c553ba21b097eeb243e4c86666b3cb8a8b7df7dfe3f"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/author/supervision.py",
+      "bytes": 7846,
+      "sha256": "418ad3d9a5537f5ab4f97ddc748ab3529e4d491919e171c52754f772d69be142"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/author/source-checks.py",
+      "bytes": 7912,
+      "sha256": "0de6b33e0d75600037133c2447ef084faa05478a993a2aa865f93096e3b8ba50"
+    },
+    {
+      "path": "scripts/qualification/worker_runner_inventory.py",
+      "bytes": 13224,
+      "sha256": "7615e26a5d038ff2fa054cde3cdb04077def5636874f848c97e050dae9df03e9"
+    },
+    {
+      "path": "scripts/qualification/worker_runner_capture.py",
+      "bytes": 10069,
+      "sha256": "3219d21ec7d7bfa63deb07f87125e3ffcf5b6ff5df4f2b5f87f487cb6594153c"
+    },
+    {
+      "path": "docs/qualification/candidates/native-ancestor-diagnosis-20261012/inspect-ancestor-metadata.py",
+      "bytes": 6297,
+      "sha256": "9514b8e8ad0aff24e1eea7e782dd32178d856011fafcb750ce2c0f9a715c6efd"
+    }
+  ],
+  "privateStaging": "new locators pending; no original input verification claimed",
+  "nativeAuthorized": false
+}

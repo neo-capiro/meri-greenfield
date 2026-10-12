@@ -1,0 +1,129 @@
+{
+  "freeze": "74f9692047be50beb8c59a0b0d7833f0cb682c76",
+  "tree": "d3c0e8a8b0940b3173b9d01f9df134ac148847f3",
+  "manifestSha256": "2267f56d8cca1b67d5ba7c299901575c2d152d1c1bb0d2492b7758d318380285",
+  "manifestMembers": 16,
+  "changedPaths": 17,
+  "facts": [
+    {
+      "case": "clean-exact-freeze",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "manifest-exact-known-sha",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "manifest:docs/coordination/reports/MERI-NATIVE-BINDINGS-20261012.md",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "manifest:docs/coordination/tasks/MERI-NATIVE-BINDINGS-20261012.md",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "manifest:docs/qualification/candidates/native-bindings-20261012/author/binding-review.json",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "manifest:docs/qualification/candidates/native-bindings-20261012/author/checks-final-clock-repair.stderr.txt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "manifest:docs/qualification/candidates/native-bindings-20261012/author/checks-final-clock-repair.stdout.json",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "manifest:docs/qualification/candidates/native-bindings-20261012/author/checks-first.stderr.txt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "manifest:docs/qualification/candidates/native-bindings-20261012/author/checks-first.stdout.json",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "manifest:docs/qualification/candidates/native-bindings-20261012/author/checks-freeze.stderr.txt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "manifest:docs/qualification/candidates/native-bindings-20261012/author/checks-freeze.stdout.json",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "manifest:docs/qualification/candidates/native-bindings-20261012/author/checks-port-deadline-repair.stderr.txt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "manifest:docs/qualification/candidates/native-bindings-20261012/author/checks-port-deadline-repair.stdout.json",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "manifest:docs/qualification/candidates/native-bindings-20261012/author/evidence-writer.py",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "manifest:docs/qualification/candidates/native-bindings-20261012/author/historical-location-check.stderr.txt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "manifest:docs/qualification/candidates/native-bindings-20261012/author/historical-location-check.stdout.txt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "manifest:docs/qualification/candidates/native-bindings-20261012/author/source-checks.py",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "manifest:docs/qualification/candidates/native-supervisor-20261012/author/run-supervised.py",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "complete-current-membership",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "no-known-private-path-values-published",
+      "passed": true,
+      "detail": {
+        "matches": 0,
+        "scannedRecords": 2
+      }
+    },
+    {
+      "case": "no-original-private-body-copied",
+      "passed": true,
+      "detail": {
+        "matches": 0
+      }
+    },
+    {
+      "case": "all-runtime-flags-remain-false",
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "passed": 22,
+  "failed": 0,
+  "privacyScope": "Known absolute private path values from two verified records plus exact original body; not a comprehensive secret scanner",
+  "privateBodiesPublished": false,
+  "nativeCalls": 0
+}

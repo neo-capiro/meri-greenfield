@@ -1,0 +1,17 @@
+{
+  "freeze": "74f9692047be50beb8c59a0b0d7833f0cb682c76",
+  "argv": [
+    "python",
+    "/workspace/meri-native-bindings-20261012/docs/qualification/candidates/native-supervisor-20261012/review/lifecycle-controls.py",
+    "/workspace/meri-native-bindings-20261012/docs/qualification/candidates/native-supervisor-20261012/author/supervision.py",
+    "/workspace/meri-native-bindings-review-20261012/docs/qualification/candidates/native-bindings-20261012/review/final-lifecycle.json"
+  ],
+  "exitCode": 0,
+  "elapsedSeconds": 0.036895547000312945,
+  "harnessCompleted": true,
+  "targetImported": false,
+  "nativeProcesses": 0,
+  "nativeFilesystemOperations": 0,
+  "stdoutSha256": "7653b7b3ecd63656e59fcfe777d09b35412afde51697c21a91b6276ead3ff33a",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

@@ -1,0 +1,363 @@
+{
+  "freeze": "74f9692047be50beb8c59a0b0d7833f0cb682c76",
+  "tree": "d3c0e8a8b0940b3173b9d01f9df134ac148847f3",
+  "base": "263d0d174f9924a6030bb1c20100ff1115ffcda0",
+  "changes": [
+    [
+      "A",
+      "docs/coordination/reports/MERI-NATIVE-BINDINGS-20261012.md"
+    ],
+    [
+      "A",
+      "docs/coordination/tasks/MERI-NATIVE-BINDINGS-20261012.md"
+    ],
+    [
+      "A",
+      "docs/qualification/candidates/native-bindings-20261012/author/binding-review.json"
+    ],
+    [
+      "A",
+      "docs/qualification/candidates/native-bindings-20261012/author/checks-final-clock-repair.stderr.txt"
+    ],
+    [
+      "A",
+      "docs/qualification/candidates/native-bindings-20261012/author/checks-final-clock-repair.stdout.json"
+    ],
+    [
+      "A",
+      "docs/qualification/candidates/native-bindings-20261012/author/checks-first.stderr.txt"
+    ],
+    [
+      "A",
+      "docs/qualification/candidates/native-bindings-20261012/author/checks-first.stdout.json"
+    ],
+    [
+      "A",
+      "docs/qualification/candidates/native-bindings-20261012/author/checks-freeze.stderr.txt"
+    ],
+    [
+      "A",
+      "docs/qualification/candidates/native-bindings-20261012/author/checks-freeze.stdout.json"
+    ],
+    [
+      "A",
+      "docs/qualification/candidates/native-bindings-20261012/author/checks-port-deadline-repair.stderr.txt"
+    ],
+    [
+      "A",
+      "docs/qualification/candidates/native-bindings-20261012/author/checks-port-deadline-repair.stdout.json"
+    ],
+    [
+      "A",
+      "docs/qualification/candidates/native-bindings-20261012/author/current-manifest.json"
+    ],
+    [
+      "A",
+      "docs/qualification/candidates/native-bindings-20261012/author/evidence-writer.py"
+    ],
+    [
+      "A",
+      "docs/qualification/candidates/native-bindings-20261012/author/historical-location-check.stderr.txt"
+    ],
+    [
+      "A",
+      "docs/qualification/candidates/native-bindings-20261012/author/historical-location-check.stdout.txt"
+    ],
+    [
+      "A",
+      "docs/qualification/candidates/native-bindings-20261012/author/source-checks.py"
+    ],
+    [
+      "M",
+      "docs/qualification/candidates/native-supervisor-20261012/author/run-supervised.py"
+    ]
+  ],
+  "sources": [
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/author/run-supervised.py",
+      "bytes": 16775,
+      "sha256": "380dfc349ac5283f49b7d8a8360a4dc9d7c2a43516361d1d1c387290620ec595"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/author/evidence-writer.py",
+      "bytes": 8831,
+      "sha256": "8715d7999e4c9d7ab1422f7360a6a9cff5053da57687dacda861ef69d5e42afc"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/author/source-checks.py",
+      "bytes": 9859,
+      "sha256": "d8f27ee4801d63b5b2de4c2bed26e30d924a23acd688614202af3cd9619e6e70"
+    }
+  ],
+  "facts": [
+    {
+      "case": "exact-clean-freeze",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "one-existing-path-only",
+      "passed": true,
+      "detail": [
+        [
+          "A",
+          "docs/coordination/reports/MERI-NATIVE-BINDINGS-20261012.md"
+        ],
+        [
+          "A",
+          "docs/coordination/tasks/MERI-NATIVE-BINDINGS-20261012.md"
+        ],
+        [
+          "A",
+          "docs/qualification/candidates/native-bindings-20261012/author/binding-review.json"
+        ],
+        [
+          "A",
+          "docs/qualification/candidates/native-bindings-20261012/author/checks-final-clock-repair.stderr.txt"
+        ],
+        [
+          "A",
+          "docs/qualification/candidates/native-bindings-20261012/author/checks-final-clock-repair.stdout.json"
+        ],
+        [
+          "A",
+          "docs/qualification/candidates/native-bindings-20261012/author/checks-first.stderr.txt"
+        ],
+        [
+          "A",
+          "docs/qualification/candidates/native-bindings-20261012/author/checks-first.stdout.json"
+        ],
+        [
+          "A",
+          "docs/qualification/candidates/native-bindings-20261012/author/checks-freeze.stderr.txt"
+        ],
+        [
+          "A",
+          "docs/qualification/candidates/native-bindings-20261012/author/checks-freeze.stdout.json"
+        ],
+        [
+          "A",
+          "docs/qualification/candidates/native-bindings-20261012/author/checks-port-deadline-repair.stderr.txt"
+        ],
+        [
+          "A",
+          "docs/qualification/candidates/native-bindings-20261012/author/checks-port-deadline-repair.stdout.json"
+        ],
+        [
+          "A",
+          "docs/qualification/candidates/native-bindings-20261012/author/current-manifest.json"
+        ],
+        [
+          "A",
+          "docs/qualification/candidates/native-bindings-20261012/author/evidence-writer.py"
+        ],
+        [
+          "A",
+          "docs/qualification/candidates/native-bindings-20261012/author/historical-location-check.stderr.txt"
+        ],
+        [
+          "A",
+          "docs/qualification/candidates/native-bindings-20261012/author/historical-location-check.stdout.txt"
+        ],
+        [
+          "A",
+          "docs/qualification/candidates/native-bindings-20261012/author/source-checks.py"
+        ],
+        [
+          "M",
+          "docs/qualification/candidates/native-supervisor-20261012/author/run-supervised.py"
+        ]
+      ]
+    },
+    {
+      "case": "all-new-paths-allocated",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "protected-original:docs/qualification/candidates/native-supervisor-20261012/author/supervision.py",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "protected-original:docs/qualification/candidates/native-supervisor-20261012/author/source-checks.py",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "protected-original:scripts/qualification/worker_runner_inventory.py",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "protected-original:scripts/qualification/worker_runner_capture.py",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "protected-original:docs/qualification/candidates/native-ancestor-diagnosis-20261012/inspect-ancestor-metadata.py",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "same-wrapper-function-owners",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "unchanged-wrapper-function:require",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "unchanged-wrapper-function:local_path",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "unchanged-wrapper-function:bind",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "unchanged-wrapper-function:native_spawn",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "unchanged-wrapper-function:native_thread",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "unchanged-wrapper-function:checked_file",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "unchanged-wrapper-function:read_json",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "unchanged-wrapper-function:verify_original_source",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "unchanged-wrapper-function:verify_prior",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "all-old-constants-and-imports-unchanged",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "exact-readonly-git-argv",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "git-same-clock-and-capture-ports",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "git-full-status-preserved",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "writer-explicit-trusted-dependency",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "all-prepublication-statements-preserved",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "exact-writer-composition-tail",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "immutable-missing-pins-still-before-ports",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "native-publication-and-runtime-flags-false",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "writer-top-level-no-effects",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "exact-three-artifact-caps",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "native-exclusive-adapter-mode",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "no-delete-rename-replace-or-retry-port",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "writer-required-ports",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "canonical-readback-and-same-deadline",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "source-observation-only",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "fixed-grammar-precedes-first-filesystem-port",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "old-historical-check-retained",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "current-bytes-match-freeze:docs/qualification/candidates/native-supervisor-20261012/author/run-supervised.py",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "current-bytes-match-freeze:docs/qualification/candidates/native-bindings-20261012/author/evidence-writer.py",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "current-bytes-match-freeze:docs/qualification/candidates/native-bindings-20261012/author/source-checks.py",
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "passed": 39,
+  "failed": 0,
+  "candidateModulesImported": false,
+  "nativeCalls": 0,
+  "runtimeAccepted": false
+}

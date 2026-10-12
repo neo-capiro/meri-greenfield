@@ -1,0 +1,38 @@
+{
+  "reviewer": "Codex /root/memory_reviewer",
+  "verdict": "ACCEPT_SOURCE",
+  "scope": "Reserved evidence writer, actual blocked partial-wrapper composition and approved Git argument hardening only",
+  "authorFreeze": "74f9692047be50beb8c59a0b0d7833f0cb682c76",
+  "authorTree": "d3c0e8a8b0940b3173b9d01f9df134ac148847f3",
+  "base": "263d0d174f9924a6030bb1c20100ff1115ffcda0",
+  "passed": {
+    "independentWriter": 156,
+    "authorReplay": 47,
+    "preservedLifecycle": 78,
+    "sourceAstAudit": 39,
+    "packetIntegrityPrivacy": 22
+  },
+  "historicalCurrentPlacementCheck": {
+    "exitCode": 1,
+    "assertion": "exclusive-evidence-allocation",
+    "status": "preserved intentional source-placement supersession; original assertion unchanged"
+  },
+  "rawFailuresPreserved": {
+    "finalClock": "150PASS/1FAIL",
+    "lateFstat": "151PASS/1FAIL",
+    "lateDirectoryEntryOnSavedDraft": "154PASS/2FAIL"
+  },
+  "reportSha256": "d95cc266a9123e3fc914a3bd8076a34f260c9e032929e9d2080fcec111c88069",
+  "allOwnedHarnessCommandsCompleted": true,
+  "targetImports": 0,
+  "nativeProcesses": 0,
+  "nativeFilesystemOperations": 0,
+  "backgroundJobsCreated": 0,
+  "privateBodiesPublished": false,
+  "runtimeAccepted": false,
+  "nativePublicationQualified": false,
+  "hardTotalProven": false,
+  "completeBindingsAccepted": false,
+  "executionAuthorized": false,
+  "g1Accepted": false
+}
