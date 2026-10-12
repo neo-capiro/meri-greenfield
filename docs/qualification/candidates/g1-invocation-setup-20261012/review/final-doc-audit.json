@@ -1,8 +1,8 @@
 {
   "base": "6cfb1f9a4d8acd66c5bd8d38d892d656fa3cd89e",
-  "rootFreeze": "c5af5a6ad412595aafd30bd0196198790ca18be3",
-  "rootParent": "f3468416bb8a83d215cc3947698123373e098fa4",
-  "rootTree": "e7187b01b208624e3c1c0bc1667313698c3cbae8",
+  "rootFreeze": "5f18de1ed6980dfb77a309aa21800dadf8797b19",
+  "rootParent": "c5af5a6ad412595aafd30bd0196198790ca18be3",
+  "rootTree": "75d8fb65c546507a9ba9acad24f99800e46ed15c",
   "documentAnchors": [
     {
       "path": "docs/plans/MERI-G1-SOURCE-TO-NATIVE.md",
@@ -11,8 +11,8 @@
     },
     {
       "path": "docs/coordination/reports/MERI-G1-INVOCATION-SETUP-20261012.md",
-      "bytes": 11003,
-      "sha256": "3e413aac69efd24ea05973a7dae4efe76f747038047d8d93807a8ca0bdd4a836"
+      "bytes": 11154,
+      "sha256": "4f37d323f4c42aa987c1e7077386a7e677b2515b7ffa46a6dbd84d2dffbffd95"
     }
   ],
   "method": "Offline Git metadata, JSON, hashing and local link reads only",
@@ -29,42 +29,6 @@
         [
           "M",
           "docs/coordination/reports/MERI-G1-INVOCATION-SETUP-20261012.md"
-        ],
-        [
-          "A",
-          "docs/qualification/candidates/g1-invocation-setup-20261012/integration/integrated-audit.json"
-        ],
-        [
-          "A",
-          "docs/qualification/candidates/g1-invocation-setup-20261012/integration/integrated-source-audit.json"
-        ],
-        [
-          "A",
-          "docs/qualification/candidates/g1-invocation-setup-20261012/integration/integrated-source-audit.stderr.bin"
-        ],
-        [
-          "A",
-          "docs/qualification/candidates/g1-invocation-setup-20261012/integration/integrated-source-audit.stdout.bin"
-        ],
-        [
-          "A",
-          "docs/qualification/candidates/g1-invocation-setup-20261012/integration/whitespace-authored.stderr.bin"
-        ],
-        [
-          "A",
-          "docs/qualification/candidates/g1-invocation-setup-20261012/integration/whitespace-authored.stdout.bin"
-        ],
-        [
-          "A",
-          "docs/qualification/candidates/g1-invocation-setup-20261012/integration/whitespace-checks.json"
-        ],
-        [
-          "A",
-          "docs/qualification/candidates/g1-invocation-setup-20261012/integration/whitespace-full.stderr.bin"
-        ],
-        [
-          "A",
-          "docs/qualification/candidates/g1-invocation-setup-20261012/integration/whitespace-full.stdout.bin"
         ]
       ]
     },
