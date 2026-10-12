@@ -1,0 +1,138 @@
+✔ namespace and aggregate-neutral per-object result are closed (11.729615ms)
+✔ normalization correlates trusted destination and exact immutable objects (1.013773ms)
+✔ one through ten selected immutable objects, never empty or eleven (0.730598ms)
+✔ duplicate object and alternate version of same object refuse explicitly (0.599451ms)
+✔ raw selectors cannot replace trusted client or conversation (0.353772ms)
+✔ unknown raw/context authority fields refuse (0.707794ms)
+✔ object reference required fields and tenant scopes remain canonical (0.789387ms)
+✔ command action, normalized args and original full binding must match (1.866725ms)
+✔ every selected object has exactly one observation with exact version/hash/bytes/scopes (3.253869ms)
+✔ distinct-object observation order does not manufacture aggregate semantics (0.889297ms)
+✔ saved source observation permits indexed or pending with reused preserved (0.948005ms)
+✔ pending quarantine remains not_indexed and requires persisted identity and reason (2.054077ms)
+✔ failed before storage and failed persisted observation are distinct valid branches (0.803708ms)
+✔ partial persisted tuples and contradictory saved/failed indexing refuse (3.288662ms)
+✔ no approval/readability/source-completeness flags on observations (1.783691ms)
+✔ result digest must bind the full immutable command (1.682228ms)
+✔ receipt outcomes remain supplied observations independent of per-file success (2.404974ms)
+✔ receipt may refer to recovered current executor while stable provenance is fixed (1.512883ms)
+✔ receipt hash/idempotency/command/scope substitutions fail (1.180635ms)
+✔ optional generated version correlates its object, not two distinct version IDs (1.447284ms)
+✔ valid artifact draft/pending preview never implies native or render validation (0.296706ms)
+✔ raw, output and receipt snapshots cannot alias caller data (0.820112ms)
+✔ inert admission rejects effectful getters/proxies without traps (0.435755ms)
+✔ pending before storage has reason/fileName without fabricated document identity (0.439471ms)
+✖ found attachment observations require string filename while empty stored names survive (0.629315ms)
+✖ caught errors may have empty message but required reason key is preserved (0.436836ms)
+✔ private task namespace and six-field projection are closed (5.400065ms)
+✔ title trims and missing client/date normalize to null without owner (0.362454ms)
+✔ title bounds count UTF16 and reject instead of truncate (0.702135ms)
+✔ raw fields are strict and cannot add unadvertised description or owner (1.15154ms)
+✔ trusted name resolution produces UUID without claiming lookup or visibility (0.466531ms)
+✔ UUID selector cannot be rebound and unresolved or unrequested clients refuse (0.356656ms)
+✔ client reference80UTF16 bound is explicit (0.342735ms)
+✔ date-only becomes explicit UTC midnight and canonical UTC stays exact (0.503536ms)
+✔ date grammar rejects ambient timezone, offsets, rollover and invalid leap seconds (0.81205ms)
+✔ context is exact inert producer provenance without grant booleans (0.52527ms)
+✔ command checks action, no attachments and exact original producer binding (1.484952ms)
+✔ task command cannot be used for update or schedule vocabulary (0.537628ms)
+✔ source result must match normalized title/client/date and todo default (1.461636ms)
+✔ all six result keys are required and no source approval/owner facts invented (2.366476ms)
+✔ source result for resolved client and due date is supported (0.34573ms)
+✔ successful validators return detached data, including nested command context (0.321704ms)
+✔ getters/proxies/cycles and hidden properties refuse without caller effects (0.331919ms)
+✔ public immutable proposal and stable recovery execution remain canonical (2.002249ms)
+✔ scope shape does not silently choose ordinary task authorization policy (0.290767ms)
+✔ task due date is a stored SQL date, never a silently truncated noon instant (0.388955ms)
+✔ direct command/result entry cannot bypass contradictory UUID resolution context (0.355885ms)
+✖ blank optional client/date preserve source absence and reject extraneous resolution (0.291328ms)
+✖ date whitespace trims before explicit midnight admission (0.195714ms)
+ℹ tests 49
+ℹ suites 0
+ℹ pass 45
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 393.932898
+
+✖ failing tests:
+
+test at packages/contracts/test/command-artifact-file.test.mjs:54:1
+✖ found attachment observations require string filename while empty stored names survive (0.629315ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-command-payloads-20261012/packages/contracts/test/command-artifact-file.test.mjs:54:203)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/command-artifact-file.test.mjs:55:1
+✖ caught errors may have empty message but required reason key is preserved (0.436836ms)
+  AssertionError [ERR_ASSERTION]: data/files/0/reason must NOT have fewer than 1 characters
+      at validateShape (file:///workspace/meri-command-payloads-20261012/packages/contracts/test/command-artifact-file.test.mjs:12:71)
+      at Object.assertArtifactFileResult (file:///workspace/meri-command-payloads-20261012/packages/contracts/commands-0.2/artifact-file-validation.mjs:36:103)
+      at check (file:///workspace/meri-command-payloads-20261012/packages/contracts/test/command-artifact-file.test.mjs:24:37)
+      at TestContext.<anonymous> (file:///workspace/meri-command-payloads-20261012/packages/contracts/test/command-artifact-file.test.mjs:55:87)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/command-task-create.test.mjs:47:1
+✖ blank optional client/date preserve source absence and reject extraneous resolution (0.291328ms)
+  AssertionError [ERR_ASSERTION]: data/dueDate must match pattern "^\d{4}-\d{2}-\d{2}(?:T00:00:00\.000Z)?$", data/dueDate must be null, data/dueDate must match a schema in anyOf
+      at validateShape (file:///workspace/meri-command-payloads-20261012/packages/contracts/test/command-task-create.test.mjs:12:71)
+      at Object.normalizeTaskCreateInput (file:///workspace/meri-command-payloads-20261012/packages/contracts/commands-0.2/task-create-validation.mjs:23:75)
+      at TestContext.<anonymous> (file:///workspace/meri-command-payloads-20261012/packages/contracts/test/command-task-create.test.mjs:47:150)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/command-task-create.test.mjs:48:1
+✖ date whitespace trims before explicit midnight admission (0.195714ms)
+  AssertionError [ERR_ASSERTION]: data/dueDate must match pattern "^\d{4}-\d{2}-\d{2}(?:T00:00:00\.000Z)?$", data/dueDate must be null, data/dueDate must match a schema in anyOf
+      at validateShape (file:///workspace/meri-command-payloads-20261012/packages/contracts/test/command-task-create.test.mjs:12:71)
+      at Object.normalizeTaskCreateInput (file:///workspace/meri-command-payloads-20261012/packages/contracts/commands-0.2/task-create-validation.mjs:23:75)
+      at TestContext.<anonymous> (file:///workspace/meri-command-payloads-20261012/packages/contracts/test/command-task-create.test.mjs:48:137)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

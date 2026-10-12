@@ -1,0 +1,53 @@
+{
+  "scope": "PRIVATE_SOURCE_ONLY",
+  "task": {
+    "factory": "createTaskCreateValidators",
+    "schemaId": "urn:meri:commands:task-create:0.2.0",
+    "definitions": [
+      "TaskCreateRaw",
+      "TaskCreateContext",
+      "TaskCreateArguments",
+      "TaskCreateResult"
+    ],
+    "contextKeys": [
+      "binding",
+      "clientResolution"
+    ],
+    "methods": [
+      "normalizeTaskCreateInput(raw,context)",
+      "assertTaskCreateCommand(command,context)",
+      "assertTaskCreateResult(result,command,context)"
+    ]
+  },
+  "filing": {
+    "factory": "createArtifactFileValidators",
+    "schemaId": "urn:meri:commands:artifact-file:0.2.0",
+    "definitions": [
+      "ArtifactFileRaw",
+      "ArtifactFileContext",
+      "ArtifactFileArguments",
+      "ArtifactFileObservation",
+      "ArtifactFileResult"
+    ],
+    "contextKeys": [
+      "binding",
+      "destination"
+    ],
+    "methods": [
+      "normalizeArtifactFileInput(raw,context)",
+      "assertArtifactFileCommand(command,context)",
+      "assertArtifactFileResult(result,command,context)",
+      "assertArtifactFileReceipt(receipt,command,context)",
+      "assertArtifactFileVersion(version,command,context)"
+    ]
+  },
+  "injectedDependencies": [
+    "validateShape",
+    "validatePublicShape",
+    "canonicalSha256"
+  ],
+  "unchangedCanonicalAdmission": "retrieval-0.2/operation-contracts.mjs snapshotOperationData",
+  "aggregateOutcomeDecision": "EXTERNAL_UNRESOLVED_NO_MAPPING",
+  "currentAuthorization": "NOT_ESTABLISHED",
+  "productionEnabled": false
+}

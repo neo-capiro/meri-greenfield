@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/command-task-create.test.mjs",
+    "packages/contracts/test/command-artifact-file.test.mjs"
+  ],
+  "cwd": "/workspace/meri-command-payloads-20261012",
+  "sourceHead": "0565003a32a7311658a86cfc7689036b6b450f57",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T19:07:10.846943+00:00",
+  "durationSeconds": 0.516,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 264617,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-freeze.stdout.bin",
+      "bytes": 4025,
+      "sha256": "3bec84820ea3765ca31934d0ecb3eb85821d4d352fc2ebf92bc08f837a9cec81"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-freeze.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Exact committed source freeze binding; earlier passing untracked snapshot retained.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
