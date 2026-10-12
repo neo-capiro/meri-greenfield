@@ -139,3 +139,27 @@ test('unreadable section blocks automatic traversal and never manufactures an ev
   const p=page();p.data.records=[];Object.assign(p.data.coverage,{readability:{status:'no_readable_text',method:'text',scope:'section',section:1,sectionCount:2,chars:0,note:'No readable text'},extractedSectionEmpty:true,continuationBlocked:true,missingContent:true,nextAction:'Inspect original document',explicitNextSection:2,truncated:true,complete:false,sectionCount:2,sectionCharacters:0,characterStart:0,characterEnd:0,sectionComplete:false});
   check(p,input(),context());for(const change of [p=>delete p.data.coverage.missingContent,p=>p.data.coverage.explicitNextSection=1,p=>p.data.coverage.nextCursor=encode(cursor({section:2})),p=>p.data.coverage.complete=true]){const x=structuredClone(p);change(x);reject(x);}
 });
+test('list continuation retains partial history disclosure and advances by ID',()=>{
+  const p=listing();Object.assign(p.data.coverage,{total:2,truncated:true,nextCursor:'documents:doc-a',complete:false,paginationComplete:false});check(p,{clientId:client,limit:1},context());
+  const end=listing();end.data.documents=[item('doc-b')];Object.assign(end.data.coverage,{total:2,complete:false});check(end,{clientId:client,cursor:'documents:doc-a'},context());
+  end.data.coverage.complete=true;reject(end,{clientId:client,cursor:'documents:doc-a'});
+});
+test('query no-match is disclosed without inventing an empty evidence record',()=>{
+  const p=page();p.data.records=[];Object.assign(p.data.coverage,{query:'absent',matched:false,characterStart:12,characterEnd:12,sectionComplete:false,complete:false});
+  check(p,{...input(),query:'absent'},context());p.data.coverage.complete=true;reject(p,{...input(),query:'absent'});
+});
+test('text slice JSON ceiling and selected non-query character limit both remain strict',()=>{
+  reject(page(),{...input(),limit:1});
+  const p=page('"'.repeat(3250));reject(p,{...input(),limit:6000});
+  const valid=page('"'.repeat(3249));check(valid,{...input(),limit:6000},context());
+});
+test('UTF16 continuation may split an astral pair without changing section-hash lineage',()=>{
+  const p=page('\ud83d'),sectionHash=hash('😀');p.data.records[0].provenance.sectionHash=sectionHash;
+  Object.assign(p.data.coverage,{sectionCharacters:2,complete:false,sectionComplete:false,truncated:true,nextCursor:encode(cursor({offset:1,sectionHash}))});
+  check(p,{...input(),limit:1},context());assert.equal(p.data.coverage.characterEnd,1);
+});
+test('partial OCR stays explicitly incomplete and uses its provider-transcribed scope',()=>{
+  const p=page();p.data.document.contentType='application/pdf';Object.assign(p.data.records[0].payload,{contentType:'application/pdf',source:'pdf',sectionKind:'page'});
+  Object.assign(p.data.coverage,{readability:{status:'ocr_partial',method:'openai_pdf',scope:'section',section:1,sectionCount:1,chars:12,note:'Partial synthetic transcription'},contentScope:'provider_transcribed_page_text',extractionTruncated:true,truncated:true,complete:false,sectionComplete:false});
+  check(p,input(),context());p.data.coverage.complete=true;reject(p);
+});

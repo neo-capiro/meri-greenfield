@@ -1,0 +1,22 @@
+{
+  "candidate": "6e37343f7289ed8374b722d638f5d6e467f9808a",
+  "testsPassed": 29,
+  "testsFailed": 0,
+  "records": [
+    {
+      "path": "packages/contracts/retrieval-0.2/client-documents-validation.mjs",
+      "bytes": 12683,
+      "sha256": "a545d51cda2e8d430ebb66f739524f55fc243ac87a923ea96dc140bab50c10e9"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/client-documents.schema.json",
+      "bytes": 21288,
+      "sha256": "71dd53119af2c0226372916e3645765687e8653da2f48b60d55c1a7a75c05247"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-client-documents-independent.test.mjs",
+      "bytes": 17519,
+      "sha256": "39815277012f9952e4049958f39db6212c42c2e91ce769f283f1d10242edb4f7"
+    }
+  ]
+}
