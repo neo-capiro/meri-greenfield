@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+    "packages/contracts/test/retrieval-next-integration-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-reference-reads-20261012",
+  "sourceHead": "82906d4ce48eae2029e50fb44009d43bbfedc92a",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T18:01:31.959801+00:00",
+  "durationSeconds": 3.336,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 223454,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/reference-integration/focused-namespace-repaired.stdout.bin",
+      "bytes": 7758,
+      "sha256": "fa93bf2ffaf5ab9c858c50b16399ae325ac21c66feb65a0d0ceb8a1852d41b0f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/reference-integration/focused-namespace-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

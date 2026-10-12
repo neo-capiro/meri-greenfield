@@ -26,7 +26,7 @@ with (evidence / f'{label}.stdout.bin').open('xb') as stdout, (evidence / f'{lab
     child = subprocess.Popen(command, cwd=root, stdout=stdout, stderr=stderr, start_new_session=True)
     timed_out = False
     try:
-        code = child.wait(timeout=120)
+        code = child.wait(timeout=240)
     except subprocess.TimeoutExpired:
         timed_out = True
         os.killpg(child.pid, signal.SIGKILL)

@@ -4556,7 +4556,7 @@
         "Source requirements are design declarations; current grants, feature flags, availability and producer authority remain unqualified.",
         "Local source validation does not qualify current identity, source access, result release or runtime.",
         "Awards in the declared 24-month window and R3 exhibit amounts have separate provenance. Match buckets and missing-table fallbacks do not establish complete contractor coverage.",
-        "Report language exposes accepted/candidate review states with stronger matching basis before status; any program-level row requires the declared caveat. Bills and contractors do not gain invented PE echo lineage."
+        "Report language exposes accepted/candidate review states. Deduplication prefers stronger matching basis before status; final projection order follows status, basis, fiscal year and confidence. Any program-level row requires the declared caveat. Bills and contractors do not gain invented PE echo lineage."
       ],
       "positiveExamples": [
         "Inspect the declared stored projection within the current authorized source scope."
@@ -4623,7 +4623,7 @@
         "Source requirements are design declarations; current grants, feature flags, availability and producer authority remain unqualified.",
         "Local source validation does not qualify current identity, source access, result release or runtime.",
         "Awards in the declared 24-month window and R3 exhibit amounts have separate provenance. Match buckets and missing-table fallbacks do not establish complete contractor coverage.",
-        "Report language exposes accepted/candidate review states with stronger matching basis before status; any program-level row requires the declared caveat. Bills and contractors do not gain invented PE echo lineage."
+        "Report language exposes accepted/candidate review states. Deduplication prefers stronger matching basis before status; final projection order follows status, basis, fiscal year and confidence. Any program-level row requires the declared caveat. Bills and contractors do not gain invented PE echo lineage."
       ],
       "positiveExamples": [
         "Inspect the declared stored projection within the current authorized source scope."
@@ -4690,7 +4690,7 @@
         "Source requirements are design declarations; current grants, feature flags, availability and producer authority remain unqualified.",
         "Local source validation does not qualify current identity, source access, result release or runtime.",
         "Awards in the declared 24-month window and R3 exhibit amounts have separate provenance. Match buckets and missing-table fallbacks do not establish complete contractor coverage.",
-        "Report language exposes accepted/candidate review states with stronger matching basis before status; any program-level row requires the declared caveat. Bills and contractors do not gain invented PE echo lineage."
+        "Report language exposes accepted/candidate review states. Deduplication prefers stronger matching basis before status; final projection order follows status, basis, fiscal year and confidence. Any program-level row requires the declared caveat. Bills and contractors do not gain invented PE echo lineage."
       ],
       "positiveExamples": [
         "Inspect the declared stored projection within the current authorized source scope."
