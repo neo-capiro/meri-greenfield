@@ -1,0 +1,223 @@
+{
+  "scope": "INDEPENDENT_SOURCE_ONLY",
+  "sourceCommit": "02bac2139b13dec288b5ca2c19edc3be85e2c6b2",
+  "sourceTree": "e38ab9d7dd189d7ea23deaeb4adb40bc7b5627ed",
+  "base": "c1c9bfde7dd466a0474589a224a99b44277adbc9",
+  "originalFilesPreserved": 6528,
+  "sourceIdentities": [
+    {
+      "path": "packages/contracts/retrieval-0.2/sam-opportunities.schema.json",
+      "bytes": 8649,
+      "sha256": "6777e85fa0966fe62be54e7467943e5b88ccca0f5df9a8ca6a6bd5f99e598222",
+      "blob": "3f7c703213ca866d193b3011de4077864c6c4730"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/sam-opportunities-validation.mjs",
+      "bytes": 6786,
+      "sha256": "048e15c68213ca83ad4f3ca0b42ba2dc1a9c24fd71a7c893c42cdd700c0b809a",
+      "blob": "072e37f879a3c3f82b052105d18879142dcfc528"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-sam-opportunities.test.mjs",
+      "bytes": 13461,
+      "sha256": "5d64926f9474ebcc7ab19610acbdc75a52056301ab7ff1e21467db9e156363b5",
+      "blob": "d2792b62bf18cf352ba9377b5624ffba7ad2fcc2"
+    }
+  ],
+  "passed": 48,
+  "failed": 0,
+  "checks": [
+    {
+      "check": "all original complete blobs and modes preserved",
+      "pass": true
+    },
+    {
+      "check": "only three allocated source additions",
+      "pass": true
+    },
+    {
+      "check": "source is review ancestor",
+      "pass": true
+    },
+    {
+      "check": "working exact packages/contracts/retrieval-0.2/sam-opportunities.schema.json",
+      "pass": true
+    },
+    {
+      "check": "working exact packages/contracts/retrieval-0.2/sam-opportunities-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "working exact packages/contracts/test/retrieval-sam-opportunities.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "canonical original unchanged packages/contracts/retrieval-0.2/operation-contracts.mjs",
+      "pass": true
+    },
+    {
+      "check": "canonical original unchanged packages/contracts/retrieval-0.2/funding-envelope-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "canonical original unchanged packages/contracts/retrieval-0.2/funding-opportunities.schema.json",
+      "pass": true
+    },
+    {
+      "check": "canonical original unchanged packages/contracts/retrieval-0.2/catalog.json",
+      "pass": true
+    },
+    {
+      "check": "canonical original unchanged packages/contracts/validate.mjs",
+      "pass": true
+    },
+    {
+      "check": "canonical original unchanged packages/contracts/meri.schema.json",
+      "pass": true
+    },
+    {
+      "check": "canonical original unchanged packages/contracts/THIRD-PARTY-NOTICES.md",
+      "pass": true
+    },
+    {
+      "check": "nine independently pinned pairs",
+      "pass": true
+    },
+    {
+      "check": "reference fd8765ec01d292013758606204f2c9d886cd31c1:apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "check": "reference 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace:apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "check": "reference fd8765ec01d292013758606204f2c9d886cd31c1:apps/api/src/program-element/program-element-read.service.ts",
+      "pass": true
+    },
+    {
+      "check": "reference 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace:apps/api/src/program-element/program-element-read.service.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/program-element/program-element-read.service.ts",
+      "pass": true
+    },
+    {
+      "check": "reference fd8765ec01d292013758606204f2c9d886cd31c1:apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "check": "reference 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace:apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "check": "reference fd8765ec01d292013758606204f2c9d886cd31c1:apps/api/src/funding-opportunities/meri-opportunity-tools.adapter.ts",
+      "pass": true
+    },
+    {
+      "check": "reference 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace:apps/api/src/funding-opportunities/meri-opportunity-tools.adapter.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/funding-opportunities/meri-opportunity-tools.adapter.ts",
+      "pass": true
+    },
+    {
+      "check": "reference fd8765ec01d292013758606204f2c9d886cd31c1:apps/api/src/funding-opportunities/funding-opportunity-v2-search.service.ts",
+      "pass": true
+    },
+    {
+      "check": "reference 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace:apps/api/src/funding-opportunities/funding-opportunity-v2-search.service.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/funding-opportunities/funding-opportunity-v2-search.service.ts",
+      "pass": true
+    },
+    {
+      "check": "reference fd8765ec01d292013758606204f2c9d886cd31c1:apps/api/src/funding-opportunities/funding-opportunity-source-access.ts",
+      "pass": true
+    },
+    {
+      "check": "reference 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace:apps/api/src/funding-opportunities/funding-opportunity-source-access.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/funding-opportunities/funding-opportunity-source-access.ts",
+      "pass": true
+    },
+    {
+      "check": "reference fd8765ec01d292013758606204f2c9d886cd31c1:packages/shared/src/funding-opportunities-v2.ts",
+      "pass": true
+    },
+    {
+      "check": "reference 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace:packages/shared/src/funding-opportunities-v2.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift packages/shared/src/funding-opportunities-v2.ts",
+      "pass": true
+    },
+    {
+      "check": "reference fd8765ec01d292013758606204f2c9d886cd31c1:packages/shared/src/schedule/deadline.ts",
+      "pass": true
+    },
+    {
+      "check": "reference 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace:packages/shared/src/schedule/deadline.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift packages/shared/src/schedule/deadline.ts",
+      "pass": true
+    },
+    {
+      "check": "reference fd8765ec01d292013758606204f2c9d886cd31c1:apps/api/src/common/meri-evidence-accuracy-flags.ts",
+      "pass": true
+    },
+    {
+      "check": "reference 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace:apps/api/src/common/meri-evidence-accuracy-flags.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/common/meri-evidence-accuracy-flags.ts",
+      "pass": true
+    },
+    {
+      "check": "private metadata only",
+      "pass": true
+    },
+    {
+      "check": "exact private schema ID",
+      "pass": true
+    },
+    {
+      "check": "closed required four context members",
+      "pass": true
+    },
+    {
+      "check": "reuse canonical inert snapshot",
+      "pass": true
+    },
+    {
+      "check": "reuse funding relation helper",
+      "pass": true
+    },
+    {
+      "check": "no ambient clock or source IO",
+      "pass": true
+    },
+    {
+      "check": "source whitespace",
+      "pass": true
+    }
+  ]
+}
