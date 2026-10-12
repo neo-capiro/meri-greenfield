@@ -1,0 +1,321 @@
+{
+  "authorPacket": "f6413801acf949141dea3bb86f7bcd5233eef3f5",
+  "source": "c78a4dff30f825441da5c32015d90647be107b3a",
+  "manifestSha256": "0e8997955083e72633e794e750da3220d734eedf8606c6dbd43d6342fe408da2",
+  "members": 34,
+  "checks": [
+    {
+      "name": "Author manifest exact supplied hash",
+      "passed": true
+    },
+    {
+      "name": "Author manifest34members",
+      "passed": true
+    },
+    {
+      "name": "Author member apps/control/schedules/temporal-inspection.mjs",
+      "passed": true
+    },
+    {
+      "name": "Author committed member apps/control/schedules/temporal-inspection.mjs",
+      "passed": true
+    },
+    {
+      "name": "Author member apps/control/test/temporal-inspection.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "Author committed member apps/control/test/temporal-inspection.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/coordination/reports/CODEX-SCHEDULE-INSPECTION-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "Author committed member docs/coordination/reports/CODEX-SCHEDULE-INSPECTION-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/coordination/tasks/CODEX-SCHEDULE-INSPECTION-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "Author committed member docs/coordination/tasks/CODEX-SCHEDULE-INSPECTION-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "name": "Author committed member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/failure-notes.json",
+      "passed": true
+    },
+    {
+      "name": "Author committed member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/failure-notes.json",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-exact.json",
+      "passed": true
+    },
+    {
+      "name": "Author committed member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-exact.json",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-exact.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Author committed member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-exact.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-exact.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Author committed member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-exact.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-initial.json",
+      "passed": true
+    },
+    {
+      "name": "Author committed member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-initial.json",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-initial.patch",
+      "passed": true
+    },
+    {
+      "name": "Author committed member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-initial.patch",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-initial.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Author committed member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-initial.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-initial.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Author committed member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-initial.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-late-handle-before.json",
+      "passed": true
+    },
+    {
+      "name": "Author committed member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-late-handle-before.json",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-late-handle-before.patch",
+      "passed": true
+    },
+    {
+      "name": "Author committed member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-late-handle-before.patch",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-late-handle-before.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Author committed member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-late-handle-before.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-late-handle-before.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Author committed member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-late-handle-before.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-late-handle-repaired.json",
+      "passed": true
+    },
+    {
+      "name": "Author committed member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-late-handle-repaired.json",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-late-handle-repaired.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Author committed member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-late-handle-repaired.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-late-handle-repaired.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Author committed member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-late-handle-repaired.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-repair-exact.json",
+      "passed": true
+    },
+    {
+      "name": "Author committed member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-repair-exact.json",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-repair-exact.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Author committed member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-repair-exact.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-repair-exact.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Author committed member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-repair-exact.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/raw-whitespace.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Author committed member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/raw-whitespace.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/raw-whitespace.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Author committed member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/raw-whitespace.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/sdk-metadata.json",
+      "passed": true
+    },
+    {
+      "name": "Author committed member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/sdk-metadata.json",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/setup-observations.json",
+      "passed": true
+    },
+    {
+      "name": "Author committed member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/setup-observations.json",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/source-audit-87ee0f35.json",
+      "passed": true
+    },
+    {
+      "name": "Author committed member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/source-audit-87ee0f35.json",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/source-audit.json",
+      "passed": true
+    },
+    {
+      "name": "Author committed member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/source-audit.json",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/verify-source.py",
+      "passed": true
+    },
+    {
+      "name": "Author committed member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/verify-source.py",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/whitespace.json",
+      "passed": true
+    },
+    {
+      "name": "Author committed member docs/qualification/candidates/backend-execution-20261012/schedule-inspection/whitespace.json",
+      "passed": true
+    },
+    {
+      "name": "Author member packages/contracts/schedules-0.2/inspection-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Author committed member packages/contracts/schedules-0.2/inspection-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Author member packages/contracts/schedules-0.2/inspection.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Author committed member packages/contracts/schedules-0.2/inspection.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Author member packages/runtime/operation-lifetime.mjs",
+      "passed": true
+    },
+    {
+      "name": "Author committed member packages/runtime/operation-lifetime.mjs",
+      "passed": true
+    },
+    {
+      "name": "Final packet no later source edit",
+      "passed": true
+    },
+    {
+      "name": "Author owned group absent inspection-exact.json",
+      "passed": true
+    },
+    {
+      "name": "Author owned group absent inspection-late-handle-before.json",
+      "passed": true
+    },
+    {
+      "name": "Author owned group absent inspection-repair-exact.json",
+      "passed": true
+    },
+    {
+      "name": "Author owned group absent inspection-initial.json",
+      "passed": true
+    },
+    {
+      "name": "Author owned group absent inspection-late-handle-repaired.json",
+      "passed": true
+    },
+    {
+      "name": "Preserved whitespace limitation",
+      "passed": true
+    }
+  ],
+  "passed": 77,
+  "failed": 0,
+  "sourceReplayNeeded": false,
+  "reason": "Author later packet changes only documentation/evidence, source exact",
+  "runtimeAccepted": false
+}

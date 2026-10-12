@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/schedules/test/temporal-inspection-independent.test.mjs",
+    "apps/control/test/temporal-inspection.test.mjs"
+  ],
+  "cwd": "/workspace/meri-schedule-inspection-review-20261012",
+  "sourceHead": "0c9cd8832489de51a08ffd6f30828e33ce17130d",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T21:16:21.135862+00:00",
+  "durationSeconds": 0.774,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 326385,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection-review/repaired-candidate.stdout.bin",
+      "bytes": 6253,
+      "sha256": "fa089b3fdc20e27852b4ee2667e2f45d8dd3e7c9f20297256464fdb41621837d"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection-review/repaired-candidate.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

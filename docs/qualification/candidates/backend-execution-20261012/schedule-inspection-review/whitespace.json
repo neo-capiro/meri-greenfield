@@ -1,0 +1,18 @@
+{
+  "command": [
+    "git",
+    "diff",
+    "--check",
+    "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+    "--",
+    "apps/control/schedules/test/temporal-inspection-independent.test.mjs",
+    "docs/coordination/tasks/CODEX-SCHEDULE-INSPECTION-REVIEW-20261012.md",
+    "docs/coordination/reports/CODEX-SCHEDULE-INSPECTION-REVIEW-20261012.md",
+    "docs/qualification/candidates/backend-execution-20261012/schedule-inspection-review"
+  ],
+  "exitCode": 2,
+  "sourceAcceptedDespiteRawFailureWhitespace": true,
+  "stdoutSha256": "ad7a931f432f39d43ea57eff2bef2186acdf3013ac9e1e050b5c3b738a16bfc5",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "note": "Captured raw failure output is immutable; no normalization or source/test weakening."
+}

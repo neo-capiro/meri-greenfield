@@ -1,0 +1,267 @@
+{
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "source": "c78a4dff30f825441da5c32015d90647be107b3a",
+  "sharedDependency": "37f84fcb3bf2d34ae59673b1644fac64f1ef798c",
+  "checks": [
+    {
+      "name": "Every preexisting base tree entry preserved",
+      "passed": true
+    },
+    {
+      "name": "Exact reviewed source bytes apps/control/schedules/temporal-inspection.mjs",
+      "passed": true
+    },
+    {
+      "name": "Exact reviewed source bytes apps/control/test/temporal-inspection.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "Exact reviewed source bytes packages/contracts/schedules-0.2/inspection.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Exact reviewed source bytes packages/contracts/schedules-0.2/inspection-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Exact reviewed source bytes packages/runtime/operation-lifetime.mjs",
+      "passed": true
+    },
+    {
+      "name": "Shared lifecycle exact root dependency",
+      "passed": true
+    },
+    {
+      "name": "All original22 author test bytes unchanged prefix",
+      "passed": true
+    },
+    {
+      "name": "Repair preserves schema/validator/shared dependency packages/contracts/schedules-0.2/inspection.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Repair preserves schema/validator/shared dependency packages/contracts/schedules-0.2/inspection-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Repair preserves schema/validator/shared dependency packages/runtime/operation-lifetime.mjs",
+      "passed": true
+    },
+    {
+      "name": "Repair source-only existing delta adapter/test",
+      "passed": true
+    },
+    {
+      "name": "Single canonical lifetime use and no adapter timer race",
+      "passed": true
+    },
+    {
+      "name": "Borrowed client not closed",
+      "passed": true
+    },
+    {
+      "name": "Only exact describe path; no schedule mutation/list",
+      "passed": true
+    },
+    {
+      "name": "Public canonical snapshot/hash reused",
+      "passed": true
+    },
+    {
+      "name": "No app-private dependency in contract validator",
+      "passed": true
+    },
+    {
+      "name": "No connection/service initialization",
+      "passed": true
+    },
+    {
+      "name": "Pinned installed SDK bytes schedule-client.d.ts",
+      "passed": true
+    },
+    {
+      "name": "Pinned installed SDK bytes schedule-client.js",
+      "passed": true
+    },
+    {
+      "name": "Pinned installed SDK bytes schedule-types.d.ts",
+      "passed": true
+    },
+    {
+      "name": "Pinned installed SDK bytes connection.d.ts",
+      "passed": true
+    },
+    {
+      "name": "Pinned installed SDK bytes connection.js",
+      "passed": true
+    },
+    {
+      "name": "Installed SDK declared version1.24.0",
+      "passed": true
+    },
+    {
+      "name": "SDK getHandle returns own scheduleId/describe method",
+      "passed": true
+    },
+    {
+      "name": "SDK describes using pinned handle and configured namespace",
+      "passed": true
+    },
+    {
+      "name": "SDK decodes action/memo before returned projection",
+      "passed": true
+    },
+    {
+      "name": "SDK external-storage inbound work disclosed",
+      "passed": true
+    },
+    {
+      "name": "SDK withDeadline and AbortSignal scoped contexts",
+      "passed": true
+    },
+    {
+      "name": "SDK original run explicitly differs after retry/continue/reset",
+      "passed": true
+    },
+    {
+      "name": "SDK recent oldest-to-newest order",
+      "passed": true
+    },
+    {
+      "name": "Owned group absent initial-candidate",
+      "passed": true
+    },
+    {
+      "name": "Raw receipt bytes docs/qualification/candidates/backend-execution-20261012/schedule-inspection-review/initial-candidate.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Raw receipt bytes docs/qualification/candidates/backend-execution-20261012/schedule-inspection-review/initial-candidate.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Owned group absent expanded-initial",
+      "passed": true
+    },
+    {
+      "name": "Raw receipt bytes docs/qualification/candidates/backend-execution-20261012/schedule-inspection-review/expanded-initial.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Raw receipt bytes docs/qualification/candidates/backend-execution-20261012/schedule-inspection-review/expanded-initial.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Owned group absent repaired-candidate",
+      "passed": true
+    },
+    {
+      "name": "Raw receipt bytes docs/qualification/candidates/backend-execution-20261012/schedule-inspection-review/repaired-candidate.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Raw receipt bytes docs/qualification/candidates/backend-execution-20261012/schedule-inspection-review/repaired-candidate.stderr.bin",
+      "passed": true
+    }
+  ],
+  "passed": 40,
+  "failed": 0,
+  "originalEntries": 7677,
+  "preservedOriginalEntries": 7677,
+  "sourceFiles": [
+    {
+      "path": "apps/control/schedules/temporal-inspection.mjs",
+      "bytes": 4345,
+      "sha256": "48cde95e629b57944d46fac9b54f4756e55a81330f3b8abcc1ddb60150c7cdc8",
+      "blob": "776a5e19aa07d9410e32d6e32a0c09c9c4a31f60"
+    },
+    {
+      "path": "apps/control/test/temporal-inspection.test.mjs",
+      "bytes": 11702,
+      "sha256": "d45a115628b6b3f6409f81e6815b44efc71af2f2a0d43519a1aab7660a57d341",
+      "blob": "61b8ea2594da9b2f4be45fb979593dba411c2750"
+    },
+    {
+      "path": "packages/contracts/schedules-0.2/inspection.schema.json",
+      "bytes": 6806,
+      "sha256": "2e6a140a555984f6de88c4d1bded03bb2aebec9bd2e9bc34709130d0ee22fa85",
+      "blob": "0d073024d823a9bec9596b40aa7f93dbebf3ee0e"
+    },
+    {
+      "path": "packages/contracts/schedules-0.2/inspection-validation.mjs",
+      "bytes": 5177,
+      "sha256": "bb96d966fc4fe83efffc4cafafed26f7337c7ad74ee13ed189ac7d5462731c81",
+      "blob": "ce31a173eff73620b81aaf595abb234c704297f4"
+    },
+    {
+      "path": "packages/runtime/operation-lifetime.mjs",
+      "bytes": 2596,
+      "sha256": "cee9966de6b7317eded1ed8a588e41a17324ac1eb98cfed70a70cf434dc0a72e",
+      "blob": "39f887ef070f3295f69ec26c536c903276cef49b"
+    }
+  ],
+  "sdkFiles": [
+    {
+      "path": "/workspace/meri-temporal-recovery-20261012/apps/control/qualification-temporal/node_modules/@temporalio/client/lib/schedule-client.d.ts",
+      "bytes": 6611,
+      "sha256": "159bfec61bc7cb83eea1cef18456a495dc8f94b55444c9c8b2c5fa1307a68590",
+      "role": "read-only installed pinned SDK metadata; no module execution",
+      "independentlyMatched": true
+    },
+    {
+      "path": "/workspace/meri-temporal-recovery-20261012/apps/control/qualification-temporal/node_modules/@temporalio/client/lib/schedule-client.js",
+      "bytes": 20546,
+      "sha256": "40cc2033748347fbed0611a8dc733a33b9e48a399c7028c079fbdea6cfbe02d4",
+      "role": "read-only installed pinned SDK metadata; no module execution",
+      "independentlyMatched": true
+    },
+    {
+      "path": "/workspace/meri-temporal-recovery-20261012/apps/control/qualification-temporal/node_modules/@temporalio/client/lib/schedule-types.d.ts",
+      "bytes": 27670,
+      "sha256": "3db6dac31dc25aa73938a6717564fd5fa86873a3cea63640a1b38de34737d24e",
+      "role": "read-only installed pinned SDK metadata; no module execution",
+      "independentlyMatched": true
+    },
+    {
+      "path": "/workspace/meri-temporal-recovery-20261012/apps/control/qualification-temporal/node_modules/@temporalio/client/lib/connection.d.ts",
+      "bytes": 15172,
+      "sha256": "b038e00fb8c1f7ec0795fef1eb852dd2e730bba50a562a6b2090add6561b066a",
+      "role": "read-only installed pinned SDK metadata; no module execution",
+      "independentlyMatched": true
+    },
+    {
+      "path": "/workspace/meri-temporal-recovery-20261012/apps/control/qualification-temporal/node_modules/@temporalio/client/lib/connection.js",
+      "bytes": 19903,
+      "sha256": "507806d4b0c5c23558e40d187bed0b1a3b2bfea86e9f527bfc24922ac3788182",
+      "role": "read-only installed pinned SDK metadata; no module execution",
+      "independentlyMatched": true
+    }
+  ],
+  "officialReferences": [
+    "https://raw.githubusercontent.com/temporalio/sdk-typescript/1fd1c81a0383f5f5c7923dd735472c7d1ffdc867/packages/client/src/schedule-client.ts",
+    "https://raw.githubusercontent.com/temporalio/sdk-typescript/1fd1c81a0383f5f5c7923dd735472c7d1ffdc867/packages/client/src/schedule-types.ts",
+    "https://raw.githubusercontent.com/temporalio/sdk-typescript/1fd1c81a0383f5f5c7923dd735472c7d1ffdc867/packages/client/src/connection.ts"
+  ],
+  "officialRead": "Independent read of three exact pinned official source URLs; no SDK module import/execution",
+  "captureReceipts": [
+    {
+      "label": "initial-candidate",
+      "exitCode": 1,
+      "group": 325259,
+      "absent": true
+    },
+    {
+      "label": "expanded-initial",
+      "exitCode": 1,
+      "group": 326193,
+      "absent": true
+    },
+    {
+      "label": "repaired-candidate",
+      "exitCode": 0,
+      "group": 326385,
+      "absent": true
+    }
+  ],
+  "runtimeAccepted": false
+}
