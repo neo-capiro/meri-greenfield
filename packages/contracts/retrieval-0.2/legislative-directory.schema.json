@@ -1,0 +1,693 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meri.capiro.app/private/retrieval/0.2/legislative-directory.schema.json",
+  "title": "Private stored legislative directory projections; source unavailable",
+  "$defs": {
+    "DirectoryStateNames": {
+      "const": {
+        "AL": "Alabama",
+        "AK": "Alaska",
+        "AZ": "Arizona",
+        "AR": "Arkansas",
+        "CA": "California",
+        "CO": "Colorado",
+        "CT": "Connecticut",
+        "DE": "Delaware",
+        "FL": "Florida",
+        "GA": "Georgia",
+        "HI": "Hawaii",
+        "ID": "Idaho",
+        "IL": "Illinois",
+        "IN": "Indiana",
+        "IA": "Iowa",
+        "KS": "Kansas",
+        "KY": "Kentucky",
+        "LA": "Louisiana",
+        "ME": "Maine",
+        "MD": "Maryland",
+        "MA": "Massachusetts",
+        "MI": "Michigan",
+        "MN": "Minnesota",
+        "MS": "Mississippi",
+        "MO": "Missouri",
+        "MT": "Montana",
+        "NE": "Nebraska",
+        "NV": "Nevada",
+        "NH": "New Hampshire",
+        "NJ": "New Jersey",
+        "NM": "New Mexico",
+        "NY": "New York",
+        "NC": "North Carolina",
+        "ND": "North Dakota",
+        "OH": "Ohio",
+        "OK": "Oklahoma",
+        "OR": "Oregon",
+        "PA": "Pennsylvania",
+        "RI": "Rhode Island",
+        "SC": "South Carolina",
+        "SD": "South Dakota",
+        "TN": "Tennessee",
+        "TX": "Texas",
+        "UT": "Utah",
+        "VT": "Vermont",
+        "VA": "Virginia",
+        "WA": "Washington",
+        "WV": "West Virginia",
+        "WI": "Wisconsin",
+        "WY": "Wyoming",
+        "DC": "District of Columbia",
+        "PR": "Puerto Rico",
+        "GU": "Guam",
+        "VI": "Virgin Islands",
+        "AS": "American Samoa",
+        "MP": "Northern Mariana Islands"
+      }
+    },
+    "DirectoryRolePatterns": {
+      "const": {
+        "chair": "^(?:co[\\s\\-‐-―]*)?chair(?:man|woman|person)?$",
+        "viceChair": "^vice[\\s\\-‐-―]*chair(?:man|woman|person)?$",
+        "rankingMember": "^ranking(?:\\s+member)?$"
+      }
+    },
+    "DirectorySelectionNote": {
+      "const": "Provide a committee id/name AND jurisdiction (\"federal\" or \"state\") — the two are separate namespaces and cannot be guessed from the name alone."
+    },
+    "DirectoryStateNote": {
+      "const": "state is required when jurisdiction=state — state committee ids/names are only unique within a state."
+    },
+    "DirectoryEmptyRosterNote": {
+      "const": "Committee resolved but no roster rows are synced for it yet — say so explicitly, do not guess membership."
+    },
+    "DirectoryFederalRosterNote": {
+      "const": "This roster carries each member's STATE only — it does NOT carry congressional districts. Do NOT infer or state a member's district from committee membership; use get_representation or resolve_entity for any member↔district claim."
+    },
+    "DirectoryMemberSelectionNote": {
+      "const": "Provide a state (full name or 2-letter code) and/or a chamber (\"house\"|\"senate\") — at least one filter is required."
+    },
+    "CommitteeRosterRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "committee": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "jurisdiction": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "state": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "chamber": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": []
+    },
+    "CommitteeRosterInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "committee": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "jurisdiction": {
+          "type": "string",
+          "maxLength": 10
+        },
+        "state": {
+          "type": "string",
+          "maxLength": 2
+        },
+        "chamber": {
+          "type": "string",
+          "maxLength": 10
+        }
+      },
+      "required": []
+    },
+    "MemberListRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "state": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "chamber": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "limit": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": []
+    },
+    "MemberListInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "state": {
+          "type": "string",
+          "maxLength": 40
+        },
+        "chamber": {
+          "enum": [
+            "house",
+            "senate"
+          ]
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      "required": [
+        "limit"
+      ]
+    },
+    "DirectoryFederalMember": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "party": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "state": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "side": {
+          "type": "string"
+        },
+        "rank": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": -2147483648,
+              "maximum": 2147483647
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "party",
+        "state",
+        "side",
+        "rank",
+        "title"
+      ]
+    },
+    "DirectoryStateMember": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "party": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "chamber": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "district": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "role": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "party",
+        "chamber",
+        "district",
+        "role"
+      ]
+    },
+    "DirectoryFederalCommittee": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "chamber": {
+          "type": "string"
+        },
+        "jurisdiction": {
+          "const": "federal"
+        },
+        "isSubcommittee": {
+          "type": "boolean"
+        },
+        "matchedBy": {
+          "enum": [
+            "code",
+            "name"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "chamber",
+        "jurisdiction",
+        "isSubcommittee",
+        "matchedBy"
+      ]
+    },
+    "DirectoryStateCommittee": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "chamber": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "jurisdiction": {
+          "const": "state"
+        },
+        "matchedBy": {
+          "enum": [
+            "id",
+            "name"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "chamber",
+        "jurisdiction",
+        "matchedBy"
+      ]
+    },
+    "CommitteeRosterUnresolved": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "get_committee_roster"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "committee": {
+          "type": "null"
+        },
+        "chair": {
+          "type": "null"
+        },
+        "viceChair": {
+          "type": "null"
+        },
+        "rankingMember": {
+          "type": "null"
+        },
+        "members": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "committee",
+        "chair",
+        "viceChair",
+        "rankingMember",
+        "members",
+        "note"
+      ]
+    },
+    "CommitteeRosterFederal": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "get_committee_roster"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "committee": {
+          "$ref": "#/$defs/DirectoryFederalCommittee"
+        },
+        "chair": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DirectoryFederalMember"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "viceChair": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DirectoryFederalMember"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "rankingMember": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DirectoryFederalMember"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DirectoryFederalMember"
+          }
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "committee",
+        "chair",
+        "viceChair",
+        "rankingMember",
+        "members",
+        "note"
+      ]
+    },
+    "CommitteeRosterState": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "get_committee_roster"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "committee": {
+          "$ref": "#/$defs/DirectoryStateCommittee"
+        },
+        "chair": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DirectoryStateMember"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "viceChair": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DirectoryStateMember"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "rankingMember": {
+          "type": "null"
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DirectoryStateMember"
+          }
+        },
+        "note": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "committee",
+        "chair",
+        "viceChair",
+        "rankingMember",
+        "members",
+        "note"
+      ]
+    },
+    "CommitteeRosterOutput": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/CommitteeRosterUnresolved"
+        },
+        {
+          "$ref": "#/$defs/CommitteeRosterFederal"
+        },
+        {
+          "$ref": "#/$defs/CommitteeRosterState"
+        }
+      ]
+    },
+    "DirectoryCongressMember": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "party": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "state": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "district": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": -2147483648,
+              "maximum": 2147483647
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "chamber": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "party",
+        "state",
+        "district",
+        "chamber"
+      ]
+    },
+    "MemberListRefusal": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "list_members"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "matchesFound": {
+          "const": 0
+        },
+        "members": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "matchesFound",
+        "members",
+        "note"
+      ]
+    },
+    "MemberListResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "list_members"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "filter": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "state": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "chamber": {
+              "enum": [
+                "house",
+                "senate",
+                null
+              ]
+            }
+          },
+          "required": [
+            "state",
+            "chamber"
+          ]
+        },
+        "matchesFound": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DirectoryCongressMember"
+          },
+          "maxItems": 100
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "filter",
+        "matchesFound",
+        "members",
+        "note"
+      ]
+    },
+    "MemberListOutput": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/MemberListRefusal"
+        },
+        {
+          "$ref": "#/$defs/MemberListResult"
+        }
+      ]
+    }
+  }
+}
