@@ -1,0 +1,37 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/commands-memory-propose.test.mjs",
+    "packages/contracts/test/commands-memory-propose-independent.test.mjs",
+    "packages/contracts/test/commands-memory-propose-connected.test.mjs",
+    "packages/contracts/test/command-contracts-integration-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-backend-execution-20261012",
+  "sourceHead": "46a722c97477e2bac28789ddc292d049f31eca5a",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-12T21:00:07.896781+00:00",
+  "durationSeconds": 0.823,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 316824,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/memory-command-integration.stdout.bin",
+      "bytes": 9325,
+      "sha256": "6751d9a1ac24bf3faaab9a225d54c6541cd2f677314433934990efc2c4b75d36"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/memory-command-integration.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
