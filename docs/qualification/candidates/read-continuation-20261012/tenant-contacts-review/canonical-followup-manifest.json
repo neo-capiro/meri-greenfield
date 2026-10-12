@@ -1,0 +1,195 @@
+{
+  "repair": "1e31f94bb8e399eede1f28609cb241b87e356b62",
+  "authorTestCorrection": "e890cff6d1110a1d29bd5dec0b7f340db0e41f06",
+  "historicalManifestAt": "5e5d6abe11091fda90dd07b2701b8b2e85e1b718",
+  "outsideEvidence": [
+    "docs/coordination/reports/CODEX-TENANT-CONTACTS-REVIEW-20261012.md",
+    "packages/contracts/test/retrieval-tenant-contacts-independent.test.mjs"
+  ],
+  "exclusions": [
+    "canonical-followup-manifest.json self reference",
+    "canonical-verification.json derived result"
+  ],
+  "files": [
+    {
+      "path": "docs/coordination/reports/CODEX-TENANT-CONTACTS-REVIEW-20261012.md",
+      "bytes": 6664,
+      "sha256": "223f5d78ce1ded97c1502858144d5b09821afdb95192cdb15c6db5aab7be20b5"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/audit-canonical-followup.py",
+      "bytes": 3286,
+      "sha256": "56ea0b9ce43759d2d037c8061852c4b5efc0607de154159255746a1e6a034e98"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/audit-packet.py",
+      "bytes": 6577,
+      "sha256": "0d6c2eef2bbfae97e56a8f88b58f14c6e8ec494c09f6f01acc58ecc4c46e4fc8"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/canonical-audit.json",
+      "bytes": 6198,
+      "sha256": "595310d3f4f6e027124039b678868100989f573254e885b2a0f008068214c014"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/canonical-before.json",
+      "bytes": 1326,
+      "sha256": "773e1107d0280cb4b7373f00d9a4e7eea28229a721e0e25f5cec49cce686221c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/canonical-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/canonical-before.stdout.bin",
+      "bytes": 8510,
+      "sha256": "4c934a1f382a55bc4fb1b943bfbacfaad93ba8626484f7a80a7dce15f89f8bc0"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/canonical-cleanup.json",
+      "bytes": 146,
+      "sha256": "82b0a9470e288a9caf7bdd99a6e470864c226910e6c32a2e449d08c44a859b19"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/canonical-final.json",
+      "bytes": 1390,
+      "sha256": "70c09ae6dbc3c12c9b271c690e4ceebec374df79dff49290917e87a9665373ef"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/canonical-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/canonical-final.stdout.bin",
+      "bytes": 6007,
+      "sha256": "684508f64b00f8fc8601602dc9bdfc26f3a3ffcd520e1ac6b7154b6a5cc5d440"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/canonical-followup-criteria.md",
+      "bytes": 1069,
+      "sha256": "fae83f1b3ff1c7ee52ded2fafcb687d613d489f53ea2c1169009c59fa2e9782e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/canonical-repaired-old-expectations.json",
+      "bytes": 1431,
+      "sha256": "ed2b2124c4341161e3a6a44a76bb2f107228417813edfd0e1bc30fb75658b9d7"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/canonical-repaired-old-expectations.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/canonical-repaired-old-expectations.stdout.bin",
+      "bytes": 10127,
+      "sha256": "86868bc2c181e7b8f69be3e7096635a0c3b6a972882c2109a102e8b980fda131"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/cleanup.json",
+      "bytes": 248,
+      "sha256": "7eb5c1e82dcdc90fb23c125ee12f1312366daf00c2cc59ee12b78a8a176db19a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/criteria.md",
+      "bytes": 2450,
+      "sha256": "d3d83571fb15551fe9eab27b8478e964dc31521777861eda98868587f0e17e03"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/independent-date-boundary.json",
+      "bytes": 1344,
+      "sha256": "282ce551860db133736efc31d919210924956c01e1bc5a385de3cd311970097c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/independent-date-boundary.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/independent-date-boundary.stdout.bin",
+      "bytes": 3460,
+      "sha256": "fca6b35811eab22015081ff1310048ecaf6558a5c4f41c7d8f61b377b179a915"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/independent-first.json",
+      "bytes": 1328,
+      "sha256": "2de3c2c626c6e2c62d52897f16101718ba73a3e3507c8b38f856cec4382abfe8"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/independent-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/independent-first.stdout.bin",
+      "bytes": 3354,
+      "sha256": "684248588b4312e30c025a1e0b2d21bae7c6466fbe336fd35c9555c6708763d8"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/inspect-references.cjs",
+      "bytes": 10052,
+      "sha256": "3875261f69ed233f5d6da0071584e47165539440dce2c53f96c6aeca6840f687"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/manifest.json",
+      "bytes": 4998,
+      "sha256": "e0818bc4a09c4cf2d824a4e0bf813fc06648d1087395947ae8e9b86eddaa70c6"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/packet-audit.json",
+      "bytes": 1333,
+      "sha256": "16d055d1d308413ef5bafae55457ea5aca37486fbdb98569fbed97f3459359dd"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/packet-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/packet-audit.stdout.bin",
+      "bytes": 11679,
+      "sha256": "5c83cf1862cef7b441e121741d9e06127dd5d8e383913db71e908424c6b79335"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/pre-detachment-independent.test.mjs.txt",
+      "bytes": 13412,
+      "sha256": "7f0e6ced677d65d3ffc7ad05c1f119b30b38ce36e254b4477a8111e05308970c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/reference-audit-with-notes.json",
+      "bytes": 8528,
+      "sha256": "6f2c84b303dbc9061ef8aa69b621d4f1778ba2f4d654db45eeeba17e81c20b6f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/reference-audit.json",
+      "bytes": 8308,
+      "sha256": "f7ab8c02044228b4f0b5425b7567e3aba9e38a44c5f61e321d86dfb45e1fe2e7"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/verification.json",
+      "bytes": 3036,
+      "sha256": "ecede4af0652d0a3217dfdf7688e499a6cbc4f2456850b1363f4fba627ae70b5"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/verify-canonical-followup.py",
+      "bytes": 802,
+      "sha256": "da743e5f80960ccd53a360128c93c534e8e11e3a70f89400f697c9013aa95e58"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/verify-review.py",
+      "bytes": 1219,
+      "sha256": "c6a17bfd889291c8807289ddc6d40f46282029e458483a7cf0b42e9a89359c89"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-tenant-contacts-independent.test.mjs",
+      "bytes": 14237,
+      "sha256": "0153510b01f1a303ccd1669033d11eaf94f996e044e1c46dea116b46ab10afbb"
+    }
+  ]
+}

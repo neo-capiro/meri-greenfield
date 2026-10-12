@@ -1,0 +1,179 @@
+{
+  "repair": "1e31f94bb8e399eede1f28609cb241b87e356b62",
+  "authorTestCorrection": "e890cff6d1110a1d29bd5dec0b7f340db0e41f06",
+  "historicalReview": "5e5d6abe11091fda90dd07b2701b8b2e85e1b718",
+  "scope": "SOURCE_ONLY_RUNTIME_HOLD",
+  "checks": 42,
+  "passed": 42,
+  "failed": 0,
+  "results": [
+    {
+      "name": "exact root bytes:packages/contracts/retrieval-0.2/tenant-contacts.schema.json",
+      "pass": true
+    },
+    {
+      "name": "exact root bytes:packages/contracts/retrieval-0.2/tenant-contacts-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact root bytes:packages/contracts/test/retrieval-tenant-contacts.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "exactly two detached return substitutions",
+      "pass": true
+    },
+    {
+      "name": "schema only namespace change",
+      "pass": true
+    },
+    {
+      "name": "original independent test preimage preserved",
+      "pass": true
+    },
+    {
+      "name": "historical manifest:docs/coordination/reports/CODEX-TENANT-CONTACTS-REVIEW-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "historical manifest:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/audit-packet.py",
+      "pass": true
+    },
+    {
+      "name": "historical manifest:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "historical manifest:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/cleanup.json",
+      "pass": true
+    },
+    {
+      "name": "historical manifest:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/criteria.md",
+      "pass": true
+    },
+    {
+      "name": "historical manifest:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/independent-date-boundary.json",
+      "pass": true
+    },
+    {
+      "name": "historical manifest:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/independent-date-boundary.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "historical manifest:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/independent-date-boundary.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "historical manifest:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/independent-first.json",
+      "pass": true
+    },
+    {
+      "name": "historical manifest:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/independent-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "historical manifest:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/independent-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "historical manifest:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/inspect-references.cjs",
+      "pass": true
+    },
+    {
+      "name": "historical manifest:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/packet-audit.json",
+      "pass": true
+    },
+    {
+      "name": "historical manifest:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/packet-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "historical manifest:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/packet-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "historical manifest:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/reference-audit-with-notes.json",
+      "pass": true
+    },
+    {
+      "name": "historical manifest:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/reference-audit.json",
+      "pass": true
+    },
+    {
+      "name": "historical manifest:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/verify-review.py",
+      "pass": true
+    },
+    {
+      "name": "historical manifest:packages/contracts/test/retrieval-tenant-contacts-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "historical nineteen members",
+      "pass": true
+    },
+    {
+      "name": "6110 original blobs preserved",
+      "pass": true
+    },
+    {
+      "name": "owned group settled:canonical-before",
+      "pass": true
+    },
+    {
+      "name": "exact tested source:canonical-before",
+      "pass": true
+    },
+    {
+      "name": "raw stream:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/canonical-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw stream:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/canonical-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "actual pass/fail counts:canonical-before",
+      "pass": true
+    },
+    {
+      "name": "owned group settled:canonical-repaired-old-expectations",
+      "pass": true
+    },
+    {
+      "name": "exact tested source:canonical-repaired-old-expectations",
+      "pass": true
+    },
+    {
+      "name": "raw stream:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/canonical-repaired-old-expectations.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw stream:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/canonical-repaired-old-expectations.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "actual pass/fail counts:canonical-repaired-old-expectations",
+      "pass": true
+    },
+    {
+      "name": "owned group settled:canonical-final",
+      "pass": true
+    },
+    {
+      "name": "exact tested source:canonical-final",
+      "pass": true
+    },
+    {
+      "name": "raw stream:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/canonical-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw stream:docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/canonical-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "actual pass/fail counts:canonical-final",
+      "pass": true
+    }
+  ]
+}
