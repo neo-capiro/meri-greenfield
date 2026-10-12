@@ -1,6 +1,6 @@
 {
-  "checks": 34,
-  "passed": 34,
+  "checks": 35,
+  "passed": 35,
   "failed": 0,
   "results": [
     {
@@ -21,6 +21,10 @@
     },
     {
       "name": "member:docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/cleanup.json",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/documentation-correction.json",
       "pass": true
     },
     {
