@@ -36,8 +36,12 @@ export function createTemporalScheduleInspector(options) {
       const description=await lifetime.run(signal=>withDeadline.call(connection,effectiveDeadlineMs,()=>{lifetime.check();return withAbortSignal.call(connection,signal,()=>{
         lifetime.check();
         const handle=getHandle.call(scheduleClient,binding.projection.temporalScheduleId);
-        if(!handle||types.isProxy(handle)||handle.scheduleId!==binding.projection.temporalScheduleId||typeof handle.describe!=='function')throw error('SCHEDULE_INSPECTION_DATA');
-        return handle.describe();
+        lifetime.check();
+        if(!handle||types.isProxy(handle))throw error('SCHEDULE_INSPECTION_DATA');
+        const id=Object.getOwnPropertyDescriptor(handle,'scheduleId'),describe=Object.getOwnPropertyDescriptor(handle,'describe');
+        if(!id||!Object.hasOwn(id,'value')||id.value!==binding.projection.temporalScheduleId||!describe||!Object.hasOwn(describe,'value')||typeof describe.value!=='function')throw error('SCHEDULE_INSPECTION_DATA');
+        lifetime.check();
+        return describe.value.call(handle);
       });}));
       const output=projectScheduleInspection(description,binding,clock());
       await current('before_release');
