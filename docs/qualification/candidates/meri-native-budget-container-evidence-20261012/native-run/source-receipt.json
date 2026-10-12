@@ -1,0 +1,143 @@
+{
+  "source_commit": "3f5302a96309ff4b615dedc3f6ba196b0eb5aeb0",
+  "source_tree": "42692971ac7d18b0d45c4aea4252818b990577a5",
+  "base_rc1": "2f06feccca731d6cd388612cd568185ecc29668f",
+  "files": [
+    {
+      "path": "apps/gateway/test/postgres-budget.integration.mjs",
+      "sha256": "85c5b91c6424397c8d85f49770717ca459df2a247905690b539194ef88285693",
+      "bytes": 13079,
+      "same_as_rc1": true
+    },
+    {
+      "path": "apps/gateway/test/postgres-budget-child.mjs",
+      "sha256": "493834c03bec2effaf0932049ad375e3624166ddcd230e8965dac32ff04bb9e9",
+      "bytes": 1895,
+      "same_as_rc1": true
+    },
+    {
+      "path": "apps/gateway/test/postgres-budget-admission.test.mjs",
+      "sha256": "92c1325c0951378b6de3256ae7e7b474fea19679fab6a1276841035fd5bc372e",
+      "bytes": 5720,
+      "same_as_rc1": true
+    },
+    {
+      "path": "apps/gateway/test/postgres-budget-native-fixture.mjs",
+      "sha256": "6411a3b5b25664568979a4894fca2016735591f7bb87fa900928b66f33cfdf1e",
+      "bytes": 10818,
+      "same_as_rc1": false
+    },
+    {
+      "path": "apps/gateway/test/postgres-budget-container-fixture.mjs",
+      "sha256": "77efef99b2f1b45cd1dedca8df3a8d30415a2ae9f3792fd90b5f58a5388adc1a",
+      "bytes": 2995,
+      "same_as_rc1": null
+    },
+    {
+      "path": "apps/gateway/test/postgres-budget-container.test.mjs",
+      "sha256": "5e8aed71609764dbe86d82aee360b69209c5e8390f5fa2b4eb087b482f88fa72",
+      "bytes": 6341,
+      "same_as_rc1": null
+    },
+    {
+      "path": "apps/control/qualification-sdk-fixture/state/package-lock.json",
+      "sha256": "c5ab764dcd9dcd8dee88d2cab3e7412fb9752e3a869c0a1693839c0567d3973a",
+      "bytes": 5739,
+      "same_as_rc1": true
+    },
+    {
+      "path": "apps/proxy/qualification/state/migrations/0001_qualification_state.sql",
+      "sha256": "fa33f51c492361c280c4847ea08629f0c777cb6b0e9652f1e67f95543bda0dfc",
+      "bytes": 2467,
+      "same_as_rc1": true
+    },
+    {
+      "path": "apps/proxy/qualification/state/migrations/0002_tool_budget.sql",
+      "sha256": "53d3933a440ed0801411d3ed544f4c554f397b3338acaad1ce1addcce4ef5809",
+      "bytes": 2391,
+      "same_as_rc1": true
+    }
+  ],
+  "pinned_state_dependencies": [
+    {
+      "path": "node_modules/pg",
+      "version": "8.23.1"
+    },
+    {
+      "path": "node_modules/pg-cloudflare",
+      "version": "1.4.1"
+    },
+    {
+      "path": "node_modules/pg-connection-string",
+      "version": "2.14.1"
+    },
+    {
+      "path": "node_modules/pg-int8",
+      "version": "1.0.1"
+    },
+    {
+      "path": "node_modules/pg-pool",
+      "version": "3.14.0"
+    },
+    {
+      "path": "node_modules/pg-protocol",
+      "version": "1.16.1"
+    },
+    {
+      "path": "node_modules/pg-types",
+      "version": "2.2.0"
+    },
+    {
+      "path": "node_modules/pgpass",
+      "version": "1.0.5"
+    },
+    {
+      "path": "node_modules/postgres-array",
+      "version": "2.0.0"
+    },
+    {
+      "path": "node_modules/postgres-bytea",
+      "version": "1.0.1"
+    },
+    {
+      "path": "node_modules/postgres-date",
+      "version": "1.0.7"
+    },
+    {
+      "path": "node_modules/postgres-interval",
+      "version": "1.2.0"
+    },
+    {
+      "path": "node_modules/split2",
+      "version": "4.2.0"
+    },
+    {
+      "path": "node_modules/xtend",
+      "version": "4.0.2"
+    }
+  ],
+  "source_checks": {
+    "tests": 78,
+    "pass": 78,
+    "fail": 0,
+    "skipped": 0,
+    "raw_streams": [
+      {
+        "name": "source-tests.stdout.log",
+        "sha256": "dc0093a93dc45e370289aca9039d6a05265d783e19124edb511c641a75ecc22e",
+        "bytes": 13555
+      },
+      {
+        "name": "source-tests.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    ]
+  },
+  "tracked_worktree_clean": true,
+  "untracked_dependency_links": [
+    "node_modules",
+    "apps/control/qualification-sdk-fixture/state/node_modules"
+  ],
+  "no_source_case_or_migration_changes": true
+}

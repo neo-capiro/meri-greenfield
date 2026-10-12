@@ -1,0 +1,7 @@
+{
+  "t0Ms": 1791821474269,
+  "workDeadlineMs": 1791822194269,
+  "cleanupDeadlineMs": 1791822374269,
+  "authority": "Current user authorizes ordinary synthetic actions after independent source acceptance; no new credentials/security changes.",
+  "fixture": "Existing dedicated instance and qualification_owner; preserve all original and prior schemas/data."
+}

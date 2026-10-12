@@ -1,0 +1,186 @@
+{
+  "source_commit": "2f06feccca731d6cd388612cd568185ecc29668f",
+  "source_tree": "39165ddad3989434908087f4571b70bea000a98d",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 6582,
+      "sha256": "a0650949b74e5aee709bd8b3c9d480f95f5b898778ac8f7b3927eb54b141437a",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "docs/IMPLEMENTATION-STANDARDS.md",
+      "bytes": 11082,
+      "sha256": "d4f10f964ee207187abacd967649a1cfc9bdd468072dc01f859268f08b719959",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "docs/plans/MERI-G1-SOURCE-TO-NATIVE.md",
+      "bytes": 38565,
+      "sha256": "c457027091b54a9373494feda828e0f1827ebc68c92bb4d686b7123a771fe516",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "docs/coordination/reports/MERI-G1-INVOCATION-SETUP-20261012.md",
+      "bytes": 11154,
+      "sha256": "4f37d323f4c42aa987c1e7077386a7e677b2515b7ffa46a6dbd84d2dffbffd95",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/gateway/test/postgres-budget.integration.mjs",
+      "bytes": 13079,
+      "sha256": "85c5b91c6424397c8d85f49770717ca459df2a247905690b539194ef88285693",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/gateway/test/postgres-budget-native-fixture.mjs",
+      "bytes": 10049,
+      "sha256": "a4a4cc8205668d72e15b2df46408f20172c1adc5914590b871f9ac206065f22a",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/gateway/test/tool-invocation-owner.test.mjs",
+      "bytes": 19890,
+      "sha256": "2b64a89a1d8eaa1f4e81bdb74067390b8314a65a6de37d347d2ff2f59ec0ab95",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/gateway/test/tool-invocation-transaction.test.mjs",
+      "bytes": 3071,
+      "sha256": "a7ddb8660ebff3ed0abae6b864ea8dca11566c93cb5d60ec189135c5a3b12fdc",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/control/test/tool-invocations.test.mjs",
+      "bytes": 1364,
+      "sha256": "85a63340bfc98c7307d640eace9a9e4807cdaae85e23c6f4feda92184f2f6a86",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/control/tool-invocations.mjs",
+      "bytes": 2738,
+      "sha256": "96bb3dd5b64a64fd59ac57fda8bd1198ad32bf0401d8e4f9447ffb9301e7e70c",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/gateway/budget/tool-invocation-owner.mjs",
+      "bytes": 9007,
+      "sha256": "ede1672b79da5055f3ea8a2e1b8603c50d5ba9783914fab24195a8e6356aec75",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/gateway/budget/tool-invocation-record.mjs",
+      "bytes": 3580,
+      "sha256": "dc3fc265fe10d2013d50a96441c9af8ec8032b16f4c74c2cd7f446ee588f47c3",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/gateway/budget/tool-budget-dispatch.mjs",
+      "bytes": 4693,
+      "sha256": "ee866f6abb29222b868d1950027b66a0115e5791122d66415d34dbdcb393ee35",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/gateway/budget/postgres-tool-budget.mjs",
+      "bytes": 12279,
+      "sha256": "4f3d3336e2cdf01785cecd0ea22aeccea1e5c9a8d773b20492f8cd5fefb06ed4",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/gateway/budget/postgres-budget-store.mjs",
+      "bytes": 2155,
+      "sha256": "2178dcfe773f288087644ab42403d637c1aeea97e42058a19d50f7b39e51f772",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/proxy/qualification/state/postgres_store.py",
+      "bytes": 5019,
+      "sha256": "a51cf9ab2bd7eab81ce5b52d48557eab61bd33c3d7ec10089b8c7e4cbcaa713f",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/proxy/qualification/state/migrations/0001_qualification_state.sql",
+      "bytes": 2467,
+      "sha256": "fa33f51c492361c280c4847ea08629f0c777cb6b0e9652f1e67f95543bda0dfc",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/proxy/qualification/state/migrations/0002_tool_budget.sql",
+      "bytes": 2391,
+      "sha256": "53d3933a440ed0801411d3ed544f4c554f397b3338acaad1ce1addcce4ef5809",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/proxy/qualification/state/migrations/0003_tool_invocations.sql",
+      "bytes": 1097,
+      "sha256": "8d0c6ab5e3027b637f7905bd19ac1d830095f1565f745d4e2954294b115137e5",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/gateway/budget/README.md",
+      "bytes": 17448,
+      "sha256": "33b6bf03a1c71a8b9f5217ed840e3a88f91aa1ee0cd9a05b8f14d04a1eadc469",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/proxy/qualification/linux/native-runtime/native_auth_probe.py",
+      "bytes": 13523,
+      "sha256": "55b88f9c8e2e357dcc8a8ad9af5a19815c862fa67989a0f9476122314c048742",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/proxy/qualification/linux/native-runtime/fixture_config.py",
+      "bytes": 11716,
+      "sha256": "e715f9ee72aa740370366725f6e5e861b1fcef11fb15b4dcc70ed31977d53fbb",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/proxy/qualification/linux/native-runtime/README.md",
+      "bytes": 8866,
+      "sha256": "8ed4a2f38501fbf54a5cd9e337e460e34180af995e71e09e4c2fbde04caeb780",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-capture.mjs",
+      "bytes": 52572,
+      "sha256": "027117958a878cce722650c57bd0fe6132c5be69a440a3b3b9cd6f83213e6083",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-capture-options.mjs",
+      "bytes": 17469,
+      "sha256": "964f4f1958dd0707198fcd21611018b9a9337e90e5f434ed24ce47beb3986b0e",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-interruption.mjs",
+      "bytes": 12617,
+      "sha256": "2764babd954e95f07caf964ac14e57ee8a5a7d148d1527f97d1af4ea16b9040f",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/worker/qualification/package.json",
+      "bytes": 1240,
+      "sha256": "c14736fe666c6f1674d96794f8b55011501aa0b430f29b8ed23772d79cabea5b",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/control/qualification-temporal/README.md",
+      "bytes": 12556,
+      "sha256": "72835dd067b5ea3b2d5d48a6089d73fb0b94e7a271a4d60b2e23114da1c4cb54",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/control/qualification-temporal/recovery-activities.mjs",
+      "bytes": 12344,
+      "sha256": "539b6216a4d34e647e0ec9037fef5814d86d10ffd0a1207c128b54711982adc3",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/control/qualification-temporal/recovery-workflow.ts",
+      "bytes": 1403,
+      "sha256": "f720e4eaf3d064fd34f82638b2663946667b0b83527628241622d2f5f1457057",
+      "matches_rc1_git_blob": true
+    }
+  ]
+}

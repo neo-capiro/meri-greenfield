@@ -1,0 +1,17 @@
+{
+  "platform_session_id": 85098,
+  "terminal": {
+    "chunk_id": "957b48",
+    "wall_time_seconds": 0.000028573,
+    "exit_code": 0,
+    "original_token_count": 0,
+    "output": ""
+  },
+  "source_commit": "3f5302a96309ff4b615dedc3f6ba196b0eb5aeb0",
+  "source_tree": "42692971ac7d18b0d45c4aea4252818b990577a5",
+  "expected_tests": 9,
+  "passed": 9,
+  "failed": 0,
+  "skipped": 0,
+  "attempts": 1
+}

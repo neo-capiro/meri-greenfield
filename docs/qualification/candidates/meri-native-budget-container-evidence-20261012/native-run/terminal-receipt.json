@@ -1,0 +1,110 @@
+{
+  "status": "PASS_9_NATIVE_BUDGET_CASES_AND_CLEANUP",
+  "at": "2026-10-12T16:13:50.083889+00:00",
+  "source_commit": "3f5302a96309ff4b615dedc3f6ba196b0eb5aeb0",
+  "source_tree": "42692971ac7d18b0d45c4aea4252818b990577a5",
+  "base_rc1": "2f06feccca731d6cd388612cd568185ecc29668f",
+  "source_checks": 78,
+  "independent_source_checks": 40,
+  "native_tests": 9,
+  "native_pass": 9,
+  "native_fail": 0,
+  "native_skipped": 0,
+  "attempts": 1,
+  "platform_terminal_exit_code": 0,
+  "platform_session_id": 85098,
+  "t0": "2026-10-12T16:11:14.269000+00:00",
+  "work_deadline": "2026-10-12T16:23:14.269000+00:00",
+  "cleanup_deadline": "2026-10-12T16:26:14.269000+00:00",
+  "restored_at": "2026-10-12T16:12:50.020633+00:00",
+  "elapsed_to_restoration_seconds": 95.751633,
+  "within_work_and_cleanup_deadlines": true,
+  "native_tap_duration_ms": 3308.687834,
+  "original_oid": 16389,
+  "preserved_prior_oids": [
+    24577,
+    24814
+  ],
+  "sdk_oid": 25502,
+  "archive_name": "meri_qualification_budget_20261012",
+  "archive_oid": 25602,
+  "all_original_prior_sdk_data_preserved": true,
+  "roles_hba_database_catalog_unchanged": true,
+  "new_credentials_or_security_changes": false,
+  "new_database_container_or_service": false,
+  "live_owned_test_processes": 0,
+  "new_unreaped_process_records": 0,
+  "test_database_backends": 0,
+  "historical_zombies_claimed_reaped": false,
+  "host5432_untouched": true,
+  "provider_cloud_calls": 0,
+  "provider_cloud_call_basis": "Exact existing nine source cases use source-disabled gateway, synthetic claims/ports/rows and real pg SQL only; env-i contains no provider/production credentials; no model/SDK/cloud/client path executed. Local Docker inspect only.",
+  "scope_limit": "Prepared PG16.15 trust/synthetic-superuser functional budget evidence only; no production authentication/network tenant isolation, fullG1, genuine SDK/provider/native-auth/browser/Temporal acceptance.",
+  "prior_33_receipts_preserved": [
+    {
+      "path": "rc1-python-state.receipt.json",
+      "sha256": "ebcc5791280d3cd6be084031738a7487f2202bad2dfd3d9ddff3eacb7e46a3bd"
+    },
+    {
+      "path": "rc1-python-state.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "rc1-python-state.stderr.log",
+      "sha256": "7c39a97e2beb0ac99f0c9777d1341ecc0ab3e77efcdebfe013c060973e5d8c03"
+    },
+    {
+      "path": "sdk-registry-ingress.receipt.json",
+      "sha256": "7b08c10be293f76880ee724080cb2abf17a7a82b53ef4c47a90c61c73c32c45a"
+    },
+    {
+      "path": "sdk-registry-ingress.stdout.log",
+      "sha256": "322c82a92a4dd4cb46a2c75bca5303ad48b256b3cfef203e6d5ab595d09547ec"
+    },
+    {
+      "path": "sdk-registry-ingress.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "sdk-registry.receipt.json",
+      "sha256": "7d9634f566fac64b4907310895cac7255a1465260610eb35f5f84848ac44bb64"
+    },
+    {
+      "path": "sdk-registry.stdout.log",
+      "sha256": "891aef8fc4250c4ff0fd9a4af9fe6ee33b30a7953e788fc29c13d1f2f0f98c28"
+    },
+    {
+      "path": "sdk-registry.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "sdk-revocation-postgres.receipt.json",
+      "sha256": "6db83671ab87ff339ab09c857e87328071ea33d0dee3a7a4771593fd04f5472a"
+    },
+    {
+      "path": "sdk-revocation-postgres.stdout.log",
+      "sha256": "cc60175592b65f9f0aa26afa561529e103c91ae3d15cad5160f8663c1b182a0e"
+    },
+    {
+      "path": "sdk-revocation-postgres.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "terminal-receipt.json",
+      "sha256": "afa5e7159d077ea1c77f71640f482b8bced83312bee2128ed2756587d454e3db"
+    },
+    {
+      "path": "cleanup-receipt.json",
+      "sha256": "1520d93bd801fe315eb296c8aac9ef405c5dc41357ca1e61683c5205baef68de"
+    }
+  ],
+  "producer_setup_log_preserved": true,
+  "source_receipt_sha256": "c0aedf9131a8c6bc2852608e41c3cb10c07aa7329456c785206cc524bc7bfae9",
+  "independent_review_sha256": "63d75eebc4e367ccc8d5c48a3ad1f6ed1cafd2c4df5b8c5c52f6f34c2cb998f8",
+  "operations_sha256": "92e29266c1004a90b35ddd346a652d2dd0642f6e61734331a81f4d4eb8698ec7",
+  "raw_stdout_sha256": "a5e43a9b1ff8898d03082c24b61ba8cebf7b4d635e0966ed26fd0274ea53b3cc",
+  "raw_stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "restoration_receipt_sha256": "ef61f91eb5ec4b4fae8375f087553db992e499318dba83f62cbfa3c3c6ca1af6",
+  "process_cleanup_sha256": "63ae5c0a099a1ebf2fbfc9c5d50c87e5ea5773d18a718440621ad25ac3f4371b",
+  "next_real_gate": "Missing independently reviewed actual-pg trusted invocation producer/reconciliation integration source for unchanged migration0003; DDL alone is not qualification. No newsecurityapproval needed forsourcepreparation."
+}

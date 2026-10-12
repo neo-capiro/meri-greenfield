@@ -1,0 +1,33 @@
+{
+  "at": "2026-10-12T16:12:39.359193+00:00",
+  "parent_pid": 97667,
+  "owned_metadata": [],
+  "live_owned_processes": 0,
+  "historical_metadata": [
+    [
+      "37280",
+      "1",
+      "37179",
+      "Z",
+      "python"
+    ],
+    [
+      "37281",
+      "1",
+      "37179",
+      "Z",
+      "python"
+    ],
+    [
+      "37282",
+      "1",
+      "37179",
+      "Z",
+      "python"
+    ]
+  ],
+  "historical_claimed_reaped": false,
+  "test_children_close_events_basis": "Exact unchanged integration awaits all six child close events with code0; Node after hook ends owned pool. Docker execFile callbacks await close.",
+  "protected_proc_reads": false,
+  "shared_process_actions": false
+}

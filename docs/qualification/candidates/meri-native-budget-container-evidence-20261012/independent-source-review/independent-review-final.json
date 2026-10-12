@@ -1,0 +1,125 @@
+{
+  "verdict": "ACCEPT_SOURCE_AND_FINITE_SCOPE_REVIEW",
+  "reviewed_at": "2026-10-12T16:09:23Z",
+  "started_at": "2026-10-12T15:54:40Z",
+  "task_deadline": "2026-10-12T16:14:40Z",
+  "actual_nine_native_cases": "NOT_RUN_BY_REVIEWER; QUALIFICATION_RESULT_PENDING",
+  "source": {
+    "commit": "3f5302a96309ff4b615dedc3f6ba196b0eb5aeb0",
+    "tree": "42692971ac7d18b0d45c4aea4252818b990577a5",
+    "parent_rc1": "2f06feccca731d6cd388612cd568185ecc29668f",
+    "commit_verification": {
+      "chunk_id": "29a06f",
+      "wall_time_seconds": 0.000036015,
+      "exit_code": 0,
+      "original_token_count": 94,
+      "output": "3f5302a96309ff4b615dedc3f6ba196b0eb5aeb0\n42692971ac7d18b0d45c4aea4252818b990577a5\n2f06feccca731d6cd388612cd568185ecc29668f\n\nA\tapps/gateway/test/postgres-budget-container-fixture.mjs\nA\tapps/gateway/test/postgres-budget-container.test.mjs\nM\tapps/gateway/test/postgres-budget-native-fixture.mjs\nA\tdocs/qualification/candidates/meri-native-budget-container-20261012/OUTLINE.md\n"
+    },
+    "exact_hashes": {
+      "/workspace/scratch/meri-native-budget-run-20261012/operations.py": "92e29266c1004a90b35ddd346a652d2dd0642f6e61734331a81f4d4eb8698ec7",
+      "/workspace/scratch/meri-native-budget-container-20261012/apps/gateway/test/postgres-budget-native-fixture.mjs": "6411a3b5b25664568979a4894fca2016735591f7bb87fa900928b66f33cfdf1e",
+      "/workspace/scratch/meri-native-budget-container-20261012/apps/gateway/test/postgres-budget-container-fixture.mjs": "77efef99b2f1b45cd1dedca8df3a8d30415a2ae9f3792fd90b5f58a5388adc1a",
+      "/workspace/scratch/meri-native-budget-container-20261012/apps/gateway/test/postgres-budget-container.test.mjs": "5e8aed71609764dbe86d82aee360b69209c5e8390f5fa2b4eb087b482f88fa72",
+      "/workspace/scratch/meri-native-budget-container-20261012/docs/qualification/candidates/meri-native-budget-container-20261012/OUTLINE.md": "ba95843eafafc6712667587ae98b005ab896d9984e434f8685be4f07fbaefe8d",
+      "/workspace/scratch/meri-native-budget-container-review-20261012/independent-container.test.mjs": "e33365be3b166ab8cddc84e5c273ac5ca09a7e6ef34dad0dee3ede07a7013aa5"
+    },
+    "scope": "Only native test helper, new prepared-container helper, its source tests, and outline. Existing nine-case integration, child, 13-key admission tests, migrations, contracts and locks unchanged."
+  },
+  "independent_source_checks": {
+    "cases": 40,
+    "pass": 40,
+    "fail": 0,
+    "skipped": 0,
+    "execution_receipt": {
+      "chunk_id": "8d8a72",
+      "wall_time_seconds": 0.031727402,
+      "exit_code": 0,
+      "original_token_count": 0,
+      "output": ""
+    },
+    "stdout": "independent-source-tests.stdout.log",
+    "stderr": "independent-source-tests.stderr.log",
+    "native_executor_safety": "execFile replaced via builtin ESM synchronization and asserted identical to the stub before any inspector invocation; no Docker/SQL/network call.",
+    "covered": "Legacy thirteen-key password profile; exact prepared endpoint/database/role; deep descriptor freeze; wrong container/image/name/running/purpose/volume/destination/mapping/network; malformed JSON/null/simulated timeout/CLI errors; fixed local daemon/clean argv/bounds/whitelist; actual valid-env PGPASSWORD and PGSERVICE drift; SQL host projection and all identity checks."
+  },
+  "author_source_checks_independently_rerun": {
+    "cases": 78,
+    "pass": 78,
+    "fail": 0,
+    "skipped": 0,
+    "execution_receipt": {
+      "chunk_id": "68a679",
+      "wall_time_seconds": 0.070786632,
+      "exit_code": 0,
+      "original_token_count": 0,
+      "output": ""
+    },
+    "stdout": "author-source-tests-sealed.stdout.log",
+    "stderr": "author-source-tests-sealed.stderr.log"
+  },
+  "resolved_review_findings": [
+    "Installed pg null-password fallback is prevented by actual-process admission recheck and supported password callback returning undefined.",
+    "Docker acquisition projects only required public identity/binding/network/volume fields, uses local Unix daemon and clean PATH-only environment, configured timeout5000/maxBuffer8192, and scrubbed errors.",
+    "PostgreSQL host(inet_server_addr()) normalizes CIDR text to the bare address; mapped host127.0.0.1:55432 remains distinct from actual container server172.17.0.2:5432.",
+    "Fresh-OID native-env/setup ownership manifests are written inside the SQL transaction before commit; absent-path guards precede mutation; separate terminal marker records successful commit."
+  ],
+  "operations": {
+    "reviewed_file": "/workspace/scratch/meri-native-budget-run-20261012/operations.py",
+    "sha256": "92e29266c1004a90b35ddd346a652d2dd0642f6e61734331a81f4d4eb8698ec7",
+    "review_mode": "AST and source only; not imported or executed",
+    "static_checks": {
+      "verdict": "PASS",
+      "manifest_writes_inside_transaction": true,
+      "commit_success_record_after_transaction": true,
+      "migrations_do_not_break_transaction": true,
+      "prior_receipts_and_unchanged_source_fingerprints_preserved": 79,
+      "changed_preserved_files": [],
+      "hashes": {
+        "/workspace/scratch/meri-native-budget-run-20261012/operations.py": "92e29266c1004a90b35ddd346a652d2dd0642f6e61734331a81f4d4eb8698ec7",
+        "/workspace/scratch/meri-native-budget-container-20261012/apps/gateway/test/postgres-budget-native-fixture.mjs": "6411a3b5b25664568979a4894fca2016735591f7bb87fa900928b66f33cfdf1e",
+        "/workspace/scratch/meri-native-budget-container-20261012/apps/gateway/test/postgres-budget-container-fixture.mjs": "77efef99b2f1b45cd1dedca8df3a8d30415a2ae9f3792fd90b5f58a5388adc1a",
+        "/workspace/scratch/meri-native-budget-container-20261012/apps/gateway/test/postgres-budget-container.test.mjs": "5e8aed71609764dbe86d82aee360b69209c5e8390f5fa2b4eb087b482f88fa72",
+        "/workspace/scratch/meri-native-budget-container-20261012/docs/qualification/candidates/meri-native-budget-container-20261012/OUTLINE.md": "ba95843eafafc6712667587ae98b005ab896d9984e434f8685be4f07fbaefe8d",
+        "/workspace/scratch/meri-native-budget-container-review-20261012/independent-container.test.mjs": "e33365be3b166ab8cddc84e5c273ac5ca09a7e6ef34dad0dee3ede07a7013aa5"
+      }
+    },
+    "execution_requirement": "Owner invokes fixed operations with env-i PATH/LANG/PYTHONDONTWRITEBYTECODE only and supported bounded platform lifecycle; no ambient libpq credential/service inheritance."
+  },
+  "finite_native_scope": {
+    "security_or_credential_confirmation_required_by_correction": false,
+    "basis": "The source correction and proposed operations use only existing synthetic instance/owner/authentication and reversible fixture schema changes; no new role/password/HBA/network listener/service/package/provider or cloud action.",
+    "endpoint": "127.0.0.1:55432",
+    "database": "meri_qualification_test",
+    "existing_owner": "qualification_owner",
+    "original_schema_oid": 16389,
+    "temporary_alias": "meri_qualification_setup_budget_20261012",
+    "distinct_archive": "meri_qualification_budget_20261012",
+    "preserved_prior_schema_oids": [
+      24577,
+      24814
+    ],
+    "preserved_sdk_schema_oid": 25502,
+    "migrations": "Unchanged0001 then0002 once inside fresh canonical schema setup transaction; helper/integration performs no migration/reset.",
+    "cases": 9,
+    "attempts": 1,
+    "test_timeout_seconds": 90,
+    "kill_grace_seconds": 5,
+    "common_work_seconds": 720,
+    "cleanup_deadline_seconds": 900,
+    "T0": "Fresh frozen T0, never extended or reset; operation admission must fit remaining deadlines.",
+    "cleanup": "Supported platform terminal result and owned live-resource/backend absence precede restoration; archive fresh state, restore original OID/row hashes and compare prior schemas/SDK/security metadata. Preserve all evidence and exited historical PID records.",
+    "limits": "Synthetic trust functional evidence only. No production authentication, tenant isolation or full G1 acceptance claim."
+  },
+  "preservation": {
+    "baseline": "preservation-baseline.json",
+    "unchanged_files_checked": 79,
+    "changed_preserved_files": [],
+    "original_failed_attempt_and_33_case_receipts": "Fingerprints unchanged",
+    "prior_independent_reviews": "Fingerprints unchanged",
+    "database_and_schema_verification": "Reviewer performed no database actions; runtime owner's preflight and final restoration receipts remain required."
+  },
+  "reviewer_database_docker_network_runtime_actions": [],
+  "installs": [],
+  "provider_cloud_calls": 0,
+  "remaining_source_blockers": []
+}

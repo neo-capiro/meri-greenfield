@@ -1,0 +1,192 @@
+{
+  "verdict": "ACCEPT_RECORDED_NATIVE_BUDGET_QUALIFICATION",
+  "reviewed_at": "2026-10-12 16:21:27 UTC",
+  "review_started_at": "2026-10-12T16:15:20Z",
+  "review_deadline": "2026-10-12T16:23:20Z",
+  "native_result": {
+    "tests": 9,
+    "pass": 9,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "attempts": 1,
+    "raw_tap_duration_ms": 3308.687834,
+    "platform_session_id": 85098,
+    "recorded_terminal_exit_code": 0
+  },
+  "source_binding": {
+    "local_commit": "3f5302a96309ff4b615dedc3f6ba196b0eb5aeb0",
+    "tree": "42692971ac7d18b0d45c4aea4252818b990577a5",
+    "base_rc1": "2f06feccca731d6cd388612cd568185ecc29668f",
+    "source_files_and_lengths_verified": 9,
+    "unchanged_rc1_case_child_admission_migrations_lock_verified": true,
+    "installed_locked_package_versions_verified": 14,
+    "prior_independent_source_review_sha256": "63d75eebc4e367ccc8d5c48a3ad1f6ed1cafd2c4df5b8c5c52f6f34c2cb998f8",
+    "remote_publication": {
+      "commit": "afb8f6729ffca8d64ee7e7de4a0a853bf0362aca",
+      "tree": "42692971ac7d18b0d45c4aea4252818b990577a5",
+      "basis": "Reported by root; reviewer made no remote/network calls"
+    }
+  },
+  "exact_verified_hashes": {
+    "terminal-receipt.json": "b2403b1a5fe1f03d4b47dd866027de4ebc1e9191ba79496840ef0f8e888d31d0",
+    "source-receipt.json": "c0aedf9131a8c6bc2852608e41c3cb10c07aa7329456c785206cc524bc7bfae9",
+    "operations.py": "92e29266c1004a90b35ddd346a652d2dd0642f6e61734331a81f4d4eb8698ec7",
+    "admission.json": "c36fb84207b2a5bde359af80aa907a68a94c2744e97420a866055187c9e6c088",
+    "native-command.json": "04856efb7cb5472ad988cc2fb1b034aaa264c62ced224c044ba513b9966b5c43",
+    "native-env.json": "f86bbc48d1ad4204aedf63c8c1918e4265f74eaaea72d745492e33ad060add90",
+    "native-budget.receipt.json": "69105b0135e1b2a6821f2d74c6e2d0e9be6767e3b0aeb40435142054a9261c97",
+    "native-budget.stdout.log": "a5e43a9b1ff8898d03082c24b61ba8cebf7b4d635e0966ed26fd0274ea53b3cc",
+    "native-budget.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "native-budget.parent.pid": "8f77429cbbe11e215f2c3cf6a1314dd9613f1319d0209c369000b5b6add9e19a",
+    "setup-receipt.json": "09ea2b063650f78759ca4257e4930d97d5bf6b2d690827819b7434942be176e9",
+    "setup-terminal.json": "eacd77cb343e0f7acc674ab81d21c4c5c600dfed759fc2096e1fc3cbbf25411b",
+    "process-cleanup.json": "63ae5c0a099a1ebf2fbfc9c5d50c87e5ea5773d18a718440621ad25ac3f4371b",
+    "restoration-receipt.json": "ef61f91eb5ec4b4fae8375f087553db992e499318dba83f62cbfa3c3c6ca1af6",
+    "preflight.json": "87c96a11514c4bf49f01dcf2e6e87962405f7d570a7c5f787a23074a33b9fe4f"
+  },
+  "exact_test_identities": [
+    "real production entry binds admitted grant but unavailable execution opens no transaction",
+    "real slot survives fresh adapter; historical completion charges once without authorizing replay",
+    "synthetic lost reserve acknowledgement after real COMMIT preserves exact native row",
+    "synthetic lost settle acknowledgement after real COMMIT preserves exact native row",
+    "real pg clients are returned after commit/rollback; borrowed pool remains usable",
+    "three real child pools contend one retained invocation",
+    "three real child pools contend one run call allowance",
+    "real shared model/tool run cap retains model UNKNOWN 91",
+    "real shared model/tool run cap retains model UNKNOWN 90"
+  ],
+  "bounded_command": {
+    "verified": true,
+    "workdir": "/workspace/scratch/meri-native-budget-container-20261012",
+    "argv": "node --test --test-concurrency=1 --test-timeout=60000 --test-reporter=tap apps/gateway/test/postgres-budget.integration.mjs",
+    "native_timeout_seconds": 90,
+    "kill_grace_seconds": 5,
+    "capture_limit_bytes_per_stream": 1048576,
+    "environment": "env-i with only PATH/LANG and exact three MERI budget admission values; admitted password null, no PG/provider credential variables",
+    "public_parent_pid": 97667,
+    "exclusive_pid_stamp_checked": true,
+    "raw_stdout_and_stderr_paths_exclusive": true,
+    "login": false,
+    "no_rerun_to_collect_completion": true
+  },
+  "deadlines": {
+    "frozen_T0": "2026-10-12T16:11:14.269000+00:00",
+    "native_admitted_at": "2026-10-12 16:11:54 UTC",
+    "work_deadline": "2026-10-12T16:23:14.269000+00:00",
+    "cleanup_deadline": "2026-10-12T16:26:14.269000+00:00",
+    "restoration_at": "2026-10-12T16:12:50.020633+00:00",
+    "elapsed_to_restoration_seconds": 95.751633,
+    "fixed_command_and_grace_fit_work_window": true,
+    "restoration_within_work_and_cleanup_window": true
+  },
+  "database_evidence_review": {
+    "fixture_endpoint": "127.0.0.1:55432",
+    "actual_server": "172.17.0.2:5432",
+    "version": "160015",
+    "original_schema_oid": 16389,
+    "prior_schema_oids": [
+      24577,
+      24814
+    ],
+    "preserved_sdk_schema_oid": 25502,
+    "retained_native_archive": {
+      "name": "meri_qualification_budget_20261012",
+      "oid": 25602
+    },
+    "fresh_setup_archive_relation_oids_equal": true,
+    "setup_receipt_is_precommit_ownership_manifest": true,
+    "separate_setup_terminal_records_commit_success": true,
+    "unchanged_0001_and_0002_migrations_only": true,
+    "original_prior_sdk_row_and_relation_oid_comparisons": "Runtime-owner restoration assertions, supported by exact reviewed operations.py; no independent database query by this reviewer",
+    "roles_hba_database_catalog": "Runtime-owner unchanged-comparison receipt",
+    "no_other_test_backends": "Runtime-owner recorded query assertion",
+    "no_new_credentials_security_database_service_or_host5432_change": "Consistent with fixed reviewed source/command/operation scope and owner receipts"
+  },
+  "cleanup_evidence_review": {
+    "owned_public_metadata": [],
+    "recorded_live_owned_test_processes": 0,
+    "recorded_new_unreaped_records": 0,
+    "historical_zombies": [
+      37280,
+      37281,
+      37282
+    ],
+    "historical_state": "Z, PPid1; explicitly unreaped",
+    "historical_reaped_claim": false,
+    "canonical_child_close_basis": "Nine-case passing TAP includes both three-child contention tests; reviewed unchanged integration requires owned child close/code0 and owned pool close",
+    "limitation": "Process and backend state are runtime-owner recorded metadata; reviewer did not inspect live process or protected proc paths"
+  },
+  "prior_evidence_preservation": {
+    "prior33_artifacts_hashes_independently_verified": 14,
+    "producer_tests_log_sha256": "b9e23b71e60e7261bf64754400e5feb806306d93895382ca31a80196a9a66585",
+    "producer_hash_matches_initial_verification_receipt": true,
+    "accepted_independent_source_review_preserved": true
+  },
+  "scope_limits": [
+    "Synthetic prepared PostgreSQL16.15/trust/superuser functional budget evidence.",
+    "No production authentication or tenant network isolation qualification.",
+    "No genuine SDK/provider/native-auth/browser/Temporal or full G1 acceptance.",
+    "Unchanged migration0003 producer/reconciliation coverage is outside these nine cases."
+  ],
+  "consistency_check": {
+    "verdict": "CONSISTENT",
+    "verified_artifact_hashes": {
+      "terminal-receipt.json": "b2403b1a5fe1f03d4b47dd866027de4ebc1e9191ba79496840ef0f8e888d31d0",
+      "source-receipt.json": "c0aedf9131a8c6bc2852608e41c3cb10c07aa7329456c785206cc524bc7bfae9",
+      "operations.py": "92e29266c1004a90b35ddd346a652d2dd0642f6e61734331a81f4d4eb8698ec7",
+      "admission.json": "c36fb84207b2a5bde359af80aa907a68a94c2744e97420a866055187c9e6c088",
+      "native-command.json": "04856efb7cb5472ad988cc2fb1b034aaa264c62ced224c044ba513b9966b5c43",
+      "native-env.json": "f86bbc48d1ad4204aedf63c8c1918e4265f74eaaea72d745492e33ad060add90",
+      "native-budget.receipt.json": "69105b0135e1b2a6821f2d74c6e2d0e9be6767e3b0aeb40435142054a9261c97",
+      "native-budget.stdout.log": "a5e43a9b1ff8898d03082c24b61ba8cebf7b4d635e0966ed26fd0274ea53b3cc",
+      "native-budget.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "native-budget.parent.pid": "8f77429cbbe11e215f2c3cf6a1314dd9613f1319d0209c369000b5b6add9e19a",
+      "setup-receipt.json": "09ea2b063650f78759ca4257e4930d97d5bf6b2d690827819b7434942be176e9",
+      "setup-terminal.json": "eacd77cb343e0f7acc674ab81d21c4c5c600dfed759fc2096e1fc3cbbf25411b",
+      "process-cleanup.json": "63ae5c0a099a1ebf2fbfc9c5d50c87e5ea5773d18a718440621ad25ac3f4371b",
+      "restoration-receipt.json": "ef61f91eb5ec4b4fae8375f087553db992e499318dba83f62cbfa3c3c6ca1af6",
+      "preflight.json": "87c96a11514c4bf49f01dcf2e6e87962405f7d570a7c5f787a23074a33b9fe4f"
+    },
+    "source_files_verified": 9,
+    "installed_pins_verified": 14,
+    "tap_cases": [
+      "real production entry binds admitted grant but unavailable execution opens no transaction",
+      "real slot survives fresh adapter; historical completion charges once without authorizing replay",
+      "synthetic lost reserve acknowledgement after real COMMIT preserves exact native row",
+      "synthetic lost settle acknowledgement after real COMMIT preserves exact native row",
+      "real pg clients are returned after commit/rollback; borrowed pool remains usable",
+      "three real child pools contend one retained invocation",
+      "three real child pools contend one run call allowance",
+      "real shared model/tool run cap retains model UNKNOWN 91",
+      "real shared model/tool run cap retains model UNKNOWN 90"
+    ],
+    "native_tests": 9,
+    "native_pass": 9,
+    "native_skipped": 0,
+    "native_fail": 0,
+    "platform_session_id": 85098,
+    "platform_exit": 0,
+    "attempts": 1,
+    "fresh_schema_oid": 25602,
+    "preserved_oids": [
+      16389,
+      24577,
+      24814,
+      25502
+    ],
+    "source_review_receipt_preserved_sha256": "63d75eebc4e367ccc8d5c48a3ad1f6ed1cafd2c4df5b8c5c52f6f34c2cb998f8",
+    "restoration_elapsed_seconds": 95.751633,
+    "command_fits_original_work_deadline": true,
+    "restoration_within_original_work_and_cleanup_deadlines": true,
+    "prior33_artifacts_hashes_verified": 14,
+    "producer_log_sha256": "b9e23b71e60e7261bf64754400e5feb806306d93895382ca31a80196a9a66585",
+    "limits": "DB/process snapshots and tool terminal are runtime-owner reported evidence; reviewer performed no independent runtime requery or rerun."
+  },
+  "reviewer_reran_tests": false,
+  "reviewer_database_docker_network_actions": [],
+  "reviewer_protected_proc_access": false,
+  "reviewer_mutated_prior_evidence": false,
+  "remaining_findings": []
+}

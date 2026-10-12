@@ -1,0 +1,142 @@
+{
+  "at": "2026-10-12T16:12:50.020633+00:00",
+  "within_cleanup_deadline": true,
+  "original_and_prior_schemas_unchanged": true,
+  "sdk_unchanged": true,
+  "roles_hba_database_catalog_unchanged": true,
+  "archive_name": "meri_qualification_budget_20261012",
+  "archive": {
+    "oid": 25602,
+    "relations": [
+      [
+        25603,
+        "budget",
+        "r"
+      ],
+      [
+        25722,
+        "budget_liabilities",
+        "v"
+      ],
+      [
+        25611,
+        "budget_pkey",
+        "i"
+      ],
+      [
+        25623,
+        "grants",
+        "r"
+      ],
+      [
+        25634,
+        "grants_capability_sha256_key",
+        "i"
+      ],
+      [
+        25632,
+        "grants_pkey",
+        "i"
+      ],
+      [
+        25660,
+        "one_unknown_per_grant",
+        "i"
+      ],
+      [
+        25721,
+        "one_unknown_tool_per_grant",
+        "i"
+      ],
+      [
+        25641,
+        "requests",
+        "r"
+      ],
+      [
+        25653,
+        "requests_pkey",
+        "i"
+      ],
+      [
+        25613,
+        "runs",
+        "r"
+      ],
+      [
+        25621,
+        "runs_pkey",
+        "i"
+      ],
+      [
+        25677,
+        "tool_grant_bindings",
+        "r"
+      ],
+      [
+        25682,
+        "tool_grant_bindings_pkey",
+        "i"
+      ],
+      [
+        25694,
+        "tool_reservations",
+        "r"
+      ],
+      [
+        25707,
+        "tool_reservations_pkey",
+        "i"
+      ],
+      [
+        25709,
+        "tool_reservations_reservation_id_key",
+        "i"
+      ],
+      [
+        25661,
+        "tool_run_allocations",
+        "r"
+      ],
+      [
+        25670,
+        "tool_run_allocations_pkey",
+        "i"
+      ]
+    ],
+    "tables": {
+      "budget": {
+        "rows": 1,
+        "sha256": "2c69ef53747ff30bd80459e4bba92fbac33add9c7da2acf3df74c5a796a840ee"
+      },
+      "grants": {
+        "rows": 13,
+        "sha256": "d5b20f34272365498ac2bd25ffe2e5d28ed13e3fad4b7ae2191f734ef918f42c"
+      },
+      "requests": {
+        "rows": 2,
+        "sha256": "855e8f214d3ccc6e9a12ba71244c612e915ea60abfc9c31acf2f873a26e8dd26"
+      },
+      "runs": {
+        "rows": 8,
+        "sha256": "8f2c425e88f8b6a4b12b664892265c9a9eb3bb4b101ea08c1b544479fa37540c"
+      },
+      "tool_grant_bindings": {
+        "rows": 11,
+        "sha256": "f97ce3cb6afc462793e1bfa33261fbf485454ea780b736dbcc16ae91193850e2"
+      },
+      "tool_reservations": {
+        "rows": 6,
+        "sha256": "6edebd69bb6f7661609889569141bf9e7b9701c795b5d29d240ccd467aeae33f"
+      },
+      "tool_run_allocations": {
+        "rows": 8,
+        "sha256": "37e9f23aad66fd3390ca3397236375a3577dc274965be609ced9ff1557865335"
+      }
+    }
+  },
+  "no_other_test_backends": true,
+  "new_credentials_or_security_changes": false,
+  "container_kept_running": true,
+  "host5432_untouched": true
+}

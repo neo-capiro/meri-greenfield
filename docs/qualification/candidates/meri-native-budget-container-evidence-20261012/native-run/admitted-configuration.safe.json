@@ -1,0 +1,48 @@
+{
+  "transformation": "Parsed explicit synthetic native admission and bounded execution metadata. No environment map, shell inline-environment body or ambient environment values included.",
+  "original_native_env_path": "/workspace/scratch/meri-native-budget-run-20261012/native-env.json",
+  "original_native_env_file_sha256": "f86bbc48d1ad4204aedf63c8c1918e4265f74eaaea72d745492e33ad060add90",
+  "original_config_string_sha256": "bbee5ea7576abf12c7711ae4f83f14750a2f63300a2925f5b8c88d05f20b6d36",
+  "config": {
+    "host": "127.0.0.1",
+    "port": 55432,
+    "database": "meri_qualification_test",
+    "user": "qualification_owner",
+    "password": null,
+    "systemIdentifier": "7695783086874624040",
+    "serverStartTime": "2026-10-12T14:23:35.557407+00:00",
+    "serverVersion": "160015",
+    "t0Ms": 1791821474269,
+    "workDeadlineMs": 1791822194269,
+    "cleanupDeadlineMs": 1791822374269,
+    "stateLockSha256": "c5ab764dcd9dcd8dee88d2cab3e7412fb9752e3a869c0a1693839c0567d3973a",
+    "migrationSha256": "53d3933a440ed0801411d3ed544f4c554f397b3338acaad1ce1addcce4ef5809",
+    "preparedContainer": {
+      "id": "5d55589bfbc222ea4c9ae5c0bba7b862a10b2c521e741792b86d9264c69af845",
+      "image": "sha256:f1447071e6c8449dcf4056aa0994c81d3566ce5ee232de36b04dc25696a116dd",
+      "serverHost": "172.17.0.2",
+      "serverPort": 5432
+    }
+  },
+  "original_native_command_receipt_sha256": "04856efb7cb5472ad988cc2fb1b034aaa264c62ced224c044ba513b9966b5c43",
+  "admitted_at": "2026-10-12 16:11:54 UTC",
+  "expected_tests": 9,
+  "attempt": 1,
+  "timeout_seconds": 90,
+  "kill_grace_seconds": 5,
+  "bounded_argv": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "--test-timeout=60000",
+    "--test-reporter=tap",
+    "apps/gateway/test/postgres-budget.integration.mjs"
+  ],
+  "platform_execution_metadata": {
+    "workdir": "/workspace/scratch/meri-native-budget-container-20261012",
+    "login": false,
+    "yield_time_ms": 1000,
+    "max_output_tokens": 1200,
+    "tty": false
+  }
+}

@@ -1,0 +1,64 @@
+TAP version 13
+# Subtest: real production entry binds admitted grant but unavailable execution opens no transaction
+ok 1 - real production entry binds admitted grant but unavailable execution opens no transaction
+  ---
+  duration_ms: 75.794205
+  type: 'test'
+  ...
+# Subtest: real slot survives fresh adapter; historical completion charges once without authorizing replay
+ok 2 - real slot survives fresh adapter; historical completion charges once without authorizing replay
+  ---
+  duration_ms: 31.464554
+  type: 'test'
+  ...
+# Subtest: synthetic lost reserve acknowledgement after real COMMIT preserves exact native row
+ok 3 - synthetic lost reserve acknowledgement after real COMMIT preserves exact native row
+  ---
+  duration_ms: 24.180259
+  type: 'test'
+  ...
+# Subtest: synthetic lost settle acknowledgement after real COMMIT preserves exact native row
+ok 4 - synthetic lost settle acknowledgement after real COMMIT preserves exact native row
+  ---
+  duration_ms: 28.364393
+  type: 'test'
+  ...
+# Subtest: real pg clients are returned after commit/rollback; borrowed pool remains usable
+ok 5 - real pg clients are returned after commit/rollback; borrowed pool remains usable
+  ---
+  duration_ms: 2.034297
+  type: 'test'
+  ...
+# Subtest: three real child pools contend one retained invocation
+ok 6 - three real child pools contend one retained invocation
+  ---
+  duration_ms: 1095.761358
+  type: 'test'
+  ...
+# Subtest: three real child pools contend one run call allowance
+ok 7 - three real child pools contend one run call allowance
+  ---
+  duration_ms: 1059.686794
+  type: 'test'
+  ...
+# Subtest: real shared model/tool run cap retains model UNKNOWN 91
+ok 8 - real shared model/tool run cap retains model UNKNOWN 91
+  ---
+  duration_ms: 20.593764
+  type: 'test'
+  ...
+# Subtest: real shared model/tool run cap retains model UNKNOWN 90
+ok 9 - real shared model/tool run cap retains model UNKNOWN 90
+  ---
+  duration_ms: 19.69161
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3308.687834
