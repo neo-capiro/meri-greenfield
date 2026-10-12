@@ -1,7 +1,7 @@
 {
   "base": "26f11758",
   "candidate": "62062236e38ac77b9494a04668df6969ab1f33e2",
-  "reviewHead": "7f4da6b767b9eda172399ef4dccaba44e14daa13",
+  "reviewHead": "9c52be90085f35e352a7424ab6705c5062432105",
   "originalEntries": 8689,
   "unchangedOriginalEntries": 8683,
   "changedOriginalPaths": [
@@ -1548,8 +1548,8 @@
       "passed": true
     },
     {
-      "name": "existing descriptor get_research_portfolio_changes",
-      "passed": false
+      "name": "existing portfolio descriptor footnote only",
+      "passed": true
     },
     {
       "name": "existing descriptor get_business_development_context",
@@ -2277,7 +2277,7 @@
     },
     {
       "name": "actual existing GET listReviews",
-      "passed": false
+      "passed": true
     },
     {
       "name": "fixed controller delegate getAnnualReview",
@@ -2285,7 +2285,7 @@
     },
     {
       "name": "actual existing GET getAnnualReview",
-      "passed": false
+      "passed": true
     },
     {
       "name": "fixed controller delegate snapshot",
@@ -2293,7 +2293,7 @@
     },
     {
       "name": "actual existing GET snapshot",
-      "passed": false
+      "passed": true
     },
     {
       "name": "annual GET explicitly passes false persistence",
@@ -2352,8 +2352,8 @@
       "passed": true
     }
   ],
-  "passed": 576,
-  "failed": 4,
+  "passed": 580,
+  "failed": 0,
   "privateSourceExecuted": false,
   "runtimeAccepted": false
 }

@@ -1,0 +1,43 @@
+{
+  "records": [
+    {
+      "receiptRef": "64e838cd",
+      "receiptPath": "docs/qualification/candidates/vertical-source-20261012/integration/portfolio-and-memory-baseline.json",
+      "receiptSha256": "dfe0041d6946b2b97aa949965f6afcd718e05647a96755d8e2937bc4d978fa53",
+      "sourceHead": "f8caa12c5640b3bbdaa733ce3d98ec344888f7f8",
+      "exitCode": 0,
+      "sourceDiffBytes": 0,
+      "ownedProcessGroupAbsent": true,
+      "streams": [
+        {
+          "path": "docs/qualification/candidates/vertical-source-20261012/integration/portfolio-and-memory-baseline.stdout.bin",
+          "matched": true
+        },
+        {
+          "path": "docs/qualification/candidates/vertical-source-20261012/integration/portfolio-and-memory-baseline.stderr.bin",
+          "matched": true
+        }
+      ]
+    },
+    {
+      "receiptRef": "62062236",
+      "receiptPath": "docs/qualification/candidates/vertical-source-20261012/integration/portfolio-uuid-repaired.json",
+      "receiptSha256": "3992582d0e4e1025d3ba2137201febc5b3a90f976b30fc259aef370ec8201a97",
+      "sourceHead": "468be0b9d047bc43338e0ad4aa1b55baea5f3355",
+      "exitCode": 0,
+      "sourceDiffBytes": 0,
+      "ownedProcessGroupAbsent": true,
+      "streams": [
+        {
+          "path": "docs/qualification/candidates/vertical-source-20261012/integration/portfolio-uuid-repaired.stdout.bin",
+          "matched": true
+        },
+        {
+          "path": "docs/qualification/candidates/vertical-source-20261012/integration/portfolio-uuid-repaired.stderr.bin",
+          "matched": true
+        }
+      ]
+    }
+  ],
+  "allMatched": true
+}
