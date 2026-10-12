@@ -1,0 +1,107 @@
+{
+  "sourceBeforeUpdates": "82906d4ce48eae2029e50fb44009d43bbfedc92a",
+  "explicitNewOperationIds": [
+    "get_committee_roster",
+    "list_members",
+    "get_pe_contractors",
+    "get_pe_bills",
+    "get_pe_report_language",
+    "get_state_rule_status",
+    "get_certification_status",
+    "search_intel_articles",
+    "list_global_datasets",
+    "get_representation"
+  ],
+  "changes": [
+    {
+      "path": "packages/contracts/test/retrieval-selected-next-bindings.test.mjs",
+      "beforeSha256": "456d6bdfa32ac3a49bdc285c2d503b6db5fa257b227638708f3b5115bd8a8548",
+      "afterSha256": "623660c698e19d655d202f989773b9efa19352e23c0ad0e345305614b5dd9f21",
+      "change": "Exact reviewed mapping allowlist and canonical ledger count/version expectations only; original behavior and negative controls remain."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+      "beforeSha256": "a3444b1e41429afd9ac4afedc25caa83ad5fbbfb1b88258dafc60dca59b36e75",
+      "afterSha256": "38c5af077a9c332e8bcfa6f97ac2661ed32bf8ad2b6b3d74346b6378bea7a071",
+      "change": "Exact reviewed mapping allowlist and canonical ledger count/version expectations only; original behavior and negative controls remain."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+      "beforeSha256": "b492cbc9ad06783949c759937060103b11abc97ad44d588120e44c9cd4f18c2a",
+      "afterSha256": "0b71f799f3b00f0f2d7dfe6a9a8a901e619be37b9f5d1a2bfa79aba5084c9ef6",
+      "change": "Exact reviewed mapping allowlist and canonical ledger count/version expectations only; original behavior and negative controls remain."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-mail.test.mjs",
+      "beforeSha256": "8a806e3e55b095f2f7b12b76e3b1771b7245c87c1f8482726a8edcbf6e108a7e",
+      "afterSha256": "23da9369de303b4bb65f95bf730997a5bc8c4cb689ddb44faa331c53909bd358",
+      "change": "Exact reviewed mapping allowlist and canonical ledger count/version expectations only; original behavior and negative controls remain."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-next-bindings.test.mjs",
+      "beforeSha256": "275ca93e94b8a8cc37c4d095911f381d5b653cf83f8c81b6756550478c80eef5",
+      "afterSha256": "b83c2c804cdaf82eef3df95ca206a9d61e1b7f589adf83ec6c0a8622f728d083",
+      "change": "Exact reviewed mapping allowlist and canonical ledger count/version expectations only; original behavior and negative controls remain."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+      "beforeSha256": "f5c91e1e37f9b20b0a84d713b621df7ec8ab8d511ffc6712c02f25fbf34be90e",
+      "afterSha256": "946f736fe9a39ec0636ebbb6b579f3d2e972cdfc46cec2f9600a228b15948231",
+      "change": "Exact reviewed mapping allowlist and canonical ledger count/version expectations only; original behavior and negative controls remain."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+      "beforeSha256": "153e1abc6fa4ae3b8bf457d67d96d610a3a11469c892a7a3bebe90ad54923c47",
+      "afterSha256": "478a133e178607f77c9c7114871775c9f7503ffdb265844113cbbdaab5100542",
+      "change": "Exact reviewed mapping allowlist and canonical ledger count/version expectations only; original behavior and negative controls remain."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+      "beforeSha256": "2fd6c1ab464f49a58e845ea9d575dcb0deccad4fa3affde887a6d6a2af7ec24e",
+      "afterSha256": "1ec73e847adb94108c7ec7131282213c7fe93f86acfd5202f1c63ab4c9a678e5",
+      "change": "Exact reviewed mapping allowlist and canonical ledger count/version expectations only; original behavior and negative controls remain."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+      "beforeSha256": "739a563c90c54b8ef081c155cdd7c80080c8ea164605c68bdcea27327a0a1dec",
+      "afterSha256": "2aa490331a4f7b98aff75de1c1dae3a77c1eaad1655e8ccd2d60c9975e561397",
+      "change": "Exact reviewed mapping allowlist and canonical ledger count/version expectations only; original behavior and negative controls remain."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-selected-next-independent.test.mjs",
+      "beforeSha256": "4080c71027822213b7e64d66ee52f0d9758c554c81ad3ec23e8414cc16b6b3b4",
+      "afterSha256": "defce3d6f652a6b8d2be095d9a6faa5a0127236acb5f43d9965cd827862b5e20",
+      "change": "Exact reviewed mapping allowlist and canonical ledger count/version expectations only; original behavior and negative controls remain."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-memory-binding.test.mjs",
+      "beforeSha256": "1649753b458189cb1a720b392c0513f0431b807ad4c5f8a45922f23491327905",
+      "afterSha256": "021d9fee5fe251cc77acccdf745768e7788739ad811d3ccfb71b7e3a82ec6490",
+      "change": "Exact reviewed mapping allowlist and canonical ledger count/version expectations only; original behavior and negative controls remain."
+    },
+    {
+      "path": "apps/gateway/test/mail-context-independent.test.mjs",
+      "beforeSha256": "71768a422ddbe9abb19462e825159555fdb1c6ced38b3b8f58378fef018d7697",
+      "afterSha256": "f7ed9bc7bd8891ed4ea79f96febd3e2f3137ca4653377faddd8ee65f749bc60a",
+      "change": "Exact reviewed mapping allowlist and canonical ledger count/version expectations only; original behavior and negative controls remain."
+    },
+    {
+      "path": "apps/gateway/test/capability-next-independent.test.mjs",
+      "beforeSha256": "ab5b2d8cd4288a76b8708d87a9a4d10fa32bcee1afdebaf54b6a50c62cb0f01c",
+      "afterSha256": "a6fe1b15f21050c7f0db6e6a27595c0adfd274d5f5aa9480e303dd1742f86f22",
+      "change": "Exact reviewed mapping allowlist and canonical ledger count/version expectations only; original behavior and negative controls remain."
+    },
+    {
+      "path": "apps/gateway/test/action-item-context-independent.test.mjs",
+      "beforeSha256": "9a051ed3062e71fb3fb31e2cac56652c672439564157b47afc4cb056144378e0",
+      "afterSha256": "dc5f4a00527a2efbde17dbe230d45d7626a6860666a10796c9c01cead90e2e12",
+      "change": "Exact reviewed mapping allowlist and canonical ledger count/version expectations only; original behavior and negative controls remain."
+    },
+    {
+      "path": "apps/gateway/test/memory-context-independent.test.mjs",
+      "beforeSha256": "0d18eb9e3183842ac44aedcd7279d9448edac075613807f0a774a777cfca4a7b",
+      "afterSha256": "70ac54996c4e71de3a2bba219654d54ec03f2dc022f030fdb92007bb790738c6",
+      "change": "Exact reviewed mapping allowlist and canonical ledger count/version expectations only; original behavior and negative controls remain."
+    }
+  ]
+}
