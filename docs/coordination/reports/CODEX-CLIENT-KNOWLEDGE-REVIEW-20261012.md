@@ -19,3 +19,7 @@ The initial import-regex discovery failure is recorded without retaining its ove
 ## Monday initial failure
 
 HOLD at `27cc7469`: 22/23 combined controls passed. The unchanged independent explicit-page-size negative accepted two records for pageSize=1, although both normal and partial-first-page producer slices honor that bound. No generic coverage completeness/count relation was inferred from the shared declared DTO. The raw failure is preserved; the author has supplied a narrow repair for exact replay.
+
+## Monday repair checkpoint
+
+ACCEPT_SOURCE for `read_monday_client_boards` only at `5ee5446521caf47597b584166c435b5f1cde9804`, restricted to the three fingerprinted Monday files. The exact one-guard repair and appended author test pass24/24 (15 independent+9 author). The original22/23 failure stays unchanged. Current membership, wall, provider access, cursor authentication and completeness remain runtime/source-adapter obligations. Attachments, memory search and full client context remain OPEN; complete author packet audit is pending.
