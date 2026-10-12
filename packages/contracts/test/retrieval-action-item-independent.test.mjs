@@ -1,5 +1,6 @@
+import {fullActionReference} from './backend-execution-expectations.mjs';
 // Explicit reviewed continuation allowlist; historical baseline hashes stay unchanged.
-const continuationIds = ["search_cbo_cost_estimates", "search_federal_grants", "search_federal_awards", "search_gao_reports", "search_state_bills", "get_state_legislator", "search_crs_reports", "query_economic_data", "get_district_nexus_context", "get_district_nexus_changes", "read_client_documents", "search_funding_opportunities", "get_funding_opportunity_requirements", "get_funding_opportunity", "get_opportunity_client_context", "get_opportunity_government_landscape", "search_sec_filings", "search_fara_registrations", "search_lda_filings", "search_acquisition_personnel", "get_acquisition_person", "get_bill_status", "search_floor_votes", "search_congress_bills", "read_bill_text", "get_committee_roster", "list_members", "get_pe_contractors", "get_pe_bills", "get_pe_report_language", "get_state_rule_status", "get_certification_status", "search_intel_articles", "list_global_datasets", "get_representation", "get_state_bill_status", "search_state_floor_votes", "query_regulatory_dockets", "find_contacts", "resolve_entity", "search_tracked_bills", "query_intelligence", "search_public_web", "scrape_web_page", "search_sam_opportunities", "get_florida_budget_project", "query_outreach", "search_program_elements", "get_program_element", "get_pe_budget_timeline"];
+const continuationIds = ["search_cbo_cost_estimates", "search_federal_grants", "search_federal_awards", "search_gao_reports", "search_state_bills", "get_state_legislator", "search_crs_reports", "query_economic_data", "get_district_nexus_context", "get_district_nexus_changes", "read_client_documents", "search_funding_opportunities", "get_funding_opportunity_requirements", "get_funding_opportunity", "get_opportunity_client_context", "get_opportunity_government_landscape", "search_sec_filings", "search_fara_registrations", "search_lda_filings", "search_acquisition_personnel", "get_acquisition_person", "get_bill_status", "search_floor_votes", "search_congress_bills", "read_bill_text", "get_committee_roster", "list_members", "get_pe_contractors", "get_pe_bills", "get_pe_report_language", "get_state_rule_status", "get_certification_status", "search_intel_articles", "list_global_datasets", "get_representation", "get_state_bill_status", "search_state_floor_votes", "query_regulatory_dockets", "find_contacts", "resolve_entity", "search_tracked_bills", "query_intelligence", "search_public_web", "scrape_web_page", "search_sam_opportunities", "get_florida_budget_project", "query_outreach", "search_program_elements", "get_program_element", "get_pe_budget_timeline", "search_client_knowledge", "query_knowledge_graph", "read_monday_client_boards", "read_chat_attachments", "search_memory", "get_client_context", "search_research_sources", "query_global_data", "search_legislative_research", "get_legal_reference", "search_legiwatch_news", "search_committee_hearings"];
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -15,7 +16,7 @@ test('independent literal recommendation and outcome source proofs satisfy uncha
   assert.equal(assertActionItemReadInput({}).mode,'unscoped_legacy_pending');
 });
 test('partial binding preserves every original row and fourteen descriptors',()=>{
-  assertCatalog(catalog);assert.equal(catalog.operations.length,71);
+  assertCatalog(catalog);assert.equal(catalog.operations.length,84);
   const priorRows = structuredClone(catalog.originals);
   for (const id of ['lookup_client_registry','get_business_development_context','get_business_development_evidence',
     'get_business_development_recent_changes','get_research_portfolio','get_research_portfolio_changes',...continuationIds]) {
@@ -24,12 +25,14 @@ test('partial binding preserves every original row and fourteen descriptors',()=
     // Undo only the six prior and16 explicit reviewed continuation mappings for the unchanged historical hash.
     row.state='pending'; row.replacement=null;
   }
+  const fullAction=priorRows.find(row=>row.id==='query_action_items');
+  assert.deepEqual(fullAction.replacement,fullActionReference);fullAction.state='pending';fullAction.replacement=null;
   assert.equal(sha(priorRows),baseline.originalsSha256);
   assert.equal(sha(catalog.operations.filter(x=>baseline.originalIds.includes(x.operation.id))),baseline.originalOperationsSha256);
-  assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,70);
-  assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.replacement===null).length,26);
+  assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,83);
+  assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.replacement===null).length,13);
   const c=contract();assert.equal(c.binding.nativeCoverage,'partial');assert.deepEqual(c.descriptor.aliases,[]);
-  assert.equal(catalog.originals.find(x=>x.id===operation.id).replacement,null);
+  assert.deepEqual(catalog.originals.find(x=>x.id===operation.id).replacement,fullActionReference);
 });
 test('canonical binding defaults, raw ownership and digest use existing selection',()=>{
   const request={clientId:` ${clientId} `};const c=contract();const n=c.normalizeInput(request,{actorId,nowMs:1});

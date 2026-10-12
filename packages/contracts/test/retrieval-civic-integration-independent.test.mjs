@@ -1,3 +1,4 @@
+import {fullActionReference,expectedExistingDescriptor,expectedExistingBinding,expectedExistingOriginal} from './backend-execution-expectations.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -9,7 +10,7 @@ import {CATALOG_OPERATION_BINDINGS as bindings} from '../retrieval-0.2/catalog-v
 import {createSourceDisabledGateway} from '../../../apps/gateway/index.mjs';
 import {fixture,limits,NOW,uuid} from '../../../apps/gateway/test/fixtures.mjs';
 
-const observedIds=["search_public_web", "scrape_web_page", "search_sam_opportunities", "get_florida_budget_project", "query_outreach", "search_program_elements", "get_program_element", "get_pe_budget_timeline"];
+const observedIds=["search_public_web", "scrape_web_page", "search_sam_opportunities", "get_florida_budget_project", "query_outreach", "search_program_elements", "get_program_element", "get_pe_budget_timeline", "search_client_knowledge", "query_knowledge_graph", "read_monday_client_boards", "read_chat_attachments", "search_memory", "get_client_context", "search_research_sources", "query_global_data", "search_legislative_research", "get_legal_reference", "search_legiwatch_news", "search_committee_hearings"];
 const ids=['get_state_bill_status','search_state_floor_votes','query_regulatory_dockets','find_contacts','resolve_entity','search_tracked_bills','query_intelligence'];
 const [STATUS,VOTES,DOCKETS,CONTACTS,ENTITY,TRACKED,SUMMARY]=ids;
 const ev=new URL('../../../docs/qualification/candidates/read-continuation-20261012/civic-integration-review/',import.meta.url);
@@ -34,14 +35,14 @@ function output(id){const common={tool:id,generatedAt:T};switch(id){
 const check=(id,page=output(id),req=request(id),ctx=context(id))=>resolve(id).assertOutput(page,{...ctx,request:req});
 
 test('all original139 rows,56 descriptors and callback implementations survive seven exact additions',()=>{
- assertCatalog(catalog);assert.equal(catalog.operations.length,71);assert.equal(bindings.length,71);
- assert.deepEqual(catalog.operations.filter(d=>!ids.includes(d.operation.id)&&!observedIds.includes(d.operation.id)),oldCatalog.operations);
+ assertCatalog(catalog);assert.equal(catalog.operations.length,84);assert.equal(bindings.length,84);
+ assert.deepEqual(catalog.operations.filter(d=>!ids.includes(d.operation.id)&&!observedIds.includes(d.operation.id)&&d.operation.id!=='actions.query'),oldCatalog.operations.map(expectedExistingDescriptor));
  assert.equal(catalog.originals.length,139);assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);assert.equal(catalog.originals.filter(x=>x.disposition==='deferred').length,43);
- assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,70);assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.replacement===null).length,26);
- for(const old of oldCatalog.originals)assert.deepEqual(catalog.originals.find(x=>x.id===old.id),(ids.includes(old.id)||observedIds.includes(old.id))?{...old,state:'mapped',replacement:{id:old.id,version:'0.2.0'}}:old);
- const serialized=JSON.parse(JSON.stringify(bindings.filter(x=>!ids.includes(x.id)&&!observedIds.includes(x.id)),(k,v)=>typeof v==='function'?{source:v.toString()}:v));assert.deepEqual(serialized,oldBindings);
- assert.equal(catalog.originals.find(x=>x.id==='query_action_items').replacement,null);
- for(const id of ['query_global_data','save_memory','create_task','create_word','schedule_task','run_analysis'])assert.throws(()=>resolve(id));
+ assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,83);assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.replacement===null).length,13);
+ for(const old of oldCatalog.originals.map(expectedExistingOriginal))assert.deepEqual(catalog.originals.find(x=>x.id===old.id),(ids.includes(old.id)||observedIds.includes(old.id))?{...old,state:'mapped',replacement:{id:old.id,version:'0.2.0'}}:old);
+ const serialized=JSON.parse(JSON.stringify(bindings.filter(x=>!ids.includes(x.id)&&!observedIds.includes(x.id)&&x.id!=='actions.query'),(k,v)=>typeof v==='function'?{source:v.toString()}:v));assert.deepEqual(serialized,oldBindings.map(expectedExistingBinding));
+ assert.deepEqual(catalog.originals.find(x=>x.id==='query_action_items').replacement,fullActionReference);
+ for(const id of ['save_memory','create_task','create_word','schedule_task','run_analysis'])assert.throws(()=>resolve(id));
 });
 
 test('every schema pin resolves exact bytes while every descriptor remains unavailable',()=>{
@@ -87,7 +88,7 @@ for(const id of ids){
  });
 }
 
-test('production gateway rejects all71 before any authority/budget port and has no activation option',async()=>{
+test('production gateway rejects all84 before any authority/budget port and has no activation option',async()=>{
  const f=fixture(),options={authorityPorts:f.ports,budget:f.budget,limits,now:()=>NOW,newId:()=>uuid('8')},gateway=createSourceDisabledGateway(options);
  assert.equal(gateway.sourceEnabled,false);assert.deepEqual(await gateway.discover(),[]);
  for(const row of catalog.operations)await assert.rejects(gateway.execute(JSON.stringify({operation:row.operation,arguments:ids.includes(row.operation.id)?request(row.operation.id):{}}),'synthetic'),/UNAVAILABLE/);
