@@ -136,3 +136,9 @@ test('canonical resolver binds immutable normalized hash and zero context keys w
  const resolver=createOperationContracts({catalog,bindings,validators:v,assertCatalog(){},canonicalSha256});
  for(const id of PUBLIC_WEB_OPERATION_IDS){const contract=resolver.resolveOperationContract({id,version:'0.2.0'}),request=id===search?{query:' synthetic '}:{url,mode:'extract'},n=contract.normalizeInput(request);assert.equal(n.argumentsSha256,canonicalSha256(n.input));assert.ok(Object.isFrozen(n.request));assert.equal(contract.descriptor.handler,null);contract.assertOutput(id===search?result():html(),{request:n.request});assert.throws(()=>contract.normalizeInput(request,{nowMs:1}));assert.throws(()=>contract.assertOutput(id===search?result():html(),{}));}
 });
+
+test('truncated HTML/PDF cannot return a shorter-than-requested prefix window',()=>{
+ assert.throws(()=>check(scrape,html('partial',true)));
+ assert.throws(()=>check(scrape,pdf('partial',4001)));
+ const h=html('x'.repeat(500),true);assert.throws(()=>check(scrape,h,{url,maxChars:500}));
+});
