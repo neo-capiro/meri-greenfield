@@ -1,0 +1,333 @@
+{
+  "base": "4566cef6417428d46274a14f7937ca11df66ae9d",
+  "source": "450d48fc158dbcdd24f224ec32d6f5b2f92aca80",
+  "packet": "7761e705a5947940814139e39517474ad851eced",
+  "sourceIdentities": [
+    {
+      "path": "packages/contracts/retrieval-0.2/dataset-metadata-validation.mjs",
+      "blob": "a4287fd60cea38205faa487020bd959fd89eb97f",
+      "bytes": 2995,
+      "sha256": "75293e81c30eb3d5429b97bfc9d5bf9193f5265fe332b2613b29ec4eb0b57ead"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/dataset-metadata.schema.json",
+      "blob": "4f56d0865d791056be327f3f54f1ba73b705c428",
+      "bytes": 2191,
+      "sha256": "77ee177ac0b95cd961928f975e8f87bf7c69f57e30de6957b86988dd44ff35ec"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/stored-intelligence-validation.mjs",
+      "blob": "d986ba8aa5885b5e7c315b8b74123cd592c9cd74",
+      "bytes": 3896,
+      "sha256": "c65bd5101d132b93a604ba04e625e024396240c212978b0c68733f2dfb51808a"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/stored-intelligence.schema.json",
+      "blob": "4a1ba03d835c2416a2aae364a93a439c4299cddf",
+      "bytes": 2505,
+      "sha256": "6de0e82a4b3c6e8d11c44da2f0a18d464172e58dd44b43830186fcfd45bdca3c"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-dataset-metadata.test.mjs",
+      "blob": "1164232fb22bea8bb11c738a6c80092ffdcce5b1",
+      "bytes": 9340,
+      "sha256": "63dcada0640d6728fbd122a2c370d701b16d8cbd7049200616521f704a07d46b"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-stored-intelligence.test.mjs",
+      "blob": "e26ee3d89416afd44f2484d4fe49a333b015fe07",
+      "bytes": 10479,
+      "sha256": "668dfad7d401485442b50d8135307f45e7b6a3db75281c5211185a25b9b0cd21"
+    }
+  ],
+  "authorReceipts": [
+    {
+      "label": "focused-initial",
+      "tests": 31,
+      "sourceHead": "4566cef6417428d46274a14f7937ca11df66ae9d",
+      "ownedGroupAbsent": true,
+      "reapedDescendants": 0
+    },
+    {
+      "label": "root-source-check",
+      "tests": 1321,
+      "sourceHead": "450d48fc158dbcdd24f224ec32d6f5b2f92aca80",
+      "ownedGroupAbsent": true,
+      "reapedDescendants": 2
+    },
+    {
+      "label": "public-distribution",
+      "tests": 7,
+      "sourceHead": "450d48fc158dbcdd24f224ec32d6f5b2f92aca80",
+      "ownedGroupAbsent": true,
+      "reapedDescendants": 3
+    }
+  ],
+  "originalBlobsPreserved": 6001,
+  "checks": 65,
+  "passed": 65,
+  "failed": 0,
+  "results": [
+    {
+      "name": "exact source tree",
+      "pass": true
+    },
+    {
+      "name": "all6001 original blobs unchanged",
+      "pass": true
+    },
+    {
+      "name": "exact six new allocated source paths",
+      "pass": true
+    },
+    {
+      "name": "review branch retains all source blobs",
+      "pass": true
+    },
+    {
+      "name": "packet retains all source blobs",
+      "pass": true
+    },
+    {
+      "name": "packet adds only allocated author report and evidence",
+      "pass": true
+    },
+    {
+      "name": "working reviewed source exact: packages/contracts/retrieval-0.2/dataset-metadata-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "working reviewed source exact: packages/contracts/retrieval-0.2/dataset-metadata.schema.json",
+      "pass": true
+    },
+    {
+      "name": "working reviewed source exact: packages/contracts/retrieval-0.2/stored-intelligence-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "working reviewed source exact: packages/contracts/retrieval-0.2/stored-intelligence.schema.json",
+      "pass": true
+    },
+    {
+      "name": "working reviewed source exact: packages/contracts/test/retrieval-dataset-metadata.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "working reviewed source exact: packages/contracts/test/retrieval-stored-intelligence.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "sole shared JSON import: stored-intelligence",
+      "pass": true
+    },
+    {
+      "name": "no source client or module loading: stored-intelligence",
+      "pass": true
+    },
+    {
+      "name": "sole shared JSON import: dataset-metadata",
+      "pass": true
+    },
+    {
+      "name": "no source client or module loading: dataset-metadata",
+      "pass": true
+    },
+    {
+      "name": "author manifest hash",
+      "pass": true
+    },
+    {
+      "name": "author manifest17 unique safe members",
+      "pass": true
+    },
+    {
+      "name": "author member: docs/coordination/reports/CODEX-STORED-REFERENCE-AUTHOR-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "author member: docs/qualification/candidates/read-continuation-20261012/stored-reference-author/build-schemas.py",
+      "pass": true
+    },
+    {
+      "name": "author member: docs/qualification/candidates/read-continuation-20261012/stored-reference-author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "author member: docs/qualification/candidates/read-continuation-20261012/stored-reference-author/focused-initial-source.patch",
+      "pass": true
+    },
+    {
+      "name": "author member: docs/qualification/candidates/read-continuation-20261012/stored-reference-author/focused-initial.json",
+      "pass": true
+    },
+    {
+      "name": "author member: docs/qualification/candidates/read-continuation-20261012/stored-reference-author/focused-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author member: docs/qualification/candidates/read-continuation-20261012/stored-reference-author/focused-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author member: docs/qualification/candidates/read-continuation-20261012/stored-reference-author/outline.json",
+      "pass": true
+    },
+    {
+      "name": "author member: docs/qualification/candidates/read-continuation-20261012/stored-reference-author/public-distribution.json",
+      "pass": true
+    },
+    {
+      "name": "author member: docs/qualification/candidates/read-continuation-20261012/stored-reference-author/public-distribution.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author member: docs/qualification/candidates/read-continuation-20261012/stored-reference-author/public-distribution.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author member: docs/qualification/candidates/read-continuation-20261012/stored-reference-author/reference-identities.json",
+      "pass": true
+    },
+    {
+      "name": "author member: docs/qualification/candidates/read-continuation-20261012/stored-reference-author/root-source-check.json",
+      "pass": true
+    },
+    {
+      "name": "author member: docs/qualification/candidates/read-continuation-20261012/stored-reference-author/root-source-check.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author member: docs/qualification/candidates/read-continuation-20261012/stored-reference-author/root-source-check.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author member: docs/qualification/candidates/read-continuation-20261012/stored-reference-author/source-preservation.json",
+      "pass": true
+    },
+    {
+      "name": "author member: docs/qualification/candidates/read-continuation-20261012/stored-reference-author/verify.py",
+      "pass": true
+    },
+    {
+      "name": "author packet exact membership",
+      "pass": true
+    },
+    {
+      "name": "focused original patch equals exact source diff",
+      "pass": true
+    },
+    {
+      "name": "author command: focused-initial",
+      "pass": true
+    },
+    {
+      "name": "author source receipt: focused-initial",
+      "pass": true
+    },
+    {
+      "name": "author bounded success and owned exit: focused-initial",
+      "pass": true
+    },
+    {
+      "name": "same subreaper helper: focused-initial",
+      "pass": true
+    },
+    {
+      "name": "author raw stream: docs/qualification/candidates/read-continuation-20261012/stored-reference-author/focused-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author raw stream: docs/qualification/candidates/read-continuation-20261012/stored-reference-author/focused-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author actual test count: focused-initial",
+      "pass": true
+    },
+    {
+      "name": "author command: root-source-check",
+      "pass": true
+    },
+    {
+      "name": "author source receipt: root-source-check",
+      "pass": true
+    },
+    {
+      "name": "author bounded success and owned exit: root-source-check",
+      "pass": true
+    },
+    {
+      "name": "same subreaper helper: root-source-check",
+      "pass": true
+    },
+    {
+      "name": "author raw stream: docs/qualification/candidates/read-continuation-20261012/stored-reference-author/root-source-check.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author raw stream: docs/qualification/candidates/read-continuation-20261012/stored-reference-author/root-source-check.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author actual test count: root-source-check",
+      "pass": true
+    },
+    {
+      "name": "author command: public-distribution",
+      "pass": true
+    },
+    {
+      "name": "author source receipt: public-distribution",
+      "pass": true
+    },
+    {
+      "name": "author bounded success and owned exit: public-distribution",
+      "pass": true
+    },
+    {
+      "name": "same subreaper helper: public-distribution",
+      "pass": true
+    },
+    {
+      "name": "author raw stream: docs/qualification/candidates/read-continuation-20261012/stored-reference-author/public-distribution.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author raw stream: docs/qualification/candidates/read-continuation-20261012/stored-reference-author/public-distribution.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author actual test count: public-distribution",
+      "pass": true
+    },
+    {
+      "name": "independent source receipt exact",
+      "pass": true
+    },
+    {
+      "name": "independent owned group physical exit",
+      "pass": true
+    },
+    {
+      "name": "independent raw stream: independent-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "independent raw stream: independent-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "independent actual60/60",
+      "pass": true
+    },
+    {
+      "name": "independent reference audit33/33",
+      "pass": true
+    },
+    {
+      "name": "initial metadata checker failure retained28/5",
+      "pass": true
+    }
+  ],
+  "scope": "SOURCE_AND_EVIDENCE_ONLY_NOT_RUNTIME_ACCEPTANCE"
+}

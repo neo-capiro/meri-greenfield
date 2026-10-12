@@ -1,0 +1,33 @@
+{
+  "command": [
+    "python3",
+    "docs/qualification/candidates/read-continuation-20261012/stored-reference-review/audit-packet.py"
+  ],
+  "cwd": "/workspace/meri-stored-reference-review-20261012",
+  "sourceHead": "44ddd1bb55ac510435dcc355b4f010380698bb05",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T17:40:28.145842+00:00",
+  "durationSeconds": 0.215,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 198869,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/stored-reference-review/packet-audit-final.stdout.bin",
+      "bytes": 10507,
+      "sha256": "51c6ba0fc3b40504de86f4b5978b7a535a5cc74b3255988d645e6a4c756027e0"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/stored-reference-review/packet-audit-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

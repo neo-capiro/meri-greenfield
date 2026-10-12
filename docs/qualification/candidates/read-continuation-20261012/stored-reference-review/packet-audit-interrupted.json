@@ -1,0 +1,12 @@
+{
+  "status": "INTERRUPTED_REVIEWER_AUDIT",
+  "sourcePreimage": "audit-packet-first.py.txt",
+  "ownedPid": 195420,
+  "signal": "SIGINT",
+  "cause": "Reviewer tree lookup was inside a per-blob generator, rereading the full tree for every original blob. Interrupted during local tree dictionary construction; no product result produced.",
+  "observedToolExitCode": 1,
+  "firstException": "KeyboardInterrupt",
+  "followupException": "JSONDecodeError on empty redirected output",
+  "repair": "Memoize immutable tree lookup; no audit predicate or production source changed.",
+  "rawStderr": "Tool-returned traceback was not separately file-captured; this record is a summary, not a native stream receipt."
+}
