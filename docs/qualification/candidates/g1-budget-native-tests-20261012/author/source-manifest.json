@@ -1,0 +1,29 @@
+{
+  "base": "e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5",
+  "changedOriginalPaths": [
+    "apps/gateway/budget/README.md"
+  ],
+  "allOtherOriginalFilesPreserved": true,
+  "originalFileCount": 3945,
+  "source": {
+    "apps/gateway/test/postgres-budget-native-fixture.mjs": {
+      "sha256": "a4a4cc8205668d72e15b2df46408f20172c1adc5914590b871f9ac206065f22a",
+      "bytes": 10049
+    },
+    "apps/gateway/test/postgres-budget-child.mjs": {
+      "sha256": "493834c03bec2effaf0932049ad375e3624166ddcd230e8965dac32ff04bb9e9",
+      "bytes": 1895
+    },
+    "apps/gateway/test/postgres-budget.integration.mjs": {
+      "sha256": "227780eb228fd92640d11fe9f0eeecde2b1b24dfbe4702d382728b5aff69f06f",
+      "bytes": 12900
+    },
+    "apps/gateway/test/postgres-budget-admission.test.mjs": {
+      "sha256": "cd10701cf440379962ddb077a741ceac8f340a7d1c96dbc9ce984a89d8a3b0e4",
+      "bytes": 4632
+    }
+  },
+  "runtimeAdmission": false,
+  "sourceEnabled": false,
+  "ownedProcessesStillRunning": []
+}

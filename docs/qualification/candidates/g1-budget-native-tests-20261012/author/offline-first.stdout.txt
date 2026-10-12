@@ -1,0 +1,39 @@
+✔ pure admission returns frozen correlation only; importing child does not run it (1.894254ms)
+✔ missing/unrecognized mode undefined refuses before native dependencies (0.49971ms)
+✔ missing/unrecognized mode yes refuses before native dependencies (0.166169ms)
+✔ missing/unrecognized mode true refuses before native dependencies (0.115664ms)
+✔ missing/unrecognized mode  refuses before native dependencies (0.131637ms)
+✔ closed native binding rejects host=db.internal (0.150887ms)
+✔ closed native binding rejects host=localhost (0.434963ms)
+✔ closed native binding rejects port=0 (0.236936ms)
+✔ closed native binding rejects port=6543 (0.204507ms)
+✔ closed native binding rejects database=production (0.310136ms)
+✔ closed native binding rejects user=postgres (0.159179ms)
+✔ closed native binding rejects password= (0.127522ms)
+✔ closed native binding rejects systemIdentifier=-1 (0.237557ms)
+✔ closed native binding rejects serverStartTime=bad (0.090496ms)
+✔ closed native binding rejects serverVersion=16.15 (0.201452ms)
+✔ closed native binding rejects workDeadlineMs=1800000720000 (0.141673ms)
+✔ closed native binding rejects cleanupDeadlineMs=1800000900000 (0.10633ms)
+✔ closed native binding rejects t0Ms=1800000000001 (0.078538ms)
+✔ closed native binding rejects stateLockSha256=x (0.108823ms)
+✔ closed native binding rejects migrationSha256=null (0.084517ms)
+✔ ambient PGHOST cannot override native admission (0.105879ms)
+✔ ambient PGPASSWORD cannot override native admission (0.085027ms)
+✔ ambient PGSERVICE cannot override native admission (0.130867ms)
+✔ ambient AWS_ACCESS_KEY_ID cannot override native admission (0.104276ms)
+✔ ambient ANTHROPIC_API_KEY cannot override native admission (0.125138ms)
+✔ ambient OPENAI_API_KEY cannot override native admission (0.10676ms)
+✔ ambient BEDROCK_ENDPOINT cannot override native admission (0.103706ms)
+✔ ambient NODE_OPTIONS cannot override native admission (0.101161ms)
+✔ ambient NODE_PATH cannot override native admission (0.10621ms)
+✔ hash mismatch, extra keys, overflow, expiry and effectful environment fail closed (0.594282ms)
+✔ source admission precedes dynamic application imports; no migration/reset/production activation (13.839453ms)
+ℹ tests 31
+ℹ suites 0
+ℹ pass 31
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 85.288797
