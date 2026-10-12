@@ -1,0 +1,18 @@
+{
+  "state": "Unfrozen author draft",
+  "argv": [
+    "node",
+    "--test",
+    "/workspace/meri-sandbox-lifecycle-review-20261012/docs/qualification/candidates/sandbox-lifecycle-20261012/review/cli-cancellation-independent.test.mjs"
+  ],
+  "source_root": "/workspace/meri-sandbox-lifecycle-20261012",
+  "source_sha256": {
+    "office-export.mjs": "2e7d27786dc28763bff4a39acba3f65b4334f5583c84c9d031fcdf9834502c92",
+    "owned-probe-child.mjs": "c24e00e9bfcce6d864e84419bc556480c5c8d490ba14d958a35f493905336472",
+    "runtime.mjs": "b77481f4d4a23938df6cf9b8740cd840de496b83da1a6790d6a8ff4ec1b744fe"
+  },
+  "test_sha256": "3cd7fa282e6d5cd0c4db365fa783590b64b099f420ef87cbe9663a6467d0e6b8",
+  "exit_code": 1,
+  "reaped": true,
+  "OS_signal_or_native_execution": false
+}
