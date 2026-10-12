@@ -1,0 +1,13 @@
+{
+  "originalSource": "306734d65e90c079bf150a9a93f9be74fcc0e285",
+  "counterexampleCommit": "4c3d84e4e524ccb9cc9404df26d97a6d72de78b1",
+  "actualBefore": "26 pass / 1 fail of27; first short-HTML assertion failed, remaining same-test assertions were not reached",
+  "sourceReason": "HTML readable probe maxChars+1 is normalized and re-summarized to requested max with ellipsis when truncated. PDF worker returns normalized extraction prefix maxChars+1; outer trim/summarize yields maxChars when full normalized count exceeds maxChars. These are necessary DTO projection relations, no text extraction implementation.",
+  "productionRepair": "Require truncated text length == request maxChars; HTML truncated output ends ellipsis. PDF need not end ellipsis because prefix trim at whitespace can fill window without ellipsis.",
+  "fixtureCorrections": [
+    "Original HTML truncated-positive short text replaced with full4000-unit ellipsis text.",
+    "Original PDF truncated-positive short text replaced with full4000-unit ellipsis text."
+  ],
+  "negativeAssertions": "All appended negative assertions retained unchanged.",
+  "originalTestPreimage": "initial-author-test.mjs"
+}
