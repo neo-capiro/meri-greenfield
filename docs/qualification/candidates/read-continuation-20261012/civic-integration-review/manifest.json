@@ -1,0 +1,259 @@
+{
+  "base": "c1c9bfde7dd466a0474589a224a99b44277adbc9",
+  "productionSource": "a35a8323024b37ebb245f1a3c67084c19ef2f0c3",
+  "acceptedPacket": "fcf0d0bff20c4ed1b81d0896ce71403b592d27fc",
+  "decision": "ACCEPT_SOURCE",
+  "files": [
+    {
+      "path": "docs/coordination/reports/CODEX-CIVIC-INTEGRATION-REVIEW-20261012.md",
+      "bytes": 9338,
+      "sha256": "7084b91bed12b3c1e144f7478c933c473a2b3d5460a16b5071f213146a31849f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/.gitattributes",
+      "bytes": 50,
+      "sha256": "1bee6826ab8565b1a50079d470700a548e73e2363ea12450cf37ea13454b9eba"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/accepted-test-audit-results.json",
+      "bytes": 41833,
+      "sha256": "5cefdf72aa80dd4501275a98345256f11f4fa9d33f56876ef60460dcaea65756"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/accepted-test-audit.json",
+      "bytes": 1394,
+      "sha256": "bdd74080f0a06888e18452079f5f0073618c1c661d3b481c4771dc0d5e275d39"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/accepted-test-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/accepted-test-audit.stdout.bin",
+      "bytes": 1568,
+      "sha256": "5008bcd64289cfc8d5bdff3e7740f6829f32b83c472bdad733846ec9d83421c5"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/audit-before.py.txt",
+      "bytes": 4603,
+      "sha256": "4014e0b81e1eeef930e65528dc10617614a84103476d4745ececb7d7920d7f48"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/audit-results.json",
+      "bytes": 42169,
+      "sha256": "98ba179cc2a8d336ab40165fcd97d59262907e7fae82d46224ecc16f877e5f15"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/audit.py",
+      "bytes": 5004,
+      "sha256": "2a39989de30c0ccea5a8ab82fc8968fdd8c22b5ba8c75709c90d57a6973e4e76"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/baseline-bindings.json",
+      "bytes": 32709,
+      "sha256": "455af7ad076958d4613a0a0aa965a0e3c72aa655f18442eea0f9e2caa4a9dbc6"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/baseline-catalog.json",
+      "bytes": 209519,
+      "sha256": "8720bc3130f0d692f05132021bb5c1d866e14a185c55572966a0bb7c5047f4d5"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/baseline.json",
+      "bytes": 1319,
+      "sha256": "d0d6a906e7902a35cc3faa8235996dd1a924e6bc01b85ac4ab0899d1a49313b7"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/baseline.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/baseline.stdout.bin",
+      "bytes": 37645,
+      "sha256": "172e2a1f7edca3a58b60a53aaf0e0c5864ac832fa37486924f5defaef69c8a8a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/candidate.json",
+      "bytes": 1320,
+      "sha256": "fb7be08df9437575ea644b237823f19b1cd0acadbcfdb18c489abeb99b01dbab"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/candidate.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/candidate.stdout.bin",
+      "bytes": 7088,
+      "sha256": "1ae8a3f269604c7126bfd08c3e1fa9bf911b7a2a897134d3724f1f057dba01be"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/complete-audit.json",
+      "bytes": 1352,
+      "sha256": "b37bbe6d65d21aaf566f984117545b3f868c88b8babd4849999959c35cc6b02f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/complete-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/complete-audit.stdout.bin",
+      "bytes": 1535,
+      "sha256": "369a6c2542badb0ae1cb71b1005b3cfa365ac1ae6e73a0a9a5c6b3014ab3ee15"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/contact-test-pin-failed-audit.json",
+      "bytes": 41835,
+      "sha256": "99729eb5496aaf2b94c6fd581fa2fd13d92e509744541253c6c8ee455ea1265f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/corrected-candidate.json",
+      "bytes": 1340,
+      "sha256": "c8a4f079be09f8ec9938bf8518fbe1c1f43b43481bfcd7ded0db3d1040ddfae5"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/corrected-candidate.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/corrected-candidate.stdout.bin",
+      "bytes": 4488,
+      "sha256": "5df71dd94886f53f4ddaa7521a159975e19412d8a868f169760a5829a9e39f90"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/criteria.md",
+      "bytes": 5740,
+      "sha256": "6ebeb5914111d98b146b3aabf7df911e0447ab1e8b742ca3976c6fc82d800990"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/dependencies.json",
+      "bytes": 1512,
+      "sha256": "afc4180af7c486befefbd2f3bd795f97be1bb0b9f48812ea2ba0910b892d578a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/family-test-audit.json",
+      "bytes": 1390,
+      "sha256": "d174df695f3b544aa7781197b29e5ae2557327aa9cf62fdc17b111df74483afc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/family-test-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/family-test-audit.stdout.bin",
+      "bytes": 1730,
+      "sha256": "aa1cde7823dcd4ffeccb365cad39b5176bfcf6e4d961a10964338f0e098a466e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/federal-fixture-before.mjs.txt",
+      "bytes": 13890,
+      "sha256": "a7f1ca0c756639f8400308d002c35aa3bd00b70c011fe8ecba440f176592c4b8"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/final-audit.json",
+      "bytes": 1379,
+      "sha256": "413d619b42b2ea5f9fcdb54537a0b217774554c52e7ae921dffc857d077af6a9"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/final-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/final-audit.stdout.bin",
+      "bytes": 1568,
+      "sha256": "5f68cd3bb902583e4082421065358ad2b9f4be2a4c9f3f06c3313c2bf52dd22f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/first-complete-audit-results.json",
+      "bytes": 39510,
+      "sha256": "2f09732ae32af57ad076586d382d5564e567b5ddd3b8f51e421d87d42bafe53b"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/initial-controls.mjs.txt",
+      "bytes": 13217,
+      "sha256": "dc71eb6f3a42e1ab9af3ad0539001cbadcb8fff641aad7248164b29efd1f5e00"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/owned-cleanup.json",
+      "bytes": 2917,
+      "sha256": "7154de4ab449314fae6e832f91c9423c120ca01b91bb9992f66a9bd8daafd8dc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/root-receipts-verification.json",
+      "bytes": 27255,
+      "sha256": "77bceb3584d5960baf94d48ce3e5e463568031a2e610fcd0f16d2a5c95e89bed"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/root-receipts.json",
+      "bytes": 1572,
+      "sha256": "cbaca63d2dcf83df4887887897dff9e728178dc1d6743c745bfdc29d3849b356"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/root-receipts.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/root-receipts.stdout.bin",
+      "bytes": 27255,
+      "sha256": "77bceb3584d5960baf94d48ce3e5e463568031a2e610fcd0f16d2a5c95e89bed"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/source-audit.json",
+      "bytes": 1380,
+      "sha256": "1fe37452b0c9527927e2349c6e46bb5ee0e4461734446099b924bd216077d9ce"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/source-audit.stderr.bin",
+      "bytes": 423,
+      "sha256": "6bc0d28e1747f14ceb59a09318dc3bb3dcafe21b4ddf1bcdde83f44455b7f8af"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/source-audit.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/state-expectation-audit-results.json",
+      "bytes": 42169,
+      "sha256": "236d607914b6f89f7af7ee573c3d6c96d3d61455035057525124c4184ebecc71"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/state-expectation-audit.json",
+      "bytes": 1403,
+      "sha256": "197b72153a929ce1c5b93ba704ed0db96fdf74d180d7fb7ee61b182755104a25"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/state-expectation-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/state-expectation-audit.stdout.bin",
+      "bytes": 1568,
+      "sha256": "10246f145b1b95c644d2c73ec32efd812231b42b5ae9eff296a77086c7764580"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/verify-root-receipts.py",
+      "bytes": 2271,
+      "sha256": "1419abb5bb801b0c67a094ca7dbc57bd8674ce0f644309ec316e9c36fb769ff9"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-civic-integration-independent.test.mjs",
+      "bytes": 13894,
+      "sha256": "91c6c14a901b76444cf85328e8de35d0579beaef3128eb0dcab5b77e02267e9c"
+    }
+  ],
+  "selfExcluded": true
+}
