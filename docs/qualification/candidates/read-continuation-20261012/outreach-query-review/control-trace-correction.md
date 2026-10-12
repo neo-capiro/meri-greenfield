@@ -1,0 +1,3 @@
+# Pre-candidate source-trace correction
+
+The initial controls at efc9cd3 are preserved. Before inspecting candidate production or running these controls, a targeted output-field trace confirmed that campaign createdBy is the nullable projected email string; only the exact record returns a selected creator object. The campaign fixture and its type assertion now use the actual projection, preserving null acceptance and rejecting a creator object. This corrects reviewer fixture construction, not producer source. The original record fixture lastStep0 was also changed to1 after independent migration review established the stored1..7 check. No test execution or production repair preceded these corrections.
