@@ -1,0 +1,94 @@
+test_authority_credentials_refused (test_worker_image_build.Controls.test_authority_credentials_refused) ... ok
+test_authority_full_identity_and_role (test_worker_image_build.Controls.test_authority_full_identity_and_role) ... ok
+test_bounded_bundle_prefix_and_exclusions (test_worker_image_build.Controls.test_bounded_bundle_prefix_and_exclusions) ... ok
+test_build_ack_full_source_and_retry (test_worker_image_build.Controls.test_build_ack_full_source_and_retry) ... ok
+test_bundle_after_copy_metadata_failure_retained (test_worker_image_build.Controls.test_bundle_after_copy_metadata_failure_retained) ... ok
+test_cleanup_inspect_retains_exact_cid_and_volume_set (test_worker_image_build.Controls.test_cleanup_inspect_retains_exact_cid_and_volume_set) ... ok
+test_collector_full_source_preflight_and_drift (test_worker_image_build.Controls.test_collector_full_source_preflight_and_drift) ... ERROR
+test_context_manifest_pin_tracks_candidate_bytes (test_worker_image_build.Controls.test_context_manifest_pin_tracks_candidate_bytes) ... FAIL
+test_create_ack_bound_to_owned_inspect_before_artifacts (test_worker_image_build.Controls.test_create_ack_bound_to_owned_inspect_before_artifacts) ... ok
+test_dispatch_one_upload_one_start (test_worker_image_build.Controls.test_dispatch_one_upload_one_start) ... ok
+test_foreign_create_never_remove (test_worker_image_build.Controls.test_foreign_create_never_remove) ... ok
+test_full_ack_retry_fields_are_closed_integer_zero (test_worker_image_build.Controls.test_full_ack_retry_fields_are_closed_integer_zero) ... ok
+test_full_ack_zero_counter_does_not_waive_other_bindings (test_worker_image_build.Controls.test_full_ack_zero_counter_does_not_waive_other_bindings) ... ok
+test_image_iid_platform_volumes_credentials (test_worker_image_build.Controls.test_image_iid_platform_volumes_credentials) ... ok
+test_initial_full_ack_with_zero_retry_counter (test_worker_image_build.Controls.test_initial_full_ack_with_zero_retry_counter) ... ok
+test_inventory_frozen_binary_pins_and_source_entries (test_worker_image_build.Controls.test_inventory_frozen_binary_pins_and_source_entries) ... ok
+test_json_finite_floats_preserved (test_worker_image_build.Controls.test_json_finite_floats_preserved) ... ok
+test_json_float_overflow_and_nested_nonfinite_refused (test_worker_image_build.Controls.test_json_float_overflow_and_nested_nonfinite_refused) ... ok
+test_lost_ack_consumes_forever (test_worker_image_build.Controls.test_lost_ack_consumes_forever) ... ok
+test_lost_create_ack_owned_cleanup_both_volumes (test_worker_image_build.Controls.test_lost_create_ack_owned_cleanup_both_volumes) ... ok
+test_pagination_before_reserve (test_worker_image_build.Controls.test_pagination_before_reserve) ... ok
+test_real_owner_execution_closure_pins (test_worker_image_build.Controls.test_real_owner_execution_closure_pins) ... ERROR
+test_recipe_fixed_build_only (test_worker_image_build.Controls.test_recipe_fixed_build_only) ... ok
+test_review_separate_exact_and_fresh (test_worker_image_build.Controls.test_review_separate_exact_and_fresh) ... ok
+test_source_missing_and_duplicate_before_output (test_worker_image_build.Controls.test_source_missing_and_duplicate_before_output) ... ok
+test_strict_json (test_worker_image_build.Controls.test_strict_json) ... ok
+test_tar_exact_regular (test_worker_image_build.Controls.test_tar_exact_regular) ... ok
+test_two_owned_anonymous_volumes (test_worker_image_build.Controls.test_two_owned_anonymous_volumes) ... ok
+test_version_no_null_and_no_retry (test_worker_image_build.Controls.test_version_no_null_and_no_retry) ... ok
+test_collector_orders_source_post_publication_and_bundle (test_worker_image_publish.Publication.test_collector_orders_source_post_publication_and_bundle) ... ok
+test_explicit_publish_binding_and_distinct_review (test_worker_image_publish.Publication.test_explicit_publish_binding_and_distinct_review) ... ok
+test_failure_and_unknown_push_stay_consumed_and_bundled (test_worker_image_publish.Publication.test_failure_and_unknown_push_stay_consumed_and_bundled) ... ok
+test_owner_execute_refuses_repository_drift_before_any_write (test_worker_image_publish.Publication.test_owner_execute_refuses_repository_drift_before_any_write) ... ok
+test_owner_repository_authority_precedes_consumption (test_worker_image_publish.Publication.test_owner_repository_authority_precedes_consumption) ... ok
+test_publish_manifest_pins_both_new_sources (test_worker_image_publish.Publication.test_publish_manifest_pins_both_new_sources) ... ERROR
+test_publish_postbuild_fallback_is_bounded_failure_evidence (test_worker_image_publish.Publication.test_publish_postbuild_fallback_is_bounded_failure_evidence) ... ok
+test_static_or_source_post_failure_prevents_all_ecr (test_worker_image_publish.Publication.test_static_or_source_post_failure_prevents_all_ecr) ... ok
+test_success_exact_manifest_cleanup_and_no_admission (test_worker_image_publish.Publication.test_success_exact_manifest_cleanup_and_no_admission) ... ok
+
+======================================================================
+ERROR: test_collector_full_source_preflight_and_drift (test_worker_image_build.Controls.test_collector_full_source_preflight_and_drift)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/853fba62b1f1/meri-g1-trusted-source/.task-inputs/scan-baseline-review-20261011/source/scripts/qualification/test_worker_image_build.py", line 120, in test_collector_full_source_preflight_and_drift
+    raw = collect.encoded(value); collect.validate_input(root, raw, collect.digest(raw))
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/853fba62b1f1/meri-g1-trusted-source/.task-inputs/scan-baseline-review-20261011/source/scripts/qualification/worker_image_collect.py", line 116, in validate_input
+    rows = value['members']; need(type(rows) is list and len(rows) == (49 if publish else 47), 'exact source/recipe records')
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/853fba62b1f1/meri-g1-trusted-source/.task-inputs/scan-baseline-review-20261011/source/scripts/qualification/worker_image_collect.py", line 51, in need
+    raise ValueError(message)
+ValueError: exact source/recipe records
+
+======================================================================
+ERROR: test_real_owner_execution_closure_pins (test_worker_image_build.Controls.test_real_owner_execution_closure_pins)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/853fba62b1f1/meri-g1-trusted-source/.task-inputs/scan-baseline-review-20261011/source/scripts/qualification/test_worker_image_build.py", line 135, in test_real_owner_execution_closure_pins
+    rows = build.pins(); values = {r['path']: r for r in rows}
+           ^^^^^^^^^^^^
+  File "/workspace/scratch/853fba62b1f1/meri-g1-trusted-source/.task-inputs/scan-baseline-review-20261011/source/scripts/qualification/worker_image_build.py", line 58, in pins
+    need(Path(sys.executable) == PYTHON and sys.version_info[:3] == (3, 12, 14)
+  File "/workspace/scratch/853fba62b1f1/meri-g1-trusted-source/.task-inputs/scan-baseline-review-20261011/source/scripts/qualification/worker_image_collect.py", line 51, in need
+    raise ValueError(message)
+ValueError: fixed owner Python runtime
+
+======================================================================
+ERROR: test_publish_manifest_pins_both_new_sources (test_worker_image_publish.Publication.test_publish_manifest_pins_both_new_sources)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/853fba62b1f1/meri-g1-trusted-source/.task-inputs/scan-baseline-review-20261011/source/scripts/qualification/test_worker_image_publish.py", line 195, in test_publish_manifest_pins_both_new_sources
+    collect.validate_input(root, raw, collect.digest(raw))
+  File "/workspace/scratch/853fba62b1f1/meri-g1-trusted-source/.task-inputs/scan-baseline-review-20261011/source/scripts/qualification/worker_image_collect.py", line 116, in validate_input
+    rows = value['members']; need(type(rows) is list and len(rows) == (49 if publish else 47), 'exact source/recipe records')
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/853fba62b1f1/meri-g1-trusted-source/.task-inputs/scan-baseline-review-20261011/source/scripts/qualification/worker_image_collect.py", line 51, in need
+    raise ValueError(message)
+ValueError: exact source/recipe records
+
+======================================================================
+FAIL: test_context_manifest_pin_tracks_candidate_bytes (test_worker_image_build.Controls.test_context_manifest_pin_tracks_candidate_bytes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/853fba62b1f1/meri-g1-trusted-source/.task-inputs/scan-baseline-review-20261011/source/scripts/qualification/test_worker_image_build.py", line 143, in test_context_manifest_pin_tracks_candidate_bytes
+    self.assertEqual(build.context_manifest_sha(files), collect.CONTEXT_SHA)
+AssertionError: 'da96000546d9688bafd50ffb5d6101ce5a76300e65a47bfb5ea55a1273bd13a4' != '18836912a03fc035d69c0cfc57d1f407e5c46af1bdd37c21a761f5d42dc84dda'
+- da96000546d9688bafd50ffb5d6101ce5a76300e65a47bfb5ea55a1273bd13a4
++ 18836912a03fc035d69c0cfc57d1f407e5c46af1bdd37c21a761f5d42dc84dda
+
+
+----------------------------------------------------------------------
+Ran 38 tests in 0.080s
+
+FAILED (failures=1, errors=3)

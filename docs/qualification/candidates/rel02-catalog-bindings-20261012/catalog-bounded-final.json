@@ -1,0 +1,23 @@
+{
+  "argv": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "--test",
+    "packages/contracts/test/retrieval-catalog-bindings.test.mjs"
+  ],
+  "cwd": "/workspace/scratch/853fba62b1f1/meri-rel02-catalog-bindings-20261012",
+  "startedAtEpochSeconds": 1791765258.3926105,
+  "endedAtEpochSeconds": 1791765259.8691175,
+  "exitCode": 0,
+  "timeoutSeconds": 120,
+  "timedOut": false,
+  "ownedProcessGroupAbsent": true,
+  "environment": "replacement PATH/LANG/LC_ALL/TMPDIR only; not OS network sandbox",
+  "stdout": {
+    "bytes": 1529,
+    "sha256": "93eda682dc50727cd0fbef93dc328d94077d0643aecf14806f2967a4c9e49fa0"
+  },
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

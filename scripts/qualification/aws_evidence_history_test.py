@@ -33,6 +33,28 @@ class HistoryTransport(unittest.TestCase):
             self.assertEqual(receipt['argv'].count('--no-paginate'), 1)
             self.assertEqual(receipt['automaticRetries'], 0)
 
+    def test_default_profile_is_unchanged_and_worker_override_is_exact(self):
+        args = ['sts', 'get-caller-identity']
+        raw = b'{"Account":"967807252336"}'
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            with patch.object(aws_evidence.subprocess, 'run', return_value=
+                              subprocess.CompletedProcess([], 0, raw, b'')) as run:
+                aws_evidence.capture(root, 'old', args)
+                old = run.call_args.args[0]
+                aws_evidence.capture(root, 'worker', args, profile='default')
+                worker = run.call_args.args[0]
+            self.assertEqual(old[old.index('--profile') + 1], aws_evidence.PROFILE)
+            self.assertEqual(worker[worker.index('--profile') + 1], 'default')
+            self.assertEqual([x for x in old if x != aws_evidence.PROFILE],
+                             [x for x in worker if x != 'default'])
+            for value in ('other', '', 'DEFAULT', None, 1):
+                with self.subTest(value=value), patch.object(aws_evidence.subprocess, 'run') as run:
+                    with self.assertRaises(ValueError):
+                        aws_evidence.capture(root, 'refused', args, profile=value)
+                    run.assert_not_called()
+                    self.assertFalse((root / 'refused').exists())
+
     def test_flag_cannot_escape_to_other_operations(self):
         for service, operations in aws_evidence.ALLOWED.items():
             for operation in operations:

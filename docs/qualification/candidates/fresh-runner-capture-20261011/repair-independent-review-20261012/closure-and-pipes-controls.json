@@ -1,0 +1,48 @@
+{
+  "sourceCommit": "6f0a8c57e47f1f352198c3bdd4ae092b8bc45946",
+  "argv": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "-I",
+    "-B",
+    "-S",
+    "docs/qualification/candidates/fresh-runner-capture-20261011/repair-independent-review-20261012/closure-and-pipes-controls.py"
+  ],
+  "externalTimeoutSeconds": 15,
+  "physicalExitCode": 0,
+  "expectedExitCode": 0,
+  "timedOut": false,
+  "elapsedSeconds": 0.859,
+  "fixtureGroupRemainedAfterDirectScriptExit": false,
+  "reviewerKilledRemainingOwnedFixtureGroup": false,
+  "reapedOwnedDescendants": [
+    {
+      "pid": 23,
+      "status": 9
+    },
+    {
+      "pid": 25,
+      "status": 9
+    },
+    {
+      "pid": 27,
+      "status": 9
+    }
+  ],
+  "ownedProcessGroupAbsent": true,
+  "tmpEntriesAfter": [],
+  "streams": {
+    "stdout": {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-independent-review-20261012/closure-and-pipes-controls.stdout.bin",
+      "bytes": 707,
+      "sha256": "04bf308866f078af4ab14d2f47c17d1831a525af52b3b1a1c59725f3e5c36871"
+    },
+    "stderr": {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-independent-review-20261012/closure-and-pipes-controls.stderr.bin",
+      "bytes": 306,
+      "sha256": "1fec06b7acbefb94b0e909f1de52ee926516c59ba02b82c53b04830f29aa2974"
+    }
+  },
+  "productionProcessTreeCleanupClaim": false,
+  "actualWindowsExecution": "UNRUN",
+  "nativeAwsExecuted": false
+}

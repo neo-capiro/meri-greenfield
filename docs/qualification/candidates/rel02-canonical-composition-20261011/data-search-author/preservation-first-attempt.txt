@@ -1,0 +1,4 @@
+Copied complete tool output from the first preservation helper attempt; no source/test execution failed.
+Traceback (most recent call last):
+  File "<stdin>", line 15, in <module>
+ValueError: domain algorithm changed

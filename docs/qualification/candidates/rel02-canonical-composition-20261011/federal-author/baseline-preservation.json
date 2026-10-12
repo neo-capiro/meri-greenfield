@@ -1,0 +1,33 @@
+{
+  "base": "32709fd72b895cdd27ebeac0ac617ed21cd6721a",
+  "testBodies": {
+    "exposes five distinct operation IDs each pinned to one schema definition": "537a29f6e5bb92499f34d4df3532df48fbda419aecfc786384a1735ac5628029",
+    "accepts one positive shape for each of the five operation families": "44aa6d792ccc926566fdcff7bb0baa5f48010b21638ab820367746179a300642",
+    "materializes page/limit defaults only when absent without mutating the caller input": "3eef43522b13698f3be1b2688128e64b64dc0709f1d125dc7f49303b38e79b49",
+    "enforces the shared page (1-10000) and limit (1-25) bounds": "8eaa79d3450d808a1e28450a7c418f146ced9666adac8a57d1e2e92a6be04783",
+    "bounds fiscalYear to 1900-2200 wherever the shape allows it": "6f737fcefd93329b336cb44cf46ba63339ae111aa459b4abbfe7d36673c4db62",
+    "contract vehicles exclude and explicitly reject fiscalYear": "f55789fbaf3c0dff45deed2e0bcba5d0bdcff086ac5ad485ae3d15825f0e33c4",
+    "district federal market requires both state and district": "7fcbfd357ff670bdc2862d55c2d0807a7532674410776e202d5e10f09e14d229",
+    "normalizes state/district casing and refuses malformed or non-string geography": "803e98ea276e7641a76204a3663a5e91ece2692cf350163b427ca2eba87bfe5f",
+    "fails closed on unknown fields and refuses string-to-number coercion": "400e98e161e91caf58d37f1f7f4df5c692d5d9455ca21cc22dc94892adee8f3b",
+    "clientId is inert data and never authority": "d2abef028243a09d0d483bd772537f18ce033dd223b04854fb286913f9fd8b60",
+    "keeps the forecast global-query boundary explicit": "56b376c5f2756a1eb0e0ecc93a682ec23a87dea787d40ab6e6853ed2ea299199",
+    "module is a pure import with no network or storage effects": "63d254704dc7426728cc65dae1b638d42cc8ab984f45745d182644fa62d07a11",
+    "exposes one distinct structural output definition per federal-market operation": "42c308bda64d4dbb0f121a9ac39dfde978030e3cbde5c63b73d9d1273b6f628e",
+    "accepts one positive structural result for each of the five output families": "617c74fbce462b71a2de1c737c2547aba3e07f9ff2ec023ff48a96296717eea1",
+    "enforces declared result fields, nullability and row source literals": "7d7d87c8a9db28f4908cb3f45b2acf866a10c89710b0278b87c1611846a1fa34",
+    "keeps the state-only subaward rail separate from district attribution": "d4dede346185d388f0b7310492910e6a018e3a6865e5a0cb6efe81fbf6b4ca39",
+    "enforces the paged-result paging boundary established by the frozen pageResult": "78e70ca1bb5aa9481ce2dd6791478c6ec1c4914117f031ec009daf8fd4f9f0dc",
+    "asserts no freshness, coverage, authorization or date format on result shapes": "594ea7cf21c119bf1d51c8c84a50023ce20d4d2febbc668bb5632064eeca825d"
+  },
+  "immutableFiles": {
+    "packages/contracts/retrieval-0.2/federal-market.schema.json": "5ebd54c7a1e5d3a2ef99f5a69e76293aec227fbe50874f21ba69ea987417bada",
+    "packages/contracts/retrieval-0.2/catalog.json": "940d768aab94cc2b513a177ade216c675a74ff4021d99ec04b1b059f80b4d264",
+    "packages/contracts/retrieval-0.2/mail.schema.json": "d45681f76ba5f5d7f65b7385ab1e1c3deb9626d4166e55fc6039e88bc3d804e6",
+    "packages/contracts/meri.schema.json": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b",
+    "packages/contracts/validate.mjs": "c2449fd55300b31bdc1e829b5d918a531f1c4b2c675085a5b4707726ddd36d10",
+    "packages/contracts/package.json": "5ffd1042ab28e234a4803344f34a882bd0695580914d21136e7c13e43c7ddbe7",
+    "packages/contracts/dist/browser.mjs": "3682cd96d10c1cc53f4e4a91845c6da514eda9d524ce8342b89e09ffcc19ae83",
+    "packages/contracts/dist/metadata.mjs": "63a4733b40a9671dbca69419d12cae894adca42a9f2ced83cd729ce239e1ef94"
+  }
+}

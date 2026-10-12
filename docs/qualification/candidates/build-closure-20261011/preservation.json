@@ -1,0 +1,47 @@
+{
+  "base": "a5c41c7afdd9ec235ac3a0184a96e4c457ef2f90",
+  "preservedBuildFunctions": [
+    "pins",
+    "validate_authority",
+    "check_review",
+    "recipe",
+    "dispatch",
+    "execute",
+    "reconcile",
+    "validate_repository",
+    "validate_build",
+    "start_input"
+  ],
+  "protectedByteIdentities": [
+    {
+      "path": "apps/worker/qualification/component-pins.json",
+      "sha256": "6c08b00a43ef6155333c0a891bd92eb0275e18767c3159282ccdef3e13c0793a",
+      "bytes": 36019
+    },
+    {
+      "path": "scripts/qualification/worker_context.py",
+      "sha256": "48f065d0ad61f98ba571c89dcd62141e6f8c9b272f0d371331d74a0dabf87851",
+      "bytes": 11723
+    },
+    {
+      "path": "scripts/qualification/worker_source_pins.py",
+      "sha256": "1708650ce0e347a974bd8621018c8ad8723985d68ecb1f707a98b40a57df2a6a",
+      "bytes": 4310
+    },
+    {
+      "path": "scripts/qualification/host_assets_build.py",
+      "sha256": "eb00e22164ba4785b44d29a2a177e50b2621abca3681b27ad2a4671788dc2953",
+      "bytes": 21682
+    },
+    {
+      "path": "scripts/qualification/host_assets_source.py",
+      "sha256": "0465108f347442e8e06ebd04c23f9679197b2acf86bdfe8a1d892c0483aef4fd",
+      "bytes": 10081
+    },
+    {
+      "path": "scripts/clear-qualification-docker-config.py",
+      "sha256": "fbf5e0c23ac13fe75342f1488d84fdc446cb3d7b36a098adaf8dc5c0aefb191f",
+      "bytes": 13489
+    }
+  ]
+}

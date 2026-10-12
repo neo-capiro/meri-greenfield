@@ -1,0 +1,80 @@
+{
+  "retrievalDate": "2026-10-11",
+  "observations": [
+    {
+      "header": "CVE-2026-95619 (https://security-tracker.debian.org/tracker/CVE-2026-95619)\n\u3010turn172view0\u3011 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({\"ref_id\":\"https://security-tracker.debian.org/tracker/CVE-2026-95619\",\"lineno\":null}); Total lines: 44",
+      "dataLines": [
+        "L9: \u301018\u2020gcc-12\u3011 (\u301019\u2020PTS\u2020tracker.debian.org\u3011)  | bookworm  | 12.2.0-14+deb12u1  | vulnerable",
+        "L10:  | trixie  | 12.4.0-5  | vulnerable",
+        "L11:  | forky  | 12.5.0-9  | vulnerable",
+        "L12:  | sid  | 12.5.0-11  | vulnerable",
+        "L13: \u301020\u2020gcc-13\u3011 (\u301021\u2020PTS\u2020tracker.debian.org\u3011)  | trixie  | 13.3.0-16  | vulnerable",
+        "L14:  | forky  | 13.5.0-1  | vulnerable",
+        "L15:  | sid  | 13.5.0-3  | fixed",
+        "L16: \u301022\u2020gcc-14\u3011 (\u301023\u2020PTS\u2020tracker.debian.org\u3011)  | trixie  | 14.2.0-19  | vulnerable",
+        "L17:  | forky  | 14.4.0-2  | vulnerable",
+        "L18:  | sid  | 14.4.0-3  | fixed",
+        "L19: \u301024\u2020gcc-15\u3011 (\u301025\u2020PTS\u2020tracker.debian.org\u3011)  | forky, sid  | 15.3.0-4  | vulnerable",
+        "L20: \u301026\u2020gcc-16\u3011 (\u301027\u2020PTS\u2020tracker.debian.org\u3011)  | forky, sid  | 16.2.0-3  | vulnerable",
+        "L23: Package  | Type  | Release  | Fixed Version  | Urgency  | Origin  | Debian Bugs",
+        "L25: \u301018\u2020gcc-12\u3011  | source  | (unstable)  | (unfixed)  |  |  |",
+        "L26: \u301020\u2020gcc-13\u3011  | source  | (unstable)  | 13.5.0-3  |  |  |",
+        "L27: \u301022\u2020gcc-14\u3011  | source  | (unstable)  | 14.4.0-3  |  |  |",
+        "L28: \u301024\u2020gcc-15\u3011  | source  | (unstable)  | (unfixed)  |  |  |",
+        "L29: \u301026\u2020gcc-16\u3011  | source  | (unstable)  | (unfixed)  |  |  |",
+        "L32:     [trixie] - gcc-14 <no-dsa> (Minor issue)",
+        "L33:     [trixie] - gcc-13 <no-dsa> (Minor issue)",
+        "L34:     [trixie] - gcc-12 <no-dsa> (Minor issue)"
+      ]
+    },
+    {
+      "header": "\nCVE-2026-78410 (https://security-tracker.debian.org/tracker/CVE-2026-78410)\n\u3010turn172view1\u3011 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({\"ref_id\":\"https://security-tracker.debian.org/tracker/CVE-2026-78410\",\"lineno\":null}); Total lines: 29",
+      "dataLines": [
+        "L10: \u301018\u2020util-linux\u3011 (\u301019\u2020PTS\u2020tracker.debian.org\u3011)  | bookworm  | 2.38.1-5+deb12u3  | vulnerable",
+        "L11:  | bookworm (security)  | 2.38.1-5+deb12u1  | vulnerable",
+        "L12:  | trixie (security), trixie  | 2.41.5-0+deb13u1  | vulnerable",
+        "L13:  | forky, sid  | 2.42.4-1  | fixed",
+        "L16: Package  | Type  | Release  | Fixed Version  | Urgency  | Origin  | Debian Bugs",
+        "L18: \u301018\u2020util-linux\u3011  | source  | (unstable)  | 2.42.3-1  |  |  |",
+        "L21:     [trixie] - util-linux <no-dsa> (Minor issue)"
+      ]
+    },
+    {
+      "header": "\nCVE-2026-78408 (https://security-tracker.debian.org/tracker/CVE-2026-78408)\n\u3010turn172view2\u3011 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({\"ref_id\":\"https://security-tracker.debian.org/tracker/CVE-2026-78408\",\"lineno\":null}); Total lines: 31",
+      "dataLines": [
+        "L11: \u301018\u2020util-linux\u3011 (\u301019\u2020PTS\u2020tracker.debian.org\u3011)  | bookworm  | 2.38.1-5+deb12u3  | vulnerable",
+        "L12:  | bookworm (security)  | 2.38.1-5+deb12u1  | vulnerable",
+        "L13:  | trixie (security), trixie  | 2.41.5-0+deb13u1  | vulnerable",
+        "L14:  | forky, sid  | 2.42.4-1  | fixed",
+        "L17: Package  | Type  | Release  | Fixed Version  | Urgency  | Origin  | Debian Bugs",
+        "L19: \u301018\u2020util-linux\u3011  | source  | (unstable)  | 2.42.4-1  |  |  |",
+        "L22:     [trixie] - util-linux <no-dsa> (Minor issue)",
+        "L24:     Fixed by: \u301021\u2020https://github.com/util-linux/util-linux/commit/286dd3ff41526b582ef48830de239dffbaa61f90\u2020github.com\u3011 (v2.42.4)"
+      ]
+    },
+    {
+      "header": "\nCVE-2026-76642 (https://security-tracker.debian.org/tracker/CVE-2026-76642)\n\u3010turn172view3\u3011 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({\"ref_id\":\"https://security-tracker.debian.org/tracker/CVE-2026-76642\",\"lineno\":null}); Total lines: 29",
+      "dataLines": [
+        "L10: \u301018\u2020util-linux\u3011 (\u301019\u2020PTS\u2020tracker.debian.org\u3011)  | bookworm  | 2.38.1-5+deb12u3  | vulnerable",
+        "L11:  | bookworm (security)  | 2.38.1-5+deb12u1  | vulnerable",
+        "L12:  | trixie (security), trixie  | 2.41.5-0+deb13u1  | vulnerable",
+        "L13:  | forky, sid  | 2.42.4-1  | fixed",
+        "L16: Package  | Type  | Release  | Fixed Version  | Urgency  | Origin  | Debian Bugs",
+        "L18: \u301018\u2020util-linux\u3011  | source  | (unstable)  | 2.42.3-1  |  |  |",
+        "L21:     [trixie] - util-linux <no-dsa> (Minor issue)"
+      ]
+    },
+    {
+      "header": "\nCVE-2026-78409 (https://security-tracker.debian.org/tracker/CVE-2026-78409)\n\u3010turn172view4\u3011 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({\"ref_id\":\"https://security-tracker.debian.org/tracker/CVE-2026-78409\",\"lineno\":null}); Total lines: 29",
+      "dataLines": [
+        "L10: \u301018\u2020util-linux\u3011 (\u301019\u2020PTS\u2020tracker.debian.org\u3011)  | bookworm  | 2.38.1-5+deb12u3  | vulnerable",
+        "L11:  | bookworm (security)  | 2.38.1-5+deb12u1  | vulnerable",
+        "L12:  | trixie (security), trixie  | 2.41.5-0+deb13u1  | vulnerable",
+        "L13:  | forky, sid  | 2.42.4-1  | fixed",
+        "L16: Package  | Type  | Release  | Fixed Version  | Urgency  | Origin  | Debian Bugs",
+        "L18: \u301018\u2020util-linux\u3011  | source  | (unstable)  | 2.42.3-1  |  |  |",
+        "L21:     [trixie] - util-linux <no-dsa> (Minor issue)"
+      ]
+    }
+  ]
+}

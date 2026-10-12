@@ -1,0 +1,25 @@
+test_foreign_member_must_refuse_success (__main__.IndependentOutputControls.test_foreign_member_must_refuse_success) ... FAIL
+test_prior_artifact_mutation_must_refuse_success (__main__.IndependentOutputControls.test_prior_artifact_mutation_must_refuse_success) ... FAIL
+
+======================================================================
+FAIL: test_foreign_member_must_refuse_success (__main__.IndependentOutputControls.test_foreign_member_must_refuse_success)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/853fba62b1f1/meri-fresh-runner-capture-independent-20261012/docs/qualification/candidates/fresh-runner-capture-20261011/independent-review-20261012/output-negative-controls.py", line 17, in test_foreign_member_must_refuse_success
+    with self.assertRaises(ValueError): inventory.write_result(output,{'first.json':b'{}','second.json':b'{}'})
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_prior_artifact_mutation_must_refuse_success (__main__.IndependentOutputControls.test_prior_artifact_mutation_must_refuse_success)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/853fba62b1f1/meri-fresh-runner-capture-independent-20261012/docs/qualification/candidates/fresh-runner-capture-20261011/independent-review-20261012/output-negative-controls.py", line 26, in test_prior_artifact_mutation_must_refuse_success
+    with self.assertRaises(ValueError): inventory.write_result(output,{'first.json':b'{}','second.json':b'{}'})
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.004s
+
+FAILED (failures=2)

@@ -1,0 +1,72 @@
+{
+  "sourceCommit": "c0cef1430d3a0e2bd6b441a599f8fa8c3c0987fa",
+  "sourceTree": "8eff53f0ea6178c78a22fce9f05f30a58172aed9",
+  "parentCommit": "a5c41c7afdd9ec235ac3a0184a96e4c457ef2f90",
+  "parentTree": "3181f8e0d75299e39fc45a738baff4c41e01463e",
+  "changedPathCount": 21,
+  "astIdenticalFunctions": {
+    "pins": true,
+    "validate_authority": true,
+    "check_review": true,
+    "recipe": true,
+    "dispatch": true,
+    "execute": true,
+    "reconcile": true,
+    "validate_repository": true,
+    "validate_build": true,
+    "start_input": true
+  },
+  "byteIdenticalProtectedFiles": [
+    {
+      "path": "apps/worker/qualification/component-pins.json",
+      "byteIdentical": true,
+      "sha256": "6c08b00a43ef6155333c0a891bd92eb0275e18767c3159282ccdef3e13c0793a",
+      "bytes": 36019
+    },
+    {
+      "path": "scripts/qualification/worker_context.py",
+      "byteIdentical": true,
+      "sha256": "48f065d0ad61f98ba571c89dcd62141e6f8c9b272f0d371331d74a0dabf87851",
+      "bytes": 11723
+    },
+    {
+      "path": "scripts/qualification/worker_source_pins.py",
+      "byteIdentical": true,
+      "sha256": "1708650ce0e347a974bd8621018c8ad8723985d68ecb1f707a98b40a57df2a6a",
+      "bytes": 4310
+    },
+    {
+      "path": "scripts/qualification/host_assets_build.py",
+      "byteIdentical": true,
+      "sha256": "eb00e22164ba4785b44d29a2a177e50b2621abca3681b27ad2a4671788dc2953",
+      "bytes": 21682
+    },
+    {
+      "path": "scripts/qualification/host_assets_source.py",
+      "byteIdentical": true,
+      "sha256": "0465108f347442e8e06ebd04c23f9679197b2acf86bdfe8a1d892c0483aef4fd",
+      "bytes": 10081
+    },
+    {
+      "path": "scripts/clear-qualification-docker-config.py",
+      "byteIdentical": true,
+      "sha256": "fbf5e0c23ac13fe75342f1488d84fdc446cb3d7b36a098adaf8dc5c0aefb191f",
+      "bytes": 13489
+    }
+  ],
+  "importMembershipCheck": {
+    "argv": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+      "-I",
+      "-B",
+      "-S",
+      "-c",
+      "import sys, json, subprocess, socket, os\nfrom pathlib import Path\nfrom unittest.mock import patch\nsys.path.insert(0, 'scripts/qualification')\nwith patch.object(subprocess, 'Popen', side_effect=AssertionError('unexpected process on import')), patch.object(subprocess, 'run', side_effect=AssertionError('unexpected process on import')), patch.object(socket, 'socket', side_effect=AssertionError('unexpected socket on import')), patch.object(Path, 'open', side_effect=AssertionError('unexpected data open on import')), patch.object(Path, 'mkdir', side_effect=AssertionError('unexpected resource allocation on import')):\n    import worker_image_manifest, worker_build_binding\n    import worker_image_build\n    paths={str(publish): {'source':len(worker_image_manifest.source_paths(publish)), 'archive':len(worker_image_manifest.archive_paths(publish))} for publish in (False,True)}\n    assert paths == {'False':{'source':57,'archive':58},'True':{'source':59,'archive':60}}\nprint(json.dumps({'importSafeWithProcessSocketAndPathIoGuards':True,'membership':paths,'newModules':['worker_image_manifest','worker_build_binding']}))\n"
+    ],
+    "exitCode": 0,
+    "stdoutSha256": "779ee80394ac0710355414504147b3e9fb9cffbe28bbf67ed9baf22404cc5dda",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "{\"importSafeWithProcessSocketAndPathIoGuards\": true, \"membership\": {\"False\": {\"source\": 57, \"archive\": 58}, \"True\": {\"source\": 59, \"archive\": 60}}, \"newModules\": [\"worker_image_manifest\", \"worker_build_binding\"]}\n",
+    "stderr": ""
+  }
+}

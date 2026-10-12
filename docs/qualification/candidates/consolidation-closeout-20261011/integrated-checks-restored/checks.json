@@ -1,0 +1,226 @@
+{
+  "sourceCommit": "00af1a681116a4d23ac6195124372e1fec2c42e0",
+  "records": [
+    {
+      "label": "root-contracts-hermes",
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "--test",
+        "packages/contracts/test/boundaries.test.mjs",
+        "packages/contracts/test/public-package.test.mjs",
+        "packages/contracts/test/retrieval-data-search.test.mjs",
+        "packages/contracts/test/retrieval-federal-market.test.mjs",
+        "packages/contracts/test/retrieval-mail.test.mjs",
+        "packages/contracts/test/retrieval-meeting-source.test.mjs",
+        "packages/contracts/test/retrieval-operational-reads.test.mjs",
+        "packages/contracts/test/retrieval-r2.test.mjs",
+        "packages/contracts/test/sdk-fixture-contract.test.mjs",
+        "packages/contracts/test/sdk-fixture-wire.test.mjs",
+        "packages/contracts/test/sdk-native-evidence.test.mjs",
+        "evals/qualification/hermes-session.test.mjs"
+      ],
+      "cwd": "/workspace/scratch/853fba62b1f1/meri-consolidation-closeout-20261011",
+      "startedAtEpochSeconds": 1791762932.7141666,
+      "endedAtEpochSeconds": 1791762935.9610171,
+      "timeoutSeconds": 120,
+      "timedOut": false,
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "stdout": {
+        "path": "root-contracts-hermes.stdout.bin",
+        "bytes": 17291,
+        "sha256": "0c51f2d1dc86e53a4d61732f8cee2ccefd5f494fb8b81742aab5a6eb64acab3b"
+      },
+      "stderr": {
+        "path": "root-contracts-hermes.stderr.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "sdk-evidence",
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "--test",
+        "--test-concurrency=1",
+        "packages/contracts/test/sdk-native-evidence.test.mjs",
+        "apps/control/qualification-sdk-fixture/service/test/native-evidence.test.mjs",
+        "apps/control/qualification-sdk-fixture/service/test/native-evidence-publisher.test.mjs",
+        "apps/control/qualification-sdk-fixture/service/test/s3-checkpoint.test.mjs",
+        "apps/worker/qualification/probes/native-observations.test.mjs",
+        "apps/worker/qualification/probes/native-stream-observer.test.mjs",
+        "apps/worker/qualification/probes/native-namespace-observer.test.mjs",
+        "apps/worker/qualification/probes/sdk-capture.test.mjs",
+        "apps/worker/qualification/probes/sdk-interruption.test.mjs",
+        "apps/worker/qualification/probes/sdk-interruption-loopback.test.mjs",
+        "apps/worker/qualification/checkpoint/fixture-channel.test.mjs",
+        "apps/worker/qualification/checkpoint/fixture-transport.test.mjs",
+        "apps/worker/qualification/checkpoint/native-session-files.test.mjs",
+        "apps/worker/qualification/checkpoint/resume-admission.test.mjs",
+        "apps/worker/qualification/checkpoint/fixture-sentinel.test.mjs",
+        "scripts/qualification/sdk-stale-worker-challenge.test.mjs",
+        "scripts/qualification/sdk-native-evidence-owner.test.mjs"
+      ],
+      "cwd": "/workspace/scratch/853fba62b1f1/meri-consolidation-closeout-20261011",
+      "startedAtEpochSeconds": 1791762935.9635313,
+      "endedAtEpochSeconds": 1791762957.6234417,
+      "timeoutSeconds": 180,
+      "timedOut": false,
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "stdout": {
+        "path": "sdk-evidence.stdout.bin",
+        "bytes": 32525,
+        "sha256": "7d1066836fcdd0f8478982753b6bf6709575882a88020fd67c3ee52986ed1c46"
+      },
+      "stderr": {
+        "path": "sdk-evidence.stderr.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "native-static-sessionstore",
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "--test",
+        "apps/worker/qualification/probes/static.test.mjs",
+        "apps/worker/qualification/checkpoint/native-session-files.test.mjs",
+        "apps/worker/qualification/checkpoint/native-capture-boundaries.test.mjs",
+        "apps/worker/qualification/checkpoint/session-store.test.mjs"
+      ],
+      "cwd": "/workspace/scratch/853fba62b1f1/meri-consolidation-closeout-20261011",
+      "startedAtEpochSeconds": 1791762957.626119,
+      "endedAtEpochSeconds": 1791762958.3672686,
+      "timeoutSeconds": 120,
+      "timedOut": false,
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "stdout": {
+        "path": "native-static-sessionstore.stdout.bin",
+        "bytes": 12701,
+        "sha256": "5af89095b20866919ed6ab7fb2cce9227ad52a1be1fdf7ffeec8169942251e61"
+      },
+      "stderr": {
+        "path": "native-static-sessionstore.stderr.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "builder-publisher-focused",
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "-v",
+        "test_worker_image_publish",
+        "test_worker_image_build.FreshRunnerBinding",
+        "test_worker_image_build.Controls.test_collector_full_source_preflight_and_drift",
+        "test_worker_image_build.Controls.test_membership_rejects_extra_missing_duplicate_and_wrong_shape",
+        "test_worker_image_build.Controls.test_source_missing_and_duplicate_before_output"
+      ],
+      "cwd": "/workspace/scratch/853fba62b1f1/meri-consolidation-closeout-20261011/scripts/qualification",
+      "startedAtEpochSeconds": 1791762958.3700323,
+      "endedAtEpochSeconds": 1791762958.5704246,
+      "timeoutSeconds": 120,
+      "timedOut": false,
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "stdout": {
+        "path": "builder-publisher-focused.stdout.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "builder-publisher-focused.stderr.bin",
+        "bytes": 2998,
+        "sha256": "6ef2965118df607e6c5d93a52069c4c8993258b6ab93e0ffd5840ef2cf65fe37"
+      }
+    },
+    {
+      "label": "source-pin-regressions",
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "-v",
+        "scripts.qualification.worker_source_pins_test"
+      ],
+      "cwd": "/workspace/scratch/853fba62b1f1/meri-consolidation-closeout-20261011",
+      "startedAtEpochSeconds": 1791762958.5732906,
+      "endedAtEpochSeconds": 1791762958.6723256,
+      "timeoutSeconds": 90,
+      "timedOut": false,
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "stdout": {
+        "path": "source-pin-regressions.stdout.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "source-pin-regressions.stderr.bin",
+        "bytes": 914,
+        "sha256": "18c9b1288b0832e469faba3b2247bc9948a8b068cd51f630a7cc61b2f8f82ea8"
+      }
+    },
+    {
+      "label": "ecr-reader-regressions",
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "-v",
+        "scripts.qualification.aws_evidence_ecr_test",
+        "scripts.qualification.aws_evidence_history_test",
+        "scripts.qualification.aws_evidence_timeout_test"
+      ],
+      "cwd": "/workspace/scratch/853fba62b1f1/meri-consolidation-closeout-20261011",
+      "startedAtEpochSeconds": 1791762958.6750793,
+      "endedAtEpochSeconds": 1791762958.806221,
+      "timeoutSeconds": 90,
+      "timedOut": false,
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "stdout": {
+        "path": "ecr-reader-regressions.stdout.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "ecr-reader-regressions.stderr.bin",
+        "bytes": 3575,
+        "sha256": "9b76d9242aa7cf4973a9a3e8c20148398c2645d42aa97b1b9d7c1c4a0b328d70"
+      }
+    },
+    {
+      "label": "generated-public-check",
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "generate.mjs",
+        "--check"
+      ],
+      "cwd": "/workspace/scratch/853fba62b1f1/meri-consolidation-closeout-20261011/packages/contracts",
+      "startedAtEpochSeconds": 1791762958.811283,
+      "endedAtEpochSeconds": 1791762959.290587,
+      "timeoutSeconds": 90,
+      "timedOut": false,
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "stdout": {
+        "path": "generated-public-check.stdout.bin",
+        "bytes": 742,
+        "sha256": "5a793f2a60ec7efd2f09a42d78f4c6248a0bd4b3f0a52690caa114ab5c0710dd"
+      },
+      "stderr": {
+        "path": "generated-public-check.stderr.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+✔ the probe is stdlib-only and has no process/network/dynamic execution call (87.92193ms)
+✔ refuses a non-Linux platform without opening any root; CLI cannot override (151.018279ms)
+✔ rejects mismatched expectation counts before scanning (80.604492ms)
+✔ enumerates fabricated roots deterministically and retains candidate byte hashes (169.433167ms)
+✔ records a directory symlink/junction and never descends into it (256.622121ms)
+✔ rejects exclusions that weaken declared static coverage (72.983135ms)
+✔ a file root is a traversal error, never empty coverage (143.785566ms)
+✔ a missing root is inaccessible, never an absence claim (75.21274ms)
+✔ entry caps and deadline zero fail closed, including a zero fake clock (155.851727ms)
+✔ oversized candidates/errors stay bounded and explicitly incomplete (158.705173ms)
+✔ expectation mismatch and missing exact paths fail closed (137.716627ms)
+✔ a matching root-owned mode4755 helper needs its exact hash-bound allowlist (177.976046ms)
+✔ rejects empty, duplicate, relative and incomplete declared roots (522.944599ms)
+✔ SUID prefix collisions, owner/mode/hash drift and SGID helpers remain unreviewed (566.965762ms)
+✔ records privilege directories and fails on traversal/read errors or event caps (347.626484ms)
+✔ rejects a declared root reached through a link/junction ancestor (92.466687ms)
+✔ known root aliases are recorded without walking; unexpected or missing targets fail (162.758526ms)
+✔ file hashing refuses replaced paths, changed FDs, short reads and late EOF (95.181488ms)
+✔ compiled production roots cover usr aliases, scripts and private packages; binary pins stay exact (41.170282ms)
+✔ production output is mandatory and cannot exclude an arbitrary scanned file (143.010513ms)
+✔ reviewed root alias identity and target remain bound through validation and final coverage (82.625855ms)
+✔ recorded child directory mode, inode and ownership are checked again before descent (90.167459ms)
+✔ full ancestors above the declared root stay bound before, during and after traversal (107.028317ms)
+✔ file hashing rechecks the captured full ancestor chain after reading its FD (83.879622ms)
+✔ Linux main admits only the literal output and actually requests mandatory emission (86.206091ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4227.686358

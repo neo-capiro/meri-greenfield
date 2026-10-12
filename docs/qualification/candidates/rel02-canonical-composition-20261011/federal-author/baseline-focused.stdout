@@ -1,0 +1,26 @@
+✔ exposes five distinct operation IDs each pinned to one schema definition (1.713505ms)
+✔ accepts one positive shape for each of the five operation families (1.975892ms)
+✔ materializes page/limit defaults only when absent without mutating the caller input (0.503682ms)
+✔ enforces the shared page (1-10000) and limit (1-25) bounds (0.634826ms)
+✔ bounds fiscalYear to 1900-2200 wherever the shape allows it (0.396715ms)
+✔ contract vehicles exclude and explicitly reject fiscalYear (0.274645ms)
+✔ district federal market requires both state and district (0.31896ms)
+✔ normalizes state/district casing and refuses malformed or non-string geography (0.378768ms)
+✔ fails closed on unknown fields and refuses string-to-number coercion (0.653603ms)
+✔ clientId is inert data and never authority (0.316586ms)
+✔ keeps the forecast global-query boundary explicit (0.275126ms)
+✔ module is a pure import with no network or storage effects (244.936673ms)
+✔ exposes one distinct structural output definition per federal-market operation (0.627796ms)
+✔ accepts one positive structural result for each of the five output families (20.74985ms)
+✔ enforces declared result fields, nullability and row source literals (2.181786ms)
+✔ keeps the state-only subaward rail separate from district attribution (4.293632ms)
+✔ enforces the paged-result paging boundary established by the frozen pageResult (2.868457ms)
+✔ asserts no freshness, coverage, authorization or date format on result shapes (1.059471ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 619.105447

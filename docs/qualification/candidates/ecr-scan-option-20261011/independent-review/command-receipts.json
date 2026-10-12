@@ -1,0 +1,77 @@
+{
+  "schemaVersion": "meri-independent-unified-command-review/1",
+  "sourceCommit": "42399f0569921eb81e0a91eb06d85353d5745686",
+  "sourceTree": "6be454ef5e4ab0a6ff71c1205ab8a4c64cdd37bd",
+  "decision": "ACCEPT_SOURCE_ONLY",
+  "cwd": "/workspace/scratch/853fba62b1f1/meri-aws-scan-option-20261011",
+  "checks": [
+    {
+      "name": "ecr",
+      "command": [
+        "timeout",
+        "60s",
+        "python3",
+        "-I",
+        "-B",
+        "-S",
+        "scripts/qualification/aws_evidence_ecr_test.py"
+      ],
+      "toolReceipt": {
+        "chunk_id": "1ad0a6",
+        "wall_time_seconds": 0.068056385,
+        "exit_code": 0,
+        "original_token_count": 269,
+        "output": "test_existing_ecr_plural_operations_are_unchanged (__main__.EcrTransport.test_existing_ecr_plural_operations_are_unchanged) ... ok\ntest_failed_scan_retains_raw_error_without_retry (__main__.EcrTransport.test_failed_scan_retains_raw_error_without_retry) ... ok\ntest_incorrect_plural_and_foreign_scan_options_refuse_before_effects (__main__.EcrTransport.test_incorrect_plural_and_foreign_scan_options_refuse_before_effects) ... ok\ntest_non_utf8_stdout_is_retained_and_never_transcoded (__main__.EcrTransport.test_non_utf8_stdout_is_retained_and_never_transcoded) ... ok\ntest_scan_keeps_profile_and_deadline_refusals (__main__.EcrTransport.test_scan_keeps_profile_and_deadline_refusals) ... ok\ntest_singular_option_cannot_escape_to_another_command (__main__.EcrTransport.test_singular_option_cannot_escape_to_another_command) ... ok\ntest_singular_scan_keeps_exact_argv_raw_bytes_and_receipt (__main__.EcrTransport.test_singular_scan_keeps_exact_argv_raw_bytes_and_receipt) ... ok\n\n----------------------------------------------------------------------\nRan 7 tests in 0.023s\n\nOK\n"
+      },
+      "outputFormat": "Unified exec output; stdout/stderr were not retained separately"
+    },
+    {
+      "name": "history",
+      "command": [
+        "timeout",
+        "60s",
+        "python3",
+        "-I",
+        "-B",
+        "-S",
+        "scripts/qualification/aws_evidence_history_test.py"
+      ],
+      "toolReceipt": {
+        "chunk_id": "b2f1d0",
+        "wall_time_seconds": 0.043931117,
+        "exit_code": 0,
+        "original_token_count": 26,
+        "output": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.014s\n\nOK\n"
+      },
+      "outputFormat": "Unified exec output; stdout/stderr were not retained separately"
+    },
+    {
+      "name": "timeout",
+      "command": [
+        "timeout",
+        "60s",
+        "python3",
+        "-I",
+        "-B",
+        "-S",
+        "scripts/qualification/aws_evidence_timeout_test.py"
+      ],
+      "toolReceipt": {
+        "chunk_id": "26084f",
+        "wall_time_seconds": 0.015783942,
+        "exit_code": 0,
+        "original_token_count": 313,
+        "output": "test_body_hardlink_is_not_admitted (__main__.CaptureDeadline.test_body_hardlink_is_not_admitted) ... ok\ntest_checksum_is_actual_body_hash (__main__.CaptureDeadline.test_checksum_is_actual_body_hash) ... ok\ntest_explicit_upload_deadlines_forward_exactly (__main__.CaptureDeadline.test_explicit_upload_deadlines_forward_exactly) ... ok\ntest_fixed_upload_namespace_and_encryption (__main__.CaptureDeadline.test_fixed_upload_namespace_and_encryption) ... ok\ntest_metadata_binding_and_duplicate_keys (__main__.CaptureDeadline.test_metadata_binding_and_duplicate_keys) ... ok\ntest_missing_empty_relative_directory_or_oversized_body (__main__.CaptureDeadline.test_missing_empty_relative_directory_or_oversized_body) ... ok\ntest_no_duplicate_or_ambiguous_options (__main__.CaptureDeadline.test_no_duplicate_or_ambiguous_options) ... ok\ntest_ordinary_operations_keep_one_to_sixty (__main__.CaptureDeadline.test_ordinary_operations_keep_one_to_sixty) ... ok\ntest_timeout_is_retained_without_retry (__main__.CaptureDeadline.test_timeout_is_retained_without_retry) ... ok\ntest_timeout_type_and_range (__main__.CaptureDeadline.test_timeout_type_and_range) ... ok\n\n----------------------------------------------------------------------\nRan 10 tests in 0.019s\n\nOK\n"
+      },
+      "outputFormat": "Unified exec output; stdout/stderr were not retained separately"
+    }
+  ],
+  "testsPassed": 21,
+  "physicalCommandExitCodes": [
+    0,
+    0,
+    0
+  ],
+  "captureLimit": "Exact unified tool responses retained; split raw stdout/stderr binary captures were not created by the independent reviewer.",
+  "furtherTestsRerun": false
+}

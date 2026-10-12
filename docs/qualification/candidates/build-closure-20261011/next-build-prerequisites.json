@@ -1,0 +1,34 @@
+{
+  "status": "NOT_EXECUTABLE_MISSING_PREREQUISITES",
+  "baseCommit": "a5c41c7afdd9ec235ac3a0184a96e4c457ef2f90",
+  "baseTree": "3181f8e0d75299e39fc45a738baff4c41e01463e",
+  "sourceContext": {
+    "members": 53,
+    "totalBytes": 994107,
+    "sha256": "da96000546d9688bafd50ffb5d6101ce5a76300e65a47bfb5ea55a1273bd13a4",
+    "assemblerSha256": "48f065d0ad61f98ba571c89dcd62141e6f8c9b272f0d371331d74a0dabf87851",
+    "historicalContextPinUnchanged": "18836912a03fc035d69c0cfc57d1f407e5c46af1bdd37c21a761f5d42dc84dda",
+    "historicalAssemblerPinUnchanged": "67c1cf554e80c62eeb56b6dcb9be00106adf9b1b8b40beba85249de662b835eb"
+  },
+  "membership": {
+    "buildSourceRecords": 57,
+    "publishSourceRecords": 59,
+    "buildArchiveEntries": 58,
+    "publishArchiveEntries": 60
+  },
+  "freshExecutionBindingImplemented": false,
+  "missing": [
+    "Fresh shipper executable bytes/hash and full runtime closure",
+    "Fresh independently reviewed source commit/tree/helper/context/assembler/archive/recipe closure",
+    "Measured runtime/helper/caller observation and supported approved prepare/load/execute adapter",
+    "Fresh complete STS and role/KMS/project/repository authority records",
+    "Exact one-build action review and infrastructure cost bound",
+    "Supervision, fresh UUID, reservation and cleanup authority",
+    "New image full licenses, patched package set/security applicability and scan/runtime acceptance"
+  ],
+  "awsCalls": 0,
+  "buildAuthorized": false,
+  "scanAdmitted": false,
+  "runtimeAdmitted": false,
+  "g1Admitted": false
+}

@@ -1,0 +1,76 @@
+{
+  "decision": "HOLD_SOURCE_OPTIONAL_ADAPTER",
+  "nativeDecision": "ACCEPT_SOURCE_ONLY",
+  "sourceCommit": "09b962f86e52b9559c46b19c80d8c25fcd3410f5",
+  "sourceTree": "b045c081443d08ace456c08b30ad84acefa9dd30",
+  "trackedSourceDiffExitCode": 0,
+  "report": {
+    "path": "docs/coordination/reports/CODEX-SESSIONSTORE-INDEPENDENT-20261011.md",
+    "bytes": 7157,
+    "sha256": "2dfe7a0439f44d4a8e4fa6b9e1f02688f0771172565952b3e738a66e516e3caf"
+  },
+  "evidence": [
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/independent-review/adversarial-probes.json",
+      "bytes": 961,
+      "sha256": "1922efa3daa99604ad311434dda06763a9e2bfdcab2c538898ecf85443abd8cf"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/independent-review/adversarial-probes.mjs",
+      "bytes": 2015,
+      "sha256": "5e367153cce7d38f917f7ea2e2e09dee27835f9ac5ac4d69c69082c38b140b92"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/independent-review/adversarial-probes.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/independent-review/adversarial-probes.stdout.bin",
+      "bytes": 171,
+      "sha256": "9488c04f0dfa1e3df6d120ea0b808fb5eb7048598bf55f19799b372916bda402"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/independent-review/focused.json",
+      "bytes": 740,
+      "sha256": "c3bdc4a68db3785e893123932816c5f2076fe87ece42b8784a7251b1338b3ad0"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/independent-review/focused.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/independent-review/focused.stdout.bin",
+      "bytes": 3319,
+      "sha256": "142de6c5949cbdd4e8dae5a0643af3cfb466df1da60cbc9e0e5b31c250351d48"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/independent-review/native-mode-probe.json",
+      "bytes": 951,
+      "sha256": "58e89a6712c4f50bb15c69f29480fc6a743b5e39f9731f15e98d9f693d722487"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/independent-review/native-mode-probe.mjs",
+      "bytes": 1458,
+      "sha256": "ddb837938dcbf605008b52b4a7f98935be44d5ad80084270829e8ad25f4ba162"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/independent-review/native-mode-probe.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/independent-review/native-mode-probe.stdout.bin",
+      "bytes": 97,
+      "sha256": "e903ea8024aa4ecf4405b6cc0a469ea59680678d4bc6b63eb21781b4653e9a7e"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/independent-review/source-preservation.json",
+      "bytes": 4674,
+      "sha256": "c0237f1843f1fd68aece6adaee7cb722d61070de20560f6bfdb60a872baf0fc8"
+    }
+  ],
+  "completeRecoveryCheckpoint": false,
+  "sessionStoreQualified": false
+}

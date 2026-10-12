@@ -1,0 +1,10 @@
+usage: worker_source_pins.py [-h] (--check | --write)
+
+Regenerate SDK fixture source pins from the fixed worker context; no build.
+
+options:
+  -h, --help  show this help message and exit
+  --check     Refuse stale pins without writing.
+  --write     Regenerate only fixed SDK fixture source records.
+
+Exit 0: verified/generated. Exit 2: invalid input or stale pins.

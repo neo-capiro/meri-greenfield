@@ -1,0 +1,45 @@
+✔ unrelated sibling creation above the owned config does not change captured bytes (8.008441ms)
+✔ mutation within owned configDir remains a capture refusal (2.649264ms)
+✔ mutation within owned projects remains a capture refusal (1.420814ms)
+✔ mutation within owned project remains a capture refusal (1.281989ms)
+✔ replacing a borrowed ancestor while preserving its child namespace is refused (2.017664ms)
+✔ replacing a borrowed ancestor with a junction remains a refusal (1.841203ms)
+✔ same-length transcript writes remain a refusal (1.591345ms)
+✔ opaque main, nested subagent, meta sidecar and empty directory round trip exactly (29.372783ms)
+✔ missing main and empty main refuse (2.625159ms)
+✔ session and project binding are exact (1.761005ms)
+✔ all corruption is refused before target allocation (9.422465ms)
+✔ foreign/traversal/alias/NFC/ancestor-conflicting inventory refuses before writes (8.099315ms)
+✔ hard-linked main is rejected (0.773389ms)
+✔ ancestor junction and subtree junction are rejected without reading target (1.292345ms)
+✔ known external session state refuses instead of silently omitting it (1.897477ms)
+✔ file replacement during a real read is refused (3.709877ms)
+✔ file, aggregate, member, depth and deadline policies bound real capture (3.258993ms)
+✔ existing restore target is never overwritten or cleaned (2.240892ms)
+✔ partial restore write failure cleans only created paths and retains borrowed parent (1.579076ms)
+✔ cleanup refuses a substituted identity and preserves the foreign file (1.755557ms)
+✔ builtin-only module imports without application filesystem calls (1.597474ms)
+✔ pinned SDK interface roundtrips unknown/compaction fields and repeated UUID-less entries (18.497377ms)
+✔ all append calls are delivered in call order even when an earlier commit is delayed (0.604751ms)
+✔ input and loaded values cannot mutate stored state or trusted binding (1.272004ms)
+✔ foreign session/project and malformed key refuse before transport (3.758308ms)
+✔ JSON-unsafe entries and payload/entry bounds refuse before transport (34.751519ms)
+✔ invalid canonical binding, missing subkey transport and timeout policy fail at construction (4.836537ms)
+✔ transport errors are redacted, and a successful SDK retry can follow a definite rejection (0.847219ms)
+✔ uncertain timeout aborts its signal and refuses queued/retried dispatch (14.057395ms)
+✔ closing rejects late SDK writes; observed settlement is not labelled durable (0.562068ms)
+✔ trusted execution boundary can reject an obsolete generation before append (0.336676ms)
+✔ unknown append rejection is treated as possibly committed and is never retried by dispatch (0.397836ms)
+✔ full transcripts can exceed one append batch without truncation (35.884508ms)
+✔ whole-snapshot verification checks ordered main/subagent entries and produces readback-only digest (1.135603ms)
+✔ missing, changed, reordered, duplicated or omitted UUID-less transcript records fail verification (4.586528ms)
+✔ missing or extra subagent streams and missing main refuse (2.68772ms)
+✔ backend cannot return malformed/duplicate subkeys or invalid transcript entries (0.905844ms)
+ℹ tests 37
+ℹ suites 0
+ℹ pass 37
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1320.69804

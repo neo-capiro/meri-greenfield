@@ -1,0 +1,398 @@
+{
+  "status": "SOURCE_CHECKS_PASS_RUNTIME_HOLD",
+  "sourceCommit": "9d044f1396aa28e66987d0525ca2b21eda380d6b",
+  "sourceTree": "e34962f5a75a831c5485a451967c2c254902df8b",
+  "baseCommit": "7e4e3f8579b716148ce9c4d67e47fc497356e49e",
+  "sourceRecords": [
+    {
+      "path": "apps/control/qualification-sdk-fixture/ingress/test/worker-channel-loopback.test.mjs",
+      "bytes": 9198,
+      "sha256": "daf9e13aeff49c5e439ea00d791e0b02137bb44e1c302fd575d6f33807e05cdc"
+    },
+    {
+      "path": "apps/worker/qualification/.dockerignore",
+      "bytes": 1542,
+      "sha256": "7bab997b99912abb20f7b87a0dc93e4024acdb4b0ccb1bc9449b464834a7c54b"
+    },
+    {
+      "path": "apps/worker/qualification/Dockerfile",
+      "bytes": 18786,
+      "sha256": "3f86ae7ca55e8bbfb2814f1b335b7df8159daf9b5008df60f1165ba879c40f36"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/fixture-channel.mjs",
+      "bytes": 11858,
+      "sha256": "160929a1ac8ce647574fac5740294d117ab70230d0a040b6d37ca4ef5712ad0b"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/fixture-channel.test.mjs",
+      "bytes": 16419,
+      "sha256": "3d8eb0e88e6ae45c6f55b1303e1f2075344c044ed0eba4e39a0f7ca26994612c"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/fixture-sentinel.mjs",
+      "bytes": 8266,
+      "sha256": "4e5779fa84f149a4867e556e5fc7d20c644cd440a69f0ad4c6a7c4e8160324fd"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/fixture-sentinel.test.mjs",
+      "bytes": 14919,
+      "sha256": "73a14fea4fc24fd0a05f68523c4f9dbbbaf500dfd62f80225f8e93996f4e8ed7"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/resume-admission.mjs",
+      "bytes": 5948,
+      "sha256": "81b15faafc9f27b4e4107d7034708fd0f83a18caf09cbb367f03b7ef77701c9d"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/resume-admission.test.mjs",
+      "bytes": 8022,
+      "sha256": "5e53aaaf445c70dd7a56a55a3ea1ab2936a6eff86ed78b2dd04b072a79dfdb4f"
+    },
+    {
+      "path": "apps/worker/qualification/component-pins.json",
+      "bytes": 36019,
+      "sha256": "6c08b00a43ef6155333c0a891bd92eb0275e18767c3159282ccdef3e13c0793a"
+    },
+    {
+      "path": "apps/worker/qualification/package.json",
+      "bytes": 1143,
+      "sha256": "a32e658933bd058d2524cfb2112cf770e5be81827dbf5e789ddecbcab86e5d80"
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-interruption.mjs",
+      "bytes": 12617,
+      "sha256": "2764babd954e95f07caf964ac14e57ee8a5a7d148d1527f97d1af4ea16b9040f"
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-interruption.test.mjs",
+      "bytes": 21053,
+      "sha256": "93ab5df298ad95c5169f76247d5e0093bab585e9eec7bb46b3350cb61ffc1daa"
+    },
+    {
+      "path": "apps/worker/qualification/probes/static.test.mjs",
+      "bytes": 66109,
+      "sha256": "910044c4c16b9d8e523bef960d80aac5f66632817afd9a103cf3e277b762e6e1"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-G1-PHYSICAL-SENTINEL-20261011.md",
+      "bytes": 2389,
+      "sha256": "0f60ee0c3a7d75cf46b2668488cf914c07d2fa0cb0a56dce6c0a72d9ec2e4322"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-G1-RUNTIME-CREDENTIAL-SEPARATION-20261011.md",
+      "bytes": 3808,
+      "sha256": "456eab33d192314a5dfcd72f97ea8010f241b7358d627b78103b7463c57f0411"
+    },
+    {
+      "path": "package.json",
+      "bytes": 1879,
+      "sha256": "86c91825b9fbaf46d6110e607668daf4e50010d00790a1505629e770a11f3a86"
+    },
+    {
+      "path": "packages/contracts/qualification-sdk/validate.mjs",
+      "bytes": 14049,
+      "sha256": "2d0bd74171e390c370ad8d9e599f7c46ce4751e5efd6ba2c18923090b749b86c"
+    },
+    {
+      "path": "packages/contracts/test/sdk-fixture-contract.test.mjs",
+      "bytes": 18023,
+      "sha256": "98f2e73b0ebda0f8e896d07ed02b6f3b0351892dc5241cac98df584da1a3cc93"
+    },
+    {
+      "path": "scripts/qualification/sdk-stale-worker-challenge.mjs",
+      "bytes": 3542,
+      "sha256": "8cf5066f6c1be96b88bc99111da914bb88ad2dcd5fe4c75acaffc562382b01b3"
+    },
+    {
+      "path": "scripts/qualification/sdk-stale-worker-challenge.test.mjs",
+      "bytes": 4974,
+      "sha256": "6532e5d81839d107e2bf74eef56f58dee4492d8d3464a736c45890ccb1304077"
+    },
+    {
+      "path": "scripts/qualification/worker_context.py",
+      "bytes": 11723,
+      "sha256": "48f065d0ad61f98ba571c89dcd62141e6f8c9b272f0d371331d74a0dabf87851"
+    },
+    {
+      "path": "scripts/qualification/worker_context_test.py",
+      "bytes": 11156,
+      "sha256": "42ebe4455171806243a8459ea0194038264026af1605a0744bca3f303c3e5d87"
+    },
+    {
+      "path": "scripts/qualification/worker_source_pins.py",
+      "bytes": 4310,
+      "sha256": "1708650ce0e347a974bd8621018c8ad8723985d68ecb1f707a98b40a57df2a6a"
+    },
+    {
+      "path": "scripts/qualification/worker_source_pins_test.py",
+      "bytes": 3322,
+      "sha256": "d8e6d32ec88b1991fe7db07183308fa38465d77af0143a2344e543bff8dfbbe0"
+    }
+  ],
+  "checks": [
+    {
+      "name": "sdk-evidence",
+      "command": [
+        "npm",
+        "run",
+        "check:sdk-evidence"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "elapsedSeconds": 20.617,
+      "stdout": {
+        "bytes": 32517,
+        "sha256": "39df2a736d7c828628ed16ca16c08f43834bdf58ad9fa621989a5893d0934346"
+      },
+      "stderr": {
+        "bytes": 99,
+        "sha256": "7125f194612fcff2f454c05d848e7cb71facc1967b4d5017e25b34fdee3ba74f"
+      }
+    },
+    {
+      "name": "root-contracts",
+      "command": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "elapsedSeconds": 3.139,
+      "stdout": {
+        "bytes": 16892,
+        "sha256": "40cefa2065aa83b452ac58eb323d16017c2469ae6cba2358a04ee66795848d16"
+      },
+      "stderr": {
+        "bytes": 99,
+        "sha256": "7125f194612fcff2f454c05d848e7cb71facc1967b4d5017e25b34fdee3ba74f"
+      }
+    },
+    {
+      "name": "public-distribution",
+      "command": [
+        "npm",
+        "run",
+        "check:contracts:distribution"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "elapsedSeconds": 5.024,
+      "stdout": {
+        "bytes": 2045,
+        "sha256": "585d8dc437145e0b72bbda79175596dcb9293f0745cc6b01c8bc0eafeec31449"
+      },
+      "stderr": {
+        "bytes": 495,
+        "sha256": "1d2e4b8fa2e909d95849309780183545b5157cda35be2b38da2441d8f7032d03"
+      }
+    },
+    {
+      "name": "worker-package",
+      "command": [
+        "npm",
+        "test",
+        "--prefix",
+        "apps/worker/qualification"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "elapsedSeconds": 1.888,
+      "stdout": {
+        "bytes": 19170,
+        "sha256": "196094a566a16f6ca4c7459106b2bb861a4504825bccef8867ff5366dbfbc405"
+      },
+      "stderr": {
+        "bytes": 99,
+        "sha256": "7125f194612fcff2f454c05d848e7cb71facc1967b4d5017e25b34fdee3ba74f"
+      }
+    },
+    {
+      "name": "control-service",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "apps/control/qualification-sdk-fixture/service/test/control.test.mjs",
+        "apps/control/qualification-sdk-fixture/service/test/handlers.test.mjs",
+        "apps/control/qualification-sdk-fixture/service/test/native-evidence-publisher.test.mjs",
+        "apps/control/qualification-sdk-fixture/service/test/native-evidence.test.mjs",
+        "apps/control/qualification-sdk-fixture/service/test/registry-ingress.test.mjs",
+        "apps/control/qualification-sdk-fixture/service/test/s3-checkpoint.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "elapsedSeconds": 3.922,
+      "stdout": {
+        "bytes": 3931,
+        "sha256": "13647f6f31d2c4712e945f3706a5161318f5428eb89dce7d10af608024a37c17"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "mtls-ingress",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "apps/control/qualification-sdk-fixture/ingress/test/ingress.test.mjs",
+        "apps/control/qualification-sdk-fixture/ingress/test/worker-channel-loopback.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "elapsedSeconds": 2.453,
+      "stdout": {
+        "bytes": 2812,
+        "sha256": "d1af87af7411d5fd52d886a7fc90447e6ed31689be1fe9e8e233d5f8a6577a5b"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "source-context",
+      "command": [
+        "python",
+        "-m",
+        "unittest",
+        "scripts.qualification.worker_context_test",
+        "scripts.qualification.worker_source_pins_test"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "elapsedSeconds": 0.811,
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "bytes": 120,
+        "sha256": "77ae3f1ff490553c099b8b0afa87f9f2d444bb16aea9c754df6fa87dd17d72f6"
+      }
+    },
+    {
+      "name": "source-pins",
+      "command": [
+        "python",
+        "scripts/qualification/worker_source_pins.py",
+        "--check"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "elapsedSeconds": 0.055,
+      "stdout": {
+        "bytes": 69,
+        "sha256": "c8d7c07562d4a07cccd13da9fa712e4beb599e8f62382a42f73ca31c379d3465"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "context-assembly",
+      "command": [
+        "python",
+        "scripts/qualification/worker_context.py",
+        "--output",
+        "/workspace/scratch/853fba62b1f1/meri-g1-combined-source/.task-inputs/runtime-delta-final-20261011-3/worker-context"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "elapsedSeconds": 0.088,
+      "stdout": {
+        "bytes": 63,
+        "sha256": "7635d7d53c0d46e0dbb6e996b4ba103f8b4cfb1ce6f2f80e595f5ca5e6ac79d9"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "driver-help",
+      "command": [
+        "node",
+        "apps/worker/qualification/probes/sdk-interruption.mjs",
+        "--help"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "elapsedSeconds": 0.471,
+      "stdout": {
+        "bytes": 113,
+        "sha256": "33bda6b5766c63bbbfc449dc6e40b4c4fdadc1cd6557c007ab05426879adc5e8"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "driver-missing",
+      "command": [
+        "node",
+        "apps/worker/qualification/probes/sdk-interruption.mjs"
+      ],
+      "exitCode": 2,
+      "expectedExitCode": 2,
+      "elapsedSeconds": 0.472,
+      "stdout": {
+        "bytes": 100,
+        "sha256": "28c4c95cb8c70bc04b85344c1d351e63336aff0978178cb77cf7b9af0e478ac3"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "source-pins-help",
+      "command": [
+        "python",
+        "scripts/qualification/worker_source_pins.py",
+        "--help"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "elapsedSeconds": 0.049,
+      "stdout": {
+        "bytes": 366,
+        "sha256": "4a368de41442ed11a7d25f42531c939b053ba91dcde87224d3cfe5090535da6c"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "source-pins-missing",
+      "command": [
+        "python",
+        "scripts/qualification/worker_source_pins.py"
+      ],
+      "exitCode": 2,
+      "expectedExitCode": 2,
+      "elapsedSeconds": 0.033,
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "bytes": 133,
+        "sha256": "f202a1bd67ccf9abf5f4799e46d2a451d49c7fd3ff0b283e377955daa495484f"
+      }
+    }
+  ],
+  "awsOperations": 0,
+  "imageBuilds": 0,
+  "nativeSdkRuns": 0,
+  "providerCalls": 0,
+  "completeRecoveryCheckpoint": false,
+  "sessionStoreQualified": false
+}

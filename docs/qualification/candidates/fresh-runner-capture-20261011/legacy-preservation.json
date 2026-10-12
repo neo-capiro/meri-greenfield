@@ -1,0 +1,59 @@
+{
+  "baseCommit": "19d64a1b5446337ad10a0068229164133756a073",
+  "files": [
+    {
+      "path": "scripts/qualification/worker_image_build.py",
+      "bytes": 33018,
+      "sha256": "7a50f535486e343aa534f32d7359c8281021dbe4ee5f88bb654ebb45675464b9",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "scripts/qualification/worker_build_binding.py",
+      "bytes": 6869,
+      "sha256": "6daff67b434e78824ee211803139a417bd23c6a3bb02dc0429695d86f5e1af53",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "scripts/qualification/worker_image_manifest.py",
+      "bytes": 1475,
+      "sha256": "9a080fa6a1fce15379e1f55e2fba1d3c6f7bff2c4c96743ae3794c8ae27da134",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "scripts/qualification/worker_image_collect.py",
+      "bytes": 29750,
+      "sha256": "b9d7d634aba85c9339d683e4638f30862ff45f005616cbe23dc534184801075f",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "scripts/qualification/worker_image_publish.py",
+      "bytes": 11611,
+      "sha256": "da1cb478d3048c7b102f90203f6bb3080d8002502d18c7a7711cd86dd2f795fa",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "scripts/qualification/worker_image_scan.py",
+      "bytes": 9958,
+      "sha256": "d85a402b80df5a701dcc1f132c10eeab93885c9ada8aa1e46a90a08ef5dc27e0",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "scripts/qualification/aws_evidence.py",
+      "bytes": 12447,
+      "sha256": "972db83fe90c28fa1cc5c2c56d9e9a4f2dea66a9416db75abba7e01b12b51a04",
+      "unchangedFromBase": true
+    }
+  ],
+  "awsRequests": 0,
+  "legacyPinsOrAuthorityChanged": false,
+  "earlierProofAttempt": {
+    "argv": [
+      "git",
+      "show",
+      "19d64a1b5446337ad10a0068229164133756a073:scripts/qualification/worker_image_context.py"
+    ],
+    "exitCode": 128,
+    "reason": "incorrect nonexistent path; corrected to actual canonical source names",
+    "lazyFetchDisabled": true
+  }
+}

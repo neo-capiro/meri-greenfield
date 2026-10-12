@@ -35,6 +35,10 @@ OPTIONS = {
               "--ssekms-key-id", "--checksum-algorithm", "--checksum-sha256", "--metadata",
               "--version-id", "--checksum-mode"},
 }
+COMMAND_OPTIONS = {
+    # The scan takes one image; other ECR reads retain their plural vocabulary.
+    ("ecr", "describe-image-scan-findings"): {"--repository-name", "--image-id"},
+}
 ALLOWED = {
     "sts": {"get-caller-identity"},
     "cloudformation": {"validate-template", "create-change-set", "describe-change-set",
@@ -124,8 +128,10 @@ def validate_timeout(arguments, timeout):
         raise ValueError("upload body drift or checksum mismatch")
 
 
-def capture(out, label, arguments, timeout=45):
+def capture(out, label, arguments, timeout=45, *, profile=PROFILE):
     """Run one admitted operation once and retain binary stdout/stderr and envelope."""
+    if type(profile) is not str or profile not in (PROFILE, 'default'):
+        raise ValueError('unapproved AWS profile')
     if not re.fullmatch(r"[a-z0-9][a-z0-9-]{0,79}", label):
         raise ValueError("invalid evidence label")
     if len(arguments) < 2 or arguments[1] not in ALLOWED.get(arguments[0], set()):
@@ -133,7 +139,7 @@ def capture(out, label, arguments, timeout=45):
     # History consumers bind each raw service page and its explicit nextToken.
     # Keep all previous callers unchanged; this flag is admitted only for that
     # one read operation and cannot become a global-option escape hatch.
-    options = OPTIONS[arguments[0]]
+    options = COMMAND_OPTIONS.get(tuple(arguments[:2]), OPTIONS[arguments[0]])
     if arguments[:2] == ["stepfunctions", "get-execution-history"]:
         options = options | {"--no-paginate"}
     if arguments.count("--no-paginate") > 1:
@@ -145,15 +151,16 @@ def capture(out, label, arguments, timeout=45):
     validate_timeout(arguments, timeout)
     destination = Path(out).resolve() / label
     destination.mkdir(parents=True, exist_ok=False)
-    argv = [AWS, *arguments, "--profile", PROFILE, "--region", REGION, "--output", "json", "--no-cli-pager",
+    argv = [AWS, *arguments, "--profile", profile, "--region", REGION, "--output", "json", "--no-cli-pager",
             "--cli-connect-timeout", "10", "--cli-read-timeout", "30"]
-    # Only the trusted named local profile supplies identity; ambient endpoint,
+    # Only the validated local profile supplies identity; ambient endpoint,
     # config-file, credential and transport-proxy overrides are removed.
     environment = {key: value for key, value in os.environ.items()
                    if not key.upper().startswith("AWS_")
                    and key.upper() not in {"BOTO_CONFIG", "HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY", "NO_PROXY",
                                            "REQUESTS_CA_BUNDLE", "CURL_CA_BUNDLE", "SSL_CERT_FILE", "SSL_CERT_DIR"}}
     environment.update(AWS_MAX_ATTEMPTS="1", AWS_RETRY_MODE="standard", AWS_PAGER="",
+                       AWS_CLI_OUTPUT_ENCODING="UTF-8",
                        AWS_IGNORE_CONFIGURED_ENDPOINT_URLS="true",
                        AWS_CONFIG_FILE=str(Path.home() / ".aws" / "config"),
                        AWS_SHARED_CREDENTIALS_FILE=str(Path.home() / ".aws" / "credentials"))

@@ -1,0 +1,22 @@
+✔ registers exactly the ten typed additions while preserving all139/96/43 boundaries (7.620489ms)
+✔ every binding resolves the correct existing definition and exact raw schema hash (6.622198ms)
+✔ allknown input/output hash, foreign definition and version substitutions refuse (145.810113ms)
+✔ missing, foreign and incorrectly remapped registered operations refuse (7.666307ms)
+✔ aliases, cycles and forbidden unrestricted query identifiers retain refusal guards (12.259456ms)
+✔ everycurrent descriptor stays pending/null; fabricated executable metadata cannot expose it (28.155169ms)
+✔ resolver refuses unknown versions and unsafe references without invoking getters (0.440149ms)
+✔ family default materialization and argument digest happen before dispatch (3.156992ms)
+✔ data-search normalized domains, cursors and conditional memory retain canonical behavior (3.46755ms)
+✔ mail defaults/context and meeting inventory/body modes reuse their original domain rules (10.301289ms)
+✔ federal output uses actual family paging invariants and retains unproven total relation (0.879897ms)
+✔ real calendar DTO validates only with its original request and explicit trusted clock (6.887519ms)
+✔ normalizer data ownership prevents accessor/proxy/toJSON effects and caller mutation (0.503352ms)
+✔ private JSON admission bounds deep, wide and oversized values before family execution (10.615953ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1391.738876

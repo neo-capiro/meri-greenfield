@@ -1,0 +1,31 @@
+{
+  "label": "cli-help",
+  "sourceCommit": "4b8bbe7c110db70079f011a2407d7d616e8ebfbd",
+  "argv": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "-I",
+    "-B",
+    "-S",
+    "scripts/qualification/worker_runner_capture.py",
+    "--help"
+  ],
+  "supervisorTimeoutSeconds": 30,
+  "physicalExitCode": 0,
+  "expectedExitCode": 0,
+  "timedOut": false,
+  "elapsedSeconds": 0.07,
+  "ownedProcessGroupAbsent": true,
+  "tmpEntriesAfter": [],
+  "streams": {
+    "stdout": {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/independent-review-20261012/cli-help.stdout.bin",
+      "bytes": 456,
+      "sha256": "7de1e0098ced95e6dce49f770700da26c171d9cf76ba0f2a39f23092da6492fb"
+    },
+    "stderr": {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/independent-review-20261012/cli-help.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

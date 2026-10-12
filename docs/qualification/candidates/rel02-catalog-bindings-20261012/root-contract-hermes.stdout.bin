@@ -1,0 +1,294 @@
+✔ fixture conforms to frozen 0.1.0 WorkspaceManifest and ApprovalProposal shapes (4.578686ms)
+✔ accepts the portable workspace and the unchanged approved command (6.582287ms)
+✔ rejects traversal and non-portable workspace paths before restoration (1.049936ms)
+✔ rejects a mutated approved command argument (0.316806ms)
+✔ rejects a mutated attachment version (0.319762ms)
+✔ accepts portable manifests and immutable proposals (7.221008ms)
+✔ rejects unsafe workspace paths before restoration (1.071799ms)
+✔ rejects duplicate paths and unsupported symlinks (0.383034ms)
+✔ rejects changed approved arguments, input versions and tenant approvers (0.74645ms)
+✔ rejects unknown protocol versions, loose identity fields and unsafe integers (0.707882ms)
+✔ canonical hashes are key-order independent and bind every command input (0.31218ms)
+✔ event envelope requires typed payload, scopes and positive durable sequence (13.311079ms)
+✔ rejects file ancestors regardless of manifest insertion order (0.672591ms)
+✔ truncated scans cannot claim complete coverage (0.777886ms)
+✔ approval survives executor replacement while approved intent stays immutable (4.660485ms)
+✔ all ten frozen variants agree through deliberate browser and Node exports (70.967498ms)
+✔ closed fields, dates, scopes, payloads and safe integer bounds retain strict rejection (12.631423ms)
+✔ structural validation deliberately grants no tenant authorization (0.489692ms)
+✔ public metadata binds the exact unchanged schema and cannot mutate its vocabulary (0.929349ms)
+✔ generated browser ESM evaluates without Node globals, builtins or external imports (95.669308ms)
+✔ generator help and invalid arguments exit before generation (178.596884ms)
+✔ generated distribution check is independent of caller working directory (2141.358859ms)
+✔ registers exactly the ten typed additions while preserving all139/96/43 boundaries (16.69592ms)
+✔ every binding resolves the correct existing definition and exact raw schema hash (11.028239ms)
+✔ allknown input/output hash, foreign definition and version substitutions refuse (274.399191ms)
+✔ missing, foreign and incorrectly remapped registered operations refuse (12.325491ms)
+✔ aliases, cycles and forbidden unrestricted query identifiers retain refusal guards (24.845508ms)
+✔ everycurrent descriptor stays pending/null; fabricated executable metadata cannot expose it (80.732543ms)
+✔ resolver refuses unknown versions and unsafe references without invoking getters (0.609799ms)
+✔ family default materialization and argument digest happen before dispatch (6.796974ms)
+✔ data-search normalized domains, cursors and conditional memory retain canonical behavior (1.827803ms)
+✔ mail defaults/context and meeting inventory/body modes reuse their original domain rules (29.687201ms)
+✔ federal output uses actual family paging invariants and retains unproven total relation (0.97726ms)
+✔ pins the schema id and the frozen domain and query-class vocabularies literally (2.387878ms)
+✔ normalizes a minimal selector with the frozen defaults and omits an empty query (2.229605ms)
+✔ normalizes a full selector and derives the frozen retrieval request selectors (0.688174ms)
+✔ keeps clientId a non-authoritative selector (0.812747ms)
+✔ enforces the conditional memoryItemId rule (0.871544ms)
+✔ scopes opaque cursors to requested domains and bounds their length (0.600064ms)
+✔ bounds the domain list and de-duplicates in first-seen order (0.566395ms)
+✔ bounds the query, queryClass, pageSize and window selectors (0.763064ms)
+✔ refuses unknown input properties and non-inert input data (0.616268ms)
+✔ validates the frozen result envelope and the tool envelope (6.347383ms)
+✔ discloses the result relations that are deliberately not asserted (0.366ms)
+✖ declares every schema reference locally and closes every result shape (4.960939ms)
+✔ imports and runs with no filesystem, network or process side effect (1640.814744ms)
+✔ canonical structural ownership preserves the closed data-search definition boundary (1.000985ms)
+✔ canonical composition retains selector relations beyond generic structural shape checks (3.691459ms)
+✔ raw query and domain bounds still precede normalization without mutating callers (0.76661ms)
+✔ exposes five distinct operation IDs each pinned to one schema definition (1.842344ms)
+✔ accepts one positive shape for each of the five operation families (3.9638ms)
+✔ materializes page/limit defaults only when absent without mutating the caller input (0.582378ms)
+✔ enforces the shared page (1-10000) and limit (1-25) bounds (0.554416ms)
+✔ bounds fiscalYear to 1900-2200 wherever the shape allows it (0.449713ms)
+✔ contract vehicles exclude and explicitly reject fiscalYear (0.256568ms)
+✔ district federal market requires both state and district (0.534147ms)
+✔ normalizes state/district casing and refuses malformed or non-string geography (6.082653ms)
+✔ fails closed on unknown fields and refuses string-to-number coercion (0.992132ms)
+✔ clientId is inert data and never authority (0.527728ms)
+✔ keeps the forecast global-query boundary explicit (0.453598ms)
+✔ module is a pure import with no network or storage effects (1284.963145ms)
+✔ exposes one distinct structural output definition per federal-market operation (0.456332ms)
+✔ accepts one positive structural result for each of the five output families (5.466194ms)
+✔ enforces declared result fields, nullability and row source literals (1.410699ms)
+✔ keeps the state-only subaward rail separate from district attribution (0.896211ms)
+✔ enforces the paged-result paging boundary established by the frozen pageResult (1.63563ms)
+✖ asserts no freshness, coverage, authorization or date format on result shapes (1.49984ms)
+✔ canonical structural owner resolves federal definitions without widening the federal family (1.674797ms)
+✔ canonical structural checks compose with federal paging rules rather than replacing them (0.321043ms)
+✔ materializes verified legacy defaults without mutating strict input (2.512452ms)
+✔ rejects coercion, null numeric values, injected authority and unsupported subjects (3.187376ms)
+✔ preserves exact numeric bounds and requires message identity for body continuation (0.416023ms)
+✔ mail external DTO accessors and cycles refuse before executing getters (1.166459ms)
+✔ stored disconnected reads remain transport-only with unknown immutable identities (20.388481ms)
+✔ UTF-16 offsets count a surrogate pair as two units and permit its legacy split (20.043312ms)
+✔ late decisive body section remains an unresolved read despite ending the stored body (1.353704ms)
+✔ offset beyond stored body is disclosed empty transport, not absent material (0.914428ms)
+✔ all upstream completeness states stay incomplete and missing differs from empty (1.515683ms)
+✔ unknown body size and snapshot cannot imply completion (1.116445ms)
+✔ selection and exact normalized argument digest must agree with original request (0.993834ms)
+✔ personal/client request and resolved subject agree without broadening authority (1.006503ms)
+✔ denied source cannot contribute; mixed source accounting keeps eligible stored read (0.780971ms)
+✔ message count and continuation use the filtered message collection (0.920356ms)
+✔ unknown message totals cannot invent next positions or aggregate totals (4.766072ms)
+✔ body continuation inventory, page bounds and truncation agree (1.772963ms)
+✔ duplicate messages cannot inflate count using another citation or version (0.417716ms)
+✔ transport refuses absence, evidence-ready, complete enumeration and cursor guarantees (10.633759ms)
+✔ empty stored thread page never certifies absence (0.444164ms)
+✔ concrete catalog preserves every ledger ID/boundary and thirteen unavailable mappings (4.951295ms)
+✔ mail descriptor raw-byte schema pins and exact definition IDs cannot drift (17.366738ms)
+✔ no skill can expose the pending mail operation (5.535075ms)
+✔ mail schema objects stay closed and package public exports stay 0.1 only (1.836666ms)
+✔ mailbox identity and authoritative body lineage cannot be substituted (1.575802ms)
+✔ list/search defaults are strict inert normalized DATA with no clock invention (5.579612ms)
+✔ search literal terms remain distinct AND filters and keyword-free scoped search is valid (0.31927ms)
+✔ list/search getters hidden fields null and nonfinite values are refused without effects (0.35963ms)
+✔ candidate query inclusive anchor is separate from exclusive requester window (38.59034ms)
+✔ message totals and page-only groups differ; exhausted preview never proves absence (5.598458ms)
+✔ continuation binds retained anchor filters actor window and message offset (6.720602ms)
+✔ dedup is mailbox-specific; order nulls-last and immutable versions are conservative (1.949923ms)
+✔ authorization source and mailbox scopes are independent of connection state (5.67452ms)
+✔ preview has no body offsets size guarantee or recipient completeness upgrade (2.47742ms)
+✔ search page operation groups counts filters and all pending descriptor pins are closed (61.638379ms)
+✔ cross-mailbox identical internet IDs stay distinct stored candidates (2.202324ms)
+✔ offset ceiling keeps hasMore true with null nextOffset and no completeness (4.569733ms)
+✔ empty search and unknown stored totals cannot become complete or absent (1.621479ms)
+✔ upcoming calendar inventory materializes verified defaults without mutating strict input (2.097731ms)
+✔ upcoming calendar inventory rejects coercion, extra authority, bounds and missing trusted clock (1.209442ms)
+✔ bounded calendar page counts returned rows and never claims whole history (21.33144ms)
+✔ debrief list and exact-body modes keep distinct normalized selections and defaults (1.56102ms)
+✔ debrief inputs refuse missing client, foreign fields, mode confusion and cursor substitution (0.704728ms)
+✔ debrief exact body windows, hashes and decisive reads stay exact (26.565733ms)
+✔ debrief list pages cannot claim complete history without a completed body pass (3.355854ms)
+✔ meeting reads keep inventory and exact-source-body modes separate (1.217103ms)
+✔ meeting inputs refuse missing/foreign client scope and mode substitution (0.755393ms)
+✔ meeting inventory discloses restricted, omitted and paginated coverage (48.849596ms)
+✔ exact meeting source bodies bind hash, byte and window provenance (19.069038ms)
+✔ cursor reuse is disclosed but never authenticated by this pending contract (10.049207ms)
+✔ meeting external DTO accessors, cycles and non-finite values refuse before executing getters (0.510062ms)
+✔ shared collaborators are delegated, not re-implemented, and still have teeth (1.972206ms)
+✔ meeting pages enforce canonical single-subject cardinality and roster rules (1.816046ms)
+✔ meeting pages enforce canonical timezone and calendar-week boundaries (9.29123ms)
+✔ meeting source observations retain their pending timestamp boundary (0.867468ms)
+✔ meeting schema objects stay closed and package public exports stay 0.1 only (0.580695ms)
+✖ no catalog operation, descriptor or skill exposes the pending meeting source contract (27.261437ms)
+✔ task read materializes verified defaults without mutating strict input (6.743666ms)
+✔ task read rejects coercion, extra authority, bounds, unknown status and missing trusted context (1.458168ms)
+✔ client-scoped task page pins scope, identity, provenance and honest coverage (37.325656ms)
+✔ authorized-tasks page derives overdue only when unscoped and never invents client scope (1.464207ms)
+✔ task pagination resumes only by a disclosed cursor and never claims complete absence (8.824663ms)
+✔ action-item read keeps the client-scoped exact read distinct from the pending unscoped list (1.433152ms)
+✔ client-scoped action-item page pins scope, order, identity and provenance (26.950609ms)
+✔ action-item page resumes page >= 2 only with a cursor and binds linked evidence (1.823697ms)
+✔ operational-read DTO accessors, cycles and non-finite values refuse before executing getters (0.489401ms)
+✔ shared collaborators are delegated, not re-implemented, and still have teeth (7.154241ms)
+✔ task pages enforce canonical single-subject and authorized-roster identities (8.223727ms)
+✔ task pages enforce canonical timezone and calendar-month boundaries (23.150681ms)
+✔ operational source observations retain their pending timestamp boundary (1.365512ms)
+✔ operational-read schema objects stay closed and package public exports stay 0.1 only (0.944972ms)
+✖ no catalog operation, descriptor or skill exposes the pending operational-read contracts (9.82093ms)
+✔ preserves all139 native IDs and exact accepted96/43 selections (18.174198ms)
+✔ rejects missing/contradictory mappings and unavailable handlers (25.356911ms)
+✔ rejects ambiguous aliases, canonical shadowing and replacement cycles (12.626945ms)
+✔ distinguishes client/portfolio/personal identity and server lineage (3.651791ms)
+✔ accepts DST calendar week and explicit Monday/Sunday policy (27.176733ms)
+✔ keeps calendar periods, fixed relative durations and FY/stage/revision distinct (5.866985ms)
+✔ permits complete authoritative zero count and denies incomplete false absence (13.529194ms)
+✔ candidate search cannot invent a total or certify absence (1.199738ms)
+✔ complete exact history binds every returned record and its zero total (5.535946ms)
+✔ snippets require follow-up; source reads contain full decisive content (2.08372ms)
+✔ enforces coverage/source/freshness/count and failure consistency (3.263108ms)
+✔ domain comparisons require compatible revision/stage/units (2.72163ms)
+✔ all14 skill IDs are retained without adding historical built-ins (4.028596ms)
+✔ skill requirements cannot reference absent, disabled or insufficient operations (15.956019ms)
+✔ manifest/catalog pins and lifecycle versions survive reconnect/resume/fork (16.019594ms)
+✔ closed selected invocation carries identity/version plus typed scope/window (4.372482ms)
+✔ strict0.1 readers remain strict and0.2 never silently upgrades them (5.070631ms)
+✔ immutable record-version identity cannot be inflated by citations or substituted content (3.830634ms)
+✔ record-version tuple identity separates delimiter collisions, versions and sources (2.114476ms)
+✔ denied or unavailable source state cannot contribute returned candidate evidence (3.473397ms)
+✔ mixed checked or partial and denied sources retain legitimate disclosed partial records (6.198273ms)
+✔ four fixed operations round-trip while retaining original producer and partial flags (42.313826ms)
+✔ fixture receipt is rejected by product Checkpoint and absent from public package exports (5.595024ms)
+✔ partial flags, closed profile and object-storage URLs cannot be upgraded or supplied (2.902787ms)
+✔ reference binds every receipt field; rehashed foreign producer still refuses (4.140301ms)
+✔ original D720/C900 and current grant lifetime are exact and never reset (0.885014ms)
+✔ replacement must be fresh, different and fully mapped with higher fence (27.802064ms)
+✔ expired producer grant can remain provenance; replacement current grant cannot expire (2.513704ms)
+✔ missing/foreign/duplicate native members and file-parent ambiguities refuse (5.902528ms)
+✔ opaque bytes survive; changed bytes, hash, size and noncanonical base64 refuse (7.326394ms)
+✔ private sentinel validation retains fixed path, 64KiB bound and canonical byte integrity (1.35704ms)
+✔ stored object version/hash/readback/inventory substitution refuses after transfer (21.90857ms)
+✔ workspace is exactly one safe synthetic nonexecutable sentinel with producer binding (13.963845ms)
+✔ evidence and storage scopes require exact original tenant/policy and positive bounded bytes (9.246964ms)
+✔ only explicit validated stale denial is a denial witness; unknown/errors never return false (7.477458ms)
+✔ authorization decisions are correlated, time bounded and not accepted for another producer (7.737432ms)
+✔ stale denial cannot predate its named replacement admission (1.571035ms)
+✔ unknown operations, phase confusion and missing product-incomplete flags refuse (2.270155ms)
+✔ nonfinite numbers, cycles, accessors and sparse arrays refuse without reading getters (1.086111ms)
+✔ canonical fixture wire encodes and decodes all four fixed operations without mutation (31.413075ms)
+✔ trusted-service request decoder round-trips all four canonical worker operations as DATA (6.643083ms)
+✔ request decoder refuses invalid buffers, encoding, structure and expired context (23.639211ms)
+✔ request decoder refuses noncanonical duplicate, whitespace, number and escape forms (2.980661ms)
+✔ wire refuses invalid UTF8 BOM truncation and non-object responses (12.354033ms)
+✔ wire canonical equality rejects duplicates whitespace escapes and alternate numeric forms (10.306777ms)
+✔ wire schema correlation future decision and error replies never become stale false (3.600295ms)
+✔ wire raw cap precedes parse and nested/nonfinite parsed data refuses (35.247244ms)
+✔ wire request validation rejects hidden/accessor/unknown operations before serialization (1.674848ms)
+✔ wire accepts only exact validated stale denial and keeps original producer binding (2.826144ms)
+✔ schema owns the immutable four-kind lifecycle vocabulary (4.300486ms)
+✔ inconsistent base64 refuses before allocating a decoded file buffer (21.701204ms)
+✔ four canonical signed observation records round-trip without altering opaque capture (11.715862ms)
+✔ signing bytes omit only signature and support strictly validated unsigned input (5.281051ms)
+✔ alternate JSON, duplicate keys, trailing bytes, corrupt UTF-8 and oversized inputs refuse (3.907658ms)
+✔ closed grammar refuses added authority, missing facts and kind/sequence confusion (7.538257ms)
+✔ nonempty interrupt queues and unsuccessful quiescence/stream flags refuse (3.937456ms)
+✔ safe integer bounds, accessors, cycles and noncanonical signatures refuse without getter reads (2.575635ms)
+✔ capture refuses altered raw bytes, sentinel hashes, foreign namespace and unsafe paths (3.146717ms)
+ℹ tests 198
+ℹ suites 0
+ℹ pass 194
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4098.719358
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-data-search.test.mjs:398:1
+✖ declares every schema reference locally and closes every result shape (4.960939ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'mapped'
+  - 'pending'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/853fba62b1f1/meri-rel02-catalog-bindings-20261012/packages/contracts/test/retrieval-data-search.test.mjs:438:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'mapped',
+    expected: 'pending',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-federal-market.test.mjs:420:1
+✖ asserts no freshness, coverage, authorization or date format on result shapes (1.49984ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/853fba62b1f1/meri-rel02-catalog-bindings-20261012/packages/contracts/test/retrieval-federal-market.test.mjs:440:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-meeting-source.test.mjs:369:1
+✖ no catalog operation, descriptor or skill exposes the pending meeting source contract (27.261437ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert(!catalog.operations.some(operation => operation.operation.id === id || operation.aliases.includes(id)))
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/853fba62b1f1/meri-rel02-catalog-bindings-20261012/packages/contracts/test/retrieval-meeting-source.test.mjs:373:5)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-operational-reads.test.mjs:402:1
+✖ no catalog operation, descriptor or skill exposes the pending operational-read contracts (9.82093ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert(!catalog.operations.some(operation => operation.operation.id === id || operation.aliases.includes(id)))
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/853fba62b1f1/meri-rel02-catalog-bindings-20261012/packages/contracts/test/retrieval-operational-reads.test.mjs:406:5)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

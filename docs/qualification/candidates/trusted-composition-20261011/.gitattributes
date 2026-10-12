@@ -1,0 +1,5 @@
+# Retain captured process streams byte-for-byte, including original whitespace.
+stdout binary
+stderr binary
+*.stdout binary
+*.stderr binary

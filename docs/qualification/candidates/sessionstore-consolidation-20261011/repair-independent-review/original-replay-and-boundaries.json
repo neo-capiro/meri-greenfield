@@ -1,0 +1,25 @@
+{
+  "sourceCommit": "680f09cef6e97bee101d09c9d39ab325c0af2007",
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "docs/qualification/candidates/sessionstore-consolidation-20261011/repair-independent-review/original-replay-and-boundaries.mjs"
+  ],
+  "externalTimeoutSeconds": 30,
+  "timeout": false,
+  "physicalExitCode": 0,
+  "elapsedSeconds": 1.038,
+  "processGroupAbsent": true,
+  "streams": {
+    "stdout": {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/repair-independent-review/original-replay-and-boundaries.stdout.bin",
+      "bytes": 430,
+      "sha256": "09dbe43fdde66b64bef936a9b5176a75d89a1fa74e44efb618a1492b54507204"
+    },
+    "stderr": {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/repair-independent-review/original-replay-and-boundaries.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "scriptSha256": "9f2438e012178784e2d02dec7cdfa236a556bab94da150b9da4acfcaf817cb15"
+}

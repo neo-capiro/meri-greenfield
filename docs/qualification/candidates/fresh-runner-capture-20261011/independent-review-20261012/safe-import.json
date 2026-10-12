@@ -1,0 +1,31 @@
+{
+  "label": "safe-import",
+  "sourceCommit": "4b8bbe7c110db70079f011a2407d7d616e8ebfbd",
+  "argv": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "-I",
+    "-B",
+    "-S",
+    "-c",
+    "import sys, subprocess, socket\nfrom pathlib import Path\nfrom unittest.mock import patch\nsys.path.insert(0, 'scripts/qualification')\nwith patch.object(subprocess, 'Popen', side_effect=AssertionError('import process')), patch.object(socket, 'socket', side_effect=AssertionError('import network')), patch.object(Path, 'open', side_effect=AssertionError('import data read')), patch.object(Path, 'mkdir', side_effect=AssertionError('import allocation')), patch.object(Path, 'unlink', side_effect=AssertionError('import removal')), patch.object(Path, 'rmdir', side_effect=AssertionError('import removal')):\n import worker_runner_inventory, worker_runner_capture\nprint('inert import PASS')\n"
+  ],
+  "supervisorTimeoutSeconds": 30,
+  "physicalExitCode": 0,
+  "expectedExitCode": 0,
+  "timedOut": false,
+  "elapsedSeconds": 0.09,
+  "ownedProcessGroupAbsent": true,
+  "tmpEntriesAfter": [],
+  "streams": {
+    "stdout": {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/independent-review-20261012/safe-import.stdout.bin",
+      "bytes": 18,
+      "sha256": "8384fd7494e6efdc7bddd4d2101183c7e9f397ad73fa6b05e9002a49627edd40"
+    },
+    "stderr": {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/independent-review-20261012/safe-import.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

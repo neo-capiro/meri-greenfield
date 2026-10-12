@@ -1,0 +1,46 @@
+✔ composition refuses a missing inspector before object or listener allocation (4.51374ms)
+﹣ A commit is versioned, B rereads it through the current fence, A is revoked (0.177071ms) # isolated PostgreSQL test database required
+✔ fixed handlers correlate committed A receipt and loaded/verified B bytes (56.49259ms)
+✔ a lost publication acknowledgement is reconciled to the exact receipt once (4.238904ms)
+✔ substituted stored publication bytes and uncertain foreign receipts refuse (6.852074ms)
+✔ a stale A commit is refused before object preparation (0.676827ms)
+✔ a disconnected commit leaves prepared objects uncommitted (1.026262ms)
+✔ a B grant revoked during object read refuses before returning loaded bytes (3.703135ms)
+✔ ordinary adapter refuses evidence writes including an attempted allowed-kind override (13.431486ms)
+✔ trusted evidence storage is create-only, producer-scoped, exact-version read back and authorizes both effects (21.757891ms)
+✔ stale, aborted or malformed trusted publication cannot produce an S3 effect (2.163176ms)
+✔ revocation after PUT forbids readback and uncertain writes are never retried (8.20719ms)
+✔ trusted adapter rejects wrong KMS, version, size and checksum on readback (12.473665ms)
+✔ publisher refuses oversized observations before copying or authorizing (33.795223ms)
+✔ publisher refuses inconsistent capture without cloning bulk input (39.71225ms)
+✔ publisher returns four scoped immutable references verified again by the independent inspector (28.184759ms)
+✔ publisher refuses stale currentness, foreign signed records and mismatched capture before writes (87.71322ms)
+✔ publisher rejects foreign admission, invalid IDs, accessors and cancellation without effects (42.028141ms)
+✔ publisher quarantines after an uncertain first object and rejects fabricated references (62.260587ms)
+✔ concurrent publications cannot both cross a pending authorization barrier (25.834136ms)
+✔ inspector reads all four exact immutable refs and verifies admitted signed capture (52.270149ms)
+✔ foreign admitted task, fence, session, image or policy refuses before any object read (22.205621ms)
+✔ re-signed foreign record producer, observer and process cannot rewrite owner admission (102.565935ms)
+✔ wrong signer, modified signed facts and descriptor/public-key mismatch refuse (16.871363ms)
+✔ reordered refs, impossible times, future observations and unexplained process failure refuse (65.887329ms)
+✔ documented intentional termination is distinguished from unknown/forced exit (121.402046ms)
+✔ valid different transcript or sentinel bytes refuse without checkpoint writes (37.391741ms)
+✔ corrupt/noncanonical bytes, version/hash substitution and oversized refs refuse (14.714145ms)
+✔ cancellation before or during reads refuses; dependency errors have fixed bounded output (9.545201ms)
+✔ construction is read-only and refuses omitted trust, expired clock and accessor admission (2.446004ms)
+✔ inspector snapshots capture and references before any asynchronous read (5.895575ms)
+✔ accessor object read results refuse without invoking getters (3.010205ms)
+﹣ real mTLS credentials reach PostgreSQL current-fence decisions across A and B (0.786279ms) # isolated PostgreSQL test database required
+✔ create-only S3 bundle/sentinel/receipt versions are reread and bound to publication (78.329327ms)
+✔ evidence refusal makes no S3 write; altered readback and foreign publication refuse (8.99488ms)
+✔ checkpoint writes the exact verified immutable capture despite caller mutation after verification (46.563046ms)
+✔ S3 adapter refuses a missing version and a stream beyond the read ceiling (2.459302ms)
+✔ native evidence reads only the producer-scoped immutable version and cannot be written through this adapter (1.582652ms)
+ℹ tests 38
+ℹ suites 0
+ℹ pass 36
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 2
+ℹ todo 0
+ℹ duration_ms 2149.870265

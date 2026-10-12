@@ -1,0 +1,31 @@
+{
+  "label": "source-tests",
+  "sourceCommit": "4b8bbe7c110db70079f011a2407d7d616e8ebfbd",
+  "argv": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "-I",
+    "-B",
+    "-S",
+    "-c",
+    "import sys, unittest\nsys.path.insert(0, 'scripts/qualification')\nresult = unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromName('test_worker_runner_capture'))\nraise SystemExit(not result.wasSuccessful())\n"
+  ],
+  "supervisorTimeoutSeconds": 30,
+  "physicalExitCode": 0,
+  "expectedExitCode": 0,
+  "timedOut": false,
+  "elapsedSeconds": 0.266,
+  "ownedProcessGroupAbsent": true,
+  "tmpEntriesAfter": [],
+  "streams": {
+    "stdout": {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/independent-review-20261012/source-tests.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stderr": {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/independent-review-20261012/source-tests.stderr.bin",
+      "bytes": 3398,
+      "sha256": "e953ebaf55d76c9a5a489da95bd842d4de77eb0cd31112c71235d3f1e9b68a7f"
+    }
+  }
+}

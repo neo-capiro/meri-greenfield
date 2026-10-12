@@ -1,0 +1,52 @@
+{
+  "schema": "meri-handover-original-inputs/1",
+  "files": [
+    {
+      "originalName": "Meri_Codex_Hermes_Deployment_Plan (1).md",
+      "path": "docs/handover/20261012/inputs/Meri_Codex_Hermes_Deployment_Plan.original.md",
+      "bytes": 44322,
+      "sha256": "948f5fa6b3d76f1e6df72496f85d7e09d25cc397bc0f8e1efe0ab58fe0eda560",
+      "libraryId": "libfile_263786bad34c8191aa198f87d82de6f2",
+      "purpose": "Original human-supplied context; authority subject to later decisions/R2/ownership handoff",
+      "credentialsIncluded": false
+    },
+    {
+      "originalName": "Meri_Greenfield_Agent_Plan(1).docx",
+      "path": "docs/handover/20261012/inputs/Meri_Greenfield_Agent_Plan.original.docx",
+      "bytes": 57656,
+      "sha256": "80a96320bde810214127919ddfe14659e3efd44d7ee7f6ae57d51527bc814ad7",
+      "libraryId": "libfile_02c79888060c819180969b4f468e4634",
+      "purpose": "Original human-supplied context; authority subject to later decisions/R2/ownership handoff",
+      "credentialsIncluded": false
+    },
+    {
+      "originalName": "Pasted markdown(20261011-232916).md",
+      "path": "docs/handover/20261012/inputs/Shared_Frontend_Handoff.original.md",
+      "bytes": 18193,
+      "sha256": "79e65d2f1ef597a045315553dd11e4ec9f78bf648ccb6fcd229f4742a9808581",
+      "libraryId": "libfile_5bb48826c4f08191b4fa436128906858",
+      "purpose": "Original human-supplied context; authority subject to later decisions/R2/ownership handoff",
+      "credentialsIncluded": false
+    },
+    {
+      "originalName": "Pasted text(20261011-225628).txt",
+      "path": "docs/handover/20261012/inputs/AWS_Shipper_Return.original.txt",
+      "bytes": 18923,
+      "sha256": "1347f16d39867c9edfe1581d6a8cabfb5ab1c391e595d4d1b9e2e80e79ef9804",
+      "libraryId": "libfile_71a6aff1f2f0819191a4334e6a52c2fe",
+      "purpose": "Original human-supplied context; authority subject to later decisions/R2/ownership handoff",
+      "credentialsIncluded": false
+    },
+    {
+      "originalName": "image(20261009-221454).png",
+      "path": "docs/handover/20261012/inputs/Mode_Toggle_Reference.original.png",
+      "bytes": 19255,
+      "sha256": "5f26f5f242e57c9557f2940e572fc94e241572b132305afe6e4897b9f4505fe1",
+      "libraryId": "libfile_0a9d33738ed081919e67171ba08b84d2",
+      "purpose": "Original human-supplied context; authority subject to later decisions/R2/ownership handoff",
+      "credentialsIncluded": false
+    }
+  ],
+  "rawBytesPreserved": true,
+  "authTokensAndPrivateSourceExcluded": true
+}

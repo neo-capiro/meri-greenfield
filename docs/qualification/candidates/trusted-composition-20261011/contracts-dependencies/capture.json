@@ -1,0 +1,25 @@
+{
+  "sourceCommit": "72c8afa5f7854505f99ccbd569c5de8c9e6bd1d9",
+  "argv": [
+    "npm",
+    "ci",
+    "--ignore-scripts",
+    "--no-audit",
+    "--no-fund",
+    "--prefix",
+    "packages/contracts"
+  ],
+  "startedAt": "2026-10-11T21:12:18.112710+00:00",
+  "elapsedSeconds": 1.32,
+  "exitCode": 0,
+  "output": {
+    "stdout": {
+      "bytes": 25,
+      "sha256": "1d41eb5f721bb9d5710254973769ef57dc59f277b97c8647bf6ffaff5426b4ba"
+    },
+    "stderr": {
+      "bytes": 99,
+      "sha256": "7125f194612fcff2f454c05d848e7cb71facc1967b4d5017e25b34fdee3ba74f"
+    }
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "decision": "ACCEPT_SOURCE_ONLY",
+  "sourceCommit": "680f09cef6e97bee101d09c9d39ab325c0af2007",
+  "sourceTree": "32f6528b10154098a0a95ee3ed1cc99099ca4194",
+  "parentCommit": "cf9eb76a0f9ea797151a2684bc83592ae1033c9f",
+  "trackedProductDiffExitCode": 0,
+  "report": {
+    "path": "docs/coordination/reports/CODEX-SESSIONSTORE-REPAIR-INDEPENDENT-20261011.md",
+    "bytes": 8380,
+    "sha256": "d6d272fda9305781e7269978de2f8c2dd2fff3460dd9a52f62ac27613769f9c9"
+  },
+  "evidence": [
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/repair-independent-review/focused44.json",
+      "bytes": 1206,
+      "sha256": "a0006855a5e912d9decc5cf9bcf68965574263f8d09e3e0bbbfe3cbaae6b3bd8"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/repair-independent-review/focused44.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/repair-independent-review/focused44.stdout.bin",
+      "bytes": 3976,
+      "sha256": "6e23c83722d4db156c3db47a1d8a568101fee7ff881812e5d8a2d6921f6b76f2"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/repair-independent-review/original-replay-and-boundaries.json",
+      "bytes": 1085,
+      "sha256": "a9149d4634e642f3023d4ea09bcd74d3451111d123887699ea4f5f54896e1797"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/repair-independent-review/original-replay-and-boundaries.mjs",
+      "bytes": 6093,
+      "sha256": "9f2438e012178784e2d02dec7cdfa236a556bab94da150b9da4acfcaf817cb15"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/repair-independent-review/original-replay-and-boundaries.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/repair-independent-review/original-replay-and-boundaries.stdout.bin",
+      "bytes": 430,
+      "sha256": "09dbe43fdde66b64bef936a9b5176a75d89a1fa74e44efb618a1492b54507204"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/repair-independent-review/preservation.json",
+      "bytes": 19103,
+      "sha256": "8ea829a7a145028d876d8852039048ccfe6c7a73cb47442372a6c57aaa6a55cc"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/repair-independent-review/static137.json",
+      "bytes": 1263,
+      "sha256": "543239748eccfdf185cad5b11936dd14117e566767e029cb5e65fb92d2d3a7ab"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/repair-independent-review/static137.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/repair-independent-review/static137.stdout.bin",
+      "bytes": 12706,
+      "sha256": "370698ae35bfdbb1b88621962c072d8afe0dec5d44d7eed24297f9cb0b79ead5"
+    }
+  ],
+  "g1Accepted": false,
+  "completeRecoveryCheckpoint": false,
+  "sessionStoreQualified": false,
+  "actualUidGidMutation": "UNRUN_HOST_CHOWN_EINVAL",
+  "remoteGitOrCloud": false
+}

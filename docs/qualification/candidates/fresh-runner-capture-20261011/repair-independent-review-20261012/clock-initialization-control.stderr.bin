@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/workspace/scratch/853fba62b1f1/meri-fresh-runner-capture-repair-independent-20261012/docs/qualification/candidates/fresh-runner-capture-20261011/repair-independent-review-20261012/clock-initialization-control.py", line 19, in <module>
+    assert all(child.poll() is not None and child.stdout.closed and child.stderr.closed for child in children), 'owned initialization failure cleanup is incomplete'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: owned initialization failure cleanup is incomplete

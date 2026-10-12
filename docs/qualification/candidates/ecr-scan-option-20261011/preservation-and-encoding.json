@@ -1,0 +1,24 @@
+{
+  "unchangedFiles": [
+    "scripts/qualification/aws_evidence_history_test.py",
+    "scripts/qualification/aws_evidence_timeout_test.py",
+    "scripts/qualification/worker_image_build.py",
+    "scripts/qualification/worker_image_publish.py",
+    "scripts/qualification/host_assets_build.py",
+    "scripts/qualification/teststate_request.py",
+    "scripts/qualification/readonly_shapes.py"
+  ],
+  "canonicalAstPreservedExcept": [
+    "COMMAND_OPTIONS scan override",
+    "options lookup",
+    "AWS_CLI_OUTPUT_ENCODING child environment"
+  ],
+  "upstreamSource": "https://github.com/aws/aws-cli/blob/2.36.8/awscli/compat.py",
+  "upstreamSourceSha256": "0a7a41b0f3eb7951eb71d4f50eebbcb3600e6ed5e0ee897342536d74bcf2c1b9",
+  "upstreamFunction": "set_preferred_output_encoding",
+  "streamInitialEncoding": "cp1252",
+  "streamFinalEncoding": "UTF-8",
+  "emittedJsonSha256": "4188f3eb6c7d504bcd01894bfef2926059812be272c4d7540f3a45267933b931",
+  "actualWindowsCliExecuted": false,
+  "status": "PASS"
+}

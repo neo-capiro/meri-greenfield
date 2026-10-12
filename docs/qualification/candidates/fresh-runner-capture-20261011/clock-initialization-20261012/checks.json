@@ -1,0 +1,343 @@
+{
+  "sourceBase": "6f0a8c57e47f1f352198c3bdd4ae092b8bc45946",
+  "sourceFileSha256": {
+    "scripts/qualification/worker_runner_capture.py": "3219d21ec7d7bfa63deb07f87125e3ffcf5b6ff5df4f2b5f87f487cb6594153c",
+    "scripts/qualification/worker_runner_inventory.py": "7615e26a5d038ff2fa054cde3cdb04077def5636874f848c97e050dae9df03e9",
+    "scripts/qualification/test_worker_runner_capture.py": "fa5bf1783299d2b00f740f951163a2904059c0a9510604282e40afcbb455d2ac"
+  },
+  "sourceTestCount": 27,
+  "checks": [
+    {
+      "label": "source-tests",
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "test_worker_runner_capture"
+      ],
+      "cwd": "/workspace/scratch/853fba62b1f1/meri-fresh-runner-capture-20261011/scripts/qualification",
+      "startedAt": "2026-10-12T00:16:15.767190+00:00",
+      "endedAt": "2026-10-12T00:16:16.780237+00:00",
+      "timeoutSeconds": 30,
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "bytes": 185,
+        "sha256": "65951ecc46a8279e2b4689e37f2ec64d95aea7b2812a7c0ac2b5e60681f00f1a"
+      }
+    },
+    {
+      "label": "whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "timeoutSeconds": 30,
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "original25TestMethodsPreserved": [
+    "test_casefold_and_explicit_duplicate_paths_refused",
+    "test_dangling_output_link_refuses_before_native",
+    "test_extra_or_missing_member_on_rescan_refused",
+    "test_helper_traversal_and_missing_helper_refused",
+    "test_member_entry_file_aggregate_and_deadline_bounds",
+    "test_missing_config_refuses_before_host_files_or_output",
+    "test_native_version_command_and_limits_refuse_before_process",
+    "test_opened_permissions_are_independently_stable",
+    "test_output_syntax_and_existing_slot_refuse",
+    "test_read_mutation_detected_and_handle_closed",
+    "test_reparse_attribute_refused",
+    "test_runtime_mutation_during_version_capture_is_refused",
+    "test_success_has_exact_selected_scope_no_contents_or_authority",
+    "test_symlink_file_directory_and_hardlink_refused",
+    "test_version_adapter_bounded_streams_timeout_and_environment",
+    "test_version_adapter_inherited_stdout_or_stderr_refuses_with_bounded_close",
+    "test_version_failure_oversize_and_changed_executable_leave_no_slot",
+    "test_writer_corruption_readback_refuses_and_cleans_owned_slot",
+    "test_writer_failure_cleans_only_created_resources",
+    "test_writer_final_readback_mutation_is_detected_by_closure_rescan",
+    "test_writer_foreign_file_preserved_on_failure",
+    "test_writer_foreign_member_refuses_success_and_preserves_foreign",
+    "test_writer_prior_artifact_changed_by_later_fsync_refuses",
+    "test_writer_substituted_directory_is_preserved",
+    "test_wrong_host_and_version_before_io_or_native_invocation"
+  ],
+  "historicalEvidence": [
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/checks.json",
+      "bytes": 6090,
+      "sha256": "c6ed05153602a25d1abb08d809010a5cd10b31acd70dd6b725e6b8d0fa0df1db",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/cli-help.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/cli-help.stdout.bin",
+      "bytes": 456,
+      "sha256": "7de1e0098ced95e6dce49f770700da26c171d9cf76ba0f2a39f23092da6492fb",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/cli-missing-config.stderr.bin",
+      "bytes": 59,
+      "sha256": "bd67a072307d7bd000988211f2c33720cf16ca2a0a811b08c22c8d04638ca445",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/cli-missing-config.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/cli-wrong-host.stderr.bin",
+      "bytes": 59,
+      "sha256": "bd67a072307d7bd000988211f2c33720cf16ca2a0a811b08c22c8d04638ca445",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/cli-wrong-host.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/earlier-source20/checks.json",
+      "bytes": 5996,
+      "sha256": "5f8bdfd6c403fccfd3fc0fb0abdb637dc39c68fe6e03b84fd3e2d349af495bcc",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/earlier-source20/cli-help.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/earlier-source20/cli-help.stdout.bin",
+      "bytes": 456,
+      "sha256": "7de1e0098ced95e6dce49f770700da26c171d9cf76ba0f2a39f23092da6492fb",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/earlier-source20/cli-missing-config.stderr.bin",
+      "bytes": 59,
+      "sha256": "bd67a072307d7bd000988211f2c33720cf16ca2a0a811b08c22c8d04638ca445",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/earlier-source20/cli-missing-config.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/earlier-source20/cli-wrong-host.stderr.bin",
+      "bytes": 59,
+      "sha256": "bd67a072307d7bd000988211f2c33720cf16ca2a0a811b08c22c8d04638ca445",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/earlier-source20/cli-wrong-host.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/earlier-source20/safe-import.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/earlier-source20/safe-import.stdout.bin",
+      "bytes": 40,
+      "sha256": "3b09a2e08027372e7db2fabeeff27be32b3a1e34bb403a27b387a1b54757d07e",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/earlier-source20/source-tests.stderr.bin",
+      "bytes": 178,
+      "sha256": "3b42ef06b640aacf3b8d43c69ec8afb05cf836c2e4a2f0dfc7ff7cf472e822b4",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/earlier-source20/source-tests.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/earlier-source20/whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/earlier-source20/whitespace.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/legacy-preservation.json",
+      "bytes": 1938,
+      "sha256": "33ba7ea59ef5b11f986ffa59a0ab691ecc4daf555b2a3d7b6ea95c2751bf2482",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-20261012/checks.json",
+      "bytes": 15108,
+      "sha256": "62d2f1de493d0588b56f942d2cb8c2dfd830e46dfeadadec467569ca52869ca7",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-20261012/cli-help.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-20261012/cli-help.stdout.bin",
+      "bytes": 456,
+      "sha256": "7de1e0098ced95e6dce49f770700da26c171d9cf76ba0f2a39f23092da6492fb",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-20261012/cli-missing-config.stderr.bin",
+      "bytes": 59,
+      "sha256": "bd67a072307d7bd000988211f2c33720cf16ca2a0a811b08c22c8d04638ca445",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-20261012/cli-missing-config.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-20261012/cli-wrong-host.stderr.bin",
+      "bytes": 59,
+      "sha256": "bd67a072307d7bd000988211f2c33720cf16ca2a0a811b08c22c8d04638ca445",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-20261012/cli-wrong-host.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-20261012/independent-output-controls.stderr.bin",
+      "bytes": 364,
+      "sha256": "aa37827a7802edebb043ce39a0cfc60658bf2e57024d4bbab47f86325b784c76",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-20261012/independent-output-controls.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-20261012/safe-import.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-20261012/safe-import.stdout.bin",
+      "bytes": 40,
+      "sha256": "3b09a2e08027372e7db2fabeeff27be32b3a1e34bb403a27b387a1b54757d07e",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-20261012/source-tests.stderr.bin",
+      "bytes": 183,
+      "sha256": "609f84b12f705dea7fcd2922fd5471654baf2a803c45004516fc51b909c4da18",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-20261012/source-tests.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-20261012/whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-20261012/whitespace.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/safe-import.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/safe-import.stdout.bin",
+      "bytes": 40,
+      "sha256": "3b09a2e08027372e7db2fabeeff27be32b3a1e34bb403a27b387a1b54757d07e",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/source-tests.stderr.bin",
+      "bytes": 179,
+      "sha256": "232ce70e512679029d7cedb11541f892dd1779b22913d9cb56c310525b67139e",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/source-tests.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "unchanged": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/whitespace.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "unchanged": true
+    }
+  ],
+  "actualWindowsCapture": "UNRUN",
+  "descendantTeardownQualified": false,
+  "awsRequests": 0,
+  "cloudMutations": 0,
+  "runnerQualified": false,
+  "buildAuthorized": false,
+  "independentReplayRequired": true
+}

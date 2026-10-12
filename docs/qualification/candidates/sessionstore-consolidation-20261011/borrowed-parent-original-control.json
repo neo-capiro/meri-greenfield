@@ -1,0 +1,30 @@
+{
+  "argv": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "--test",
+    "--test-name-pattern=unrelated sibling creation",
+    "checkpoint/native-capture-boundaries.test.mjs"
+  ],
+  "cwd": "/workspace/scratch/853fba62b1f1/meri-sessionstore-consolidation-20261011/apps/worker/qualification",
+  "startedAtEpochSeconds": 1791760791.7648072,
+  "endedAtEpochSeconds": 1791760791.9320083,
+  "timeoutSeconds": 90,
+  "timedOut": false,
+  "exitCode": 1,
+  "ownedProcessGroupAbsent": true,
+  "runtime": {
+    "version": "24.19.0",
+    "sha256": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12"
+  },
+  "nativeCaptureSha256": "6bc9b3559975dfb2ea585da076687e46e04051904ae8f88e200e4768b40b2b9d",
+  "temporaryRoot": "/workspace/scratch/853fba62b1f1/meri-sessionstore-consolidation-20261011/.task-inputs/check-tmp",
+  "networkIsolation": "not an OS network sandbox",
+  "stdout": {
+    "bytes": 2078,
+    "sha256": "a24d2ebbb05de4d9d2ee5dfa328396be45fa042fbf5d8980c3617b561f324dba"
+  },
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

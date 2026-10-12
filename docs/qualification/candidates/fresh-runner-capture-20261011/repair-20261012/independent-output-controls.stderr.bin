@@ -1,0 +1,7 @@
+test_foreign_member_must_refuse_success (__main__.IndependentOutputControls.test_foreign_member_must_refuse_success) ... ok
+test_prior_artifact_mutation_must_refuse_success (__main__.IndependentOutputControls.test_prior_artifact_mutation_must_refuse_success) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.002s
+
+OK

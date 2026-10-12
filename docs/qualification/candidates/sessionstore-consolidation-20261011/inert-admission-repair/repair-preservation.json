@@ -1,0 +1,285 @@
+{
+  "base": "cf9eb76a0f9ea797151a2684bc83592ae1033c9f",
+  "original16TestBodiesPreserved": true,
+  "originalTestNames": [
+    "pinned SDK interface roundtrips unknown/compaction fields and repeated UUID-less entries",
+    "all append calls are delivered in call order even when an earlier commit is delayed",
+    "input and loaded values cannot mutate stored state or trusted binding",
+    "foreign session/project and malformed key refuse before transport",
+    "JSON-unsafe entries and payload/entry bounds refuse before transport",
+    "invalid canonical binding, missing subkey transport and timeout policy fail at construction",
+    "transport errors are redacted, and a successful SDK retry can follow a definite rejection",
+    "uncertain timeout aborts its signal and refuses queued/retried dispatch",
+    "closing rejects late SDK writes; observed settlement is not labelled durable",
+    "trusted execution boundary can reject an obsolete generation before append",
+    "unknown append rejection is treated as possibly committed and is never retried by dispatch",
+    "full transcripts can exceed one append batch without truncation",
+    "whole-snapshot verification checks ordered main/subagent entries and produces readback-only digest",
+    "missing, changed, reordered, duplicated or omitted UUID-less transcript records fail verification",
+    "missing or extra subagent streams and missing main refuse",
+    "backend cannot return malformed/duplicate subkeys or invalid transcript entries"
+  ],
+  "newAdversarialGroups": 7,
+  "sourceFiles": [
+    {
+      "path": "apps/worker/qualification/checkpoint/bound-session-store.mjs",
+      "bytes": 6925,
+      "sha256": "c4100a00783a43bf89f3e4ed34bee155169d3aff611c84deb8a94d329320cdce"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/session-store-data.mjs",
+      "bytes": 4601,
+      "sha256": "ba1897e62fee64a2b4e03e9a6c1a9e111cd2044af1c3d5dda295c09bcb884993"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/verify-session-store.mjs",
+      "bytes": 2887,
+      "sha256": "bdfac290cea0157676d6949c31a7bc7b546312eedd25849f26fad4d626c4d53a"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/session-store.test.mjs",
+      "bytes": 17013,
+      "sha256": "2e115e03e32d7bd9a9abd0b6c7e8df480528e023bf318d0f0639af4d91fc6389"
+    }
+  ],
+  "protectedContextMembers": [
+    {
+      "path": "apps/worker/qualification/.dockerignore",
+      "sha256": "7bab997b99912abb20f7b87a0dc93e4024acdb4b0ccb1bc9449b464834a7c54b"
+    },
+    {
+      "path": "apps/worker/qualification/Dockerfile",
+      "sha256": "3f86ae7ca55e8bbfb2814f1b335b7df8159daf9b5008df60f1165ba879c40f36"
+    },
+    {
+      "path": "apps/worker/qualification/README.md",
+      "sha256": "c606fd180c1d57461dba0e94310cd4410ac3a051f61f76d92ae9b38a3e2a6a0e"
+    },
+    {
+      "path": "apps/worker/qualification/package.json",
+      "sha256": "a32e658933bd058d2524cfb2112cf770e5be81827dbf5e789ddecbcab86e5d80"
+    },
+    {
+      "path": "apps/worker/qualification/package-lock.json",
+      "sha256": "d3d4c5362e0c7dc1392ef9cad2048d00c564f1ff70d98c3e10108e50aa56147a"
+    },
+    {
+      "path": "apps/worker/qualification/requirements.lock.txt",
+      "sha256": "47bb048b9750b074c7d33faba9f9c3873b7b461eaa4360bf57cb08d4f55c9765"
+    },
+    {
+      "path": "apps/worker/qualification/component-pins.json",
+      "sha256": "2f2c5d52fbee23bbdb206456235664b9dbbdf5c3526ccc065d499ed0a61f5aed"
+    },
+    {
+      "path": "apps/worker/qualification/sdk-options.mjs",
+      "sha256": "174efdfcf4731845d65c1f32de4c73e8a9032ccf1522022ab7675ccc7e6a5d9e"
+    },
+    {
+      "path": "apps/worker/qualification/vendor/capiro-meri-contracts-0.1.0.tgz",
+      "sha256": "2f15ade9458cbffe960b7cc36c6fb77cb54cc2a0eca4bc7c0f918b77cfacd4ee"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/native-session-files.mjs",
+      "sha256": "543e05c230bf614cd5cf73f2d69877f1311ec0faf9d7ca205429161a75b842e1"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/fixture-channel.mjs",
+      "sha256": "160929a1ac8ce647574fac5740294d117ab70230d0a040b6d37ca4ef5712ad0b"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/fixture-channel.test.mjs",
+      "sha256": "3d8eb0e88e6ae45c6f55b1303e1f2075344c044ed0eba4e39a0f7ca26994612c"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/fixture-transport.mjs",
+      "sha256": "3b802df4571cd2e170890c9bfd77be995997736ff4e5e003c3248946e3b3d31c"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/fixture-transport.test.mjs",
+      "sha256": "8c676e68f2bb670dee4ed7405d29c009ef757387a49902e96a99fa99e3d6a3c5"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/resume-admission.mjs",
+      "sha256": "81b15faafc9f27b4e4107d7034708fd0f83a18caf09cbb367f03b7ef77701c9d"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/resume-admission.test.mjs",
+      "sha256": "5e53aaaf445c70dd7a56a55a3ea1ab2936a6eff86ed78b2dd04b072a79dfdb4f"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/fixture-sentinel.mjs",
+      "sha256": "4e5779fa84f149a4867e556e5fc7d20c644cd440a69f0ad4c6a7c4e8160324fd"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/fixture-sentinel.test.mjs",
+      "sha256": "73a14fea4fc24fd0a05f68523c4f9dbbbaf500dfd62f80225f8e93996f4e8ed7"
+    },
+    {
+      "path": "apps/worker/qualification/probes/artifacts.mjs",
+      "sha256": "3155bd31447f37b27c512cc2522a46947241c0f3fd74d738bed54920486757d6"
+    },
+    {
+      "path": "apps/worker/qualification/probes/artifacts.py",
+      "sha256": "b75d7eacc12c88fc87b23c7aab6bfa22adbb22eee99b4236f01ac90bde858d15"
+    },
+    {
+      "path": "apps/worker/qualification/probes/browser.mjs",
+      "sha256": "c09bd204a86c0cbfcdfa397b9b1f6938b078f7b4b3c6989a59d3588db2c481e0"
+    },
+    {
+      "path": "apps/worker/qualification/probes/image-inventory.py",
+      "sha256": "c7d682e67b5b3064947c92bebdce785aa04c3e00238fc8fb769d4a828479de58"
+    },
+    {
+      "path": "apps/worker/qualification/probes/image-inventory.test.mjs",
+      "sha256": "6f43c0d24e97f766aa588b6773dd6a3399074b35e6ad226e47e73adde27627e7"
+    },
+    {
+      "path": "apps/worker/qualification/probes/office-export.mjs",
+      "sha256": "78a3526f0e7ea738f675433a5289c49552011cef7267a2c9057827fb42ab5156"
+    },
+    {
+      "path": "apps/worker/qualification/probes/office-export.test.mjs",
+      "sha256": "da1087cd155c64a85a5d9dd818db275688f6e8610719d665007a8649e3423dde"
+    },
+    {
+      "path": "apps/worker/qualification/probes/office-reconstruct.mjs",
+      "sha256": "133d8c5adbfae930aa5e59d7d633e73482994106382cebef35b065d059303205"
+    },
+    {
+      "path": "apps/worker/qualification/probes/runtime.mjs",
+      "sha256": "56873762181926b276fc8283ceb9485d9fd55ef788bd4204b55feef241236716"
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-capture.mjs",
+      "sha256": "027117958a878cce722650c57bd0fe6132c5be69a440a3b3b9cd6f83213e6083"
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-capture.test.mjs",
+      "sha256": "4eca411e364d3da83b2e1afe5451f94b69a32e023b5733cf5ad4382008b73f84"
+    },
+    {
+      "path": "apps/worker/qualification/probes/native-observations.mjs",
+      "sha256": "fea49e07f71dccbea3d6c21cab8d1e4502b79a2d1ff05085dbd2a0e2089b2b15"
+    },
+    {
+      "path": "apps/worker/qualification/probes/native-stream-observer.mjs",
+      "sha256": "66fa0dec53eb9cc3d98a79d45a0cc8290281efc46dce7baa05e1f0721771beba"
+    },
+    {
+      "path": "apps/worker/qualification/probes/native-namespace-observer.mjs",
+      "sha256": "6c4ff8b525c414f93f0d0d29653b1e8a68db5fc520d4f414cf88d0b3e08b23c4"
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-capture-options.mjs",
+      "sha256": "964f4f1958dd0707198fcd21611018b9a9337e90e5f434ed24ce47beb3986b0e"
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-discovery-options.mjs",
+      "sha256": "868d470804fbc6aa3cfad5a9a2f39ca5ac2b71881c020b20db122efa7b16479b"
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-discovery-options.test.mjs",
+      "sha256": "dd1e03d0f0641bf7133cb29e3c2259f0c9a1779aae8e3a29618e92b045f096f2"
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-discovery-tools.mjs",
+      "sha256": "462dc2e956ee9ada8d64df32bc67a79aa58ceb16292d45219869effd2db776a7"
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-discovery-tools.test.mjs",
+      "sha256": "eab916e8abd61493f768e425a705f7f814317d354221a2e1eacff8c5823f893a"
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-interruption.mjs",
+      "sha256": "2764babd954e95f07caf964ac14e57ee8a5a7d148d1527f97d1af4ea16b9040f"
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-interruption.test.mjs",
+      "sha256": "93ab5df298ad95c5169f76247d5e0093bab585e9eec7bb46b3350cb61ffc1daa"
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-interruption-options.mjs",
+      "sha256": "132da9c8b37f258309a041bc4d8426a613b20e2fc35f622cd577f1b565c7d182"
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-interruption-loopback.mjs",
+      "sha256": "784658878a08952fe665bcf13868830dba06402ccbb99b9d7a44cafc41fdf40d"
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-interruption-loopback.test.mjs",
+      "sha256": "93188dbcbafd58291270c522542c9ed91815161dd03641ef9b1f4fa790d2f222"
+    },
+    {
+      "path": "apps/worker/qualification/probes/static.test.mjs",
+      "sha256": "910044c4c16b9d8e523bef960d80aac5f66632817afd9a103cf3e277b762e6e1"
+    },
+    {
+      "path": "scripts/sdk-capture/json-records.mjs",
+      "sha256": "8b889617a9565b7f1b5d29863b772b71f2c880a5fd1606b8a8b68ac2163be02d"
+    },
+    {
+      "path": "scripts/sdk-capture/protocol.mjs",
+      "sha256": "c20499a3a9e29069f6a59b58c7262fda6dfddd03068d7a49d6d73003f07e4a9e"
+    },
+    {
+      "path": "packages/contracts/validate.mjs",
+      "sha256": "c2449fd55300b31bdc1e829b5d918a531f1c4b2c675085a5b4707726ddd36d10"
+    },
+    {
+      "path": "packages/contracts/meri.schema.json",
+      "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b"
+    },
+    {
+      "path": "packages/contracts/qualification-sdk/validate.mjs",
+      "sha256": "2d0bd74171e390c370ad8d9e599f7c46ce4751e5efd6ba2c18923090b749b86c"
+    },
+    {
+      "path": "packages/contracts/qualification-sdk/wire.mjs",
+      "sha256": "f8f506ceeca820f3957b67f8bcbfc36c80f009356baba83b32ac99afe401ad9a"
+    },
+    {
+      "path": "packages/contracts/qualification-sdk/fixture.schema.json",
+      "sha256": "fbf0655ab6960ac5c486c08ba70b2a31310086ca282f0e9a1f41c08430ebfa13"
+    },
+    {
+      "path": "packages/contracts/qualification-sdk/native-evidence.mjs",
+      "sha256": "0f587aefd26e189fd9099b1639910da6ec37725b5729c4ba5d98a4695ec5fcde"
+    },
+    {
+      "path": "packages/contracts/qualification-sdk/native-evidence.schema.json",
+      "sha256": "5f9ac8980940bf4928b2d655fa5e299208f3d6dbf8f1adceceb9727cb69f62f5"
+    },
+    {
+      "path": "packages/contracts/test/sdk-fixture-wire.test.mjs",
+      "sha256": "0a292a418855ab4f3f07f096a618772928e06533fa05b41db4d4d6a56506abcc"
+    }
+  ],
+  "independentOriginalProof": [
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/inert-admission-repair/adversarial-probes.json",
+      "bytes": 961,
+      "sha256": "1922efa3daa99604ad311434dda06763a9e2bfdcab2c538898ecf85443abd8cf"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/inert-admission-repair/adversarial-probes.mjs",
+      "bytes": 2015,
+      "sha256": "5e367153cce7d38f917f7ea2e2e09dee27835f9ac5ac4d69c69082c38b140b92"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/inert-admission-repair/adversarial-probes.stdout.bin",
+      "bytes": 171,
+      "sha256": "9488c04f0dfa1e3df6d120ea0b808fb5eb7048598bf55f19799b372916bda402"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/inert-admission-repair/adversarial-probes.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "nativeAndPinsChanged": false,
+  "g1Accepted": false,
+  "sessionStoreQualified": false,
+  "completeRecoveryCheckpoint": false
+}

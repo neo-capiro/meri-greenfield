@@ -1,0 +1,38 @@
+{
+  "sourceCommit": "4b8bbe7c110db70079f011a2407d7d616e8ebfbd",
+  "argv": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "-I",
+    "-B",
+    "-S",
+    "docs/qualification/candidates/fresh-runner-capture-20261011/independent-review-20261012/inherited-pipe-control.py"
+  ],
+  "externalTimeoutSeconds": 10,
+  "physicalExitCode": -9,
+  "timedOut": true,
+  "elapsedSeconds": 10.006,
+  "ownedProcessGroupAbsent": true,
+  "linuxSubreaperEnabled": true,
+  "reapedOwnedDescendants": [
+    {
+      "pid": 12,
+      "waitStatus": 9
+    }
+  ],
+  "tmpEntriesAfter": [],
+  "streams": {
+    "stdout": {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/independent-review-20261012/inherited-pipe-control.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stderr": {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/independent-review-20261012/inherited-pipe-control.stderr.bin",
+      "bytes": 1615,
+      "sha256": "8c6896b0205f5e6410fde6b481fc95394b3b5768cb68d99d73f665ec300e8574"
+    }
+  },
+  "scriptSha256": "ef38faed3b82a4dafeca59ba4cb29532fbeaa346580618e96dfbd951b32ec75c",
+  "actualWindowsExecution": "UNRUN",
+  "awsNativeExecuted": false
+}

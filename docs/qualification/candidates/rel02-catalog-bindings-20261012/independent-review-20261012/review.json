@@ -1,0 +1,159 @@
+{
+  "decision": "ACCEPT_SOURCE_ONLY",
+  "sourceCommit": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+  "sourceTree": "8c7166aa86be9f3fa4fdecafeda46dbdc0cfb89d",
+  "sourceBase": "00af1a681116a4d23ac6195124372e1fec2c42e0",
+  "report": {
+    "path": "docs/coordination/reports/CODEX-REL02-CATALOG-INDEPENDENT-20261012.md",
+    "bytes": 8695,
+    "sha256": "9a8ad45623c9fcf8e14ff1cc3bbbb0257d2f7271499adccdd95253d6a02fd222"
+  },
+  "evidence": [
+    {
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/independent-review-20261012/all201-final-local-layout.json",
+      "bytes": 1961,
+      "sha256": "f1ec4a3da6bf4aa08411538cbbfcef7531051f554933fffd98626b354470523c"
+    },
+    {
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/independent-review-20261012/all201-final-local-layout.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/independent-review-20261012/all201-final-local-layout.stdout.bin",
+      "bytes": 18713,
+      "sha256": "5bceb796feb896ccbbca6f9fd188429f3997136ca07e9fb1314b762189ef1623"
+    },
+    {
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/independent-review-20261012/all201-repaired-dependencies.json",
+      "bytes": 1928,
+      "sha256": "ca728642118f2b8da703415c34c3b4211f28f75948a204dfb295441bc7c24044"
+    },
+    {
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/independent-review-20261012/all201-repaired-dependencies.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/independent-review-20261012/all201-repaired-dependencies.stdout.bin",
+      "bytes": 19665,
+      "sha256": "52409ae587eef062c01b536a7e1356914dce0d44edffce34c732606862daf108"
+    },
+    {
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/independent-review-20261012/all201.json",
+      "bytes": 2004,
+      "sha256": "72dcfa050b1c7c215945693cf8f724ee54ad9edb60cddfd6decaacc8315d0108"
+    },
+    {
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/independent-review-20261012/all201.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/independent-review-20261012/all201.stdout.bin",
+      "bytes": 21631,
+      "sha256": "ca63b87f7f5f82d8de223c8b4d457ddd649776326e8a0350260e9978b3bc46ab"
+    },
+    {
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/independent-review-20261012/author-evidence-cleanup.json",
+      "bytes": 5620,
+      "sha256": "c3bb65834a18a5d93591863117bf703058020bab05644686b841294cde1446ea"
+    },
+    {
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/independent-review-20261012/extra-boundaries-receipt.json",
+      "bytes": 1065,
+      "sha256": "07325ac340f116a76a10d29949f8b11f46354f2fe4ed3197f54d3ca2f70a028c"
+    },
+    {
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/independent-review-20261012/extra-boundaries.mjs",
+      "bytes": 2536,
+      "sha256": "f8a0dc369d2ca3dcb64a01563137714e2506c14677940106537827d5f5f9312d"
+    },
+    {
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/independent-review-20261012/extra-boundaries.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/independent-review-20261012/extra-boundaries.stdout.bin",
+      "bytes": 280,
+      "sha256": "fa46f7918e670d9ad10a26497ee41011e8e395bac8c621f5bac09715b0072f41"
+    },
+    {
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/independent-review-20261012/focused14.json",
+      "bytes": 1306,
+      "sha256": "68dc39f325fb3746303c39cda1003fa8eadb3a04bb335bee6b1cbe2428ba24af"
+    },
+    {
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/independent-review-20261012/focused14.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/independent-review-20261012/focused14.stdout.bin",
+      "bytes": 1527,
+      "sha256": "2a86689633d0a096a35bb14955067be69a8a07dac74ed6de3fb71614e9ef63a8"
+    },
+    {
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/independent-review-20261012/preservation-receipt.json",
+      "bytes": 1052,
+      "sha256": "a7c27aa9d5a6cc9a09c1614fbef9a35fc216c45ae2919c6cee77fe5a003b2883"
+    },
+    {
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/independent-review-20261012/preservation-result.json",
+      "bytes": 7067,
+      "sha256": "d5452b445527c4703fb80e35aa9fc38d58d38e6dae0bfbbb5e0f488fa02a74c0"
+    },
+    {
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/independent-review-20261012/preservation.json",
+      "bytes": 7067,
+      "sha256": "d5452b445527c4703fb80e35aa9fc38d58d38e6dae0bfbbb5e0f488fa02a74c0"
+    },
+    {
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/independent-review-20261012/preservation.mjs",
+      "bytes": 4592,
+      "sha256": "62684ecf89205b3d4cc97827de266c530928d136fc2a00fa156a2a95037e0b1c"
+    },
+    {
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/independent-review-20261012/preservation.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/independent-review-20261012/preservation.stdout.bin",
+      "bytes": 96,
+      "sha256": "49f1407a38a10cc352e265f6977a5d8d7d1c088f587b86556513a0b1dfcac971"
+    },
+    {
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/independent-review-20261012/public-distribution.json",
+      "bytes": 1275,
+      "sha256": "13e221a9ddc68859e3360ffe237632047f6997e86c9e509c4d8b3c4c53c14285"
+    },
+    {
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/independent-review-20261012/public-distribution.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/independent-review-20261012/public-distribution.stdout.bin",
+      "bytes": 1947,
+      "sha256": "a6d5734c058e18abecc7a31a5247046ecd6bb50d019357591ab716d0b6b50a47"
+    }
+  ],
+  "focusedPass": 14,
+  "fullPass": 201,
+  "publicPass": 7,
+  "originals": 139,
+  "selected": 96,
+  "deferred": 43,
+  "mapped": 13,
+  "pendingSelected": 83,
+  "enabledOperations": 0,
+  "allHandlersNull": true,
+  "allRetriesZero": true,
+  "liveActivation": false,
+  "gatewayAuthorizationQualified": false,
+  "fullRel02Qualified": false,
+  "g1Accepted": false,
+  "providerOrCloudActions": 0
+}

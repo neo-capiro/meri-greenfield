@@ -1,6 +1,7 @@
 // Private qualification protocol: shape/integrity checks never establish authority.
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
+import { types } from 'node:util';
 import Ajv from 'ajv/dist/2020.js';
 import addFormats from 'ajv-formats';
 import canonicalize from 'canonicalize';
@@ -9,10 +10,12 @@ import { canonicalSha256, assertWorkspacePaths } from '../validate.mjs';
 const publicRaw = readFileSync(new URL('../meri.schema.json', import.meta.url));
 export const publicSchemaSha256 = createHash('sha256').update(publicRaw).digest('hex');
 const schema = JSON.parse(readFileSync(new URL('./fixture.schema.json', import.meta.url)));
+const nativeEvidenceSchema = JSON.parse(readFileSync(new URL('./native-evidence.schema.json', import.meta.url)));
+export const nativeEvidenceKinds = Object.freeze([...nativeEvidenceSchema.$defs.NativeEvidenceSigningRecord.properties.kind.enum]);
 const ajv = new Ajv({ strict: true, allErrors: true });
-addFormats(ajv); ajv.addSchema(JSON.parse(publicRaw)); ajv.addSchema(schema);
-const validators = new Map(Object.keys(schema.$defs).map(name =>
-  [name, ajv.compile({ $ref: `${schema.$id}#/$defs/${name}` })]));
+addFormats(ajv); ajv.addSchema(JSON.parse(publicRaw)); ajv.addSchema(schema); ajv.addSchema(nativeEvidenceSchema);
+const validators = new Map([schema, nativeEvidenceSchema].flatMap(owner =>
+  Object.keys(owner.$defs).map(name => [name, ajv.compile({ $ref: `${owner.$id}#/$defs/${name}` })])));
 const operations = Object.freeze(['authorizeFixturePhase', 'commitFixtureCheckpoint',
   'loadFixtureCheckpoint', 'verifyFixtureCheckpoint']);
 const fail = code => { throw new Error(code); };
@@ -23,7 +26,7 @@ function data(value, seen = new Set(), count = { n: 0 }, depth = 0) {
   if (++count.n > 10000 || depth > 32) fail('FIXTURE_DATA_BOUND');
   if (value === null || typeof value === 'boolean' || typeof value === 'string') return;
   if (typeof value === 'number') { if (!Number.isFinite(value)) fail('FIXTURE_NONFINITE'); return; }
-  if (typeof value !== 'object' || seen.has(value) ||
+  if (typeof value !== 'object' || types.isProxy(value) || seen.has(value) ||
       (!Array.isArray(value) && Object.getPrototypeOf(value) !== Object.prototype)) fail('FIXTURE_JSON_ONLY');
   seen.add(value);
   const descriptors = Object.getOwnPropertyDescriptors(value);
@@ -42,6 +45,21 @@ export function validateShape(name, value) {
   if (!validator) fail('UNKNOWN_FIXTURE_SHAPE');
   if (!validator(value)) fail(`INVALID_FIXTURE_${name}`);
   return value;
+}
+/** Immutable private request snapshot across asynchronous trusted boundaries. */
+export function snapshotFixtureData(value) {
+  data(value);
+  const serialized = canonicalize(value);
+  if (typeof serialized !== 'string' || Buffer.byteLength(serialized, 'utf8') > 64 * 1024 * 1024)
+    fail('FIXTURE_TRANSFER_BOUND');
+  const copied = JSON.parse(serialized);
+  const freeze = item => {
+    if (item !== null && typeof item === 'object') {
+      Object.values(item).forEach(freeze); Object.freeze(item);
+    }
+    return item;
+  };
+  return freeze(copied);
 }
 function clock(context, nowMs, current) {
   const c = context.clock, i = context.identity;
@@ -64,7 +82,7 @@ function stable(a, b) {
       ['tenantId', 'actorId', 'conversationId', 'runId'].some(k =>
         a.identity.canonical[k] !== b.identity.canonical[k])) fail('FIXTURE_STABLE_BINDING');
 }
-function replacement(producer, current, nowMs, committedAtMs) {
+export function assertFixtureReplacement(producer, current, nowMs, committedAtMs) {
   assertFixtureContext(producer, nowMs, { current: false }); assertFixtureContext(current, nowMs);
   stable(producer, current);
   const a = producer.identity, b = current.identity;
@@ -105,21 +123,31 @@ function paths(inventory, context) {
   if (files.reduce((n, f) => n + f.bytes, 0) !== inventory.totalBytes) fail('FIXTURE_TOTAL_BYTES');
 }
 function bytes(row) {
+  // Canonical base64 length follows the already bounded declared byte count.
+  // Refuse inconsistent input before allocating a decoded buffer.
+  if (row.base64.length !== Math.ceil(row.bytes / 3) * 4) fail('FIXTURE_BYTES_MISMATCH');
   const raw = Buffer.from(row.base64, 'base64');
   if (raw.length !== row.bytes || raw.toString('base64') !== row.base64 ||
       createHash('sha256').update(raw).digest('hex') !== row.sha256) fail('FIXTURE_BYTES_MISMATCH');
+}
+/** The fixed qualification sentinel uses the existing bounded byte grammar. */
+export function assertFixtureSentinelPayload(value) {
+  validateShape('Sentinel', value); bytes(value); return value;
 }
 function inventory(bundle) {
   return { format: bundle.format, directories: bundle.directories,
     files: bundle.files.map(({ path, bytes, sha256 }) => ({ path, bytes, sha256 })), totalBytes: bundle.totalBytes };
 }
-function assertPayload(bundle, fixtureFile, context) {
+export function assertFixturePayload(bundle, fixtureFile, context) {
   validateShape('NativeBundle', bundle); validateShape('Sentinel', fixtureFile);
   if (!same(bundle.binding, context.namespace)) fail('FIXTURE_NATIVE_NAMESPACE');
   paths(inventory(bundle), context); bundle.files.forEach(bytes); bytes(fixtureFile);
   if (Buffer.byteLength(canonicalize(bundle)) > 48 * 1024 * 1024) fail('FIXTURE_TRANSFER_BOUND');
 }
-function assertEvidence(evidence, context) { Object.values(evidence).forEach(r => assertObject(r, context)); }
+export function assertFixtureEvidence(evidence, context) {
+  validateShape('NativeEvidence', evidence);
+  Object.values(evidence).forEach(r => assertObject(r, context));
+}
 
 export function fixtureReceiptIdentity(receipt) {
   validateShape('FixtureCheckpointReceipt', receipt);
@@ -135,7 +163,7 @@ export function assertFixtureReceipt(receipt, { producer, reference, nowMs }) {
   if (commit.committedAtMs < producer.identity.admittedAtMs || commit.committedAtMs > nowMs ||
       commit.committedAtMs >= producer.identity.expiresAtMs || commit.publicationFence !== producer.identity.fence ||
       !same(commit.bundleReadback, receipt.bundle)) fail('FIXTURE_COMMIT_BINDING');
-  paths(receipt.nativeInventory, producer); assertObject(receipt.bundle, producer); assertEvidence(receipt.evidence, producer);
+  paths(receipt.nativeInventory, producer); assertObject(receipt.bundle, producer); assertFixtureEvidence(receipt.evidence, producer);
   assertWorkspacePaths(workspace);
   if (!same(workspace.binding, producer.identity.canonical) || workspace.entries.length !== 1 ||
       workspace.entries[0].path !== 'qualification/continuity.txt' || workspace.entries[0].executable !== false ||
@@ -152,8 +180,8 @@ export function assertFixtureRequest(request, { nowMs }) {
   validateShape(`${request.operation}Request`, request); assertFixtureContext(request.context, nowMs);
   const upload = request.operation === 'commitFixtureCheckpoint', read = request.operation !== 'authorizeFixturePhase' && !upload;
   if ((upload && request.context.phase !== 'interrupt') || (read && request.context.phase !== 'resume')) fail('FIXTURE_PHASE_OPERATION');
-  if (upload || request.operation === 'verifyFixtureCheckpoint') assertPayload(request.bundle, request.fixtureFile, request.context);
-  if (upload) assertEvidence(request.evidence, request.context);
+  if (upload || request.operation === 'verifyFixtureCheckpoint') assertFixturePayload(request.bundle, request.fixtureFile, request.context);
+  if (upload) assertFixtureEvidence(request.evidence, request.context);
   return request;
 }
 function payloadMatches(receipt, bundle, file) {
@@ -170,11 +198,11 @@ export function assertFixtureResponse(request, response, { producer, nowMs }) {
     assertFixtureContext(producer, nowMs, { current: false });
     stable(producer, request.context);
     if (request.context.phase === 'interrupt' && !same(producer, request.context)) fail('FIXTURE_PRODUCER_REWRITE');
-    if (request.context.phase === 'resume') replacement(producer, request.context, nowMs, producer.identity.admittedAtMs);
+    if (request.context.phase === 'resume') assertFixtureReplacement(producer, request.context, nowMs, producer.identity.admittedAtMs);
     if (response.checkedAtMs > nowMs || response.checkedAtMs < nowMs - 30000 ||
         response.checkedAtMs < request.context.identity.admittedAtMs) fail('FIXTURE_DECISION_FRESHNESS');
     if (response.status === 'DENIED_STALE_BINDING') {
-      replacement(request.context, response.currentContext, nowMs, request.context.identity.admittedAtMs);
+      assertFixtureReplacement(request.context, response.currentContext, nowMs, request.context.identity.admittedAtMs);
       if (response.checkedAtMs < response.currentContext.identity.admittedAtMs) fail('FIXTURE_DECISION_FRESHNESS');
       return 'STALE_BINDING_DENIED';
     }
@@ -186,10 +214,10 @@ export function assertFixtureResponse(request, response, { producer, nowMs }) {
     if (!same(request.context, producer) || !same(request.evidence, response.receipt.evidence)) fail('FIXTURE_PRODUCER_REWRITE');
     payloadMatches(response.receipt, request.bundle, request.fixtureFile);
   } else {
-    replacement(producer, request.context, nowMs, response.receipt.commit.committedAtMs);
+    assertFixtureReplacement(producer, request.context, nowMs, response.receipt.commit.committedAtMs);
     const bundle = request.operation === 'loadFixtureCheckpoint' ? response.bundle : request.bundle;
     const file = request.operation === 'loadFixtureCheckpoint' ? response.fixtureFile : request.fixtureFile;
-    assertPayload(bundle, file, request.context); payloadMatches(response.receipt, bundle, file);
+    assertFixturePayload(bundle, file, request.context); payloadMatches(response.receipt, bundle, file);
   }
   return response.status;
 }

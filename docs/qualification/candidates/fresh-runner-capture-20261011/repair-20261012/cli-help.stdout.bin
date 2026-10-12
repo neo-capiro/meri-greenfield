@@ -1,0 +1,13 @@
+usage: worker_runner_capture.py [-h] [--output OUTPUT]
+                                [--read-only-host-capture]
+
+Read-only Windows runner observations. No AWS requests or build authority.
+
+options:
+  -h, --help            show this help message and exit
+  --output OUTPUT
+  --read-only-host-capture
+
+Exit 0: measured source-only observations. Exit 2: invalid configuration,
+unsupported host or bounded capture failure. No AWS request or build
+admission.

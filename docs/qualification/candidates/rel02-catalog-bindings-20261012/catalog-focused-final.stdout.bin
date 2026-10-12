@@ -1,0 +1,37 @@
+✔ registers exactly the ten typed additions while preserving all139/96/43 boundaries (14.710197ms)
+✔ every binding resolves the correct existing definition and exact raw schema hash (15.37694ms)
+✔ allknown input/output hash, foreign definition and version substitutions refuse (286.412157ms)
+✔ missing, foreign and incorrectly remapped registered operations refuse (7.017461ms)
+✔ aliases, cycles and forbidden unrestricted query identifiers retain refusal guards (22.411094ms)
+✔ everycurrent descriptor stays pending/null; fabricated executable metadata cannot expose it (58.926374ms)
+✔ resolver refuses unknown versions and unsafe references without invoking getters (0.485946ms)
+✔ family default materialization and argument digest happen before dispatch (9.138647ms)
+✔ data-search normalized domains, cursors and conditional memory retain canonical behavior (1.793814ms)
+✔ mail defaults/context and meeting inventory/body modes reuse their original domain rules (21.91854ms)
+✔ federal output uses actual family paging invariants and retains unproven total relation (4.494332ms)
+✖ real calendar DTO validates only with its original request and explicit trusted clock (6.657501ms)
+✔ normalizer data ownership prevents accessor/proxy/toJSON effects and caller mutation (5.435049ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 12
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1658.490275
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-catalog-bindings.test.mjs:138:1
+✖ real calendar DTO validates only with its original request and explicit trusted clock (6.657501ms)
+  Error: MeetingUpcomingPage: data/subject/scopes/0/kind must be equal to one of the allowed values
+      at validateShape (file:///workspace/scratch/853fba62b1f1/meri-rel02-catalog-bindings-20261012/packages/contracts/retrieval-0.2/validate.mjs:28:28)
+      at assertEnvelope (file:///workspace/scratch/853fba62b1f1/meri-rel02-catalog-bindings-20261012/packages/contracts/retrieval-0.2/meeting-source-validation.mjs:64:28)
+      at Object.assertUpcomingMeetingsPage (file:///workspace/scratch/853fba62b1f1/meri-rel02-catalog-bindings-20261012/packages/contracts/retrieval-0.2/meeting-source-validation.mjs:102:3)
+      at Object.outputAssert (file:///workspace/scratch/853fba62b1f1/meri-rel02-catalog-bindings-20261012/packages/contracts/retrieval-0.2/catalog-validation.mjs:26:61)
+      at Object.assertOutput (file:///workspace/scratch/853fba62b1f1/meri-rel02-catalog-bindings-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:69:24)
+      at TestContext.<anonymous> (file:///workspace/scratch/853fba62b1f1/meri-rel02-catalog-bindings-20261012/packages/contracts/test/retrieval-catalog-bindings.test.mjs:150:29)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)

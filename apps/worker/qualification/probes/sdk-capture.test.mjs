@@ -21,6 +21,7 @@ import { Writable } from 'node:stream';
 import zlib from 'node:zlib';
 import { EventEmitter } from 'node:events';
 import { createHash } from 'node:crypto';
+import { observeNativeStdout } from './native-stream-observer.mjs';
 
 import {
   LOOPBACK_HOST,
@@ -1080,7 +1081,7 @@ test('runCapture requires child stdio EOF before a PASS', async () => {
 function isolatedRealSpawner(child) {
   const source = readFileSync(join(HERE, 'sdk-capture.mjs'), 'utf8');
   const body = source.slice(source.indexOf('export function realSpawner('), source.indexOf('// Synthetic input stream')).replace('export function', 'function');
-  return new Function('nodeSpawn', 'createHash', 'MAX_STDERR_BYTES', 'STDERR_PREVIEW_CHARS', 'boundedPreview', `${body};return realSpawner;`)(() => child, createHash, 65536, 2048, () => '[scrubbed]');
+  return new Function('nodeSpawn', 'createHash', 'MAX_STDERR_BYTES', 'STDERR_PREVIEW_CHARS', 'boundedPreview', 'observeNativeStdout', `${body};return realSpawner;`)(() => child, createHash, 65536, 2048, () => '[scrubbed]', observeNativeStdout);
 }
 
 test('real adapter waits for child close after stderr EOF and snapshots final bytes', async () => {
@@ -1112,6 +1113,21 @@ test('real adapter overflow and read error reach the violation callback', async 
   assert.equal(record.stderrTotalBytes, 65537);
   assert.equal(record.stderrHashedBytes, 65536);
   assert.equal(record.stderrTruncated, true);
+});
+
+test('real adapter distinguishes controlled AbortError from a process failure', async () => {
+  const child = new EventEmitter(); child.stderr = new EventEmitter();
+  const controller = new AbortController(), record = {};
+  isolatedRealSpawner(child)({ command: 'never-executed', args: [], signal: controller.signal }, record);
+  controller.abort();
+  const error = new Error('OPAQUE_SYNTHETIC_CREDENTIAL'); error.name = 'AbortError';
+  child.emit('error', error);
+  assert.equal(record.controlledAbortError, true);
+  assert.equal(record.processError, undefined);
+  assert.equal(JSON.stringify(record).includes('OPAQUE_SYNTHETIC_CREDENTIAL'), false);
+  child.emit('error', new Error('another opaque process error'));
+  assert.equal(record.processError, true);
+  child.emit('close', null, 'SIGTERM'); await record.stdioDone;
 });
 
 test('public spawn hook forwards the violation callback to its adapter', () => {

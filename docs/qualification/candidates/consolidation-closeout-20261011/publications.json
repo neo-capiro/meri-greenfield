@@ -1,0 +1,41 @@
+{
+  "status": "EXACT_SOURCE_TREES_PUBLISHED_DRAFT_ONLY",
+  "backend": {
+    "repository": "neo-capiro/meri-greenfield",
+    "pr": 7,
+    "beforeHead": "415a55827b3f6343a0835e1d0e30fa0c69d673e6",
+    "publishedHead": "e74cac70ffcce34b1fc7b3bdda6a99a4702df06e",
+    "tree": "383fe7567aaf95cb18408dd5b2cb9c557a3ec897",
+    "localSourceEquivalent": "0eb81023343fcfd2d5129a09c0048371cc9ccaa2",
+    "parents": [
+      "415a55827b3f6343a0835e1d0e30fa0c69d673e6",
+      "65d9c750639e0d370985827983f24019a3f585ab"
+    ],
+    "treeReadbackMatched": true,
+    "headReadbackMatched": true
+  },
+  "frontend": {
+    "repository": "neo-capiro/capiro-frontend",
+    "pr": 4,
+    "beforeHead": "ad04c660a8a181aa99b4786bf51926dd4957ea3a",
+    "publishedHead": "e141d68f8954ba6c76327bcbed94739d28e0a902",
+    "tree": "9fb3ef9aa72010e87a173378e4d04150be41d6d3",
+    "localSourceEquivalent": "3cc4645de01046c402af96ac381c16cfd5721e9e",
+    "parents": [
+      "ad04c660a8a181aa99b4786bf51926dd4957ea3a",
+      "b697cfcba6589ef193de4e3bcb25aad773871125"
+    ],
+    "treeReadbackMatched": true,
+    "headReadbackMatched": true
+  },
+  "coordination": {
+    "shipperReturn": "https://github.com/neo-capiro/meri-greenfield/pull/8#issuecomment-6115462339",
+    "cleanupBoundaryRequest": "https://github.com/neo-capiro/capirov2/pull/2392#issuecomment-6115067919",
+    "cleanupAgreementReceived": false
+  },
+  "mainMerged": false,
+  "branchesDeleted": false,
+  "awsWrites": false,
+  "g1Admitted": false,
+  "runtimeAdmitted": false
+}

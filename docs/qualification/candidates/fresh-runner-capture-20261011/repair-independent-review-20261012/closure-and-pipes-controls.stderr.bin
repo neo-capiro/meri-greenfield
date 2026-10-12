@@ -1,0 +1,7 @@
+test_final_readback_mutation (__main__.RepairControls.test_final_readback_mutation) ... ok
+test_individual_inherited_pipe_boundaries (__main__.RepairControls.test_individual_inherited_pipe_boundaries) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.754s
+
+OK

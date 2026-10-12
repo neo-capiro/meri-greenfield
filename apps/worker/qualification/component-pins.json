@@ -17,7 +17,15 @@
     "sourceArchiveSha256": "8b2f9480f2ec026452466aa570755f2dead79b3d1b2f21b7663087cc37bb1fbc",
     "codeBuildId": "55c89c64-547f-41ff-8a8b-3120e25d8b39",
     "buildId": "55c89c64-547f-41ff-8a8b-3120e25d8b39",
-    "ecrScan": { "critical": 2, "high": 13, "medium": 23, "low": 7, "undefined": 3, "scanner": "ECR basic scan, COMPLETE, source updated 2026-10-09T21:49:22Z", "scanFileSha256": "547049894f404d7c8781580ff7c2d036d756656af419f221b7f74a80c87e58c8" },
+    "ecrScan": {
+      "critical": 2,
+      "high": 13,
+      "medium": 23,
+      "low": 7,
+      "undefined": 3,
+      "scanner": "ECR basic scan, COMPLETE, source updated 2026-10-09T21:49:22Z",
+      "scanFileSha256": "547049894f404d7c8781580ff7c2d036d756656af419f221b7f74a80c87e58c8"
+    },
     "scanStatus": "UNRESOLVED: 2 CRITICAL / 13 HIGH on 7327 remain outstanding; see docs/coordination/reports/W02-IMAGE-SECURITY-DISPOSITION-PREP.md",
     "admittedProbe": "one synthetic closed-network baseline kernel/tool probe only; no source/provider/external-content access",
     "status": "probe-only candidate; NOT application/G1 accepted; does NOT transfer admission or evidence to the trixie candidate"
@@ -26,8 +34,17 @@
     "note": "Prior f669 probe task run in isolated Fargate (bookworm recipe generation). These are FAILED G1 probes under the OLD recipe, not proof of universal Fargate incompatibility; recorded here only as historical context. Runtime code unchanged this stage.",
     "taskId": "cfcc4a32e3ea45a7be898d322f663411",
     "stopped": "exit 1 at 2026-10-09T20:57:40Z",
-    "passed": ["identity", "mounts", "read-only-root", "SDK-static", "DNS controls"],
-    "failed": { "browser-sandbox": "FATAL No usable sandbox", "xlsx-recalc": "null result" }
+    "passed": [
+      "identity",
+      "mounts",
+      "read-only-root",
+      "SDK-static",
+      "DNS controls"
+    ],
+    "failed": {
+      "browser-sandbox": "FATAL No usable sandbox",
+      "xlsx-recalc": "null result"
+    }
   },
   "baseImage": {
     "reference": "node:24.21.0-trixie-slim",
@@ -73,7 +90,12 @@
       "version": "0.3.295",
       "integrity": "sha512-GaLZbMAqyT4ZCtDQYq2p26bjpqqRfoobVxCK+Ao283I12sGyw2ttMvjdCXclS9VKhs+/IIu8/AtjqyrX73FZ/g==",
       "license": "SEE LICENSE IN README.md (proprietary; use subject to Anthropic legal agreements)",
-      "licenseFiles": [{ "path": "LICENSE.md", "sha256": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a" }],
+      "licenseFiles": [
+        {
+          "path": "LICENSE.md",
+          "sha256": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a"
+        }
+      ],
       "bundledCli": {
         "version": "2.1.295",
         "manifestCommit": "07e8f67ea3282bf154a9e05673a0942b1b173cef",
@@ -96,10 +118,21 @@
       "version": "0.0.83",
       "integrity": "sha512-oNcl+Ae2/IAjhfPeP46BfIkSakfmprY+aOtkv5MjrQ4lPav4/yNtPhL0iq8SlIM90oApWgBDUxaNKvktazUKOg==",
       "license": "Apache-2.0",
-      "licenseFiles": [{ "path": "LICENSE", "sha256": "9a7110fc2d2f964038e5dc49128f908f29f47a574c961cba16085914e879cbda" }],
+      "licenseFiles": [
+        {
+          "path": "LICENSE",
+          "sha256": "9a7110fc2d2f964038e5dc49128f908f29f47a574c961cba16085914e879cbda"
+        }
+      ],
       "bin": "playwright-mcp",
-      "exports": { ".": "./index.js", "./package.json": "./package.json" },
-      "declaredDependencies": { "playwright": "1.64.0-alpha-1790635538000", "playwright-core": "1.64.0-alpha-1790635538000" },
+      "exports": {
+        ".": "./index.js",
+        "./package.json": "./package.json"
+      },
+      "declaredDependencies": {
+        "playwright": "1.64.0-alpha-1790635538000",
+        "playwright-core": "1.64.0-alpha-1790635538000"
+      },
       "mcpSdkNote": "0.0.83 declares no runtime @modelcontextprotocol/sdk dependency (server bundled); the official client is added only to drive the probe."
     },
     {
@@ -108,8 +141,14 @@
       "integrity": "sha512-/5XDUMxpOd/9AojJtWDFIRV3EJZNQ0AwvK69wgt3CPzy8wTgiBG9pX45VfxtqtvIRGwfWzMhrvawNKreG69Snw==",
       "license": "Apache-2.0",
       "licenseFiles": [
-        { "path": "LICENSE", "sha256": "45873d00a0dd243596deb4aa23b2493b3d1f0671921bf2538ea431d7380220eb" },
-        { "path": "NOTICE", "sha256": "6d602191187b35b9b01d2cffa01c8469c2c8d9de8a96f1bf868e0f264f51c81d" }
+        {
+          "path": "LICENSE",
+          "sha256": "45873d00a0dd243596deb4aa23b2493b3d1f0671921bf2538ea431d7380220eb"
+        },
+        {
+          "path": "NOTICE",
+          "sha256": "6d602191187b35b9b01d2cffa01c8469c2c8d9de8a96f1bf868e0f264f51c81d"
+        }
       ],
       "bin": "cli.js (adopted CLI used for `install chromium`)"
     },
@@ -118,22 +157,58 @@
       "version": "1.64.0-alpha-1790635538000",
       "integrity": "sha512-pNwaXirhXMRLaRQs4NQ18EpTdtDoFwyPH9FOaaDC7YXG4hpwE2xmwCic/1srbuExVQC7zT9LJSJpDBAru+Vo9A==",
       "license": "Apache-2.0",
-      "licenseFiles": [{ "path": "LICENSE", "sha256": "45873d00a0dd243596deb4aa23b2493b3d1f0671921bf2538ea431d7380220eb" }]
+      "licenseFiles": [
+        {
+          "path": "LICENSE",
+          "sha256": "45873d00a0dd243596deb4aa23b2493b3d1f0671921bf2538ea431d7380220eb"
+        }
+      ]
     },
     {
       "name": "pptxgenjs",
       "version": "4.0.1",
       "integrity": "sha512-TeJISr8wouAuXw4C1F/mC33xbZs/FuEG6nH9FG1Zj+nuPcGMP5YRHl6X+j3HSUnS1f3at6k75ZZXPMZlA5Lj9A==",
       "license": "MIT",
-      "licenseFiles": [{ "path": "LICENSE", "sha256": "7a2bfe96150786ed1908b8e63f98ebab88875c1e79e28faff6649e0f11f77e52" }]
+      "licenseFiles": [
+        {
+          "path": "LICENSE",
+          "sha256": "7a2bfe96150786ed1908b8e63f98ebab88875c1e79e28faff6649e0f11f77e52"
+        }
+      ]
     },
     {
       "name": "pdfjs-dist",
       "version": "6.4.299",
       "integrity": "sha512-AVl138zALtfaAPvADulE0PZThbYzCBS79nL4pOSL/6Sm/4AH5A21BD9VHt97OlCuzJuCpmeZtAtkinisF4Vb1g==",
       "license": "Apache-2.0",
-      "licenseFiles": [{ "path": "LICENSE", "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594" }],
+      "licenseFiles": [
+        {
+          "path": "LICENSE",
+          "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+        }
+      ],
       "note": "Adopted preview candidate only; no new viewer implemented in this ticket."
+    },
+    {
+      "name": "ajv",
+      "version": "8.20.0",
+      "integrity": "sha512-Thbli+OlOj+iMPYFBVBfJ3OmCAnaSyNn4M1vz9T6Gka5Jt9ba/HIR56joy65tY6kx/FCF5VXNB819Y7/GUrBGA==",
+      "license": "MIT",
+      "role": "private fixture and public schema validation"
+    },
+    {
+      "name": "ajv-formats",
+      "version": "3.0.1",
+      "integrity": "sha512-8iUql50EUR+uUcdRQ3HDqa6EVyo3docL8g5WJ3FNcWmu62IbkGUue/pEyLBW8VGKKucTPgqeks4fIU1DA4yowQ==",
+      "license": "MIT",
+      "role": "fixture schema format validation"
+    },
+    {
+      "name": "canonicalize",
+      "version": "5.1.0",
+      "integrity": "sha512-bab9+WefZljqQ8jT0qRwVmTyzAUU63K97QIQD3agynIBrb6sa5M2eAy8Hv8K3p4V9+ONVYZKtGYl4Dg+/5Gumw==",
+      "license": "Apache-2.0",
+      "role": "exact private fixture wire and receipt hashes"
     }
   ],
   "chromium": {
@@ -175,15 +250,59 @@
     "chromeSandboxInternals": "chrome://sandbox renders a two-cell table (#sandbox-status) with Layer 1 Sandbox (Namespace/SUID/None), PID namespaces, Network namespaces, Seccomp-BPF sandbox and TSYNC rows; see chromium 155.0.8059.12 chrome/browser/resources/sandbox_internals/sandbox_internals.{ts,html}"
   },
   "pypi": [
-    { "name": "python-docx", "version": "1.2.0", "license": "MIT", "wheel": "python_docx-1.2.0-py3-none-any.whl", "sha256": "3fd478f3250fbbbfd3b94fe1e985955737c145627498896a8a6bf81f4baf66c7" },
-    { "name": "XlsxWriter", "version": "3.2.9", "license": "BSD-2-Clause", "wheel": "xlsxwriter-3.2.9-py3-none-any.whl", "sha256": "9a5db42bc5dff014806c58a20b9eae7322a134abb6fce3c92c181bfb275ec5b3" },
-    { "name": "openpyxl", "version": "3.1.5", "license": "MIT", "wheel": "openpyxl-3.1.5-py2.py3-none-any.whl", "sha256": "5282c12b107bffeef825f4617dc029afaf41d0ea60823bbb665ef3079dc79de2" },
-    { "name": "pypdf", "version": "6.20.0", "license": "BSD-3-Clause", "wheel": "pypdf-6.20.0-py3-none-any.whl", "sha256": "f003fc2014814d264fe7dd3f9d435c158e23e1a85a2233f87a0a2d6d21c914ad" }
+    {
+      "name": "python-docx",
+      "version": "1.2.0",
+      "license": "MIT",
+      "wheel": "python_docx-1.2.0-py3-none-any.whl",
+      "sha256": "3fd478f3250fbbbfd3b94fe1e985955737c145627498896a8a6bf81f4baf66c7"
+    },
+    {
+      "name": "XlsxWriter",
+      "version": "3.2.9",
+      "license": "BSD-2-Clause",
+      "wheel": "xlsxwriter-3.2.9-py3-none-any.whl",
+      "sha256": "9a5db42bc5dff014806c58a20b9eae7322a134abb6fce3c92c181bfb275ec5b3"
+    },
+    {
+      "name": "openpyxl",
+      "version": "3.1.5",
+      "license": "MIT",
+      "wheel": "openpyxl-3.1.5-py2.py3-none-any.whl",
+      "sha256": "5282c12b107bffeef825f4617dc029afaf41d0ea60823bbb665ef3079dc79de2"
+    },
+    {
+      "name": "pypdf",
+      "version": "6.20.0",
+      "license": "BSD-3-Clause",
+      "wheel": "pypdf-6.20.0-py3-none-any.whl",
+      "sha256": "f003fc2014814d264fe7dd3f9d435c158e23e1a85a2233f87a0a2d6d21c914ad"
+    }
   ],
   "pypiTransitive": [
-    { "name": "lxml", "version": "6.1.3", "license": "BSD-3-Clause", "wheel": "lxml-6.1.3-cp313-cp313-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl", "sha256": "d85dfab42dd672f87a7f76e9de7172962aee69fa12044f0d6e1a23cbd53fb80e", "selectedFor": "linux x86_64 cp313, non-free-threaded, manylinux_2_28 (Debian trixie glibc >= 2.36); the W02-01 cp311 wheel is the wrong ABI for trixie python3.13", "wheelBytes": 5232385 },
-    { "name": "et_xmlfile", "version": "2.0.0", "license": "MIT", "wheel": "et_xmlfile-2.0.0-py3-none-any.whl", "sha256": "7a91720bc756843502c3b7504c77b8fe44217c85c537d85037f0f536151b2caa" },
-    { "name": "typing_extensions", "version": "4.16.0", "license": "PSF-2.0", "wheel": "typing_extensions-4.16.0-py3-none-any.whl", "sha256": "481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8" }
+    {
+      "name": "lxml",
+      "version": "6.1.3",
+      "license": "BSD-3-Clause",
+      "wheel": "lxml-6.1.3-cp313-cp313-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl",
+      "sha256": "d85dfab42dd672f87a7f76e9de7172962aee69fa12044f0d6e1a23cbd53fb80e",
+      "selectedFor": "linux x86_64 cp313, non-free-threaded, manylinux_2_28 (Debian trixie glibc >= 2.36); the W02-01 cp311 wheel is the wrong ABI for trixie python3.13",
+      "wheelBytes": 5232385
+    },
+    {
+      "name": "et_xmlfile",
+      "version": "2.0.0",
+      "license": "MIT",
+      "wheel": "et_xmlfile-2.0.0-py3-none-any.whl",
+      "sha256": "7a91720bc756843502c3b7504c77b8fe44217c85c537d85037f0f536151b2caa"
+    },
+    {
+      "name": "typing_extensions",
+      "version": "4.16.0",
+      "license": "PSF-2.0",
+      "wheel": "typing_extensions-4.16.0-py3-none-any.whl",
+      "sha256": "481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8"
+    }
   ],
   "wheelHashVerification": {
     "method": "downloaded each exact wheel from files.pythonhosted.org and sha256-summed the bytes in this session",
@@ -310,14 +429,14 @@
   "interruptionPackaging": {
     "status": "SOURCE_ONLY",
     "contextAssembler": "scripts/qualification/worker_context.py",
-    "sourceCommit": "2201364be32bc99a5abe68ce96c4d1e18d1a1e8c",
+    "sourceCommit": "09b962f86e52b9559c46b19c80d8c25fcd3410f5",
     "records": [
       {
         "sourcePath": "apps/worker/qualification/checkpoint/native-session-files.mjs",
         "contextPath": "checkpoint/native-session-files.mjs",
         "imagePath": "/opt/meri-worker/checkpoint/native-session-files.mjs",
-        "bytes": 11588,
-        "sha256": "6bc9b3559975dfb2ea585da076687e46e04051904ae8f88e200e4768b40b2b9d"
+        "bytes": 12049,
+        "sha256": "543e05c230bf614cd5cf73f2d69877f1311ec0faf9d7ca205429161a75b842e1"
       },
       {
         "sourcePath": "scripts/sdk-capture/json-records.mjs",
@@ -335,5 +454,150 @@
       }
     ],
     "limitations": "Generated byte copies only; root build-command migration, fresh image assembly and native admission remain separate."
+  },
+  "sdkFixturePackaging": {
+    "status": "SOURCE_ONLY",
+    "contextAssembler": "scripts/qualification/worker_context.py",
+    "records": [
+      {
+        "sourcePath": "apps/worker/qualification/checkpoint/fixture-channel.mjs",
+        "contextPath": "checkpoint/fixture-channel.mjs",
+        "imagePath": "/opt/meri-worker/checkpoint/fixture-channel.mjs",
+        "bytes": 11858,
+        "sha256": "160929a1ac8ce647574fac5740294d117ab70230d0a040b6d37ca4ef5712ad0b"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/checkpoint/fixture-channel.test.mjs",
+        "contextPath": "checkpoint/fixture-channel.test.mjs",
+        "imagePath": "/opt/meri-worker/checkpoint/fixture-channel.test.mjs",
+        "bytes": 16419,
+        "sha256": "3d8eb0e88e6ae45c6f55b1303e1f2075344c044ed0eba4e39a0f7ca26994612c"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/checkpoint/fixture-transport.mjs",
+        "contextPath": "checkpoint/fixture-transport.mjs",
+        "imagePath": "/opt/meri-worker/checkpoint/fixture-transport.mjs",
+        "bytes": 13008,
+        "sha256": "3b802df4571cd2e170890c9bfd77be995997736ff4e5e003c3248946e3b3d31c"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/checkpoint/fixture-transport.test.mjs",
+        "contextPath": "checkpoint/fixture-transport.test.mjs",
+        "imagePath": "/opt/meri-worker/checkpoint/fixture-transport.test.mjs",
+        "bytes": 30179,
+        "sha256": "8c676e68f2bb670dee4ed7405d29c009ef757387a49902e96a99fa99e3d6a3c5"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/checkpoint/resume-admission.mjs",
+        "contextPath": "checkpoint/resume-admission.mjs",
+        "imagePath": "/opt/meri-worker/checkpoint/resume-admission.mjs",
+        "bytes": 5948,
+        "sha256": "81b15faafc9f27b4e4107d7034708fd0f83a18caf09cbb367f03b7ef77701c9d"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/checkpoint/resume-admission.test.mjs",
+        "contextPath": "checkpoint/resume-admission.test.mjs",
+        "imagePath": "/opt/meri-worker/checkpoint/resume-admission.test.mjs",
+        "bytes": 8022,
+        "sha256": "5e53aaaf445c70dd7a56a55a3ea1ab2936a6eff86ed78b2dd04b072a79dfdb4f"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/checkpoint/fixture-sentinel.mjs",
+        "contextPath": "checkpoint/fixture-sentinel.mjs",
+        "imagePath": "/opt/meri-worker/checkpoint/fixture-sentinel.mjs",
+        "bytes": 8266,
+        "sha256": "4e5779fa84f149a4867e556e5fc7d20c644cd440a69f0ad4c6a7c4e8160324fd"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/checkpoint/fixture-sentinel.test.mjs",
+        "contextPath": "checkpoint/fixture-sentinel.test.mjs",
+        "imagePath": "/opt/meri-worker/checkpoint/fixture-sentinel.test.mjs",
+        "bytes": 14919,
+        "sha256": "73a14fea4fc24fd0a05f68523c4f9dbbbaf500dfd62f80225f8e93996f4e8ed7"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/probes/native-observations.mjs",
+        "contextPath": "probes/native-observations.mjs",
+        "imagePath": "/opt/meri-worker/probes/native-observations.mjs",
+        "bytes": 7072,
+        "sha256": "fea49e07f71dccbea3d6c21cab8d1e4502b79a2d1ff05085dbd2a0e2089b2b15"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/probes/native-stream-observer.mjs",
+        "contextPath": "probes/native-stream-observer.mjs",
+        "imagePath": "/opt/meri-worker/probes/native-stream-observer.mjs",
+        "bytes": 3459,
+        "sha256": "66fa0dec53eb9cc3d98a79d45a0cc8290281efc46dce7baa05e1f0721771beba"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/probes/native-namespace-observer.mjs",
+        "contextPath": "probes/native-namespace-observer.mjs",
+        "imagePath": "/opt/meri-worker/probes/native-namespace-observer.mjs",
+        "bytes": 11069,
+        "sha256": "6c4ff8b525c414f93f0d0d29653b1e8a68db5fc520d4f414cf88d0b3e08b23c4"
+      },
+      {
+        "sourcePath": "packages/contracts/validate.mjs",
+        "contextPath": "build-dependencies/contracts/validate.mjs",
+        "imagePath": "/packages/contracts/validate.mjs",
+        "bytes": 3311,
+        "sha256": "c2449fd55300b31bdc1e829b5d918a531f1c4b2c675085a5b4707726ddd36d10"
+      },
+      {
+        "sourcePath": "packages/contracts/meri.schema.json",
+        "contextPath": "build-dependencies/contracts/meri.schema.json",
+        "imagePath": "/packages/contracts/meri.schema.json",
+        "bytes": 50043,
+        "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b"
+      },
+      {
+        "sourcePath": "packages/contracts/qualification-sdk/validate.mjs",
+        "contextPath": "build-dependencies/contracts/qualification-sdk/validate.mjs",
+        "imagePath": "/packages/contracts/qualification-sdk/validate.mjs",
+        "bytes": 14049,
+        "sha256": "2d0bd74171e390c370ad8d9e599f7c46ce4751e5efd6ba2c18923090b749b86c"
+      },
+      {
+        "sourcePath": "packages/contracts/qualification-sdk/wire.mjs",
+        "contextPath": "build-dependencies/contracts/qualification-sdk/wire.mjs",
+        "imagePath": "/packages/contracts/qualification-sdk/wire.mjs",
+        "bytes": 1925,
+        "sha256": "f8f506ceeca820f3957b67f8bcbfc36c80f009356baba83b32ac99afe401ad9a"
+      },
+      {
+        "sourcePath": "packages/contracts/qualification-sdk/fixture.schema.json",
+        "contextPath": "build-dependencies/contracts/qualification-sdk/fixture.schema.json",
+        "imagePath": "/packages/contracts/qualification-sdk/fixture.schema.json",
+        "bytes": 26397,
+        "sha256": "fbf0655ab6960ac5c486c08ba70b2a31310086ca282f0e9a1f41c08430ebfa13"
+      },
+      {
+        "sourcePath": "packages/contracts/qualification-sdk/native-evidence.mjs",
+        "contextPath": "build-dependencies/contracts/qualification-sdk/native-evidence.mjs",
+        "imagePath": "/packages/contracts/qualification-sdk/native-evidence.mjs",
+        "bytes": 3849,
+        "sha256": "0f587aefd26e189fd9099b1639910da6ec37725b5729c4ba5d98a4695ec5fcde"
+      },
+      {
+        "sourcePath": "packages/contracts/qualification-sdk/native-evidence.schema.json",
+        "contextPath": "build-dependencies/contracts/qualification-sdk/native-evidence.schema.json",
+        "imagePath": "/packages/contracts/qualification-sdk/native-evidence.schema.json",
+        "bytes": 11751,
+        "sha256": "5f9ac8980940bf4928b2d655fa5e299208f3d6dbf8f1adceceb9727cb69f62f5"
+      },
+      {
+        "sourcePath": "packages/contracts/test/sdk-fixture-wire.test.mjs",
+        "contextPath": "build-dependencies/contracts/test/sdk-fixture-wire.test.mjs",
+        "imagePath": "/packages/contracts/test/sdk-fixture-wire.test.mjs",
+        "bytes": 11632,
+        "sha256": "0a292a418855ab4f3f07f096a618772928e06533fa05b41db4d4d6a56506abcc"
+      }
+    ],
+    "directDependencies": [
+      "ajv@8.20.0",
+      "ajv-formats@3.0.1",
+      "canonicalize@5.1.0"
+    ],
+    "limitations": "No image build, installed-byte validation, native two-task run, grant revocation or G1 admission."
   }
 }

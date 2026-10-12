@@ -1,0 +1,121 @@
+{
+  "decision": "HOLD_SOURCE",
+  "sourceCommit": "6f0a8c57e47f1f352198c3bdd4ae092b8bc45946",
+  "sourceTree": "2c7bb223cfbf7096e02b074efe638ccf15dece32",
+  "sourceParent": "4b8bbe7c110db70079f011a2407d7d616e8ebfbd",
+  "report": {
+    "path": "docs/coordination/reports/CODEX-FRESH-RUNNER-CAPTURE-REPAIR-INDEPENDENT-20261012.md",
+    "bytes": 5217,
+    "sha256": "82a24cac4614f73da7e565d561082865d13a90ce85a356524de38bb91f0629cf"
+  },
+  "evidence": [
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-independent-review-20261012/clock-initialization-control.json",
+      "bytes": 1194,
+      "sha256": "a9efba5c51ddfc4583b0e5c0f05baa5101dc83731e1a3ead6dab17d3efd72e34"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-independent-review-20261012/clock-initialization-control.py",
+      "bytes": 1371,
+      "sha256": "fda216bd2736a9478d881801f011dc29e6982e39f520a6e4c7afd3849c3de11d"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-independent-review-20261012/clock-initialization-control.stderr.bin",
+      "bytes": 622,
+      "sha256": "d435b284b9e2574f397a86da864413c946accda4ae98b7c761d6652d898d630b"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-independent-review-20261012/clock-initialization-control.stdout.bin",
+      "bytes": 110,
+      "sha256": "f266d882db5061e29a9d5d1eddb6a486bdfa454111fc0b58b88e6f5a0149a43e"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-independent-review-20261012/closure-and-pipes-controls.json",
+      "bytes": 1483,
+      "sha256": "3ee78db078cb1ef8685e2bdbe40cf1fd0d5a354f10e25ce59dd83b78760e2ae8"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-independent-review-20261012/closure-and-pipes-controls.py",
+      "bytes": 3039,
+      "sha256": "d70d0137db8f7600c6a79314b947364177f429a60bf2891b39b58ff7b35b63c5"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-independent-review-20261012/closure-and-pipes-controls.stderr.bin",
+      "bytes": 306,
+      "sha256": "1fec06b7acbefb94b0e909f1de52ee926516c59ba02b82c53b04830f29aa2974"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-independent-review-20261012/closure-and-pipes-controls.stdout.bin",
+      "bytes": 707,
+      "sha256": "04bf308866f078af4ab14d2f47c17d1831a525af52b3b1a1c59725f3e5c36871"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-independent-review-20261012/original-inherited-pipe-control.json",
+      "bytes": 1397,
+      "sha256": "9b95df2a26022b97820a1c47d13b64355a0e46c3277b754ae20397745a062dff"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-independent-review-20261012/original-inherited-pipe-control.py",
+      "bytes": 832,
+      "sha256": "ef38faed3b82a4dafeca59ba4cb29532fbeaa346580618e96dfbd951b32ec75c"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-independent-review-20261012/original-inherited-pipe-control.stderr.bin",
+      "bytes": 739,
+      "sha256": "3f2bf948abcc72163330ae6028c9a60c11f92c8ca0280e6b6249312d9c144b0c"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-independent-review-20261012/original-inherited-pipe-control.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-independent-review-20261012/original-output-negative-controls.json",
+      "bytes": 1356,
+      "sha256": "bfacfa1deaf6fc3d7b51ae74ed827aeab892f05ca4e48c140f30c47672492dd1"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-independent-review-20261012/original-output-negative-controls.py",
+      "bytes": 1238,
+      "sha256": "bff55f3fd397c917f56bb8bfac60b4d9df4b5116963252be3d5c338bf32818be"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-independent-review-20261012/original-output-negative-controls.stderr.bin",
+      "bytes": 364,
+      "sha256": "aa37827a7802edebb043ce39a0cfc60658bf2e57024d4bbab47f86325b784c76"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-independent-review-20261012/original-output-negative-controls.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-independent-review-20261012/preservation-author-evidence.json",
+      "bytes": 7493,
+      "sha256": "6213745770155208051eaad23fb99abaf75c74f42f1a973f153a36042841c13c"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-independent-review-20261012/source-tests25.json",
+      "bytes": 1563,
+      "sha256": "37d86efe64fc16b70e47c26d2cf9d8a00d05fc0b9bb0696d38989581613a1fbe"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-independent-review-20261012/source-tests25.stderr.bin",
+      "bytes": 4126,
+      "sha256": "70e3fc6d6be59eb04e709f569fb6c1fda3e9f8edcd54677fd23c32e5483b6cf1"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-independent-review-20261012/source-tests25.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "originalThreeFindingsRepaired": true,
+  "clockInitializationCleanup": "FAIL",
+  "actualWindowsExecution": "UNRUN",
+  "runnerQualified": false,
+  "buildAuthorized": false,
+  "completeExecutableClosure": false,
+  "productionTreeCleanupClaim": false,
+  "awsRequests": 0
+}

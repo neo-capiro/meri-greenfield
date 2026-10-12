@@ -1,0 +1,35 @@
+{
+  "sourceCommit": "a3c3c340218690ff1b02672ab50565014f51eae2",
+  "argv": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "-I",
+    "-B",
+    "-S",
+    "scripts/qualification/worker_runner_capture.py"
+  ],
+  "externalTimeoutSeconds": 15,
+  "physicalExitCode": 2,
+  "expectedExitCode": 2,
+  "timedOut": false,
+  "elapsedSeconds": 0.083,
+  "fixtureGroupRemainedAfterDirectScriptExit": false,
+  "reviewerKilledRemainingOwnedFixtureGroup": false,
+  "reapedOwnedDescendants": [],
+  "ownedProcessGroupAbsent": true,
+  "tmpEntriesAfter": [],
+  "streams": {
+    "stdout": {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/final-independent-review-20261012/cli-missing-config.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stderr": {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/final-independent-review-20261012/cli-missing-config.stderr.bin",
+      "bytes": 59,
+      "sha256": "bd67a072307d7bd000988211f2c33720cf16ca2a0a811b08c22c8d04638ca445"
+    }
+  },
+  "productionProcessTreeCleanupClaim": false,
+  "actualWindowsExecution": "UNRUN",
+  "nativeAwsExecuted": false
+}

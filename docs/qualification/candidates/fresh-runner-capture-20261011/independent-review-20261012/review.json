@@ -1,0 +1,170 @@
+{
+  "decision": "HOLD_SOURCE",
+  "sourceCommit": "4b8bbe7c110db70079f011a2407d7d616e8ebfbd",
+  "sourceTree": "ab24ae120482c386d40e2daf85950bb5bdd274f2",
+  "sourceParent": "19d64a1b5446337ad10a0068229164133756a073",
+  "trackedProductDiffExitCode": 0,
+  "reviewDocuments": [
+    {
+      "path": "docs/coordination/tasks/CODEX-FRESH-RUNNER-CAPTURE-INDEPENDENT-20261012.md",
+      "bytes": 1745,
+      "sha256": "9a1b53b4aa6fc754d3761de0bc1b366748ebcb430e3decb551c7f6e2805b95a8"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-FRESH-RUNNER-CAPTURE-INDEPENDENT-20261012.md",
+      "bytes": 8999,
+      "sha256": "b43ccc504a2107270a20cc9ad75490aa187ccc50d6684937e5d4f9311a5dd668"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/independent-review-20261012/cli-help.json",
+      "bytes": 993,
+      "sha256": "c7a5e4b235c6645076a6fa3e02f8b7cb008974fe9dcbdd8617e5c9245858a7a7"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/independent-review-20261012/cli-help.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/independent-review-20261012/cli-help.stdout.bin",
+      "bytes": 456,
+      "sha256": "7de1e0098ced95e6dce49f770700da26c171d9cf76ba0f2a39f23092da6492fb"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/independent-review-20261012/cli-missing-config.json",
+      "bytes": 1009,
+      "sha256": "c71530e4e9152805fe40af22885d1dc12ceae9dc3fed555f9b75cfa5061280ae"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/independent-review-20261012/cli-missing-config.stderr.bin",
+      "bytes": 59,
+      "sha256": "bd67a072307d7bd000988211f2c33720cf16ca2a0a811b08c22c8d04638ca445"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/independent-review-20261012/cli-missing-config.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/independent-review-20261012/cli-wrong-host.json",
+      "bytes": 1184,
+      "sha256": "70ec623a44bbb134b76fb517892a4c213e9c922b305a6e8b0b90d0892aad373f"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/independent-review-20261012/cli-wrong-host.stderr.bin",
+      "bytes": 59,
+      "sha256": "bd67a072307d7bd000988211f2c33720cf16ca2a0a811b08c22c8d04638ca445"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/independent-review-20261012/cli-wrong-host.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/independent-review-20261012/commands.json",
+      "bytes": 6795,
+      "sha256": "3e1516f5e16768bfc55a9da8fbb6b5bd9f0069c86e194f3bca8c94803c9c3bc7"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/independent-review-20261012/inherited-pipe-control.json",
+      "bytes": 1299,
+      "sha256": "7004f3600391e1d61609d340c4ac81aaec92a845029c4a2fcda54c59029091fe"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/independent-review-20261012/inherited-pipe-control.py",
+      "bytes": 832,
+      "sha256": "ef38faed3b82a4dafeca59ba4cb29532fbeaa346580618e96dfbd951b32ec75c"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/independent-review-20261012/inherited-pipe-control.stderr.bin",
+      "bytes": 1615,
+      "sha256": "8c6896b0205f5e6410fde6b481fc95394b3b5768cb68d99d73f665ec300e8574"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/independent-review-20261012/inherited-pipe-control.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/independent-review-20261012/output-negative-controls.json",
+      "bytes": 1250,
+      "sha256": "59510e5e084c878eaf42229bc5c6d3de1c97d4ca07c542271274428a672bcb8b"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/independent-review-20261012/output-negative-controls.py",
+      "bytes": 1238,
+      "sha256": "bff55f3fd397c917f56bb8bfac60b4d9df4b5116963252be3d5c338bf32818be"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/independent-review-20261012/output-negative-controls.stderr.bin",
+      "bytes": 1906,
+      "sha256": "58a251f3354ced2b5219a2fb1cc9fa2ffa6826774df4fc0529121e7ecc8f78a3"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/independent-review-20261012/output-negative-controls.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/independent-review-20261012/preservation-author-evidence.json",
+      "bytes": 11556,
+      "sha256": "9f071ff9e5d5ec385d9f7e85bc48b045bad216967ed47f4b08e20c1312ea8f4b"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/independent-review-20261012/safe-import.json",
+      "bytes": 1641,
+      "sha256": "77229e157121afb48a871d0102b98974d68cad674f416c4957add55019cac389"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/independent-review-20261012/safe-import.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/independent-review-20261012/safe-import.stdout.bin",
+      "bytes": 18,
+      "sha256": "8384fd7494e6efdc7bddd4d2101183c7e9f397ad73fa6b05e9002a49627edd40"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/independent-review-20261012/source-tests.json",
+      "bytes": 1197,
+      "sha256": "dfb571690b9a630594d2c258ae756e08f3106517ca2bfe0db0a042a8161d21ed"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/independent-review-20261012/source-tests.stderr.bin",
+      "bytes": 3398,
+      "sha256": "e953ebaf55d76c9a5a489da95bd842d4de77eb0cd31112c71235d3f1e9b68a7f"
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/independent-review-20261012/source-tests.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "actualWindowsExecution": "UNRUN",
+  "selectedInventoryOnly": true,
+  "completeExecutableClosure": false,
+  "runnerQualified": false,
+  "buildAuthorized": false,
+  "scanAdmitted": false,
+  "runtimeAdmitted": false,
+  "g1Admitted": false,
+  "awsNativeExecuted": false,
+  "awsApiRequests": 0,
+  "sourceTests": {
+    "pass": 21,
+    "physicalExitCode": 0
+  },
+  "outputNegativeControls": {
+    "fail": 2,
+    "physicalExitCode": 1
+  },
+  "inheritedPipeControl": {
+    "physicalExitCode": -9,
+    "externalTimeoutSeconds": 10,
+    "timedOut": true,
+    "ownedProcessGroupAbsent": true
+  }
+}

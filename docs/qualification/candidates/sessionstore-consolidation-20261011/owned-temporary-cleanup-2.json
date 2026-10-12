@@ -1,0 +1,13 @@
+{
+  "exclusivelyOwnedRoot": "/workspace/scratch/853fba62b1f1/meri-sessionstore-consolidation-20261011/.task-inputs/check-tmp",
+  "remainingBeforeCleanup": [
+    "meri-ws-Ttl2ay",
+    "meri-ws-Ttl2ay/a",
+    "meri-ws-Ttl2ay/a/b",
+    "meri-ws-Ttl2ay/a/b/f",
+    "meri-ws-Ttl2ay/link",
+    "meri-ws-Ttl2ay/real"
+  ],
+  "allOwnedCheckGroupsAbsent": true,
+  "rootEmptyAfterCleanup": true
+}

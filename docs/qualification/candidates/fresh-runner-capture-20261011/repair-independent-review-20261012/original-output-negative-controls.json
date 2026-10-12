@@ -1,0 +1,35 @@
+{
+  "sourceCommit": "6f0a8c57e47f1f352198c3bdd4ae092b8bc45946",
+  "argv": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "-I",
+    "-B",
+    "-S",
+    "docs/qualification/candidates/fresh-runner-capture-20261011/repair-independent-review-20261012/original-output-negative-controls.py"
+  ],
+  "externalTimeoutSeconds": 15,
+  "physicalExitCode": 0,
+  "expectedExitCode": 0,
+  "timedOut": false,
+  "elapsedSeconds": 0.075,
+  "fixtureGroupRemainedAfterDirectScriptExit": false,
+  "reviewerKilledRemainingOwnedFixtureGroup": false,
+  "reapedOwnedDescendants": [],
+  "ownedProcessGroupAbsent": true,
+  "tmpEntriesAfter": [],
+  "streams": {
+    "stdout": {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-independent-review-20261012/original-output-negative-controls.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stderr": {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-independent-review-20261012/original-output-negative-controls.stderr.bin",
+      "bytes": 364,
+      "sha256": "aa37827a7802edebb043ce39a0cfc60658bf2e57024d4bbab47f86325b784c76"
+    }
+  },
+  "productionProcessTreeCleanupClaim": false,
+  "actualWindowsExecution": "UNRUN",
+  "nativeAwsExecuted": false
+}

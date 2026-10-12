@@ -20,6 +20,7 @@ import { dirname as pathDirname, resolve as pathResolve } from 'node:path';
 import { createHash, randomUUID } from 'node:crypto';
 import { spawn as nodeSpawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { observeNativeStdout } from './native-stream-observer.mjs';
 
 import {
   LOOPBACK_HOST,
@@ -648,14 +649,18 @@ export function buildSpawnHook(counters, record, spawnImpl, onViolation) {
     record.cwd = spawnOptions.cwd;
     record.envNames = Object.keys(spawnOptions.env || {}).sort();
     record.spawned = true;
+    record.instanceId = randomUUID();
+    record.startedAtMs = Date.now();
     const child = spawnImpl(spawnOptions, record, onViolation);
     record.child = child;
+    record.pid = child?.pid;
     record.exitPromise = new Promise((resolve) => {
       if (child && typeof child.once === 'function') {
         child.once('exit', (code, sig) => {
           record.exited = true;
           record.exitCode = code;
           record.signalCode = sig;
+          record.exitedAtMs = Date.now();
           resolve();
         });
       } else {
@@ -713,6 +718,13 @@ export function realSpawner(spawnOptions, record, onViolation) {
     stdio: ['pipe', 'pipe', 'pipe'],
     signal: spawnOptions.signal,
   });
+  observeNativeStdout(child, record, onViolation);
+  child.on('error', error => {
+    // Node reports an intentional AbortSignal shutdown as AbortError. It still
+    // requires an observed exit; it is distinct from a spawn/transport failure.
+    if (error?.name === 'AbortError' && spawnOptions.signal?.aborted) record.controlledAbortError = true;
+    else record.processError = true;
+  });
   let total = 0;
   let hashed = 0;
   let preview = '';
@@ -745,6 +757,7 @@ export function realSpawner(spawnOptions, record, onViolation) {
   child.stderr.on('end', () => {
     record.stderrEnded = true;
   });
+  child.stderr.on('close', () => { record.stderrClosed = true; });
   child.stderr.on('error', () => {
     record.stderrReadError = true;
     if (typeof onViolation === 'function') onViolation('stderr read failed');

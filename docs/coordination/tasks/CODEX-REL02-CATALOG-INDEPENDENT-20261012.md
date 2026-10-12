@@ -1,0 +1,7 @@
+# Independent REL-02 catalog and resolver review
+
+Exact source `475e970bb0776b63a80a1ac8170bfaabf27959a3`, tree `8c7166aa86be9f3fa4fdecafeda46dbdc0cfb89d`. Isolated detached worktree `meri-rel02-catalog-independent-20261012`; local Git lazy fetching disabled. Parent owns source/integration/acceptance. Review budget: initial fifteen minutes; no recursive delegation.
+
+Reviewer owns only this NEW task, matching report and `docs/qualification/candidates/rel02-catalog-bindings-20261012/independent-review-20261012/**`. No product edits, source activation, runtime, model/provider/cloud, network/remote Git or migration. Borrow existing pinned dependency trees read-only through owned ignored links; no large copies or installs.
+
+Outline: inspect canonical 13-operation registry, private snapshot/resolver and existing family callback reuse; verify all139/96/43 preservation, thirteen pending/null-handler/zero-retry mappings and 83 pending selected IDs including action-item gap; check inert bounded input/context/output ownership and defaults before digest. Independently inspect five approved characterization migrations and retained original files/failure proofs, preserving schema/domain/skill/authorization assertions. Run focused14, all201 contract/Hermes cases and appropriate public checks with bounded owned supervision/raw receipts. Return a local task/report/evidence-only review commit with exact source parent and source-only ACCEPT/HOLD; no live source/handler exposure or authorization implied.

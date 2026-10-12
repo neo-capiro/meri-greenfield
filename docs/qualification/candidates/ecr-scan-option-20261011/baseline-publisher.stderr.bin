@@ -1,0 +1,27 @@
+test_collector_orders_source_post_publication_and_bundle (test_worker_image_publish.Publication.test_collector_orders_source_post_publication_and_bundle) ... ok
+test_explicit_publish_binding_and_distinct_review (test_worker_image_publish.Publication.test_explicit_publish_binding_and_distinct_review) ... ok
+test_failure_and_unknown_push_stay_consumed_and_bundled (test_worker_image_publish.Publication.test_failure_and_unknown_push_stay_consumed_and_bundled) ... ok
+test_owner_execute_refuses_repository_drift_before_any_write (test_worker_image_publish.Publication.test_owner_execute_refuses_repository_drift_before_any_write) ... ok
+test_owner_repository_authority_precedes_consumption (test_worker_image_publish.Publication.test_owner_repository_authority_precedes_consumption) ... ok
+test_publish_manifest_pins_both_new_sources (test_worker_image_publish.Publication.test_publish_manifest_pins_both_new_sources) ... ERROR
+test_publish_postbuild_fallback_is_bounded_failure_evidence (test_worker_image_publish.Publication.test_publish_postbuild_fallback_is_bounded_failure_evidence) ... ok
+test_static_or_source_post_failure_prevents_all_ecr (test_worker_image_publish.Publication.test_static_or_source_post_failure_prevents_all_ecr) ... ok
+test_success_exact_manifest_cleanup_and_no_admission (test_worker_image_publish.Publication.test_success_exact_manifest_cleanup_and_no_admission) ... ok
+
+======================================================================
+ERROR: test_publish_manifest_pins_both_new_sources (test_worker_image_publish.Publication.test_publish_manifest_pins_both_new_sources)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/853fba62b1f1/meri-aws-scan-option-base-20261011/scripts/qualification/test_worker_image_publish.py", line 195, in test_publish_manifest_pins_both_new_sources
+    collect.validate_input(root, raw, collect.digest(raw))
+  File "/workspace/scratch/853fba62b1f1/meri-aws-scan-option-base-20261011/scripts/qualification/worker_image_collect.py", line 116, in validate_input
+    rows = value['members']; need(type(rows) is list and len(rows) == (49 if publish else 47), 'exact source/recipe records')
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/853fba62b1f1/meri-aws-scan-option-base-20261011/scripts/qualification/worker_image_collect.py", line 51, in need
+    raise ValueError(message)
+ValueError: exact source/recipe records
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.026s
+
+FAILED (errors=1)

@@ -1,0 +1,1094 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:federal-market:0.2.0",
+  "title": "Meri candidate federal-market tool contracts 0.2.0",
+  "description": "CANDIDATE family contract for the five selected federal-market Meri tools. Not a frozen revision: the family contract version remains 0.1.0 until Codex freezes a reviewed integration commit. The first five operation definitions are the input contract; the `*Output` definitions added for REL-02 results are DECLARED-TYPE CANDIDATES for the structural result shapes of the same five operations, transcribed from the frozen result interfaces and the frozen dispatch envelope. This document is structural only. It neither authenticates an actor, grants source access, pins client scope, qualifies the tools, nor represents parity or G1 acceptance; it asserts no freshness, total accuracy, coverage, authorization, source authority or date format. Unlike the legacy advertised schemas it is closed on unknown fields, never coerces strings to numbers, and assigns no date format to fields the frozen source types only as string.",
+  "$defs": {
+    "FederalMarketOperationId": {
+      "description": "The five distinct selected federal-market operation IDs. Each maps to exactly one input definition below; no alias, handler or availability mapping exists.",
+      "type": "string",
+      "enum": [
+        "search_federal_contract_awards",
+        "search_federal_subawards",
+        "search_contract_vehicles",
+        "search_procurement_forecasts",
+        "get_district_federal_market"
+      ]
+    },
+    "FederalMarketClientId": {
+      "description": "Optional client identifier carried as inert data. It is never authority: the server binds the effective client scope for the conversation. Passing a value here cannot widen, substitute or prove access.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "FederalMarketQueryText": {
+      "description": "Keyword search over visible fields. Bounded candidate boundary length; the frozen source advertises an unbounded string.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000
+    },
+    "FederalMarketAgency": {
+      "description": "Agency or office name filter.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "FederalMarketState": {
+      "description": "Two-letter place-of-performance state in normalized uppercase form. The boundary normalizes casing before validating; it does not accept a non-string.",
+      "type": "string",
+      "pattern": "^[A-Z]{2}$"
+    },
+    "FederalMarketDistrict": {
+      "description": "Congressional district number, or 00/AL for at-large, in normalized uppercase form. The boundary normalizes casing before validating; a numeric argument is not coerced.",
+      "type": "string",
+      "pattern": "^(?:[0-9]{1,2}|00|AL)$"
+    },
+    "FederalMarketFiscalYear": {
+      "description": "Federal fiscal-year filter where the source supplies one.",
+      "type": "integer",
+      "minimum": 1900,
+      "maximum": 2200
+    },
+    "FederalMarketPage": {
+      "description": "Result page, starting at 1. Absent means 1.",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10000,
+      "default": 1
+    },
+    "FederalMarketLimit": {
+      "description": "Maximum rows, 1-25. Absent means 10.",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 25,
+      "default": 10
+    },
+    "FederalMarketRecipient": {
+      "description": "Recipient/contractor or prime/subrecipient name filter.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "FederalMarketDateBound": {
+      "description": "Optional date lower or upper bound. The frozen source types this field only as string, so no date format is asserted here and callers must not infer ISO-8601 acceptance from this contract.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "SearchFederalContractAwardsInput": {
+      "description": "Candidate input for search_federal_contract_awards. Closed on unknown fields; adds a bounded fiscalYear plus recipient and date bounds.",
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "$ref": "#/$defs/FederalMarketClientId"
+        },
+        "query": {
+          "$ref": "#/$defs/FederalMarketQueryText"
+        },
+        "agency": {
+          "$ref": "#/$defs/FederalMarketAgency"
+        },
+        "state": {
+          "$ref": "#/$defs/FederalMarketState"
+        },
+        "district": {
+          "$ref": "#/$defs/FederalMarketDistrict"
+        },
+        "fiscalYear": {
+          "$ref": "#/$defs/FederalMarketFiscalYear"
+        },
+        "page": {
+          "$ref": "#/$defs/FederalMarketPage"
+        },
+        "limit": {
+          "$ref": "#/$defs/FederalMarketLimit"
+        },
+        "recipient": {
+          "$ref": "#/$defs/FederalMarketRecipient"
+        },
+        "dateFrom": {
+          "$ref": "#/$defs/FederalMarketDateBound"
+        },
+        "dateTo": {
+          "$ref": "#/$defs/FederalMarketDateBound"
+        }
+      },
+      "additionalProperties": false
+    },
+    "SearchFederalSubawardsInput": {
+      "description": "Candidate input for search_federal_subawards. Same shared fields as contract awards; no award-specific date-repair behaviour is claimed.",
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "$ref": "#/$defs/FederalMarketClientId"
+        },
+        "query": {
+          "$ref": "#/$defs/FederalMarketQueryText"
+        },
+        "agency": {
+          "$ref": "#/$defs/FederalMarketAgency"
+        },
+        "state": {
+          "$ref": "#/$defs/FederalMarketState"
+        },
+        "district": {
+          "$ref": "#/$defs/FederalMarketDistrict"
+        },
+        "fiscalYear": {
+          "$ref": "#/$defs/FederalMarketFiscalYear"
+        },
+        "page": {
+          "$ref": "#/$defs/FederalMarketPage"
+        },
+        "limit": {
+          "$ref": "#/$defs/FederalMarketLimit"
+        },
+        "recipient": {
+          "$ref": "#/$defs/FederalMarketRecipient"
+        },
+        "dateFrom": {
+          "$ref": "#/$defs/FederalMarketDateBound"
+        },
+        "dateTo": {
+          "$ref": "#/$defs/FederalMarketDateBound"
+        }
+      },
+      "additionalProperties": false
+    },
+    "SearchContractVehiclesInput": {
+      "description": "Candidate input for search_contract_vehicles. fiscalYear is deliberately absent from this shape, so a closed object rejects it; the boundary also rejects a present fiscalYear explicitly to preserve the legacy runtime refusal.",
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "$ref": "#/$defs/FederalMarketClientId"
+        },
+        "query": {
+          "$ref": "#/$defs/FederalMarketQueryText"
+        },
+        "agency": {
+          "$ref": "#/$defs/FederalMarketAgency"
+        },
+        "state": {
+          "$ref": "#/$defs/FederalMarketState"
+        },
+        "district": {
+          "$ref": "#/$defs/FederalMarketDistrict"
+        },
+        "page": {
+          "$ref": "#/$defs/FederalMarketPage"
+        },
+        "limit": {
+          "$ref": "#/$defs/FederalMarketLimit"
+        }
+      },
+      "additionalProperties": false
+    },
+    "SearchProcurementForecastsInput": {
+      "description": "Candidate input for search_procurement_forecasts. Forecasts are global public data: clientId is accepted only so a client-scoped session cannot substitute another client, and it is never used to manufacture a client match. The boundary reports this global query scope explicitly.",
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "$ref": "#/$defs/FederalMarketClientId"
+        },
+        "query": {
+          "$ref": "#/$defs/FederalMarketQueryText"
+        },
+        "agency": {
+          "$ref": "#/$defs/FederalMarketAgency"
+        },
+        "state": {
+          "$ref": "#/$defs/FederalMarketState"
+        },
+        "district": {
+          "$ref": "#/$defs/FederalMarketDistrict"
+        },
+        "fiscalYear": {
+          "$ref": "#/$defs/FederalMarketFiscalYear"
+        },
+        "page": {
+          "$ref": "#/$defs/FederalMarketPage"
+        },
+        "limit": {
+          "$ref": "#/$defs/FederalMarketLimit"
+        }
+      },
+      "additionalProperties": false
+    },
+    "GetDistrictFederalMarketInput": {
+      "description": "Candidate input for get_district_federal_market, the only shape with required fields. Geography requires both state and district; fiscalYear is not part of this shape.",
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "$ref": "#/$defs/FederalMarketClientId"
+        },
+        "state": {
+          "$ref": "#/$defs/FederalMarketState"
+        },
+        "district": {
+          "$ref": "#/$defs/FederalMarketDistrict"
+        },
+        "agency": {
+          "$ref": "#/$defs/FederalMarketAgency"
+        }
+      },
+      "required": [
+        "state",
+        "district"
+      ],
+      "additionalProperties": false
+    },
+    "FederalMarketNullableText": {
+      "description": "Declared `string | null` result field. The frozen source types these fields only as string, so no date, UUID or other format is asserted and a caller must not infer one.",
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "FederalMarketNullableAmount": {
+      "description": "Declared `number | null` monetary result field. No currency, basis, rounding or precision is asserted; null records that the source supplied no value and is never a zero.",
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "FederalMarketNullableInteger": {
+      "description": "Declared nullable integer result field.",
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "FederalContractMarketRow": {
+      "description": "DECLARED-TYPE CANDIDATE for one search_federal_contract_awards item, transcribed from the frozen `FederalContractMarketRow` interface. The frozen dispatch maps this family's items through `serializeFederalAwardDates` in evidence-accuracy `enforce` mode, and that serializer is outside the frozen file set, so the exact runtime row serialization is NOT established: `additionalProperties` is deliberately left open so an unestablished serialized field is not rejected, and no field beyond the declared interface is invented. Declared fields are required as declared; the `| null` fields are required-but-nullable.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "awardId": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "recipientName": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "recipientUei": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "awardingAgency": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "amount": {
+          "$ref": "#/$defs/FederalMarketNullableAmount"
+        },
+        "description": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "actionDate": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "latestActionDate": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "baseAwardSignedDate": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "sourceLastModifiedDate": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "popStartDate": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "popEndDate": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "state": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "district": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "districtKey": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "source": {
+          "description": "Declared source literal for this row family. It names the frozen row's source only; it proves no freshness, coverage or source authority.",
+          "const": "usaspending"
+        },
+        "sourceUpdatedAt": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        }
+      },
+      "required": [
+        "id",
+        "awardId",
+        "recipientName",
+        "recipientUei",
+        "awardingAgency",
+        "amount",
+        "description",
+        "actionDate",
+        "latestActionDate",
+        "baseAwardSignedDate",
+        "sourceLastModifiedDate",
+        "popStartDate",
+        "popEndDate",
+        "state",
+        "district",
+        "districtKey",
+        "source",
+        "sourceUpdatedAt"
+      ],
+      "additionalProperties": true
+    },
+    "FederalSubawardMarketRow": {
+      "description": "DECLARED-TYPE CANDIDATE for one search_federal_subawards item, transcribed from the frozen `FederalSubawardMarketRow` interface. Structural only: no freshness, total accuracy, coverage, authorization or source authority is asserted.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "providerKey": {
+          "type": "string"
+        },
+        "awardKey": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "primeRecipientName": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "primeRecipientUei": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "subawardeeName": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "subawardeeUei": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "awardingAgency": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "awardingOffice": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "amount": {
+          "$ref": "#/$defs/FederalMarketNullableAmount"
+        },
+        "description": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "actionDate": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "fiscalYear": {
+          "$ref": "#/$defs/FederalMarketNullableInteger"
+        },
+        "naicsCode": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "state": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "district": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "districtKey": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "sourceUrl": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "source": {
+          "description": "Declared source literal for this row family. It names the frozen row's source only; it proves no freshness, coverage or source authority.",
+          "const": "tango"
+        },
+        "sourceUpdatedAt": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        }
+      },
+      "required": [
+        "id",
+        "providerKey",
+        "awardKey",
+        "primeRecipientName",
+        "primeRecipientUei",
+        "subawardeeName",
+        "subawardeeUei",
+        "awardingAgency",
+        "awardingOffice",
+        "amount",
+        "description",
+        "actionDate",
+        "fiscalYear",
+        "naicsCode",
+        "state",
+        "district",
+        "districtKey",
+        "sourceUrl",
+        "source",
+        "sourceUpdatedAt"
+      ],
+      "additionalProperties": false
+    },
+    "FederalVehicleMarketRow": {
+      "description": "DECLARED-TYPE CANDIDATE for one search_contract_vehicles item, transcribed from the frozen `FederalVehicleMarketRow` interface. Structural only: no eligibility, deadline, freshness or coverage claim is made, and `lastDateToOrder` carries no date format.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "vehicleId": {
+          "type": "string"
+        },
+        "name": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "solicitationIdentifier": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "vehicleType": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "agency": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "naicsCode": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "pscCode": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "setAside": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "lastDateToOrder": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "awardeeCount": {
+          "$ref": "#/$defs/FederalMarketNullableInteger"
+        },
+        "orderCount": {
+          "$ref": "#/$defs/FederalMarketNullableInteger"
+        },
+        "totalObligated": {
+          "$ref": "#/$defs/FederalMarketNullableAmount"
+        },
+        "relationship": {
+          "description": "Declared relationship of the recipient to the vehicle: self, parent, or unknown (null).",
+          "anyOf": [
+            {
+              "enum": [
+                "self",
+                "parent"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "recipientUei": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "source": {
+          "description": "Declared source literal for this row family. It names the frozen row's source only; it proves no freshness, coverage or source authority.",
+          "const": "tango"
+        },
+        "sourceUpdatedAt": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        }
+      },
+      "required": [
+        "id",
+        "vehicleId",
+        "name",
+        "solicitationIdentifier",
+        "vehicleType",
+        "agency",
+        "naicsCode",
+        "pscCode",
+        "setAside",
+        "lastDateToOrder",
+        "awardeeCount",
+        "orderCount",
+        "totalObligated",
+        "relationship",
+        "recipientUei",
+        "source",
+        "sourceUpdatedAt"
+      ],
+      "additionalProperties": false
+    },
+    "FederalForecastMarketRow": {
+      "description": "DECLARED-TYPE CANDIDATE for one search_procurement_forecasts item, transcribed from the frozen `FederalForecastMarketRow` interface. A forecast is a future opportunity, never an awarded dollar; no eligibility, deadline, status interpretation or date format is asserted.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "forecastId": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "agency": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "department": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "office": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "anticipatedAwardDate": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "estimatedPeriod": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "fiscalYear": {
+          "$ref": "#/$defs/FederalMarketNullableInteger"
+        },
+        "naicsCode": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "pscCode": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "setAside": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "contractVehicle": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "placeOfPerformance": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "contactName": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "contactEmail": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "status": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "active": {
+          "description": "Declared tri-state activity flag. The frozen source types it `boolean | null`; no interpretation of a null is asserted.",
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sourceSystem": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "sourceUrl": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "source": {
+          "description": "Declared source literal for this row family. It names the frozen row's source only; it proves no freshness, coverage or source authority.",
+          "const": "tango"
+        },
+        "sourceUpdatedAt": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        }
+      },
+      "required": [
+        "id",
+        "forecastId",
+        "title",
+        "description",
+        "agency",
+        "department",
+        "office",
+        "anticipatedAwardDate",
+        "estimatedPeriod",
+        "fiscalYear",
+        "naicsCode",
+        "pscCode",
+        "setAside",
+        "contractVehicle",
+        "placeOfPerformance",
+        "contactName",
+        "contactEmail",
+        "status",
+        "active",
+        "sourceSystem",
+        "sourceUrl",
+        "source",
+        "sourceUpdatedAt"
+      ],
+      "additionalProperties": false
+    },
+    "FederalMarketDistrictRow": {
+      "description": "DECLARED-TYPE CANDIDATE for one district aggregate of get_district_federal_market. Closed on the declared fields so a state-only subaward rail row cannot be passed off as a district row. Counts are declared numbers, not asserted to be exact totals.",
+      "type": "object",
+      "properties": {
+        "districtKey": {
+          "type": "string"
+        },
+        "state": {
+          "description": "Declared string. No casing or two-letter pattern is asserted here because the frozen composer filters districts without normalizing the emitted row.",
+          "type": "string"
+        },
+        "district": {
+          "description": "Declared string. The frozen composer drops statewide/non-voting sentinel codes, so the literal sentinels 90, 98 and ZZ are refused. The composer compares case-insensitively after trimming, while this structural check rejects only the exact literal forms.",
+          "type": "string",
+          "not": {
+            "enum": [
+              "90",
+              "98",
+              "ZZ"
+            ]
+          }
+        },
+        "contractCount": {
+          "type": "number"
+        },
+        "contractAmount": {
+          "$ref": "#/$defs/FederalMarketNullableAmount"
+        },
+        "subawardCount": {
+          "type": "number"
+        },
+        "subawardAmount": {
+          "$ref": "#/$defs/FederalMarketNullableAmount"
+        }
+      },
+      "required": [
+        "districtKey",
+        "state",
+        "district",
+        "contractCount",
+        "contractAmount",
+        "subawardCount",
+        "subawardAmount"
+      ],
+      "additionalProperties": false
+    },
+    "FederalMarketStateSubawardRow": {
+      "description": "DECLARED-TYPE CANDIDATE for one state-only subaward rail row. Source-backed to a state but not to a congressional district, so it is deliberately NOT a district row and must never be folded into `districts` or into awarded-dollar district totals.",
+      "type": "object",
+      "properties": {
+        "state": {
+          "type": "string"
+        },
+        "subawardCount": {
+          "type": "number"
+        },
+        "subawardAmount": {
+          "$ref": "#/$defs/FederalMarketNullableAmount"
+        },
+        "geographyBasis": {
+          "description": "Literal basis for the separate rail: the subaward place of performance is source-backed to a state only.",
+          "const": "source_state_place_of_performance"
+        }
+      },
+      "required": [
+        "state",
+        "subawardCount",
+        "subawardAmount",
+        "geographyBasis"
+      ],
+      "additionalProperties": false
+    },
+    "FederalMarketFutureSignal": {
+      "description": "DECLARED-TYPE CANDIDATE for one future-opportunity signal. A future signal is not an awarded dollar and is never counted as one; no eligibility, deadline or freshness claim is made and `date` carries no date format.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "source": {
+          "description": "Declared source literal for a future signal.",
+          "enum": [
+            "sam_gov",
+            "agency_forecast"
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "agency": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "state": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "districtKey": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "date": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "geographyBasis": {
+          "description": "Declared basis on which the signal was placed geographically; `unresolved` records that no geography was established.",
+          "enum": [
+            "source_place_of_performance",
+            "state_text",
+            "unresolved"
+          ]
+        },
+        "sourceUrl": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        }
+      },
+      "required": [
+        "id",
+        "source",
+        "title",
+        "agency",
+        "state",
+        "districtKey",
+        "date",
+        "geographyBasis",
+        "sourceUrl"
+      ],
+      "additionalProperties": false
+    },
+    "SearchFederalContractAwardsOutput": {
+      "description": "Candidate structural output for search_federal_contract_awards: the frozen `FederalMarketPage<T>` page fields, the `pageResult` fields `hasMore`, `nextPage` and `paginationLimitReached`, and the dispatch's `tool` and `generatedAt`. Carries the declared-type-candidate item family above. Structural only: it proves no authorization, client scope, source availability, freshness or total accuracy.",
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FederalContractMarketRow"
+          }
+        },
+        "total": {
+          "description": "Declared number. The contract does not assert that this count is exact or complete.",
+          "type": "number"
+        },
+        "page": {
+          "description": "Declared page index. Modelled as a positive integer because the frozen input boundary refuses a non-integer or sub-1 page; the service page construction itself is outside the frozen file set.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "pageSize": {
+          "description": "Declared page size. Modelled as a positive integer because the frozen input boundary refuses a non-integer or sub-1 limit; the service page construction itself is outside the frozen file set.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "source": {
+          "description": "Declared string source name. The frozen types do not narrow it to a literal, so no enum is asserted.",
+          "type": "string"
+        },
+        "asOf": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "generatedAt": {
+          "description": "Declared string. The frozen dispatch builds it with Date#toISOString, but no date format keyword is asserted here so the family keeps one uniform no-inferred-format rule.",
+          "type": "string"
+        },
+        "hasMore": {
+          "description": "Declared boolean. The frozen producer derives it from the page and total; this contract does not re-derive it, because that would assert total accuracy.",
+          "type": "boolean"
+        },
+        "nextPage": {
+          "description": "Declared continuation page or null. The frozen producer returns page + 1 while more rows remain below the tool page limit, and null otherwise; the paging consistency is checked by the validation module, not by this schema.",
+          "$ref": "#/$defs/FederalMarketNullableInteger"
+        },
+        "paginationLimitReached": {
+          "description": "Declared boolean: more rows remain but the frozen tool page limit was reached.",
+          "type": "boolean"
+        },
+        "tool": {
+          "const": "search_federal_contract_awards"
+        }
+      },
+      "required": [
+        "items",
+        "total",
+        "page",
+        "pageSize",
+        "source",
+        "asOf",
+        "generatedAt",
+        "hasMore",
+        "nextPage",
+        "paginationLimitReached",
+        "tool"
+      ],
+      "additionalProperties": false
+    },
+    "SearchFederalSubawardsOutput": {
+      "description": "Candidate structural output for search_federal_subawards: the frozen `FederalMarketPage<T>` page fields, the `pageResult` fields and the dispatch's `tool` and `generatedAt`, with the declared subaward row family. Structural only: no authorization, client scope, freshness or total accuracy is proven.",
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FederalSubawardMarketRow"
+          }
+        },
+        "total": {
+          "description": "Declared number. The contract does not assert that this count is exact or complete.",
+          "type": "number"
+        },
+        "page": {
+          "description": "Declared page index. Modelled as a positive integer because the frozen input boundary refuses a non-integer or sub-1 page; the service page construction itself is outside the frozen file set.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "pageSize": {
+          "description": "Declared page size. Modelled as a positive integer because the frozen input boundary refuses a non-integer or sub-1 limit; the service page construction itself is outside the frozen file set.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "source": {
+          "description": "Declared string source name. The frozen types do not narrow it to a literal, so no enum is asserted.",
+          "type": "string"
+        },
+        "asOf": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "generatedAt": {
+          "description": "Declared string. The frozen dispatch builds it with Date#toISOString, but no date format keyword is asserted here so the family keeps one uniform no-inferred-format rule.",
+          "type": "string"
+        },
+        "hasMore": {
+          "description": "Declared boolean. The frozen producer derives it from the page and total; this contract does not re-derive it, because that would assert total accuracy.",
+          "type": "boolean"
+        },
+        "nextPage": {
+          "description": "Declared continuation page or null, with the same producer paging consistency as the other paged families.",
+          "$ref": "#/$defs/FederalMarketNullableInteger"
+        },
+        "paginationLimitReached": {
+          "description": "Declared boolean: more rows remain but the frozen tool page limit was reached.",
+          "type": "boolean"
+        },
+        "tool": {
+          "const": "search_federal_subawards"
+        }
+      },
+      "required": [
+        "items",
+        "total",
+        "page",
+        "pageSize",
+        "source",
+        "asOf",
+        "generatedAt",
+        "hasMore",
+        "nextPage",
+        "paginationLimitReached",
+        "tool"
+      ],
+      "additionalProperties": false
+    },
+    "SearchContractVehiclesOutput": {
+      "description": "Candidate structural output for search_contract_vehicles: the frozen `FederalMarketPage<T>` page fields, the `pageResult` fields and the dispatch's `tool` and `generatedAt`, with the declared vehicle row family. Structural only: no eligibility, deadline, freshness or total accuracy is proven.",
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FederalVehicleMarketRow"
+          }
+        },
+        "total": {
+          "description": "Declared number. The contract does not assert that this count is exact or complete.",
+          "type": "number"
+        },
+        "page": {
+          "description": "Declared page index. Modelled as a positive integer because the frozen input boundary refuses a non-integer or sub-1 page; the service page construction itself is outside the frozen file set.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "pageSize": {
+          "description": "Declared page size. Modelled as a positive integer because the frozen input boundary refuses a non-integer or sub-1 limit; the service page construction itself is outside the frozen file set.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "source": {
+          "description": "Declared string source name. The frozen types do not narrow it to a literal, so no enum is asserted.",
+          "type": "string"
+        },
+        "asOf": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "generatedAt": {
+          "description": "Declared string. The frozen dispatch builds it with Date#toISOString, but no date format keyword is asserted here so the family keeps one uniform no-inferred-format rule.",
+          "type": "string"
+        },
+        "hasMore": {
+          "description": "Declared boolean. The frozen producer derives it from the page and total; this contract does not re-derive it, because that would assert total accuracy.",
+          "type": "boolean"
+        },
+        "nextPage": {
+          "description": "Declared continuation page or null, with the same producer paging consistency as the other paged families.",
+          "$ref": "#/$defs/FederalMarketNullableInteger"
+        },
+        "paginationLimitReached": {
+          "description": "Declared boolean: more rows remain but the frozen tool page limit was reached.",
+          "type": "boolean"
+        },
+        "tool": {
+          "const": "search_contract_vehicles"
+        }
+      },
+      "required": [
+        "items",
+        "total",
+        "page",
+        "pageSize",
+        "source",
+        "asOf",
+        "generatedAt",
+        "hasMore",
+        "nextPage",
+        "paginationLimitReached",
+        "tool"
+      ],
+      "additionalProperties": false
+    },
+    "SearchProcurementForecastsOutput": {
+      "description": "Candidate structural output for search_procurement_forecasts: the frozen `FederalMarketPage<T>` page fields, the `pageResult` fields and the dispatch's `tool` and `generatedAt`, with the declared forecast row family. A forecast is a future opportunity, never an awarded dollar. Structural only: no eligibility, deadline, freshness or total accuracy is proven.",
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FederalForecastMarketRow"
+          }
+        },
+        "total": {
+          "description": "Declared number. The contract does not assert that this count is exact or complete.",
+          "type": "number"
+        },
+        "page": {
+          "description": "Declared page index. Modelled as a positive integer because the frozen input boundary refuses a non-integer or sub-1 page; the service page construction itself is outside the frozen file set.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "pageSize": {
+          "description": "Declared page size. Modelled as a positive integer because the frozen input boundary refuses a non-integer or sub-1 limit; the service page construction itself is outside the frozen file set.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "source": {
+          "description": "Declared string source name. The frozen types do not narrow it to a literal, so no enum is asserted.",
+          "type": "string"
+        },
+        "asOf": {
+          "$ref": "#/$defs/FederalMarketNullableText"
+        },
+        "generatedAt": {
+          "description": "Declared string. The frozen dispatch builds it with Date#toISOString, but no date format keyword is asserted here so the family keeps one uniform no-inferred-format rule.",
+          "type": "string"
+        },
+        "hasMore": {
+          "description": "Declared boolean. The frozen producer derives it from the page and total; this contract does not re-derive it, because that would assert total accuracy.",
+          "type": "boolean"
+        },
+        "nextPage": {
+          "description": "Declared continuation page or null, with the same producer paging consistency as the other paged families.",
+          "$ref": "#/$defs/FederalMarketNullableInteger"
+        },
+        "paginationLimitReached": {
+          "description": "Declared boolean: more rows remain but the frozen tool page limit was reached.",
+          "type": "boolean"
+        },
+        "tool": {
+          "const": "search_procurement_forecasts"
+        }
+      },
+      "required": [
+        "items",
+        "total",
+        "page",
+        "pageSize",
+        "source",
+        "asOf",
+        "generatedAt",
+        "hasMore",
+        "nextPage",
+        "paginationLimitReached",
+        "tool"
+      ],
+      "additionalProperties": false
+    },
+    "GetDistrictFederalMarketOutput": {
+      "description": "Candidate structural output for get_district_federal_market: the frozen `FederalMarketGeographyResponse` fields plus the dispatch's `tool` and `generatedAt`. The state-only subaward rail is a separate optional array that must never be folded into `districts` or into awarded-dollar district totals, and future signals are never awarded dollars. `stateSubawards` and `futureSignalsAvailability` stay optional because the frozen source declares them optional for rolling compatibility; a successful empty lookup (`available`) is distinct from a failed one (`unavailable`). Structural only: no authorization, coverage, freshness or total accuracy is proven.",
+      "type": "object",
+      "properties": {
+        "districts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FederalMarketDistrictRow"
+          }
+        },
+        "stateSubawards": {
+          "description": "Separate state-only subaward rail. Optional: the frozen source declares it optional for rolling compatibility and new clients treat absence as an empty rail. Rows here are never district attributions.",
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FederalMarketStateSubawardRow"
+          }
+        },
+        "futureSignals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FederalMarketFutureSignal"
+          }
+        },
+        "futureSignalsAvailability": {
+          "description": "Optional source-only status for the future-signals rail, distinguishing a successful empty lookup from a failed one. Absence is not a failure claim.",
+          "enum": [
+            "available",
+            "unavailable"
+          ]
+        },
+        "awardedMoneyIncludesFutureOpportunities": {
+          "description": "Literal false. Forecasts and future opportunities are never included in awarded-dollar totals.",
+          "const": false
+        },
+        "warnings": {
+          "description": "Independent rail failures. A healthy rail still renders when another one fails.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "tool": {
+          "const": "get_district_federal_market"
+        },
+        "generatedAt": {
+          "description": "Declared string. The frozen dispatch builds it with Date#toISOString, but no date format keyword is asserted here so the family keeps one uniform no-inferred-format rule.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "districts",
+        "futureSignals",
+        "awardedMoneyIncludesFutureOpportunities",
+        "warnings",
+        "tool",
+        "generatedAt"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "sourceCommit": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+  "argv": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "--test",
+    "packages/contracts/test/retrieval-catalog-bindings.test.mjs"
+  ],
+  "environmentKeys": [
+    "PATH",
+    "LANG",
+    "LC_ALL",
+    "TMPDIR",
+    "npm_config_cache",
+    "GIT_NO_LAZY_FETCH"
+  ],
+  "supervisorTimeoutSeconds": 60,
+  "physicalExitCode": 0,
+  "timedOut": false,
+  "elapsedSeconds": 1.186,
+  "ownedProcessGroupAbsent": true,
+  "ownedTempEntriesBeforeOwnerCleanup": [],
+  "ownedTempRootRemoved": true,
+  "streams": {
+    "stdout": {
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/independent-review-20261012/focused14.stdout.bin",
+      "bytes": 1527,
+      "sha256": "2a86689633d0a096a35bb14955067be69a8a07dac74ed6de3fb71614e9ef63a8"
+    },
+    "stderr": {
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/independent-review-20261012/focused14.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "nodeSha256": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12",
+  "dependencies": "borrowed read-only through ignored links; no copies/installs",
+  "runtimeActivation": false
+}

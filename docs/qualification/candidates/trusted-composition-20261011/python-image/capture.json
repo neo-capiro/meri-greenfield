@@ -1,0 +1,27 @@
+{
+  "sourceCommit": "72c8afa5f7854505f99ccbd569c5de8c9e6bd1d9",
+  "argv": [
+    "python",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "scripts/qualification",
+    "-p",
+    "test_worker_image_*.py",
+    "-v"
+  ],
+  "startedAt": "2026-10-11T21:11:29.367156+00:00",
+  "elapsedSeconds": 0.721,
+  "exitCode": 1,
+  "output": {
+    "stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stderr": {
+      "bytes": 11953,
+      "sha256": "a629569ff47d90d379b0cc24c235db7828b094ec4a727cc98798a05296f9c5de"
+    }
+  }
+}

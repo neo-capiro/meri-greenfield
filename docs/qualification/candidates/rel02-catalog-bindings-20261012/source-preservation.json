@@ -1,0 +1,156 @@
+{
+  "base": "00af1a681116a4d23ac6195124372e1fec2c42e0",
+  "classification": "SOURCE_ONLY",
+  "schemaAndFamilyBytePreservation": [
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog.schema.json",
+      "bytes": 16814,
+      "sha256": "95eec52796389bbe2e515637024280015993f3a74d971b7680aacddea4e34488",
+      "baseExact": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/common.schema.json",
+      "bytes": 15134,
+      "sha256": "7d7ac22eff809cc31e84d1fc9b2fada1b56c316f73e50115207b579de0d92c4b",
+      "baseExact": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/data-search-validation.mjs",
+      "bytes": 18029,
+      "sha256": "5049b9177664275f763ab97f92fe722ae5d4e2064ca8400f6448d89027f5cd43",
+      "baseExact": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/data-search.schema.json",
+      "bytes": 25959,
+      "sha256": "96e5d1ebc461dc53db86e2fd14e2863d93d5c651e134382a2da5daefd3836fec",
+      "baseExact": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/federal-market-validation.mjs",
+      "bytes": 8669,
+      "sha256": "eebf8b073bc8b25e6c7aea415c269cb034eb9976d45ab6ae0411d709e11295df",
+      "baseExact": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/federal-market.schema.json",
+      "bytes": 40586,
+      "sha256": "5ebd54c7a1e5d3a2ef99f5a69e76293aec227fbe50874f21ba69ea987417bada",
+      "baseExact": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/mail-validation.mjs",
+      "bytes": 15957,
+      "sha256": "e15eec9ea611daa70d8605e8b350c20535fab27f516937897914eeb55d6f8cdc",
+      "baseExact": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/mail.schema.json",
+      "bytes": 30679,
+      "sha256": "d45681f76ba5f5d7f65b7385ab1e1c3deb9626d4166e55fc6039e88bc3d804e6",
+      "baseExact": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/meeting-source-validation.mjs",
+      "bytes": 23313,
+      "sha256": "5fc7e262efc9be933c760ee089e02f58e4a8d74a958c8e412c216846bbba8ac2",
+      "baseExact": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/meeting-source.schema.json",
+      "bytes": 37907,
+      "sha256": "b7ec6ecbdaab3fcccac3b83b9530828c90bda96685385b6f49f929fbd2776664",
+      "baseExact": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/operational-reads-validation.mjs",
+      "bytes": 21346,
+      "sha256": "81be7fe48c5d34f9352e145d9c47dc2e143ffc0b985a5f1ac26e0be07c344a42",
+      "baseExact": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/operational-reads.schema.json",
+      "bytes": 31381,
+      "sha256": "a8556220e2285239e9d46aba97954594f245daad20ab126c1733f2360d3f109c",
+      "baseExact": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/retrieval.schema.json",
+      "bytes": 21023,
+      "sha256": "6058aa0d735b595a093907eec8bf7e4e8f4eb96952f497caa3c1eb00f3ad1a8c",
+      "baseExact": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/skill.schema.json",
+      "bytes": 9072,
+      "sha256": "146a78397cf72fbb899769fe23a83ab609fd8d67803f543ab5a76dba7a37ee7e",
+      "baseExact": true
+    }
+  ],
+  "testMigrations": [
+    {
+      "path": "packages/contracts/test/retrieval-mail.test.mjs",
+      "originalBytes": 29920,
+      "originalSha256": "5324967d8dbffe3357ccaef7c09c13af67a320fbb9d72aa93f6322a9a69cb5cf",
+      "outsideAuthorizedBodyBaseExact": true,
+      "semanticPrefixOrSkillSuffixPreserved": true,
+      "originalCapture": "original-retrieval-mail.test.mjs.txt"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-data-search.test.mjs",
+      "originalBytes": 32852,
+      "originalSha256": "ed1614966269edae40952af90baa615893b838aa1f8a89930b2ad240a2346642",
+      "outsideAuthorizedBodyBaseExact": true,
+      "semanticPrefixOrSkillSuffixPreserved": true,
+      "originalCapture": "original-retrieval-data-search.test.mjs.txt"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-federal-market.test.mjs",
+      "originalBytes": 34411,
+      "originalSha256": "aa7db71d4233e8d2a5dbade93b2f4e8c215fd2714e7ae955b3c6cf165975a1a6",
+      "outsideAuthorizedBodyBaseExact": true,
+      "semanticPrefixOrSkillSuffixPreserved": true,
+      "originalCapture": "original-retrieval-federal-market.test.mjs.txt"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-meeting-source.test.mjs",
+      "originalBytes": 33382,
+      "originalSha256": "55530a58f9e7d47fcef5a0713168d1c05cdf1697bcc7f2ceaf116c9a07126ef6",
+      "outsideAuthorizedBodyBaseExact": true,
+      "semanticPrefixOrSkillSuffixPreserved": true,
+      "originalCapture": "original-retrieval-meeting-source.test.mjs.txt"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-operational-reads.test.mjs",
+      "originalBytes": 30460,
+      "originalSha256": "20a103d89d53f780a74258c3818a6d46380f4420cb80de6da5c12be4646e721f",
+      "outsideAuthorizedBodyBaseExact": true,
+      "semanticPrefixOrSkillSuffixPreserved": true,
+      "originalCapture": "original-retrieval-operational-reads.test.mjs.txt"
+    }
+  ],
+  "catalog": {
+    "oldMailDescriptorsExactAndOrderPreserved": true,
+    "original139IdentityDispositionBoundaryExact": true,
+    "operations": 13,
+    "mapped": 13,
+    "selectedPending": 83,
+    "deferred": 43,
+    "allDisabled": true
+  },
+  "trackedSourceDiff": [
+    "packages/contracts/retrieval-0.2/catalog.json",
+    "packages/contracts/retrieval-0.2/validate.mjs",
+    "packages/contracts/test/retrieval-data-search.test.mjs",
+    "packages/contracts/test/retrieval-federal-market.test.mjs",
+    "packages/contracts/test/retrieval-mail.test.mjs",
+    "packages/contracts/test/retrieval-meeting-source.test.mjs",
+    "packages/contracts/test/retrieval-operational-reads.test.mjs"
+  ],
+  "allOtherTrackedBaseFilesUnchanged": true,
+  "dependencies": {
+    "node": "24.19.0",
+    "nodeBinarySha256": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12",
+    "nodeModules": "physical copies of accepted local root and contracts node_modules; no install/network/lock changes; not complete installed-tree attestation"
+  }
+}

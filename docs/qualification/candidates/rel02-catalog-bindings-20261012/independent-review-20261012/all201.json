@@ -1,0 +1,50 @@
+{
+  "sourceCommit": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+  "argv": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "--test",
+    "packages/contracts/test/boundaries.test.mjs",
+    "packages/contracts/test/public-package.test.mjs",
+    "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+    "packages/contracts/test/retrieval-data-search.test.mjs",
+    "packages/contracts/test/retrieval-federal-market.test.mjs",
+    "packages/contracts/test/retrieval-mail.test.mjs",
+    "packages/contracts/test/retrieval-meeting-source.test.mjs",
+    "packages/contracts/test/retrieval-operational-reads.test.mjs",
+    "packages/contracts/test/retrieval-r2.test.mjs",
+    "packages/contracts/test/sdk-fixture-contract.test.mjs",
+    "packages/contracts/test/sdk-fixture-wire.test.mjs",
+    "packages/contracts/test/sdk-native-evidence.test.mjs",
+    "evals/qualification/hermes-session.test.mjs"
+  ],
+  "environmentKeys": [
+    "PATH",
+    "LANG",
+    "LC_ALL",
+    "TMPDIR",
+    "npm_config_cache",
+    "GIT_NO_LAZY_FETCH"
+  ],
+  "supervisorTimeoutSeconds": 60,
+  "physicalExitCode": 1,
+  "timedOut": false,
+  "elapsedSeconds": 3.394,
+  "ownedProcessGroupAbsent": true,
+  "ownedTempEntriesBeforeOwnerCleanup": [],
+  "ownedTempRootRemoved": true,
+  "streams": {
+    "stdout": {
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/independent-review-20261012/all201.stdout.bin",
+      "bytes": 21631,
+      "sha256": "ca63b87f7f5f82d8de223c8b4d457ddd649776326e8a0350260e9978b3bc46ab"
+    },
+    "stderr": {
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/independent-review-20261012/all201.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "nodeSha256": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12",
+  "dependencies": "borrowed read-only through ignored links; no copies/installs",
+  "runtimeActivation": false
+}

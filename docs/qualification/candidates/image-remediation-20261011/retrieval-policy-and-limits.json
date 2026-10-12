@@ -1,0 +1,60 @@
+{
+  "retrievalDate": "2026-10-11",
+  "observations": [
+    {
+      "url": "https://www.debian.org/security/faq",
+      "ref": "turn171view0",
+      "observation": "Stable security updates can preserve the upstream version by backporting fixes; exact Debian package version, changelog and advisory determine fix state. The FAQ distinguishes stable security support from testing/unstable and unsupported proposed-updates."
+    },
+    {
+      "url": "https://snapshot.debian.org/",
+      "ref": "turn173view4",
+      "observation": "An explicit archive timestamp identifies a historical repository state; unavailable exact timestamps resolve to the preceding available snapshot. Historical sources may require source-scoped check-valid-until=no. This does not waive Release signature verification."
+    },
+    {
+      "url": "https://lxml.de/installation.html",
+      "ref": "turn173view0",
+      "observation": "lxml documents both a system-library source build and explicit static dependency builds. A pinned wheel/version alone does not identify every embedded library version; all-copy verification must inspect the selected binary."
+    },
+    {
+      "url": "https://playwright.dev/docs/intro",
+      "ref": "turn173view1",
+      "observation": "Current system requirements include Node22/24/26 and Debian12/13 on x86-64 or arm64. Generic documentation does not qualify pinned alpha1.64.0/Chromium155 or prove sandbox operation on a specific host."
+    },
+    {
+      "url": "https://playwright.dev/docs/docker",
+      "ref": "turn173view2",
+      "observation": "Official guidance recommends a separate non-root user and seccomp namespace permissions for untrusted browser content, pinning images and matching client/server versions. Development advice that adds SYS_ADMIN or uses host IPC is not authority to widen Meri's approved isolation controls."
+    },
+    {
+      "url": "https://www.gnutls.org/security.html",
+      "ref": "turn173view3",
+      "observation": "Retrieval/find did not expose CVE-2026 matching text. This is no evidence that current findings are fixed or inapplicable."
+    },
+    {
+      "url": "https://gitlab.com/libtiff/libtiff/-/commit/b04e935cb6242f22cc8b63c99a372cf3ea825e4e",
+      "ref": "turn174view0",
+      "observation": "403; actual patch bytes and direct compatibility were not inspected. The fix identity is a Debian tracker lead."
+    },
+    {
+      "url": "https://gitlab.freedesktop.org/poppler/poppler/-/merge_requests/2398",
+      "ref": "turn174view1",
+      "observation": "Access denied; no merged patch or supported release verified."
+    },
+    {
+      "url": "https://github.com/madler/zlib/issues/1310",
+      "ref": "turn174view2",
+      "observation": "Owner confirms df84af2 fix and advises using other bug fixes rather than cherry-picking. Later affected-range discussion remains unresolved in retrieved comments; third-party claims are not accepted vendor applicability."
+    },
+    {
+      "url": "https://bugs.debian.org/1150522",
+      "ref": "turn175view0",
+      "observation": "Unavailable through retrieval tool; no direct maintainer conclusion obtained."
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-107778",
+      "ref": "turn175view1",
+      "observation": "Unavailable through retrieval tool; previously retained Kerberos finding is not discharged by omission from current47 scan."
+    }
+  ]
+}

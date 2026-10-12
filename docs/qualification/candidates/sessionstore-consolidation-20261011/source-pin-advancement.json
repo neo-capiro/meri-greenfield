@@ -1,0 +1,14 @@
+{
+  "frozenSource": "09b962f86e52b9559c46b19c80d8c25fcd3410f5",
+  "onlyChangedJsonFields": [
+    "interruptionPackaging.sourceCommit",
+    "interruptionPackaging.records[0].bytes",
+    "interruptionPackaging.records[0].sha256"
+  ],
+  "allOtherComponentFieldsUnchanged": true,
+  "nativeMatchesFrozenCommit": true,
+  "status": "SOURCE_ONLY",
+  "commitAuthority": false,
+  "buildAuthorized": false,
+  "runtimeAccepted": false
+}

@@ -1,0 +1,79 @@
+✔ unrelated sibling creation above the owned config does not change captured bytes (9.440089ms)
+✔ mutation within owned configDir remains a capture refusal (3.032047ms)
+✔ mutation within owned projects remains a capture refusal (4.936784ms)
+✔ mutation within owned project remains a capture refusal (1.616091ms)
+✔ replacing a borrowed ancestor while preserving its child namespace is refused (1.763037ms)
+✔ replacing a borrowed ancestor with a junction remains a refusal (1.372261ms)
+✔ same-length transcript writes remain a refusal (1.374065ms)
+✔ opaque main, nested subagent, meta sidecar and empty directory round trip exactly (29.276405ms)
+✔ missing main and empty main refuse (1.85283ms)
+✔ session and project binding are exact (1.732242ms)
+✔ all corruption is refused before target allocation (5.229274ms)
+✔ foreign/traversal/alias/NFC/ancestor-conflicting inventory refuses before writes (7.460663ms)
+✔ hard-linked main is rejected (0.70591ms)
+✔ ancestor junction and subtree junction are rejected without reading target (1.123595ms)
+✔ known external session state refuses instead of silently omitting it (0.881329ms)
+✔ file replacement during a real read is refused (2.129567ms)
+✔ file, aggregate, member, depth and deadline policies bound real capture (6.882671ms)
+✔ existing restore target is never overwritten or cleaned (1.177395ms)
+✔ partial restore write failure cleans only created paths and retains borrowed parent (1.568331ms)
+✔ cleanup refuses a substituted identity and preserves the foreign file (1.681918ms)
+✔ builtin-only module imports without application filesystem calls (1.601129ms)
+node:internal/modules/package_json_reader:301
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@anthropic-ai/claude-agent-sdk' imported from /workspace/scratch/853fba62b1f1/meri-consolidation-closeout-20261011/apps/worker/qualification/checkpoint/session-store.test.mjs
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:301:9)
+    at packageResolve (node:internal/modules/esm/resolve:768:81)
+    at moduleResolve (node:internal/modules/esm/resolve:859:18)
+    at defaultResolve (node:internal/modules/esm/resolve:992:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+    at #resolve (node:internal/modules/esm/loader:683:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v24.19.0
+✖ apps/worker/qualification/checkpoint/session-store.test.mjs (96.195082ms)
+node:internal/modules/package_json_reader:301
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@anthropic-ai/claude-agent-sdk' imported from /workspace/scratch/853fba62b1f1/meri-consolidation-closeout-20261011/apps/worker/qualification/sdk-options.mjs
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:301:9)
+    at packageResolve (node:internal/modules/esm/resolve:768:81)
+    at moduleResolve (node:internal/modules/esm/resolve:859:18)
+    at defaultResolve (node:internal/modules/esm/resolve:992:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+    at #resolve (node:internal/modules/esm/loader:683:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v24.19.0
+✖ apps/worker/qualification/probes/static.test.mjs (95.682516ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 21
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 167.312068
+
+✖ failing tests:
+
+test at apps/worker/qualification/checkpoint/session-store.test.mjs:1:1
+✖ apps/worker/qualification/checkpoint/session-store.test.mjs (96.195082ms)
+  'test failed'
+
+test at apps/worker/qualification/probes/static.test.mjs:1:1
+✖ apps/worker/qualification/probes/static.test.mjs (95.682516ms)
+  'test failed'

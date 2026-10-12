@@ -1,0 +1,33 @@
+{
+  "frozenSource": "09b962f86e52b9559c46b19c80d8c25fcd3410f5",
+  "focusedAfterPinRefresh": {
+    "pass": 130,
+    "fail": 0,
+    "skipped": 0
+  },
+  "existingSdkEvidenceAfterDependencyRestoration": {
+    "pass": 369,
+    "fail": 0,
+    "skipped": 0
+  },
+  "originalNativeAndSessionStore": {
+    "pass": 37,
+    "fail": 0
+  },
+  "directOriginalConfigAssertions": {
+    "pass": 7,
+    "promptfooCliInvoked": false
+  },
+  "unchangedImageInventoryFocused": {
+    "pass": 25,
+    "fail": 0
+  },
+  "fixedSdkSourcePins": 19,
+  "allCheckProcessGroupsAbsent": true,
+  "ownedGeneratedContextAbsent": true,
+  "ownedTemporaryRootEmpty": true,
+  "g1Accepted": false,
+  "sessionStoreQualified": false,
+  "completeRecoveryCheckpoint": false,
+  "buildAuthorized": false
+}

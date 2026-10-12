@@ -1,3 +1,10 @@
+import { createOperationContracts } from './operation-contracts.mjs';
+import { createCatalogValidators, CATALOG_OPERATION_BINDINGS } from './catalog-validation.mjs';
+import { createMailValidators } from './mail-validation.mjs';
+import { createMeetingValidators } from './meeting-source-validation.mjs';
+import { createOperationalReadValidators } from './operational-reads-validation.mjs';
+import { createFederalMarketValidators } from './federal-market-validation.mjs';
+import { createDataSearchValidators } from './data-search-validation.mjs';
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import Ajv from 'ajv/dist/2020.js';
@@ -5,11 +12,9 @@ import addFormats from 'ajv-formats';
 import { canonicalSha256 } from '../validate.mjs';
 
 export const contractVersion = '0.2.0';
-const groups = ['common', 'catalog', 'retrieval', 'skill', 'mail'];
+const groups = ['common', 'catalog', 'retrieval', 'skill', 'mail', 'meeting-source', 'operational-reads', 'federal-market', 'data-search'];
 const schemaBytes = groups.map(group => readFileSync(new URL(`./${group}.schema.json`, import.meta.url)));
 const schemas = schemaBytes.map(raw => JSON.parse(raw));
-const mailSchemaId = 'urn:meri:retrieval:mail:0.2.0';
-const mailSchemaSha256 = createHash('sha256').update(schemaBytes[groups.indexOf('mail')]).digest('hex');
 const ajv = new Ajv({ strict: true, allErrors: true });
 addFormats(ajv);
 ajv.addSchema(JSON.parse(readFileSync(new URL('../meri.schema.json', import.meta.url))));
@@ -75,48 +80,9 @@ export function assertSubject(subject, binding = null) {
   return subject;
 }
 
-export function assertCatalog(catalog) {
-  validateShape('Catalog', catalog);
-  unique(catalog.originals.map(row => row.id), 'native capability');
-  const selected = catalog.originals.filter(row => row.disposition === 'selected');
-  if (selected.length !== 96 || catalog.originals.length - selected.length !== 43) fail('D012 disposition mismatch');
-  const operations = new Map();
-  const aliases = new Map();
-  for (const operation of catalog.operations) {
-    const id = key(operation.operation);
-    if (operations.has(id)) fail('Duplicate operation version');
-    if (['query_data', 'query_sql', 'execute_sql', 'raw_sql'].includes(operation.operation.id)) fail('Unrestricted query operation forbidden');
-    if (operation.availability === 'enabled' && (operation.qualification !== 'qualified' || operation.handler === null)) fail('Unavailable handler cannot be exposed');
-    if (id === 'mail.read_thread@0.2.0' && ['inputSchema', 'outputSchema'].some((field, index) =>
-      operation[field].id !== `${mailSchemaId}#/$defs/${index === 0 ? 'MailThreadInput' : 'MailThreadSourcePage'}` || operation[field].sha256 !== mailSchemaSha256)) fail('Mail schema byte pin mismatch');
-    if (operation.sideEffect === 'none' ? operation.approvalBoundary !== 'none' : operation.approvalBoundary === 'none') fail('Side-effect approval mismatch');
-    if (operation.handler && (operation.handler.module.split('/').some(part => !part || part === '.' || part === '..') || !/^[a-zA-Z0-9_./-]+$/.test(operation.handler.module))) fail('Invalid handler metadata path');
-    unique(operation.sourceRequirements.map(row => `${row.sourceId}:${row.purpose}`), 'operation source purpose');
-    operations.set(id, operation);
-    for (const alias of operation.aliases) {
-      if (aliases.has(alias)) fail('Ambiguous alias');
-      aliases.set(alias, id);
-    }
-  }
-  for (const operation of catalog.operations) {
-    if (operation.replacement && !operations.has(key(operation.replacement))) fail('Unavailable replacement operation');
-    const visited = new Set([key(operation.operation)]);
-    let replacement = operation.replacement;
-    while (replacement) {
-      if (visited.has(key(replacement))) fail('Cyclic operation replacement');
-      const target = operations.get(key(replacement));
-      if (!target) fail('Unavailable replacement operation');
-      visited.add(key(replacement)); replacement = target.replacement;
-    }
-  }
-  for (const [alias, target] of aliases) if (catalog.operations.some(operation => operation.operation.id === alias && key(operation.operation) !== target)) fail('Alias shadows canonical operation');
-  for (const original of catalog.originals) {
-    if ((original.state === 'mapped') !== (original.replacement !== null)) fail('Incomplete preservation mapping');
-    if (original.replacement && !operations.has(key(original.replacement))) fail('Missing mapped operation');
-    if (aliases.has(original.id) && (original.replacement === null || aliases.get(original.id) !== key(original.replacement))) fail('Alias contradicts preservation mapping');
-  }
-  return catalog;
-}
+export const {assertCatalog} = createCatalogValidators({validateShape, schemaRecords:
+  groups.map((group, index) => ({group, schema: schemas[index],
+    sha256: createHash('sha256').update(schemaBytes[index]).digest('hex')}))});
 
 // Shared declarations only; this does not decide current source authorization.
 function assertSourceInventory(envelope) {
@@ -174,84 +140,38 @@ export function assertEvidence(envelope) {
   return envelope;
 }
 
-// New external mail DTOs accept inert JSON data, never coercion or accessors.
-function assertMailData(value) {
-  const seen = new Set(), pending = [value];
-  while (pending.length) {
-    const item = pending.pop();
-    if (item === null || ['string', 'boolean'].includes(typeof item)) continue;
-    if (typeof item === 'number' && Number.isFinite(item)) continue;
-    if (typeof item !== 'object' || seen.has(item)) fail('Mail DTO requires finite, acyclic JSON data');
-    seen.add(item);
-    const prototype = Object.getPrototypeOf(item);
-    if (prototype !== (Array.isArray(item) ? Array.prototype : Object.prototype) && prototype !== null) fail('Mail DTO requires plain JSON objects');
-    for (const name of Reflect.ownKeys(item)) {
-      if (Array.isArray(item) && name === 'length') continue;
-      const property = Object.getOwnPropertyDescriptor(item, name);
-      if (typeof name !== 'string' || !property.enumerable || !('value' in property)) fail('Mail DTO accessor or hidden property');
-      pending.push(property.value);
-    }
-  }
-}
+const mailValidators = createMailValidators({validateShape, assertSubject, assertWindow, assertSourceInventory, unique});
+export const {assertMailThreadInput, assertMailThreadSourcePage, assertMailListInput, assertMailSearchInput, assertMailCandidateSourcePage} = mailValidators;
 
-export function assertMailThreadInput(input) {
-  assertMailData(input); validateShape('MailThreadInput', input);
-  const normalized = { ...input, messageId: input.messageId ?? null, messageOffset: input.messageOffset ?? 0,
-    bodyOffset: input.bodyOffset ?? 0, limit: input.limit ?? 3, maxCharacters: input.maxCharacters ?? 2000 };
-  if (normalized.bodyOffset > 0 && normalized.messageId === null) fail('Body continuation requires exact messageId');
-  return normalized;
-}
+const meetingValidators = createMeetingValidators({validateShape, assertSubject, assertWindow, assertSourceInventory, unique});
+export const {
+  assertUpcomingMeetingsInput, assertUpcomingMeetingsPage, assertDebriefReadInput, assertDebriefSourcePage,
+  assertClientMeetingReadInput, assertClientMeetingInventoryPage, assertClientMeetingSourceBodyPage,
+} = meetingValidators;
 
-export function assertMailThreadSourcePage(page, input) {
-  const normalized = assertMailThreadInput(input);
-  assertMailData(page); validateShape('MailThreadSourcePage', page);
-  assertSubject(page.subject, page.binding); assertWindow(page.window);
-  const { checked } = assertSourceInventory(page);
-  const { coverage, selection, messages, continuation } = page;
-  if (canonicalSha256(selection) !== canonicalSha256(normalized) || page.argumentsSha256 !== canonicalSha256(normalized)) fail('Mail argument/selection binding mismatch');
-  if (page.subject.kind !== normalized.subject.kind || (normalized.subject.kind === 'client' && page.subject.entityIds[0] !== normalized.subject.entityId)) fail('Mail requested/resolved subject mismatch');
-  if (coverage.enumeration === 'complete' || continuation.cursor !== null) fail('Mail transport cannot claim complete or snapshot-safe continuation');
-  if (coverage.returnedCount !== messages.length || messages.length > normalized.limit) fail('Mail returned message count mismatch');
-  if (page.snapshotVersionId === null && coverage.enumeration !== 'unknown') fail('Unknown snapshot requires unknown enumeration');
-  if (page.totalMessages === null) {
-    if (page.hasMoreMessages !== null || page.nextMessageOffset !== null || coverage.enumerableTotal !== null) fail('Unknown mail total cannot imply continuation or total');
-  } else {
-    const expected = Math.min(normalized.limit, Math.max(0, page.totalMessages - normalized.messageOffset));
-    const more = normalized.messageOffset + messages.length < page.totalMessages;
-    if (messages.length !== expected || page.hasMoreMessages !== more || page.nextMessageOffset !== (more ? normalized.messageOffset + messages.length : null) || coverage.enumerableTotal !== page.totalMessages) fail('Mail message continuation mismatch');
-    if (normalized.messageId !== null && page.totalMessages > 1) fail('Exact message selection cannot count whole thread');
-  }
-  unique(messages.map(message => JSON.stringify([message.sourceId, message.mailboxId, message.threadId, message.messageId])), 'mail message identity');
-  unique(messages.map(message => message.readHandle), 'mail read handle');
-  if (new Set(messages.map(message => message.mailboxId)).size > 1) fail('Mail thread cannot substitute another mailbox');
-  const bodies = [];
-  for (const message of messages) {
-    if (!checked.includes(message.sourceId)) fail('Mail source is not eligible');
-    if (message.threadId !== normalized.threadId || (normalized.messageId !== null && message.messageId !== normalized.messageId)) fail('Mail thread/message selection mismatch');
-    if (message.scopes.some(scope => !page.subject.scopes.some(parent => canonicalSha256(parent) === canonicalSha256(scope)))) fail('Mail scope lineage mismatch');
-    if (!message.scopes.some(scope => scope.kind === 'mailbox' && scope.resourceId === message.mailboxId)) fail('Mail mailbox scope mismatch');
-    if (!continuation.requiredReads.includes(message.readHandle)) fail('Mail transport requires unresolved decisive read');
-    if (message.recordVersionId === null && coverage.enumeration !== 'unknown') fail('Unknown record version requires unknown enumeration');
-    const source = page.sources.find(row => row.sourceId === message.sourceId);
-    if (source.authority !== 'authoritative') fail('Stored mail body requires authoritative source');
-    if (page.snapshotVersionId !== null && source.snapshotVersionId !== page.snapshotVersionId) fail('Mail snapshot lineage mismatch');
-    const section = message.section, length = section.text?.length;
-    if (section.endExclusive < section.start || section.endExclusive - section.start > normalized.maxCharacters || (section.text !== null && length !== section.endExclusive - section.start)) fail('Mail UTF-16 section length mismatch');
-    if (section.text === null && (!['missing', 'unknown'].includes(message.bodyCompleteness) || section.totalCodeUnits !== null || section.start !== section.endExclusive)) fail('Missing mail text cannot claim material or known size');
-    if (message.bodyCompleteness === 'missing' && section.text !== null) fail('Missing mail body cannot contain text');
-    if (section.totalCodeUnits === null) {
-      if (section.start !== normalized.bodyOffset || section.hasMore !== null) fail('Unknown body size cannot claim completion');
-    } else {
-      const start = Math.min(normalized.bodyOffset, section.totalCodeUnits);
-      const end = Math.min(section.totalCodeUnits, normalized.bodyOffset + normalized.maxCharacters);
-      if (section.start !== start || section.endExclusive !== end || section.hasMore !== (end < section.totalCodeUnits)) fail('Mail body continuation mismatch');
-    }
-    if (section.hasMore === true) bodies.push({ messageId: message.messageId, bodyOffset: section.endExclusive });
-  }
-  if (canonicalSha256(page.nextBodyOffsets) !== canonicalSha256(bodies)) fail('Mail body continuation inventory mismatch');
-  if ((bodies.length || page.hasMoreMessages === true) && !coverage.truncated) fail('Incomplete mail sections require truncation disclosure');
-  return page;
-}
+const operationalReadValidators = createOperationalReadValidators({validateShape, assertSubject, assertWindow, assertSourceInventory, unique});
+export const {
+  assertTaskReadInput, assertTaskReadPage, assertActionItemReadInput, assertActionItemClientScopedPage,
+  OPERATIONAL_READ_PENDING_MODES,
+} = operationalReadValidators;
+
+const federalMarketValidators = createFederalMarketValidators({
+  validateShape, schema: schemas[groups.indexOf('federal-market')],
+});
+export const {
+  federalMarketSchemaId, FEDERAL_MARKET_OPERATION_IDS, federalMarketInputDefinition,
+  validateFederalMarketShape, normalizeFederalMarketInput,
+} = federalMarketValidators;
+
+const dataSearchValidators = createDataSearchValidators({
+  validateShape, schema: schemas[groups.indexOf('data-search')],
+});
+export const {
+  DATA_SEARCH_OPERATION_ID, DATA_SEARCH_DOMAINS, DATA_SEARCH_QUERY_CLASSES,
+  RETRIEVAL_QUERY_CLASSES, DATA_SEARCH_UNSELECTABLE_QUERY_CLASSES, DATA_SEARCH_DEFAULTS,
+  DATA_SEARCH_STRICTER_THAN_FROZEN, RESULT_UNPROVEN_RELATIONS, DATA_SEARCH_FROZEN_BOUNDARY_NOTES,
+  dataSearchSchemaId, validateDataSearchShape, normalizeDataSearchInput, assertDataSearchResult,
+} = dataSearchValidators;
 
 export function assertSkillManifest(manifest, catalog) {
   validateShape('SkillManifest', manifest); assertCatalog(catalog);
@@ -285,3 +205,10 @@ export function assertSkillContinuity(previous, next) {
 
 // Structural and consistency checks only: never authenticate, authorize,
 // resolve an entity/timezone boundary, load handlers, or enable source access.
+
+// Fixed source catalog snapshot; no operation handler is loaded or enabled.
+const sourceCatalog = JSON.parse(readFileSync(new URL('./catalog.json', import.meta.url)));
+export const {resolveOperationContract} = createOperationContracts({catalog: sourceCatalog,
+  bindings: CATALOG_OPERATION_BINDINGS, assertCatalog, canonicalSha256,
+  validators: Object.freeze({...mailValidators, ...meetingValidators, ...operationalReadValidators,
+    ...federalMarketValidators, ...dataSearchValidators})});

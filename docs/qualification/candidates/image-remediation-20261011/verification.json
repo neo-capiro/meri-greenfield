@@ -1,0 +1,49 @@
+{
+  "schema": "meri.source-only-doc-verification.v1",
+  "completedAt": "2026-10-11T23:24:59.716708+00:00",
+  "checks": [
+    {
+      "name": "all candidate JSON decodes",
+      "result": "PASS"
+    },
+    {
+      "name": "all47 source tuples and severity counts unchanged; no accepted fixes",
+      "result": "PASS"
+    },
+    {
+      "name": "three PR8 input sizes and SHA256 identities",
+      "result": "PASS"
+    },
+    {
+      "name": "30 native metadata entries equal original inventory",
+      "result": "PASS"
+    },
+    {
+      "name": "no build, write, model or admission authority emitted",
+      "result": "PASS"
+    },
+    {
+      "name": "all local report artifact links resolve",
+      "result": "PASS"
+    },
+    {
+      "name": "recipe, pins, npm/Python locks remain exact base bytes",
+      "result": "PASS"
+    },
+    {
+      "name": "git diff --cached --check",
+      "result": "PASS"
+    },
+    {
+      "name": "only15 newly claimed task/report/candidate paths staged",
+      "result": "PASS"
+    }
+  ],
+  "applicationTestsRun": false,
+  "nativeImageTestsRun": false,
+  "awsActionsRun": false,
+  "limitations": [
+    "This verifies derived research input/structure/metadata correspondence only; not vendor applicability or supported patched package acquisition.",
+    "git diff --cached --check and scoped diff inspection are performed after staging, reported in the commit return."
+  ]
+}

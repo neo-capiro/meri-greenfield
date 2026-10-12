@@ -1,0 +1,31 @@
+{
+  "argv": [
+    "python3",
+    "-I",
+    "-B",
+    "-S",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "scripts/qualification",
+    "-p",
+    "test_worker_image_publish.py",
+    "-v"
+  ],
+  "cwd": "/workspace/scratch/853fba62b1f1/meri-aws-scan-option-base-20261011",
+  "baseCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+  "startedAtEpochSeconds": 1791757936.3616042,
+  "endedAtEpochSeconds": 1791757936.4963176,
+  "timeoutSeconds": 60,
+  "exitCode": 1,
+  "stdout": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stderr": {
+    "bytes": 2681,
+    "sha256": "d0dfea30bdb79382040c4efeb8320fee5a90b29d0207c2c6bf2930a6aad70dfb"
+  },
+  "baselineStatus": "HOLD"
+}

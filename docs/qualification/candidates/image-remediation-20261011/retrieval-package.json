@@ -1,0 +1,51 @@
+{
+  "retrievalDate": "2026-10-11",
+  "observations": [
+    {
+      "header": "CVE-2026-67693 (https://security-tracker.debian.org/tracker/CVE-2026-67693)\n\u3010turn168view0\u3011 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({\"ref_id\":\"https://security-tracker.debian.org/tracker/CVE-2026-67693\",\"lineno\":null}); Total lines: 29",
+      "dataLines": [
+        "L11: \u301019\u2020gnutls28\u3011 (\u301020\u2020PTS\u2020tracker.debian.org\u3011)  | bookworm, bookworm (security)  | 3.7.9-2+deb12u7  | vulnerable",
+        "L12:  | trixie (security), trixie  | 3.8.9-3+deb13u4  | vulnerable",
+        "L13:  | forky, sid  | 3.8.13-1  | vulnerable",
+        "L16: Package  | Type  | Release  | Fixed Version  | Urgency  | Origin  | Debian Bugs",
+        "L18: \u301019\u2020gnutls28\u3011  | source  | (unstable)  | (unfixed)  |  |  | \u301018\u20201150522\u2020bugs.debian.org\u3011",
+        "L22:     check, upstream contacted, wait for their assessment"
+      ]
+    },
+    {
+      "header": "\nCVE-2026-86140 (https://security-tracker.debian.org/tracker/CVE-2026-86140)\n\u3010turn168view1\u3011 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({\"ref_id\":\"https://security-tracker.debian.org/tracker/CVE-2026-86140\",\"lineno\":null}); Total lines: 31",
+      "dataLines": [
+        "L11: \u301019\u2020libxml2\u3011 (\u301020\u2020PTS\u2020tracker.debian.org\u3011)  | bookworm  | 2.9.14+dfsg-1.3~deb12u6  | vulnerable",
+        "L12:  | bookworm (security)  | 2.9.14+dfsg-1.3~deb12u4  | vulnerable",
+        "L13:  | trixie  | 2.12.7+dfsg+really2.9.14-2.1+deb13u3  | vulnerable",
+        "L14:  | trixie (security)  | 2.12.7+dfsg+really2.9.14-2.1+deb13u1  | vulnerable",
+        "L15:  | forky, sid  | 2.15.4+dfsg-1  | fixed",
+        "L18: Package  | Type  | Release  | Fixed Version  | Urgency  | Origin  | Debian Bugs",
+        "L20: \u301019\u2020libxml2\u3011  | source  | (unstable)  | 2.15.4+dfsg-1  |  |  | \u301018\u20201146744\u2020bugs.debian.org\u3011",
+        "L24:     Fixed by: \u301021\u2020https://gitlab.gnome.org/GNOME/libxml2/-/commit/d1686f91dbda141a752200419d35639fd6b38340\u2020gitlab.gnome.org\u3011 (v2.15.4)"
+      ]
+    },
+    {
+      "header": "\nInformation on source package cyrus-sasl2 (https://security-tracker.debian.org/tracker/source-package/cyrus-sasl2)\n\u3010turn168view2\u3011 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({\"ref_id\":\"https://security-tracker.debian.org/tracker/source-package/cyrus-sasl2\",\"lineno\":null}); Total lines: 49",
+      "dataLines": [
+        "L19: \u30104\u2020CVE-2026-107161\u3011  | vulnerable  | vulnerable  | vulnerable  | vulnerable "
+      ]
+    },
+    {
+      "header": "\nInformation on source package curl (https://security-tracker.debian.org/tracker/source-package/curl)\n\u3010turn168view3\u3011 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({\"ref_id\":\"https://security-tracker.debian.org/tracker/source-package/curl\",\"lineno\":null}); Total lines: 326",
+      "dataLines": [
+        "L33: \u301018\u2020CVE-2026-8927\u3011  | vulnerable (no DSA, postponed)  | vulnerable (no DSA)  | fixed  | fixed ",
+        "L35: \u301020\u2020CVE-2026-8924\u3011  | vulnerable (no DSA, postponed)  | vulnerable (no DSA)  | fixed  | fixed ",
+        "L37: \u301022\u2020CVE-2026-8286\u3011  | vulnerable (no DSA, postponed)  | vulnerable (no DSA)  | fixed  | fixed "
+      ]
+    },
+    {
+      "header": "\nInformation on source package cups (https://security-tracker.debian.org/tracker/source-package/cups)\n\u3010turn168view4\u3011 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({\"ref_id\":\"https://security-tracker.debian.org/tracker/source-package/cups\",\"lineno\":null}); Total lines: 219\n\n",
+      "dataLines": []
+    },
+    {
+      "header": "\nInformation on source package avahi (https://security-tracker.debian.org/tracker/source-package/avahi)\n\u3010turn168view5\u3011 [wordlim: 200] Crawled: last week; Content type: text/html; Source: open({\"ref_id\":\"https://security-tracker.debian.org/tracker/source-package/avahi\",\"lineno\":null}); Total lines: 6",
+      "dataLines": []
+    }
+  ]
+}

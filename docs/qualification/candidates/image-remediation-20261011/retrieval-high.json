@@ -1,0 +1,171 @@
+{
+  "retrievalDate": "2026-10-11",
+  "urls": [
+    "https://security-tracker.debian.org/tracker/CVE-2026-24882",
+    "https://security-tracker.debian.org/tracker/CVE-2026-85091",
+    "https://security-tracker.debian.org/tracker/CVE-2026-86143",
+    "https://security-tracker.debian.org/tracker/CVE-2026-93990",
+    "https://security-tracker.debian.org/tracker/CVE-2026-86142",
+    "https://security-tracker.debian.org/tracker/CVE-2026-95184",
+    "https://security-tracker.debian.org/tracker/CVE-2026-74860",
+    "https://security-tracker.debian.org/tracker/CVE-2026-95209",
+    "https://security-tracker.debian.org/tracker/CVE-2026-107161",
+    "https://security-tracker.debian.org/tracker/CVE-2026-86139",
+    "https://security-tracker.debian.org/tracker/CVE-2026-86144",
+    "https://security-tracker.debian.org/tracker/CVE-2026-107705",
+    "https://security-tracker.debian.org/tracker/CVE-2026-77214",
+    "https://security-tracker.debian.org/tracker/CVE-2026-86138",
+    "https://security-tracker.debian.org/tracker/CVE-2026-67693",
+    "https://security-tracker.debian.org/tracker/CVE-2026-86140",
+    "https://security-tracker.debian.org/tracker/CVE-2026-8286"
+  ],
+  "observations": [
+    {
+      "header": "CVE-2026-24882 (https://security-tracker.debian.org/tracker/CVE-2026-24882)\n\u3010turn166view0\u3011 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({\"ref_id\":\"https://security-tracker.debian.org/tracker/CVE-2026-24882\",\"lineno\":null}); Total lines: 35",
+      "dataLines": [
+        "L11: \u301019\u2020gnupg2\u3011 (\u301020\u2020PTS\u2020tracker.debian.org\u3011)  | bookworm  | 2.2.40-1.1+deb12u2  | fixed",
+        "L12:  | trixie  | 2.4.7-21+deb13u1  | vulnerable",
+        "L13:  | forky  | 2.4.9-7  | fixed",
+        "L14:  | sid  | 2.4.9-8  | fixed",
+        "L17: Package  | Type  | Release  | Fixed Version  | Urgency  | Origin  | Debian Bugs",
+        "L22: \u301019\u2020gnupg2\u3011  | source  | (unstable)  | 2.4.9-4  |  |  | \u301018\u20201126631\u2020bugs.debian.org\u3011",
+        "L23: ## Notes",
+        "L25:     [trixie] - gnupg2 <no-dsa> (Minor issue)",
+        "L26:     [bookworm] - gnupg2 <not-affected> (Vulnerable code introduced later)",
+        "L27:     [bullseye] - gnupg2 <not-affected> (tpm2daemon introduced later in v2.3.0)",
+        "L29:     Introduced after: \u301022\u2020https://github.com/gpg/gnupg/commit/62a7854816b8f3661fb41f05463289e5b96663ee\u2020github.com\u3011 (Beta-2.3.0-beta1655)"
+      ]
+    },
+    {
+      "header": "\nCVE-2026-85091 (https://security-tracker.debian.org/tracker/CVE-2026-85091)\n\u3010turn166view1\u3011 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({\"ref_id\":\"https://security-tracker.debian.org/tracker/CVE-2026-85091\",\"lineno\":null}); Total lines: 33",
+      "dataLines": [
+        "L11: \u301019\u2020zlib\u3011 (\u301020\u2020PTS\u2020tracker.debian.org\u3011)  | bookworm  | 1:1.2.13.dfsg-1  | vulnerable",
+        "L12:  | trixie  | 1:1.3.dfsg+really1.3.1-1  | vulnerable",
+        "L13:  | forky, sid  | 1:1.3.dfsg+really1.3.2-3  | vulnerable",
+        "L16: Package  | Type  | Release  | Fixed Version  | Urgency  | Origin  | Debian Bugs",
+        "L18: \u301019\u2020zlib\u3011  | source  | (unstable)  | (unfixed)  |  |  | \u301018\u20201146895\u2020bugs.debian.org\u3011",
+        "L19: ## Notes",
+        "L22:     \u301022\u2020https://github.com/madler/zlib/issues/1310\u2020github.com\u3011",
+        "L23:     \u301023\u2020https://github.com/madler/zlib/pull/1317\u2020github.com\u3011",
+        "L24:     Fixed by: \u301024\u2020https://github.com/madler/zlib/commit/df84af25dc1942490e1d1c899a07619152a46148\u2020github.com\u3011",
+        "L25:     Discussion on affected range: \u301025\u2020https://github.com/madler/zlib/issues/1310#issuecomment-5979623265\u2020github.com\u3011",
+        "L26:     Support non-blocking devices in the gz* routines introduced with:",
+        "L27:     \u301026\u2020https://github.com/madler/zlib/commit/81cc0bebedd935daeb81b0b6e475d8786b51af3d\u2020github.com\u3011 (v1.3.1.2)"
+      ]
+    },
+    {
+      "header": "\nCVE-2026-86143 (https://security-tracker.debian.org/tracker/CVE-2026-86143)\n\u3010turn166view2\u3011 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({\"ref_id\":\"https://security-tracker.debian.org/tracker/CVE-2026-86143\",\"lineno\":null}); Total lines: 32",
+      "dataLines": [
+        "L11: \u301019\u2020libxml2\u3011 (\u301020\u2020PTS\u2020tracker.debian.org\u3011)  | bookworm  | 2.9.14+dfsg-1.3~deb12u6  | vulnerable",
+        "L12:  | bookworm (security)  | 2.9.14+dfsg-1.3~deb12u4  | vulnerable",
+        "L13:  | trixie  | 2.12.7+dfsg+really2.9.14-2.1+deb13u3  | vulnerable",
+        "L14:  | trixie (security)  | 2.12.7+dfsg+really2.9.14-2.1+deb13u1  | vulnerable",
+        "L15:  | forky, sid  | 2.15.4+dfsg-1  | fixed",
+        "L18: Package  | Type  | Release  | Fixed Version  | Urgency  | Origin  | Debian Bugs",
+        "L20: \u301019\u2020libxml2\u3011  | source  | (unstable)  | 2.15.4+dfsg-1  |  |  | \u301018\u20201146744\u2020bugs.debian.org\u3011",
+        "L21: ## Notes",
+        "L24:     \u301021\u2020https://gitlab.gnome.org/GNOME/libxml2/-/work_items/1111\u2020gitlab.gnome.org\u3011",
+        "L25:     Fixed by: \u301022\u2020https://gitlab.gnome.org/GNOME/libxml2/-/commit/90f293ba74d28b1d570920382e707586f68ebf35\u2020gitlab.gnome.org\u3011 (v2.15.4)"
+      ]
+    },
+    {
+      "header": "\nCVE-2026-93990 (https://security-tracker.debian.org/tracker/CVE-2026-93990)\n\u3010turn166view3\u3011 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({\"ref_id\":\"https://security-tracker.debian.org/tracker/CVE-2026-93990\",\"lineno\":null}); Total lines: 32",
+      "dataLines": [
+        "L12: \u301020\u2020expat\u3011 (\u301021\u2020PTS\u2020tracker.debian.org\u3011)  | bookworm  | 2.5.0-1+deb12u2  | vulnerable",
+        "L13:  | bookworm (security)  | 2.5.0-1+deb12u4  | fixed",
+        "L14:  | trixie (security), trixie  | 2.8.3-1~deb13u1  | vulnerable",
+        "L15:  | forky, sid  | 2.9.0-1  | fixed",
+        "L18: Package  | Type  | Release  | Fixed Version  | Urgency  | Origin  | Debian Bugs",
+        "L21: \u301020\u2020expat\u3011  | source  | (unstable)  | 2.8.4-2  |  |  | \u301019\u20201148665\u2020bugs.debian.org\u3011",
+        "L22: ## Notes",
+        "L24:     \u301022\u2020https://github.com/libexpat/libexpat/pull/1282\u2020github.com\u3011",
+        "L25:     Fixed by: \u301023\u2020https://github.com/libexpat/libexpat/commit/0cfd15bdf4b2c22d6b0df73610709dfb60921091\u2020github.com\u3011 (R_2_8_5)",
+        "L26:     Fixed by: \u301024\u2020https://github.com/libexpat/libexpat/commit/28fcfba540f6933aa8904a1514c4811713d2ab72\u2020github.com\u3011 (R_2_8_5)"
+      ]
+    },
+    {
+      "header": "\nCVE-2026-86142 (https://security-tracker.debian.org/tracker/CVE-2026-86142)\n\u3010turn166view4\u3011 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({\"ref_id\":\"https://security-tracker.debian.org/tracker/CVE-2026-86142\",\"lineno\":null}); Total lines: 32",
+      "dataLines": [
+        "L11: \u301019\u2020libxml2\u3011 (\u301020\u2020PTS\u2020tracker.debian.org\u3011)  | bookworm  | 2.9.14+dfsg-1.3~deb12u6  | vulnerable",
+        "L12:  | bookworm (security)  | 2.9.14+dfsg-1.3~deb12u4  | vulnerable",
+        "L13:  | trixie  | 2.12.7+dfsg+really2.9.14-2.1+deb13u3  | vulnerable",
+        "L14:  | trixie (security)  | 2.12.7+dfsg+really2.9.14-2.1+deb13u1  | vulnerable",
+        "L15:  | forky, sid  | 2.15.4+dfsg-1  | fixed",
+        "L18: Package  | Type  | Release  | Fixed Version  | Urgency  | Origin  | Debian Bugs",
+        "L20: \u301019\u2020libxml2\u3011  | source  | (unstable)  | 2.15.4+dfsg-1  |  |  | \u301018\u20201146744\u2020bugs.debian.org\u3011",
+        "L21: ## Notes",
+        "L24:     \u301021\u2020https://gitlab.gnome.org/GNOME/libxml2/-/work_items/1113\u2020gitlab.gnome.org\u3011",
+        "L25:     Fixed by: \u301022\u2020https://gitlab.gnome.org/GNOME/libxml2/-/commit/6b3a736c0edc74ceec3d82f5252499d7911b3a58\u2020gitlab.gnome.org\u3011 (v2.15.4)"
+      ]
+    },
+    {
+      "header": "\nCVE-2026-95184 (https://security-tracker.debian.org/tracker/CVE-2026-95184)\n\u3010turn166view5\u3011 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({\"ref_id\":\"https://security-tracker.debian.org/tracker/CVE-2026-95184\",\"lineno\":null}); Total lines: 29",
+      "dataLines": [
+        "L11: \u301019\u2020gnutls28\u3011 (\u301020\u2020PTS\u2020tracker.debian.org\u3011)  | bookworm, bookworm (security)  | 3.7.9-2+deb12u7  | vulnerable",
+        "L12:  | trixie (security), trixie  | 3.8.9-3+deb13u4  | vulnerable",
+        "L13:  | forky, sid  | 3.8.13-1  | vulnerable",
+        "L16: Package  | Type  | Release  | Fixed Version  | Urgency  | Origin  | Debian Bugs",
+        "L18: \u301019\u2020gnutls28\u3011  | source  | (unstable)  | (unfixed)  |  |  | \u301018\u20201150522\u2020bugs.debian.org\u3011",
+        "L19: ## Notes",
+        "L21:     \u301021\u2020https://github.com/lkloliver/poc/tree/main/CVE-2026-95184\u2020github.com\u3011",
+        "L22:     check, upstream contacted, wait for their assessment"
+      ]
+    },
+    {
+      "header": "\nCVE-2026-74860 (https://security-tracker.debian.org/tracker/CVE-2026-74860)\n\u3010turn166view6\u3011 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({\"ref_id\":\"https://security-tracker.debian.org/tracker/CVE-2026-74860\",\"lineno\":null}); Total lines: 32",
+      "dataLines": [
+        "L10: \u301018\u2020libxml2\u3011 (\u301019\u2020PTS\u2020tracker.debian.org\u3011)  | bookworm  | 2.9.14+dfsg-1.3~deb12u6  | vulnerable",
+        "L11:  | bookworm (security)  | 2.9.14+dfsg-1.3~deb12u4  | vulnerable",
+        "L12:  | trixie  | 2.12.7+dfsg+really2.9.14-2.1+deb13u3  | vulnerable",
+        "L13:  | trixie (security)  | 2.12.7+dfsg+really2.9.14-2.1+deb13u1  | vulnerable",
+        "L14:  | forky, sid  | 2.15.4+dfsg-1  | fixed",
+        "L17: Package  | Type  | Release  | Fixed Version  | Urgency  | Origin  | Debian Bugs",
+        "L19: \u301018\u2020libxml2\u3011  | source  | (unstable)  | 2.15.3+dfsg-1  |  |  |",
+        "L20: ## Notes",
+        "L24:     \u301021\u2020https://gitlab.gnome.org/GNOME/libxml2/-/work_items/1076\u2020gitlab.gnome.org\u3011",
+        "L25:     \u301022\u2020https://gitlab.gnome.org/GNOME/libxml2/-/merge_requests/397\u2020gitlab.gnome.org\u3011",
+        "L26:     Fixed by: \u301023\u2020https://gitlab.gnome.org/GNOME/libxml2/-/commit/f41e1865781f74d1cadfe2fbdfeefed946026f12\u2020gitlab.gnome.org\u3011 (v2.15.3)"
+      ]
+    },
+    {
+      "header": "\nCVE-2026-95209 (https://security-tracker.debian.org/tracker/CVE-2026-95209)\n\u3010turn166view7\u3011 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({\"ref_id\":\"https://security-tracker.debian.org/tracker/CVE-2026-95209\",\"lineno\":null}); Total lines: 29",
+      "dataLines": []
+    },
+    {
+      "header": "\nInternal Error ()\n\u3010turn166view8\u3011 [wordlim: 200] Source: open({\"ref_id\":\"https://security-tracker.debian.org/tracker/CVE-2026-107161\",\"lineno\":null}); Total lines: 1\n\n",
+      "dataLines": []
+    },
+    {
+      "header": "\nCVE-2026-86139 (https://security-tracker.debian.org/tracker/CVE-2026-86139)\n\u3010turn166view9\u3011 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({\"ref_id\":\"https://security-tracker.debian.org/tracker/CVE-2026-86139\",\"lineno\":null}); Total lines: 32\n\n",
+      "dataLines": []
+    },
+    {
+      "header": "\nCVE-2026-86144 (https://security-tracker.debian.org/tracker/CVE-2026-86144)\n\u3010turn166view10\u3011 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({\"ref_id\":\"https://security-tracker.debian.org/tracker/CVE-2026-86144\",\"lineno\":null}); Total lines: 31\n\n",
+      "dataLines": []
+    },
+    {
+      "header": "\nCVE-2026-107705 (https://security-tracker.debian.org/tracker/CVE-2026-107705)\n\u3010turn166view11\u3011 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({\"ref_id\":\"https://security-tracker.debian.org/tracker/CVE-2026-107705\",\"lineno\":null}); Total lines: 32\n\n",
+      "dataLines": []
+    },
+    {
+      "header": "\nCVE-2026-77214 (https://security-tracker.debian.org/tracker/CVE-2026-77214)\n\u3010turn166view12\u3011 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({\"ref_id\":\"https://security-tracker.debian.org/tracker/CVE-2026-77214\",\"lineno\":null}); Total lines: 31\n\n",
+      "dataLines": []
+    },
+    {
+      "header": "\nCVE-2026-86138 (https://security-tracker.debian.org/tracker/CVE-2026-86138)\n\u3010turn166view13\u3011 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({\"ref_id\":\"https://security-tracker.debian.org/tracker/CVE-2026-86138\",\"lineno\":null}); Total lines: 31\n\n",
+      "dataLines": []
+    },
+    {
+      "header": "\nCVE-2026-67693 (https://security-tracker.debian.org/tracker/CVE-2026-67693)\n\u3010turn166view14\u3011 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({\"ref_id\":\"https://security-tracker.debian.org/tracker/CVE-2026-67693\",\"lineno\":null}); Total lines: 29\n\n",
+      "dataLines": []
+    },
+    {
+      "header": "\nCVE-2026-86140 (https://security-tracker.debian.org/tracker/CVE-2026-86140)\n\u3010turn166view15\u3011 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({\"ref_id\":\"https://security-tracker.debian.org/tracker/CVE-2026-86140\",\"lineno\":null}); Total lines: 31\n\n",
+      "dataLines": []
+    },
+    {
+      "header": "\nInternal Error ()\n\u3010turn166view16\u3011 [wordlim: 200] Source: open({\"ref_id\":\"https://security-tracker.debian.org/tracker/CVE-2026-8286\",\"lineno\":null}); Total lines: 1\n",
+      "dataLines": []
+    }
+  ]
+}

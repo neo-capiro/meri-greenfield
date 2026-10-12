@@ -1,0 +1,55 @@
+{
+  "unchangedProcfs": [
+    {
+      "path": "apps/worker/qualification/probes/native-namespace-observer.mjs",
+      "sha256": "6c4ff8b525c414f93f0d0d29653b1e8a68db5fc520d4f414cf88d0b3e08b23c4",
+      "matchesBase": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/native-namespace-observer.test.mjs",
+      "sha256": "e4888c1871f87bbd5a7ab9bf578a95a3c4ba357838088052cfefc7252e91143f",
+      "matchesBase": true
+    }
+  ],
+  "initialSdkFailures": {
+    "missingLocalServiceDependency": 3,
+    "unexpectedRefusalVocabularyNAMESPACE_STAT": 1
+  },
+  "afterDependencyRestoration": {
+    "sdkTests": 369,
+    "pass": 369,
+    "fail": 0,
+    "skipped": 0
+  },
+  "focusedProcfsReplay": {
+    "pass": 1,
+    "failureResolvedBySourceChange": false,
+    "runtimeQualified": false
+  },
+  "originalNativeAndNewSessionStore": {
+    "pass": 37,
+    "fail": 0
+  },
+  "directOriginalConfigAssertions": {
+    "pass": 7,
+    "promptfooCliInvoked": false
+  },
+  "unchangedScannerFocused": {
+    "pass": 25,
+    "fail": 0,
+    "originalBroaderParallelCommandReplayed": false,
+    "scannerEdited": false
+  },
+  "staticSourcePinBeforeRefresh": {
+    "pass": 129,
+    "fail": 1,
+    "candidateRelated": true,
+    "awaitingSeparatePinAdvance": true
+  },
+  "g1Accepted": false,
+  "countCorrection": {
+    "previousDerivedPassCount": 127,
+    "actualRawPassCount": 129,
+    "rawOutputsChanged": false
+  }
+}

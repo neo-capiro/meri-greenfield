@@ -1,0 +1,1 @@
+{"importSafeWithProcessSocketAndPathIoGuards": true, "membership": {"False": {"source": 57, "archive": 58}, "True": {"source": 59, "archive": 60}}, "newModules": ["worker_image_manifest", "worker_build_binding"]}

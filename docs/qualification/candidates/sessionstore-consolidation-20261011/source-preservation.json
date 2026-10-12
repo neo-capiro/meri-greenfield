@@ -1,0 +1,108 @@
+{
+  "base": "a5c41c7afdd9ec235ac3a0184a96e4c457ef2f90",
+  "candidate": "65d9c750639e0d370985827983f24019a3f585ab",
+  "frozenSource": "09b962f86e52b9559c46b19c80d8c25fcd3410f5",
+  "exactCandidatePaths": [
+    {
+      "path": "apps/worker/qualification/checkpoint/bound-session-store.mjs",
+      "gitBlob": "e7255cf825d8ea9ec3c2d8a477412c5a372bd3d0",
+      "bytes": 7025,
+      "sha256": "2ca4e6e4957f606e1a8c64ded9a24c2dfc3ff4877b328526a8b74c0dd351c322"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/native-capture-boundaries.test.mjs",
+      "gitBlob": "44f25267df4c08d618a73f2de75abf2b5b60dbc4",
+      "bytes": 4323,
+      "sha256": "dfbb4caed570339793bc32a2bfb6cd01abf98d3c4cd34626a86dd64034f7086e"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/native-session-files.mjs",
+      "gitBlob": "ac138c990adeae889c1a4624acab523324669c37",
+      "bytes": 12049,
+      "sha256": "543e05c230bf614cd5cf73f2d69877f1311ec0faf9d7ca205429161a75b842e1"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/promptfooconfig.json",
+      "gitBlob": "871cd0b4d7d6418283c50e77ccd45cca2ec919cb",
+      "bytes": 2814,
+      "sha256": "b9aceaf0ebd22fd84fc28cd3b1579cd2ac8233f1911e4d74ef557c16143e496c"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/session-store-eval-provider.mjs",
+      "gitBlob": "42d7f4803629ecd609816a18d0396f8c96ba6d07",
+      "bytes": 3625,
+      "sha256": "da3942891abe57982f58acc85186b52aca421a3ee40ff7eedd471a14d9862439"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/session-store.test.mjs",
+      "gitBlob": "0636e8038793b444e268930412fa05eeea0645c6",
+      "bytes": 10987,
+      "sha256": "ac06de2d19aa5033f3d5cdde99e14751c2403b9fedd33cba382de5154d3c84e4"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/verify-session-store.mjs",
+      "gitBlob": "6d9672cda21816e41193eace1530aa61d183635d",
+      "bytes": 2417,
+      "sha256": "ed95128e06578040f441e9902b55d1262b61bee655ae270ea5cd0c0a0f684234"
+    },
+    {
+      "path": "docs/coordination/reports/PORTFOLIO-NATIVE-CAPTURE-RACE.md",
+      "gitBlob": "58367745022b1d599afbf4707430b0d3f93c35c5",
+      "bytes": 7485,
+      "sha256": "af8efe74c328e119f5f87fbc0199ea4d9e474dc58a384c1c42846e7a638782af"
+    },
+    {
+      "path": "docs/coordination/reports/PORTFOLIO-SESSIONSTORE-CANDIDATE.md",
+      "gitBlob": "36f912eed71ad1643bc21df52a5c0814cc0ba482",
+      "bytes": 5924,
+      "sha256": "1200a32649a4900bd1395f94b87b9b81d0ec5a98dc96902acfbe5ac867a7a554"
+    }
+  ],
+  "unchangedAtSourceFreeze": [
+    {
+      "path": "apps/worker/qualification/checkpoint/native-session-files.test.mjs",
+      "sha256": "defd486e0160412b8c7dde2c87d9cc93b57e0bb57248342b2c2b65f695bb44b3"
+    },
+    {
+      "path": "apps/worker/qualification/probes/static.test.mjs",
+      "sha256": "910044c4c16b9d8e523bef960d80aac5f66632817afd9a103cf3e277b762e6e1"
+    },
+    {
+      "path": "apps/worker/qualification/probes/image-inventory.test.mjs",
+      "sha256": "6f43c0d24e97f766aa588b6773dd6a3399074b35e6ad226e47e73adde27627e7"
+    },
+    {
+      "path": "apps/worker/qualification/probes/image-inventory.py",
+      "sha256": "c7d682e67b5b3064947c92bebdce785aa04c3e00238fc8fb769d4a828479de58"
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-interruption.mjs",
+      "sha256": "2764babd954e95f07caf964ac14e57ee8a5a7d148d1527f97d1af4ea16b9040f"
+    },
+    {
+      "path": "apps/worker/qualification/sdk-options.mjs",
+      "sha256": "174efdfcf4731845d65c1f32de4c73e8a9032ccf1522022ab7675ccc7e6a5d9e"
+    },
+    {
+      "path": "apps/worker/qualification/component-pins.json",
+      "sha256": "6c08b00a43ef6155333c0a891bd92eb0275e18767c3159282ccdef3e13c0793a"
+    },
+    {
+      "path": "package.json",
+      "sha256": "42f84c0309a87d043a4023f657a6b1932ac5c1ca9e51eca8874e33085cb64d98"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "b2293773bf4ddc6d23425b7d718b79575384679999b86fd3caad78e6eda4a42d"
+    },
+    {
+      "path": "apps/worker/qualification/package.json",
+      "sha256": "a32e658933bd058d2524cfb2112cf770e5be81827dbf5e789ddecbcab86e5d80"
+    },
+    {
+      "path": "apps/worker/qualification/package-lock.json",
+      "sha256": "d3d4c5362e0c7dc1392ef9cad2048d00c564f1ff70d98c3e10108e50aa56147a"
+    }
+  ],
+  "runtimeQualified": false
+}

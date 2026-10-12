@@ -1,0 +1,198 @@
+{
+  "schemaVersion": "1.0.0",
+  "status": "SOURCE_INVENTORY_ONLY",
+  "recordedDate": "2026-10-11",
+  "authority": {
+    "instruction": "do whatver you ahve to do to finish the project",
+    "scope": "Implementation, preservation, source integration and verification; AWS shipping and G7 cutover remain separately admitted."
+  },
+  "repositories": [
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "branches": [
+        {
+          "name": "codex/portfolio-31-20261010",
+          "commit": "7dbf8e1ee7e2ded8c6f7b0e3d3b9bc557cdca1a3"
+        },
+        {
+          "name": "codex/portfolio-continuation-20261011",
+          "commit": "606a6a81744e5a2373af79fc0896adb728fda68f"
+        },
+        {
+          "name": "codex/portfolio-preview-service-taskdef-20261011",
+          "commit": "97d0e7ffa8626ac38b3fa88371fc395acfd2975d"
+        },
+        {
+          "name": "codex/portfolio-source-removal-20261011",
+          "commit": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc"
+        },
+        {
+          "name": "codex/sessionstore-recovery-20261011",
+          "commit": "65d9c750639e0d370985827983f24019a3f585ab"
+        },
+        {
+          "name": "handoff/meri-remote-resume-20261011",
+          "commit": "8d045221aa314871edf214deb2c9f1800fde6b17"
+        },
+        {
+          "name": "handoff/sdk-worker-adapter-wip-20261011",
+          "commit": "4d33640d9eaadc045c1c1f15dfcceddfe330f3fa"
+        },
+        {
+          "name": "main",
+          "commit": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc"
+        },
+        {
+          "name": "resume/meri-g1-review-20261011",
+          "commit": "1eac54274223729d69a0d44456a3f090dc1a0b80"
+        },
+        {
+          "name": "shipper/aws-preflight-20261011-r1",
+          "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9"
+        },
+        {
+          "name": "task/codex-g1-publish-20261011",
+          "commit": "415a55827b3f6343a0835e1d0e30fa0c69d673e6"
+        },
+        {
+          "name": "task/g1-parallel-integration",
+          "commit": "2f0e03ac656e393165ebc539bf6bfe9209623e2d"
+        },
+        {
+          "name": "task/g1-rel02-mail-list-search-contract",
+          "commit": "dd98d6268d2e7057b4ef236bb2fd352f0fb0cec6"
+        },
+        {
+          "name": "task/g1-rel02-remaining-capability-metadata",
+          "commit": "086263abdf1b5c34b502a44d957b5568e837f992"
+        },
+        {
+          "name": "task/handover-20261011",
+          "commit": "05271df2bbe7fd50031e7486316a23f05a70bc49"
+        }
+      ],
+      "openPullRequests": [
+        {
+          "number": 8,
+          "head": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+          "headBranch": "shipper/aws-preflight-20261011-r1",
+          "base": "415a55827b3f6343a0835e1d0e30fa0c69d673e6",
+          "baseBranch": "task/codex-g1-publish-20261011"
+        },
+        {
+          "number": 7,
+          "head": "415a55827b3f6343a0835e1d0e30fa0c69d673e6",
+          "headBranch": "task/codex-g1-publish-20261011",
+          "base": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc",
+          "baseBranch": "main"
+        },
+        {
+          "number": 3,
+          "head": "1eac54274223729d69a0d44456a3f090dc1a0b80",
+          "headBranch": "resume/meri-g1-review-20261011",
+          "base": "05271df2bbe7fd50031e7486316a23f05a70bc49",
+          "baseBranch": "task/handover-20261011"
+        },
+        {
+          "number": 2,
+          "head": "65d9c750639e0d370985827983f24019a3f585ab",
+          "headBranch": "codex/sessionstore-recovery-20261011",
+          "base": "0c8e9e153fd38d8a62d6de96f596269c05af3b4c",
+          "baseBranch": "main"
+        }
+      ]
+    },
+    {
+      "repository": "neo-capiro/capiro-frontend",
+      "branches": [
+        {
+          "name": "codex/portfolio-handover-closeout-20261011",
+          "commit": "02c02d95bdf3949662b9123f425271c6491ffdab"
+        },
+        {
+          "name": "codex/portfolio-repo-move-20261011",
+          "commit": "8e8e6999c385beccd245e94e8f32a8a3120e8131"
+        },
+        {
+          "name": "main",
+          "commit": "02c02d95bdf3949662b9123f425271c6491ffdab"
+        },
+        {
+          "name": "task/meri-cited-answer-20261011",
+          "commit": "b697cfcba6589ef193de4e3bcb25aad773871125"
+        },
+        {
+          "name": "task/meri-ui-publish-20261011",
+          "commit": "ad04c660a8a181aa99b4786bf51926dd4957ea3a"
+        }
+      ],
+      "openPullRequests": [
+        {
+          "number": 4,
+          "head": "ad04c660a8a181aa99b4786bf51926dd4957ea3a",
+          "headBranch": "task/meri-ui-publish-20261011",
+          "base": "02c02d95bdf3949662b9123f425271c6491ffdab",
+          "baseBranch": "main"
+        },
+        {
+          "number": 1,
+          "head": "b697cfcba6589ef193de4e3bcb25aad773871125",
+          "headBranch": "task/meri-cited-answer-20261011",
+          "base": "28c300093c0886018c49df8764a8e6fac44819eb",
+          "baseBranch": "main"
+        }
+      ]
+    }
+  ],
+  "candidates": [
+    {
+      "lane": "frontend",
+      "worktree": "capiro-frontend-consolidation-20261011",
+      "base": "85e96b968a3e984407886b2e06536b20810eccef",
+      "publishedEquivalent": "ad04c660a8a181aa99b4786bf51926dd4957ea3a",
+      "tree": "9d662c6d1090af8211a459e9ff95310242ec21da",
+      "preserve": "b697cfcba6589ef193de4e3bcb25aad773871125"
+    },
+    {
+      "lane": "sessionstore",
+      "base": "a5c41c7afdd9ec235ac3a0184a96e4c457ef2f90",
+      "publishedEquivalent": "415a55827b3f6343a0835e1d0e30fa0c69d673e6",
+      "tree": "3181f8e0d75299e39fc45a738baff4c41e01463e",
+      "preserve": "65d9c750639e0d370985827983f24019a3f585ab"
+    },
+    {
+      "lane": "build-closure",
+      "base": "a5c41c7afdd9ec235ac3a0184a96e4c457ef2f90",
+      "tree": "3181f8e0d75299e39fc45a738baff4c41e01463e"
+    }
+  ],
+  "preservationFindings": [
+    {
+      "branch": "codex/sessionstore-recovery-20261011",
+      "missingSourceFiles": 6,
+      "missingReports": 2,
+      "changedCanonicalFiles": [
+        "apps/worker/qualification/checkpoint/native-session-files.mjs"
+      ],
+      "decision": "Separate owner security review and source consolidation required."
+    },
+    {
+      "branch": "task/meri-cited-answer-20261011",
+      "missingAddedFiles": 28,
+      "changedExistingFiles": 7,
+      "overlap": [
+        "apps/web/src/shared/shell/Sidebar.tsx"
+      ],
+      "decision": "Preserve current Home and Portfolio; integrate cited-answer changes with focused visual and behavior verification."
+    },
+    {
+      "branch": "shipper/aws-preflight-20261011-r1",
+      "head": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+      "decision": "Evidence intake only accepted; 8 report link corrections remain; no source/security/runtime admission."
+    }
+  ],
+  "noBranchDeletion": true,
+  "noForcedRefUpdates": true,
+  "awsWritesAuthorizedByThisRecord": false,
+  "productionCutoverAuthorized": false
+}

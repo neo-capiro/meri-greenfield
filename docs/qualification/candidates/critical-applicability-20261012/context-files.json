@@ -1,0 +1,1389 @@
+{
+  "schema": "meri.image-research-context-manifest.v1",
+  "generatedAt": "2026-10-12T00:59:58.395167+00:00",
+  "purpose": "Exact new-session recovery inventory for both image research tasks; references and hashes only, no admission",
+  "repo": "neo-capiro/meri-greenfield",
+  "authorHead": "85885d38029d775c1c87d83bf142f20b5abe05c6",
+  "authorBase": "08a84fbd7f1859cfe59dc3c5bcf79d416f5e2312",
+  "primaryIntegrationCommitObservedLocally": "302dbb6cfeca6de58e6510eabd3497aa6327bdb9",
+  "primaryIntegrationPublicRefConfirmedByThisTask": false,
+  "publicationRule": "Root independently publishes/maps local author commits to exact public source-equivalent head. Local author refs are not asserted to exist on GitHub. This file excludes itself to avoid circular hash/commit identity. New public handover must bind publication heads separately.",
+  "files": [
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "415a55827b3f6343a0835e1d0e30fa0c69d673e6",
+      "refAvailability": "CONFIRMED_PUBLIC_SOURCE_EQUIVALENT_TREE_3181F8E0",
+      "path": "AGENTS.md",
+      "bytes": 6582,
+      "sha256": "a0650949b74e5aee709bd8b3c9d480f95f5b898778ac8f7b3927eb54b141437a",
+      "gitBlobSha1": "fe8cefa588409d8562f0e6d939a6da7d120c0d87",
+      "role": "Read-only accepted source/security/organization reference; no recipe/source change"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "415a55827b3f6343a0835e1d0e30fa0c69d673e6",
+      "refAvailability": "CONFIRMED_PUBLIC_SOURCE_EQUIVALENT_TREE_3181F8E0",
+      "path": "docs/IMPLEMENTATION-STANDARDS.md",
+      "bytes": 11082,
+      "sha256": "d4f10f964ee207187abacd967649a1cfc9bdd468072dc01f859268f08b719959",
+      "gitBlobSha1": "7f680395e07d1114667a800f3f8ed77010a3eac2",
+      "role": "Read-only accepted source/security/organization reference; no recipe/source change"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "415a55827b3f6343a0835e1d0e30fa0c69d673e6",
+      "refAvailability": "CONFIRMED_PUBLIC_SOURCE_EQUIVALENT_TREE_3181F8E0",
+      "path": "docs/coordination/reports/CODEX-G1-SECURITY.md",
+      "bytes": 20080,
+      "sha256": "dff9fde0aee880e1f14bcf8a60fa49ca1d8b6638291241c1c9cf93aa25373e48",
+      "gitBlobSha1": "ac2255a547fd3a80260934bb450252a8ef3a2f96",
+      "role": "Read-only accepted source/security/organization reference; no recipe/source change"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "415a55827b3f6343a0835e1d0e30fa0c69d673e6",
+      "refAvailability": "CONFIRMED_PUBLIC_SOURCE_EQUIVALENT_TREE_3181F8E0",
+      "path": "apps/worker/qualification/Dockerfile",
+      "bytes": 18786,
+      "sha256": "3f86ae7ca55e8bbfb2814f1b335b7df8159daf9b5008df60f1165ba879c40f36",
+      "gitBlobSha1": "2317a4615dfb941158e15688d78421ebbbc6cdd6",
+      "role": "Read-only accepted source/security/organization reference; no recipe/source change"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "415a55827b3f6343a0835e1d0e30fa0c69d673e6",
+      "refAvailability": "CONFIRMED_PUBLIC_SOURCE_EQUIVALENT_TREE_3181F8E0",
+      "path": "apps/worker/qualification/component-pins.json",
+      "bytes": 36019,
+      "sha256": "6c08b00a43ef6155333c0a891bd92eb0275e18767c3159282ccdef3e13c0793a",
+      "gitBlobSha1": "5be2e8a4eef600784df4e388b622571243d5584a",
+      "role": "Read-only accepted source/security/organization reference; no recipe/source change"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "415a55827b3f6343a0835e1d0e30fa0c69d673e6",
+      "refAvailability": "CONFIRMED_PUBLIC_SOURCE_EQUIVALENT_TREE_3181F8E0",
+      "path": "apps/worker/qualification/requirements.lock.txt",
+      "bytes": 1383,
+      "sha256": "47bb048b9750b074c7d33faba9f9c3873b7b461eaa4360bf57cb08d4f55c9765",
+      "gitBlobSha1": "40ae212b4089621ed69cf059f876f3cee7118bb6",
+      "role": "Read-only accepted source/security/organization reference; no recipe/source change"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "415a55827b3f6343a0835e1d0e30fa0c69d673e6",
+      "refAvailability": "CONFIRMED_PUBLIC_SOURCE_EQUIVALENT_TREE_3181F8E0",
+      "path": "apps/worker/qualification/package-lock.json",
+      "bytes": 68705,
+      "sha256": "d3d4c5362e0c7dc1392ef9cad2048d00c564f1ff70d98c3e10108e50aa56147a",
+      "gitBlobSha1": "93afb40b97d0ed80b790660c3c8129e04a59f4e2",
+      "role": "Read-only accepted source/security/organization reference; no recipe/source change"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "08a84fbd7f1859cfe59dc3c5bcf79d416f5e2312",
+      "refAvailability": "LOCAL_AUTHOR_COMMIT_PRIMARY_PUBLISHER_MUST_BIND_PUBLIC_REF",
+      "path": "docs/coordination/tasks/CODEX-IMAGE-REMEDIATION-20261011.md",
+      "bytes": 2420,
+      "sha256": "bbaa7f0f7484abebf7a1d1e2d3827678f43c595998c07a3864f29eafee2b8cbc",
+      "gitBlobSha1": "ebb45e00aacb21d842afba65e430d4bbde4fd770",
+      "role": "Owned research task/report; original October11 context preserved"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "08a84fbd7f1859cfe59dc3c5bcf79d416f5e2312",
+      "refAvailability": "LOCAL_AUTHOR_COMMIT_PRIMARY_PUBLISHER_MUST_BIND_PUBLIC_REF",
+      "path": "docs/coordination/reports/CODEX-IMAGE-REMEDIATION-20261011.md",
+      "bytes": 17854,
+      "sha256": "98b4b885a22251329e24427920f2180e678257194437311c478632672dcf73ff",
+      "gitBlobSha1": "550c25cbd30b37dc65048199bb65bc85b0e7a71d",
+      "role": "Owned research task/report; original October11 context preserved"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "85885d38029d775c1c87d83bf142f20b5abe05c6",
+      "refAvailability": "LOCAL_AUTHOR_COMMIT_PRIMARY_PUBLISHER_MUST_BIND_PUBLIC_REF",
+      "path": "docs/coordination/tasks/CODEX-CRITICAL-APPLICABILITY-20261012.md",
+      "bytes": 2088,
+      "sha256": "d8c68d9440dca99e9c61ee085071bbcacc13d24c7df3b230d3c971debf922690",
+      "gitBlobSha1": "49eef7e5da9eb024ac4cf0ee15ff9f7693617be3",
+      "role": "Owned research task/report; original October11 context preserved"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "85885d38029d775c1c87d83bf142f20b5abe05c6",
+      "refAvailability": "LOCAL_AUTHOR_COMMIT_PRIMARY_PUBLISHER_MUST_BIND_PUBLIC_REF",
+      "path": "docs/coordination/reports/CODEX-CRITICAL-APPLICABILITY-20261012.md",
+      "bytes": 10400,
+      "sha256": "f53086b39af74a0eeae43699a32356450bbd5fb19dc1d3cfde8f7f824fb785d9",
+      "gitBlobSha1": "5a64e680c4458f1265f9c0fb7b1059f6041e5c05",
+      "role": "Owned research task/report; original October11 context preserved"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "08a84fbd7f1859cfe59dc3c5bcf79d416f5e2312",
+      "refAvailability": "LOCAL_AUTHOR_COMMIT_PRIMARY_PUBLISHER_MUST_BIND_PUBLIC_REF",
+      "path": "docs/qualification/candidates/image-remediation-20261011/finding-matrix.json",
+      "bytes": 33076,
+      "sha256": "9dfffd6b9da99e69c969aa8cb7a720b8655cf6ce15e1ba925a007ad0316048a9",
+      "gitBlobSha1": "abacc9a83a6b1cb3b26d140d8ccd97f415991748",
+      "role": "Research evidence/factual derivative/conditional proposal/verification; not executable admission"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "08a84fbd7f1859cfe59dc3c5bcf79d416f5e2312",
+      "refAvailability": "LOCAL_AUTHOR_COMMIT_PRIMARY_PUBLISHER_MUST_BIND_PUBLIC_REF",
+      "path": "docs/qualification/candidates/image-remediation-20261011/finding-matrix.md",
+      "bytes": 8898,
+      "sha256": "59f4181c8812c2e158a2e236c5d61ccee1d23ddad7035e4c8aa9c5f732ea8427",
+      "gitBlobSha1": "34d8f575c2235e9f218552ccc9c6e37f6972cf68",
+      "role": "Research evidence/factual derivative/conditional proposal/verification; not executable admission"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "08a84fbd7f1859cfe59dc3c5bcf79d416f5e2312",
+      "refAvailability": "LOCAL_AUTHOR_COMMIT_PRIMARY_PUBLISHER_MUST_BIND_PUBLIC_REF",
+      "path": "docs/qualification/candidates/image-remediation-20261011/fresh-build-prerequisites.json",
+      "bytes": 1976,
+      "sha256": "4922ff188863ed9d43ef5895643b21956d77a46a34771fb9792b1c20965518a6",
+      "gitBlobSha1": "4ea5a20665e99eb22ee885c5a99a0ca4b552dc09",
+      "role": "Research evidence/factual derivative/conditional proposal/verification; not executable admission"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "08a84fbd7f1859cfe59dc3c5bcf79d416f5e2312",
+      "refAvailability": "LOCAL_AUTHOR_COMMIT_PRIMARY_PUBLISHER_MUST_BIND_PUBLIC_REF",
+      "path": "docs/qualification/candidates/image-remediation-20261011/native-copy-metadata.json",
+      "bytes": 9142,
+      "sha256": "3c94214db1d1cba2e0abe2e1c0019e95738497321b1eab0518be103b567f07f6",
+      "gitBlobSha1": "b33b56909a1d832fa40cc7162398bff65290c8a1",
+      "role": "Research evidence/factual derivative/conditional proposal/verification; not executable admission"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "08a84fbd7f1859cfe59dc3c5bcf79d416f5e2312",
+      "refAvailability": "LOCAL_AUTHOR_COMMIT_PRIMARY_PUBLISHER_MUST_BIND_PUBLIC_REF",
+      "path": "docs/qualification/candidates/image-remediation-20261011/retrieval-critical.json",
+      "bytes": 8015,
+      "sha256": "1c00b4323d5faac0562db01abe3a9fc9fcd670cef3a4f2ca088f0f0300e1311b",
+      "gitBlobSha1": "1a7273a736042cff423e0095f489d1402356d270",
+      "role": "Research evidence/factual derivative/conditional proposal/verification; not executable admission"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "08a84fbd7f1859cfe59dc3c5bcf79d416f5e2312",
+      "refAvailability": "LOCAL_AUTHOR_COMMIT_PRIMARY_PUBLISHER_MUST_BIND_PUBLIC_REF",
+      "path": "docs/qualification/candidates/image-remediation-20261011/retrieval-high.json",
+      "bytes": 13884,
+      "sha256": "8adb195c71ee69c39b6ee44e64f7e5cce7e6d42b8bbd1c1f92009578afc0b989",
+      "gitBlobSha1": "fd7fcb7af8edf59bacae129362921a0dd01eb6c5",
+      "role": "Research evidence/factual derivative/conditional proposal/verification; not executable admission"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "08a84fbd7f1859cfe59dc3c5bcf79d416f5e2312",
+      "refAvailability": "LOCAL_AUTHOR_COMMIT_PRIMARY_PUBLISHER_MUST_BIND_PUBLIC_REF",
+      "path": "docs/qualification/candidates/image-remediation-20261011/retrieval-high2.json",
+      "bytes": 6719,
+      "sha256": "8485aa2c88a2d518237fe443793fd2f1f024ba3cfa1702b40a39ba0b71585276",
+      "gitBlobSha1": "1156514ec07f53cfb8fd3c7144b2e83315bcf603",
+      "role": "Research evidence/factual derivative/conditional proposal/verification; not executable admission"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "08a84fbd7f1859cfe59dc3c5bcf79d416f5e2312",
+      "refAvailability": "LOCAL_AUTHOR_COMMIT_PRIMARY_PUBLISHER_MUST_BIND_PUBLIC_REF",
+      "path": "docs/qualification/candidates/image-remediation-20261011/retrieval-medium.json",
+      "bytes": 3992,
+      "sha256": "29716c3ae6268b006802f24e03a12bfc680f8d1dedee1148c2cb9674486ae5ad",
+      "gitBlobSha1": "83de6a303a1d26d86a8c870364552935e8fcfb8d",
+      "role": "Research evidence/factual derivative/conditional proposal/verification; not executable admission"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "08a84fbd7f1859cfe59dc3c5bcf79d416f5e2312",
+      "refAvailability": "LOCAL_AUTHOR_COMMIT_PRIMARY_PUBLISHER_MUST_BIND_PUBLIC_REF",
+      "path": "docs/qualification/candidates/image-remediation-20261011/retrieval-medium2.json",
+      "bytes": 6770,
+      "sha256": "d9a0e2650a99c70565f93542e36c15a4c7f10d2412e46066eb19a4ef013ba2cb",
+      "gitBlobSha1": "5a1762dff5aaaaaa790f60025d82fc996b36213a",
+      "role": "Research evidence/factual derivative/conditional proposal/verification; not executable admission"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "08a84fbd7f1859cfe59dc3c5bcf79d416f5e2312",
+      "refAvailability": "LOCAL_AUTHOR_COMMIT_PRIMARY_PUBLISHER_MUST_BIND_PUBLIC_REF",
+      "path": "docs/qualification/candidates/image-remediation-20261011/retrieval-older.json",
+      "bytes": 6064,
+      "sha256": "e1f5035c5e86a58c857f98d94f4f22e8ecf82aa23054b0bc1c078a1235c73143",
+      "gitBlobSha1": "7d08c94b8400b120c5518a3ecae4edccdb10199e",
+      "role": "Research evidence/factual derivative/conditional proposal/verification; not executable admission"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "08a84fbd7f1859cfe59dc3c5bcf79d416f5e2312",
+      "refAvailability": "LOCAL_AUTHOR_COMMIT_PRIMARY_PUBLISHER_MUST_BIND_PUBLIC_REF",
+      "path": "docs/qualification/candidates/image-remediation-20261011/retrieval-package.json",
+      "bytes": 4211,
+      "sha256": "1a04189d3ac5289fe594040c1052c973ebf81b01633b53b3d37b0c52bb232767",
+      "gitBlobSha1": "4fe8ef9e7a33528fdb7ae4c7d4c95600167ed805",
+      "role": "Research evidence/factual derivative/conditional proposal/verification; not executable admission"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "08a84fbd7f1859cfe59dc3c5bcf79d416f5e2312",
+      "refAvailability": "LOCAL_AUTHOR_COMMIT_PRIMARY_PUBLISHER_MUST_BIND_PUBLIC_REF",
+      "path": "docs/qualification/candidates/image-remediation-20261011/retrieval-policy-and-limits.json",
+      "bytes": 3401,
+      "sha256": "ccbe9101e96a0f5cf28fe4eaa00eae3a4d967a27eb12e3450ead9ee4fcd2007c",
+      "gitBlobSha1": "38a781fe7084da1cda16326957344bcff7d0df9d",
+      "role": "Research evidence/factual derivative/conditional proposal/verification; not executable admission"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "08a84fbd7f1859cfe59dc3c5bcf79d416f5e2312",
+      "refAvailability": "LOCAL_AUTHOR_COMMIT_PRIMARY_PUBLISHER_MUST_BIND_PUBLIC_REF",
+      "path": "docs/qualification/candidates/image-remediation-20261011/verification.json",
+      "bytes": 1410,
+      "sha256": "ceaafe7f146045c7bf7ffd9eb00dacef3cd47beec0c1200fae3e231591b3dc3b",
+      "gitBlobSha1": "1c265299116632d3733d97507c21e32a7dca2619",
+      "role": "Research evidence/factual derivative/conditional proposal/verification; not executable admission"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "85885d38029d775c1c87d83bf142f20b5abe05c6",
+      "refAvailability": "LOCAL_AUTHOR_COMMIT_PRIMARY_PUBLISHER_MUST_BIND_PUBLIC_REF",
+      "path": "docs/qualification/candidates/critical-applicability-20261012/applicability-proposals.json",
+      "bytes": 1815,
+      "sha256": "4be6d2fe6d9c45ed59eaa9bd2023306e56e143b29eb95577166eb3a2551ae7e5",
+      "gitBlobSha1": "13ea6b36cce57977c94916bb57c26ce6b02c153f",
+      "role": "Research evidence/factual derivative/conditional proposal/verification; not executable admission"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "85885d38029d775c1c87d83bf142f20b5abe05c6",
+      "refAvailability": "LOCAL_AUTHOR_COMMIT_PRIMARY_PUBLISHER_MUST_BIND_PUBLIC_REF",
+      "path": "docs/qualification/candidates/critical-applicability-20261012/cve-record-facts.json",
+      "bytes": 5085,
+      "sha256": "3d5170c58487f59e0a07ff53db19587eaf80c968b44d3094f1f9b2841990ce29",
+      "gitBlobSha1": "ee0c2bee1a72b065469b5f61e40850ef45e21327",
+      "role": "Research evidence/factual derivative/conditional proposal/verification; not executable admission"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "85885d38029d775c1c87d83bf142f20b5abe05c6",
+      "refAvailability": "LOCAL_AUTHOR_COMMIT_PRIMARY_PUBLISHER_MUST_BIND_PUBLIC_REF",
+      "path": "docs/qualification/candidates/critical-applicability-20261012/exact-metadata-review.json",
+      "bytes": 4352,
+      "sha256": "7a985a01a70046dcfd1488b1b20cbf67a7ac4d536e7bc530a777086d2fc9ae0b",
+      "gitBlobSha1": "7e14d681da090c55f48c50307c489d8213868b75",
+      "role": "Research evidence/factual derivative/conditional proposal/verification; not executable admission"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "85885d38029d775c1c87d83bf142f20b5abe05c6",
+      "refAvailability": "LOCAL_AUTHOR_COMMIT_PRIMARY_PUBLISHER_MUST_BIND_PUBLIC_REF",
+      "path": "docs/qualification/candidates/critical-applicability-20261012/official-observations.json",
+      "bytes": 6948,
+      "sha256": "33a09e064cbc2da5ff7e80709e29b891e37d689f9556f95478b37784f38d98ef",
+      "gitBlobSha1": "80bfa1769b5fa80e82d5719a20bbf6657046a2fa",
+      "role": "Research evidence/factual derivative/conditional proposal/verification; not executable admission"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "85885d38029d775c1c87d83bf142f20b5abe05c6",
+      "refAvailability": "LOCAL_AUTHOR_COMMIT_PRIMARY_PUBLISHER_MUST_BIND_PUBLIC_REF",
+      "path": "docs/qualification/candidates/critical-applicability-20261012/verification.json",
+      "bytes": 1368,
+      "sha256": "0e3d6aff6fb3468b395214d3b03daee12cbdf16f292e429a029438ff7fd0c399",
+      "gitBlobSha1": "01b3419534df88f7671bc0f425c7e6c5673267c8",
+      "role": "Research evidence/factual derivative/conditional proposal/verification; not executable admission"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+      "refAvailability": "CONFIRMED_PUBLIC_PR8_EXACT_HEAD",
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+      "bytes": 59680,
+      "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127",
+      "gitBlobSha1": "54c5e3e1a9d8e48ea922cfd078aef6e25a434713",
+      "role": "Original canonical59680-byte UTF8 raw; fresh read of stored scan, no transformation"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+      "refAvailability": "CONFIRMED_PUBLIC_PR8_EXACT_HEAD",
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlobSha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "role": "Canonical read stderr retained"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+      "refAvailability": "CONFIRMED_PUBLIC_PR8_EXACT_HEAD",
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/process.json",
+      "bytes": 1079,
+      "sha256": "78a9fc8a07d34e99f4a3b18e44d81b9636d2de1f92ca3fba146daff5e9364fea",
+      "gitBlobSha1": "32c57586a013db91856e4f41d35e28c65f2de269",
+      "role": "Canonical read process/command identity receipt"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+      "refAvailability": "CONFIRMED_PUBLIC_PR8_EXACT_HEAD",
+      "path": "docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-summary.json",
+      "bytes": 1476,
+      "sha256": "6ba45277654c988e1869ff34395077984ea095768cfd58144aa45118a8d7cabd",
+      "gitBlobSha1": "4e5e2d02df1f86c0169c916581ef42e7a80b4999",
+      "role": "Captured read-only status/severity/raw provenance and false authority flags"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+      "refAvailability": "CONFIRMED_PUBLIC_PR8_EXACT_HEAD",
+      "path": "docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json",
+      "bytes": 66474,
+      "sha256": "b32216ba93c2ce480fb1cc9d44d6f738f4279b10410fce294cf6c3e7de6fbcd6",
+      "gitBlobSha1": "7938929707ba2e81575a476338f3318e089c3411",
+      "role": "Complete47-row canonical OPEN finding scaffold, not old49-row scan"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+      "refAvailability": "CONFIRMED_PUBLIC_PR8_EXACT_HEAD",
+      "path": "docs/qualification/aws-shipper-20261011-r1/historical-artifacts/00-image-inventory.json",
+      "bytes": 5684552,
+      "sha256": "6b7675aa90422a9572a902012cebef87c78af7c6669f9b1fed20668e1b17c74c",
+      "gitBlobSha1": "cfb425f918c303d7f8658fa9f065bacdc0cd3e38",
+      "role": "Exact historical declared-root filesystem metadata,26901 entries; no native file bodies"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+      "refAvailability": "CONFIRMED_PUBLIC_PR8_EXACT_HEAD",
+      "path": "docs/qualification/aws-shipper-20261011-r1/historical-artifacts/01-os-installed-packages.txt",
+      "bytes": 8570,
+      "sha256": "1fa4f64de64341e41eb02988cb362a393102949122b331a44334049aee121c83",
+      "gitBlobSha1": "3d944803995727e5f7c7231437cbb02e2f9c93a5",
+      "role": "Exact installed Debian binary package revision inventory"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+      "refAvailability": "CONFIRMED_PUBLIC_PR8_EXACT_HEAD",
+      "path": "docs/qualification/aws-shipper-20261011-r1/evidence-index.json",
+      "bytes": 58973,
+      "sha256": "286a15e74c35452959e7130735d49381b3d908ba0f108b29485073c8bffd9c84",
+      "gitBlobSha1": "135b6a0bb3f23db7c6a589bcdf24a74f77947844",
+      "role": "Immutable archive/source references, unresolved historical scan and file identities; reference metadata only"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "415a55827b3f6343a0835e1d0e30fa0c69d673e6",
+      "refAvailability": "CONFIRMED_PUBLIC_SOURCE_EQUIVALENT_TREE_3181F8E0",
+      "path": "scripts/qualification/aws_evidence.py",
+      "bytes": 12447,
+      "sha256": "972db83fe90c28fa1cc5c2c56d9e9a4f2dea66a9416db75abba7e01b12b51a04",
+      "gitBlobSha1": "120f2e587010d882eb86fd7fd7a6e59b36b72565",
+      "role": "Canonical supporting capture/analyzer reference identified by supplied evidence; not executed/replayed in these research tasks"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "415a55827b3f6343a0835e1d0e30fa0c69d673e6",
+      "refAvailability": "CONFIRMED_PUBLIC_SOURCE_EQUIVALENT_TREE_3181F8E0",
+      "path": "scripts/qualification/worker_image_scan.py",
+      "bytes": 9958,
+      "sha256": "d85a402b80df5a701dcc1f132c10eeab93885c9ada8aa1e46a90a08ef5dc27e0",
+      "gitBlobSha1": "c5fb75725b7af476441837f8752345253c66b510",
+      "role": "Canonical supporting capture/analyzer reference identified by supplied evidence; not executed/replayed in these research tasks"
+    }
+  ],
+  "officialCveRecordInputs": [
+    {
+      "repository": "CVEProject/cvelistV5",
+      "sourceUrl": "https://github.com/CVEProject/cvelistV5/blob/main/cves/2026/88xxx/CVE-2026-88647.json",
+      "ref": "Git blob a50a3a842a1abcec1197276c085c8ef074f7fbb6",
+      "refAvailability": "OFFICIAL_PUBLIC_BLOB_IDENTITY_VERIFIED",
+      "path": "cves/2026/88xxx/CVE-2026-88647.json",
+      "bytes": 4863,
+      "sha256": "c86c353b3f058b87fa58c4f0d418f4b58f4960484ade009bb2da1d160534fc4c",
+      "gitBlobSha1": "a50a3a842a1abcec1197276c085c8ef074f7fbb6",
+      "originalCveRecordLocallyRetained": false,
+      "factualDerivativePath": "docs/qualification/candidates/critical-applicability-20261012/cve-record-facts.json",
+      "cveId": "CVE-2026-88647",
+      "cnaAffected": [
+        {
+          "vendor": "n/a",
+          "product": "n/a",
+          "versions": [
+            {
+              "version": "n/a",
+              "status": "affected"
+            }
+          ]
+        }
+      ],
+      "introducedVersion": null,
+      "fixedVersion": null
+    },
+    {
+      "repository": "CVEProject/cvelistV5",
+      "sourceUrl": "https://github.com/CVEProject/cvelistV5/blob/main/cves/2026/95xxx/CVE-2026-95210.json",
+      "ref": "Git blob 6a5a24fe3052ab456291d5b3481f7852002eaf03",
+      "refAvailability": "OFFICIAL_PUBLIC_BLOB_IDENTITY_VERIFIED",
+      "path": "cves/2026/95xxx/CVE-2026-95210.json",
+      "bytes": 4776,
+      "sha256": "572a8e229d25d7b0749d0f963c3a29e7b88517348574f344a6537d5516ff9e3f",
+      "gitBlobSha1": "6a5a24fe3052ab456291d5b3481f7852002eaf03",
+      "originalCveRecordLocallyRetained": false,
+      "factualDerivativePath": "docs/qualification/candidates/critical-applicability-20261012/cve-record-facts.json",
+      "cveId": "CVE-2026-95210",
+      "cnaAffected": [
+        {
+          "vendor": "n/a",
+          "product": "n/a",
+          "versions": [
+            {
+              "version": "n/a",
+              "status": "affected"
+            }
+          ]
+        }
+      ],
+      "introducedVersion": null,
+      "fixedVersion": null
+    },
+    {
+      "repository": "CVEProject/cvelistV5",
+      "sourceUrl": "https://github.com/CVEProject/cvelistV5/blob/main/cves/2026/52xxx/CVE-2026-52490.json",
+      "ref": "Git blob 81bdf5d99c82f6c65ba7a2437f884abb1403f7b0",
+      "refAvailability": "OFFICIAL_PUBLIC_BLOB_IDENTITY_VERIFIED",
+      "path": "cves/2026/52xxx/CVE-2026-52490.json",
+      "bytes": 4863,
+      "sha256": "917ad1ea603a72fa499fd10263c2eb509b924c6759c0ab2338af095a157364a9",
+      "gitBlobSha1": "81bdf5d99c82f6c65ba7a2437f884abb1403f7b0",
+      "originalCveRecordLocallyRetained": false,
+      "factualDerivativePath": "docs/qualification/candidates/critical-applicability-20261012/cve-record-facts.json",
+      "cveId": "CVE-2026-52490",
+      "cnaAffected": [
+        {
+          "vendor": "n/a",
+          "product": "n/a",
+          "versions": [
+            {
+              "version": "n/a",
+              "status": "affected"
+            }
+          ]
+        }
+      ],
+      "introducedVersion": null,
+      "fixedVersion": null
+    }
+  ],
+  "retainedDocumentationUrls": [
+    {
+      "url": "http://gnutls.com",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/critical-applicability-20261012/cve-record-facts.json"
+      ]
+    },
+    {
+      "url": "https://bugs.debian.org/1150522",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/critical-applicability-20261012/official-observations.json",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-policy-and-limits.json"
+      ]
+    },
+    {
+      "url": "https://curl.se/docs/CVE-2026-8286.html",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-IMAGE-REMEDIATION-20261011.md",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.json",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-critical.json"
+      ]
+    },
+    {
+      "url": "https://curl.se/docs/CVE-2026-8924.html",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-IMAGE-REMEDIATION-20261011.md",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.json",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-critical.json"
+      ]
+    },
+    {
+      "url": "https://curl.se/docs/CVE-2026-8927.html",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-IMAGE-REMEDIATION-20261011.md",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.json",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-critical.json"
+      ]
+    },
+    {
+      "url": "https://cveawg.mitre.org/api/cve/CVE-2026-52490",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/critical-applicability-20261012/official-observations.json"
+      ]
+    },
+    {
+      "url": "https://cveawg.mitre.org/api/cve/CVE-2026-88647",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/critical-applicability-20261012/official-observations.json"
+      ]
+    },
+    {
+      "url": "https://cveawg.mitre.org/api/cve/CVE-2026-95210",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/critical-applicability-20261012/official-observations.json"
+      ]
+    },
+    {
+      "url": "https://gist.github.com/lkloliver/4aad23689202720c4068f43b3c6069c7",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/critical-applicability-20261012/cve-record-facts.json",
+        "docs/qualification/candidates/critical-applicability-20261012/official-observations.json"
+      ]
+    },
+    {
+      "url": "https://gist.github.com/lkloliver/f98ec3de1a871fdfc02b70b8b9ba7642",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/critical-applicability-20261012/cve-record-facts.json",
+        "docs/qualification/candidates/critical-applicability-20261012/official-observations.json"
+      ]
+    },
+    {
+      "url": "https://gist.github.com/okyfh/122c2d72e991a78c8af80a3af3be8671",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/critical-applicability-20261012/cve-record-facts.json"
+      ]
+    },
+    {
+      "url": "https://github.com/CVEProject/cvelistV5/blob/main/cves/2026/52xxx/CVE-2026-52490.json",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-CRITICAL-APPLICABILITY-20261012.md",
+        "docs/qualification/candidates/critical-applicability-20261012/cve-record-facts.json"
+      ]
+    },
+    {
+      "url": "https://github.com/CVEProject/cvelistV5/blob/main/cves/2026/88xxx/CVE-2026-88647.json",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-CRITICAL-APPLICABILITY-20261012.md",
+        "docs/qualification/candidates/critical-applicability-20261012/cve-record-facts.json"
+      ]
+    },
+    {
+      "url": "https://github.com/CVEProject/cvelistV5/blob/main/cves/2026/95xxx/CVE-2026-95210.json",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-CRITICAL-APPLICABILITY-20261012.md",
+        "docs/qualification/candidates/critical-applicability-20261012/cve-record-facts.json"
+      ]
+    },
+    {
+      "url": "https://github.com/curl/curl/commit/51beed175dbfc37da3113f6acc",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-critical.json"
+      ]
+    },
+    {
+      "url": "https://github.com/curl/curl/commit/5c225384b8d52c6",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-critical.json"
+      ]
+    },
+    {
+      "url": "https://github.com/curl/curl/commit/a1701eea289fe7ea8065",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-critical.json"
+      ]
+    },
+    {
+      "url": "https://github.com/curl/curl/commit/e77b5b7453c1e8c",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-critical.json"
+      ]
+    },
+    {
+      "url": "https://github.com/curl/curl/commit/fc6eff13b5414caf6edf",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-critical.json"
+      ]
+    },
+    {
+      "url": "https://github.com/gpg/gnupg/commit/4c7e68cf3d335328821bdbb70db309a60d0e4fd4",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-medium2.json"
+      ]
+    },
+    {
+      "url": "https://github.com/gpg/gnupg/commit/62a7854816b8f3661fb41f05463289e5b96663ee",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high.json"
+      ]
+    },
+    {
+      "url": "https://github.com/libexpat/libexpat/commit/0cfd15bdf4b2c22d6b0df73610709dfb60921091",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high.json"
+      ]
+    },
+    {
+      "url": "https://github.com/libexpat/libexpat/commit/28fcfba540f6933aa8904a1514c4811713d2ab72",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high.json"
+      ]
+    },
+    {
+      "url": "https://github.com/libexpat/libexpat/commit/4d9b1c499ecb66323260a7274edcf86c5eab0517",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high2.json"
+      ]
+    },
+    {
+      "url": "https://github.com/libexpat/libexpat/pull/1282",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high.json"
+      ]
+    },
+    {
+      "url": "https://github.com/lkloliver/poc/tree/main/CVE-2026-95184",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high.json"
+      ]
+    },
+    {
+      "url": "https://github.com/madler/zlib/commit/81cc0bebedd935daeb81b0b6e475d8786b51af3d",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high.json"
+      ]
+    },
+    {
+      "url": "https://github.com/madler/zlib/commit/df84af25dc1942490e1d1c899a07619152a46148",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high.json"
+      ]
+    },
+    {
+      "url": "https://github.com/madler/zlib/issues/1310",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-IMAGE-REMEDIATION-20261011.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high.json",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-policy-and-limits.json"
+      ]
+    },
+    {
+      "url": "https://github.com/madler/zlib/issues/1310#issuecomment-5979623265",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high.json"
+      ]
+    },
+    {
+      "url": "https://github.com/madler/zlib/pull/1317",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high.json"
+      ]
+    },
+    {
+      "url": "https://github.com/util-linux/util-linux/commit/286dd3ff41526b582ef48830de239dffbaa61f90",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-older.json"
+      ]
+    },
+    {
+      "url": "https://gitlab.com/gnutls/gnutls/-/issues/1802",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-CRITICAL-APPLICABILITY-20261012.md",
+        "docs/qualification/candidates/critical-applicability-20261012/cve-record-facts.json",
+        "docs/qualification/candidates/critical-applicability-20261012/official-observations.json"
+      ]
+    },
+    {
+      "url": "https://gitlab.com/libtiff/libtiff/-/commit/67fd283d276f09db54dc39b9ef7b979d4b45c4b1",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-medium2.json"
+      ]
+    },
+    {
+      "url": "https://gitlab.com/libtiff/libtiff/-/commit/b04e935cb6242f22cc8b63c99a372cf3ea825e4e",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-critical.json",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-policy-and-limits.json"
+      ]
+    },
+    {
+      "url": "https://gitlab.com/libtiff/libtiff/-/work_items/846",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-CRITICAL-APPLICABILITY-20261012.md",
+        "docs/qualification/candidates/critical-applicability-20261012/cve-record-facts.json",
+        "docs/qualification/candidates/critical-applicability-20261012/official-observations.json"
+      ]
+    },
+    {
+      "url": "https://gitlab.freedesktop.org/poppler/poppler/-/merge_requests/2398",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-policy-and-limits.json"
+      ]
+    },
+    {
+      "url": "https://gitlab.gnome.org/GNOME/libxml2/-/commit/6b3a736c0edc74ceec3d82f5252499d7911b3a58",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high.json"
+      ]
+    },
+    {
+      "url": "https://gitlab.gnome.org/GNOME/libxml2/-/commit/76fe08d97de88bfaef2f7d5cd27f11954cc5bee2",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-medium2.json"
+      ]
+    },
+    {
+      "url": "https://gitlab.gnome.org/GNOME/libxml2/-/commit/8edbbdb09f24d26a2f900141fddc2b9d014f53b0",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high2.json"
+      ]
+    },
+    {
+      "url": "https://gitlab.gnome.org/GNOME/libxml2/-/commit/90f293ba74d28b1d570920382e707586f68ebf35",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high.json"
+      ]
+    },
+    {
+      "url": "https://gitlab.gnome.org/GNOME/libxml2/-/commit/a34c084d7a576914c1424caabdaaf5e227bb39ef",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-medium2.json"
+      ]
+    },
+    {
+      "url": "https://gitlab.gnome.org/GNOME/libxml2/-/commit/a4cba4b5b5a8c42e155ed42d2d2a44955465a2e4",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high2.json"
+      ]
+    },
+    {
+      "url": "https://gitlab.gnome.org/GNOME/libxml2/-/commit/b63cd517afecb76582dd9488c55e54ceaf50de61",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high2.json"
+      ]
+    },
+    {
+      "url": "https://gitlab.gnome.org/GNOME/libxml2/-/commit/c63248941708bc1d2e3a4292954593312212f6ca",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-medium2.json"
+      ]
+    },
+    {
+      "url": "https://gitlab.gnome.org/GNOME/libxml2/-/commit/d1686f91dbda141a752200419d35639fd6b38340",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-package.json"
+      ]
+    },
+    {
+      "url": "https://gitlab.gnome.org/GNOME/libxml2/-/commit/e89a8aae4c9b40cdafcf66b3f9e57c62db37bb55",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-medium2.json"
+      ]
+    },
+    {
+      "url": "https://gitlab.gnome.org/GNOME/libxml2/-/commit/f41e1865781f74d1cadfe2fbdfeefed946026f12",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high.json"
+      ]
+    },
+    {
+      "url": "https://gitlab.gnome.org/GNOME/libxml2/-/merge_requests/397",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high.json"
+      ]
+    },
+    {
+      "url": "https://gitlab.gnome.org/GNOME/libxml2/-/work_items/1076",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high.json"
+      ]
+    },
+    {
+      "url": "https://gitlab.gnome.org/GNOME/libxml2/-/work_items/1111",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high.json"
+      ]
+    },
+    {
+      "url": "https://gitlab.gnome.org/GNOME/libxml2/-/work_items/1113",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high.json"
+      ]
+    },
+    {
+      "url": "https://lxml.de/installation.html",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-IMAGE-REMEDIATION-20261011.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-policy-and-limits.json"
+      ]
+    },
+    {
+      "url": "https://manpages.debian.org/trixie/gnutls-doc/gnutls_x509_crt_check_hostname2.3.en.html",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/critical-applicability-20261012/official-observations.json"
+      ]
+    },
+    {
+      "url": "https://manpages.debian.org/trixie/gnutls-doc/gnutls_x509_crt_verify.3.en.html",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/critical-applicability-20261012/official-observations.json"
+      ]
+    },
+    {
+      "url": "https://metadata.ftp-master.debian.org/changelogs//main/g/gnutls28/gnutls28_3.8.9-3%2Bdeb13u4_changelog",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-CRITICAL-APPLICABILITY-20261012.md",
+        "docs/qualification/candidates/critical-applicability-20261012/official-observations.json"
+      ]
+    },
+    {
+      "url": "https://metadata.ftp-master.debian.org/changelogs//main/t/tiff/tiff_4.7.0-3%2Bdeb13u3_changelog",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/critical-applicability-20261012/official-observations.json"
+      ]
+    },
+    {
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-88647",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/critical-applicability-20261012/official-observations.json"
+      ]
+    },
+    {
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-95210",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/critical-applicability-20261012/official-observations.json"
+      ]
+    },
+    {
+      "url": "https://packages.debian.org/trixie/amd64/libgnutls30t64/filelist",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-CRITICAL-APPLICABILITY-20261012.md",
+        "docs/qualification/candidates/critical-applicability-20261012/official-observations.json"
+      ]
+    },
+    {
+      "url": "https://packages.debian.org/trixie/amd64/libtiff-tools/filelist",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-CRITICAL-APPLICABILITY-20261012.md",
+        "docs/qualification/candidates/critical-applicability-20261012/official-observations.json"
+      ]
+    },
+    {
+      "url": "https://packages.debian.org/trixie/amd64/libtiff6/filelist",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-CRITICAL-APPLICABILITY-20261012.md",
+        "docs/qualification/candidates/critical-applicability-20261012/official-observations.json"
+      ]
+    },
+    {
+      "url": "https://packages.debian.org/trixie/libgnutls30t64",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-CRITICAL-APPLICABILITY-20261012.md",
+        "docs/qualification/candidates/critical-applicability-20261012/official-observations.json"
+      ]
+    },
+    {
+      "url": "https://packages.debian.org/trixie/libtiff6",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-CRITICAL-APPLICABILITY-20261012.md",
+        "docs/qualification/candidates/critical-applicability-20261012/official-observations.json"
+      ]
+    },
+    {
+      "url": "https://playwright.dev/docs/docker",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-IMAGE-REMEDIATION-20261011.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-policy-and-limits.json"
+      ]
+    },
+    {
+      "url": "https://playwright.dev/docs/intro",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-IMAGE-REMEDIATION-20261011.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-policy-and-limits.json"
+      ]
+    },
+    {
+      "url": "https://raw.githubusercontent.com/CVEProject/cvelistV5/main/cves/2026/88xxx/CVE-2026-88647.json",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/critical-applicability-20261012/official-observations.json"
+      ]
+    },
+    {
+      "url": "https://raw.githubusercontent.com/CVEProject/cvelistV5/main/cves/2026/95xxx/CVE-2026-95210.json",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/critical-applicability-20261012/official-observations.json"
+      ]
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-107161",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high.json"
+      ]
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-107705",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-IMAGE-REMEDIATION-20261011.md",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.json",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high.json",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high2.json"
+      ]
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-107778",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-policy-and-limits.json"
+      ]
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-18495",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-IMAGE-REMEDIATION-20261011.md",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.json",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-medium.json",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-medium2.json"
+      ]
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-24882",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-IMAGE-REMEDIATION-20261011.md",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.json",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high.json"
+      ]
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-52490",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-CRITICAL-APPLICABILITY-20261012.md",
+        "docs/coordination/reports/CODEX-IMAGE-REMEDIATION-20261011.md",
+        "docs/qualification/candidates/critical-applicability-20261012/official-observations.json",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.json",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-critical.json"
+      ]
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-57062",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-IMAGE-REMEDIATION-20261011.md",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.json",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-medium.json",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-medium2.json"
+      ]
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-58055",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-IMAGE-REMEDIATION-20261011.md",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.json",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-medium.json",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-medium2.json"
+      ]
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-67693",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.json",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high.json",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-package.json"
+      ]
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-74860",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.json",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high.json"
+      ]
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-76642",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-IMAGE-REMEDIATION-20261011.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-older.json"
+      ]
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-76781",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.json",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-medium2.json"
+      ]
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-77214",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-IMAGE-REMEDIATION-20261011.md",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.json",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high.json",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high2.json"
+      ]
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-78408",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-IMAGE-REMEDIATION-20261011.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-older.json"
+      ]
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-78409",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-IMAGE-REMEDIATION-20261011.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-older.json"
+      ]
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-78410",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-IMAGE-REMEDIATION-20261011.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-older.json"
+      ]
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-8286",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high.json"
+      ]
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-85091",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-IMAGE-REMEDIATION-20261011.md",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.json",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high.json"
+      ]
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-86137",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-IMAGE-REMEDIATION-20261011.md",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.json",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-medium2.json"
+      ]
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-86138",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.json",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high.json",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high2.json"
+      ]
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-86139",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-IMAGE-REMEDIATION-20261011.md",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.json",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high.json",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high2.json"
+      ]
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-86140",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.json",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high.json",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-package.json"
+      ]
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-86141",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-IMAGE-REMEDIATION-20261011.md",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.json",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-medium2.json"
+      ]
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-86142",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.json",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high.json"
+      ]
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-86143",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.json",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high.json"
+      ]
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-86144",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.json",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high.json",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high2.json"
+      ]
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-88647",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-CRITICAL-APPLICABILITY-20261012.md",
+        "docs/coordination/reports/CODEX-IMAGE-REMEDIATION-20261011.md",
+        "docs/qualification/candidates/critical-applicability-20261012/official-observations.json",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.json",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-critical.json"
+      ]
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-88648",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-IMAGE-REMEDIATION-20261011.md",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.json",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-critical.json"
+      ]
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-8924",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-critical.json"
+      ]
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-8927",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-critical.json"
+      ]
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-93990",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-IMAGE-REMEDIATION-20261011.md",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.json",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high.json"
+      ]
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-95184",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.json",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high.json"
+      ]
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-95209",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.json",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high.json",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-high2.json"
+      ]
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-95210",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-CRITICAL-APPLICABILITY-20261012.md",
+        "docs/coordination/reports/CODEX-IMAGE-REMEDIATION-20261011.md",
+        "docs/qualification/candidates/critical-applicability-20261012/official-observations.json",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.json",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-critical.json"
+      ]
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-95619",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-IMAGE-REMEDIATION-20261011.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-older.json"
+      ]
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/source-package/avahi",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-IMAGE-REMEDIATION-20261011.md",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.json",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-medium.json",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-package.json"
+      ]
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/source-package/cups",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-IMAGE-REMEDIATION-20261011.md",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.json",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-medium.json",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-package.json"
+      ]
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/source-package/curl",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-IMAGE-REMEDIATION-20261011.md",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.json",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-package.json"
+      ]
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/source-package/cyrus-sasl2",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-IMAGE-REMEDIATION-20261011.md",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.json",
+        "docs/qualification/candidates/image-remediation-20261011/finding-matrix.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-package.json"
+      ]
+    },
+    {
+      "url": "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2026-88647",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/critical-applicability-20261012/official-observations.json"
+      ]
+    },
+    {
+      "url": "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2026-95210",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/critical-applicability-20261012/official-observations.json"
+      ]
+    },
+    {
+      "url": "https://snapshot.debian.org/",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-IMAGE-REMEDIATION-20261011.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-policy-and-limits.json"
+      ]
+    },
+    {
+      "url": "https://www.cve.org/CVERecord?id=CVE-2026-88647",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/critical-applicability-20261012/official-observations.json"
+      ]
+    },
+    {
+      "url": "https://www.cve.org/CVERecord?id=CVE-2026-95210",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/critical-applicability-20261012/official-observations.json"
+      ]
+    },
+    {
+      "url": "https://www.debian.org/security/faq",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-IMAGE-REMEDIATION-20261011.md",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-policy-and-limits.json"
+      ]
+    },
+    {
+      "url": "https://www.gnutls.org/manual/html_node/X509-certificate-API.html",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-CRITICAL-APPLICABILITY-20261012.md",
+        "docs/qualification/candidates/critical-applicability-20261012/official-observations.json"
+      ]
+    },
+    {
+      "url": "https://www.gnutls.org/security.html",
+      "usedOrRecordedIn": [
+        "docs/qualification/candidates/critical-applicability-20261012/official-observations.json",
+        "docs/qualification/candidates/image-remediation-20261011/retrieval-policy-and-limits.json"
+      ]
+    },
+    {
+      "url": "https://www.rfc-editor.org/rfc/rfc6125.html#section-6.4.4",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-CRITICAL-APPLICABILITY-20261012.md",
+        "docs/qualification/candidates/critical-applicability-20261012/official-observations.json"
+      ]
+    },
+    {
+      "url": "https://www.rfc-editor.org/rfc/rfc9525.html",
+      "usedOrRecordedIn": [
+        "docs/coordination/reports/CODEX-CRITICAL-APPLICABILITY-20261012.md",
+        "docs/qualification/candidates/critical-applicability-20261012/official-observations.json"
+      ]
+    }
+  ],
+  "immutableArchiveReferences": {
+    "historicalArchive": {
+      "bucket": "meri-greenfield-qual-build-967807252336-us-east-1",
+      "key": "results/sdk-worker-image-441596ba-edd3-4e1b-ba0a-eee53c9c4af4/evidence.tar.gz",
+      "versionId": "RN2aZBAyPulzEwf6iNKONh8NDBAsIRJ6",
+      "bytes": 2394778,
+      "sha256": "0d1b822f1b27e29b1c37e3b8b2eede574b1a6218d71fe491f39ce95f3d209c34",
+      "verification": "PASS",
+      "payloadIndependentlyAcquiredByTheseResearchTasks": false
+    },
+    "historicalSource": {
+      "bucket": "meri-greenfield-qual-build-967807252336-us-east-1",
+      "key": "inputs/sdk-worker-image-441596ba-edd3-4e1b-ba0a-eee53c9c4af4/source.zip",
+      "commit": "60941654423b4118989b7bfc772ad11b383972d0",
+      "versionId": "qDplTC_3Blz56hZoRfHciu6o6OxDWJiV",
+      "bytes": 970778,
+      "sha256": "8cbd00ece6d01a0173630321dd50238a979c0ec4016d73cf984ac0ab546397af",
+      "zipMembersVerified": 50,
+      "sourceRowsVerified": 49,
+      "inputManifestSha256": "ca3c450a5e7aacbb6b335a13b81a03d539c0b6fdee0688c38ee608f5f29e05f4",
+      "contextManifestSha256": "18836912a03fc035d69c0cfc57d1f407e5c46af1bdd37c21a761f5d42dc84dda",
+      "sourceStable": true,
+      "payloadIndependentlyAcquiredByTheseResearchTasks": false
+    },
+    "historicalScan": {
+      "status": "UNKNOWN",
+      "bytes": 59678,
+      "sha256": "56a3d5f87336bf8f6a93111ecb8e976a75458f60e42dc5553fb01e460483f415",
+      "owner": null,
+      "key": null,
+      "versionId": null
+    }
+  },
+  "readOrder": [
+    "docs/coordination/reports/CODEX-IMAGE-REMEDIATION-20261011.md",
+    "docs/qualification/candidates/image-remediation-20261011/finding-matrix.json",
+    "docs/coordination/reports/CODEX-CRITICAL-APPLICABILITY-20261012.md",
+    "docs/qualification/candidates/critical-applicability-20261012/cve-record-facts.json",
+    "docs/qualification/candidates/critical-applicability-20261012/exact-metadata-review.json",
+    "docs/qualification/candidates/critical-applicability-20261012/applicability-proposals.json",
+    "docs/qualification/candidates/image-remediation-20261011/fresh-build-prerequisites.json"
+  ],
+  "openUnknowns": [
+    "No accepted coherent supported patched Trixie/native SDK/Office/browser package set; no recipe/pin/lock changes.",
+    "Current47 findings are all OPEN:5critical17high17medium7low1undefined; do not reuse old49/4critical18high count.",
+    "GnuTLS88647 and95210 CNA affected fields are n/a; prose3.8.13 is not an introduced-version boundary.",
+    "InstalledDebian3.8.9u4 maintainer changelog imports selected3.8.13 security patchset; actual source/API/flags/consumer/all-copy applicability remains unknown.",
+    "GnuTLS88647 has reporter API lead hostname2/unsupported-SAN CN fallback; no retrieved maintainer verdict/fix/range.",
+    "GnuTLS95210 exact extension/OID/API/flags/status mapping remains unknown; generic manual is not a CVE-specific mapping.",
+    "TIFF52490 utility/library binary-package split is a precise conditional lead; absence of names/package is not every-copy/source-function exclusion or accepted VEX.",
+    "Five older GCC/util-linux obligations remain OPEN; Kerberos107778 absence from current47 is not remediation.",
+    "Native30-file subset is metadata only; SDK/Bun,Node,Chromium,Skia,lxml embedded version/license/SBOM/linkage are unqualified.",
+    "Historical59678-byte scan56a3d5... locator remainsUNKNOWN; archives/source ZIP referenced but not privately redownloaded by these research tasks.",
+    "New builder binding/source context/action approval/infrastructure cost/durable budget ledger/fence/cleanup and digest-specific runtime/scan/license acceptance remain prerequisites."
+  ],
+  "authority": {
+    "newAwsWritesAuthorized": false,
+    "buildAuthorized": false,
+    "newModelCallsAuthorized": false,
+    "runtimeAdmitted": false,
+    "scanAdmitted": false,
+    "g1Admitted": false
+  },
+  "verificationScope": "File hashes remeasured locally for manifest; no new official retrieval,outreach,native/cloud/provider actions. Prior task verification records are included as context, not runtime admission."
+}

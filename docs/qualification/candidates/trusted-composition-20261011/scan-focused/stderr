@@ -1,0 +1,23 @@
+test_all_severities_are_retained_and_counted (test_worker_image_scan.BasicScan.test_all_severities_are_retained_and_counted) ... ok
+test_bounds_and_invalid_string_shapes_refuse (test_worker_image_scan.BasicScan.test_bounds_and_invalid_string_shapes_refuse) ... ok
+test_cli_bindings_validate_before_canonical_file_read (test_worker_image_scan.BasicScan.test_cli_bindings_validate_before_canonical_file_read) ... ok
+test_cli_help_missing_flags_refusal_and_hold_have_no_writes (test_worker_image_scan.BasicScan.test_cli_help_missing_flags_refusal_and_hold_have_no_writes) ... ok
+test_count_truncation_invalid_types_and_unknown_severities_refuse (test_worker_image_scan.BasicScan.test_count_truncation_invalid_types_and_unknown_severities_refuse) ... ok
+test_duplicate_attribute_keys_and_rows_refuse (test_worker_image_scan.BasicScan.test_duplicate_attribute_keys_and_rows_refuse) ... ok
+test_duplicate_json_and_nonfinite_numbers_refuse (test_worker_image_scan.BasicScan.test_duplicate_json_and_nonfinite_numbers_refuse) ... ok
+test_enhanced_malformed_and_unknown_fields_refuse (test_worker_image_scan.BasicScan.test_enhanced_malformed_and_unknown_fields_refuse) ... ok
+test_external_hash_is_required_and_verified (test_worker_image_scan.BasicScan.test_external_hash_is_required_and_verified) ... ok
+test_import_is_inert_without_configuration_or_resources (test_worker_image_scan.BasicScan.test_import_is_inert_without_configuration_or_resources) ... ok
+test_missing_optional_metadata_is_retained_without_guesses (test_worker_image_scan.BasicScan.test_missing_optional_metadata_is_retained_without_guesses) ... ok
+test_output_is_deterministic (test_worker_image_scan.BasicScan.test_output_is_deterministic) ... ok
+test_pagination_tokens_refuse_even_if_counts_match (test_worker_image_scan.BasicScan.test_pagination_tokens_refuse_even_if_counts_match) ... ok
+test_retains_every_row_attribute_and_exact_evidence_identity (test_worker_image_scan.BasicScan.test_retains_every_row_attribute_and_exact_evidence_identity) ... ok
+test_same_cve_distinct_providers_are_not_deduplicated (test_worker_image_scan.BasicScan.test_same_cve_distinct_providers_are_not_deduplicated) ... ok
+test_stable_regular_file_reader_rejects_links_and_hardlinks (test_worker_image_scan.BasicScan.test_stable_regular_file_reader_rejects_links_and_hardlinks) ... ok
+test_wrong_registry_repository_digest_and_status_refuse (test_worker_image_scan.BasicScan.test_wrong_registry_repository_digest_and_status_refuse) ... ok
+test_zero_findings_never_admit_security_runtime_or_g1 (test_worker_image_scan.BasicScan.test_zero_findings_never_admit_security_runtime_or_g1) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.404s
+
+OK

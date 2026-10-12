@@ -1,0 +1,25 @@
+{
+  "source": "09b962f86e52b9559c46b19c80d8c25fcd3410f5",
+  "argv": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "apps/worker/qualification/checkpoint/native-session-files.test.mjs",
+    "apps/worker/qualification/checkpoint/native-capture-boundaries.test.mjs",
+    "apps/worker/qualification/checkpoint/session-store.test.mjs"
+  ],
+  "timeoutSeconds": 60,
+  "elapsedSeconds": 1.433964471998479,
+  "exitCode": 0,
+  "timedOut": false,
+  "processGroupAbsent": true,
+  "tmpEntriesAfter": [],
+  "stdout": {
+    "bytes": 3319,
+    "sha256": "142de6c5949cbdd4e8dae5a0643af3cfb466df1da60cbc9e0e5b31c250351d48"
+  },
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

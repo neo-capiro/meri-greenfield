@@ -1,0 +1,65 @@
+{
+  "sourceCommit": "72c8afa5f7854505f99ccbd569c5de8c9e6bd1d9",
+  "baseCommit": "7f1d20d2c28db25948ecc02d26545645e87a3e3c",
+  "sourceTree": "6a38083a3090a272559a0f1d7d5283e4c54ba798",
+  "status": "SOURCE_ACCEPT_RUNTIME_HOLD",
+  "changes": [
+    {
+      "path": "apps/control/qualification-sdk-fixture/service/native-evidence.mjs",
+      "bytes": 6989,
+      "sha256": "a1bd96960ee00886cece2ee10ba3115366251d34ff9bd6903c28f79489c9539f"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-G1-EVIDENCE-OWNER-COMPOSITION-20261011.md",
+      "bytes": 7459,
+      "sha256": "20cbeef9299a562b02cfe1098ef748bdf11bd2f76b8dba7f1329fc22e86638cf"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-G1-SCAN-PREPARATION-20261011.md",
+      "bytes": 10275,
+      "sha256": "c8b383e09be03a54bc661cf8deb91115c6e18dc37b97f3b96c85e64c065e6743"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-G1-TRUSTED-COMPOSITION-20261011.md",
+      "bytes": 3683,
+      "sha256": "9b183bc26122a4571126ff4e68dc86a98588511326eaa3e6d6cffaba0401f307"
+    },
+    {
+      "path": "package.json",
+      "bytes": 1936,
+      "sha256": "42f84c0309a87d043a4023f657a6b1932ac5c1ca9e51eca8874e33085cb64d98"
+    },
+    {
+      "path": "scripts/qualification/sdk-native-evidence-owner.mjs",
+      "bytes": 7065,
+      "sha256": "e3dc2b73e5b5bee2f2464a57da6a4397b5f44083c6585dd27dc32730244c597f"
+    },
+    {
+      "path": "scripts/qualification/sdk-native-evidence-owner.test.mjs",
+      "bytes": 18349,
+      "sha256": "4915dbfd39a90cf8081645e333d55e8064049678893e181af56a318d18b0fb75"
+    },
+    {
+      "path": "scripts/qualification/test_worker_image_scan.py",
+      "bytes": 16668,
+      "sha256": "a0aa326b50828e1b45cd6bfc4a5a9fcd7f5254287b922d372b9017ab0cec301a"
+    },
+    {
+      "path": "scripts/qualification/worker_image_scan.py",
+      "bytes": 9958,
+      "sha256": "d85a402b80df5a701dcc1f132c10eeab93885c9ada8aa1e46a90a08ef5dc27e0"
+    }
+  ],
+  "protectedOwnersUnchanged": [
+    "apps/worker/qualification/Dockerfile",
+    "apps/worker/qualification/component-pins.json",
+    "scripts/qualification/worker_context.py",
+    "scripts/qualification/worker_image_build.py",
+    "scripts/qualification/worker_image_collect.py",
+    "scripts/qualification/worker_image_publish.py",
+    "packages/contracts/meri.schema.json"
+  ],
+  "imageBuildAdmitted": false,
+  "awsAccountCalls": 0,
+  "awsResourceChanges": 0
+}

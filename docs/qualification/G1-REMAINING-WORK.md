@@ -1,6 +1,26 @@
 # G1 remaining scope and sequence
 
-Current continuation, 11 October 2026 11:30 UTC: **G0 accepted / G1 OPEN.
+## Current source checkpoint — 12 October 2026 UTC
+
+**G0 accepted / G1 OPEN. G2–G7 remain unentered. The complete adopted first-release plan remains in scope.**
+
+Backend PR #7 now preserves reviewed source at `e74cac70ffcce34b1fc7b3bdda6a99a4702df06e`, exact tree `383fe7567aaf95cb18408dd5b2cb9c557a3ec897`. Original SessionStore PR #2 is an additional Git parent. Independent review accepts the inert-data repair as source only; the optional mirror is not packaged into runtime. Actual interruption, durable checkpoint publication, replacement/resume and stale-worker rejection remain unqualified. The [combined source report](../coordination/reports/CODEX-CONSOLIDATION-CLOSEOUT-20261012.md) records passing source tests, public generation/typechecks and retained failures.
+
+Canonical build/archive membership and non-executable fresh-runner binding preparation have source acceptance. The new binding cannot drive prepare/execute. Legacy runtime/caller/context/assembler guards remain in force. The selected read-only runner collector at author `a3c3c340218690ff1b02672ab50565014f51eae2` has final independent SOURCE_ONLY acceptance; 27 source tests and original attack replays pass. Its initial output-integrity, inherited-pipe and initialization failures remain preserved. Primary combined capture27/builder18 checks pass. Actual Windows measurement, complete executable closure and fresh action/cost/cleanup authority are not established. The [next read-only shipper handoff](../coordination/reports/CODEX-AWS-SHIPPER-NEXT-READ-20261012.md) grants no cloud write or build admission.
+
+AWS shipper PR #8 at `28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9` has evidence-intake acceptance only. Its native UTF-8 readback contains 47 findings: 5 critical, 17 high, 17 medium, 7 low and 1 undefined. The old image remains PUBLISHED_NOT_ADMITTED. No coherent supported patched image or immutable locator for the historical `56a3d5...` scan has been accepted. Office and actual image/runtime admission remain HOLD. Five older vendor obligations remain open; differing scan counts do not close them. The six shared VPC endpoint ENIs are not owned cleanup targets.
+
+Frontend source is independently preserved in `capiro-frontend` PR #4 at `e141d68f8954ba6c76327bcbed94739d28e0a902`, tree `9fb3ef9aa72010e87a173378e4d04150be41d6d3`. Home and cited-answer Figma/browser checks pass, with original cited PR #1 ancestry retained. Final integration must follow the latest Portfolio-first consolidation into one canonical `apps/web` and `HeaderFrame`, then qualify one combined image on the existing Portfolio preview origin. The newer Portfolio continuation is still unpublished on observed GitHub branches. This older candidate is not a standalone Meri UI deployment or connected-runtime acceptance.
+
+Private REL-02 contracts retain all 139 original IDs and the approved 96 selected/43 deferred disposition. Current published catalog has three pending mail descriptors; further canonical operation/schema binding and contract-backed UI work are in progress. No live handler, public 0.2 export, skill or source connection is enabled. Qualification fixture state must not be promoted into production authorization.
+
+Remaining live prerequisites include real Linux proxy/Prisma packaging and PostgreSQL authentication/revocation, trusted task identity, durable aggregate model accounting, actual-proxy deferred discovery, native recovery, dedicated browser host sandboxes/network/teardown and Office artifact acceptance. Real-request traces are a later measured release dependency; synthetic source checks cannot replace them. Temporal production deployment belongs to later gates. No new AWS write, provider call, SQL, resource deletion, main merge or production cutover occurred in this continuation; no historical aggregate paid-use amount is freshly asserted.
+
+Bounded Codex workers continue source tasks because Hermes is unavailable on this runner; the primary records independent acceptance of each returned source. Shared Cleanup1 path/resource agreement has been requested and remains pending. Original branches and historical evidence are preserved.
+
+## Historical checkpoint retained below
+
+Recorded continuation, 11 October 2026 11:30 UTC: **G0 accepted / G1 OPEN.
 Eight gates total; G2-G7 remain unentered.** Substantial runtime, capability,
 measurement and security work remains. No reliable completion estimate is
 established. Codex alone owns G0/G1 through bounded implementation sessions and

@@ -1,0 +1,11 @@
+{
+  "unchangedFailingAssertions": {
+    "test_real_owner_execution_closure_pins": true,
+    "test_context_manifest_pin_tracks_candidate_bytes": true
+  },
+  "classification": {
+    "test_real_owner_execution_closure_pins": "Pre-existing historical Windows/Python executable binding is unavailable on this Linux reviewer; remains an open execution gate.",
+    "test_context_manifest_pin_tracks_candidate_bytes": "Pre-existing historical context authority differs from current 53-file source context; remains an open source-admission gate."
+  },
+  "noGateWaiver": true
+}

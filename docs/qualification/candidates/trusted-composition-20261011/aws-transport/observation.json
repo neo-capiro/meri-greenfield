@@ -1,0 +1,30 @@
+{
+  "AWSAccountCalls": 0,
+  "authSucceeded": false,
+  "capturedResponseBytes": 195,
+  "capturedResponseSha256": "5b131ca14aa96311d3432b0062c7443d3b0e6346ec279bd376a75f0a76bcd5d7",
+  "cloudMutations": 0,
+  "contentType": "text/html",
+  "exactResponseUrl": true,
+  "httpStatus": 200,
+  "officialTokenEndpoint": "https://us-east-1.signin.aws.amazon.com/v1/token",
+  "recognizedPage": "Site unavailable",
+  "reconstructedFromToolObservation": true,
+  "redirectsRejected": true,
+  "tlsCertificateAndHostnameVerification": true,
+  "transportVariablePresence": {
+    "ALL_PROXY": true,
+    "AWS_CA_BUNDLE": false,
+    "CURL_CA_BUNDLE": false,
+    "HTTPS_PROXY": true,
+    "HTTP_PROXY": true,
+    "NO_PROXY": true,
+    "REQUESTS_CA_BUNDLE": true,
+    "SSL_CERT_DIR": false,
+    "SSL_CERT_FILE": true,
+    "all_proxy": true,
+    "http_proxy": true,
+    "https_proxy": true,
+    "no_proxy": true
+  }
+}

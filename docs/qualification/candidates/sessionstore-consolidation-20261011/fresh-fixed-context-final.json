@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "scripts/qualification/worker_context.py",
+    "--output",
+    "/workspace/scratch/853fba62b1f1/meri-sessionstore-consolidation-20261011/.task-inputs/check-tmp/fresh-context-final"
+  ],
+  "cwd": "/workspace/scratch/853fba62b1f1/meri-sessionstore-consolidation-20261011",
+  "startedAtEpochSeconds": 1791761362.154989,
+  "endedAtEpochSeconds": 1791761362.2691612,
+  "timeoutSeconds": 45,
+  "timedOut": false,
+  "exitCode": 0,
+  "ownedProcessGroupAbsent": true,
+  "stdout": {
+    "bytes": 63,
+    "sha256": "41ee601bf3e78b144719690b279dfb123ffe5a01233e051c051c45510e24bcf0"
+  },
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "sourceOnly": true
+}

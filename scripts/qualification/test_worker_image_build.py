@@ -7,11 +7,13 @@ from pathlib import Path
 import tarfile
 import tempfile
 import time
+import sys
 import unittest
 from unittest.mock import patch
 
 import worker_image_build as build
 import worker_image_collect as collect
+import worker_build_binding as binding
 
 TOKEN = '41173c6e-56a8-4fb0-834c-1c2c47c3e517'
 IID = 'sha256:'+'a'*64
@@ -30,7 +32,7 @@ def project():
 
 
 def request():
-    caller = {'Account': build.ACCOUNT, 'Arn': build.authority.PRINCIPAL, 'UserId': 'synthetic-user-id'}
+    caller = {'Account': build.ACCOUNT, 'Arn': 'arn:aws:iam::967807252336:user/hermes-cli', 'UserId': 'synthetic-user-id'}
     auth = {'decision': 'ROOT_REVIEWED_WORKER_BUILDER_AUTHORITY', 'capturedAt': dt.datetime.now(dt.timezone.utc).isoformat(),
             'caller': caller, 'project': project(), 'authorityRecords': {k: 'f'*64 for k in
                 ('roleTrust', 'inlinePolicy', 'attachedPolicies', 'kmsKey', 'kmsPolicy')}}
@@ -72,9 +74,12 @@ class Controls(unittest.TestCase):
 
     def test_authority_full_identity_and_role(self):
         value = request()['authority']; self.assertEqual(build.validate_authority(value), project())
+        self.assertEqual(build.WORKER_BUILDER_PRINCIPAL, 'arn:aws:iam::967807252336:user/hermes-cli')
         for field in ('UserId', 'Account', 'Arn'):
             wrong = copy.deepcopy(value); wrong['caller'][field] = ''
             with self.assertRaises(ValueError): build.validate_authority(wrong)
+        old = copy.deepcopy(value); old['caller']['Arn'] = build.authority.PRINCIPAL
+        with self.assertRaises(ValueError): build.validate_authority(old)
         wrong = copy.deepcopy(value); wrong['project']['serviceRole'] = 'foreign'
         with self.assertRaises(ValueError): build.validate_authority(wrong)
 
@@ -107,23 +112,37 @@ class Controls(unittest.TestCase):
 
     def test_collector_full_source_preflight_and_drift(self):
         root = Path(self.temp.name)
-        names = [p for p, _ in build.worker_context.MEMBERS]+[collect.ASSEMBLER, collect.COLLECTOR]
+        names = [p for p, _ in build.worker_context.MEMBERS]+[collect.ASSEMBLER, collect.COLLECTOR, build.manifest_owner.MANIFEST_OWNER]
         rows = []
         for name in names:
             raw = (build.ROOT/name).read_bytes(); target = root/name; target.parent.mkdir(parents=True, exist_ok=True)
             collect.write(target, raw); rows.append({'path': name, 'bytes': len(raw), 'sha256': collect.digest(raw)})
         collect.write(root/'buildspec.json', build.recipe()); rows.append({'path': 'buildspec.json', 'bytes': len(build.recipe()), 'sha256': collect.digest(build.recipe())})
         value = {'schema': collect.SCHEMA, 'sourceCommit': 'c'*40, 'runUuid': TOKEN, 'contextManifestSha256': collect.CONTEXT_SHA, 'members': rows}
-        raw = collect.encoded(value); collect.validate_input(root, raw, collect.digest(raw))
-        with self.assertRaises(ValueError): collect.validate_input(root, raw, 'f'*64)
-        (root/collect.COLLECTOR).write_bytes(b'x'*rows[-2]['bytes'])
-        with self.assertRaises(ValueError): collect.validate_input(root, raw, collect.digest(raw))
+        raw = collect.encoded(value)
+        # This current-source fixture is not an admission of the historical assembler pin.
+        with patch.object(collect, 'ASSEMBLER_SHA', collect.digest((root/collect.ASSEMBLER).read_bytes())):
+            collect.validate_input(root, raw, collect.digest(raw))
+            with self.assertRaises(ValueError): collect.validate_input(root, raw, 'f'*64)
+            (root/collect.COLLECTOR).write_bytes(b'x'*rows[-3]['bytes'])
+            with self.assertRaises(ValueError): collect.validate_input(root, raw, collect.digest(raw))
         self.assertFalse((root/'.meri-worker-evidence').exists())
+
+    def test_membership_rejects_extra_missing_duplicate_and_wrong_shape(self):
+        names = build.manifest_owner.source_paths(True)
+        good = [{'path': name} for name in names]
+        build.manifest_owner.require_source_membership(good, True)
+        for rows in (good[:-1], good+[{'path': 'unapproved.py'}], good+[good[0]],
+                     [dict(row, path=None) for row in good], {}, [None]):
+            with self.subTest(rows=type(rows).__name__), self.assertRaises(ValueError):
+                build.manifest_owner.require_source_membership(rows, True)
+        self.assertEqual(set(build.manifest_owner.archive_paths(True)),
+                         set(names) | {'worker-image-input.json'})
 
     def test_source_missing_and_duplicate_before_output(self):
         root = Path(self.temp.name)
         value = {'schema': collect.SCHEMA, 'sourceCommit': 'c'*40, 'runUuid': TOKEN, 'contextManifestSha256': collect.CONTEXT_SHA,
-                 'members': [{'path': 'missing', 'bytes': 1, 'sha256': 'a'*64}]*37}
+                 'members': [{'path': 'missing', 'bytes': 1, 'sha256': 'a'*64}]*47}
         raw = collect.encoded(value)
         with self.assertRaises((ValueError, OSError)): collect.validate_input(root, raw, collect.digest(raw))
         self.assertFalse((root/'.meri-worker-evidence').exists())
@@ -134,6 +153,14 @@ class Controls(unittest.TestCase):
         self.assertIn(str(build.PYTHON.parent/'python312.dll'), values)
         self.assertIn(str(build.PYTHON.parent/'Lib/zipfile/__init__.py'), values)
         self.assertEqual(values[str(build.ROOT/'scripts/qualification/worker_context.py')]['sha256'], collect.ASSEMBLER_SHA)
+
+    def test_context_manifest_pin_tracks_candidate_bytes(self):
+        files = {p: (build.ROOT/p).read_bytes() for p, _ in build.worker_context.MEMBERS}
+        self.assertEqual(build.context_manifest_sha(files), collect.CONTEXT_SHA)
+        changed = dict(files)
+        path = 'packages/contracts/qualification-sdk/wire.mjs'
+        changed[path] += b'\n'
+        self.assertNotEqual(build.context_manifest_sha(changed), collect.CONTEXT_SHA)
 
     def dispatch_case(self, failure=None):
         folder = Path(self.temp.name); req = request(); collect.write(folder/'source.zip', b'zip'); seen = []
@@ -224,17 +251,23 @@ class Controls(unittest.TestCase):
         entries = [dict(path=p, type='file', **pin) for p, pin in pins.items()]
         source = {'contextPath': 'probes/sdk-interruption.mjs', 'bytes': 123, 'sha256': 'a'*64}
         entries.append({'path': '/opt/meri-worker/probes/sdk-interruption.mjs', 'type': 'file', 'size': 123, 'sha256': 'a'*64})
+        private = {'contextPath': 'build-dependencies/contracts/qualification-sdk/wire.mjs', 'bytes': 321, 'sha256': 'b'*64}
+        entries.append({'path': '/packages/contracts/qualification-sdk/wire.mjs', 'type': 'file', 'size': 321, 'sha256': 'b'*64})
         value = {'schema': 'meri.qualification.image-inventory/1', 'ok': True, 'refused': False, 'truncated': False,
                  'coverage': {'complete': True}, 'summary': {'roots': sorted(collect.REQUIRED_ROOTS), 'errors': 0,
                  'expectationFailures': 0, 'unexpectedPrivilegeEntries': 0, 'limitsExceeded': None}, 'errors': [], 'unexpectedPrivilegeFiles': [],
                  'entries': entries, 'expectations': [{'path': p, 'status': 'match', 'expected': pin} for p, pin in pins.items()],
                  'privilegeFiles': [{'path': p} for p in collect.HELPERS]}
-        collect.validate_inventory(collect.encoded(value), [source], component)
+        collect.validate_inventory(collect.encoded(value), [source, private], component)
+        with self.assertRaises(ValueError):
+            collect.validate_inventory(collect.encoded(value),
+                                       [source, {'contextPath': 'build-dependencies/foreign/unknown.mjs',
+                                                 'bytes': 1, 'sha256': 'f'*64}], component)
         for mutate in [lambda r: r['expectations'][0]['expected'].update(sha256='f'*64),
                        lambda r: r['entries'][-1].update(sha256='f'*64), lambda r: r.update(truncated=True),
                        lambda r: r['privilegeFiles'].append({'path': '/foreign'})]:
             wrong = copy.deepcopy(value); mutate(wrong)
-            with self.assertRaises(ValueError): collect.validate_inventory(collect.encoded(wrong), [source], component)
+            with self.assertRaises(ValueError): collect.validate_inventory(collect.encoded(wrong), [source, private], component)
 
     def test_lost_create_ack_owned_cleanup_both_volumes(self):
         output = Path(self.temp.name); seen = []; manifest = {'sourceCommit': 'c'*40, 'runUuid': TOKEN}
@@ -391,6 +424,97 @@ def full_ack():
            'environment': env, 'serviceRole': build.ROLE, 'encryptionKey': build.KMS, 'cache': p['cache'],
            'artifacts': {'location': ''}, 'logs': {'cloudWatchLogs': p['logsConfig']['cloudWatchLogs']}}
     return req, start, ack
+
+
+class FreshRunnerBinding(unittest.TestCase):
+    """Proposal checks are offline contracts, never current-runner qualification."""
+
+    def setUp(self):
+        self.helpers = tuple('scripts/qualification/'+name for name in build.HELPERS) + ('scripts/qualification/worker_build_binding.py',)
+        self.value = {
+            'schema': binding.SCHEMA, 'sourceCommit': 'c'*40, 'sourceTree': 'd'*40,
+            'contextManifestSha256': 'a'*64, 'assemblerSha256': 'b'*64, 'authoritySha256': 'e'*64,
+            'target': {'account': binding.ACCOUNT, 'region': binding.REGION, 'profile': binding.PROFILE,
+                       'caller': {'Account': binding.ACCOUNT, 'Arn': binding.PRINCIPAL, 'UserId': 'synthetic'}},
+            'runtime': {'platform': 'win32', 'executable': r'C:\Runner\python.exe', 'basePrefix': r'C:\Runner',
+                        'version': [3, 11, 15], 'files': [
+                            {'path': r'C:\Runner\python.exe', 'bytes': 1024, 'sha256': 'f'*64},
+                            {'path': r'C:\Runner\Lib\os.py', 'bytes': 2048, 'sha256': 'a'*64}]},
+            'helperFiles': [{'path': path, 'bytes': 32, 'sha256': 'a'*64} for path in self.helpers]}
+        self.now = dt.datetime(2026, 10, 11, 23, 0, tzinfo=dt.timezone.utc)
+
+    def proposal(self, value=None):
+        raw = collect.encoded(self.value if value is None else value)
+        return binding.validate_proposal(raw, collect.digest(raw), self.helpers), raw
+
+    def review(self, raw):
+        return {'decision': binding.REVIEW_DECISION, 'bindingSha256': collect.digest(raw),
+                'sourceCommit': self.value['sourceCommit'], 'sourceTree': self.value['sourceTree'],
+                'authoritySha256': self.value['authoritySha256'],
+                'closureSha256': collect.digest(collect.encoded({'runtime': self.value['runtime'], 'helperFiles': self.value['helperFiles']})),
+                'capturedAt': self.now.isoformat(), 'expiresAt': (self.now+dt.timedelta(seconds=300)).isoformat(),
+                'reviewer': 'synthetic root'}
+
+    def test_exact_new_binding_does_not_change_historical_identity(self):
+        value, _ = self.proposal()
+        self.assertEqual(value['target']['caller']['Arn'], binding.PRINCIPAL)
+        self.assertEqual(build.WORKER_BUILDER_PRINCIPAL, 'arn:aws:iam::967807252336:user/hermes-cli')
+        self.assertEqual(build.PYTHON_SHA, '10d845f50a2af64e3500bb2fcb348b5bc98a75d8ddada63e45ba1da6a1fc79d1')
+        self.assertEqual(collect.ASSEMBLER_SHA, '67c1cf554e80c62eeb56b6dcb9be00106adf9b1b8b40beba85249de662b835eb')
+        self.assertEqual(collect.CONTEXT_SHA, '18836912a03fc035d69c0cfc57d1f407e5c46af1bdd37c21a761f5d42dc84dda')
+
+    def test_proposal_refuses_wrong_target_or_unpinned_closure(self):
+        changes = [('profile', 'default'), ('region', 'us-west-2'), ('account', '000000000000')]
+        for field, wrong in changes:
+            value = copy.deepcopy(self.value); value['target'][field] = wrong
+            with self.subTest(field=field), self.assertRaises(ValueError): self.proposal(value)
+        for field, wrong in [('Arn', build.WORKER_BUILDER_PRINCIPAL), ('UserId', ''), ('Account', 'foreign')]:
+            value = copy.deepcopy(self.value); value['target']['caller'][field] = wrong
+            with self.subTest(field=field), self.assertRaises(ValueError): self.proposal(value)
+        for field in ('contextManifestSha256', 'assemblerSha256', 'authoritySha256'):
+            value = copy.deepcopy(self.value); value[field] = None
+            with self.subTest(field=field), self.assertRaises(ValueError): self.proposal(value)
+
+    def test_proposal_refuses_missing_extra_duplicate_and_unsafe_files(self):
+        for mutation in ('missing-helper', 'extra-helper', 'duplicate', 'no-executable', 'relative', 'outside', 'hash', 'bytes'):
+            value = copy.deepcopy(self.value)
+            if mutation == 'missing-helper': value['helperFiles'].pop()
+            elif mutation == 'extra-helper': value['helperFiles'].append({'path': 'unapproved.py', 'bytes': 1, 'sha256': 'a'*64})
+            elif mutation == 'duplicate': value['runtime']['files'].append(value['runtime']['files'][0])
+            elif mutation == 'no-executable': value['runtime']['files'].pop(0)
+            elif mutation == 'relative': value['runtime']['executable'] = 'python.exe'
+            elif mutation == 'outside': value['runtime']['files'][1]['path'] = r'C:\Elsewhere\os.py'
+            elif mutation == 'hash': value['runtime']['files'][0]['sha256'] = 'unchecked'
+            else: value['runtime']['files'][0]['bytes'] = True
+            with self.subTest(mutation=mutation), self.assertRaises(ValueError): self.proposal(value)
+
+    def test_distinct_review_binds_complete_proposal_and_ten_minute_window(self):
+        value, raw = self.proposal(); review = self.review(raw); rr = collect.encoded(review)
+        binding.validate_review(value, raw, rr, collect.digest(rr), now=self.now)
+        for field, wrong in [('decision', 'APPROVE_ONE_WORKER_IMAGE_PUBLISH_BUILD_ONLY'), ('bindingSha256', '0'*64),
+                             ('sourceTree', '0'*40), ('closureSha256', '0'*64), ('authoritySha256', '0'*64),
+                             ('expiresAt', (self.now+dt.timedelta(seconds=601)).isoformat()), ('reviewer', '')]:
+            bad = dict(review, **{field: wrong}); blob = collect.encoded(bad)
+            with self.subTest(field=field), self.assertRaises(ValueError):
+                binding.validate_review(value, raw, blob, collect.digest(blob), now=self.now)
+        for now in (self.now-dt.timedelta(seconds=1), self.now+dt.timedelta(seconds=300)):
+            with self.assertRaises(ValueError): binding.validate_review(value, raw, rr, collect.digest(rr), now=now)
+
+    def test_missing_fresh_observation_and_stale_write_identity_refused(self):
+        value, _ = self.proposal(); runtime = value['runtime']
+        observation = {'runtime_files': runtime['files'], 'runtime_identity': {name: runtime[name] for name in ('platform', 'executable', 'basePrefix', 'version')},
+                       'helper_files': value['helperFiles'], 'caller': value['target']['caller']}
+        binding.require_observed_binding(value, **observation)
+        for field in observation:
+            wrong = dict(observation, **{field: None})
+            with self.subTest(field=field), self.assertRaises(ValueError): binding.require_observed_binding(value, **wrong)
+
+    def test_cli_invalid_binding_and_override_refuse_before_cloud_or_slot(self):
+        for argv in (['worker_image_build.py', 'inspect-binding'],
+                     ['worker_image_build.py', 'execute', '--evidence', 'missing', '--runner-binding-file', 'override']):
+            with patch.object(sys, 'argv', argv), patch.object(build.aws_evidence, 'capture') as cloud, patch.object(build, 'slot') as slot:
+                with self.assertRaises(ValueError): build.main()
+                cloud.assert_not_called(); slot.assert_not_called()
 
 
 if __name__ == '__main__': unittest.main()
