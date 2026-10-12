@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-federal-legislation.test.mjs",
+    "packages/contracts/test/retrieval-federal-legislation-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-federal-legislation-review-20261012",
+  "sourceHead": "74efa85011a462ef3048f35201d26d29eedf6ca3",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T17:08:25.500868+00:00",
+  "durationSeconds": 0.825,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 173072,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/exact-source-tests.stdout.bin",
+      "bytes": 6036,
+      "sha256": "6a54596a08eba1765261a5740bb9661040c2e2ff1a5a9c2c82c8940b536bac04"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/exact-source-tests.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
