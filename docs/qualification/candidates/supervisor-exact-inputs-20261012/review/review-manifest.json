@@ -1,0 +1,45 @@
+{
+  "authorCommit": "e58bbdf110014493b19a0186ecff2df1ddc107a7",
+  "authorTree": "e8a9c5dd54cb3b206c864576b05943ddd8d6bbf5",
+  "verdict": "ACCEPT_SOURCE: exact-input documentation only",
+  "nativeExecution": false,
+  "runtimeAccepted": false,
+  "selfExcluded": true,
+  "files": [
+    {
+      "path": "docs/coordination/reports/MERI-SUPERVISOR-EXACT-INPUTS-REVIEW-20261012.md",
+      "bytes": 5055,
+      "sha256": "0e5918d18eec20deb8fdd08b492ff418c32fbe7e551df8155a81e9c2d197145f"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-exact-inputs-20261012/review/exact-freeze-data-ast.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-exact-inputs-20261012/review/exact-freeze-data-ast.stdout.json",
+      "bytes": 2126,
+      "sha256": "ab8c27da4d58b82b024bfa458c73ffe1faec5a8e8c38e8c8646233e79125921e"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-exact-inputs-20261012/review/exact-freeze-integrity.json",
+      "bytes": 2520,
+      "sha256": "39e937e4512cdc06397e92b1bacaf1829649ebce8731f75d70b24a7d81e911fa"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-exact-inputs-20261012/review/frozen-criteria.json",
+      "bytes": 2763,
+      "sha256": "a37687f21a9b950f569e4e09c71809223f7c1616b3204749b7bb053e1d57b067"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-exact-inputs-20261012/review/independent-input-audit.json",
+      "bytes": 8041,
+      "sha256": "bb3328348cfc9b645ffd47f0c19a0aa5d0fc21d6f46a23e921df0817b835dde8"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-exact-inputs-20261012/review/verify-freeze.py",
+      "bytes": 5038,
+      "sha256": "cc80570f120182136e349675a5c102a8a0c79b14dbe870fe08bc845b96a938ed"
+    }
+  ]
+}

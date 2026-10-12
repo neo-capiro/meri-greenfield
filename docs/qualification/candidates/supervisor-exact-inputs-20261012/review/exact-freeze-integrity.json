@@ -1,0 +1,107 @@
+{
+  "base": "6cfb1f9a4d8acd66c5bd8d38d892d656fa3cd89e",
+  "authorCommit": "e58bbdf110014493b19a0186ecff2df1ddc107a7",
+  "authorTree": "e8a9c5dd54cb3b206c864576b05943ddd8d6bbf5",
+  "method": "Git metadata, byte hashing, JSON and reviewed data/AST checker only; no inspected source import or execution",
+  "authorManifestSha256": "2a0a10d4af1eb46df5efeae6c854086aa440f042c670ac9f7fe0966bfd6b9826",
+  "authorManifestMembers": 8,
+  "knownPrivatePathValuesScanned": 27,
+  "knownPrivatePathValueLeaks": 0,
+  "authorDataAstReplay": {
+    "passed": 23,
+    "failed": 0,
+    "exitCode": 0
+  },
+  "checks": [
+    {
+      "name": "exact-author-head",
+      "passed": true
+    },
+    {
+      "name": "exact-author-tree",
+      "passed": true
+    },
+    {
+      "name": "clean-author-worktree",
+      "passed": true
+    },
+    {
+      "name": "only-nine-new-allocated-files",
+      "passed": true
+    },
+    {
+      "name": "manifest-base-self-excluded",
+      "passed": true
+    },
+    {
+      "name": "complete-eight-member-manifest",
+      "passed": true
+    },
+    {
+      "name": "member-integrity:MERI-SUPERVISOR-EXACT-INPUTS-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "member-integrity:check-map.py",
+      "passed": true
+    },
+    {
+      "name": "member-integrity:data-ast-checks.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "member-integrity:data-ast-checks.stdout.json",
+      "passed": true
+    },
+    {
+      "name": "member-integrity:exact-inputs.json",
+      "passed": true
+    },
+    {
+      "name": "member-integrity:outline.json",
+      "passed": true
+    },
+    {
+      "name": "member-integrity:staging-inventory.json",
+      "passed": true
+    },
+    {
+      "name": "member-integrity:verification-receipt.json",
+      "passed": true
+    },
+    {
+      "name": "unchanged-source:run-supervised.py",
+      "passed": true
+    },
+    {
+      "name": "unchanged-source:worker_runner_inventory.py",
+      "passed": true
+    },
+    {
+      "name": "unchanged-source:evidence-writer.py",
+      "passed": true
+    },
+    {
+      "name": "whitespace-clean",
+      "passed": true
+    },
+    {
+      "name": "no-known-private-path-value-leaks",
+      "passed": true
+    },
+    {
+      "name": "exact-freeze-author-data-ast-replay",
+      "passed": true
+    },
+    {
+      "name": "replay-matches-frozen-receipt",
+      "passed": true
+    }
+  ],
+  "passed": 21,
+  "failed": 0,
+  "targetImported": false,
+  "nativeExecution": false,
+  "runtimeAccepted": false,
+  "ownedJobsRemaining": 0
+}

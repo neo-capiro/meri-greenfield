@@ -1,0 +1,56 @@
+{
+  "base": "6cfb1f9a4d8acd66c5bd8d38d892d656fa3cd89e",
+  "criteria": [
+    {
+      "id": "EI1",
+      "assertion": "Exact PR18 base; read-only source/data review; only allocated reviewer docs/evidence may be created. No wrapper/identity/policy changes or native imports/execution."
+    },
+    {
+      "id": "EI2",
+      "assertion": "Map actual wrapper consumer function, nine action keys, JSON selectors, exact known sizes/SHA pins and unresolved constants; distinguish direct runtime inputs from human review dependencies."
+    },
+    {
+      "id": "EI3",
+      "assertion": "Independently hash locally retained verified source/provenance records; distinguish actual raw bytes from relay derivatives, parent materialization claims and truncated local candidate evidence."
+    },
+    {
+      "id": "EI4",
+      "assertion": "Use exact supplied manifest member names/identities; request minimal missing members for next review, never generic complete-packet resend and never imply globally absent when only locally missing."
+    },
+    {
+      "id": "EI5",
+      "assertion": "Keep original collector receipt, original source-verification, prior audit reference, previous supervisor receipt and ZIP member manifest separate; no schema/content/completeness substitution."
+    },
+    {
+      "id": "EI6",
+      "assertion": "Describe sourceVerification relative $.files[].path versus priorManifest absolute $.files[].path, both byte/hash fields and finite existing bounds; unknown source count/schema is not permission to truncate or widen."
+    },
+    {
+      "id": "EI7",
+      "assertion": "Pin selected executable known size/hash separately from Git known path and absent size/hash; preserve failed timestamp/bracket and bounded-hash flags, historical wrapper uncertainty, watchdog/runtime/publication HOLD."
+    },
+    {
+      "id": "EI8",
+      "assertion": "Publish no private paths/bodies; retain only member/JSON selectors/size/hash and analysis. Final verdict covers exact-input conclusions, not source execution readiness or native admission."
+    }
+  ],
+  "sourceAnchors": [
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/author/run-supervised.py",
+      "bytes": 16775,
+      "sha256": "380dfc349ac5283f49b7d8a8360a4dc9d7c2a43516361d1d1c387290620ec595"
+    },
+    {
+      "path": "scripts/qualification/worker_runner_inventory.py",
+      "bytes": 13224,
+      "sha256": "7615e26a5d038ff2fa054cde3cdb04077def5636874f848c97e050dae9df03e9"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/author/evidence-writer.py",
+      "bytes": 8831,
+      "sha256": "8715d7999e4c9d7ab1422f7360a6a9cff5053da57687dacda861ef69d5e42afc"
+    }
+  ],
+  "targetImported": false,
+  "nativeAuthorized": false
+}
