@@ -1,0 +1,274 @@
+{
+  "packet": "e2242bb113b2f9adc2028fc5cef005e36c07fb2e",
+  "source": "6f14d780a40e878fa62bc928c4d520286313f56c",
+  "manifestSha256": "584290782636caaf2b009220b310d4b98bfc7f7ce6f198e7678745e87af18b34",
+  "checks": [
+    {
+      "check": "manifest sha",
+      "pass": true
+    },
+    {
+      "check": "source freeze",
+      "pass": true
+    },
+    {
+      "check": "member count",
+      "pass": true
+    },
+    {
+      "check": "member apps/control/task-lookup/README.md",
+      "pass": true
+    },
+    {
+      "check": "member apps/control/task-lookup/binding.mjs",
+      "pass": true
+    },
+    {
+      "check": "member apps/control/task-lookup/delivery.mjs",
+      "pass": true
+    },
+    {
+      "check": "member apps/control/task-lookup/delivery.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "member apps/control/task-lookup/fixtures.mjs",
+      "pass": true
+    },
+    {
+      "check": "member apps/control/task-lookup/index.mjs",
+      "pass": true
+    },
+    {
+      "check": "member apps/control/task-lookup/migrations/0001_task_lookup.sql",
+      "pass": true
+    },
+    {
+      "check": "member apps/control/task-lookup/postgres-fixture.mjs",
+      "pass": true
+    },
+    {
+      "check": "member apps/control/task-lookup/postgres-results.mjs",
+      "pass": true
+    },
+    {
+      "check": "member apps/control/task-lookup/postgres-results.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "member docs/coordination/reports/CODEX-TASK-LOOKUP-CONTROL-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "member docs/coordination/tasks/CODEX-TASK-LOOKUP-CONTROL-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/audit.json",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/audit.py",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/authored-whitespace.json",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/cleanup.json",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/coherent-scope-negative.json",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/coherent-scope-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/coherent-scope-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/connected-store.json",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/connected-store.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/connected-store.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/corrected-control.json",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/corrected-control.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/corrected-control.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/discovery-notes.json",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/fixture-correction.json",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/initial-control.json",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/initial-control.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/initial-control.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/reference-case-negative.json",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/reference-case-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/reference-case-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/reference-case-repaired.json",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/reference-case-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/reference-case-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/scope-negative.json",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/scope-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/scope-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/scope-repaired.json",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/scope-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/scope-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/store-initial.json",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/store-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/store-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/store-repaired.json",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/store-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/store-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/verify-packet.py",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/whitespace.json",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/whitespace.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "member docs/qualification/candidates/task-slice-20261012/control-author/whitespace.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source packet exact apps/control/task-lookup/binding.mjs",
+      "pass": true
+    },
+    {
+      "check": "source packet exact apps/control/task-lookup/delivery.mjs",
+      "pass": true
+    },
+    {
+      "check": "source packet exact apps/control/task-lookup/delivery.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "source packet exact apps/control/task-lookup/fixtures.mjs",
+      "pass": true
+    },
+    {
+      "check": "source packet exact apps/control/task-lookup/index.mjs",
+      "pass": true
+    },
+    {
+      "check": "source packet exact apps/control/task-lookup/migrations/0001_task_lookup.sql",
+      "pass": true
+    },
+    {
+      "check": "source packet exact apps/control/task-lookup/postgres-fixture.mjs",
+      "pass": true
+    },
+    {
+      "check": "source packet exact apps/control/task-lookup/postgres-results.mjs",
+      "pass": true
+    },
+    {
+      "check": "source packet exact apps/control/task-lookup/postgres-results.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "complete packet membership",
+      "pass": true
+    }
+  ],
+  "passed": 66,
+  "failed": 0,
+  "nativeRuntimeAccepted": false
+}
