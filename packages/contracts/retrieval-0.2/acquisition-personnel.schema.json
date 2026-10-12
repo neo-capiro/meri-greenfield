@@ -1,0 +1,558 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:acquisition-personnel:0.2.0",
+  "title": "Pinned acquisition personnel read projections; no live source or policy authority",
+  "$defs": {
+    "AcquisitionUuid": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "AcquisitionInstant": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "AcquisitionSearchContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "actorRole": {
+          "enum": [
+            "capiro_admin",
+            "user_admin",
+            "standard_user",
+            "client_portal_user"
+          ]
+        }
+      },
+      "required": [
+        "actorRole"
+      ]
+    },
+    "AcquisitionDetailContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "actorRole": {
+          "enum": [
+            "capiro_admin",
+            "user_admin",
+            "standard_user",
+            "client_portal_user"
+          ]
+        }
+      },
+      "required": [
+        "actorRole"
+      ]
+    },
+    "AcquisitionPersonnelSearchInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "query": {
+          "type": "string"
+        },
+        "service": {
+          "type": "string"
+        },
+        "organization": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        },
+        "peCode": {
+          "type": "string"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50,
+          "default": 20
+        },
+        "page": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 1
+        }
+      },
+      "required": []
+    },
+    "AcquisitionPersonDetailInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "id"
+      ]
+    },
+    "AcquisitionPersonnelRow": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/AcquisitionUuid"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "service": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "organization": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "role": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "pePrimary": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "peSecondary": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "emailDomain": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "publicProfileUrl": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "confidence": {
+          "type": "number"
+        },
+        "status": {
+          "type": "string"
+        },
+        "firstSeenAt": {
+          "$ref": "#/$defs/AcquisitionInstant"
+        },
+        "lastSeenAt": {
+          "$ref": "#/$defs/AcquisitionInstant"
+        },
+        "email": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "phone": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "parentOffice": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "department": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "headshotUrl": {},
+        "sourceCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "id",
+        "fullName",
+        "service",
+        "organization",
+        "title",
+        "role",
+        "pePrimary",
+        "peSecondary",
+        "emailDomain",
+        "publicProfileUrl",
+        "confidence",
+        "status",
+        "firstSeenAt",
+        "lastSeenAt",
+        "email",
+        "phone",
+        "parentOffice",
+        "department",
+        "headshotUrl",
+        "sourceCount"
+      ]
+    },
+    "AcquisitionSourceMention": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/AcquisitionUuid"
+        },
+        "source": {
+          "type": "string"
+        },
+        "sourceUrl": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "snippet": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "observedAt": {
+          "$ref": "#/$defs/AcquisitionInstant"
+        },
+        "confidence": {
+          "type": "number"
+        },
+        "metadata": {}
+      },
+      "required": [
+        "id",
+        "source",
+        "sourceUrl",
+        "snippet",
+        "observedAt",
+        "confidence",
+        "metadata"
+      ]
+    },
+    "AcquisitionPerson": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/AcquisitionUuid"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "service": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "organization": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "role": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "pePrimary": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "peSecondary": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "emailDomain": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "publicProfileUrl": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "confidence": {
+          "type": "number"
+        },
+        "status": {
+          "type": "string"
+        },
+        "firstSeenAt": {
+          "$ref": "#/$defs/AcquisitionInstant"
+        },
+        "lastSeenAt": {
+          "$ref": "#/$defs/AcquisitionInstant"
+        },
+        "nameKey": {
+          "type": "string"
+        },
+        "programOfRecord": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "email": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "phone": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "parentOffice": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "department": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "metadata": {},
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AcquisitionSourceMention"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "fullName",
+        "service",
+        "organization",
+        "title",
+        "role",
+        "pePrimary",
+        "peSecondary",
+        "emailDomain",
+        "publicProfileUrl",
+        "confidence",
+        "status",
+        "firstSeenAt",
+        "lastSeenAt",
+        "nameKey",
+        "programOfRecord",
+        "email",
+        "phone",
+        "parentOffice",
+        "department",
+        "metadata",
+        "sources"
+      ]
+    },
+    "AcquisitionPersonnelSearchOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "search_acquisition_personnel"
+        },
+        "generatedAt": {
+          "$ref": "#/$defs/AcquisitionInstant"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AcquisitionPersonnelRow"
+          },
+          "maxItems": 50
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "page": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "data",
+        "total",
+        "page",
+        "limit"
+      ]
+    },
+    "AcquisitionPersonDetailOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "get_acquisition_person"
+        },
+        "generatedAt": {
+          "$ref": "#/$defs/AcquisitionInstant"
+        },
+        "person": {
+          "$ref": "#/$defs/AcquisitionPerson"
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "person"
+      ]
+    }
+  }
+}
