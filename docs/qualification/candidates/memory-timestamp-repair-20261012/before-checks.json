@@ -1,0 +1,24 @@
+[
+  {
+    "label": "author-before",
+    "command": [
+      "node",
+      "--test",
+      "packages/contracts/test/retrieval-memory-proposals.test.mjs"
+    ],
+    "exitCode": 1,
+    "elapsedSeconds": 1.155,
+    "sourceBase": "c57b7d26df7de2acbd8c7d8edc7098f7d495053a"
+  },
+  {
+    "label": "reviewer-probes-before",
+    "command": [
+      "node",
+      "--test",
+      "docs/qualification/candidates/memory-timestamp-repair-20261012/adversarial.test.mjs"
+    ],
+    "exitCode": 1,
+    "elapsedSeconds": 0.881,
+    "sourceBase": "c57b7d26df7de2acbd8c7d8edc7098f7d495053a"
+  }
+]

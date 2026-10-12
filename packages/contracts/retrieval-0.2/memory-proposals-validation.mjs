@@ -5,6 +5,12 @@ import { types } from 'node:util';
 
 const fail = message => { throw new Error(message); };
 
+function proposalTimestamp(value) {
+  const instant = Date.parse(value);
+  if (!Number.isFinite(instant)) fail('Proposal timestamp must denote a finite instant');
+  return instant;
+}
+
 // This family's small inert DTO admission precedes Ajv and property reads.
 // Existing canonical admission is private to registered operations; this family
 // is intentionally unregistered. No generic shared framework is introduced.
@@ -70,8 +76,9 @@ export function createMemoryProposalValidators({validateShape, assertSubject, un
       fail('Proposal continuation requires progress');
     if (page.nextCursor !== null && page.nextCursor.length > 2048) fail('Proposal next cursor UTF-16 bound');
     unique(page.candidates.map(row => row.id.toLowerCase()), 'proposal identity');
-    let previous = null;
+    let previous = null, previousCreatedAt = null;
     for (const row of page.candidates) {
+      const createdAt = proposalTimestamp(row.createdAt);
       if ((row.scope === 'client') !== (row.clientId !== null)) fail('Proposal scope/client mismatch');
       if (requested.clientId !== null && row.clientId !== null && row.clientId !== requested.clientId)
         fail('Proposal row belongs to another selected client');
@@ -79,10 +86,11 @@ export function createMemoryProposalValidators({validateShape, assertSubject, un
         fail('Proposal content UTF-16 bound');
       if (row.restricted && (row.title !== null || row.proposedText !== null || row.contentTruncated))
         fail('Restricted proposal must disclose no content');
-      if (previous && (Date.parse(row.createdAt) > Date.parse(previous.createdAt) ||
-          (Date.parse(row.createdAt) === Date.parse(previous.createdAt) && row.id.toLowerCase() >= previous.id.toLowerCase())))
+      if (previous && (createdAt > previousCreatedAt ||
+          (createdAt === previousCreatedAt && row.id.toLowerCase() >= previous.id.toLowerCase())))
         fail('Proposal page requires descending createdAt/id order');
       previous = row;
+      previousCreatedAt = createdAt;
     }
     if (page.coverage.firstPage !== (requested.cursor === null)) fail('Proposal first-page disclosure mismatch');
     if (!page.enabled) {
@@ -121,8 +129,9 @@ export function createMemoryProposalValidators({validateShape, assertSubject, un
     const classified = result(page, requested, options.subject);
     if (options.previous && page.candidates.length) {
       const last = options.previous.page.candidates.at(-1), first = page.candidates[0];
-      if (Date.parse(first.createdAt) > Date.parse(last.createdAt) ||
-          (Date.parse(first.createdAt) === Date.parse(last.createdAt) && first.id.toLowerCase() >= last.id.toLowerCase()))
+      const firstCreatedAt = proposalTimestamp(first.createdAt), lastCreatedAt = proposalTimestamp(last.createdAt);
+      if (firstCreatedAt > lastCreatedAt ||
+          (firstCreatedAt === lastCreatedAt && first.id.toLowerCase() >= last.id.toLowerCase()))
         fail('Proposal continuation order failed to advance');
     }
     return classified;
