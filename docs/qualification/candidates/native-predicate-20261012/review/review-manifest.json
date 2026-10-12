@@ -1,0 +1,110 @@
+{
+  "authorCommit": "7591d8670e53fa49876aa762b0407b8baf2c66ba",
+  "authorTree": "1e6938c6ad6db442233a0b0693daca0d70ec4eb7",
+  "verdict": "ACCEPT_SOURCE_BOUNDED_FACTS_AND_VERIFIER_ONLY",
+  "fullPredicateAndNativeAdmission": "HOLD",
+  "selfExcluded": true,
+  "files": [
+    {
+      "path": "docs/coordination/reports/MERI-NATIVE-PREDICATE-REVIEW-20261012.md",
+      "bytes": 5598,
+      "sha256": "a6af2471e5edde8ec8fdefd71e3e7af56792051dfbee745238c4129d96f49376"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/review/check-private-records.initial.py.txt",
+      "bytes": 6862,
+      "sha256": "c14935755799769aebf8e6f87beb764a299626a5f18e2c39cba7e021537bc3ae"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/review/check-private-records.py",
+      "bytes": 6866,
+      "sha256": "f34a7ba309fc355b62aa1f88713b3180e19c421511c63a8e639ede7b84af69f5"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/review/data-audit-corrected.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/review/data-audit-corrected.stdout.txt",
+      "bytes": 123,
+      "sha256": "cfa12c951b923e38e47768a955188bd69676d9a0cd6430bf9c8e8f15a1708156"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/review/data-audit-initial.json",
+      "bytes": 5717,
+      "sha256": "516a4b353c09c78abd38892905375e108f272c5218ce97cce8df5064ece3e9bb"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/review/data-audit-initial.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/review/data-audit-initial.stdout.txt",
+      "bytes": 123,
+      "sha256": "27687243e8071c2c26462e08fc0b1a5e0ebadaabf61bd8379dd3017bab88e777"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/review/exact-freeze-audit.json",
+      "bytes": 3119,
+      "sha256": "20f834a8e00e70f7ebe5ca48c001d41b769393f51f085e7be9f49af965e55ed2"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/review/frozen-author.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/review/frozen-author.stdout.json",
+      "bytes": 7374,
+      "sha256": "80148ce3091645eea2ba795d901c1f22c896b5f2e2c581ec2313d96ee555196a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/review/frozen-criteria.json",
+      "bytes": 3977,
+      "sha256": "032108b2a94c6968c04529aac043659eab0d512746623cf14da3f7a5388b4825"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/review/frozen-independent-data.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/review/frozen-independent-data.stdout.json",
+      "bytes": 123,
+      "sha256": "cfa12c951b923e38e47768a955188bd69676d9a0cd6430bf9c8e8f15a1708156"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/review/frozen-independent-inert.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/review/frozen-independent-inert.stdout.json",
+      "bytes": 80,
+      "sha256": "a72a5d2bfccca93fd9c3bdc0e652d2acc6a3cd67ab9bbc6b2a151f492818d806"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/review/full-member-data-audit.json",
+      "bytes": 5716,
+      "sha256": "04c2e78d3d72884515459b9404d1f48da2731b88dbeacc8a7397615c1007ca85"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/review/inert-analysis-controls.py",
+      "bytes": 5194,
+      "sha256": "ce7024a129171f9977dcb6aa64bc7817567d49b31085f757cb474024de6444e3"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/review/inert-analysis-result.json",
+      "bytes": 1895,
+      "sha256": "7a0f850ab5d6d0017deeb4028ef956cece22e09346017576a1f7433a359ee1e8"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/review/initial-check-receipt.json",
+      "bytes": 293,
+      "sha256": "3c5719c8eda19d5971244fc12c7c36bfaecd3d6aeebb7fe361eaf10afb104894"
+    }
+  ],
+  "nativeExecution": false
+}

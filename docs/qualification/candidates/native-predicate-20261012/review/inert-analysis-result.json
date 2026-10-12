@@ -1,0 +1,81 @@
+{
+  "authorAnalysisSha256": "cb6f4ac269ba5446988a0c7133b685b54658d3c3aee4cf25041cb74d464ef569",
+  "scope": "Isolated public author JSON-analysis definitions only; no private-source execution",
+  "checks": [
+    {
+      "name": "exact-record-all-pairs-and-rejection",
+      "passed": true
+    },
+    {
+      "name": "observation-never-claims-helper-or-native-proof",
+      "passed": true
+    },
+    {
+      "name": "false-acceptance-term:0",
+      "passed": true
+    },
+    {
+      "name": "false-acceptance-term:1",
+      "passed": true
+    },
+    {
+      "name": "false-acceptance-term:2",
+      "passed": true
+    },
+    {
+      "name": "false-acceptance-term:3",
+      "passed": true
+    },
+    {
+      "name": "strict-boolean-term-not-truthy-integer",
+      "passed": true
+    },
+    {
+      "name": "forged-recorded-acceptance-disagrees",
+      "passed": true
+    },
+    {
+      "name": "missing-hash-retains-rejection-without-invented-pairs",
+      "passed": true
+    },
+    {
+      "name": "identity-change-not-hidden-by-reported-flag",
+      "passed": true
+    },
+    {
+      "name": "access-time-retained-separate-from-six-field-identity",
+      "passed": true
+    },
+    {
+      "name": "missing-field-visible",
+      "passed": true
+    },
+    {
+      "name": "added-field-visible",
+      "passed": true
+    },
+    {
+      "name": "boolean-integer-not-collapsed",
+      "passed": true
+    },
+    {
+      "name": "unequal-count-is-explicit-data-error",
+      "passed": true
+    },
+    {
+      "name": "dropping-all-fields-conjunct-detected",
+      "passed": true
+    }
+  ],
+  "passed": 16,
+  "failed": 0,
+  "negativeControl": {
+    "mutation": "Remove required all-fields term in isolated memory only",
+    "invalidResult": true,
+    "expectedRecordedRejection": false,
+    "detected": true
+  },
+  "privateSourceExecuted": false,
+  "nativeExecution": false,
+  "ownedJobsRemaining": 0
+}
