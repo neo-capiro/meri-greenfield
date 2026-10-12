@@ -1,0 +1,18 @@
+✔ browser API completion closes only explicitly owned resources once (3.907955ms)
+✔ already-aborted browser scope refuses before invoking an operation (0.75982ms)
+✔ parked browser operation is bounded and retains unresolved API cleanup (9.745007ms)
+✔ server acquisition completing after timeout is still owned and closed (9.074992ms)
+✔ one parked resource close cannot prevent other owned cleanup attempts (10.072112ms)
+✔ server close requires its callback rather than synchronous return (9.837386ms)
+✔ server close callback error retains cleanup uncertainty (0.35306ms)
+✔ stderr overflow rejects the active operation and never grows retained output beyond cap (0.897147ms)
+✔ closing a scope suppresses pending output and applies late-connect cleanup (0.735304ms)
+✔ absolute browser deadline elapsed between ports is retained before final success (20.00143ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 121.318841

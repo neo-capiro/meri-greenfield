@@ -1,0 +1,24 @@
+{
+  "state": "Unfrozen author draft",
+  "argv": [
+    "node",
+    "--test",
+    "/workspace/meri-sandbox-lifecycle-review-20261012/docs/qualification/candidates/sandbox-lifecycle-20261012/review/office-supervisor-independent.test.mjs",
+    "/workspace/meri-sandbox-lifecycle-review-20261012/docs/qualification/candidates/sandbox-lifecycle-20261012/review/supervisor-entry-independent.test.mjs",
+    "/workspace/meri-sandbox-lifecycle-review-20261012/docs/qualification/candidates/sandbox-lifecycle-20261012/review/runtime-entry-independent.test.mjs"
+  ],
+  "source_root": "/workspace/meri-sandbox-lifecycle-20261012",
+  "exit_code": 0,
+  "reaped": true,
+  "source_sha256": {
+    "office-export.mjs": "6189606caab89bc5be25dd3d84164365de011ea1e1b8d34a195648e5e5cd9522",
+    "runtime.mjs": "aba60f89bb7461e50dc1f0fc4eb45b41508d8a5aefa3377eada762642cd231a1",
+    "owned-probe-child.mjs": "bb67590df3bc65fb7d32dc045562a723f442a1d7c8e1661c737535cd91e65c56"
+  },
+  "test_sha256": {
+    "office-supervisor-independent.test.mjs": "aee2c998513c676b78cd43fad65579b0e557286adc27f33f9c3f6c554c5d7ade",
+    "supervisor-entry-independent.test.mjs": "a35cdb2818e7ff6e7f0936e940d4135e0082030c44df23de14d11df34db18c70",
+    "runtime-entry-independent.test.mjs": "3476b5cb5579dbf59c49e59a6951ce80089fd0a0d9b3a076f8187ffeac6300d6"
+  },
+  "native_process_or_OS_kill": false
+}
