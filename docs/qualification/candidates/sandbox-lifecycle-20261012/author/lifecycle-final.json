@@ -1,0 +1,37 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/worker/qualification/probes/owned-probe-child.test.mjs",
+    "apps/worker/qualification/probes/browser-lifetime.test.mjs",
+    "apps/worker/qualification/probes/office-export.test.mjs",
+    "apps/worker/qualification/probes/static.test.mjs"
+  ],
+  "cwd": "/workspace/meri-sandbox-lifecycle-20261012",
+  "sourceHead": "41ded012694bbe0d90e18506ae57c50168f1a3fc",
+  "sourceDiffSha256": "cfa7a1685eb2b259ac0a95557de1a1e3b41bd479b961bffe68099f49948b57d0",
+  "sourceDiffBytes": 56299,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T05:11:40.460534+00:00",
+  "durationSeconds": 0.831,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 63463,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/author/lifecycle-final.stdout.bin",
+      "bytes": 16104,
+      "sha256": "be228e3acd9d80ac413928b261ef87bcf24181ca12e6709261e041cfc0b9f0fb"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/author/lifecycle-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Enforce absolute cleanup grace even when synchronous close delays timer execution",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

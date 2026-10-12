@@ -1,0 +1,7 @@
+{
+  "sourceCommit": "2f182431a78f4ccb200a5e4adfd62b0ad3afa508",
+  "sourceSha256": "b77481f4d4a23938df6cf9b8740cd840de496b83da1a6790d6a8ff4ec1b744fe",
+  "finding": "CLI installed SIGINT/SIGTERM bridge before main entered pre-existing unbounded checkNetworkDenial DNS await. Cancellation could therefore swallow default OS termination before any owned child existed.",
+  "evidenceClass": "static actual callpath diagnosis; no native signal/DNS execution",
+  "repair": "install bridge only immediately around owned-child phase after prechecks; keep earlier default OS termination behavior"
+}

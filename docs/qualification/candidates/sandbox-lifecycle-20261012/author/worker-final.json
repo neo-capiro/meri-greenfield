@@ -1,0 +1,35 @@
+{
+  "command": [
+    "npm",
+    "test",
+    "--prefix",
+    "apps/worker/qualification"
+  ],
+  "cwd": "/workspace/meri-sandbox-lifecycle-20261012",
+  "sourceHead": "87144573d12ea72e9d88e5d6f531f96623d8f045",
+  "sourceDiffSha256": "1b94f28b29af840ef717339ff8835580478da4472df68c98bb90aa315ea2b48c",
+  "sourceDiffBytes": 2133,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T05:15:21.116648+00:00",
+  "durationSeconds": 1.927,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 64160,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/author/worker-final.stdout.bin",
+      "bytes": 26901,
+      "sha256": "b4b8ec492d317d1ff9d9d6a50e85f4728323f97cc165b404df109b36b1744156"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/author/worker-final.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    }
+  ],
+  "rerunReason": "New CLI phase control exposed cancelled-but-clean sequencing gap; suppress later probe on cancellation; root adds all supervisor suites to npm test",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

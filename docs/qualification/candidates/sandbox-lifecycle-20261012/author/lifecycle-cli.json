@@ -1,0 +1,37 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/worker/qualification/probes/owned-probe-child.test.mjs",
+    "apps/worker/qualification/probes/browser-lifetime.test.mjs",
+    "apps/worker/qualification/probes/office-export.test.mjs",
+    "apps/worker/qualification/probes/static.test.mjs"
+  ],
+  "cwd": "/workspace/meri-sandbox-lifecycle-20261012",
+  "sourceHead": "41ded012694bbe0d90e18506ae57c50168f1a3fc",
+  "sourceDiffSha256": "1060f23f327bf131dc7d86781a6262554fc1eab1b22e88091c82b2364f3af58f",
+  "sourceDiffBytes": 55641,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T05:10:41.439806+00:00",
+  "durationSeconds": 0.62,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 62901,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/author/lifecycle-cli.stdout.bin",
+      "bytes": 16011,
+      "sha256": "497603cd6571f3222ac4615db235de5e9fb31855ba62ec979aee285f63353e9f"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/author/lifecycle-cli.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Root-approved actual CLI cancellation wiring and exact53-to57 packaging expectations",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

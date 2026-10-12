@@ -1,0 +1,35 @@
+{
+  "sourceBase": "14be9fc614568a74133b89f2b229e50c9b030322",
+  "copies": [
+    {
+      "reviewerPath": "/workspace/meri-sandbox-lifecycle-review-20261012/docs/qualification/candidates/sandbox-lifecycle-20261012/review/baseline-offline-command.json",
+      "retained": "reviewer-baseline-offline-command.json",
+      "sha256": "0b2f6fec4788267903ec2e1fdd1878d0967e7be86da3c54c7f7f80ba968e98c6"
+    },
+    {
+      "reviewerPath": "/workspace/meri-sandbox-lifecycle-review-20261012/docs/qualification/candidates/sandbox-lifecycle-20261012/review/baseline-offline.stdout.txt",
+      "retained": "reviewer-baseline-offline.stdout.txt",
+      "sha256": "b1c36d5e4ec983679ae74c89346123681f030bcbc33f8c9d730916498dd538b4"
+    },
+    {
+      "reviewerPath": "/workspace/meri-sandbox-lifecycle-review-20261012/docs/qualification/candidates/sandbox-lifecycle-20261012/review/baseline-offline.stderr.txt",
+      "retained": "reviewer-baseline-offline.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "reviewerPath": "/workspace/meri-sandbox-lifecycle-review-20261012/docs/qualification/candidates/sandbox-lifecycle-20261012/review/supervisor-before-command.json",
+      "retained": "reviewer-supervisor-before-command.json",
+      "sha256": "32fdb98d65c9d0c9c2f20158f98d5d0717c7ade23fd9834dc4e90d3cbcf26602"
+    },
+    {
+      "reviewerPath": "/workspace/meri-sandbox-lifecycle-review-20261012/docs/qualification/candidates/sandbox-lifecycle-20261012/review/supervisor-before.stdout.txt",
+      "retained": "reviewer-supervisor-before.stdout.txt",
+      "sha256": "4e237c08f0ee49832308b3fe9b4a0f83b87922cf0d98b1bd7d4db2309904407d"
+    },
+    {
+      "reviewerPath": "/workspace/meri-sandbox-lifecycle-review-20261012/docs/qualification/candidates/sandbox-lifecycle-20261012/review/supervisor-before.stderr.txt",
+      "retained": "reviewer-supervisor-before.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+{
+  "error": "AssertionError",
+  "cause": "Initial inverse-checker globally removed child.pid = 424242 from pre-existing separate fixtures; corrected inverse restricts removal to newly edited generatingSpawn helper only. No production or test source changed for this checker correction.",
+  "resolution": "fixture-preservation.json exact full-byte equality passes"
+}

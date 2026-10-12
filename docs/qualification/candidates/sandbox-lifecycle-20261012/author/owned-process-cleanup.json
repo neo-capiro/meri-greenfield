@@ -1,0 +1,144 @@
+{
+  "sourceOnly": true,
+  "allOwnedCapturedGroupsAbsent": true,
+  "captureCount": 18,
+  "receipts": [
+    {
+      "path": "context-before-count.json",
+      "exitCode": 1,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": []
+    },
+    {
+      "path": "context-final.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": []
+    },
+    {
+      "path": "context-freeze.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": []
+    },
+    {
+      "path": "fixture-repair.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": []
+    },
+    {
+      "path": "lifecycle-cli.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": []
+    },
+    {
+      "path": "lifecycle-export-cancel.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": []
+    },
+    {
+      "path": "lifecycle-final.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": []
+    },
+    {
+      "path": "lifecycle-focused-repaired.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": []
+    },
+    {
+      "path": "lifecycle-focused.json",
+      "exitCode": 1,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": []
+    },
+    {
+      "path": "lifecycle-preabort-repair.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": []
+    },
+    {
+      "path": "lifecycle-source-audit.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": []
+    },
+    {
+      "path": "public-distribution.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": [
+        {
+          "pid": 63115,
+          "status": 0
+        },
+        {
+          "pid": 63241,
+          "status": 0
+        },
+        {
+          "pid": 63260,
+          "status": 0
+        }
+      ]
+    },
+    {
+      "path": "root-check-physical.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": [
+        {
+          "pid": 62504,
+          "status": 0
+        },
+        {
+          "pid": 62529,
+          "status": 0
+        }
+      ]
+    },
+    {
+      "path": "root-check.json",
+      "exitCode": 1,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": [
+        {
+          "pid": 62139,
+          "status": 0
+        }
+      ]
+    },
+    {
+      "path": "runtime-cli-placement.json",
+      "exitCode": 1,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": []
+    },
+    {
+      "path": "supervisor-original.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": []
+    },
+    {
+      "path": "worker-final.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": []
+    },
+    {
+      "path": "worker-offline.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": []
+    }
+  ],
+  "noNativeSDKBrowserRendererCloudOrProviderProcessLaunched": true,
+  "borrowedDependencyTreesMutated": false
+}

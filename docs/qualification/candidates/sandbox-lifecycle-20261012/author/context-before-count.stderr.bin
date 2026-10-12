@@ -1,0 +1,30 @@
+.F.F.......F.....
+======================================================================
+FAIL: test_context_extra_missing_and_drift_each_refused (scripts.qualification.worker_context_test.WorkerContextTests.test_context_extra_missing_and_drift_each_refused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/meri-sandbox-lifecycle-20261012/scripts/qualification/worker_context_test.py", line 162, in test_context_extra_missing_and_drift_each_refused
+    self.assertEqual(len(m.verify_context(self.out)["members"]), 53)
+AssertionError: 57 != 53
+
+======================================================================
+FAIL: test_exact_raw_copy_excludes_private_and_unselected_files (scripts.qualification.worker_context_test.WorkerContextTests.test_exact_raw_copy_excludes_private_and_unselected_files)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/meri-sandbox-lifecycle-20261012/scripts/qualification/worker_context_test.py", line 42, in test_exact_raw_copy_excludes_private_and_unselected_files
+    self.assertEqual(len(result["members"]), 53)
+AssertionError: 57 != 53
+
+======================================================================
+FAIL: test_real_native_observation_import_closure_is_in_fixed_context (scripts.qualification.worker_context_test.WorkerContextTests.test_real_native_observation_import_closure_is_in_fixed_context)
+Check image relocation, not just a synthetic copy of member rows.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/meri-sandbox-lifecycle-20261012/scripts/qualification/worker_context_test.py", line 240, in test_real_native_observation_import_closure_is_in_fixed_context
+    self.assertEqual(len(actual["members"]), 53)
+AssertionError: 57 != 53
+
+----------------------------------------------------------------------
+Ran 17 tests in 0.366s
+
+FAILED (failures=3)
