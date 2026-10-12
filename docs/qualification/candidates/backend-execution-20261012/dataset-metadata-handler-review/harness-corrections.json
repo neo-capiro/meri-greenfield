@@ -1,0 +1,6 @@
+{
+  "importCorrection": {
+    "beforeSha256": "9ef5cc868309a30c4ffff4397b065246f67b09a4928614ceccdd0529f8b6c369",
+    "reason": "Family validator is internal in canonical loader, not a named export. Registry uses actual exported validateShape; canonical resolver still owns deep output validation. No production or assertion change."
+  }
+}

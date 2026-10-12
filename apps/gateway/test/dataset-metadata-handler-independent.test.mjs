@@ -2,13 +2,13 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import catalog from '../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
-import {resolveOperationContract,validateDatasetMetadataShape} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {resolveOperationContract,validateShape} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {createPublicDomainDatasetRegistry} from '../../../packages/contracts/retrieval-0.2/public-domain-registry.mjs';
 import {createDatasetMetadataHandler} from '../sources/dataset-metadata/handler.mjs';
 import {createSourceDisabledGateway} from '../index.mjs';
 import {fixture,NOW,uuid,limits} from './fixtures.mjs';
 const op={id:'list_global_datasets',version:'0.2.0'},request=JSON.stringify({operation:op,arguments:{}});
-const registry=createPublicDomainDatasetRegistry({canonicalSha256,validateMetadata:validateDatasetMetadataShape});
+const registry=createPublicDomainDatasetRegistry({canonicalSha256,validateMetadata:validateShape});
 const tick=()=>new Promise(resolve=>setImmediate(resolve));
 function connected(){
  const f=fixture(),contract=resolveOperationContract(op),descriptor=contract.descriptor;
