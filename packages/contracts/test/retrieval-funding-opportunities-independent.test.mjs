@@ -309,3 +309,11 @@ test('requirements short page cannot invent an extra-row continuation without a 
   const plausible = requirements([requirement()], { pagination: { offset: 0, limit: 10, total: 2, hasMore: true, nextOffset: 1 } });
   assert.doesNotThrow(() => requirementsOutput(plausible));
 });
+
+test('landscape SAM UUID admission cannot become available after the actual producer would refuse it', () => {
+  const value = envelope(OPS[4], 'available', landscape());
+  const bad = { ...input(OPS[4]), sourceRecordId: 'not-a-sam-uuid' };
+  assert.doesNotThrow(() => normalize(OPS[4], bad));
+  assert.doesNotThrow(() => output(OPS[4], envelope(OPS[4], 'invalid_request'), bad));
+  assert.throws(() => output(OPS[4], value, bad));
+});
