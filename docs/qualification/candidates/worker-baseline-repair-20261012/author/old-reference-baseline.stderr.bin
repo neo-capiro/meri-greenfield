@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/workspace/meri-g1-executable-source-20261012/docs/qualification/candidates/worker-baseline-repair-20261012/author/probe-baseline.py", line 23, in <module>
+    source = build.baseline(sys.argv[1])
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/meri-g1-executable-source-20261012/scripts/qualification/worker_image_build.py", line 103, in baseline
+    old = git_files(REFERENCE, stable, capture, 'reference')
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/meri-g1-executable-source-20261012/scripts/qualification/worker_image_build.py", line 89, in git_files
+    need(set(entries) == set(names), 'exact Git membership')
+  File "/workspace/meri-g1-executable-source-20261012/scripts/qualification/worker_image_collect.py", line 53, in need
+    raise ValueError(message)
+ValueError: exact Git membership
