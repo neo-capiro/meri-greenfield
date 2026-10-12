@@ -95,5 +95,6 @@ except Exception as error:
 for label in ('close-error','late-close','boolean-exit'):
  r,_,_,_=run(label,child_mode=label);check(label+'-no-success',not r['observationEligible'])
 r,_,_,_=run('late-read-observation',stderr=((16,b'abc'),b''));check('late-read-counted-without-success',not r['observationEligible'] and r['streams'] is not None and r['streams']['stderr']['observedBytes']==3,{'streams':None if r['streams'] is None else {name:{key:value for key,value in row.items() if key!='data'} for name,row in r['streams'].items()}})
+r,c,_,_=run('late-overflow-observation',stderr=((16,b'x'*65537),b''));check('late-overflow-count-retention-eof-and-no-more-read',not r['observationEligible'] and r['streams'] is not None and r['streams']['stderr']['observedBytes']==65537 and r['streams']['stderr']['overflow'] and len(r['streams']['stderr']['data'])==65536 and not r['streams']['stderr']['eof'] and r['streams']['stderr']['error']=='Refusal' and c.stderr.values==[b''])
 result={'sourceSha256':hashlib.sha256(source).hexdigest(),'isolatedDefinitions':['Refusal','Budget','capture'],'candidateEntryImported':False,'nativePortsExecuted':False,'facts':facts,'passed':sum(x['passed'] for x in facts),'failed':sum(not x['passed'] for x in facts)}
 output.write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result));raise SystemExit(0 if result['failed']==0 else 1)

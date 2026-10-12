@@ -1,0 +1,6 @@
+{
+  "expectedSourceFreeze": "a9d5d849fe3065ee1aec2b17806e6b6219a511c7",
+  "observedNextCleanHead": "724850cb6cc84c8381fb52aec23b582e0e3b5872",
+  "failure": "exact candidate HEAD moved while complete manifest was being committed",
+  "disposition": "retained raw67PASS/1FAIL; final packet is separately rechecked, never relabel this receipt"
+}
