@@ -1,0 +1,17 @@
+{
+  "base": "690bac4cd44112b161d8e02818aeae7639ce237a",
+  "methods": [
+    "constructor",
+    "resolveCertificate",
+    "admitRun",
+    "replaceRun",
+    "authorize",
+    "publishCommit",
+    "readPublication",
+    "loadCheckpoint",
+    "verifyCheckpoint"
+  ],
+  "standaloneRevocation": "undefined",
+  "sourceOnly": true,
+  "databaseAccess": false
+}

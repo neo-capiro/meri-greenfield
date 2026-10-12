@@ -37,3 +37,30 @@ the authority for current grant, fence, expiry and publication. An issuer must
 still create unique short-lived certificates, bind their fingerprint to an
 observed ECS task ARN during trusted admission, and deliver them safely; this
 read-only resolver does not issue credentials or attest ECS possession.
+
+## Trusted owner cancellation
+
+`revokeRun({context, peer})` is an internal control-owner method, with no worker
+HTTP route. The owner supplies the previously admitted canonical context and
+resolved peer. Both are detached and frozen before the transaction. Historical
+context validation at `admittedAtMs` checks integrity only; exact current expired
+authority can be revoked, but the method never authorizes its use. Future
+admission relative to database time refuses. Under run then current-grant locks,
+every stored binding, pin, original clock, admission/expiry and peer must match.
+A stale A input cannot revoke B. No committed checkpoint is required.
+
+The existing one-way grant transition records PostgreSQL `clock_timestamp()`;
+`REVOKED` changes no run, expiry, checkpoint or budget. An exact repeat reads
+`ALREADY_REVOKED` without another UPDATE, preserving its original timestamp.
+Ambiguous COMMIT propagates `CommitUncertain`: no automatic retry, refund or
+success is inferred. A later explicit owner call with the same exact binding
+can observe `ALREADY_REVOKED`; if the binding has advanced it refuses. Workers
+remain subject to the existing current-grant resolver and authorization checks.
+Live owner cancellation wiring and physical credential revocation are unimplemented.
+
+Local source controls: `node --test apps/control/qualification-sdk-fixture/state/test/revocation.test.mjs`.
+New real-engine controls additionally require explicit
+`MERI_FIXTURE_REVOCATION_TEST_RUN=yes` and the existing isolated database settings;
+run `node --test apps/control/qualification-sdk-fixture/state/test/revocation-postgres.test.mjs`.
+They do not provision, migrate, reset or delete state. Their presence is not
+proof of PostgreSQL concurrency, durability or native runtime qualification.

@@ -1,0 +1,48 @@
+✔ fixed handlers correlate committed A receipt and loaded/verified B bytes (24.849243ms)
+✔ a lost publication acknowledgement is reconciled to the exact receipt once (2.817024ms)
+✔ substituted stored publication bytes and uncertain foreign receipts refuse (4.176567ms)
+✔ a stale A commit is refused before object preparation (0.846562ms)
+✔ a disconnected commit leaves prepared objects uncommitted (0.808104ms)
+✔ a B grant revoked during object read refuses before returning loaded bytes (1.999315ms)
+✔ pre-checkpoint revocation locks run then grant, records once, and denies future authorization (6.831867ms)
+✔ every stored run and grant field must match before mutation (18.007081ms)
+✔ expired exact context can revoke; future admission, invalid DB clock and missing rows cannot (1.857171ms)
+✔ stale A cannot revoke current B and wrong peer cannot revoke current A (0.995636ms)
+✔ detached input survives caller mutation during lock wait; accessors fail before transaction (1.216878ms)
+✔ unknown commit acknowledgement propagates without retry or inferred success (0.606031ms)
+✔ four fixed operations round-trip while retaining original producer and partial flags (23.52998ms)
+✔ fixture receipt is rejected by product Checkpoint and absent from public package exports (3.075612ms)
+✔ partial flags, closed profile and object-storage URLs cannot be upgraded or supplied (2.953248ms)
+✔ reference binds every receipt field; rehashed foreign producer still refuses (3.707712ms)
+✔ original D720/C900 and current grant lifetime are exact and never reset (0.642385ms)
+✔ replacement must be fresh, different and fully mapped with higher fence (22.947355ms)
+✔ expired producer grant can remain provenance; replacement current grant cannot expire (1.72359ms)
+✔ missing/foreign/duplicate native members and file-parent ambiguities refuse (5.294877ms)
+✔ opaque bytes survive; changed bytes, hash, size and noncanonical base64 refuse (4.210367ms)
+✔ private sentinel validation retains fixed path, 64KiB bound and canonical byte integrity (1.302638ms)
+✔ stored object version/hash/readback/inventory substitution refuses after transfer (8.97038ms)
+✔ workspace is exactly one safe synthetic nonexecutable sentinel with producer binding (7.810458ms)
+✔ evidence and storage scopes require exact original tenant/policy and positive bounded bytes (7.3396ms)
+✔ only explicit validated stale denial is a denial witness; unknown/errors never return false (4.063527ms)
+✔ authorization decisions are correlated, time bounded and not accepted for another producer (3.390305ms)
+✔ stale denial cannot predate its named replacement admission (1.705363ms)
+✔ unknown operations, phase confusion and missing product-incomplete flags refuse (2.290843ms)
+✔ nonfinite numbers, cycles, accessors and sparse arrays refuse without reading getters (0.775185ms)
+✔ canonical fixture wire encodes and decodes all four fixed operations without mutation (24.001238ms)
+✔ trusted-service request decoder round-trips all four canonical worker operations as DATA (2.877494ms)
+✔ request decoder refuses invalid buffers, encoding, structure and expired context (17.201049ms)
+✔ request decoder refuses noncanonical duplicate, whitespace, number and escape forms (1.908157ms)
+✔ wire refuses invalid UTF8 BOM truncation and non-object responses (1.322037ms)
+✔ wire canonical equality rejects duplicates whitespace escapes and alternate numeric forms (2.695251ms)
+✔ wire schema correlation future decision and error replies never become stale false (2.118593ms)
+✔ wire raw cap precedes parse and nested/nonfinite parsed data refuses (19.799945ms)
+✔ wire request validation rejects hidden/accessor/unknown operations before serialization (0.938551ms)
+✔ wire accepts only exact validated stale denial and keeps original producer binding (2.505585ms)
+ℹ tests 40
+ℹ suites 0
+ℹ pass 40
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1000.587813

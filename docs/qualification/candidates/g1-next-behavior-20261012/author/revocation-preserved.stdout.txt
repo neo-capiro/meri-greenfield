@@ -1,0 +1,14 @@
+✔ fixed handlers correlate committed A receipt and loaded/verified B bytes (23.611802ms)
+✔ a lost publication acknowledgement is reconciled to the exact receipt once (2.918305ms)
+✔ substituted stored publication bytes and uncertain foreign receipts refuse (4.517779ms)
+✔ a stale A commit is refused before object preparation (0.616977ms)
+✔ a disconnected commit leaves prepared objects uncommitted (0.866352ms)
+✔ a B grant revoked during object read refuses before returning loaded bytes (2.132044ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 456.758526

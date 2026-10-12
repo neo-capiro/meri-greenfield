@@ -21,6 +21,7 @@ import {
 import { fail } from './errors.mjs';
 import { publicationRow, sameIdentity } from './receipt.mjs';
 import { resolveCredentialRows } from './credential-resolution.mjs';
+import { revocationBinding, assertCurrentRevocation } from './revocation.mjs';
 
 const RUN_COLUMNS = ['run_uuid', 'session_id', 't0_ms', 'deadline_ms', 'cleanup_deadline_ms',
   'canonical_tenant_id', 'canonical_actor_id', 'canonical_conversation_id', 'canonical_run_id',
@@ -57,7 +58,8 @@ async function lockRun(client, runUuid) {
 async function lockGrant(client, grantId) {
   const result = await client.query(
     'SELECT grant_id, run_uuid, session_id, attempt, fence, phase, mapping_id, task_arn, ' +
-    'attempt_id, worker_id, peer_id, credential_id, policy_revision, state, expires_at_ms ' +
+    'attempt_id, worker_id, peer_id, credential_id, policy_revision, state, admitted_at_ms, ' +
+    'expires_at_ms, revoked_at ' +
     'FROM meri_qualification_sdk_fixture.grants ' +
     'WHERE grant_id = $1 FOR UPDATE', [grantId]);
   return result.rows[0] ?? null;
@@ -168,6 +170,29 @@ export class FixtureRegistry {
           next.attemptId, next.workerId, next.peerId, next.credentialId, next.admittedAtMs,
           next.expiresAtMs]);
       return Object.freeze({ outcome: 'REPLACED', binding: next });
+    });
+  }
+
+  /**
+   * Trusted control-owner cancellation, never a worker HTTP operation. Requires
+   * the exact current binding even when expired; grants no operation authority.
+   * A lost COMMIT acknowledgement propagates without retry or release.
+   */
+  async revokeRun({ context, peer }) {
+    const expected = revocationBinding(context, peer);
+    return this.#store.transact(async client => {
+      const row = await lockRun(client, expected.runUuid);
+      if (row === null) fail('FIXTURE_REVOCATION_UNKNOWN_RUN');
+      const current = trustedBindingFromRow(row);
+      const grant = await lockGrant(client, current.grantId);
+      const state = assertCurrentRevocation({ expected, current, grant,
+        nowMs: await databaseNow(client) });
+      if (state === 'REVOKED') return Object.freeze({ outcome: 'ALREADY_REVOKED', binding: expected });
+      const revoked = await client.query(
+        "UPDATE meri_qualification_sdk_fixture.grants SET state = 'REVOKED', revoked_at = " +
+        "clock_timestamp() WHERE grant_id = $1 AND state = 'ACTIVE'", [current.grantId]);
+      if (revoked.rowCount !== 1) fail('FIXTURE_REVOCATION_GRANT');
+      return Object.freeze({ outcome: 'REVOKED', binding: expected });
     });
   }
 
