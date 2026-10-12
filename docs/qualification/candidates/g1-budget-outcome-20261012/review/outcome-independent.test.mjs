@@ -52,7 +52,8 @@ test('parallel observations do not alter or settle liability',async()=>{
   assert.deepEqual(h.state(),before);assert.equal(mutations(h).length,writes);
 });
 test('all canonical descriptor execute paths remain unavailable before further transaction/authority work',async()=>{
-  const h=await initialized();const n=h.commands.length;await assert.rejects(h.gateway().execute(requestJson,h.credential,h.json()),/UNAVAILABLE/);
+  const h=await initialized();const n=h.commands.length;assert.equal(h.operations.length,14);
+  for(const entry of h.operations)await assert.rejects(h.gateway().execute(JSON.stringify({operation:entry.operation,arguments:{}}),h.credential,h.json()),/UNAVAILABLE/);
   assert.equal(h.commands.length,n);assert.deepEqual(h.f.calls,[]);assert.equal(h.gateway().sourceEnabled,false);
 });
 for(const state of ['ABSENT','UNKNOWN'])test(`${state} requires retained allocation and original grant binding`,async()=>{

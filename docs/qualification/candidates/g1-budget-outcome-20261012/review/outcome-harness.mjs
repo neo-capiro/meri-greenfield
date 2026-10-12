@@ -49,12 +49,12 @@ export function harness() {
       if(sql.startsWith('SELECT * FROM meri_qualification.tool_run_allocations'))return rows(local.allocation?[local.allocation]:[]);
       if(sql.startsWith('SELECT * FROM meri_qualification.tool_grant_bindings'))return rows(local.grantBinding?[local.grantBinding]:[]);
       if(sql.startsWith('SELECT * FROM meri_qualification.tool_reservations'))return rows(local.reservations.has(p[0])?[local.reservations.get(p[0])]:[]);
-      if(sql.startsWith('INSERT INTO meri_qualification.tool_run_allocations')){local.allocation={run_id:p[0],allocation_sha256:p[1],allocation:p[2],max_tool_calls:String(p[3]),max_cost_micro_usd:String(p[4]),started_at:new Date(clock)};return rows([]);}
-      if(sql.startsWith('INSERT INTO meri_qualification.tool_grant_bindings')){local.grantBinding={grant_id:p[0],run_id:p[1],facts:p[2]};return rows([]);}
+      if(sql.startsWith('INSERT INTO meri_qualification.tool_run_allocations')){local.allocation={run_id:p[0],allocation_sha256:p[1],allocation:structuredClone(p[2]),max_tool_calls:String(p[3]),max_cost_micro_usd:String(p[4]),started_at:new Date(clock)};return rows([]);}
+      if(sql.startsWith('INSERT INTO meri_qualification.tool_grant_bindings')){local.grantBinding={grant_id:p[0],run_id:p[1],facts:structuredClone(p[2])};return rows([]);}
       if(sql.startsWith('SELECT 1 FROM meri_qualification.budget_liabilities'))return rows([...local.reservations.values()].filter(r=>r.grant_id===p[0]&&r.state==='UNKNOWN').map(()=>({one:1})));
       if(sql.includes(' AS run_total')){const rs=[...local.reservations.values()];return rows([{held:String(rs.filter(r=>r.state==='UNKNOWN').reduce((a,r)=>a+BigInt(r.hold_micro_usd),0n)),run_total:String(rs.filter(r=>r.run_id===p[0]).reduce((a,r)=>a+BigInt(r.state==='UNKNOWN'?r.hold_micro_usd:r.charged_micro_usd),0n))}]);}
       if(sql.startsWith('SELECT count(*) AS calls'))return rows([{calls:String([...local.reservations.values()].filter(r=>r.run_id===p[0]).length)}]);
-      if(sql.startsWith('INSERT INTO meri_qualification.tool_reservations')){local.reservations.set(p[0],{invocation_id:p[0],reservation_id:p[1],grant_id:p[2],run_id:p[3],facts:p[4],operation:p[5],arguments_sha256:p[6],hold_micro_usd:String(p[7]),max_output_bytes:String(p[8]),state:'UNKNOWN',charged_micro_usd:null,output_bytes:null,created_at:new Date(clock),settled_at:null});return rows([]);}
+      if(sql.startsWith('INSERT INTO meri_qualification.tool_reservations')){local.reservations.set(p[0],{invocation_id:p[0],reservation_id:p[1],grant_id:p[2],run_id:p[3],facts:structuredClone(p[4]),operation:structuredClone(p[5]),arguments_sha256:p[6],hold_micro_usd:String(p[7]),max_output_bytes:String(p[8]),state:'UNKNOWN',charged_micro_usd:null,output_bytes:null,created_at:new Date(clock),settled_at:null});return rows([]);}
       if(sql.startsWith('UPDATE meri_qualification.budget SET consumed_micro_usd')){local.budget.consumed_micro_usd=String(BigInt(local.budget.consumed_micro_usd)+BigInt(p[0]));return rows([]);}
       if(sql.startsWith('UPDATE meri_qualification.tool_reservations SET')){const row=local.reservations.get(p[0]);Object.assign(row,{state:'SETTLED',charged_micro_usd:row.hold_micro_usd,output_bytes:String(p[1]),settled_at:new Date(clock)});return rows([]);}
       throw Error(`UNSUPPORTED_SCRIPTED_QUERY:${sql}`);
@@ -65,7 +65,7 @@ export function harness() {
   const gateway=()=>createDurableSourceDisabledGateway({pool,allocationJson:JSON.stringify(allocation),authorityPorts:f.ports,limits,now:()=>NOW,newId:()=>uuid('7')});
   const reserve=()=>owner().forInvocation(json()).reserve({reservationId:uuid('7'),binding:f.binding,operation,argumentsSha256:expected.argumentsSha256,budgets:f.claims.budgets,claims:f.claims,deadlineMs:NOW+5000});
   const settle=()=>owner().forInvocation(json()).settle({reservationId:uuid('7'),outcome:'completed',outputBytes:7});
-  return {f,invocation,allocation,expected,pool,owner,gateway,reserve,settle,commands,releases,credential,json,
+  return {f,invocation,allocation,expected,pool,owner,gateway,reserve,settle,commands,releases,credential,json,operations:catalog.operations,
     state:()=>state,row:()=>state.reservations.get(invocation.invocationId),setClock:value=>{clock=value;},loseCommit:()=>{lose=true;},
     failAt:pattern=>{failQuery=pattern;},bind:()=>owner().bindTrustedGrant(json()),
     read:()=>gateway().readInvocationOutcome(json(),JSON.stringify(expected)),

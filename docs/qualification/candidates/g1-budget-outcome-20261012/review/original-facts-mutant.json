@@ -1,0 +1,32 @@
+{
+  "command": [
+    "env",
+    "MERI_REVIEW_SOURCE_ROOT=/workspace/meri-budget-outcome-20261012",
+    "node",
+    "--import",
+    "./docs/qualification/candidates/g1-budget-outcome-20261012/review/remove-original-facts-mutant.mjs",
+    "--test",
+    "--test-name-pattern=reservation duplicate identities and full original facts",
+    "docs/qualification/candidates/g1-budget-outcome-20261012/review/outcome-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-budget-outcome-review-20261012",
+  "startUnixSeconds": 1791786677.0113661,
+  "elapsedSeconds": 1.722259759902954,
+  "exitCode": 1,
+  "ownedPidAndGroup": 93018,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "reapedDescendants": [],
+  "streams": {
+    "stdout": {
+      "path": "original-facts-mutant.stdout.txt",
+      "bytes": 983,
+      "sha256": "df635250c9b32baa34ad97baae9dbce0e56441b79344d744d2ed989d8e432b51"
+    },
+    "stderr": {
+      "path": "original-facts-mutant.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

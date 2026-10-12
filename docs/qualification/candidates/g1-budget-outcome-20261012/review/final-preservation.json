@@ -1,0 +1,31 @@
+{
+  "command": [
+    "python3",
+    "-I",
+    "-B",
+    "-S",
+    "docs/qualification/candidates/g1-budget-outcome-20261012/review/verify-source.py",
+    "/workspace/meri-budget-outcome-20261012",
+    "028b1134e373734caea036ee5c38d35b20428d8b"
+  ],
+  "cwd": "/workspace/meri-budget-outcome-review-20261012",
+  "startUnixSeconds": 1791786676.9918196,
+  "elapsedSeconds": 0.11753177642822266,
+  "exitCode": 0,
+  "ownedPidAndGroup": 93006,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "reapedDescendants": [],
+  "streams": {
+    "stdout": {
+      "path": "final-preservation.stdout.txt",
+      "bytes": 1318,
+      "sha256": "8fe513041bff094bf4d1de15725e3f6605a9a622491b05e33a3f35de1de191f9"
+    },
+    "stderr": {
+      "path": "final-preservation.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}
