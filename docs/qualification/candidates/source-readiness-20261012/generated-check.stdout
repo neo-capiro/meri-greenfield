@@ -1,0 +1,1 @@
+{"status": "PASS_CHECK", "products": ["capability-accounting.json", "image-findings.json", "packet.json", "source-manifest.json"], "summary": {"original": 139, "selected": 96, "deferred": 43, "boundUnavailable": 13, "selectedUnmapped": 83, "enabled": 0, "originalSkillsPending": 14}, "sourceFiles": 78, "runtimeAdmission": false}

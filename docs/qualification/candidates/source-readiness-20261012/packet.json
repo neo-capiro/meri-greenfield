@@ -1,0 +1,435 @@
+{
+  "schema": "meri-source-readiness-packet/1",
+  "status": "NOT_EXECUTABLE",
+  "asOf": "2026-10-12",
+  "authorReview": "PENDING_INDEPENDENT_PARENT_REVIEW",
+  "refs": {
+    "accepted": {
+      "commit": "5ee46446b5f60034916f00b2a665b3e2bef9cf60",
+      "tree": "985e0fdafe23d68b6f2e81a092cf098d8ede3182",
+      "observation": "LOCAL_IMMUTABLE_GIT_OBJECT; remote not refreshed by this author"
+    },
+    "preservation": {
+      "commit": "c57b7d26df7de2acbd8c7d8edc7098f7d495053a",
+      "tree": "66135fa4cc69de9fbae12d77b4cc3bc24305a074",
+      "observation": "LOCAL_IMMUTABLE_GIT_OBJECT; remote not refreshed by this author"
+    },
+    "shipper": {
+      "commit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+      "tree": "3995f79cfdbdb42f91b41987e5940db1699d9b33",
+      "observation": "LOCAL_IMMUTABLE_GIT_OBJECT; remote not refreshed by this author"
+    },
+    "main": {
+      "commit": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc",
+      "tree": "f1133b2190cf67acd782c00debfa82501fa71c43",
+      "observation": "LOCAL_IMMUTABLE_GIT_OBJECT; remote not refreshed by this author"
+    }
+  },
+  "gates": {
+    "G0": "ACCEPTED_HISTORICAL",
+    "G1": "OPEN",
+    "G2": "UNENTERED",
+    "G3": "UNENTERED",
+    "G4": "UNENTERED",
+    "G5": "UNENTERED",
+    "G6": "UNENTERED",
+    "G7": "UNENTERED"
+  },
+  "capabilitySummary": {
+    "original": 139,
+    "selected": 96,
+    "deferred": 43,
+    "boundUnavailable": 13,
+    "selectedUnmapped": 83,
+    "enabled": 0,
+    "originalSkillsPending": 14
+  },
+  "requirements": [
+    {
+      "id": "G1-RUNNER",
+      "requirement": "Admit an executable runner from actual Windows measurements and independently reviewed complete execution closure.",
+      "status": "HOLD_NATIVE_EVIDENCE_MISSING",
+      "recordedPasses": [
+        "Source collector27/27 plus original output/pipe/clock attack replays; direct-child cleanup only.",
+        "Offline build-binding18 focused checks; inspect-binding is NOT_EXECUTABLE."
+      ],
+      "recordedFailures": [
+        "Original collector output-integrity, inherited-pipe hang and initialization-child leak retained in earlier independent reviews.",
+        "Historical full build suite43/45 PASS, one context-hash FAIL, one fixed-Windows-runtime ERROR; no waiver."
+      ],
+      "unrun": [
+        "Returned native Windows Python3.11.15 capture",
+        "PeekNamedPipe behavior, complete loaded executable/stdlib/ZIP/pyc/native/OS/ACL and AWS installation closure",
+        "Descendant teardown and new profile prepare/execute admission"
+      ],
+      "nextOwner": "Designated shipper returns authorized read-only capture; independent runner reviewer; primary allocates separate execution-profile implementation.",
+      "nextAction": "Verify four original artifacts, stdout/stderr, exit and exact source/head/tree; independently bind actual caller and full execution closure before separately authorizing a reviewed profile.",
+      "sources": [
+        "accepted:scripts/qualification/worker_runner_capture.py",
+        "accepted:scripts/qualification/worker_runner_inventory.py",
+        "accepted:scripts/qualification/worker_build_binding.py",
+        "accepted:scripts/qualification/worker_image_manifest.py",
+        "accepted:docs/coordination/reports/CODEX-FRESH-RUNNER-CAPTURE-FINAL-INDEPENDENT-20261012.md",
+        "accepted:docs/coordination/reports/CODEX-BUILD-CLOSURE-INDEPENDENT-20261011.md",
+        "accepted:docs/coordination/reports/CODEX-AWS-SHIPPER-NEXT-READ-20261012.md"
+      ]
+    },
+    {
+      "id": "G1-IMAGE",
+      "requirement": "Supported patched worker and proxy images with exact source/build/package/native/license closure and independent security disposition.",
+      "status": "HOLD_OLD_IMAGE_FORBIDDEN",
+      "recordedPasses": [
+        "PR8 original UTF-8 stored-scan reacquisition and complete47-row offline scaffold; evidence intake only."
+      ],
+      "recordedFailures": [
+        "Old image47 OPEN findings:5 critical,17 high,17 medium,7 low,1 undefined; five older vendor obligations remain open.",
+        "Original plural --image-ids CLI252 and CP1252 decoder failure remain retained; repaired reader does not remediate image."
+      ],
+      "unrun": [
+        "Supported coherent patched component set and fresh build",
+        "Complete embedded/native/package/license closure and ABI compatibility",
+        "Exact replacement image scan and accepted per-finding disposition",
+        "Historical56a3d5 scan immutable locator still unknown"
+      ],
+      "nextOwner": "Image/security source author plus distinct reviewer; designated shipper only after new bounded approval.",
+      "nextAction": "Prepare supported remediation and complete source/recipe/context/buildspec/helper identities, independently review all dispositions, then request exact bounded build authority; never launch the held digest.",
+      "sources": [
+        "accepted:apps/worker/qualification/Dockerfile",
+        "accepted:apps/worker/qualification/component-pins.json",
+        "accepted:scripts/qualification/worker_image_scan.py",
+        "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json",
+        "shipper:docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-summary.json",
+        "shipper:docs/qualification/aws-shipper-20261011-r1/command-ledger.json",
+        "shipper:docs/qualification/aws-shipper-20261011-r1/evidence-index.json",
+        "shipper:docs/coordination/reports/AWS-SHIPPER-20261011-r1.md"
+      ]
+    },
+    {
+      "id": "G1-PROXY",
+      "requirement": "Supported Linux Claude SDK to trusted LiteLLM to Bedrock path and coherent Prisma/native dependencies.",
+      "status": "HOLD_RUNTIME_COMPOSITION_UNQUALIFIED",
+      "recordedPasses": [
+        "Historical bounded community import/offline Prisma generation and native TLS1.3/nonowner plus specific negative controls; limited scopes described by owner reports."
+      ],
+      "recordedFailures": [
+        "Earlier TLS cause-decoder and selected ABI/native-library evidence gaps remain preserved; subset omission is not proof of full-image absence.",
+        "Historical Polars162084352-byte capture exceeded128MiB evidence cap; harness limitation, not proved package defect."
+      ],
+      "unrun": [
+        "Coherent admitted Linux full startup/import/lifespan/schema/views/auth stack",
+        "Generated Prisma/native engines/libc/OpenSSL and complete community/enterprise notices",
+        "Real Fargate composition on patched admitted images"
+      ],
+      "nextOwner": "Proxy/Linux packaging author and independent reviewer, then separately authorized shipper.",
+      "nextAction": "Finish compatible source/package/native closure without replacing provider internals; obtain exact reviewed image and isolated synthetic PostgreSQL admission before runtime tests.",
+      "sources": [
+        "accepted:apps/proxy/qualification/component-pins.json",
+        "accepted:apps/proxy/qualification/linux/Dockerfile",
+        "accepted:apps/proxy/qualification/linux/assembly-pins.json",
+        "accepted:docs/coordination/reports/CODEX-G1-ACTUAL-ABI-AND-DISCOVERY-OWNER.md",
+        "preservation:docs/handover/20261012/REMOTE-RESUME-CURRENT-20261012.md"
+      ]
+    },
+    {
+      "id": "G1-TASK-AUTH",
+      "requirement": "Trusted task-bound short-lived identity, current authorization, expiry, revocation and fences before effects and publication.",
+      "status": "HOLD_NATIVE_AUTH_UNRUN",
+      "recordedPasses": [
+        "Accepted private source contracts, mTLS/registry and isolated PostgreSQL fixture preparation; no production authentication acceptance."
+      ],
+      "recordedFailures": [],
+      "unrun": [
+        "Actual ECS task identity and trusted capability/signature key issuance",
+        "Real proxy task authentication, expiry and revocation against isolated PostgreSQL",
+        "Cross-tenant/client/attempt stale-fence refusal before effects and publication on actual runtime"
+      ],
+      "nextOwner": "Trusted control/proxy author plus independent security reviewer.",
+      "nextAction": "Bind authentic task identity and current authority to the exact image/configuration and prove expiry/revocation/fence negatives using admitted isolated fixtures; workers receive no provider/database/admin credentials.",
+      "sources": [
+        "accepted:apps/proxy/qualification/state/admission.py",
+        "accepted:apps/proxy/qualification/state/grants.py",
+        "accepted:apps/proxy/qualification/state/postgres_store.py",
+        "accepted:apps/proxy/qualification/runtime/ingress.py",
+        "accepted:apps/proxy/qualification/linux/native-runtime/native_auth_probe.py",
+        "accepted:apps/control/qualification-sdk-fixture/state/registry.mjs",
+        "accepted:docs/coordination/reports/CODEX-G1-SDK-REGISTRY-INGRESS-COMPOSE-20261011.md",
+        "preservation:docs/handover/20261012/REMOTE-RESUME-CURRENT-20261012.md"
+      ]
+    },
+    {
+      "id": "G1-BUDGET",
+      "requirement": "Durable aggregate reservation/settlement/uncertain-usage accounting outside the agent, including interruptions and subagents.",
+      "status": "HOLD_LEDGER_REMAINDER_UNKNOWN",
+      "recordedPasses": [
+        "Source ledger/pricing and native usage/counter work is preserved; historical $10 is one aggregate allowance."
+      ],
+      "recordedFailures": [],
+      "unrun": [
+        "Reconciled historical durable paid ledger and outstanding UNKNOWN reservations",
+        "Actual durable reservation, settlement and interrupted-call usage through trusted proxy",
+        "Current aggregate remaining allowance and separate infrastructure ceiling"
+      ],
+      "nextOwner": "Budget/ledger owner and primary approval owner.",
+      "nextAction": "Reconcile the existing aggregate ledger; never reset UNKNOWN reservations or create a new per-run $10 allowance. Freeze exact model and infrastructure limits before any paid call or spend.",
+      "sources": [
+        "accepted:apps/proxy/qualification/state/ledger.py",
+        "accepted:apps/proxy/qualification/state/pricing.py",
+        "accepted:apps/proxy/qualification/runtime/native_usage.py",
+        "accepted:apps/proxy/qualification/runtime/aws_counter.py",
+        "shipper:docs/qualification/aws-shipper-20261011-r1/next-action-packet.json",
+        "preservation:docs/handover/20261012/REMOTE-RESUME-CURRENT-20261012.md"
+      ]
+    },
+    {
+      "id": "G1-RECOVERY",
+      "requirement": "Actual native SDK task-A interruption, durable checkpoint, replacement task-B recovery, stale-A denial and bounded containment.",
+      "status": "HOLD_NATIVE_AB_UNRUN",
+      "recordedPasses": [
+        "Native files/SessionStore137 source checks and inert-data repair; trusted composition369 offline/source checks.",
+        "Versioned S3 adapter readback/corruption fixtures and atomic-fence source contracts; fake storage is not native durability."
+      ],
+      "recordedFailures": [
+        "Original getter/proxy inert-data HOLDs retained and repaired at source; no full durable acknowledgement inferred.",
+        "Host uid/gid mutation test unrun after chown EINVAL."
+      ],
+      "unrun": [
+        "Trusted native init/interrupt/subprocess and subagent exit/drain/quiescence producer",
+        "Complete supported transcript/compaction/subagent acknowledgement plus verified workspace snapshot",
+        "Actual A stop, fence advance/revoke, stale-A effect denial, distinct B restore under original D720/C900 clocks",
+        "Physical containment/teardown of both tasks and immutable durable inspector readback"
+      ],
+      "nextOwner": "Native recovery author, independent evidence reviewer and separately authorized shipping owner.",
+      "nextAction": "Complete trusted native evidence and exact two-task recovery packet without treating SessionStore best-effort mirroring as a complete checkpoint; preserve partial fixture flags until proved.",
+      "sources": [
+        "accepted:apps/worker/qualification/checkpoint/native-session-files.mjs",
+        "accepted:apps/worker/qualification/checkpoint/bound-session-store.mjs",
+        "accepted:apps/worker/qualification/checkpoint/resume-admission.mjs",
+        "accepted:apps/worker/qualification/probes/sdk-interruption.mjs",
+        "accepted:apps/control/qualification-sdk-fixture/service/checkpoint-store.mjs",
+        "accepted:scripts/qualification/sdk-native-evidence-owner.mjs",
+        "accepted:scripts/qualification/sdk-stale-worker-challenge.mjs",
+        "accepted:docs/coordination/reports/CODEX-G1-SDK-S3-CHECKPOINT-20261011.md",
+        "accepted:docs/coordination/reports/CODEX-G1-TRUSTED-COMPOSITION-ACCEPTANCE-20261011.md",
+        "preservation:docs/handover/20261012/REMOTE-RESUME-CURRENT-20261012.md"
+      ]
+    },
+    {
+      "id": "G1-DISCOVERY",
+      "requirement": "RG-08 native deferred tool discovery through the actual approved SDK/proxy/Bedrock configuration.",
+      "status": "HOLD_ACTUAL_PROXY_UNRUN",
+      "recordedPasses": [
+        "Source options/tool-reference preparation exists; earlier mechanical fixture disabled betas."
+      ],
+      "recordedFailures": [],
+      "unrun": [
+        "Exact supported native tool-search opt-in/headers/reference blocks through custom ANTHROPIC_BASE_URL",
+        "Streaming/cancellation/compaction/resume and permitted/unavailable tools through approved US inference profile",
+        "Revocation-before-effect with real trusted current authority"
+      ],
+      "nextOwner": "SDK/proxy compatibility author and independent reviewer.",
+      "nextAction": "Finish source packet for SDK0.3.295/Claude Code2.1.295/LiteLLM1.104.2 and approved Bedrock Sonnet4.6 route; paid runtime waits for ledger and explicit action admission.",
+      "sources": [
+        "accepted:apps/worker/qualification/probes/sdk-discovery-tools.mjs",
+        "accepted:apps/worker/qualification/probes/sdk-discovery-options.mjs",
+        "accepted:docs/qualification/BEDROCK-PROXY-COMPATIBILITY.md",
+        "accepted:docs/coordination/reports/CODEX-G1-SDK-DISCOVERY-NATIVE-PREPARATION-DESIGN.md",
+        "preservation:docs/handover/20261012/REMOTE-RESUME-CURRENT-20261012.md"
+      ]
+    },
+    {
+      "id": "G1-BROWSER",
+      "requirement": "Real nonroot browser AND renderer sandboxes, restricted egress, watchdog/cancel and independently verified host/volume teardown.",
+      "status": "HOLD_HOST_QUALIFICATION_UNRUN",
+      "recordedPasses": [
+        "Dedicated browser-host exception follows measured Fargate failure; source supervision/teardown helpers and scoped read-only absence observations exist."
+      ],
+      "recordedFailures": [
+        "Fargate Chromium155.0.8059.12 namespace creation denied:unshare_ret=-1 errno=1.",
+        "Earlier startup/InvalidDefinition and expired-clock cleanup UNKNOWN remain historical; local UI --no-sandbox is not host qualification."
+      ],
+      "unrun": [
+        "Qualified nonroot browser and renderer on isolated approved host",
+        "Actual restrictive egress, credentials and conversation/tenant isolation",
+        "Watchdog/cancel and positive independently inspected task/host/volume teardown within original clock"
+      ],
+      "nextOwner": "Browser isolation author/reviewer and separately authorized host owner.",
+      "nextAction": "Prepare exact host/image/probe/egress/watchdog/cleanup packet; keep application/control on Fargate and do not reuse a host across conversations or tenants.",
+      "sources": [
+        "accepted:scripts/qualify-browser-host.py",
+        "accepted:apps/worker/qualification/probes/browser.mjs",
+        "accepted:docs/coordination/reports/CODEX-G1-BROWSER-OPERATIONAL-NEXT.md",
+        "accepted:docs/coordination/reports/CODEX-G1-BROWSER-EGRESS-ACCEPTANCE.md",
+        "preservation:docs/handover/20261012/REMOTE-RESUME-CURRENT-20261012.md"
+      ]
+    },
+    {
+      "id": "G1-ARTIFACTS",
+      "requirement": "Qualified artifact generation/export/inspection and visual acceptance on supported native libraries.",
+      "status": "HOLD_SECURITY_AND_INSPECTION",
+      "recordedPasses": [
+        "Historical Office mechanics generated/recalculated files; source export/reconstruction helpers exist."
+      ],
+      "recordedFailures": [
+        "Native parsing/image/font/XML/ZIP/PDF vulnerabilities and unresolved embedded copies prevent old-image admission."
+      ],
+      "unrun": [
+        "Actual exported file inspection and visual acceptance on patched admitted image",
+        "Complete binary/package/license closure",
+        "Later authorized artifact provenance/versioning/previews/downloads/filing and retention"
+      ],
+      "nextOwner": "Artifact service author and independent artifact/security reviewer.",
+      "nextAction": "Prepare original product skill and inspection acceptance criteria using adopted libraries; do not copy host Office skills or reopen the held image.",
+      "sources": [
+        "accepted:apps/worker/qualification/probes/office-export.mjs",
+        "accepted:apps/worker/qualification/probes/office-reconstruct.mjs",
+        "accepted:apps/worker/qualification/probes/artifacts.mjs",
+        "accepted:apps/worker/qualification/probes/artifacts.py",
+        "preservation:docs/handover/20261012/REMOTE-RESUME-CURRENT-20261012.md"
+      ]
+    },
+    {
+      "id": "G1-REL02",
+      "requirement": "Complete accepted canonical contracts for selected capabilities without reducing scope to current fixtures.",
+      "status": "HOLD_83_SELECTED_UNMAPPED",
+      "recordedPasses": [
+        "Accepted catalog201 root contract/session source checks,14 focused, generated-byte/type checks and7 public tests; overlapping cohorts.",
+        "139 original IDs and96/43 disposition preserved;13 canonical bindings all unavailable."
+      ],
+      "recordedFailures": [
+        "Original194/198 catalog expansion and199/201,200/201 dependency-layout failures retained.",
+        "Gateway shortened-release deadline original failure and independent candidate HOLD retained; author18/18 does not accept repair."
+      ],
+      "unrun": [
+        "Independent memory/gateway acceptance on final repaired candidates",
+        "83 selected mappings and real qualified source adapters/handlers",
+        "14 original skill manifests and REL-04 execution qualification"
+      ],
+      "nextOwner": "Canonical contracts owner; bounded family authors and distinct reviewers; dot for consequential memory policy decision.",
+      "nextAction": "Review preserved candidates, resolve admin-self-approval versus another-reviewer conflict before dependent governance, and incrementally qualify all selected IDs. Keep list_memory_proposals unavailable and source connectivity disabled.",
+      "sources": [
+        "accepted:docs/coordination/r2/capabilities.json",
+        "accepted:docs/coordination/r2/skills.json",
+        "accepted:packages/contracts/retrieval-0.2/catalog.json",
+        "accepted:packages/contracts/retrieval-0.2/catalog-validation.mjs",
+        "accepted:packages/contracts/retrieval-0.2/operation-contracts.mjs",
+        "accepted:docs/coordination/reports/CODEX-REL02-CATALOG-INDEPENDENT-20261012.md",
+        "accepted:docs/qualification/candidates/rel02-catalog-bindings-20261012/evidence-index.json",
+        "preservation:docs/handover/20261012/CANDIDATE-FREEZE.json",
+        "preservation:docs/coordination/reports/CODEX-GATEWAY-INDEPENDENT-20261012.md",
+        "preservation:docs/coordination/reports/CODEX-MEMORY-PROPOSALS-CONTRACT-20261012.md"
+      ]
+    },
+    {
+      "id": "G1-STATE-TEMPORAL",
+      "requirement": "Preserve adopted existing Aurora decision and Temporal durability responsibilities; qualify isolated state and topology boundaries.",
+      "status": "HOLD_LIVE_STATE_ADMISSION",
+      "recordedPasses": [
+        "Historical Temporal G1 production-topology design acceptance; full deployment belongs later.",
+        "Human selected existing capiro-dev-data-auroracluster23d869c0-ltmz40k47ewv for eventual state; PR8 metadata only."
+      ],
+      "recordedFailures": [],
+      "unrun": [
+        "Current Aurora capacity, logical database/roles/schema and network admission",
+        "Isolated G1 synthetic PostgreSQL runtime auth/state integration",
+        "Later Temporal production persistence/auth/TLS/backup/upgrade/HA/restore and W05/W09 full durable recovery"
+      ],
+      "nextOwner": "State/Temporal owner plus security/database/network approval owners.",
+      "nextAction": "Keep existing Aurora selection, no newRDS deployment or network/database mutation. Prepare logical isolation/capacity/security design; qualification-only migration0001 grants no product/Temporal migration allocation.",
+      "sources": [
+        "accepted:docs/qualification/PROXY-TEMPORAL-DECISIONS.md",
+        "accepted:apps/proxy/qualification/state/migrations/0001_qualification_state.sql",
+        "accepted:docs/plans/MERI-DEPLOYMENT.md",
+        "shipper:docs/coordination/reports/AWS-SHIPPER-20261011-r1.md",
+        "preservation:docs/handover/20261012/REMOTE-RESUME-CURRENT-20261012.md"
+      ]
+    },
+    {
+      "id": "G1-EVIDENCE-AND-AUTHORITY",
+      "requirement": "Exact independently reviewed shipping packet, current host policy, bounded costs/actions/cleanup and frozen qualification budgets.",
+      "status": "HOLD_EXTERNAL_INPUTS",
+      "recordedPasses": [
+        "Accepted source/preservation/evidence trees are recoverable; source snapshots are not read audits or runtime admission."
+      ],
+      "recordedFailures": [
+        "Parent reports current private capiro-agent-ops retrieval404; this author did not retry or infer policy."
+      ],
+      "unrun": [
+        "Current supported private host/Hermes policy retrieval",
+        "Fresh caller/account/region/task/fence identity and exact action/resource allowlist",
+        "Security approvals, infrastructure cost ceiling, model ledger remainder, cleanup/rollback/supervision deadlines",
+        "Frozen measured cohort budgets; later75-approved-real-request owner/location and expansion to200"
+      ],
+      "nextOwner": "Primary reviewer, designated shipping session, dot and relevant approval owners.",
+      "nextAction": "Fill missing authoritative inputs in a separately reviewed packet before shipping. Continue independent source work. REL-01 real requests remain later release work and are not a G1 prerequisite; do not replace them with synthetic fixtures.",
+      "sources": [
+        "preservation:docs/handover/20261012/CONTEXT-INDEX.json",
+        "preservation:docs/handover/20261012/SOURCE-SNAPSHOTS.json",
+        "preservation:docs/handover/20261012/PUBLICATION-RECEIPT.json",
+        "accepted:docs/handover/20261011/CONTINUATION-INSTRUCTIONS.md",
+        "accepted:docs/coordination/r2/gates.json",
+        "shipper:docs/qualification/aws-shipper-20261011-r1/next-action-packet.json"
+      ]
+    }
+  ],
+  "candidateBoundary": {
+    "memory": "PRESERVED_UNREVIEWED_AT_PIN",
+    "gateway": "HOLD_AT_PIN",
+    "selfApprovalConflict": "DOT_DECISION_REQUIRED; no consequential semantics chosen"
+  },
+  "currentExecutionAuthority": {
+    "runner": null,
+    "caller": null,
+    "account": null,
+    "region": null,
+    "taskIdentity": null,
+    "fence": null,
+    "imageDigest": null,
+    "sourceContextArchive": null,
+    "actionResourceAllowlist": [],
+    "exactActionApproval": null,
+    "securityApproval": null,
+    "infrastructureCostCeilingUsd": null,
+    "paidModelHistoricalCapUsd": 10,
+    "paidModelSpentUsd": null,
+    "paidModelReservedUsd": null,
+    "paidModelRemainingUsd": null,
+    "durableLedger": null,
+    "deadline": null,
+    "cleanupOwner": null,
+    "rollbackEvidence": null
+  },
+  "stateSelection": {
+    "eventualState": "existing Aurora",
+    "historicalSelectedCluster": "capiro-dev-data-auroracluster23d869c0-ltmz40k47ewv",
+    "currentCapacityVerified": false,
+    "newRdsAuthorized": false,
+    "networkChangeAuthorized": false,
+    "databaseChangeAuthorized": false
+  },
+  "runtimeReceiptFlags": {
+    "completeRecoveryCheckpoint": false,
+    "sessionStoreQualified": false
+  },
+  "authorTaskActions": {
+    "localGitReads": true,
+    "localSourceChecks": true,
+    "cloudCommands": 0,
+    "networkRequests": 0,
+    "providerCalls": 0,
+    "paidModelCalls": 0,
+    "customerDataActions": 0,
+    "resourceChanges": 0
+  },
+  "externalPolicy": {
+    "repository": "neo-capiro/capiro-agent-ops",
+    "status": "PARENT_REPORTED_404",
+    "retrievedByThisAuthor": false,
+    "affectedActions": "Host/Hermes actions requiring current private policy remain blocked"
+  },
+  "independentSourceWorkMayContinue": true,
+  "requirementsInput": {
+    "path": "g1-requirements.json",
+    "bytes": 19904,
+    "sha256": "466d647e682f5a7b1b3dca43265865e8b31935b3d20142a43cd85f6060fb550d"
+  }
+}
