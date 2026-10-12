@@ -1,0 +1,56 @@
+{
+  "status": "PASS_ACCEPTED_SOURCE_BYTES",
+  "sourceCandidate": "c463f7f7e7580e26d07b31c5f4020eaa469d4f67",
+  "runtimeAccepted": false,
+  "checks": [
+    {
+      "family": "registry",
+      "acceptedSourceCommit": "deba2c13c612845b4f65e38c263982c698bb4361",
+      "path": "packages/contracts/retrieval-0.2/client-registry.schema.json",
+      "bytes": 4315,
+      "sha256": "6415f49f3b1edd20af3ba43b5d4e81b8b207bdf78b2326d871436a164c012833"
+    },
+    {
+      "family": "registry",
+      "acceptedSourceCommit": "deba2c13c612845b4f65e38c263982c698bb4361",
+      "path": "packages/contracts/retrieval-0.2/client-registry-validation.mjs",
+      "bytes": 2320,
+      "sha256": "0a563f5a91bb91d883e5dd354fddf11df788dc8ec449f9007cc9f9f00ad1b24e"
+    },
+    {
+      "family": "business",
+      "acceptedSourceCommit": "bf9a06cfba22c5c3bac87949689348b16febcbc5",
+      "path": "packages/contracts/retrieval-0.2/business-development.schema.json",
+      "bytes": 26703,
+      "sha256": "fff7362e49e0d981b1aeaeec881ea2e72e2fa263d9f64dfad94456fd50b330f1"
+    },
+    {
+      "family": "business",
+      "acceptedSourceCommit": "bf9a06cfba22c5c3bac87949689348b16febcbc5",
+      "path": "packages/contracts/retrieval-0.2/business-development-validation.mjs",
+      "bytes": 7517,
+      "sha256": "c6ede747a9ffce2acba96130bef2afd1fdaa0460b54dfd1603bde2b8911ffe5a"
+    },
+    {
+      "family": "portfolio",
+      "acceptedSourceCommit": "088cfa10df8af518795a10590ce3e17c8b4fad8a",
+      "path": "packages/contracts/retrieval-0.2/research-portfolio.schema.json",
+      "bytes": 17893,
+      "sha256": "cb6d881f19cd7f37561e5955a082080211f1fa69ef520f7208ace9c2e3eb41bc"
+    },
+    {
+      "family": "portfolio",
+      "acceptedSourceCommit": "088cfa10df8af518795a10590ce3e17c8b4fad8a",
+      "path": "packages/contracts/retrieval-0.2/research-portfolio-validation.mjs",
+      "bytes": 6091,
+      "sha256": "55c006eda93cca6f51f913d70fee93b73f125c2339638eabb6574da0d867f0d2"
+    },
+    {
+      "family": "canonical-admission",
+      "acceptedSourceCommit": "685fe100233da10991485be49b2a1e8e31dd8308",
+      "path": "packages/contracts/retrieval-0.2/operation-contracts.mjs",
+      "bytes": 5544,
+      "sha256": "f09b6b3a8b0186b3e2f05a17135ce40bac9ed728796493501ce7d8d4d647adfd"
+    }
+  ]
+}
