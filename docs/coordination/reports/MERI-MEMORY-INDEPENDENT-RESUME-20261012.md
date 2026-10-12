@@ -1,0 +1,58 @@
+# Independent memory proposal source review — 12 October 2026
+
+**HOLD** on the preserved memory candidate at `c57b7d26df7de2acbd8c7d8edc7098f7d495053a` (tree `66135fa4cc69de9fbae12d77b4cc3bc24305a074`). Three independently specified timestamp negative controls fail. Original tests remain green; they do not override the reproduced defect. `list_memory_proposals` remains unmapped/unavailable. No runtime, source authorization, approval semantics or G1 acceptance is granted.
+
+Reviewed author source: `49df68b72e8b3761433502aab0569382e6330a04`, metadata `d09b689cdc517c36a8428338ddc36a5e9beda056`; accepted source dependency `5ee46446b5f60034916f00b2a665b3e2bef9cf60`. Reviewer is separate from the candidate author. Dedicated worktree `/workspace/meri-memory-review-20261012`, branch `review/meri-memory-independent-20261012`. Only this report and the assigned evidence directory were changed.
+
+## Review outline and preservation
+
+Independently verify the 14 pinned producer/policy references without publishing their bodies; inspect the private 0.2 input/result family, canonical composition and public 0.1 separation; preserve original checks and add adversarial synthetic tests in the evidence directory. Review proposal reads independently of approval-policy choice. Run focused/full contracts and generated/type/public checks using unchanged locks and disabled install lifecycle scripts. No production module, original test, catalog, lock or migration is edited by this reviewer.
+
+Read AGENTS.md, implementation standards, the exact 12 October handover and its context/source/freeze/publication manifests, 11 October continuation instructions, and relevant adopted R2 architecture, memory, authorization and gate requirements. No repository `.agents` skill files or workspace skill files were available. Current shared host/Hermes policy remains the parent's access task; no affected host/Hermes action is taken here.
+
+All 14 private references at `neo-capiro/capirov2@fd8765ec01d292013758606204f2c9d886cd31c1` were recovered from the existing local Git object database and independently match their blob IDs, SHA-256 values and byte counts (838,086 bytes). [Reference verification](../../qualification/candidates/memory-independent-resume-20261012/private-source-verification.json) records every locator/hash and the relevant semantic spans reviewed. Complete-byte verification is not a claim to a line-by-line audit of unrelated portions of the two large modules. Private source bodies are only in task-owned `/tmp/meri-memory-independent-private-20261012`; none enter Git or test fixtures.
+
+[Preservation receipt](../../qualification/candidates/memory-independent-resume-20261012/preservation.json) verifies all four memory/composition files against the author's source manifest and all 49 previous contract files exactly. Removing only the memory import, schema-group entry and factory export from the canonical validator reproduces accepted PR7 bytes. Public schemas/exports, both lockfiles, catalog and operation bindings are unchanged. The cohesive schema/factory/original-test ownership is appropriate; no parallel authorization or operation registry is added.
+
+## Blocking finding M1: nonfinite timestamp bypasses ordering
+
+`packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:82` and `:124` use `Date.parse` comparisons without first requiring finite instants. Ajv's RFC3339 `date-time` admits `2026-06-30T23:59:60Z`; Node24 `Date.parse` returns `NaN`. Both `NaN > value` and `NaN === value` are false.
+
+The independent [eight-case probe](../../qualification/candidates/memory-independent-resume-20261012/adversarial.test.mjs) reproduces three missing refusals:
+
+1. One malformed proposal timestamp is admitted as complete producer coverage.
+2. A page beginning with that timestamp then a 2027 row bypasses descending-time validation.
+3. A retained prior page carrying that timestamp permits a newer 2027 continuation.
+
+Expected refusal assertions remain failing in [raw stdout](../../qualification/candidates/memory-independent-resume-20261012/adversarial-original.stdout.bin); [command/exit/hash record](../../qualification/candidates/memory-independent-resume-20261012/adversarial-original.json) records exit1, 5 pass/3 fail. No failure was rewritten into success. The pinned producer emits `Date.toISOString()` from its owner rows, so this payload is outside actual producer ordering representation; trusting the schema's broader date grammar is insufficient at the candidate boundary. This is a source-contract defect, not evidence of a live disclosure or source exploit.
+
+Proposed narrow repair: refuse any row whose parsed timestamp is nonfinite before within-page or retained-page ordering; preserve the original 15 test bodies and append regressions. A separate implementation owner has been assigned by the parent. Replay these exact negative controls and the original/full/public suites against the returned immutable repair before accepting it.
+
+## Policy conflict for dot: no consequential semantics selected
+
+At the pinned producer reference, `memory-review-admin-policy.ts:3–17`, `memory-authorization.helpers.ts:89–109` and `memory-candidate.service.ts:614–630` explicitly permit an administrator (`user_admin`/`capiro_admin`) to approve their own shared proposal. The actual approval path invokes canonical authorization and then this exception. Ethical-wall, client-status, tenant and current actor checks are still required; an administrator is not a wall bypass. The authorization service binds a transaction-local administrator decision capability for an allowed pending candidate.
+
+Conversely, `memory-candidate-rules.ts:56–78,108–125` and `meri-tools.service.ts:2898–2954` assert that shared memory requires another reviewer, including administrator proposals. Shared proposals still become pending; the difference is whether the proposer may perform a subsequent approval. In addition, `governed-memory-candidate.service.ts:386–397` forbids a shared proposer from using reviewer rejection even when an administrator; proposer withdrawal is the supported separate path. These are distinct approve/reject/withdraw behaviors, not one generic self-review rule.
+
+Consequences: enforcing the prose universally would deny currently permitted administrator self-approvals and could stall a sole-administrator tenant; adopting the producer exception while retaining the wrapper text would promise two-person approval that is not enforced. Neither implication is decided by this read contract. Pending text remains unapproved, and the DTO has no authority to approve, reject or withdraw anything.
+
+Proposed resolution for dot: explicitly decide the shared approval policy (administrator exception or universal separate reviewer), document scope for firm/client and private/automated proposals separately, then align the canonical producer authorization, rule reasons, wrapper/UI wording, database guard behavior and fixtures under one versioned policy. Preserve tenant/wall/current membership checks, exact immutable approval, expiry/revocation and audit obligations. Add matrix cases for standard/admin proposers, other reviewers, missing/expired grants, revoked membership, walls, impersonation, and approve versus reject versus withdraw. The independent proposal-read source review can continue; approval-bearing implementation/admission remains held until that decision. This report requests a policy decision through the parent/dot; no external message is sent by this worker.
+
+## Checks actually run
+
+| Check | Result |
+| --- | --- |
+| Initial root and contracts `npm ci --ignore-scripts --no-audit --no-fund` | Both exit254: default `/home/agent/.npm/_cacache` unavailable; raw outputs retained |
+| Exact-lock retry with two owned `/tmp` caches | Both exit0; lifecycle scripts disabled, no lock mutation |
+| Original memory suite | 15/15 PASS |
+| Full contracts | 211/211 PASS |
+| Public generated bytes, strict TypeScript, public package | PASS, public7/7 |
+| Independent adversarial controls | 5 PASS / 3 FAIL; M1 above |
+| All 14 private file identities | PASS |
+| 49 prior contract files and candidate/composition preservation | PASS |
+
+[Checks](../../qualification/candidates/memory-independent-resume-20261012/checks.json) and the evidence directory retain exact commands, exits and raw stdout/stderr; outputs are marked binary to preserve original bytes. Node is v24.19.0 and npm11.9.0. No tests were skipped or original assertions weakened. Broader native/image/SDK/browser/SQL/paid-model and live source checks are UNRUN and were outside the authorized review scope.
+
+The currently passing boundaries include own actor/client binding, selected-client plus clientless behavior, pending/fact constants, redaction, disabled and continued pages, no global-absence claim, UTF-16 bounds, inert hostile context and cursor progress. Shape validation still cannot prove row proposer identity (not emitted per row), current role/grants/walls, cursor authenticity, snapshot immutability, source completeness or policy freshness. Real producer/gateway integration must independently establish these before availability.
+
+All check processes exited; no background/native/provider/cloud job was started. Owned dependency caches and private reference material remain local for the repair replay; borrowed repository/worktree/process state was not altered. Full release scope stays 139 original /96 selected /43 deferred, with 13 bound unavailable and 83 unmapped at this snapshot. G0 accepted; G1 OPEN; G2–G7 unentered.
