@@ -1,0 +1,9 @@
+{
+  "command": "node --check apps/control/commands/tool-interface.mjs",
+  "cwd": "/workspace/meri-vertical-source-20261012",
+  "exitCode": 1,
+  "reason": "Author syntax check was accidentally addressed to integration worktree before own new file integration; MODULE_NOT_FOUND, no source execution or mutation.",
+  "correction": "Same syntax checks in isolated author worktree passed.",
+  "scope": "SETUP_ONLY_NOT_CANDIDATE_FAILURE",
+  "rawSubprocessCapture": false
+}

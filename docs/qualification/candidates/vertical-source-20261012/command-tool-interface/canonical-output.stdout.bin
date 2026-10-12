@@ -1,0 +1,28 @@
+✔ task.create: raw normalization creates exact pending proposal with no source/journal effect (68.767444ms)
+✔ task.update: raw normalization creates exact pending proposal with no source/journal effect (29.788929ms)
+✔ memory.propose: raw normalization creates exact pending proposal with no source/journal effect (66.164175ms)
+✔ artifact.file: raw normalization creates exact pending proposal with no source/journal effect (27.784595ms)
+✔ raw request cannot supply any server-owned metadata or unknown action (1.917543ms)
+✔ metadata operation/action/binding/raw/input digest mismatch refuses before proposal/executor (5.273228ms)
+✔ unsafe/future/stale receipt clocks and expired/future proposal metadata refuse (3.67828ms)
+✔ non-inert metadata and caller options are rejected without executing getters (2.219868ms)
+✔ preaborted preparation starts no metadata or source port (0.675585ms)
+✔ late preparation ACK is not returned and does not pretend persisted metadata rolled back (5.440981ms)
+✔ late read ACK after cancellation cannot start the existing executor (2.162261ms)
+✔ read must reconstruct exact immutable original command/proposal, not caller substitutions (11.804228ms)
+✔ current metadata policy refusal prevents delegation; current approval remains actual executor responsibility (3.58542ms)
+✔ personal proposal preparation never claims committed memory and actual execution retains pending-producer HOLD (3.367133ms)
+✔ same-actor reviewer is not silently forbidden; current approval policy still external (1.177231ms)
+✔ old producer binding stays immutable while a fresh executor must satisfy actual current authority (3.120181ms)
+✔ final clock-triggered abort cannot release a pending proposal (0.866893ms)
+✔ unknown metadata-owner output fields and oversized receipts refuse (1.02407ms)
+✔ executor result uses exact canonical output schema; absent/extra success are not execution outputs (5.817056ms)
+✔ actual durable journal/source output cannot be substituted before facade release (9.330778ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3019.618028
