@@ -1,0 +1,129 @@
+✔ independent: canonical memory profile alone is selected; actual14 stay unavailable (16.421003ms)
+✔ independent: first page uses fresh server-selected client and canonical normalized input (13.1245ms)
+✔ independent: canonical continuation consumes retained raw request/page and advances (18.446667ms)
+✔ independent: all invalid model shape/context inputs fail before trusted ports (3.642022ms)
+✔ independent: client selector cannot override server subject before effects (4.190246ms)
+✔ independent: decision IDs rotate while stable authority remains required (5.861427ms)
+✔ independent: stable subject drift at authority stage 2 never releases (1.677901ms)
+✔ independent: stable subject drift at authority stage 3 never releases (2.805686ms)
+✔ independent: stable subject drift at authority stage 4 never releases (4.847764ms)
+✔ independent: stable subject drift at authority stage 5 never releases (3.340139ms)
+✔ independent: absent retained context or context ports cannot invent continuation (1.638752ms)
+✔ independent: retained context rejects tenant (6.575951ms)
+✔ independent: retained context rejects actor (4.91909ms)
+✔ independent: retained context rejects conversation (4.99807ms)
+✔ independent: retained context rejects run (3.140789ms)
+✔ independent: retained context rejects attempt (3.64056ms)
+✔ independent: retained context rejects worker (3.451876ms)
+✔ independent: retained context rejects fence (8.536247ms)
+✔ independent: retained context rejects policy (11.770206ms)
+✔ independent: retained context rejects operation (5.931583ms)
+✔ independent: retained context rejects version (14.136411ms)
+✔ independent: retained context rejects subject (3.921392ms)
+✔ independent: retained context rejects cursor (7.395001ms)
+✔ independent: retained context rejects digest (5.092553ms)
+✔ independent: retained context rejects staleRead (2.717313ms)
+✔ independent: retained context rejects futureRead (6.952957ms)
+✔ independent: retained context rejects futureRecord (3.881683ms)
+✔ independent: retained context rejects expired (5.84315ms)
+✔ independent: retained context rejects beyondAuthority (3.606709ms)
+✔ independent: retained context rejects extra (2.206886ms)
+✔ independent: retained context rejects limit (2.507949ms)
+✔ independent: retained context rejects poisonedCursor (3.077434ms)
+✔ independent: retained context rejects invalidPage (3.55433ms)
+✔ independent: envelope and raw DTO reject operation (1.240443ms)
+✔ independent: envelope and raw DTO reject arguments (1.342768ms)
+✔ independent: envelope and raw DTO reject binding (1.202777ms)
+✔ independent: envelope and raw DTO reject subject (1.382167ms)
+✔ independent: envelope and raw DTO reject extra (4.873203ms)
+✔ independent: envelope and raw DTO reject missing (1.090899ms)
+✔ independent: envelope and raw DTO reject approved (1.345001ms)
+✔ independent: envelope and raw DTO reject actor (1.109868ms)
+✔ independent: envelope and raw DTO reject restricted (1.225441ms)
+✔ independent: envelope and raw DTO reject coverage (1.248696ms)
+✔ independent: retain receipt rejects decision (1.937571ms)
+✔ independent: retain receipt rejects keySha256 (1.576128ms)
+✔ independent: retain receipt rejects previousSha256 (1.502137ms)
+✔ independent: retain receipt rejects checkedAtMs (1.387695ms)
+✖ independent: load rejects hostile non-JSON receipt without property effects (3.56719ms)
+✖ independent: retain rejects hostile non-JSON receipt without property effects (2.028237ms)
+✔ independent: retained ports receive immutable context detached from model objects (10.831976ms)
+✔ independent: release revocation prevents retain, final revocation prevents release (2.736392ms)
+✔ independent: fresh shortened authority bounds parked load and late completion (102.586803ms)
+✔ independent: fresh shortened authority bounds parked retain and late completion (100.529251ms)
+✔ independent: fresh shortened authority bounds parked settle and late completion (100.566887ms)
+✔ memory dispatch consumes canonical raw DTO inside current request/lineage wrapper (14.476833ms)
+✔ memory shape rejects model supplied subject/previous and legacy context before business ports (7.529764ms)
+✔ selected client comes from fresh server authority and model client substitution refuses (5.653706ms)
+✔ stable authority cannot drift between preflight and normalized authorization (1.359082ms)
+✔ refreshed decision IDs do not change stable subject selection or prevent release (2.92872ms)
+✔ trusted retained first page enables advancing continuation without model-supplied history (6.722762ms)
+✔ missing context ports and unknown cursor cannot execute or reserve (1.794667ms)
+✔ retained pages reject corrupt digest, wrong run fence/operation/subject and stale or future times (49.123029ms)
+✔ even correctly digested retained substitution must pass canonical limit/cursor/order validation (14.558496ms)
+✔ result wrapper must bind exact operation/digest/lineage and preserve raw pending DTO semantics (22.140377ms)
+✔ loadPrevious: parked trusted context is bounded; late completion starts no further effect (23.603125ms)
+✔ retain: parked trusted context is bounded; late completion starts no further effect (20.666683ms)
+✔ revocation during retention cannot release a result after budget settlement (2.425805ms)
+ℹ tests 67
+ℹ suites 0
+ℹ pass 65
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4369.32913
+
+✖ failing tests:
+
+test at apps/gateway/test/memory-context-independent.test.mjs:196:39
+✖ independent: load rejects hostile non-JSON receipt without property effects (3.56719ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /^GatewayDenied: (INVALID_ARGUMENTS|ACCESS_DENIED|INVALID_RESULT|DEADLINE|CANCELLED|BUDGET_UNCERTAIN|GATEWAY_CONFIGURATION)$/. Input:
+  
+  'GatewayDenied: INTERNAL_ERROR'
+  
+      at async denied (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:94:3)
+      at async TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:200:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: GatewayDenied: INTERNAL_ERROR
+        at safeFailure (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:55:10)
+        at Object.execute (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:95:13)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async denied (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:94:3)
+        at async TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:200:3)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    expected: /^GatewayDenied: (INVALID_ARGUMENTS|ACCESS_DENIED|INVALID_RESULT|DEADLINE|CANCELLED|BUDGET_UNCERTAIN|GATEWAY_CONFIGURATION)$/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/memory-context-independent.test.mjs:196:39
+✖ independent: retain rejects hostile non-JSON receipt without property effects (2.028237ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /^GatewayDenied: (INVALID_ARGUMENTS|ACCESS_DENIED|INVALID_RESULT|DEADLINE|CANCELLED|BUDGET_UNCERTAIN|GATEWAY_CONFIGURATION)$/. Input:
+  
+  'GatewayDenied: INTERNAL_ERROR'
+  
+      at async denied (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:94:3)
+      at async TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:200:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: GatewayDenied: INTERNAL_ERROR
+        at safeFailure (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/operation-result.mjs:55:10)
+        at Object.execute (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:95:13)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async denied (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:94:3)
+        at async TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:200:3)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    expected: /^GatewayDenied: (INVALID_ARGUMENTS|ACCESS_DENIED|INVALID_RESULT|DEADLINE|CANCELLED|BUDGET_UNCERTAIN|GATEWAY_CONFIGURATION)$/,
+    operator: 'rejects',
+    diff: 'simple'
+  }

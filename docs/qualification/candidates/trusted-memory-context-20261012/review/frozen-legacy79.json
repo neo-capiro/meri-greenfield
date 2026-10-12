@@ -1,0 +1,31 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/gateway/test/authority-deadline.test.mjs",
+    "apps/gateway/test/gateway.test.mjs",
+    "docs/qualification/candidates/gateway-independent-resume-20261012/inner-authority-deadlines.test.mjs",
+    "docs/qualification/candidates/gateway-independent-resume-20261012/late-cancellation.test.mjs",
+    "docs/qualification/candidates/gateway-independent-resume-20261012/issued-at.test.mjs",
+    "docs/qualification/candidates/gateway-independent-resume-20261012/budget-containment.test.mjs"
+  ],
+  "cwd": "/workspace/meri-trusted-memory-context-review-20261012",
+  "startUnixSeconds": 1791773939.6755805,
+  "elapsedSeconds": 6.30810546875,
+  "exitCode": 0,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "fixtureRoot": null,
+  "streams": {
+    "stdout": {
+      "path": "frozen-legacy79.stdout.txt",
+      "bytes": 14092,
+      "sha256": "3dd66ca8ee3849619808979f604640e5cb3b701e4c9c195709ecb6daeb2cbd64"
+    },
+    "stderr": {
+      "path": "frozen-legacy79.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

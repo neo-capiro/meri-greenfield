@@ -1,0 +1,49 @@
+{
+  "base": "5db2714b6dcbd3109c528e0afafcb654216133ca",
+  "candidate": "5ebe58d6480496689f409b03060b5fdb76c5d7fe",
+  "originalTrackedFiles": 2134,
+  "unchangedOriginalFiles": 2132,
+  "changedOriginalFiles": [
+    {
+      "path": "apps/gateway/dispatch/tool-dispatch.mjs",
+      "baseSha256": "9071d378947273d56e08c6dac38e72cfb52cc89d6f457a20908ed01165b27d39",
+      "candidateSha256": "1ba9d1d2afa22bbff9008fb1de13853e25ec98684d7e0bbc87904e979e7b9cfb"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "baseSha256": "91d1aba15ecd2d0c7094e33f3893cee1ac7af62de548dbe621b4342c7499cb98",
+      "candidateSha256": "8084c4065ff782d4f996d27c001e0a1b5b075810b4f51d61852f3c3d9bfcdabe"
+    }
+  ],
+  "canonicalBindingDelta": "memory-only dispatchProfile metadata; all other original registry bytes unchanged",
+  "unchangedOriginalContracts": 55,
+  "unchangedOriginalGatewayTests": [
+    "apps/gateway/test/authority-deadline.test.mjs",
+    "apps/gateway/test/fixtures.mjs",
+    "apps/gateway/test/gateway.test.mjs"
+  ],
+  "newPaths": [
+    "apps/gateway/dispatch/memory-read-context.mjs",
+    "apps/gateway/dispatch/operation-context.mjs",
+    "apps/gateway/dispatch/read-result-envelope.mjs",
+    "apps/gateway/test/memory-context.test.mjs",
+    "docs/coordination/reports/MERI-TRUSTED-MEMORY-CONTEXT-AUTHOR-20261012.md",
+    "docs/coordination/tasks/MERI-TRUSTED-MEMORY-CONTEXT-20261012.md",
+    "docs/qualification/candidates/trusted-memory-context-20261012/author/.gitattributes",
+    "docs/qualification/candidates/trusted-memory-context-20261012/author/contracts-install.stderr.txt",
+    "docs/qualification/candidates/trusted-memory-context-20261012/author/contracts-install.stdout.txt",
+    "docs/qualification/candidates/trusted-memory-context-20261012/author/gateway-final.stderr.txt",
+    "docs/qualification/candidates/trusted-memory-context-20261012/author/gateway-final.stdout.txt",
+    "docs/qualification/candidates/trusted-memory-context-20261012/author/legacy-initial.stderr.txt",
+    "docs/qualification/candidates/trusted-memory-context-20261012/author/legacy-initial.stdout.txt",
+    "docs/qualification/candidates/trusted-memory-context-20261012/author/memory-initial.stderr.txt",
+    "docs/qualification/candidates/trusted-memory-context-20261012/author/memory-initial.stdout.txt",
+    "docs/qualification/candidates/trusted-memory-context-20261012/author/public-final.stderr.txt",
+    "docs/qualification/candidates/trusted-memory-context-20261012/author/public-final.stdout.txt",
+    "docs/qualification/candidates/trusted-memory-context-20261012/author/root-final.stderr.txt",
+    "docs/qualification/candidates/trusted-memory-context-20261012/author/root-final.stdout.txt",
+    "docs/qualification/candidates/trusted-memory-context-20261012/author/root-install.stderr.txt",
+    "docs/qualification/candidates/trusted-memory-context-20261012/author/root-install.stdout.txt",
+    "docs/qualification/candidates/trusted-memory-context-20261012/author/verification.json"
+  ]
+}

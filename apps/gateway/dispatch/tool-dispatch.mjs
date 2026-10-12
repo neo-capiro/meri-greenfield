@@ -1,7 +1,9 @@
 /** One tool call coordinator, not an agent loop or source adapter. */
 import { canonicalSha256 } from '../../../packages/contracts/validate.mjs';
 import { createDispatchLifetime, markBudgetUncertain } from './dispatch-lifetime.mjs';
-import { assertResultLineage, deny, exactKeys, parseRawJson, rejectArgumentAuthority, safeFailure } from './operation-result.mjs';
+import { deny, exactKeys, parseRawJson, rejectArgumentAuthority, safeFailure } from './operation-result.mjs';
+import { assertOperationArguments, prepareOperationContext } from './operation-context.mjs';
+import { assertDispatchResult } from './read-result-envelope.mjs';
 
 const sameBinding = (a, b) => canonicalSha256(a.binding) === canonicalSha256(b.binding) && a.policyRevision === b.policyRevision;
 const subjectSelection = subject => {
@@ -12,7 +14,7 @@ function sameAuthority(a, b) {
   return sameBinding(a, b) && canonicalSha256(subjectSelection(a.subject)) === canonicalSha256(subjectSelection(b.subject));
 }
 
-export function createToolDispatch({ catalog, authority, budget, limits, now, newId, sourceEnabled = false }) {
+export function createToolDispatch({ catalog, authority, budget, limits, now, newId, sourceEnabled = false, memoryContextPorts }) {
   if (!catalog || typeof catalog.entry !== 'function' || typeof catalog.discoverable !== 'function' ||
       !authority || typeof authority.identify !== 'function' || typeof authority.check !== 'function' ||
       !budget || ['reserve', 'settle', 'markUncertain'].some(name => typeof budget[name] !== 'function') ||
@@ -30,21 +32,27 @@ export function createToolDispatch({ catalog, authority, budget, limits, now, ne
     const entry = catalog.entry(request.operation);
     if (!sourceEnabled || entry === null) deny('UNAVAILABLE');
     if (canonicalSha256(entry.descriptor.operation) !== canonicalSha256(request.operation)) deny('GATEWAY_CONFIGURATION');
+    assertOperationArguments(entry, request.arguments);
     const lifetime = createDispatchLifetime({ deadlineMs: now()+limits.maxRequestMs, now, signal });
     let reservationId; let reservationAttempted = false; let settled = false;
     try {
       const identity = await lifetime.run(signal => authority.identify({ credential, signal, limitDeadline: lifetime.limitDeadline }));
       lifetime.limitDeadline(Math.min(identity.run.deadlineMs, Date.parse(identity.claims.expiresAt)));
+      const authorize = input => lifetime.run(signal => authority.check({ credential, descriptor: entry.descriptor,
+        input, signal, limitDeadline: lifetime.limitDeadline }));
+      const context = await prepareOperationContext({ entry, request: request.arguments, identity, authorize,
+        ports: memoryContextPorts, lifetime, now, maxBytes: limits.maxResponseBytes });
       let normalized;
-      try { normalized = entry.contract.normalizeInput(request.arguments, { nowMs: now(), actorId: identity.claims.binding.actorId }); }
+      try { normalized = entry.contract.normalizeInput(request.arguments, context.options(context.authority)); }
       catch { deny('INVALID_ARGUMENTS'); }
       if (!normalized || canonicalSha256(normalized.input) !== normalized.argumentsSha256) deny('INVALID_ARGUMENTS');
-      const inspect = signal => authority.check({ credential, descriptor: entry.descriptor, input: normalized.input,
-        signal, limitDeadline: lifetime.limitDeadline });
-      const before = await lifetime.run(inspect);
+      const inspect = () => authorize(normalized.input);
+      const before = await inspect();
       if (!sameBinding(before, { binding: identity.claims.binding, policyRevision: identity.claims.policyRevision })) deny('ACCESS_DENIED');
+      if (context.authority && !sameAuthority(context.authority, before)) deny('ACCESS_DENIED');
       if (now() >= before.deadlineMs) deny('DEADLINE');
       lifetime.limitDeadline(before.deadlineMs);
+      context.observeAuthority(before);
       reservationId = newId();
       if (typeof reservationId !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(reservationId)) deny('GATEWAY_CONFIGURATION');
       reservationAttempted = true;
@@ -53,9 +61,10 @@ export function createToolDispatch({ catalog, authority, budget, limits, now, ne
         budgets: before.claims.budgets, deadlineMs: before.deadlineMs, signal })), limits.maxResponseBytes, 'BUDGET_UNCERTAIN');
       exactKeys(reservation, ['reservationId', 'decision'], 'BUDGET_UNCERTAIN');
       if (reservation.reservationId !== reservationId || reservation.decision !== 'reserved') deny('BUDGET_UNCERTAIN');
-      const effect = await lifetime.run(inspect);
+      const effect = await inspect();
       if (!sameAuthority(before, effect) || now() >= effect.deadlineMs) deny('ACCESS_DENIED');
       lifetime.limitDeadline(effect.deadlineMs);
+      context.observeAuthority(effect);
       let outputJson;
       try { outputJson = await lifetime.run(signal => entry.execute({ input: normalized.input,
         request: normalized.request, authority: effect, argumentsSha256: normalized.argumentsSha256, signal })); }
@@ -65,18 +74,18 @@ export function createToolDispatch({ catalog, authority, budget, limits, now, ne
         deny('INVALID_RESULT');
       }
       const output = parseRawJson(outputJson, Math.min(limits.maxResponseBytes, effect.claims.budgets.maxOutputBytes), 'INVALID_RESULT');
-      try { entry.contract.assertOutput(output, { request: normalized.request, nowMs: now(), actorId: effect.binding.actorId }); }
-      catch { deny('INVALID_RESULT'); }
-      assertResultLineage(output, effect);
-      const release = await lifetime.run(inspect);
+      const result = assertDispatchResult({ entry, output, authority: effect, normalized, context });
+      const release = await inspect();
       if (!sameAuthority(effect, release) || now() >= release.deadlineMs) deny('ACCESS_DENIED');
       lifetime.limitDeadline(release.deadlineMs);
+      context.observeAuthority(release);
+      await context.retain({ current: release, normalized, result });
       const settlement = parseRawJson(await lifetime.run(signal => budget.settle({ reservationId, outcome: 'completed',
         outputBytes: Buffer.byteLength(outputJson, 'utf8'), signal })), limits.maxResponseBytes, 'BUDGET_UNCERTAIN');
       exactKeys(settlement, ['reservationId', 'decision'], 'BUDGET_UNCERTAIN');
       if (settlement.reservationId !== reservationId || settlement.decision !== 'settled') deny('BUDGET_UNCERTAIN');
       settled = true;
-      const final = await lifetime.run(inspect);
+      const final = await inspect();
       if (!sameAuthority(effect, final) || now() >= final.deadlineMs) deny('ACCESS_DENIED');
       lifetime.limitDeadline(final.deadlineMs);
       lifetime.check();

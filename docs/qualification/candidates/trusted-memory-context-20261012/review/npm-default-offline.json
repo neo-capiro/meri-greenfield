@@ -1,0 +1,29 @@
+{
+  "command": [
+    "npm",
+    "ci",
+    "--ignore-scripts",
+    "--offline",
+    "--no-audit",
+    "--no-fund"
+  ],
+  "cwd": "/workspace/meri-trusted-memory-context-review-20261012",
+  "startUnixSeconds": 1791773411.178894,
+  "elapsedSeconds": 0.26462221145629883,
+  "exitCode": 1,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "fixtureRoot": null,
+  "streams": {
+    "stdout": {
+      "path": "npm-default-offline.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stderr": {
+      "path": "npm-default-offline.stderr.txt",
+      "bytes": 385,
+      "sha256": "7b5beb04eafce4c8682c371b544cc5c3da0f12a8b67b80c5644094640e40c351"
+    }
+  }
+}

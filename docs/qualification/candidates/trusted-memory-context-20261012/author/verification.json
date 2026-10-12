@@ -1,0 +1,458 @@
+{
+  "base": "5db2714b6dcbd3109c528e0afafcb654216133ca",
+  "kind": "source-only-author-evidence",
+  "commands": [
+    {
+      "name": "root-install",
+      "command": "npm ci --ignore-scripts --no-audit --no-fund (root; owned cache)",
+      "exitCode": 0,
+      "passed": null
+    },
+    {
+      "name": "contracts-install",
+      "command": "npm ci --ignore-scripts --no-audit --no-fund (contracts; owned cache)",
+      "exitCode": 0,
+      "passed": null
+    },
+    {
+      "name": "legacy-initial",
+      "command": "node --test apps/gateway/test/*.test.mjs (before new author test)",
+      "exitCode": 0,
+      "passed": 34
+    },
+    {
+      "name": "memory-initial",
+      "command": "node --test apps/gateway/test/memory-context.test.mjs",
+      "exitCode": 0,
+      "passed": 13
+    },
+    {
+      "name": "gateway-final",
+      "command": "node --test apps/gateway/test/*.test.mjs",
+      "exitCode": 0,
+      "passed": 47
+    },
+    {
+      "name": "root-final",
+      "command": "npm run check",
+      "exitCode": 0,
+      "passed": 244
+    },
+    {
+      "name": "public-final",
+      "command": "npm run check:contracts:distribution",
+      "exitCode": 0,
+      "passed": 7
+    }
+  ],
+  "sourceHashes": {
+    "apps/gateway/dispatch/tool-dispatch.mjs": "1ba9d1d2afa22bbff9008fb1de13853e25ec98684d7e0bbc87904e979e7b9cfb",
+    "apps/gateway/dispatch/operation-context.mjs": "0598ca96e1bff2817b0c0f02ef0a857a94a0d67508582d2b9369c5b6035855d5",
+    "apps/gateway/dispatch/memory-read-context.mjs": "8f4dc2f3b6ff1506ff694454625a624378ea7d6bfa7edd8a8b4703d472aafa14",
+    "apps/gateway/dispatch/read-result-envelope.mjs": "878bb4da296c8e1aca3dc0a6155f4ee6e3466423e4a0f6612db54178a78cc848",
+    "apps/gateway/test/memory-context.test.mjs": "675653ef2aac9de901f3bc2ab0280c38058b435835c5a4c808e564a7563a571d",
+    "packages/contracts/retrieval-0.2/catalog-validation.mjs": "8084c4065ff782d4f996d27c001e0a1b5b075810b4f51d61852f3c3d9bfcdabe"
+  },
+  "protectedFiles": [
+    {
+      "path": "apps/gateway/authorization/current-tool-authority.mjs",
+      "baseBlob": "5eed1731a5a36d5e9e9ac8eb971de4b87f702291",
+      "sha256": "182b5372a07968e64608454b259cd19e5603b4ff4b96e1750a336de5bf4b87a6",
+      "unchanged": true
+    },
+    {
+      "path": "apps/gateway/catalog/runtime-catalog.mjs",
+      "baseBlob": "5c2f3dc48c68daa93b4f19c515a404b62a83e05e",
+      "sha256": "092ed325693df95c3c5a41d20d3fdb56e19cce3fc9b47dafd8d42d76b9325dff",
+      "unchanged": true
+    },
+    {
+      "path": "apps/gateway/dispatch/dispatch-lifetime.mjs",
+      "baseBlob": "c7d93cd5c4137508d0faf5e93162ed25338abd17",
+      "sha256": "37219130a9a895125fa594bb8266b724c08a58f1af54f1353ff3b9f2fc5d6248",
+      "unchanged": true
+    },
+    {
+      "path": "apps/gateway/dispatch/operation-result.mjs",
+      "baseBlob": "bafbe910bca5e7da2c97d9d8f1c3e529835f78e8",
+      "sha256": "26e44f72ec13011a8c0960842d6a8abd53b8f67e9082f888f4bc2458b5c42468",
+      "unchanged": true
+    },
+    {
+      "path": "apps/gateway/index.mjs",
+      "baseBlob": "2e27d9a8c31a17218e112cf3c8fa61cbb2b76c45",
+      "sha256": "594f8f1dc780b5dc41e1738e6e484c8e20d365ed6b46137091c3644c4e2266c9",
+      "unchanged": true
+    },
+    {
+      "path": "apps/gateway/test/authority-deadline.test.mjs",
+      "baseBlob": "e2a538798329dbd4beb51fb0553acf3d5f2a92eb",
+      "sha256": "4e8a9eac66b1481cbce30cec68274a25681026890688644ccdf28a78d0c81d28",
+      "unchanged": true
+    },
+    {
+      "path": "apps/gateway/test/fixtures.mjs",
+      "baseBlob": "13c2a3825972dddca25b09d1211f5df29b797973",
+      "sha256": "53915bd72e3e7eb9a7a70219c06aa4359948a9c9abab91469fcfaaf1322f8a2c",
+      "unchanged": true
+    },
+    {
+      "path": "apps/gateway/test/gateway.test.mjs",
+      "baseBlob": "80590441e8bd2acf827a56d85135ee24e9071eac",
+      "sha256": "6f71caf19539fca672c1217df079e58a6ed772f91648536bfe3f45e8a2d5d0e4",
+      "unchanged": true
+    },
+    {
+      "path": "package-lock.json",
+      "baseBlob": "1df76d455fb2c978f178137357c99438f2cb8a8e",
+      "sha256": "b2293773bf4ddc6d23425b7d718b79575384679999b86fd3caad78e6eda4a42d",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/README.md",
+      "baseBlob": "fc8c907c08f6af8d9ef5ae55342f7c09b59b01a0",
+      "sha256": "8ce45c8fe273b5d929f455a3d74803c4267a0113a530cd7e584c0886c999edd6",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/THIRD-PARTY-NOTICES.md",
+      "baseBlob": "ec61b91441db31faa8b8e8d2c32f131eb0129e6c",
+      "sha256": "5c7b0def28c37c7a1855ecc25c6cf3ea61e79dad7c5a1601ad69fc9d7dd361dd",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/dist/browser.d.ts",
+      "baseBlob": "5791ac15a45bc1cb19817005af1ae4e976ecf0a7",
+      "sha256": "638d76071540b340cc8bd7efd728e3847cb22456dc8ec45d8733497792a0ba30",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/dist/browser.mjs",
+      "baseBlob": "0edfb969fedcd13773c3da2c6c054d256a05ec71",
+      "sha256": "3682cd96d10c1cc53f4e4a91845c6da514eda9d524ce8342b89e09ffcc19ae83",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/dist/contracts.d.ts",
+      "baseBlob": "1273d1adced80d7f6361df242a0f7968f16ca24f",
+      "sha256": "e0366e2f5a668e9e14f09e90c175dce53cbec176125aa98a58c878b44fd74fbd",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/dist/index.d.ts",
+      "baseBlob": "79e6e96d047b3766f91352ec2845765a169059d7",
+      "sha256": "b1d45e99574c3834d70354fd973298b5a9b4e76befc11d6e2996c51c70266642",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/dist/metadata.d.ts",
+      "baseBlob": "2d97076985d9cefb8906f31f5c90608942fff8fd",
+      "sha256": "63e058d979f30b9807ed9a7c5df2760c06a180bd903ff13daa9c96bfcba78087",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/dist/metadata.mjs",
+      "baseBlob": "ac07aa48b3dd52f80ed243061f770d3528c3e6bd",
+      "sha256": "63a4733b40a9671dbca69419d12cae894adca42a9f2ced83cd729ce239e1ef94",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/generate.mjs",
+      "baseBlob": "a5ce60ef8ffa2925c767165c5947aeb1b9e89125",
+      "sha256": "80c645d6c1ef206e7e67d2d553c4277d33c2f4980c9cddcd2862c4bb1b54e06e",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/meri.schema.json",
+      "baseBlob": "d7b3c22491ae81c5e875243754413aa7d35097e3",
+      "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/package-lock.json",
+      "baseBlob": "ab7cd61ebb528597c6031f6006d6d03512ac2206",
+      "sha256": "dae8c670bb76b9c570f174d8749a8c59179cf865d5d6ec83b64a67bb5b2b06a6",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/package.json",
+      "baseBlob": "4731aff07da77ede83700de8de6d9a015131bcc2",
+      "sha256": "5ffd1042ab28e234a4803344f34a882bd0695580914d21136e7c13e43c7ddbe7",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/qualification-sdk/fixture.schema.json",
+      "baseBlob": "ba6207f79be5dda007b7a89cd69be00ae8a53b15",
+      "sha256": "fbf0655ab6960ac5c486c08ba70b2a31310086ca282f0e9a1f41c08430ebfa13",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/qualification-sdk/native-evidence.mjs",
+      "baseBlob": "2ff2d20a3eab5d4c3a326c33260c953858dca1fb",
+      "sha256": "0f587aefd26e189fd9099b1639910da6ec37725b5729c4ba5d98a4695ec5fcde",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/qualification-sdk/native-evidence.schema.json",
+      "baseBlob": "aa2bfc00d5a481e07c22aa1c35ffc0e51491fe21",
+      "sha256": "5f9ac8980940bf4928b2d655fa5e299208f3d6dbf8f1adceceb9727cb69f62f5",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/qualification-sdk/validate.mjs",
+      "baseBlob": "827e3c6f29cd77ef62fa9d341df2e2c45c7be187",
+      "sha256": "2d0bd74171e390c370ad8d9e599f7c46ce4751e5efd6ba2c18923090b749b86c",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/qualification-sdk/wire.mjs",
+      "baseBlob": "f643c958081f531922121a368cf02c265a85fdd7",
+      "sha256": "f8f506ceeca820f3957b67f8bcbfc36c80f009356baba83b32ac99afe401ad9a",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog.json",
+      "baseBlob": "be6f0b073055616d07ecaabf80f4c54e0a2c04c7",
+      "sha256": "733438a232fafbc7aaf8635ba30fd33d1fab94bc73949d2c9264b14c92e8cbce",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog.schema.json",
+      "baseBlob": "51a764cfeb94a0e6fdce99c2bab3ce62d6b95853",
+      "sha256": "95eec52796389bbe2e515637024280015993f3a74d971b7680aacddea4e34488",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/common.schema.json",
+      "baseBlob": "2f13b30da97a8d459f399b64326b3ebe1f619588",
+      "sha256": "7d7ac22eff809cc31e84d1fc9b2fada1b56c316f73e50115207b579de0d92c4b",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/data-search-validation.mjs",
+      "baseBlob": "9c155d85299b84d1749c208a4dd91e835b43941a",
+      "sha256": "5049b9177664275f763ab97f92fe722ae5d4e2064ca8400f6448d89027f5cd43",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/data-search.schema.json",
+      "baseBlob": "f9513267ab11ec3237f05ecadbdac32c32b6fc04",
+      "sha256": "96e5d1ebc461dc53db86e2fd14e2863d93d5c651e134382a2da5daefd3836fec",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/federal-market-validation.mjs",
+      "baseBlob": "49e32e9eb288d91b78c6482f03c973d4862bdbf9",
+      "sha256": "eebf8b073bc8b25e6c7aea415c269cb034eb9976d45ab6ae0411d709e11295df",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/federal-market.schema.json",
+      "baseBlob": "04b4f788ed0a9964bf586109727a56d48bc957ef",
+      "sha256": "5ebd54c7a1e5d3a2ef99f5a69e76293aec227fbe50874f21ba69ea987417bada",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/mail-validation.mjs",
+      "baseBlob": "54fd3f1998f358eb60dbea7490eb990085b44523",
+      "sha256": "e15eec9ea611daa70d8605e8b350c20535fab27f516937897914eeb55d6f8cdc",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/mail.schema.json",
+      "baseBlob": "40148b9b889c4f3f08ad768ce7b2a12c23f328b5",
+      "sha256": "d45681f76ba5f5d7f65b7385ab1e1c3deb9626d4166e55fc6039e88bc3d804e6",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/meeting-source-validation.mjs",
+      "baseBlob": "dd019496ccc5f6715676c6a6d5cedeeb6a679e5d",
+      "sha256": "5fc7e262efc9be933c760ee089e02f58e4a8d74a958c8e412c216846bbba8ac2",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/meeting-source.schema.json",
+      "baseBlob": "8142217c2e85930ad386bbaf7b421c18aef62cc0",
+      "sha256": "b7ec6ecbdaab3fcccac3b83b9530828c90bda96685385b6f49f929fbd2776664",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/memory-proposals-validation.mjs",
+      "baseBlob": "9f525ec76aa141b03aef3a146885ee4416f3afe5",
+      "sha256": "93a39db8d1302117ddcc97406f3132462259221d38a52670646e89ea0fd53e28",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/memory-proposals.schema.json",
+      "baseBlob": "4cf06d08b66805736bee21920b5b902c6df4a02b",
+      "sha256": "e881b3786e40e3c579f230633b1a59a725b8da59499ac5f284c9b3b84f3ac7ce",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/memory-review-policy.mjs",
+      "baseBlob": "2cb6b2afc194f70bf75e2e39170f61bf6b5980ea",
+      "sha256": "088d64a80ea10eaad4e9c6bd6028fb128a96d79f5ce7af3c60a314fa13894ff8",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/operation-contracts.mjs",
+      "baseBlob": "1447d84e2d0074bebb0296e16204e2d7f913315e",
+      "sha256": "400065b146861f629915c6c26bfb99c3f75395563861d7a07b40c4865beb3adb",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/operational-reads-validation.mjs",
+      "baseBlob": "b58d63bef3759798f91638924ab8a7454c50d2b4",
+      "sha256": "81be7fe48c5d34f9352e145d9c47dc2e143ffc0b985a5f1ac26e0be07c344a42",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/operational-reads.schema.json",
+      "baseBlob": "fa5b7daf9b93c1344cb4f4ef1985b0a2cb3031ab",
+      "sha256": "a8556220e2285239e9d46aba97954594f245daad20ab126c1733f2360d3f109c",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/retrieval.schema.json",
+      "baseBlob": "cc18ee2600cfc0714a5088a9d62ce2f9710b8461",
+      "sha256": "6058aa0d735b595a093907eec8bf7e4e8f4eb96952f497caa3c1eb00f3ad1a8c",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/skill.schema.json",
+      "baseBlob": "73da0d331097e739373722b6b0bf1984f0d45c1f",
+      "sha256": "146a78397cf72fbb899769fe23a83ab609fd8d67803f543ab5a76dba7a37ee7e",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/validate.mjs",
+      "baseBlob": "022908f083bf667818046e40f390a3cce83bda97",
+      "sha256": "36247f9ef66bd98dbd7bf1aded6971b8b6b38c8d648d4cfc3128d423d3a198df",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/test/boundaries.test.mjs",
+      "baseBlob": "764fd9aca4420d64709a336fe4a8de30334401cb",
+      "sha256": "521f72c4fed9333db9eeca4e3b7a34e01ff94cb69b61f876e023f58c5f7afa7e",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/test/native-evidence-fixture.mjs",
+      "baseBlob": "f8823d05b697991c2f8483a32ba3513cbac40dec",
+      "sha256": "f8560005230f043284c4a879a4ab72a8bd115c202d9f407614226e57f5a8e35c",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/test/public-package.test.mjs",
+      "baseBlob": "58a792968c016f2d28370c851b7c9cfb9f79728f",
+      "sha256": "707a08a5b4b63338c1e1cd4c0f6e9166fd4d3fdcd78d15a094b3a4618c400e4d",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/test/public-types.ts",
+      "baseBlob": "2f13dd4e62a025dc781026cccc8dc8589390540a",
+      "sha256": "ac20e2d9ab7312f3d008a1b7f8b64770435668420b56da3eda7ba6c631a1f1ba",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+      "baseBlob": "093dbebe615f162454e10a183e6817e856f80422",
+      "sha256": "5a8856da6dc45303cf416722540e4a22da9de3a9f6e359d2d620acb34436e487",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/test/retrieval-data-search.test.mjs",
+      "baseBlob": "f18ed7e14494451f5c7bc8ae3b3184b2bd5cde10",
+      "sha256": "8c54528ece9781bce90d05754da499ceaac0b3d121328f1112e43b6b47449fc1",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/test/retrieval-federal-market.test.mjs",
+      "baseBlob": "b58209fb658e952bdf1d6996462f07450b6e062e",
+      "sha256": "f42aff67c1b8c9832c774feab4dc5fba50097720793fef5efca99e9e076b0016",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/test/retrieval-mail.test.mjs",
+      "baseBlob": "b63d96ebddeb11b248b31a5fee3edcfd8da66d15",
+      "sha256": "294cdf427adce6d52d1892df7f0caf78b545d8c00cdec8136bf66acb3d97b5a6",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/test/retrieval-meeting-source.test.mjs",
+      "baseBlob": "b9f039e75a07e49060dc6127c5ee904c2d52ec94",
+      "sha256": "cb2972660effd42f4eed8bdf20d1ea8580a9db6e38700cdd56e80eb44615f479",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/test/retrieval-memory-binding.test.mjs",
+      "baseBlob": "d95c7325db476e83fb7fc2efdcf07c91c446920a",
+      "sha256": "90a7429b1f79fc5baeb68144a5acc3e0532f6f51e6a2d3d0c855cfa048aa1003",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/test/retrieval-memory-proposals.test.mjs",
+      "baseBlob": "bd8dbbdcc0770d61003df2a7fc10e6d29b4f394a",
+      "sha256": "9f6981e2877abda950f74789a40fdd27dbeda805e23a5f65acb04f53a189343b",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/test/retrieval-memory-review-policy.test.mjs",
+      "baseBlob": "f0fd58756bfd049f309a17555380151908d33b1a",
+      "sha256": "89305181c698699a3576f96179a481d982a8b3dbce0b544ed7d1af765307ae19",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/test/retrieval-operational-reads.test.mjs",
+      "baseBlob": "96d60542f401dedaa1ce5d1e25a4490c1d4dd71f",
+      "sha256": "fb31ba2aca26600e2404ef6137c9a568e0fd27ed00299f4bc5b3a3ff1d3bdfb0",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/test/retrieval-r2.test.mjs",
+      "baseBlob": "09938c0424c5b9d09496a63b33c6c84cfeef7a43",
+      "sha256": "474228f11a79bc865233509bc1aba02533d4975a5c0b0371e47529aff9d48a23",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/test/sdk-fixture-contract.test.mjs",
+      "baseBlob": "05903eed0fa09a425312ce5fbf38d19a864a1a5e",
+      "sha256": "98f2e73b0ebda0f8e896d07ed02b6f3b0351892dc5241cac98df584da1a3cc93",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/test/sdk-fixture-wire.test.mjs",
+      "baseBlob": "9baf896d605f1b84411733e4045eddbd06d9e2db",
+      "sha256": "0a292a418855ab4f3f07f096a618772928e06533fa05b41db4d4d6a56506abcc",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/test/sdk-native-evidence.test.mjs",
+      "baseBlob": "b3c3f245045b7072bf0105f9c427288fd598f5dc",
+      "sha256": "46aa59d850f26786dd5c8a24eea4c8a3fd573c0b2ce082b85ea45a6e3387a64e",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/validate.mjs",
+      "baseBlob": "2effe37084e7d20c20a33dc0104baea237f7d309",
+      "sha256": "c2449fd55300b31bdc1e829b5d918a531f1c4b2c675085a5b4707726ddd36d10",
+      "unchanged": true
+    }
+  ],
+  "rawEvidence": {
+    "contracts-install.stderr.txt": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d",
+    "contracts-install.stdout.txt": "1d41eb5f721bb9d5710254973769ef57dc59f277b97c8647bf6ffaff5426b4ba",
+    "gateway-final.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "gateway-final.stdout.txt": "156abd330bbd72f3e97919d318c25bd83ab93a5edce2d19069e05fffd42a6ee8",
+    "legacy-initial.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "legacy-initial.stdout.txt": "486ad59542f353d6b64db5db7868300d350d3cb245ef30552d4876bab102a6f1",
+    "memory-initial.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "memory-initial.stdout.txt": "62838ba934b5088eab8042e14256404471ff9a4251e7532070fa430a0101eb23",
+    "public-final.stderr.txt": "cbbd466f3bf458f7f516c133ea486c1aada38d325ec9a80b698c26da8c18237f",
+    "public-final.stdout.txt": "4daf6e304dc55ba6666b53eaa353e7305d45d3adea3826a0a96c65a90c94b7c4",
+    "root-final.stderr.txt": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d",
+    "root-final.stdout.txt": "1d2a72d96fe3ab283650b4f6ae190f8fc1d6092d6c1023f2ebda7b0ba431909d",
+    "root-install.stderr.txt": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d",
+    "root-install.stdout.txt": "10a3b21efb70f84d46dae9fd0fc25ede9abef4b84b10aa0eed78fe9f0c6a96fa"
+  }
+}
