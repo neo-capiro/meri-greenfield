@@ -1,0 +1,36 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "packages/contracts/test/retrieval-reference-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-selected-next-bindings.test.mjs"
+  ],
+  "cwd": "/workspace/meri-civic-reads-20261012",
+  "sourceHead": "a35a8323024b37ebb245f1a3c67084c19ef2f0c3",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-12T18:36:42.586868+00:00",
+  "durationSeconds": 3.932,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 250869,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration/focused-canonical.stdout.bin",
+      "bytes": 8738,
+      "sha256": "ff769a8be5c025ccc42daf0a2403263c2f8a8a6867c9e9848d3910f8f04745c1"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration/focused-canonical.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

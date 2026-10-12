@@ -1,0 +1,128 @@
+{
+  "reason": "Disposable installed CDK caches in this team completed, independently accepted PR30 reference source lanes; preserve all tracked source/evidence/locks and original branches. None of these caches is needed by ongoing source-contract work.",
+  "removed": [
+    {
+      "path": "/workspace/meri-legislative-directory-20261012/node_modules/aws-cdk",
+      "packageJsonSha256": "e11fc2819979c9d7ca647d0d4773aca927310f1b89dc921bc76736e62617d423",
+      "completedWorktreeHead": "62a9f7e3c71d12a2e9e6e3ad4b9d361f3be9d257"
+    },
+    {
+      "path": "/workspace/meri-legislative-directory-20261012/node_modules/aws-cdk-lib",
+      "packageJsonSha256": "0d52a9f827fd09cde3e17e9de00aff11d1e6bbbf7d93ea498d44673153e7608f",
+      "completedWorktreeHead": "62a9f7e3c71d12a2e9e6e3ad4b9d361f3be9d257"
+    },
+    {
+      "path": "/workspace/meri-legislative-directory-20261012/node_modules/constructs",
+      "packageJsonSha256": "2494c6c26191f27f179eb9e4149144fa71206d2975a4f87d9df30c3429bee8c8",
+      "completedWorktreeHead": "62a9f7e3c71d12a2e9e6e3ad4b9d361f3be9d257"
+    },
+    {
+      "path": "/workspace/meri-legislative-directory-review-20261012/node_modules/aws-cdk",
+      "packageJsonSha256": "e11fc2819979c9d7ca647d0d4773aca927310f1b89dc921bc76736e62617d423",
+      "completedWorktreeHead": "7f287767e15b334e44919d8c2ee9bcd4f60819bc"
+    },
+    {
+      "path": "/workspace/meri-legislative-directory-review-20261012/node_modules/aws-cdk-lib",
+      "packageJsonSha256": "0d52a9f827fd09cde3e17e9de00aff11d1e6bbbf7d93ea498d44673153e7608f",
+      "completedWorktreeHead": "7f287767e15b334e44919d8c2ee9bcd4f60819bc"
+    },
+    {
+      "path": "/workspace/meri-legislative-directory-review-20261012/node_modules/constructs",
+      "packageJsonSha256": "2494c6c26191f27f179eb9e4149144fa71206d2975a4f87d9df30c3429bee8c8",
+      "completedWorktreeHead": "7f287767e15b334e44919d8c2ee9bcd4f60819bc"
+    },
+    {
+      "path": "/workspace/meri-pe-references-20261012/node_modules/aws-cdk",
+      "packageJsonSha256": "e11fc2819979c9d7ca647d0d4773aca927310f1b89dc921bc76736e62617d423",
+      "completedWorktreeHead": "3348a42ff4275c6e60b195f8af03a7c017ced3a4"
+    },
+    {
+      "path": "/workspace/meri-pe-references-20261012/node_modules/aws-cdk-lib",
+      "packageJsonSha256": "0d52a9f827fd09cde3e17e9de00aff11d1e6bbbf7d93ea498d44673153e7608f",
+      "completedWorktreeHead": "3348a42ff4275c6e60b195f8af03a7c017ced3a4"
+    },
+    {
+      "path": "/workspace/meri-pe-references-20261012/node_modules/constructs",
+      "packageJsonSha256": "2494c6c26191f27f179eb9e4149144fa71206d2975a4f87d9df30c3429bee8c8",
+      "completedWorktreeHead": "3348a42ff4275c6e60b195f8af03a7c017ced3a4"
+    },
+    {
+      "path": "/workspace/meri-rule-status-20261012/node_modules/aws-cdk",
+      "packageJsonSha256": "e11fc2819979c9d7ca647d0d4773aca927310f1b89dc921bc76736e62617d423",
+      "completedWorktreeHead": "86c701c87f36b4b42d8923a53b190e1a2213ce70"
+    },
+    {
+      "path": "/workspace/meri-rule-status-20261012/node_modules/aws-cdk-lib",
+      "packageJsonSha256": "0d52a9f827fd09cde3e17e9de00aff11d1e6bbbf7d93ea498d44673153e7608f",
+      "completedWorktreeHead": "86c701c87f36b4b42d8923a53b190e1a2213ce70"
+    },
+    {
+      "path": "/workspace/meri-rule-status-20261012/node_modules/constructs",
+      "packageJsonSha256": "2494c6c26191f27f179eb9e4149144fa71206d2975a4f87d9df30c3429bee8c8",
+      "completedWorktreeHead": "86c701c87f36b4b42d8923a53b190e1a2213ce70"
+    },
+    {
+      "path": "/workspace/meri-rule-status-review-20261012/node_modules/aws-cdk",
+      "packageJsonSha256": "e11fc2819979c9d7ca647d0d4773aca927310f1b89dc921bc76736e62617d423",
+      "completedWorktreeHead": "b3670edb527aa2cd8f4deaa3b75fbbec4993a267"
+    },
+    {
+      "path": "/workspace/meri-rule-status-review-20261012/node_modules/aws-cdk-lib",
+      "packageJsonSha256": "0d52a9f827fd09cde3e17e9de00aff11d1e6bbbf7d93ea498d44673153e7608f",
+      "completedWorktreeHead": "b3670edb527aa2cd8f4deaa3b75fbbec4993a267"
+    },
+    {
+      "path": "/workspace/meri-rule-status-review-20261012/node_modules/constructs",
+      "packageJsonSha256": "2494c6c26191f27f179eb9e4149144fa71206d2975a4f87d9df30c3429bee8c8",
+      "completedWorktreeHead": "b3670edb527aa2cd8f4deaa3b75fbbec4993a267"
+    },
+    {
+      "path": "/workspace/meri-certification-status-20261012/node_modules/aws-cdk",
+      "packageJsonSha256": "e11fc2819979c9d7ca647d0d4773aca927310f1b89dc921bc76736e62617d423",
+      "completedWorktreeHead": "1142bbd7dabd927653ec5c810b86f8ecba89f0ba"
+    },
+    {
+      "path": "/workspace/meri-certification-status-20261012/node_modules/aws-cdk-lib",
+      "packageJsonSha256": "0d52a9f827fd09cde3e17e9de00aff11d1e6bbbf7d93ea498d44673153e7608f",
+      "completedWorktreeHead": "1142bbd7dabd927653ec5c810b86f8ecba89f0ba"
+    },
+    {
+      "path": "/workspace/meri-certification-status-20261012/node_modules/constructs",
+      "packageJsonSha256": "2494c6c26191f27f179eb9e4149144fa71206d2975a4f87d9df30c3429bee8c8",
+      "completedWorktreeHead": "1142bbd7dabd927653ec5c810b86f8ecba89f0ba"
+    },
+    {
+      "path": "/workspace/meri-stored-reference-reads-20261012/node_modules/aws-cdk",
+      "packageJsonSha256": "e11fc2819979c9d7ca647d0d4773aca927310f1b89dc921bc76736e62617d423",
+      "completedWorktreeHead": "7761e705a5947940814139e39517474ad851eced"
+    },
+    {
+      "path": "/workspace/meri-stored-reference-reads-20261012/node_modules/aws-cdk-lib",
+      "packageJsonSha256": "0d52a9f827fd09cde3e17e9de00aff11d1e6bbbf7d93ea498d44673153e7608f",
+      "completedWorktreeHead": "7761e705a5947940814139e39517474ad851eced"
+    },
+    {
+      "path": "/workspace/meri-stored-reference-reads-20261012/node_modules/constructs",
+      "packageJsonSha256": "2494c6c26191f27f179eb9e4149144fa71206d2975a4f87d9df30c3429bee8c8",
+      "completedWorktreeHead": "7761e705a5947940814139e39517474ad851eced"
+    },
+    {
+      "path": "/workspace/meri-facility-representation-review-20261012/node_modules/aws-cdk",
+      "packageJsonSha256": "e11fc2819979c9d7ca647d0d4773aca927310f1b89dc921bc76736e62617d423",
+      "completedWorktreeHead": "f9b4dbcbbce74565aba852f6d529d006b948653f"
+    },
+    {
+      "path": "/workspace/meri-facility-representation-review-20261012/node_modules/aws-cdk-lib",
+      "packageJsonSha256": "0d52a9f827fd09cde3e17e9de00aff11d1e6bbbf7d93ea498d44673153e7608f",
+      "completedWorktreeHead": "f9b4dbcbbce74565aba852f6d529d006b948653f"
+    },
+    {
+      "path": "/workspace/meri-facility-representation-review-20261012/node_modules/constructs",
+      "packageJsonSha256": "2494c6c26191f27f179eb9e4149144fa71206d2975a4f87d9df30c3429bee8c8",
+      "completedWorktreeHead": "f9b4dbcbbce74565aba852f6d529d006b948653f"
+    }
+  ],
+  "skipped": [],
+  "untouched": "Shared installed donor and all native/worker/infrastructure/other-owner worktrees",
+  "freeMiB": 1606
+}

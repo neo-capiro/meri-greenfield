@@ -1,0 +1,116 @@
+[
+  {
+    "path": "packages/contracts/retrieval-0.2/state-bill-identity.mjs",
+    "originalSource": "788c0419c9489dfdd4906a50b59661595a072713",
+    "expectedSource": "788c0419c9489dfdd4906a50b59661595a072713",
+    "sha256": "25d86301366971f622f88fcdcf45ccf25036b677f38a5612283ac595872c6ad7"
+  },
+  {
+    "path": "packages/contracts/retrieval-0.2/state-status-votes-validation.mjs",
+    "originalSource": "a25516ae8d2c44638800e492e439e212098dc750",
+    "expectedSource": "a25516ae8d2c44638800e492e439e212098dc750",
+    "sha256": "43587a404705d7a589000c0bd228beb74be4880c12ebc71c17ca5fca93cfeaa1"
+  },
+  {
+    "path": "packages/contracts/retrieval-0.2/state-status-votes.schema.json",
+    "originalSource": "a25516ae8d2c44638800e492e439e212098dc750",
+    "expectedSource": "a25516ae8d2c44638800e492e439e212098dc750",
+    "sha256": "ac017527b6d8da90b91e61c550623144a8eed4cd89a3b020c4a23acd27a8fde2"
+  },
+  {
+    "path": "packages/contracts/test/retrieval-state-status-votes.test.mjs",
+    "originalSource": "a25516ae8d2c44638800e492e439e212098dc750",
+    "expectedSource": "a25516ae8d2c44638800e492e439e212098dc750",
+    "sha256": "4c199d928bf8e5955156e0ab9ba11849aa2cb9688e5ae645aa22c850587e1ed7"
+  },
+  {
+    "path": "packages/contracts/retrieval-0.2/regulatory-dockets-validation.mjs",
+    "originalSource": "57e09ebfda15d6057bdf4bfb7fc84b4061eac03f",
+    "expectedSource": "57e09ebfda15d6057bdf4bfb7fc84b4061eac03f",
+    "sha256": "f9e8cf5f48c15b52590ba4ab5f7ad24efea0064f5b03c719a186fe0c552de1d7"
+  },
+  {
+    "path": "packages/contracts/retrieval-0.2/regulatory-dockets.schema.json",
+    "originalSource": "57e09ebfda15d6057bdf4bfb7fc84b4061eac03f",
+    "expectedSource": "57e09ebfda15d6057bdf4bfb7fc84b4061eac03f",
+    "sha256": "67780fed6830f53dbb4fa0f76a681666b426a41408046f5c778be3efdb810654"
+  },
+  {
+    "path": "packages/contracts/test/retrieval-regulatory-dockets.test.mjs",
+    "originalSource": "57e09ebfda15d6057bdf4bfb7fc84b4061eac03f",
+    "expectedSource": "57e09ebfda15d6057bdf4bfb7fc84b4061eac03f",
+    "sha256": "9735c10f9a99e8cc717ff199ebf39b587520fabb9536caabfa89f8a49c026a64"
+  },
+  {
+    "path": "packages/contracts/retrieval-0.2/tenant-contacts-validation.mjs",
+    "originalSource": "0aba55ef096a68a3cfd92f770783dec3fddfea22",
+    "expectedSource": "1e31f94bb8e399eede1f28609cb241b87e356b62",
+    "sha256": "793b0880b4a1a8cf4d77ad39ee857b1222289d732a7ba9704b4acbae06989767"
+  },
+  {
+    "path": "packages/contracts/retrieval-0.2/tenant-contacts.schema.json",
+    "originalSource": "0aba55ef096a68a3cfd92f770783dec3fddfea22",
+    "expectedSource": "1e31f94bb8e399eede1f28609cb241b87e356b62",
+    "sha256": "065ff9d94072c8d54cb1f490957be23c952334ee2c9184bbeb76f5d82c59f691"
+  },
+  {
+    "path": "packages/contracts/test/retrieval-tenant-contacts.test.mjs",
+    "originalSource": "0aba55ef096a68a3cfd92f770783dec3fddfea22",
+    "expectedSource": "e890cff6d1110a1d29bd5dec0b7f340db0e41f06",
+    "sha256": "9c1b2d8918361d9457c29a1a5169096010749f05f265f3a5e4ef2eede43d7669"
+  },
+  {
+    "path": "packages/contracts/retrieval-0.2/entity-candidates-validation.mjs",
+    "originalSource": "788c0419c9489dfdd4906a50b59661595a072713",
+    "expectedSource": "788c0419c9489dfdd4906a50b59661595a072713",
+    "sha256": "2ef046fa6166f5e9011c89081a5f58b0413b0a5ee2d1bd12bbdc8c580f723090"
+  },
+  {
+    "path": "packages/contracts/retrieval-0.2/entity-candidates.schema.json",
+    "originalSource": "788c0419c9489dfdd4906a50b59661595a072713",
+    "expectedSource": "788c0419c9489dfdd4906a50b59661595a072713",
+    "sha256": "2b8eb948781d2e0c486b58f09fafbe821a6216942eb5ee33797135392f78d100"
+  },
+  {
+    "path": "packages/contracts/test/retrieval-entity-candidates.test.mjs",
+    "originalSource": "788c0419c9489dfdd4906a50b59661595a072713",
+    "expectedSource": "788c0419c9489dfdd4906a50b59661595a072713",
+    "sha256": "34767d375d11663d7136d389aaf14f8278dd9ffa59bbb09d2909f2ddfaf53b11"
+  },
+  {
+    "path": "packages/contracts/retrieval-0.2/tracked-bills-validation.mjs",
+    "originalSource": "e020f4ff2af3c23412adf2fd634f8362140eeb51",
+    "expectedSource": "e020f4ff2af3c23412adf2fd634f8362140eeb51",
+    "sha256": "697ba30c8cfbf7c02e5b815104e909fd2183633891ccc835373d568e44b6bc67"
+  },
+  {
+    "path": "packages/contracts/retrieval-0.2/tracked-bills.schema.json",
+    "originalSource": "e020f4ff2af3c23412adf2fd634f8362140eeb51",
+    "expectedSource": "e020f4ff2af3c23412adf2fd634f8362140eeb51",
+    "sha256": "726efeaa4fd06c37790e05da94380f95e1ab97c694d0d8d5ada60a1579ee4cf5"
+  },
+  {
+    "path": "packages/contracts/test/retrieval-tracked-bills.test.mjs",
+    "originalSource": "e020f4ff2af3c23412adf2fd634f8362140eeb51",
+    "expectedSource": "e020f4ff2af3c23412adf2fd634f8362140eeb51",
+    "sha256": "9666aeec7f29e93f20cb530decb7303b4219554da5c452f64c5ea06bce1a8b96"
+  },
+  {
+    "path": "packages/contracts/retrieval-0.2/intelligence-summary-validation.mjs",
+    "originalSource": "d48c9620e30c3686217095cb45b24f1b0c8218a2",
+    "expectedSource": "d48c9620e30c3686217095cb45b24f1b0c8218a2",
+    "sha256": "7140959d4b77abbd835b6bb3179c88da516be43999b56ba79953ee659730d9d0"
+  },
+  {
+    "path": "packages/contracts/retrieval-0.2/intelligence-summary.schema.json",
+    "originalSource": "d48c9620e30c3686217095cb45b24f1b0c8218a2",
+    "expectedSource": "d48c9620e30c3686217095cb45b24f1b0c8218a2",
+    "sha256": "cd589df078359153d23e83ada2fb9a5fea46fa18552809a97ebfa10cafa0bd24"
+  },
+  {
+    "path": "packages/contracts/test/retrieval-intelligence-summary.test.mjs",
+    "originalSource": "d48c9620e30c3686217095cb45b24f1b0c8218a2",
+    "expectedSource": "d48c9620e30c3686217095cb45b24f1b0c8218a2",
+    "sha256": "fac48b362c5b813eabcbb687f1e5d127fdfe2053beb408ffa0c43aacdc96c889"
+  }
+]
