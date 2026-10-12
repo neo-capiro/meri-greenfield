@@ -139,3 +139,16 @@ test('independent dockets: cycles hidden data and foreign prototypes refuse iner
  const cycle={};cycle.self=cycle;for(const input of [cycle,new Date(),Object.defineProperty({},'limit',{value:2})])assert.throws(()=>normalize(input));
  const p=page();p.results[0].title=new String('synthetic');assert.throws(()=>check(p));
 });
+
+test('independent dockets: metadata explicitly limits both count and current-window qualification',()=>{
+ for(const [request,countScope] of [[{},'separate-local-count'],[{upcomingOnly:true},'bounded-service-window-before-limit']]){
+  const metadata=normalize(request).metadata;
+  assert.deepEqual(metadata,{authoritative:false,sourceConnected:false,producerQualified:false,absenceEvidence:false,currentWindowQualified:false,sourceScope:'stored-regulatory-dockets',countScope});
+ }
+});
+test('independent dockets: direct output shape helper retains necessary window relationships',()=>{
+ const p=upcoming([row({commentEndDate:stamp,withdrawn:true})]);
+ assert.throws(()=>v.validateRegulatoryDocketsShape('RegulatoryDocketsQueryOutput',p));
+ assert.throws(()=>v.validateRegulatoryDocketsShape('RegulatoryDocketsQueryOutput',upcoming(undefined,51)));
+ v.validateRegulatoryDocketsShape('RegulatoryDocketsQueryOutput',page([row()],0));
+});
