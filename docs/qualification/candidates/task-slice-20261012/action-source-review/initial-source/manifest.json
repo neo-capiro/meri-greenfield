@@ -1,0 +1,22 @@
+[
+  {
+    "path": "projection.mjs",
+    "sha256": "bca0dc7285ab089a606c7f29c6026522b6f75f397b21a2e8940c78cc7fa72f8e",
+    "bytes": 2648
+  },
+  {
+    "path": "http-adapter.mjs",
+    "sha256": "f7119fddf850f829e094ab076d4597d23dc4a84a63c9bfa65b159508f90a9186",
+    "bytes": 4376
+  },
+  {
+    "path": "handler.mjs",
+    "sha256": "c701f71fea2d1e808a09adb9d6907adbaffbda1ad4f79bd0c11a3d631f7fc453",
+    "bytes": 1804
+  },
+  {
+    "path": "request-context.mjs",
+    "sha256": "742326e8c5fa224d67ee2e4c4f3d072007eac64609fe8d1d417901ab92f43dfb",
+    "bytes": 2814
+  }
+]
