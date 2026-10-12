@@ -1,0 +1,44 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/gateway/test/authority-deadline.test.mjs",
+    "apps/gateway/test/durable-tool-budget.test.mjs",
+    "apps/gateway/test/gateway.test.mjs",
+    "apps/gateway/test/memory-context-independent.test.mjs",
+    "apps/gateway/test/memory-context.test.mjs",
+    "apps/gateway/test/postgres-budget-admission.test.mjs",
+    "apps/gateway/test/postgres-tool-budget.test.mjs",
+    "apps/gateway/test/tool-budget-outcome.test.mjs",
+    "apps/gateway/test/tool-invocation-owner.test.mjs",
+    "apps/gateway/test/tool-invocation-transaction.test.mjs",
+    "apps/control/test/tool-invocations.test.mjs"
+  ],
+  "cwd": "/workspace/meri-g1-invocation-setup-20261012",
+  "sourceHead": "0d630acba6fe69297059acd6a6016a33238e1f57",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T07:37:46.229243+00:00",
+  "durationSeconds": 4.198,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 106232,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/gateway-control-integrated.stdout.bin",
+      "bytes": 20498,
+      "sha256": "02bda5fe5560041444472135c32c1aa48b1d89328d8baea419e032ac2862d5ed"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/gateway-control-integrated.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,37 @@
+{
+  "command": [
+    "python",
+    "-I",
+    "-B",
+    "-S",
+    "docs/qualification/candidates/supervisor-exact-inputs-20261012/author/check-map.py",
+    "/workspace/private-native-supervisor-relay-20261012"
+  ],
+  "cwd": "/workspace/meri-g1-invocation-setup-20261012",
+  "sourceHead": "88529de5572ca7643cc91e9b45d924b23cf9bcca",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T07:25:44.585958+00:00",
+  "durationSeconds": 0.065,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 100352,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/supervisor-inputs-integrated.stdout.bin",
+      "bytes": 2126,
+      "sha256": "ab8c27da4d58b82b024bfa458c73ffe1faec5a8e8c38e8c8646233e79125921e"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/supervisor-inputs-integrated.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
