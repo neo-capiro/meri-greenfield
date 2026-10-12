@@ -1,3 +1,5 @@
+import {verticalOperationIds} from './vertical-source-expectations.mjs';
+import {priorVerticalBoundary} from './vertical-continuation-expectations.mjs';
 import {priorExistingDescriptor} from './backend-execution-expectations.mjs';
 // Explicit reviewed continuation allowlist; historical baseline hashes stay unchanged.
 const continuationIds = ["search_cbo_cost_estimates", "search_federal_grants", "search_federal_awards", "search_gao_reports", "search_state_bills", "get_state_legislator", "search_crs_reports", "query_economic_data", "get_district_nexus_context", "get_district_nexus_changes", "read_client_documents", "search_funding_opportunities", "get_funding_opportunity_requirements", "get_funding_opportunity", "get_opportunity_client_context", "get_opportunity_government_landscape", "search_sec_filings", "search_fara_registrations", "search_lda_filings", "search_acquisition_personnel", "get_acquisition_person", "get_bill_status", "search_floor_votes", "search_congress_bills", "read_bill_text", "get_committee_roster", "list_members", "get_pe_contractors", "get_pe_bills", "get_pe_report_language", "get_state_rule_status", "get_certification_status", "search_intel_articles", "list_global_datasets", "get_representation", "get_state_bill_status", "search_state_floor_votes", "query_regulatory_dockets", "find_contacts", "resolve_entity", "search_tracked_bills", "query_intelligence", "search_public_web", "scrape_web_page", "search_sam_opportunities", "get_florida_budget_project", "query_outreach", "search_program_elements", "get_program_element", "get_pe_budget_timeline", "search_client_knowledge", "query_knowledge_graph", "read_monday_client_boards", "read_chat_attachments", "search_memory", "get_client_context", "search_research_sources", "query_global_data", "search_legislative_research", "get_legal_reference", "search_legiwatch_news", "search_committee_hearings"];
@@ -16,9 +18,9 @@ const additions = ['lookup_client_registry', 'get_business_development_context',
 test('selected read additions preserve every prior descriptor and original accepted boundary', () => {
   // Literal hashes of accepted PR22 catalog content, computed independently of
   // the new registry. Adding descriptors must not silently rewrite old contracts.
-  assert.equal(canonicalSha256(catalog.operations.filter(row => !additions.includes(row.operation.id)&&!continuationIds.includes(row.operation.id)&&row.operation.id!=='actions.query').map(priorExistingDescriptor)),
+  assert.equal(canonicalSha256(catalog.operations.filter(row=>!verticalOperationIds.includes(row.operation.id)&&!additions.includes(row.operation.id)&&!continuationIds.includes(row.operation.id)&&row.operation.id!=='actions.query').map(priorExistingDescriptor)),
     '7302157d3d1059774b198b48f47591db55b85fa63a1bf025d2741ec4b1187b2b');
-  assert.equal(canonicalSha256(catalog.originals.map(({id, disposition, boundary}) => ({id, disposition, boundary}))),
+  assert.equal(canonicalSha256(catalog.originals.map(({id, disposition, boundary}) => ({id, disposition, boundary:priorVerticalBoundary(id,boundary)}))),
     '3cdea92ff8d789f30b540af232f92cca5d239412278cb4a1f78374f4a29fe392');
   for (const id of additions) {
     const original = catalog.originals.find(row => row.id === id);
@@ -28,12 +30,12 @@ test('selected read additions preserve every prior descriptor and original accep
     assert.equal(descriptor.handler, null); assert.equal(descriptor.availability, 'unimplemented');
     assert.equal(descriptor.qualification, 'pending'); assert.equal(descriptor.sideEffect, 'none');
   }
-  assert.equal(catalog.operations.length, 84);
-  assert.equal(catalog.originals.filter(row => row.state === 'mapped').length, 83);
-  assert.equal(catalog.originals.filter(row => row.disposition === 'selected' && row.state === 'pending').length, 13);
+  assert.equal(catalog.operations.length, 97);
+  assert.equal(catalog.originals.filter(row => row.state === 'mapped').length, 96);
+  assert.equal(catalog.originals.filter(row => row.disposition === 'selected' && row.state === 'pending').length, 0);
   for (const id of ['get_research_evidence']) {
-    assert.equal(catalog.originals.find(row => row.id === id).state, 'pending');
-    assert.equal(catalog.originals.find(row => row.id === id).replacement, null);
+    assert.equal(catalog.originals.find(row => row.id === id).state, 'mapped');
+    assert.deepEqual(catalog.originals.find(row => row.id === id).replacement, {id,version:'0.2.0'});
   }
 });
 

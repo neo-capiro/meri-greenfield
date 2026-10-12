@@ -1,0 +1,26 @@
+{
+  "scope": "Own local check groups only; donor dependencies and other sessions untouched",
+  "groups": [
+    {
+      "label": "focused-first",
+      "pidAndPgid": 391516,
+      "absent": true,
+      "timeout": false,
+      "killRequired": false
+    },
+    {
+      "label": "source-preservation",
+      "pidAndPgid": 392379,
+      "absent": true,
+      "timeout": false,
+      "killRequired": false
+    },
+    {
+      "label": "frozen-focused",
+      "pidAndPgid": 392476,
+      "absent": true,
+      "timeout": false,
+      "killRequired": false
+    }
+  ]
+}

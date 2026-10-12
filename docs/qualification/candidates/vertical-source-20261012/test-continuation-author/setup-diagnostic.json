@@ -1,0 +1,8 @@
+{
+  "command": "git sparse-checkout add --no-cone <exact fixture paths>",
+  "exitCode": 129,
+  "error": "unknown option `no-cone`",
+  "rawShellCaptureAvailable": false,
+  "scope": "Setup command failed before fixture materialization; configured non-cone mode already applies to add. No product test ran.",
+  "repair": "Remove unsupported add option; keep same exact scoped paths."
+}

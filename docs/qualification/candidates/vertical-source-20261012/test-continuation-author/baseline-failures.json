@@ -1,0 +1,104 @@
+{
+  "base": "1375349a62f4abc036ee091d0d2ebe3a6ec62910",
+  "path": "docs/qualification/candidates/vertical-source-20261012/integration/combined-source-check.stdout.bin",
+  "bytes": 512054,
+  "sha256": "0674334cbcda8e038e094a2247191dbcf3d449626273d9c4fdb4bdb850aad92a",
+  "tests": 4904,
+  "passed": 4881,
+  "failed": 23,
+  "failedLocations": [
+    {
+      "line": 4934,
+      "location": "test at apps/control/test/commands-durable-budget.test.mjs:1:1"
+    },
+    {
+      "line": 4938,
+      "location": "test at packages/contracts/test/backend-execution-connected.test.mjs:65:1"
+    },
+    {
+      "line": 4957,
+      "location": "test at packages/contracts/test/backend-execution-integration-independent.test.mjs:83:1"
+    },
+    {
+      "line": 4978,
+      "location": "test at packages/contracts/test/command-contracts-integration-independent.test.mjs:18:1"
+    },
+    {
+      "line": 5017,
+      "location": "test at packages/contracts/test/command-payloads-independent.test.mjs:59:1"
+    },
+    {
+      "line": 5035,
+      "location": "test at packages/contracts/test/retrieval-action-item-binding.test.mjs:17:1"
+    },
+    {
+      "line": 5054,
+      "location": "test at packages/contracts/test/retrieval-action-item-binding.test.mjs:80:1"
+    },
+    {
+      "line": 5077,
+      "location": "test at packages/contracts/test/retrieval-action-item-independent.test.mjs:18:1"
+    },
+    {
+      "line": 5098,
+      "location": "test at packages/contracts/test/retrieval-backend-next-independent.test.mjs:32:1"
+    },
+    {
+      "line": 5117,
+      "location": "test at packages/contracts/test/retrieval-backend-next-independent.test.mjs:42:1"
+    },
+    {
+      "line": 5135,
+      "location": "test at packages/contracts/test/retrieval-civic-integration-independent.test.mjs:37:1"
+    },
+    {
+      "line": 5154,
+      "location": "test at packages/contracts/test/retrieval-civic-integration-independent.test.mjs:48:1"
+    },
+    {
+      "line": 5172,
+      "location": "test at packages/contracts/test/retrieval-mail.test.mjs:131:1"
+    },
+    {
+      "line": 5208,
+      "location": "test at packages/contracts/test/retrieval-next-bindings.test.mjs:16:1"
+    },
+    {
+      "line": 5229,
+      "location": "test at packages/contracts/test/retrieval-next-integration-independent.test.mjs:66:1"
+    },
+    {
+      "line": 5248,
+      "location": "test at packages/contracts/test/retrieval-next-integration-independent.test.mjs:84:1"
+    },
+    {
+      "line": 5269,
+      "location": "test at packages/contracts/test/retrieval-observed-integration-independent.test.mjs:30:1"
+    },
+    {
+      "line": 5288,
+      "location": "test at packages/contracts/test/retrieval-observed-integration-independent.test.mjs:37:1"
+    },
+    {
+      "line": 5306,
+      "location": "test at packages/contracts/test/retrieval-read-continuation-bindings.test.mjs:49:1"
+    },
+    {
+      "line": 5325,
+      "location": "test at packages/contracts/test/retrieval-read-continuation-independent.test.mjs:75:1"
+    },
+    {
+      "line": 5344,
+      "location": "test at packages/contracts/test/retrieval-read-continuation-independent.test.mjs:94:1"
+    },
+    {
+      "line": 5365,
+      "location": "test at packages/contracts/test/vertical-execution-integration-independent.test.mjs:19:1"
+    },
+    {
+      "line": 5384,
+      "location": "test at packages/contracts/test/vertical-execution-integration-independent.test.mjs:20:1"
+    }
+  ],
+  "notThisLane": "commands-durable-budget.test.mjs is missing MERI_REVIEW_SOURCE_ROOT setup; root will set it, no test/source edit."
+}
