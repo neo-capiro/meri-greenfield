@@ -1,0 +1,35 @@
+✔ economic selectors normalize defaults, exact aliases and supported producer extensions (3.013438ms)
+✔ source limit normalization retains clamping and finite scalar coercion without caller mutation (0.740963ms)
+✔ page has separate strict positive integer grammar and upper bound (1.316168ms)
+✔ trusted evidence mode is mandatory only for the two policy-dependent reads (0.688354ms)
+✔ selectors and authority arguments are closed and malformed year scalars refuse (1.023728ms)
+✔ UTF-16 request truncation and PE normalization are exact (0.214132ms)
+✔ Census keeps nullable storage facts and opaque inert JSON without invented ranges (2.844755ms)
+✔ Census exact state/district selectors bind only its own variant (0.861855ms)
+✔ BLS preserves period and value semantics and nested twelve-point ceiling (1.075406ms)
+✔ BEA nullable values/units and exact dataset/year bind without new unit assumptions (0.808155ms)
+✔ unknown economic source retains an error branch and cannot fabricate empty success (0.533061ms)
+✔ economic source, operation, requested window and generated timestamp cannot substitute (0.485249ms)
+✔ grant wire scalars preserve nulls, negative adjustments and non-URL source text (14.727049ms)
+✔ grant count is a separate observation, not a snapshot guarantee (0.866763ms)
+✔ grant stored status and generated source anchor are exact (0.767934ms)
+✔ grant raw close day stays open through Eastern close date (0.577427ms)
+✔ trusted enforce requires deadlines, while off and shadow forbid added precision (1.062487ms)
+✔ text-qualified structured deadlines stay unknown while legacy raw status may remain open (0.866962ms)
+✔ structured date-only grant deadline binds literal day, end-of-day, status and days (1.360054ms)
+✔ Eastern winter end-of-day differs from daylight-saving end-of-day (0.617718ms)
+✔ grant unknown null status and UTC stored date cannot silently normalize malformed values (0.597718ms)
+✔ award wire numbers are already converted and raw date/identity fields remain closed (1.911882ms)
+✔ legacy award continuation preserves count races and final page boundary (0.480722ms)
+✔ award page, PE and requested window are bound to normalized selectors (0.480763ms)
+✔ award enforce preserves unknown signing/latest dates and exact sync anchor (0.610507ms)
+✔ no result family can add runtime, source completeness or approval claims (1.2974ms)
+✔ hostile requests, outputs and trusted context refuse without getter/proxy execution (0.454804ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 240.250518
