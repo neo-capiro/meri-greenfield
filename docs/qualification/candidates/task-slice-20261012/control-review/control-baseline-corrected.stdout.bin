@@ -1,0 +1,41 @@
+✔ independent actual delivery uses exact owned gateway seam once and returns only immutable references (25.813609ms)
+✔ independent read rechecks current access and preserves exact stored observation without redispatch (10.568381ms)
+✔ independent exact duplicate delivery never invokes gateway twice (6.116773ms)
+✔ independent concurrent same lookup has only one successful claim and one gateway call (4.669105ms)
+✔ independent revocation at before_claim refuses release and downstream work (0.93046ms)
+✔ independent revocation at before_dispatch refuses release and downstream work (1.937325ms)
+✔ independent revocation at before_store refuses release and downstream work (3.082558ms)
+✔ independent revocation at before_release refuses release and downstream work (3.378744ms)
+✔ independent reconnect revocation at before_read does not expose stored content (4.454411ms)
+✔ independent reconnect revocation at before_release does not expose stored content (5.80228ms)
+✔ independent recovered current binding stays distinct from immutable producer provenance (5.694558ms)
+✔ independent wrong stored original tenantId cannot pass immutable result digest checks (4.277665ms)
+✔ independent wrong stored original actorId cannot pass immutable result digest checks (4.637998ms)
+✔ independent wrong stored original conversationId cannot pass immutable result digest checks (4.305448ms)
+✔ independent wrong stored original runId cannot pass immutable result digest checks (4.318668ms)
+✔ independent wrong stored original attemptId cannot pass immutable result digest checks (4.347261ms)
+✔ independent wrong stored original workerId cannot pass immutable result digest checks (4.052948ms)
+✔ independent wrong stored original writerFence cannot pass immutable result digest checks (4.370966ms)
+✔ independent cross-tenant read refuses even if policy callback returns allowed (3.078842ms)
+✔ independent stored digest and completed event reference substitutions refuse (19.731388ms)
+✔ independent all model authority and selection fields stay outside the raw request (1.087246ms)
+✔ independent hostile request/context and thrown accessor never execute getters (1.055878ms)
+✔ independent caller mutations during claim cannot alter selected request or original provenance (4.011356ms)
+✔ independent uncertain claim acknowledgment does not redispatch (1.873589ms)
+✔ independent uncertain markDispatching acknowledgment does not redispatch (2.604038ms)
+✔ independent uncertain complete acknowledgment does not redispatch (11.67748ms)
+✔ independent post-claim deadline prevents later effects and release (1.574359ms)
+✔ independent post-markDispatching deadline prevents later effects and release (1.356401ms)
+✔ independent post-complete deadline prevents later effects and release (2.960445ms)
+✔ independent post-gateway deadline suppresses durable result publication (1.643622ms)
+✔ independent early expiry from authority bounds a parked store and late acknowledgment (31.600525ms)
+✔ independent cancellation while gateway parks has no late publication or result event (3.0246ms)
+✔ independent missing result is unavailable and never causes a lookup (0.550839ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 33
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2619.097118

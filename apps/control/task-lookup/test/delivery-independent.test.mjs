@@ -101,3 +101,15 @@ test('independent cancellation while gateway parks has no late publication or re
  const run=h.lookup({signal:controller.signal});await began;controller.abort();await reject(run);gate.resolve(JSON.stringify(envelope()));await new Promise(r=>setImmediate(r));assert.equal(count(h,'complete'),0);assert.equal(count(h,'recordError'),0);
 });
 test('independent missing result is unavailable and never causes a lookup',async()=>{const h=harness();await reject(h.read());assert.equal(count(h,'gateway'),0);assert.equal(count(h,'claim'),0);});
+
+test('independent returned source scopes cannot substitute different policy or widen UI-event provenance',async()=>{
+ for(const mutate of [o=>o.subject.scopes[0].policyRevision='different-policy',o=>o.subject.scopes.push({...o.subject.scopes[0],resourceId:id(91)})]){
+  const h=harness({gateway:()=>({executeOwned:async()=>{const o=envelope();mutate(o);o.result.subject=structuredClone(o.subject);return JSON.stringify(o);}})});
+  await assert.rejects(h.lookup());assert.equal(count(h,'complete'),0);
+ }
+});
+test('independent recovered reader policy receives original source scopes and current scope selection separately',async()=>{
+ const h=harness();await h.lookup();const c=readContext();c.currentBinding.actorId='delegated-reader';c.scopes[0].policyRevision='current-reader-policy';
+ const out=await h.read({context:c});const a=h.s.auth.at(-1).binding;
+ assert.deepEqual(a.original.context.scopes,h.c.scopes);assert.deepEqual(a.scopes,c.scopes);assert.equal(a.current.actorId,'delegated-reader');assert.deepEqual(out.observation.subject.scopes,h.c.scopes);
+});
