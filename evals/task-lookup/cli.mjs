@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /** Local JSON evaluation only; no corpus/source/provider acquisition. */
-import {open,lstat,realpath} from 'node:fs/promises';import {constants} from 'node:fs';import {resolve,dirname} from 'node:path';import {pathToFileURL} from 'node:url';
+import {open,realpath} from 'node:fs/promises';import {constants} from 'node:fs';import {resolve,dirname} from 'node:path';import {pathToFileURL} from 'node:url';
 import {freezeCorpus,verifyCorpus,runnerCases} from './corpus.mjs';import {scoreObservations} from './score.mjs';import {hash,digest,error} from './contracts.mjs';
 const HELP=`Usage:
   node evals/task-lookup/cli.mjs freeze --input FILE --approval-sha256 SHA --output NEWFILE
@@ -10,7 +10,16 @@ Pins are canonical JSON SHA256; corpus pin is frozen.corpusSha256. Files <=16MiB
 Exit0: accepted freeze/runner or all supplied cases satisfied; exit1: score has failed/missing/skipped/ineligible/foreign cases or empty cohort; exit2: invalid input/I/O.
 No acquisition, authority authentication, runtime execution or release-gate acceptance occurs.\n`;
 async function ordinary(path){const absolute=resolve(path);if(await realpath(absolute)!==absolute)error('EVAL_PATH_SYMLINK');return absolute;}
-async function read(path){const absolute=await ordinary(path),f=await open(absolute,constants.O_RDONLY|constants.O_NOFOLLOW);try{const s=await f.stat();if(!s.isFile()||s.size>16*1024*1024)error('EVAL_FILE_BOUND');const bytes=await f.readFile();if(bytes.length>16*1024*1024)error('EVAL_FILE_BOUND');return JSON.parse(bytes.toString('utf8'));}finally{await f.close();}}
+export async function readBoundedJson(handle,maxBytes=16*1024*1024){
+ if(!Number.isSafeInteger(maxBytes)||maxBytes<1||maxBytes>16*1024*1024)error('EVAL_FILE_BOUND');
+ const chunks=[];let total=0;
+ while(total<=maxBytes){const buffer=Buffer.alloc(Math.min(65536,maxBytes+1-total)),{bytesRead}=await handle.read(buffer,0,buffer.length,null);
+  if(!Number.isInteger(bytesRead)||bytesRead<0||bytesRead>buffer.length)error('EVAL_FILE_READ');if(!bytesRead)return JSON.parse(Buffer.concat(chunks,total).toString('utf8'));
+  total+=bytesRead;if(total>maxBytes)error('EVAL_FILE_BOUND');chunks.push(buffer.subarray(0,bytesRead));
+ }
+ error('EVAL_FILE_BOUND');
+}
+async function read(path){const absolute=await ordinary(path),f=await open(absolute,constants.O_RDONLY|constants.O_NOFOLLOW);try{const s=await f.stat();if(!s.isFile()||s.size>16*1024*1024)error('EVAL_FILE_BOUND');return await readBoundedJson(f);}finally{await f.close();}}
 async function write(path,value){const absolute=resolve(path);await ordinary(dirname(absolute));const bytes=Buffer.from(JSON.stringify(value,null,2)+'\n');if(bytes.length>16*1024*1024)error('EVAL_FILE_BOUND');const f=await open(absolute,constants.O_WRONLY|constants.O_CREAT|constants.O_EXCL|constants.O_NOFOLLOW,0o600);try{await f.writeFile(bytes);}finally{await f.close();}}
 export async function main(args,{stdout=process.stdout,stderr=process.stderr}={}){
  if(args.length===1&&['--help','-h'].includes(args[0])){stdout.write(HELP);return 0;}

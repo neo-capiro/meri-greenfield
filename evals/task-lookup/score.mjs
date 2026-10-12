@@ -1,3 +1,4 @@
+import {assertTaskLookupStoredBinding} from '../../apps/control/task-lookup/index.mjs';
 import {verifyCorpus} from './corpus.mjs';
 import {snapshot,hash,publicShape,action,semanticResult,exact,text,digest,instant,enumeration,array,unique,same,freeze,qualification,error} from './contracts.mjs';
 const operation={id:'actions.query',version:'0.2.0'};
@@ -13,33 +14,43 @@ function delivery(value,binding,scopes){
  // UUID shape belongs to the existing public protocol, not a new ID vocabulary.
  publicShape('UIEvent',{...completed,data:{requestId:value.lookupId,resultReference:value.resultReference}});
 }
-function authorization(rows,{binding,scopes,reference,resultSha256,started,completed},returned){
- array(rows,2);if(returned&&(rows.length!==2||rows[0].phase!=='before_read'||rows[1].phase!=='before_release'))error('EVAL_AUTHORITY_TRACE');
+function authorization(rows,{binding,scopes,reference,resultSha256,started,completed,request,argumentsSha256,delivered},returned){
+ array(rows,2);if(returned&&(rows.length!==2||rows[0].phase!=='before_read'||rows[1].phase!=='before_release'))error('EVAL_AUTHORITY_TRACE');let denied=false;
  for(const [index,row] of rows.entries()){
-  exact(row,['phase','binding','receipt','observedAtMs']);enumeration(row.phase,['before_read','before_release']);if(index===1&&row.phase!=='before_release')error('EVAL_AUTHORITY_TRACE');
+  exact(row,['phase','binding','receipt','error','observedAtMs']);enumeration(row.phase,['before_read','before_release']);if(index===1&&row.phase!=='before_release')error('EVAL_AUTHORITY_TRACE');
   const b=row.binding;exact(b,['original','current','scopes','resultReference','resultSha256','bindingSha256']);digest(b.bindingSha256);const {bindingSha256,...intent}=b;
   if(hash(intent)!==bindingSha256)error('EVAL_AUTHORITY_HASH');publicShape('RunBinding',b.current);if(!same(stable(b.current),stable(binding))||!same(b.scopes,scopes))error('EVAL_AUTHORITY_SCOPE');
   if(reference!==null&&b.resultReference!==reference)error('EVAL_AUTHORITY_REFERENCE');
   if(row.phase==='before_read'){if(b.original!==null||b.resultSha256!==null)error('EVAL_READ_INTENT');}
-  else if(!same(b.original,binding)||b.resultSha256!==resultSha256)error('EVAL_RELEASE_INTENT');
-  exact(row.receipt,['authorized','bindingSha256','expiresAtMs']);if(typeof row.receipt.authorized!=='boolean'||row.receipt.bindingSha256!==bindingSha256)error('EVAL_AUTHORITY_RECEIPT');
-  if(!Number.isSafeInteger(row.observedAtMs)||row.observedAtMs<started||row.observedAtMs>completed||!Number.isSafeInteger(row.receipt.expiresAtMs))error('EVAL_AUTHORITY_TIME');
-  if(row.receipt.authorized&&(row.receipt.expiresAtMs<=row.observedAtMs))error('EVAL_AUTHORITY_EXPIRED');
-  if(returned&&!row.receipt.authorized)error('EVAL_AUTHORITY_DENIED');
+  else {
+   const original=assertTaskLookupStoredBinding(b.original),c=original.context;
+   if(!same(c.binding,binding)||!same(c.scopes,scopes)||!same(original.request,{operation,arguments:request})||original.argumentsSha256!==argumentsSha256||c.resultReference!==b.resultReference)error('EVAL_RELEASE_INTENT');
+   digest(b.resultSha256);if(resultSha256!==null&&b.resultSha256!==resultSha256)error('EVAL_RELEASE_INTENT');
+   if(delivered&&(c.lookupId!==delivered.lookupId||c.resultReference!==delivered.resultReference||c.requestId!==delivered.events[0].data.requestId||!same(c.slots,{started:{eventId:delivered.events[0].eventId,sequence:delivered.events[0].sequence},terminal:{eventId:delivered.events[1].eventId,sequence:delivered.events[1].sequence}})))error('EVAL_PREPARED_DELIVERY');
+  }
+  if(!Number.isSafeInteger(row.observedAtMs)||row.observedAtMs<started||row.observedAtMs>completed)error('EVAL_AUTHORITY_TIME');
+  if(row.receipt===null){exact(row.error,['code']);if(row.error.code!=='ACCESS_DENIED')error('EVAL_AUTHORITY_ERROR');denied=true;}
+  else {
+   if(row.error!==null)error('EVAL_AUTHORITY_TRACE');exact(row.receipt,['authorized','bindingSha256','expiresAtMs']);if(typeof row.receipt.authorized!=='boolean'||row.receipt.bindingSha256!==bindingSha256||!Number.isSafeInteger(row.receipt.expiresAtMs))error('EVAL_AUTHORITY_RECEIPT');
+   if(row.receipt.authorized&&row.receipt.expiresAtMs<=row.observedAtMs)error('EVAL_AUTHORITY_EXPIRED');if(!row.receipt.authorized)denied=true;
+  }
+  if(returned&&denied)error('EVAL_AUTHORITY_DENIED');
  }
+ return denied;
 }
 function checkObservation(c,pin,o,run,binding,frozen){
- exact(o,['caseId','caseSha256','attemptId','runId','configSha256','sourceSetSha256','status','reason','route','authorization','delivery','read','claims','traceSha256','startedAt','completedAt']);
+ exact(o,['caseId','caseSha256','attemptId','runId','configSha256','sourceSetSha256','status','reason','route','authorization','delivery','read','claims','traceSha256','startedAt','completedAt','failure']);
  text(o.attemptId);digest(o.traceSha256);enumeration(o.status,['returned','denied','clarify','failed','skipped','ineligible']);
  const started=instant(o.startedAt),completed=instant(o.completedAt);if(completed<started||started<instant(run.startedAt)||completed>instant(run.completedAt))error('EVAL_CAPTURE_TIME');
  if(o.caseSha256!==pin.caseSha256||o.runId!==run.runId||o.configSha256!==frozen.configSha256||o.sourceSetSha256!==pin.sourceSetSha256)error('EVAL_OBSERVATION_IDENTITY');
  exact(o.claims,['absence','exhaustive','acceptedTasks']);for(const v of Object.values(o.claims))if(typeof v!=='boolean')error('EVAL_CLAIMS');
  if(o.claims.absence||o.claims.exhaustive||o.claims.acceptedTasks)error('EVAL_UNSUPPORTED_CLAIM');
  if(o.reason!==null)text(o.reason,500);if(o.status!=='returned'&&o.reason===null)error('EVAL_MISSING_REASON');
+ if(o.failure!==null){exact(o.failure,['code','outcome']);text(o.failure.code,80);enumeration(o.failure.outcome,['NOT_DISPATCHED','UNKNOWN','RESULT_NOT_RELEASED']);}
  const context={...c.context,binding},normalized=action.normalizeInput(c.request,context);
  if(o.route!==null){exact(o.route,['operation','request']);if(!same(o.route.operation,operation)||!same(o.route.request,c.request))error('EVAL_ROUTE');}
  if(o.status==='returned'){
-  if(o.route===null||o.reason!==null)error('EVAL_RETURN_ROUTE');delivery(o.delivery,binding,c.scopes);
+  if(o.route===null||o.reason!==null||o.failure!==null)error('EVAL_RETURN_ROUTE');delivery(o.delivery,binding,c.scopes);
   exact(o.read,['lookupId','resultReference','resultSha256','classification','acceptedTasks','events','observation']);const {observation,...readDelivery}=o.read;if(!same(o.delivery,readDelivery))error('EVAL_READ_REFERENCE');
   exact(observation,['binding','subject','operation','argumentsSha256','result']);if(!same(observation.binding,binding)||!same(observation.operation,operation)||observation.argumentsSha256!==normalized.argumentsSha256)error('EVAL_RESULT_LINEAGE');
   action.assertOutput(observation.result,{request:c.request,...context});if(!same(observation.subject,observation.result.subject)||!same(observation.subject.scopes,c.scopes))error('EVAL_RESULT_SUBJECT');
@@ -47,11 +58,13 @@ function checkObservation(c,pin,o,run,binding,frozen){
   if(!same(observation.result.sources.map(s=>s.sourceId).sort(),[...c.sourceIds].sort()))error('EVAL_RESULT_SOURCES');
   if(hash(semanticResult(observation))!==c.expected.semanticSha256||!same(observation.result.actions.map(a=>a.id),c.expected.recordIds))error('EVAL_SEMANTIC_GOLD');
   if(c.expected.replaySha256!==null&&hash(observation)!==c.expected.replaySha256)error('EVAL_REPLAY_GOLD');
-  authorization(o.authorization,{binding,scopes:c.scopes,reference:o.delivery.resultReference,resultSha256:o.delivery.resultSha256,started,completed},true);
+  authorization(o.authorization,{binding,scopes:c.scopes,reference:o.delivery.resultReference,resultSha256:o.delivery.resultSha256,started,completed,request:c.request,argumentsSha256:normalized.argumentsSha256,delivered:o.delivery},true);
  }else{
   if(o.delivery!==null||o.read!==null)error('EVAL_NONRETURN_DISCLOSURE');
-  authorization(o.authorization,{binding,scopes:c.scopes,reference:null,resultSha256:null,started,completed},false);
+  const denied=authorization(o.authorization,{binding,scopes:c.scopes,reference:null,resultSha256:null,started,completed,request:c.request,argumentsSha256:normalized.argumentsSha256,delivered:null},false);
+  if(o.status==='denied'&&(!denied||o.failure?.code!=='ACCESS_DENIED'))error('EVAL_DENIAL_NOT_OBSERVED');
  }
+ if(o.status==='clarify'&&c.expected.outcome==='clarify')return 'ineligible';
  if(['skipped','ineligible'].includes(o.status))return o.status;
  if(o.status!==c.expected.outcome)error('EVAL_OUTCOME');
  return 'passed';
@@ -68,7 +81,7 @@ export function scoreObservations(value,observed){
  for(const c of frozen.input.cases){const entries=grouped.get(c.caseId)??[];let status='missing',reasons=['MISSING_OBSERVATION'];let observationSha256=null;
   if(!runMatches){status='failed';reasons=['RUN_IDENTITY_MISMATCH'];}
   else if(entries.length>1){status='failed';reasons=['DUPLICATE_OBSERVATION'];diagnostics.push({code:'DUPLICATE_OBSERVATION',caseId:c.caseId,count:entries.length});}
-  else if(entries.length===1){observationSha256=hash(entries[0]);try{status=checkObservation(c,frozen.casePins.find(p=>p.caseId===c.caseId),entries[0],run,run.bindings.find(b=>b.caseId===c.caseId).binding,frozen);reasons=status==='passed'?[]:[status.toUpperCase()];}catch(e){status='failed';reasons=[typeof e.code==='string'&&e.code.startsWith('EVAL_')?e.code:'INVALID_CANONICAL_OBSERVATION'];}}
+  else if(entries.length===1){observationSha256=hash(entries[0]);try{status=checkObservation(c,frozen.casePins.find(p=>p.caseId===c.caseId),entries[0],run,run.bindings.find(b=>b.caseId===c.caseId).binding,frozen);reasons=status==='passed'?[]:[entries[0].status==='clarify'?'MISSING_CLARIFICATION_CONTRACT':status.toUpperCase()];}catch(e){status='failed';reasons=[typeof e.code==='string'&&e.code.startsWith('EVAL_')?e.code:'INVALID_CANONICAL_OBSERVATION'];}}
   rows.push({caseId:c.caseId,status,reasons,observationSha256});
  }
  const all=summary(rows),countKeys=['total',...statuses];return freeze({schema:'meri-task-lookup-score/1',corpusSha256:frozen.corpusSha256,runId:run.runId,rows,counts:Object.fromEntries(countKeys.map(k=>[k,all[k]])),allCasePassRate:all.allCasePassRate,executedPassRate:all.executedPassRate,
