@@ -85,7 +85,7 @@ function searchClaims(row){
   observeClaim(row.enactedClaim,enacted?.value??null,enacted?.fy??null,'enacted',row.peCurrentCycleFy);
   observeClaim(row.requestAtEnactedClaim,row.requestAtEnactedFy,enacted?.fy??null,'request',row.peCurrentCycleFy);
   const a=row.enactedClaim,b=row.requestAtEnactedClaim,pair=a!==null&&b!==null;
-  const pct=pair&&b.value!==0?(a.value-b.value)/Math.abs(b.value)*100:null;
+  const pct=pair&&b.value!==0?(a.value-b.value)/b.value*100:null;
   if(pair){const x=row.comparableEnactedVsRequest;if(x===null||x.fiscalYear!==a.fiscalYear||x.enacted!==a.value||x.request!==b.value||!closeNumber(x.deltaPct,pct))fail('Matched enacted/request comparison mismatch');}
   else if(row.comparableEnactedVsRequest!==null)fail('Unmatched enacted/request comparison');
   if(!closeNumber(f.enactedVsRequestPct,pct))fail('Finder percent differs from matched fiscal-year pair');
