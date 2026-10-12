@@ -1,0 +1,60 @@
+{
+  "planSha256": "05ed3d02721f425192852e3f14c4d2df91062d0e00d1b66cbc7358be7c8922f0",
+  "localLinks": [
+    {
+      "link": "MERI-DEPLOYMENT.md",
+      "exists": true
+    },
+    {
+      "link": "../qualification/candidates/g1-native-path-20261012/integration/pr-stack-observation.json",
+      "exists": true
+    },
+    {
+      "link": "../qualification/candidates/g1-native-path-20261012/integration/pr-stack-ancestry.json",
+      "exists": true
+    },
+    {
+      "link": "../coordination/reports/MERI-MEMORY-SOURCE-INTEGRATION-20261012.md",
+      "exists": true
+    },
+    {
+      "link": "../../apps/control/qualification-sdk-fixture/service/control.mjs",
+      "exists": true
+    },
+    {
+      "link": "../../apps/gateway/budget/README.md",
+      "exists": true
+    },
+    {
+      "link": "../../apps/control/qualification-temporal/README.md",
+      "exists": true
+    },
+    {
+      "link": "../../apps/worker/qualification/README.md",
+      "exists": true
+    },
+    {
+      "link": "../coordination/reports/MERI-G1-RECOVERY-SANDBOX-INTEGRATION-20261012.md",
+      "exists": true
+    },
+    {
+      "link": "../qualification/candidates/g1-execution-options-20261012/author/image-options.json",
+      "exists": true
+    },
+    {
+      "link": "../qualification/candidates/ubuntu-source-assessment-20261012/author/obligations-54.json",
+      "exists": true
+    },
+    {
+      "link": "../coordination/reports/MERI-G1-EXECUTION-OPTIONS-20261012.md",
+      "exists": true
+    },
+    {
+      "link": "../qualification/candidates/g1-execution-options-20261012/author/execution-plan.json",
+      "exists": true
+    }
+  ],
+  "allLocalLinksExist": true,
+  "linkCount": 13,
+  "nativeActionsExecuted": false
+}

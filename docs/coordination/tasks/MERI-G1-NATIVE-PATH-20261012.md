@@ -1,0 +1,30 @@
+# G1 source-to-native continuation — 12 October 2026
+
+Root base is PR16 `e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5`, tree `35e6da43d35e06701b5bde73db571b5e1e688ea8`. Worktree `/workspace/meri-g1-native-path-20261012`, branch `task/meri-g1-native-path-20261012`. Parent requests actual private-supervisor source review/adaptation and one canonical dependency/merge plan across PR10–16, with a concrete path to native verification and precise image/local-PostgreSQL decisions.
+
+## Authority and boundaries
+
+Source changes, isolated author/reviewer worktrees, local source/AST/data/inert-port controls, commits and draft publication are authorized. No execution/import of the relayed supervisor, candidate entry, diagnostic, native process ports or Popen. No database, Temporal server/Worker, browser/renderer, container, image build/push/launch, cloud resource, credentials, network/security state, customer data, paid model/provider or main merge. Original branches, failures and frozen evidence stay intact. Source connectivity remains false; G0 accepted, G1 OPEN, G2–G7 unentered. Existing Aurora remains selected; no new RDS or network/database change.
+
+AGENTS.md, implementation standards, adopted R2 and prior source reports apply. SDK alone owns the model loop; Temporal owns durability and canonical registry/budget/checkpoint owners remain intact. Public0.1/private0.2 and the139-original capability ledger (96 selected/43 deferred;14 bound unavailable/82 unmapped;14 named skills unqualified) are unchanged. Do not copy private bodies or paths into Git.
+
+## Proportionate outline and exclusive paths
+
+1. Root owns this task, `docs/plans/MERI-G1-SOURCE-TO-NATIVE.md`, matching coordination report and `docs/qualification/candidates/g1-native-path-20261012/{integration,publication}/`. The plan is the single current dependency/native execution roadmap; historical packets stay frozen and linked, not rewritten. Verify exact PR heads/base branches and Git ancestry before recording the ordered stack. Distinguish source acceptance, missing implementation, native evidence and action permission.
+2. Native supervisor author owns `docs/coordination/tasks/MERI-NATIVE-SUPERVISOR-20261012.md`, matching author report and candidate `native-supervisor-20261012/author/`, on isolated PR16 base. Three source files allocated: `run-supervised.py` (sanitized fixed-diagnostic composition), `supervision.py` (direct-child/two-stream lifecycle), `source-checks.py` (AST/data/inert controls). Preserve exact canonical receipt/source/identity refusal predicates; no generic framework, alternate product launcher, native backend or invented watchdog admission. Explicit selected-executable binding and a fresh exclusive destination replace the actual wrapper defects. Construction has no effects; prove by AST without importing the entry.
+3. Independent native reviewer owns only `docs/coordination/reports/MERI-NATIVE-SUPERVISOR-REVIEW-20261012.md` and candidate `native-supervisor-20261012/review/`, in its own PR16-based worktree. Criteria are frozen from the actual verified current wrapper, before author acceptance. Independent source controls may isolate lifecycle definitions with inert ports; no candidate entry, diagnostic or native execution. Integrate only an exact ACCEPT_SOURCE freeze; preserve HOLD and negative evidence.
+4. Root obtains separate read-only review of the canonical plan, source assertions and integration evidence before publication. No changes to shared contracts, source pins, migrations, production modules, dependencies/locks or old packets are allocated.
+
+## Actual source findings and required limits
+
+Parent relay of the actual wrapper is11124 bytes, SHA256 `e37894e22b3bb290c8b8b8fb7aaf35f2d7b2868cc2d469214913953d1b4fc9df`, privately verified. This identifies current bytes, not the historical execution: that receipt did not pin the wrapper hash. The parent verified the original ZIP; this environment has the relayed wrapper and proposal derivative, not an independently downloaded/verified ZIP. Proposal formatting differs from the original hash and is labelled accordingly.
+
+The original wrapper has unbounded pre/post hashing/Git/packaging, synchronous Popen, an execution-only15s timer followed by additional termination and per-stream drain waits, and fixed occupied output plus executable selection from an old receipt. Thread completion is an EOF proxy only with zero reader errors. Direct-child exit never proves descendant containment. Assertions must not enforce admission because optimized Python can remove them.
+
+The repair must account against one original absolute15s budget, with10s action/3s termination/2s drain reservations clipped to remaining time, explicit separate EOF/error states,32768-byte stdout and65536-byte stderr caps, and fail-closed preservation/cleanup outcomes. This is cooperative accounting only: blocked process creation, filesystem, kill or pipe-close calls require a separately reviewed/admitted enclosing native watchdog. No boolean supplied by a caller establishes that proof. Execution stays HOLD.
+
+Selected executable hash/size/opened identity and exact path-role comparisons need the actual supporting JSON/source. Root requested `supervisor-source-review.json` and the exact ZIP member listing; no guessed member paths or repeated failed download. Timestamp-inclusive failure is retained until its exact predicates/diff are reviewed. Neither version metadata nor current hash establishes distributor/DLL trust or historical execution identity.
+
+## Verification and completion
+
+Author/reviewer report within10 minutes, initial work bounds25 minutes with progress; no recursive agents. Preserve raw failures, record exact source SHA256s and author/reviewer commits, verify isolated worktrees and publication ancestry. Root checks plan links, Git ancestry, source diff/identity, original tests/guards preserved, and independent source controls only. No local synthetic result changes a runtime gate. Report precise ACCEPT_SOURCE/HOLD per lane, passed/failed/unrun checks and the smallest remaining factual bindings, component decisions and execution permissions.
