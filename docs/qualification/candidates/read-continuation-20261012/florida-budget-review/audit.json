@@ -1,0 +1,244 @@
+{
+  "base": "c1c9bfde7dd466a0474589a224a99b44277adbc9",
+  "source": "dabe2b50d94f0b12ef983292a1c18e1ef35d4675",
+  "sourceTree": "83c708d207dc36f9bc8c7b9339636ac6143ab962",
+  "originalCount": 6528,
+  "originalUnchanged": 6528,
+  "originalChanged": [],
+  "sourceFiles": [
+    {
+      "path": "packages/contracts/retrieval-0.2/florida-budget-validation.mjs",
+      "bytes": 7290,
+      "sha256": "386e8ccde7b2cdbba9743e2f6d0218ff8ef3d8b54d2364b5b7d4861ae387b9eb",
+      "blob": "91af87c65481cfbdf405206dbb487efdfed337a1"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/florida-budget.schema.json",
+      "bytes": 10656,
+      "sha256": "338f182a21716ec38778d8728509f87ed9fbaaf82c70d29ee7d3297e1673f8db",
+      "blob": "a64b15509a795685c625fd9709b37ae6c70842d9"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-florida-budget.test.mjs",
+      "bytes": 18156,
+      "sha256": "fce74bf830de78ea0e42e76aa2e090b8060742c4eb9d63c59dda5fe208ed086e",
+      "blob": "edc58370bcfb81ab9166f5199ad95767f5e7cbc1"
+    }
+  ],
+  "referencePairs": 12,
+  "receipts": [
+    {
+      "path": "final-focused.json",
+      "exitCode": 0,
+      "ownedPidAndPgid": 264833,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "path": "independent-before-repair.json",
+      "exitCode": 1,
+      "ownedPidAndPgid": 264143,
+      "ownedProcessGroupAbsent": true
+    }
+  ],
+  "checks": [
+    {
+      "check": "all original base tracked files byte-preserved",
+      "passed": true
+    },
+    {
+      "check": "only three additive family files in source candidate",
+      "passed": true
+    },
+    {
+      "check": "review checkout exact packages/contracts/retrieval-0.2/florida-budget-validation.mjs",
+      "passed": true
+    },
+    {
+      "check": "review checkout exact packages/contracts/retrieval-0.2/florida-budget.schema.json",
+      "passed": true
+    },
+    {
+      "check": "review checkout exact packages/contracts/test/retrieval-florida-budget.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "frozen identity apps/api/src/meri/meri-tools.service.ts",
+      "passed": true
+    },
+    {
+      "check": "observed identity apps/api/src/meri/meri-tools.service.ts",
+      "passed": true
+    },
+    {
+      "check": "unchanged private reference apps/api/src/meri/meri-tools.service.ts",
+      "passed": true
+    },
+    {
+      "check": "frozen identity apps/intel-api/src/tracker/editorial/evidence.service.ts",
+      "passed": true
+    },
+    {
+      "check": "observed identity apps/intel-api/src/tracker/editorial/evidence.service.ts",
+      "passed": true
+    },
+    {
+      "check": "unchanged private reference apps/intel-api/src/tracker/editorial/evidence.service.ts",
+      "passed": true
+    },
+    {
+      "check": "frozen identity apps/intel-api/src/tracker/research/research.service.ts",
+      "passed": true
+    },
+    {
+      "check": "observed identity apps/intel-api/src/tracker/research/research.service.ts",
+      "passed": true
+    },
+    {
+      "check": "unchanged private reference apps/intel-api/src/tracker/research/research.service.ts",
+      "passed": true
+    },
+    {
+      "check": "frozen identity apps/intel-api/src/tracker/reports/report.service.ts",
+      "passed": true
+    },
+    {
+      "check": "observed identity apps/intel-api/src/tracker/reports/report.service.ts",
+      "passed": true
+    },
+    {
+      "check": "unchanged private reference apps/intel-api/src/tracker/reports/report.service.ts",
+      "passed": true
+    },
+    {
+      "check": "frozen identity apps/intel-api/src/tracker/folders/folder-tracker.service.ts",
+      "passed": true
+    },
+    {
+      "check": "observed identity apps/intel-api/src/tracker/folders/folder-tracker.service.ts",
+      "passed": true
+    },
+    {
+      "check": "unchanged private reference apps/intel-api/src/tracker/folders/folder-tracker.service.ts",
+      "passed": true
+    },
+    {
+      "check": "frozen identity apps/intel-api/src/tracker/keywords/keyword-rule.service.ts",
+      "passed": true
+    },
+    {
+      "check": "observed identity apps/intel-api/src/tracker/keywords/keyword-rule.service.ts",
+      "passed": true
+    },
+    {
+      "check": "unchanged private reference apps/intel-api/src/tracker/keywords/keyword-rule.service.ts",
+      "passed": true
+    },
+    {
+      "check": "frozen identity apps/intel-api/src/tracker/keywords/keyword-meri.controller.ts",
+      "passed": true
+    },
+    {
+      "check": "observed identity apps/intel-api/src/tracker/keywords/keyword-meri.controller.ts",
+      "passed": true
+    },
+    {
+      "check": "unchanged private reference apps/intel-api/src/tracker/keywords/keyword-meri.controller.ts",
+      "passed": true
+    },
+    {
+      "check": "frozen identity apps/intel-api/src/tracker/keywords/internal-workflow.controller.ts",
+      "passed": true
+    },
+    {
+      "check": "observed identity apps/intel-api/src/tracker/keywords/internal-workflow.controller.ts",
+      "passed": true
+    },
+    {
+      "check": "unchanged private reference apps/intel-api/src/tracker/keywords/internal-workflow.controller.ts",
+      "passed": true
+    },
+    {
+      "check": "frozen identity apps/api/prisma/migrations/20280914030000_legiwatch_news_fiscal/migration.sql",
+      "passed": true
+    },
+    {
+      "check": "observed identity apps/api/prisma/migrations/20280914030000_legiwatch_news_fiscal/migration.sql",
+      "passed": true
+    },
+    {
+      "check": "unchanged private reference apps/api/prisma/migrations/20280914030000_legiwatch_news_fiscal/migration.sql",
+      "passed": true
+    },
+    {
+      "check": "frozen identity apps/intel-api/prisma/migrations/20260914030000_legiwatch_news_editorial/migration.sql",
+      "passed": true
+    },
+    {
+      "check": "observed identity apps/intel-api/prisma/migrations/20260914030000_legiwatch_news_editorial/migration.sql",
+      "passed": true
+    },
+    {
+      "check": "unchanged private reference apps/intel-api/prisma/migrations/20260914030000_legiwatch_news_editorial/migration.sql",
+      "passed": true
+    },
+    {
+      "check": "frozen identity packages/shared/src/legiwatch-phase8.ts",
+      "passed": true
+    },
+    {
+      "check": "observed identity packages/shared/src/legiwatch-phase8.ts",
+      "passed": true
+    },
+    {
+      "check": "unchanged private reference packages/shared/src/legiwatch-phase8.ts",
+      "passed": true
+    },
+    {
+      "check": "frozen identity apps/api/prisma/schema.prisma",
+      "passed": true
+    },
+    {
+      "check": "observed identity apps/api/prisma/schema.prisma",
+      "passed": true
+    },
+    {
+      "check": "unchanged private reference apps/api/prisma/schema.prisma",
+      "passed": true
+    },
+    {
+      "check": "final-focused.json owned group absent",
+      "passed": true
+    },
+    {
+      "check": "final-focused.json raw stdout",
+      "passed": true
+    },
+    {
+      "check": "final-focused.json raw stderr",
+      "passed": true
+    },
+    {
+      "check": "independent-before-repair.json owned group absent",
+      "passed": true
+    },
+    {
+      "check": "independent-before-repair.json raw stdout",
+      "passed": true
+    },
+    {
+      "check": "independent-before-repair.json raw stderr",
+      "passed": true
+    },
+    {
+      "check": "initial 29 pass 1 fail preserved",
+      "passed": true
+    },
+    {
+      "check": "independent controls unchanged except explicit canonical Input definition decision",
+      "passed": true
+    }
+  ],
+  "passed": 49,
+  "failed": 0,
+  "scope": "OFFLINE_SOURCE_ONLY_NO_PRIVATE_BODIES_PUBLISHED_NO_RUNTIME_ACCEPTANCE"
+}
