@@ -12,6 +12,22 @@ const searched = result => ({input: result.input, metadata: {clientScope: result
 const federal = result => ({input: result.query, metadata: {queryScope: result.queryScope, clientScope: result.clientScope}});
 
 export const CATALOG_OPERATION_BINDINGS = Object.freeze([
+  Object.freeze({id: 'create_word', nativeId: 'create_word', group: 'artifacts', input: 'WordRequest', output: 'ArtifactCreatedResult', version: '0.2.0',
+    contextKeys: Object.freeze(["binding", "scopes", "evidence", "assets", "deadlineMs", "maxBytes", "analysisAdmission"]), dispatchProfile: 'artifact-execution/1',
+    normalize: (v, request, context, binding) => v.artifactValidators.normalizeArtifactInput(binding.id, request, clock(context, binding.contextKeys)),
+    outputAssert: (v, page, request, context, binding) => v.artifactValidators.assertArtifactOutput(binding.id, page, request, clock(context, binding.contextKeys))}),
+  Object.freeze({id: 'create_excel', nativeId: 'create_excel', group: 'artifacts', input: 'ExcelRequest', output: 'ArtifactCreatedResult', version: '0.2.0',
+    contextKeys: Object.freeze(["binding", "scopes", "evidence", "assets", "deadlineMs", "maxBytes", "analysisAdmission"]), dispatchProfile: 'artifact-execution/1',
+    normalize: (v, request, context, binding) => v.artifactValidators.normalizeArtifactInput(binding.id, request, clock(context, binding.contextKeys)),
+    outputAssert: (v, page, request, context, binding) => v.artifactValidators.assertArtifactOutput(binding.id, page, request, clock(context, binding.contextKeys))}),
+  Object.freeze({id: 'create_powerpoint', nativeId: 'create_powerpoint', group: 'artifacts', input: 'PowerpointRequest', output: 'ArtifactCreatedResult', version: '0.2.0',
+    contextKeys: Object.freeze(["binding", "scopes", "evidence", "assets", "deadlineMs", "maxBytes", "analysisAdmission"]), dispatchProfile: 'artifact-execution/1',
+    normalize: (v, request, context, binding) => v.artifactValidators.normalizeArtifactInput(binding.id, request, clock(context, binding.contextKeys)),
+    outputAssert: (v, page, request, context, binding) => v.artifactValidators.assertArtifactOutput(binding.id, page, request, clock(context, binding.contextKeys))}),
+  Object.freeze({id: 'run_analysis', nativeId: 'run_analysis', group: 'artifacts', input: 'AnalysisRequest', output: 'ArtifactOperationResult', version: '0.2.0',
+    contextKeys: Object.freeze(["binding", "scopes", "evidence", "assets", "deadlineMs", "maxBytes", "analysisAdmission"]), dispatchProfile: 'artifact-execution/1',
+    normalize: (v, request, context, binding) => v.artifactValidators.normalizeArtifactInput(binding.id, request, clock(context, binding.contextKeys)),
+    outputAssert: (v, page, request, context, binding) => v.artifactValidators.assertArtifactOutput(binding.id, page, request, clock(context, binding.contextKeys))}),
   Object.freeze({id: 'search_client_knowledge', nativeId: 'search_client_knowledge', group: 'client-knowledge-search', input: 'ClientKnowledgeSearchRequest', output: 'ClientKnowledgeSearchOutput', version: '0.2.0',
     contextKeys: Object.freeze(["asOf"]),
     normalize: (v, request, context, binding) => (v.clientKnowledgeSearchValidators.normalizeInput(binding.id, request, clock(context, binding.contextKeys))),
