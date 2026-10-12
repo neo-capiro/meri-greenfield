@@ -49,3 +49,22 @@ test('already-aborted Office entry acquires no directory or native child',async(
  const result=await officeMain({baseRoot:'/tmp',signal:controller.signal,writeStream:stream,mkdir:()=>{dirs++;throw Error('must not mkdir');},spawnFn:()=>{children++;throw Error('must not spawn');}});
  assert.equal(result,1);assert.equal(dirs,0);assert.equal(children,0);
 });
+
+test('actual runtime CLI child owner installs bounded signal bridge and removes only own listeners',async()=>{
+ const {runQualificationChildrenForCli}=await import(pathToFileURL(`${root}/apps/worker/qualification/probes/runtime.mjs`));
+ const fake=new EventEmitter();const borrowed=()=>{};fake.on('SIGTERM',borrowed);let child,spawns=0,kills=0,closed=false;
+ const values=await runQualificationChildrenForCli({processLike:fake,deadlineMs:100,graceMs:20,detached:true,
+  spawnFn:()=>{spawns++;assert.equal(fake.listenerCount('SIGINT'),1);assert.equal(fake.listenerCount('SIGTERM'),2);child=new EventEmitter();child.pid=424242;child.stdout=new EventEmitter();child.stderr=new EventEmitter();queueMicrotask(()=>{fake.emit('SIGTERM');fake.emit('SIGINT');});return child;},
+  groupKill:c=>{assert.equal(c,child);kills++;queueMicrotask(()=>{closed=true;c.emit('close',null,'SIGKILL');});return true;},
+  probeGroup:c=>{assert.equal(c,child);return !closed;}
+ });
+ assert.equal(spawns,1);assert.equal(kills,1);assert.equal(values[0].cleanupConfirmed,true);assert.equal(values[1].notRun,true);
+ assert.equal(fake.listenerCount('SIGINT'),0);assert.deepEqual(fake.listeners('SIGTERM'),[borrowed]);
+});
+
+test('actual runtime CLI owner disposes signal handlers when input admission refuses a child',async()=>{
+ const {runQualificationChildrenForCli}=await import(pathToFileURL(`${root}/apps/worker/qualification/probes/runtime.mjs`));
+ const fake=new EventEmitter();let spawns=0;
+ const values=await runQualificationChildrenForCli({processLike:fake,deadlineMs:NaN,spawnFn:()=>{spawns++;throw Error('must not spawn');}});
+ assert.equal(spawns,0);assert.ok(values.every(x=>x.status==='fail'));assert.equal(fake.listenerCount('SIGINT'),0);assert.equal(fake.listenerCount('SIGTERM'),0);
+});
