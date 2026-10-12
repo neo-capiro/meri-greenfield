@@ -1,0 +1,8 @@
+{
+  "dependencyCopy": {
+    "firstAttempt": "Prior native-test worktree had no node_modules; cp failed ENOENT, no mutation",
+    "successfulSource": "/workspace/meri-trusted-memory-context-20261012/node_modules",
+    "rootLockByteEqual": true,
+    "scriptsExecuted": false
+  }
+}

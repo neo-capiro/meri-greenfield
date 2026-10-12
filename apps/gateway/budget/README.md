@@ -18,6 +18,41 @@ Settlement records the full fixed `charged_micro_usd`; it does not claim measure
 
 Tests with a scripted SQL boundary establish source control flow and outcomes, including the actual dispatcher. They do not establish PostgreSQL atomicity, isolation, SQL execution, driver behavior, restart durability, real trusted identity, Temporal replay, image/runtime or G1 acceptance. Existing Aurora selection and the unknown remainder of the historical $10 allowance are unchanged; no database or paid provider action is authorized by this source.
 
+## Trusted owner accounting readback
+
+`readInvocationOutcome(originalInvocationJson, expectedJson)` is an explicit
+internal method on the existing pool/allocation-bound budget owner and durable
+gateway composition. `expectedJson` contains exactly `operation` and
+`argumentsSha256`. Both inputs are bounded JSON strings snapshotted before any
+await. The method adds no worker, UI or HTTP route; exposing it externally would
+require separate authorization design and review. Possession of invocation
+metadata alone is not an authentication mechanism.
+
+The read uses the canonical aggregate budget lock, stored allocation, retained
+grant correlation and original grant/reservation rows. It compares full original
+binding, grant/capability, operation, digest and redundant row identifiers, and
+validates conservative charge, output limits and state-specific timestamps/nulls.
+Original expiry, revocation, replacement, schedule expiry and budget quarantine
+do not hide accounting. These are historical integrity checks, not fresh effect
+admission; the method neither checks nor grants current tool permission.
+
+The frozen result contains `invocationId`, `reservationId`, `state`, `operation`,
+`argumentsSha256`, `holdMicrousd`, `chargedMicrousd`, `outputBytes`, and
+`observedAtMs`. Amounts are exact decimal strings, output bytes a safe number;
+nonexistent fields are null. `ABSENT` means no row was observed under that lock:
+an already-issued transaction may still commit afterward. `UNKNOWN` retains the
+full hold; `SETTLED` records conservative accounting, not source-result completion
+or provider actual usage. The observation never permits retry, refund, result
+release, new dispatch or grant creation. It performs no ledger writes and does
+not automatically reconcile an execute failure. Database/COMMIT/release failures
+remain content-free refusal or `BudgetCommitUncertain`; no failure is converted
+to ABSENT. The borrowed pool remains owned by its caller.
+
+Scripted source tests cover the actual disabled production facade and canonical
+adapter/transaction path. PostgreSQL execution/isolation, native replay and a
+trusted durable invocation producer remain unqualified. The existing separate
+native test suite is unchanged and still UNRUN.
+
 ## Explicit real-pg test source (UNRUN)
 
 The separate source suite `../test/postgres-budget.integration.mjs` consumes

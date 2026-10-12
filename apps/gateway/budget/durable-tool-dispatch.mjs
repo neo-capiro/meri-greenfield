@@ -11,6 +11,7 @@ export function createDurableToolDispatch({ pool, allocationJson, ...options }) 
   const owner = createPostgresToolBudget({ pool, allocationJson });
   return Object.freeze({
     bindTrustedGrant: owner.bindTrustedGrant,
+    readInvocationOutcome: owner.readInvocationOutcome,
     async execute(requestJson, credential, trustedInvocationJson, signal) {
       // Raw trusted JSON is copied and deeply frozen before the first await.
       const i = invocation(trustedInvocationJson, a);

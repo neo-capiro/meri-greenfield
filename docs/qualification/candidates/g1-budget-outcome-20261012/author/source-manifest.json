@@ -1,0 +1,31 @@
+{
+  "base": "263d0d174f9924a6030bb1c20100ff1115ffcda0",
+  "originalFileCount": 4198,
+  "changedOriginalPaths": [
+    "apps/gateway/budget/README.md",
+    "apps/gateway/budget/durable-tool-dispatch.mjs",
+    "apps/gateway/budget/postgres-tool-budget.mjs"
+  ],
+  "allOtherOriginalFilesPreserved": true,
+  "source": {
+    "apps/gateway/budget/postgres-tool-budget.mjs": {
+      "sha256": "6d2d76ace7edf38bd2c0559fc62b069b00d0f80b7e187db7347974998c48f6e0",
+      "bytes": 10790
+    },
+    "apps/gateway/budget/durable-tool-dispatch.mjs": {
+      "sha256": "17d791d9b4803dfbfd67e30befd3818a7d3bc82464b2e00a385a4619bf0fc9a6",
+      "bytes": 2766
+    },
+    "apps/gateway/budget/tool-budget-outcome.mjs": {
+      "sha256": "d5148557646a228160fc080efd40da6b110bebb6a2264b4180a9c6f5a018e3a7",
+      "bytes": 3638
+    },
+    "apps/gateway/test/tool-budget-outcome.test.mjs": {
+      "sha256": "fb85247c9b1e8ba97ca0fe318094eb10f0130d5977b923a70954f6b318585ae4",
+      "bytes": 14319
+    }
+  },
+  "nativeExecution": false,
+  "sourceEnabled": false,
+  "ownedProcessesStillRunning": []
+}

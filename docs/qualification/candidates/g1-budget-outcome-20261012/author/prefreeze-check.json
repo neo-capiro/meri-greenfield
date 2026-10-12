@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "apps/gateway/test/tool-budget-outcome.test.mjs",
+    "apps/gateway/test/durable-tool-budget.test.mjs"
+  ],
+  "exit": 0,
+  "seconds": 1.421,
+  "processGroup": 83576,
+  "processGroupAbsent": true,
+  "realSQLExecuted": false
+}
