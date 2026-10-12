@@ -1,0 +1,31 @@
+{
+  "checks": [
+    {
+      "receipt": "docs/qualification/candidates/durable-invocation-20261012/author/cancellation-repair-check.json",
+      "processGroup": 99740,
+      "absentAtFreeze": true
+    },
+    {
+      "receipt": "docs/qualification/candidates/durable-invocation-20261012/author/final-offline-check.json",
+      "processGroup": 100089,
+      "absentAtFreeze": true
+    },
+    {
+      "receipt": "docs/qualification/candidates/durable-invocation-20261012/author/initial-check.json",
+      "processGroup": 98828,
+      "absentAtFreeze": true
+    },
+    {
+      "receipt": "docs/qualification/candidates/durable-invocation-20261012/author/provenance-repair-check.json",
+      "processGroup": 99136,
+      "absentAtFreeze": true
+    },
+    {
+      "receipt": "docs/qualification/candidates/durable-invocation-20261012/author/transaction-boundary-final-check.json",
+      "processGroup": 101101,
+      "absentAtFreeze": true
+    }
+  ],
+  "noOwnedActiveProcessGroups": true,
+  "nativeResourcesStarted": false
+}
