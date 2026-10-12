@@ -1,0 +1,33 @@
+{
+  "command": [
+    "python",
+    "docs/qualification/candidates/task-slice-20261012/action-source-author/audit-final-v2.py"
+  ],
+  "cwd": "/workspace/meri-action-items-source-20261012",
+  "sourceHead": "926c3cfe250f6e2cb3a171e194f087e1444b9f44",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-12T23:45:16.564143+00:00",
+  "durationSeconds": 0.266,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 412110,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/action-source-author/final-audit-v2.stdout.bin",
+      "bytes": 242,
+      "sha256": "64f35f852415bed11fd788c219b9cf0f393eb1b5606d16ecb160cfbd0310d436"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/action-source-author/final-audit-v2.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Prior audit detailed report shared the capture receipt filename; preserve old scripts/receipts and rerun with a distinct checks filename. No production change.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
