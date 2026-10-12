@@ -1,0 +1,143 @@
+{
+  "candidate": "39b6da63289241b368a5003d47e98352c7cbc817",
+  "raisedBy": "root integration sampling; independently checked by this reviewer",
+  "initialMechanicalAudit": {
+    "passed": 334,
+    "total": 334,
+    "limit": "Initial oracle incorrectly required only G0 completed-source; mechanical PASS does not resolve W00 semantic mapping. Full original audit source and output are preserved."
+  },
+  "findings": [
+    {
+      "id": "MR1",
+      "requirement": "W00",
+      "before": {
+        "id": "W00",
+        "originalLocator": {
+          "path": "docs/plans/MERI-DEPLOYMENT.md",
+          "line": 176
+        },
+        "originalRequirement": "| W00 Discovery and scope | Codex, read-only Hermes support | Access to environment | Source inventory; selected/deferred capability ledger; account/repository decision; pinned Meri Figma baseline and shared-shell decision; REL-01 baseline/trace plan |",
+        "originalRecordSha256": "2f2b6111ec0ac0504721d931d1bde4fd777178a456d8679c8c2e3d0ec43981e5",
+        "status": "pending",
+        "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+        "completedSourceComponents": "G0 discovery and PR34 authority/requirements metadata accepted.",
+        "sourceReceiptIds": [
+          "g0",
+          "plan-index",
+          "scope",
+          "frontend",
+          "native-reported"
+        ],
+        "qualifiedRuntime": false,
+        "reportedRuntimeReceiptIds": [
+          "native-reported"
+        ],
+        "remaining": "Current owner receipts and any remaining source/design/discovery gaps still need exact joins.",
+        "owner": "integration + source/design owners",
+        "nextParallelSourceOrMetadataWork": "Bind latest external-owner receipts to existing inventory and unresolved source boundaries.",
+        "decisionOrExternalPrerequisite": "Obtain current receipts; four authority tensions remain visible without reclassifying.",
+        "optional": false,
+        "optionalDisposition": null
+      },
+      "disposition": "HOLD for narrow metadata correction",
+      "reason": "Exact W00 discovery outputs are covered by D012 accepted discovery and D013 adopted baseline/trace plan. Full REL01 real dataset/measurement and current runtime/UI service qualification are later work; generic current-owner receipts do not reopen W00.",
+      "requiredChange": "Credit completed-source discovery only, pin exact G0/R2 reports, remove unrelated native receipt from W00. Preserve G1OPEN and all future gates."
+    },
+    {
+      "id": "MR2",
+      "requirements": [
+        "REL-07",
+        "REL-08"
+      ],
+      "before": [
+        {
+          "id": "REL-07",
+          "originalLocator": {
+            "path": "docs/plans/MERI-DEPLOYMENT.md",
+            "line": 314
+          },
+          "originalRequirement": "| REL-07 Optional Decisions shadow | B/A scoped new adapter; separate D review | Accepted REL-06 baseline; actual API availability | One bounded advisor, multi-source/abstention/fallback fixtures, paired held-out improvement and latency evidence; adopt or remain disabled | R-11; RG-09/RG-10 |",
+          "originalRecordSha256": "c103b5051dc7de7c13ad43c03ede486f4eaccba2fc0de3703341eec13fa95981",
+          "status": "pending",
+          "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+          "completedSourceComponents": "Optional boundary preserved.",
+          "sourceReceiptIds": [
+            "benchmark"
+          ],
+          "qualifiedRuntime": false,
+          "reportedRuntimeReceiptIds": [],
+          "remaining": "Paired Decisions shadow/adoption unrun.",
+          "owner": "optional evaluation",
+          "nextParallelSourceOrMetadataWork": "Prepare abstention/mixed-family/fallback design; leave disabled.",
+          "decisionOrExternalPrerequisite": "Qualified REL06 and separately authorized supported API.",
+          "optional": true,
+          "optionalDisposition": "disabled/shadow pending baseline and own adoption; not mandatory or permanently excluded"
+        },
+        {
+          "id": "REL-08",
+          "originalLocator": {
+            "path": "docs/plans/MERI-DEPLOYMENT.md",
+            "line": 315
+          },
+          "originalRequirement": "| REL-08 Optional JEV shadow | B scoped trusted judge adapter; separate D review | Accepted REL-06 baseline; task/model availability | Labelled evidence calibration, required-evidence safeguards, paired quality/latency evidence; adopt or remain disabled | R-12; RG-09/RG-11 |",
+          "originalRecordSha256": "3fed09dafcf0e8be030acc543ddaeab3e6b283994c6b26d6c7d2c81efe5dcf3b",
+          "status": "pending",
+          "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+          "completedSourceComponents": "Optional boundary preserved.",
+          "sourceReceiptIds": [
+            "benchmark"
+          ],
+          "qualifiedRuntime": false,
+          "reportedRuntimeReceiptIds": [],
+          "remaining": "Labelled JEV evidence shadow/calibration unrun.",
+          "owner": "optional evaluation",
+          "nextParallelSourceOrMetadataWork": "Prepare separate task-specific judge rubric; leave disabled.",
+          "decisionOrExternalPrerequisite": "Qualified REL06 and task/model availability/authority.",
+          "optional": true,
+          "optionalDisposition": "disabled/shadow pending baseline and own adoption; not mandatory or permanently excluded"
+        }
+      ],
+      "disposition": "HOLD for narrow provenance wording",
+      "reason": "Unrun without scope asserts other-owner work absence that supplied receipts cannot establish.",
+      "requiredChange": "Describe optional shadow/adoption as not evidenced/qualified in received receipts; this metadata lane performed no run. Keep optional baseline/adoption constraints."
+    }
+  ],
+  "references": [
+    {
+      "commit": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+      "path": "docs/plans/MERI-DEPLOYMENT.md",
+      "bytes": 86848,
+      "sha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388",
+      "blob": "c9849375e463e88a064b256f715db7858cd369df"
+    },
+    {
+      "commit": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+      "path": "docs/coordination/DECISIONS.md",
+      "bytes": 24662,
+      "sha256": "8d5238335bbc9e68b58cbe083bd275dc24938eb7d13dc8d047342b8f37a819ae",
+      "blob": "fd58ed15daa8d3a093893e49e901f28570c91f51"
+    },
+    {
+      "commit": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+      "path": "docs/coordination/reports/CODEX-G0-DISCOVERY.md",
+      "bytes": 5910,
+      "sha256": "0c79b223d82ae6c374636eeb89c90a9ea4bcb5271d2358eb6a8eff93ac347232",
+      "blob": "84c2c04dd09ab2da3db8a9d325e48fa344eb2115"
+    },
+    {
+      "commit": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+      "path": "docs/coordination/reports/CODEX-R2-ADOPTION.md",
+      "bytes": 5774,
+      "sha256": "8ea4fc14c75747d27cb5ceb51a41551f71618c92cb89ca6113027aef56a7d0f5",
+      "blob": "c0436b3578b634f0441b7557a64571f21dba2761"
+    },
+    {
+      "commit": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+      "path": "docs/RETRIEVAL-AUDIT.md",
+      "bytes": 3213,
+      "sha256": "3790e591154beabaa5a438f93dd1e4b6236ca33fc8922f8cde1cb9d9805a1a9d",
+      "blob": "439c006ac5bfe70453ff9b414cbb743fe56700ee"
+    }
+  ],
+  "runtimeChanged": false
+}
