@@ -74,6 +74,14 @@ nor outreach authority.
 The prior memory approval conflict remains separate: producer administrator
 self-approval and wrapper independent-reviewer semantics are not reconciled by
 any read-contract change. No approval mutation is introduced here.
+Consequence: honoring the producer would allow an administrator to approve their
+own proposal despite the wrapper's other-reviewer requirement; honoring the
+wrapper would reject an action the producer currently permits. Proposed
+resolution for dot: adopt one explicit canonical rule, preferably a distinct
+reviewer even for administrators, then align producer, wrapper and tests through
+a separately approved governance change. This is a recommendation, not an
+implemented policy choice. Proposal reads can continue independently; approval
+operations and actual source connectivity remain unavailable.
 
 ## Evidence and authority limits
 
