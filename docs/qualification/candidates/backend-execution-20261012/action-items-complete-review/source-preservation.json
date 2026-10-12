@@ -19,7 +19,7 @@
       "sha256": "6a9670671dd09c26d00b967c68b4ab8cc97072da50afd2caeac3a39641609f5a"
     }
   ],
-  "passed": 29,
+  "passed": 31,
   "failed": 0,
   "checks": [
     {
@@ -136,6 +136,14 @@
     },
     {
       "name": "unscoped exact envelope",
+      "passed": true
+    },
+    {
+      "name": "packet source unchanged",
+      "passed": true
+    },
+    {
+      "name": "packet original preservation",
       "passed": true
     }
   ]
