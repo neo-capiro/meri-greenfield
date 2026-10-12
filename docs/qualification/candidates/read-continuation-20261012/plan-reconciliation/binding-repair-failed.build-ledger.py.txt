@@ -1,0 +1,159 @@
+#!/usr/bin/env python3
+"""Frozen Git/ZIP/XML documentary reconciliation; no project imports or runtime calls."""
+import collections, hashlib, io, json, re, subprocess, zipfile, xml.etree.ElementTree as ET
+from pathlib import Path
+BASE='cff71e1ba8ca8dea8970ad0c778b580a73f84815'
+READ='753566baf2d230ed241941dcdeca41625277cb1d'
+CMD='bdbb14603cfab0d52d483956f7f1a7e373abb3cb'
+LOADER='5fca98580c5d93c9f9aa4a3ed518e926e087846c'
+OUT=Path(__file__).resolve().parent
+ROOT=OUT.parents[4]
+def git(*args):return subprocess.check_output(['git','-C',str(ROOT),*args])
+def raw(path,ref=BASE):return git('show',ref+':'+path)
+def sha(b):return hashlib.sha256(b).hexdigest()
+def write(name,obj): (OUT/name).write_text(json.dumps(obj,ensure_ascii=False,indent=2)+'\n')
+def identity(path,ref=BASE):
+ b=raw(path,ref);return {'ref':ref,'path':path,'blob':git('rev-parse',ref+':'+path).decode().strip(),'bytes':len(b),'sha256':sha(b)}
+plan='docs/plans/MERI-DEPLOYMENT.md'
+book='docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx'
+stored='docs/plans/revisions/20261010-R2/inventory-stored-cells.json'
+doc='docs/plans/Meri_Greenfield_Agent_Plan.docx'
+inputs=git('ls-tree','-r','--name-only',BASE,'docs/plans','docs/handover/20261012/inputs').decode().splitlines()
+refs=['AGENTS.md','docs/IMPLEMENTATION-STANDARDS.md','docs/coordination/DECISIONS.md','docs/handover/20261011/CONTINUATION-INSTRUCTIONS.md','docs/handover/20261012/REMOTE-RESUME-CURRENT-20261012.md','docs/handover/20261012/CONTEXT-INDEX.json','docs/handover/20261012/SOURCE-SNAPSHOTS.json','docs/SKILL-CONTRACT.md','docs/RETRIEVAL-CONTRACT.md','docs/ROUTING-EVALUATION.md','docs/UI-SPEC.md','docs/UI-COVERAGE.md','docs/SOURCE-INVENTORY.md','docs/COMPONENTS.md','docs/coordination/r2/skills.json','docs/coordination/reports/CODEX-FRONTEND-RUNTIME-CLOSEOUT.md','docs/coordination/reports/CODEX-R2-ADOPTION.md','docs/coordination/reports/CODEX-REL02-CANONICAL-COMPOSITION-ACCEPTANCE-20261011.md','docs/coordination/reports/MERI-G1-NATIVE-PATH-20261012.md','docs/coordination/reports/MERI-G1-EXECUTION-OPTIONS-20261012.md','docs/coordination/reports/MERI-PGDG-METADATA-20261012.md','docs/coordination/reports/MERI-IMAGE-UPSTREAM-REVIEW-20261012.md','docs/decisions/MEMORY-ADMIN-SELF-APPROVAL-20261012.md','packages/contracts/retrieval-0.2/skill.schema.json','packages/contracts/retrieval-0.2/memory-review-policy.mjs','apps/control/qualification-temporal/recovery-activities.mjs','apps/control/qualification-temporal/recovery-workflow.ts','apps/worker/qualification/checkpoint/native-session-files.mjs','apps/gateway/budget/README.md','apps/gateway/test/postgres-budget.integration.mjs']
+source=[];missing=[]
+for p in dict.fromkeys(inputs+refs):
+ try:source.append(identity(p))
+ except subprocess.CalledProcessError:missing.append(p)
+for ref,p in [('79efba457f41ce436b91f76741dac783ba82010b','docs/coordination/reports/CODEX-SCOPE-AUTHORITY-20261012.md'),('ab637c786bb344719bb096630314949b4b99e657','docs/coordination/reports/CODEX-OBSERVED-READS-INTEGRATION-REVIEW-20261012.md'),('97de9c3fb44284dffc5ac88c8265057bfdf967fc','docs/coordination/reports/CODEX-COMMAND-CONTRACTS-INTEGRATION-REVIEW-20261012.md'),(READ,'packages/contracts/retrieval-0.2/catalog.json'),(READ,'packages/contracts/retrieval-0.2/validate.mjs'),(CMD,'packages/contracts/commands-0.2/artifact-file-validation.mjs'),(LOADER,'packages/contracts/commands-0.2/validate.mjs')]:source.append(identity(p,ref))
+write('source-identities.json',{'base':BASE,'files':source,'unavailableRequestedPaths':missing,'missingOriginals':[{'item':'pre-R2 capability workbook','status':'not found among original/plans files in this exact Meri Git tree; not a claim of global absence; R2 workbook available'}],'readBoundary':'Metadata pins are not a claim that all historical source/evidence bodies were manually read. No remote refresh.'})
+# Group conclusions deliberately bound to dated reports; a group association is not a row implementation proof.
+G={}
+def group(k,title,owner,evidence,done,gap,status='partial-source; product qualification pending'):
+ G[k]={'id':k,'title':title,'owner':owner,'evidence':evidence,'implementedOrAcceptedEvidence':done,'remainingRequirement':gap,'status':status,'runtimeQualified':False,'runtimeBoundary':'No whole-plan product/runtime PASS established; G1 OPEN, G2-G7 unentered. Other-owner current receipts not inspected.'}
+group('scope','Discovery, source inventory and authority','integration + source owners',['docs/coordination/DECISIONS.md','docs/coordination/reports/CODEX-R2-ADOPTION.md'],'G0 discovery accepted;139 native rows96 selected43 deferred; R2 adopted; full plan not replaced by catalog.','Finish item-level product/adapter/workflow receipt joins; retain all plan requirements and recorded scope distinctions.','G0 discovery accepted; full delivery pending')
+group('catalog','Typed retrieval boundaries and canonical mappings','backend source/gateway',['@READ:packages/contracts/retrieval-0.2/catalog.json','@READ:packages/contracts/retrieval-0.2/validate.mjs'],'Exact accepted-source candidate has67 typed unavailable operations,66 mapped originals,30 selected pending; one action-item partial remains pending.','Real handlers, trusted context producers, source access/policy and domain behavior qualification;30 full mappings remain. No catalog count proves139 product parity.')
+group('evidence','Evidence, exact/search/full-read, windows and lineage','backend retrieval + source owners',['docs/RETRIEVAL-CONTRACT.md','docs/coordination/reports/CODEX-REL02-CANONICAL-COMPOSITION-ACCEPTANCE-20261011.md'],'Private schema/consistency/normalization and declared lineage source components exist and were independently accepted.','Calendar/FY/version resolver, actual full reads, authentic snapshots/cursors/citations, source completeness and current authorization need production composition and actual evidence.')
+group('skills','Original skills, coworker tasks and fourteen intents','skills/backend + frontend + independent domain QA',['docs/SKILL-CONTRACT.md','docs/coordination/r2/skills.json','packages/contracts/retrieval-0.2/skill.schema.json'],'Versioned invocation/manifest structure and continuity validators exist;14 names explicitly preserved pending.','Original executable manifests/prose, required-evidence completion, Commitments rubric, real task execution and lifecycle integration for each14; drafting/meeting briefs remain required even if legacy command ID deferred.','source contract foundation; all14 workflow execution qualifications pending')
+group('ui','Conversation/chat/coworker interface and preferences','capiro-frontend owner + backend event/identity owners',['docs/coordination/reports/CODEX-FRONTEND-RUNTIME-CLOSEOUT.md','docs/UI-SPEC.md','docs/UI-COVERAGE.md','docs/coordination/DECISIONS.md'],'D014 assigns frontend separately; dated Home/shared-shell evidence cites28c300093c0886018c49df8764a8e6fac44819eb; public transport/producer source preserved.','Obtain current owner freeze and per-control/frame/state receipts for all screens, chat, attachments, history, approval, artifact/schedule controls, visual/accessibility; dated Home does not close60 UI states.','dated partial source/UI evidence; current external-owner completion unknown-by-this-lane')
+group('sdk','Single SDK loop, discovery, specialists and trusted proxy','native RC1/runtime + proxy owners',['docs/plans/MERI-G1-SOURCE-TO-NATIVE.md','docs/coordination/reports/MERI-G1-NATIVE-PATH-20261012.md'],'Source-only runtime/proxy/checkpoint/admission components and offline controls preserved.','Actual pinned supported runtime/proxy tool-reference/schema loading/streaming/compaction/resume; task auth expiry revocation durable budgets; native owner current receipt required. No model call authorized.')
+group('durability','Temporal, checkpoints, interruption, recovery and writer fences','Temporal/control + native owners',['apps/control/qualification-temporal/recovery-activities.mjs','apps/control/qualification-temporal/recovery-workflow.ts','apps/worker/qualification/checkpoint/native-session-files.mjs','docs/coordination/reports/MERI-G1-NATIVE-PATH-20261012.md'],'Qualification source includes recovery activities/workflow and session/file boundaries. Old PR15 statement of only synthetic activities is superseded by later source, not by runtime proof.','Genuine SDK A/B native checkpoints, persisted files/history, interrupted approval, stale writer rejection, restart/replay and zero duplicate effects; exact recovery<=2min gate remains.')
+group('schedules','Schedules and event-trigger lifecycle','Temporal/control + frontend + source owners',['docs/plans/MERI-DEPLOYMENT.md','docs/plans/Meri_Greenfield_Agent_Plan.docx'],'Temporal is selected durable scheduler; relevant contracts/qualification source do not establish complete product CRUD.','Create/inspect/edit/pause/resume/cancel/history, timezone/retry/destination/budget, per-run authority and revocation disable; current product handler receipt unknown-by-this-lane.','planned required behavior; complete handler implementation unknown-by-this-lane')
+group('memory','Governed Institutional Memory and current review policy','memory source/gateway + command owner',['packages/contracts/retrieval-0.2/memory-review-policy.mjs','docs/decisions/MEMORY-ADMIN-SELF-APPROVAL-20261012.md','docs/SKILL-CONTRACT.md'],'Read/proposal/review source boundaries; explicit administrator self-approval exception already approved.','Trusted eligibility/grants/legal holds/supersession/audit, fresh recall after resume, actual command outcomes; never revive resolved approval-policy conflict or enable handlers.')
+group('commands','Governed tasks, memory actions and artifact filing','command integration + source owners',['@CMD:packages/contracts/commands-0.2/artifact-file-validation.mjs','@LOADER:packages/contracts/commands-0.2/validate.mjs'],'Accepted standalone payload source bdbb146 and loader5fca985; parent reports independent143 controls.','Payload validation is not transaction execution: trusted producers, current authority/expiry, durable idempotency and uncertain outcome reconciliation, receipts and actual restricted source adapter remain separate.')
+group('artifacts','Native file drafting, edits, previews, provenance and filing','worker artifact + trusted publication + frontend owners',['docs/COMPONENTS.md','docs/coordination/reports/MERI-G1-EXECUTION-OPTIONS-20261012.md'],'Upstream library adoption/pin and source-only preparation exist; native benchmark is unrun here.','DOCX/XLSX/PPTX/PDF/HTML/code/CSV/notebook/ZIP workflows, original skills/templates, byte and render inspection, formulas/totals, exact immutable versions/downloads, revisions and source-derived access; current owner product receipts needed.')
+group('uploads','Upload, parse/OCR and source-scoped ingestion','artifact ingestion + frontend owners',['docs/COMPONENTS.md','docs/UI-SPEC.md'],'Required supported parsers/limits and UI/source contracts are documented.','Actual MIME/size/page/processing enforcement, cancellation, corrupt/encrypted files, scoped extraction/citations and provenance; no parser or upload service qualification asserted.','partial source requirements; actual product implementation unknown-by-this-lane')
+group('browser','Qualified Playwright browser and renderer isolation','native browser + security + artifact owners',['docs/coordination/DECISIONS.md','docs/coordination/reports/MERI-G1-EXECUTION-OPTIONS-20261012.md'],'D005 browser-host exception and source-only probe/admission work exist; no general host switch or sandbox waiver.','Patched admitted host/image, browser AND renderer sandbox, scoped auth/profile/uploads/downloads, egress/watchdog/teardown, cancellation/restart/revocation; each authenticated workflow separately qualified.')
+group('security','Identity, authorization, budget, egress and runtime enforcement','identity/gateway/security + runtime owners',['docs/coordination/DECISIONS.md','docs/coordination/reports/MERI-G1-NATIVE-PATH-20261012.md','apps/gateway/budget/README.md','apps/gateway/test/postgres-budget.integration.mjs'],'Current-grant/binding/budget/fence source guards and actual-pg test source exist; schemas do not confer authority.','Admitted real principals, short capability issuer/expiry/revocation, nonowner source access, denied paths, durable accounting and actual engine tests;100 adversarial+within-tenant/stored-context gates; no benchmark dollars invented.')
+group('retention','Retention/deletion, revoked old content and backup restore','control/storage/security + frontend owners',['docs/plans/MERI-DEPLOYMENT.md','docs/plans/Meri_Greenfield_Agent_Plan.docx'],'Requirement explicitly covers transcripts, UI events, uploads, browser state, snapshots, previews, artifacts and telemetry.','Per-store lifecycle implementation, caches/exports deletion, legal holds, backup expiry/restore and revoked stored-content denial receipts needed; implementation unknown-by-this-lane.','required behavior; current implementation unknown-by-this-lane')
+group('benchmark','Real tasks, reliability/oracles, domain truth, load and QA','independent QA + benchmark source owner',['docs/ROUTING-EVALUATION.md','docs/coordination/reports/CODEX-R2-ADOPTION.md'],'Protocol and gates adopted; frozen documentary baseline says real dataset empty/unmeasured. Local contract counts are not benchmark task counts.','Approved75 real requests ->>=200 labelled split/oracles; original>=60tasks90%completion95%facts,100 isolation,100%source/control/recovery,95%artifact rubric,10runs2s ack90s fresh;8s original/15s RG cohorts distinct. Obtain current dataset/results owner receipt.')
+group('optional','Optional Decisions/JEV evaluation','independent evaluation owner',['docs/ROUTING-EVALUATION.md','docs/plans/MERI-DEPLOYMENT.md'],'Optional disabled/shadow until independent adoption; no extra planner or authority.','After qualified baseline, actual availability+labelled paired/calibrated evidence; RG10>=25%relative improvement and latency; RG11 task-specific frozen thresholds. Never blocks passing core while disabled.','optional; unqualified, disabled/shadow')
+group('deployment','Image provenance, infrastructure, lifecycle, staging and release','shipping/release + platform/security owners',['docs/coordination/reports/MERI-IMAGE-UPSTREAM-REVIEW-20261012.md','docs/coordination/reports/MERI-PGDG-METADATA-20261012.md','docs/handover/20261012/REMOTE-RESUME-CURRENT-20261012.md','docs/coordination/reports/MERI-G1-NATIVE-PATH-20261012.md'],'Existing Aurora selected; source-only image54-obligation/prefix/runtime evidence preserved. No supported fully patched executable candidate established in this lane.','Current native/shipping receipt; supported authenticated image/library closure and runtime admission; exact authority/cost; staged candidate, retention/restore/rollback/in-flight compatibility, internal+tenant canary. G1OPEN, G2-G7unentered; no new RDS/network changes.')
+group('process','Independent authorship/review, preservation and delivery controls','integration owner',['AGENTS.md','docs/IMPLEMENTATION-STANDARDS.md','docs/coordination/DECISIONS.md'],'Independent source author/reviewer paths, immutable freezes and failures used throughout. Later continuation supersedes historical no-Hermes text; no launch authority added.','Per-candidate current accepted evidence/compatibility/publication; do not merge preserved unreviewed candidates or duplicate PR2; bounded owned cleanup and no destructive rollback.')
+group('unresolved','Requirement indexed but semantic implementation join not established','integration assigns exact component owner',['docs/plans/MERI-DEPLOYMENT.md'],'Exact original requirement retained; no inferred implementation absence or completion.','Obtain item-specific source/handler/workflow/runtime receipt and independently reconcile; group association alone is not proof.','unknown-by-this-lane')
+write('groups.json',list(G.values()))
+cat=json.loads(raw('packages/contracts/retrieval-0.2/catalog.json',READ));originals={o['id']:o for o in cat['originals']}
+def group_for(text):
+ t=text.lower()
+ for pat,g in [('retention|deletion|backup.expir|backup/restore','retention'),('decisions|jev','optional'),('benchmark|held.out|recall@|oracle|rg-','benchmark'),('memory|supersession|legal hold','memory'),('artifact|office|spreadsheet|word creation|pptx|docx|xlsx|pdf export|drafting|meeting briefing|native file','artifacts'),('upload|ocr|extraction|attachment','uploads'),('browser|playwright|chromium','browser'),('schedule|recurring|source.event','schedules'),('temporal|checkpoint|recovery|durab|single.writer|resume|fork|steer|interrupt','durability'),('skill|commitment','skills'),('conversation|workspace|interface|ui |figma|appearance|keyboard|composer|responsive|sidebar|menu|screen|frontend','ui'),('approval|mutation|command|task creation|filing','commands'),('permission|authoriz|revocation|grant|tenant|clerk|identity|budget|usage|capabilit.*expir|egress','security'),('deployment|release|image|infrastructure|aws|fargate|rollback|license|dependency','deployment'),('sdk|agent|model|subagent|compaction|mcp|shell','sdk'),('catalog|native tool|139','catalog'),('source|retrieval|evidence|lookup|search|filter|pagination|count|freshness|calendar|fiscal|version','evidence'),('codex|hermes|review|worktree|worker task|worker handoff','process')]:
+  if re.search(pat,t):return g
+ return 'unresolved'
+def state(g,scope=''):
+ s=G[g];return {'group':g,'implementation':s['status'],'sourceAcceptance':'component-only evidence; individual semantic implementation join pending','runtimeQualification':'not-established-by-this-lane','originalScope':scope,'owner':s['owner'],'evidence':s['evidence'],'blockerOrNextReceipt':s['remainingRequirement']}
+# Reconcile exact XML stored cells; no Excel evaluation/external data refresh.
+J=json.loads(raw(stored));ns={'s':'http://schemas.openxmlformats.org/spreadsheetml/2006/main'}
+with zipfile.ZipFile(io.BytesIO(raw(book))) as z:
+ shared=[''.join(e.itertext()) for e in ET.fromstring(z.read('xl/sharedStrings.xml')).findall('s:si',ns)]
+ for sheet in J:
+  r=ET.fromstring(z.read(sheet['xmlPath']));xmlrows=[]
+  for row in r.findall('.//s:sheetData/s:row',ns):
+   cells=[]
+   for c in row.findall('s:c',ns):
+    v=c.find('s:v',ns);f=c.find('s:f',ns);value=v.text if v is not None else None
+    if c.attrib.get('t')=='s' and value is not None:value=shared[int(value)]
+    if c.attrib.get('t')=='inlineStr':value=''.join(c.find('s:is',ns).itertext())
+    q={'cell':c.attrib['r']}
+    if value is not None:q['value']=value
+    if f is not None:q['formula']=f.text
+    if len(q)>1:cells.append(q)
+   if cells:xmlrows.append({'row':row.attrib['r'],'cells':cells})
+  assert xmlrows==sheet['rows'],sheet['name']
+rows=[];sheetstats=[]
+for sheet in J:
+ headers={c['cell'].rstrip('0123456789'):c.get('value','') for r in sheet['rows'] if r['row']=='7' for c in r['cells']}
+ count=0
+ for row in sheet['rows']:
+  if sheet['name']=='Overview' or int(row['row'])<8:continue
+  cells={c['cell'].rstrip('0123456789'):c.get('value','') for c in row['cells']};fields={headers.get(k,k):v for k,v in cells.items()};id=cells.get('A');scope=fields.get('Scope status',fields.get('Coverage status',fields.get('Adoption or gap status',fields.get('Scope',''))))
+  g={'Current native tools':'catalog','Current workflows':'skills','UI states':'ui','Routing audit':'benchmark','Qualification':'benchmark','SDK coverage':'sdk'}.get(sheet['name'],group_for(cells.get('B','')+' '+cells.get('C','')))
+  if id in ('R-11','R-12','RG-10','RG-11','REL-07','REL-08'):g='optional'
+  item={'id':sheet['name']+':'+str(id),'originalId':id,'locator':{'path':book,'sheet':sheet['name'],'row':int(row['row']),'cells':[c['cell'] for c in row['cells']]},'originalFields':fields,**state(g,scope),'implementationJoin':'group-level supporting evidence only; not an individual completion judgment'}
+  item['implementation']='unknown-by-this-lane at individual product row; group component evidence retained'
+  if sheet['name']=='Current native tools':
+   o=originals.get(id);assert o,id
+   item['canonicalOriginalAtReadFreeze']=o
+   item['sourceAcceptance']='mapped contract only' if o['state']=='mapped' else 'full native mapping pending' if o['disposition']=='selected' else 'deferred legacy native ID; authority review separate'
+   item['implementationJoin']='exact canonical original ID; does not imply corresponding product workflow completion'
+  if id and id.startswith('quick_skill.'):
+   item['sourceAcceptance']='shared invocation/manifest structure only; original executable skill and execution qualification pending'
+  if scope=='Deferred':item['implementation']='original workbook deferred classification retained; authority not re-adjudicated here'
+  text=' '.join(str(v) for v in fields.values()).lower()
+  secondary=[]
+  for pattern,key in [('schedul|recurring','schedules'),('draft|artifact|document|workbook|presentation|filing','artifacts'),('delete|retention|backup|export','retention'),('authoriz|permission|grant|private|export|sharing|security','security'),('deploy|release|standalone|rollout|canary|infrastructure','deployment'),('sdk|discovery|agent loop|proxy|tool_reference','sdk'),('durab|checkpoint|resume|fork|restart|reconnect|temporal','durability'),('benchmark|qualif|test|oracle|latency|evidence report','benchmark'),('frontend|ui|interface|conversation|display|controls','ui'),('skill|manifest|workflow intent','skills'),('independent|review|worktree|codex|hermes','process')]:
+   if re.search(pattern,text) and key!=g:secondary.append(key)
+  if id=='REL-09':secondary=list(dict.fromkeys(secondary+['deployment','process','benchmark']))
+  item['additionalGroups']=secondary
+  item['ownerDependencies']=[G[k]['owner'] for k in secondary]
+  item['requiredItemSpecificEvidence']=fields.get('Required action',fields.get('Action to retain parity',fields.get('What it does',fields.get('Displayed behavior',fields.get('Completion evidence','Retain original fields and obtain direct requirement-specific evidence')))))
+  rows.append(item);count+=1
+ sheetstats.append({'sheet':sheet['name'],'dataRows':count,'storedRows':len(sheet['rows'])})
+write('workbook-requirements.json',{'note':'Read-only documentary trace, never a second runtime catalog. Source group association is not item-level acceptance. Original scopes retained without new decisions.','source':identity(book),'xmlStoredCellsVerified':True,'formulasRecalculated':False,'sheetCounts':sheetstats,'rows':rows})
+# Whole original prose coverage, including blanks/headings/examples and historical versions.
+units=[]
+for p in inputs:
+ if not p.endswith('.md') or p.endswith('manifest.json'):continue
+ lines=raw(p).decode().splitlines();section='';fence=False
+ role='governing R2' if p in (plan,'docs/plans/revisions/20261010-R2/Meri_Codex_Hermes_Deployment_Plan-R2.md') else 'historical or ownership companion; later explicit decisions govern'
+ for n,line in enumerate(lines,1):
+  if line.startswith('#'):section=line.lstrip('# ').strip()
+  kind='substantive line'
+  if not line.strip():kind='blank'
+  elif line.startswith('```'):fence=not fence;kind='fence'
+  elif fence:kind='example or embedded prompt; no execution authority'
+  elif line.startswith('#'):kind='heading'
+  elif re.match(r'^\|[ |:-]+\|$',line):kind='table delimiter'
+  elif section.startswith('Primary documentation'):kind='reference'
+  g=group_for(section+' '+line)
+  units.append({'locator':{'path':p,'line':n},'text':line,'section':section,'kind':kind,'authorityRole':role,**state(g),'semanticReview':'original requirement preserved; group evidence only; no line-completion claim'})
+write('plan-line-coverage.json',{'units':units})
+nsw={'w':'http://schemas.openxmlformats.org/wordprocessingml/2006/main'}
+with zipfile.ZipFile(io.BytesIO(raw(doc))) as z:root=ET.fromstring(z.read('word/document.xml'))
+ps=[];ordinal=0;section=''
+for i,p in enumerate(root.findall('.//w:p',nsw),1):
+ t=''.join(n.text or '' for n in p.findall('.//w:t',nsw));ordinal+=bool(t)
+ kind='reference' if i>=277 else 'blank' if not t else 'original paragraph/table cell'
+ ps.append({'locator':{'path':doc,'part':'word/document.xml','xmlParagraph':i,'nonemptyParagraph':ordinal if t else None},'text':t,'kind':kind,**state(group_for(t)),'authorityRole':'unaffected original requirements; R2 and explicit later decisions supersede only specified conflicts','semanticReview':'indexed original requirement; group evidence only, not paragraph completion'})
+write('original-docx-coverage.json',{'byteIdenticalOriginal':'docs/handover/20261012/inputs/Meri_Greenfield_Agent_Plan.original.docx','xmlParagraphCount':len(ps),'nonemptyParagraphCount':ordinal,'paragraphs':ps})
+# Explicit normative IDs, plan tables and current canonical exact counts.
+lines=raw(plan).decode().splitlines();ids=[]
+for i,line in enumerate(lines,1):
+ m=re.match(r'^\| ((?:R-|REL-|RG-)\d{2}|W\d{2}|G\d)(?: | \|)',line)
+ if m:ids.append({'id':m.group(1),'locator':{'path':plan,'line':i},'requirement':line,**state(group_for(line))})
+for r in ids:
+ k=r['id']
+ if k=='G0':r.update(implementation='accepted discovery only',runtimeQualification='not a runtime gate')
+ elif k=='G1':r.update(implementation='OPEN',runtimeQualification='HOLD')
+ elif re.fullmatch('G[2-7]',k):r.update(implementation='unentered',runtimeQualification='UNRUN')
+ if k in ('R-11','R-12','REL-07','REL-08','RG-10','RG-11'):r.update(**state('optional'))
+idgroups={'W00':'scope','W01':'catalog','W02':'sdk','W03':'deployment','W04':'evidence','W05':'durability','W06':'ui','W07':'artifacts','W08':'commands','W09':'benchmark','W10':'deployment','W11':'deployment', 'R-01':'catalog','R-02':'security','R-03':'evidence','R-04':'evidence','R-05':'evidence','R-06':'sdk','R-07':'skills','R-08':'skills','R-09':'sdk','R-10':'benchmark','R-11':'optional','R-12':'optional','REL-01':'benchmark','REL-02':'catalog','REL-03':'evidence','REL-04':'skills','REL-05':'sdk','REL-06':'benchmark','REL-07':'optional','REL-08':'optional','REL-09':'deployment'}
+for r in ids:
+ if r['id'] in idgroups:r.update(**state(idgroups[r['id']]))
+ if r['id'].startswith('RG-'):r['implementation']='unmeasured product qualification; local validators are not this gate'
+ if r['id']=='W07':r['additionalGroups']=['browser','uploads']
+ if r['id']=='REL-04':r['additionalGroups']=['ui']
+ if r['id']=='REL-05':r['checkpoints']={'runtimeOnly':'G1/W02 pending actual native/proxy receipt','endToEnd':'after REL03/04,W03/W05; pending'}
+ if r['id']=='REL-09':r['checkpoints']={'preStaging':'W09/W10 pending','canary':'W11 after staging and exact release authorization; pending'}
+write('normative-id-ledger.json',{'requirements':ids})
+ops=cat['operations'];counts=collections.Counter(o['state'] for o in originals.values());selected=sum(o['disposition']=='selected' for o in originals.values())
+write('current-source-boundary.json',{'base':BASE,'readSource':READ,'sourceCatalogIdentity':identity('packages/contracts/retrieval-0.2/catalog.json',READ),'catalogVersion':cat['catalogVersion'],'originals':len(originals),'selected':selected,'deferred':len(originals)-selected,'canonicalStates':dict(counts),'typedOperations':len(ops),'allHandlerNull':all(o.get('handler') is None for o in ops),'operations':[{'id':o['binding']['id'],'version':o['binding']['version'],'nativeCoverage':o['binding'].get('nativeCoverage'),'availability':o.get('availability'),'handler':o.get('handler')} for o in ops],'acceptanceAndCountsProvenance':'Independent review ab637c786bb344719bb096630314949b4b99e657 records ACCEPT_SOURCE /2817 root /27 independent; exact report and Git catalog pinned/read here. Original raw suites were not replayed or independently re-audited in this documentary lane.','commandSource':CMD,'commandLoader':LOADER,'commandEvidence':'Independent integration review97de9c3fb44284dffc5ac88c8265057bfdf967fc records source acceptance and143 combined controls (36 new,97 family,10 boundary); standalone reviewer757e3e691f4578781116d81fb516b5c9f454325a records97 payload controls. Neither means real mutation handlers.','publication':'At allocation PR31 was last published62 mappings. Parent subsequently reports PR32 ede7b56845816d38d0bbffab5a657aaa4f978739 and PR33 a838c3819ca01798d9175a1d07bef1eb81355808 published. These are parent-provided publication identities, not independently remote-refreshed by this lane.','gateState':{'G0':'accepted discovery','G1':'OPEN','G2-G7':'unentered'},'otherOwnerEvidence':'Current frontend/native RC1/shipping receipts must be reconciled; historical checked-in reports are dated, not global absence claims.'})
+write('coverage-summary.json',{'workbookRows':len(rows),'sheetCounts':sheetstats,'r2LineCount':len(lines),'allIndexedMarkdownLines':len(units),'docxXmlParagraphs':len(ps),'docxNonemptyParagraphs':ordinal,'namedIds':collections.Counter(re.sub(r'\d.*','',r['id']) for r in ids),'quickSkills':[r['originalId'] for r in rows if r['originalId'] and r['originalId'].startswith('quick_skill.')],'newMeriCategories':dict(collections.Counter(r['originalFields']['Category'] for r in rows if r['locator']['sheet']=='New Meri')),'completionClaim':False,'noProductOrRuntimeChecksExecuted':True})
+print(json.dumps({'status':'PASS','workbookRows':len(rows),'r2Lines':len(lines),'docxXmlParagraphs':len(ps),'namedIds':len(ids),'sourceFiles':len(source),'missingRequestedPaths':missing}))

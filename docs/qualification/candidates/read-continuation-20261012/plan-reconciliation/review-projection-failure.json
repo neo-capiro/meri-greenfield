@@ -1,0 +1,9 @@
+{
+  "status": "FAIL",
+  "checks": 1,
+  "failed": 1,
+  "predicate": "Every operation has exact nested binding.id/version/coverage",
+  "observedMissingIdCount": 67,
+  "source": "reviewer discovered wrong documentary projection; product catalog unchanged",
+  "preimageSha256": "834af143af56f6df562e669ea5670301ff9ccfc8b43d189cb856b7a09d5ee9c9"
+}
