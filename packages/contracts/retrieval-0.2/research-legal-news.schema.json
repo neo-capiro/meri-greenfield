@@ -1,0 +1,1802 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:research-legal-news:0.2.0",
+  "title": "Scoped publisher/personnel/private monitor evidence; all source views retained",
+  "$defs": {
+    "ResearchLegalNewsRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "view": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "sessionKey": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "folderId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "clientId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "q": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "publisher": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "monitorId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "kind": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "branch": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "limit": {
+          "type": [
+            "number",
+            "string",
+            "null"
+          ]
+        },
+        "offset": {
+          "type": [
+            "number",
+            "string",
+            "null"
+          ]
+        },
+        "days": {
+          "type": [
+            "number",
+            "string",
+            "null"
+          ]
+        },
+        "year": {
+          "type": [
+            "number",
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": []
+    },
+    "ResearchLegalNewsScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "jurisdiction": {
+          "const": "FL"
+        },
+        "sessionKey": {
+          "type": "string"
+        },
+        "folderId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "clientId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "jurisdiction",
+        "sessionKey",
+        "folderId",
+        "clientId"
+      ]
+    },
+    "ResearchLegalNewsContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "clientResolution": {
+          "$ref": "urn:meri:retrieval:outreach-query:0.2.0#/$defs/OutreachQueryContext/properties/clientResolution"
+        },
+        "effectiveScope": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ResearchLegalNewsScope"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "windowAsOf": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "defaultYear": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": -2147483648,
+              "maximum": 2147483647
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "owner": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "tenantId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "clerkUserId": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "tenantId",
+            "clerkUserId"
+          ]
+        }
+      },
+      "required": [
+        "clientResolution",
+        "effectiveScope",
+        "windowAsOf",
+        "defaultYear",
+        "owner"
+      ]
+    },
+    "ResearchLegalNewsInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "view": {
+          "enum": [
+            "news",
+            "source",
+            "personnel",
+            "monitors"
+          ]
+        },
+        "scope": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ResearchLegalNewsScope"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "q": {
+          "type": "string"
+        },
+        "publisher": {
+          "type": "string"
+        },
+        "monitorId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "kind": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "branch": {
+          "type": "string"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000
+        },
+        "days": {
+          "enum": [
+            1,
+            3,
+            7,
+            14
+          ]
+        },
+        "year": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": -2147483648,
+              "maximum": 2147483647
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "view",
+        "scope",
+        "q",
+        "publisher",
+        "monitorId",
+        "kind",
+        "id",
+        "branch",
+        "limit",
+        "offset",
+        "days",
+        "year"
+      ]
+    },
+    "ResearchLegalNewsArticle": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "article_id": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "string"
+        },
+        "provider": {
+          "type": "string"
+        },
+        "provider_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "original_url": {
+          "type": "string"
+        },
+        "canonical_url": {
+          "type": "string"
+        },
+        "publisher": {
+          "type": "string"
+        },
+        "author": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "provider_parsed_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "summary": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "body": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "body_complete": {
+          "type": "boolean"
+        },
+        "language": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "publisher_country": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "article_geography": {},
+        "published_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "publication_precision": {
+          "type": "string"
+        },
+        "observed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_url": {
+          "type": "string"
+        },
+        "rights": {
+          "enum": [
+            "headline_link",
+            "excerpt",
+            "full_text"
+          ]
+        },
+        "is_current": {
+          "type": "boolean"
+        },
+        "saved": {
+          "type": "boolean"
+        },
+        "tracking_version": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": -2147483648,
+              "maximum": 2147483647
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "article_id",
+        "revision",
+        "provider",
+        "provider_id",
+        "original_url",
+        "canonical_url",
+        "publisher",
+        "author",
+        "provider_parsed_at",
+        "title",
+        "summary",
+        "body",
+        "body_complete",
+        "language",
+        "publisher_country",
+        "article_geography",
+        "published_at",
+        "publication_precision",
+        "observed_at",
+        "source_url",
+        "rights",
+        "is_current",
+        "saved",
+        "tracking_version"
+      ]
+    },
+    "ResearchLegalNewsPersonnel": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "source_key": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "change",
+            "registration"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "branch": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "registration_year": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": -2147483648,
+              "maximum": 2147483647
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "firm": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "principal": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "old_role": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "new_role": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "announced_date": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "effective_date": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "withdrawal_date": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "confirmation": {
+          "type": "string"
+        },
+        "canonical_person_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "directory_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "source_url": {
+          "type": "string"
+        },
+        "receipt_id": {
+          "type": "string"
+        },
+        "payload": {},
+        "observed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "saved": {
+          "type": "boolean"
+        },
+        "tracking_version": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": -2147483648,
+              "maximum": 2147483647
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "source_key",
+        "revision",
+        "kind",
+        "name",
+        "branch",
+        "registration_year",
+        "firm",
+        "principal",
+        "old_role",
+        "new_role",
+        "announced_date",
+        "effective_date",
+        "withdrawal_date",
+        "confirmation",
+        "canonical_person_id",
+        "directory_url",
+        "source_url",
+        "receipt_id",
+        "payload",
+        "observed_at",
+        "saved",
+        "tracking_version"
+      ]
+    },
+    "ResearchLegalNewsFeed": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "publisher": {
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "succeeded",
+            "partial",
+            "failed",
+            "unknown",
+            "not_checked"
+          ]
+        },
+        "observedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "primaryFailure": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "url",
+        "publisher",
+        "status",
+        "observedAt",
+        "reason",
+        "primaryFailure"
+      ]
+    },
+    "ResearchLegalNewsCoverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "publisher": {
+          "type": "string"
+        },
+        "source_group": {
+          "type": "string"
+        },
+        "source_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "enum": [
+            "supported",
+            "partial",
+            "unavailable",
+            "excluded"
+          ]
+        },
+        "evidence": {},
+        "owner": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "intake": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "status": {
+              "enum": [
+                "no_verified_endpoint",
+                "succeeded",
+                "failed",
+                "not_checked",
+                "partial"
+              ]
+            },
+            "feeds": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ResearchLegalNewsFeed"
+              },
+              "maxItems": 7
+            }
+          },
+          "required": [
+            "status",
+            "feeds"
+          ]
+        },
+        "retained": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "articles": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "fullTextArticles": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "latestPublishedAt": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "latestObservedAt": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "articles",
+            "fullTextArticles",
+            "latestPublishedAt",
+            "latestObservedAt"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "publisher",
+        "source_group",
+        "source_url",
+        "status",
+        "evidence",
+        "owner",
+        "version",
+        "intake",
+        "retained"
+      ]
+    },
+    "ResearchLegalNewsPage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/ResearchLegalNewsScope"
+        },
+        "matchDefinition": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "version": {
+                  "type": "integer",
+                  "minimum": -2147483648,
+                  "maximum": 2147483647
+                },
+                "query": {},
+                "fields": {},
+                "interpretation": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "version",
+                "interpretation"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ResearchLegalNewsArticle"
+          },
+          "maxItems": 100
+        },
+        "nextOffset": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10100
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "coverage": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ResearchLegalNewsCoverage"
+          }
+        },
+        "window": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "since": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "days": {
+              "enum": [
+                1,
+                3,
+                7,
+                14
+              ]
+            }
+          },
+          "required": [
+            "since",
+            "days"
+          ]
+        },
+        "coverageMessage": {
+          "const": "Results reflect retained sources. Missing article bodies and unavailable providers limit coverage."
+        }
+      },
+      "required": [
+        "scope",
+        "matchDefinition",
+        "items",
+        "nextOffset",
+        "coverage",
+        "window",
+        "coverageMessage"
+      ]
+    },
+    "ResearchLegalNewsPersonnelPage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ResearchLegalNewsPersonnel"
+          },
+          "maxItems": 100
+        },
+        "nextOffset": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10100
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "year": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "notice": {
+          "const": "Source-linked observations; withdrawal does not establish employment termination. Unresolved identities remain unmerged."
+        }
+      },
+      "required": [
+        "items",
+        "nextOffset",
+        "year",
+        "notice"
+      ]
+    },
+    "ResearchLegalNewsCompilation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "raw": {
+          "type": "string"
+        },
+        "parserVersion": {
+          "const": "legiwatch-query-v1"
+        },
+        "status": {
+          "enum": [
+            "supported",
+            "unsupported",
+            "empty"
+          ]
+        },
+        "ast": {
+          "anyOf": [
+            {
+              "$ref": "urn:meri:retrieval:research-legal-legislation:0.2.0#/$defs/ResearchLegalQueryAst"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reasons": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "interpretation": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "adapterVersion": {
+          "const": "legiwatch-news-query-v1"
+        },
+        "providerQuery": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "raw",
+        "parserVersion",
+        "status",
+        "ast",
+        "reasons",
+        "interpretation",
+        "adapterVersion",
+        "providerQuery"
+      ]
+    },
+    "ResearchLegalNewsMonitor": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "tenant_id": {
+          "type": "string"
+        },
+        "owner_clerk_id": {
+          "type": "string"
+        },
+        "source_key": {
+          "type": "string"
+        },
+        "source": {},
+        "config": {},
+        "version": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "state": {
+          "enum": [
+            "needs_review",
+            "paused",
+            "active",
+            "excluded"
+          ]
+        },
+        "baseline_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "checkpoint": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "pending_window": {},
+        "last_attempt_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "last_error": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "interpretation": {
+          "$ref": "#/$defs/ResearchLegalNewsCompilation"
+        }
+      },
+      "required": [
+        "id",
+        "tenant_id",
+        "owner_clerk_id",
+        "source_key",
+        "source",
+        "config",
+        "version",
+        "state",
+        "baseline_at",
+        "checkpoint",
+        "pending_window",
+        "last_attempt_at",
+        "last_error",
+        "created_at",
+        "interpretation"
+      ]
+    },
+    "ResearchLegalNewsMonitorsPage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "monitors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ResearchLegalNewsMonitor"
+          }
+        }
+      },
+      "required": [
+        "monitors"
+      ]
+    },
+    "ResearchLegalNewsSourceNews": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "article_id": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "string"
+        },
+        "provider": {
+          "type": "string"
+        },
+        "provider_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "original_url": {
+          "type": "string"
+        },
+        "canonical_url": {
+          "type": "string"
+        },
+        "publisher": {
+          "type": "string"
+        },
+        "author": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "provider_parsed_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "summary": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "body": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "body_complete": {
+          "type": "boolean"
+        },
+        "language": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "publisher_country": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "article_geography": {},
+        "published_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "publication_precision": {
+          "type": "string"
+        },
+        "observed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_url": {
+          "type": "string"
+        },
+        "rights": {
+          "enum": [
+            "headline_link",
+            "excerpt",
+            "full_text"
+          ]
+        },
+        "is_current": {
+          "type": "boolean"
+        },
+        "sourceUrl": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "complete": {
+          "type": "boolean"
+        },
+        "authority": {
+          "const": "Attributed publisher reporting"
+        }
+      },
+      "required": [
+        "id",
+        "article_id",
+        "revision",
+        "provider",
+        "provider_id",
+        "original_url",
+        "canonical_url",
+        "publisher",
+        "author",
+        "provider_parsed_at",
+        "title",
+        "summary",
+        "body",
+        "body_complete",
+        "language",
+        "publisher_country",
+        "article_geography",
+        "published_at",
+        "publication_precision",
+        "observed_at",
+        "source_url",
+        "rights",
+        "is_current",
+        "sourceUrl",
+        "text",
+        "observedAt",
+        "complete",
+        "authority"
+      ]
+    },
+    "ResearchLegalNewsSourceBudget": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "publisher": {
+          "$ref": "urn:meri:retrieval:florida-budget:0.2.0#/$defs/FloridaBudgetDocument/properties/publisher"
+        },
+        "source_url": {
+          "$ref": "urn:meri:retrieval:florida-budget:0.2.0#/$defs/FloridaBudgetDocument/properties/source_url"
+        },
+        "content_hash": {
+          "$ref": "urn:meri:retrieval:florida-budget:0.2.0#/$defs/FloridaBudgetDocument/properties/content_hash"
+        },
+        "title": {
+          "type": "string"
+        },
+        "fiscal_year": {
+          "$ref": "urn:meri:retrieval:florida-budget:0.2.0#/$defs/FloridaBudgetDocument/properties/fiscal_year"
+        },
+        "session_key": {
+          "$ref": "urn:meri:retrieval:florida-budget:0.2.0#/$defs/FloridaBudgetDocument/properties/session_key"
+        },
+        "chamber": {
+          "$ref": "urn:meri:retrieval:florida-budget:0.2.0#/$defs/FloridaBudgetDocument/properties/chamber"
+        },
+        "stage": {
+          "$ref": "urn:meri:retrieval:florida-budget:0.2.0#/$defs/FloridaBudgetDocument/properties/stage"
+        },
+        "role": {
+          "$ref": "urn:meri:retrieval:florida-budget:0.2.0#/$defs/FloridaBudgetDocument/properties/role"
+        },
+        "offer": {
+          "$ref": "urn:meri:retrieval:florida-budget:0.2.0#/$defs/FloridaBudgetDocument/properties/offer"
+        },
+        "publication_date": {
+          "$ref": "urn:meri:retrieval:florida-budget:0.2.0#/$defs/FloridaBudgetDocument/properties/publication_date"
+        },
+        "observed_at": {
+          "$ref": "urn:meri:retrieval:florida-budget:0.2.0#/$defs/FloridaBudgetDocument/properties/observed_at"
+        },
+        "receipt_id": {
+          "type": "string"
+        },
+        "sections": {},
+        "metadata": {
+          "$ref": "urn:meri:retrieval:florida-budget:0.2.0#/$defs/FloridaBudgetDocument/properties/metadata"
+        },
+        "complete": {
+          "type": "boolean"
+        },
+        "revision": {
+          "type": "string"
+        },
+        "sourceUrl": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "authority": {
+          "type": "string"
+        },
+        "rights": {
+          "const": "full_text"
+        }
+      },
+      "required": [
+        "id",
+        "publisher",
+        "source_url",
+        "content_hash",
+        "title",
+        "fiscal_year",
+        "session_key",
+        "chamber",
+        "stage",
+        "role",
+        "offer",
+        "publication_date",
+        "observed_at",
+        "receipt_id",
+        "sections",
+        "metadata",
+        "complete",
+        "revision",
+        "sourceUrl",
+        "text",
+        "observedAt",
+        "authority",
+        "rights"
+      ]
+    },
+    "ResearchLegalNewsSourcePersonnel": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "source_key": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "change",
+            "registration"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "branch": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "registration_year": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": -2147483648,
+              "maximum": 2147483647
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "firm": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "principal": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "old_role": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "new_role": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "announced_date": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "effective_date": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "withdrawal_date": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "confirmation": {
+          "type": "string"
+        },
+        "canonical_person_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "directory_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "source_url": {
+          "type": "string"
+        },
+        "receipt_id": {
+          "type": "string"
+        },
+        "payload": {},
+        "observed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "title": {
+          "type": "string"
+        },
+        "sourceUrl": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "complete": {
+          "const": true
+        },
+        "authority": {
+          "type": "string"
+        },
+        "rights": {
+          "const": "full_text"
+        }
+      },
+      "required": [
+        "id",
+        "source_key",
+        "revision",
+        "kind",
+        "name",
+        "branch",
+        "registration_year",
+        "firm",
+        "principal",
+        "old_role",
+        "new_role",
+        "announced_date",
+        "effective_date",
+        "withdrawal_date",
+        "confirmation",
+        "canonical_person_id",
+        "directory_url",
+        "source_url",
+        "receipt_id",
+        "payload",
+        "observed_at",
+        "title",
+        "sourceUrl",
+        "text",
+        "observedAt",
+        "complete",
+        "authority",
+        "rights"
+      ]
+    },
+    "ResearchLegalNewsSection": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "locator": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "hash": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "locator",
+        "text",
+        "hash"
+      ]
+    },
+    "ResearchLegalNewsSourceResearch": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "string"
+        },
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "sourceUrl": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "complete": {
+          "type": "boolean"
+        },
+        "authority": {
+          "const": "Published legislative record"
+        },
+        "rights": {
+          "const": "full_text"
+        },
+        "billId": {
+          "type": "string"
+        },
+        "sections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ResearchLegalNewsSection"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "title",
+        "sourceUrl",
+        "text",
+        "observedAt",
+        "complete",
+        "authority",
+        "rights",
+        "billId",
+        "sections"
+      ]
+    },
+    "ResearchLegalNewsOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "search_legiwatch_news"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "result": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/ResearchLegalNewsPage"
+            },
+            {
+              "$ref": "#/$defs/ResearchLegalNewsPersonnelPage"
+            },
+            {
+              "$ref": "#/$defs/ResearchLegalNewsMonitorsPage"
+            },
+            {
+              "$ref": "#/$defs/ResearchLegalNewsSourceNews"
+            },
+            {
+              "$ref": "#/$defs/ResearchLegalNewsSourceBudget"
+            },
+            {
+              "$ref": "#/$defs/ResearchLegalNewsSourcePersonnel"
+            },
+            {
+              "$ref": "#/$defs/ResearchLegalNewsSourceResearch"
+            }
+          ]
+        },
+        "authority": {
+          "const": "Source quotations retain their document identity. Meri relevance is an inference for review; keyword grammar and current folder decisions control assignments."
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "result",
+        "authority"
+      ]
+    },
+    "ResearchLegalNewsIntakeEndpoints": {
+      "const": [
+        {
+          "publisher": "The Hill",
+          "slug": "the_hill",
+          "url": "https://thehill.com/feed/"
+        },
+        {
+          "publisher": "Politico",
+          "slug": "politico",
+          "url": "https://rss.politico.com/politics-news.xml"
+        },
+        {
+          "publisher": "Politico",
+          "slug": "politico_congress",
+          "url": "https://rss.politico.com/congress.xml"
+        },
+        {
+          "publisher": "CBS Miami",
+          "slug": "cbs_miami",
+          "url": "https://www.cbsnews.com/miami/latest/rss/main"
+        },
+        {
+          "publisher": "Florida Daily",
+          "slug": "florida_daily",
+          "url": "https://floridadaily.com/feed/"
+        },
+        {
+          "publisher": "Florida Phoenix",
+          "slug": "florida_phoenix",
+          "url": "https://floridaphoenix.com/feed/"
+        },
+        {
+          "publisher": "WUSF",
+          "slug": "wusf",
+          "url": "https://www.wusf.org/news.rss"
+        }
+      ]
+    }
+  }
+}

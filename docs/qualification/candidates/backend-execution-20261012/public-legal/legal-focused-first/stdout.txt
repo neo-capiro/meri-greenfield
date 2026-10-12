@@ -1,0 +1,41 @@
+✔ two exact operations and separate request versus normalized definitions (1.512536ms)
+✔ selectors refuse coercion without executing hooks (0.421404ms)
+✔ defaults preserve explicit research session and nullable scope (1.713578ms)
+✔ scope scalar admission and UTF16 bounds are fail closed (0.485069ms)
+✔ trusted client alias resolution is mandatory and cannot rebind UUID (0.605711ms)
+✔ folder does not manufacture client scope in ResearchService (2.465499ms)
+✔ query bounds and policies retain admitted successful producer variants (0.526082ms)
+✔ selected bills deduplicate and sort without fabricating nonempty IDs (0.390097ms)
+✔ empty source pages and nullable view-derived kinds are admitted (2.424147ms)
+✔ all output members required and metadata authority exact (1.100205ms)
+✔ query interpretation binds exact expression without pretending grammar execution (1.210651ms)
+✔ query evidence offsets and first excerpt must agree (0.941396ms)
+✔ NOT match can have no evidence with default prefix excerpt (0.324748ms)
+✔ filtered empty page may still have cursor and scanned25 (0.368975ms)
+✔ unqueried scan cannot silently discard rows (0.222224ms)
+✔ source identity ordering unique, not chronological or legislative progression (0.583127ms)
+✔ projected qualified inventory can remain incomplete under reference filter (0.289085ms)
+✔ qualified flags cannot invent queried manifest without explicit bills (0.30571ms)
+✔ current kind stage and dated text filters correlate only projected fields (0.779242ms)
+✔ three reference dispatch branches preserve all-other view behavior (3.491052ms)
+✔ version view requires session plus string bill including empty (0.338349ms)
+✔ versions carry selected bill and 200 row completeness distinction (3.491813ms)
+✔ citation fact binds raw citation and explicit reference still overrides (0.307492ms)
+✔ edition format remains 20xx and constitution suppresses even invalid edition (0.259581ms)
+✔ citation resolution is never a model field or nonreference branch option (0.754385ms)
+✔ nullable lateral join preserves all-null missing revision (0.621756ms)
+✔ present revision retains opaque JSON and nullable history/edition (0.370557ms)
+✔ related rows preserve raw jurisdiction but selected reference/session/offsets (0.532642ms)
+✔ rules selected notice and adopted filter are separate (0.627263ms)
+✔ rule observations have descending time and stable notice ID ties (0.702928ms)
+✔ owned normalized selection is frozen and returned projection detached (0.287963ms)
+✔ inert boundary refuses accessors aliases and nonfinite JSON before hooks (0.220652ms)
+✔ no ambient wall clock or current source claim is required (0.222014ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 33
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 256.282692
