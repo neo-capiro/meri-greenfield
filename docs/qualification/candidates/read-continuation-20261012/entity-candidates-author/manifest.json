@@ -1,0 +1,91 @@
+{
+  "sourceCommit": "788c0419c9489dfdd4906a50b59661595a072713",
+  "sourceTree": "cc42292346660c99160b1f98725804e59e92a8ad",
+  "prerequisiteCommit": "e721b6f815e68df80d598f9ff1d8127a190ae62a",
+  "scope": "Author DTO/source evidence only; independent acceptance and runtime separate",
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-ENTITY-CANDIDATES-AUTHOR-20261012.md",
+      "bytes": 8434,
+      "sha256": "8cd4b71e6e340a00a4aa59763fd4f052ce340eb4a5515a046f861b0cb4633996"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/dependencies.json",
+      "bytes": 1935,
+      "sha256": "f9e72de4d85c87f43fccfa2e9e0eb13f9dad5d14a89fd8b2ab5640062d91edc8"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/focused-initial.json",
+      "bytes": 1317,
+      "sha256": "a61213c7d9bd6739168eda14f270105dde6c3b731e9618224b3a48085dfa26a2"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/focused-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/focused-initial.stdout.bin",
+      "bytes": 2440,
+      "sha256": "a0f0e559d8008bbc5db09279d3febb4b5428945a36ba8a7aea1ddeaab0daf1bc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/focused-name-uniqueness-repair.json",
+      "bytes": 1544,
+      "sha256": "e7324716bf80f78902dbd7d7040fcf2cb395bccdfd0c52551a600953bd61fea2"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/focused-name-uniqueness-repair.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/focused-name-uniqueness-repair.stdout.bin",
+      "bytes": 2549,
+      "sha256": "0a1f2c6e6b69c45235e1518cf5d8f82b3bedf9f3d614fa36c10d119faa79da42"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/initial-author-test.mjs",
+      "bytes": 13289,
+      "sha256": "d00fd49a046de8c0cf4dd09be9bb481685d9816cb5e76023f2d774ed08a40de8"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/name-uniqueness-repair.json",
+      "bytes": 1014,
+      "sha256": "6292737c65ecf2bae5f913a14cdef3b1628b9a763721581f0c1aeee3554839b8"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/outline.json",
+      "bytes": 2773,
+      "sha256": "2ff8a438d7c668ab2d7bb5cba5189681bc24f7a1372c9466f36ae715684c46d8"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/reference-identities.json",
+      "bytes": 1901,
+      "sha256": "9e6d2e5290aca1c1c8f69d239fe5326cc514ef43ae2bfcad834cf459a186bff4"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/state-helper-dependency.json",
+      "bytes": 425,
+      "sha256": "95514793125613b8a0b5aeb512e15850d7f75e7bd25db10e325165cc9cba0a55"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/verification.json",
+      "bytes": 5720,
+      "sha256": "d1dc748b6d7a739b9721996e5650f521ae257f1b6f129b3d8699ac115aee601d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/verify.py",
+      "bytes": 5262,
+      "sha256": "4292f66ec9d7abb1d73fa4c95f3def69dcb1e5dcfa25f55b5d66849abf692fcd"
+    }
+  ],
+  "excluded": [
+    "manifest.json (self-reference)"
+  ]
+}
