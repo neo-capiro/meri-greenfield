@@ -1,0 +1,6 @@
+test_rejected_syntax_role_before_native_io (__main__.SyntaxControl.test_rejected_syntax_role_before_native_io) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.003s
+
+OK

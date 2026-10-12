@@ -1,0 +1,125 @@
+{
+  "checks": [
+    {
+      "check": "supplement:notices/node-v24.21.0-LICENSE.txt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "supplement:notices/cpython-v3.13.5-LICENSE.txt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "supplement:notices/standardwebhooks-exact-LICENSE.txt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "supplement:notices/canvas-exact-gitmodules.txt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "supplement:notices/cpython-v3.13.5-abi.rst",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "supplement:notices/isarray-1.0.0-inline-MIT-LICENSE.txt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "isarray-source-member",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "isarray-license-verbatim-section",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "standardwebhooks-exact-githead",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "standardwebhooks-source-receipt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "standardwebhooks-notice:standard-webhooks-b4d2c14fc5b4ccff3ff271e3b087dff812254c59/LICENSE",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "standardwebhooks-notice:standard-webhooks-b4d2c14fc5b4ccff3ff271e3b087dff812254c59/libraries/LICENSE",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "standardwebhooks-notice:standard-webhooks-b4d2c14fc5b4ccff3ff271e3b087dff812254c59/libraries/python/LICENSE",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "standardwebhooks-subdirectory-manifest",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "standardwebhooks-license-scope",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "sdk-binary-static-pin",
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "failures": [],
+  "standardwebhooks": {
+    "registry_gitHead": "b4d2c14fc5b4ccff3ff271e3b087dff812254c59",
+    "source_tarball_sha256": "6543b0f8db7eed216fa67856e1d6607cadd87e3a50bd4d6481403694c315f3de",
+    "source_manifest": "standard-webhooks-b4d2c14fc5b4ccff3ff271e3b087dff812254c59/libraries/javascript/package.json",
+    "name": "standardwebhooks",
+    "version": "1.1.1",
+    "license": "MIT",
+    "npm_reproducible_build_not_verified": true
+  },
+  "sdk_binary": {
+    "bytes": 256113848,
+    "sha256": "4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358",
+    "data_only": true
+  },
+  "upstream_failures_preserved": [
+    {
+      "url": "https://api.github.com/repos/Brooooooklyn/canvas/git/trees/7d19abed029287e7c26b14eaa6e67d560a37d853",
+      "error": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>"
+    },
+    {
+      "url": "https://lxml.de/installation.html",
+      "error": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>"
+    },
+    {
+      "url": "https://code.claude.com/docs/en/legal-and-compliance",
+      "error": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>"
+    },
+    {
+      "url": "https://www.anthropic.com/legal/commercial-terms",
+      "error": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>"
+    },
+    {
+      "url": "https://chromium.googlesource.com/chromium/src/+/155.0.8059.12/LICENSE?format=TEXT",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+    },
+    {
+      "url": "https://storage.googleapis.com/chrome-for-testing-public/155.0.8059.12/linux64/chrome-linux64.zip",
+      "error": "URLError(OSError('Tunnel connection failed: 403 Forbidden'))"
+    }
+  ]
+}

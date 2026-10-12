@@ -1,0 +1,129 @@
+[
+  {
+    "command": [
+      "python3",
+      "-I",
+      "-B",
+      "-S",
+      "docs/qualification/candidates/image-patch-20261012/review/independent_controls.py"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 0.415,
+    "ownedProcessGroupAbsent": true,
+    "killRequired": false,
+    "streams": [
+      {
+        "path": "independent14.stdout.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "independent14.stderr.txt",
+        "bytes": 2040,
+        "sha256": "0e114f58ac7524833dbc767417234b52f907a544f752f3c1463ad0e57edc9da6"
+      }
+    ]
+  },
+  {
+    "command": [
+      "python3",
+      "-I",
+      "-B",
+      "-S",
+      "docs/qualification/candidates/image-patch-20261012/upstream/verify-packet.py"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 0.064,
+    "ownedProcessGroupAbsent": true,
+    "killRequired": false,
+    "streams": [
+      {
+        "path": "upstream142.stdout.txt",
+        "bytes": 6144,
+        "sha256": "ca3b66824db383f9f5df1454c97f73e9a62b9c9a07f621806ad3e10901ef30e6"
+      },
+      {
+        "path": "upstream142.stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ]
+  },
+  {
+    "command": [
+      "python3",
+      "-I",
+      "-B",
+      "-S",
+      "docs/qualification/candidates/image-patch-20261012/integration/verify-held-inputs.py"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 0.116,
+    "ownedProcessGroupAbsent": true,
+    "killRequired": false,
+    "streams": [
+      {
+        "path": "held-inputs.stdout.txt",
+        "bytes": 3098,
+        "sha256": "69446fc6dfa5f0aef343b667cffedfece5105095d393583e76d41d2e991d8683"
+      },
+      {
+        "path": "held-inputs.stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ]
+  },
+  {
+    "command": [
+      "python3",
+      "-I",
+      "-B",
+      "-S",
+      "docs/qualification/candidates/image-patch-20261012/license-review/verify-packet.py",
+      ".",
+      "docs/qualification/candidates/image-patch-20261012/integration/license-artifact-checks.json"
+    ],
+    "exitCode": 0,
+    "execution": "exec_command process completed; read-only verifier has no child-process calls",
+    "checksPassed": 1141,
+    "streams": [
+      {
+        "path": "license-artifact-checks.stdout.txt",
+        "bytes": 465,
+        "sha256": "2fd7f69b7d8dbf0a9de2127c8a2514a67cff5a676e46d9ceead251b39dfceb76"
+      },
+      {
+        "path": "license-artifact-checks.stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ]
+  },
+  {
+    "command": [
+      "python3",
+      "-I",
+      "-B",
+      "-S",
+      "docs/qualification/candidates/image-patch-20261012/license-review/verify-supplements.py",
+      ".",
+      "docs/qualification/candidates/image-patch-20261012/integration/license-supplement-checks.json"
+    ],
+    "exitCode": 0,
+    "execution": "exec_command process completed; read-only verifier has no child-process calls",
+    "checksPassed": 16,
+    "streams": [
+      {
+        "path": "license-supplement-checks.stdout.txt",
+        "bytes": 3728,
+        "sha256": "294f994ff5aa119d7d4211c90ee208dc2f3c1c84650858b958a4c5038f3c36d9"
+      },
+      {
+        "path": "license-supplement-checks.stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ]
+  }
+]

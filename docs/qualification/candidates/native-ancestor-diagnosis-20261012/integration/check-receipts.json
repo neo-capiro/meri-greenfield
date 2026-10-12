@@ -1,0 +1,74 @@
+[
+  {
+    "command": [
+      "python3",
+      "-B",
+      "docs/qualification/candidates/native-ancestor-diagnosis-20261012/review/independent_controls.py"
+    ],
+    "ANCESTOR_SOURCE": "/workspace/meri-image-source-preparation-20261012/docs/qualification/candidates/native-ancestor-diagnosis-20261012/inspect-ancestor-metadata.py",
+    "exitCode": 0,
+    "durationSeconds": 0.114,
+    "ownedProcessGroupAbsent": true,
+    "killRequired": false,
+    "streams": [
+      {
+        "path": "independent16.stdout.txt",
+        "bytes": 111,
+        "sha256": "b6ff4195adb341a857f44e872ee61f73cd237aa5fd096856565ca05badec464e"
+      },
+      {
+        "path": "independent16.stderr.txt",
+        "bytes": 1779,
+        "sha256": "0e77652fce65eae85ad88ab24d56981a4ad3779f0e5f0fcba43e722dfe2cb55f"
+      }
+    ]
+  },
+  {
+    "command": [
+      "python3",
+      "-B",
+      "docs/qualification/candidates/native-ancestor-diagnosis-20261012/review/syntax_controls.py"
+    ],
+    "ANCESTOR_SOURCE": "/workspace/meri-image-source-preparation-20261012/docs/qualification/candidates/native-ancestor-diagnosis-20261012/inspect-ancestor-metadata.py",
+    "exitCode": 0,
+    "durationSeconds": 0.115,
+    "ownedProcessGroupAbsent": true,
+    "killRequired": false,
+    "streams": [
+      {
+        "path": "syntax1.stdout.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "syntax1.stderr.txt",
+        "bytes": 215,
+        "sha256": "9ee5cd832fa20fcc44be0139be473bbe0f357eed67430926c708c59924521791"
+      }
+    ]
+  },
+  {
+    "command": [
+      "python3",
+      "-B",
+      "docs/qualification/candidates/native-ancestor-diagnosis-20261012/author/test_ancestor_metadata.py"
+    ],
+    "ANCESTOR_SOURCE": "/workspace/meri-image-source-preparation-20261012/docs/qualification/candidates/native-ancestor-diagnosis-20261012/inspect-ancestor-metadata.py",
+    "exitCode": 0,
+    "durationSeconds": 0.114,
+    "ownedProcessGroupAbsent": true,
+    "killRequired": false,
+    "streams": [
+      {
+        "path": "author12.stdout.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "author12.stderr.txt",
+        "bytes": 111,
+        "sha256": "4e9583fbd8b7dfd17b1b52f963bca5e078ab351e78d6c9726b2c05ff184c10db"
+      }
+    ]
+  }
+]
