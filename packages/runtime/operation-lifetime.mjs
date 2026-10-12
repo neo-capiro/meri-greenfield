@@ -51,4 +51,3 @@ export function createOperationLifetime({ deadlineMs, now, signal, schedule = se
   return Object.freeze({ run, check, close, limitDeadline, signal: controller.signal,
     pendingOperations: () => pending.size });
 }
-

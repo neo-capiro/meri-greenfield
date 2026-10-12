@@ -1,0 +1,12 @@
+{
+  "observedAt": "2026-10-12T21:26:00Z",
+  "method": "git ls-remote origin exact refs; successful read-only remote check from authorized source donor worktree",
+  "refs": {
+    "main": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc",
+    "task/codex-g1-publish-20261011": "5ee46446b5f60034916f00b2a665b3e2bef9cf60",
+    "task/handover-preserve-candidates-20261012": "c57b7d26df7de2acbd8c7d8edc7098f7d495053a",
+    "task/meri-backend-next-20261012": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+    "task/meri-backend-execution-20261012": "1b95bcc16cdb681931212d8f87c0797c7f8c2759"
+  },
+  "mainMerged": false
+}
