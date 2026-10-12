@@ -1,0 +1,7 @@
+{
+  "sourcePreimageCommit": "1446fb49a972189a49ffdd2b74b18455b55658aa",
+  "baseline": "command-authority-baseline.json",
+  "result": "37 passed, 9 failed; all nine failures asserted nonexistent error.code instead of the canonical GatewayDenied name/message. No production behavior repaired by this change.",
+  "correction": "Use existing fixed error name/message, preserve each refusal control; controlled parked port released and its rejection awaited after abort.",
+  "runtimeAcceptance": false
+}

@@ -34,7 +34,7 @@ test('command authority reuses all four fresh ports and publishes validated dead
 
 for (const actions of [['tool.read'], ['command.propose'], ['artifact.publish']]) {
   test(`command authority refuses ${actions[0]} before later ports`, async () => {
-    const f = setup(actions); await assert.rejects(f.authority.check(f.request), {code: 'ACCESS_DENIED'});
+    const f = setup(actions); await assert.rejects(f.authority.check(f.request), {name: 'GatewayDenied', message: 'ACCESS_DENIED'});
     assert.deepEqual(f.calls, ['capability']);
   });
 }
@@ -42,16 +42,16 @@ for (const actions of [['tool.read'], ['command.propose'], ['artifact.publish']]
 test('original authority still requires tool.read when no action is configured', async () => {
   const f = setup();
   const original = createCurrentToolAuthority({ports: f.ports, now: f.options.now, maxFactBytes: 65536});
-  await assert.rejects(original.check(f.request), {code: 'ACCESS_DENIED'});
+  await assert.rejects(original.check(f.request), {name: 'GatewayDenied', message: 'ACCESS_DENIED'});
   assert.deepEqual(f.calls, ['capability']);
 });
 
 test('fixed command authority cannot be changed through caller configuration', () => {
   const f = setup();
-  assert.throws(() => createCommandAuthority({...f.options, capabilityAction: 'tool.read'}), {code: 'GATEWAY_CONFIGURATION'});
+  assert.throws(() => createCommandAuthority({...f.options, capabilityAction: 'tool.read'}), {name: 'GatewayDenied', message: 'GATEWAY_CONFIGURATION'});
   for (const capabilityAction of ['', 'command.propose', 'artifact.publish', ['command.execute'], null]) {
     assert.throws(() => createCurrentToolAuthority({ports: f.ports, now: f.options.now,
-      maxFactBytes: 65536, capabilityAction}), {code: 'GATEWAY_CONFIGURATION'});
+      maxFactBytes: 65536, capabilityAction}), {name: 'GatewayDenied', message: 'GATEWAY_CONFIGURATION'});
   }
   assert.deepEqual(f.calls, []);
 });
@@ -63,19 +63,22 @@ for (const kind of ['revoked', 'expired', 'stale-fence', 'source-disabled']) {
     if (kind === 'expired') f.claims.expiresAt = new Date(NOW).toISOString();
     if (kind === 'stale-fence') f.state.fence = 2;
     if (kind === 'source-disabled') f.state.sourceEnabled = false;
-    await assert.rejects(f.authority.check(f.request), {code: 'ACCESS_DENIED'});
+    await assert.rejects(f.authority.check(f.request), {name: 'GatewayDenied', message: 'ACCESS_DENIED'});
   });
 }
 
 test('capability expiry is published before a parked command run fact', async () => {
   const f = setup(); const controller = new AbortController(); let entered;
   const waiting = new Promise(resolve => { entered = resolve; });
-  f.ports.currentRun = async () => { entered(); return new Promise(() => {}); };
+  let release; const parked = new Promise(resolve => { release = resolve; });
+  const original = f.ports.currentRun;
+  f.ports.currentRun = async (...args) => { entered(); await parked; return original(...args); };
   const pending = f.authority.identify({...f.request, signal: controller.signal});
   await waiting; assert.deepEqual(f.deadlines, [NOW + 10000]);
   // The canonical outer lifetime owns waiting/cancellation. This lower port does
   // not turn a cancellation into proof that parked external work has stopped.
-  controller.abort(); void pending;
+  controller.abort(); release();
+  await assert.rejects(pending, {name: 'GatewayDenied', message: 'ACCESS_DENIED'});
 });
 
 test('new authority factory does not activate the production gateway', async () => {
