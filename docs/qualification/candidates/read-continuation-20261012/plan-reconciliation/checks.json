@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "python3",
+    "-I",
+    "-B",
+    "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/verify.py"
+  ],
+  "result": {
+    "status": "PASS",
+    "checks": 2978,
+    "base": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+    "productTestsRun": false,
+    "runtimeActions": false
+  },
+  "exitCode": 0,
+  "stdoutSha256": "ab9a3ae983992b3a9063c5732c74da8f936600a8c5713faf913b79e3380ff577",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "scriptSha256": "2aba06043a176785cff0fe554580e9795f62cf29280e2799d6f9aee69cbf772a",
+  "sourceChecksOnly": true,
+  "productTests": "UNRUN",
+  "runtimeOrServiceExecution": "UNRUN",
+  "networkOrProviderCalls": 0,
+  "processBoundary": "Only synchronous Python/Git documentary children; tool calls returned. No background/service/native process started; no other owner process touched."
+}

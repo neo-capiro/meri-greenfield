@@ -1,0 +1,14 @@
+fatal: not a git repository (or any of the parent directories): .git
+Traceback (most recent call last):
+  File "/workspace/meri-plan-reconciliation-20261012/docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/build-ledger.py", line 21, in <module>
+    inputs=git('ls-tree','-r','--name-only',BASE,'docs/plans','docs/handover/20261012/inputs').decode().splitlines()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/meri-plan-reconciliation-20261012/docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/build-ledger.py", line 11, in git
+    def git(*args):return subprocess.check_output(['git','-C',str(ROOT),*args])
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['git', '-C', '/workspace', 'ls-tree', '-r', '--name-only', 'cff71e1ba8ca8dea8970ad0c778b580a73f84815', 'docs/plans', 'docs/handover/20261012/inputs']' returned non-zero exit status 128.

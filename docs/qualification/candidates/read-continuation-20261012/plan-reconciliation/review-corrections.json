@@ -1,0 +1,19 @@
+{
+  "sourceChanged": false,
+  "originalsChanged": false,
+  "findings": [
+    {
+      "finding": "All67 operation id/version values incorrectly null in derivative inventory",
+      "cause": "Top-level keys used on nested raw catalog descriptors",
+      "reviewerInitialSuggestion": "binding.id/version; reviewer later explicitly corrected that suggestion as confusing resolved descriptor with raw catalog",
+      "intermediateResult": "Both documentary builder and verifier refused with KeyError; raw streams and script preimages retained",
+      "repair": "Raw catalog operation.id/version; separate canonical catalog-validation partial declaration; ordered identity and partial-source check",
+      "status": "repaired documentary metadata only"
+    },
+    {
+      "finding": "Cross-cutting owner links absent in initial705-row inventory",
+      "repair": "Secondary required groups/owners attached; explicit N084 schedules,N028 retention,N033 security,N001 deployment,REL05 SDK,REL09 deployment/process/benchmark controls",
+      "boundary": "Owner-routing links are not semantic implementation or runtime acceptance"
+    }
+  ]
+}

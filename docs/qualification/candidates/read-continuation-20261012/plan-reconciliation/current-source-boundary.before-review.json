@@ -1,0 +1,504 @@
+{
+  "base": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+  "readSource": "753566baf2d230ed241941dcdeca41625277cb1d",
+  "sourceCatalogIdentity": {
+    "ref": "753566baf2d230ed241941dcdeca41625277cb1d",
+    "path": "packages/contracts/retrieval-0.2/catalog.json",
+    "blob": "420c7dcb5ff8422cc67cf0336fec50f8d25313dc",
+    "bytes": 242133,
+    "sha256": "5c8a6ad710a9a48156dfabd0954d7d5c6150cd0720af014449a63d954838e218"
+  },
+  "catalogVersion": "0.2.9",
+  "originals": 139,
+  "selected": 96,
+  "deferred": 43,
+  "canonicalStates": {
+    "deferred": 43,
+    "mapped": 66,
+    "pending": 30
+  },
+  "typedOperations": 67,
+  "allHandlerNull": true,
+  "operations": [
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    },
+    {
+      "id": null,
+      "version": null,
+      "availability": "unimplemented",
+      "handler": null,
+      "nativeCoverage": null
+    }
+  ],
+  "acceptanceAndCountsProvenance": "Independent review ab637c786bb344719bb096630314949b4b99e657 records ACCEPT_SOURCE /2817 root /27 independent; exact report and Git catalog pinned/read here. Original raw suites were not replayed or independently re-audited in this documentary lane.",
+  "commandSource": "bdbb14603cfab0d52d483956f7f1a7e373abb3cb",
+  "commandLoader": "5fca98580c5d93c9f9aa4a3ed518e926e087846c",
+  "commandEvidence": "Independent integration review97de9c3fb44284dffc5ac88c8265057bfdf967fc records source acceptance and143 combined controls (36 new,97 family,10 boundary); standalone reviewer757e3e691f4578781116d81fb516b5c9f454325a records97 payload controls. Neither means real mutation handlers.",
+  "publication": "Parent reports PR31 last published62 mappings; accepted66-mapping successor publication pending at allocation. No remote refresh here.",
+  "gateState": {
+    "G0": "accepted discovery",
+    "G1": "OPEN",
+    "G2-G7": "unentered"
+  },
+  "otherOwnerEvidence": "Current frontend/native RC1/shipping receipts must be reconciled; historical checked-in reports are dated, not global absence claims."
+}

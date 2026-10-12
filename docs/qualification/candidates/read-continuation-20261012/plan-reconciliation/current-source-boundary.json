@@ -1,0 +1,504 @@
+{
+  "base": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+  "readSource": "753566baf2d230ed241941dcdeca41625277cb1d",
+  "sourceCatalogIdentity": {
+    "ref": "753566baf2d230ed241941dcdeca41625277cb1d",
+    "path": "packages/contracts/retrieval-0.2/catalog.json",
+    "blob": "420c7dcb5ff8422cc67cf0336fec50f8d25313dc",
+    "bytes": 242133,
+    "sha256": "5c8a6ad710a9a48156dfabd0954d7d5c6150cd0720af014449a63d954838e218"
+  },
+  "catalogVersion": "0.2.9",
+  "originals": 139,
+  "selected": 96,
+  "deferred": 43,
+  "canonicalStates": {
+    "deferred": 43,
+    "mapped": 66,
+    "pending": 30
+  },
+  "typedOperations": 67,
+  "allHandlerNull": true,
+  "operations": [
+    {
+      "id": "mail.read_thread",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "mail.list_messages",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "mail.search_messages",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "meeting.list_upcoming_meetings",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "meeting.read_client_meetings",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "meeting.query_debriefs",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "query_tasks",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "search_capiro_data",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "search_federal_contract_awards",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "search_federal_subawards",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "search_contract_vehicles",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "search_procurement_forecasts",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "get_district_federal_market",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "memory.list_own_proposals",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "query_action_items",
+      "version": "0.2.0",
+      "nativeCoverage": "partial",
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "lookup_client_registry",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "get_research_portfolio",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "get_research_portfolio_changes",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "get_business_development_context",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "get_business_development_evidence",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "get_business_development_recent_changes",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "search_funding_opportunities",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "get_funding_opportunity_requirements",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "get_funding_opportunity",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "get_opportunity_client_context",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "get_opportunity_government_landscape",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "read_client_documents",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "query_economic_data",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "search_federal_grants",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "search_federal_awards",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "get_district_nexus_context",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "get_district_nexus_changes",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "search_state_bills",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "get_state_legislator",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "search_cbo_cost_estimates",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "search_gao_reports",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "search_crs_reports",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "search_sec_filings",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "search_fara_registrations",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "search_lda_filings",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "search_acquisition_personnel",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "get_acquisition_person",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "get_bill_status",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "search_floor_votes",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "search_congress_bills",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "read_bill_text",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "get_committee_roster",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "list_members",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "get_pe_contractors",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "get_pe_bills",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "get_pe_report_language",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "get_state_rule_status",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "get_certification_status",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "search_intel_articles",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "list_global_datasets",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "get_representation",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "get_state_bill_status",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "search_state_floor_votes",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "query_regulatory_dockets",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "find_contacts",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "resolve_entity",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "search_tracked_bills",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "query_intelligence",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "search_public_web",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "scrape_web_page",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "search_sam_opportunities",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    },
+    {
+      "id": "get_florida_budget_project",
+      "version": "0.2.0",
+      "nativeCoverage": null,
+      "availability": "unimplemented",
+      "handler": null
+    }
+  ],
+  "acceptanceAndCountsProvenance": "Independent review ab637c786bb344719bb096630314949b4b99e657 records ACCEPT_SOURCE /2817 root /27 independent; exact report and Git catalog pinned/read here. Original raw suites were not replayed or independently re-audited in this documentary lane.",
+  "commandSource": "bdbb14603cfab0d52d483956f7f1a7e373abb3cb",
+  "commandLoader": "5fca98580c5d93c9f9aa4a3ed518e926e087846c",
+  "commandEvidence": "Independent integration review97de9c3fb44284dffc5ac88c8265057bfdf967fc records source acceptance and143 combined controls (36 new,97 family,10 boundary); standalone reviewer757e3e691f4578781116d81fb516b5c9f454325a records97 payload controls. Neither means real mutation handlers.",
+  "publication": "At allocation PR31 was last published62 mappings. Parent subsequently reports PR32 ede7b56845816d38d0bbffab5a657aaa4f978739 and PR33 a838c3819ca01798d9175a1d07bef1eb81355808 published. These are parent-provided publication identities, not independently remote-refreshed by this lane.",
+  "gateState": {
+    "G0": "accepted discovery",
+    "G1": "OPEN",
+    "G2-G7": "unentered"
+  },
+  "otherOwnerEvidence": "Current frontend/native RC1/shipping receipts must be reconciled; historical checked-in reports are dated, not global absence claims."
+}

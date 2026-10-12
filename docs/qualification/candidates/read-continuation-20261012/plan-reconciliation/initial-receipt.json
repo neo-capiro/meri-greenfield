@@ -1,0 +1,5 @@
+{
+  "exitCode": 1,
+  "cause": "Wrong documentary script root parent index; Git refused before reading source or writing any ledger. Replayed once to retain exact raw streams. No product/runtime entry.",
+  "sourceSha256": "6526ee6552b4cd8411a54f78858b4eca09c43cd85c028db8c8850903002cc43a"
+}
