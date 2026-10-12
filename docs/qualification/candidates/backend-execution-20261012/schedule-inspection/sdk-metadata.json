@@ -1,0 +1,47 @@
+{
+  "declaredPackage": "1.24.0",
+  "sourceCommit": "1fd1c81a0383f5f5c7923dd735472c7d1ffdc867",
+  "officialReferences": [
+    "https://raw.githubusercontent.com/temporalio/sdk-typescript/1fd1c81a0383f5f5c7923dd735472c7d1ffdc867/packages/client/src/schedule-client.ts",
+    "https://raw.githubusercontent.com/temporalio/sdk-typescript/1fd1c81a0383f5f5c7923dd735472c7d1ffdc867/packages/client/src/schedule-types.ts",
+    "https://raw.githubusercontent.com/temporalio/sdk-typescript/1fd1c81a0383f5f5c7923dd735472c7d1ffdc867/packages/client/src/connection.ts"
+  ],
+  "officialRead": "2026-10-12 web read successful; no SDK service invocation",
+  "installed": [
+    {
+      "path": "/workspace/meri-temporal-recovery-20261012/apps/control/qualification-temporal/node_modules/@temporalio/client/lib/schedule-client.d.ts",
+      "bytes": 6611,
+      "sha256": "159bfec61bc7cb83eea1cef18456a495dc8f94b55444c9c8b2c5fa1307a68590",
+      "role": "read-only installed pinned SDK metadata; no module execution"
+    },
+    {
+      "path": "/workspace/meri-temporal-recovery-20261012/apps/control/qualification-temporal/node_modules/@temporalio/client/lib/schedule-client.js",
+      "bytes": 20546,
+      "sha256": "40cc2033748347fbed0611a8dc733a33b9e48a399c7028c079fbdea6cfbe02d4",
+      "role": "read-only installed pinned SDK metadata; no module execution"
+    },
+    {
+      "path": "/workspace/meri-temporal-recovery-20261012/apps/control/qualification-temporal/node_modules/@temporalio/client/lib/schedule-types.d.ts",
+      "bytes": 27670,
+      "sha256": "3db6dac31dc25aa73938a6717564fd5fa86873a3cea63640a1b38de34737d24e",
+      "role": "read-only installed pinned SDK metadata; no module execution"
+    },
+    {
+      "path": "/workspace/meri-temporal-recovery-20261012/apps/control/qualification-temporal/node_modules/@temporalio/client/lib/connection.d.ts",
+      "bytes": 15172,
+      "sha256": "b038e00fb8c1f7ec0795fef1eb852dd2e730bba50a562a6b2090add6561b066a",
+      "role": "read-only installed pinned SDK metadata; no module execution"
+    },
+    {
+      "path": "/workspace/meri-temporal-recovery-20261012/apps/control/qualification-temporal/node_modules/@temporalio/client/lib/connection.js",
+      "bytes": 19903,
+      "sha256": "507806d4b0c5c23558e40d187bed0b1a3b2bfea86e9f527bfc24922ac3788182",
+      "role": "read-only installed pinned SDK metadata; no module execution"
+    }
+  ],
+  "limitations": [
+    "Installed file identities are exact local observations, not independent upstream tarball verification.",
+    "SDK describe decodes action/memo/data-converter fields before returning; adapter excludes these from its public response but cannot claim the SDK did not retrieve/decode them.",
+    "SDK describe may use configured externalStorage inbound conversion; trusted client configuration is a runtime prerequisite."
+  ]
+}
