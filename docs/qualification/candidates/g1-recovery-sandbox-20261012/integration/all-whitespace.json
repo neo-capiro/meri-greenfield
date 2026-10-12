@@ -1,0 +1,36 @@
+{
+  "command": [
+    "git",
+    "diff",
+    "--cached",
+    "--check",
+    "14be9fc614568a74133b89f2b229e50c9b030322"
+  ],
+  "cwd": "/workspace/meri-g1-recovery-sandbox-20261012",
+  "sourceHead": "104489af455d4d7126990c7df1927e0313e02664",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T05:26:48.093199+00:00",
+  "durationSeconds": 0.033,
+  "exitCode": 2,
+  "timedOut": false,
+  "ownedPidAndPgid": 67664,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/all-whitespace.stdout.bin",
+      "bytes": 14252,
+      "sha256": "873b4b8319e2dc6405c831220a07b1fffe07cbf1d5cfb2fd9082d5eb307944f5"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/all-whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

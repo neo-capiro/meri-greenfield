@@ -1,0 +1,393 @@
+{
+  "sourceCommit": "d5a1b0aa2f77d9c215f1a092d7c329b93492cb55",
+  "sourceTree": "750fa31f9c6ed76199fd85b2624d73a96a193b5f",
+  "rootPinReview": "80f0ec84a1d4c93529e32d9e47430c87cec17c28",
+  "scope": "SOURCE_ONLY_RUNTIME_HOLD",
+  "files": [
+    {
+      "path": "docs/coordination/reports/MERI-G1-RECOVERY-SANDBOX-INTEGRATION-20261012.md",
+      "bytes": 12082,
+      "sha256": "d295755c0b85b24305c21193197721d0f912e5e3b3dbd1e12cb53e7def5c6a17"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/all-whitespace.json",
+      "bytes": 1299,
+      "sha256": "5a02050c0eb7b716231df7c24811b64c59b1387cf0e64d973aa411f6f3c27ccd"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/all-whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/all-whitespace.stdout.bin",
+      "bytes": 14252,
+      "sha256": "873b4b8319e2dc6405c831220a07b1fffe07cbf1d5cfb2fd9082d5eb307944f5"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/baseline-control-results.json",
+      "bytes": 2042,
+      "sha256": "405badfdf87f6323f3ee07c6c3074fb70357138bee1dad40f5ec1b4c1fc0a69f"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/baseline-controls.json",
+      "bytes": 1578,
+      "sha256": "43e5a22b48e3f57f3a574a193b5e94bfe5e2f83f03c5cf5b258d14c983e5e7ee"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/baseline-controls.py",
+      "bytes": 4387,
+      "sha256": "dc902bca7f0156e306ffdb67101c3b44f03301fec70d2ad8d9b6e415bd6114b5"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/baseline-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/baseline-controls.stdout.bin",
+      "bytes": 28,
+      "sha256": "d803fe1e0117a925b539af3d02204c4c8ae237cb9855fc97f821c2cf8f46eed7"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/builder.json",
+      "bytes": 1315,
+      "sha256": "446742fbafd4f0d537cee3758fa970f1484bd16a8b4ede73b95d88caf7c1b554"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/builder.stderr.bin",
+      "bytes": 1074,
+      "sha256": "9f10857fdf2475cd59f2955c108d188f45e3daa3271f383b0b6deeb2c75900fd"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/builder.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/dependencies-contracts.json",
+      "bytes": 1391,
+      "sha256": "ea54d7f307aa14d9e3a5597fe5e9f246f30464ef23e5e3ee9d227fc6f980a432"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/dependencies-contracts.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/dependencies-contracts.stdout.bin",
+      "bytes": 25,
+      "sha256": "797651fdd65a93c0a386b38b4417b99617f49e65399a91cfe98ff2c70c98e910"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/dependencies-root.json",
+      "bytes": 1359,
+      "sha256": "7706458954a7a24ca5afb4e0c66afa18b41a8b79207668fe7a9a25d766f12c4c"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/dependencies-root.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/dependencies-root.stdout.bin",
+      "bytes": 25,
+      "sha256": "25e4d06238ecc6c1dadcedcc197e9aabb58a4442ab4214f862bb842a89e76c79"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/dependencies-service.json",
+      "bytes": 1413,
+      "sha256": "4a0c1a0af0f3d940260a93511bfd9f693db6c19fcbd918b9d40a179311ffdd2b"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/dependencies-service.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/dependencies-service.stdout.bin",
+      "bytes": 25,
+      "sha256": "e0a87ef9362693d88cf668b596bacad506b66340d8d64918450759815ee85c74"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/dependencies-state.json",
+      "bytes": 1403,
+      "sha256": "4f29a55227e04e2b999d684471a9683bf04159118ac5da9953592ff789edf17e"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/dependencies-state.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/dependencies-state.stdout.bin",
+      "bytes": 25,
+      "sha256": "33874ed79e92ab67989b256ef5f66814b5c0c4ff7fecfbefecc46d95d6c6042f"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/dependencies-temporal.json",
+      "bytes": 1404,
+      "sha256": "1aa2f41e8cbc1c5e8a1fd39dd6a924fb78426b0bc81c31577a77a73056409827"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/dependencies-temporal.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/dependencies-temporal.stdout.bin",
+      "bytes": 26,
+      "sha256": "3bf059f88f5fcd40446b1397e3ef92202fcc18a141047ebd30b0eca42d2b777d"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/dependencies-worker.json",
+      "bytes": 1389,
+      "sha256": "8c1c4c064a871a9a988b032fa2e07a579b1c9a2f2b3a51c891b280a0250d3bd2"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/dependencies-worker.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/dependencies-worker.stdout.bin",
+      "bytes": 26,
+      "sha256": "ad6c4d366ed9f68437caa38e79b9b3b061d2e27f46ccb4fbdc1eeba9bf2d8fcd"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/execution-options-review.json",
+      "bytes": 2640,
+      "sha256": "b040eb41f0d550bd54149eb14022f42c57e4bbb00c6b14e3785cd9a143e1498a"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/execution-packet.json",
+      "bytes": 1371,
+      "sha256": "1af3cb2a16cab8523819c0b461a6de404ad215643f919709db1af5d51ec46ac4"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/execution-packet.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/execution-packet.stdout.bin",
+      "bytes": 259,
+      "sha256": "83e7b0b3a5af81d0351a04822b5506009f806a2087a35d0eb285eabe3fd326f1"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/integration-preservation.json",
+      "bytes": 1917,
+      "sha256": "f1c9d5d0c5b86a3eaaba1dff6dfe898b942f00a16a3af8960bc8693bce01890b"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/pin-rollover.patch",
+      "bytes": 3042,
+      "sha256": "8b546a9449b7ae06f2f2fd32809aa99db3ca8ec49a1b4619efd0089c4037d40c"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/prepin-baseline.json",
+      "bytes": 1934,
+      "sha256": "72ea9ee25e1d99bda0d2ebf01528109b4e5d9effeee0fbcb0e8a1177763b474c"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/prepin-baseline.stderr.bin",
+      "bytes": 680,
+      "sha256": "a7898b148484c14611e482b2fcdfaf4ed2907149824f848152df84c79ada94c6"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/prepin-baseline.stdout.bin",
+      "bytes": 488,
+      "sha256": "7c10ff4dd35e7604dc7d68597de1acaa67e7344463f8fc1518337db41325f25f"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/prepin-full-reference.json",
+      "bytes": 1419,
+      "sha256": "7a12d00a82bcfb364291b5dec60d3d2c89c8b9c20eadec3d0a593ceb8c92cdf7"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/prepin-full-reference.stderr.bin",
+      "bytes": 680,
+      "sha256": "a7898b148484c14611e482b2fcdfaf4ed2907149824f848152df84c79ada94c6"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/prepin-full-reference.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/preservation.json",
+      "bytes": 1317,
+      "sha256": "80d1a80a2078c7759bb7e149d445b1bf5a106d0f4199487723f432206748a779"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/preservation.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/preservation.stdout.bin",
+      "bytes": 1917,
+      "sha256": "f1c9d5d0c5b86a3eaaba1dff6dfe898b942f00a16a3af8960bc8693bce01890b"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/private-packet-access.json",
+      "bytes": 901,
+      "sha256": "34ad9b1a78fe09bd7a683c58a14c38c02ea36a083a49bc32bd5c27520861c708"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/public.json",
+      "bytes": 1414,
+      "sha256": "970ec6710d9409267c71069de25f44479328f729c1655fd42c05adf1be700a82"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/public.stderr.bin",
+      "bytes": 832,
+      "sha256": "a5bed74e8271b4bed502d2d779b1766e28a92b798d5f5560230b37ebdcc9e5a2"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/public.stdout.bin",
+      "bytes": 1946,
+      "sha256": "764aebd2b70f7d0d5676ba03de6069243e3b9a2b0ff26dc8904f16f0a3551ac7"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/root.json",
+      "bytes": 1318,
+      "sha256": "da3f80bf2aa4eec67c3355e0383c1adfcf2677537e0cdc0c80fe3b15115d5e09"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/root.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/root.stdout.bin",
+      "bytes": 22977,
+      "sha256": "d49d0e02811e17c63dcb60852ec52e63b829a313e1ecddf859e8aef18a78c775"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/sandbox-independent-repaired.json",
+      "bytes": 2151,
+      "sha256": "4a3e0048a52c36214856c92654ab25a1db5d7ef0a07cf5eda8742554f90c4663"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/sandbox-independent-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/sandbox-independent-repaired.stdout.bin",
+      "bytes": 4210,
+      "sha256": "c7d1aec21f380aff90e0f0e5b0ef23c5fc15e15754a61cc18b22e82f8cf6e121"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/sandbox-independent.json",
+      "bytes": 2035,
+      "sha256": "a2e90bfd8fa3a7c861cd716f279e7ac0f53ef21bdc826a0e5e47cac05114b32f"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/sandbox-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/sandbox-independent.stdout.bin",
+      "bytes": 5048,
+      "sha256": "18ba0ca4ae46aef0375761c1f21ffebec9e80f5962eac1f9da1a0f0fdcfdfa35"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/source-context-publication.json",
+      "bytes": 1412,
+      "sha256": "3f84262d7cfc5b2bfa28660793530076c6d67e24802180dee5aa1812929dbf37"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/source-context-publication.stderr.bin",
+      "bytes": 129,
+      "sha256": "a8cfe80886e52dc133e6ca4297d64b0a1dd3be30bc2ff012c36f7447163e3a25"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/source-context-publication.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/source-whitespace.json",
+      "bytes": 1379,
+      "sha256": "badc0a8a034f01a10fc61d21a1c1068518b2ac82b9e5f7eb71f05a8a05c891a1"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/source-whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/source-whitespace.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/temporal-independent.json",
+      "bytes": 1428,
+      "sha256": "c850901561584448db7db37e73beaafd50db8eef58d25886b0c7208356e2ab99"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/temporal-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/temporal-independent.stdout.bin",
+      "bytes": 3351,
+      "sha256": "03203512ef3a2cb1065506a813688c4062bb699f4b6ac3faa166b4e5849e2d76"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/temporal-source.json",
+      "bytes": 1293,
+      "sha256": "cc5c3214191a9a6a91e75f1261b6174156424cfc93cfd66f319e20dd61a57da4"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/temporal-source.stderr.bin",
+      "bytes": 624,
+      "sha256": "3f6b43df05fe3fe07a2f5b70a843b7b1aa8847a2cde8dd433344a768aa77b1c4"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/temporal-source.stdout.bin",
+      "bytes": 3318,
+      "sha256": "a27682fbfd61de18c5877c32298a051633a8018b3733b1af23b7b349dbc5030f"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/verification-summary.json",
+      "bytes": 6367,
+      "sha256": "16702a65dbd33454abe5bdd7f2c17822d576c596686a153e8187d60acd51a3b1"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/verify-integration.py",
+      "bytes": 3809,
+      "sha256": "ad271ab6cd9159167f6d8c6beb60f7cab570e77693f351f538ca7101fdb0a8a2"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/worker.json",
+      "bytes": 1255,
+      "sha256": "395143e8d7c09babe6f41a09ea91fbd4e876beb8fdfaf704021b5733c5ee4649"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/worker.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/worker.stdout.bin",
+      "bytes": 26918,
+      "sha256": "cf54598cc82435b67232f7f079ecbb38566d782507214683e36716b11c6a34c9"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/publication/base-and-lanes.json",
+      "bytes": 1498,
+      "sha256": "9fd8c4fd32eefaf3aeb5d5cf7ed6b271db3cb67adf1bfdd4cca643777868e917"
+    }
+  ]
+}

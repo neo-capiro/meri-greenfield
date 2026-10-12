@@ -1,0 +1,43 @@
+{
+  "command": [
+    "env",
+    "MERI_SANDBOX_REPO=/workspace/meri-g1-recovery-sandbox-20261012",
+    "MERI_SANDBOX_CANDIDATE=d5a1b0aa2f77d9c215f1a092d7c329b93492cb55",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "docs/qualification/candidates/sandbox-lifecycle-20261012/review/browser-lifetime-independent.test.mjs",
+    "docs/qualification/candidates/sandbox-lifecycle-20261012/review/cli-cancellation-independent.test.mjs",
+    "docs/qualification/candidates/sandbox-lifecycle-20261012/review/office-supervisor-independent.test.mjs",
+    "docs/qualification/candidates/sandbox-lifecycle-20261012/review/precheck-signal-independent.test.mjs",
+    "docs/qualification/candidates/sandbox-lifecycle-20261012/review/runtime-entry-independent.test.mjs",
+    "docs/qualification/candidates/sandbox-lifecycle-20261012/review/supervisor-entry-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-g1-recovery-sandbox-20261012",
+  "sourceHead": "174e65702cdb912fd76fd440bc9eb58f1c1b8d34",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T05:24:30.353428+00:00",
+  "durationSeconds": 1.118,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 67286,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/sandbox-independent-repaired.stdout.bin",
+      "bytes": 4210,
+      "sha256": "c7d1aec21f380aff90e0f0e5b0ef23c5fc15e15754a61cc18b22e82f8cf6e121"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/sandbox-independent-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Independent reviewer corrected positive fake close scheduling after retained 43/44 concurrent failure; production source unchanged.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

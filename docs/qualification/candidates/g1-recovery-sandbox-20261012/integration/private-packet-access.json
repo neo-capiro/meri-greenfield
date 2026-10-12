@@ -1,0 +1,16 @@
+{
+  "status": "BLOCKED_TRANSFER",
+  "libraryFileId": "libfile_cfea6f93eaec8191bac30610e450d663",
+  "expectedAndReturnedBackingFileId": "file_000000004ac081fd89581ea1f9dd3e20",
+  "expectedBytes": 39189,
+  "expectedZipSha256": "6b5a503b242def09dec995110ae8e645fb3413cf4659b4df81a1a9d493499ee0",
+  "prepareMaterialize": "SUCCESS_EXACT_BACKING_ID",
+  "supportedTransferHelperExitCode": 1,
+  "supportedTransferHelperError": "library file transfer failed: download failed",
+  "retryCount": 0,
+  "bodyRead": false,
+  "candidateOrDiagnosticExecuted": false,
+  "sourceReview": "HOLD_PENDING_PARENT_READER_RELAY",
+  "privateTransferParametersPublished": false,
+  "notes": "Metadata supplied by the parent is not a local byte verification. Parent was notified immediately; other source work continued. No conclusion about supervisor correctness or interpreter admission is possible from the unavailable body."
+}

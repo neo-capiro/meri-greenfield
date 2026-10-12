@@ -1,0 +1,207 @@
+{
+  "ownedCaptureGroups": 22,
+  "allOwnedGroupsAbsent": true,
+  "allRawStreamHashesMatch": true,
+  "noTimeoutOrGroupKill": true,
+  "capturedResults": [
+    {
+      "receipt": "all-whitespace.json",
+      "exitCode": 2,
+      "ownedPidAndPgid": 67664,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": []
+    },
+    {
+      "receipt": "baseline-controls.json",
+      "exitCode": 0,
+      "ownedPidAndPgid": 66455,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": []
+    },
+    {
+      "receipt": "builder.json",
+      "exitCode": 1,
+      "ownedPidAndPgid": 66473,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": []
+    },
+    {
+      "receipt": "dependencies-contracts.json",
+      "exitCode": 0,
+      "ownedPidAndPgid": 59213,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": []
+    },
+    {
+      "receipt": "dependencies-root.json",
+      "exitCode": 0,
+      "ownedPidAndPgid": 59248,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": []
+    },
+    {
+      "receipt": "dependencies-service.json",
+      "exitCode": 0,
+      "ownedPidAndPgid": 59261,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": []
+    },
+    {
+      "receipt": "dependencies-state.json",
+      "exitCode": 0,
+      "ownedPidAndPgid": 59205,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": []
+    },
+    {
+      "receipt": "dependencies-temporal.json",
+      "exitCode": 0,
+      "ownedPidAndPgid": 59247,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": []
+    },
+    {
+      "receipt": "dependencies-worker.json",
+      "exitCode": 0,
+      "ownedPidAndPgid": 59288,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": []
+    },
+    {
+      "receipt": "execution-packet.json",
+      "exitCode": 0,
+      "ownedPidAndPgid": 63755,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": []
+    },
+    {
+      "receipt": "prepin-baseline.json",
+      "exitCode": 1,
+      "ownedPidAndPgid": 66128,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": []
+    },
+    {
+      "receipt": "prepin-full-reference.json",
+      "exitCode": 1,
+      "ownedPidAndPgid": 66153,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": []
+    },
+    {
+      "receipt": "preservation.json",
+      "exitCode": 0,
+      "ownedPidAndPgid": 66433,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": []
+    },
+    {
+      "receipt": "public.json",
+      "exitCode": 0,
+      "ownedPidAndPgid": 66411,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": [
+        {
+          "pid": 66751,
+          "status": 0
+        },
+        {
+          "pid": 66921,
+          "status": 0
+        },
+        {
+          "pid": 66954,
+          "status": 0
+        }
+      ]
+    },
+    {
+      "receipt": "root.json",
+      "exitCode": 0,
+      "ownedPidAndPgid": 66365,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": [
+        {
+          "pid": 66759,
+          "status": 0
+        },
+        {
+          "pid": 66819,
+          "status": 0
+        }
+      ]
+    },
+    {
+      "receipt": "sandbox-independent-repaired.json",
+      "exitCode": 0,
+      "ownedPidAndPgid": 67286,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": []
+    },
+    {
+      "receipt": "sandbox-independent.json",
+      "exitCode": 1,
+      "ownedPidAndPgid": 66397,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": []
+    },
+    {
+      "receipt": "source-context-publication.json",
+      "exitCode": 0,
+      "ownedPidAndPgid": 66366,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": []
+    },
+    {
+      "receipt": "source-whitespace.json",
+      "exitCode": 0,
+      "ownedPidAndPgid": 67647,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": []
+    },
+    {
+      "receipt": "temporal-independent.json",
+      "exitCode": 0,
+      "ownedPidAndPgid": 63308,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": []
+    },
+    {
+      "receipt": "temporal-source.json",
+      "exitCode": 0,
+      "ownedPidAndPgid": 63298,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": []
+    },
+    {
+      "receipt": "worker.json",
+      "exitCode": 0,
+      "ownedPidAndPgid": 66349,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": []
+    }
+  ],
+  "fullWhitespaceExitCode": 2,
+  "whitespaceFindingsOnlyRetainedRawEvidence": [
+    "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/pin-rollover.patch",
+    "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/sandbox-independent.stdout.bin",
+    "docs/qualification/candidates/sandbox-lifecycle-20261012/author/raw-evidence-whitespace.stdout.bin",
+    "docs/qualification/candidates/sandbox-lifecycle-20261012/author/reviewer-baseline-offline.stdout.txt",
+    "docs/qualification/candidates/sandbox-lifecycle-20261012/author/reviewer-supervisor-before.stdout.txt",
+    "docs/qualification/candidates/sandbox-lifecycle-20261012/author/root-check.stdout.bin",
+    "docs/qualification/candidates/sandbox-lifecycle-20261012/author/runtime-cli-placement.stdout.bin",
+    "docs/qualification/candidates/sandbox-lifecycle-20261012/review/baseline-offline.stdout.txt",
+    "docs/qualification/candidates/sandbox-lifecycle-20261012/review/cli-before.stdout.txt",
+    "docs/qualification/candidates/sandbox-lifecycle-20261012/review/deadline-mutant.stdout.txt",
+    "docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch",
+    "docs/qualification/candidates/sandbox-lifecycle-20261012/review/expanded-supervisor-before.stdout.txt",
+    "docs/qualification/candidates/sandbox-lifecycle-20261012/review/fixture-timing/root-sandbox-independent.stdout.bin",
+    "docs/qualification/candidates/sandbox-lifecycle-20261012/review/packaging-pins/baseline-adaptation.patch",
+    "docs/qualification/candidates/sandbox-lifecycle-20261012/review/packaging-pins/exact-pin.patch",
+    "docs/qualification/candidates/sandbox-lifecycle-20261012/review/precheck-signal-before.stdout.txt",
+    "docs/qualification/candidates/sandbox-lifecycle-20261012/review/supervisor-before.stdout.txt"
+  ],
+  "sourceAndCoordinationWhitespaceExitCode": 0,
+  "sourceConnectivityEnabled": false,
+  "nativeRuntimeAdmission": false
+}

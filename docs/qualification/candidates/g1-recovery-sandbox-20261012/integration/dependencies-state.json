@@ -1,0 +1,40 @@
+{
+  "command": [
+    "npm",
+    "ci",
+    "--prefix",
+    "apps/control/qualification-sdk-fixture/state",
+    "--ignore-scripts",
+    "--no-audit",
+    "--no-fund",
+    "--cache",
+    "/tmp/meri-recovery-cache-state"
+  ],
+  "cwd": "/workspace/meri-g1-recovery-sandbox-20261012",
+  "sourceHead": "0dd7838a00eef84238b6dae213399206489666e6",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T04:59:48.588311+00:00",
+  "durationSeconds": 2.0,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 59205,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/dependencies-state.stdout.bin",
+      "bytes": 25,
+      "sha256": "33874ed79e92ab67989b256ef5f66814b5c0c4ff7fecfbefecc46d95d6c6042f"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/dependencies-state.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

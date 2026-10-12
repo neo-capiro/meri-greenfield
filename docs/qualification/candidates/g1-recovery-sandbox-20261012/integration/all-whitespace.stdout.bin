@@ -1,0 +1,233 @@
+docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/pin-rollover.patch:13: trailing whitespace.
++ 
+docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/pin-rollover.patch:22: trailing whitespace.
++ 
+docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/sandbox-independent.stdout.bin:59: trailing whitespace.
++  
+docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/sandbox-independent.stdout.bin:61: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/raw-evidence-whitespace.stdout.bin:2: trailing whitespace.
+++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/raw-evidence-whitespace.stdout.bin:4: trailing whitespace.
+++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/raw-evidence-whitespace.stdout.bin:6: trailing whitespace.
+++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/raw-evidence-whitespace.stdout.bin:8: trailing whitespace.
+++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/raw-evidence-whitespace.stdout.bin:10: trailing whitespace.
+++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/raw-evidence-whitespace.stdout.bin:12: trailing whitespace.
+++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/raw-evidence-whitespace.stdout.bin:14: trailing whitespace.
+++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/raw-evidence-whitespace.stdout.bin:16: trailing whitespace.
+++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/raw-evidence-whitespace.stdout.bin:18: trailing whitespace.
+++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/raw-evidence-whitespace.stdout.bin:20: trailing whitespace.
+++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/raw-evidence-whitespace.stdout.bin:22: trailing whitespace.
+++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/raw-evidence-whitespace.stdout.bin:24: trailing whitespace.
+++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/raw-evidence-whitespace.stdout.bin:26: trailing whitespace.
+++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/raw-evidence-whitespace.stdout.bin:28: trailing whitespace.
+++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/raw-evidence-whitespace.stdout.bin:30: trailing whitespace.
+++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/raw-evidence-whitespace.stdout.bin:32: trailing whitespace.
+++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/raw-evidence-whitespace.stdout.bin:34: trailing whitespace.
+++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/raw-evidence-whitespace.stdout.bin:36: trailing whitespace.
+++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/raw-evidence-whitespace.stdout.bin:38: trailing whitespace.
+++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/raw-evidence-whitespace.stdout.bin:40: trailing whitespace.
+++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/raw-evidence-whitespace.stdout.bin:42: trailing whitespace.
+++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/raw-evidence-whitespace.stdout.bin:44: trailing whitespace.
+++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/reviewer-baseline-offline.stdout.txt:163: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/reviewer-baseline-offline.stdout.txt:165: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/reviewer-baseline-offline.stdout.txt:180: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/reviewer-baseline-offline.stdout.txt:182: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/reviewer-supervisor-before.stdout.txt:19: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/reviewer-supervisor-before.stdout.txt:21: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/reviewer-supervisor-before.stdout.txt:36: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/reviewer-supervisor-before.stdout.txt:38: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/reviewer-supervisor-before.stdout.txt:53: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/reviewer-supervisor-before.stdout.txt:55: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/reviewer-supervisor-before.stdout.txt:70: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/reviewer-supervisor-before.stdout.txt:72: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/root-check.stdout.bin:263: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/root-check.stdout.bin:264: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/root-check.stdout.bin:266: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/root-check.stdout.bin:287: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/root-check.stdout.bin:303: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/root-check.stdout.bin:305: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/root-check.stdout.bin:306: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/root-check.stdout.bin:308: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/runtime-cli-placement.stdout.bin:194: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/author/runtime-cli-placement.stdout.bin:197: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/baseline-offline.stdout.txt:163: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/baseline-offline.stdout.txt:165: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/baseline-offline.stdout.txt:180: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/baseline-offline.stdout.txt:182: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/cli-before.stdout.txt:21: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/cli-before.stdout.txt:23: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/deadline-mutant.stdout.txt:16: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/deadline-mutant.stdout.txt:18: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch:13: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch:15: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch:281: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch:286: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch:296: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch:301: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch:314: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch:321: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch:324: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch:330: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch:343: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch:353: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch:360: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch:381: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch:392: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch:410: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch:414: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch:417: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch:428: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch:432: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch:556: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch:560: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch:656: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch:692: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch:710: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch:717: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch:997: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch:1007: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch:1013: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch:1017: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch:1021: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch:1074: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch:1083: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch:1090: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch:1132: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch:1142: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch:1143: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch:1142: new blank line at EOF.
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/expanded-supervisor-before.stdout.txt:26: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/expanded-supervisor-before.stdout.txt:28: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/expanded-supervisor-before.stdout.txt:43: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/expanded-supervisor-before.stdout.txt:45: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/expanded-supervisor-before.stdout.txt:60: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/expanded-supervisor-before.stdout.txt:62: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/expanded-supervisor-before.stdout.txt:77: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/expanded-supervisor-before.stdout.txt:79: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/fixture-timing/root-sandbox-independent.stdout.bin:59: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/fixture-timing/root-sandbox-independent.stdout.bin:61: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/packaging-pins/baseline-adaptation.patch:9: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/packaging-pins/exact-pin.patch:13: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/packaging-pins/exact-pin.patch:22: trailing whitespace.
++ 
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/precheck-signal-before.stdout.txt:16: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/precheck-signal-before.stdout.txt:18: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/supervisor-before.stdout.txt:19: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/supervisor-before.stdout.txt:21: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/supervisor-before.stdout.txt:36: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/supervisor-before.stdout.txt:38: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/supervisor-before.stdout.txt:53: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/supervisor-before.stdout.txt:55: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/supervisor-before.stdout.txt:70: trailing whitespace.
++  
+docs/qualification/candidates/sandbox-lifecycle-20261012/review/supervisor-before.stdout.txt:72: trailing whitespace.
++  

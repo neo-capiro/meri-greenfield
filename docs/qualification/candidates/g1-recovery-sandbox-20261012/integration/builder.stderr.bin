@@ -1,0 +1,18 @@
+......................E.............
+======================================================================
+ERROR: test_real_owner_execution_closure_pins (test_worker_image_build.Controls.test_real_owner_execution_closure_pins)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/meri-g1-recovery-sandbox-20261012/scripts/qualification/test_worker_image_build.py", line 151, in test_real_owner_execution_closure_pins
+    rows = build.pins(); values = {r['path']: r for r in rows}
+           ^^^^^^^^^^^^
+  File "/workspace/meri-g1-recovery-sandbox-20261012/scripts/qualification/worker_image_build.py", line 59, in pins
+    need(Path(sys.executable) == PYTHON and sys.version_info[:3] == (3, 12, 14)
+  File "/workspace/meri-g1-recovery-sandbox-20261012/scripts/qualification/worker_image_collect.py", line 53, in need
+    raise ValueError(message)
+ValueError: fixed owner Python runtime
+
+----------------------------------------------------------------------
+Ran 36 tests in 0.057s
+
+FAILED (errors=1)
