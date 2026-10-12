@@ -9,12 +9,12 @@ const { createDurableToolDispatch } = await load('apps/gateway/budget/durable-to
 const { fixture, NOW, limits, uuid, requestJson } = await load('apps/gateway/test/fixtures.mjs');
 const { canonicalSha256 } = await load('packages/contracts/validate.mjs');
 
-function harness({ charge = 10, runCap = 100, globalCap = 100, runtimeSeconds = 10 } = {}) {
+function harness({ charge = 10, runCap = 100, globalCap = 100, runtimeSeconds = 10, scheduleMs = 10000 } = {}) {
  const f = fixture(); const policy = 'a'.repeat(64);
  f.claims.policyRevision = policy; f.claims.scopes[0].policyRevision = policy; f.subject.policyRevision = policy;
  const allocation = { run: Object.fromEntries(['tenantId','actorId','conversationId','runId'].map(k => [k,f.binding[k]])),
   manifestSha256:'b'.repeat(64),catalogSha256:'c'.repeat(64),budgets:{maxTurns:5,maxToolCalls:5,maxRecoveryAttempts:0,maxRuntimeSeconds:runtimeSeconds,maxCostMicroUSD:runCap,maxOutputBytes:65536},
-  schedule:{revision:'d'.repeat(64),expiresAt:new Date(NOW+10000).toISOString(),operations:[{operation:f.descriptor.operation,chargeMicrousd:charge}]} };
+  schedule:{revision:'d'.repeat(64),expiresAt:new Date(NOW+scheduleMs).toISOString(),operations:[{operation:f.descriptor.operation,chargeMicrousd:charge}]} };
  allocation.manifest={contractVersion:'0.2.0',skillId:'quick_skill.relationship_brief',skillVersion:'1.0.0',prose:{id:'urn:meri:independent:budget',sha256:'a'.repeat(64)},requiredSources:[{sourceId:'synthetic-source',authority:'authoritative',purpose:'enumeration'}],allowedOperations:[f.descriptor.operation],subjectKinds:['personal'],windowBases:['unbounded'],completion:{requireAllSources:true,allowDisclosedPartial:true,negativeClaims:'complete-covered-only',rubric:[{id:'proof',requirement:'Independent budget fixture',evidenceRequired:true}]},approval:{mutations:'separate-immutable-proposal',autoCreateTasks:false},budgets:allocation.budgets,versionPolicy:{existingRuns:'pin-immutable',resume:'exact-or-explicit-migration',fork:'preserve-unless-explicit-reselection'}};
  allocation.manifestSha256=canonicalSha256(allocation.manifest);
  const credential='synthetic-opaque';
@@ -81,4 +81,13 @@ test('manifest body/hash, exact budgets and allowed operation are required befor
  for(const modify of [a=>a.manifestSha256='f'.repeat(64),a=>a.budgets={...a.budgets,maxToolCalls:99},a=>{a.manifest.allowedOperations=[{id:'other.operation',version:'0.2.0'}];a.manifestSha256=canonicalSha256(a.manifest);}]){
   const h=harness();modify(h.allocation);assert.throws(h.create);assert.equal(h.queries.length,0);
  }
+});
+
+for(const expiry of ['grant','schedule'])test(`known ${expiry} expiry bounds a parked tool before longer authority deadline`,async()=>{
+ const h=harness({scheduleMs:expiry==='schedule'?10:10000});await h.install();
+ if(expiry==='grant')h.state().grant.expires_at=new Date(NOW+10);
+ let release;let timer;h.f.entry.execute=()=>new Promise(resolve=>{release=()=>resolve(JSON.stringify(h.f.output));});
+ const outcome=h.call(h.create({limits:{...limits,maxCleanupMs:20}}));outcome.catch(()=>{});
+ try{await assert.rejects(Promise.race([outcome,new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('known '+expiry+' expiry failed to bound parked handler')),100);})]),/^GatewayDenied: (DEADLINE|BUDGET_UNCERTAIN)$/);assert.equal(h.state().reservations.get(h.i.invocationId).state,'UNKNOWN');}
+ finally{clearTimeout(timer);release?.();await outcome.catch(()=>{});await new Promise(r=>setImmediate(r));}
 });
