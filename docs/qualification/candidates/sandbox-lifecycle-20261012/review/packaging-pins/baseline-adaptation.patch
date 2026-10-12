@@ -1,0 +1,40 @@
+--- historical-preserved-baseline-controls.py
++++ root-accepted-source-baseline-controls.py
+@@ -1,13 +1,12 @@
+-"""Independent actual Git baseline checks; only the test's Git path is substituted."""
++"""Actual Git controls for the accepted watchdog baseline rollover; historical14 controls remain unchanged in their original packet."""
+ from pathlib import Path
+ from unittest.mock import patch
+ import hashlib,json,os,subprocess,sys,tempfile
+ 
+-root=Path(sys.argv[1]).resolve();candidate=sys.argv[2];output=Path(sys.argv[3])
++root=Path(sys.argv[1]).resolve();candidate=sys.argv[2];output=Path(sys.argv[3]);accepted=sys.argv[4]
+ sys.path.insert(0,str(root/'scripts/qualification'))
+ import worker_image_build as b
+-accepted='5ee46446b5f60034916f00b2a665b3e2bef9cf60'
+-historical='f118ff55dfb96ba4b44099953e6c9724064b723d'
++historical='5ee46446b5f60034916f00b2a665b3e2bef9cf60'
+ facts=[]
+ def check(name,condition,detail=None):
+  facts.append({'check':name,'passed':bool(condition),'detail':detail})
+@@ -25,15 +24,15 @@
+  return r.stdout
+ stable=tuple(p for p in b.ORIGINAL if p not in b.PACKAGING_CHANGES)
+ check('accepted-reference-only',b.REFERENCE==accepted)
+-check('44-stable-members',len(stable)==44)
++check('48-stable-members',len(stable)==48)
+ with patch.object(b.source,'GIT','/usr/bin/git'):
+  current=b.baseline(candidate)
+- check('actual-candidate-baseline-passes',len(current)==56)
++ check('actual-candidate-baseline-passes',len(current)==60)
+  old=b.git_files(accepted,stable)
+- check('all44-exact-accepted-bytes',all(old[p]==current[p] for p in stable))
+- check('unchanged-current-context',b.context_manifest_sha(current)==b.collector.CONTEXT_SHA=='0f9cc23fb20d3d292fc5f2759a570ec5b022a5b9068d17ac545251803f73e903')
++ check('all48-exact-accepted-bytes',all(old[p]==current[p] for p in stable))
++ check('unchanged-current-context',b.context_manifest_sha(current)==b.collector.CONTEXT_SHA)
+  with patch.object(b,'REFERENCE',historical):
+-  reject('historical-incomplete-baseline-refused',lambda:b.baseline(candidate),'exact Git membership')
++  reject('prior-PR7-missing-new-members-refused',lambda:b.baseline(candidate),'exact Git membership')
+  with tempfile.TemporaryDirectory(prefix='meri-baseline-review-') as temp:
+   temp_root=Path(temp);git(temp_root,'init','--quiet')
+   common=Path(git(root,'rev-parse','--git-common-dir').decode().strip())

@@ -1,0 +1,45 @@
+diff --git a/scripts/qualification/test_worker_image_build.py b/scripts/qualification/test_worker_image_build.py
+index 3e1a29f..b8f1ca0 100644
+--- a/scripts/qualification/test_worker_image_build.py
++++ b/scripts/qualification/test_worker_image_build.py
+@@ -460,8 +460,8 @@ class FreshRunnerBinding(unittest.TestCase):
+         self.assertEqual(value['target']['caller']['Arn'], binding.PRINCIPAL)
+         self.assertEqual(build.WORKER_BUILDER_PRINCIPAL, 'arn:aws:iam::967807252336:user/hermes-cli')
+         self.assertEqual(build.PYTHON_SHA, '10d845f50a2af64e3500bb2fcb348b5bc98a75d8ddada63e45ba1da6a1fc79d1')
+-        self.assertEqual(collect.ASSEMBLER_SHA, '48f065d0ad61f98ba571c89dcd62141e6f8c9b272f0d371331d74a0dabf87851')
+-        self.assertEqual(collect.CONTEXT_SHA, '0f9cc23fb20d3d292fc5f2759a570ec5b022a5b9068d17ac545251803f73e903')
++        self.assertEqual(collect.ASSEMBLER_SHA, 'e5ea8c06607f15c6c0c2dfde527f20d9dfa509e6c59268ffaa03cbfa6b97d765')
++        self.assertEqual(collect.CONTEXT_SHA, '640c5f3dd73272af3a120bf7ec71afa096e30506f6c0b99b242e22dd96c0b229')
+ 
+     def test_proposal_refuses_wrong_target_or_unpinned_closure(self):
+         changes = [('profile', 'default'), ('region', 'us-west-2'), ('account', '000000000000')]
+diff --git a/scripts/qualification/worker_image_build.py b/scripts/qualification/worker_image_build.py
+index 0adbba3..146a80f 100644
+--- a/scripts/qualification/worker_image_build.py
++++ b/scripts/qualification/worker_image_build.py
+@@ -23,8 +23,8 @@ import worker_image_collect as collector
+ import worker_image_manifest as manifest_owner
+ 
+ ROOT = Path(__file__).resolve().parents[2]
+-# Accepted PR7 includes reviewed recovery/native-evidence source; runtime remains unqualified.
+-REFERENCE = '5ee46446b5f60034916f00b2a665b3e2bef9cf60'
++# Independently accepted watchdog source freeze; all native/runtime gates remain unqualified.
++REFERENCE = 'bb44e802de14b5483c51ea1a58448ca23a5f11a0'
+ ACCOUNT, REGION, PROJECT = authority.ACCOUNT, authority.REGION, authority.PROJECT
+ BUCKET, KMS, ROLE = authority.BUCKET, authority.KMS, authority.BUILDER_ROLE
+ SCHEMA = 'meri-worker-image-build/1'
+diff --git a/scripts/qualification/worker_image_collect.py b/scripts/qualification/worker_image_collect.py
+index f931b93..b4e5274 100644
+--- a/scripts/qualification/worker_image_collect.py
++++ b/scripts/qualification/worker_image_collect.py
+@@ -30,8 +30,8 @@ ASSEMBLER = manifest_owner.ASSEMBLER
+ COLLECTOR = manifest_owner.COLLECTOR
+ PUBLISHER = manifest_owner.PUBLISHER
+ CLEANER = manifest_owner.CLEANER
+-CONTEXT_SHA = '0f9cc23fb20d3d292fc5f2759a570ec5b022a5b9068d17ac545251803f73e903'
+-ASSEMBLER_SHA = '48f065d0ad61f98ba571c89dcd62141e6f8c9b272f0d371331d74a0dabf87851'
++CONTEXT_SHA = '640c5f3dd73272af3a120bf7ec71afa096e30506f6c0b99b242e22dd96c0b229'
++ASSEMBLER_SHA = 'e5ea8c06607f15c6c0c2dfde527f20d9dfa509e6c59268ffaa03cbfa6b97d765'
+ ARTIFACTS = {
+     'image-inventory.json': 32*1024*1024, 'os-installed-packages.txt': 4*1024*1024,
+     'runtime-versions.txt': 65536, 'libreoffice-version.err': 65536,
