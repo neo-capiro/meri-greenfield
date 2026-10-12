@@ -1,0 +1,32 @@
+{
+  "failedSource": "0e579078b71146d12a1783b9b3cfde6e4ea06800",
+  "rawFailure": "focused-initial.json",
+  "reason": "Accepted standalone schemas used HTTPS IDs, but unchanged canonical catalog SchemaRef requires urn:meri:. Normalize two local private schema identities and repin three descriptors.",
+  "canonicalSchemaRefChanged": false,
+  "projectionChanged": false,
+  "changes": [
+    {
+      "path": "packages/contracts/retrieval-0.2/legislative-directory.schema.json",
+      "beforeId": "https://meri.capiro.app/private/retrieval/0.2/legislative-directory.schema.json",
+      "afterId": "urn:meri:retrieval:legislative-directory:0.2.0",
+      "beforeSha256": "24c14bfb6a68ee9bb0699663f14a6348196ab069e35034a801fe1766cd3698fb",
+      "afterSha256": "e40a8462d8c061eb5c42b18f7ec61948c930b278a4d24617d6b9198dbbcc3812",
+      "affectedOperations": [
+        "get_committee_roster",
+        "list_members"
+      ],
+      "changedProperty": "$id only"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/rule-status.schema.json",
+      "beforeId": "https://meri.capiro.app/private/retrieval/0.2/rule-status.schema.json",
+      "afterId": "urn:meri:retrieval:rule-status:0.2.0",
+      "beforeSha256": "6668f39d0fad44005df43d29f2e0824c8137e6abafb208a1747350b54fc2b43a",
+      "afterSha256": "770d91d6894c81151d4853691530ed00daa5da21d904a7a84f44217a43aa0eb3",
+      "affectedOperations": [
+        "get_state_rule_status"
+      ],
+      "changedProperty": "$id only"
+    }
+  ]
+}

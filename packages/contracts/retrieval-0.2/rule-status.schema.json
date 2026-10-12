@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://meri.capiro.app/private/retrieval/0.2/rule-status.schema.json",
+  "$id": "urn:meri:retrieval:rule-status:0.2.0",
   "title": "Private stored rule status with explicit observed clocks",
   "$defs": {
     "RuleStatusLabels": {

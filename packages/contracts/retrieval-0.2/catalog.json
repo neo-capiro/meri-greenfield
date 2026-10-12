@@ -4438,12 +4438,12 @@
         }
       ],
       "inputSchema": {
-        "id": "https://meri.capiro.app/private/retrieval/0.2/legislative-directory.schema.json#/$defs/CommitteeRosterInput",
-        "sha256": "24c14bfb6a68ee9bb0699663f14a6348196ab069e35034a801fe1766cd3698fb"
+        "id": "urn:meri:retrieval:legislative-directory:0.2.0#/$defs/CommitteeRosterInput",
+        "sha256": "e40a8462d8c061eb5c42b18f7ec61948c930b278a4d24617d6b9198dbbcc3812"
       },
       "outputSchema": {
-        "id": "https://meri.capiro.app/private/retrieval/0.2/legislative-directory.schema.json#/$defs/CommitteeRosterOutput",
-        "sha256": "24c14bfb6a68ee9bb0699663f14a6348196ab069e35034a801fe1766cd3698fb"
+        "id": "urn:meri:retrieval:legislative-directory:0.2.0#/$defs/CommitteeRosterOutput",
+        "sha256": "e40a8462d8c061eb5c42b18f7ec61948c930b278a4d24617d6b9198dbbcc3812"
       },
       "aliases": [],
       "sideEffect": "none",
@@ -4505,12 +4505,12 @@
         }
       ],
       "inputSchema": {
-        "id": "https://meri.capiro.app/private/retrieval/0.2/legislative-directory.schema.json#/$defs/MemberListInput",
-        "sha256": "24c14bfb6a68ee9bb0699663f14a6348196ab069e35034a801fe1766cd3698fb"
+        "id": "urn:meri:retrieval:legislative-directory:0.2.0#/$defs/MemberListInput",
+        "sha256": "e40a8462d8c061eb5c42b18f7ec61948c930b278a4d24617d6b9198dbbcc3812"
       },
       "outputSchema": {
-        "id": "https://meri.capiro.app/private/retrieval/0.2/legislative-directory.schema.json#/$defs/MemberListOutput",
-        "sha256": "24c14bfb6a68ee9bb0699663f14a6348196ab069e35034a801fe1766cd3698fb"
+        "id": "urn:meri:retrieval:legislative-directory:0.2.0#/$defs/MemberListOutput",
+        "sha256": "e40a8462d8c061eb5c42b18f7ec61948c930b278a4d24617d6b9198dbbcc3812"
       },
       "aliases": [],
       "sideEffect": "none",
@@ -4773,12 +4773,12 @@
         }
       ],
       "inputSchema": {
-        "id": "https://meri.capiro.app/private/retrieval/0.2/rule-status.schema.json#/$defs/RuleStatusInput",
-        "sha256": "6668f39d0fad44005df43d29f2e0824c8137e6abafb208a1747350b54fc2b43a"
+        "id": "urn:meri:retrieval:rule-status:0.2.0#/$defs/RuleStatusInput",
+        "sha256": "770d91d6894c81151d4853691530ed00daa5da21d904a7a84f44217a43aa0eb3"
       },
       "outputSchema": {
-        "id": "https://meri.capiro.app/private/retrieval/0.2/rule-status.schema.json#/$defs/RuleStatusOutput",
-        "sha256": "6668f39d0fad44005df43d29f2e0824c8137e6abafb208a1747350b54fc2b43a"
+        "id": "urn:meri:retrieval:rule-status:0.2.0#/$defs/RuleStatusOutput",
+        "sha256": "770d91d6894c81151d4853691530ed00daa5da21d904a7a84f44217a43aa0eb3"
       },
       "aliases": [],
       "sideEffect": "none",

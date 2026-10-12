@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://meri.capiro.app/private/retrieval/0.2/legislative-directory.schema.json",
+  "$id": "urn:meri:retrieval:legislative-directory:0.2.0",
   "title": "Private stored legislative directory projections; source unavailable",
   "$defs": {
     "DirectoryStateNames": {
