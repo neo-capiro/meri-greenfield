@@ -1,0 +1,10 @@
+{
+  "sourceHead": "6e4f0c56912ba64f67b1a827450bf0b6d97afb89",
+  "modifiedTest": {
+    "path": "packages/contracts/test/retrieval-disclosures.test.mjs",
+    "snapshot": "docs/qualification/candidates/read-continuation-20261012/disclosures-author/operation-coercion-failed-test.mjs",
+    "bytes": 14784,
+    "sha256": "a65252212259bd11d701aebe57f4cb55a80c88c2b53ebb40bb44853052d16280"
+  },
+  "preservedDiffSha256": "b9548eb18f0f8c0e546f4701b74adcdc3688fa0a72b5526ab78d5d4247f6eb6a"
+}

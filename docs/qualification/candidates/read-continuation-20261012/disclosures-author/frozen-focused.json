@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-disclosures.test.mjs"
+  ],
+  "cwd": "/workspace/meri-disclosures-20261012",
+  "sourceHead": "88c9257e10822396c30cc99fb277ab145aac7218",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T16:48:35.347479+00:00",
+  "durationSeconds": 0.265,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 160851,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/disclosures-author/frozen-focused.stdout.bin",
+      "bytes": 2835,
+      "sha256": "b0316c6f90302c0c3b41232fdd86833e164b7b728905524b478ba9bff92bb35e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/disclosures-author/frozen-focused.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Exact committed disclosure source verification after preserved country-null and operation-coercion defects were repaired.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
