@@ -1,0 +1,32 @@
+✔ exact schedule describe returns only bounded public fields and original run references (8.441824ms)
+✔ delegated same-tenant inspection relies on current callback, not owner equality (1.350832ms)
+✔ cancelled app projection is described and never inferred absent (1.078632ms)
+✔ request projection and caller are detached before first await (0.845181ms)
+✔ cross-tenant caller or scope refuses before authority and SDK (4.385705ms)
+✔ authority denial, substitution and expiry refuse before describe (2.26052ms)
+✔ revocation at release refuses result without retry (1.863242ms)
+✔ known authority expiry is installed in actual SDK scope (0.934485ms)
+✔ larger authority expiry cannot extend original deadline (1.127476ms)
+✔ published authority expiry bounds parked before_describe (12.328138ms)
+✔ published authority expiry bounds parked before_release (10.216233ms)
+✔ parked SDK describe observes deadline and no late result release (11.50798ms)
+✔ pre-abort invokes no authority or SDK (0.912873ms)
+✔ abort of parked read cancels scoped signal and removes owned listener (0.603307ms)
+✔ local call bound refuses invalid or more than60 second deadlines before effects (0.599992ms)
+✔ private fields are neither accessed nor projected (0.896808ms)
+✔ hostile included fields and invalid Date fail closed (2.129762ms)
+✔ changed SDK schedule identity refuses even under valid authority (0.502075ms)
+✔ each returned window is capped with exact observed omissions, recent keeps newest suffix (3.512833ms)
+✔ empty recent window is still partial history independent of action counter (0.437157ms)
+✔ SDK rejection is sanitized without evaluating hostile error code getter (0.456867ms)
+✔ request accessors and context extras are rejected without execution (0.168113ms)
+✔ getHandle completion after deadline cannot begin describe (0.380863ms)
+✔ handle data accessors cannot run or swap describe after validation (0.467984ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 409.128814

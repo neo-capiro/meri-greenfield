@@ -1,0 +1,85 @@
+{
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "sourceFreeze": "87ee0f35edb510c981eb816fcccb70d27d2de875",
+  "passed": 19,
+  "total": 19,
+  "checks": [
+    {
+      "check": "all 7677 original Git entries preserved",
+      "pass": true
+    },
+    {
+      "check": "exact root-owned shared lifetime dependency",
+      "pass": true
+    },
+    {
+      "check": "SDK metadata schedule-client.d.ts",
+      "pass": true
+    },
+    {
+      "check": "SDK metadata schedule-client.js",
+      "pass": true
+    },
+    {
+      "check": "SDK metadata schedule-types.d.ts",
+      "pass": true
+    },
+    {
+      "check": "SDK metadata connection.d.ts",
+      "pass": true
+    },
+    {
+      "check": "SDK metadata connection.js",
+      "pass": true
+    },
+    {
+      "check": "bounded exit inspection-exact.json",
+      "pass": true
+    },
+    {
+      "check": "raw output inspection-exact.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw output inspection-exact.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "owned group absent 324426",
+      "pass": true
+    },
+    {
+      "check": "bounded exit inspection-initial.json",
+      "pass": true
+    },
+    {
+      "check": "raw output inspection-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw output inspection-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "owned group absent 323687",
+      "pass": true
+    },
+    {
+      "check": "frozen source apps/control/schedules/temporal-inspection.mjs",
+      "pass": true
+    },
+    {
+      "check": "frozen source apps/control/test/temporal-inspection.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "frozen source packages/contracts/schedules-0.2/inspection.schema.json",
+      "pass": true
+    },
+    {
+      "check": "frozen source packages/contracts/schedules-0.2/inspection-validation.mjs",
+      "pass": true
+    }
+  ],
+  "scope": "OFFLINE_SOURCE_ONLY_NO_SDK_SERVICE"
+}

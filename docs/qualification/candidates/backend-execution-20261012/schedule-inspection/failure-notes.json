@@ -1,0 +1,8 @@
+{
+  "initialSource": "87ee0f35edb510c981eb816fcccb70d27d2de875",
+  "repairedSource": "c78a4dff30f825441da5c32015d90647be107b3a",
+  "retainedFailure": "inspection-late-handle-before:22pass/1fail; expected zero describe after effective deadline, observed one.",
+  "repair": "Canonical check after handle acquisition and before captured describe invocation; SDK own data descriptors, no accessor execution.",
+  "assertions": "All original22 author cases unchanged;2 additive controls. Reviewer initial and expanded failures remain separate.",
+  "audit": "Initial19-check inline audit retained; final31-check verifier file is a reproducible equivalent of prior offline checks plus new capture receipts."
+}

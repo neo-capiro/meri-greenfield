@@ -1,0 +1,9 @@
+diff --git a/apps/control/test/temporal-inspection.test.mjs b/apps/control/test/temporal-inspection.test.mjs
+index 891e4622..2f5b181a 100644
+--- a/apps/control/test/temporal-inspection.test.mjs
++++ b/apps/control/test/temporal-inspection.test.mjs
+@@ -36,3 +36,4 @@ test('each returned window is capped with exact observed omissions, recent keeps
+ test('empty recent window is still partial history independent of action counter',async()=>{const d=description();d.info.recentActions=[];d.info.runningActions=[];const f=fixture({description:d}),out=await f.inspector.inspect(f.request());assert.equal(out.temporal.numActionsTaken,42);assert.equal(out.coverage.historyComplete,false);});
+ test('SDK rejection is sanitized without evaluating hostile error code getter',async()=>{let touched=0;const cause={get code(){touched++;throw new Error('private');}};const f=fixture({describe:()=>Promise.reject(cause)});await assert.rejects(f.inspector.inspect(f.request()),/^Error: SCHEDULE_INSPECTION_FAILED$/);assert.equal(touched,0);});
+ test('request accessors and context extras are rejected without execution',async()=>{const f=fixture();let touched=0;await assert.rejects(f.inspector.inspect({...f.request(),get signal(){touched++;return undefined;}}));assert.equal(touched,0);await assert.rejects(f.inspector.inspect({...f.request(),scheduleId:'foreign'}));assert.equal(f.calls.length,0);});
++test('getHandle completion after deadline cannot begin describe',async()=>{let now=NOW,describes=0;const f=fixture();f.scheduleClient.getHandle=value=>{now+=50000;return {scheduleId:value,describe(){describes++;return description();}};};const inspector=createTemporalScheduleInspector({scheduleClient:f.scheduleClient,authorize:receipt,clock:()=>now});await assert.rejects(inspector.inspect(f.request()),/SCHEDULE_INSPECTION_DEADLINE/);assert.equal(describes,0);});

@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/test/temporal-inspection.test.mjs"
+  ],
+  "cwd": "/workspace/meri-schedule-inspection-20261012",
+  "sourceHead": "c78a4dff30f825441da5c32015d90647be107b3a",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "e0eda6c30be9041846623c04ea10e0392677bfa0fd9c340b19559f35c69de8e3",
+  "startedAt": "2026-10-12T21:16:34.239500+00:00",
+  "durationSeconds": 0.48,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 326486,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-repair-exact.stdout.bin",
+      "bytes": 2072,
+      "sha256": "6fb0890893a963440a38f1f7ab44942f938eff29bdae197f84fe637c070b8e0d"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-repair-exact.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Unique label identifies initial or repaired focused Florida source verification; prior receipts are preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
