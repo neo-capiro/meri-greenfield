@@ -1,0 +1,18 @@
+{
+  "observedBetween": [
+    "2026-10-12 21:51:27 UTC",
+    "2026-10-12 21:51:28 UTC"
+  ],
+  "url": "https://github.com/neo-capiro/meri-greenfield/pull/37",
+  "head": "task/meri-backend-execution-20261012",
+  "headSha": "dbe4f9238eb514faeff354755ecc2253ce382a4e",
+  "base": "task/meri-backend-next-20261012",
+  "baseSha": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "state": "open",
+  "draft": true,
+  "merged": false,
+  "githubMergeabilityObservation": true,
+  "title": "Add reviewed backend reads and governed execution adapters",
+  "scope": "SOURCE_ONLY_NO_MERGE_NO_DEPLOYMENT",
+  "independentReview": "5357dc276189213d2a06fb83c8952abaf29e5319"
+}
