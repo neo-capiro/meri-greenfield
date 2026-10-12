@@ -1,0 +1,37 @@
+{
+  "rows": [
+    {
+      "cve": "CVE-2026-86138",
+      "url": "https://ubuntu.com/security/notices/USN-8910-1",
+      "readDateUtc": "2026-10-12",
+      "mechanism": "web.open",
+      "result": "RELEASED_NOTICE_FACTS_RETURNED",
+      "sourceLastUpdated": "8 October 2026",
+      "facts": [
+        {
+          "sourcePackage": "libxml2",
+          "release": "26.04",
+          "vendorStatus": "Fixed 2.15.2+dfsg-0.1ubuntu0.3"
+        },
+        {
+          "sourcePackage": "libxml2",
+          "release": "24.04",
+          "vendorStatus": "Fixed 2.9.14+dfsg-1.3ubuntu3.10"
+        }
+      ],
+      "error": null
+    }
+  ],
+  "curlNotice": {
+    "url": "https://ubuntu.com/security/notices/USN-8487-1",
+    "publishedUtc": "2026-06-30",
+    "cves": [
+      "CVE-2026-8927",
+      "CVE-2026-8924",
+      "CVE-2026-8286"
+    ],
+    "fixed26": "8.18.0-1ubuntu2.2",
+    "fixed24": "8.5.0-2ubuntu10.10",
+    "scope": "Released vendor packages; not authenticated installed copies"
+  }
+}

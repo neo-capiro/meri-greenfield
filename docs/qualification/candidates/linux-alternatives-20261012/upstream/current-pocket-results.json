@@ -1,0 +1,122 @@
+{
+  "retrievedUtc": "2026-10-12T03:52:22.465685+00:00",
+  "signatureVerification": "UNRUN; live metadata only, not selected snapshot",
+  "rows": [
+    {
+      "url": "https://archive.ubuntu.com/ubuntu/dists/resolute-updates/InRelease",
+      "error": null,
+      "bytes": 137401,
+      "sha256": "7762b0a6d034133a7b208a68ff17efaf8b2e7ed8cea8f33f47bc248661bca137",
+      "path": "metadata-transport/resolute-updates-inrelease.body.bin",
+      "indices": [
+        [
+          "f9986740287e4f9d9e8b7919678d1c82654b0d80c5b04f4973911246656cfd1a",
+          "734484",
+          "main/binary-amd64/Packages.xz"
+        ],
+        [
+          "0040f94d11d0039505328a90b2ff48968db873e9e7967307631bf40ef5679275",
+          "32",
+          "main/debian-installer/binary-amd64/Packages.xz"
+        ],
+        [
+          "581c14b018730daad83c80b39525c739f5368737488fdf7701811d8723fc3c9e",
+          "323208",
+          "universe/binary-amd64/Packages.xz"
+        ],
+        [
+          "0040f94d11d0039505328a90b2ff48968db873e9e7967307631bf40ef5679275",
+          "32",
+          "universe/debian-installer/binary-amd64/Packages.xz"
+        ]
+      ]
+    },
+    {
+      "url": "https://archive.ubuntu.com/ubuntu/dists/resolute-security/InRelease",
+      "error": null,
+      "bytes": 137403,
+      "sha256": "d1483ad1c40d1717e07f3ab3cd2da72ceb5a05c8a3cb1e901f33b1ec5906e21d",
+      "path": "metadata-transport/resolute-security-inrelease.body.bin",
+      "indices": [
+        [
+          "e094f77d426124a877938e72c211e6e726a5fd4dea9fd260ba5f7ef85f1d4144",
+          "599716",
+          "main/binary-amd64/Packages.xz"
+        ],
+        [
+          "0040f94d11d0039505328a90b2ff48968db873e9e7967307631bf40ef5679275",
+          "32",
+          "main/debian-installer/binary-amd64/Packages.xz"
+        ],
+        [
+          "58f52e78c1589500550cb76e7eb06b94e473786347649cb86165f7635e730331",
+          "200948",
+          "universe/binary-amd64/Packages.xz"
+        ],
+        [
+          "0040f94d11d0039505328a90b2ff48968db873e9e7967307631bf40ef5679275",
+          "32",
+          "universe/debian-installer/binary-amd64/Packages.xz"
+        ]
+      ]
+    },
+    {
+      "url": "https://archive.ubuntu.com/ubuntu/dists/noble-updates/InRelease",
+      "error": null,
+      "bytes": 126125,
+      "sha256": "86a89fd6c2eb7fcd315b27db7bfdb9b14a2db97bcb857ac31a5a357a8d9d642e",
+      "path": "metadata-transport/noble-updates-inrelease.body.bin",
+      "indices": [
+        [
+          "9c100243ebb3cb006f80a7f122dc53fe84ab3818e3ca0f76ffb1a338b6e71a60",
+          "1374764",
+          "main/binary-amd64/Packages.xz"
+        ],
+        [
+          "0040f94d11d0039505328a90b2ff48968db873e9e7967307631bf40ef5679275",
+          "32",
+          "main/debian-installer/binary-amd64/Packages.xz"
+        ],
+        [
+          "7b284890643bd864ce6ccf1dcd5491300afa80d589c13f8b98ffd4717b65be0c",
+          "1702144",
+          "universe/binary-amd64/Packages.xz"
+        ],
+        [
+          "0040f94d11d0039505328a90b2ff48968db873e9e7967307631bf40ef5679275",
+          "32",
+          "universe/debian-installer/binary-amd64/Packages.xz"
+        ]
+      ]
+    },
+    {
+      "url": "https://archive.ubuntu.com/ubuntu/dists/noble-security/InRelease",
+      "error": null,
+      "bytes": 126127,
+      "sha256": "3d52bb5b6ef5df8221b9fa653dad05d0bf4137976e365b82118b7b781744ef22",
+      "path": "metadata-transport/noble-security-inrelease.body.bin",
+      "indices": [
+        [
+          "fe01a017a1699fc673be7a20ca698b81f02f1265bef724e338ad4afe3bbd857d",
+          "1120684",
+          "main/binary-amd64/Packages.xz"
+        ],
+        [
+          "0040f94d11d0039505328a90b2ff48968db873e9e7967307631bf40ef5679275",
+          "32",
+          "main/debian-installer/binary-amd64/Packages.xz"
+        ],
+        [
+          "71a7a251910e837a7503d18bb63baa877ce4fb294997b78eb92ecc10c54bdaf1",
+          "1219656",
+          "universe/binary-amd64/Packages.xz"
+        ],
+        [
+          "0040f94d11d0039505328a90b2ff48968db873e9e7967307631bf40ef5679275",
+          "32",
+          "universe/debian-installer/binary-amd64/Packages.xz"
+        ]
+      ]
+    }
+  ]
+}

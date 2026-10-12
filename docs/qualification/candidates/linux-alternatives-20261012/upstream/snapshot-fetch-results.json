@@ -1,0 +1,60 @@
+{
+  "retrievedUtc": "2026-10-12T03:50:19.058928+00:00",
+  "signatureVerification": "UNRUN: no independently authenticated Ubuntu archive keyring available",
+  "rows": [
+    {
+      "url": "https://snapshot.ubuntu.com/ubuntu/20261012T000000Z/dists/resolute/InRelease",
+      "status": null,
+      "error": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "metadata-transport/snapshot-resolute-inrelease.body.bin",
+      "elapsedSeconds": 0.012836
+    },
+    {
+      "url": "https://snapshot.ubuntu.com/ubuntu/20261012T000000Z/dists/resolute-updates/InRelease",
+      "status": null,
+      "error": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "metadata-transport/snapshot-resolute-updates-inrelease.body.bin",
+      "elapsedSeconds": 0.003975
+    },
+    {
+      "url": "https://snapshot.ubuntu.com/ubuntu/20261012T000000Z/dists/resolute-security/InRelease",
+      "status": null,
+      "error": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "metadata-transport/snapshot-resolute-security-inrelease.body.bin",
+      "elapsedSeconds": 0.00281
+    },
+    {
+      "url": "https://snapshot.ubuntu.com/ubuntu/20261012T000000Z/dists/noble/InRelease",
+      "status": null,
+      "error": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "metadata-transport/snapshot-noble-inrelease.body.bin",
+      "elapsedSeconds": 0.003604
+    },
+    {
+      "url": "https://snapshot.ubuntu.com/ubuntu/20261012T000000Z/dists/noble-updates/InRelease",
+      "status": null,
+      "error": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "metadata-transport/snapshot-noble-updates-inrelease.body.bin",
+      "elapsedSeconds": 0.005043
+    },
+    {
+      "url": "https://snapshot.ubuntu.com/ubuntu/20261012T000000Z/dists/noble-security/InRelease",
+      "status": null,
+      "error": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "metadata-transport/snapshot-noble-security-inrelease.body.bin",
+      "elapsedSeconds": 0.005193
+    }
+  ]
+}

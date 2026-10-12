@@ -1,0 +1,60 @@
+{
+  "bindings": [
+    {
+      "bytes": 6582,
+      "path": "AGENTS.md",
+      "sha256": "a0650949b74e5aee709bd8b3c9d480f95f5b898778ac8f7b3927eb54b141437a"
+    },
+    {
+      "bytes": 11082,
+      "path": "docs/IMPLEMENTATION-STANDARDS.md",
+      "sha256": "d4f10f964ee207187abacd967649a1cfc9bdd468072dc01f859268f08b719959"
+    },
+    {
+      "bytes": 86848,
+      "path": "docs/plans/MERI-DEPLOYMENT.md",
+      "sha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388"
+    },
+    {
+      "bytes": 8930,
+      "path": "docs/COMPONENTS.md",
+      "sha256": "d41dae59bf7b350a3a2c8c95bad55a3f571e1220060bea3f52798f8f9f98f3a7"
+    },
+    {
+      "bytes": 18786,
+      "path": "apps/worker/qualification/Dockerfile",
+      "sha256": "3f86ae7ca55e8bbfb2814f1b335b7df8159daf9b5008df60f1165ba879c40f36"
+    },
+    {
+      "bytes": 36019,
+      "path": "apps/worker/qualification/component-pins.json",
+      "sha256": "2f2c5d52fbee23bbdb206456235664b9dbbdf5c3526ccc065d499ed0a61f5aed"
+    },
+    {
+      "bytes": 68705,
+      "path": "apps/worker/qualification/package-lock.json",
+      "sha256": "d3d4c5362e0c7dc1392ef9cad2048d00c564f1ff70d98c3e10108e50aa56147a"
+    },
+    {
+      "bytes": 1383,
+      "path": "apps/worker/qualification/requirements.lock.txt",
+      "sha256": "47bb048b9750b074c7d33faba9f9c3873b7b461eaa4360bf57cb08d4f55c9765"
+    },
+    {
+      "bytes": 90619,
+      "path": "docs/qualification/candidates/image-patch-20261012/upstream/upstream-matrix.json",
+      "sha256": "4235a8074c314e497071afc8858eeaf26d7adf43d6afd89ba8f3fd322a1e7ad5"
+    },
+    {
+      "bytes": 7423,
+      "path": "docs/coordination/reports/MERI-IMAGE-LICENSE-REVIEW-20261012.md",
+      "sha256": "5ded58a2c177ab0c9c9371b940aa031a47f354d2ab03e1cc76428aa9972356c1"
+    },
+    {
+      "bytes": 2516,
+      "path": "docs/qualification/candidates/image-patch-20261012/licenses/metadata/playwright-core_1.64.0-alpha-1790635538000.json",
+      "sha256": "59134eefc86bfd06e025ba51486328a610816454842cd48b8419a831187c8da4"
+    }
+  ],
+  "commit": "690bac4cd44112b161d8e02818aeae7639ce237a"
+}

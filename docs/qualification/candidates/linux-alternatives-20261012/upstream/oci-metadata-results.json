@@ -1,0 +1,62 @@
+{
+  "retrievedUtc": "2026-10-12T03:50:36.999939+00:00",
+  "scope": "public anonymous OCI manifest metadata only; no layers/images/login or persistent credentials",
+  "rows": [
+    {
+      "url": "https://registry-1.docker.io/v2/library/ubuntu/manifests/resolute-20260927",
+      "error": null,
+      "bytes": 6694,
+      "sha256": "f144425ff09be612d6d9ad965196e9cdc23dae1f42110a8a11a3e9a8198759f7",
+      "dockerContentDigest": "sha256:f144425ff09be612d6d9ad965196e9cdc23dae1f42110a8a11a3e9a8198759f7",
+      "path": "metadata-transport/resolute-20260927-oci-index.body.json",
+      "amd64": [
+        {
+          "annotations": {
+            "com.docker.official-images.bashbrew.arch": "amd64",
+            "org.opencontainers.image.base.name": "scratch",
+            "org.opencontainers.image.created": "2026-09-27T00:00:00Z",
+            "org.opencontainers.image.revision": "97b63f1d28d5d0c4a7374bfa87241a49f984ed04",
+            "org.opencontainers.image.source": "https://git.launchpad.net/cloud-images/+oci/ubuntu-base",
+            "org.opencontainers.image.url": "https://hub.docker.com/_/ubuntu",
+            "org.opencontainers.image.version": "26.04"
+          },
+          "digest": "sha256:88a381d5b5eeb2b35d3ad70925a362c37ce569daf43ede89ff818ec20e4d3794",
+          "mediaType": "application/vnd.oci.image.manifest.v1+json",
+          "platform": {
+            "architecture": "amd64",
+            "os": "linux"
+          },
+          "size": 1392
+        }
+      ]
+    },
+    {
+      "url": "https://registry-1.docker.io/v2/library/ubuntu/manifests/noble-20260917",
+      "error": null,
+      "bytes": 6688,
+      "sha256": "534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55",
+      "dockerContentDigest": "sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55",
+      "path": "metadata-transport/noble-20260917-oci-index.body.json",
+      "amd64": [
+        {
+          "annotations": {
+            "com.docker.official-images.bashbrew.arch": "amd64",
+            "org.opencontainers.image.base.name": "scratch",
+            "org.opencontainers.image.created": "2026-09-17T00:00:00Z",
+            "org.opencontainers.image.revision": "ab7012ab5b3136a47103c5453cb27d07445ac13d",
+            "org.opencontainers.image.source": "https://git.launchpad.net/cloud-images/+oci/ubuntu-base",
+            "org.opencontainers.image.url": "https://hub.docker.com/_/ubuntu",
+            "org.opencontainers.image.version": "24.04"
+          },
+          "digest": "sha256:f610ab94648195aa356059f5b41d6085c9d4d903c072430cdd1af7bdb646106b",
+          "mediaType": "application/vnd.oci.image.manifest.v1+json",
+          "platform": {
+            "architecture": "amd64",
+            "os": "linux"
+          },
+          "size": 424
+        }
+      ]
+    }
+  ]
+}
