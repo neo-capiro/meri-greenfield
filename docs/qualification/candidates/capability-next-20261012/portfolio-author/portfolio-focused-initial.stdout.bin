@@ -1,0 +1,32 @@
+✔ normalizes trusted conversation/portfolio and changes defaults without mutating inputs (4.723228ms)
+✔ refuses supplied foreign or malformed conversation and authority injection (1.862829ms)
+✔ adopts declared integer grammar rather than permissive producer clamping (1.975209ms)
+✔ requires only the closed canonical context and a single research-portfolio entity (0.618089ms)
+✔ both operations accept their exact nonempty producer DTO projections (5.163028ms)
+✔ detail preserves current revision and older historical event revision without equalizing them (1.007004ms)
+✔ detail preserves every declared mode/disposition and nullable unresolved metadata (1.479904ms)
+✔ detail role is reported per explicit grant, without ownerUserId or admin bypass (1.872164ms)
+✔ rejects foreign portfolio and projected count inconsistencies (1.689028ms)
+✔ permits explicitly empty visible links/history and does not infer complete history (1.492212ms)
+✔ detail rejects duplicate native identities (1.443279ms)
+✔ changes binds recipient state to current actor and its own event (0.915646ms)
+✔ changes represents page continuation without source-history completeness (0.774354ms)
+✔ changes refuses nonprogress, foreign next cursor, excess rows and empty continuation (1.232953ms)
+✔ event ordering follows descending occurredAt then id and is never revision sorting (1.041045ms)
+✔ result full run/task/fence and subject fields cannot be substituted (2.185363ms)
+✔ all structural DTOs are closed and nullable fields are distinct from omission (2.16279ms)
+✔ rejects nonfinite timestamps even when the schema recognizes a leap-second format (0.603156ms)
+✔ bounds history, recursive payloads and declared text without deleting content (3.336474ms)
+✔ opaque event JSON remains source-reported data, not promoted authorization (0.582646ms)
+✔ hostile getters, proxies and coercions are refused before executing user code (0.494413ms)
+✔ refuses cycles, hidden keys, symbols, inherited objects, sparse arrays and nonfinite JSON (0.638709ms)
+✔ safe shared JSON references are accepted without creating a false cycle (0.335884ms)
+✔ Clio research evidence and unrelated operations stay outside this family (0.159339ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1121.11419
