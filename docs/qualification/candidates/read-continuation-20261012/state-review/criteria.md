@@ -18,7 +18,10 @@ does not qualify an adapter, authorize source access or advance a runtime gate.
    resolver, quota reservation, writes or new generic framework is introduced.
    Unknown operation/fields and malformed shapes fail closed. Prototype, accessor,
    sparse-array, cyclic and non-finite/non-JSON inputs must not become admitted
-   mutable data. Accepted arguments/results are detached and deeply immutable.
+   mutable data. Normalized arguments are detached and deeply immutable through
+   canonical resolution; output admission must not mutate caller data. Existing
+   resolver output APIs do not uniformly promise frozen return values, so this
+   review does not invent that requirement for the new family.
 2. `search_state_bills`: closed typed inputs may deliberately be stricter than
    old coercion, but normalization/defaults/caps are documented. Optional query,
    state, session and status; limit 1–50/default20. String limits inherited from
@@ -80,3 +83,8 @@ Preparation note: the discovery packet is not in the stage2 outline base, so its
 metadata was read by `git show` at its preserved freeze rather than assumed to
 exist in this checkout. `.agents` has no local skill files. No tests have run at
 this criteria freeze; no production candidate has yet been supplied.
+
+Pre-candidate clarification: this revision corrects the original blanket output
+freeze wording after inspecting the existing resolver. The original criteria
+commit remains preserved; normalized-argument immutability and output inertness
+remain required.
