@@ -1,0 +1,415 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:research-legal-candidates:0.2.0",
+  "title": "Private tenant research candidate projections; no source authority or completeness claim",
+  "$defs": {
+    "ResearchLegalCandidatesRequest": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string"
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "limit": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "query"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchLegalCandidatesInput": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 240
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 25
+        }
+      },
+      "required": [
+        "query",
+        "clientId",
+        "limit"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchLegalCandidatesContext": {
+      "$ref": "urn:meri:retrieval:outreach-query:0.2.0#/$defs/OutreachQueryContext"
+    },
+    "ResearchCandidateClient": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "client"
+        },
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "clientId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "title": {
+          "type": "string"
+        },
+        "snippet": {
+          "type": "string",
+          "maxLength": 360
+        },
+        "occurredAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-"
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "clientId",
+        "title",
+        "snippet",
+        "occurredAt"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchCandidateMeeting": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "meeting"
+        },
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "snippet": {
+          "type": "string",
+          "maxLength": 360
+        },
+        "occurredAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-"
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "clientId",
+        "title",
+        "snippet",
+        "occurredAt"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchCandidateMailThread": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "mail_thread"
+        },
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "snippet": {
+          "type": "string",
+          "maxLength": 360
+        },
+        "occurredAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-"
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "clientId",
+        "title",
+        "snippet",
+        "occurredAt"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchCandidateMailMessage": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "mail_message"
+        },
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "snippet": {
+          "type": "string",
+          "maxLength": 360
+        },
+        "occurredAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^\\d{4}-"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "metadata": {
+          "type": "object",
+          "properties": {
+            "threadId": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "threadId"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "clientId",
+        "title",
+        "snippet",
+        "occurredAt",
+        "metadata"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchCandidateClioNote": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "clio_note"
+        },
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "snippet": {
+          "type": "string",
+          "maxLength": 360
+        },
+        "occurredAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-"
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "clientId",
+        "title",
+        "snippet",
+        "occurredAt"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchCandidateDirectoryNote": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "directory_contact_note"
+        },
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "clientId": {
+          "type": "null"
+        },
+        "title": {
+          "type": "string"
+        },
+        "snippet": {
+          "type": "string",
+          "maxLength": 360
+        },
+        "occurredAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-"
+        },
+        "metadata": {
+          "type": "object",
+          "properties": {
+            "directoryContactId": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "directoryContactId"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "clientId",
+        "title",
+        "snippet",
+        "occurredAt",
+        "metadata"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchLegalCandidate": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/ResearchCandidateClient"
+        },
+        {
+          "$ref": "#/$defs/ResearchCandidateMeeting"
+        },
+        {
+          "$ref": "#/$defs/ResearchCandidateMailThread"
+        },
+        {
+          "$ref": "#/$defs/ResearchCandidateMailMessage"
+        },
+        {
+          "$ref": "#/$defs/ResearchCandidateClioNote"
+        },
+        {
+          "$ref": "#/$defs/ResearchCandidateDirectoryNote"
+        }
+      ]
+    },
+    "ResearchLegalCandidatesOutput": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "search_research_sources"
+        },
+        "query": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 240
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-"
+        },
+        "results": {
+          "type": "array",
+          "maxItems": 75,
+          "items": {
+            "$ref": "#/$defs/ResearchLegalCandidate"
+          }
+        }
+      },
+      "required": [
+        "tool",
+        "query",
+        "generatedAt",
+        "results"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
