@@ -1,0 +1,1 @@
+{"operation":"cherry-pick 84a9313735ec9fb079e35a92adb074f6afaf32e7","initialExit":1,"diagnostic":"directory rename split for integration evidence; no unmerged index entries","resolution":"verified exact five staged paths and continued cherry-pick without production edits","result":"4c214f7b9e4b1d52f9443c17bbf60c4f83e9309f","exactSourceCorrespondence":"source-audit.stdout.bin"}

@@ -1,0 +1,57 @@
+✖ action source independent: actual canonical dispatch reaches fixed adapter and validated scoped projection (58.006278ms)
+✔ action source independent: actual production catalog remains disabled before any ports (8.271311ms)
+✔ action source independent: model cannot supply authority/context or transport options (2.806228ms)
+✔ action source independent: connected unscoped and names refuse, UUID must equal current selected subject (11.092791ms)
+✔ action source independent: exact origin admission precedes allocation (0.608194ms)
+✔ action source independent: credential full binding, expiry, header admission and closed shape (33.715921ms)
+✔ action source independent: credential getters and proxies are inert at admission (4.880545ms)
+✔ action source independent: HTTP status, redirect, media and encoding refuse without retry (14.071258ms)
+✔ action source independent: bounded bytes and fatal UTF8 JSON decoding (19.5955ms)
+✔ action source independent: acquired response cancelled when outer lifetime loses same-turn race (10.008341ms)
+✔ action source independent: parked credentials abort refuses and cancels owned late body (4.251379ms)
+✔ action source independent: parked fetch abort refuses and cancels owned late body (4.026241ms)
+✔ action source independent: parked body abort refuses and cancels owned late body (4.057078ms)
+✔ action source independent: parked credentials expiry refuses and cancels owned late body (10.447171ms)
+✔ action source independent: parked fetch expiry refuses and cancels owned late body (3.704357ms)
+✔ action source independent: parked body expiry refuses and cancels owned late body (2.479035ms)
+✔ action source independent: credential deadline shrinks original authority during body read (2.231253ms)
+✔ action source independent: raw page substitution, scope, proof and recommendation truth refuse (30.721772ms)
+✔ action source independent: revocation and source/fence/subject drift after fetch prevents release (19.884274ms)
+✔ action source independent: final fresh authority after settlement denies late success (12.965335ms)
+✔ action source independent: direct handler checks exact normalized digest and caller cancellation (2.449241ms)
+✔ action source independent: outer operation/digest/full lineage cannot be replaced by handler result (16.196441ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 21
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5351.552754
+
+✖ failing tests:
+
+test at apps/gateway/test/action-items-source-independent.test.mjs:36:1
+✖ action source independent: actual canonical dispatch reaches fixed adapter and validated scoped projection (58.006278ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  -   actionItemId: null,
+      clientId: 'cccccccc-cccc-4ccc-8ccc-cccccccccccc',
+  -   cursor: null,
+      limit: 20,
+      sort: 'deadline',
+  -   status: null
+    }
+  
+      at TestContext.<anonymous> (file:///workspace/meri-action-items-source-review-20261012/apps/gateway/test/action-items-source-independent.test.mjs:36:1451)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { limit: 20, sort: 'deadline', clientId: 'cccccccc-cccc-4ccc-8ccc-cccccccccccc' },
+    expected: { clientId: 'cccccccc-cccc-4ccc-8ccc-cccccccccccc', actionItemId: null, status: null, sort: 'deadline', limit: 20, cursor: null },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
