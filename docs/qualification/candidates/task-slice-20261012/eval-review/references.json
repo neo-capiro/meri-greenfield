@@ -1,0 +1,36 @@
+{
+  "base": "77cedb126d57a0223d2df42ad2f3fe988eb51759",
+  "references": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 6582,
+      "sha256": "a0650949b74e5aee709bd8b3c9d480f95f5b898778ac8f7b3927eb54b141437a",
+      "blob": "fe8cefa588409d8562f0e6d939a6da7d120c0d87"
+    },
+    {
+      "path": "docs/IMPLEMENTATION-STANDARDS.md",
+      "bytes": 11082,
+      "sha256": "d4f10f964ee207187abacd967649a1cfc9bdd468072dc01f859268f08b719959",
+      "blob": "7f680395e07d1114667a800f3f8ed77010a3eac2"
+    },
+    {
+      "path": "docs/ROUTING-EVALUATION.md",
+      "bytes": 4222,
+      "sha256": "b908086bb036a0bbe04572975ed9d04e180770a2c333c68bfe7fef360a200add",
+      "blob": "fab563ae2e8f3185d4506dbcb023a07e9900bccf"
+    },
+    {
+      "path": "docs/plans/MERI-DEPLOYMENT.md",
+      "bytes": 86848,
+      "sha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388",
+      "blob": "c9849375e463e88a064b256f715db7858cd369df"
+    },
+    {
+      "path": "docs/coordination/r2/gates.json",
+      "bytes": 8743,
+      "sha256": "edb425d2bb70e346bf2006ad62748f93f1bc8cfc63b16d3ffba7ce5b6159f887",
+      "blob": "72126e3b1ba7c8ee453520311a55012802ccb8bd"
+    }
+  ],
+  "privateBodiesCopied": false
+}
