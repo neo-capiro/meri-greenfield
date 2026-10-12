@@ -1,7 +1,7 @@
 {
   "contractVersion": "0.2.0",
   "catalogId": "meri.retrieval",
-  "catalogVersion": "0.2.5",
+  "catalogVersion": "0.2.6",
   "sourceRegistryCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
   "originals": [
     {
@@ -251,8 +251,11 @@
       "id": "get_bill_status",
       "disposition": "selected",
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "get_bill_status",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "read_bill_text",
@@ -272,8 +275,11 @@
       "id": "search_floor_votes",
       "disposition": "selected",
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "search_floor_votes",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "search_cbo_cost_estimates",
@@ -296,8 +302,11 @@
       "id": "search_lda_filings",
       "disposition": "selected",
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "search_lda_filings",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "list_global_datasets",
@@ -317,15 +326,21 @@
       "id": "search_sec_filings",
       "disposition": "selected",
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "search_sec_filings",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "search_fara_registrations",
       "disposition": "selected",
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "search_fara_registrations",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "search_federal_grants",
@@ -734,15 +749,21 @@
       "id": "search_acquisition_personnel",
       "disposition": "selected",
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "search_acquisition_personnel",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "get_acquisition_person",
       "disposition": "selected",
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "get_acquisition_person",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "create_word",
@@ -3722,6 +3743,493 @@
       ],
       "fixtureIds": [
         "catalog.binding.search_crs_reports"
+      ]
+    },
+    {
+      "operation": {
+        "id": "search_sec_filings",
+        "version": "0.2.0"
+      },
+      "displayName": "Search sec filings",
+      "whenToUse": "Inspect the declared stored disclosures projection through a qualified source owner.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Source requirements are design declarations; current grants, feature flags, availability and producer authority remain unqualified.",
+        "Local source validation does not qualify current identity, source access, result release or runtime.",
+        "SEC and FARA totals are independent observations, not exhaustive counts of returned rows. LDA total and page retain source semantics; no pagination or completeness is invented.",
+        "Nullable stored fields, UTC-midnight SQL dates, excerpt bounds and distinct record identities retain their pinned projections. LDA spending is a finite JSON number or null, not an exact Decimal arithmetic guarantee.",
+        "Raw aliases and clamped registered limits are preserved. Fractional or out-of-Int32 effective years are refused before any database adapter. Global source records and LDA client IDs do not establish tenant authority.",
+        "FARA country-filtered results require a non-null matching country; source authenticity, query collation and current grants remain adapter obligations."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "disclosures",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:disclosures:0.2.0#/$defs/DisclosuresSecInput",
+        "sha256": "80e6c104e75821e9cfe2861b19073b1e83ea17f87a3efd5e90b77edd4eba8c3f"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:disclosures:0.2.0#/$defs/DisclosuresSecOutput",
+        "sha256": "80e6c104e75821e9cfe2861b19073b1e83ea17f87a3efd5e90b77edd4eba8c3f"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.search_sec_filings"
+      ]
+    },
+    {
+      "operation": {
+        "id": "search_fara_registrations",
+        "version": "0.2.0"
+      },
+      "displayName": "Search fara registrations",
+      "whenToUse": "Inspect the declared stored disclosures projection through a qualified source owner.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Source requirements are design declarations; current grants, feature flags, availability and producer authority remain unqualified.",
+        "Local source validation does not qualify current identity, source access, result release or runtime.",
+        "SEC and FARA totals are independent observations, not exhaustive counts of returned rows. LDA total and page retain source semantics; no pagination or completeness is invented.",
+        "Nullable stored fields, UTC-midnight SQL dates, excerpt bounds and distinct record identities retain their pinned projections. LDA spending is a finite JSON number or null, not an exact Decimal arithmetic guarantee.",
+        "Raw aliases and clamped registered limits are preserved. Fractional or out-of-Int32 effective years are refused before any database adapter. Global source records and LDA client IDs do not establish tenant authority.",
+        "FARA country-filtered results require a non-null matching country; source authenticity, query collation and current grants remain adapter obligations."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "disclosures",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:disclosures:0.2.0#/$defs/DisclosuresFaraInput",
+        "sha256": "80e6c104e75821e9cfe2861b19073b1e83ea17f87a3efd5e90b77edd4eba8c3f"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:disclosures:0.2.0#/$defs/DisclosuresFaraOutput",
+        "sha256": "80e6c104e75821e9cfe2861b19073b1e83ea17f87a3efd5e90b77edd4eba8c3f"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.search_fara_registrations"
+      ]
+    },
+    {
+      "operation": {
+        "id": "search_lda_filings",
+        "version": "0.2.0"
+      },
+      "displayName": "Search lda filings",
+      "whenToUse": "Inspect the declared stored disclosures projection through a qualified source owner.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Source requirements are design declarations; current grants, feature flags, availability and producer authority remain unqualified.",
+        "Local source validation does not qualify current identity, source access, result release or runtime.",
+        "SEC and FARA totals are independent observations, not exhaustive counts of returned rows. LDA total and page retain source semantics; no pagination or completeness is invented.",
+        "Nullable stored fields, UTC-midnight SQL dates, excerpt bounds and distinct record identities retain their pinned projections. LDA spending is a finite JSON number or null, not an exact Decimal arithmetic guarantee.",
+        "Raw aliases and clamped registered limits are preserved. Fractional or out-of-Int32 effective years are refused before any database adapter. Global source records and LDA client IDs do not establish tenant authority.",
+        "FARA country-filtered results require a non-null matching country; source authenticity, query collation and current grants remain adapter obligations."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "disclosures",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:disclosures:0.2.0#/$defs/DisclosuresLdaInput",
+        "sha256": "80e6c104e75821e9cfe2861b19073b1e83ea17f87a3efd5e90b77edd4eba8c3f"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:disclosures:0.2.0#/$defs/DisclosuresLdaOutput",
+        "sha256": "80e6c104e75821e9cfe2861b19073b1e83ea17f87a3efd5e90b77edd4eba8c3f"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.search_lda_filings"
+      ]
+    },
+    {
+      "operation": {
+        "id": "search_acquisition_personnel",
+        "version": "0.2.0"
+      },
+      "displayName": "Search acquisition personnel",
+      "whenToUse": "Inspect the declared stored acquisition personnel projection through a qualified source owner.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Source requirements are design declarations; current grants, feature flags, availability and producer authority remain unqualified.",
+        "Local source validation does not qualify current identity, source access, result release or runtime.",
+        "Current4be13b0 contact projections intentionally supersede the fd8765 inventory projection. Both operations require trusted current actorRole; model personnel role selectors grant no privilege.",
+        "Only capiro_admin admits top-level email, phone, parentOffice and department. Non-admin detail metadata removes the two pinned top-level upload keys only; nested/opaque data is not claimed recursively redacted.",
+        "The owner requires unconditional audit writes inside tenant context, including detail lookup failure. These writes, transaction behavior, current roles and release authority are unqualified execution dependencies; this read descriptor authorizes no audit execution.",
+        "Query/q nonblank fallback is preserved. Fuzzy totals count already paged candidates before filters; ordinary totals are independent observations. Neither counts nor absent continuation establish exhaustive coverage.",
+        "Headshot and other opaque JSON retain the source projection under inert transport admission. UUID storage identity is validated without invented version/variant constraints."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "acquisition_personnel",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:acquisition-personnel:0.2.0#/$defs/AcquisitionPersonnelSearchInput",
+        "sha256": "7407ecb11c145fca7c75a88360a118f1db2870dd45cf9d1c85756e5427b37fa2"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:acquisition-personnel:0.2.0#/$defs/AcquisitionPersonnelSearchOutput",
+        "sha256": "7407ecb11c145fca7c75a88360a118f1db2870dd45cf9d1c85756e5427b37fa2"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.search_acquisition_personnel"
+      ]
+    },
+    {
+      "operation": {
+        "id": "get_acquisition_person",
+        "version": "0.2.0"
+      },
+      "displayName": "Get acquisition person",
+      "whenToUse": "Inspect the declared stored acquisition personnel projection through a qualified source owner.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Source requirements are design declarations; current grants, feature flags, availability and producer authority remain unqualified.",
+        "Local source validation does not qualify current identity, source access, result release or runtime.",
+        "Current4be13b0 contact projections intentionally supersede the fd8765 inventory projection. Both operations require trusted current actorRole; model personnel role selectors grant no privilege.",
+        "Only capiro_admin admits top-level email, phone, parentOffice and department. Non-admin detail metadata removes the two pinned top-level upload keys only; nested/opaque data is not claimed recursively redacted.",
+        "The owner requires unconditional audit writes inside tenant context, including detail lookup failure. These writes, transaction behavior, current roles and release authority are unqualified execution dependencies; this read descriptor authorizes no audit execution.",
+        "Query/q nonblank fallback is preserved. Fuzzy totals count already paged candidates before filters; ordinary totals are independent observations. Neither counts nor absent continuation establish exhaustive coverage.",
+        "Headshot and other opaque JSON retain the source projection under inert transport admission. UUID storage identity is validated without invented version/variant constraints."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "acquisition_personnel",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:acquisition-personnel:0.2.0#/$defs/AcquisitionPersonDetailInput",
+        "sha256": "7407ecb11c145fca7c75a88360a118f1db2870dd45cf9d1c85756e5427b37fa2"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:acquisition-personnel:0.2.0#/$defs/AcquisitionPersonDetailOutput",
+        "sha256": "7407ecb11c145fca7c75a88360a118f1db2870dd45cf9d1c85756e5427b37fa2"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.get_acquisition_person"
+      ]
+    },
+    {
+      "operation": {
+        "id": "get_bill_status",
+        "version": "0.2.0"
+      },
+      "displayName": "Get bill status",
+      "whenToUse": "Inspect the declared stored federal legislation projection through a qualified source owner.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Source requirements are design declarations; current grants, feature flags, availability and producer authority remain unqualified.",
+        "Local source validation does not qualify current identity, source access, result release or runtime.",
+        "Trusted defaultCongress is mandatory and excluded from model arguments; no ambient calendar or current-Congress claim. Bill-ID grammar has one shared pure owner used by bill-text contracts.",
+        "Stored status, member resolution and floor-vote projections do not prove current status, source truth, tenant grants or actor authority. Bill stored Congress and identifier have no invented cross-column equality constraint.",
+        "Invalid floor bill/chamber selectors remove filters as in the source; invalid bill status selectors retain their explicit refusal. Resolved-member vote rows require at least one selected position, a disclosed fail-closed race refusal.",
+        "Inherited Object.prototype status names are refused because the pinned producer omits their labels; ordinary unknown and empty status strings retain original labels. No legacy status helper repair is claimed.",
+        "Signed stored counts and opaque party totals remain distinct; no vote-sum, outcome or completeness inference is made. Arrays preserve source bounds with separately disclosed transport ceilings."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "federal_legislation",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:federal-legislation:0.2.0#/$defs/FederalBillStatusInput",
+        "sha256": "40fa4a0c4416bcd254e631a4c8259e6cac414abe4f8e2a341eb3e8e23e155eeb"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:federal-legislation:0.2.0#/$defs/FederalBillStatusOutput",
+        "sha256": "40fa4a0c4416bcd254e631a4c8259e6cac414abe4f8e2a341eb3e8e23e155eeb"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.get_bill_status"
+      ]
+    },
+    {
+      "operation": {
+        "id": "search_floor_votes",
+        "version": "0.2.0"
+      },
+      "displayName": "Search floor votes",
+      "whenToUse": "Inspect the declared stored federal legislation projection through a qualified source owner.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Source requirements are design declarations; current grants, feature flags, availability and producer authority remain unqualified.",
+        "Local source validation does not qualify current identity, source access, result release or runtime.",
+        "Trusted defaultCongress is mandatory and excluded from model arguments; no ambient calendar or current-Congress claim. Bill-ID grammar has one shared pure owner used by bill-text contracts.",
+        "Stored status, member resolution and floor-vote projections do not prove current status, source truth, tenant grants or actor authority. Bill stored Congress and identifier have no invented cross-column equality constraint.",
+        "Invalid floor bill/chamber selectors remove filters as in the source; invalid bill status selectors retain their explicit refusal. Resolved-member vote rows require at least one selected position, a disclosed fail-closed race refusal.",
+        "Inherited Object.prototype status names are refused because the pinned producer omits their labels; ordinary unknown and empty status strings retain original labels. No legacy status helper repair is claimed.",
+        "Signed stored counts and opaque party totals remain distinct; no vote-sum, outcome or completeness inference is made. Arrays preserve source bounds with separately disclosed transport ceilings."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "federal_legislation",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:federal-legislation:0.2.0#/$defs/FederalFloorVotesInput",
+        "sha256": "40fa4a0c4416bcd254e631a4c8259e6cac414abe4f8e2a341eb3e8e23e155eeb"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:federal-legislation:0.2.0#/$defs/FederalFloorVotesOutput",
+        "sha256": "40fa4a0c4416bcd254e631a4c8259e6cac414abe4f8e2a341eb3e8e23e155eeb"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.search_floor_votes"
       ]
     }
   ]
