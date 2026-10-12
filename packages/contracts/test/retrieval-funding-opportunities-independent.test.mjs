@@ -194,3 +194,28 @@ test('landscape fingerprint grammar and unknown packet authority fields refuse',
   assert.throws(() => landscapeOutput({ ...data, clientId: CLIENT }));
   assert.throws(() => landscapeOutput({ ...data, generatedAt: ASOF }));
 });
+
+const counts = () => ({ activeGrants: null, activeContracts: null, saved: null, pursuing: null, dismissed: null, deadlinesIn30Days: null });
+function clientContext() { return { clientId: CLIENT, counts: counts(), nextDeadline: null, missingProfileFields: null, freshness: [], emptyReason: null, emptyExplanation: null, topGrants: [], topContracts: [] }; }
+function brief(source = 'sam_gov') { return { ref: { source, sourceRecordId: RECORD }, title: 'Synthetic opportunity', agency: null, kind: source === 'sam_gov' ? 'solicitation' : 'grant', isActive: true, isPursuable: true, responseDeadline: null, responseDeadlineNote: null, relevanceScore: null, eligibility: { state: 'unknown', reason: 'Synthetic scope; source verification absent.' }, recommendation: null, humanDecision: null, workflowStatus: null, sourceUrl: null, sourceUpdatedAt: null }; }
+function contextOutput(data, truncated) { const value = envelope(OPS[3], 'available', data); if (truncated) value.truncated = truncated; return output(OPS[3], value); }
+
+test('client context retains nullable counts and current client identity without made-up zeroes', () => {
+  const data = clientContext(); assert.doesNotThrow(() => contextOutput(data));
+  assert.throws(() => contextOutput({ ...data, clientId: RECORD }));
+  const missing = clone(data); delete missing.counts.activeContracts; assert.throws(() => contextOutput(missing));
+  assert.throws(() => contextOutput({ ...data, authorized: true }));
+});
+test('client context separately caps each source at five without claiming complete source coverage', () => {
+  const data = clientContext(); data.topGrants = Array.from({ length: 5 }, () => brief('grants_gov')); data.topContracts = Array.from({ length: 5 }, () => brief());
+  assert.doesNotThrow(() => contextOutput(data));
+  assert.doesNotThrow(() => contextOutput(data, [{ collection: 'topGrants', kept: 5, total: 6 }]));
+  assert.throws(() => contextOutput(data, [{ collection: 'topGrants', kept: 4, total: 6 }]));
+  data.topContracts.push(brief()); assert.throws(() => contextOutput(data));
+});
+test('client context keeps grant and contract collections separate and preserves legacy decision null audits', () => {
+  const data = clientContext(); const row = brief();
+  row.humanDecision = { decision: 'monitor', reason: null, decidedAt: null, decidedByUserId: null, nextAction: null, nextActionDueAt: null };
+  data.topContracts = [row]; assert.doesNotThrow(() => contextOutput(data));
+  data.topGrants = [brief()]; assert.throws(() => contextOutput(data));
+});
