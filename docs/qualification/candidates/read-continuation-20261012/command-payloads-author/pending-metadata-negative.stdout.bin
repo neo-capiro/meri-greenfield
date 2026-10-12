@@ -1,0 +1,78 @@
+✔ namespace and aggregate-neutral per-object result are closed (10.669232ms)
+✔ normalization correlates trusted destination and exact immutable objects (0.840033ms)
+✔ one through ten selected immutable objects, never empty or eleven (0.769977ms)
+✔ duplicate object and alternate version of same object refuse explicitly (0.559962ms)
+✔ raw selectors cannot replace trusted client or conversation (0.409145ms)
+✔ unknown raw/context authority fields refuse (0.722686ms)
+✔ object reference required fields and tenant scopes remain canonical (0.903868ms)
+✔ command action, normalized args and original full binding must match (1.866074ms)
+✔ every selected object has exactly one observation with exact version/hash/bytes/scopes (3.508482ms)
+✔ distinct-object observation order does not manufacture aggregate semantics (1.455682ms)
+✔ saved source observation permits indexed or pending with reused preserved (1.045872ms)
+✔ pending quarantine remains not_indexed and requires persisted identity and reason (2.097472ms)
+✔ failed before storage and failed persisted observation are distinct valid branches (0.842616ms)
+✔ partial persisted tuples and contradictory saved/failed indexing refuse (2.70216ms)
+✔ no approval/readability/source-completeness flags on observations (2.789172ms)
+✔ result digest must bind the full immutable command (0.675214ms)
+✔ receipt outcomes remain supplied observations independent of per-file success (2.756132ms)
+✔ receipt may refer to recovered current executor while stable provenance is fixed (1.200824ms)
+✔ receipt hash/idempotency/command/scope substitutions fail (1.1974ms)
+✔ optional generated version correlates its object, not two distinct version IDs (1.500985ms)
+✔ valid artifact draft/pending preview never implies native or render validation (0.309355ms)
+✔ raw, output and receipt snapshots cannot alias caller data (0.689166ms)
+✔ inert admission rejects effectful getters/proxies without traps (0.464308ms)
+✔ pending before storage has reason/fileName without fabricated document identity (0.415224ms)
+✔ found attachment observations require string filename while empty stored names survive (2.550513ms)
+✔ caught errors may have empty message but required reason key is preserved (0.835305ms)
+✖ pending only represents persisted quarantine, never missing source bytes (0.666041ms)
+✔ private task namespace and six-field projection are closed (5.87582ms)
+✔ title trims and missing client/date normalize to null without owner (0.404618ms)
+✔ title bounds count UTF16 and reject instead of truncate (0.794204ms)
+✔ raw fields are strict and cannot add unadvertised description or owner (3.312347ms)
+✔ trusted name resolution produces UUID without claiming lookup or visibility (3.59712ms)
+✔ UUID selector cannot be rebound and unresolved or unrequested clients refuse (0.399651ms)
+✔ client reference80UTF16 bound is explicit (0.485119ms)
+✔ date-only becomes explicit UTC midnight and canonical UTC stays exact (0.561133ms)
+✔ date grammar rejects ambient timezone, offsets, rollover and invalid leap seconds (0.80564ms)
+✔ context is exact inert producer provenance without grant booleans (0.607793ms)
+✔ command checks action, no attachments and exact original producer binding (1.150839ms)
+✔ task command cannot be used for update or schedule vocabulary (0.41935ms)
+✔ source result must match normalized title/client/date and todo default (1.676489ms)
+✔ all six result keys are required and no source approval/owner facts invented (2.336431ms)
+✔ source result for resolved client and due date is supported (0.487743ms)
+✔ successful validators return detached data, including nested command context (0.344287ms)
+✔ getters/proxies/cycles and hidden properties refuse without caller effects (0.388564ms)
+✔ public immutable proposal and stable recovery execution remain canonical (2.41591ms)
+✔ scope shape does not silently choose ordinary task authorization policy (0.397047ms)
+✔ task due date is a stored SQL date, never a silently truncated noon instant (0.338669ms)
+✔ direct command/result entry cannot bypass contradictory UUID resolution context (0.308263ms)
+✔ blank optional client/date preserve source absence and reject extraneous resolution (0.367281ms)
+✔ date whitespace trims before explicit midnight admission (0.339621ms)
+ℹ tests 50
+ℹ suites 0
+ℹ pass 49
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 427.411555
+
+✖ failing tests:
+
+test at packages/contracts/test/command-artifact-file.test.mjs:57:1
+✖ pending only represents persisted quarantine, never missing source bytes (0.666041ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-command-payloads-20261012/packages/contracts/test/command-artifact-file.test.mjs:57:93)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }

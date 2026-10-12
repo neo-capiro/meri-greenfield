@@ -1,0 +1,22 @@
+{
+  "sourceHead": "8c1f4a5f4287b282f478f3e18aeb376573e53ddd",
+  "pin": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "path": "apps/api/src/meri/meri-client-filing.service.ts",
+  "locators": {
+    "missingAttachment": 145,
+    "missingBytesOrMediaType": [
+      149,
+      150
+    ],
+    "persistedPending": [
+      163,
+      167,
+      169
+    ]
+  },
+  "observedMissingBytesStatus": "failed",
+  "priorClaim": "pending",
+  "priorClaimIncorrect": true,
+  "consequence": "Await independent recheck then require persisted tuple for pending; prestorage failed remains supported. Initial audit failure retained, no private bodies included.",
+  "dueDateAuditCorrection": "@map decorator lies between nullable DateTime and @db.Date; checker had incorrectly required adjacency."
+}

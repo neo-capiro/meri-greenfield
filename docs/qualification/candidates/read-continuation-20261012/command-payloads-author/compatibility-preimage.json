@@ -1,0 +1,35 @@
+{
+  "sourceHead": "0565003a32a7311658a86cfc7689036b6b450f57",
+  "files": [
+    {
+      "path": "packages/contracts/commands-0.2/artifact-file-validation.mjs",
+      "bytes": 5517,
+      "sha256": "458e4767debe08fd165b5921f6e00be4d58c76f313991c9a4124361b36863fbc"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/task-create-validation.mjs",
+      "bytes": 3904,
+      "sha256": "3a81c07f42851667aa666509246a227823f0444cea2e9b4e399236e3304a77ea"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/task-create.schema.json",
+      "bytes": 3865,
+      "sha256": "bef1b0bc59dab4482a7d3257d044e5b586a42486006bccc20ed397f211a0db69"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/artifact-file.schema.json",
+      "bytes": 3520,
+      "sha256": "a2dcb94285d008eede02defa2738101801401b4205fcc7bb622e3c7480d4f321"
+    },
+    {
+      "path": "packages/contracts/test/command-task-create.test.mjs",
+      "bytes": 9097,
+      "sha256": "a1e314dff6f2744516afc2ec95889f4d7b6d340d5756432e462f19624889bbe9"
+    },
+    {
+      "path": "packages/contracts/test/command-artifact-file.test.mjs",
+      "bytes": 10343,
+      "sha256": "52b813a6d923736be46b73c6fe6cb9cfcd357286c7820404189f36d2dce69da7"
+    }
+  ]
+}

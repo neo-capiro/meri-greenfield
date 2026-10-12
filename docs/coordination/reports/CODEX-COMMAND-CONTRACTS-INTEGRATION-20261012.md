@@ -1,0 +1,13 @@
+# Private command payload integration
+
+## Outline before integration
+
+Base is PR31 `cff71e1ba8ca8dea8970ad0c778b580a73f84815`; this separate `task/meri-command-contracts-20261012` worktree owns command contract integration. Root retains the canonical new `packages/contracts/commands-0.2/validate.mjs` loader. The separate author owns task-create/artifact-file schemas and validators; independent review must accept exact source before import. No review verdict is implied by this outline.
+
+Compose the two private family factories through one small strict Ajv2020 loader. Reuse the existing public0.1 schema/validators/canonical hash, and the existing inert snapshot boundary. Export deliberately named task-create and artifact-file normalization/correlation functions. Do not add an action registry, approval service, policy engine, execution port, persistence adapter, scheduler or source handler. No existing contract/schema/source/test file needs modification; this namespace is additive and private.
+
+Task creation covers the declared title/client/date arguments and six projected result fields. Artifact filing covers one-to-ten exact immutable object references, trusted destination assertion and distinct per-object source outcomes. Optional public receipt/version helpers correlate supplied immutable facts; they establish neither aggregate outcome nor actual storage, indexing, authorization or execution. Original producer provenance and recovered executor provenance remain distinct under the existing public protocol.
+
+Ordinary task permissions, effective command/object/destination scope computation, durable effect reconciliation and current source authorization remain canonical execution-owner gates. No literal scope-union policy is invented. Public task.update and Temporal action allocation remain absent; memory administrator approval policy is unchanged. Raw private admission changes must be explicit and source counterexamples preserved. No command capability is remapped into the read catalog or enabled by these payload contracts; the entire139original/96selected/43deferred ledger remains untouched.
+
+After source review, preserve author/reviewer commits and raw failures, then add the loader and run focused family plus independent connected controls, strict compilation and exact baseline/source/packet audits. Independent integration review owns its separate controls and evidence. Relevant public protocol regression tests verify unchanged public reuse. Record bounded process cleanup. No model/provider/SQL/native/cloud/security/network/database action, credentials, spend, image build/launch, deployment or merge is authorized.

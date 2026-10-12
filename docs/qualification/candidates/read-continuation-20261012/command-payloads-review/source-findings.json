@@ -1,0 +1,46 @@
+{
+  "task": {
+    "owner": "meri-tools.service.ts:createEngagementTask8969 and engagement.service.ts:createTask5629",
+    "advertisedArguments": [
+      "title",
+      "clientId",
+      "dueDate"
+    ],
+    "excludedUnadvertised": [
+      "description",
+      "ownerUserId",
+      "status"
+    ],
+    "result": [
+      "id",
+      "title",
+      "status",
+      "dueDate",
+      "clientId",
+      "createdAt"
+    ],
+    "statusDefault": "todo",
+    "dueDateStorage": "nullable @db.Date; timestamp input and date-only persisted projection must remain distinct",
+    "creator": "current tenant actor; not model input",
+    "ownerDefault": null,
+    "clientResolution": "current tenant visibility; UUID lookup or case-insensitive unique name; no admission of authority from this structural contract"
+  },
+  "filing": {
+    "owner": "meri-client-filing.service.ts:saveAttachments118",
+    "inputArray": "legacy IDs1..10 then dedup; immutable ObjectReference is a different public type needing trusted mapping",
+    "preStoragePending": "missing data or mediaType -> pending with fileName/reason and no document tuple",
+    "missingAttachment": "failed with null fileName/reason, no document tuple",
+    "persisted": "document.id required; quarantined->pending/not_indexed; other disallowed nonnull lifecycle->failed/not_indexed; allowed/null->saved with indexedAt ? indexed : pending; reused true only exact booleantrue",
+    "destination": "current client wall and tenant/status + current actor conversation not archived + compatible conversation client",
+    "cancellation": "request-active check before write and inside catch, so cancellation may stop later siblings",
+    "partial": "saved/pending/failed observations do not decide public aggregate receipt outcome or readability"
+  },
+  "publicCorrelation": {
+    "command": "full original producer binding",
+    "receipt": "stable tenantId/actorId/conversationId/runId, recovery attempt/worker/fence may differ",
+    "scope": "same tenant, immutable exact attachment scopes and exact receipt-command scopes; no invented union/destination authorization",
+    "artifactVersion": "optional generated-origin object match; logical ArtifactVersion.versionId differs from storage ObjectReference.versionId"
+  },
+  "sourceConnected": false,
+  "runtimeAccepted": false
+}
