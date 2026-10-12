@@ -1,0 +1,47 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "check:contracts:distribution"
+  ],
+  "cwd": "/workspace/meri-capability-next-integration-review-20261012",
+  "sourceHead": "1dcb3ce5752a4ba53d1ec98d4fc5aa553f3f89c3",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T15:54:43.939512+00:00",
+  "durationSeconds": 4.354,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 141686,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 142086,
+      "status": 0
+    },
+    {
+      "pid": 142194,
+      "status": 0
+    },
+    {
+      "pid": 142213,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/integration-review/public-distribution.stdout.bin",
+      "bytes": 2042,
+      "sha256": "c62ac74a57a9b5c500e817ce6eceea9b9755846de55b35148be3eca69867ca07"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/integration-review/public-distribution.stderr.bin",
+      "bytes": 1040,
+      "sha256": "cbbd466f3bf458f7f516c133ea486c1aada38d325ec9a80b698c26da8c18237f"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

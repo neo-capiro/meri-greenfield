@@ -1,0 +1,1994 @@
+{
+  "candidate": "c463f7f7e7580e26d07b31c5f4020eaa469d4f67",
+  "base": "e0163fb65a639a28d9423e929058b40b48cc556d",
+  "scope": "OFFLINE_SOURCE_ONLY",
+  "passed": 426,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "candidate exact tree",
+      "passed": true
+    },
+    {
+      "name": "criteria precedes candidate integration in review ancestry",
+      "passed": true
+    },
+    {
+      "name": "candidate preserved in review ancestry",
+      "passed": true
+    },
+    {
+      "name": "every baseline tracked path retained",
+      "passed": true
+    },
+    {
+      "name": "protected tree unchanged: apps/proxy",
+      "passed": true
+    },
+    {
+      "name": "protected tree unchanged: apps/worker",
+      "passed": true
+    },
+    {
+      "name": "protected tree unchanged: apps/control",
+      "passed": true
+    },
+    {
+      "name": "protected tree unchanged: infra",
+      "passed": true
+    },
+    {
+      "name": "protected tree unchanged: scripts",
+      "passed": true
+    },
+    {
+      "name": "protected tree unchanged: package.json",
+      "passed": true
+    },
+    {
+      "name": "protected tree unchanged: package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "protected tree unchanged: packages/contracts/meri.schema.json",
+      "passed": true
+    },
+    {
+      "name": "protected tree unchanged: packages/contracts/validate.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected tree unchanged: packages/contracts/package.json",
+      "passed": true
+    },
+    {
+      "name": "protected tree unchanged: packages/contracts/generate.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected tree unchanged: packages/contracts/dist",
+      "passed": true
+    },
+    {
+      "name": "protected tree unchanged: docs/plans",
+      "passed": true
+    },
+    {
+      "name": "protected tree unchanged: docs/handover",
+      "passed": true
+    },
+    {
+      "name": "gateway source unchanged: apps/gateway/authorization/current-tool-authority.mjs",
+      "passed": true
+    },
+    {
+      "name": "gateway source unchanged: apps/gateway/budget/README.md",
+      "passed": true
+    },
+    {
+      "name": "gateway source unchanged: apps/gateway/budget/durable-tool-dispatch.mjs",
+      "passed": true
+    },
+    {
+      "name": "gateway source unchanged: apps/gateway/budget/postgres-budget-store.mjs",
+      "passed": true
+    },
+    {
+      "name": "gateway source unchanged: apps/gateway/budget/postgres-tool-budget.mjs",
+      "passed": true
+    },
+    {
+      "name": "gateway source unchanged: apps/gateway/budget/tool-budget-binding.mjs",
+      "passed": true
+    },
+    {
+      "name": "gateway source unchanged: apps/gateway/budget/tool-budget-dispatch.mjs",
+      "passed": true
+    },
+    {
+      "name": "gateway source unchanged: apps/gateway/budget/tool-budget-outcome.mjs",
+      "passed": true
+    },
+    {
+      "name": "gateway source unchanged: apps/gateway/budget/tool-invocation-owner.mjs",
+      "passed": true
+    },
+    {
+      "name": "gateway source unchanged: apps/gateway/budget/tool-invocation-record.mjs",
+      "passed": true
+    },
+    {
+      "name": "gateway source unchanged: apps/gateway/catalog/runtime-catalog.mjs",
+      "passed": true
+    },
+    {
+      "name": "gateway source unchanged: apps/gateway/dispatch/dispatch-lifetime.mjs",
+      "passed": true
+    },
+    {
+      "name": "gateway source unchanged: apps/gateway/dispatch/mail-read-context.mjs",
+      "passed": true
+    },
+    {
+      "name": "gateway source unchanged: apps/gateway/dispatch/memory-read-context.mjs",
+      "passed": true
+    },
+    {
+      "name": "gateway source unchanged: apps/gateway/dispatch/operation-context.mjs",
+      "passed": true
+    },
+    {
+      "name": "gateway source unchanged: apps/gateway/dispatch/operation-result.mjs",
+      "passed": true
+    },
+    {
+      "name": "gateway source unchanged: apps/gateway/dispatch/read-result-envelope.mjs",
+      "passed": true
+    },
+    {
+      "name": "gateway source unchanged: apps/gateway/dispatch/tool-dispatch.mjs",
+      "passed": true
+    },
+    {
+      "name": "gateway source unchanged: apps/gateway/index.mjs",
+      "passed": true
+    },
+    {
+      "name": "existing-file scope: apps/gateway/test/action-item-context-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "existing-file scope: apps/gateway/test/mail-context-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "existing-file scope: apps/gateway/test/memory-context-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "existing-file scope: docs/RETRIEVAL-CONTRACT.md",
+      "passed": true
+    },
+    {
+      "name": "existing-file scope: packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "existing-file scope: packages/contracts/retrieval-0.2/catalog.json",
+      "passed": true
+    },
+    {
+      "name": "existing-file scope: packages/contracts/retrieval-0.2/operation-contracts.mjs",
+      "passed": true
+    },
+    {
+      "name": "existing-file scope: packages/contracts/retrieval-0.2/validate.mjs",
+      "passed": true
+    },
+    {
+      "name": "existing-file scope: packages/contracts/test/retrieval-action-item-binding.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "existing-file scope: packages/contracts/test/retrieval-action-item-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "existing-file scope: packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "existing-file scope: packages/contracts/test/retrieval-mail.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "existing-file scope: packages/contracts/test/retrieval-memory-binding.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "helper is only exact four-line export addition",
+      "passed": true
+    },
+    {
+      "name": "accepted author bytes: packages/contracts/retrieval-0.2/client-registry.schema.json",
+      "passed": true
+    },
+    {
+      "name": "review checkout source bytes: packages/contracts/retrieval-0.2/client-registry.schema.json",
+      "passed": true
+    },
+    {
+      "name": "accepted author bytes: packages/contracts/retrieval-0.2/client-registry-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "review checkout source bytes: packages/contracts/retrieval-0.2/client-registry-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted author bytes: packages/contracts/retrieval-0.2/business-development.schema.json",
+      "passed": true
+    },
+    {
+      "name": "review checkout source bytes: packages/contracts/retrieval-0.2/business-development.schema.json",
+      "passed": true
+    },
+    {
+      "name": "accepted author bytes: packages/contracts/retrieval-0.2/business-development-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "review checkout source bytes: packages/contracts/retrieval-0.2/business-development-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "accepted author bytes: packages/contracts/retrieval-0.2/research-portfolio.schema.json",
+      "passed": true
+    },
+    {
+      "name": "review checkout source bytes: packages/contracts/retrieval-0.2/research-portfolio.schema.json",
+      "passed": true
+    },
+    {
+      "name": "accepted author bytes: packages/contracts/retrieval-0.2/research-portfolio-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "review checkout source bytes: packages/contracts/retrieval-0.2/research-portfolio-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "domain final review commit has no production edits: c245d4f",
+      "passed": true
+    },
+    {
+      "name": "domain final review commit has no production edits: ac3f609",
+      "passed": true
+    },
+    {
+      "name": "domain final review commit has no production edits: bf430c5",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/ingress/README.md",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/ingress/authority.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/ingress/config.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/ingress/dispatch.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/ingress/errors.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/ingress/http-request.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/ingress/http-response.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/ingress/index.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/ingress/server.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/ingress/test/fixture-data.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/ingress/test/generate-certs.ps1",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/ingress/test/harness.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/ingress/test/ingress.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/ingress/test/worker-channel-loopback.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/service/README.md",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/service/binding.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/service/checkpoint-store.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/service/control.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/service/handlers.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/service/native-evidence-publisher.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/service/native-evidence.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/service/package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/service/package.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/service/run-stop.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/service/s3-objects.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/service/test/cancellation.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/service/test/control.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/service/test/fake-s3.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/service/test/fixture.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/service/test/handlers.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/service/test/native-evidence-publisher.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/service/test/native-evidence.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/service/test/registry-ingress.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/service/test/run-stop.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/service/test/s3-checkpoint.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/state/README.md",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/state/binding.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/state/credential-resolution.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/state/errors.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/state/migrations/0001_qualification_sdk_fixture_state.sql",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/state/package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/state/package.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/state/receipt.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/state/registry.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/state/revocation.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/state/store.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/state/test/registry.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/state/test/revocation-postgres.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-sdk-fixture/state/test/revocation.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-temporal/.gitignore",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-temporal/README.md",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-temporal/activities.ts",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-temporal/client-options.ts",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-temporal/compatibility.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-temporal/component-pins.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-temporal/deployment.fixture.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-temporal/negative-types.ts",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-temporal/package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-temporal/package.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-temporal/recovery-activities.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-temporal/recovery-types.ts",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-temporal/recovery-workflow.ts",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-temporal/recovery.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-temporal/tsconfig.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/qualification-temporal/workflow.ts",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/test/tool-invocations.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/control/tool-invocations.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/gateway/authorization/current-tool-authority.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/gateway/budget/README.md",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/gateway/budget/durable-tool-dispatch.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/gateway/budget/postgres-budget-store.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/gateway/budget/postgres-tool-budget.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/gateway/budget/tool-budget-binding.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/gateway/budget/tool-budget-dispatch.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/gateway/budget/tool-budget-outcome.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/gateway/budget/tool-invocation-owner.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/gateway/budget/tool-invocation-record.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/gateway/catalog/runtime-catalog.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/gateway/dispatch/dispatch-lifetime.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/gateway/dispatch/mail-read-context.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/gateway/dispatch/memory-read-context.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/gateway/dispatch/operation-context.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/gateway/dispatch/operation-result.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/gateway/dispatch/read-result-envelope.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/gateway/dispatch/tool-dispatch.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/gateway/index.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/.dockerignore",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/.gitignore",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/Dockerfile",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/README.md",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/component-pins.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/linux/Dockerfile",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/linux/README.md",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/linux/assembly-pins.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/linux/assembly.test.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/linux/import-probe.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/linux/native-runtime/README.md",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/linux/native-runtime/fixture_config.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/linux/native-runtime/native_auth_probe.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/linux/native-runtime/test_native_auth_config.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/linux/postgres-fixture/README.md",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/linux/postgres-fixture/config.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/linux/postgres-fixture/docker_capture.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/linux/postgres-fixture/native_bootstrap.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/linux/postgres-fixture/native_output_capture.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/linux/postgres-fixture/prisma-peer.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/linux/postgres-fixture/prisma_error_evidence.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/linux/postgres-fixture/run-fixture.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/linux/postgres-fixture/server-bootstrap.sh",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/linux/postgres-fixture/test_fixture.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/linux/postgres-fixture/test_native_bootstrap.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/linux/postgres-fixture/test_native_output_capture.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/linux/postgres-fixture/test_prisma_error_evidence.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/linux/prisma-build.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/linux/requirements.lock",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/offline-policy.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/package.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/policy.fixture.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/proxy-config.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/runtime/__init__.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/runtime/aws_counter.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/runtime/bedrock_body.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/runtime/bedrock_transport.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/runtime/ingress.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/runtime/lifetime.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/runtime/native_usage.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/runtime/server.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/state/__init__.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/state/admission.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/state/dependencies.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/state/grants.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/state/ledger.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/state/migrations/0001_qualification_state.sql",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/state/migrations/0002_tool_budget.sql",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/state/migrations/0003_tool_invocations.sql",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/state/postgres_store.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/state/pricing.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/test/offline-policy.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/test/test_aws_counter.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/test/test_bedrock_transport.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/test/test_ingress.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/test/test_lifetime.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/test/test_native_usage.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/test/test_postgres_state.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/test/test_server.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/proxy/qualification/test/test_tool_budget_source.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/.dockerignore",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/.gitignore",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/Dockerfile",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/README.md",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/checkpoint/bound-session-store.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/checkpoint/fixture-channel.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/checkpoint/fixture-channel.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/checkpoint/fixture-sentinel.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/checkpoint/fixture-sentinel.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/checkpoint/fixture-transport.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/checkpoint/fixture-transport.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/checkpoint/native-capture-boundaries.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/checkpoint/native-session-files.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/checkpoint/native-session-files.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/checkpoint/promptfooconfig.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/checkpoint/resume-admission.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/checkpoint/resume-admission.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/checkpoint/session-store-data.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/checkpoint/session-store-eval-provider.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/checkpoint/session-store.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/checkpoint/verify-session-store.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/component-pins.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/package.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/probes/artifacts.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/probes/artifacts.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/probes/browser-lifetime.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/probes/browser-lifetime.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/probes/browser.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/probes/image-inventory.py",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/probes/image-inventory.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/probes/native-namespace-observer.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/probes/native-namespace-observer.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/probes/native-observations.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/probes/native-observations.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/probes/native-stream-observer.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/probes/native-stream-observer.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/probes/office-export.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/probes/office-export.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/probes/office-reconstruct.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/probes/owned-probe-child.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/probes/owned-probe-child.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/probes/runtime.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/probes/sdk-capture-options.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/probes/sdk-capture.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/probes/sdk-capture.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/probes/sdk-discovery-options.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/probes/sdk-discovery-options.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/probes/sdk-discovery-tools.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/probes/sdk-discovery-tools.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/probes/sdk-interruption-loopback.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/probes/sdk-interruption-loopback.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/probes/sdk-interruption-options.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/probes/sdk-interruption.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/probes/sdk-interruption.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/probes/static.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/requirements.lock.txt",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/sdk-options.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: apps/worker/qualification/vendor/capiro-meri-contracts-0.1.0.tgz",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/README.md",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/THIRD-PARTY-NOTICES.md",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/dist/browser.d.ts",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/dist/browser.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/dist/contracts.d.ts",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/dist/index.d.ts",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/dist/metadata.d.ts",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/dist/metadata.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/generate.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/meri.schema.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/package.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/qualification-sdk/fixture.schema.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/qualification-sdk/native-evidence.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/qualification-sdk/native-evidence.schema.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/qualification-sdk/validate.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/qualification-sdk/wire.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/retrieval-0.2/business-development-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/retrieval-0.2/business-development.schema.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/retrieval-0.2/catalog.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/retrieval-0.2/catalog.schema.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/retrieval-0.2/client-registry-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/retrieval-0.2/client-registry.schema.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/retrieval-0.2/common.schema.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/retrieval-0.2/data-search-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/retrieval-0.2/data-search.schema.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/retrieval-0.2/federal-market-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/retrieval-0.2/federal-market.schema.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/retrieval-0.2/mail-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/retrieval-0.2/mail.schema.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/retrieval-0.2/meeting-source-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/retrieval-0.2/meeting-source.schema.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/retrieval-0.2/memory-proposals-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/retrieval-0.2/memory-proposals.schema.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/retrieval-0.2/memory-review-policy.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/retrieval-0.2/operation-contracts.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/retrieval-0.2/operational-reads-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/retrieval-0.2/operational-reads.schema.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/retrieval-0.2/research-portfolio-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/retrieval-0.2/research-portfolio.schema.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/retrieval-0.2/retrieval.schema.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/retrieval-0.2/skill.schema.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/retrieval-0.2/validate.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/contracts/validate.mjs",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/ui-stream/README.md",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/ui-stream/dist/producer.d.ts",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/ui-stream/dist/producer.js",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/ui-stream/dist/protocol.d.ts",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/ui-stream/dist/protocol.js",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/ui-stream/package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/ui-stream/package.json",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/ui-stream/src/producer.ts",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/ui-stream/src/protocol.ts",
+      "passed": true
+    },
+    {
+      "name": "candidate production equals checked review: packages/ui-stream/tsconfig.json",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/business-author/focused-canonical.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/business-author/focused-canonical.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "owned group absence receipt: docs/qualification/candidates/capability-next-20261012/business-author/focused-canonical.json",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/business-author/focused-first.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/business-author/focused-first.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "owned group absence receipt: docs/qualification/candidates/capability-next-20261012/business-author/focused-first.json",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/business-author/focused-second.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/business-author/focused-second.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "owned group absence receipt: docs/qualification/candidates/capability-next-20261012/business-author/focused-second.json",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/business-author/original-contracts.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/business-author/original-contracts.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "owned group absence receipt: docs/qualification/candidates/capability-next-20261012/business-author/original-contracts.json",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/business-review/final-whitespace.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/business-review/final-whitespace.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "owned group absence receipt: docs/qualification/candidates/capability-next-20261012/business-review/final-whitespace.json",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/business-review/full-source.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/business-review/full-source.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "owned group absence receipt: docs/qualification/candidates/capability-next-20261012/business-review/full-source.json",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/business-review/independent-first.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/business-review/independent-first.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "owned group absence receipt: docs/qualification/candidates/capability-next-20261012/business-review/independent-first.json",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/business-review/preservation-audit.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/business-review/preservation-audit.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "owned group absence receipt: docs/qualification/candidates/capability-next-20261012/business-review/preservation-audit.json",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/integration/combined-source.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/integration/combined-source.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "owned group absence receipt: docs/qualification/candidates/capability-next-20261012/integration/combined-source.json",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/integration/public-distribution.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/integration/public-distribution.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "owned group absence receipt: docs/qualification/candidates/capability-next-20261012/integration/public-distribution.json",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/integration/registry-before-binding.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/integration/registry-before-binding.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "owned group absence receipt: docs/qualification/candidates/capability-next-20261012/integration/registry-before-binding.json",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/integration/registry-canonical.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/integration/registry-canonical.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "owned group absence receipt: docs/qualification/candidates/capability-next-20261012/integration/registry-canonical.json",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/integration/registry-family.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/integration/registry-family.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "owned group absence receipt: docs/qualification/candidates/capability-next-20261012/integration/registry-family.json",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/integration/registry-utf16-repair.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/integration/registry-utf16-repair.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "owned group absence receipt: docs/qualification/candidates/capability-next-20261012/integration/registry-utf16-repair.json",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/integration/source-boundaries.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/integration/source-boundaries.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "owned group absence receipt: docs/qualification/candidates/capability-next-20261012/integration/source-boundaries.json",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/portfolio-author/portfolio-canonical-admission.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/portfolio-author/portfolio-canonical-admission.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "owned group absence receipt: docs/qualification/candidates/capability-next-20261012/portfolio-author/portfolio-canonical-admission.json",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/portfolio-author/portfolio-continuation-repair.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/portfolio-author/portfolio-continuation-repair.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "owned group absence receipt: docs/qualification/candidates/capability-next-20261012/portfolio-author/portfolio-continuation-repair.json",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/portfolio-author/portfolio-exact-freeze.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/portfolio-author/portfolio-exact-freeze.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "owned group absence receipt: docs/qualification/candidates/capability-next-20261012/portfolio-author/portfolio-exact-freeze.json",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/portfolio-author/portfolio-focused-initial.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/portfolio-author/portfolio-focused-initial.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "owned group absence receipt: docs/qualification/candidates/capability-next-20261012/portfolio-author/portfolio-focused-initial.json",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/portfolio-review/first-independent.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/portfolio-review/first-independent.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "owned group absence receipt: docs/qualification/candidates/capability-next-20261012/portfolio-review/first-independent.json",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/portfolio-review/repaired-independent.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/portfolio-review/repaired-independent.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "owned group absence receipt: docs/qualification/candidates/capability-next-20261012/portfolio-review/repaired-independent.json",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/portfolio-review/source-audit.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/portfolio-review/source-audit.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "owned group absence receipt: docs/qualification/candidates/capability-next-20261012/portfolio-review/source-audit.json",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/registry-review/final-family.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/registry-review/final-family.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "owned group absence receipt: docs/qualification/candidates/capability-next-20261012/registry-review/final-family.json",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/registry-review/final-whitespace.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/registry-review/final-whitespace.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "owned group absence receipt: docs/qualification/candidates/capability-next-20261012/registry-review/final-whitespace.json",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/registry-review/first-independent.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/registry-review/first-independent.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "owned group absence receipt: docs/qualification/candidates/capability-next-20261012/registry-review/first-independent.json",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/registry-review/preservation-audit.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/registry-review/preservation-audit.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "owned group absence receipt: docs/qualification/candidates/capability-next-20261012/registry-review/preservation-audit.json",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/registry-review/reference-audit-corrected.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/registry-review/reference-audit-corrected.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "owned group absence receipt: docs/qualification/candidates/capability-next-20261012/registry-review/reference-audit-corrected.json",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/registry-review/reference-audit-final.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/registry-review/reference-audit-final.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "owned group absence receipt: docs/qualification/candidates/capability-next-20261012/registry-review/reference-audit-final.json",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/registry-review/reference-audit.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/registry-review/reference-audit.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "owned group absence receipt: docs/qualification/candidates/capability-next-20261012/registry-review/reference-audit.json",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/registry-review/repaired-unchanged-controls.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/registry-review/repaired-unchanged-controls.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "owned group absence receipt: docs/qualification/candidates/capability-next-20261012/registry-review/repaired-unchanged-controls.json",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/registry-review/staged-whitespace-corrected.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/registry-review/staged-whitespace-corrected.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "owned group absence receipt: docs/qualification/candidates/capability-next-20261012/registry-review/staged-whitespace-corrected.json",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/registry-review/staged-whitespace.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "stream retained: docs/qualification/candidates/capability-next-20261012/registry-review/staged-whitespace.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "owned group absence receipt: docs/qualification/candidates/capability-next-20261012/registry-review/staged-whitespace.json",
+      "passed": true
+    },
+    {
+      "name": "pre-candidate baseline original rows exact",
+      "passed": true
+    },
+    {
+      "name": "pre-candidate baseline prior descriptors exact",
+      "passed": true
+    },
+    {
+      "name": "pre-candidate raw catalog binding exact",
+      "passed": true
+    }
+  ],
+  "familyIdentities": [
+    {
+      "path": "packages/contracts/retrieval-0.2/client-registry.schema.json",
+      "authorRef": "deba2c13c612845b4f65e38c263982c698bb4361",
+      "sha256": "6415f49f3b1edd20af3ba43b5d4e81b8b207bdf78b2326d871436a164c012833",
+      "bytes": 4315
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/client-registry-validation.mjs",
+      "authorRef": "deba2c13c612845b4f65e38c263982c698bb4361",
+      "sha256": "0a563f5a91bb91d883e5dd354fddf11df788dc8ec449f9007cc9f9f00ad1b24e",
+      "bytes": 2320
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/business-development.schema.json",
+      "authorRef": "bf9a06cfba22c5c3bac87949689348b16febcbc5",
+      "sha256": "fff7362e49e0d981b1aeaeec881ea2e72e2fa263d9f64dfad94456fd50b330f1",
+      "bytes": 26703
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/business-development-validation.mjs",
+      "authorRef": "bf9a06cfba22c5c3bac87949689348b16febcbc5",
+      "sha256": "c6ede747a9ffce2acba96130bef2afd1fdaa0460b54dfd1603bde2b8911ffe5a",
+      "bytes": 7517
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/research-portfolio.schema.json",
+      "authorRef": "088cfa10df8af518795a10590ce3e17c8b4fad8a",
+      "sha256": "cb6d881f19cd7f37561e5955a082080211f1fa69ef520f7208ace9c2e3eb41bc",
+      "bytes": 17893
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/research-portfolio-validation.mjs",
+      "authorRef": "088cfa10df8af518795a10590ce3e17c8b4fad8a",
+      "sha256": "55c006eda93cca6f51f913d70fee93b73f125c2339638eabb6574da0d867f0d2",
+      "bytes": 6091
+    }
+  ],
+  "captureReceipts": [
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-author/focused-canonical.json",
+      "exitCode": 0,
+      "sourceHead": "443814c519edacb88eeae215d6f0c41c57e51a96",
+      "sourceDiffBytes": 58245,
+      "timedOut": false
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-author/focused-first.json",
+      "exitCode": 1,
+      "sourceHead": "e0163fb65a639a28d9423e929058b40b48cc556d",
+      "sourceDiffBytes": 0,
+      "timedOut": false
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-author/focused-second.json",
+      "exitCode": 0,
+      "sourceHead": "e0163fb65a639a28d9423e929058b40b48cc556d",
+      "sourceDiffBytes": 57648,
+      "timedOut": false
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-author/original-contracts.json",
+      "exitCode": 0,
+      "sourceHead": "bf9a06cfba22c5c3bac87949689348b16febcbc5",
+      "sourceDiffBytes": 0,
+      "timedOut": false
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-review/final-whitespace.json",
+      "exitCode": 0,
+      "sourceHead": "748e68c3c804be913bb558254f74f664c0d50ce3",
+      "sourceDiffBytes": 0,
+      "timedOut": false
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-review/full-source.json",
+      "exitCode": 0,
+      "sourceHead": "748e68c3c804be913bb558254f74f664c0d50ce3",
+      "sourceDiffBytes": 0,
+      "timedOut": false
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-review/independent-first.json",
+      "exitCode": 0,
+      "sourceHead": "43f84069f8f6c081100b4cc91eef45feb094f6b8",
+      "sourceDiffBytes": 0,
+      "timedOut": false
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-review/preservation-audit.json",
+      "exitCode": 0,
+      "sourceHead": "748e68c3c804be913bb558254f74f664c0d50ce3",
+      "sourceDiffBytes": 0,
+      "timedOut": false
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/integration/combined-source.json",
+      "exitCode": 1,
+      "sourceHead": "cb9aefa7946306ad63e52dce1275af3cf63e410a",
+      "sourceDiffBytes": 0,
+      "timedOut": false
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/integration/public-distribution.json",
+      "exitCode": 0,
+      "sourceHead": "5967bd440f6c140010a6d22adc7a45dd5a04c0c0",
+      "sourceDiffBytes": 20033,
+      "timedOut": false
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/integration/registry-before-binding.json",
+      "exitCode": 1,
+      "sourceHead": "e0163fb65a639a28d9423e929058b40b48cc556d",
+      "sourceDiffBytes": 0,
+      "timedOut": false
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/integration/registry-canonical.json",
+      "exitCode": 0,
+      "sourceHead": "060d97a906341a1c3fe11f51a00375864e50f2af",
+      "sourceDiffBytes": 0,
+      "timedOut": false
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/integration/registry-family.json",
+      "exitCode": 0,
+      "sourceHead": "e0163fb65a639a28d9423e929058b40b48cc556d",
+      "sourceDiffBytes": 2178,
+      "timedOut": false
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/integration/registry-utf16-repair.json",
+      "exitCode": 0,
+      "sourceHead": "deba2c13c612845b4f65e38c263982c698bb4361",
+      "sourceDiffBytes": 0,
+      "timedOut": false
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/integration/source-boundaries.json",
+      "exitCode": 0,
+      "sourceHead": "cb9aefa7946306ad63e52dce1275af3cf63e410a",
+      "sourceDiffBytes": 0,
+      "timedOut": false
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/portfolio-author/portfolio-canonical-admission.json",
+      "exitCode": 0,
+      "sourceHead": "5efbc0f24e31ce2a3a131b3955d7e3ef23b750d1",
+      "sourceDiffBytes": 0,
+      "timedOut": false
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/portfolio-author/portfolio-continuation-repair.json",
+      "exitCode": 0,
+      "sourceHead": "c8a23acc80bfdc199f198ac11b0c90f08fe519b1",
+      "sourceDiffBytes": 2056,
+      "timedOut": false
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/portfolio-author/portfolio-exact-freeze.json",
+      "exitCode": 0,
+      "sourceHead": "deec763c57ba57cc4d7e7915d55b0f8719e13021",
+      "sourceDiffBytes": 0,
+      "timedOut": false
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/portfolio-author/portfolio-focused-initial.json",
+      "exitCode": 0,
+      "sourceHead": "e0163fb65a639a28d9423e929058b40b48cc556d",
+      "sourceDiffBytes": 0,
+      "timedOut": false
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/portfolio-review/first-independent.json",
+      "exitCode": 1,
+      "sourceHead": "544b57afa790c667107495ff8c4922919c88f0d6",
+      "sourceDiffBytes": 0,
+      "timedOut": false
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/portfolio-review/repaired-independent.json",
+      "exitCode": 0,
+      "sourceHead": "c6ba4c932b5719d284773d80d49e7e3a8677bf95",
+      "sourceDiffBytes": 0,
+      "timedOut": false
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/portfolio-review/source-audit.json",
+      "exitCode": 0,
+      "sourceHead": "c6ba4c932b5719d284773d80d49e7e3a8677bf95",
+      "sourceDiffBytes": 0,
+      "timedOut": false
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/final-family.json",
+      "exitCode": 0,
+      "sourceHead": "8f44407cbd2f4529e89ebff8547efadb58847c2a",
+      "sourceDiffBytes": 0,
+      "timedOut": false
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/final-whitespace.json",
+      "exitCode": 0,
+      "sourceHead": "38ff56a1da3b4df41836a29f8ba9a7aad4d56815",
+      "sourceDiffBytes": 0,
+      "timedOut": false
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/first-independent.json",
+      "exitCode": 1,
+      "sourceHead": "63bfb5dc9abe397c35704c98f211b0bf78866f2d",
+      "sourceDiffBytes": 0,
+      "timedOut": false
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/preservation-audit.json",
+      "exitCode": 0,
+      "sourceHead": "8f44407cbd2f4529e89ebff8547efadb58847c2a",
+      "sourceDiffBytes": 0,
+      "timedOut": false
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/reference-audit-corrected.json",
+      "exitCode": 1,
+      "sourceHead": "8f44407cbd2f4529e89ebff8547efadb58847c2a",
+      "sourceDiffBytes": 0,
+      "timedOut": false
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/reference-audit-final.json",
+      "exitCode": 0,
+      "sourceHead": "8f44407cbd2f4529e89ebff8547efadb58847c2a",
+      "sourceDiffBytes": 0,
+      "timedOut": false
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/reference-audit.json",
+      "exitCode": 1,
+      "sourceHead": "63bfb5dc9abe397c35704c98f211b0bf78866f2d",
+      "sourceDiffBytes": 0,
+      "timedOut": false
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/repaired-unchanged-controls.json",
+      "exitCode": 0,
+      "sourceHead": "8f44407cbd2f4529e89ebff8547efadb58847c2a",
+      "sourceDiffBytes": 0,
+      "timedOut": false
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/staged-whitespace-corrected.json",
+      "exitCode": 2,
+      "sourceHead": "8f44407cbd2f4529e89ebff8547efadb58847c2a",
+      "sourceDiffBytes": 9621,
+      "timedOut": false
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/staged-whitespace.json",
+      "exitCode": 2,
+      "sourceHead": "8f44407cbd2f4529e89ebff8547efadb58847c2a",
+      "sourceDiffBytes": 9623,
+      "timedOut": false
+    }
+  ],
+  "priorTrackedPaths": 5055,
+  "candidateTrackedPaths": 5222,
+  "existingChangedPaths": [
+    "apps/gateway/test/action-item-context-independent.test.mjs",
+    "apps/gateway/test/mail-context-independent.test.mjs",
+    "apps/gateway/test/memory-context-independent.test.mjs",
+    "docs/RETRIEVAL-CONTRACT.md",
+    "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+    "packages/contracts/retrieval-0.2/catalog.json",
+    "packages/contracts/retrieval-0.2/operation-contracts.mjs",
+    "packages/contracts/retrieval-0.2/validate.mjs",
+    "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+    "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+    "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+    "packages/contracts/test/retrieval-mail.test.mjs",
+    "packages/contracts/test/retrieval-memory-binding.test.mjs"
+  ]
+}
