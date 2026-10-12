@@ -169,3 +169,10 @@ test('client UUID identity survives trailing whitespace introduced by the80unit 
  const valid=resolved(selector,cid);assert.equal(v.normalizeInput(id,{clientId:raw},valid).input.clientId,cid);
  assert.throws(()=>v.normalizeInput(id,{clientId:raw},resolved(selector,other)));
 });
+
+test('validated Florida output is detached from subsequent caller mutation',()=>{
+ const original=output();original.result.projects=[project()];
+ const accepted=check(original);assert.notStrictEqual(accepted,original);
+ original.result.projects[0].title='Mutated after admission';original.result.scope.sessionKey='foreign';
+ assert.equal(accepted.result.projects[0].title,'Synthetic publisher item');assert.equal(accepted.result.scope.sessionKey,'');
+});
