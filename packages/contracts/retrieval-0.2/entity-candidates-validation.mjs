@@ -73,7 +73,7 @@ export function createEntityCandidatesValidators({validateShape, schema}) {
     }
     if (Object.hasOwn(page, 'note')) fail('Entity matches cannot carry a missing/no-match note');
     let selectedPhase = null, previousNameFamily = -1, previousDirectFamily = -1;
-    const currentSeen = new Map();
+    const currentSeen = new Map(), nameIds = new Map();
     for (const row of page.matches) {
       if (input.type && row.entityType !== input.type) fail('Candidate type selector mismatch');
       const rowPhase = phase(row);
@@ -86,6 +86,9 @@ export function createEntityCandidatesValidators({validateShape, schema}) {
         previousDirectFamily = rank;
       } else if (rowPhase === 'name') {
         if (!metadata.canNameSearch) fail('Name lookup requires the source ASCII-letter predicate');
+        const ids = nameIds.get(row.entityType) ?? new Set();
+        if (ids.has(row.canonicalId)) fail('Duplicate entity name-search identity');
+        ids.add(row.canonicalId); nameIds.set(row.entityType, ids);
         const rank = nameOrder.indexOf(row.entityType);
         if (rank < previousNameFamily) fail('Entity name family order mismatch');
         previousNameFamily = rank;
