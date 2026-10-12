@@ -7,8 +7,8 @@
   "entries": [
     {
       "path": "docs/coordination/reports/CODEX-CAPABILITY-NEXT-BUSINESS-AUTHOR-20261012.md",
-      "bytes": 10884,
-      "sha256": "3c6d43eda13f9fb193b7ec66342657a6da7485ffb874e4b26569b97a3cc677ff"
+      "bytes": 11801,
+      "sha256": "6ef43029d807505e9be9ffa42694dd1412e99fa549db2f701a1a2d816ec23070"
     },
     {
       "path": "docs/qualification/candidates/capability-next-20261012/business-author/capture-reaped.py",
@@ -102,8 +102,8 @@
     },
     {
       "path": "docs/qualification/candidates/capability-next-20261012/business-author/reference-identities.json",
-      "bytes": 3046,
-      "sha256": "0a2ed16b7a8a3022577e30833f877491d8eee24489b99e83c7ed56322973a495"
+      "bytes": 4389,
+      "sha256": "4d038028d7f96ef15f7b580be7e3a80b488cef307778d060a84a8d1e36d7a19d"
     },
     {
       "path": "docs/qualification/candidates/capability-next-20261012/business-author/source-before-snapshot.patch",

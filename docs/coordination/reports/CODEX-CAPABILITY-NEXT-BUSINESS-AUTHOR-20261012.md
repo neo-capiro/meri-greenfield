@@ -104,6 +104,17 @@ facts were used; no private source body was copied into this repository.
 | `apps/api/src/business-development/bizdev-dossier.service.spec.ts` | `e980be77c30d19265a398859958f15cf14170159` | Source/identity/provider coverage limitations |
 | `apps/api/src/meri/meri-prospect-scope.helpers.spec.ts` | `dccdfdba2a3514bc750b12e86ebf37a5db98d307` | Missing/stale selection refusal and no retargeting |
 | `apps/api/prisma/schema.prisma` | `cdf1923217edae6e7624993796a5671922b61ac0` | Prospect/history/preference scalar and null types |
+| `apps/api/src/vendor-reference/vendor-reference-sam.client.ts` | `fe586e9c425af353a4b1fb9312258bdeddf0c816` | Normalized address DTO and six string/null leaves |
+| `apps/api/src/vendor-reference/vendor-reference-sam.client.spec.ts` | `0fcf56e628df3123e40f5089baa21345fe8559de` | Complete address and missing-section null contract |
+
+The address references were added after an independent review provenance question.
+`SamPhysicalAddress` (lines 23–30), `SamEntityRecord.physicalAddress` (line 41)
+and the normalized address projection (lines 197–206) establish the six
+string/null leaves. The dossier forwards that typed value (line 1105), while
+the tool filters its keys. This clarification changes no source or assertion.
+The prior evidence freeze `9a8027c4f162447be4aa30d441bc8990ead3f4de` remains
+preserved; the reference receipt records a bounded display-loop failure without
+copying private source bodies.
 
 The discovery assessment was corrected after root clarified that a separately
 named complete DTO is unnecessary when a frozen producer projection closes the

@@ -73,7 +73,32 @@
       "frozenBlob": "cdf1923217edae6e7624993796a5671922b61ac0",
       "observedBlob": "cdf1923217edae6e7624993796a5671922b61ac0",
       "unchanged": true
+    },
+    {
+      "path": "apps/api/src/vendor-reference/vendor-reference-sam.client.ts",
+      "frozenBlob": "fe586e9c425af353a4b1fb9312258bdeddf0c816",
+      "observedBlob": "fe586e9c425af353a4b1fb9312258bdeddf0c816",
+      "unchanged": true,
+      "locators": "SamPhysicalAddress 23-30; SamEntityRecord 32-49; string normalization 148-150; address projection 197-206"
+    },
+    {
+      "path": "apps/api/src/vendor-reference/vendor-reference-sam.client.spec.ts",
+      "frozenBlob": "0fcf56e628df3123e40f5089baa21345fe8559de",
+      "observedBlob": "0fcf56e628df3123e40f5089baa21345fe8559de",
+      "unchanged": true,
+      "locators": "full address contract 145-152; missing section nulls 161-165"
     }
   ],
-  "privateBodiesPublished": false
+  "privateBodiesPublished": false,
+  "addressProvenanceFollowup": {
+    "evidenceBase": "9a8027c4f162447be4aa30d441bc8990ead3f4de",
+    "sourceUnchanged": "bf9a06cfba22c5c3bac87949689348b16febcbc5",
+    "reason": "Independent reviewer requested exact provenance for address leaf string/null types.",
+    "initialReadFailure": {
+      "exitCode": 1,
+      "cause": "Local display loop requested spec lines through169; exact source ends at167. Metadata and client type read completed before IndexError. No producer or test executed.",
+      "privateBodyRetained": false
+    },
+    "boundedFollowup": "Exact file lengths and metadata-only locators verified successfully."
+  }
 }
