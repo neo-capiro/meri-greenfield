@@ -1,0 +1,109 @@
+{
+  "scope": "OFFLINE_REFERENCE_METADATA_ONLY",
+  "passed": 25,
+  "total": 25,
+  "privateBodiesPublished": false,
+  "sourceExecuted": false,
+  "checks": [
+    {
+      "name": "apps/api/src/meri/meri-tools.service.ts:pinned-blob",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-tools.service.ts:observed-blob",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-tools.service.ts:no-drift",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-tools.service.ts:sha256",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-tools.service.ts:bytes",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/schema.prisma:pinned-blob",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/schema.prisma:observed-blob",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/schema.prisma:no-drift",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/schema.prisma:sha256",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/schema.prisma:bytes",
+      "passed": true
+    },
+    {
+      "name": "packages/shared/src/index.ts:pinned-blob",
+      "passed": true
+    },
+    {
+      "name": "packages/shared/src/index.ts:observed-blob",
+      "passed": true
+    },
+    {
+      "name": "packages/shared/src/index.ts:no-drift",
+      "passed": true
+    },
+    {
+      "name": "packages/shared/src/index.ts:sha256",
+      "passed": true
+    },
+    {
+      "name": "packages/shared/src/index.ts:bytes",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-state-bill-status-tool.spec.ts:pinned-blob",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-state-bill-status-tool.spec.ts:observed-blob",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-state-bill-status-tool.spec.ts:no-drift",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-state-bill-status-tool.spec.ts:sha256",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-state-bill-status-tool.spec.ts:bytes",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-state-bill-live.ts:pinned-blob",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-state-bill-live.ts:observed-blob",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-state-bill-live.ts:no-drift",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-state-bill-live.ts:sha256",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-state-bill-live.ts:bytes",
+      "passed": true
+    }
+  ]
+}
