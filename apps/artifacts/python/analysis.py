@@ -3,6 +3,13 @@ import io, json, math, zipfile
 
 def analyze(spec, path):
     import pandas as pd
+    max_number=9007199254740991
+    def numeric(series):
+        values=pd.to_numeric(series,errors='raise')
+        for value in values:
+            if not pd.isna(value) and (not math.isfinite(value) or abs(value)>max_number):raise ValueError('Numeric range unsupported')
+        # Explicit floating-point mode avoids pandas signed-int64 wraparound.
+        return values.astype('float64')
     tables={t['name']:pd.DataFrame(t['rows'],columns=t['columns']) for t in spec['tables']}
     frame=tables[spec['source']].copy()
     for step in spec['steps']:
@@ -18,13 +25,15 @@ def analyze(spec, path):
             frame=frame.merge(right,how=step['how'],left_on=step['leftOn'],right_on=step['rightOn'],validate=step['validate'],suffixes=('_left','_right'))
         elif kind=='derive':
             if step['name'] in frame.columns: raise ValueError('Derived column would overwrite input')
-            left=pd.to_numeric(frame[step['left']],errors='raise')
-            right=pd.to_numeric(frame[step['right']['column']],errors='raise') if isinstance(step['right'],dict) else step['right']
+            left=numeric(frame[step['left']])
+            right=numeric(frame[step['right']['column']]) if isinstance(step['right'],dict) else float(step['right'])
+            if isinstance(right,float) and (not math.isfinite(right) or abs(right)>max_number):raise ValueError('Numeric range unsupported')
             if step['operator']=='divide' and ((right==0).any() if hasattr(right,'any') else right==0): raise ValueError('Division by zero')
             operators={'add':lambda:left+right,'subtract':lambda:left-right,'multiply':lambda:left*right,'divide':lambda:left/right}
             frame[step['name']]=operators[step['operator']]()
         elif kind=='aggregate':
             fn=step['function'];column=step['column'];keys=step['groupBy']
+            if fn!='count':frame[column]=numeric(frame[column])
             if keys: frame=frame.groupby(keys,dropna=False,sort=False)[column].agg(fn).reset_index(name=step['name'])
             else: frame=pd.DataFrame({step['name']:[getattr(frame[column],fn)()]})
         elif kind=='sort': frame=frame.sort_values(step['columns'],ascending=step['ascending'],kind='stable')
@@ -33,9 +42,11 @@ def analyze(spec, path):
     # Explicitly reject infinities; pandas serializes missing values as null.
     for row in frame.itertuples(index=False,name=None):
         for value in row:
-            if isinstance(value,(int,float)) and not pd.isna(value) and not math.isfinite(value): raise ValueError('Nonfinite analysis result')
-    result=json.loads(frame.to_json(orient='split',index=False,date_format='iso',double_precision=15))
-    result['semantics']={'numeric':'pandas floating point; not arbitrary-precision accounting','nulls':'JSON null; null join keys refused','codeExecution':False}
+            if isinstance(value,(int,float)) and not pd.isna(value) and (not math.isfinite(value) or abs(value)>max_number): raise ValueError('Numeric result range unsupported')
+    rows=[]
+    for row in frame.itertuples(index=False,name=None):rows.append([None if pd.isna(value) else value.item() if hasattr(value,'item') else value for value in row])
+    result={'columns':list(frame.columns),'data':rows}
+    result['semantics']={'numeric':'pandas float64 for arithmetic; magnitude<=9007199254740991; not arbitrary-precision accounting','nulls':'JSON null; null join keys refused','codeExecution':False}
     with zipfile.ZipFile(path,'w',compression=zipfile.ZIP_DEFLATED) as out:
         out.writestr('result.json',json.dumps(result,allow_nan=False,ensure_ascii=False))
         # Exported CSV is data-only JSON's companion; neutralize spreadsheet formulas.

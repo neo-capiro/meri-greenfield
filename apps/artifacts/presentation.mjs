@@ -4,7 +4,9 @@ import {createRequire} from 'node:module';
 import {createHash} from 'node:crypto';
 import {pathToFileURL} from 'node:url';
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
-export async function generatePresentation({request,assets,maxBytes},modulePath){
+// Internal fixed entry: local-executor verifies the exact PNG bytes through
+// the shared Pillow adapter before invoking this generator. Not a public API.
+async function generatePresentation({request,assets,maxBytes},modulePath){
   const require=createRequire(import.meta.url),packageData=JSON.parse(await readFile(new URL('package.json',pathToFileURL(modulePath.endsWith('/')?modulePath:modulePath+'/')),'utf8'));
   if(packageData.name!=='pptxgenjs'||packageData.version!=='4.0.1')throw new Error('PptxGenJS version mismatch');
   const PptxGenJS=require(modulePath),pptx=new PptxGenJS();pptx.layout='LAYOUT_WIDE';pptx.title=request.title;pptx.subject='Meri immutable generated artifact';pptx.author='Meri';

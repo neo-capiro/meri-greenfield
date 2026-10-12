@@ -5,7 +5,7 @@ def load(name):
     spec=importlib.util.spec_from_file_location('meri_artifact_'+name,pathlib.Path(__file__).with_name(name+'.py'))
     module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module);return module
 
-def main():
+def main(validate_assets=False):
     # Limits complement parent supervision; they do not qualify OS isolation.
     resource.setrlimit(resource.RLIMIT_CPU,(25,25));resource.setrlimit(resource.RLIMIT_FSIZE,(8388608,8388608))
     resource.setrlimit(resource.RLIMIT_NOFILE,(64,64))
@@ -20,7 +20,10 @@ def main():
         with Image.open(io.BytesIO(image)) as parsed:
             if parsed.width>4096 or parsed.height>4096:raise ValueError('Image dimension limit')
             parsed.verify()
+        with Image.open(io.BytesIO(image)) as parsed:parsed.load()
         assets[asset['id']]=image
+    if validate_assets:
+        print(json.dumps({'assets':[{'id':key,'sha256':hashlib.sha256(value).hexdigest(),'bytes':len(value)} for key,value in assets.items()]}));return
     form=request['format']
     if form not in ('docx','txt','xlsx','zip'):raise ValueError('Unsupported Python artifact format')
     path=pathlib.Path('artifact.'+form)
@@ -46,8 +49,8 @@ if __name__=='__main__':
     if sys.argv[1:]==['--help']:
         print('Fixed artifact data entry: bounded JSON stdin, output artifact.<format> in owned cwd. Exit0 success;2 handled failure.');sys.exit(0)
     try:
-        if len(sys.argv)!=1:raise ValueError('No arguments accepted')
-        main()
+        if sys.argv[1:] not in ([],['--validate-assets']):raise ValueError('Only fixed asset validation mode accepted')
+        main(sys.argv[1:]==['--validate-assets'])
     except Exception as error:
         # Content, paths and input values are not copied into errors.
         print(json.dumps({'error':'ARTIFACT_GENERATION_FAILED','type':type(error).__name__}),file=sys.stderr);sys.exit(2)
