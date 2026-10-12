@@ -1,0 +1,81 @@
+{
+  "candidate": "d5a1b0aa2f77d9c215f1a092d7c329b93492cb55",
+  "reference": "bb44e802de14b5483c51ea1a58448ca23a5f11a0",
+  "facts": [
+    {
+      "check": "accepted-reference-only",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "48-stable-members",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "actual-candidate-baseline-passes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "all48-exact-accepted-bytes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "unchanged-current-context",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "prior-PR7-missing-new-members-refused",
+      "passed": true,
+      "detail": "exact Git membership"
+    },
+    {
+      "check": "actual-temporary-Git-baseline-passes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "current-worktree-drift-refused",
+      "passed": true,
+      "detail": "candidate Git/current drift"
+    },
+    {
+      "check": "committed-stable-drift-refused",
+      "passed": true,
+      "detail": "stable fixture source drift"
+    },
+    {
+      "check": "missing-stable-Git-member-refused",
+      "passed": true,
+      "detail": "exact Git membership"
+    },
+    {
+      "check": "committed-assembler-drift-refused",
+      "passed": true,
+      "detail": "assembler reference pin"
+    },
+    {
+      "check": "collector-current-drift-refused",
+      "passed": true,
+      "detail": "collector Git/current drift"
+    },
+    {
+      "check": "manifest-owner-current-drift-refused",
+      "passed": true,
+      "detail": "manifest owner Git/current drift"
+    },
+    {
+      "check": "owned-temporary-Git-fixture-removed",
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "passed": 14,
+  "adapter": "Only source.GIT is patched to /usr/bin/git in test scope; actual git_files/baseline and source.git_read are unmodified.",
+  "native_owner_execution": "UNRUN: fixed Windows Git/Python unavailable",
+  "cloud_calls": 0,
+  "image_builds": 0
+}

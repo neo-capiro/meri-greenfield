@@ -1,0 +1,17 @@
+{
+  "argv": [
+    "python3",
+    "-B",
+    "/workspace/meri-sandbox-lifecycle-review-20261012/docs/qualification/candidates/sandbox-lifecycle-20261012/review/packaging-pins/root-baseline-controls.py",
+    "/workspace/meri-g1-recovery-sandbox-20261012",
+    "d5a1b0aa2f77d9c215f1a092d7c329b93492cb55",
+    "/workspace/meri-sandbox-lifecycle-review-20261012/docs/qualification/candidates/sandbox-lifecycle-20261012/review/packaging-pins/actual-git14.json",
+    "bb44e802de14b5483c51ea1a58448ca23a5f11a0"
+  ],
+  "cwd": "/workspace/meri-g1-recovery-sandbox-20261012",
+  "candidate": "d5a1b0aa2f77d9c215f1a092d7c329b93492cb55",
+  "exitCode": 0,
+  "durationSeconds": 0.442,
+  "processReaped": true,
+  "nativeBuildCloudExecuted": false
+}

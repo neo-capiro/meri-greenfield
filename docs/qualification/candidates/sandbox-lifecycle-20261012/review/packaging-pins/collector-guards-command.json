@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "python3",
+    "-B",
+    "/workspace/meri-sandbox-lifecycle-review-20261012/docs/qualification/candidates/sandbox-lifecycle-20261012/review/packaging-pins/collector-controls.py",
+    "/workspace/meri-g1-recovery-sandbox-20261012",
+    "/workspace/meri-sandbox-lifecycle-review-20261012/docs/qualification/candidates/sandbox-lifecycle-20261012/review/packaging-pins/collector-guards.json",
+    "d5a1b0aa2f77d9c215f1a092d7c329b93492cb55"
+  ],
+  "cwd": "/workspace/meri-g1-recovery-sandbox-20261012",
+  "candidate": "d5a1b0aa2f77d9c215f1a092d7c329b93492cb55",
+  "exitCode": 0,
+  "durationSeconds": 0.244,
+  "processReaped": true,
+  "nativeBuildCloudExecuted": false
+}

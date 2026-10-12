@@ -1,0 +1,20 @@
+{
+  "argv": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "scripts/qualification",
+    "-p",
+    "test_worker_image_build.py",
+    "-v"
+  ],
+  "cwd": "/workspace/meri-g1-recovery-sandbox-20261012",
+  "candidate": "d5a1b0aa2f77d9c215f1a092d7c329b93492cb55",
+  "exitCode": 1,
+  "durationSeconds": 0.228,
+  "processReaped": true,
+  "nativeBuildCloudExecuted": false
+}

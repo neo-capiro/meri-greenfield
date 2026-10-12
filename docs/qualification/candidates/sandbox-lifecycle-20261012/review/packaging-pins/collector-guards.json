@@ -1,0 +1,89 @@
+{
+  "candidate": "d5a1b0aa2f77d9c215f1a092d7c329b93492cb55",
+  "facts": [
+    {
+      "check": "exact-current-context",
+      "passed": true,
+      "detail": "640c5f3dd73272af3a120bf7ec71afa096e30506f6c0b99b242e22dd96c0b229"
+    },
+    {
+      "check": "exact-unchanged-assembler",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "context-remains-source-only",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "current-input-preflight-only",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "prior-reviewed-context-refused",
+      "passed": true,
+      "detail": "worker input schema"
+    },
+    {
+      "check": "historical-context-refused",
+      "passed": true,
+      "detail": "worker input schema"
+    },
+    {
+      "check": "pre-fixture-context-refused",
+      "passed": true,
+      "detail": "worker input schema"
+    },
+    {
+      "check": "missing-source-member-refused",
+      "passed": true,
+      "detail": "canonical worker membership"
+    },
+    {
+      "check": "extra-source-member-refused",
+      "passed": true,
+      "detail": "canonical worker membership"
+    },
+    {
+      "check": "duplicate-source-member-refused",
+      "passed": true,
+      "detail": "canonical worker membership"
+    },
+    {
+      "check": "changed-current-bytes-refused",
+      "passed": true,
+      "detail": "source drift"
+    },
+    {
+      "check": "rehashed-changed-context-refused-before-build",
+      "passed": true,
+      "detail": "accepted context manifest"
+    },
+    {
+      "check": "native-build-port-not-called",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "rehashed-assembler-change-refused",
+      "passed": true,
+      "detail": "canonical assembler"
+    },
+    {
+      "check": "source-symlink-refused",
+      "passed": true,
+      "detail": "link/reparse"
+    },
+    {
+      "check": "owned-fixture-cleanup",
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "context_sha256": "640c5f3dd73272af3a120bf7ec71afa096e30506f6c0b99b242e22dd96c0b229",
+  "sourceOnly": true,
+  "external_commands": 0,
+  "native_build_calls": 0
+}
