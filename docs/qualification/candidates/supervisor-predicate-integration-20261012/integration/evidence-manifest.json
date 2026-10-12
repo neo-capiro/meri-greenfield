@@ -1,0 +1,477 @@
+{
+  "scope": "All changed/new files from PR19 through accepted root and integrated final review, before this self-excluded manifest and later publication metadata.",
+  "base": "15f671a65365e3401f0ce07b46deb4cf63538346",
+  "acceptedRoot": "e5e851f381d14359c00cca1b5438fe13f4fadfb0",
+  "rootReviewer": "1957a920ed6b46ef15ec634b1aa03b4ba44dc2ac",
+  "acceptedRootTree": "ebae2f0eb44e0a41b91ccfe65a84c01cbc230991",
+  "decision": "ACCEPT_DOCUMENT_INTEGRATION",
+  "files": [
+    {
+      "path": "docs/coordination/reports/MERI-NATIVE-PREDICATE-20261012.md",
+      "bytes": 5728,
+      "sha256": "c14ade698c0e147c0f106a7abf73fc28e9033ee171404d1a026a076e80015072"
+    },
+    {
+      "path": "docs/coordination/reports/MERI-NATIVE-PREDICATE-REVIEW-20261012.md",
+      "bytes": 5598,
+      "sha256": "a6af2471e5edde8ec8fdefd71e3e7af56792051dfbee745238c4129d96f49376"
+    },
+    {
+      "path": "docs/coordination/reports/MERI-PGDG-METADATA-20261012.md",
+      "bytes": 4602,
+      "sha256": "9528d1504fba3d977347f6494cbd8f313571494abcd601a6fb05b832acee5c26"
+    },
+    {
+      "path": "docs/coordination/reports/MERI-PGDG-METADATA-REVIEW-20261012.md",
+      "bytes": 5511,
+      "sha256": "ba7e39fb5126131c2aec9fc5c42d73742fd9edaee2cf621a4471beb9196e65d0"
+    },
+    {
+      "path": "docs/coordination/reports/MERI-SUPERVISOR-PREDICATE-INTEGRATION-20261012.md",
+      "bytes": 8186,
+      "sha256": "e7df69c0d6f979145df486c9db9640753c672633865bcd755b92491cb54b3863"
+    },
+    {
+      "path": "docs/coordination/reports/MERI-SUPERVISOR-PREDICATE-INTEGRATION-REVIEW-20261012.md",
+      "bytes": 9430,
+      "sha256": "3dd00b38d890c5dc1ea73148f217bcb266ba3b59153a68ac316b15d8b822c467"
+    },
+    {
+      "path": "docs/coordination/tasks/MERI-NATIVE-PREDICATE-20261012.md",
+      "bytes": 1136,
+      "sha256": "0ab2229c964bfe36c978460bc2a13e7aecdb22bfcaff0f0cfe6a57b7a79586e6"
+    },
+    {
+      "path": "docs/coordination/tasks/MERI-PGDG-METADATA-20261012.md",
+      "bytes": 1906,
+      "sha256": "0121197499eefacc45702da821ae9a9eb30c454098ecd81ae174b6a70bebb255"
+    },
+    {
+      "path": "docs/coordination/tasks/MERI-SUPERVISOR-PREDICATE-20261012.md",
+      "bytes": 5599,
+      "sha256": "0330a8a88aab7d73b6d29f51c9c10e35fcc4ffff05340d386b5e03f0d009c824"
+    },
+    {
+      "path": "docs/plans/MERI-G1-SOURCE-TO-NATIVE.md",
+      "bytes": 36339,
+      "sha256": "f66f86f78877a799528a849746a34e5021134aa5fb1d8eb1418da7abba42de0b"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/author/data-observation.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/author/data-observation.stdout.json",
+      "bytes": 7374,
+      "sha256": "80148ce3091645eea2ba795d901c1f22c896b5f2e2c581ec2313d96ee555196a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/author/initial-fact-manifest.json",
+      "bytes": 2114,
+      "sha256": "6c79fc11362deab66dc73cf3778795f4d34b87ff9068906b33835bb954f3dda0"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/author/outline.json",
+      "bytes": 893,
+      "sha256": "acd0630ab8da0f48ee14cd3bcb48e2db104fbf058c6527389ddafee9bb66c51e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/author/predicate-data.py",
+      "bytes": 6663,
+      "sha256": "cb6f4ac269ba5446988a0c7133b685b54658d3c3aee4cf25041cb74d464ef569"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/author/predicate-map.json",
+      "bytes": 4668,
+      "sha256": "da24f22b56a431ec913657d1c2056cff53fc21b84c5a3797a37e6704f9664aed"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/author/tool-transport-failure.json",
+      "bytes": 394,
+      "sha256": "97f4f0fa002d3c172455647b2271353a0b1e710a1af55e95652e1834a978012f"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/author/verification-receipt.json",
+      "bytes": 423,
+      "sha256": "35175338c2237ac20305310c2a85fc3f12e590bf600d2bee45bf6904e2eb01f2"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/review/check-private-records.initial.py.txt",
+      "bytes": 6862,
+      "sha256": "c14935755799769aebf8e6f87beb764a299626a5f18e2c39cba7e021537bc3ae"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/review/check-private-records.py",
+      "bytes": 6866,
+      "sha256": "f34a7ba309fc355b62aa1f88713b3180e19c421511c63a8e639ede7b84af69f5"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/review/data-audit-corrected.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/review/data-audit-corrected.stdout.txt",
+      "bytes": 123,
+      "sha256": "cfa12c951b923e38e47768a955188bd69676d9a0cd6430bf9c8e8f15a1708156"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/review/data-audit-initial.json",
+      "bytes": 5717,
+      "sha256": "516a4b353c09c78abd38892905375e108f272c5218ce97cce8df5064ece3e9bb"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/review/data-audit-initial.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/review/data-audit-initial.stdout.txt",
+      "bytes": 123,
+      "sha256": "27687243e8071c2c26462e08fc0b1a5e0ebadaabf61bd8379dd3017bab88e777"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/review/exact-freeze-audit.json",
+      "bytes": 3119,
+      "sha256": "20f834a8e00e70f7ebe5ca48c001d41b769393f51f085e7be9f49af965e55ed2"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/review/frozen-author.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/review/frozen-author.stdout.json",
+      "bytes": 7374,
+      "sha256": "80148ce3091645eea2ba795d901c1f22c896b5f2e2c581ec2313d96ee555196a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/review/frozen-criteria.json",
+      "bytes": 3977,
+      "sha256": "032108b2a94c6968c04529aac043659eab0d512746623cf14da3f7a5388b4825"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/review/frozen-independent-data.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/review/frozen-independent-data.stdout.json",
+      "bytes": 123,
+      "sha256": "cfa12c951b923e38e47768a955188bd69676d9a0cd6430bf9c8e8f15a1708156"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/review/frozen-independent-inert.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/review/frozen-independent-inert.stdout.json",
+      "bytes": 80,
+      "sha256": "a72a5d2bfccca93fd9c3bdc0e652d2acc6a3cd67ab9bbc6b2a151f492818d806"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/review/full-member-data-audit.json",
+      "bytes": 5716,
+      "sha256": "04c2e78d3d72884515459b9404d1f48da2731b88dbeacc8a7397615c1007ca85"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/review/inert-analysis-controls.py",
+      "bytes": 5194,
+      "sha256": "ce7024a129171f9977dcb6aa64bc7817567d49b31085f757cb474024de6444e3"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/review/inert-analysis-result.json",
+      "bytes": 1895,
+      "sha256": "7a0f850ab5d6d0017deeb4028ef956cece22e09346017576a1f7433a359ee1e8"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/review/initial-check-receipt.json",
+      "bytes": 293,
+      "sha256": "3c5719c8eda19d5971244fc12c7c36bfaecd3d6aeebb7fe361eaf10afb104894"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/review/review-manifest.json",
+      "bytes": 4783,
+      "sha256": "a9a5755cc9735083b37bcb68f3db49f7e9c9226d5d43e572f8d365e14873fc93"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/collection-notes.json",
+      "bytes": 1045,
+      "sha256": "150186549c314ae3f380979e1636146f116202c58bdf352b106d21859fd577bb"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/collection-source.py.txt",
+      "bytes": 2442,
+      "sha256": "71d963812643c3bbce19a8921891b92a354ed578283e0d66bbf6c27f554d22aa"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/decision-package.json",
+      "bytes": 9733,
+      "sha256": "7196182c33be71f7e1f6eef08a551177836a7d2db1cf0397aaddaa410f8c41fc"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/manifest.json",
+      "bytes": 3579,
+      "sha256": "02dad919bd6b0f81f86597cc1c6a425792973dc79c6fa908b87a8b17ca4d1641"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/raw/17-Packages.bz2",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/raw/ACCC4CF8.asc",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/raw/InRelease",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/raw/Release",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/raw/Release.gpg",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/raw/main-Packages.bz2",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/raw/main-Sources.bz2",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/raw/postgresql-17_17.11-1.pgdg13+2.dsc",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/retrievals.json",
+      "bytes": 4851,
+      "sha256": "0fb01242de8fe5454aed8a64e8949dc5ceba2beac6b311905f8b6f14e8732a93"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/verification.json",
+      "bytes": 6963,
+      "sha256": "8b831ee3877c1208015323c36e929e03fad0d140bb7fb8621049336ea6abaadb"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/verification.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/verify.py",
+      "bytes": 3853,
+      "sha256": "5801eea31e8a7dd272f80533e3506bdc1822ce8f9efb6230e768708cffefac19"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/web-fallback.json",
+      "bytes": 16371,
+      "sha256": "247670effcb7f57706b583d4a6a8baf65d9332ddcc786021f9e5f8e5b25f0dfc"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/review/audit-author-result.json",
+      "bytes": 16075,
+      "sha256": "5883b16fcbec93fe701381e428cc31ed4e5660619521ba189ccb5ae32226ecb9"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/review/audit-author.py",
+      "bytes": 9033,
+      "sha256": "ffee7b824ab990edb132537100f04e37760a3e427847e046ab07bc09b51b00ef"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/review/audit-author.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/review/audit-author.stdout.json",
+      "bytes": 186,
+      "sha256": "91f5fec0db643a8593753e87eda96ad284f5d213542811c37c843cacd4b74d0c"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/review/author-verifier.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/review/author-verifier.stdout.json",
+      "bytes": 6963,
+      "sha256": "8b831ee3877c1208015323c36e929e03fad0d140bb7fb8621049336ea6abaadb"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/review/check-receipts.json",
+      "bytes": 1818,
+      "sha256": "25cb2e9fcfa7acb243402fa35f1daf93ba3514bec1dd9f5017d3c185eb7a0e69"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/review/frozen-criteria.json",
+      "bytes": 3133,
+      "sha256": "207eb0a703a3aa99f8585ffb9e9035cbf4353d665bb87bc5c7b9453531d56319"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/review/manifest.json",
+      "bytes": 2362,
+      "sha256": "edbd4f0f759b16cbf0f047a27a4f748204af2663a9ff0926f6e8e598bc325951"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/integration/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/integration/executor-availability.json",
+      "bytes": 634,
+      "sha256": "4d657c6762acb3cb7791e703cccffb6235c26ea8f6d7f3d5229625a9438dbd8d"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/integration/pgdg-author.json",
+      "bytes": 1339,
+      "sha256": "9817f23c6bf14607299af175eea028ae7ae7095a9628ce3941ad5ccc73f7f8e4"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/integration/pgdg-author.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/integration/pgdg-author.stdout.bin",
+      "bytes": 6964,
+      "sha256": "49bdd99e7c33a2b04aa75ce440ab5538435286590eac1c4ba856f1cbb37b578f"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/integration/pgdg-integrated-pin-explanation.json",
+      "bytes": 1135,
+      "sha256": "a918c1f11ed2f0ccf57525daf6bc87d6008087d190d334643abb318960023c43"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/integration/pgdg-review-exact.json",
+      "bytes": 1534,
+      "sha256": "747eac3d7af1c38eec09f2e4829890859c9ea1c2b9348d67b2d5ab85f6ad38ae"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/integration/pgdg-review-exact.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/integration/pgdg-review-exact.stdout.bin",
+      "bytes": 186,
+      "sha256": "91f5fec0db643a8593753e87eda96ad284f5d213542811c37c843cacd4b74d0c"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/integration/pgdg-review.json",
+      "bytes": 1445,
+      "sha256": "b746558858a4d321255e856d9345f2cd080bc629b5ae87c5a2853e367fd96d53"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/integration/pgdg-review.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/integration/pgdg-review.stdout.bin",
+      "bytes": 278,
+      "sha256": "cb1e4f67f7995a33cbb34a718348e25b0df9577b186e347d8b1d0a9821398ed8"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/integration/pr19-base-readback.json",
+      "bytes": 1165,
+      "sha256": "dc10fb68944964eec0bc04f4aec937b9163e133602caf65346ba93b2b3065e7d"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/integration/predicate-author.json",
+      "bytes": 1500,
+      "sha256": "e734f468cbaa4d602a9706cc9463b70baecd7dfb474dc40df5d53babd114cf50"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/integration/predicate-author.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/integration/predicate-author.stdout.bin",
+      "bytes": 7374,
+      "sha256": "80148ce3091645eea2ba795d901c1f22c896b5f2e2c581ec2313d96ee555196a"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/integration/root-preservation-privacy.json",
+      "bytes": 920,
+      "sha256": "59c30bfe20017a489f4891a9ea39b7bfa3a6b38f23fc6ee2e1b0acd7303cc4fc"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/integration/root-private-observation.json",
+      "bytes": 2977,
+      "sha256": "e44377beb3f6cad99835990d2cf25a2889e4582d3be3076588886d5d734e9d24"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/integration/verified-private-intake.json",
+      "bytes": 2593,
+      "sha256": "5b228f148e79114da2467b20dbb7df75fdf7209316b2fe0abd6fa4dfe8fd447b"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/review/audit-integration.py",
+      "bytes": 8584,
+      "sha256": "3cc86177773da239a01ff8023038153ef45e29c8361d50bd89a6c527dd063188"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/review/corrected-audit.json",
+      "bytes": 921,
+      "sha256": "9d660acbbbdc77de605fef026e6a388b29c9eb3df8a0ae0a4241605879b54b74"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/review/corrected-audit.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/review/corrected-audit.stdout.txt",
+      "bytes": 5880,
+      "sha256": "2632fe8c79c059db21eceb0677bf8cd7dcb3293803e083e27f1dc134eb9c9989"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/review/exact-audit.json",
+      "bytes": 5880,
+      "sha256": "2632fe8c79c059db21eceb0677bf8cd7dcb3293803e083e27f1dc134eb9c9989"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/review/initial-assumed-ancestry-audit.json",
+      "bytes": 5535,
+      "sha256": "aa0e9681f6fc3c8b08c71bd6d1a0e28a96e5bf83196797a2d39350f9eccc277f"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/review/initial-assumed-ancestry-audit.py",
+      "bytes": 8023,
+      "sha256": "844a560c31ef29696bc64952beeeef3ed186aeb1faaf5261cb100a8caef7d538"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/review/review-manifest.json",
+      "bytes": 2654,
+      "sha256": "4dfc4f9380931746b09fe1ef2f1b46ea55945d284635b9623c28ef1dbd0a509b"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/review/run-check.py",
+      "bytes": 2114,
+      "sha256": "f3f0f3d6592696ccac9ed44bd904c492f61c95a73a941b45b8da27618ddf174a"
+    }
+  ],
+  "fileCount": 92,
+  "selfExcluded": "docs/qualification/candidates/supervisor-predicate-integration-20261012/integration/evidence-manifest.json",
+  "publicationExcludedPrefix": "docs/qualification/candidates/supervisor-predicate-integration-20261012/publication/",
+  "postAcceptedRootDeltaOnlyReviewEvidence": true,
+  "nativeAdmission": false,
+  "fullHelperReview": "HOLD_MISSING_EXACT_NativeMetadata.cs",
+  "setup": "HOLD_EXTERNAL_INPUT_NOT_EXECUTABLE"
+}
