@@ -48,6 +48,15 @@ for record in manifest['members']:
    for stream in value.get('streams',[]):
     p=stream['path'];data=raw(packet,p)
     check('author capture bytes '+p,len(data)==stream['bytes'] and hashlib.sha256(data).hexdigest()==stream['sha256'])
+  if isinstance(value,dict) and 'argv' in value and 'groupAbsent' in value:
+   check('author group receipt '+record['path'],value['groupAbsent'] is True and value.get('timeout') is False)
+   check('author source diff '+record['path'],value.get('sourceDiff')=='')
+   for channel in ['stdout','stderr']:
+    path=record['path'][:-5]+'.'+channel+'.txt';data=raw(packet,path)
+    check('author raw stream '+path,hashlib.sha256(data).hexdigest()==value[channel+'Sha256'])
+   try:os.killpg(value['group'],0);absent=False
+   except ProcessLookupError:absent=True
+   check('author physical group readback '+record['path'],absent)
 for p in E.glob('*.json'):
  try:v=json.loads(p.read_bytes())
  except Exception:continue
