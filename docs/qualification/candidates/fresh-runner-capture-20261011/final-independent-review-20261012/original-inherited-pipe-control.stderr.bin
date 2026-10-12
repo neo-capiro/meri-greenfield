@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/workspace/scratch/853fba62b1f1/meri-fresh-runner-capture-final-independent-20261012/docs/qualification/candidates/fresh-runner-capture-20261011/final-independent-review-20261012/original-inherited-pipe-control.py", line 13, in <module>
+    capture.native_version([capture.AWS_EXE,'--version'],seconds=1,cap=65536)
+  File "/workspace/scratch/853fba62b1f1/meri-fresh-runner-capture-final-independent-20261012/scripts/qualification/worker_runner_capture.py", line 110, in native_version
+    raise VersionPipeBoundaryError('VERSION_PIPE_EOF_INCOMPLETE; DESCENDANT_TEARDOWN_UNQUALIFIED')
+worker_runner_capture.VersionPipeBoundaryError: VERSION_PIPE_EOF_INCOMPLETE; DESCENDANT_TEARDOWN_UNQUALIFIED

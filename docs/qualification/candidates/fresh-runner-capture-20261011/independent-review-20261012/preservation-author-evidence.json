@@ -1,0 +1,242 @@
+{
+  "sourceCommit": "4b8bbe7c110db70079f011a2407d7d616e8ebfbd",
+  "sourceTree": "ab24ae120482c386d40e2daf85950bb5bdd274f2",
+  "baseCommit": "19d64a1b5446337ad10a0068229164133756a073",
+  "authorStreamsVerified": [
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/source-tests.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receiptMatches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/source-tests.stderr.bin",
+      "bytes": 179,
+      "sha256": "232ce70e512679029d7cedb11541f892dd1779b22913d9cb56c310525b67139e",
+      "receiptMatches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/cli-help.stdout.bin",
+      "bytes": 456,
+      "sha256": "7de1e0098ced95e6dce49f770700da26c171d9cf76ba0f2a39f23092da6492fb",
+      "receiptMatches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/cli-help.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receiptMatches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/cli-missing-config.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receiptMatches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/cli-missing-config.stderr.bin",
+      "bytes": 59,
+      "sha256": "bd67a072307d7bd000988211f2c33720cf16ca2a0a811b08c22c8d04638ca445",
+      "receiptMatches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/cli-wrong-host.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receiptMatches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/cli-wrong-host.stderr.bin",
+      "bytes": 59,
+      "sha256": "bd67a072307d7bd000988211f2c33720cf16ca2a0a811b08c22c8d04638ca445",
+      "receiptMatches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/safe-import.stdout.bin",
+      "bytes": 40,
+      "sha256": "3b09a2e08027372e7db2fabeeff27be32b3a1e34bb403a27b387a1b54757d07e",
+      "receiptMatches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/safe-import.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receiptMatches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/whitespace.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receiptMatches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receiptMatches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/earlier-source20/source-tests.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receiptMatches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/earlier-source20/source-tests.stderr.bin",
+      "bytes": 178,
+      "sha256": "3b42ef06b640aacf3b8d43c69ec8afb05cf836c2e4a2f0dfc7ff7cf472e822b4",
+      "receiptMatches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/earlier-source20/cli-help.stdout.bin",
+      "bytes": 456,
+      "sha256": "7de1e0098ced95e6dce49f770700da26c171d9cf76ba0f2a39f23092da6492fb",
+      "receiptMatches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/earlier-source20/cli-help.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receiptMatches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/earlier-source20/cli-missing-config.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receiptMatches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/earlier-source20/cli-missing-config.stderr.bin",
+      "bytes": 59,
+      "sha256": "bd67a072307d7bd000988211f2c33720cf16ca2a0a811b08c22c8d04638ca445",
+      "receiptMatches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/earlier-source20/cli-wrong-host.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receiptMatches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/earlier-source20/cli-wrong-host.stderr.bin",
+      "bytes": 59,
+      "sha256": "bd67a072307d7bd000988211f2c33720cf16ca2a0a811b08c22c8d04638ca445",
+      "receiptMatches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/earlier-source20/safe-import.stdout.bin",
+      "bytes": 40,
+      "sha256": "3b09a2e08027372e7db2fabeeff27be32b3a1e34bb403a27b387a1b54757d07e",
+      "receiptMatches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/earlier-source20/safe-import.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receiptMatches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/earlier-source20/whitespace.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receiptMatches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/earlier-source20/whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receiptMatches": true
+    }
+  ],
+  "authorCurrentSourceHashesVerified": {
+    "scripts/qualification/worker_runner_inventory.py": "51c62cfd170caa77cca51dec898cbb53bf5af3d51c9b281806a55e83304dc0ab",
+    "scripts/qualification/worker_runner_capture.py": "dc2fe34aa6f73e494158631fbd63f41234dbf457654f691c032e219bb6d1b6ec",
+    "scripts/qualification/test_worker_runner_capture.py": "a780022a0ee41854d64fed26be80d42b20ac3b66cfe0a017a5e18eb5b026ad27"
+  },
+  "legacyFilesByteIdentical": [
+    {
+      "path": "scripts/qualification/worker_image_build.py",
+      "bytes": 33018,
+      "sha256": "7a50f535486e343aa534f32d7359c8281021dbe4ee5f88bb654ebb45675464b9",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "scripts/qualification/worker_build_binding.py",
+      "bytes": 6869,
+      "sha256": "6daff67b434e78824ee211803139a417bd23c6a3bb02dc0429695d86f5e1af53",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "scripts/qualification/worker_image_manifest.py",
+      "bytes": 1475,
+      "sha256": "9a080fa6a1fce15379e1f55e2fba1d3c6f7bff2c4c96743ae3794c8ae27da134",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "scripts/qualification/worker_image_collect.py",
+      "bytes": 29750,
+      "sha256": "b9d7d634aba85c9339d683e4638f30862ff45f005616cbe23dc534184801075f",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "scripts/qualification/worker_image_publish.py",
+      "bytes": 11611,
+      "sha256": "da1cb478d3048c7b102f90203f6bb3080d8002502d18c7a7711cd86dd2f795fa",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "scripts/qualification/worker_image_scan.py",
+      "bytes": 9958,
+      "sha256": "d85a402b80df5a701dcc1f132c10eeab93885c9ada8aa1e46a90a08ef5dc27e0",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "scripts/qualification/aws_evidence.py",
+      "bytes": 12447,
+      "sha256": "972db83fe90c28fa1cc5c2c56d9e9a4f2dea66a9416db75abba7e01b12b51a04",
+      "unchangedFromBase": true
+    }
+  ],
+  "exactThreeProductPaths": [
+    "scripts/qualification/test_worker_runner_capture.py",
+    "scripts/qualification/worker_runner_capture.py",
+    "scripts/qualification/worker_runner_inventory.py"
+  ],
+  "changedPaths": [
+    "docs/coordination/reports/CODEX-FRESH-RUNNER-CAPTURE-20261011.md",
+    "docs/coordination/tasks/CODEX-FRESH-RUNNER-CAPTURE-20261011.md",
+    "docs/qualification/candidates/fresh-runner-capture-20261011/checks.json",
+    "docs/qualification/candidates/fresh-runner-capture-20261011/cli-help.stderr.bin",
+    "docs/qualification/candidates/fresh-runner-capture-20261011/cli-help.stdout.bin",
+    "docs/qualification/candidates/fresh-runner-capture-20261011/cli-missing-config.stderr.bin",
+    "docs/qualification/candidates/fresh-runner-capture-20261011/cli-missing-config.stdout.bin",
+    "docs/qualification/candidates/fresh-runner-capture-20261011/cli-wrong-host.stderr.bin",
+    "docs/qualification/candidates/fresh-runner-capture-20261011/cli-wrong-host.stdout.bin",
+    "docs/qualification/candidates/fresh-runner-capture-20261011/earlier-source20/checks.json",
+    "docs/qualification/candidates/fresh-runner-capture-20261011/earlier-source20/cli-help.stderr.bin",
+    "docs/qualification/candidates/fresh-runner-capture-20261011/earlier-source20/cli-help.stdout.bin",
+    "docs/qualification/candidates/fresh-runner-capture-20261011/earlier-source20/cli-missing-config.stderr.bin",
+    "docs/qualification/candidates/fresh-runner-capture-20261011/earlier-source20/cli-missing-config.stdout.bin",
+    "docs/qualification/candidates/fresh-runner-capture-20261011/earlier-source20/cli-wrong-host.stderr.bin",
+    "docs/qualification/candidates/fresh-runner-capture-20261011/earlier-source20/cli-wrong-host.stdout.bin",
+    "docs/qualification/candidates/fresh-runner-capture-20261011/earlier-source20/safe-import.stderr.bin",
+    "docs/qualification/candidates/fresh-runner-capture-20261011/earlier-source20/safe-import.stdout.bin",
+    "docs/qualification/candidates/fresh-runner-capture-20261011/earlier-source20/source-tests.stderr.bin",
+    "docs/qualification/candidates/fresh-runner-capture-20261011/earlier-source20/source-tests.stdout.bin",
+    "docs/qualification/candidates/fresh-runner-capture-20261011/earlier-source20/whitespace.stderr.bin",
+    "docs/qualification/candidates/fresh-runner-capture-20261011/earlier-source20/whitespace.stdout.bin",
+    "docs/qualification/candidates/fresh-runner-capture-20261011/legacy-preservation.json",
+    "docs/qualification/candidates/fresh-runner-capture-20261011/safe-import.stderr.bin",
+    "docs/qualification/candidates/fresh-runner-capture-20261011/safe-import.stdout.bin",
+    "docs/qualification/candidates/fresh-runner-capture-20261011/source-tests.stderr.bin",
+    "docs/qualification/candidates/fresh-runner-capture-20261011/source-tests.stdout.bin",
+    "docs/qualification/candidates/fresh-runner-capture-20261011/whitespace.stderr.bin",
+    "docs/qualification/candidates/fresh-runner-capture-20261011/whitespace.stdout.bin",
+    "scripts/qualification/test_worker_runner_capture.py",
+    "scripts/qualification/worker_runner_capture.py",
+    "scripts/qualification/worker_runner_inventory.py"
+  ],
+  "gitLazyFetchDisabled": true,
+  "actualWindowsExecution": "UNRUN",
+  "selectedInventoryOnly": true
+}

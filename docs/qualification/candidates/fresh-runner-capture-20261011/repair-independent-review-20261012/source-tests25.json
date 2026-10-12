@@ -1,0 +1,49 @@
+{
+  "sourceCommit": "6f0a8c57e47f1f352198c3bdd4ae092b8bc45946",
+  "argv": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "-I",
+    "-B",
+    "-S",
+    "-c",
+    "import sys,unittest;sys.path.insert(0,'scripts/qualification');r=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromName('test_worker_runner_capture'));raise SystemExit(not r.wasSuccessful())"
+  ],
+  "externalTimeoutSeconds": 15,
+  "physicalExitCode": 0,
+  "expectedExitCode": 0,
+  "timedOut": false,
+  "elapsedSeconds": 1.0,
+  "fixtureGroupRemainedAfterDirectScriptExit": false,
+  "reviewerKilledRemainingOwnedFixtureGroup": false,
+  "reapedOwnedDescendants": [
+    {
+      "pid": 11,
+      "status": 9
+    },
+    {
+      "pid": 13,
+      "status": 9
+    },
+    {
+      "pid": 15,
+      "status": 9
+    }
+  ],
+  "ownedProcessGroupAbsent": true,
+  "tmpEntriesAfter": [],
+  "streams": {
+    "stdout": {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-independent-review-20261012/source-tests25.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stderr": {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-independent-review-20261012/source-tests25.stderr.bin",
+      "bytes": 4126,
+      "sha256": "70e3fc6d6be59eb04e709f569fb6c1fda3e9f8edcd54677fd23c32e5483b6cf1"
+    }
+  },
+  "productionProcessTreeCleanupClaim": false,
+  "actualWindowsExecution": "UNRUN",
+  "nativeAwsExecuted": false
+}

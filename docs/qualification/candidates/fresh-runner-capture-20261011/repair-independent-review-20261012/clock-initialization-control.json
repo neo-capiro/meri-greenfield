@@ -1,0 +1,30 @@
+{
+  "sourceCommit": "6f0a8c57e47f1f352198c3bdd4ae092b8bc45946",
+  "argv": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "-I",
+    "-B",
+    "-S",
+    "docs/qualification/candidates/fresh-runner-capture-20261011/repair-independent-review-20261012/clock-initialization-control.py"
+  ],
+  "externalTimeoutSeconds": 10,
+  "physicalExitCode": 1,
+  "timedOut": false,
+  "elapsedSeconds": 0.123,
+  "ownedProcessGroupAbsent": true,
+  "streams": {
+    "stdout": {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-independent-review-20261012/clock-initialization-control.stdout.bin",
+      "bytes": 110,
+      "sha256": "f266d882db5061e29a9d5d1eddb6a486bdfa454111fc0b58b88e6f5a0149a43e"
+    },
+    "stderr": {
+      "path": "docs/qualification/candidates/fresh-runner-capture-20261011/repair-independent-review-20261012/clock-initialization-control.stderr.bin",
+      "bytes": 622,
+      "sha256": "d435b284b9e2574f397a86da864413c946accda4ae98b7c761d6652d898d630b"
+    }
+  },
+  "scriptSha256": "fda216bd2736a9478d881801f011dc29e6982e39f520a6e4c7afd3849c3de11d",
+  "actualWindowsExecution": "UNRUN",
+  "nativeAwsExecuted": false
+}

@@ -1,0 +1,7 @@
+# Independent fresh-runner capture repair review
+
+Frozen source `6f0a8c57e47f1f352198c3bdd4ae092b8bc45946`, tree `2c7bb223cfbf7096e02b074efe638ccf15dece32`. Dedicated detached worktree `meri-fresh-runner-capture-repair-independent-20261012`. Parent owns source repair, integration and acceptance. Initial independent HOLD commit `c13a536d9d629cfc9a4f74a9c70d9cc744bfbd03` remains immutable and separate.
+
+Reviewer owns only this NEW task, matching new report and `docs/qualification/candidates/fresh-runner-capture-20261011/repair-independent-review-20261012/**`. No product edits, remote Git/network/cloud/provider/native AWS invocation or actual Windows execution. Local Git reads disable lazy fetch; no recursive delegation.
+
+Review outline: inspect exact repair and module responsibilities; replay original output and inherited-pipe controls against the repair; independently exercise final closure mutation, stdout/stderr/both missing EOF, bounded direct-child exit and parent-handle close with minimal environment; check import/configuration refusals, original 21 method AST identity and legacy preservation. Use bounded owned local synthetic fixtures, retain raw failures and receipts, and verify physical process cleanup by the reviewer owner. The collector itself makes no process-tree cleanup claim. Actual Windows PeekNamedPipe behavior, executable closure, runner/build admission and cloud qualification remain unrun/false. Return documentation/evidence-only local review commit with exact parent and ACCEPT_SOURCE_ONLY or concrete HOLD.

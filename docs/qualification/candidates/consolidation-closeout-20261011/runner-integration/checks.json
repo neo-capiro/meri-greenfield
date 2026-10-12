@@ -1,0 +1,61 @@
+{
+  "sourceCommit": "81150afb9fcb7e5ed0469568daff3b9c1b0bd00d",
+  "records": [
+    {
+      "label": "capture27",
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "-v",
+        "test_worker_runner_capture"
+      ],
+      "cwd": "/workspace/scratch/853fba62b1f1/meri-consolidation-closeout-20261011/scripts/qualification",
+      "exitCode": 0,
+      "startedAt": 1791764598.7339659,
+      "endedAt": 1791764599.834483,
+      "stdout": {
+        "path": "capture27.stdout.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "capture27.stderr.bin",
+        "bytes": 4494,
+        "sha256": "a177705de19cd8cd7040cb23df5fdab9986dab3df405195cbace5d3c92c5062e"
+      }
+    },
+    {
+      "label": "builder18",
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "-v",
+        "test_worker_image_publish",
+        "test_worker_image_build.FreshRunnerBinding",
+        "test_worker_image_build.Controls.test_collector_full_source_preflight_and_drift",
+        "test_worker_image_build.Controls.test_membership_rejects_extra_missing_duplicate_and_wrong_shape",
+        "test_worker_image_build.Controls.test_source_missing_and_duplicate_before_output"
+      ],
+      "cwd": "/workspace/scratch/853fba62b1f1/meri-consolidation-closeout-20261011/scripts/qualification",
+      "exitCode": 0,
+      "startedAt": 1791764599.8348048,
+      "endedAt": 1791764600.0255997,
+      "stdout": {
+        "path": "builder18.stdout.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "builder18.stderr.bin",
+        "bytes": 2998,
+        "sha256": "11419e8a8af7647cb3ca3722e0e7da1ccd59878fc8784d1f12ed7bbe5f6ee11a"
+      }
+    }
+  ],
+  "actualWindowsQualified": false,
+  "g1Admitted": false
+}

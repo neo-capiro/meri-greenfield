@@ -1,0 +1,165 @@
+{
+  "baseCommit": "19d64a1b5446337ad10a0068229164133756a073",
+  "baseTree": "63af3468f319fc07ecb16cd71fc01f546654f759",
+  "checks": [
+    {
+      "label": "source-tests",
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-m",
+        "unittest",
+        "test_worker_runner_capture"
+      ],
+      "cwd": "/workspace/scratch/853fba62b1f1/meri-fresh-runner-capture-20261011/scripts/qualification",
+      "startedAt": "2026-10-12T00:00:15.062731+00:00",
+      "endedAt": "2026-10-12T00:00:15.292354+00:00",
+      "timeoutSeconds": 30,
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "bytes": 179,
+        "sha256": "232ce70e512679029d7cedb11541f892dd1779b22913d9cb56c310525b67139e"
+      }
+    },
+    {
+      "label": "cli-help",
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-I",
+        "-B",
+        "-S",
+        "scripts/qualification/worker_runner_capture.py",
+        "--help"
+      ],
+      "cwd": "/workspace/scratch/853fba62b1f1/meri-fresh-runner-capture-20261011",
+      "startedAt": "2026-10-12T00:00:15.292715+00:00",
+      "endedAt": "2026-10-12T00:00:15.357864+00:00",
+      "timeoutSeconds": 30,
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "stdout": {
+        "bytes": 456,
+        "sha256": "7de1e0098ced95e6dce49f770700da26c171d9cf76ba0f2a39f23092da6492fb"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "cli-missing-config",
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-I",
+        "-B",
+        "-S",
+        "scripts/qualification/worker_runner_capture.py"
+      ],
+      "cwd": "/workspace/scratch/853fba62b1f1/meri-fresh-runner-capture-20261011",
+      "startedAt": "2026-10-12T00:00:15.358121+00:00",
+      "endedAt": "2026-10-12T00:00:15.436346+00:00",
+      "timeoutSeconds": 30,
+      "exitCode": 2,
+      "expectedExitCode": 2,
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "bytes": 59,
+        "sha256": "bd67a072307d7bd000988211f2c33720cf16ca2a0a811b08c22c8d04638ca445"
+      }
+    },
+    {
+      "label": "cli-wrong-host",
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-I",
+        "-B",
+        "-S",
+        "scripts/qualification/worker_runner_capture.py",
+        "--read-only-host-capture",
+        "--output",
+        "/workspace/scratch/853fba62b1f1/meri-fresh-runner-capture-20261011/.task-inputs/worker-runner-capture-linux-refusal"
+      ],
+      "cwd": "/workspace/scratch/853fba62b1f1/meri-fresh-runner-capture-20261011",
+      "startedAt": "2026-10-12T00:00:15.436691+00:00",
+      "endedAt": "2026-10-12T00:00:15.501495+00:00",
+      "timeoutSeconds": 30,
+      "exitCode": 2,
+      "expectedExitCode": 2,
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "bytes": 59,
+        "sha256": "bd67a072307d7bd000988211f2c33720cf16ca2a0a811b08c22c8d04638ca445"
+      }
+    },
+    {
+      "label": "safe-import",
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-I",
+        "-B",
+        "-S",
+        "-c",
+        "import sys, subprocess, socket\nfrom pathlib import Path\nfrom unittest.mock import patch\nsys.path.insert(0, 'scripts/qualification')\nwith patch.object(subprocess, 'Popen', side_effect=AssertionError('import process')), patch.object(socket, 'socket', side_effect=AssertionError('import network')), patch.object(Path, 'open', side_effect=AssertionError('import data read')), patch.object(Path, 'mkdir', side_effect=AssertionError('import allocation')):\n import worker_runner_inventory, worker_runner_capture\nprint('import-safe source-only capture modules')\n"
+      ],
+      "cwd": "/workspace/scratch/853fba62b1f1/meri-fresh-runner-capture-20261011",
+      "startedAt": "2026-10-12T00:00:15.501745+00:00",
+      "endedAt": "2026-10-12T00:00:15.599037+00:00",
+      "timeoutSeconds": 30,
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "stdout": {
+        "bytes": 40,
+        "sha256": "3b09a2e08027372e7db2fabeeff27be32b3a1e34bb403a27b387a1b54757d07e"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "cwd": "/workspace/scratch/853fba62b1f1/meri-fresh-runner-capture-20261011",
+      "startedAt": "2026-10-12T00:00:15.599272+00:00",
+      "endedAt": "2026-10-12T00:00:15.603361+00:00",
+      "timeoutSeconds": 30,
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "sourceFileSha256": {
+    "scripts/qualification/worker_runner_inventory.py": "51c62cfd170caa77cca51dec898cbb53bf5af3d51c9b281806a55e83304dc0ab",
+    "scripts/qualification/worker_runner_capture.py": "dc2fe34aa6f73e494158631fbd63f41234dbf457654f691c032e219bb6d1b6ec",
+    "scripts/qualification/test_worker_runner_capture.py": "a780022a0ee41854d64fed26be80d42b20ac3b66cfe0a017a5e18eb5b026ad27"
+  },
+  "actualWindowsCapture": "UNRUN",
+  "awsRequests": 0,
+  "runnerQualified": false,
+  "buildAuthorized": false,
+  "completeExecutableClosure": false,
+  "sourceTestCount": 21,
+  "earlierReceiptDirectory": "earlier-source20"
+}

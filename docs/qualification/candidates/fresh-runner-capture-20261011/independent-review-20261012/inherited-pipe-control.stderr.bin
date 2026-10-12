@@ -1,0 +1,16 @@
+Timeout (0:00:08)!
+Thread 0x00007f52597316c0 (most recent call first):
+  File "/workspace/scratch/853fba62b1f1/meri-fresh-runner-capture-independent-20261012/scripts/qualification/worker_runner_capture.py", line 77 in consume
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/threading.py", line 1012 in run
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/threading.py", line 1075 in _bootstrap_inner
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/threading.py", line 1032 in _bootstrap
+
+Thread 0x00007f5259f326c0 (most recent call first):
+  File "/workspace/scratch/853fba62b1f1/meri-fresh-runner-capture-independent-20261012/scripts/qualification/worker_runner_capture.py", line 77 in consume
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/threading.py", line 1012 in run
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/threading.py", line 1075 in _bootstrap_inner
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/threading.py", line 1032 in _bootstrap
+
+Thread 0x00007f525b498740 (most recent call first):
+  File "/workspace/scratch/853fba62b1f1/meri-fresh-runner-capture-independent-20261012/scripts/qualification/worker_runner_capture.py", line 104 in native_version
+  File "/workspace/scratch/853fba62b1f1/meri-fresh-runner-capture-independent-20261012/docs/qualification/candidates/fresh-runner-capture-20261011/independent-review-20261012/inherited-pipe-control.py", line 13 in <module>
