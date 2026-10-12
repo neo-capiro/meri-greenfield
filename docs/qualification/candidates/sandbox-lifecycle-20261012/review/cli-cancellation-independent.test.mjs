@@ -25,7 +25,7 @@ test('CLI signal reaches actual runtime containment and repeated signals never a
  const fake=new EventEmitter();const bridge=installProbeCancellation(fake);let children=0,kills=0,closed=false;let child;
  const result=runQualificationChildren({signal:bridge.signal,deadlineMs:100,graceMs:20,detached:true,
   spawnFn:()=>{children++;child=new EventEmitter();child.pid=424242;child.stdout=new EventEmitter();child.stderr=new EventEmitter();queueMicrotask(()=>{fake.emit('SIGTERM');fake.emit('SIGINT');});return child;},
-  groupKill:c=>{assert.equal(c,child);kills++;setImmediate(()=>{closed=true;c.emit('close',null,'SIGKILL');});return true;},
+  groupKill:c=>{assert.equal(c,child);kills++;queueMicrotask(()=>{closed=true;c.emit('close',null,'SIGKILL');});return true;},
   probeGroup:c=>{assert.equal(c,child);return !closed;}
  });
  const values=await result;assert.equal(children,1);assert.equal(kills,1);assert.equal(values[0].cleanupConfirmed,true);assert.ok(values.every(x=>x.status==='fail'));bridge.dispose();assert.equal(fake.listenerCount('SIGTERM'),0);

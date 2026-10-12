@@ -62,8 +62,8 @@
     },
     {
       "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/cli-cancellation-independent.test.mjs",
-      "bytes": 6013,
-      "sha256": "44f4c4a2086464192544a861c555cbba776d3b48d7802927c0e58464ad37249e"
+      "bytes": 6015,
+      "sha256": "288683c40bdce7941e8668484910509464d4da9751b7a17e6ead4c2b3b10ccf2"
     },
     {
       "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/cli-signal-allocation.json",
@@ -221,6 +221,46 @@
       "sha256": "73194c0707a6529db05a00ac182c08b3679ae5c8f934c8549162a479cf130689"
     },
     {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/fixture-timing/original-cli-cancellation-independent.test.mjs",
+      "bytes": 6013,
+      "sha256": "44f4c4a2086464192544a861c555cbba776d3b48d7802927c0e58464ad37249e"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/fixture-timing/repair-provenance.json",
+      "bytes": 596,
+      "sha256": "df83269e8db6b0fbee471f24a23b399c1c8eb7e237ba6989a43a3a63a2ea49a4"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/fixture-timing/repaired44-command.json",
+      "bytes": 960,
+      "sha256": "90ebcd558536181739ddb7f54446be440c501c107fb69bdf2fadc3f30094a0c3"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/fixture-timing/repaired44.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/fixture-timing/repaired44.stdout.txt",
+      "bytes": 4209,
+      "sha256": "decab77e84bf1bf3c70891c7f358742bd3a2a79a0fcab1ea4908f2f322261657"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/fixture-timing/root-sandbox-independent.json",
+      "bytes": 2035,
+      "sha256": "a2e90bfd8fa3a7c861cd716f279e7ac0f53ef21bdc826a0e5e47cac05114b32f"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/fixture-timing/root-sandbox-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/fixture-timing/root-sandbox-independent.stdout.bin",
+      "bytes": 5048,
+      "sha256": "18ba0ca4ae46aef0375761c1f21ffebec9e80f5962eac1f9da1a0f0fdcfdfa35"
+    },
+    {
       "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/frozen-criteria.json",
       "bytes": 4242,
       "sha256": "12b674bad7e88be52b93ad01ed469f8caa57c086d463de84dcc6fb2be5045218"
@@ -325,5 +365,6 @@
       "bytes": 7520,
       "sha256": "a7f0f5a230053ba34643e3e372e5fcbad4f309d5456c8dc2b3a521c338948185"
     }
-  ]
+  ],
+  "subsequentReviewFixtureRepair": "One positive fake-close scheduling change at root request; original failure/assertions retained under fixture-timing/; previous manifest preserved in commit e093bee67ab507b13599fa6121887890115c6e82"
 }
