@@ -141,3 +141,11 @@ for(const stage of ['connect','BEGIN',"SET LOCAL statement_timeout = '5s'","SET 
  const later=h.commands.slice(atCancel).map(x=>x.sql);assert.ok(later.every(sql=>sql==='ROLLBACK'),`unexpected later port: ${JSON.stringify(later)}`);
  assert.equal(h.state().produced.size,0);assert.equal(h.state().reservations.size,0);assert.equal(handlerCount(h),0);
 });
+
+test('freshly shortened release authority deadline also bounds parked completion marker continuation',async()=>{
+ const {h,c}=await setup();const original=h.f.ports.currentRun;let checks=0;
+ h.f.ports.currentRun=async()=>{const row=JSON.parse(await original());checks++;if(checks>=4)row.deadlineMs=NOW+500;return JSON.stringify(row);};
+ const gate=h.parkCommit('marker');const promise=c.execute(requestJson,h.credential,deliveryId),rejected=assert.rejects(promise);await gate.ready;assert.ok(checks>=4);h.setClock(NOW+501);gate.resume();await rejected;await new Promise(r=>setImmediate(r));
+ assert.ok(produced(h).completion);assert.equal(reserved(h).state,'UNKNOWN');assert.equal(settleCount(h),0);
+ await (await h.controller()).reconcile(requestJson,deliveryId);assert.equal(reserved(h).state,'SETTLED');assert.equal(settleCount(h),1);
+});

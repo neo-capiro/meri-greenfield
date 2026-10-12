@@ -1,0 +1,29 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/durable-invocation-20261012/review/invocation-independent.test.mjs",
+    "docs/qualification/candidates/durable-invocation-20261012/review/exposed-marker-independent.test.mjs",
+    "docs/qualification/candidates/durable-invocation-20261012/review/private-composition-injection.test.mjs"
+  ],
+  "cwd": "/workspace/meri-durable-invocation-review-20261012",
+  "startUnixSeconds": 1791790407.326127,
+  "elapsedSeconds": 1.4218156337738037,
+  "exitCode": 0,
+  "ownedPidAndGroup": 101212,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "reapedDescendants": [],
+  "streams": {
+    "stdout": {
+      "path": "repaired-prefreeze-controls.stdout.txt",
+      "bytes": 4052,
+      "sha256": "05fc1f175c61e7eb5620b3f896a95c7d2a7ce942b17e165ec78d5fe2609d2e96"
+    },
+    "stderr": {
+      "path": "repaired-prefreeze-controls.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}
