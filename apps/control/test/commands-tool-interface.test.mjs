@@ -1,20 +1,26 @@
 /** Actual normalization/proposal/executor/journal/source path, synthetic external ports. */
+import {readFileSync} from 'node:fs';import Ajv from 'ajv/dist/2020.js';import addFormats from 'ajv-formats';
 import test from 'node:test';import assert from 'node:assert/strict';
 import * as payloads from '../../../packages/contracts/commands-0.2/validate.mjs';
 import {assertProposalIntegrity,canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {createCommandToolValidators} from '../../../packages/contracts/commands-0.2/tool-interface-validation.mjs';
 import {createCommandToolInterface} from '../commands/tool-interface.mjs';
 import {fixture,taskUpdate,NOW,id} from './commands-fixture.mjs';
+const ajv=new Ajv({strict:true,allErrors:true});addFormats(ajv);
+for(const path of ['../meri.schema.json','./task-create.schema.json','./task-update.schema.json','./artifact-file.schema.json','./memory-propose.schema.json','./tool-interface.schema.json'])ajv.addSchema(JSON.parse(readFileSync(new URL('../../../packages/contracts/commands-0.2/'+path,import.meta.url))));
+const shapes=new Map();
+function validateToolShape(name,value){let check=shapes.get(name);if(!check){check=ajv.compile({$ref:'urn:meri:commands:tool-interface:0.2.0#/$defs/'+name});shapes.set(name,check);}if(!check(value))throw Error('Invalid command tool result');return value;}
 function setup(action='task.create'){
  const f=fixture(action);let retained,prepareCalls=0,readCalls=0,executeCalls=0;const hooks={};
- const validators=createCommandToolValidators({payloads,taskUpdate,intents:f.contracts,validateShape:()=>{throw Error('Unused output schema callback');},canonicalSha256});
+ const validators=createCommandToolValidators({payloads,taskUpdate,intents:f.contracts,validateShape:validateToolShape,canonicalSha256});
  const raw=action==='task.create'?{title:'  Task  '}:action==='task.update'?{taskId:id(21),title:' Updated ',status:'open'}:action==='memory.propose'?{content:' Memory ',scope:'firm'}:{...f.context.destination,objects:f.command.attachments};
  const owner={async prepare(call){prepareCalls++;if(hooks.prepare)await hooks.prepare(call);
   retained={operation:call.operation,action,binding:f.binding,request:call.request,inputSha256:canonicalSha256(call.input),commandId:f.command.commandId,idempotencyKey:f.command.idempotencyKey,proposalId:f.proposal.proposalId,scopes:f.scopes,createdAt:f.proposal.createdAt,expiresAt:f.proposal.expiresAt,requiredApprover:f.proposal.requiredApprover,checkedAtMs:f.state.now};
   const value=structuredClone(retained);hooks.mutate?.(value);return value;},
   async read(call){readCalls++;if(hooks.read)await hooks.read(call);const value=structuredClone(retained);value.checkedAtMs=f.state.now;hooks.mutateRead?.(value);return value;}};
  const executable=f.create();
- const create=changes=>createCommandToolInterface({operation:f.descriptor.operation,action,commandContext:f.context,validators,
+ const outputShape={'task.create':'TaskCreateToolResult','task.update':'TaskUpdateToolResult','artifact.file':'ArtifactFileToolResult','memory.propose':'MemoryProposeToolResult'}[action];
+ const create=changes=>createCommandToolInterface({operation:f.descriptor.operation,action,outputShape,commandContext:f.context,validators,
   assertProposal:action==='task.update'?taskUpdate.assertTaskUpdateProposal:assertProposalIntegrity,
   approvalMetadataOwner:owner,executor:{execute(...args){executeCalls++;return executable.execute(...args);}},now:()=>f.state.now,limits:{maxRequestMs:1000,maxFactBytes:65536},...changes});
  return {f,raw,hooks,owner,validators,create,counts:()=>({prepareCalls,readCalls,executeCalls}),retained:()=>retained};
@@ -84,4 +90,15 @@ test('final clock-triggered abort cannot release a pending proposal',async()=>{
 });
 test('unknown metadata-owner output fields and oversized receipts refuse',async()=>{
  const t=setup();t.hooks.mutate=r=>r.approved=true;await assert.rejects(t.create().prepare(t.raw));t.hooks.mutate=null;await assert.rejects(t.create({limits:{maxRequestMs:1000,maxFactBytes:1}}).prepare(t.raw));
+});
+test('executor result uses exact canonical output schema; absent/extra success are not execution outputs',async()=>{
+ const t=setup(),p=await t.create().prepare(t.raw);
+ for(const value of [{status:'absent',outcome:null},{status:'indeterminate',outcome:null,retry:true},{status:'approval_required',proposal:p.proposal}]){
+  const service=t.create({executor:{execute:async()=>value}});await assert.rejects(service.executeApproved(p.proposal,t.f.execution,'synthetic'));
+ }
+});
+test('actual durable journal/source output cannot be substituted before facade release',async()=>{
+ const t=setup(),p=await t.create().prepare(t.raw),actual=t.f.create();
+ const service=t.create({executor:{async execute(...args){const value=structuredClone(await actual.execute(...args));value.outcome.receipt.commandSha256='f'.repeat(64);return value;}}});
+ await assert.rejects(service.executeApproved(p.proposal,t.f.execution,'synthetic'));assert.equal(t.f.state.fetches,1);assert.equal([...t.f.pg.rows.values()][0].state,'OUTCOME');
 });
