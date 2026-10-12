@@ -7,8 +7,8 @@
   "members": [
     {
       "path": "docs/coordination/reports/CODEX-PLAN-RECEIPT-JOIN-20261012.md",
-      "bytes": 13311,
-      "sha256": "9ce48b843326d287c2dc7f10b8e0a9e8c2258d430dc376fb82af662f80da5ff8"
+      "bytes": 13706,
+      "sha256": "db54ebd2e96b6597fc472a110176ece016970bd2e2d68475c7b8423e91c56627"
     },
     {
       "path": "docs/coordination/tasks/CODEX-PLAN-RECEIPT-JOIN-20261012.md",
@@ -22,13 +22,13 @@
     },
     {
       "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/boundaries.json",
-      "bytes": 2944,
-      "sha256": "10d426c161f4feb2a9dedca09be165fdd58371d86e77a78092c500a4b6bd0cb4"
+      "bytes": 3154,
+      "sha256": "c5e2491eec15b7c30a12ef9823707fee98fa19d834adef21fc6cf2fd9808078a"
     },
     {
       "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/build.py",
-      "bytes": 35212,
-      "sha256": "30ee4b6a934474bbaed8f509cf25cbd2ea0ceea8c6ac982af4a0de34cbf94f6f"
+      "bytes": 35367,
+      "sha256": "78b77f14c52af0556d328bc98052944b4922670b4a4db38b8f0242a0e0599a91"
     },
     {
       "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/build.stderr",
@@ -144,6 +144,36 @@
       "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/verify.stdout",
       "bytes": 194,
       "sha256": "23805cdfcb1eb645bb7b7ee77e1c36800e0fb9fe634f1b5ba67d4b957ec3dc89"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/whitespace-all.json",
+      "bytes": 424,
+      "sha256": "07d9ceba4dfa6e028df729399c601703f59c0888e760e252a33278b4bf518156"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/whitespace-all.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/whitespace-all.stdout",
+      "bytes": 735,
+      "sha256": "f9b4fabf23d72ec1e6218c51fd34031dc5840a6f126adcd3905db5352dfee6d3"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/whitespace-authored.json",
+      "bytes": 559,
+      "sha256": "a464035f0377b754986d4f47b5ec09fb4262b7fe5e64746dfcc83539275bda57"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/whitespace-authored.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/whitespace-authored.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     }
   ]
 }

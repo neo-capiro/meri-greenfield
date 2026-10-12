@@ -1,4 +1,14 @@
 {
+  "gateStates": {
+    "G0": "accepted discovery",
+    "G1": "OPEN",
+    "G2": "unentered",
+    "G3": "unentered",
+    "G4": "unentered",
+    "G5": "unentered",
+    "G6": "unentered",
+    "G7": "unentered"
+  },
   "originalBenchmarks": {
     "realTasksMinimum": 60,
     "completionRateMinimum": 0.9,
