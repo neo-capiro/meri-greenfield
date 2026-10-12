@@ -1,0 +1,201 @@
+{
+  "scope": "Pre-freeze immutable prerequisites only; not final root acceptance",
+  "observedRootHead": "949c58de06dff783c494f128e43ae787fbbab7bd",
+  "base": "6cfb1f9a4d8acd66c5bd8d38d892d656fa3cd89e",
+  "githubState": "Retained root connector observation only; reviewer did not refresh network state",
+  "ancestry": [
+    {
+      "pr": 7,
+      "head": "5ee46446b5f60034916f00b2a665b3e2bef9cf60",
+      "tree": "985e0fdafe23d68b6f2e81a092cf098d8ede3182",
+      "baseAncestor": true,
+      "adjacentBaseMatchesPreviousHead": null
+    },
+    {
+      "pr": 10,
+      "head": "7ba0e9d10ebf684e162dcc7c143915afdbf00f32",
+      "tree": "26527e06900f4c63dc81c7d394dd50e45c4febaf",
+      "baseAncestor": true,
+      "adjacentBaseMatchesPreviousHead": true
+    },
+    {
+      "pr": 11,
+      "head": "5db2714b6dcbd3109c528e0afafcb654216133ca",
+      "tree": "0eef3a0166b4b95fdfdc9bd886b5157d299d02db",
+      "baseAncestor": true,
+      "adjacentBaseMatchesPreviousHead": true
+    },
+    {
+      "pr": 12,
+      "head": "90b4dc8472da13cdee9f49cdc0b4c8306ecbdc73",
+      "tree": "1f6ac35ad37531e790c2a19c9e310c7e618e6522",
+      "baseAncestor": true,
+      "adjacentBaseMatchesPreviousHead": true
+    },
+    {
+      "pr": 13,
+      "head": "690bac4cd44112b161d8e02818aeae7639ce237a",
+      "tree": "c3c6ee29de298fd26cbf32b43fbf43c0c92521ca",
+      "baseAncestor": true,
+      "adjacentBaseMatchesPreviousHead": true
+    },
+    {
+      "pr": 14,
+      "head": "1e6d430cf9c239caca4198aea42a762f13021cd5",
+      "tree": "4584edc9cba1ee6e9f81464d47b477039994bbfb",
+      "baseAncestor": true,
+      "adjacentBaseMatchesPreviousHead": true
+    },
+    {
+      "pr": 15,
+      "head": "14be9fc614568a74133b89f2b229e50c9b030322",
+      "tree": "fd5ac72bed31f0611e4c24a6535730ac17a14ad7",
+      "baseAncestor": true,
+      "adjacentBaseMatchesPreviousHead": true
+    },
+    {
+      "pr": 16,
+      "head": "e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5",
+      "tree": "35e6da43d35e06701b5bde73db571b5e1e688ea8",
+      "baseAncestor": true,
+      "adjacentBaseMatchesPreviousHead": true
+    },
+    {
+      "pr": 17,
+      "head": "263d0d174f9924a6030bb1c20100ff1115ffcda0",
+      "tree": "bae9e77b928b4053d788aa4d5542bf6c1575644e",
+      "baseAncestor": true,
+      "adjacentBaseMatchesPreviousHead": true
+    },
+    {
+      "pr": 18,
+      "head": "6cfb1f9a4d8acd66c5bd8d38d892d656fa3cd89e",
+      "tree": "7072177eefc7a8b495625ab0c20c0e82b7c55dd8",
+      "baseAncestor": true,
+      "adjacentBaseMatchesPreviousHead": true
+    }
+  ],
+  "protectedInputs": [
+    {
+      "path": "docs/plans/MERI-DEPLOYMENT.md",
+      "bytes": 86848,
+      "sha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388",
+      "unchangedFromPr18": true
+    },
+    {
+      "path": "docs/coordination/r2/capabilities.json",
+      "bytes": 307002,
+      "sha256": "7207b38fd415c1254c5b8cbf80ec0a2910f399f8e65aa7f85b7b9b9f3c2dd4f1",
+      "unchangedFromPr18": true
+    },
+    {
+      "path": "docs/coordination/r2/skills.json",
+      "bytes": 25018,
+      "sha256": "bfd0b14953b858d351a58a778f435f2d546c1a420050ee6c31ae5e489f1f17b6",
+      "unchangedFromPr18": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog.json",
+      "bytes": 79211,
+      "sha256": "733438a232fafbc7aaf8635ba30fd33d1fab94bc73949d2c9264b14c92e8cbce",
+      "unchangedFromPr18": true
+    },
+    {
+      "path": "docs/qualification/candidates/g1-execution-options-20261012/author/execution-plan.json",
+      "bytes": 36920,
+      "sha256": "caefeacf2310a8fd11dbd3ac5976a824bb0ffe33e0183a0a01ddc776e14c1f1d",
+      "unchangedFromPr18": true
+    }
+  ],
+  "historicalFailure": [
+    {
+      "name": "frozen source: docs/plans/MERI-G1-SOURCE-TO-NATIVE.md",
+      "passed": false
+    }
+  ],
+  "checks": [
+    {
+      "name": "git-ancestry:PR7",
+      "passed": true
+    },
+    {
+      "name": "git-ancestry:PR10",
+      "passed": true
+    },
+    {
+      "name": "git-ancestry:PR11",
+      "passed": true
+    },
+    {
+      "name": "git-ancestry:PR12",
+      "passed": true
+    },
+    {
+      "name": "git-ancestry:PR13",
+      "passed": true
+    },
+    {
+      "name": "git-ancestry:PR14",
+      "passed": true
+    },
+    {
+      "name": "git-ancestry:PR15",
+      "passed": true
+    },
+    {
+      "name": "git-ancestry:PR16",
+      "passed": true
+    },
+    {
+      "name": "git-ancestry:PR17",
+      "passed": true
+    },
+    {
+      "name": "git-ancestry:PR18",
+      "passed": true
+    },
+    {
+      "name": "original-scope139-selected96-deferred43",
+      "passed": true
+    },
+    {
+      "name": "catalog-fourteen-operations",
+      "passed": true
+    },
+    {
+      "name": "unchanged:docs/plans/MERI-DEPLOYMENT.md",
+      "passed": true
+    },
+    {
+      "name": "unchanged:docs/coordination/r2/capabilities.json",
+      "passed": true
+    },
+    {
+      "name": "unchanged:docs/coordination/r2/skills.json",
+      "passed": true
+    },
+    {
+      "name": "unchanged:packages/contracts/retrieval-0.2/catalog.json",
+      "passed": true
+    },
+    {
+      "name": "unchanged:docs/qualification/candidates/g1-execution-options-20261012/author/execution-plan.json",
+      "passed": true
+    },
+    {
+      "name": "native-prefix-historical-roadmap-only-failure-preserved",
+      "passed": true
+    },
+    {
+      "name": "native-prefix-original-author282-pass-preserved",
+      "passed": true
+    },
+    {
+      "name": "fourteen-unavailable-eighty-two-selected-unmapped",
+      "passed": true
+    }
+  ],
+  "passed": 20,
+  "failed": 0,
+  "nativeExecution": false
+}
