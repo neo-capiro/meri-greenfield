@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "python3",
+    "-B",
+    "scripts/qualification/worker_context_test.py"
+  ],
+  "cwd": "/workspace/meri-sandbox-lifecycle-20261012",
+  "sourceCommit": "bb44e802de14b5483c51ea1a58448ca23a5f11a0",
+  "exitCode": 0,
+  "durationSeconds": 1.394,
+  "processReaped": true,
+  "nativeQualificationExecuted": false
+}
