@@ -12,6 +12,22 @@ const searched = result => ({input: result.input, metadata: {clientScope: result
 const federal = result => ({input: result.query, metadata: {queryScope: result.queryScope, clientScope: result.clientScope}});
 
 export const CATALOG_OPERATION_BINDINGS = Object.freeze([
+  Object.freeze({id:'schedule_task',nativeId:'schedule_task',group:'schedule-tools',input:'ScheduleTaskRequest',output:'ScheduleMutationOutput',version:'0.2.0',
+    contextKeys:Object.freeze(['scheduleContext']),dispatchProfile:'schedule-execution/1',
+    normalize:(v,request,context,binding)=>v.scheduleToolValidators.normalizeInput(binding.id,request,clock(context,binding.contextKeys)),
+    outputAssert:(v,page,request,context,binding)=>v.scheduleToolValidators.assertResult(binding.id,page,request,clock(context,binding.contextKeys))}),
+  Object.freeze({id:'list_scheduled_tasks',nativeId:'list_scheduled_tasks',group:'schedule-tools',input:'ListScheduledTasksRequest',output:'ListScheduledTasksOutput',version:'0.2.0',
+    contextKeys:Object.freeze(['scheduleContext']),dispatchProfile:'schedule-execution/1',
+    normalize:(v,request,context,binding)=>v.scheduleToolValidators.normalizeInput(binding.id,request,clock(context,binding.contextKeys)),
+    outputAssert:(v,page,request,context,binding)=>v.scheduleToolValidators.assertResult(binding.id,page,request,clock(context,binding.contextKeys))}),
+  Object.freeze({id:'cancel_scheduled_task',nativeId:'cancel_scheduled_task',group:'schedule-tools',input:'CancelScheduledTaskRequest',output:'ScheduleMutationOutput',version:'0.2.0',
+    contextKeys:Object.freeze(['scheduleContext']),dispatchProfile:'schedule-execution/1',
+    normalize:(v,request,context,binding)=>v.scheduleToolValidators.normalizeInput(binding.id,request,clock(context,binding.contextKeys)),
+    outputAssert:(v,page,request,context,binding)=>v.scheduleToolValidators.assertResult(binding.id,page,request,clock(context,binding.contextKeys))}),
+  Object.freeze({id:'update_scheduled_task',nativeId:'update_scheduled_task',group:'schedule-tools',input:'UpdateScheduledTaskRequest',output:'ScheduleMutationOutput',version:'0.2.0',
+    contextKeys:Object.freeze(['scheduleContext']),dispatchProfile:'schedule-execution/1',
+    normalize:(v,request,context,binding)=>v.scheduleToolValidators.normalizeInput(binding.id,request,clock(context,binding.contextKeys)),
+    outputAssert:(v,page,request,context,binding)=>v.scheduleToolValidators.assertResult(binding.id,page,request,clock(context,binding.contextKeys))}),
   Object.freeze({id:'create_task',nativeId:'create_task',action:'task.create',group:'command-tools',input:'TaskCreateToolRequest',output:'TaskCreateToolResult',version:'0.2.0',
     contextKeys:Object.freeze(['commandContext','command','proposal']),dispatchProfile:'command-execution/1',
     normalize:(v,request,context,binding)=>v.commandToolValidators.normalizeCommandToolInput(binding.action,request,clock(context,binding.contextKeys)),

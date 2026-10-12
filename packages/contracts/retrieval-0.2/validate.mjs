@@ -83,8 +83,8 @@ function executionShape(group,name,value) {
   if (!check || !check(value)) throw new Error(`Invalid private execution contract ${group}:${name}`);
   return value;
 }
-const executionToolValidators = createExecutionToolValidators({schemaShape:executionShape, validatePublicShape, canonicalSha256});
-export const {artifactValidators,commandToolValidators} = executionToolValidators;
+const executionToolValidators = createExecutionToolValidators({schemaShape:executionShape, schemaFor:group=>schemas[groups.indexOf(group)], validatePublicShape, canonicalSha256});
+export const {artifactValidators,commandToolValidators,scheduleToolValidators} = executionToolValidators;
 const fail = message => { throw new Error(message); };
 const key = operation => `${operation.id}@${operation.version}`;
 function unique(values, label) {

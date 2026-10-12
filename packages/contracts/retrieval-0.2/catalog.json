@@ -1,7 +1,7 @@
 {
   "contractVersion": "0.2.0",
   "catalogId": "meri.retrieval",
-  "catalogVersion": "0.2.14",
+  "catalogVersion": "0.2.15",
   "sourceRegistryCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
   "originals": [
     {
@@ -913,29 +913,41 @@
       "id": "schedule_task",
       "disposition": "selected",
       "boundary": "New application Temporal Schedule only, bound to initiating actor, scope, timezone and budget; existing Capiro schedule parity is not accepted.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "schedule_task",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "list_scheduled_tasks",
       "disposition": "selected",
       "boundary": "New application-owned Temporal schedule inspection and run history; current Capiro schedule store parity is not accepted.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "list_scheduled_tasks",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "cancel_scheduled_task",
       "disposition": "selected",
       "boundary": "New application Temporal Schedule cancellation; cancellation and run-history fixtures required.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "cancel_scheduled_task",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "update_scheduled_task",
       "disposition": "selected",
       "boundary": "New application schedule update and pause controls; recheck authority; no arbitrary external action expansion.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "update_scheduled_task",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "query_tasks",
@@ -7686,6 +7698,281 @@
       ],
       "fixtureIds": [
         "catalog.binding.save_chat_attachments"
+      ]
+    },
+    {
+      "operation": {
+        "id": "schedule_task",
+        "version": "0.2.0"
+      },
+      "displayName": "Create an approved schedule",
+      "whenToUse": "Prepare and review a complete explicit schedule intent, then apply only its exact current approval through the owned lifecycle.",
+      "limitations": [
+        "Source-only model interface and concrete application ownership/Temporal SDK adapters. Null production handler and runtime qualification pending.",
+        "Only scheduleContext carries trusted current caller, owner, scope, projection/generation, task/template, destination and effective-limit resolution. Raw instruction or identifiers grant no authority.",
+        "Create/update approval hashes include exact normalized instruction digest and full resolved intent. Current qualified producers must implement the task/template mapping and future workflow scope/budget enforcement.",
+        "List preserves unavailable inspection separately from absence and denied access. Returned windows are bounded; historyComplete and currentRetryVerified remain false.",
+        "Cancellation selects pause/delete and explicit original runs. An acknowledgment is not physical stop. Lost effects remain unknown; SDK updates have no compare-and-swap and transport retries can issue multiple attempts.",
+        "Source-only SQL migrations are not applied. Real Postgres/Temporal durability, current policy and production wiring remain unqualified.",
+        "The existing command.execute capability vocabulary is a required prerequisite, not sufficient schedule authority. The qualified current schedule authorization adapter must separately bind delegated owner, exact intent, scope and approval; no new public action enum is introduced."
+      ],
+      "positiveExamples": [
+        "Review the explicit timezone, complete schedule policy, instruction, destination and effective budgets, or inspect an authorized stored schedule page."
+      ],
+      "negativeExamples": [
+        "Treat model-supplied owner/workflow/policy as authorization, reuse approval after instruction change, infer complete retry history, or claim cancellation physically stopped work."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "application_schedules",
+          "authority": "authoritative",
+          "purpose": "enumeration"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:schedules:tool-interface:0.2.0#/$defs/ScheduleTaskRequest",
+        "sha256": "2de8450111ea263876553f86b895d7fe93bca65ec55bcd649421e21a6f6d3fcf"
+      },
+      "outputSchema": {
+        "id": "urn:meri:schedules:tool-interface:0.2.0#/$defs/ScheduleMutationOutput",
+        "sha256": "2de8450111ea263876553f86b895d7fe93bca65ec55bcd649421e21a6f6d3fcf"
+      },
+      "aliases": [],
+      "sideEffect": "schedule",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.schedule_task"
+      ]
+    },
+    {
+      "operation": {
+        "id": "list_scheduled_tasks",
+        "version": "0.2.0"
+      },
+      "displayName": "List authorized schedules and original run history",
+      "whenToUse": "Inspect authorized application schedules and bounded original-run history.",
+      "limitations": [
+        "Source-only model interface and concrete application ownership/Temporal SDK adapters. Null production handler and runtime qualification pending.",
+        "Only scheduleContext carries trusted current caller, owner, scope, projection/generation, task/template, destination and effective-limit resolution. Raw instruction or identifiers grant no authority.",
+        "Create/update approval hashes include exact normalized instruction digest and full resolved intent. Current qualified producers must implement the task/template mapping and future workflow scope/budget enforcement.",
+        "List preserves unavailable inspection separately from absence and denied access. Returned windows are bounded; historyComplete and currentRetryVerified remain false.",
+        "Cancellation selects pause/delete and explicit original runs. An acknowledgment is not physical stop. Lost effects remain unknown; SDK updates have no compare-and-swap and transport retries can issue multiple attempts.",
+        "Source-only SQL migrations are not applied. Real Postgres/Temporal durability, current policy and production wiring remain unqualified."
+      ],
+      "positiveExamples": [
+        "Review the explicit timezone, complete schedule policy, instruction, destination and effective budgets, or inspect an authorized stored schedule page."
+      ],
+      "negativeExamples": [
+        "Treat model-supplied owner/workflow/policy as authorization, reuse approval after instruction change, infer complete retry history, or claim cancellation physically stopped work."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "application_schedules",
+          "authority": "authoritative",
+          "purpose": "enumeration"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:schedules:tool-interface:0.2.0#/$defs/ListScheduledTasksRequest",
+        "sha256": "2de8450111ea263876553f86b895d7fe93bca65ec55bcd649421e21a6f6d3fcf"
+      },
+      "outputSchema": {
+        "id": "urn:meri:schedules:tool-interface:0.2.0#/$defs/ListScheduledTasksOutput",
+        "sha256": "2de8450111ea263876553f86b895d7fe93bca65ec55bcd649421e21a6f6d3fcf"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.list_scheduled_tasks"
+      ]
+    },
+    {
+      "operation": {
+        "id": "cancel_scheduled_task",
+        "version": "0.2.0"
+      },
+      "displayName": "Cancel or pause an approved schedule",
+      "whenToUse": "Prepare and review a complete explicit schedule intent, then apply only its exact current approval through the owned lifecycle.",
+      "limitations": [
+        "Source-only model interface and concrete application ownership/Temporal SDK adapters. Null production handler and runtime qualification pending.",
+        "Only scheduleContext carries trusted current caller, owner, scope, projection/generation, task/template, destination and effective-limit resolution. Raw instruction or identifiers grant no authority.",
+        "Create/update approval hashes include exact normalized instruction digest and full resolved intent. Current qualified producers must implement the task/template mapping and future workflow scope/budget enforcement.",
+        "List preserves unavailable inspection separately from absence and denied access. Returned windows are bounded; historyComplete and currentRetryVerified remain false.",
+        "Cancellation selects pause/delete and explicit original runs. An acknowledgment is not physical stop. Lost effects remain unknown; SDK updates have no compare-and-swap and transport retries can issue multiple attempts.",
+        "Source-only SQL migrations are not applied. Real Postgres/Temporal durability, current policy and production wiring remain unqualified.",
+        "The existing command.execute capability vocabulary is a required prerequisite, not sufficient schedule authority. The qualified current schedule authorization adapter must separately bind delegated owner, exact intent, scope and approval; no new public action enum is introduced."
+      ],
+      "positiveExamples": [
+        "Review the explicit timezone, complete schedule policy, instruction, destination and effective budgets, or inspect an authorized stored schedule page."
+      ],
+      "negativeExamples": [
+        "Treat model-supplied owner/workflow/policy as authorization, reuse approval after instruction change, infer complete retry history, or claim cancellation physically stopped work."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "application_schedules",
+          "authority": "authoritative",
+          "purpose": "enumeration"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:schedules:tool-interface:0.2.0#/$defs/CancelScheduledTaskRequest",
+        "sha256": "2de8450111ea263876553f86b895d7fe93bca65ec55bcd649421e21a6f6d3fcf"
+      },
+      "outputSchema": {
+        "id": "urn:meri:schedules:tool-interface:0.2.0#/$defs/ScheduleMutationOutput",
+        "sha256": "2de8450111ea263876553f86b895d7fe93bca65ec55bcd649421e21a6f6d3fcf"
+      },
+      "aliases": [],
+      "sideEffect": "schedule",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.cancel_scheduled_task"
+      ]
+    },
+    {
+      "operation": {
+        "id": "update_scheduled_task",
+        "version": "0.2.0"
+      },
+      "displayName": "Update an approved schedule",
+      "whenToUse": "Prepare and review a complete explicit schedule intent, then apply only its exact current approval through the owned lifecycle.",
+      "limitations": [
+        "Source-only model interface and concrete application ownership/Temporal SDK adapters. Null production handler and runtime qualification pending.",
+        "Only scheduleContext carries trusted current caller, owner, scope, projection/generation, task/template, destination and effective-limit resolution. Raw instruction or identifiers grant no authority.",
+        "Create/update approval hashes include exact normalized instruction digest and full resolved intent. Current qualified producers must implement the task/template mapping and future workflow scope/budget enforcement.",
+        "List preserves unavailable inspection separately from absence and denied access. Returned windows are bounded; historyComplete and currentRetryVerified remain false.",
+        "Cancellation selects pause/delete and explicit original runs. An acknowledgment is not physical stop. Lost effects remain unknown; SDK updates have no compare-and-swap and transport retries can issue multiple attempts.",
+        "Source-only SQL migrations are not applied. Real Postgres/Temporal durability, current policy and production wiring remain unqualified.",
+        "The existing command.execute capability vocabulary is a required prerequisite, not sufficient schedule authority. The qualified current schedule authorization adapter must separately bind delegated owner, exact intent, scope and approval; no new public action enum is introduced."
+      ],
+      "positiveExamples": [
+        "Review the explicit timezone, complete schedule policy, instruction, destination and effective budgets, or inspect an authorized stored schedule page."
+      ],
+      "negativeExamples": [
+        "Treat model-supplied owner/workflow/policy as authorization, reuse approval after instruction change, infer complete retry history, or claim cancellation physically stopped work."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "application_schedules",
+          "authority": "authoritative",
+          "purpose": "enumeration"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:schedules:tool-interface:0.2.0#/$defs/UpdateScheduledTaskRequest",
+        "sha256": "2de8450111ea263876553f86b895d7fe93bca65ec55bcd649421e21a6f6d3fcf"
+      },
+      "outputSchema": {
+        "id": "urn:meri:schedules:tool-interface:0.2.0#/$defs/ScheduleMutationOutput",
+        "sha256": "2de8450111ea263876553f86b895d7fe93bca65ec55bcd649421e21a6f6d3fcf"
+      },
+      "aliases": [],
+      "sideEffect": "schedule",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.update_scheduled_task"
       ]
     }
   ]

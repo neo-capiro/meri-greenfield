@@ -1,0 +1,12 @@
+[
+  {
+    "path": "/workspace/meri-read-continuation-20261012/node_modules/aws-cdk",
+    "bytes": 25777833,
+    "scope": "Unused untracked infrastructure build dependencies only. Source/locks/logs/contract toolchain preserved."
+  },
+  {
+    "path": "/workspace/meri-read-continuation-20261012/node_modules/@aws-cdk",
+    "bytes": 25018889,
+    "scope": "Unused untracked infrastructure build dependencies only. Source/locks/logs/contract toolchain preserved."
+  }
+]
