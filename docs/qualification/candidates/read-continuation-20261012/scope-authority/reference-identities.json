@@ -1,0 +1,261 @@
+{
+  "references": [
+    {
+      "commit": "753566baf2d230ed241941dcdeca41625277cb1d",
+      "path": "packages/contracts/retrieval-0.2/catalog.json",
+      "blob": "420c7dcb5ff8422cc67cf0336fec50f8d25313dc",
+      "bytes": 242133,
+      "sha256": "5c8a6ad710a9a48156dfabd0954d7d5c6150cd0720af014449a63d954838e218",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/753566baf2d230ed241941dcdeca41625277cb1d/packages/contracts/retrieval-0.2/catalog.json"
+    },
+    {
+      "commit": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "packages/contracts/retrieval-0.2/catalog.json",
+      "blob": "117c1696f9988b7e95f672bac7413a0e43aba0d4",
+      "bytes": 230127,
+      "sha256": "b40aa7b795083ab4e4a13e7df36ea9cc7e1356c12f7fd11a57594bf2b4d5133a",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/cff71e1ba8ca8dea8970ad0c778b580a73f84815/packages/contracts/retrieval-0.2/catalog.json"
+    },
+    {
+      "commit": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3",
+      "path": "docs/CAPABILITY-SCOPE.md",
+      "blob": "edabdfc52fba3e84ea4f65cfea5ec8a48738ca0d",
+      "bytes": 43210,
+      "sha256": "505a78b961b7a59e4c832d48e7fba6e5139b14ec85887368cbac5f2f6fdec1d9",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3/docs/CAPABILITY-SCOPE.md"
+    },
+    {
+      "commit": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b",
+      "path": "docs/CAPABILITY-SCOPE.md",
+      "blob": "4b14019d20630731ade648b7ae74fa50787daa2b",
+      "bytes": 43968,
+      "sha256": "b222e0c4614d52dc1d1c0e22e557cf47e2c6bea0fc4929aad42ad7f6194174c6",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/c558b1533e88122f2bc4fb4a11c47e2c5c38768b/docs/CAPABILITY-SCOPE.md"
+    },
+    {
+      "commit": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/CAPABILITY-SCOPE.md",
+      "blob": "4b14019d20630731ade648b7ae74fa50787daa2b",
+      "bytes": 43968,
+      "sha256": "b222e0c4614d52dc1d1c0e22e557cf47e2c6bea0fc4929aad42ad7f6194174c6",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/cff71e1ba8ca8dea8970ad0c778b580a73f84815/docs/CAPABILITY-SCOPE.md"
+    },
+    {
+      "commit": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/CAPABILITIES.json",
+      "blob": "eea7fa42ba8c4a16a6028f5174163a5b1b701a73",
+      "bytes": 22260,
+      "sha256": "d8e1ccc013e2943479251d445dfa5cf1da7f8a312d9b97c41619bc92aab6056b",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/cff71e1ba8ca8dea8970ad0c778b580a73f84815/docs/CAPABILITIES.json"
+    },
+    {
+      "commit": "e14564e6ca4747fe97cf911ede3c816a295ba59c",
+      "path": "docs/coordination/r2/capabilities.json",
+      "blob": "78e155390e13948ec3a9a543214b810d8399ce05",
+      "bytes": 307002,
+      "sha256": "7207b38fd415c1254c5b8cbf80ec0a2910f399f8e65aa7f85b7b9b9f3c2dd4f1",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/e14564e6ca4747fe97cf911ede3c816a295ba59c/docs/coordination/r2/capabilities.json"
+    },
+    {
+      "commit": "e14564e6ca4747fe97cf911ede3c816a295ba59c",
+      "path": "docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+      "blob": "084c0150bc0fc1dfe99858402dabc14caa48ab82",
+      "bytes": 127877,
+      "sha256": "3d281d7a1a9a1eaf4fe520dde8e46e2abedac82f6b771041a613c1cfb0df25ec",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/e14564e6ca4747fe97cf911ede3c816a295ba59c/docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx"
+    },
+    {
+      "commit": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5",
+      "path": "docs/coordination/DECISIONS.md",
+      "blob": "64fc779a777d6d128860cfd6ee766b7d5d1825bb",
+      "bytes": 16919,
+      "sha256": "b2aef79714a5d5f965ee7daffc8245ca84f0e3768de9d89a2ea711439fef79e8",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/3406ed7e01af3aef85aeebc00fc49f6f41002bc5/docs/coordination/DECISIONS.md"
+    },
+    {
+      "commit": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b",
+      "path": "docs/coordination/DECISIONS.md",
+      "blob": "f349ed2ab18299428b8df6c1168aba1ada731d1d",
+      "bytes": 18306,
+      "sha256": "d01a6be6d9dc089665b65081facb718ea4957fbdb1a5bf4f216b3905226dbd68",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/c558b1533e88122f2bc4fb4a11c47e2c5c38768b/docs/coordination/DECISIONS.md"
+    },
+    {
+      "commit": "e14564e6ca4747fe97cf911ede3c816a295ba59c",
+      "path": "docs/coordination/reports/CODEX-R2-ADOPTION.md",
+      "blob": "c0436b3578b634f0441b7557a64571f21dba2761",
+      "bytes": 5774,
+      "sha256": "8ea4fc14c75747d27cb5ceb51a41551f71618c92cb89ca6113027aef56a7d0f5",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/e14564e6ca4747fe97cf911ede3c816a295ba59c/docs/coordination/reports/CODEX-R2-ADOPTION.md"
+    },
+    {
+      "commit": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/plans/Meri_Greenfield_Agent_Plan.docx",
+      "blob": "bda0a5741732b0b2a305f211818eb1f3f2890cff",
+      "bytes": 57656,
+      "sha256": "80a96320bde810214127919ddfe14659e3efd44d7ee7f6ae57d51527bc814ad7",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/cff71e1ba8ca8dea8970ad0c778b580a73f84815/docs/plans/Meri_Greenfield_Agent_Plan.docx"
+    },
+    {
+      "commit": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/handover/20261012/inputs/Meri_Greenfield_Agent_Plan.original.docx",
+      "blob": "bda0a5741732b0b2a305f211818eb1f3f2890cff",
+      "bytes": 57656,
+      "sha256": "80a96320bde810214127919ddfe14659e3efd44d7ee7f6ae57d51527bc814ad7",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/cff71e1ba8ca8dea8970ad0c778b580a73f84815/docs/handover/20261012/inputs/Meri_Greenfield_Agent_Plan.original.docx"
+    },
+    {
+      "commit": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/plans/archive/MERI-DEPLOYMENT-20261009-before-figma.md",
+      "blob": "b04f7130c53fc3e6111b06305828e669db49b9e3",
+      "bytes": 34216,
+      "sha256": "f2412671f68e9bcaab3bde6304294d56bf7b3194626697afbc2969abb5526c03",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/cff71e1ba8ca8dea8970ad0c778b580a73f84815/docs/plans/archive/MERI-DEPLOYMENT-20261009-before-figma.md"
+    },
+    {
+      "commit": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/plans/archive/MERI-DEPLOYMENT-20261010-before-R2.md",
+      "blob": "f94c599701d5f10e75f554b49550ef63044f2257",
+      "bytes": 44322,
+      "sha256": "948f5fa6b3d76f1e6df72496f85d7e09d25cc397bc0f8e1efe0ab58fe0eda560",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/cff71e1ba8ca8dea8970ad0c778b580a73f84815/docs/plans/archive/MERI-DEPLOYMENT-20261010-before-R2.md"
+    },
+    {
+      "commit": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/handover/20261012/inputs/Meri_Codex_Hermes_Deployment_Plan.original.md",
+      "blob": "f94c599701d5f10e75f554b49550ef63044f2257",
+      "bytes": 44322,
+      "sha256": "948f5fa6b3d76f1e6df72496f85d7e09d25cc397bc0f8e1efe0ab58fe0eda560",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/cff71e1ba8ca8dea8970ad0c778b580a73f84815/docs/handover/20261012/inputs/Meri_Codex_Hermes_Deployment_Plan.original.md"
+    },
+    {
+      "commit": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/plans/MERI-DEPLOYMENT.md",
+      "blob": "c9849375e463e88a064b256f715db7858cd369df",
+      "bytes": 86848,
+      "sha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/cff71e1ba8ca8dea8970ad0c778b580a73f84815/docs/plans/MERI-DEPLOYMENT.md"
+    },
+    {
+      "commit": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/plans/revisions/20261010-R2/Meri_Codex_Hermes_Deployment_Plan-R2.md",
+      "blob": "c9849375e463e88a064b256f715db7858cd369df",
+      "bytes": 86848,
+      "sha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/cff71e1ba8ca8dea8970ad0c778b580a73f84815/docs/plans/revisions/20261010-R2/Meri_Codex_Hermes_Deployment_Plan-R2.md"
+    },
+    {
+      "commit": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+      "blob": "084c0150bc0fc1dfe99858402dabc14caa48ab82",
+      "bytes": 127877,
+      "sha256": "3d281d7a1a9a1eaf4fe520dde8e46e2abedac82f6b771041a613c1cfb0df25ec",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/cff71e1ba8ca8dea8970ad0c778b580a73f84815/docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx"
+    },
+    {
+      "commit": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/plans/revisions/20261010-R2/manifest.json",
+      "blob": "0210582185e479306555597d37e0f2ffcb82c7db",
+      "bytes": 2312,
+      "sha256": "3af1bd511c4eff3bbb43c728808046c872768cf47da7ea6a83262bd95211cbe5",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/cff71e1ba8ca8dea8970ad0c778b580a73f84815/docs/plans/revisions/20261010-R2/manifest.json"
+    },
+    {
+      "commit": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/handover/20261012/inputs/manifest.json",
+      "blob": "53458a1ad4d72561a2b3707cc7ba7bb13e896e20",
+      "bytes": 2504,
+      "sha256": "7b5f9e6bba6e18c5e5c75fcf40a547dcb834d30d2cdff371e30f2a0f07e5e594",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/cff71e1ba8ca8dea8970ad0c778b580a73f84815/docs/handover/20261012/inputs/manifest.json"
+    },
+    {
+      "commit": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/handover/20261011/Meri_Greenfield_Engineering_Handover_2026-10-11.docx",
+      "blob": "79dd7d4973ade209bc14ba89bff6563931772415",
+      "bytes": 83776,
+      "sha256": "d62a91f88ef642d20b5bedf1293e0f9a42716c56bc268efb8ec05f175fc3af7b",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/cff71e1ba8ca8dea8970ad0c778b580a73f84815/docs/handover/20261011/Meri_Greenfield_Engineering_Handover_2026-10-11.docx"
+    },
+    {
+      "commit": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/handover/20261011/Meri_Greenfield_Engineering_Handover_2026-10-11.md",
+      "blob": "f24c22fdf661900a7f23474b5ba34de1b1cc9dd5",
+      "bytes": 103436,
+      "sha256": "b6bf31ad6b2e75031ebe3fa71aa3c0820400ebd62f3baa5a1d66cd8f444653f9",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/cff71e1ba8ca8dea8970ad0c778b580a73f84815/docs/handover/20261011/Meri_Greenfield_Engineering_Handover_2026-10-11.md"
+    },
+    {
+      "commit": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/handover/20261012/REMOTE-RESUME-CURRENT-20261012.md",
+      "blob": "41dd06647389d79e613165f635f5a262ad0ecacd",
+      "bytes": 59176,
+      "sha256": "d2a3abb69b6e54bf1e81940f2f44cf4d77cd18dbbafbb7c1665af19fa57b33a8",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/cff71e1ba8ca8dea8970ad0c778b580a73f84815/docs/handover/20261012/REMOTE-RESUME-CURRENT-20261012.md"
+    },
+    {
+      "commit": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "AGENTS.md",
+      "blob": "fe8cefa588409d8562f0e6d939a6da7d120c0d87",
+      "bytes": 6582,
+      "sha256": "a0650949b74e5aee709bd8b3c9d480f95f5b898778ac8f7b3927eb54b141437a",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/cff71e1ba8ca8dea8970ad0c778b580a73f84815/AGENTS.md"
+    },
+    {
+      "commit": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/IMPLEMENTATION-STANDARDS.md",
+      "blob": "7f680395e07d1114667a800f3f8ed77010a3eac2",
+      "bytes": 11082,
+      "sha256": "d4f10f964ee207187abacd967649a1cfc9bdd468072dc01f859268f08b719959",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/cff71e1ba8ca8dea8970ad0c778b580a73f84815/docs/IMPLEMENTATION-STANDARDS.md"
+    },
+    {
+      "commit": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/coordination/DECISIONS.md",
+      "blob": "fd58ed15daa8d3a093893e49e901f28570c91f51",
+      "bytes": 24662,
+      "sha256": "8d5238335bbc9e68b58cbe083bd275dc24938eb7d13dc8d047342b8f37a819ae",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/cff71e1ba8ca8dea8970ad0c778b580a73f84815/docs/coordination/DECISIONS.md"
+    },
+    {
+      "commit": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/coordination/reports/CODEX-G0-DISCOVERY.md",
+      "blob": "84c2c04dd09ab2da3db8a9d325e48fa344eb2115",
+      "bytes": 5910,
+      "sha256": "0c79b223d82ae6c374636eeb89c90a9ea4bcb5271d2358eb6a8eff93ac347232",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/cff71e1ba8ca8dea8970ad0c778b580a73f84815/docs/coordination/reports/CODEX-G0-DISCOVERY.md"
+    },
+    {
+      "commit": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/handover/20261011/CONTINUATION-INSTRUCTIONS.md",
+      "blob": "4d07982667a31f21c0d0b497a62932c6392a9036",
+      "bytes": 13012,
+      "sha256": "37cdc0af9397bd53d7f4e91c6ef7d727508d238056447bd789dc5695f150748f",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/cff71e1ba8ca8dea8970ad0c778b580a73f84815/docs/handover/20261011/CONTINUATION-INSTRUCTIONS.md"
+    },
+    {
+      "commit": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/handover/20261011/REFERENCE-INDEX.md",
+      "blob": "25a4fb76dd8827eaf238512eaef8206b5087a570",
+      "bytes": 24125,
+      "sha256": "d622785b6c1152abdf46addded4d7e175eac6a227761bd04b417e227a4e1066c",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/cff71e1ba8ca8dea8970ad0c778b580a73f84815/docs/handover/20261011/REFERENCE-INDEX.md"
+    },
+    {
+      "commit": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/handover/20261012/CONTEXT-INDEX.json",
+      "blob": "83034020fe5c3c3c4a79e01305a6f3ba614ab7d7",
+      "bytes": 8487,
+      "sha256": "64491730fb678c688ffa295d175e8123193cb932dc9a6a9178fbdbca11196bf0",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/cff71e1ba8ca8dea8970ad0c778b580a73f84815/docs/handover/20261012/CONTEXT-INDEX.json"
+    },
+    {
+      "commit": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+      "path": "docs/decisions/MEMORY-ADMIN-SELF-APPROVAL-20261012.md",
+      "blob": "35aa3a22e4fca429c431078bd325f0cd96ee328f",
+      "bytes": 5769,
+      "sha256": "54d41f5eb09a6625e1f4fd241a144a619ba326f7420629b0f4b4bff823b4c8b0",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/cff71e1ba8ca8dea8970ad0c778b580a73f84815/docs/decisions/MEMORY-ADMIN-SELF-APPROVAL-20261012.md"
+    }
+  ],
+  "readScope": "Public Meri planning/metadata objects; no legacy Capiro implementation import or private body publication."
+}
