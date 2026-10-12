@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-federal-legislation.test.mjs"
+  ],
+  "cwd": "/workspace/meri-federal-legislation-20261012",
+  "sourceHead": "bcf36777b6f3fab94bec144c129e9143c18c8857",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T17:02:50.418211+00:00",
+  "durationSeconds": 0.365,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 171033,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/federal-legislation-author/prototype-status-reproduction.stdout.bin",
+      "bytes": 4343,
+      "sha256": "df673228a4553025b963ef14ad286af9146f6a1575016922855fff43240a1cb8"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/federal-legislation-author/prototype-status-reproduction.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Pinned source in-membership omits inherited-key status label; reproduce unfaithful fallback before root-approved fail-closed repair.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
