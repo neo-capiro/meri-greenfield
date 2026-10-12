@@ -1,0 +1,57 @@
+{
+  "decision": "ACCEPT_SOURCE_INTEGRATION_ONLY",
+  "sourceHeadBeforeMetadata": "b264e34b3f59264e3e8a46c7c006906161a9899b",
+  "productionSourceAuthor": "9d8358ba559134d82265f07840fd537943302090",
+  "productionSourceReviewer": "eb59a3f3e3c0ddb7f549e7063387093bf9bb66b6",
+  "productionSourceFilesMatched": 14,
+  "documentationReviewer": "ec91e937d37dc06110a3fa1f75519907fd2c62b0",
+  "reviewedDocuments": [
+    {
+      "path": "docs/plans/MERI-G1-SOURCE-TO-NATIVE.md",
+      "bytes": 33652,
+      "sha256": "9bdba1f17089a977593de6d22cb682f0ec64a221ab191234da958e4bcbe7ab72"
+    },
+    {
+      "path": "docs/coordination/reports/MERI-G1-INVOCATION-SETUP-20261012.md",
+      "bytes": 11154,
+      "sha256": "4f37d323f4c42aa987c1e7077386a7e677b2515b7ffa46a6dbd84d2dffbffd95"
+    }
+  ],
+  "reviewManifestMembersMatched": 9,
+  "rootChecks": [
+    {
+      "label": "final-integrity-audit",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "gateway-control-integrated",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "integrated-source-audit",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "invocation-independent-integrated",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "native-prefix-integrated",
+      "exitCode": 1,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "supervisor-inputs-integrated",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    }
+  ],
+  "g1": "OPEN",
+  "nativeRuntimeAccepted": false,
+  "setup": "HOLD_EXTERNAL_INPUT_NOT_EXECUTABLE",
+  "forbiddenActionsPerformed": false
+}
