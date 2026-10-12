@@ -1,0 +1,1136 @@
+{
+  "scope": "OFFLINE_METADATA_AND_SOURCE_ONLY",
+  "passed": 282,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/assessment.json",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/assessment.json",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/authored-diff-check.json",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/authored-diff-check.json",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/collection-notes.json",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/collection-notes.json",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/diff-check-raw-failure.json",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/diff-check-raw-failure.json",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/host-dependency-query.json",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/host-dependency-query.json",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/GPL-2",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/GPL-2",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/GPL-3",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/GPL-3",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/common-README.md",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/common-README.md",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/common-maint-functions",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/common-maint-functions",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/common-pg-wrapper",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/common-pg-wrapper",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/common-postgresql.mk",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/common-postgresql.mk",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/common-server-maint-functions",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/common-server-maint-functions",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/debian17-control",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/debian17-control",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/debian17-rules",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/debian17-rules",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/host-dependency-query.stderr",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/host-dependency-query.stderr",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/host-dependency-query.stdout",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/host-dependency-query.stdout",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/npm-pg-cloudflare-1.4.1.json",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/npm-pg-cloudflare-1.4.1.json",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/npm-pg-connection-string-2.14.1.json",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/npm-pg-connection-string-2.14.1.json",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/npm-pg-int8-1.0.1.json",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/npm-pg-int8-1.0.1.json",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/npm-pg-pool-3.14.0.json",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/npm-pg-pool-3.14.0.json",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/npm-pg-protocol-1.16.1.json",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/npm-pg-protocol-1.16.1.json",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/npm-pg-types-2.2.0.json",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/npm-pg-types-2.2.0.json",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/npm-pgpass-1.0.5.json",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/npm-pgpass-1.0.5.json",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/npm-postgres-array-2.0.0.json",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/npm-postgres-array-2.0.0.json",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/npm-postgres-bytea-1.0.1.json",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/npm-postgres-bytea-1.0.1.json",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/npm-postgres-date-1.0.7.json",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/npm-postgres-date-1.0.7.json",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/npm-postgres-interval-1.2.0.json",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/npm-postgres-interval-1.2.0.json",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/npm-split2-4.2.0.json",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/npm-split2-4.2.0.json",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/npm-xtend-4.0.2.json",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/npm-xtend-4.0.2.json",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/pg8231-metadata.json",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/pg8231-metadata.json",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/pgdg-17-Packages.bz2",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/pgdg-17-Packages.bz2",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/pgdg-InRelease",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/pgdg-InRelease",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/pgdg-Sources.bz2",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/pgdg-Sources.bz2",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/pgdg-faq.html",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/pgdg-faq.html",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/pgdg-main-Packages.bz2",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/pgdg-main-Packages.bz2",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/pgdg-packaging-api.json",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/pgdg-packaging-api.json",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/pgdg-signing-key.asc",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/pgdg-signing-key.asc",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/postgres-debian.html",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/postgres-debian.html",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/postgres17-COPYRIGHT",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/postgres17-COPYRIGHT",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/postgres17-exec.c",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/postgres17-exec.c",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/postgres17-install.html",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/postgres17-install.html",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/postgres17-path.c",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/postgres17-path.c",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/psycopg333-LICENSE",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/psycopg333-LICENSE",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/psycopg333-install.rst",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/psycopg333-install.rst",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/psycopg333-libpq-ctypes.py",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/psycopg333-libpq-ctypes.py",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/psycopg333-pq-init.py",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/psycopg333-pq-init.py",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/psycopg333-pq-misc.py",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/psycopg333-pq-misc.py",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/psycopg333-pypi.json",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/psycopg333-pypi.json",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/psycopg333-pyproject.toml",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/psycopg333-pyproject.toml",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/typing415-pypi.json",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/typing415-pypi.json",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/web-10.txt",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/web-10.txt",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/web-11.txt",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/web-11.txt",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/web-3.txt",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/web-3.txt",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/web-5.txt",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/web-5.txt",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/web-6.txt",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/web-6.txt",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/web-7.txt",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/web-7.txt",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/raw/web-pool-listing.txt",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/raw/web-pool-listing.txt",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/retrievals.json",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/retrievals.json",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/qualification/candidates/native-prefix-20261012/author/verify.py",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/qualification/candidates/native-prefix-20261012/author/verify.py",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/coordination/tasks/MERI-NATIVE-PREFIX-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/coordination/tasks/MERI-NATIVE-PREFIX-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "file hash: docs/coordination/reports/MERI-NATIVE-PREFIX-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "file bytes: docs/coordination/reports/MERI-NATIVE-PREFIX-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "frozen source: AGENTS.md",
+      "passed": true
+    },
+    {
+      "name": "frozen source: docs/IMPLEMENTATION-STANDARDS.md",
+      "passed": true
+    },
+    {
+      "name": "frozen source: docs/plans/MERI-DEPLOYMENT.md",
+      "passed": true
+    },
+    {
+      "name": "frozen source: docs/plans/MERI-G1-SOURCE-TO-NATIVE.md",
+      "passed": true
+    },
+    {
+      "name": "frozen source: docs/coordination/reports/MERI-G1-L1-HOST-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "frozen source: docs/qualification/candidates/g1-l1-host-20261012/author/setup-packet.json",
+      "passed": true
+    },
+    {
+      "name": "frozen source: docs/qualification/candidates/g1-execution-options-20261012/author/execution-plan.json",
+      "passed": true
+    },
+    {
+      "name": "frozen source: apps/proxy/qualification/state/postgres_store.py",
+      "passed": true
+    },
+    {
+      "name": "frozen source: apps/proxy/qualification/state/dependencies.json",
+      "passed": true
+    },
+    {
+      "name": "frozen source: apps/control/qualification-sdk-fixture/state/package.json",
+      "passed": true
+    },
+    {
+      "name": "frozen source: apps/control/qualification-sdk-fixture/state/package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "frozen source: apps/control/qualification-sdk-fixture/state/store.mjs",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: pgdg-InRelease",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: pgdg-InRelease",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: pgdg-main-Packages.bz2",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: pgdg-main-Packages.bz2",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: pgdg-17-Packages.bz2",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: pgdg-17-Packages.bz2",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: pgdg-Sources.bz2",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: pgdg-Sources.bz2",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: pgdg-signing-key.asc",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: pgdg-signing-key.asc",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: postgres-debian.html",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: postgres-debian.html",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: pgdg-faq.html",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: pgdg-faq.html",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: postgres17-install.html",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: postgres17-install.html",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: psycopg333-pypi.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: psycopg333-pypi.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: psycopg333-install.rst",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: psycopg333-install.rst",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: psycopg333-pyproject.toml",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: psycopg333-pyproject.toml",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: debian17-rules",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: debian17-rules",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: debian17-control",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: debian17-control",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: postgres17-path.c",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: postgres17-path.c",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: postgres17-exec.c",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: postgres17-exec.c",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: psycopg333-pq-init.py",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: psycopg333-pq-init.py",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: pgdg-packaging-api.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: pgdg-packaging-api.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: pg8231-metadata.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: pg8231-metadata.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: common-postgresql.mk",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: common-postgresql.mk",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: common-maint-functions",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: common-maint-functions",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: typing415-pypi.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: typing415-pypi.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: psycopg333-pq-misc.py",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: psycopg333-pq-misc.py",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: psycopg333-libpq-ctypes.py",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: psycopg333-libpq-ctypes.py",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: postgres17-COPYRIGHT",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: postgres17-COPYRIGHT",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: psycopg333-LICENSE",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: psycopg333-LICENSE",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: common-README.md",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: common-README.md",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: common-pg-wrapper",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: common-pg-wrapper",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: common-server-maint-functions",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: common-server-maint-functions",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: npm-pg-cloudflare-1.4.1.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: npm-pg-cloudflare-1.4.1.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: npm-pg-connection-string-2.14.1.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: npm-pg-connection-string-2.14.1.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: npm-pg-int8-1.0.1.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: npm-pg-int8-1.0.1.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: npm-pg-pool-3.14.0.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: npm-pg-pool-3.14.0.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: npm-pg-protocol-1.16.1.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: npm-pg-protocol-1.16.1.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: npm-pg-types-2.2.0.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: npm-pg-types-2.2.0.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: npm-pgpass-1.0.5.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: npm-pgpass-1.0.5.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: npm-postgres-array-2.0.0.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: npm-postgres-array-2.0.0.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: npm-postgres-bytea-1.0.1.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: npm-postgres-bytea-1.0.1.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: npm-postgres-date-1.0.7.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: npm-postgres-date-1.0.7.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: npm-postgres-interval-1.2.0.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: npm-postgres-interval-1.2.0.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: npm-split2-4.2.0.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: npm-split2-4.2.0.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval body: npm-xtend-4.0.2.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval cap: npm-xtend-4.0.2.json",
+      "passed": true
+    },
+    {
+      "name": "read-only package query",
+      "passed": true
+    },
+    {
+      "name": "missing dependency exit retained",
+      "passed": true
+    },
+    {
+      "name": "package query stdout",
+      "passed": true
+    },
+    {
+      "name": "package query stderr",
+      "passed": true
+    },
+    {
+      "name": "external input decision",
+      "passed": true
+    },
+    {
+      "name": "inert candidate",
+      "passed": true
+    },
+    {
+      "name": "targetPayloadAcquired",
+      "passed": true
+    },
+    {
+      "name": "targetPayloadExtracted",
+      "passed": true
+    },
+    {
+      "name": "targetRuntimeExecuted",
+      "passed": true
+    },
+    {
+      "name": "qualificationExecuted",
+      "passed": true
+    },
+    {
+      "name": "no setup command",
+      "passed": true
+    },
+    {
+      "name": "no setup approval",
+      "passed": true
+    },
+    {
+      "name": "no L1 approval",
+      "passed": true
+    },
+    {
+      "name": "no invented signatures",
+      "passed": true
+    },
+    {
+      "name": "rendered metadata not authentication",
+      "passed": true
+    },
+    {
+      "name": "two package leads only",
+      "passed": true
+    },
+    {
+      "name": "listed subtotal",
+      "passed": true
+    },
+    {
+      "name": "subtotal not closure",
+      "passed": true
+    },
+    {
+      "name": "conditional relocation retained",
+      "passed": true
+    },
+    {
+      "name": "upstream path mechanism: make_relative_path",
+      "passed": true
+    },
+    {
+      "name": "upstream path mechanism: goto no_match",
+      "passed": true
+    },
+    {
+      "name": "upstream path mechanism: strlcpy(ret_path, target_path",
+      "passed": true
+    },
+    {
+      "name": "Python native loader retained",
+      "passed": true
+    },
+    {
+      "name": "two wheel metadata records",
+      "passed": true
+    },
+    {
+      "name": "Python bytes subtotal",
+      "passed": true
+    },
+    {
+      "name": "wheel metadata: psycopg-3.3.3-py3-none-any.whl",
+      "passed": true
+    },
+    {
+      "name": "wheel unacquired: psycopg-3.3.3-py3-none-any.whl",
+      "passed": true
+    },
+    {
+      "name": "wheel metadata: typing_extensions-4.15.0-py3-none-any.whl",
+      "passed": true
+    },
+    {
+      "name": "wheel unacquired: typing_extensions-4.15.0-py3-none-any.whl",
+      "passed": true
+    },
+    {
+      "name": "all14 locked Node packages retained",
+      "passed": true
+    },
+    {
+      "name": "Node registry+lock: pg",
+      "passed": true
+    },
+    {
+      "name": "Node unacquired: pg",
+      "passed": true
+    },
+    {
+      "name": "Node registry+lock: pg-cloudflare",
+      "passed": true
+    },
+    {
+      "name": "Node unacquired: pg-cloudflare",
+      "passed": true
+    },
+    {
+      "name": "Node registry+lock: pg-connection-string",
+      "passed": true
+    },
+    {
+      "name": "Node unacquired: pg-connection-string",
+      "passed": true
+    },
+    {
+      "name": "Node registry+lock: pg-int8",
+      "passed": true
+    },
+    {
+      "name": "Node unacquired: pg-int8",
+      "passed": true
+    },
+    {
+      "name": "Node registry+lock: pg-pool",
+      "passed": true
+    },
+    {
+      "name": "Node unacquired: pg-pool",
+      "passed": true
+    },
+    {
+      "name": "Node registry+lock: pg-protocol",
+      "passed": true
+    },
+    {
+      "name": "Node unacquired: pg-protocol",
+      "passed": true
+    },
+    {
+      "name": "Node registry+lock: pg-types",
+      "passed": true
+    },
+    {
+      "name": "Node unacquired: pg-types",
+      "passed": true
+    },
+    {
+      "name": "Node registry+lock: pgpass",
+      "passed": true
+    },
+    {
+      "name": "Node unacquired: pgpass",
+      "passed": true
+    },
+    {
+      "name": "Node registry+lock: postgres-array",
+      "passed": true
+    },
+    {
+      "name": "Node unacquired: postgres-array",
+      "passed": true
+    },
+    {
+      "name": "Node registry+lock: postgres-bytea",
+      "passed": true
+    },
+    {
+      "name": "Node unacquired: postgres-bytea",
+      "passed": true
+    },
+    {
+      "name": "Node registry+lock: postgres-date",
+      "passed": true
+    },
+    {
+      "name": "Node unacquired: postgres-date",
+      "passed": true
+    },
+    {
+      "name": "Node registry+lock: postgres-interval",
+      "passed": true
+    },
+    {
+      "name": "Node unacquired: postgres-interval",
+      "passed": true
+    },
+    {
+      "name": "Node registry+lock: split2",
+      "passed": true
+    },
+    {
+      "name": "Node unacquired: split2",
+      "passed": true
+    },
+    {
+      "name": "Node registry+lock: xtend",
+      "passed": true
+    },
+    {
+      "name": "Node unacquired: xtend",
+      "passed": true
+    }
+  ],
+  "setupAndRuntime": "HOLD_EXTERNAL_INPUT_NOT_EXECUTABLE"
+}

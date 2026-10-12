@@ -1,0 +1,42 @@
+{
+  "authorCommit": "05b297923791e434c52aa63eca6d3752d21af54e",
+  "authorTree": "37d59c0eced3ec760bf65f1aac8e7f4c1c2a3bd4",
+  "authorManifestSha256": "eb897c2abfa084bdfd386ffed02d3c03044cdbd070f98266c68497ffc3eaddaa",
+  "authorFiles": 68,
+  "manifestMembers": 65,
+  "manifestExcluded": [
+    "docs/qualification/candidates/native-prefix-20261012/author/manifest.json",
+    "docs/qualification/candidates/native-prefix-20261012/author/verification.json",
+    "docs/qualification/candidates/native-prefix-20261012/author/verification.stderr"
+  ],
+  "originalTrackedFilesPreserved": 4430,
+  "retrievals": 41,
+  "http200": 28,
+  "failedRetrievals": 13,
+  "metadataResponseBytes": 169939,
+  "sourceBindings": 12,
+  "checks": [
+    {
+      "name": "author manifest covers every changed file except declared self/results",
+      "passed": true
+    },
+    {
+      "name": "replayed verifier result exactly matches original",
+      "passed": true
+    },
+    {
+      "name": "all original Git blobs preserved",
+      "passed": true
+    },
+    {
+      "name": "replay and independent checks all passed",
+      "passed": true
+    },
+    {
+      "name": "exact external-input decision",
+      "passed": true
+    }
+  ],
+  "passed": 5,
+  "failed": []
+}

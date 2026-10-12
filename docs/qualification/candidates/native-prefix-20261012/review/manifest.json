@@ -1,0 +1,97 @@
+{
+  "criteriaCommit": "0446c76a1e0bdc4c190d3f81975fb128adaa0fa7",
+  "reviewedAuthorCommit": "05b297923791e434c52aa63eca6d3752d21af54e",
+  "reviewedAuthorTree": "37d59c0eced3ec760bf65f1aac8e7f4c1c2a3bd4",
+  "disposition": "ACCEPT_SOURCE_EVIDENCE",
+  "setupDisposition": "HOLD_EXTERNAL_INPUT_NOT_EXECUTABLE",
+  "excludes": [
+    "docs/qualification/candidates/native-prefix-20261012/review/manifest.json"
+  ],
+  "files": [
+    {
+      "path": "docs/coordination/reports/MERI-NATIVE-PREFIX-REVIEW-20261012.md",
+      "bytes": 7134,
+      "sha256": "52412fdb2eacf24593c23238ded78fe37a0224f5c750d9276ed31cd77afa732a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/review/audit-author-result.json",
+      "bytes": 46384,
+      "sha256": "9e12a32568fc42d997175285018c7c03c5565fde2e1794c64891f840311244e9"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/review/audit-author.py",
+      "bytes": 7701,
+      "sha256": "826db9a65098aac0b238417d83ac2f1a80ade751a987d0f37a9dcdfc44090b36"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/review/audit-author.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/review/audit-author.stdout.json",
+      "bytes": 225,
+      "sha256": "ce107ff2682978b46c251507c5fddcb41b9cd7f926ceba13d9387ab36d44ac81"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/review/author-verifier.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/review/author-verifier.stdout.json",
+      "bytes": 32478,
+      "sha256": "74b30eecb9c12c0619e137386b7bc6d7d893a54a1a07c8df66e1222db2a68109"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/review/check-receipts.json",
+      "bytes": 1713,
+      "sha256": "611feae73852c585f708dbb4f710278411215e3ccc00006cb835f919270acb3f"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/review/fetch-official-metadata.py",
+      "bytes": 1940,
+      "sha256": "fc6e042535bfc4a850f7927b228b39d7ff5868b91a4685eec43457e935403671"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/review/fetch.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/review/fetch.stdout.json",
+      "bytes": 879,
+      "sha256": "5ae6f6b34e405ba7b4513c38851facc6d56f73cab2b03d9b0ab5c91694ebc141"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/review/frozen-criteria.json",
+      "bytes": 2924,
+      "sha256": "aca863826356654835036828395fc5a1a5eb6bf325b52ddc785c3c38488f99c5"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/review/official-metadata-fetch.json",
+      "bytes": 1186,
+      "sha256": "29f0c6a747e0a24a81ae34247092a4aecffffbf7877a3b836d96e35d2a5f444e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/review/packet-coverage.json",
+      "bytes": 1238,
+      "sha256": "1c4b8921a4edafea29e0b6c654ef6ffb9508ec20600874ed037ee4ac76ede334"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/review/pgdg-key.asc",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/review/pgdg-trixie.InRelease",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/review/primary-document-observations.json",
+      "bytes": 4188,
+      "sha256": "7a9d8f475d80448130c9ff5601f1f3265fe08efcfcf78314e7e1264f5d692314"
+    }
+  ]
+}

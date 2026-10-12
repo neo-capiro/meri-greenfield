@@ -1,0 +1,46 @@
+{
+  "baseCommit": "6cfb1f9a4d8acd66c5bd8d38d892d656fa3cd89e",
+  "baseTree": "7072177eefc7a8b495625ab0c20c0e82b7c55dd8",
+  "recordedAt": "2026-10-12T07:02:33.743834+00:00",
+  "scope": "Independent official-metadata and source-only native-prefix setup review; no target acquisition or execution",
+  "outline": [
+    "Read root task/standards/R2, preserved host evidence and canonical driver owners.",
+    "Independently check official supported Debian13 amd64 package channel and exact authenticated metadata chain; no runtime/package payload acquisition.",
+    "Review full dependency/loader/extension/config/driver closure and whether artifact-only extraction into an owned prefix is actually supported and viable in the selected host.",
+    "Audit exact author freeze, proposed paths/actions/time/bytes/cost/cleanup and no initdb/service/security side effects; return precise ACCEPT_SOURCE/HOLD and external prerequisites."
+  ],
+  "criteria": [
+    {
+      "id": "P1",
+      "expectation": "Exact selected saved Debian13 amd64 host and PR18 source; no relocation or implicit installation/runtime authority."
+    },
+    {
+      "id": "P2",
+      "expectation": "Official supported channel with current exact version/architecture, retained metadata URLs/bytes/hashes, Release signature verification anchored to an independently established trusted key. HTTPS/hash alone insufficient."
+    },
+    {
+      "id": "P3",
+      "expectation": "Complete exact server/admin/client/native dependency closure, alternatives/version constraints and already-present host dependency evidence; mutable indices distinguished from admitted immutable inputs."
+    },
+    {
+      "id": "P4",
+      "expectation": "Official packaging/source proves extraction-only behavior and actual relocation/layout/loader/config/extension semantics for this build; dpkg-deb extraction syntax alone is not runtime-support evidence."
+    },
+    {
+      "id": "P5",
+      "expectation": "Required psycopg3.3.3 backend, selected Python and libpq/native closure plus pg8.23.1/Node24 closure fit actual canonical callers. Historical Windows lock is not reused as Linux evidence."
+    },
+    {
+      "id": "P6",
+      "expectation": "One exact bounded artifact-only setup recipe with verified paths, bytes/actions/resource/time/output/cost and ownership/rollback; no initdb/start/service/role/credentials/HBA/install scripts or global mutation."
+    },
+    {
+      "id": "P7",
+      "expectation": "No guessed support, isolation/auth exception or viable launcher claim. Unresolved external prerequisites are precise; stop speculative recipe expansion when support cannot be substantiated."
+    },
+    {
+      "id": "P8",
+      "expectation": "Exact clean author/evidence freeze, original failures retained, private bodies excluded, source acceptance distinct from setup/native approval; no target payload download/extraction/install/execute in review."
+    }
+  ]
+}
