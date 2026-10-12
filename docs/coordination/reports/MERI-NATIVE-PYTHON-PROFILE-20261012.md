@@ -10,7 +10,7 @@ in this packet grants execution, collector retry, build or G1 admission.
 ## What is known and how
 
 The parent reports one already-existing ordinary Astral/uv CPython3.11.15 x64
-candidate on NEOMART. FileVersion/ProductVersion are3.11.15 and the associated
+candidate. FileVersion/ProductVersion are3.11.15 and the associated
 HKCU Astral registration reports SysVersion3.11.15/64bit. Root, executable, Lib,
 DLLs and their relevant ancestors reportedly satisfy plain fixed-drive metadata
 checks without reparse. Discovery examined15 candidates,7 commands and3
@@ -104,3 +104,9 @@ Independent prefreeze review requested the explicit application-counter scope
 above; it is incorporated. `-I -B -S` does not authenticate startup/runtime
 closure or guarantee zero implicit reads. Ordinary metadata checks are neither
 a hostile-filesystem race proof nor a hard native-syscall interruption bound.
+
+Accuracy correction: the current discovery excerpt does not establish host
+identity. No host is inferred from the supplied personal path or earlier runs.
+The candidate role is `EXISTING_ASTRAL_CPYTHON_3_11_15_X64_01`; exact host identity
+is another unresolved private packet field. The original packet freeze remains
+preserved at `2965a26f63d38330455cdfd9cefc0b6fe002a663`.

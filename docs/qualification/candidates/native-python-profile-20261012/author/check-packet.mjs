@@ -40,6 +40,9 @@ check('inventory bounds and build version stay distinct', () => {
 check('missing executable and supervisor identity remain missing', () => {
   for (const key of ['executableBytes', 'executableSha256', 'distributorBuildProvenance']) assert.equal(packet.candidate[key], null);
   assert.equal(packet.candidate.actualRuntimeIdentityVerified, false);
+  assert.equal(packet.candidate.role, 'EXISTING_ASTRAL_CPYTHON_3_11_15_X64_01');
+  assert.equal(packet.candidate.hostIdentityPrivate, null);
+  assert.equal(packet.candidate.hostIdentityVerified, false);
   assert.equal(packet.supervisor.sourceSha256, null);
   assert.equal(packet.supervisor.reviewed, false);
   assert.equal(packet.nextAction.argvComplete, false);
