@@ -1,0 +1,10 @@
+{
+  "captureKind": "observed initial runner result summary, not reconstructed raw bytes",
+  "tests": 12,
+  "passed": 11,
+  "failed": 1,
+  "case": "malformed or oversized raw output and foreign lineage cannot escape",
+  "expected": "INVALID_RESULT",
+  "actual": "INTERNAL_ERROR",
+  "repair": "Content-free handler-output boundary mapping preserves owned deadline/cancellation; safeFailure uses immutable private WeakMap codes"
+}

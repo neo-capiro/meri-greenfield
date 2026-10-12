@@ -1,0 +1,485 @@
+{
+  "schema": "meri-independent-context-files/1",
+  "scope": "all repository files read/copied/imported for this gateway review plus explicitly linked earlier handover reports; third-party installed trees are not fully attested",
+  "gatewaySourceCommit": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+  "catalogDependencyCommit": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+  "files": [
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+      "path": "AGENTS.md",
+      "bytes": 6582,
+      "sha256": "a0650949b74e5aee709bd8b3c9d480f95f5b898778ac8f7b3927eb54b141437a",
+      "usage": "canonical instructions/allocation/report read and used"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+      "path": "docs/IMPLEMENTATION-STANDARDS.md",
+      "bytes": 11082,
+      "sha256": "d4f10f964ee207187abacd967649a1cfc9bdd468072dc01f859268f08b719959",
+      "usage": "canonical instructions/allocation/report read and used"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+      "path": "docs/coordination/tasks/CODEX-GATEWAY-SOURCE-DISABLED-20261012.md",
+      "bytes": 2742,
+      "sha256": "fdc827d254063463cccff2a9aa631487adbeec40277e2e43135148b68ed14b4a",
+      "usage": "canonical instructions/allocation/report read and used"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+      "path": "docs/coordination/reports/CODEX-GATEWAY-SOURCE-DISABLED-20261012.md",
+      "bytes": 10367,
+      "sha256": "005ddbc0ea2bc1537a8d9d6a63fc9bf3951eea237ab85795eb41b6b240b9d5c4",
+      "usage": "canonical instructions/allocation/report read and used"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+      "path": "apps/gateway/authorization/current-tool-authority.mjs",
+      "bytes": 5718,
+      "sha256": "cd090d987e5603d93c111b8ea36e6933fe108bfdeeb8d77ce03f66a4e85f0217",
+      "usage": "source/test inspected and executed"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+      "path": "apps/gateway/catalog/runtime-catalog.mjs",
+      "bytes": 2396,
+      "sha256": "092ed325693df95c3c5a41d20d3fdb56e19cce3fc9b47dafd8d42d76b9325dff",
+      "usage": "source/test inspected and executed"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+      "path": "apps/gateway/dispatch/dispatch-lifetime.mjs",
+      "bytes": 2994,
+      "sha256": "37219130a9a895125fa594bb8266b724c08a58f1af54f1353ff3b9f2fc5d6248",
+      "usage": "source/test inspected and executed"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+      "path": "apps/gateway/dispatch/operation-result.mjs",
+      "bytes": 2818,
+      "sha256": "26e44f72ec13011a8c0960842d6a8abd53b8f67e9082f888f4bc2458b5c42468",
+      "usage": "source/test inspected and executed"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+      "path": "apps/gateway/dispatch/tool-dispatch.mjs",
+      "bytes": 6409,
+      "sha256": "ac0f957a4b8c3716af8fbedaac1e547e033077f3d0642bc49ba6d7c7d33fa916",
+      "usage": "source/test inspected and executed"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+      "path": "apps/gateway/index.mjs",
+      "bytes": 1319,
+      "sha256": "594f8f1dc780b5dc41e1738e6e484c8e20d365ed6b46137091c3644c4e2266c9",
+      "usage": "source/test inspected and executed"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+      "path": "apps/gateway/test/fixtures.mjs",
+      "bytes": 5042,
+      "sha256": "53915bd72e3e7eb9a7a70219c06aa4359948a9c9abab91469fcfaaf1322f8a2c",
+      "usage": "source/test inspected and executed"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+      "path": "apps/gateway/test/gateway.test.mjs",
+      "bytes": 10635,
+      "sha256": "ae9e94ae696ebf0982b0e1592438ec510f502bee29a315a567f6f27faeb62268",
+      "usage": "source/test inspected and executed"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+      "path": "packages/contracts/retrieval-0.2/catalog.json",
+      "bytes": 49718,
+      "sha256": "940d768aab94cc2b513a177ade216c675a74ff4021d99ec04b1b059f80b4d264",
+      "usage": "canonical source schemas/factories loaded by baseline test composition"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+      "path": "packages/contracts/retrieval-0.2/catalog.schema.json",
+      "bytes": 16814,
+      "sha256": "95eec52796389bbe2e515637024280015993f3a74d971b7680aacddea4e34488",
+      "usage": "canonical source schemas/factories loaded by baseline test composition"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+      "path": "packages/contracts/retrieval-0.2/common.schema.json",
+      "bytes": 15134,
+      "sha256": "7d7ac22eff809cc31e84d1fc9b2fada1b56c316f73e50115207b579de0d92c4b",
+      "usage": "canonical source schemas/factories loaded by baseline test composition"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+      "path": "packages/contracts/retrieval-0.2/data-search-validation.mjs",
+      "bytes": 18029,
+      "sha256": "5049b9177664275f763ab97f92fe722ae5d4e2064ca8400f6448d89027f5cd43",
+      "usage": "canonical source schemas/factories loaded by baseline test composition"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+      "path": "packages/contracts/retrieval-0.2/data-search.schema.json",
+      "bytes": 25959,
+      "sha256": "96e5d1ebc461dc53db86e2fd14e2863d93d5c651e134382a2da5daefd3836fec",
+      "usage": "canonical source schemas/factories loaded by baseline test composition"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+      "path": "packages/contracts/retrieval-0.2/federal-market-validation.mjs",
+      "bytes": 8669,
+      "sha256": "eebf8b073bc8b25e6c7aea415c269cb034eb9976d45ab6ae0411d709e11295df",
+      "usage": "canonical source schemas/factories loaded by baseline test composition"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+      "path": "packages/contracts/retrieval-0.2/federal-market.schema.json",
+      "bytes": 40586,
+      "sha256": "5ebd54c7a1e5d3a2ef99f5a69e76293aec227fbe50874f21ba69ea987417bada",
+      "usage": "canonical source schemas/factories loaded by baseline test composition"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+      "path": "packages/contracts/retrieval-0.2/mail-validation.mjs",
+      "bytes": 15957,
+      "sha256": "e15eec9ea611daa70d8605e8b350c20535fab27f516937897914eeb55d6f8cdc",
+      "usage": "canonical source schemas/factories loaded by baseline test composition"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+      "path": "packages/contracts/retrieval-0.2/mail.schema.json",
+      "bytes": 30679,
+      "sha256": "d45681f76ba5f5d7f65b7385ab1e1c3deb9626d4166e55fc6039e88bc3d804e6",
+      "usage": "canonical source schemas/factories loaded by baseline test composition"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+      "path": "packages/contracts/retrieval-0.2/meeting-source-validation.mjs",
+      "bytes": 23313,
+      "sha256": "5fc7e262efc9be933c760ee089e02f58e4a8d74a958c8e412c216846bbba8ac2",
+      "usage": "canonical source schemas/factories loaded by baseline test composition"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+      "path": "packages/contracts/retrieval-0.2/meeting-source.schema.json",
+      "bytes": 37907,
+      "sha256": "b7ec6ecbdaab3fcccac3b83b9530828c90bda96685385b6f49f929fbd2776664",
+      "usage": "canonical source schemas/factories loaded by baseline test composition"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+      "path": "packages/contracts/retrieval-0.2/operational-reads-validation.mjs",
+      "bytes": 21346,
+      "sha256": "81be7fe48c5d34f9352e145d9c47dc2e143ffc0b985a5f1ac26e0be07c344a42",
+      "usage": "canonical source schemas/factories loaded by baseline test composition"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+      "path": "packages/contracts/retrieval-0.2/operational-reads.schema.json",
+      "bytes": 31381,
+      "sha256": "a8556220e2285239e9d46aba97954594f245daad20ab126c1733f2360d3f109c",
+      "usage": "canonical source schemas/factories loaded by baseline test composition"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+      "path": "packages/contracts/retrieval-0.2/retrieval.schema.json",
+      "bytes": 21023,
+      "sha256": "6058aa0d735b595a093907eec8bf7e4e8f4eb96952f497caa3c1eb00f3ad1a8c",
+      "usage": "canonical source schemas/factories loaded by baseline test composition"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+      "path": "packages/contracts/retrieval-0.2/skill.schema.json",
+      "bytes": 9072,
+      "sha256": "146a78397cf72fbb899769fe23a83ab609fd8d67803f543ab5a76dba7a37ee7e",
+      "usage": "canonical source schemas/factories loaded by baseline test composition"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+      "path": "packages/contracts/retrieval-0.2/validate.mjs",
+      "bytes": 19407,
+      "sha256": "0b01b7be420bfbd71506a088f717b209babee7623269ad2370f175b408657711",
+      "usage": "canonical source schemas/factories loaded by baseline test composition"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+      "path": "packages/contracts/validate.mjs",
+      "bytes": 3311,
+      "sha256": "c2449fd55300b31bdc1e829b5d918a531f1c4b2c675085a5b4707726ddd36d10",
+      "usage": "canonical frozen public shapes/hash/dependency metadata used by baseline imports"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+      "path": "packages/contracts/meri.schema.json",
+      "bytes": 50043,
+      "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b",
+      "usage": "canonical frozen public shapes/hash/dependency metadata used by baseline imports"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+      "path": "packages/contracts/package.json",
+      "bytes": 1291,
+      "sha256": "5ffd1042ab28e234a4803344f34a882bd0695580914d21136e7c13e43c7ddbe7",
+      "usage": "canonical frozen public shapes/hash/dependency metadata used by baseline imports"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "bytes": 11365,
+      "sha256": "8fbf9c152c7a08678150f122bdfa0dec33253dc877509f72ef0e1b17ac9b8307",
+      "usage": "exact frozen read/copied byte source for actual13 overlay (producer unchanged)"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/retrieval-0.2/catalog.json",
+      "bytes": 76401,
+      "sha256": "731ed180fb4070eee4da92a9b7e7dfe3014f1524c83bf2c3c28732bd961707f5",
+      "usage": "exact frozen read/copied byte source for actual13 overlay (producer unchanged)"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/retrieval-0.2/catalog.schema.json",
+      "bytes": 16814,
+      "sha256": "95eec52796389bbe2e515637024280015993f3a74d971b7680aacddea4e34488",
+      "usage": "exact frozen read/copied byte source for actual13 overlay (producer unchanged)"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/retrieval-0.2/common.schema.json",
+      "bytes": 15134,
+      "sha256": "7d7ac22eff809cc31e84d1fc9b2fada1b56c316f73e50115207b579de0d92c4b",
+      "usage": "exact frozen read/copied byte source for actual13 overlay (producer unchanged)"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/retrieval-0.2/data-search-validation.mjs",
+      "bytes": 18029,
+      "sha256": "5049b9177664275f763ab97f92fe722ae5d4e2064ca8400f6448d89027f5cd43",
+      "usage": "exact frozen read/copied byte source for actual13 overlay (producer unchanged)"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/retrieval-0.2/data-search.schema.json",
+      "bytes": 25959,
+      "sha256": "96e5d1ebc461dc53db86e2fd14e2863d93d5c651e134382a2da5daefd3836fec",
+      "usage": "exact frozen read/copied byte source for actual13 overlay (producer unchanged)"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/retrieval-0.2/federal-market-validation.mjs",
+      "bytes": 8669,
+      "sha256": "eebf8b073bc8b25e6c7aea415c269cb034eb9976d45ab6ae0411d709e11295df",
+      "usage": "exact frozen read/copied byte source for actual13 overlay (producer unchanged)"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/retrieval-0.2/federal-market.schema.json",
+      "bytes": 40586,
+      "sha256": "5ebd54c7a1e5d3a2ef99f5a69e76293aec227fbe50874f21ba69ea987417bada",
+      "usage": "exact frozen read/copied byte source for actual13 overlay (producer unchanged)"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/retrieval-0.2/mail-validation.mjs",
+      "bytes": 15957,
+      "sha256": "e15eec9ea611daa70d8605e8b350c20535fab27f516937897914eeb55d6f8cdc",
+      "usage": "exact frozen read/copied byte source for actual13 overlay (producer unchanged)"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/retrieval-0.2/mail.schema.json",
+      "bytes": 30679,
+      "sha256": "d45681f76ba5f5d7f65b7385ab1e1c3deb9626d4166e55fc6039e88bc3d804e6",
+      "usage": "exact frozen read/copied byte source for actual13 overlay (producer unchanged)"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/retrieval-0.2/meeting-source-validation.mjs",
+      "bytes": 23313,
+      "sha256": "5fc7e262efc9be933c760ee089e02f58e4a8d74a958c8e412c216846bbba8ac2",
+      "usage": "exact frozen read/copied byte source for actual13 overlay (producer unchanged)"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/retrieval-0.2/meeting-source.schema.json",
+      "bytes": 37907,
+      "sha256": "b7ec6ecbdaab3fcccac3b83b9530828c90bda96685385b6f49f929fbd2776664",
+      "usage": "exact frozen read/copied byte source for actual13 overlay (producer unchanged)"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/retrieval-0.2/operation-contracts.mjs",
+      "bytes": 5255,
+      "sha256": "e76240850b6436b49ee8dba87b75579c3e59bc6187b35c7ea6353286f1ec943a",
+      "usage": "exact frozen read/copied byte source for actual13 overlay (producer unchanged)"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/retrieval-0.2/operational-reads-validation.mjs",
+      "bytes": 21346,
+      "sha256": "81be7fe48c5d34f9352e145d9c47dc2e143ffc0b985a5f1ac26e0be07c344a42",
+      "usage": "exact frozen read/copied byte source for actual13 overlay (producer unchanged)"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/retrieval-0.2/operational-reads.schema.json",
+      "bytes": 31381,
+      "sha256": "a8556220e2285239e9d46aba97954594f245daad20ab126c1733f2360d3f109c",
+      "usage": "exact frozen read/copied byte source for actual13 overlay (producer unchanged)"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/retrieval-0.2/retrieval.schema.json",
+      "bytes": 21023,
+      "sha256": "6058aa0d735b595a093907eec8bf7e4e8f4eb96952f497caa3c1eb00f3ad1a8c",
+      "usage": "exact frozen read/copied byte source for actual13 overlay (producer unchanged)"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/retrieval-0.2/skill.schema.json",
+      "bytes": 9072,
+      "sha256": "146a78397cf72fbb899769fe23a83ab609fd8d67803f543ab5a76dba7a37ee7e",
+      "usage": "exact frozen read/copied byte source for actual13 overlay (producer unchanged)"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/retrieval-0.2/validate.mjs",
+      "bytes": 16841,
+      "sha256": "405983458447c4dc2221f7fff944446862ebe9be15c2df4e1b8ba0fde1b7c52d",
+      "usage": "exact frozen read/copied byte source for actual13 overlay (producer unchanged)"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/validate.mjs",
+      "bytes": 3311,
+      "sha256": "c2449fd55300b31bdc1e829b5d918a531f1c4b2c675085a5b4707726ddd36d10",
+      "usage": "exact frozen read/copied byte source for actual13 overlay (producer unchanged)"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/meri.schema.json",
+      "bytes": 50043,
+      "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b",
+      "usage": "exact frozen read/copied byte source for actual13 overlay (producer unchanged)"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/package.json",
+      "bytes": 1291,
+      "sha256": "5ffd1042ab28e234a4803344f34a882bd0695580914d21136e7c13e43c7ddbe7",
+      "usage": "exact frozen read/copied byte source for actual13 overlay (producer unchanged)"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "ae4ba22ea5b598cc808270acc252435aa0fbe7d3",
+      "path": "docs/coordination/reports/CODEX-FRESH-RUNNER-CAPTURE-FINAL-INDEPENDENT-20261012.md",
+      "bytes": 7882,
+      "sha256": "0d2dd2a86a30ef4512d506f1161a9c25668cb34362e3657b05ebb0a3b5ec85e5",
+      "usage": "earlier independently accepted source review used for handover limits"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "2b4336de9714e26a731923621a3cb0b289c3b11a",
+      "path": "docs/coordination/reports/CODEX-REL02-CATALOG-INDEPENDENT-20261012.md",
+      "bytes": 8695,
+      "sha256": "9a8ad45623c9fcf8e14ff1cc3bbbb0257d2f7271499adccdd95253d6a02fd222",
+      "usage": "earlier accepted catalog dependency source review"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "c13a536d9d629cfc9a4f74a9c70d9cc744bfbd03",
+      "path": "docs/coordination/reports/CODEX-FRESH-RUNNER-CAPTURE-INDEPENDENT-20261012.md",
+      "bytes": 8999,
+      "sha256": "b43ccc504a2107270a20cc9ad75490aa187ccc50d6684937e5d4f9311a5dd668",
+      "usage": "original failure review retained for handover"
+    },
+    {
+      "repo": "neo-capiro/meri-greenfield",
+      "ref": "58b12c32be5dd596414a128bd84d63dd6b25112f",
+      "path": "docs/coordination/reports/CODEX-FRESH-RUNNER-CAPTURE-REPAIR-INDEPENDENT-20261012.md",
+      "bytes": 5217,
+      "sha256": "82a24cac4614f73da7e565d561082865d13a90ce85a356524de38bb91f0629cf",
+      "usage": "initialization failure review retained for handover"
+    }
+  ],
+  "runtime": {
+    "path": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "sha256": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12",
+    "version": "24.19.0"
+  },
+  "borrowedDependencyMetadata": [
+    {
+      "name": "ajv",
+      "version": "8.20.0",
+      "localBorrowedPath": "/workspace/scratch/853fba62b1f1/meri-gateway-source-disabled-20261012/node_modules/ajv/package.json",
+      "packageMetadataSha256": "1f9033ee5a6515e7d76938b7072941862d1ed228a6879cc7fe10cdeb75107989",
+      "completeInstalledTreeAttestation": false
+    },
+    {
+      "name": "ajv-formats",
+      "version": "3.0.1",
+      "localBorrowedPath": "/workspace/scratch/853fba62b1f1/meri-gateway-source-disabled-20261012/node_modules/ajv-formats/package.json",
+      "packageMetadataSha256": "402fb4bcfa457f0226813f3976ac42839dd619907c075c108efba8600d7edb69",
+      "completeInstalledTreeAttestation": false
+    },
+    {
+      "name": "canonicalize",
+      "version": "5.1.0",
+      "localBorrowedPath": "/workspace/scratch/853fba62b1f1/meri-gateway-source-disabled-20261012/node_modules/canonicalize/package.json",
+      "packageMetadataSha256": "ca7454aac0f76429b5d56bbc3bd61fa706fb1088a19f45d64cf38e055fbf4670",
+      "completeInstalledTreeAttestation": false
+    }
+  ],
+  "networkGitUsed": false
+}

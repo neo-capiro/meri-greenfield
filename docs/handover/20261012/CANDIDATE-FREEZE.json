@@ -1,0 +1,46 @@
+{
+  "schema": "meri-handover-candidate-freeze/1",
+  "classification": "PRESERVATION_ONLY_UNREVIEWED_HOLD",
+  "memory": {
+    "authorCommit": "49df68b72e8b3761433502aab0569382e6330a04",
+    "authorTree": "e7a2222fcd03bf3ddc70b398fd3e45407b1cce0d",
+    "metadataCommit": "d09b689cdc517c36a8428338ddc36a5e9beda056",
+    "finalAuthorTree": "2f2c470b6798c2c553196604b671eb7d5f81b301",
+    "independentAcceptance": false,
+    "authorTests": {
+      "focusedGroups": 15,
+      "contracts": 211,
+      "public": 7
+    },
+    "toolEnabled": false
+  },
+  "gateway": {
+    "originalAuthorCommit": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+    "originalTree": "309fcb76b3effab1f34e78445a311e0c8f74b150",
+    "independentHoldCommit": "ce44daa91d35660f506ae38f4bb311113c50fb7d",
+    "independentHoldTree": "4928732add242646877853da7aacc17b1fe0717e",
+    "narrowFixCommit": "7a040bd85c980da7d1a46b51a6298e44a8b736a7",
+    "narrowFixTree": "a242fb38384bea8fcbbb07f625102de5d6e069de",
+    "metadataCommits": [
+      "2860b71c4057d52ebc6087ccc636ed9f172d8480",
+      "9bf9cf0eea8cfabdbbebef284e309a5c7bc19314"
+    ],
+    "finalAuthorCommit": "2860b71c4057d52ebc6087ccc636ed9f172d8480",
+    "finalAuthorTree": "ba13d1dba093b13dff5c4f18869d30faf41b4211",
+    "fixTestsAuthor": 18,
+    "originalTestFilePrefixPreserved": true,
+    "independentFixReplay": false,
+    "remainingReview": "Original deadline control, actual accepted13 coupling and inner authorization shortened deadline propagation",
+    "sourceEnabled": false
+  },
+  "primaryLocalCandidateSource": {
+    "commit": "7903c3c181447cc97b4ad788fb7a76278cda9b7e",
+    "tree": "6b3b16cb911aeff04548995205ca2411175a12f7"
+  },
+  "admission": {
+    "mainMerge": false,
+    "awsWrite": false,
+    "G1": false,
+    "production": false
+  }
+}

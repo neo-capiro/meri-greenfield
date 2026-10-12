@@ -1,0 +1,61 @@
+{
+  "schema": "meri-handover-source-snapshots/1",
+  "snapshots": [
+    {
+      "name": "backend-accepted",
+      "repository": "neo-capiro/meri-greenfield",
+      "localRef": "ddb92c6e08bcedf4063897e37ca05d14614f72ea",
+      "tree": "985e0fdafe23d68b6f2e81a092cf098d8ede3182",
+      "publicRef": "5ee46446b5f60034916f00b2a665b3e2bef9cf60",
+      "usage": "COMPLETE_TRACKED_SNAPSHOT_NOT_READ_AUDIT",
+      "fileCount": 1626,
+      "totalBytes": 16793786,
+      "inventory": "docs/handover/20261012/snapshots/backend-accepted.json",
+      "inventoryBytes": 474945,
+      "inventorySha256": "998e0fabdc08a20eaa7a1974dbfc0464de4848b699720ac04cfec34797ab25b5"
+    },
+    {
+      "name": "backend-candidate-freeze",
+      "repository": "neo-capiro/meri-greenfield",
+      "localRef": "7903c3c181447cc97b4ad788fb7a76278cda9b7e",
+      "tree": "6b3b16cb911aeff04548995205ca2411175a12f7",
+      "publicRef": null,
+      "usage": "COMPLETE_TRACKED_SNAPSHOT_NOT_READ_AUDIT",
+      "fileCount": 1716,
+      "totalBytes": 17350718,
+      "inventory": "docs/handover/20261012/snapshots/backend-candidate-freeze.json",
+      "inventoryBytes": 502303,
+      "inventorySha256": "bfa7250d53e4f9985deaacc166cbb8d246d3718134e2db3ec5f845d645b2b67e"
+    },
+    {
+      "name": "frontend",
+      "repository": "neo-capiro/capiro-frontend",
+      "localRef": "d792cb5791a998dc886c74d24da086703879878f",
+      "tree": "d67a73f5a3d68ed3d927d3611b5f8377f826f9b1",
+      "publicRef": "3cc30ff3182e8050d563516607866cf07efe2aef",
+      "usage": "COMPLETE_TRACKED_SNAPSHOT_NOT_READ_AUDIT",
+      "fileCount": 1092,
+      "totalBytes": 13563501,
+      "inventory": "docs/handover/20261012/snapshots/frontend.json",
+      "inventoryBytes": 305423,
+      "inventorySha256": "46569924d2201efc202d37fafb41625a64a99f4ec49b0a8f8db987c440441817"
+    },
+    {
+      "name": "aws-shipper-materialized",
+      "repository": "neo-capiro/meri-greenfield",
+      "publicRef": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+      "localRef": null,
+      "usage": "MATERIALIZED_SCRUBBED_EVIDENCE_NOT_GIT_CHECKOUT",
+      "fileCount": 296,
+      "totalBytes": 6851210,
+      "inventory": "docs/handover/20261012/snapshots/aws-shipper-materialized.json",
+      "inventoryBytes": 84974,
+      "inventorySha256": "9d1782d51b73f3df82c04354797e01252aa6a9c9e07a7bf5015b187cdaf2cbd8"
+    }
+  ],
+  "limitations": [
+    "Final handover additions are listed by the final published Git tree; self-referential inventory hashes are not invented.",
+    "Backend candidate has a locally identified pre-handover tree; publication binds the complete final descendant.",
+    "Installed dependencies/private implementation/customer bytes are excluded; not a read audit or SBOM."
+  ]
+}

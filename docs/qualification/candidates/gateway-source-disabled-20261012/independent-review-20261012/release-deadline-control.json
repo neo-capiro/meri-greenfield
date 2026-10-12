@@ -1,0 +1,31 @@
+{
+  "sourceCommit": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+  "catalogOverlayCommit": null,
+  "argv": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "docs/qualification/candidates/gateway-source-disabled-20261012/independent-review-20261012/release-deadline-control.mjs"
+  ],
+  "cwd": "/workspace/scratch/853fba62b1f1/meri-gateway-independent-20261012",
+  "externalTimeoutSeconds": 15,
+  "physicalExitCode": 1,
+  "expectedExitCode": 1,
+  "timedOut": false,
+  "elapsedSeconds": 0.933,
+  "ownedProcessGroupAbsent": true,
+  "ownedTempContentsBeforeCleanup": [],
+  "ownedTempRootRemoved": true,
+  "streams": {
+    "stdout": {
+      "path": "docs/qualification/candidates/gateway-source-disabled-20261012/independent-review-20261012/release-deadline-control.stdout.bin",
+      "bytes": 277,
+      "sha256": "dd820176a52bc01684d0fa249a84db2ded396738b69768434347f5323b911313"
+    },
+    "stderr": {
+      "path": "docs/qualification/candidates/gateway-source-disabled-20261012/independent-review-20261012/release-deadline-control.stderr.bin",
+      "bytes": 548,
+      "sha256": "08741f22024d974518c50b2ebc7c62142566eb3ca1a39df55488b7e81045fa5e"
+    }
+  },
+  "productionActivation": false,
+  "realJwtDbOrCloud": false
+}
