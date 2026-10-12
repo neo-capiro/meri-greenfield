@@ -1,0 +1,33 @@
+{
+  "command": [
+    "python3",
+    "docs/qualification/candidates/read-continuation-20261012/pe-references-review/replay-initial.py"
+  ],
+  "cwd": "/workspace/meri-pe-references-review-20261012",
+  "sourceHead": "920606d870a4c32bb6afaeb3493bf685f38ccf94",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T17:21:18.922194+00:00",
+  "durationSeconds": 0.416,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 186134,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-references-review/initial-negative-replay.stdout.bin",
+      "bytes": 5596,
+      "sha256": "bed4054bcea27651f671475bfdfaf3c33afa5b2f39d31ee2e81f0754f306a819"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-references-review/initial-negative-replay.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
