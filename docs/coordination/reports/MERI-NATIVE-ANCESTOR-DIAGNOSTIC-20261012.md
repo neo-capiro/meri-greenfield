@@ -33,7 +33,9 @@ A rejection reports role, one-based root-to-leaf ancestor ordinal/count, stage,
 the three predicate booleans, numeric stat mode, Windows file attributes and
 reparse tag. Missing Windows metadata is explicitly null. OS/native API failures
 carry only bounded numeric errno/winerror and stage, never exception text. For a
-syntax or drive failure, no ancestor was statted; the ordinal is null. Successful
+syntax or drive failure, no ancestor was statted; the ordinal is null. Upfront
+syntax failures identify their input role, including the separately supplied
+original-output argument, before any native or filesystem operation. Successful
 earlier roles report counts only. No private path strings are emitted; the parent
 maps role and ordinal back to its exact input receipt.
 
@@ -57,11 +59,11 @@ stdlib inventory, filesystem race safety, runner qualification or build authorit
 
 ## Local verification
 
-Eleven synthetic source controls passed: root-first ordering; individual and
+Twelve synthetic source controls passed: root-first ordering; individual and
 simultaneous rejection predicates; stop-at-first-failure; numeric OS error
 reporting without filenames; UNC/device/drive-relative/traversal/NUL/length/count
 refusal before IO; fixed-drive/API refusal; deadline checks; wrong-runtime refusal;
-role ordering; absent attribute reporting; invalid-argument path suppression and
+role ordering; upfront syntax-role reporting; absent attribute reporting; invalid-argument path suppression and
 stdout bounds. The actual isolated Linux command exited 2 with the required
 runtime-refusal record before filesystem metadata; help exited 0 and a deliberately
 invalid argument exited 2 without echoing its value. Raw outputs remain retained.
@@ -71,3 +73,9 @@ opening, directory enumeration, subprocess or collector import. The source hash,
 size, call list, original-script preservation and exact local receipts are under
 the candidate's `author/` directory. All owned local check processes completed.
 No native Windows execution, file repair or safety relaxation was performed.
+
+The initial eleven-control/source freeze `783563fb4b9609d1866da890dbacfc4bf81709f0`
+is retained. Parent requested the subsequent syntax-role clarity refinement;
+its new regression confirms unsafe repository, original-output and basePrefix
+inputs identify the role while making zero drive or lstat calls. The original
+eleven controls remain unchanged; all twelve pass with this refinement.

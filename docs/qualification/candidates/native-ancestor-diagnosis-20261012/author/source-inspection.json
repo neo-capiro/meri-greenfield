@@ -1,8 +1,8 @@
 {
   "sourceCommitBase": "90b4dc8472da13cdee9f49cdc0b4c8306ecbdc73",
   "scriptPath": "docs/qualification/candidates/native-ancestor-diagnosis-20261012/inspect-ancestor-metadata.py",
-  "bytes": 6017,
-  "sha256": "c08397884fad41ceb5e5aaac548a1d54d69ef3aba6b143bc426fe6dd882fc5bf",
+  "bytes": 6297,
+  "sha256": "9514b8e8ad0aff24e1eea7e782dd32178d856011fafcb750ce2c0f9a715c6efd",
   "imports": [
     "argparse",
     "json",
