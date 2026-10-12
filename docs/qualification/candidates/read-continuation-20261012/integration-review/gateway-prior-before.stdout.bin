@@ -1,0 +1,205 @@
+✖ all15 production operations remain unavailable and zero-effect (7.913069ms)
+✔ actual resolver to current authority to dispatcher validates a nonempty recommendation (19.416867ms)
+✔ clientless and malformed raw arguments refuse before reserve or handler (4.481811ms)
+✔ model authority injection refuses before every trusted port (1.136762ms)
+✔ stale task, expired credential, absent grant and disabled source stop prior to reservation (2.294006ms)
+✔ revocation while reserving prevents effect and preserves uncertain hold (1.470595ms)
+✔ opaque cursor and exact action requests reach effect only as canonical selections (3.013078ms)
+✔ full foreign run and authorization lineage never escapes even for valid family data (17.840072ms)
+✔ source proof, fabricated evidence and recommendation completion fail through dispatch (12.558226ms)
+✔ reported recommendation outcome is accepted only as noncompletion (2.578544ms)
+✔ revocation during effect or settlement never releases a result (3.314702ms)
+✔ uncertain acknowledgements stop before effects or output and never refund (2.434657ms)
+✔ cancelled parked effect/settlement cannot start a later authorization or release (22.574854ms)
+✔ freshly shortened release authority bounds parked settlement with no late release (23.838287ms)
+✖ independent combined catalog remains invisible and refuses all21 operations before every effect (6.661274ms)
+✔ mail independent: canonical list three-page continuation (32.838082ms)
+✔ mail independent: canonical search three-page continuation (11.44551ms)
+✔ mail independent: stable key retains exact full page and immutable snapshots (6.480291ms)
+✔ mail independent: first-page current decision IDs may rotate (2.80812ms)
+✔ mail independent: full previous/current page decision mismatch still refuses (5.604782ms)
+✔ mail independent: terminal or unknown total 0 never retains invented continuation (2.106443ms)
+✔ mail independent: terminal or unknown total 1 never retains invented continuation (2.063969ms)
+✔ mail independent: terminal or unknown total null never retains invented continuation (6.216183ms)
+✔ mail independent: malformed shapes refuse before ports and semantic input before business effects (2.221777ms)
+✔ mail independent: missing context ports refuse without reservation or handler (0.891954ms)
+✔ mail independent: retained missing refuses before budget/effect (3.090205ms)
+✔ mail independent: retained digest refuses before budget/effect (3.18035ms)
+✔ mail independent: retained keyBinding refuses before budget/effect (3.111367ms)
+✔ mail independent: retained keyOperation refuses before budget/effect (3.203605ms)
+✔ mail independent: retained keyPolicy refuses before budget/effect (3.059128ms)
+✔ mail independent: retained keySubject refuses before budget/effect (2.774329ms)
+✔ mail independent: retained keySelection refuses before budget/effect (2.967329ms)
+✔ mail independent: retained staleReceipt refuses before budget/effect (3.338378ms)
+✔ mail independent: retained futureReceipt refuses before budget/effect (3.006799ms)
+✔ mail independent: retained expired refuses before budget/effect (2.880759ms)
+✔ mail independent: retained futureRecorded refuses before budget/effect (3.113841ms)
+✔ mail independent: retained extended refuses before budget/effect (2.972978ms)
+✔ mail independent: retained extra refuses before budget/effect (2.966097ms)
+✔ mail independent: rehashed retained anchor cannot bypass canonical continuation (3.036723ms)
+✔ mail independent: rehashed retained pageDecision cannot bypass canonical continuation (4.24275ms)
+✔ mail independent: rehashed retained nextOffset cannot bypass canonical continuation (3.023043ms)
+✔ mail independent: rehashed retained selection cannot bypass canonical continuation (3.433121ms)
+✔ mail independent: rehashed retained window cannot bypass canonical continuation (2.939398ms)
+✔ mail independent: raw context field accessors are rejected without invocation (4.870807ms)
+✔ mail independent: retained acknowledgment receiptDigest suppresses settlement (2.552986ms)
+✔ mail independent: retained acknowledgment receiptKey suppresses settlement (1.969407ms)
+✔ mail independent: retained acknowledgment stale suppresses settlement (2.0182ms)
+✔ mail independent: retained acknowledgment extra suppresses settlement (1.920002ms)
+✔ mail independent: retained acknowledgment oversized suppresses settlement (2.017379ms)
+✔ mail independent: revoked authority after load never releases (3.15994ms)
+✔ mail independent: revoked authority after retain never releases (2.17828ms)
+✔ mail independent: revoked authority after settle never releases (2.059222ms)
+✔ mail independent: fresh release deadline bounds parked load (50.089507ms)
+✔ mail independent: cancellation bounds parked load (3.838101ms)
+✔ mail independent: fresh release deadline bounds parked retain (42.925352ms)
+✔ mail independent: cancellation bounds parked retain (4.486098ms)
+✔ mail independent: fresh release deadline bounds parked settle (42.94489ms)
+✔ mail independent: cancellation bounds parked settle (3.080711ms)
+✔ mail independent: budget-shortened lifetime bounds retained expiry (2.173985ms)
+✖ mail independent: source-disabled canonical catalog never reaches supplied ports (6.163093ms)
+✔ mail independent: context port proxy/accessor admission is inert (1.459859ms)
+✔ mail independent: shortened retained expiry bounds the next parked authority port (43.333226ms)
+✔ mail independent: candidate output cannot promote previews or omit decisive reads (10.500236ms)
+✖ independent: canonical mail and memory profiles are selected; actual15 stay unavailable (3.361203ms)
+✔ independent: first page uses fresh server-selected client and canonical normalized input (12.405115ms)
+✔ independent: canonical continuation consumes retained raw request/page and advances (6.708545ms)
+✔ independent: all invalid model shape/context inputs fail before trusted ports (2.847189ms)
+✔ independent: client selector cannot override server subject before effects (1.209031ms)
+✔ independent: decision IDs rotate while stable authority remains required (3.035071ms)
+✔ independent: stable subject drift at authority stage 2 never releases (1.276492ms)
+✔ independent: stable subject drift at authority stage 3 never releases (1.484677ms)
+✔ independent: stable subject drift at authority stage 4 never releases (2.294897ms)
+✔ independent: stable subject drift at authority stage 5 never releases (2.282488ms)
+✔ independent: absent retained context or context ports cannot invent continuation (1.060588ms)
+✔ independent: retained context rejects tenant (2.806287ms)
+✔ independent: retained context rejects actor (2.398712ms)
+✔ independent: retained context rejects conversation (2.836603ms)
+✔ independent: retained context rejects run (2.280555ms)
+✔ independent: retained context rejects attempt (2.173614ms)
+✔ independent: retained context rejects worker (2.29072ms)
+✔ independent: retained context rejects fence (2.78809ms)
+✔ independent: retained context rejects policy (2.362248ms)
+✔ independent: retained context rejects operation (3.161522ms)
+✔ independent: retained context rejects version (2.553877ms)
+✔ independent: retained context rejects subject (2.367316ms)
+✔ independent: retained context rejects cursor (2.243278ms)
+✔ independent: retained context rejects digest (2.52349ms)
+✔ independent: retained context rejects staleRead (2.087635ms)
+✔ independent: retained context rejects futureRead (2.003588ms)
+✔ independent: retained context rejects futureRecord (2.254655ms)
+✔ independent: retained context rejects expired (2.52319ms)
+✔ independent: retained context rejects beyondAuthority (2.538914ms)
+✔ independent: retained context rejects extra (2.242327ms)
+✔ independent: retained context rejects limit (2.332063ms)
+✔ independent: retained context rejects poisonedCursor (3.03393ms)
+✔ independent: retained context rejects invalidPage (2.632485ms)
+✔ independent: envelope and raw DTO reject operation (1.4203ms)
+✔ independent: envelope and raw DTO reject arguments (1.142961ms)
+✔ independent: envelope and raw DTO reject binding (1.295311ms)
+✔ independent: envelope and raw DTO reject subject (1.230063ms)
+✔ independent: envelope and raw DTO reject extra (1.071144ms)
+✔ independent: envelope and raw DTO reject missing (1.482844ms)
+✔ independent: envelope and raw DTO reject approved (1.393489ms)
+✔ independent: envelope and raw DTO reject actor (1.311195ms)
+✔ independent: envelope and raw DTO reject restricted (1.234119ms)
+✔ independent: envelope and raw DTO reject coverage (1.087909ms)
+✔ independent: retain receipt rejects decision (1.937709ms)
+✔ independent: retain receipt rejects keySha256 (6.053358ms)
+✔ independent: retain receipt rejects previousSha256 (1.727602ms)
+✔ independent: retain receipt rejects checkedAtMs (1.345857ms)
+✔ independent: load rejects hostile non-JSON receipt without property effects (2.386495ms)
+✔ independent: retain rejects hostile non-JSON receipt without property effects (2.557402ms)
+✔ independent: retained ports receive immutable context detached from model objects (8.233071ms)
+✔ independent: release revocation prevents retain, final revocation prevents release (2.842001ms)
+✔ independent: fresh shortened authority bounds parked load and late completion (102.657199ms)
+✔ independent: fresh shortened authority bounds parked retain and late completion (101.17399ms)
+✔ independent: fresh shortened authority bounds parked settle and late completion (100.390207ms)
+ℹ tests 117
+ℹ suites 0
+ℹ pass 113
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3446.669964
+
+✖ failing tests:
+
+test at apps/gateway/test/action-item-context-independent.test.mjs:10:1
+✖ all15 production operations remain unavailable and zero-effect (7.913069ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  37 !== 21
+  
+      at TestContext.<anonymous> (file:///workspace/meri-read-continuation-integration-review-20261012/apps/gateway/test/action-item-context-independent.test.mjs:12:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 37,
+    expected: 21,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/capability-next-independent.test.mjs:7:1
+✖ independent combined catalog remains invisible and refuses all21 operations before every effect (6.661274ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  37 !== 21
+  
+      at TestContext.<anonymous> (file:///workspace/meri-read-continuation-integration-review-20261012/apps/gateway/test/capability-next-independent.test.mjs:9:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 37,
+    expected: 21,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/mail-context-independent.test.mjs:180:1
+✖ mail independent: source-disabled canonical catalog never reaches supplied ports (6.163093ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  36 !== 20
+  
+      at TestContext.<anonymous> (file:///workspace/meri-read-continuation-integration-review-20261012/apps/gateway/test/mail-context-independent.test.mjs:183:133)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 36,
+    expected: 20,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/memory-context-independent.test.mjs:97:1
+✖ independent: canonical mail and memory profiles are selected; actual15 stay unavailable (3.361203ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  37 !== 21
+  
+      at TestContext.<anonymous> (file:///workspace/meri-read-continuation-integration-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:101:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 37,
+    expected: 21,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
