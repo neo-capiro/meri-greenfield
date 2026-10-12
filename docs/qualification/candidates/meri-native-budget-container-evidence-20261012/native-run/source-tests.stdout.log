@@ -1,0 +1,478 @@
+TAP version 13
+# Subtest: pure admission returns frozen correlation only; importing child does not run it
+ok 1 - pure admission returns frozen correlation only; importing child does not run it
+  ---
+  duration_ms: 1.734766
+  type: 'test'
+  ...
+# Subtest: missing/unrecognized mode undefined refuses before native dependencies
+ok 2 - missing/unrecognized mode undefined refuses before native dependencies
+  ---
+  duration_ms: 0.444332
+  type: 'test'
+  ...
+# Subtest: missing/unrecognized mode yes refuses before native dependencies
+ok 3 - missing/unrecognized mode yes refuses before native dependencies
+  ---
+  duration_ms: 0.133456
+  type: 'test'
+  ...
+# Subtest: missing/unrecognized mode true refuses before native dependencies
+ok 4 - missing/unrecognized mode true refuses before native dependencies
+  ---
+  duration_ms: 0.138944
+  type: 'test'
+  ...
+# Subtest: missing/unrecognized mode  refuses before native dependencies
+ok 5 - missing/unrecognized mode  refuses before native dependencies
+  ---
+  duration_ms: 0.1159
+  type: 'test'
+  ...
+# Subtest: closed native binding rejects host=db.internal
+ok 6 - closed native binding rejects host=db.internal
+  ---
+  duration_ms: 0.152754
+  type: 'test'
+  ...
+# Subtest: closed native binding rejects host=localhost
+ok 7 - closed native binding rejects host=localhost
+  ---
+  duration_ms: 0.182398
+  type: 'test'
+  ...
+# Subtest: closed native binding rejects port=0
+ok 8 - closed native binding rejects port=0
+  ---
+  duration_ms: 0.108299
+  type: 'test'
+  ...
+# Subtest: closed native binding rejects port=6543
+ok 9 - closed native binding rejects port=6543
+  ---
+  duration_ms: 0.130552
+  type: 'test'
+  ...
+# Subtest: closed native binding rejects database=production
+ok 10 - closed native binding rejects database=production
+  ---
+  duration_ms: 0.211921
+  type: 'test'
+  ...
+# Subtest: closed native binding rejects user=postgres
+ok 11 - closed native binding rejects user=postgres
+  ---
+  duration_ms: 0.172934
+  type: 'test'
+  ...
+# Subtest: closed native binding rejects password=
+ok 12 - closed native binding rejects password=
+  ---
+  duration_ms: 0.157451
+  type: 'test'
+  ...
+# Subtest: closed native binding rejects systemIdentifier=-1
+ok 13 - closed native binding rejects systemIdentifier=-1
+  ---
+  duration_ms: 0.119766
+  type: 'test'
+  ...
+# Subtest: closed native binding rejects systemIdentifier=123
+ok 14 - closed native binding rejects systemIdentifier=123
+  ---
+  duration_ms: 0.104163
+  type: 'test'
+  ...
+# Subtest: closed native binding rejects serverStartTime=0
+ok 15 - closed native binding rejects serverStartTime=0
+  ---
+  duration_ms: 0.111354
+  type: 'test'
+  ...
+# Subtest: closed native binding rejects serverStartTime=bad
+ok 16 - closed native binding rejects serverStartTime=bad
+  ---
+  duration_ms: 0.100117
+  type: 'test'
+  ...
+# Subtest: closed native binding rejects serverVersion=16.15
+ok 17 - closed native binding rejects serverVersion=16.15
+  ---
+  duration_ms: 0.113897
+  type: 'test'
+  ...
+# Subtest: closed native binding rejects workDeadlineMs=1800000720000
+ok 18 - closed native binding rejects workDeadlineMs=1800000720000
+  ---
+  duration_ms: 0.076612
+  type: 'test'
+  ...
+# Subtest: closed native binding rejects cleanupDeadlineMs=1800000900000
+ok 19 - closed native binding rejects cleanupDeadlineMs=1800000900000
+  ---
+  duration_ms: 0.076412
+  type: 'test'
+  ...
+# Subtest: closed native binding rejects t0Ms=1800000000001
+ok 20 - closed native binding rejects t0Ms=1800000000001
+  ---
+  duration_ms: 0.10928
+  type: 'test'
+  ...
+# Subtest: closed native binding rejects stateLockSha256=x
+ok 21 - closed native binding rejects stateLockSha256=x
+  ---
+  duration_ms: 0.082501
+  type: 'test'
+  ...
+# Subtest: closed native binding rejects migrationSha256=null
+ok 22 - closed native binding rejects migrationSha256=null
+  ---
+  duration_ms: 0.078645
+  type: 'test'
+  ...
+# Subtest: ambient PGHOST cannot override native admission
+ok 23 - ambient PGHOST cannot override native admission
+  ---
+  duration_ms: 0.110272
+  type: 'test'
+  ...
+# Subtest: ambient PGPASSWORD cannot override native admission
+ok 24 - ambient PGPASSWORD cannot override native admission
+  ---
+  duration_ms: 0.062752
+  type: 'test'
+  ...
+# Subtest: ambient PGSERVICE cannot override native admission
+ok 25 - ambient PGSERVICE cannot override native admission
+  ---
+  duration_ms: 0.056373
+  type: 'test'
+  ...
+# Subtest: ambient AWS_ACCESS_KEY_ID cannot override native admission
+ok 26 - ambient AWS_ACCESS_KEY_ID cannot override native admission
+  ---
+  duration_ms: 0.055682
+  type: 'test'
+  ...
+# Subtest: ambient ANTHROPIC_API_KEY cannot override native admission
+ok 27 - ambient ANTHROPIC_API_KEY cannot override native admission
+  ---
+  duration_ms: 0.054099
+  type: 'test'
+  ...
+# Subtest: ambient OPENAI_API_KEY cannot override native admission
+ok 28 - ambient OPENAI_API_KEY cannot override native admission
+  ---
+  duration_ms: 0.053488
+  type: 'test'
+  ...
+# Subtest: ambient BEDROCK_ENDPOINT cannot override native admission
+ok 29 - ambient BEDROCK_ENDPOINT cannot override native admission
+  ---
+  duration_ms: 0.055091
+  type: 'test'
+  ...
+# Subtest: ambient NODE_OPTIONS cannot override native admission
+ok 30 - ambient NODE_OPTIONS cannot override native admission
+  ---
+  duration_ms: 0.052898
+  type: 'test'
+  ...
+# Subtest: ambient NODE_PATH cannot override native admission
+ok 31 - ambient NODE_PATH cannot override native admission
+  ---
+  duration_ms: 0.056273
+  type: 'test'
+  ...
+# Subtest: hash mismatch, extra keys, overflow, expiry and effectful environment fail closed
+ok 32 - hash mismatch, extra keys, overflow, expiry and effectful environment fail closed
+  ---
+  duration_ms: 0.449429
+  type: 'test'
+  ...
+# Subtest: source admission precedes dynamic application imports; no migration/reset/production activation
+ok 33 - source admission precedes dynamic application imports; no migration/reset/production activation
+  ---
+  duration_ms: 16.495692
+  type: 'test'
+  ...
+# Subtest: source keeps one original group cutoff before each fork and each barrier send
+ok 34 - source keeps one original group cutoff before each fork and each barrier send
+  ---
+  duration_ms: 0.693628
+  type: 'test'
+  ...
+# Subtest: explicit prepared trust profile is deeply frozen and binds mapped and server endpoints separately
+ok 35 - explicit prepared trust profile is deeply frozen and binds mapped and server endpoints separately
+  ---
+  duration_ms: 2.7998
+  type: 'test'
+  ...
+# Subtest: prepared admission rejects wrong host localhost
+ok 36 - prepared admission rejects wrong host localhost
+  ---
+  duration_ms: 0.697754
+  type: 'test'
+  ...
+# Subtest: prepared admission rejects wrong host 172.17.0.2
+ok 37 - prepared admission rejects wrong host 172.17.0.2
+  ---
+  duration_ms: 0.251039
+  type: 'test'
+  ...
+# Subtest: prepared admission rejects wrong port 5432
+ok 38 - prepared admission rejects wrong port 5432
+  ---
+  duration_ms: 0.268264
+  type: 'test'
+  ...
+# Subtest: prepared admission rejects wrong port 55433
+ok 39 - prepared admission rejects wrong port 55433
+  ---
+  duration_ms: 0.244679
+  type: 'test'
+  ...
+# Subtest: prepared admission rejects wrong database another_test
+ok 40 - prepared admission rejects wrong database another_test
+  ---
+  duration_ms: 0.212202
+  type: 'test'
+  ...
+# Subtest: prepared admission rejects wrong user postgres
+ok 41 - prepared admission rejects wrong user postgres
+  ---
+  duration_ms: 0.221986
+  type: 'test'
+  ...
+# Subtest: prepared admission rejects wrong password unused
+ok 42 - prepared admission rejects wrong password unused
+  ---
+  duration_ms: 0.172974
+  type: 'test'
+  ...
+# Subtest: prepared admission rejects wrong password undefined
+ok 43 - prepared admission rejects wrong password undefined
+  ---
+  duration_ms: 0.230539
+  type: 'test'
+  ...
+# Subtest: prepared descriptor rejects invalid id
+ok 44 - prepared descriptor rejects invalid id
+  ---
+  duration_ms: 0.421679
+  type: 'test'
+  ...
+# Subtest: prepared descriptor rejects invalid image
+ok 45 - prepared descriptor rejects invalid image
+  ---
+  duration_ms: 0.227775
+  type: 'test'
+  ...
+# Subtest: prepared descriptor rejects invalid serverHost
+ok 46 - prepared descriptor rejects invalid serverHost
+  ---
+  duration_ms: 0.192893
+  type: 'test'
+  ...
+# Subtest: prepared descriptor rejects invalid serverHost
+ok 47 - prepared descriptor rejects invalid serverHost
+  ---
+  duration_ms: 0.138964
+  type: 'test'
+  ...
+# Subtest: prepared descriptor rejects invalid serverHost
+ok 48 - prepared descriptor rejects invalid serverHost
+  ---
+  duration_ms: 4.076363
+  type: 'test'
+  ...
+# Subtest: prepared descriptor rejects invalid serverPort
+ok 49 - prepared descriptor rejects invalid serverPort
+  ---
+  duration_ms: 0.491892
+  type: 'test'
+  ...
+# Subtest: prepared descriptor rejects invalid serverPort
+ok 50 - prepared descriptor rejects invalid serverPort
+  ---
+  duration_ms: 0.229768
+  type: 'test'
+  ...
+# Subtest: prepared descriptor rejects invalid extra
+ok 51 - prepared descriptor rejects invalid extra
+  ---
+  duration_ms: 0.173255
+  type: 'test'
+  ...
+# Subtest: read-only identity refuses wrong container
+ok 52 - read-only identity refuses wrong container
+  ---
+  duration_ms: 0.429311
+  type: 'test'
+  ...
+# Subtest: read-only identity refuses wrong image
+ok 53 - read-only identity refuses wrong image
+  ---
+  duration_ms: 0.136861
+  type: 'test'
+  ...
+# Subtest: read-only identity refuses wrong name
+ok 54 - read-only identity refuses wrong name
+  ---
+  duration_ms: 0.087849
+  type: 'test'
+  ...
+# Subtest: read-only identity refuses wrong stopped
+ok 55 - read-only identity refuses wrong stopped
+  ---
+  duration_ms: 0.072456
+  type: 'test'
+  ...
+# Subtest: read-only identity refuses wrong purpose
+ok 56 - read-only identity refuses wrong purpose
+  ---
+  duration_ms: 0.073197
+  type: 'test'
+  ...
+# Subtest: read-only identity refuses wrong volume
+ok 57 - read-only identity refuses wrong volume
+  ---
+  duration_ms: 0.075221
+  type: 'test'
+  ...
+# Subtest: read-only identity refuses wrong mount destination
+ok 58 - read-only identity refuses wrong mount destination
+  ---
+  duration_ms: 0.070073
+  type: 'test'
+  ...
+# Subtest: read-only identity refuses wrong read-only mount
+ok 59 - read-only identity refuses wrong read-only mount
+  ---
+  duration_ms: 0.1567
+  type: 'test'
+  ...
+# Subtest: read-only identity refuses wrong inner address
+ok 60 - read-only identity refuses wrong inner address
+  ---
+  duration_ms: 0.089481
+  type: 'test'
+  ...
+# Subtest: read-only identity refuses wrong extra network
+ok 61 - read-only identity refuses wrong extra network
+  ---
+  duration_ms: 0.104994
+  type: 'test'
+  ...
+# Subtest: read-only identity refuses wrong public host
+ok 62 - read-only identity refuses wrong public host
+  ---
+  duration_ms: 0.170731
+  type: 'test'
+  ...
+# Subtest: read-only identity refuses wrong public port
+ok 63 - read-only identity refuses wrong public port
+  ---
+  duration_ms: 0.094138
+  type: 'test'
+  ...
+# Subtest: read-only identity refuses wrong duplicate mapping
+ok 64 - read-only identity refuses wrong duplicate mapping
+  ---
+  duration_ms: 0.077344
+  type: 'test'
+  ...
+# Subtest: read-only identity refuses wrong extra port
+ok 65 - read-only identity refuses wrong extra port
+  ---
+  duration_ms: 0.066648
+  type: 'test'
+  ...
+# Subtest: read-only identity refuses wrong malformed mapping
+ok 66 - read-only identity refuses wrong malformed mapping
+  ---
+  duration_ms: 0.121018
+  type: 'test'
+  ...
+# Subtest: read-only identity refuses wrong malformed mount
+ok 67 - read-only identity refuses wrong malformed mount
+  ---
+  duration_ms: 0.135679
+  type: 'test'
+  ...
+# Subtest: SQL identity still refuses wrong db
+ok 68 - SQL identity still refuses wrong db
+  ---
+  duration_ms: 1.289563
+  type: 'test'
+  ...
+# Subtest: SQL identity still refuses wrong usr
+ok 69 - SQL identity still refuses wrong usr
+  ---
+  duration_ms: 0.233893
+  type: 'test'
+  ...
+# Subtest: SQL identity still refuses wrong addr
+ok 70 - SQL identity still refuses wrong addr
+  ---
+  duration_ms: 0.331367
+  type: 'test'
+  ...
+# Subtest: SQL identity still refuses wrong port
+ok 71 - SQL identity still refuses wrong port
+  ---
+  duration_ms: 0.128739
+  type: 'test'
+  ...
+# Subtest: SQL identity still refuses wrong system
+ok 72 - SQL identity still refuses wrong system
+  ---
+  duration_ms: 0.14354
+  type: 'test'
+  ...
+# Subtest: SQL identity still refuses wrong started
+ok 73 - SQL identity still refuses wrong started
+  ---
+  duration_ms: 0.147035
+  type: 'test'
+  ...
+# Subtest: SQL identity still refuses wrong version
+ok 74 - SQL identity still refuses wrong version
+  ---
+  duration_ms: 0.143491
+  type: 'test'
+  ...
+# Subtest: SQL identity still refuses wrong fsync
+ok 75 - SQL identity still refuses wrong fsync
+  ---
+  duration_ms: 0.104233
+  type: 'test'
+  ...
+# Subtest: SQL identity still refuses wrong sync
+ok 76 - SQL identity still refuses wrong sync
+  ---
+  duration_ms: 0.265199
+  type: 'test'
+  ...
+# Subtest: container inspector remains bounded, local, read-only and excludes secret-bearing metadata
+ok 77 - container inspector remains bounded, local, read-only and excludes secret-bearing metadata
+  ---
+  duration_ms: 20.020766
+  type: 'test'
+  ...
+# Subtest: actual ambient password drift after admission refuses before Docker or pg loading
+ok 78 - actual ambient password drift after admission refuses before Docker or pg loading
+  ---
+  duration_ms: 1.155256
+  type: 'test'
+  ...
+1..78
+# tests 78
+# suites 0
+# pass 78
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 100.068972

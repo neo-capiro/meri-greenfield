@@ -1,0 +1,141 @@
+{
+  "at": "2026-10-12T16:11:14.340374+00:00",
+  "fresh_schema": {
+    "oid": 25602,
+    "relations": [
+      [
+        25603,
+        "budget",
+        "r"
+      ],
+      [
+        25722,
+        "budget_liabilities",
+        "v"
+      ],
+      [
+        25611,
+        "budget_pkey",
+        "i"
+      ],
+      [
+        25623,
+        "grants",
+        "r"
+      ],
+      [
+        25634,
+        "grants_capability_sha256_key",
+        "i"
+      ],
+      [
+        25632,
+        "grants_pkey",
+        "i"
+      ],
+      [
+        25660,
+        "one_unknown_per_grant",
+        "i"
+      ],
+      [
+        25721,
+        "one_unknown_tool_per_grant",
+        "i"
+      ],
+      [
+        25641,
+        "requests",
+        "r"
+      ],
+      [
+        25653,
+        "requests_pkey",
+        "i"
+      ],
+      [
+        25613,
+        "runs",
+        "r"
+      ],
+      [
+        25621,
+        "runs_pkey",
+        "i"
+      ],
+      [
+        25677,
+        "tool_grant_bindings",
+        "r"
+      ],
+      [
+        25682,
+        "tool_grant_bindings_pkey",
+        "i"
+      ],
+      [
+        25694,
+        "tool_reservations",
+        "r"
+      ],
+      [
+        25707,
+        "tool_reservations_pkey",
+        "i"
+      ],
+      [
+        25709,
+        "tool_reservations_reservation_id_key",
+        "i"
+      ],
+      [
+        25661,
+        "tool_run_allocations",
+        "r"
+      ],
+      [
+        25670,
+        "tool_run_allocations_pkey",
+        "i"
+      ]
+    ],
+    "tables": {
+      "budget": {
+        "rows": 1,
+        "sha256": "1a8b23c94afd9b4af70bc6306c328275a0e5130fc271232cdfc55a358cda54d9"
+      },
+      "grants": {
+        "rows": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "requests": {
+        "rows": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "runs": {
+        "rows": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "tool_grant_bindings": {
+        "rows": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "tool_reservations": {
+        "rows": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "tool_run_allocations": {
+        "rows": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      }
+    }
+  },
+  "original_alias": "meri_qualification_setup_budget_20261012",
+  "original_oid": 16389,
+  "migrations": [
+    "0001_qualification_state.sql",
+    "0002_tool_budget.sql"
+  ],
+  "atomic": true,
+  "status": "OWNERSHIP_MANIFEST_BEFORE_COMMIT"
+}

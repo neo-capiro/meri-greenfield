@@ -1,0 +1,48 @@
+✔ SQL address projection uses bare host instead of CIDR text without removing other identity checks (5.733212ms)
+✔ prepared correlation is frozen at both levels and maps distinct host/server endpoints (5.448243ms)
+✔ legacy thirteen-key password path retains its port and SQL identity behavior (0.338578ms)
+✔ null password cannot open the legacy profile without descriptor (0.369493ms)
+✔ prepared parser refuses wrong host (0.40083ms)
+✔ prepared parser refuses wrong port (0.268485ms)
+✔ prepared parser refuses wrong database (0.181698ms)
+✔ prepared parser refuses wrong user (0.148138ms)
+✔ inspected identity refuses wrong container with scrubbed error (0.39451ms)
+✔ inspected identity refuses wrong image with scrubbed error (0.510661ms)
+✔ inspected identity refuses wrong name with scrubbed error (0.200595ms)
+✔ inspected identity refuses wrong running with scrubbed error (0.342484ms)
+✔ inspected identity refuses wrong purpose with scrubbed error (0.154787ms)
+✔ inspected identity refuses wrong volume with scrubbed error (0.221696ms)
+✔ inspected identity refuses wrong volume destination with scrubbed error (0.127587ms)
+✔ inspected identity refuses wrong volume writeability with scrubbed error (0.193464ms)
+✔ inspected identity refuses wrong mapped address with scrubbed error (0.697526ms)
+✔ inspected identity refuses wrong mapped port with scrubbed error (0.377155ms)
+✔ inspected identity refuses wrong inner address with scrubbed error (0.130492ms)
+✔ inspected identity refuses wrong extra mapping with scrubbed error (0.160547ms)
+✔ inspected identity refuses wrong extra network with scrubbed error (0.117002ms)
+✔ inspected identity refuses wrong extra exposed port with scrubbed error (0.113597ms)
+✔ inspected identity refuses wrong malformed bindings with scrubbed error (0.1433ms)
+✔ inspected identity refuses wrong malformed mounts with scrubbed error (0.980332ms)
+✔ local inspector execution receives only fixed local command, whitelist, bounds and clean environment (0.786457ms)
+✔ inspector scrubs malformed JSON (0.211351ms)
+✔ inspector scrubs null JSON (0.092306ms)
+✔ inspector scrubs simulated CLI timeout (0.118364ms)
+✔ inspector scrubs simulated CLI failure (0.09536ms)
+✔ actual PGPASSWORD drift rejects before any stubbed Docker or pool path (0.563359ms)
+✔ actual PGSERVICE drift rejects before any stubbed Docker or pool path (0.256247ms)
+✔ SQL identity retains refusal of wrong db (0.93146ms)
+✔ SQL identity retains refusal of wrong usr (0.242787ms)
+✔ SQL identity retains refusal of wrong addr (0.172334ms)
+✔ SQL identity retains refusal of wrong port (0.176299ms)
+✔ SQL identity retains refusal of wrong system (0.146896ms)
+✔ SQL identity retains refusal of wrong started (0.121339ms)
+✔ SQL identity retains refusal of wrong version (0.153756ms)
+✔ SQL identity retains refusal of wrong fsync (0.143961ms)
+✔ SQL identity retains refusal of wrong sync (0.154757ms)
+ℹ tests 40
+ℹ suites 0
+ℹ pass 40
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 105.798838

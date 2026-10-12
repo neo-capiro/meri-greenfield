@@ -1,0 +1,362 @@
+{
+  "schema": "meri-native-next-gates-source-review/1",
+  "recorded_at": "2026-10-12T15:54:07.646234+00:00",
+  "source_commit": "2f06feccca731d6cd388612cd568185ecc29668f",
+  "source_tree": "39165ddad3989434908087f4571b70bea000a98d",
+  "owned_output_path": "/workspace/scratch/meri-native-next-gates-20261012",
+  "mode": "SOURCE_ONLY_READ_ONLY_NO_TEST_EXECUTION_NO_DATABASE_ACTION",
+  "all_reviewed_sources_match_rc1": true,
+  "successful_33_case_receipt_preservation": {
+    "source_test_receipts_sha256": "26f678a2c1d2456b7b4ad59da1a980b9ae5b3cbd4a55ebd67b5b1631bf742bc8",
+    "checks": [
+      {
+        "group": "rc1-python-state",
+        "kind": "receipt",
+        "sha256": "ebcc5791280d3cd6be084031738a7487f2202bad2dfd3d9ddff3eacb7e46a3bd",
+        "matches_existing_receipt": true
+      },
+      {
+        "group": "rc1-python-state",
+        "kind": "stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "matches_existing_receipt": true
+      },
+      {
+        "group": "rc1-python-state",
+        "kind": "stderr",
+        "sha256": "7c39a97e2beb0ac99f0c9777d1341ecc0ab3e77efcdebfe013c060973e5d8c03",
+        "matches_existing_receipt": true
+      },
+      {
+        "group": "sdk-registry-ingress",
+        "kind": "receipt",
+        "sha256": "7b08c10be293f76880ee724080cb2abf17a7a82b53ef4c47a90c61c73c32c45a",
+        "matches_existing_receipt": true
+      },
+      {
+        "group": "sdk-registry-ingress",
+        "kind": "stdout",
+        "sha256": "322c82a92a4dd4cb46a2c75bca5303ad48b256b3cfef203e6d5ab595d09547ec",
+        "matches_existing_receipt": true
+      },
+      {
+        "group": "sdk-registry-ingress",
+        "kind": "stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "matches_existing_receipt": true
+      },
+      {
+        "group": "sdk-registry",
+        "kind": "receipt",
+        "sha256": "7d9634f566fac64b4907310895cac7255a1465260610eb35f5f84848ac44bb64",
+        "matches_existing_receipt": true
+      },
+      {
+        "group": "sdk-registry",
+        "kind": "stdout",
+        "sha256": "891aef8fc4250c4ff0fd9a4af9fe6ee33b30a7953e788fc29c13d1f2f0f98c28",
+        "matches_existing_receipt": true
+      },
+      {
+        "group": "sdk-registry",
+        "kind": "stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "matches_existing_receipt": true
+      },
+      {
+        "group": "sdk-revocation-postgres",
+        "kind": "receipt",
+        "sha256": "6db83671ab87ff339ab09c857e87328071ea33d0dee3a7a4771593fd04f5472a",
+        "matches_existing_receipt": true
+      },
+      {
+        "group": "sdk-revocation-postgres",
+        "kind": "stdout",
+        "sha256": "cc60175592b65f9f0aa26afa561529e103c91ae3d15cad5160f8663c1b182a0e",
+        "matches_existing_receipt": true
+      },
+      {
+        "group": "sdk-revocation-postgres",
+        "kind": "stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "matches_existing_receipt": true
+      },
+      {
+        "kind": "terminal-receipt.json",
+        "sha256": "afa5e7159d077ea1c77f71640f482b8bced83312bee2128ed2756587d454e3db",
+        "matches_existing_receipt": true
+      },
+      {
+        "kind": "cleanup-receipt.json",
+        "sha256": "1520d93bd801fe315eb296c8aac9ef405c5dc41357ca1e61683c5205baef68de",
+        "matches_existing_receipt": true
+      }
+    ],
+    "all_match": true
+  },
+  "installed_dependency_presence": [
+    {
+      "relative_path": "node_modules/@anthropic-ai/claude-agent-sdk/package.json",
+      "present": false,
+      "version": null
+    },
+    {
+      "relative_path": "apps/worker/qualification/node_modules/@anthropic-ai/claude-agent-sdk/package.json",
+      "present": false,
+      "version": null
+    },
+    {
+      "relative_path": "apps/control/qualification-sdk-fixture/state/node_modules/pg/package.json",
+      "present": true,
+      "version": "8.23.1"
+    },
+    {
+      "relative_path": "apps/control/qualification-temporal/node_modules/@temporalio/worker/package.json",
+      "present": false,
+      "version": null
+    }
+  ],
+  "next_gate": {
+    "gate": "real_pg_trusted_invocation_producer_and_reconciliation",
+    "status": "HOLD_MISSING_EXECUTABLE_TEST_SOURCE",
+    "specific_missing_prerequisite": "An independently reviewed actual-pg invocation integration test that uses existing trusted control/canonical dispatch/owner against explicit migration0003. RC1 has no such entry; the only actual-pg integration entry is the nine-case0001/0002 suite.",
+    "migration_only_is_not_qualification": true,
+    "existing_migration_entry": "apps.proxy.qualification.state.postgres_store.PostgresStore.migrate_tool_invocations",
+    "existing_sequence": "0001 -> 0002 -> explicit0003",
+    "migration_effect": "CREATE TABLE meri_qualification.tool_invocations only; references existing tool_run_allocations/tool_reservations; unique/check constraints; no role/password/HBA/listener/provider effect; no automatic invocation",
+    "current_prepared_dependencies": "Existing psycopg3.3.3 and nested pg8.23.1 are sufficient driver prerequisites for that SQL/adapter path; source has no PostgreSQL17 requirement for invocation0003. Current database isolation/identity still belongs to native owner admission.",
+    "coverage_available_only_as_source": {
+      "apps/control/test/tool-invocations.test.mjs": 2,
+      "apps/gateway/test/tool-invocation-transaction.test.mjs": 8,
+      "apps/gateway/test/tool-invocation-owner.test.mjs": 22
+    },
+    "coverage_note": "Counts derived from actual test declarations and constant loops, not executed here. All three use injected ports/scripted SQL; no real pg connections.",
+    "minimal_next_action": "Allocate and independently review a bounded produced-path native test entry reusing the corrected nine-case admission and existing canonical invocation composition; retain all existing data/evidence and do not label a standalone DDL apply as a pass. No framework or automatic server restart is needed.",
+    "approval_now": "No new security approval is justified by source-only test preparation. No runnable ordinary qualification command can be supplied until that missing source exists."
+  },
+  "subsequent_existing_probes": [
+    {
+      "path": "apps/worker/qualification/probes/sdk-capture.mjs",
+      "kind": "real pinned SDK loopback query/tool/stream probe when main uses buildRealHost; offline tests inject fakes",
+      "status": "HOLD_DEPENDENCY_AND_RUNTIME_ADMISSION",
+      "missing": "Pinned @anthropic-ai/claude-agent-sdk0.3.295 absent at root/worker resolution; supported bundled CLI2.1.295/native runtime/source closure and owned clean workspace/process observer still unqualified.",
+      "effects": "One ephemeral127.0.0.1 HTTP listener, real native SDK child, writes only fixed empty /workspace/conversation,/workspace/config,/workspace/home; synthetic loopback API token only; no database/provider/cloud calls intended.",
+      "bounds": "runCapture bounds60s,2Messages requests,4MiB compressed/8MiB decompressed per request,1native spawn; external whole-command import/teardown envelope still required.",
+      "existing_argv": "node apps/worker/qualification/probes/sdk-capture.mjs",
+      "not_admitted": true
+    },
+    {
+      "path": "apps/proxy/qualification/linux/native-runtime/native_auth_probe.py",
+      "kind": "genuine LiteLLM app/lifespan/Prisma key authentication probe",
+      "status": "HOLD_DIFFERENT_FIXED_FIXTURE",
+      "missing": "Exact PostgreSQL17.11 image/network host meri-native-auth-pg:5432, dedicated nonowner app role/password, native schema, genuine Prisma TLS/SCRAM positive/negative receipts, UID10001 admitted proxy image and private mounted master/salt keys; current PG16.15 trust/superuser fixture does not satisfy these predicates.",
+      "effects": "Requires additional credential/security/TLS fixture scope; cannot silently substitute prepared55432 endpoint or weaker auth.",
+      "not_admitted": true
+    },
+    {
+      "path": "apps/control/qualification-temporal/recovery-workflow.ts",
+      "kind": "real compiled workflow source with scripted offline execution only",
+      "status": "HOLD_MISSING_NATIVE_OWNER",
+      "missing": "No Worker/server connection composition or qualified physical A retirement provider. @temporalio/worker absent in nested package.",
+      "effects": "Real Temporal connection, authenticated namespace/worker/server topology and trusted A/B retirement needed; existingPGalone supplies none.",
+      "not_admitted": true
+    }
+  ],
+  "source_manifest": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 6582,
+      "sha256": "a0650949b74e5aee709bd8b3c9d480f95f5b898778ac8f7b3927eb54b141437a",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "docs/IMPLEMENTATION-STANDARDS.md",
+      "bytes": 11082,
+      "sha256": "d4f10f964ee207187abacd967649a1cfc9bdd468072dc01f859268f08b719959",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "docs/plans/MERI-G1-SOURCE-TO-NATIVE.md",
+      "bytes": 38565,
+      "sha256": "c457027091b54a9373494feda828e0f1827ebc68c92bb4d686b7123a771fe516",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "docs/coordination/reports/MERI-G1-INVOCATION-SETUP-20261012.md",
+      "bytes": 11154,
+      "sha256": "4f37d323f4c42aa987c1e7077386a7e677b2515b7ffa46a6dbd84d2dffbffd95",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/gateway/test/postgres-budget.integration.mjs",
+      "bytes": 13079,
+      "sha256": "85c5b91c6424397c8d85f49770717ca459df2a247905690b539194ef88285693",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/gateway/test/postgres-budget-native-fixture.mjs",
+      "bytes": 10049,
+      "sha256": "a4a4cc8205668d72e15b2df46408f20172c1adc5914590b871f9ac206065f22a",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/gateway/test/tool-invocation-owner.test.mjs",
+      "bytes": 19890,
+      "sha256": "2b64a89a1d8eaa1f4e81bdb74067390b8314a65a6de37d347d2ff2f59ec0ab95",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/gateway/test/tool-invocation-transaction.test.mjs",
+      "bytes": 3071,
+      "sha256": "a7ddb8660ebff3ed0abae6b864ea8dca11566c93cb5d60ec189135c5a3b12fdc",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/control/test/tool-invocations.test.mjs",
+      "bytes": 1364,
+      "sha256": "85a63340bfc98c7307d640eace9a9e4807cdaae85e23c6f4feda92184f2f6a86",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/control/tool-invocations.mjs",
+      "bytes": 2738,
+      "sha256": "96bb3dd5b64a64fd59ac57fda8bd1198ad32bf0401d8e4f9447ffb9301e7e70c",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/gateway/budget/tool-invocation-owner.mjs",
+      "bytes": 9007,
+      "sha256": "ede1672b79da5055f3ea8a2e1b8603c50d5ba9783914fab24195a8e6356aec75",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/gateway/budget/tool-invocation-record.mjs",
+      "bytes": 3580,
+      "sha256": "dc3fc265fe10d2013d50a96441c9af8ec8032b16f4c74c2cd7f446ee588f47c3",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/gateway/budget/tool-budget-dispatch.mjs",
+      "bytes": 4693,
+      "sha256": "ee866f6abb29222b868d1950027b66a0115e5791122d66415d34dbdcb393ee35",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/gateway/budget/postgres-tool-budget.mjs",
+      "bytes": 12279,
+      "sha256": "4f3d3336e2cdf01785cecd0ea22aeccea1e5c9a8d773b20492f8cd5fefb06ed4",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/gateway/budget/postgres-budget-store.mjs",
+      "bytes": 2155,
+      "sha256": "2178dcfe773f288087644ab42403d637c1aeea97e42058a19d50f7b39e51f772",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/proxy/qualification/state/postgres_store.py",
+      "bytes": 5019,
+      "sha256": "a51cf9ab2bd7eab81ce5b52d48557eab61bd33c3d7ec10089b8c7e4cbcaa713f",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/proxy/qualification/state/migrations/0001_qualification_state.sql",
+      "bytes": 2467,
+      "sha256": "fa33f51c492361c280c4847ea08629f0c777cb6b0e9652f1e67f95543bda0dfc",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/proxy/qualification/state/migrations/0002_tool_budget.sql",
+      "bytes": 2391,
+      "sha256": "53d3933a440ed0801411d3ed544f4c554f397b3338acaad1ce1addcce4ef5809",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/proxy/qualification/state/migrations/0003_tool_invocations.sql",
+      "bytes": 1097,
+      "sha256": "8d0c6ab5e3027b637f7905bd19ac1d830095f1565f745d4e2954294b115137e5",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/gateway/budget/README.md",
+      "bytes": 17448,
+      "sha256": "33b6bf03a1c71a8b9f5217ed840e3a88f91aa1ee0cd9a05b8f14d04a1eadc469",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/proxy/qualification/linux/native-runtime/native_auth_probe.py",
+      "bytes": 13523,
+      "sha256": "55b88f9c8e2e357dcc8a8ad9af5a19815c862fa67989a0f9476122314c048742",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/proxy/qualification/linux/native-runtime/fixture_config.py",
+      "bytes": 11716,
+      "sha256": "e715f9ee72aa740370366725f6e5e861b1fcef11fb15b4dcc70ed31977d53fbb",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/proxy/qualification/linux/native-runtime/README.md",
+      "bytes": 8866,
+      "sha256": "8ed4a2f38501fbf54a5cd9e337e460e34180af995e71e09e4c2fbde04caeb780",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-capture.mjs",
+      "bytes": 52572,
+      "sha256": "027117958a878cce722650c57bd0fe6132c5be69a440a3b3b9cd6f83213e6083",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-capture-options.mjs",
+      "bytes": 17469,
+      "sha256": "964f4f1958dd0707198fcd21611018b9a9337e90e5f434ed24ce47beb3986b0e",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-interruption.mjs",
+      "bytes": 12617,
+      "sha256": "2764babd954e95f07caf964ac14e57ee8a5a7d148d1527f97d1af4ea16b9040f",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/worker/qualification/package.json",
+      "bytes": 1240,
+      "sha256": "c14736fe666c6f1674d96794f8b55011501aa0b430f29b8ed23772d79cabea5b",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/control/qualification-temporal/README.md",
+      "bytes": 12556,
+      "sha256": "72835dd067b5ea3b2d5d48a6089d73fb0b94e7a271a4d60b2e23114da1c4cb54",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/control/qualification-temporal/recovery-activities.mjs",
+      "bytes": 12344,
+      "sha256": "539b6216a4d34e647e0ec9037fef5814d86d10ffd0a1207c128b54711982adc3",
+      "matches_rc1_git_blob": true
+    },
+    {
+      "path": "apps/control/qualification-temporal/recovery-workflow.ts",
+      "bytes": 1403,
+      "sha256": "f720e4eaf3d064fd34f82638b2663946667b0b83527628241622d2f5f1457057",
+      "matches_rc1_git_blob": true
+    }
+  ],
+  "actions_performed": [
+    "Read instructions and source",
+    "Read dependency package metadata",
+    "Hash source against exact RC1 Git blobs",
+    "Verify retained33-case receipt and raw-stream hashes",
+    "Write only owned scratch evidence"
+  ],
+  "actions_not_performed": [
+    "No source checkout edits",
+    "No tests executed",
+    "No database connections/migrations/queries",
+    "No service/listener/container/credential/security changes",
+    "No package installation",
+    "No network/provider/cloud calls"
+  ]
+}

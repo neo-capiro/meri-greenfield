@@ -1,0 +1,9 @@
+{
+  "operation": "read-only preflight before runtime T0",
+  "status": "REFUSED_BEFORE_ANY_WRITE",
+  "cause": "PostgreSQL inet_server_addr()::text returned 172.17.0.2/32; exact bare-host guard failed.",
+  "correction": "Use PostgreSQL host(inet_server_addr()) in SQL identity queries, retaining exact address equality.",
+  "tests_started": 0,
+  "database_writes": 0,
+  "credentials_or_security_changes": false
+}

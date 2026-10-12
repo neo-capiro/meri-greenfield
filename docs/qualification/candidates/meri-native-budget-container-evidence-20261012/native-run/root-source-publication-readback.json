@@ -1,0 +1,28 @@
+{
+  "remote_source_commit": "afb8f6729ffca8d64ee7e7de4a0a853bf0362aca",
+  "local_tested_commit": "3f5302a96309ff4b615dedc3f6ba196b0eb5aeb0",
+  "publisher_full_tree": "42692971ac7d18b0d45c4aea4252818b990577a5",
+  "root_independently_verified_affected_file_set": true,
+  "root_readback_exact_source_files": [
+    {
+      "path": "apps/gateway/test/postgres-budget-container-fixture.mjs",
+      "git_blob_sha": "e7fb0fd04356b4eba5998a305f6752853c2394e7",
+      "exact_content_match": true
+    },
+    {
+      "path": "apps/gateway/test/postgres-budget-container.test.mjs",
+      "git_blob_sha": "44b10cd7db75957b051ad58f5cc97ef33e26169d",
+      "exact_content_match": true
+    },
+    {
+      "path": "apps/gateway/test/postgres-budget-native-fixture.mjs",
+      "git_blob_sha": "668d7ef9f3ac483d22f8ae4b5349a9858f0b5159",
+      "exact_content_match": true
+    },
+    {
+      "path": "docs/qualification/candidates/meri-native-budget-container-20261012/OUTLINE.md",
+      "git_blob_sha": "f06bbcbe9c9285b5e586a75a5869744fe4b2cb49",
+      "exact_content_match": true
+    }
+  ]
+}

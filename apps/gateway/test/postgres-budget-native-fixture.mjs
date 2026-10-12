@@ -4,6 +4,7 @@ import { createHash, randomUUID } from 'node:crypto';
 import { createRequire } from 'node:module';
 import { readFile } from 'node:fs/promises';
 import { types } from 'node:util';
+import { validPreparedContainer, inspectPreparedContainer } from './postgres-budget-container-fixture.mjs';
 
 const fail = () => { throw new Error('BUDGET_NATIVE_TEST_ADMISSION_REQUIRED'); };
 const admitted = new WeakSet();
@@ -23,10 +24,11 @@ export function parseNativeAdmission(env, nowMs = Date.now()) {
       !/^[0-9a-f]{64}$/.test(values.MERI_BUDGET_PG_TEST_CONFIG_SHA256) ||
       sha256(raw) !== values.MERI_BUDGET_PG_TEST_CONFIG_SHA256) fail();
   let c; try { c = JSON.parse(raw); } catch { fail(); }
-  if (!c || Array.isArray(c) || Object.keys(c).length !== keys.length || keys.some(k => !Object.hasOwn(c,k)) ||
+  const prepared = c && Object.hasOwn(c, 'preparedContainer');
+  if (!c || Array.isArray(c) || Object.keys(c).length !== keys.length + Number(prepared) || keys.some(k => !Object.hasOwn(c,k)) ||
       c.host !== '127.0.0.1' || c.database !== 'meri_qualification_test' || c.user !== 'qualification_owner' ||
       !Number.isInteger(c.port) || c.port < 1 || c.port > 65535 ||
-      typeof c.password !== 'string' || c.password.length < 1 || c.password.length > 512 ||
+      (prepared ? !validPreparedContainer(c) : typeof c.password !== 'string' || c.password.length < 1 || c.password.length > 512) ||
       typeof c.systemIdentifier !== 'string' || !/^[1-9][0-9]{0,19}$/.test(c.systemIdentifier) ||
       typeof c.serverStartTime !== 'string' || !Number.isSafeInteger(Date.parse(c.serverStartTime)) ||
       typeof c.serverVersion !== 'string' || !/^[1-9][0-9]{5}$/.test(c.serverVersion) ||
@@ -35,11 +37,19 @@ export function parseNativeAdmission(env, nowMs = Date.now()) {
       nowMs < c.t0Ms || nowMs >= c.workDeadlineMs ||
       ![c.stateLockSha256,c.migrationSha256].every(v => typeof v==='string' && /^[0-9a-f]{64}$/.test(v))) fail();
   // This frozen correlation/configuration is NOT host or execution authority.
+  if (prepared) Object.freeze(c.preparedContainer);
   Object.freeze(c); admitted.add(c); return c;
 }
 export function active(c) { const now=Date.now(); if (!admitted.has(c) || now<c.t0Ms || now>=c.workDeadlineMs) fail(); }
 export async function openNativePool(c) {
   active(c);
+  if (c.preparedContainer) {
+    // Validate the actual process as well as the passed admission; pg must not
+    // inherit a password/service or provider credential from an ambient env.
+    parseNativeAdmission({...process.env});
+    await inspectPreparedContainer(c);
+    active(c);
+  }
   const anchor = new URL('../../control/qualification-sdk-fixture/state/package.json', import.meta.url);
   const require = createRequire(anchor);
   const lock = await readFile(new URL('package-lock.json', anchor));
@@ -48,7 +58,8 @@ export async function openNativePool(c) {
       JSON.parse(lock).packages['node_modules/pg'].version!=='8.23.1' || require('pg/package.json').version!=='8.23.1') fail();
   const { Pool } = require('pg');
   active(c);
-  const pool = new Pool({ host:c.host,port:c.port,database:c.database,user:c.user,password:c.password,
+  const pool = new Pool({ host:c.host,port:c.port,database:c.database,user:c.user,
+    password:c.preparedContainer ? () => undefined : c.password,
     ssl:false,max:3,connectionTimeoutMillis:5000,query_timeout:6000,idleTimeoutMillis:1000,
     application_name:'meri-native-budget-source-test' });
   // No background error may disappear; owner checks before claiming success.
@@ -57,10 +68,8 @@ export async function openNativePool(c) {
 }
 export async function verifyDatabase(pool,c,{empty=false}={}) {
   active(c);
-  const {rows:[r]}=await pool.query("SELECT current_database() AS db,current_user AS usr,inet_server_addr()::text AS addr,inet_server_port() AS port,current_setting('fsync') AS fsync,current_setting('synchronous_commit') AS sync,current_setting('server_version_num') AS version,pg_postmaster_start_time() AS started,(SELECT system_identifier::text FROM pg_control_system()) AS system");
-  assert.equal(r.db,c.database);assert.equal(r.usr,c.user);assert.equal(r.addr,c.host);assert.equal(r.port,c.port);
-  assert.equal(r.fsync,'on');assert.equal(r.sync,'on');assert.equal(r.version,c.serverVersion);
-  assert.equal(r.started.getTime(),Date.parse(c.serverStartTime));assert.equal(r.system,c.systemIdentifier);
+  const {rows:[r]}=await pool.query("SELECT current_database() AS db,current_user AS usr,host(inet_server_addr()) AS addr,inet_server_port() AS port,current_setting('fsync') AS fsync,current_setting('synchronous_commit') AS sync,current_setting('server_version_num') AS version,pg_postmaster_start_time() AS started,(SELECT system_identifier::text FROM pg_control_system()) AS system");
+  assertServerIdentity(r,c);
   for(const table of ['budget','runs','grants','requests','tool_run_allocations','tool_grant_bindings','tool_reservations','budget_liabilities']) {
     assert.ok((await pool.query('SELECT to_regclass($1) AS name',[`meri_qualification.${table}`])).rows[0].name);
   }
@@ -71,6 +80,13 @@ export async function verifyDatabase(pool,c,{empty=false}={}) {
     assert.equal(b.cap_micro_usd,'10000000');assert.equal(b.consumed_micro_usd,'0');assert.equal(b.quarantined,false);
   }
   active(c);
+}
+export function assertServerIdentity(r,c) {
+  assert.equal(r.db,c.database);assert.equal(r.usr,c.user);
+  assert.equal(r.addr,c.preparedContainer?.serverHost ?? c.host);
+  assert.equal(r.port,c.preparedContainer?.serverPort ?? c.port);
+  assert.equal(r.fsync,'on');assert.equal(r.sync,'on');assert.equal(r.version,c.serverVersion);
+  assert.equal(r.started.getTime(),Date.parse(c.serverStartTime));assert.equal(r.system,c.systemIdentifier);
 }
 export async function syntheticCase(pool,c,{maxToolCalls=4,maxCostMicroUSD=100,charge=10}={}) {
   active(c);
