@@ -1,0 +1,22 @@
+{
+  "recordedAt": "2026-10-12T18:19:55.290292+00:00",
+  "pr": 30,
+  "url": "https://github.com/neo-capiro/meri-greenfield/pull/30",
+  "state": "open",
+  "draft": true,
+  "merged": false,
+  "head": "bdfb7a5f9def718c208156d11207620df6adedb2",
+  "base": "a3e946c1fa264ae7b33205f5b87804ee1ef75773",
+  "acceptedSource": "290ab5cee2ea0e7aef5019343f07555b6b404d37",
+  "independentReview": "812ccee78d8916b61bf7d0408eeccb41a0e14c97",
+  "packetManifestSha256": "e9040bc909740a42d0589473a72dfe771b7324b0d019fea2a8c1f0756894fd73",
+  "packetManifestMembers": 434,
+  "manifestScope": "Publication receipt intentionally excluded from frozen packet.",
+  "protectedRemoteRefs": {
+    "main": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc",
+    "refs/tags/meri-rc1-20261012": "b157217e69d36da1b53fa5944a0781a2f53a2f79",
+    "refs/tags/meri-rc1-20261012^{}": "2f06feccca731d6cd388612cd568185ecc29668f"
+  },
+  "runtimeVerdict": "HOLD; G1 OPEN; G2-G7 unentered",
+  "sourceConnectivityEnabled": false
+}
