@@ -42,7 +42,7 @@ export function createProgramElementValidators({validateShape,schema}) {
     for(const row of page.data){
       if(seen.has(row.peCode))fail('Duplicate finder identity');seen.add(row.peCode);instant(row.lastSyncedAt);identity(row);
       for(const key of ['currentClaim','requestClaim','enactedClaim','requestAtEnactedClaim'])claim(row[key]);
-      claim(row.currentFundingClaim,mode);if(row.currentFundingClaim.cycleClass!=='unknown')fail('Finder model claim cannot assert known cycle');
+      claim(row.currentFundingClaim,mode);if(row.currentFundingClaim!==null&&row.currentFundingClaim.cycleClass!=='unknown')fail('Finder model claim cannot assert known cycle');
       const funding=row.funding;
       if(funding.current){const expected=ladder[funding.current.stage];if(funding.current.stageLabel!==expected[0]||funding.current.vehicle!==expected[1])fail('Finder funding stage/vehicle mismatch');}
       if(funding.currentVsRequest!==null&&(!funding.current||!funding.request||funding.current.fy===null||funding.current.fy!==funding.request.fy))fail('Cross-year comparison is not source comparison');
@@ -59,7 +59,7 @@ export function createProgramElementValidators({validateShape,schema}) {
     if(page.peCode!==input.peCode)fail('Timeline selector substitution');years(page.years,page.peCode,mode);
     for(const row of page.years){
       const expected=ladder[row.currentStage];if(row.currentStageLabel!==expected[0]||row.currentVehicle!==expected[1])fail('Timeline stage/vehicle mismatch');
-      if(row.request!==null&&/^-?0(?:\.0{1,2})?$/.test(row.request)&&row.requestConflictValuesM.some(x=>x!==0)&&row.currentDeltaVsRequestM!==null)fail('Conflicting zero request cannot support delta');
+      if(row.request!==null&&/^-?0(?:\.0{1,2})?$/.test(row.request)&&row.requestConflictValuesM?.some(x=>x!==0)&&row.currentDeltaVsRequestM!==null)fail('Conflicting zero request cannot support delta');
       for(const key of Object.keys(row.missingMarks))if(row[key]!==null&&row.missingMarks[key]!=='present')fail('Present zero/nonzero mark misclassified');
     }
     const ids=new Set();
