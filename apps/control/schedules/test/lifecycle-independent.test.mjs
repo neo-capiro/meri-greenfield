@@ -267,3 +267,41 @@ test('independent lifecycle: released authority after committed mutation cannot 
   assert.equal(h.calls.filter(v => v.name === 'commitKnown').length, 1);
   assert.equal(h.calls.filter(v => v.name === 'markUnknown').length, 0);
 });
+
+test('independent lifecycle: deleted or missing Temporal schedule remains an explicitly unavailable authorized row', async () => {
+  const p = projection(); p.state = 'cancelled';
+  const h = harness({ ownerList: () => ({ rows: [{ projection: p, generation: 2, unresolved: false }], hasMore: false }),
+    describe() { throw Error('schedule does not exist'); } });
+  const out = await h.list(); assert.equal(out.rows.length, 1);
+  assert.equal(out.rows[0].projection.state, 'cancelled'); assert.equal(out.rows[0].inspection, null);
+  assert.equal(out.rows[0].inspectionState, 'unavailable'); assert.equal(out.coverage.complete, false);
+  assert.equal(out.originalRuns.executions.length, 0);
+  assert.equal(h.calls.filter(v => v.name === 'describe').length, 1);
+  assert.ok(h.calls.some(v => v.name === 'authorize' && v.args[0].phase === 'before_unavailable_row_release'));
+});
+
+test('independent lifecycle: revoked missing-row release cannot become partial authorized data', async () => {
+  const h = harness({ describe() { throw Error('absent'); }, authorize: async r => ({
+    authorized: r.phase !== 'before_unavailable_row_release', bindingSha256: r.binding.bindingSha256,
+    callerIdentity: r.binding.callerIdentity, expiresAtMs: h.clock() + 30000,
+  }) });
+  await assert.rejects(h.list()); assert.equal(h.calls.filter(v => v.name === 'workflowHandle').length, 0);
+});
+
+test('independent lifecycle: current read authority failure never becomes unavailable row', async () => {
+  const h = harness({ authorize: async r => {
+    if (r.phase === 'before_describe') throw Error('revoked');
+    return { authorized: true, bindingSha256: r.binding.bindingSha256, callerIdentity: r.binding.callerIdentity, expiresAtMs: h.clock() + 30000 };
+  } });
+  await assert.rejects(h.list()); assert.equal(h.calls.filter(v => v.name === 'describe').length, 0);
+});
+
+test('independent lifecycle: invalid description identity does not become a missing-record assertion', async () => {
+  const h = harness({ describe: () => ({ ...description(), scheduleId: 'wrong-schedule' }) });
+  // Refusal may be an unavailable observation, but never released wrong identity or absence evidence.
+  try {
+    const out = await h.list(); assert.equal(out.rows[0].inspection, null);
+    assert.equal(out.rows[0].inspectionState, 'unavailable'); assert.equal(out.coverage.complete, false);
+    assert.equal(out.originalRuns.executions.length, 0);
+  } catch (error) { assert.equal(error instanceof Error, true); }
+});
