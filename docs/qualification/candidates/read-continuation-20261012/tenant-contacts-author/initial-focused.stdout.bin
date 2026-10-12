@@ -1,0 +1,34 @@
+✔ empty and null selectors normalize to explicit nullable values and refusal (5.492503ms)
+✔ explicit empty context only, model authority and lookup scopes rejected (1.615348ms)
+✔ lookup references remain selectors; domain lowercases but query preserves case (0.171418ms)
+✔ text limits are UTF16 and second trim follows truncation for domain/query (0.671559ms)
+✔ number/string limits clamp finitely while unrelated scalar types refuse (1.366313ms)
+✔ declared transport ceilings are refused without changing effective source caps (0.409094ms)
+✔ refusal and normal variants cannot substitute for one another (1.559082ms)
+✔ normal unlinked page has exact query echo and null client projection (1.146542ms)
+✔ linked name selector admits resolved ID and nullable raced client name (0.980023ms)
+✔ unreturned derived domain is accepted only with selected client (0.787693ms)
+✔ linked-client OR permits unrelated email/domain without claiming source link (0.326952ms)
+✔ SQL NULL cannot match sole domain or query predicates (1.082297ms)
+✔ nonstandard address and stored scalars are preserved without invented formats (0.202945ms)
+✔ every contact has exactly the nine projected fields (1.754987ms)
+✔ all stored contact and history scalar types are closed (0.969326ms)
+✔ history only exists when trimmed stored email supplies lookup identity (0.795125ms)
+✔ message count does not invent available mail timestamps or latest meeting truth (0.184377ms)
+✔ returned last contact descends with nulls last and equal timestamps allowed (0.423657ms)
+✔ source Date ISO serializations refuse impossible dates and offset substitutions (0.615224ms)
+✔ duplicate name/email projections are legitimate since row IDs are omitted (0.134342ms)
+✔ returned window never exceeds requested or absolute cap (3.812399ms)
+✔ profile assertion requires linked client and a nonblank name or email (0.405479ms)
+✔ notes count only returned rows and missing-profile rows including empty linked page (0.370687ms)
+✔ whole output remains closed and cannot grant profile mutation or coverage (0.96531ms)
+✔ direct raw/options/result admission never invokes getters, proxies or coercion (0.365108ms)
+✔ symbol, hidden and array root data refuse; inputs are not mutated (0.889747ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 196.54077

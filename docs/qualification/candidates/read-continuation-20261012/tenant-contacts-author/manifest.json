@@ -1,0 +1,76 @@
+{
+  "sourceCommit": "0aba55ef096a68a3cfd92f770783dec3fddfea22",
+  "scope": "SOURCE_ONLY_AUTHOR_PACKET_INDEPENDENT_REVIEW_PENDING",
+  "files": [
+    {
+      "path": "docs/coordination/reports/CODEX-TENANT-CONTACTS-AUTHOR-20261012.md",
+      "bytes": 7114,
+      "sha256": "5ff27309646af32920be196fd39846c56eb61eb959912cc15149f2aa50d2fd0f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/initial-focused.json",
+      "bytes": 1305,
+      "sha256": "519a5fffa7ab9227a455a3462476a442808a9ed0625491f374cb156b6214b67b"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/initial-focused.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/initial-focused.stdout.bin",
+      "bytes": 2400,
+      "sha256": "ebbbf5ce2c30c8dc9065044fb85231e9ec19191f891c7b6097abb991c9baf57e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/initial-tested-source.json",
+      "bytes": 804,
+      "sha256": "c1a584dfce84d227ddacd23e0be77a9d651132bd7193320e40eafff25443d729"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/metadata-audit.json",
+      "bytes": 1331,
+      "sha256": "138f9b8cd15f6d116d6c5e8b6bed0357ebf372a442d95d0cd005f563bf20b180"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/metadata-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/metadata-audit.stdout.bin",
+      "bytes": 144,
+      "sha256": "5947f75a0267c3edb33b5518af68156eb5b92cfdf33bf5d22302f7bff4bfb736"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/metadata-checks.json",
+      "bytes": 2936,
+      "sha256": "82d503c8d1f484febb411849b3d41c41df20fc52fce5436b180525606c7c56d4"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/projection-metadata.json",
+      "bytes": 2461,
+      "sha256": "15e1572e147bbb7c6d14e496ba8be4bcd035763e52a3989fa10db1eab0b4d7d4"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/reference-identities.json",
+      "bytes": 3307,
+      "sha256": "ee35db5335ce8cf4a91b0033f56ccc631d169bdea99b7d0aab06722e1a43207a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/source-freeze.json",
+      "bytes": 584,
+      "sha256": "8dbdbfac56933957aaa77529c474c506f15a473ac2db039e568342b55b69ef04"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/verify-metadata.py",
+      "bytes": 2874,
+      "sha256": "9fd4470c8bc94f622c33b864acd72b021f72726df1f82ab03afbfd81adbbc196"
+    }
+  ]
+}
