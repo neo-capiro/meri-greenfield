@@ -20,6 +20,7 @@ export function createCommandExecutor(options){
   const lifetime=createOperationLifetime({deadlineMs,now,signal,errorFactory:c=>new CommandError(c)});
   const limitDeadline=next=>{lifetime.limitDeadline(next);deadlineMs=Math.min(deadlineMs,next);};
   const active=()=>{lifetime.check();if(lifetime.signal.aborted)deny('CANCELLED');};
+  const approvalLifetime=Object.freeze({...lifetime,limitDeadline});
   let claimed=false,claimStarted=false,selection,reservationId,reservationAttempted=false,settled=false;
   let outputLimit=bound.limits.maxResponseBytes;
   const checkOutput=value=>{if(Buffer.byteLength(JSON.stringify(value))>outputLimit)deny('COMMAND_RESOURCE_LIMIT');};
@@ -41,40 +42,41 @@ export function createCommandExecutor(options){
     if(row.state!=='OUTCOME')return data({status:'indeterminate',outcome:null});
     const observed=data({status:'observed',outcome:contracts.outcome(row.outcome,command,call.context)});checkOutput(observed);return observed;
    }
-   await approvals.check(call.proposal,first,lifetime);
+   await approvals.check(call.proposal,first,approvalLifetime);
    const prepared=await lifetime.run(s=>source.prepare({command,context:call.context,authority:first,deadlineMs:Math.min(first.deadlineMs,deadlineMs),signal:s}));
    limitDeadline(prepared.deadlineMs);
-   const before=await authorize();await approvals.check(call.proposal,before,lifetime);
+   const before=await authorize();await approvals.check(call.proposal,before,approvalLifetime);
    if(first.policyRevision!==before.policyRevision)deny('COMMAND_AUTHORITY_REFUSED');
    claimStarted=true;const claim=await lifetime.run(()=>journal.claim(payload,call.execution,active));
    if(!claim.claimed){
-    const fresh=await authorize();await approvals.check(call.proposal,fresh,lifetime);active();
+    const fresh=await authorize();await approvals.check(call.proposal,fresh,approvalLifetime);active();
     if(claim.row.state==='OUTCOME'){const observed=data({status:'observed',outcome:contracts.outcome(claim.row.outcome,command,call.context)});checkOutput(observed);return observed;}
     return data({status:'indeterminate',outcome:null});
    }
    claimed=true;reservationId=newId();
    if(typeof reservationId!=='string'||!/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/.test(reservationId))deny('COMMAND_CONFIGURATION');
    reservationAttempted=true;
-   ack(await lifetime.run(signal=>budget.reserve({reservationId,binding:before.binding,operation:bound.descriptor.operation,argumentsSha256:call.proposal.commandSha256,budgets:before.claims.budgets,deadlineMs,signal})),reservationId,'reserved');
-   const effect=await authorize();await approvals.check(call.proposal,effect,lifetime);
+   ack(await lifetime.run(signal=>budget.reserve({reservationId,binding:before.binding,operation:bound.descriptor.operation,argumentsSha256:call.proposal.commandSha256,budgets:before.claims.budgets,claims:before.claims,deadlineMs,limitDeadline,signal})),reservationId,'reserved');
+   const effect=await authorize();await approvals.check(call.proposal,effect,approvalLifetime);
    if(effect.policyRevision!==first.policyRevision)deny('COMMAND_AUTHORITY_REFUSED');active();
    const result=data(contracts.result(await lifetime.run(s=>source.execute(prepared,{authority:effect,signal:s})),command,call.context));
    if(Buffer.byteLength(JSON.stringify(result))>outputLimit)deny('INVALID_SOURCE_RESULT');
-   const release=await authorize();await approvals.check(call.proposal,release,lifetime);
+   const release=await authorize();await approvals.check(call.proposal,release,approvalLifetime);
    if(release.policyRevision!==effect.policyRevision)deny('COMMAND_AUTHORITY_REFUSED');active();
    const receipt={receiptId:newId(),commandId:command.commandId,commandSha256:canonicalSha256(command),idempotencyKey:command.idempotencyKey,binding:release.binding,
     outcome:command.action==='artifact.file'&&!result.files.every(f=>f.status==='saved')?'indeterminate':'succeeded',sourceTransactionId:null,completedAt:new Date(now()).toISOString(),scopes:command.scopes,authorizationDecisionId:release.decision.decisionId};
    const outcome=contracts.outcome({receipt,result},command,call.context);checkOutput({status:'observed',outcome});active();
-   ack(await lifetime.run(signal=>budget.settle({reservationId,outcome:'completed',outputBytes:Buffer.byteLength(JSON.stringify({status:'observed',outcome})),resultSha256:canonicalSha256({status:'observed',outcome}),signal})),reservationId,'settled');settled=true;
-   const afterSettlement=await authorize();await approvals.check(call.proposal,afterSettlement,lifetime);if(afterSettlement.policyRevision!==release.policyRevision)deny('COMMAND_AUTHORITY_REFUSED');checkOutput({status:'observed',outcome});active();
+   ack(await lifetime.run(signal=>budget.settle({reservationId,outcome:'completed',outputBytes:Buffer.byteLength(JSON.stringify({status:'observed',outcome})),resultSha256:canonicalSha256({status:'observed',outcome}),deadlineMs,signal})),reservationId,'settled');settled=true;
+   const afterSettlement=await authorize();await approvals.check(call.proposal,afterSettlement,approvalLifetime);if(afterSettlement.policyRevision!==release.policyRevision)deny('COMMAND_AUTHORITY_REFUSED');checkOutput({status:'observed',outcome});active();
    await lifetime.run(()=>journal.complete(payload,outcome,active));
-   const final=await authorize();await approvals.check(call.proposal,final,lifetime);if(final.policyRevision!==release.policyRevision)deny('COMMAND_AUTHORITY_REFUSED');active();
+   const final=await authorize();await approvals.check(call.proposal,final,approvalLifetime);if(final.policyRevision!==release.policyRevision)deny('COMMAND_AUTHORITY_REFUSED');active();
    checkOutput({status:'observed',outcome});return data({status:'observed',outcome});
   }catch(error){
    if(claimed){
-    const cleanup=createOperationLifetime({deadlineMs:now()+bound.limits.maxCleanupMs,now,errorFactory:c=>new CommandError(c)});
-    try{if(reservationAttempted&&!settled){try{await cleanup.run(()=>budget.markUncertain(reservationId));}catch{}}
-     try{await cleanup.run(()=>journal.markUnknown(payload));}catch{}
+    const cleanupDeadlineMs=now()+bound.limits.maxCleanupMs;
+    const cleanup=createOperationLifetime({deadlineMs:cleanupDeadlineMs,now,errorFactory:c=>new CommandError(c)});
+    try{if(reservationAttempted&&!settled){try{await cleanup.run(()=>budget.markUncertain(reservationId,{signal:cleanup.signal,deadlineMs:cleanupDeadlineMs}));}catch{}}
+     try{await cleanup.run(()=>journal.markUnknown(payload,()=>{cleanup.check();if(cleanup.signal.aborted)deny('CANCELLED');}));}catch{}
     }finally{cleanup.close();}
    }
    if(error instanceof CommandCommitUncertain)throw error;

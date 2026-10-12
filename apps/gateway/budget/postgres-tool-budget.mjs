@@ -3,6 +3,7 @@ import { canonicalSha256 } from '../../../packages/contracts/validate.mjs';
 import { PostgresBudgetStore, refuse } from './postgres-budget-store.mjs';
 import { allocation, invocation, grantFacts, same, digest, integer } from './tool-budget-binding.mjs';
 import { composeToolBudgetDispatch } from './tool-budget-dispatch.mjs';
+import { composeBudgetExecution } from './tool-budget-execution.mjs';
 import { createToolInvocationOwner } from './tool-invocation-owner.mjs';
 import { ownedId } from './tool-invocation-record.mjs';
 import { outcomeExpectation, assertHistoricalGrant, outcomeSnapshot } from './tool-budget-outcome.mjs';
@@ -117,12 +118,13 @@ function assembleBudget({ pool, allocationJson, now = Date.now }) {
           return receipt(reservationId, 'settled');
         });
       },
-      async markUncertain(reservationId) {
+      async markUncertain(reservationId, check) {
         reservationIdCheck(reservationId);
         return store.transact(async client => {
+          if(check){const raw=client;client={async query(...args){check();const result=await raw.query(...args);check();return result;}};}
           await store.lock(client); await original(client, reservationId, true);
           // UNKNOWN already persists; SETTLED is terminal. No refund or state rewrite.
-        });
+        }, check);
       },
     });
   }
@@ -140,4 +142,16 @@ export function createPostgresToolDispatch({ pool, allocationJson, ...options })
   if (Object.hasOwn(options, 'owner') || Object.hasOwn(options, 'producer')) refuse('GATEWAY_CONFIGURATION');
   const { owner, producer } = assembleBudget({ pool, allocationJson, now: options.now });
   return composeToolBudgetDispatch({ owner, producer, allocationJson, ...options });
+}
+
+/** Trusted host composition only. Factories are configured code, never request data. */
+export function createPostgresBudgetExecution(options) {
+  const allowed=['pool','allocationJson','authority','limits','now','createExecutor','requestIdentity'];
+  if(!options||Object.keys(options).some(k=>!allowed.includes(k)))refuse('GATEWAY_CONFIGURATION');
+  const {pool,allocationJson,...configured}=options;
+  const {owner,producer}=assembleBudget({pool,allocationJson,now:configured.now});
+  const execution=composeBudgetExecution({owner,producer,allocationJson,...configured});
+  // This new boundary deliberately has no legacy invocation bypass.
+  const {execute:ignored,...owned}=execution;
+  return Object.freeze(owned);
 }

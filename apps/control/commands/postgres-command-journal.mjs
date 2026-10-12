@@ -60,12 +60,12 @@ export function createPostgresCommandJournal(options){
    if(r.rows.length!==1)deny('COMMAND_OUTCOME_UNKNOWN');return rowValue(r.rows[0],k);
   },check);
  }
- async function markUnknown(payload){
+ async function markUnknown(payload,check){
   const k=key(payload);return transact(async q=>{
    const row=await locked(q,k);if(row.state!=='CLAIMED')return row;
    const r=await q("UPDATE meri_command_journal SET state='UNKNOWN', updated_at=clock_timestamp() WHERE tenant_id=$1 AND actor_id=$2 AND idempotency_key=$3 AND command_id=$4 AND state='CLAIMED' RETURNING *",[k.tenant,k.actor,k.idem,k.id]);
    if(r.rows.length!==1)deny('COMMAND_OUTCOME_UNKNOWN');return rowValue(r.rows[0],k);
-  });
+  },check);
  }
  async function read(payload,check){const k=key(payload);return transact(async q=>{const r=await q(select,[k.tenant,k.actor,k.idem,k.id]);if(r.rows.length===0)return null;if(r.rows.length!==1)deny('COMMAND_IDEMPOTENCY_CONFLICT');return rowValue(r.rows[0],k);},check);}
  return Object.freeze({claim,complete,markUnknown,read});
