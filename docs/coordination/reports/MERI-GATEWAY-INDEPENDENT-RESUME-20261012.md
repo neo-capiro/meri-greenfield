@@ -1,5 +1,7 @@
 # Gateway independent resumed review — 12 October 2026
 
+Final verdict: **ACCEPT_SOURCE** for the gateway source frozen at `b33c1c3e168bf889cbeff1ec8568bc01ef1b9e21`. Author evidence-only continuation `f8ad3d6f8e05e0e6fcf5a1875d14ecbd02c86812` is preserved in this review branch's ancestry and changes no gateway source. Source remains disabled. This acceptance does not accept the separately preserved memory candidate, G1, real source access or a deployment. Initial HOLD findings and raw failures below remain immutable evidence.
+
 Review base: preservation `c57b7d26df7de2acbd8c7d8edc7098f7d495053a`, tree `66135fa4cc69de9fbae12d77b4cc3bc24305a074`. Review branch `review/meri-gateway-independent-20261012`; reviewer writes only this report and `docs/qualification/candidates/gateway-independent-resume-20261012/`. Parent separately assigns production repair author. No frontend, cloud, provider, customer, paid-model or Hermes operations are authorized for this review.
 
 Implementation outline: keep all eight original gateway modules/fixture/test bytes unchanged. Replay retained release-deadline control, original 17 tests and author 18 cases with accepted thirteen-entry canonical catalog. Independently probe each authority refresh boundary while identity/business/source work is parked; measure cancellation, no late result/next-port effects and uncertainty. Preserve failing evidence before requesting repair; review exact author commit separately. Local seeded ports do not qualify authentic runtime, signatures, durable budgets, source lineage or atomic publication.
@@ -28,3 +30,30 @@ Both defects are in `authorization/current-tool-authority.mjs` composition with 
 Current catalog bytes equal accepted publication `5ee46446b5f60034916f00b2a665b3e2bef9cf60` exactly: 13 descriptors. The current contract facade also contains the preserved additive memory candidate; an additional exact accepted-contract composition will accompany repaired-source review. Production source remains hardwired unavailable with zero exposure/effects.
 
 Initial `npm ci --ignore-scripts --no-audit --no-fund` failed (exit 254) because default `/home/agent/.npm/_cacache` was unavailable; stdout/stderr are retained. Rerun with owned `/tmp/meri-gateway-review-npm-cache-20261012` succeeded, exit 0. No package or lock mutation. Node is v24.19.0. Every bounded check receipt records command array, raw stream hashes, physical exit and absent owned process group; no live runner or runtime qualification occurred.
+
+## Independent repaired-source acceptance
+
+The parent allocated a separate author, whose frozen source was merged without edits into this dedicated reviewer branch before replay. `current-tool-authority.mjs` now receives the dispatch lifetime's synchronous `limitDeadline` callback and invokes it immediately after validating each capability expiry and current-run deadline. It checks cancellation/expiry around awaits before invoking another port. It rejects non-finite/unrepresentable issuance and expiration before run lookup. `tool-dispatch.mjs` supplies the callback to both initial identity and every complete authority refresh. The existing lifetime remains the single shrink-only deadline/cancellation owner. No new public contract, port provider, registry, adapter or model loop was introduced.
+
+The callback is a deliberate internal interface requirement; existing production composition and fixtures are updated through the dispatcher. Repository caller search found no other authority callers. The guard `issuedAt <= now < expiresAt` also enforces ordered finite issuance/expiry. Existing public `0.1.0`, private `0.2`, canonical catalog, original fixture, complete original eighteen-case file and locks are byte unchanged. New author tests are separate. Source modules remain focused: authority owns trusted-fact validation, lifetime owns timing, dispatcher owns one execution, catalog owns registry resolution, result module owns safe decoding/lineage, and the entry point keeps activation disabled.
+
+| Independent frozen-repair check | Outcome |
+| --- | --- |
+| Current preserved contracts, original18 + author16 + independent46 | **80/80 PASS**, exit 0 |
+| Independent deadline matrix within that run | 13/13 PASS; each known shortened deadline bounds its parked inner port |
+| Independent late-cancellation matrix | 18/18 PASS; zero subsequent trusted ports or result releases after late completion |
+| Independent timestamp matrix | 5/5 PASS; malformed, future or unordered lifetime refuses before currentRun |
+| Independent budget matrix | 9/9 PASS; pending/unknown/throw/parked outcomes retain uncertainty and bounded cleanup |
+| Exact accepted `5ee46446b5f60034916f00b2a665b3e2bef9cf60` contract files composed with exact repaired gateway | **35/35 PASS**: original18 + author16 + independent canonical catalog check |
+| Original unmodified release-deadline control, current contracts | PASS, exit 0; deadline rejection and exactly one uncertainty call |
+| Same original control, exact accepted-contract composition | PASS, exit 0; identical semantic result |
+
+The canonical catalog check resolves every one of the actual thirteen descriptors through the accepted resolver, preserves 139 original IDs / 96 selected / 43 deferred / 83 unmapped selected entries, and proves all thirteen remain pending/unimplemented/null-handler with retries disabled. Even supplied internal handler bindings cannot activate those descriptors. Discovery stays empty, requests return UNAVAILABLE before any authority/budget/handler effect, and the canonical federal normalizer retains the known default-materialized digest. This is disabled composition compatibility, not a qualified active domain protocol; the synthetic lifecycle carrier remains explicitly internal.
+
+`accepted-composition.json` binds all sixty exact accepted-contract/candidate-gateway/control files in the owned snapshot. `review-acceptance.json` records the source pins, source byte preservation, command receipts, evidence hashes and cleanup state. The complete author ancestry is retained. Author root216/public7 checks are recorded by the author; this reviewer independently executed the gateway matrices above. Parent must independently verify the combined memory/gateway integration before advancing source integration.
+
+A complete diff whitespace check initially returned exit 2 solely for literal assertion-reporter whitespace in retained reviewer stdout. The original failed check and raw streams remain unchanged. A local `.gitattributes` classifies only this evidence directory's `*.stdout.txt` and `*.stderr.txt` as byte-preserved non-diff streams, matching the author's scoped evidence treatment. Code, tests and reports remain checked normally; final diff check passes. No test assertion or historical failure output was rewritten.
+
+All supervised test process groups physically exited; parked synthetic promises were released and drained. Ignored owned dependencies/cache and the small original/accepted composition snapshots are retained for reproduction; no borrowed resource or other session was stopped. No provider/model, database/customer, browser, cloud, credentials, deployment or Hermes operation was performed.
+
+Remaining gates: real signature/task identity and expiry/revocation adapters, current durable authority/policy, durable reservations and uncertainty reconciliation, qualified source producers and lineage, atomic authorized publication, native stop/teardown, actual sandbox/egress/checkpoint recovery, supported patched image and G1 runtime evidence. Local AbortSignals and seeded tests do not prove physical runtime cancellation or any policy propagation SLA. G1 stays OPEN, G2–G7 unentered, and source connectivity remains disabled.

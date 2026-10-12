@@ -1,0 +1,387 @@
+{
+  "schema": "meri-gateway-independent-acceptance/1",
+  "verdict": "ACCEPT_SOURCE",
+  "scope": "apps/gateway source only; no memory/runtime/G1/source activation acceptance",
+  "preservationBase": "c57b7d26df7de2acbd8c7d8edc7098f7d495053a",
+  "authorSourceCommit": "b33c1c3e168bf889cbeff1ec8568bc01ef1b9e21",
+  "authorSourceTree": "a465613739473b7135a9fa49b420cde1f9a1525e",
+  "authorMetadataHead": "f8ad3d6f8e05e0e6fcf5a1875d14ecbd02c86812",
+  "acceptedContractCommit": "5ee46446b5f60034916f00b2a665b3e2bef9cf60",
+  "preReportReviewHead": "d68af779cbe21460b9a1406d19e7ce1f12522e00",
+  "authorCommitsInReviewerAncestry": true,
+  "source": [
+    {
+      "path": "apps/gateway/authorization/current-tool-authority.mjs",
+      "bytes": 6506,
+      "sha256": "182b5372a07968e64608454b259cd19e5603b4ff4b96e1750a336de5bf4b87a6",
+      "matchesAuthorFreeze": true
+    },
+    {
+      "path": "apps/gateway/catalog/runtime-catalog.mjs",
+      "bytes": 2396,
+      "sha256": "092ed325693df95c3c5a41d20d3fdb56e19cce3fc9b47dafd8d42d76b9325dff",
+      "matchesAuthorFreeze": true
+    },
+    {
+      "path": "apps/gateway/dispatch/dispatch-lifetime.mjs",
+      "bytes": 2994,
+      "sha256": "37219130a9a895125fa594bb8266b724c08a58f1af54f1353ff3b9f2fc5d6248",
+      "matchesAuthorFreeze": true
+    },
+    {
+      "path": "apps/gateway/dispatch/operation-result.mjs",
+      "bytes": 2818,
+      "sha256": "26e44f72ec13011a8c0960842d6a8abd53b8f67e9082f888f4bc2458b5c42468",
+      "matchesAuthorFreeze": true
+    },
+    {
+      "path": "apps/gateway/dispatch/tool-dispatch.mjs",
+      "bytes": 6593,
+      "sha256": "9071d378947273d56e08c6dac38e72cfb52cc89d6f457a20908ed01165b27d39",
+      "matchesAuthorFreeze": true
+    },
+    {
+      "path": "apps/gateway/index.mjs",
+      "bytes": 1319,
+      "sha256": "594f8f1dc780b5dc41e1738e6e484c8e20d365ed6b46137091c3644c4e2266c9",
+      "matchesAuthorFreeze": true
+    },
+    {
+      "path": "apps/gateway/test/authority-deadline.test.mjs",
+      "bytes": 5678,
+      "sha256": "4e8a9eac66b1481cbce30cec68274a25681026890688644ccdf28a78d0c81d28",
+      "matchesAuthorFreeze": true
+    },
+    {
+      "path": "apps/gateway/test/fixtures.mjs",
+      "bytes": 5042,
+      "sha256": "53915bd72e3e7eb9a7a70219c06aa4359948a9c9abab91469fcfaaf1322f8a2c",
+      "matchesAuthorFreeze": true
+    },
+    {
+      "path": "apps/gateway/test/gateway.test.mjs",
+      "bytes": 11834,
+      "sha256": "6f71caf19539fca672c1217df079e58a6ed772f91648536bfe3f45e8a2d5d0e4",
+      "matchesAuthorFreeze": true
+    }
+  ],
+  "unchangedFromPreservationBase": [
+    "package.json",
+    "package-lock.json",
+    "apps/gateway/test/gateway.test.mjs",
+    "apps/gateway/test/fixtures.mjs",
+    "packages/contracts/**",
+    "docs/qualification/candidates/gateway-source-disabled-20261012/independent-review-20261012/release-deadline-control.mjs",
+    "docs/qualification/candidates/gateway-source-disabled-20261012/**"
+  ],
+  "original17PrefixSha256": "ae9e94ae696ebf0982b0e1592438ec510f502bee29a315a567f6f27faeb62268",
+  "independentRepairedChecks": {
+    "combined": {
+      "passed": 80,
+      "failed": 0
+    },
+    "exactAcceptedContractComposition": {
+      "passed": 35,
+      "failed": 0
+    },
+    "unmodifiedOriginalControlCurrent": 0,
+    "unmodifiedOriginalControlAcceptedComposition": 0
+  },
+  "retainedFailures": {
+    "originalReleaseControl": 1,
+    "innerDeadlineCases": 13,
+    "lateCancellationCases": 5,
+    "timestampCases": 2,
+    "initialDependencyInstallExit": 254,
+    "rawWhitespaceCheckExit": 2
+  },
+  "checks": [
+    {
+      "receipt": "final-diff-whitespace.json",
+      "exitCode": 0,
+      "receiptSha256": "b5e07a52c44986e884b01b3f2d7054d9cabc533d61800256e7197d4863771205",
+      "processGroupAbsent": true
+    },
+    {
+      "receipt": "full-diff-whitespace-before-raw-attributes.json",
+      "exitCode": 2,
+      "receiptSha256": "cdb5a3f2f522c7740ae06347e9cd992bd263d749171eb0e1f036e26cc3aacfa8",
+      "processGroupAbsent": true
+    },
+    {
+      "receipt": "original-release-control.json",
+      "exitCode": 1,
+      "receiptSha256": "aabc7f5228198c3f5fdcdc9b003f91b41f2edd13e1525bab156ee3344839bdb5",
+      "processGroupAbsent": true
+    },
+    {
+      "receipt": "original17-accepted13.json",
+      "exitCode": 0,
+      "receiptSha256": "8a98a4be0f9184379a0ff6cb68a28daa23feb17a97b0a2a2d613988b8649f484",
+      "processGroupAbsent": true
+    },
+    {
+      "receipt": "preserved-budget-containment.json",
+      "exitCode": 0,
+      "receiptSha256": "5fdcac41d07033d1b5c219c562df803b778f7404a8bf69e3d26e56bd007d37fd",
+      "processGroupAbsent": true
+    },
+    {
+      "receipt": "preserved-inner-deadlines.json",
+      "exitCode": 1,
+      "receiptSha256": "677b90d784b07925e1ed20a00552a1f3f483e5237f53ae67a0b42f7d04c1bf59",
+      "processGroupAbsent": true
+    },
+    {
+      "receipt": "preserved-issued-at.json",
+      "exitCode": 1,
+      "receiptSha256": "8cbb6fc6be7ff833dd89cb953bec21842d4813cf5b86c6e415f069db0fa7aa83",
+      "processGroupAbsent": true
+    },
+    {
+      "receipt": "preserved-late-cancellation.json",
+      "exitCode": 1,
+      "receiptSha256": "8e775614d61c8d6bfd31e6b90aec5c424a479fa3e496a0aa410204a328f7fadd",
+      "processGroupAbsent": true
+    },
+    {
+      "receipt": "preserved-release-control.json",
+      "exitCode": 0,
+      "receiptSha256": "e3bf1781deba4e42d1b5aa81e3364bd3113c8584d8125bb4ec0cfbfaba0f7341",
+      "processGroupAbsent": true
+    },
+    {
+      "receipt": "preserved18-accepted13.json",
+      "exitCode": 0,
+      "receiptSha256": "a97f72a2e9a291b8d7e24d09fdb9d376bd1275b8dbda653c2aecca3acb416cc6",
+      "processGroupAbsent": true
+    },
+    {
+      "receipt": "repaired-accepted13-original-control.json",
+      "exitCode": 0,
+      "receiptSha256": "17551bb0d65ac3a3837a415d6062c1472eda7729eed70caaff32b4a176427324",
+      "processGroupAbsent": true
+    },
+    {
+      "receipt": "repaired-combined80.json",
+      "exitCode": 0,
+      "receiptSha256": "5139fdf68d204bc02da05b6618ab06b54d441120e26e2f2f754eb64f6756ce99",
+      "processGroupAbsent": true
+    },
+    {
+      "receipt": "repaired-exact-accepted13.json",
+      "exitCode": 0,
+      "receiptSha256": "7ff92c2eb21d737b20bf35bc3494f57277aeb7ec21f766b6d787985da758be6e",
+      "processGroupAbsent": true
+    },
+    {
+      "receipt": "repaired-original-control.json",
+      "exitCode": 0,
+      "receiptSha256": "114157078454ac6225f3d6cef7884700ca8d36a16b02d88108761ebd4a213441",
+      "processGroupAbsent": true
+    },
+    {
+      "receipt": "scoped-source-whitespace.json",
+      "exitCode": 0,
+      "receiptSha256": "e658301b04a32e70c90ce08c41c25f80803d9e9dc1aa9603892fa083e04c5778",
+      "processGroupAbsent": true
+    }
+  ],
+  "rawStreams": [
+    {
+      "path": "final-diff-whitespace.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "final-diff-whitespace.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "full-diff-whitespace-before-raw-attributes.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "full-diff-whitespace-before-raw-attributes.stdout.txt",
+      "bytes": 5298,
+      "sha256": "e2c74bdfa324e0a3f19ff00b67fa2d2df910227af26e2a531a164353ce2c0ac7"
+    },
+    {
+      "path": "npm-ci-local-cache.stderr.txt",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    {
+      "path": "npm-ci-local-cache.stdout.txt",
+      "bytes": 25,
+      "sha256": "87ce98749cbda0c632c25e9c4963c21076562a49f92ed1e744dbc6bafbc85f82"
+    },
+    {
+      "path": "npm-ci.stderr.txt",
+      "bytes": 4470,
+      "sha256": "0c6c6cca97fc8ba7f6917950c11aae05013fd8a606fd8a774d36b5e5adee5a0a"
+    },
+    {
+      "path": "npm-ci.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "original-release-control.stderr.txt",
+      "bytes": 525,
+      "sha256": "effcbb222e0e65c01503550a3378eedb6e09860ee1a9531a5ee20b5e679ab080"
+    },
+    {
+      "path": "original-release-control.stdout.txt",
+      "bytes": 277,
+      "sha256": "dd820176a52bc01684d0fa249a84db2ded396738b69768434347f5323b911313"
+    },
+    {
+      "path": "original17-accepted13.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "original17-accepted13.stdout.txt",
+      "bytes": 1681,
+      "sha256": "0d51f2d458ddd10f7d840d719b9bad975d107240f53429f3753734a2fed37cbd"
+    },
+    {
+      "path": "preserved-budget-containment.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "preserved-budget-containment.stdout.txt",
+      "bytes": 1532,
+      "sha256": "f40886a71245e67bb8be191b83750627c0c545f65a1766c1f7d963d827b35b52"
+    },
+    {
+      "path": "preserved-inner-deadlines.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "preserved-inner-deadlines.stdout.txt",
+      "bytes": 14453,
+      "sha256": "9fc5e49f82719430ea2e0894b31137e8e6117fef67cba8ade9e6ec17c8516f17"
+    },
+    {
+      "path": "preserved-issued-at.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "preserved-issued-at.stdout.txt",
+      "bytes": 2862,
+      "sha256": "dd459ca8a05d65bff0021731abbe757fe8817ab37c5a59fe387b75853c7ff428"
+    },
+    {
+      "path": "preserved-late-cancellation.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "preserved-late-cancellation.stdout.txt",
+      "bytes": 8721,
+      "sha256": "2272049a5eb9e3c7f7c1a30247f7b1b8dd0e191454386ab37dfb828357296a0c"
+    },
+    {
+      "path": "preserved-release-control.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "preserved-release-control.stdout.txt",
+      "bytes": 281,
+      "sha256": "e6dea4b9352e94a2e30f05b85da8babba3068b31e7a83fca6831b6323a06cdef"
+    },
+    {
+      "path": "preserved18-accepted13.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "preserved18-accepted13.stdout.txt",
+      "bytes": 1788,
+      "sha256": "5f6d8913b97bb0a0d1e27eeca989154a852477932022b9617e60d43f61796aaa"
+    },
+    {
+      "path": "repaired-accepted13-original-control.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repaired-accepted13-original-control.stdout.txt",
+      "bytes": 281,
+      "sha256": "e6dea4b9352e94a2e30f05b85da8babba3068b31e7a83fca6831b6323a06cdef"
+    },
+    {
+      "path": "repaired-combined80.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repaired-combined80.stdout.txt",
+      "bytes": 14184,
+      "sha256": "5d3b87d73a929ea5c12e25e02924ff0d63c7bd1cfcb5e40aadeb6673b655a9fb"
+    },
+    {
+      "path": "repaired-exact-accepted13.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repaired-exact-accepted13.stdout.txt",
+      "bytes": 3522,
+      "sha256": "52f9b6543515e0c510eeab73fe87ef3acb9a5e85d3d10eb8f6a02fb4e7a8e2f8"
+    },
+    {
+      "path": "repaired-original-control.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repaired-original-control.stdout.txt",
+      "bytes": 281,
+      "sha256": "e6dea4b9352e94a2e30f05b85da8babba3068b31e7a83fca6831b6323a06cdef"
+    },
+    {
+      "path": "scoped-source-whitespace.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "scoped-source-whitespace.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "cleanup": {
+    "allRecordedOwnedProcessGroupsAbsent": true,
+    "externalTimeouts": 0,
+    "syntheticParkedPromisesReleasedAndDrained": true,
+    "originalOverlayRetained": "/tmp/meri-gateway-original-review-20261012",
+    "acceptedOverlayRetained": "/tmp/meri-gateway-accepted13-review-20261012",
+    "ownedIgnoredDependenciesRetained": true,
+    "otherOwnerResourcesTouched": false
+  },
+  "disabled": {
+    "source": true,
+    "discovery": true,
+    "all13HandlersUnavailable": true
+  },
+  "liveActions": 0,
+  "remaining": [
+    "real task identity/auth/expiry/revocation",
+    "durable budget and uncertainty stores",
+    "actual source policies/readers/lineage",
+    "atomic authorized publication",
+    "native runtime sandbox/egress/stop/checkpoint gates",
+    "supported patched image",
+    "combined integration owner acceptance",
+    "G1 OPEN and G2-G7 unentered"
+  ]
+}

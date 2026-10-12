@@ -1,0 +1,28 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "/tmp/meri-gateway-accepted13-review-20261012/apps/gateway/test/authority-deadline.test.mjs",
+    "/tmp/meri-gateway-accepted13-review-20261012/apps/gateway/test/gateway.test.mjs",
+    "docs/qualification/candidates/gateway-independent-resume-20261012/accepted-catalog.test.mjs"
+  ],
+  "cwd": "/workspace/meri-gateway-review-20261012",
+  "startUnixSeconds": 1791770079.646415,
+  "elapsedSeconds": 3.0418877601623535,
+  "exitCode": 0,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "fixtureRoot": "/tmp/meri-gateway-accepted13-review-20261012",
+  "streams": {
+    "stdout": {
+      "path": "repaired-exact-accepted13.stdout.txt",
+      "bytes": 3522,
+      "sha256": "52f9b6543515e0c510eeab73fe87ef3acb9a5e85d3d10eb8f6a02fb4e7a8e2f8"
+    },
+    "stderr": {
+      "path": "repaired-exact-accepted13.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}
