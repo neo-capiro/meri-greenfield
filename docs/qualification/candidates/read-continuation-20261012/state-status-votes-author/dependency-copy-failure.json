@@ -1,0 +1,7 @@
+{
+  "command": "cp -a existing installed dependency trees into dedicated author worktree",
+  "observed": "No space left on device during root aws-cdk-lib copy; contracts target could not be created.",
+  "rawTranscript": "Tool output was truncated; full raw stderr was not captured. Failure retained as observation, not an exact byte receipt.",
+  "cleanup": "Removed only this lane newly created incomplete node_modules trees; donor trees unchanged.",
+  "recovery": "Use borrowed installed dependency symlinks; no installation, package or lock changes."
+}
