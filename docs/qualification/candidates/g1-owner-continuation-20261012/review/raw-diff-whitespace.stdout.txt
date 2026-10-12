@@ -1,0 +1,47 @@
+docs/qualification/candidates/g1-owner-continuation-20261012/review/reviewed-plan.diff:7: trailing whitespace.
++ 
+docs/qualification/candidates/g1-owner-continuation-20261012/review/reviewed-plan.diff:10: trailing whitespace.
++ 
+docs/qualification/candidates/g1-owner-continuation-20261012/review/reviewed-plan.diff:12: trailing whitespace.
++ 
+docs/qualification/candidates/g1-owner-continuation-20261012/review/reviewed-plan.diff:14: trailing whitespace.
++ 
+docs/qualification/candidates/g1-owner-continuation-20261012/review/reviewed-plan.diff:17: trailing whitespace.
++ 
+docs/qualification/candidates/g1-owner-continuation-20261012/review/reviewed-plan.diff:25: trailing whitespace.
++ 
+docs/qualification/candidates/g1-owner-continuation-20261012/review/reviewed-plan.diff:28: trailing whitespace.
++ 
+docs/qualification/candidates/g1-owner-continuation-20261012/review/reviewed-plan.diff:30: trailing whitespace.
++ 
+docs/qualification/candidates/g1-owner-continuation-20261012/review/reviewed-plan.diff:32: trailing whitespace.
++ 
+docs/qualification/candidates/g1-owner-continuation-20261012/review/reviewed-plan.diff:34: trailing whitespace.
++ 
+docs/qualification/candidates/g1-owner-continuation-20261012/review/reviewed-plan.diff:47: trailing whitespace.
++ 
+docs/qualification/candidates/g1-owner-continuation-20261012/review/reviewed-plan.diff:49: trailing whitespace.
++ 
+docs/qualification/candidates/g1-owner-continuation-20261012/review/reviewed-plan.diff:51: trailing whitespace.
++ 
+docs/qualification/candidates/g1-owner-continuation-20261012/review/reviewed-plan.diff:53: trailing whitespace.
++ 
+docs/qualification/candidates/g1-owner-continuation-20261012/review/reviewed-plan.diff:56: trailing whitespace.
++ 
+docs/qualification/candidates/g1-owner-continuation-20261012/review/reviewed-plan.diff:63: trailing whitespace.
++ 
+docs/qualification/candidates/g1-owner-continuation-20261012/review/reviewed-plan.diff:65: trailing whitespace.
++ 
+docs/qualification/candidates/g1-owner-continuation-20261012/review/reviewed-plan.diff:67: trailing whitespace.
++ 
+docs/qualification/candidates/g1-owner-continuation-20261012/review/reviewed-plan.diff:69: trailing whitespace.
++ 
+docs/qualification/candidates/g1-owner-continuation-20261012/review/reviewed-plan.diff:82: trailing whitespace.
++ 
+docs/qualification/candidates/g1-owner-continuation-20261012/review/reviewed-plan.diff:84: trailing whitespace.
++ 
+docs/qualification/candidates/g1-owner-continuation-20261012/review/reviewed-plan.diff:89: trailing whitespace.
++ 
+docs/qualification/candidates/g1-owner-continuation-20261012/review/reviewed-plan.diff:91: trailing whitespace.
++ 
+docs/qualification/candidates/g1-owner-continuation-20261012/review/reviewed-plan.diff:91: new blank line at EOF.

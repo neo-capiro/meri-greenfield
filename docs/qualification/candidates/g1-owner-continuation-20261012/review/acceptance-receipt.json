@@ -23,5 +23,11 @@
   "newNativeHostDaemonDatabaseActions": 0,
   "sourceOrPlanEdited": false,
   "runtimeAdmission": "HOLD",
-  "cleanup": "All ordinary read-only Git/file commands completed synchronously; no target process or background job created."
+  "cleanup": "All ordinary read-only Git/file commands completed synchronously; no target process or background job created.",
+  "whitespace": {
+    "canonicalPlanExitCode": 0,
+    "reviewExcludingExactRawUnifiedDiffExitCode": 0,
+    "wholeReviewExitCode": 2,
+    "cause": "Raw unified-diff blank context lines retain their required space prefix. Exact failure output preserved; no canonical source whitespace failure."
+  }
 }
