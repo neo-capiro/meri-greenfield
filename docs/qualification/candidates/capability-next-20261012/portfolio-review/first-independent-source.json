@@ -1,0 +1,30 @@
+{
+  "sourceFreeze": "deec763c57ba57cc4d7e7915d55b0f8719e13021",
+  "checks": {
+    "passed": 21,
+    "failed": 1
+  },
+  "finding": "Non-null continuation accepts fewer than requested limit; violates pinned visible-page projection. No native check.",
+  "records": [
+    {
+      "path": "packages/contracts/test/retrieval-research-portfolio-independent.test.mjs",
+      "bytes": 13321,
+      "sha256": "f88c86dcc5ecc00a6616c1b72e0ee0794a1e93e1924c93a9a51055a01c6e867f"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/research-portfolio-validation.mjs",
+      "bytes": 6073,
+      "sha256": "23d4ac1d8123d3e64644976af79fba998392ef17dec50ed54182c643be946a1e"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/research-portfolio.schema.json",
+      "bytes": 17893,
+      "sha256": "cb6d881f19cd7f37561e5955a082080211f1fa69ef520f7208ace9c2e3eb41bc"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/operation-contracts.mjs",
+      "bytes": 5544,
+      "sha256": "f09b6b3a8b0186b3e2f05a17135ce40bac9ed728796493501ce7d8d4d647adfd"
+    }
+  ]
+}
