@@ -222,3 +222,48 @@ test('independent lifecycle: no-history request causes no workflow lookup', asyn
   const h = harness(); const out = await h.list({ historyLimit: 0 });
   assert.equal(out.originalRuns.executions.length, 0); assert.equal(h.calls.filter(v => v.name === 'workflowHandle').length, 0);
 });
+
+test('independent lifecycle: update current-description Proxy is refused without traps', async () => {
+  let touched = 0;
+  const h = harness({ operation: 'update_scheduled_task', update(fn) {
+    return fn(new Proxy({ scheduleId: 'application/schedule-a' }, {
+      getOwnPropertyDescriptor(target, key) { touched++; return Reflect.getOwnPropertyDescriptor(target, key); },
+    }));
+  } });
+  await assert.rejects(h.run()); assert.equal(touched, 0);
+});
+
+test('independent lifecycle: native UUID page order accepts equivalent mixed-case projections', async () => {
+  const left = projection(), right = projection();
+  left.scheduleId = 'aaaaaaaa-1111-4111-8111-111111111111';
+  right.scheduleId = 'BBBBBBBB-1111-4111-8111-111111111111';
+  const h = harness({ ownerList: () => ({ rows: [left, right].map(p => ({ projection: p, generation: 1, unresolved: false })), hasMore: false }) });
+  const out = await h.list({ historyLimit: 0 }); assert.equal(out.rows.length, 2);
+  assert.deepEqual(out.rows.map(v => v.projection.scheduleId), [left.scheduleId, right.scheduleId]);
+});
+
+test('independent lifecycle: lost SDK ACK retains unknown and never releases projection', async () => {
+  const h = harness({ create() { throw Error('SDK payload secret'); } });
+  await assert.rejects(h.run(), e => e.outcome === 'UNKNOWN' && !Object.hasOwn(e, 'projection') && !String(e).includes('secret'));
+  assert.equal(h.calls.filter(v => v.name === 'create').length, 1);
+  assert.equal(h.calls.filter(v => v.name === 'markUnknown').length, 1);
+  assert.equal(h.calls.filter(v => v.name === 'commitKnown').length, 0);
+});
+
+test('independent lifecycle: authority expiry published before parked callback suppresses mutation', async () => {
+  const gate = deferred();
+  const h = harness({ clock: Date.now, authorize: async r => {
+    r.limitDeadline(Date.now() + 70); await gate.promise;
+    return { authorized: true, bindingSha256: r.binding.bindingSha256, callerIdentity: r.binding.callerIdentity, expiresAtMs: Date.now() + 30000 };
+  } });
+  await bounded(assert.rejects(h.run())); gate.resolve(); await flush();
+  assert.equal(effects(h).length, 0); assert.equal(h.calls.filter(v => v.name === 'claim').length, 0);
+});
+
+test('independent lifecycle: released authority after committed mutation cannot release success', async () => {
+  const h = harness({ authorize: async r => ({ authorized: r.phase !== 'before_release', bindingSha256: r.binding.bindingSha256,
+    callerIdentity: r.binding.callerIdentity, expiresAtMs: h.clock() + 30000 }) });
+  await assert.rejects(h.run(), e => e.outcome === 'ACKNOWLEDGED_NOT_RELEASED' && !Object.hasOwn(e, 'projection'));
+  assert.equal(h.calls.filter(v => v.name === 'commitKnown').length, 1);
+  assert.equal(h.calls.filter(v => v.name === 'markUnknown').length, 0);
+});
