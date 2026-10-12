@@ -1,0 +1,8 @@
+{
+  "kind": "reviewer synthetic fixture correction before candidate replay",
+  "originalControls": "4878e954e690c0b06c40cbad653c0e13cd24c40b",
+  "path": "packages/contracts/test/retrieval-backend-next-independent.test.mjs",
+  "sourceLocator": "program-elements.schema.json#/$defs/ProgramElementYear/properties/id",
+  "reason": "Actual accepted-family schema requires UUID. Replaced invented year-1/year-2 fixture IDs with existing synthetic UUID constants U/V and retained duplicate-ID negative. No production change or assertion removal; source tests not yet run against new family.",
+  "previousBaseline": "original-baseline.stdout.bin preserves29 original controls"
+}

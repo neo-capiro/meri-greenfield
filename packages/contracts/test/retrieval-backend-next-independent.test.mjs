@@ -18,7 +18,7 @@ const schema=group=>JSON.parse(readFileSync(new URL(`../retrieval-0.2/${group}.s
 const context=id=>id===OUTREACH?{clientResolution:null}:{evidenceAccuracyMode:'off'};
 const request=id=>[DETAIL,TIMELINE].includes(id)?{peCode:'review-pe'}:{};
 const campaign=()=>({id:U,clientId:null,name:'Stored campaign',type:'stored',status:'draft',subject:null,sentAt:null,createdAt:T,clientName:null,recipientCount:0,createdBy:null});
-const year=()=>({id:'year-1',peCode:'review-pe',fy:2026,request:'0.00',hascMark:null,sascMark:null,hacDMark:null,sacDMark:null,conference:null,ndaaConference:null,enacted:null,reprogrammed:null,executed:null,notes:null,rDocSection:null,raw:null,lastSyncedAt:T,fundingClaim:null});
+const year=()=>({id:U,peCode:'review-pe',fy:2026,request:'0.00',hascMark:null,sascMark:null,hacDMark:null,sacDMark:null,conference:null,ndaaConference:null,enacted:null,reprogrammed:null,executed:null,notes:null,rDocSection:null,raw:null,lastSyncedAt:T,fundingClaim:null});
 function output(id){
  if(id===OUTREACH)return {tool:id,generatedAt:T,total:0,campaigns:[]};
  if(id===SEARCH)return {tool:id,generatedAt:T,data:[],total:0,page:1,limit:20};
@@ -92,8 +92,8 @@ test('program evidence mode controls actual lineage output without becoming auth
  for(const id of [DETAIL,TIMELINE]){const p=output(id);assert.throws(()=>check(id,p,request(id),{evidenceAccuracyMode:'enforce'}));p.lineage={accepted:[],candidates:[],note:schema('program-elements').$defs.ProgramElementLineage.properties.note.const};check(id,p,request(id),{evidenceAccuracyMode:'enforce'});assert.throws(()=>check(id,p));assert.throws(()=>check(id,p,request(id),{evidenceAccuracyMode:'shadow'}));}
 });
 test('program Decimal string prerequisite and stored-year identity/order survive composition',()=>{
- const p=output(DETAIL);p.programElement.years=[year(),{...year(),id:'year-2',fy:2027,request:'999999999999.99'}];check(DETAIL,p);
- for(const change of [x=>x.programElement.years[0].request=0,x=>x.programElement.years[0].request='1.001',x=>x.programElement.years[1].fy=2026,x=>x.programElement.years[1].id='year-1',x=>x.programElement.years[0].peCode='other']){const bad=copy(p);change(bad);assert.throws(()=>check(DETAIL,bad));}
+ const p=output(DETAIL);p.programElement.years=[year(),{...year(),id:V,fy:2027,request:'999999999999.99'}];check(DETAIL,p);
+ for(const change of [x=>x.programElement.years[0].request=0,x=>x.programElement.years[0].request='1.001',x=>x.programElement.years[1].fy=2026,x=>x.programElement.years[1].id=U,x=>x.programElement.years[0].peCode='other']){const bad=copy(p);change(bad);assert.throws(()=>check(DETAIL,bad));}
 });
 test('PE direct factory now returns detached nested result, canonical behavior preserved',()=>{
  const id='get_pe_bills',p={tool:id,generatedAt:T,bills:[]},raw={peCode:'review-pe'},factory=createPeReferenceValidators({validateShape,schema:schema('pe-references')}),a=factory.assertPeReferenceOutput(id,p,raw,{}),b=resolve(id).assertOutput(p,{request:raw});
