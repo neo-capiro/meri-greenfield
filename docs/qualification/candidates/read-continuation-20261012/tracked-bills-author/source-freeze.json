@@ -1,0 +1,36 @@
+{
+  "sourceCommit": "e020f4ff2af3c23412adf2fd634f8362140eeb51",
+  "sourceTree": "4339a033ca9d43096f838c89caa02b1e5c93e59d",
+  "base": "a3e946c1fa264ae7b33205f5b87804ee1ef75773",
+  "testedFilesMatchSource": true,
+  "checks": {
+    "initialAuthor": {
+      "passed": 26,
+      "failed": 0
+    },
+    "aliasNegativeControl": {
+      "passed": 26,
+      "failed": 1
+    },
+    "repairedAuthor": {
+      "passed": 27,
+      "failed": 0
+    },
+    "metadata": {
+      "passed": 43,
+      "failed": 0
+    }
+  },
+  "baseFilesByteIdentical": 6110,
+  "referencesUnchanged": 4,
+  "ownedGroupsAbsent": [
+    237686,
+    237854,
+    237989,
+    238520
+  ],
+  "sourceAccepted": false,
+  "independentReview": "PENDING",
+  "sourceEnabled": false,
+  "runtime": "UNRUN"
+}

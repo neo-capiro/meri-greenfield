@@ -1,0 +1,35 @@
+✔ normalization binds original name reference to canonical current client identity (6.402154ms)
+✔ UUID lookup must match resolved UUID case-insensitively (0.688175ms)
+✔ raw reference correlation cannot be substituted by asserted subject identity (0.362967ms)
+✔ source80UTF16 normalization is explicit and must equal retained reference (0.551951ms)
+✔ blank, wrong-type, absent and extra selector fields fail before effects (2.560964ms)
+✔ trusted context is required and closed without model role or grants (1.263692ms)
+✔ canonical subject must be one client, with tenant actor and policy lineage (1.03678ms)
+✔ canonical structural scope limitations are not silently promoted into policy (0.248674ms)
+✔ binding and subject evidence wrapper must exactly match trusted context (1.84081ms)
+✔ result wrapper and source client identity cannot be substituted (0.74433ms)
+✔ empty tracked set preserves complete returned count with no absence proof (0.841827ms)
+✔ null global enrichment preserves outer identity note date and count (1.258514ms)
+✔ enrichment identity must exactly correlate even for opaque stored bill IDs (0.836389ms)
+✔ all nine nested projected fields are required despite broad optional TS annotation (1.552767ms)
+✔ exact stored nullable and array types reject unspecific objects (2.630458ms)
+✔ stored text/status strings are not a fabricated legislature enum (0.33274ms)
+✔ action and subject lists have no invented15 or50 cap or ordering (0.477138ms)
+✔ tracking createdAt descends with equal-time arbitrary tie order (0.728726ms)
+✔ tracking creation is timestamp while global action date is SQL midnight (0.544159ms)
+✔ admitted timestamps are finite canonical four-digit UTC serialization (2.269234ms)
+✔ tracking primary UUID and client/bill unique keys are retained (0.698091ms)
+✔ returned total is exact and has no invented50-row window (4.064115ms)
+✔ whole response admission refuses overbudget source data rather than truncating (0.398629ms)
+✔ row and nested objects are closed with no model authority or private columns (1.534028ms)
+✔ direct inert admission rejects caller getters proxies hidden fields and coercion (0.449917ms)
+✔ symbol and hidden input properties refuse; requests/context/results remain unchanged (0.836689ms)
+✔ returned validated snapshot survives mutation of original caller data (0.262315ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1626.113011

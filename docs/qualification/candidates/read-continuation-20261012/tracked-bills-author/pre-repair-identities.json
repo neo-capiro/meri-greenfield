@@ -1,0 +1,23 @@
+{
+  "reason": "Independent direct-validator caller-alias defect; original author26pass and exact preimages preserved before repair.",
+  "files": [
+    {
+      "path": "packages/contracts/retrieval-0.2/tracked-bills.schema.json",
+      "snapshot": "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/pre-repair-source/tracked-bills.schema.json",
+      "bytes": 4920,
+      "sha256": "726efeaa4fd06c37790e05da94380f95e1ab97c694d0d8d5ada60a1579ee4cf5"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/tracked-bills-validation.mjs",
+      "snapshot": "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/pre-repair-source/tracked-bills-validation.mjs",
+      "bytes": 3529,
+      "sha256": "74936a21ec09eadc7b9ef709517fe1724e70f5397bed30a8a9d6c4856b070063"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-tracked-bills.test.mjs",
+      "snapshot": "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/pre-repair-source/retrieval-tracked-bills.test.mjs",
+      "bytes": 11646,
+      "sha256": "abd49c69ccfa018369b36d801618c93e13afb57a96b1691a8040c150b1e959e7"
+    }
+  ]
+}
