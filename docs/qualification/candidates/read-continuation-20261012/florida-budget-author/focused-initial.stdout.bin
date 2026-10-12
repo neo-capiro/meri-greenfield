@@ -1,0 +1,66 @@
+✔ single private operation and schema definitions are exact (1.980536ms)
+✔ defaults retain frozen fiscal year and untrimmed fiscal/query selection (2.743452ms)
+✔ normalization uses UTF16 caps and preserves session/project text (0.423856ms)
+✔ offset preserves number/string fallback and nonnegative clamp (1.188356ms)
+✔ typed narrowing rejects object/array/boolean selectors without coercion (1.286122ms)
+✔ context is mandatory, closed and never model supplied (2.456111ms)
+✔ canonical UUID selectors resolve case-insensitively and names use explicit receipt (3.384516ms)
+✔ client selector truncates80 after trim and empty selectors require null resolution (2.725285ms)
+✔ folder-derived client is distinct from explicit resolved client (0.937188ms)
+✔ scope substitutions reject session, folder, client and jurisdiction changes (1.403704ms)
+✔ empty response is selected data with no completeness or absence inference (0.578719ms)
+✔ full projected arrays preserve opaque JSON and nullable fields (3.457426ms)
+✔ all five producer row caps are independent and retained at exact boundary (63.319232ms)
+✔ project nextOffset describes extra-row lookup, not other array truncation (13.733315ms)
+✔ exact project selector bounds project identity and offset without restricting documents (0.917379ms)
+✔ history requires explicit project while recent observations require their displayed project (0.393951ms)
+✔ duplicate primary identities reject within each independent query (1.068595ms)
+✔ full and recent amount windows may share identity without forced observation equality (0.273942ms)
+✔ saved/version joins preserve absence, removed rows and signed versions (0.873452ms)
+✔ fiscal/session result correlations do not invent consecutive fiscal years (1.02496ms)
+✔ observed timestamps are finite canonical and descend without collation claims (1.08452ms)
+✔ clock binds generatedAt only and does not reject future stored observations (0.630718ms)
+✔ closed raw projections refuse private source bytes and invented money guarantees (0.819612ms)
+✔ authority and notice are fixed compatibility caveats, never grants (0.360402ms)
+✔ inert admission rejects getters, proxies, sparse arrays and cycles without effects (0.816907ms)
+✔ no ambient clock and direct normalization snapshots immutable context metadata (0.41906ms)
+✖ actual canonical resolver preserves request, hashes effective selection and filters context (2.464072ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 26
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 323.763948
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-florida-budget.test.mjs:160:1
+✖ actual canonical resolver preserves request, hashes effective selection and filters context (2.464072ms)
+  AssertionError [ERR_ASSERTION]: Got unwanted exception.
+  Actual message: "FloridaBudgetContext: data must NOT have additional properties"
+      at TestContext.<anonymous> (file:///workspace/meri-florida-budget-20261012/packages/contracts/test/retrieval-florida-budget.test.mjs:164:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: Error: FloridaBudgetContext: data must NOT have additional properties
+        at validateShape (file:///workspace/meri-florida-budget-20261012/packages/contracts/test/retrieval-florida-budget.test.mjs:13:127)
+        at selection (file:///workspace/meri-florida-budget-20261012/packages/contracts/retrieval-0.2/florida-budget-validation.mjs:39:5)
+        at Object.assertResult (file:///workspace/meri-florida-budget-20261012/packages/contracts/retrieval-0.2/florida-budget-validation.mjs:78:32)
+        at Object.outputAssert (file:///workspace/meri-florida-budget-20261012/packages/contracts/test/retrieval-florida-budget.test.mjs:161:226)
+        at Object.assertOutput (file:///workspace/meri-florida-budget-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:99:24)
+        at file:///workspace/meri-florida-budget-20261012/packages/contracts/test/retrieval-florida-budget.test.mjs:164:36
+        at getActual (node:assert:611:5)
+        at strict.doesNotThrow (node:assert:779:32)
+        at TestContext.<anonymous> (file:///workspace/meri-florida-budget-20261012/packages/contracts/test/retrieval-florida-budget.test.mjs:164:9)
+        at Test.runInAsyncScope (node:async_hooks:227:14),
+    expected: undefined,
+    operator: 'doesNotThrow',
+    diff: 'simple'
+  }

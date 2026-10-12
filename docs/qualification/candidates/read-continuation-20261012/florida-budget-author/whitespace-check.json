@@ -1,0 +1,14 @@
+{
+  "command": [
+    "git",
+    "diff",
+    "--cached",
+    "--check"
+  ],
+  "exitCode": 2,
+  "stdoutBytes": 278,
+  "stdoutSha256": "6640705b04b991e204166a03dca97b0d61e4b2f68a78a7f5d6039ed23a14f038",
+  "stderrBytes": 0,
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "scope": "All staged allocated author report and evidence before this receipt and manifest; no source edits after dabe2b50."
+}

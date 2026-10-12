@@ -1,0 +1,15 @@
+{
+  "command": [
+    "git",
+    "diff",
+    "--cached",
+    "--check",
+    "--",
+    ".",
+    ":(exclude)**/*.bin"
+  ],
+  "exitCode": 0,
+  "stdout": "",
+  "stderr": "",
+  "excluded": "Only raw binary-named streams; initial full whitespace failure retained unchanged."
+}

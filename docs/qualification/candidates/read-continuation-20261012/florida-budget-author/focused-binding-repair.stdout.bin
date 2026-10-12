@@ -1,0 +1,35 @@
+✔ single private operation and schema definitions are exact (1.873716ms)
+✔ defaults retain frozen fiscal year and untrimmed fiscal/query selection (2.234179ms)
+✔ normalization uses UTF16 caps and preserves session/project text (0.404779ms)
+✔ offset preserves number/string fallback and nonnegative clamp (1.047585ms)
+✔ typed narrowing rejects object/array/boolean selectors without coercion (1.29037ms)
+✔ context is mandatory, closed and never model supplied (0.490067ms)
+✔ canonical UUID selectors resolve case-insensitively and names use explicit receipt (3.074953ms)
+✔ client selector truncates80 after trim and empty selectors require null resolution (0.553462ms)
+✔ folder-derived client is distinct from explicit resolved client (0.897579ms)
+✔ scope substitutions reject session, folder, client and jurisdiction changes (0.844059ms)
+✔ empty response is selected data with no completeness or absence inference (0.842387ms)
+✔ full projected arrays preserve opaque JSON and nullable fields (1.713786ms)
+✔ all five producer row caps are independent and retained at exact boundary (49.863845ms)
+✔ project nextOffset describes extra-row lookup, not other array truncation (13.269998ms)
+✔ exact project selector bounds project identity and offset without restricting documents (0.902486ms)
+✔ history requires explicit project while recent observations require their displayed project (0.403507ms)
+✔ duplicate primary identities reject within each independent query (0.754233ms)
+✔ full and recent amount windows may share identity without forced observation equality (0.268854ms)
+✔ saved/version joins preserve absence, removed rows and signed versions (0.820934ms)
+✔ fiscal/session result correlations do not invent consecutive fiscal years (0.804289ms)
+✔ observed timestamps are finite canonical and descend without collation claims (0.706652ms)
+✔ clock binds generatedAt only and does not reject future stored observations (0.335043ms)
+✔ closed raw projections refuse private source bytes and invented money guarantees (0.741325ms)
+✔ authority and notice are fixed compatibility caveats, never grants (0.357547ms)
+✔ inert admission rejects getters, proxies, sparse arrays and cycles without effects (0.588735ms)
+✔ no ambient clock and direct normalization snapshots immutable context metadata (0.340953ms)
+✔ actual canonical resolver preserves request, hashes effective selection and filters context (1.837482ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 277.282704
