@@ -5,8 +5,8 @@
   "members": [
     {
       "path": "docs/coordination/reports/CODEX-PROGRAM-ELEMENTS-AUTHOR-20261012.md",
-      "bytes": 9605,
-      "sha256": "df7847daf128de6d527d8c5ca0cb5a23baba14ad75d365ae3d3899b919b60ff7"
+      "bytes": 9748,
+      "sha256": "537df566af799133444f31b7c5f9f55b42eca136591ecd4e2889d0bc53fb6c4d"
     },
     {
       "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-author/ast-helper-failure.json",
