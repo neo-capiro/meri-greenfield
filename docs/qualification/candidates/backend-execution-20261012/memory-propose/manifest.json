@@ -1,0 +1,156 @@
+{
+  "sourceCommit": "2084f947ede709dfea0705bf2b67e62c3e929438",
+  "selfExcluded": true,
+  "members": [
+    {
+      "path": "packages/contracts/commands-0.2/memory-propose.schema.json",
+      "bytes": 3500,
+      "sha256": "64bbf814a3ab3ffca858c752a9e73eee84bdc437dae01d39b624012b72d79dac"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/memory-propose-validation.mjs",
+      "bytes": 3523,
+      "sha256": "9bfc1ef293f5c073286a0519ee3a480dde3fb607c0b3c42c7781c3711b0dd52e"
+    },
+    {
+      "path": "packages/contracts/test/commands-memory-propose.test.mjs",
+      "bytes": 13038,
+      "sha256": "ee5e930cf813c96b4e3e05a36905d6275068166ae83fb84fc8348b27dabd9488"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-MEMORY-PROPOSE-20261012.md",
+      "bytes": 3628,
+      "sha256": "6ebf4809969c9d586407dfa85f3c16a1c5e4ac110ecbfb822a008da6f5ac7fb7"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-MEMORY-PROPOSE-20261012.md",
+      "bytes": 6428,
+      "sha256": "db4c85ae2feb6a0ae6e8e13ba532f317d3f9cdcbc7f18df563a007a23e2ff51a"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose/.gitattributes",
+      "bytes": 50,
+      "sha256": "1bee6826ab8565b1a50079d470700a548e73e2363ea12450cf37ea13454b9eba"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose/audit.py",
+      "bytes": 4774,
+      "sha256": "ab565f678808b760c4edb91aed591834582668b79ffdbe571aab4200a1616999"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose/cleanup.json",
+      "bytes": 1265,
+      "sha256": "ccec9c618b056e1f71146235ae0c36aa69bb23c4b3fd5715ff3000140a159391"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose/corrected-author.json",
+      "bytes": 1448,
+      "sha256": "480b2d52040e9b518fec1cecb09e597b181b890f56b4fa39b53972900f5804d1"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose/corrected-author.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose/corrected-author.stdout.bin",
+      "bytes": 2630,
+      "sha256": "f38cbbb07815d7513ee1e822d5524c6d8674025e70b4cc2c0e5e32d8595d3fb4"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose/exact-audit.json",
+      "bytes": 1320,
+      "sha256": "6f853d7c58384bb95f5d8e6634427bc6e01ed7a6124efa90b7e79e98a293f0a8"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose/exact-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose/exact-audit.stdout.bin",
+      "bytes": 87,
+      "sha256": "04969f1a5b4d5b5e98c37a0ee64d3ab5660cb2cf0ebc4cc8d1ff496b57b2a971"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose/exact-source.json",
+      "bytes": 1334,
+      "sha256": "7e9f345889d1452e990b4201ace354ebbd8a0e6caa572b8e47712362680cff58"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose/exact-source.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose/exact-source.stdout.bin",
+      "bytes": 2635,
+      "sha256": "18b801c7f58fa6da22ba6664a4283075a113c9a0b209b85bf17210d532944118"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose/initial-author.json",
+      "bytes": 1284,
+      "sha256": "046464ad0cf101cff3feb103eff2d900ba6e80568b6d85b936cddc49e172cd8b"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose/initial-author.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose/initial-author.stdout.bin",
+      "bytes": 4808,
+      "sha256": "c03f6d82c2ed55731564c7fecd84ae9c6cb72a41cfe1694e0167ce45f0c887a6"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose/metadata-audit.json",
+      "bytes": 1297,
+      "sha256": "b54f377ace409f71dd51b7dcf1b26f08f39dea23c3be268998b708b08d0e4d26"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose/metadata-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose/metadata-audit.stdout.bin",
+      "bytes": 87,
+      "sha256": "04969f1a5b4d5b5e98c37a0ee64d3ab5660cb2cf0ebc4cc8d1ff496b57b2a971"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose/reference-identities.json",
+      "bytes": 5805,
+      "sha256": "346d33f882b7ed17dc64e6eed23357e46d3abb47d4c5da463cff8356138ee48e"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose/source-audit.json",
+      "bytes": 2519,
+      "sha256": "7bcc6d219f55f7fda76bcecc91f5653b8661f9e35781908979783d1eb76d31fb"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose/source-identity.json",
+      "bytes": 817,
+      "sha256": "3ddc0a66361fa5924bf2e616284d3e5939127c387357f23d9280c1ca9c86326c"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose/whitespace.json",
+      "bytes": 1269,
+      "sha256": "e64433f73988882dec5b435beaf00e15742d6442afd897ebe20b38846104ce50"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose/whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose/whitespace.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

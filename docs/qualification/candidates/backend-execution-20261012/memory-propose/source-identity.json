@@ -1,0 +1,23 @@
+{
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "sourceCommit": "2084f947ede709dfea0705bf2b67e62c3e929438",
+  "sourceTree": "083cc342f964172210f5131a4e43a7915a51e3a7",
+  "members": [
+    {
+      "path": "packages/contracts/commands-0.2/memory-propose.schema.json",
+      "bytes": 3500,
+      "sha256": "64bbf814a3ab3ffca858c752a9e73eee84bdc437dae01d39b624012b72d79dac"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/memory-propose-validation.mjs",
+      "bytes": 3523,
+      "sha256": "9bfc1ef293f5c073286a0519ee3a480dde3fb607c0b3c42c7781c3711b0dd52e"
+    },
+    {
+      "path": "packages/contracts/test/commands-memory-propose.test.mjs",
+      "bytes": 13038,
+      "sha256": "ee5e930cf813c96b4e3e05a36905d6275068166ae83fb84fc8348b27dabd9488"
+    }
+  ],
+  "scope": "SOURCE_ONLY_UNAVAILABLE"
+}
