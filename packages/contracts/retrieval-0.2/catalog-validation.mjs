@@ -12,6 +12,22 @@ const searched = result => ({input: result.input, metadata: {clientScope: result
 const federal = result => ({input: result.query, metadata: {queryScope: result.queryScope, clientScope: result.clientScope}});
 
 export const CATALOG_OPERATION_BINDINGS = Object.freeze([
+  Object.freeze({id:'create_task',nativeId:'create_task',action:'task.create',group:'command-tools',input:'TaskCreateToolRequest',output:'TaskCreateToolResult',version:'0.2.0',
+    contextKeys:Object.freeze(['commandContext','command','proposal']),dispatchProfile:'command-execution/1',
+    normalize:(v,request,context,binding)=>v.commandToolValidators.normalizeCommandToolInput(binding.action,request,clock(context,binding.contextKeys)),
+    outputAssert:(v,page,request,context,binding)=>v.commandToolValidators.assertCommandToolOutput(binding.action,binding.output,page,request,clock(context,binding.contextKeys))}),
+  Object.freeze({id:'update_task',nativeId:'update_task',action:'task.update',group:'command-tools',input:'TaskUpdateToolRequest',output:'TaskUpdateToolResult',version:'0.2.0',
+    contextKeys:Object.freeze(['commandContext','command','proposal']),dispatchProfile:'command-execution/1',
+    normalize:(v,request,context,binding)=>v.commandToolValidators.normalizeCommandToolInput(binding.action,request,clock(context,binding.contextKeys)),
+    outputAssert:(v,page,request,context,binding)=>v.commandToolValidators.assertCommandToolOutput(binding.action,binding.output,page,request,clock(context,binding.contextKeys))}),
+  Object.freeze({id:'save_memory',nativeId:'save_memory',action:'memory.propose',group:'command-tools',input:'MemoryProposeToolRequest',output:'MemoryProposeToolResult',version:'0.2.0',
+    contextKeys:Object.freeze(['commandContext','command','proposal']),dispatchProfile:'command-execution/1',
+    normalize:(v,request,context,binding)=>v.commandToolValidators.normalizeCommandToolInput(binding.action,request,clock(context,binding.contextKeys)),
+    outputAssert:(v,page,request,context,binding)=>v.commandToolValidators.assertCommandToolOutput(binding.action,binding.output,page,request,clock(context,binding.contextKeys))}),
+  Object.freeze({id:'save_chat_attachments',nativeId:'save_chat_attachments',action:'artifact.file',group:'command-tools',input:'ArtifactFileToolRequest',output:'ArtifactFileToolResult',version:'0.2.0',
+    contextKeys:Object.freeze(['commandContext','command','proposal']),dispatchProfile:'command-execution/1',
+    normalize:(v,request,context,binding)=>v.commandToolValidators.normalizeCommandToolInput(binding.action,request,clock(context,binding.contextKeys)),
+    outputAssert:(v,page,request,context,binding)=>v.commandToolValidators.assertCommandToolOutput(binding.action,binding.output,page,request,clock(context,binding.contextKeys))}),
   Object.freeze({id: 'create_word', nativeId: 'create_word', group: 'artifacts', input: 'WordRequest', output: 'ArtifactCreatedResult', version: '0.2.0',
     contextKeys: Object.freeze(["binding", "scopes", "evidence", "assets", "deadlineMs", "maxBytes", "analysisAdmission"]), dispatchProfile: 'artifact-execution/1',
     normalize: (v, request, context, binding) => v.artifactValidators.normalizeArtifactInput(binding.id, request, clock(context, binding.contextKeys)),

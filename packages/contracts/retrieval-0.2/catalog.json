@@ -1,7 +1,7 @@
 {
   "contractVersion": "0.2.0",
   "catalogId": "meri.retrieval",
-  "catalogVersion": "0.2.13",
+  "catalogVersion": "0.2.14",
   "sourceRegistryCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
   "originals": [
     {
@@ -701,8 +701,11 @@
       "id": "save_chat_attachments",
       "disposition": "selected",
       "boundary": "Initial artifact filing only; verified exact version and source scopes preserved; no arbitrary attachment or folder access expansion.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "save_chat_attachments",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "send_email",
@@ -762,8 +765,11 @@
       "id": "save_memory",
       "disposition": "selected",
       "boundary": "Candidate proposal only through new memory.propose; no direct publication, confirmation, correction or deletion parity is accepted.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "save_memory",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "confirm_memory",
@@ -1042,15 +1048,21 @@
       "id": "create_task",
       "disposition": "selected",
       "boundary": "Initial task command; immutable approval, current authority, source invariants, idempotency and receipt required after G3-G5.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "create_task",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "update_task",
       "disposition": "selected",
       "boundary": "Initial task command; existing task ownership and field invariants require fixtures; repeated delivery must produce one outcome.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "update_task",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "update_client_profile",
@@ -7404,6 +7416,276 @@
       ],
       "fixtureIds": [
         "catalog.binding.run_analysis"
+      ]
+    },
+    {
+      "operation": {
+        "id": "create_task",
+        "version": "0.2.0"
+      },
+      "displayName": "Create an approved task",
+      "whenToUse": "Prepare immutable selected command intent for review, then execute only that exact currently approved proposal through the command executor.",
+      "limitations": [
+        "Source-only immutable proposal and concrete journal/HTTP execution composition; null production handler, source disabled, no runtime acceptance.",
+        "Raw arguments confer no actor, scope, capability, approval or current authority. Trusted metadata prepares exact command identity, idempotency key, scopes and required approver before review.",
+        "Execution rechecks current approval, capability, task identity, policy, source authority, budget and expiry. Lost acknowledgments remain indeterminate and never authorize retry, refund or duplicate mutation.",
+        "The actual shared Postgres budget owner and command journal are composed in source; real database, JWT/credentials, transport and native idempotency qualification remain pending.",
+        "Original public 0.1 contracts remain unchanged; task.update is a private 0.2 unconditional patch and offers no fabricated compare-and-swap protection."
+      ],
+      "positiveExamples": [
+        "Prepare and review the exact normalized command, then use its immutable proposal and original idempotency identity."
+      ],
+      "negativeExamples": [
+        "Execute raw model arguments directly, approve changed intent, infer source success from a lost acknowledgment, or retry an unknown mutation."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "capiro_commands",
+          "authority": "authoritative",
+          "purpose": "enumeration"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:commands:tool-interface:0.2.0#/$defs/TaskCreateToolRequest",
+        "sha256": "7c394fc336eeb91435d38b57e45180af838fd898e33f0e0f8e34fe8dcf4e8842"
+      },
+      "outputSchema": {
+        "id": "urn:meri:commands:tool-interface:0.2.0#/$defs/TaskCreateToolResult",
+        "sha256": "7c394fc336eeb91435d38b57e45180af838fd898e33f0e0f8e34fe8dcf4e8842"
+      },
+      "aliases": [],
+      "sideEffect": "source-command",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.create_task"
+      ]
+    },
+    {
+      "operation": {
+        "id": "update_task",
+        "version": "0.2.0"
+      },
+      "displayName": "Update an approved task",
+      "whenToUse": "Prepare immutable selected command intent for review, then execute only that exact currently approved proposal through the command executor.",
+      "limitations": [
+        "Source-only immutable proposal and concrete journal/HTTP execution composition; null production handler, source disabled, no runtime acceptance.",
+        "Raw arguments confer no actor, scope, capability, approval or current authority. Trusted metadata prepares exact command identity, idempotency key, scopes and required approver before review.",
+        "Execution rechecks current approval, capability, task identity, policy, source authority, budget and expiry. Lost acknowledgments remain indeterminate and never authorize retry, refund or duplicate mutation.",
+        "The actual shared Postgres budget owner and command journal are composed in source; real database, JWT/credentials, transport and native idempotency qualification remain pending.",
+        "Original public 0.1 contracts remain unchanged; task.update is a private 0.2 unconditional patch and offers no fabricated compare-and-swap protection."
+      ],
+      "positiveExamples": [
+        "Prepare and review the exact normalized command, then use its immutable proposal and original idempotency identity."
+      ],
+      "negativeExamples": [
+        "Execute raw model arguments directly, approve changed intent, infer source success from a lost acknowledgment, or retry an unknown mutation."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "capiro_commands",
+          "authority": "authoritative",
+          "purpose": "enumeration"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:commands:tool-interface:0.2.0#/$defs/TaskUpdateToolRequest",
+        "sha256": "7c394fc336eeb91435d38b57e45180af838fd898e33f0e0f8e34fe8dcf4e8842"
+      },
+      "outputSchema": {
+        "id": "urn:meri:commands:tool-interface:0.2.0#/$defs/TaskUpdateToolResult",
+        "sha256": "7c394fc336eeb91435d38b57e45180af838fd898e33f0e0f8e34fe8dcf4e8842"
+      },
+      "aliases": [],
+      "sideEffect": "source-command",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.update_task"
+      ]
+    },
+    {
+      "operation": {
+        "id": "save_memory",
+        "version": "0.2.0"
+      },
+      "displayName": "Propose governed memory",
+      "whenToUse": "Prepare immutable selected command intent for review, then execute only that exact currently approved proposal through the command executor.",
+      "limitations": [
+        "Source-only immutable proposal and concrete journal/HTTP execution composition; null production handler, source disabled, no runtime acceptance.",
+        "Raw arguments confer no actor, scope, capability, approval or current authority. Trusted metadata prepares exact command identity, idempotency key, scopes and required approver before review.",
+        "Execution rechecks current approval, capability, task identity, policy, source authority, budget and expiry. Lost acknowledgments remain indeterminate and never authorize retry, refund or duplicate mutation.",
+        "The actual shared Postgres budget owner and command journal are composed in source; real database, JWT/credentials, transport and native idempotency qualification remain pending.",
+        "Original public 0.1 contracts remain unchanged; task.update is a private 0.2 unconditional patch and offers no fabricated compare-and-swap protection.",
+        "Memory output is a pending source candidate, never an autocommitted memory. Personal scope remains unavailable because its observed producer route autocommits; no alternate store or fallback publication."
+      ],
+      "positiveExamples": [
+        "Prepare and review the exact normalized command, then use its immutable proposal and original idempotency identity."
+      ],
+      "negativeExamples": [
+        "Execute raw model arguments directly, approve changed intent, infer source success from a lost acknowledgment, or retry an unknown mutation."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "capiro_commands",
+          "authority": "authoritative",
+          "purpose": "enumeration"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:commands:tool-interface:0.2.0#/$defs/MemoryProposeToolRequest",
+        "sha256": "7c394fc336eeb91435d38b57e45180af838fd898e33f0e0f8e34fe8dcf4e8842"
+      },
+      "outputSchema": {
+        "id": "urn:meri:commands:tool-interface:0.2.0#/$defs/MemoryProposeToolResult",
+        "sha256": "7c394fc336eeb91435d38b57e45180af838fd898e33f0e0f8e34fe8dcf4e8842"
+      },
+      "aliases": [],
+      "sideEffect": "proposal",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.save_memory"
+      ]
+    },
+    {
+      "operation": {
+        "id": "save_chat_attachments",
+        "version": "0.2.0"
+      },
+      "displayName": "File exact approved artifact versions",
+      "whenToUse": "Prepare immutable selected command intent for review, then execute only that exact currently approved proposal through the command executor.",
+      "limitations": [
+        "Source-only immutable proposal and concrete journal/HTTP execution composition; null production handler, source disabled, no runtime acceptance.",
+        "Raw arguments confer no actor, scope, capability, approval or current authority. Trusted metadata prepares exact command identity, idempotency key, scopes and required approver before review.",
+        "Execution rechecks current approval, capability, task identity, policy, source authority, budget and expiry. Lost acknowledgments remain indeterminate and never authorize retry, refund or duplicate mutation.",
+        "The actual shared Postgres budget owner and command journal are composed in source; real database, JWT/credentials, transport and native idempotency qualification remain pending.",
+        "Original public 0.1 contracts remain unchanged; task.update is a private 0.2 unconditional patch and offers no fabricated compare-and-swap protection.",
+        "Exact object/version/hash/bytes/scopes and current attachment broker correlation are required. Per-file partial outcomes and extraction warnings remain explicit; no invented native transaction ID."
+      ],
+      "positiveExamples": [
+        "Prepare and review the exact normalized command, then use its immutable proposal and original idempotency identity."
+      ],
+      "negativeExamples": [
+        "Execute raw model arguments directly, approve changed intent, infer source success from a lost acknowledgment, or retry an unknown mutation."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "capiro_commands",
+          "authority": "authoritative",
+          "purpose": "enumeration"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:commands:tool-interface:0.2.0#/$defs/ArtifactFileToolRequest",
+        "sha256": "7c394fc336eeb91435d38b57e45180af838fd898e33f0e0f8e34fe8dcf4e8842"
+      },
+      "outputSchema": {
+        "id": "urn:meri:commands:tool-interface:0.2.0#/$defs/ArtifactFileToolResult",
+        "sha256": "7c394fc336eeb91435d38b57e45180af838fd898e33f0e0f8e34fe8dcf4e8842"
+      },
+      "aliases": [],
+      "sideEffect": "source-command",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.save_chat_attachments"
       ]
     }
   ]

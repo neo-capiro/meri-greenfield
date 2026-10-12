@@ -84,7 +84,7 @@ function executionShape(group,name,value) {
   return value;
 }
 const executionToolValidators = createExecutionToolValidators({schemaShape:executionShape, validatePublicShape, canonicalSha256});
-export const {artifactValidators} = executionToolValidators;
+export const {artifactValidators,commandToolValidators} = executionToolValidators;
 const fail = message => { throw new Error(message); };
 const key = operation => `${operation.id}@${operation.version}`;
 function unique(values, label) {

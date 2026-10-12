@@ -1,0 +1,9 @@
+{
+  "path": "/workspace/meri-read-continuation-20261012/node_modules/aws-cdk-lib",
+  "packageManifestSha256": "0d52a9f827fd09cde3e17e9de00aff11d1e6bbbf7d93ea498d44673153e7608f",
+  "package": "aws-cdk-lib",
+  "version": "2.273.0",
+  "scope": "Unused untracked infrastructure build dependency in closed root read-continuation worktree; no cloud builds authorized; source, lockfiles, logs and all contract dependencies preserved.",
+  "freeBefore": 2908160,
+  "freeAfter": 166649856
+}

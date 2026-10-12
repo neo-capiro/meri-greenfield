@@ -4,6 +4,7 @@ import Ajv from 'ajv/dist/2020.js';
 import addFormats from 'ajv-formats';
 import {validateShape as validatePublicShape, canonicalSha256} from '../validate.mjs';
 import {snapshotOperationData} from '../retrieval-0.2/operation-contracts.mjs';
+import {createTaskUpdateValidators} from './task-update-validation.mjs';
 import {createTaskCreateValidators} from './task-create-validation.mjs';
 import {createArtifactFileValidators} from './artifact-file-validation.mjs';
 import {createMemoryProposeValidators} from './memory-propose-validation.mjs';
@@ -13,7 +14,7 @@ const ajv = new Ajv({strict: true, allErrors: true});
 addFormats(ajv);
 const readSchema = relative => JSON.parse(readFileSync(new URL(relative, import.meta.url)));
 ajv.addSchema(readSchema('../meri.schema.json'));
-const schemas = ['task-create', 'artifact-file', 'memory-propose'].map(group => readSchema(`./${group}.schema.json`));
+const schemas = ['task-create', 'task-update', 'artifact-file', 'memory-propose'].map(group => readSchema(`./${group}.schema.json`));
 for (const schema of schemas) ajv.addSchema(schema);
 const validators = new Map();
 for (const schema of schemas) {
@@ -39,3 +40,7 @@ export const {normalizeArtifactFileInput, assertArtifactFileCommand, assertArtif
   assertArtifactFileReceipt, assertArtifactFileVersion} = createArtifactFileValidators(dependencies);
 export const {normalizeMemoryProposeInput, assertMemoryProposeCommand, assertMemoryProposeResult} =
   createMemoryProposeValidators(dependencies);
+
+export const taskUpdateValidators = createTaskUpdateValidators(dependencies);
+export const {normalizeTaskUpdateInput, assertTaskUpdateCommand, assertTaskUpdateProposal,
+  assertTaskUpdateExecution, assertTaskUpdateResult} = taskUpdateValidators;
