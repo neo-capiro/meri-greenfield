@@ -22,6 +22,7 @@ export function createResearchLegalNewsValidators({validateShape,schema}){
  function selection(id,request,options){
   operation(id);const raw=validateResearchLegalNewsShape('ResearchLegalNewsRequest',request),ctx=validateResearchLegalNewsShape('ResearchLegalNewsContext',options);
   const view=['source','personnel','monitors'].includes(raw.view)?raw.view:'news';
+  if(view==='monitors'?ctx.owner===null:ctx.owner!==null)fail('Private owner fact belongs only to monitor rows');
   const selected=raw.clientId?.trim().slice(0,80).trim()||null,r=ctx.clientResolution;
   let client=null;
   // The wrapper resolves client before the monitors route discards its body.

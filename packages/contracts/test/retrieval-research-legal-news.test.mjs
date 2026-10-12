@@ -10,7 +10,7 @@ const validators=new Map(Object.keys(schema.$defs).map(n=>[n,ajv.compile({$ref:`
 const v=createResearchLegalNewsValidators({schema,validateShape(n,x){const check=validators.get(n);if(!check?.(x))throw Error(ajv.errorsText(check?.errors));}});
 const ID='search_legiwatch_news',at='2026-10-12T12:00:00.000Z',client='00000000-0000-0000-0000-000000000001';
 const scope=()=>({jurisdiction:'FL',sessionKey:'',folderId:null,clientId:null});
-const ctx=(view='news')=>({clientResolution:null,effectiveScope:view==='monitors'?null:scope(),windowAsOf:view==='news'?at:null,defaultYear:view==='personnel'?2026:null,owner:{tenantId:'tenant',clerkUserId:'actor'}});
+const ctx=(view='news')=>({clientResolution:null,effectiveScope:view==='monitors'?null:scope(),windowAsOf:view==='news'?at:null,defaultYear:view==='personnel'?2026:null,owner:view==='monitors'?{tenantId:'tenant',clerkUserId:'actor'}:null});
 const normal=(raw={},c=ctx())=>v.normalizeResearchLegalNewsInput(ID,raw,c);
 const outer=result=>({tool:ID,generatedAt:at,result,authority:schema.$defs.ResearchLegalNewsOutput.properties.authority.const});
 const article=(id='article')=>({id,article_id:'source-article-'+id,revision:'r',provider:'provider',provider_id:null,original_url:'opaque',canonical_url:'opaque',publisher:'Other publisher',author:null,provider_parsed_at:null,title:'Title',summary:null,body:null,body_complete:false,language:null,publisher_country:null,article_geography:null,published_at:null,publication_precision:'opaque',observed_at:at,source_url:'opaque',rights:'headline_link',is_current:true,saved:false,tracking_version:null});
@@ -63,3 +63,5 @@ test('exact budget/performance source aliases retain stage and payload text sema
 test('inert requests and source rows reject accessors before hooks',()=>{let calls=0;const raw={get q(){calls++;return 'x';}};assert.throws(()=>normal(raw));const p=page();p.result.extra=NaN;assert.throws(()=>check(p));assert.equal(calls,0);});
 test('frozen normalization and detached output preserve caller ownership',()=>{const n=normal();assert.ok(Object.isFrozen(n.input.scope));const p=page();p.result.items=[article()];const out=check(p);out.result.items[0].title='changed';assert.equal(p.result.items[0].title,'Title');});
 test('ambient time is never read by news or personnel',()=>{const saved=Date.now;Date.now=()=>{throw Error('ambient');};try{check(page());check(personnel(),{view:'personnel'},ctx('personnel'));}finally{Date.now=saved;}});
+
+test('private owner fact is mandatory only for monitor rows and refused elsewhere',()=>{const c=ctx('monitors');c.owner=null;assert.throws(()=>normal({view:'monitors'},c));const n=ctx();n.owner={tenantId:'tenant',clerkUserId:'actor'};assert.throws(()=>normal({},n));});

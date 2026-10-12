@@ -68,31 +68,55 @@
           ]
         },
         "limit": {
-          "type": [
-            "number",
-            "string",
-            "null"
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
           ]
         },
         "offset": {
-          "type": [
-            "number",
-            "string",
-            "null"
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
           ]
         },
         "days": {
-          "type": [
-            "number",
-            "string",
-            "null"
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
           ]
         },
         "year": {
-          "type": [
-            "number",
-            "string",
-            "null"
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
           ]
         }
       },
@@ -170,21 +194,28 @@
           ]
         },
         "owner": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "tenantId": {
-              "type": "string",
-              "minLength": 1
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "tenantId": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "clerkUserId": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "tenantId",
+                "clerkUserId"
+              ]
             },
-            "clerkUserId": {
-              "type": "string",
-              "minLength": 1
+            {
+              "type": "null"
             }
-          },
-          "required": [
-            "tenantId",
-            "clerkUserId"
           ]
         }
       },

@@ -1,0 +1,8 @@
+{
+  "initialSource":"0dcb6ae5c16566ae53abedff3a1b5c0aca9fe309",
+  "failure":"Strict Ajv rejected number|string|null type arrays before author test cases ran.",
+  "repair":"Equivalent anyOf alternatives; strict Ajv remains enabled.",
+  "contextClarification":"Root approved exact private owner row correlation and requested irrelevant contexts refused. owner is required nonnull only for monitors, null otherwise; only the test context fixture changed and an additional refusal test was appended.",
+  "originalTestsPreservedAt":"0dcb6ae5c16566ae53abedff3a1b5c0aca9fe309",
+  "rawFailure":"news-focused-first/"
+}
