@@ -163,6 +163,24 @@
         }
       ],
       "unchanged": true
+    },
+    {
+      "path": "apps/api/prisma/migrations/20260519015221_add_engagement_campaigns/migration.sql",
+      "versions": [
+        {
+          "pin": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "570fab4a8ad61d80fea4d9e3712608b3c26d785f",
+          "bytes": 2477,
+          "sha256": "71184f478379922c99f65c0b23131c2e2c6b59a0289b9b97592202a01ccdae81"
+        },
+        {
+          "pin": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "570fab4a8ad61d80fea4d9e3712608b3c26d785f",
+          "bytes": 2477,
+          "sha256": "71184f478379922c99f65c0b23131c2e2c6b59a0289b9b97592202a01ccdae81"
+        }
+      ],
+      "unchanged": true
     }
   ],
   "scope": "SOURCE_METADATA_ONLY",
