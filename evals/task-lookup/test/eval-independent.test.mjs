@@ -1,4 +1,5 @@
 import test from 'node:test';
+import {createTaskLookupDelivery} from '../../../apps/control/task-lookup/delivery.mjs';
 import {createHash} from 'node:crypto';
 import assert from 'node:assert/strict';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
@@ -111,3 +112,14 @@ test('skipped outcome cannot conceal returned bytes or false absence claims',()=
 test('returned observation requires both distinct ordered authorization phases',()=>{fails(o=>o.authorization.pop());fails(o=>o.authorization[1].phase='before_read');fails(o=>o.authorization.reverse());});
 test('UI event ordering and distinct identity cannot be forged with shape-valid events',()=>{fails(o=>o.delivery.events[1].sequence=1);fails(o=>o.delivery.events[1].eventId=o.delivery.events[0].eventId);fails(o=>o.delivery.events.reverse());});
 test('optional exact replay pin is independent from semantic match',()=>{const f=evaluation(),input=structuredClone(f.frozen.input);input.cases[0].expected.replaySha256=digest('different exact replay');f.frozen=freeze(reseal(input));f.batch.run.corpusSha256=f.frozen.corpusSha256;f.o.caseSha256=f.frozen.casePins[0].caseSha256;const r=scored(f);assert.equal(r.counts.failed,1);assert.equal(r.counts.passed,0);});
+
+async function actualControlCapture(){
+ const f=evaluation(),state={record:null},authorization=[];let reading=false;
+ const ctx={lookupId:id(41),resultReference:id(43),requestId:id(44),binding:binding(),scopes:[scope()],selectedClientId:id(5),deliveryJson:JSON.stringify({context:{binding:binding()},producer:{namespace:'independent',executionId:'lookup'},deliveryId:'synthetic'}),slots:{started:{eventId:id(40),sequence:1},terminal:{eventId:id(42),sequence:2}},deadlineMs:Date.parse(at)+1000};
+ const ack=(b,status)=>({lookupId:b.context.lookupId,bindingSha256:b.bindingSha256,state:status});
+ const owner=createTaskLookupDelivery({clock:()=>Date.parse(at),gateway:{async executeOwned(){return JSON.stringify(f.o.read.observation);}},store:{async claim(b){return ack(b,'CLAIMED');},async markDispatching(b){return ack(b,'DISPATCHING');},async complete(b,r){state.record=r;return ack(b,'RESULT');},async recordError(b){return ack(b,'ERROR');},async read(){return state.record;}},authorize:async q=>{const receipt={authorized:true,bindingSha256:q.binding.bindingSha256,expiresAtMs:Date.parse(at)+1000};if(reading)authorization.push({phase:q.phase,binding:structuredClone(q.binding),receipt,observedAtMs:Date.parse(at)});return receipt;}});
+ f.o.delivery=await owner.lookup({request:{},context:ctx,credential:'synthetic-no-authority'});reading=true;
+ f.o.read=await owner.read({resultReference:ctx.resultReference,context:{currentBinding:{...binding(),attemptId:id(90),writerFence:2},scopes:[scope()],deadlineMs:Date.parse(at)+1000}});f.o.authorization=authorization;
+ return f;
+}
+test('actual control lookup/read callback observations score without invented DTOs',async()=>{const f=await actualControlCapture();assert.ok(f.o.authorization[1].binding.original.context);assert.equal(f.o.authorization[1].binding.original.request.operation.id,'actions.query');const r=scored(f);assert.equal(r.counts.passed,1,JSON.stringify(r.rows));});
