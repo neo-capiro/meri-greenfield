@@ -126,3 +126,23 @@ Run `npm run check:sdk-evidence` at the repository root after restoring the root
 contracts, worker and service locked dependencies. These are injected source
 tests. The two integrated PostgreSQL tests need the separately documented local
 database and synthetic certificates; an explicit skip does not qualify them.
+
+Handlers now refuse a pre-aborted request before any port, and recheck the
+signal and current request-context lifetime before and after awaited registry
+and object-store operations. Final response validation uses a fresh service
+clock after the last port. The historical producer remains lineage; an expired
+A capability does not block an otherwise valid current B load or verification.
+The canonical request/response validators remain unchanged, including stale
+authorization denial requirements.
+
+Cancellation does not undo a dispatched write or prove a parked port stopped.
+If publication reports an unknown COMMIT acknowledgement after cancellation or
+expiry, the same uncertainty is propagated without starting reconciliation.
+While active, the existing one-shot exact-identity reconciliation remains. An
+owner must supervise unfinished work and reconcile any issued transaction; no
+response success is released after observed cancellation or expiry. These
+source checks do not establish native process teardown or physical revocation.
+A failure, cancellation or expiry during the reconciliation read preserves the
+original `CommitUncertain`. Invalid/foreign readback preserves typed uncertainty
+with the existing `FIXTURE_SERVICE_REFUSED` code. Neither outcome is evidence
+that a dispatched publication rolled back or can be safely retried.

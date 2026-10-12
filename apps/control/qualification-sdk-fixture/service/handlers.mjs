@@ -3,7 +3,7 @@
 // the injected checkpoint store must perform immutable versioned object I/O.
 import { randomUUID } from 'node:crypto';
 import { canonicalSha256 } from '../../../../packages/contracts/validate.mjs';
-import { assertFixtureResponse, fixtureReceiptIdentity } from
+import { assertFixtureContext, assertFixtureResponse, fixtureReceiptIdentity } from
   '../../../../packages/contracts/qualification-sdk/validate.mjs';
 import { CommitUncertain } from '../state/errors.mjs';
 import { assertVerifiedReadback, sameIdentity } from '../state/receipt.mjs';
@@ -63,77 +63,112 @@ export function createFixtureServiceHandlers({ registry, checkpointStore,
     return reading;
   };
 
-  async function authorizeFixturePhase({ peer, context, producer, request }) {
+  // The request's current context governs this operation. The original producer
+  // remains historical lineage for a current B load/verify and may be expired.
+  function active(request, signal) {
+    if (signal?.aborted) fail();
+    assertFixtureContext(request.context, clock());
+  }
+
+  function release(request, response, producer, signal) {
+    active(request, signal);
+    return checkResponse(request, response, producer, clock());
+  }
+
+  async function authorizeFixturePhase({ peer, context, producer, request, signal }) {
+    active(request, signal);
     const decision = await registry.authorize({ presented: presentedBinding(request.context), peer });
+    active(request, signal);
     if (!Number.isSafeInteger(decision.checkedAtMs)) fail();
     const common = { decisionId: decisionId(), checkedAtMs: decision.checkedAtMs };
     if (decision.decision === 'AUTHORIZED') {
-      return checkResponse(request, envelope(request, 'AUTHORIZED', common), producer, clock());
+      return release(request, envelope(request, 'AUTHORIZED', common), producer, signal);
     }
     if (decision.decision !== 'DENIED_STALE_BINDING') fail();
     assertCurrentContext(context, decision.current, decision.checkedAtMs);
-    return checkResponse(request, envelope(request, 'DENIED_STALE_BINDING',
-      { ...common, currentContext: context }), producer, clock());
+    return release(request, envelope(request, 'DENIED_STALE_BINDING',
+      { ...common, currentContext: context }), producer, signal);
   }
 
   async function commitFixtureCheckpoint({ peer, producer, request, signal }) {
-    if (signal?.aborted) fail();
+    active(request, signal);
     const authorization = await registry.authorize({ presented: presentedBinding(producer), peer });
-    if (authorization.decision !== 'AUTHORIZED' || signal?.aborted) fail();
+    active(request, signal);
+    if (authorization.decision !== 'AUTHORIZED') fail();
     const stored = await checkpointStore.prepareCommit({ producer,
       bundle: request.bundle, fixtureFile: request.fixtureFile, evidence: request.evidence, signal });
-    if (!stored || !stored.receipt || !stored.readback || signal?.aborted) fail();
+    active(request, signal);
+    if (!stored || !stored.receipt || !stored.readback) fail();
     const response = envelope(request, 'COMMITTED', { completeRecoveryCheckpoint: false,
       sessionStoreQualified: false, receipt: stored.receipt });
     checkResponse(request, response, producer, clock());
-    if (signal?.aborted) fail();
+    active(request, signal);
     const identity = fixtureReceiptIdentity(stored.receipt);
     try {
       const result = await registry.publishCommit({ context: producer, peer,
         receipt: stored.receipt, readback: stored.readback });
+      active(request, signal);
       if (!['COMMITTED', 'ALREADY_COMMITTED'].includes(result.outcome) ||
           !sameIdentity(result.identity, identity)) fail();
     } catch (error) {
       if (!(error instanceof CommitUncertain)) throw error;
-      const observed = await registry.readPublication({ runUuid: producer.runUuid });
-      if (observed.outcome !== 'COMMITTED' || !sameIdentity(observed.identity, identity)) fail();
+      // Cancellation/expiry cannot undo an issued COMMIT. Keep its ambiguity,
+      // and leave reconciliation to the owner instead of starting another port.
+      let observed;
+      try {
+        active(request, signal);
+        observed = await registry.readPublication({ runUuid: producer.runUuid });
+        active(request, signal);
+      } catch { throw error; }
+      // An invalid/foreign readback also cannot resolve publication ambiguity.
+      // Keep the existing content-free refusal code without claiming rollback.
+      try {
+        if (observed.outcome !== 'COMMITTED' || !sameIdentity(observed.identity, identity)) fail();
+      } catch { throw new CommitUncertain('FIXTURE_SERVICE_REFUSED'); }
     }
-    return response;
+    return release(request, response, producer, signal);
   }
 
   async function readStored({ peer, context, producer, request, signal }) {
+    active(request, signal);
     const publication = await registry.loadCheckpoint({ context, peer,
       reference: request.reference });
+    active(request, signal);
     if (publication.outcome !== 'LOADED') fail();
-    const stored = checkPublication(await checkpointStore.load({ publication,
-      producer, current: context, signal }), publication, request.reference);
+    const loaded = await checkpointStore.load({ publication, producer, current: context, signal });
+    active(request, signal);
+    const stored = checkPublication(loaded, publication, request.reference);
     return { stored, publication };
   }
 
   async function loadFixtureCheckpoint(input) {
-    const { request, producer, context, peer } = input;
+    const { request, producer, context, peer, signal } = input;
     const { stored, publication } = await readStored(input);
     const response = checkResponse(request, envelope(request, 'LOADED', { completeRecoveryCheckpoint: false,
       sessionStoreQualified: false, receipt: stored.receipt, bundle: stored.bundle,
       fixtureFile: stored.fixtureFile }), producer, clock());
     // A replacement/revocation while the object bytes were being reread must
     // refuse before those bytes are sent on the worker connection.
+    active(request, signal);
     const current = await registry.loadCheckpoint({ context, peer, reference: request.reference });
+    active(request, signal);
     if (!same(publication, current)) fail();
-    return response;
+    return release(request, response, producer, signal);
   }
 
   async function verifyFixtureCheckpoint(input) {
-    const { request, producer, context, peer } = input;
+    const { request, producer, context, peer, signal } = input;
     const { stored } = await readStored(input);
     const response = envelope(request, 'VERIFIED', { completeRecoveryCheckpoint: false,
       sessionStoreQualified: false, receipt: stored.receipt });
     checkResponse(request, response, producer, clock());
+    active(request, signal);
     const result = await registry.verifyCheckpoint({ context, peer, reference: request.reference,
       bundleSha256: canonicalSha256(request.bundle),
       workspaceSha256: stored.receipt.workspaceSha256 });
+    active(request, signal);
     if (result.outcome !== 'VERIFIED' || !sameIdentity(result, request.reference)) fail();
-    return response;
+    return release(request, response, producer, signal);
   }
 
   return Object.freeze({ authorizeFixturePhase, commitFixtureCheckpoint,

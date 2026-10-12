@@ -1,0 +1,32 @@
+
+> @capiro/meri-contracts@0.1.0 check
+> npm run check:generated && npm run typecheck && npm run test:public
+
+
+> @capiro/meri-contracts@0.1.0 check:generated
+> node generate.mjs --check
+
+{"schema":"meri-contract-distribution/1","check":true,"records":[{"path":"browser.mjs","bytes":466002,"sha256":"3682cd96d10c1cc53f4e4a91845c6da514eda9d524ce8342b89e09ffcc19ae83"},{"path":"contracts.d.ts","bytes":4090,"sha256":"e0366e2f5a668e9e14f09e90c175dce53cbec176125aa98a58c878b44fd74fbd"},{"path":"index.d.ts","bytes":85,"sha256":"b1d45e99574c3834d70354fd973298b5a9b4e76befc11d6e2996c51c70266642"},{"path":"browser.d.ts","bytes":166,"sha256":"638d76071540b340cc8bd7efd728e3847cb22456dc8ec45d8733497792a0ba30"},{"path":"metadata.mjs","bytes":533,"sha256":"63a4733b40a9671dbca69419d12cae894adca42a9f2ced83cd729ce239e1ef94"},{"path":"metadata.d.ts","bytes":485,"sha256":"63e058d979f30b9807ed9a7c5df2760c06a180bd903ff13daa9c96bfcba78087"}]}
+
+> @capiro/meri-contracts@0.1.0 typecheck
+> tsc --noEmit --strict --skipLibCheck --target ES2022 --module NodeNext --moduleResolution NodeNext test/public-types.ts
+
+
+> @capiro/meri-contracts@0.1.0 test:public
+> node --test test/public-package.test.mjs
+
+✔ all ten frozen variants agree through deliberate browser and Node exports (22.979389ms)
+✔ closed fields, dates, scopes, payloads and safe integer bounds retain strict rejection (4.308513ms)
+✔ structural validation deliberately grants no tenant authorization (0.36009ms)
+✔ public metadata binds the exact unchanged schema and cannot mutate its vocabulary (0.74653ms)
+✔ generated browser ESM evaluates without Node globals, builtins or external imports (45.873188ms)
+✔ generator help and invalid arguments exit before generation (101.606011ms)
+✔ generated distribution check is independent of caller working directory (817.64701ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1305.323436

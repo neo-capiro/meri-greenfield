@@ -1,0 +1,26 @@
+✔ pre-aborted authorizeFixturePhase does not start any port (3.397495ms)
+✔ pre-aborted commitFixtureCheckpoint does not start any port (0.877949ms)
+✔ pre-aborted loadFixtureCheckpoint does not start any port (0.727513ms)
+✔ pre-aborted verifyFixtureCheckpoint does not start any port (0.718109ms)
+✔ cancelled authorizeFixturePhase final response is refused (2.539084ms)
+✔ cancelled commitFixtureCheckpoint final response is refused (10.797613ms)
+✔ cancelled loadFixtureCheckpoint final response is refused (4.060951ms)
+✔ cancelled verifyFixtureCheckpoint final response is refused (3.337695ms)
+✔ expiry after object preparation prevents publication (0.894935ms)
+✔ abort during late ambiguous publish propagates ambiguity without starting reconciliation (2.876251ms)
+✔ expiry during ambiguity readback refuses a successful response (2.538144ms)
+✔ expired historical A does not block current B load or verification (7.016842ms)
+✔ fixed handlers correlate committed A receipt and loaded/verified B bytes (27.892577ms)
+✔ a lost publication acknowledgement is reconciled to the exact receipt once (4.074241ms)
+✔ substituted stored publication bytes and uncertain foreign receipts refuse (4.974363ms)
+✔ a stale A commit is refused before object preparation (0.629296ms)
+✔ a disconnected commit leaves prepared objects uncommitted (0.824859ms)
+✔ a B grant revoked during object read refuses before returning loaded bytes (1.973846ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 468.872882

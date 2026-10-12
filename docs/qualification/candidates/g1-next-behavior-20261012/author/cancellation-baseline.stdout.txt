@@ -1,0 +1,147 @@
+✖ pre-aborted authorizeFixturePhase does not start any port (7.131386ms)
+✔ pre-aborted commitFixtureCheckpoint does not start any port (1.787436ms)
+✖ pre-aborted loadFixtureCheckpoint does not start any port (10.394258ms)
+✖ pre-aborted verifyFixtureCheckpoint does not start any port (3.84711ms)
+✖ cancelled authorizeFixturePhase final response is refused (0.999521ms)
+✖ cancelled commitFixtureCheckpoint final response is refused (3.087028ms)
+✖ cancelled loadFixtureCheckpoint final response is refused (1.916249ms)
+✖ cancelled verifyFixtureCheckpoint final response is refused (2.296932ms)
+✔ expiry after object preparation prevents publication (0.991329ms)
+✖ abort during late ambiguous publish propagates ambiguity without starting reconciliation (2.682761ms)
+✖ expiry during ambiguity readback refuses a successful response (2.289099ms)
+✔ expired historical A does not block current B load or verification (3.706309ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 3
+ℹ fail 9
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 432.860339
+
+✖ failing tests:
+
+test at apps/control/qualification-sdk-fixture/service/test/cancellation.test.mjs:32:37
+✖ pre-aborted authorizeFixturePhase does not start any port (7.131386ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-20261012/apps/control/qualification-sdk-fixture/service/test/cancellation.test.mjs:33:44)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualification-sdk-fixture/service/test/cancellation.test.mjs:32:37
+✖ pre-aborted loadFixtureCheckpoint does not start any port (10.394258ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-20261012/apps/control/qualification-sdk-fixture/service/test/cancellation.test.mjs:33:44)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualification-sdk-fixture/service/test/cancellation.test.mjs:32:37
+✖ pre-aborted verifyFixtureCheckpoint does not start any port (3.84711ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-20261012/apps/control/qualification-sdk-fixture/service/test/cancellation.test.mjs:33:44)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualification-sdk-fixture/service/test/cancellation.test.mjs:38:43
+✖ cancelled authorizeFixturePhase final response is refused (0.999521ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-20261012/apps/control/qualification-sdk-fixture/service/test/cancellation.test.mjs:43:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualification-sdk-fixture/service/test/cancellation.test.mjs:38:43
+✖ cancelled commitFixtureCheckpoint final response is refused (3.087028ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-20261012/apps/control/qualification-sdk-fixture/service/test/cancellation.test.mjs:43:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualification-sdk-fixture/service/test/cancellation.test.mjs:38:43
+✖ cancelled loadFixtureCheckpoint final response is refused (1.916249ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-20261012/apps/control/qualification-sdk-fixture/service/test/cancellation.test.mjs:43:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualification-sdk-fixture/service/test/cancellation.test.mjs:38:43
+✖ cancelled verifyFixtureCheckpoint final response is refused (2.296932ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-20261012/apps/control/qualification-sdk-fixture/service/test/cancellation.test.mjs:43:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualification-sdk-fixture/service/test/cancellation.test.mjs:50:1
+✖ abort during late ambiguous publish propagates ambiguity without starting reconciliation (2.682761ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-20261012/apps/control/qualification-sdk-fixture/service/test/cancellation.test.mjs:53:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualification-sdk-fixture/service/test/cancellation.test.mjs:56:1
+✖ expiry during ambiguity readback refuses a successful response (2.289099ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-20261012/apps/control/qualification-sdk-fixture/service/test/cancellation.test.mjs:61:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
