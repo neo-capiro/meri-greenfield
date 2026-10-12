@@ -96,9 +96,13 @@ owned process exit. Run relevant combined source, public distribution and
 preservation checks; no synthetic fixture closes a runtime gate.
 
 All descriptors remain unavailable with null handlers and pending qualification;
-source connectivity remains false. Memory approval conflict and Clio-versus-
-portfolio evidence scope remain explicit unresolved decisions. Do not introduce
-approval mutations or silently choose either consequential interpretation.
+source connectivity remains false. The approved memory administrator self-approval
+exception is settled by `docs/decisions/MEMORY-ADMIN-SELF-APPROVAL-20261012.md`
+and the existing private `memory-review-policy.mjs`; carry it forward without
+changing roles, current authorization or authority. PR24's contrary unresolved
+wording was stale and is corrected in this successor. Clio-versus-portfolio
+evidence scope remains unresolved. Do not introduce approval mutations or
+silently change consequential interpretation.
 
 Reserve proxy, worker, runtime, infra, native qualification scripts and all
 frontend paths for their owners. The native owner's reported 33-case RC1 pass
