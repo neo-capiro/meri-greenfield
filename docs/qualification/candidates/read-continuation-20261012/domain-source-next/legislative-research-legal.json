@@ -1,0 +1,61 @@
+{
+  "basis": "fd8765ec01d292013758606204f2c9d886cd31c1; independently compared with observed4be13b0",
+  "status": "DISCOVERY_ONLY; no source acceptance or runtime admission",
+  "newBindings": 0,
+  "invariants": [
+    "Original139/selected96/deferred43 unchanged",
+    "Known HTTP/DB/logging/clock effects described, never run",
+    "Source evidence is not authorization, completeness, absence, or currentness proof",
+    "No private implementation bodies, registry SQL expressions or credentials retained"
+  ],
+  "operations": [
+    "search_legislative_research",
+    "get_legal_reference"
+  ],
+  "familyRecommendation": "Two cohesive validators sharing ResearchVersion/section/interpretation definitions; legal reference keeps reference/rules/versions variants. No legacy query parser import.",
+  "source": "ResearchService28-205,228-482 + shared legislative-research/query DTOs + legal DDL",
+  "scope": "jurisdiction two uppercase letters defaultFL; sessionKey<=60 defaultempty; folder/client truthy values checked strings<=100. Existing current folder/client/member/wall checks apply; actor context is not model data.",
+  "search": {
+    "selectors": {
+      "query": "string or empty, shared grammar supports bounded AST; malformed/unsupported compiled query throws review-required",
+      "sessionKey": "required nonempty",
+      "versionPolicy": "any_retained default|current_extractions|newest_dated_text",
+      "versionStage": "all default|enrolled|chaptered",
+      "kind": "all default|text|amendment|supplement",
+      "billIds": "optional nonempty array<=30 of strings<=180; dedup then sort",
+      "title/sponsor/chamber/action": "String defaultempty each<=160",
+      "referenceId": "optional selector narrows related occurrences",
+      "cursor": "opaque base64url JSON bound to scope/query/policy/filters/bills/reference + tenant/clerk and source+metadata fingerprint"
+    },
+    "output": "scope,items,interpretedQuery nullable,versionPolicy,searchedKinds,scanned,cursor nullable,coverage,message",
+    "item": "ResearchVersion without sections + title nullable,billTitle,billIdentifier,sponsor/chamber/lastAction/versionType nullable,isCurrent boolean,excerpt,evaluation nullable",
+    "ResearchVersion": "id,billId,jurisdiction,sessionKey,revision,contentHash,extractorVersion,kind strings; sourceUrl/publishedDate nullable strings; observedAt ISO; complete boolean. contentHash fallbackempty/extractorVersion fallbackunknown. DTO string declarations do not strengthen nullable raw JSON extraction automatically.",
+    "complete": "Per-document complete only complete_document + extracted + nonempty valid sections with no discarded sections. Per-search coverage is separate.",
+    "pagination": "Fetch26, scan first25, filter by text evaluation afterward. scanned<=25 may exceed returned. Cursor after25th fetched scanned row if26 exists, even returned0. Do not use returned count or coverage.complete as cursor completion.",
+    "coverage": "Qualified explicit bill inventory requires receipt manifest billDocumentCorpusComplete plus exact source and inventory fingerprints; receipt.complete is not checked by this expression. coverage.complete=qualified && !referenceId; retainedVersionsOnly=!qualified; reference classification remains unqualified. Qualified message can coexist with reference-specific incomplete coverage.",
+    "excerpt": "UTF16 start/end/quote; default first280 when no evaluation evidence. Shared evaluation evidence includes expression; default excerpt does not.",
+    "cursorTruth": "DTO cannot prove current fingerprint or tenant/clerk binding. New trusted retained-page/source receipt prerequisite needed for source validator correlation; no client-supplied fingerprint counts as authority."
+  },
+  "legal": {
+    "viewVersions": "billId string plus nonempty sessionKey; fetch201 then output<=200 versions, sections omitted; title nullable/isCurrent; complete=not201st row and order source_identity_not_legislative_sequence. Per-version extraction complete distinct.",
+    "viewRules": "ruleNumber<=60/noticeId<=100; rows<=101 selected notice revisions, adopted<=10 only when ruleNumber; opaque payload/sections/coverage JSON; fixed incomplete selected-notices coverage.",
+    "viewDefault": "citation String<=180; parsed Florida statute/constitution identity, explicit referenceId overrides; edition null for constitution or default, otherwise20xx; rows<=101 unsliced and related<=201; raw legal-reference base plus LEFT JOIN latest revision whose entire projected revision may be null; selected-ingested-only coveragefalse.",
+    "truth": "No current law/effect, universal legal classification or source corpus completeness. Proposed/cited/reenacted relationships stay distinct; exact parsed citation identity needs separately reviewed declarative identity adapter, not copied parser."
+  },
+  "acceptanceControls": [
+    "All3 legal views and legal left-join nulls",
+    "201vs200 versions;101rows and201related",
+    "Zero returned with positive scanned and next cursor",
+    "Changed scope/binding/source or metadata fingerprint rejects replay",
+    "referenceId coveragefalse even qualifiedinventory",
+    "No hash grammar beyond proven writers",
+    "Raw opaque sections vs typed projected sections distinction",
+    "No copied parser, SQL, service calls or live currentness claim"
+  ],
+  "remainingAuthorshipWork": [
+    "Finish formal field enumeration of legal raw joins from pinned DDL; no missing DTO claim",
+    "Choose bounded cursor/interpretation context using existing Meri retained-page conventions",
+    "Inspect complete shared parse citation grammar before exact result-key correlation",
+    "Canonical ISO transport narrowing must be disclosed, not inferred from unrestricted source text dates"
+  ]
+}

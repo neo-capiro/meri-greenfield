@@ -1,0 +1,117 @@
+{
+  "basis": "fd8765ec01d292013758606204f2c9d886cd31c1; independently compared with observed4be13b0",
+  "status": "DISCOVERY_ONLY; no source acceptance or runtime admission",
+  "newBindings": 0,
+  "invariants": [
+    "Original139/selected96/deferred43 unchanged",
+    "Known HTTP/DB/logging/clock effects described, never run",
+    "Source evidence is not authorization, completeness, absence, or currentness proof",
+    "No private implementation bodies, registry SQL expressions or credentials retained"
+  ],
+  "operations": [
+    "search_legiwatch_news",
+    "get_florida_budget_project"
+  ],
+  "familyRecommendation": "Separate news/personnel/monitor and Florida fiscal family modules; share only proportionate envelope/scope/schema definitions when allocated. Do not collapse to default news view.",
+  "wrapper": {
+    "request": "clientId optional trimmed/capped80 resolved by current visibility; tenant/clerk actor and tool supplied by trusted caller",
+    "response": [
+      "tool",
+      "generatedAt canonical timestamp",
+      "result: branch-specific downstream projection",
+      "authority: compatibility prose, never authority grant"
+    ],
+    "errors": "Secret/actor unavailable; invalid/current client visibility; non-OK downstream causes scoped exception; no fabricated success/refusal envelope.",
+    "executionPrerequisites": [
+      "existing active request check",
+      "existing internal service guard",
+      "feature enabled for lane",
+      "active tenant membership",
+      "current folder/client scope and RLS actor",
+      "source access remains unavailable in Meri"
+    ]
+  },
+  "scope": {
+    "fields": {
+      "jurisdiction": "literal FL in phase8",
+      "sessionKey": "String(input??empty); phase8 itself has no cap",
+      "folderId": "string<=100 or null; truthy normalization",
+      "clientId": "string<=100 or null; folder may establish effective client"
+    },
+    "policy": "Phase8 checks requested/folder client mismatch then uses folder client; research context checks client current member/tenant/not archived/memory wall. Proposed trusted effective scope must not be inferred from model echo."
+  },
+  "news": {
+    "selectors": {
+      "view": "default branch unless source/personnel/monitors",
+      "limit": "Number/trunc/clamp1..100 default50",
+      "offset": "Number default0; integer0..10000",
+      "days": "Number default7; exactly1/3/7/14",
+      "q": "String then first500 UTF16",
+      "publisher": "String, no producer cap",
+      "monitorId": "optional truthy selector; exact tenant+owner lookup"
+    },
+    "result": {
+      "scope": "effective scope",
+      "matchDefinition": "null or id/version/query/fields/interpretation from owned monitor",
+      "items": "up to limit raw current news observations plus saved:boolean, tracking_version:integer|null",
+      "nextOffset": "offset+limit if fetch has extra row, else null",
+      "window": "since canonical ISO and days",
+      "coverage": "all configured coverage rows extended with intake and retained aggregates",
+      "coverageMessage": "existing explicit positive-only/coverage caveat"
+    },
+    "clock": "since computed from own Date.now. Propose trusted observationWindowStart/asOf fact; generatedAt is later and cannot prove exact equality.",
+    "coverage": "Configured availability, per-endpoint intake status, and retained article observations remain distinct. Newer failure remains authoritative despite older successes/articles. Intake complete=false alone is not failure. Empty result never proves absence."
+  },
+  "sourceView": {
+    "selector": "view=source; kind news/budget/personnel/research and id string1..200; kind selects exact stored revision lookup",
+    "branches": {
+      "news": "raw observation plus SourceRow aliases; body_complete governs complete",
+      "budget": "raw document plus joined section text and stage authority",
+      "personnel": "raw observation plus payload.sourceText-or-empty; complete:true is this projection, not corpus completeness",
+      "research": "ResearchVersion-derived exact text/sections, empty sourceUrl fallback; no raw news/personnel fields"
+    },
+    "limits": "Unsupported kinds and missing row throw. Outer feature lane is budget only for kind budget, otherwise news. Preserve rather than invent broader research authorization."
+  },
+  "personnelView": {
+    "selectors": "kind change|registration defaultchange; year Number(default local-calendar current year); branch empty|legislative|executive; q first200; offset truncate/nonnegative<=10000",
+    "result": "items<=100 raw latest personnel observations plus saved/tracking_version; nextOffset; year; notice. No scope field.",
+    "clock": "Current-year default is local calendar getFullYear, not UTC. Recommend trusted defaultYear rather than silently reinterpret timezone.",
+    "truth": "Registration withdrawal is not employment termination; unresolved identities stay unmerged."
+  },
+  "monitorsView": {
+    "selectors": "input otherwise ignored; default empty scope",
+    "result": "monitors array of exact tenant+owner rows whose per-config scopes remain visible; each adds full compileNewsQuery interpretation object",
+    "limits": "No producer cap/total. NotFound/Forbidden scoped monitors filtered; no all-tenant completeness. Stored source/config/pending_window remain opaque inert JSON.",
+    "privateProjection": "Owner/tenant/source configuration identifiers are private actor-scoped data, not public news."
+  },
+  "floridaBudget": {
+    "selectors": "q first200; fiscalYear default2026-27 matches20xx-xx without consecutive-year guarantee; projectId String; integer offset0..10000",
+    "result": {
+      "scope": "effective scope",
+      "fiscalYear": "effective selector",
+      "projects": "<=100 raw project rows plus recentAmounts<=4 per project",
+      "nextOffset": "offset+100 only extra101st project",
+      "documents": "up to101 selected fields, not truncated to100",
+      "amounts": "if projectId, up to501 id/observation pairs; else empty",
+      "events": "up to101 event rows plus document title/source_url/stage/fiscal_year",
+      "notice": "request/chamber alternatives do not establish awarded amounts"
+    },
+    "opaque": "Project identities/relations/evidence; document metadata; event payload; amount observation are JSONB. BudgetAmount imported type explains source meaning but DB does not force every JSON row into that DTO. Do not impose guaranteed BudgetAmount fields on arbitrary persisted observation without ingestion proof.",
+    "money": "BudgetAmount uses exact decimal minorUnits string|null; basis recurring/nonrecurring/total; measure money/positions/percentage; amount/blank/omitted/embedded/unpublished; stage/chamber/offer/role and qualified distinct. Do not sum stages or conflate allocation_amount/vetoed_amount."
+  },
+  "scalarClosure": "Exact public/private DDL paths pinned in reference-identities; legal/research section metadata in separate family. Raw database timestamps serialize at transport, nullable columns remain nullable; no inferred UUID, URL or hash lexical limits for text columns.",
+  "acceptanceControls": [
+    "Every view including monitors/source four kinds",
+    "Current scope/context substitution and absent guard refusal represented as execution gates",
+    "days/offset/limit and UTF16 edges",
+    "101/501/4 caps and no total inference",
+    "Publisher endpoint failure vs retained success",
+    "Nonobject opaque JSON admitted inertly without privacy guarantees",
+    "Clock inputs distinct from model request and generatedAt"
+  ],
+  "remainingAuthorshipWork": [
+    "Declare complete raw-column schemas from pinned DDL and joins, preserving nullable joins",
+    "Select trusted clock/defaultYear and effective scope receipt interface with root",
+    "Do not copy query parser/compiler; result interpretation can be bounded data, cannot establish parsed truth by itself"
+  ]
+}

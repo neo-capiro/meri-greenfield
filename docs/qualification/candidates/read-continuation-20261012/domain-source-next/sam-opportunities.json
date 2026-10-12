@@ -1,0 +1,84 @@
+{
+  "basis": "fd8765ec01d292013758606204f2c9d886cd31c1; independently compared with observed4be13b0",
+  "status": "DISCOVERY_ONLY; no source acceptance or runtime admission",
+  "newBindings": 0,
+  "invariants": [
+    "Original139/selected96/deferred43 unchanged",
+    "Known HTTP/DB/logging/clock effects described, never run",
+    "Source evidence is not authorization, completeness, absence, or currentness proof",
+    "No private implementation bodies, registry SQL expressions or credentials retained"
+  ],
+  "operations": [
+    "search_sam_opportunities"
+  ],
+  "familyRecommendation": "Small separate stored SAM family reusing established source-freshness/deadline definitions when structurallycompatible; do not remap existing fundingsearch as duplicate capability.",
+  "input": "query trimmed240; naics trimmed12; includeInactive optionalBoolean; limit clamp1..50 default20. Default active-only, NAICSprefix; query may match hidden description/agency/office/solicitation fields.",
+  "output": {
+    "tool": "literal search_sam_opportunities",
+    "generatedAt": "canonical asOf after search+freshness read",
+    "total": "separate database count, not equality with returned",
+    "results": "<=limit14selectedstoredfields; description overwritten with normalized whitespace UTF16<=300 excerpt incl...; optionaldeadline onlyenforce",
+    "fields": "id,noticeId,title,noticeType strings; solicitationNumber/agency/office/pscCode/naicsCode/sourceUrl nullable strings; postedDate/responseDeadline nullable timestamp; activeboolean; description projectedstring; no POC/private contact fields",
+    "sourceFreshness": "sam_gov rows only; 9statevocabulary; recordCount/activeRecordCount and date observations nullable; latestAttemptAt/lastSuccessAt optional nullable; adds countsUnavailable,neverSynced,lastRunStatus,lastRunDegraded,hoursSinceLastSuccess nullable",
+    "sourceStatus": "healthy|unknown|degraded computed from first SAMhealth record",
+    "sourceReason": "null|source_freshness_unavailable|all_federal_source_never_synced|source_freshness_unknown|latest_source_sync_incomplete|source_sync_stale",
+    "notes": "fixed synchronizedcatalog caveat plus incomplete/unknown coverage caveat iff reason"
+  },
+  "precedence": "No firstrow or null recordCount =>unavailable before otherbranches; null lastSyncedAt=>never_synced wording independent of state; invalid parsed timestamp=>unknown; state!=current=>incomplete; age>=48h=>stale; otherwisehealthy. Source neverSynced flag separately equals state==never_synced. Do not collapse these distinct facts.",
+  "clock": "Adapter hoursSinceLastSuccess uses its own Date.now (despite file-level generic no-clock comment); wrapper age uses another Date.now; generatedAt then later. Trusted asOf may support newly normalized Meri contract but source exactness needs documented observation interval/separate clock facts; do not demand exact hours from final generatedAt. Future timestamp clamps hours to0 and is not source-rejected as unhealthy.",
+  "deadline": "enforce only: at canonical timestamp/dateOnlyUTC/timeZonenull/basisexplicit_datetime for nonnullstoreddeadline; null=>allnull/basisunknown. daysRemaining ceil(delta/86400000), statusopen at equality, closed afterward, unknown null. Bound to final generatedAt.",
+  "policy": "Current tenant source enablement influences health; unavailable adapter/health failure returns unavailable source state. Search itself is stored globalcatalog; no live SAMfallback. Source reads/feature/currentactor execution unqualified.",
+  "acceptanceControls": [
+    "All freshness precedencebranches,48hexactboundary and future timestamp",
+    "Description whitespace/UTF16/surrogate boundaries",
+    "Count race and nullable storedfields",
+    "includeInactivefalse requires active but query does notrequiretitlecontains",
+    "No contactfields or livefallback",
+    "Separateclock observations; generatedAt bindsdeadline only",
+    "Mode off/shadow forbidenforcedeadline; enforce required perrow"
+  ],
+  "remainingAuthorshipWork": [
+    "Root allocate exact trusted clock/mode schema; suggested mode and trusted observation interval rather than decorativetimestamp",
+    "Pin actual enabled-sourcehealth adapter currentness semantics if strongerprovenance validation required"
+  ],
+  "proposedApi": {
+    "module": "packages/contracts/retrieval-0.2/sam-opportunities-validation.mjs",
+    "schema": "packages/contracts/retrieval-0.2/sam-opportunities.schema.json",
+    "test": "packages/contracts/test/retrieval-sam-opportunities.test.mjs",
+    "schemaId": "urn:meri:retrieval:sam-opportunities:0.2.0",
+    "factory": "createSamOpportunitiesValidators({validateShape,schema})",
+    "definitions": [
+      "SamOpportunitiesRequest",
+      "SamOpportunitiesResponse"
+    ],
+    "members": [
+      "normalizeSamOpportunitiesInput(input,context)",
+      "assertSamOpportunitiesResult(result,{request,...context})",
+      "classifySamOpportunitiesResult(result)"
+    ],
+    "contextKeysRecommended": [
+      "asOf",
+      "evidenceAccuracyMode",
+      "sourceStatusAsOf",
+      "sourceHealthAsOf"
+    ],
+    "clockContracts": {
+      "asOf": "Trusted final generatedAt and deadline calculation clock",
+      "sourceStatusAsOf": "Trusted exact wrapper age decision instant (48-hour branch)",
+      "sourceHealthAsOf": "Trusted exact SAM health age observation instant used by adapter"
+    },
+    "contextLimits": [
+      "Three canonical ISO clock inputs and trusted off|shadow|enforce mode, never model selectors",
+      "No new chronological ordering invariant: Date.now wall clock is not monotonic",
+      "No source visibility/identity/role permission inferred from any timestamp",
+      "Single-asOf alternative requires explicit normalized-producer convention; it is not exact legacy boundary equivalence"
+    ],
+    "inputNormalization": "Reuse canonical inert JSON snapshot. Preserve optionalString trim+UTF16cap, optionalBoolean and clampInt semantics or explicitly disclose approved stricter typed selectors. Return frozen effective request and digest, no ambient clock.",
+    "responseLimits": [
+      "Source health lastSyncedAt is declared string|null; wrapper explicitly handles invalid timestamps. Do not silently reject the source_freshness_unknown branch with an unjustified universal date-time format.",
+      "Adapter invalid lastSyncedAt can yield NaN hours, which JSON serialization turns null; finite/nonnegative hours are meaningful only when parsed time is finite.",
+      "Source adapter currently lacks injected clock receipt, so trusted observation capture/normalization is future adapter work; source binding stays unavailable.",
+      "SOURCE_ORDER emits one sam_gov source in normal health path, but wrapper explicitly has absent-source defensive outcome. Decide defensive empty-array admission explicitly; never claim count/absence."
+    ]
+  }
+}

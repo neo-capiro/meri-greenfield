@@ -1,0 +1,822 @@
+{
+  "tables": {
+    "legiwatch_news_observation": {
+      "source": "apps/api/prisma/migrations/20280914030000_legiwatch_news_fiscal/migration.sql",
+      "startLine": 2,
+      "columns": [
+        {
+          "field": "id",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "article_id",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "revision",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "provider",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "provider_id",
+          "type": "text",
+          "nullable": true
+        },
+        {
+          "field": "original_url",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "canonical_url",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "publisher",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "author",
+          "type": "text",
+          "nullable": true
+        },
+        {
+          "field": "provider_parsed_at",
+          "type": "timestamptz",
+          "nullable": true
+        },
+        {
+          "field": "title",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "summary",
+          "type": "text",
+          "nullable": true
+        },
+        {
+          "field": "body",
+          "type": "text",
+          "nullable": true
+        },
+        {
+          "field": "body_complete",
+          "type": "boolean",
+          "nullable": false
+        },
+        {
+          "field": "language",
+          "type": "text",
+          "nullable": true
+        },
+        {
+          "field": "publisher_country",
+          "type": "text",
+          "nullable": true
+        },
+        {
+          "field": "article_geography",
+          "type": "jsonb",
+          "nullable": false
+        },
+        {
+          "field": "published_at",
+          "type": "timestamptz",
+          "nullable": true
+        },
+        {
+          "field": "publication_precision",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "observed_at",
+          "type": "timestamptz",
+          "nullable": false
+        },
+        {
+          "field": "source_url",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "rights",
+          "type": "text",
+          "nullable": false
+        }
+      ]
+    },
+    "legiwatch_source_coverage": {
+      "source": "apps/api/prisma/migrations/20280914030000_legiwatch_news_fiscal/migration.sql",
+      "startLine": 17,
+      "columns": [
+        {
+          "field": "id",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "publisher",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "source_group",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "source_url",
+          "type": "text",
+          "nullable": true
+        },
+        {
+          "field": "status",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "evidence",
+          "type": "jsonb",
+          "nullable": false
+        },
+        {
+          "field": "owner",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "version",
+          "type": "integer",
+          "nullable": false
+        }
+      ]
+    },
+    "florida_budget_document": {
+      "source": "apps/api/prisma/migrations/20280914030000_legiwatch_news_fiscal/migration.sql",
+      "startLine": 22,
+      "columns": [
+        {
+          "field": "id",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "publisher",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "source_url",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "content_hash",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "title",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "fiscal_year",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "session_key",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "chamber",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "stage",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "role",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "offer",
+          "type": "text",
+          "nullable": true
+        },
+        {
+          "field": "publication_date",
+          "type": "text",
+          "nullable": true
+        },
+        {
+          "field": "observed_at",
+          "type": "timestamptz",
+          "nullable": false
+        },
+        {
+          "field": "receipt_id",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "sections",
+          "type": "jsonb",
+          "nullable": false
+        },
+        {
+          "field": "metadata",
+          "type": "jsonb",
+          "nullable": false
+        },
+        {
+          "field": "complete",
+          "type": "boolean",
+          "nullable": false
+        }
+      ]
+    },
+    "florida_budget_project": {
+      "source": "apps/api/prisma/migrations/20280914030000_legiwatch_news_fiscal/migration.sql",
+      "startLine": 31,
+      "columns": [
+        {
+          "field": "id",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "fiscal_year",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "title",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "agency",
+          "type": "text",
+          "nullable": true
+        },
+        {
+          "field": "identities",
+          "type": "jsonb",
+          "nullable": false
+        },
+        {
+          "field": "relations",
+          "type": "jsonb",
+          "nullable": false
+        },
+        {
+          "field": "evidence",
+          "type": "jsonb",
+          "nullable": false
+        }
+      ]
+    },
+    "florida_budget_amount": {
+      "source": "apps/api/prisma/migrations/20280914030000_legiwatch_news_fiscal/migration.sql",
+      "startLine": 35,
+      "columns": [
+        {
+          "field": "id",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "project_id",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "document_id",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "observation",
+          "type": "jsonb",
+          "nullable": false
+        },
+        {
+          "field": "observed_at",
+          "type": "timestamptz",
+          "nullable": false
+        }
+      ]
+    },
+    "florida_budget_event": {
+      "source": "apps/api/prisma/migrations/20280914030000_legiwatch_news_fiscal/migration.sql",
+      "startLine": 41,
+      "columns": [
+        {
+          "field": "id",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "project_id",
+          "type": "text",
+          "nullable": true
+        },
+        {
+          "field": "document_id",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "kind",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "payload",
+          "type": "jsonb",
+          "nullable": false
+        },
+        {
+          "field": "observed_at",
+          "type": "timestamptz",
+          "nullable": false
+        }
+      ]
+    },
+    "florida_personnel_observation": {
+      "source": "apps/api/prisma/migrations/20280914030000_legiwatch_news_fiscal/migration.sql",
+      "startLine": 47,
+      "columns": [
+        {
+          "field": "id",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "source_key",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "revision",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "kind",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "name",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "branch",
+          "type": "text",
+          "nullable": true
+        },
+        {
+          "field": "registration_year",
+          "type": "integer",
+          "nullable": true
+        },
+        {
+          "field": "firm",
+          "type": "text",
+          "nullable": true
+        },
+        {
+          "field": "principal",
+          "type": "text",
+          "nullable": true
+        },
+        {
+          "field": "old_role",
+          "type": "text",
+          "nullable": true
+        },
+        {
+          "field": "new_role",
+          "type": "text",
+          "nullable": true
+        },
+        {
+          "field": "announced_date",
+          "type": "text",
+          "nullable": true
+        },
+        {
+          "field": "effective_date",
+          "type": "text",
+          "nullable": true
+        },
+        {
+          "field": "withdrawal_date",
+          "type": "text",
+          "nullable": true
+        },
+        {
+          "field": "confirmation",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "canonical_person_id",
+          "type": "text",
+          "nullable": true
+        },
+        {
+          "field": "directory_url",
+          "type": "text",
+          "nullable": true
+        },
+        {
+          "field": "source_url",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "receipt_id",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "payload",
+          "type": "jsonb",
+          "nullable": false
+        },
+        {
+          "field": "observed_at",
+          "type": "timestamptz",
+          "nullable": false
+        }
+      ]
+    },
+    "legal_reference": {
+      "source": "apps/api/prisma/migrations/20280913030000_legiwatch_research_evidence/migration.sql",
+      "startLine": 7,
+      "columns": [
+        {
+          "field": "id",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "jurisdiction",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "code_kind",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "reference_kind",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "chapter",
+          "type": "text",
+          "nullable": true
+        },
+        {
+          "field": "section",
+          "type": "text",
+          "nullable": true
+        },
+        {
+          "field": "subdivisions",
+          "type": "jsonb",
+          "nullable": false
+        },
+        {
+          "field": "identity",
+          "type": "jsonb",
+          "nullable": false
+        },
+        {
+          "field": "created_at",
+          "type": "timestamptz",
+          "nullable": false
+        }
+      ]
+    },
+    "legal_text_revision": {
+      "source": "apps/api/prisma/migrations/20280913030000_legiwatch_research_evidence/migration.sql",
+      "startLine": 13,
+      "columns": [
+        {
+          "field": "id",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "reference_id",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "edition",
+          "type": "text",
+          "nullable": true
+        },
+        {
+          "field": "source_url",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "content_hash",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "extraction_hash",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "parser_version",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "title",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "sections",
+          "type": "jsonb",
+          "nullable": false
+        },
+        {
+          "field": "original_html",
+          "type": "text",
+          "nullable": true
+        },
+        {
+          "field": "original_bytes_base64",
+          "type": "text",
+          "nullable": true
+        },
+        {
+          "field": "source_dates",
+          "type": "jsonb",
+          "nullable": false
+        },
+        {
+          "field": "history_text",
+          "type": "text",
+          "nullable": true
+        },
+        {
+          "field": "complete",
+          "type": "boolean",
+          "nullable": false
+        },
+        {
+          "field": "coverage",
+          "type": "jsonb",
+          "nullable": false
+        },
+        {
+          "field": "observed_at",
+          "type": "timestamptz",
+          "nullable": false
+        }
+      ]
+    },
+    "rule_notice_revision": {
+      "source": "apps/api/prisma/migrations/20280913030000_legiwatch_research_evidence/migration.sql",
+      "startLine": 31,
+      "columns": [
+        {
+          "field": "id",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "notice_id",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "source_url",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "content_hash",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "parser_version",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "payload",
+          "type": "jsonb",
+          "nullable": false
+        },
+        {
+          "field": "original_html",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "observed_at",
+          "type": "timestamptz",
+          "nullable": false
+        }
+      ]
+    },
+    "legislative_legal_occurrence": {
+      "source": "apps/api/prisma/migrations/20280913030000_legiwatch_research_evidence/migration.sql",
+      "startLine": 50,
+      "columns": [
+        {
+          "field": "id",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "document_id",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "bill_id",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "jurisdiction",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "session_key",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "document_revision",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "reference_id",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "locator",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "start_offset",
+          "type": "integer",
+          "nullable": false
+        },
+        {
+          "field": "end_offset",
+          "type": "integer",
+          "nullable": false
+        },
+        {
+          "field": "quote",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "relation",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "basis",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "parser_version",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "observed_at",
+          "type": "timestamptz",
+          "nullable": false
+        }
+      ]
+    },
+    "intel_legiwatch_news_monitor": {
+      "source": "apps/intel-api/prisma/migrations/20260914030000_legiwatch_news_editorial/migration.sql",
+      "startLine": 1,
+      "columns": [
+        {
+          "field": "id",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "tenant_id",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "owner_clerk_id",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "source_key",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "source",
+          "type": "jsonb",
+          "nullable": false
+        },
+        {
+          "field": "config",
+          "type": "jsonb",
+          "nullable": false
+        },
+        {
+          "field": "version",
+          "type": "integer",
+          "nullable": false
+        },
+        {
+          "field": "state",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "field": "baseline_at",
+          "type": "timestamptz",
+          "nullable": true
+        },
+        {
+          "field": "checkpoint",
+          "type": "timestamptz",
+          "nullable": true
+        },
+        {
+          "field": "pending_window",
+          "type": "jsonb",
+          "nullable": true
+        },
+        {
+          "field": "last_attempt_at",
+          "type": "timestamptz",
+          "nullable": true
+        },
+        {
+          "field": "last_error",
+          "type": "text",
+          "nullable": true
+        },
+        {
+          "field": "created_at",
+          "type": "timestamptz",
+          "nullable": false
+        }
+      ]
+    }
+  },
+  "limits": [
+    "Pinned CREATE TABLE column metadata; targeted read-only git grep found no explicit ALTER TABLE for these12 names in API/Intel migrations (exit1 no matches). This static search is not proof of deployed schema or absence of dynamically generated migration changes.",
+    "News source view adds is_current:boolean. Source view never implies all revisions are current.",
+    "Computed saved boolean and tracking_version nullable integer are added by query projection.",
+    "Legal reference LEFT JOIN makes every selected revision field nullable even if stored NOT NULL."
+  ]
+}

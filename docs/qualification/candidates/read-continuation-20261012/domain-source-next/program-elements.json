@@ -1,0 +1,65 @@
+{
+  "basis": "fd8765ec01d292013758606204f2c9d886cd31c1; independently compared with observed4be13b0",
+  "status": "DISCOVERY_ONLY; no source acceptance or runtime admission",
+  "newBindings": 0,
+  "invariants": [
+    "Original139/selected96/deferred43 unchanged",
+    "Known HTTP/DB/logging/clock effects described, never run",
+    "Source evidence is not authorization, completeness, absence, or currentness proof",
+    "No private implementation bodies, registry SQL expressions or credentials retained"
+  ],
+  "operations": [
+    "search_program_elements",
+    "get_program_element",
+    "get_pe_budget_timeline"
+  ],
+  "familyRecommendation": "One funding-domain schema with separate finder/detail/timeline validators and cohesive claim helper. Keep stage vocabulary canonical, reuse accepted funding definitions if compatible; no service/model implementation port.",
+  "inputs": {
+    "search": "query then q trimmed240; service60; budgetActivity120; optionalBoolean hasData; limitclamp1..50 default20; pageclamp1..100 default1; wrapper does not expose markup-monitor/watched/lineType/capability/fy filters",
+    "detail/timeline": "required trimmed peCode<=32; actual storageVarChar16 does not justify rejecting longer selector before not-found path"
+  },
+  "contextProposal": [
+    "trusted evidenceAccuracyMode off|shadow|enforce; never model controlled",
+    "generatedAt as independent server observation if binding required",
+    "current tenant/user visibility and watch ownership remain execution prerequisites"
+  ],
+  "search": {
+    "output": "tool/generatedAt + data/total/page/limit",
+    "row": "Stored finder ListRow minus spark/latestCurrent/latestCurrentFy/latestCurrentStage/latestRequest/latestRequestFy/latestEnacted/latestEnactedFy/deltaPct; keeps requestAtEnactedFy,peCurrentCycleFy,existing four claims/comparable pair and signal fields; adds identifierKind,budgetExhibitType,currentFundingClaim,funding",
+    "truth": "Finder currentFundingClaim cycleClass unknown; separate existing currentClaim can carry PE cycle. Do not equate these distinct projections or remove residual numeric fields silently. Empty page total0 from first-row windowcount may not mean zero corpus.",
+    "funding": "USD millions, nullablecurrent/request/enacted; current stage label+vehicle; same-FY-only direction; enactedVsRequestPct from source; null marks notzero. No stage-less spark."
+  },
+  "detail": {
+    "output": "tool/generatedAt/identity/currentCycleFy/currentFundingClaim/programElement; lineage only enforce",
+    "programElement": "All ProgramElement stored scalars + all years orderedfy asc, fundingSummary,nullablebillCount,projectCount,sourceCount,currentCycleFy,currentUserIsWatching. years keep stored fields while adding/replacing fundingClaim.",
+    "currentness": "Watch read per request; detailcache shared PE key; cached value does not establish source freshness. Detail currentCycleFy is catalog mode of requests; fundingSummary cycle independently uses own marks.",
+    "storedNumbers": "Raw Prisma Decimal year fields survive spread; model helper converts finite values for claims. Need explicit decimal-to-wire contract from existing serialization evidence, not blanket number assumption.",
+    "failures": "Missing PE throws; materialized bill-count view failure is caught and billCount null; no invented complete refusal success."
+  },
+  "timeline": {
+    "output": "tool/generatedAt + peCode,title,service,appropriationType,budgetActivity,lineNumber,currentCycleFy,fundingSummary,years,milestones,identity,currentFundingClaim; lineage only enforce",
+    "year": "All stored year fields + cycle,current,currentStage,currentStageLabel,currentVehicle,currentDeltaVsRequestM,requestConflictValuesM,fundingClaim,missingMarks,predictedConferenceAmount/CiLow/CiHigh/Confidence nullable",
+    "semantics": "Authorization NDAA vs appropriations conference distinct. Zero marks present. Conflicting nonzero source observations suppress citable zero-request delta. Predicted amounts/CI are USD millions, not probability; confidence is separate. Forecast cached scalars are not automatically0..1 constrained by interface.",
+    "effects": "Conference predictor called persist=false; stored/cached statistical computation and source reads, no paid language-model claim. Not executed. Milestones include SQLDate nullable planned/actual dates; no chronology inference."
+  },
+  "claims": {
+    "required": "value number|null; fiscalYear integer|null; stage9vocabulary; stageLabel; legislativeVehicle7; cycleClass historical/current/outyear/unknown; isProjection; unit USD millions",
+    "mode": "legacy omits enactmentStatus/vehicleType/originalUnit/originalValue/source; enforce preserves/derives those and semantics string. Off/shadow use legacy output; shadow adds source comparisons/logging.",
+    "lineage": "accepted/candidates arrays relType/fromCode/toCode strings,status,nullabletransition FY,evidence opaqueJSON; not instruction to merge identities."
+  },
+  "acceptanceControls": [
+    "Off/shadow/enforce outputs and forbidden model-supplied mode",
+    "Zero vs null, NDAA vs appropriations, historical vs outyear, unknown currentcycle",
+    "Search strip list exactly with residual claims retained",
+    "Raw Decimal wire values vs numeric claims",
+    "Detail vs timeline cycle distinct; no fabricated equalities",
+    "Forecast amount is not probability; cached confidence schema honest",
+    "Current-user watching independent of cached public detail",
+    "No artificial list/years/milestone completeness caps"
+  ],
+  "remainingAuthorshipWork": [
+    "Pin budget-line classification helper and fundingSummary renderer grammar; referencedsharedindex alreadypinned but not all classification branches inspected",
+    "Read remaining missing-mark/helper output vocabulary and exact serializer wire before closing full schemas",
+    "Finish canonical mode context integration proposal; no feature policy decision invented"
+  ]
+}

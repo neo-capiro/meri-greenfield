@@ -1,0 +1,17 @@
+{
+  "failures": [
+    {
+      "phase": "local read-only metadata search",
+      "exitCode": null,
+      "stderr": "fatal: command line, 'model ProgramElement {': Unmatched \\{",
+      "resolution": "No source change. Subsequent bounded Python model-header lookup used escaped brace; source model metadata recovered.",
+      "receiptType": "Tool-output transcription, not a byte-captured subprocess receipt",
+      "commandDescription": "git grep -n -E \"model ProgramElement {\" fd8765ec01d292013758606204f2c9d886cd31c1 -- apps/api/prisma/schema.prisma (abbreviated search path list; pattern was executed through bounded Python subprocess)",
+      "exitCaptureLimit": "Individual grep exit was not retained; enclosing Python inspection exited0. Do not infer exact child exit from fatal stderr."
+    }
+  ],
+  "otherLimitations": [
+    "Initial sparse-worktree omitted evidence path was absent as expected; created only allocated new directory.",
+    "No private tests, source modules, SQL or provider operations were executed."
+  ]
+}

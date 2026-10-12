@@ -1,0 +1,50 @@
+{
+  "basis": "fd8765ec01d292013758606204f2c9d886cd31c1; independently compared with observed4be13b0",
+  "status": "DISCOVERY_ONLY; no source acceptance or runtime admission",
+  "newBindings": 0,
+  "invariants": [
+    "Original139/selected96/deferred43 unchanged",
+    "Known HTTP/DB/logging/clock effects described, never run",
+    "Source evidence is not authorization, completeness, absence, or currentness proof",
+    "No private implementation bodies, registry SQL expressions or credentials retained"
+  ],
+  "operations": [
+    "query_global_data"
+  ],
+  "familyRecommendation": "Typed query spec and row-result contract over accepted dataset metadata; no SQL parser/compiler copy. Separate control-owned execution/registry authority remains required.",
+  "request": {
+    "dataset": "required nonblankstring; source retains untrimmed key",
+    "select": "1..12 field optional/agg optional; barecount mayomitfield; aggregates count/count_distinct/sum/avg/min/max; deterministicaliasesunique",
+    "filters": "field/operator/value; operators eq/ne/in/not_in/gte/lte/gt/lt/between/contains/is_null/is_not_null; finite numeric/boolean/string perregistrytype; in/not_in arrays1..200;betweenlength2;contains stringonly",
+    "groupBy": "<=6 fields also selectednonaggregate and groupable;mixedaggregates requireeveryordinaryselectedfieldgrouped",
+    "orderBy": "<=3 selectedaliases; desc exactelseasclegacy",
+    "limit": "Number conversion then positivefinite floor boundedregistrymax; defaultregistrylimit",
+    "asOfDate": "onlydatasetwithdeclaredasOf source; explicitvalidDate else ambientnow. ISO-only wouldbeintentionalnarrowing."
+  },
+  "registry": "Accepted list_global_datasets provides six-typefieldmetadata/flags only; it grants no row/queryaccess. Trusted immutable registry identity needed for field/type/filter/group/aggregate validation; do not expose table/column/derivedexpressions.",
+  "result": {
+    "success": "tool/generatedAt/dataset/sql/rowCount/rows; truncated:true+note onlyifprefixtrimmed; no ok:true",
+    "parseError": "tool/generatedAt/ok:false/error dynamically describesinvalidspec",
+    "executionError": "samefalseenvelope withfixedtimeout/narrowqueryguidance",
+    "rowValues": "normalizer converts safeBigIntnumber elsedecimalstring, DateISO, Decimalfinitenumber elsetext; arraysrecursive; null remainsnull. No count-equals-total corpusclaim.",
+    "truncation": "Source named256KiB but usesJSON.stringify(row).length +1 perrow plus2 initial: UTF16characters, notUTF8bytes; keepswholeprefix; rowCountpretrim notreturned.",
+    "audit": "recordAnalyticsQuery catchesitsownfailure andlogs; neverthrowsmerelybecauseauditfails. Auditwrite is knownsourceeffect, not read-onlySQLproof."
+  },
+  "execution": "Existing source executes only trusted compiledspec with dedicatedanalyticscredentials/noapplicationfallback and SELECT-onlyDBrole/roleceilings,8sstatementtimeout+transaction10s. Noneconnected/executed; do notcopycredentials/config/state.",
+  "ownerDecision": "New Meri success projection should omit legacy compiled sql and retain typed selectedaliases/metadata; root must expressly allocate/document this compatibility difference before source contract acceptance. Typed spec/row shape can proceed without implementinglegacycompiler.",
+  "clock": "Trusted defaultasOf neededonlyforasOfcapabledataset; generatedAt capturedbeforecompiledoesnotprovethesameclockinstant. Callerexplicit date isselector notauthority.",
+  "acceptanceControls": [
+    "Unknown registry/dataset/field/operator and decorativepin refuse",
+    "Non-filterable/non-groupable and numericaggregate restrictions",
+    "Mixedgroup/aliasduplicates/orderaliases",
+    "Numericunsafeintegerresultstrings retained",
+    "UTF16prefixceiling vsUTF8 andpretrimcount",
+    "SQL/table/expression inputrefused, SQLoutputomitted onlywithdeclaredrootdecision",
+    "Errorenvelopes noabsenceclaim; audit/currentrole unqualified"
+  ],
+  "remainingAuthorshipWork": [
+    "Root outputredaction and canonical immutable registry authority interface",
+    "Owner typed execution module independent oflegacycompiler, no source connectivity",
+    "Exact result alias/typeadmission includingPostgresaggregates not guaranteed bymetadataalone"
+  ]
+}

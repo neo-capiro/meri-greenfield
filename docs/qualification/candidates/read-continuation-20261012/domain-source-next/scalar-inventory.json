@@ -1,0 +1,471 @@
+{
+  "source": "apps/api/prisma/schema.prisma",
+  "pin": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "interpretation": "Stored scalar metadata; projections select/spread different subsets; Decimal wire adaptation remains explicit. No model relation bodies retained.",
+  "models": {
+    "ProgramElement": {
+      "startLine": 4638,
+      "fields": [
+        {
+          "field": "peCode",
+          "type": "String",
+          "nullable": false,
+          "nativeType": "VarChar(16)"
+        },
+        {
+          "field": "service",
+          "type": "String",
+          "nullable": true,
+          "nativeType": null
+        },
+        {
+          "field": "serviceCode",
+          "type": "String",
+          "nullable": true,
+          "nativeType": null
+        },
+        {
+          "field": "appropriationType",
+          "type": "String",
+          "nullable": true,
+          "nativeType": null
+        },
+        {
+          "field": "budgetActivity",
+          "type": "String",
+          "nullable": true,
+          "nativeType": null
+        },
+        {
+          "field": "budgetActivityName",
+          "type": "String",
+          "nullable": true,
+          "nativeType": null
+        },
+        {
+          "field": "lineNumber",
+          "type": "String",
+          "nullable": true,
+          "nativeType": null
+        },
+        {
+          "field": "title",
+          "type": "String",
+          "nullable": false,
+          "nativeType": null
+        },
+        {
+          "field": "description",
+          "type": "String",
+          "nullable": true,
+          "nativeType": "Text"
+        },
+        {
+          "field": "acatLevel",
+          "type": "String",
+          "nullable": true,
+          "nativeType": null
+        },
+        {
+          "field": "programOfRecord",
+          "type": "String",
+          "nullable": true,
+          "nativeType": null
+        },
+        {
+          "field": "status",
+          "type": "String",
+          "nullable": true,
+          "nativeType": null
+        },
+        {
+          "field": "rDocUrl",
+          "type": "String",
+          "nullable": true,
+          "nativeType": null
+        },
+        {
+          "field": "pDocUrl",
+          "type": "String",
+          "nullable": true,
+          "nativeType": null
+        },
+        {
+          "field": "oDocUrl",
+          "type": "String",
+          "nullable": true,
+          "nativeType": null
+        },
+        {
+          "field": "raw",
+          "type": "Json",
+          "nullable": false,
+          "nativeType": null
+        },
+        {
+          "field": "source",
+          "type": "String",
+          "nullable": false,
+          "nativeType": null
+        },
+        {
+          "field": "sourceConfidence",
+          "type": "Float",
+          "nullable": true,
+          "nativeType": null
+        },
+        {
+          "field": "firstSeenFy",
+          "type": "Int",
+          "nullable": true,
+          "nativeType": null
+        },
+        {
+          "field": "lastSyncedAt",
+          "type": "DateTime",
+          "nullable": false,
+          "nativeType": "Timestamptz(6)"
+        },
+        {
+          "field": "retiredAt",
+          "type": "DateTime",
+          "nullable": true,
+          "nativeType": "Timestamptz(6)"
+        },
+        {
+          "field": "retiredReason",
+          "type": "String",
+          "nullable": true,
+          "nativeType": null
+        }
+      ]
+    },
+    "ProgramElementYear": {
+      "startLine": 4761,
+      "fields": [
+        {
+          "field": "id",
+          "type": "String",
+          "nullable": false,
+          "nativeType": "Uuid"
+        },
+        {
+          "field": "peCode",
+          "type": "String",
+          "nullable": false,
+          "nativeType": "VarChar(16)"
+        },
+        {
+          "field": "fy",
+          "type": "Int",
+          "nullable": false,
+          "nativeType": null
+        },
+        {
+          "field": "request",
+          "type": "Decimal",
+          "nullable": true,
+          "nativeType": "Decimal(14, 2)"
+        },
+        {
+          "field": "hascMark",
+          "type": "Decimal",
+          "nullable": true,
+          "nativeType": "Decimal(14, 2)"
+        },
+        {
+          "field": "sascMark",
+          "type": "Decimal",
+          "nullable": true,
+          "nativeType": "Decimal(14, 2)"
+        },
+        {
+          "field": "hacDMark",
+          "type": "Decimal",
+          "nullable": true,
+          "nativeType": "Decimal(14, 2)"
+        },
+        {
+          "field": "sacDMark",
+          "type": "Decimal",
+          "nullable": true,
+          "nativeType": "Decimal(14, 2)"
+        },
+        {
+          "field": "conference",
+          "type": "Decimal",
+          "nullable": true,
+          "nativeType": "Decimal(14, 2)"
+        },
+        {
+          "field": "ndaaConference",
+          "type": "Decimal",
+          "nullable": true,
+          "nativeType": "Decimal(14, 2)"
+        },
+        {
+          "field": "enacted",
+          "type": "Decimal",
+          "nullable": true,
+          "nativeType": "Decimal(14, 2)"
+        },
+        {
+          "field": "reprogrammed",
+          "type": "Decimal",
+          "nullable": true,
+          "nativeType": "Decimal(14, 2)"
+        },
+        {
+          "field": "executed",
+          "type": "Decimal",
+          "nullable": true,
+          "nativeType": "Decimal(14, 2)"
+        },
+        {
+          "field": "notes",
+          "type": "String",
+          "nullable": true,
+          "nativeType": "Text"
+        },
+        {
+          "field": "rDocSection",
+          "type": "String",
+          "nullable": true,
+          "nativeType": null
+        },
+        {
+          "field": "raw",
+          "type": "Json",
+          "nullable": false,
+          "nativeType": null
+        },
+        {
+          "field": "lastSyncedAt",
+          "type": "DateTime",
+          "nullable": false,
+          "nativeType": "Timestamptz(6)"
+        }
+      ]
+    },
+    "ProgramElementMilestone": {
+      "startLine": 5048,
+      "fields": [
+        {
+          "field": "id",
+          "type": "String",
+          "nullable": false,
+          "nativeType": "Uuid"
+        },
+        {
+          "field": "peCode",
+          "type": "String",
+          "nullable": false,
+          "nativeType": "VarChar(16)"
+        },
+        {
+          "field": "milestoneType",
+          "type": "String",
+          "nullable": false,
+          "nativeType": null
+        },
+        {
+          "field": "plannedDate",
+          "type": "DateTime",
+          "nullable": true,
+          "nativeType": "Date"
+        },
+        {
+          "field": "actualDate",
+          "type": "DateTime",
+          "nullable": true,
+          "nativeType": "Date"
+        },
+        {
+          "field": "status",
+          "type": "String",
+          "nullable": true,
+          "nativeType": null
+        },
+        {
+          "field": "source",
+          "type": "String",
+          "nullable": false,
+          "nativeType": null
+        },
+        {
+          "field": "notes",
+          "type": "String",
+          "nullable": true,
+          "nativeType": "Text"
+        },
+        {
+          "field": "lastSyncedAt",
+          "type": "DateTime",
+          "nullable": false,
+          "nativeType": "Timestamptz(6)"
+        }
+      ]
+    },
+    "SamOpportunity": {
+      "startLine": 10500,
+      "fields": [
+        {
+          "field": "id",
+          "type": "String",
+          "nullable": false,
+          "nativeType": "Uuid"
+        },
+        {
+          "field": "noticeId",
+          "type": "String",
+          "nullable": false,
+          "nativeType": null
+        },
+        {
+          "field": "solicitationNumber",
+          "type": "String",
+          "nullable": true,
+          "nativeType": null
+        },
+        {
+          "field": "title",
+          "type": "String",
+          "nullable": false,
+          "nativeType": null
+        },
+        {
+          "field": "noticeType",
+          "type": "String",
+          "nullable": false,
+          "nativeType": "VarChar(32)"
+        },
+        {
+          "field": "baseType",
+          "type": "String",
+          "nullable": true,
+          "nativeType": "VarChar(64)"
+        },
+        {
+          "field": "agency",
+          "type": "String",
+          "nullable": true,
+          "nativeType": null
+        },
+        {
+          "field": "subAgency",
+          "type": "String",
+          "nullable": true,
+          "nativeType": null
+        },
+        {
+          "field": "office",
+          "type": "String",
+          "nullable": true,
+          "nativeType": null
+        },
+        {
+          "field": "setAside",
+          "type": "String",
+          "nullable": true,
+          "nativeType": null
+        },
+        {
+          "field": "setAsideCode",
+          "type": "String",
+          "nullable": true,
+          "nativeType": "VarChar(16)"
+        },
+        {
+          "field": "pscCode",
+          "type": "String",
+          "nullable": true,
+          "nativeType": "VarChar(8)"
+        },
+        {
+          "field": "naicsCode",
+          "type": "String",
+          "nullable": true,
+          "nativeType": "VarChar(8)"
+        },
+        {
+          "field": "postedDate",
+          "type": "DateTime",
+          "nullable": true,
+          "nativeType": "Timestamptz(6)"
+        },
+        {
+          "field": "responseDeadline",
+          "type": "DateTime",
+          "nullable": true,
+          "nativeType": "Timestamptz(6)"
+        },
+        {
+          "field": "archiveDate",
+          "type": "DateTime",
+          "nullable": true,
+          "nativeType": "Timestamptz(6)"
+        },
+        {
+          "field": "description",
+          "type": "String",
+          "nullable": true,
+          "nativeType": "Text"
+        },
+        {
+          "field": "pocName",
+          "type": "String",
+          "nullable": true,
+          "nativeType": null
+        },
+        {
+          "field": "pocEmail",
+          "type": "String",
+          "nullable": true,
+          "nativeType": null
+        },
+        {
+          "field": "placeOfPerformance",
+          "type": "Json",
+          "nullable": false,
+          "nativeType": null
+        },
+        {
+          "field": "sourceUrl",
+          "type": "String",
+          "nullable": true,
+          "nativeType": null
+        },
+        {
+          "field": "active",
+          "type": "Boolean",
+          "nullable": false,
+          "nativeType": null
+        },
+        {
+          "field": "raw",
+          "type": "Json",
+          "nullable": false,
+          "nativeType": null
+        },
+        {
+          "field": "lastSyncedAt",
+          "type": "DateTime",
+          "nullable": false,
+          "nativeType": "Timestamptz(6)"
+        },
+        {
+          "field": "createdAt",
+          "type": "DateTime",
+          "nullable": false,
+          "nativeType": "Timestamptz(6)"
+        },
+        {
+          "field": "updatedAt",
+          "type": "DateTime",
+          "nullable": false,
+          "nativeType": "Timestamptz(6)"
+        }
+      ]
+    }
+  }
+}

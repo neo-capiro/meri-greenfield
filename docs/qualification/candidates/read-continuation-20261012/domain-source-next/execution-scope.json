@@ -1,0 +1,13 @@
+{
+  "execution": "All commands synchronous and bounded; every exec_command returned completed with exitCode0 except the recorded child grep diagnostic. No background owner, service or dependency process was launched.",
+  "ownedPersistentProcesses": [],
+  "cleanup": "No owned background process to stop or group to kill; no borrowed dependency tree used.",
+  "checks": "python -I -B -S .../verify.py; metadata/source text checks only",
+  "notExecuted": [
+    "private source or test modules",
+    "SQL or database connections",
+    "HTTP/provider/model requests",
+    "native qualification fixtures",
+    "browser/renderer/services/cloud resources"
+  ]
+}

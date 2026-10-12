@@ -1,0 +1,117 @@
+{
+  "status": "DISCOVERY_READY_FOR_SEPARATE_AUTHOR_AND_REVIEW; not an approved contract",
+  "scope": {
+    "original": 139,
+    "selected": 96,
+    "deferred": 43,
+    "priorityReads": 9,
+    "otherPriorReadsRetained": 9,
+    "newBindings": 0
+  },
+  "rankedFamilies": [
+    {
+      "rank": 1,
+      "operations": [
+        "search_sam_opportunities"
+      ],
+      "stem": "sam-opportunities",
+      "factory": "createSamOpportunitiesValidators",
+      "schemaId": "urn:meri:retrieval:sam-opportunities:0.2.0",
+      "readiness": "Closed stored projection + existing freshness/deadline DTOs; clock/mode context proposal is explicit in sam-opportunities.json",
+      "context": "asOf, evidenceAccuracyMode, sourceStatusAsOf, sourceHealthAsOf (proposal, root decides)",
+      "estimatedAuthorSlice": "One bounded source-only author/reviewer slice"
+    },
+    {
+      "rank": 2,
+      "operations": [
+        "get_florida_budget_project"
+      ],
+      "stem": "florida-budget",
+      "factory": "createFloridaBudgetValidators",
+      "schemaId": "urn:meri:retrieval:florida-budget:0.2.0",
+      "readiness": "Closed five result arrays from exact DDL/projection; raw JSON stays opaque; current effective scope cannot be inferred from model input",
+      "context": "asOf plus trusted effectiveScope if full folder-derived client echo correlation is required; authority separately unavailable",
+      "estimatedAuthorSlice": "One bounded source-only author/reviewer slice"
+    },
+    {
+      "rank": 3,
+      "operations": [
+        "get_legal_reference"
+      ],
+      "stem": "legal-reference",
+      "factory": "createLegalReferenceValidators",
+      "schemaId": "urn:meri:retrieval:legal-reference:0.2.0",
+      "readiness": "Three existing views, complete raw-field/LEFT JOIN sources available; exact citation parser grammar needs separate inspected identity contract if enforcing derived referenceId",
+      "context": "asOf plus trusted effective scope/selected reference facts where output cannot prove them",
+      "estimatedAuthorSlice": "One full-variant source-only slice, not just default references"
+    },
+    {
+      "rank": 4,
+      "operations": [
+        "search_program_elements",
+        "get_program_element",
+        "get_pe_budget_timeline"
+      ],
+      "stem": "program-element-funding",
+      "factory": "createProgramElementFundingValidators",
+      "schemaId": "urn:meri:retrieval:program-element-funding:0.2.0",
+      "readiness": "All three projections available; scalar inventory and FundingClaim/mode semantics pinned; finish ordinary renderer/classifier/missing-mark and Decimal wire assembly",
+      "context": "evidenceAccuracyMode and optional final asOf; current user watch/current tenant authority remains adapter-owned",
+      "estimatedAuthorSlice": "Larger cohesive family; allocate responsibility modules for finder versus detail/timeline/claims rather than god file"
+    },
+    {
+      "rank": 5,
+      "operations": [
+        "search_legiwatch_news"
+      ],
+      "stem": "legiwatch-news",
+      "factory": "createLegiwatchNewsValidators",
+      "schemaId": "urn:meri:retrieval:legiwatch-news:0.2.0",
+      "readiness": "Four view branches including four source kinds; stored/private monitor distinction and DDL established",
+      "context": "asOf/window clock/defaultYear and trusted effective scope proposal; not actor authority",
+      "estimatedAuthorSlice": "Full variant assembly; default news alone does not close capability"
+    },
+    {
+      "rank": 6,
+      "operations": [
+        "search_legislative_research"
+      ],
+      "stem": "legislative-research",
+      "factory": "createLegislativeResearchValidators",
+      "schemaId": "urn:meri:retrieval:legislative-research:0.2.0",
+      "readiness": "Closed result/interpretation/evaluation and cursor projection; independently bound source/metadata inventory needed before making currentness claims",
+      "context": "asOf plus retained cursor/source receipt proposal; no copied query evaluator or SQL",
+      "estimatedAuthorSlice": "One bounded contract family with exact cursor/coverage limits"
+    },
+    {
+      "rank": 7,
+      "operations": [
+        "query_global_data"
+      ],
+      "stem": "global-query",
+      "factory": "createGlobalQueryValidators",
+      "schemaId": "urn:meri:retrieval:global-query:0.2.0",
+      "readiness": "Typed request + row/error envelopes established; root output redaction/registry owner decision remains",
+      "context": "trusted immutable dataset metadata registry and effective asOf for supported datasets; model spec cannot grant registry access",
+      "estimatedAuthorSlice": "Source DTO first after explicit compatibility decision; execution owner separately allocated"
+    }
+  ],
+  "pathConvention": "Each proposed stem owns retrieval-0.2/<stem>.schema.json, <stem>-validation.mjs and test/retrieval-<stem>.test.mjs; shared helper paths require root allocation; none created here.",
+  "globalQueryConcreteProposal": {
+    "successFields": [
+      "tool",
+      "generatedAt",
+      "dataset",
+      "rowCount",
+      "rows",
+      "optional truncated:true",
+      "optional note"
+    ],
+    "droppedLegacyField": "sql",
+    "optionalTrustedMetadata": "selectedAliases and immutable registry digest in normalization metadata, not untrusted input or compiled text",
+    "unchangedErrorProjection": "ok:false/error envelopes retain errors as reported data, not evidence of absence",
+    "reason": "Keeps typed selected data without exposing database table/column/expression SQL; does not import or recreate legacy compiler",
+    "decisionOwner": "Root must explicitly approve/document compatibility projection and allocate canonical registry/execution boundary. Discovery does not authorize this change."
+  },
+  "retainedOtherNine": "retained-prior-nine.json; each remains carried-forward unfinished source assembly/owner dependency, not newly accepted."
+}

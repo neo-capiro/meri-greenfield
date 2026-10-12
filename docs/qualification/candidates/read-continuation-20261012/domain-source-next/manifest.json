@@ -1,0 +1,91 @@
+{
+  "base": "c1c9bfde7dd466a0474589a224a99b44277adbc9",
+  "disposition": "DISCOVERY_ONLY",
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-DOMAIN-SOURCE-NEXT-20261012.md",
+      "bytes": 8221,
+      "sha256": "975df0a01ee569f4ea196a422a479b7f93847628dc44b24c170f7ff10fa23fd2"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/domain-source-next/collect-metadata.py",
+      "bytes": 6799,
+      "sha256": "6d84048aab58604af16ab070ab3c184b195524083c9c14d5ec295a734b08cec8"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/domain-source-next/ddl-field-inventory.json",
+      "bytes": 18869,
+      "sha256": "6db6c62cff99ecce8e164fd1dfbbbccdcdc86f73b091e77590a932688f3df0de"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/domain-source-next/execution-scope.json",
+      "bytes": 655,
+      "sha256": "e42fff2f456f20a8accf929f690861230c237b501d569de4cb9bfa0893197c6e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/domain-source-next/legislative-research-legal.json",
+      "bytes": 5771,
+      "sha256": "1b26c6c2f8a2b18b49c253e96c310cad704d28f47f435768610b4b1ea36e1ce7"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/domain-source-next/legiwatch-news-budget.json",
+      "bytes": 7906,
+      "sha256": "b7fefadcbb08eaaf211650c3dceea78c764cb3c0aa2a4595d62ec8187000679b"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/domain-source-next/observed-failures.json",
+      "bytes": 1033,
+      "sha256": "2e0a7b41546a809e84dc2171f6759026830e441c663df54d601eccad45a818c5"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/domain-source-next/offline-checks.json",
+      "bytes": 33131,
+      "sha256": "7d41b2546ca3d200abe2e4b1059a8ab75061eb3123b41fe4a18fa69d1c098467"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/domain-source-next/outline.json",
+      "bytes": 7349,
+      "sha256": "a12d3976748cf170a6bcbc7cced78dc2fa7cdd78498d5f45c32536bc00982460"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/domain-source-next/program-elements.json",
+      "bytes": 5961,
+      "sha256": "eb3c157808cfa0a7d6c7400ab9fac80adf46ee355638344f998c0d4221ce53e0"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/domain-source-next/recommendations.json",
+      "bytes": 5914,
+      "sha256": "2dee6697fa6ea65ef940d96b1cb8641014606b3cf60b2df6689a9fb8d5cbae81"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/domain-source-next/reference-identities.json",
+      "bytes": 23476,
+      "sha256": "fa994e7e7e273bac1dcb60622642e7eacdb970ab3648be5456554c08cddf9a18"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/domain-source-next/retained-prior-nine.json",
+      "bytes": 6271,
+      "sha256": "951bce132e50078be63f7844d0706150ed5dd2570ff898cbf4a09073121bcf89"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/domain-source-next/sam-opportunities.json",
+      "bytes": 6866,
+      "sha256": "5b0458ad182564aaea3d0cae1a9e50a878daa7a0811d6f2ff2dec55dd73818b8"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/domain-source-next/scalar-inventory.json",
+      "bytes": 11204,
+      "sha256": "22eb64a62f75f95625f01d27e6deb37c4ddc9a3a44993b136ce0aa652e397ac4"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/domain-source-next/typed-global-query.json",
+      "bytes": 4233,
+      "sha256": "69a57bee028f2120a8060334e5b11e992e730470505be998fcebd5712b443b67"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/domain-source-next/verify.py",
+      "bytes": 5447,
+      "sha256": "fad475cc796b5c9336a61713c584b4dfa1b206d6984dde6474c3c23c2edc6d94"
+    }
+  ]
+}

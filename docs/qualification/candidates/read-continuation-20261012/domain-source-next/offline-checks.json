@@ -1,0 +1,1167 @@
+{
+  "passed": 290,
+  "failed": 0,
+  "scope": "Offline metadata/source text integrity only; no private code or runtime executed",
+  "checks": [
+    {
+      "check": "exact base retained",
+      "pass": true
+    },
+    {
+      "check": "priority9 unique",
+      "pass": true
+    },
+    {
+      "check": "prior9 retained",
+      "pass": true
+    },
+    {
+      "check": "no priority/prior overlap",
+      "pass": true
+    },
+    {
+      "check": "recommendations cover priority exactly",
+      "pass": true
+    },
+    {
+      "check": "scope139/96/43 unchanged",
+      "pass": true
+    },
+    {
+      "check": "original count139",
+      "pass": true
+    },
+    {
+      "check": "selected count96",
+      "pass": true
+    },
+    {
+      "check": "deferred count43",
+      "pass": true
+    },
+    {
+      "check": "search_legiwatch_news remains pending",
+      "pass": true
+    },
+    {
+      "check": "get_florida_budget_project remains pending",
+      "pass": true
+    },
+    {
+      "check": "search_legislative_research remains pending",
+      "pass": true
+    },
+    {
+      "check": "get_legal_reference remains pending",
+      "pass": true
+    },
+    {
+      "check": "search_program_elements remains pending",
+      "pass": true
+    },
+    {
+      "check": "get_program_element remains pending",
+      "pass": true
+    },
+    {
+      "check": "get_pe_budget_timeline remains pending",
+      "pass": true
+    },
+    {
+      "check": "search_sam_opportunities remains pending",
+      "pass": true
+    },
+    {
+      "check": "query_global_data remains pending",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-tools.service.ts frozen SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-tools.service.ts frozen size",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-tools.service.ts frozen blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-tools.service.ts observed SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-tools.service.ts observed size",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-tools.service.ts observed blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-tools.service.ts drift declaration",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/keywords/keyword-meri.controller.ts frozen SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/keywords/keyword-meri.controller.ts frozen size",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/keywords/keyword-meri.controller.ts frozen blob",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/keywords/keyword-meri.controller.ts observed SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/keywords/keyword-meri.controller.ts observed size",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/keywords/keyword-meri.controller.ts observed blob",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/keywords/keyword-meri.controller.ts drift declaration",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/keywords/internal-workflow.controller.ts frozen SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/keywords/internal-workflow.controller.ts frozen size",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/keywords/internal-workflow.controller.ts frozen blob",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/keywords/internal-workflow.controller.ts observed SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/keywords/internal-workflow.controller.ts observed size",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/keywords/internal-workflow.controller.ts observed blob",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/keywords/internal-workflow.controller.ts drift declaration",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/editorial/evidence.service.ts frozen SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/editorial/evidence.service.ts frozen size",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/editorial/evidence.service.ts frozen blob",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/editorial/evidence.service.ts observed SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/editorial/evidence.service.ts observed size",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/editorial/evidence.service.ts observed blob",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/editorial/evidence.service.ts drift declaration",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/research/research.service.ts frozen SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/research/research.service.ts frozen size",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/research/research.service.ts frozen blob",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/research/research.service.ts observed SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/research/research.service.ts observed size",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/research/research.service.ts observed blob",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/research/research.service.ts drift declaration",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/reports/report.service.ts frozen SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/reports/report.service.ts frozen size",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/reports/report.service.ts frozen blob",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/reports/report.service.ts observed SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/reports/report.service.ts observed size",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/reports/report.service.ts observed blob",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/reports/report.service.ts drift declaration",
+      "pass": true
+    },
+    {
+      "check": "apps/api/prisma/migrations/20280914030000_legiwatch_news_fiscal/migration.sql frozen SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/api/prisma/migrations/20280914030000_legiwatch_news_fiscal/migration.sql frozen size",
+      "pass": true
+    },
+    {
+      "check": "apps/api/prisma/migrations/20280914030000_legiwatch_news_fiscal/migration.sql frozen blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/prisma/migrations/20280914030000_legiwatch_news_fiscal/migration.sql observed SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/api/prisma/migrations/20280914030000_legiwatch_news_fiscal/migration.sql observed size",
+      "pass": true
+    },
+    {
+      "check": "apps/api/prisma/migrations/20280914030000_legiwatch_news_fiscal/migration.sql observed blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/prisma/migrations/20280914030000_legiwatch_news_fiscal/migration.sql drift declaration",
+      "pass": true
+    },
+    {
+      "check": "apps/api/prisma/migrations/20280913030000_legiwatch_research_evidence/migration.sql frozen SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/api/prisma/migrations/20280913030000_legiwatch_research_evidence/migration.sql frozen size",
+      "pass": true
+    },
+    {
+      "check": "apps/api/prisma/migrations/20280913030000_legiwatch_research_evidence/migration.sql frozen blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/prisma/migrations/20280913030000_legiwatch_research_evidence/migration.sql observed SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/api/prisma/migrations/20280913030000_legiwatch_research_evidence/migration.sql observed size",
+      "pass": true
+    },
+    {
+      "check": "apps/api/prisma/migrations/20280913030000_legiwatch_research_evidence/migration.sql observed blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/prisma/migrations/20280913030000_legiwatch_research_evidence/migration.sql drift declaration",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/prisma/migrations/20260914030000_legiwatch_news_editorial/migration.sql frozen SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/prisma/migrations/20260914030000_legiwatch_news_editorial/migration.sql frozen size",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/prisma/migrations/20260914030000_legiwatch_news_editorial/migration.sql frozen blob",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/prisma/migrations/20260914030000_legiwatch_news_editorial/migration.sql observed SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/prisma/migrations/20260914030000_legiwatch_news_editorial/migration.sql observed size",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/prisma/migrations/20260914030000_legiwatch_news_editorial/migration.sql observed blob",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/prisma/migrations/20260914030000_legiwatch_news_editorial/migration.sql drift declaration",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/editorial/publisher-coverage.ts frozen SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/editorial/publisher-coverage.ts frozen size",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/editorial/publisher-coverage.ts frozen blob",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/editorial/publisher-coverage.ts observed SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/editorial/publisher-coverage.ts observed size",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/editorial/publisher-coverage.ts observed blob",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/editorial/publisher-coverage.ts drift declaration",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/legiwatch-query.ts frozen SHA256",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/legiwatch-query.ts frozen size",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/legiwatch-query.ts frozen blob",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/legiwatch-query.ts observed SHA256",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/legiwatch-query.ts observed size",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/legiwatch-query.ts observed blob",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/legiwatch-query.ts drift declaration",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/legiwatch-phase8.ts frozen SHA256",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/legiwatch-phase8.ts frozen size",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/legiwatch-phase8.ts frozen blob",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/legiwatch-phase8.ts observed SHA256",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/legiwatch-phase8.ts observed size",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/legiwatch-phase8.ts observed blob",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/legiwatch-phase8.ts drift declaration",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/legislative-research.ts frozen SHA256",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/legislative-research.ts frozen size",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/legislative-research.ts frozen blob",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/legislative-research.ts observed SHA256",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/legislative-research.ts observed size",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/legislative-research.ts observed blob",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/legislative-research.ts drift declaration",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/folders/folder-tracker.service.ts frozen SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/folders/folder-tracker.service.ts frozen size",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/folders/folder-tracker.service.ts frozen blob",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/folders/folder-tracker.service.ts observed SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/folders/folder-tracker.service.ts observed size",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/folders/folder-tracker.service.ts observed blob",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/folders/folder-tracker.service.ts drift declaration",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/funding-opportunities-v2.ts frozen SHA256",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/funding-opportunities-v2.ts frozen size",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/funding-opportunities-v2.ts frozen blob",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/funding-opportunities-v2.ts observed SHA256",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/funding-opportunities-v2.ts observed size",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/funding-opportunities-v2.ts observed blob",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/funding-opportunities-v2.ts drift declaration",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/funding-opportunities/funding-opportunity-v2-search.service.ts frozen SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/funding-opportunities/funding-opportunity-v2-search.service.ts frozen size",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/funding-opportunities/funding-opportunity-v2-search.service.ts frozen blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/funding-opportunities/funding-opportunity-v2-search.service.ts observed SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/funding-opportunities/funding-opportunity-v2-search.service.ts observed size",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/funding-opportunities/funding-opportunity-v2-search.service.ts observed blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/funding-opportunities/funding-opportunity-v2-search.service.ts drift declaration",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/program-element/program-element-read.service.ts frozen SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/program-element/program-element-read.service.ts frozen size",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/program-element/program-element-read.service.ts frozen blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/program-element/program-element-read.service.ts observed SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/program-element/program-element-read.service.ts observed size",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/program-element/program-element-read.service.ts observed blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/program-element/program-element-read.service.ts drift declaration",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-defense-budget-tool.helpers.ts frozen SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-defense-budget-tool.helpers.ts frozen size",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-defense-budget-tool.helpers.ts frozen blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-defense-budget-tool.helpers.ts observed SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-defense-budget-tool.helpers.ts observed size",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-defense-budget-tool.helpers.ts observed blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-defense-budget-tool.helpers.ts drift declaration",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/funding-claim.ts frozen SHA256",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/funding-claim.ts frozen size",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/funding-claim.ts frozen blob",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/funding-claim.ts observed SHA256",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/funding-claim.ts observed size",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/funding-claim.ts observed blob",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/funding-claim.ts drift declaration",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/index.ts frozen SHA256",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/index.ts frozen size",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/index.ts frozen blob",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/index.ts observed SHA256",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/index.ts observed size",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/index.ts observed blob",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/index.ts drift declaration",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/common/meri-evidence-accuracy-flags.ts frozen SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/common/meri-evidence-accuracy-flags.ts frozen size",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/common/meri-evidence-accuracy-flags.ts frozen blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/common/meri-evidence-accuracy-flags.ts observed SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/common/meri-evidence-accuracy-flags.ts observed size",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/common/meri-evidence-accuracy-flags.ts observed blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/common/meri-evidence-accuracy-flags.ts drift declaration",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/program-element/budget-line-lineage.ts frozen SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/program-element/budget-line-lineage.ts frozen size",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/program-element/budget-line-lineage.ts frozen blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/program-element/budget-line-lineage.ts observed SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/program-element/budget-line-lineage.ts observed size",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/program-element/budget-line-lineage.ts observed blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/program-element/budget-line-lineage.ts drift declaration",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/program-element/models/conference-probability.service.ts frozen SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/program-element/models/conference-probability.service.ts frozen size",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/program-element/models/conference-probability.service.ts frozen blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/program-element/models/conference-probability.service.ts observed SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/program-element/models/conference-probability.service.ts observed size",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/program-element/models/conference-probability.service.ts observed blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/program-element/models/conference-probability.service.ts drift declaration",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/funding-opportunities/meri-opportunity-tools.adapter.ts frozen SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/funding-opportunities/meri-opportunity-tools.adapter.ts frozen size",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/funding-opportunities/meri-opportunity-tools.adapter.ts frozen blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/funding-opportunities/meri-opportunity-tools.adapter.ts observed SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/funding-opportunities/meri-opportunity-tools.adapter.ts observed size",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/funding-opportunities/meri-opportunity-tools.adapter.ts observed blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/funding-opportunities/meri-opportunity-tools.adapter.ts drift declaration",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/schedule/deadline.ts frozen SHA256",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/schedule/deadline.ts frozen size",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/schedule/deadline.ts frozen blob",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/schedule/deadline.ts observed SHA256",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/schedule/deadline.ts observed size",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/schedule/deadline.ts observed blob",
+      "pass": true
+    },
+    {
+      "check": "packages/shared/src/schedule/deadline.ts drift declaration",
+      "pass": true
+    },
+    {
+      "check": "apps/api/prisma/schema.prisma frozen SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/api/prisma/schema.prisma frozen size",
+      "pass": true
+    },
+    {
+      "check": "apps/api/prisma/schema.prisma frozen blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/prisma/schema.prisma observed SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/api/prisma/schema.prisma observed size",
+      "pass": true
+    },
+    {
+      "check": "apps/api/prisma/schema.prisma observed blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/prisma/schema.prisma drift declaration",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/query-spec-compiler.ts frozen SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/query-spec-compiler.ts frozen size",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/query-spec-compiler.ts frozen blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/query-spec-compiler.ts observed SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/query-spec-compiler.ts observed size",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/query-spec-compiler.ts observed blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/query-spec-compiler.ts drift declaration",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/analytics-db.service.ts frozen SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/analytics-db.service.ts frozen size",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/analytics-db.service.ts frozen blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/analytics-db.service.ts observed SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/analytics-db.service.ts observed size",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/analytics-db.service.ts observed blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/analytics-db.service.ts drift declaration",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/global-dataset-registry.ts frozen SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/global-dataset-registry.ts frozen size",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/global-dataset-registry.ts frozen blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/global-dataset-registry.ts observed SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/global-dataset-registry.ts observed size",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/global-dataset-registry.ts observed blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/global-dataset-registry.ts drift declaration",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/funding-opportunities/meri-sam-source-freshness.spec.ts frozen SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/funding-opportunities/meri-sam-source-freshness.spec.ts frozen size",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/funding-opportunities/meri-sam-source-freshness.spec.ts frozen blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/funding-opportunities/meri-sam-source-freshness.spec.ts observed SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/funding-opportunities/meri-sam-source-freshness.spec.ts observed size",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/funding-opportunities/meri-sam-source-freshness.spec.ts observed blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/funding-opportunities/meri-sam-source-freshness.spec.ts drift declaration",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/analytics-db.service.spec.ts frozen SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/analytics-db.service.spec.ts frozen size",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/analytics-db.service.spec.ts frozen blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/analytics-db.service.spec.ts observed SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/analytics-db.service.spec.ts observed size",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/analytics-db.service.spec.ts observed blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/analytics-db.service.spec.ts drift declaration",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/query-spec-compiler.spec.ts frozen SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/query-spec-compiler.spec.ts frozen size",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/query-spec-compiler.spec.ts frozen blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/query-spec-compiler.spec.ts observed SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/query-spec-compiler.spec.ts observed size",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/query-spec-compiler.spec.ts observed blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/query-spec-compiler.spec.ts drift declaration",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-defense-budget-tool.helpers.spec.ts frozen SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-defense-budget-tool.helpers.spec.ts frozen size",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-defense-budget-tool.helpers.spec.ts frozen blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-defense-budget-tool.helpers.spec.ts observed SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-defense-budget-tool.helpers.spec.ts observed size",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-defense-budget-tool.helpers.spec.ts observed blob",
+      "pass": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-defense-budget-tool.helpers.spec.ts drift declaration",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/editorial/publisher-coverage.spec.ts frozen SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/editorial/publisher-coverage.spec.ts frozen size",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/editorial/publisher-coverage.spec.ts frozen blob",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/editorial/publisher-coverage.spec.ts observed SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/editorial/publisher-coverage.spec.ts observed size",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/editorial/publisher-coverage.spec.ts observed blob",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/editorial/publisher-coverage.spec.ts drift declaration",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/research/research-domain.spec.ts frozen SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/research/research-domain.spec.ts frozen size",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/research/research-domain.spec.ts frozen blob",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/research/research-domain.spec.ts observed SHA256",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/research/research-domain.spec.ts observed size",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/research/research-domain.spec.ts observed blob",
+      "pass": true
+    },
+    {
+      "check": "apps/intel-api/src/tracker/research/research-domain.spec.ts drift declaration",
+      "pass": true
+    },
+    {
+      "check": "35 references unchanged",
+      "pass": true
+    },
+    {
+      "check": "74 stored scalars",
+      "pass": true
+    },
+    {
+      "check": "148 DDL columns",
+      "pass": true
+    },
+    {
+      "check": "SAM stored cap50",
+      "pass": true
+    },
+    {
+      "check": "SAM48h source threshold",
+      "pass": true
+    },
+    {
+      "check": "SAM generatedAt binding",
+      "pass": true
+    },
+    {
+      "check": "SAM excerpt300",
+      "pass": true
+    },
+    {
+      "check": "SAM mode-controlled deadline",
+      "pass": true
+    },
+    {
+      "check": "SAM active default",
+      "pass": true
+    },
+    {
+      "check": "SAM independent count",
+      "pass": true
+    },
+    {
+      "check": "SAM no POC selected",
+      "pass": true
+    },
+    {
+      "check": "SAM actual selected read excludes POC",
+      "pass": true
+    },
+    {
+      "check": "global limit is JSON chars",
+      "pass": true
+    },
+    {
+      "check": "global prefix starts2",
+      "pass": true
+    },
+    {
+      "check": "global audit swallowed",
+      "pass": true
+    },
+    {
+      "check": "global audit current actor",
+      "pass": true
+    },
+    {
+      "check": "timeline predicts without persistence",
+      "pass": true
+    },
+    {
+      "check": "research fetched26",
+      "pass": true
+    },
+    {
+      "check": "reference rows101",
+      "pass": true
+    },
+    {
+      "check": "related rows201",
+      "pass": true
+    },
+    {
+      "check": "legal adopted10",
+      "pass": true
+    },
+    {
+      "check": "search scanned count",
+      "pass": true
+    },
+    {
+      "check": "sections omitted",
+      "pass": true
+    },
+    {
+      "check": "reference classification limit",
+      "pass": true
+    },
+    {
+      "check": "only allocated documentation paths changed",
+      "pass": true
+    },
+    {
+      "check": "no existing baseline file changed",
+      "pass": true
+    },
+    {
+      "check": "no production changes",
+      "pass": true
+    }
+  ]
+}

@@ -1,0 +1,112 @@
+{
+  "base": "c1c9bfde7dd466a0474589a224a99b44277adbc9",
+  "scope": "Metadata-only deep projection/policy/source trace; no product edits or runtime work",
+  "priorDiscovery": "404f216c8703216afa51b86261d3c9d0028c3b89",
+  "priorityOperations": [
+    "search_legiwatch_news",
+    "get_florida_budget_project",
+    "search_legislative_research",
+    "get_legal_reference",
+    "search_program_elements",
+    "get_program_element",
+    "get_pe_budget_timeline",
+    "search_sam_opportunities",
+    "query_global_data"
+  ],
+  "otherPrior18": [
+    {
+      "operation": "read_chat_attachments",
+      "status": "ATTACHMENT_VARIANT_ASSEMBLY",
+      "sourceLocators": "meri-chat-attachment-read.service.ts:41-66,204-260,277-310,544-565,653-695; meri-chat-attachment-read-scope.ts",
+      "resumeWork": "Closed manifest and content variants exist, including signed cursor identity, bytes hash, extraction/locator/coverage. Finish final content response and manifest-row scalar inventory; reuse original attachment/current conversation/client wall and release checks.",
+      "executionGate": "Extractor and signed-secret ownership remain runtime prerequisites; no PDF/Office implementation port or execution.",
+      "catalogState": "pending",
+      "runtimeAccepted": false
+    },
+    {
+      "operation": "read_monday_client_boards",
+      "status": "CONTEXT_PLANE_PAYLOAD_ASSEMBLY",
+      "sourceLocators": "meri-tools.service.ts:470-503; meri-context-plane.service.ts; retrieval/retrieval-v2.types.ts",
+      "resumeWork": "Wrapper projection is closed over records/coverage; inspect exact managed Monday record payload/cursor contracts and complete versus explicit-page behavior.",
+      "executionGate": "Current client wall before and after external MCP access, current source identity/budgets and owned cleanup are unqualified.",
+      "catalogState": "pending",
+      "runtimeAccepted": false
+    },
+    {
+      "operation": "get_client_context",
+      "status": "SIX_SECTION_DTO_ASSEMBLY",
+      "sourceLocators": "meri-tools.service.ts:3031-3200; meri-client-context.helpers.ts",
+      "resumeWork": "Compose context and all six capabilities/people/facilities/submission-history/advocacy-matters/advocacy-records full and summary sections. Finish each existing imported DTO and paging/coverage shape; do not reduce to fixtures.",
+      "executionGate": "Current client visibility, denied-client wall and source inclusion remain adapter obligations.",
+      "catalogState": "pending",
+      "runtimeAccepted": false
+    },
+    {
+      "operation": "search_client_knowledge",
+      "status": "EMBEDDING_SEARCH_PROJECTION_ASSEMBLY",
+      "sourceLocators": "meri-tools.service.ts:2273-2319; embeddings/client-kb.service.ts:654-700",
+      "resumeWork": "Declared kind/id/title/snippet/score rows exist; finish kind vocabulary and wrapper refusal/failure distinction. No-client empty note and caught unavailable response must not mean absence.",
+      "executionGate": "Known embedText call precedes later tenant/document checks; model/provider budgets and current document visibility are not authorized or executed.",
+      "catalogState": "pending",
+      "runtimeAccepted": false
+    },
+    {
+      "operation": "query_knowledge_graph",
+      "status": "GRAPH_VARIANT_ASSEMBLY",
+      "sourceLocators": "meri-tools.service.ts:3232-3397; memory-graph.helpers.ts",
+      "resumeWork": "Inspect exact seed/client refusal, empty nodes+edges and normal nodes+connections variants, label enums and graph cache scope. Returned connections cap120 does not equal full summary edge count.",
+      "executionGate": "Current tenant/client/owner cache policy and evidence versus mention semantics require adapter qualification; no graph traversal implementation copied.",
+      "catalogState": "pending",
+      "runtimeAccepted": false
+    },
+    {
+      "operation": "search_memory",
+      "status": "EXISTING_RETRIEVAL_ENVELOPE_COMPOSITION",
+      "sourceLocators": "meri-tools.service.ts:3460-3570; meri-memory-content.helpers.ts; meri-data-search.helpers.ts; retrieval/retrieval-v2.types.ts",
+      "resumeWork": "Compose exact and semantic recall envelopes, governance coverage, content status, evidence cursors and 6000/7200 JSON-character budgets. Exact page1 fallback and partial metadata semantics must survive.",
+      "executionGate": "Current approved/active/eligible memory and client wall required; proposal approval decision is not reopened. Retrieval/provider/current authority unqualified.",
+      "catalogState": "pending",
+      "runtimeAccepted": false
+    },
+    {
+      "operation": "search_committee_hearings",
+      "status": "HEARING_RECORD_VARIANT_ASSEMBLY",
+      "sourceLocators": "meri-tools.service.ts:6394-6441; meri-context-plane.service.ts; retrieval/retrieval-v2.types.ts",
+      "resumeWork": "Known recordsView published/briefs/reconciliation with bound asOf and one returned complete chunk; inspect each actual record payload and continuation/current revision owner.",
+      "executionGate": "Current client visibility, source grants and publication state remain runtime prerequisites; unsupported browser-session material remains unsupported.",
+      "catalogState": "pending",
+      "runtimeAccepted": false
+    },
+    {
+      "operation": "list_scheduled_tasks",
+      "status": "REPLACEMENT_OWNER_CONTRACT_REQUIRED",
+      "sourceLocators": "meri-tools.service.ts:8298-8316; canonical selected boundary",
+      "resumeWork": "Legacy owner returns latest50 tenant+owner ClioScheduledTask rows, but selected replacement is application Temporal schedule/run-history inspection. Root must allocate canonical control/Temporal read owner DTO/current identity/history semantics.",
+      "executionGate": "Do not treat legacy scheduling store or its fields as selected durability contract; no schedule execution, store copying or mutation.",
+      "catalogState": "pending",
+      "runtimeAccepted": false
+    },
+    {
+      "operation": "query_action_items",
+      "status": "EXISTING_AND_FULL_SCOPE_COMPOSITION",
+      "sourceLocators": "meri-tools.service.ts:8443-8477; meri-action-item-read.helpers.ts; intelligence/actions/action-recommendation-read.service.ts",
+      "resumeWork": "Client-scoped exact read is already separately implemented; original full selected operation additionally has no-client list. Inspect and compose actual no-client list DTO/current user visibility without duplicate counting or dropping that branch.",
+      "executionGate": "Current tenant/user/client authority and recommendation policy remain execution prerequisites; no command transition.",
+      "catalogState": "pending",
+      "runtimeAccepted": false
+    }
+  ],
+  "sourcePins": {
+    "frozen": "fd8765ec01d292013758606204f2c9d886cd31c1",
+    "observed": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace"
+  },
+  "plan": [
+    "Trace actual wrapper and downstream method projections/DTOs",
+    "Record exact scalar/null/context/clock and source-effect boundaries",
+    "Compare immutable reference file identities, no bodies retained",
+    "Freeze separate family recommendations and explicit unfinished dependencies; offline checks only"
+  ],
+  "dependencies": "None installed or imported",
+  "execution": "Synchronous local Git/stdlib reads, no private execution/SQL/network/model/native/provider/cloud actions",
+  "timeBoundMinutes": 45
+}

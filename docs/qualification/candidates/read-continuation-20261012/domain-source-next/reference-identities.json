@@ -1,0 +1,600 @@
+{
+  "scope": "Metadata identities only; no private source bodies",
+  "references": [
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "locators": "2504-2566;4778-4859;5027-5233;5252-5257;8525-8604;10030-10048;10285-10289",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+        "bytes": 415704,
+        "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+        "bytes": 415704,
+        "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194"
+      },
+      "changed": false
+    },
+    {
+      "path": "apps/intel-api/src/tracker/keywords/keyword-meri.controller.ts",
+      "locators": "29-87",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "890922b0c4ab130a0eb93b1406200c2b8aa21bd9",
+        "bytes": 6935,
+        "sha256": "eeef2903f2bb7e017941b122ed125ec223a9e3ae50e7cace5e09afa7f3a4305e"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "890922b0c4ab130a0eb93b1406200c2b8aa21bd9",
+        "bytes": 6935,
+        "sha256": "eeef2903f2bb7e017941b122ed125ec223a9e3ae50e7cace5e09afa7f3a4305e"
+      },
+      "changed": false
+    },
+    {
+      "path": "apps/intel-api/src/tracker/keywords/internal-workflow.controller.ts",
+      "locators": "21-30",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "13c4b888669c6245d2de5db80d5ac08305d21403",
+        "bytes": 3416,
+        "sha256": "741ec7710ee6d95136d85262da48ad0b7b113daf06e1ab5e51163deeec4509ed"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "13c4b888669c6245d2de5db80d5ac08305d21403",
+        "bytes": 3416,
+        "sha256": "741ec7710ee6d95136d85262da48ad0b7b113daf06e1ab5e51163deeec4509ed"
+      },
+      "changed": false
+    },
+    {
+      "path": "apps/intel-api/src/tracker/editorial/evidence.service.ts",
+      "locators": "31-325;363-399",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "dcad88537fa3890ee0e0298ef345c235ef3a78a1",
+        "bytes": 35726,
+        "sha256": "eadf0323ef6862e0122e6088cc88658d1f2b4eadb701599829df0a21813ff92e"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "dcad88537fa3890ee0e0298ef345c235ef3a78a1",
+        "bytes": 35726,
+        "sha256": "eadf0323ef6862e0122e6088cc88658d1f2b4eadb701599829df0a21813ff92e"
+      },
+      "changed": false
+    },
+    {
+      "path": "apps/intel-api/src/tracker/research/research.service.ts",
+      "locators": "28-205;228-482",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "2f7be267858af4de0039f33c73d139b7dd7bb562",
+        "bytes": 37618,
+        "sha256": "a11102bd18d875af9ff8af0dc7673a1471ad7f5708f2ab3ac0e8840db8395285"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "2f7be267858af4de0039f33c73d139b7dd7bb562",
+        "bytes": 37618,
+        "sha256": "a11102bd18d875af9ff8af0dc7673a1471ad7f5708f2ab3ac0e8840db8395285"
+      },
+      "changed": false
+    },
+    {
+      "path": "apps/intel-api/src/tracker/reports/report.service.ts",
+      "locators": "41-45",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "9ca4b418dc3085b8f2397f1d192ba4bcd469db13",
+        "bytes": 15398,
+        "sha256": "bde15d5d3bc45437ac915f64bcea3b9242e74a644d25a157dd301ae9f24c83c2"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "9ca4b418dc3085b8f2397f1d192ba4bcd469db13",
+        "bytes": 15398,
+        "sha256": "bde15d5d3bc45437ac915f64bcea3b9242e74a644d25a157dd301ae9f24c83c2"
+      },
+      "changed": false
+    },
+    {
+      "path": "apps/api/prisma/migrations/20280914030000_legiwatch_news_fiscal/migration.sql",
+      "locators": "2-66",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "594361b0723f118e93a192bda126e35e2fa9775e",
+        "bytes": 5370,
+        "sha256": "c3094f0aff192ed219da9cc752153ac6e7a745fa9f12c4811d484ede79f27798"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "594361b0723f118e93a192bda126e35e2fa9775e",
+        "bytes": 5370,
+        "sha256": "c3094f0aff192ed219da9cc752153ac6e7a745fa9f12c4811d484ede79f27798"
+      },
+      "changed": false
+    },
+    {
+      "path": "apps/api/prisma/migrations/20280913030000_legiwatch_research_evidence/migration.sql",
+      "locators": "7-81",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "c5f88b11c13178a14c31ec4da16e7e7d39da2a5b",
+        "bytes": 6134,
+        "sha256": "8765717e8721622753a2edd0271104c7187e4f3d86ade2eb42ead30974124754"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "c5f88b11c13178a14c31ec4da16e7e7d39da2a5b",
+        "bytes": 6134,
+        "sha256": "8765717e8721622753a2edd0271104c7187e4f3d86ade2eb42ead30974124754"
+      },
+      "changed": false
+    },
+    {
+      "path": "apps/intel-api/prisma/migrations/20260914030000_legiwatch_news_editorial/migration.sql",
+      "locators": "1-7;19-24;46-58",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "80fb35d806012b6b92d9853a33e1532ac23e20ed",
+        "bytes": 5034,
+        "sha256": "d5022a966dda0a942d3f71bbb5f850a8876e3f8c9e2b2a0269244bf9c898d30d"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "80fb35d806012b6b92d9853a33e1532ac23e20ed",
+        "bytes": 5034,
+        "sha256": "d5022a966dda0a942d3f71bbb5f850a8876e3f8c9e2b2a0269244bf9c898d30d"
+      },
+      "changed": false
+    },
+    {
+      "path": "apps/intel-api/src/tracker/editorial/publisher-coverage.ts",
+      "locators": "1-172",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "97469ba25111d14a8e0600f94f20dc2e623a1083",
+        "bytes": 6455,
+        "sha256": "58ef06632d863765677fbfc85ce8a7ee699d5113a44976cb7b8f9aeb5a6dc458"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "97469ba25111d14a8e0600f94f20dc2e623a1083",
+        "bytes": 6455,
+        "sha256": "58ef06632d863765677fbfc85ce8a7ee699d5113a44976cb7b8f9aeb5a6dc458"
+      },
+      "changed": false
+    },
+    {
+      "path": "packages/shared/src/legiwatch-query.ts",
+      "locators": "1-28;138-220",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "9eb7ee5feefa95c514d46c87f291c9b2c36190ba",
+        "bytes": 10141,
+        "sha256": "94a5cfcdbbff33132a9a8b0766e6a1f2856e2d395bdba180af5da20fe41a045c"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "9eb7ee5feefa95c514d46c87f291c9b2c36190ba",
+        "bytes": 10141,
+        "sha256": "94a5cfcdbbff33132a9a8b0766e6a1f2856e2d395bdba180af5da20fe41a045c"
+      },
+      "changed": false
+    },
+    {
+      "path": "packages/shared/src/legiwatch-phase8.ts",
+      "locators": "1-108",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "fac862c0a96fdc47d92800629b566c0caef78981",
+        "bytes": 8328,
+        "sha256": "11ea686e845a02f022f2bd2fc0687b08a2a0be464ada912e0ae40e94f616f6f0"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "fac862c0a96fdc47d92800629b566c0caef78981",
+        "bytes": 8328,
+        "sha256": "11ea686e845a02f022f2bd2fc0687b08a2a0be464ada912e0ae40e94f616f6f0"
+      },
+      "changed": false
+    },
+    {
+      "path": "packages/shared/src/legislative-research.ts",
+      "locators": "243-274",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "ce3c93ae310885884a20f0a169062a9378dcdfb0",
+        "bytes": 13892,
+        "sha256": "1ca1772ecb3ac924660f41eb181bf252c4d7989747287af7e238402491295826"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "ce3c93ae310885884a20f0a169062a9378dcdfb0",
+        "bytes": 13892,
+        "sha256": "1ca1772ecb3ac924660f41eb181bf252c4d7989747287af7e238402491295826"
+      },
+      "changed": false
+    },
+    {
+      "path": "apps/intel-api/src/tracker/folders/folder-tracker.service.ts",
+      "locators": "82-113",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "54d6b4d39312ee00a39a07d586225a67663562aa",
+        "bytes": 31547,
+        "sha256": "94c30c05db367ce4dfe7b526d1ed6d8693c157321fac70a3cf83c6a858ecedac"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "54d6b4d39312ee00a39a07d586225a67663562aa",
+        "bytes": 31547,
+        "sha256": "94c30c05db367ce4dfe7b526d1ed6d8693c157321fac70a3cf83c6a858ecedac"
+      },
+      "changed": false
+    },
+    {
+      "path": "packages/shared/src/funding-opportunities-v2.ts",
+      "locators": "151-176",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "5bb5d2a100fe0e312092e0b69c65314abfe8ffa4",
+        "bytes": 14664,
+        "sha256": "37fe8499b219d9eb29e288744ca840149fe35f5f7ac5e328a58a03add2257893"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "5bb5d2a100fe0e312092e0b69c65314abfe8ffa4",
+        "bytes": 14664,
+        "sha256": "37fe8499b219d9eb29e288744ca840149fe35f5f7ac5e328a58a03add2257893"
+      },
+      "changed": false
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/funding-opportunity-v2-search.service.ts",
+      "locators": "251-265",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "58f26631019a716b01894829a192b910b65db566",
+        "bytes": 20014,
+        "sha256": "e529feb5f9075344451f70c55025831eab39440a5a333d3b4702bfe5d3fbe182"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "58f26631019a716b01894829a192b910b65db566",
+        "bytes": 20014,
+        "sha256": "e529feb5f9075344451f70c55025831eab39440a5a333d3b4702bfe5d3fbe182"
+      },
+      "changed": false
+    },
+    {
+      "path": "apps/api/src/program-element/program-element-read.service.ts",
+      "locators": "60-144;218-320;450-547;950-1318;2850-2896",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "d507cb15aaf58744b32488f77cb4a0334ed99738",
+        "bytes": 125497,
+        "sha256": "b4f4b51a5817ef600c94c1ce7de9feffd539dcddd90e5c7e9b185504c6bb75d0"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "d507cb15aaf58744b32488f77cb4a0334ed99738",
+        "bytes": 125497,
+        "sha256": "b4f4b51a5817ef600c94c1ce7de9feffd539dcddd90e5c7e9b185504c6bb75d0"
+      },
+      "changed": false
+    },
+    {
+      "path": "apps/api/src/meri/meri-defense-budget-tool.helpers.ts",
+      "locators": "27-208",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "ea718e05cef88f99a9f65b4dc8bf8983e11653e7",
+        "bytes": 8205,
+        "sha256": "debfa5525c2cc48a280e907646cbd802e3a83c54b3d1ad9997e1e448ee5a4b0c"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "ea718e05cef88f99a9f65b4dc8bf8983e11653e7",
+        "bytes": 8205,
+        "sha256": "debfa5525c2cc48a280e907646cbd802e3a83c54b3d1ad9997e1e448ee5a4b0c"
+      },
+      "changed": false
+    },
+    {
+      "path": "packages/shared/src/funding-claim.ts",
+      "locators": "16-117",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "834cfdc097ac170d4f96b79edc88fa669bb56039",
+        "bytes": 25949,
+        "sha256": "2f820f5891ff140038224b4a8114c4ec83f3353c4083ec362e0730f2a14a77ab"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "834cfdc097ac170d4f96b79edc88fa669bb56039",
+        "bytes": 25949,
+        "sha256": "2f820f5891ff140038224b4a8114c4ec83f3353c4083ec362e0730f2a14a77ab"
+      },
+      "changed": false
+    },
+    {
+      "path": "packages/shared/src/index.ts",
+      "locators": "2435-2506",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "62eb32931826f77abd985bc142f6a65adad6a23a",
+        "bytes": 273389,
+        "sha256": "1a713331de044768f7bd8631db4762a08a3c3541a1bbc064c67bbff46fc9a75f"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "62eb32931826f77abd985bc142f6a65adad6a23a",
+        "bytes": 273389,
+        "sha256": "1a713331de044768f7bd8631db4762a08a3c3541a1bbc064c67bbff46fc9a75f"
+      },
+      "changed": false
+    },
+    {
+      "path": "apps/api/src/common/meri-evidence-accuracy-flags.ts",
+      "locators": "1-32",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "85da1c54f1ea81e505bed6e97ca9ac697234b8cb",
+        "bytes": 943,
+        "sha256": "8ad0a799f03ebdc11301969123c48b817d0669efc8240d7be154ff3745ade161"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "85da1c54f1ea81e505bed6e97ca9ac697234b8cb",
+        "bytes": 943,
+        "sha256": "8ad0a799f03ebdc11301969123c48b817d0669efc8240d7be154ff3745ade161"
+      },
+      "changed": false
+    },
+    {
+      "path": "apps/api/src/program-element/budget-line-lineage.ts",
+      "locators": "1-51",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "16e6ba6e175b851dad614b60e4a9b59978e8ea05",
+        "bytes": 1472,
+        "sha256": "17183dbb6e7e6ecc2f959b8cc641897795d91ef7c9b6a6b195b9dc2f83d46b0f"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "16e6ba6e175b851dad614b60e4a9b59978e8ea05",
+        "bytes": 1472,
+        "sha256": "17183dbb6e7e6ecc2f959b8cc641897795d91ef7c9b6a6b195b9dc2f83d46b0f"
+      },
+      "changed": false
+    },
+    {
+      "path": "apps/api/src/program-element/models/conference-probability.service.ts",
+      "locators": "1-85;192-248",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "9f7b1d57e4a70a9635202736438f1a92dcdc3d28",
+        "bytes": 10840,
+        "sha256": "b04584ce38a0f52cbdf0ea786368bdb9a02df0b6f59dd0bdcf83a2a4f10ee835"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "9f7b1d57e4a70a9635202736438f1a92dcdc3d28",
+        "bytes": 10840,
+        "sha256": "b04584ce38a0f52cbdf0ea786368bdb9a02df0b6f59dd0bdcf83a2a4f10ee835"
+      },
+      "changed": false
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/meri-opportunity-tools.adapter.ts",
+      "locators": "35-85;190;205-250",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "ce2ec030bbadc55e102d9fb54384b1c592c4ff5f",
+        "bytes": 52923,
+        "sha256": "5f7e77815be258c1310cd7ce14277e20fed8277418b5adc5d0b73cb771ed475a"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "ce2ec030bbadc55e102d9fb54384b1c592c4ff5f",
+        "bytes": 52923,
+        "sha256": "5f7e77815be258c1310cd7ce14277e20fed8277418b5adc5d0b73cb771ed475a"
+      },
+      "changed": false
+    },
+    {
+      "path": "packages/shared/src/schedule/deadline.ts",
+      "locators": "1-73",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "f16e2aee4f71a5b0bd2b57b881a189e6e64a496f",
+        "bytes": 2333,
+        "sha256": "69aab17c2a329fcfded00e7f3e8ebf3ebffebb1800b37e555efacb6901f08c9e"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "f16e2aee4f71a5b0bd2b57b881a189e6e64a496f",
+        "bytes": 2333,
+        "sha256": "69aab17c2a329fcfded00e7f3e8ebf3ebffebb1800b37e555efacb6901f08c9e"
+      },
+      "changed": false
+    },
+    {
+      "path": "apps/api/prisma/schema.prisma",
+      "locators": "ProgramElement;ProgramElementYear;ProgramElementMilestone;SamOpportunity",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "cdf1923217edae6e7624993796a5671922b61ac0",
+        "bytes": 968034,
+        "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "cdf1923217edae6e7624993796a5671922b61ac0",
+        "bytes": 968034,
+        "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0"
+      },
+      "changed": false
+    },
+    {
+      "path": "apps/api/src/meri/analytics/query-spec-compiler.ts",
+      "locators": "1-456",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "09f725aafc574122a5e3c1472172b428ce8f7990",
+        "bytes": 15620,
+        "sha256": "05adaab570c9aeb95c8ef09a8ef71aa671c75550bb3cb69d8dda5c10d75dd4e2"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "09f725aafc574122a5e3c1472172b428ce8f7990",
+        "bytes": 15620,
+        "sha256": "05adaab570c9aeb95c8ef09a8ef71aa671c75550bb3cb69d8dda5c10d75dd4e2"
+      },
+      "changed": false
+    },
+    {
+      "path": "apps/api/src/meri/analytics/analytics-db.service.ts",
+      "locators": "1-124",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "9837cc5bcbc3c6bdb716c762243bd02758a5e5e5",
+        "bytes": 5505,
+        "sha256": "4db4114db5ffd13372a7406f78ce9a2fbc9ef202c06654b2b9fac09b09dc3056"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "9837cc5bcbc3c6bdb716c762243bd02758a5e5e5",
+        "bytes": 5505,
+        "sha256": "4db4114db5ffd13372a7406f78ce9a2fbc9ef202c06654b2b9fac09b09dc3056"
+      },
+      "changed": false
+    },
+    {
+      "path": "apps/api/src/meri/analytics/global-dataset-registry.ts",
+      "locators": "23-75;331-347 (previous accepted dataset metadata dependency)",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "806b994acd7b368bc5f686d786a39f1f7e0cd556",
+        "bytes": 18687,
+        "sha256": "7cec9500bda0a620493262ab5e73a826572e69b5d1dcb7e1e685f73dae009174"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "806b994acd7b368bc5f686d786a39f1f7e0cd556",
+        "bytes": 18687,
+        "sha256": "7cec9500bda0a620493262ab5e73a826572e69b5d1dcb7e1e685f73dae009174"
+      },
+      "changed": false
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/meri-sam-source-freshness.spec.ts",
+      "locators": "1-39 inspected assertions, not executed",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "0eb9bdb340ca2832f9a1d6f1313ab590caf1868d",
+        "bytes": 2263,
+        "sha256": "bd159c3105610f1b2fea321075bb03fc99634e580a56b961e129b242e2fffb84"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "0eb9bdb340ca2832f9a1d6f1313ab590caf1868d",
+        "bytes": 2263,
+        "sha256": "bd159c3105610f1b2fea321075bb03fc99634e580a56b961e129b242e2fffb84"
+      },
+      "changed": false
+    },
+    {
+      "path": "apps/api/src/meri/analytics/analytics-db.service.spec.ts",
+      "locators": "4-29 inspected assertions;31-83 test-name inventory, not executed",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "576ece9a017df85e3a67e01fe7c957d1ccc5770c",
+        "bytes": 3032,
+        "sha256": "7dd0016ce62898028c43c9e61c300981eec98cb8993234f99aac99a3058de278"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "576ece9a017df85e3a67e01fe7c957d1ccc5770c",
+        "bytes": 3032,
+        "sha256": "7dd0016ce62898028c43c9e61c300981eec98cb8993234f99aac99a3058de278"
+      },
+      "changed": false
+    },
+    {
+      "path": "apps/api/src/meri/analytics/query-spec-compiler.spec.ts",
+      "locators": "test-name inventory only, not executed",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "524a5833bae8d4e3de4f3d35859f3224cd86d8e3",
+        "bytes": 8786,
+        "sha256": "e0ce57a2f30b3853f368f3aff0538b82a33f8208beb5a7065bd3d40ed20a43a6"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "524a5833bae8d4e3de4f3d35859f3224cd86d8e3",
+        "bytes": 8786,
+        "sha256": "e0ce57a2f30b3853f368f3aff0538b82a33f8208beb5a7065bd3d40ed20a43a6"
+      },
+      "changed": false
+    },
+    {
+      "path": "apps/api/src/meri/meri-defense-budget-tool.helpers.spec.ts",
+      "locators": "test-name inventory only, not executed",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "f0a4062a9e2333f4827d340ccd6a62c2d3a5210a",
+        "bytes": 6545,
+        "sha256": "77e8dec72baca3bf43ef315c5ae65bfbb765f04e4e36d67e106e2d45ca779c72"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "f0a4062a9e2333f4827d340ccd6a62c2d3a5210a",
+        "bytes": 6545,
+        "sha256": "77e8dec72baca3bf43ef315c5ae65bfbb765f04e4e36d67e106e2d45ca779c72"
+      },
+      "changed": false
+    },
+    {
+      "path": "apps/intel-api/src/tracker/editorial/publisher-coverage.spec.ts",
+      "locators": "test-name inventory only, not executed",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "7086a4381b4ac561228cef7cdd8afce84db0c251",
+        "bytes": 6274,
+        "sha256": "616581ddb4d2366caa348b4a0869abb7caf703c946103a6172fb822ffada3dc5"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "7086a4381b4ac561228cef7cdd8afce84db0c251",
+        "bytes": 6274,
+        "sha256": "616581ddb4d2366caa348b4a0869abb7caf703c946103a6172fb822ffada3dc5"
+      },
+      "changed": false
+    },
+    {
+      "path": "apps/intel-api/src/tracker/research/research-domain.spec.ts",
+      "locators": "test-name inventory only, not executed",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "584f901a1fe1a49df166adac43ea086dc3207343",
+        "bytes": 6960,
+        "sha256": "3c0dd5e07da7d300ea45cf3fdf2e65d979187de0b022efb8693cf9d4c1659aec"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "584f901a1fe1a49df166adac43ea086dc3207343",
+        "bytes": 6960,
+        "sha256": "3c0dd5e07da7d300ea45cf3fdf2e65d979187de0b022efb8693cf9d4c1659aec"
+      },
+      "changed": false
+    }
+  ]
+}
