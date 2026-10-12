@@ -163,3 +163,9 @@ test('actual canonical resolver preserves request, hashes effective selection an
  const operation=resolver.resolveOperationContract({id,version:'0.2.0'}),request={clientId:'Synthetic'},c=resolved('Synthetic'),n=operation.normalizeInput(request,c);request.clientId='mutated';assert.equal(n.request.clientId,'Synthetic');assert.equal(n.input.clientId,cid);assert.match(n.argumentsSha256,/^[a-f0-9]{64}$/);assert(Object.isFrozen(n.request));
  assert.doesNotThrow(()=>operation.assertOutput(output(c),{...c,request:n.request}));assert.throws(()=>operation.assertOutput(output(c),c));assert.throws(()=>operation.normalizeInput({}, {...context(),role:'admin'}));
 });
+
+test('client UUID identity survives trailing whitespace introduced by the80unit cap',()=>{
+ const raw=`${cid}${' '.repeat(44)}x`,selector=raw.slice(0,80);
+ const valid=resolved(selector,cid);assert.equal(v.normalizeInput(id,{clientId:raw},valid).input.clientId,cid);
+ assert.throws(()=>v.normalizeInput(id,{clientId:raw},resolved(selector,other)));
+});
