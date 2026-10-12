@@ -1,0 +1,168 @@
+{
+  "references": [
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 415704,
+          "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194",
+          "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 415704,
+          "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194",
+          "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/program-element/program-element-read.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 125497,
+          "sha256": "b4f4b51a5817ef600c94c1ce7de9feffd539dcddd90e5c7e9b185504c6bb75d0",
+          "blob": "d507cb15aaf58744b32488f77cb4a0334ed99738"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 125497,
+          "sha256": "b4f4b51a5817ef600c94c1ce7de9feffd539dcddd90e5c7e9b185504c6bb75d0",
+          "blob": "d507cb15aaf58744b32488f77cb4a0334ed99738"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/prisma/schema.prisma",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 968034,
+          "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0",
+          "blob": "cdf1923217edae6e7624993796a5671922b61ac0"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 968034,
+          "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0",
+          "blob": "cdf1923217edae6e7624993796a5671922b61ac0"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/meri-opportunity-tools.adapter.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 52923,
+          "sha256": "5f7e77815be258c1310cd7ce14277e20fed8277418b5adc5d0b73cb771ed475a",
+          "blob": "ce2ec030bbadc55e102d9fb54384b1c592c4ff5f"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 52923,
+          "sha256": "5f7e77815be258c1310cd7ce14277e20fed8277418b5adc5d0b73cb771ed475a",
+          "blob": "ce2ec030bbadc55e102d9fb54384b1c592c4ff5f"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/funding-opportunity-v2-search.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 20014,
+          "sha256": "e529feb5f9075344451f70c55025831eab39440a5a333d3b4702bfe5d3fbe182",
+          "blob": "58f26631019a716b01894829a192b910b65db566"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 20014,
+          "sha256": "e529feb5f9075344451f70c55025831eab39440a5a333d3b4702bfe5d3fbe182",
+          "blob": "58f26631019a716b01894829a192b910b65db566"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/funding-opportunity-source-access.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 1711,
+          "sha256": "1d79bae9ca93e47629e1a2791b0163141f0bb9fe830bc55dfeb1e8252412237c",
+          "blob": "606cfacb3874ce0b5d2b3cb6593f85077fb6b3da"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 1711,
+          "sha256": "1d79bae9ca93e47629e1a2791b0163141f0bb9fe830bc55dfeb1e8252412237c",
+          "blob": "606cfacb3874ce0b5d2b3cb6593f85077fb6b3da"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "packages/shared/src/funding-opportunities-v2.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 14664,
+          "sha256": "37fe8499b219d9eb29e288744ca840149fe35f5f7ac5e328a58a03add2257893",
+          "blob": "5bb5d2a100fe0e312092e0b69c65314abfe8ffa4"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 14664,
+          "sha256": "37fe8499b219d9eb29e288744ca840149fe35f5f7ac5e328a58a03add2257893",
+          "blob": "5bb5d2a100fe0e312092e0b69c65314abfe8ffa4"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "packages/shared/src/schedule/deadline.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 2333,
+          "sha256": "69aab17c2a329fcfded00e7f3e8ebf3ebffebb1800b37e555efacb6901f08c9e",
+          "blob": "f16e2aee4f71a5b0bd2b57b881a189e6e64a496f"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 2333,
+          "sha256": "69aab17c2a329fcfded00e7f3e8ebf3ebffebb1800b37e555efacb6901f08c9e",
+          "blob": "f16e2aee4f71a5b0bd2b57b881a189e6e64a496f"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/common/meri-evidence-accuracy-flags.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 943,
+          "sha256": "8ad0a799f03ebdc11301969123c48b817d0669efc8240d7be154ff3745ade161",
+          "blob": "85da1c54f1ea81e505bed6e97ca9ac697234b8cb"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 943,
+          "sha256": "8ad0a799f03ebdc11301969123c48b817d0669efc8240d7be154ff3745ade161",
+          "blob": "85da1c54f1ea81e505bed6e97ca9ac697234b8cb"
+        }
+      ],
+      "unchanged": true
+    }
+  ],
+  "privateBodiesRetained": false,
+  "executed": false
+}
