@@ -4,7 +4,9 @@
   "change": "git sparse-checkout add without --no-cone expanded only this owned worktree to exact baseline r2 docs and gateway sources; existence asserted before rerun.",
   "failedReceipts": [
     "repaired-focused.json",
-    "repaired-focused-complete.json"
+    "repaired-focused-complete.json",
+    "repaired-focused-final.json"
   ],
-  "rerun": "repaired-focused-final"
+  "rerun": "repaired-focused-all-inputs",
+  "additionalMissingDependency": "The connected reference suite also requires two frozen baseline evidence files. Enumerated its readFileSync sites; exact baseline files now present."
 }
