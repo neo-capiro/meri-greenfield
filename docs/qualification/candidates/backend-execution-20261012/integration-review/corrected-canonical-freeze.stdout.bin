@@ -1,0 +1,35 @@
+✔ actual read_chat_attachments raw admission normalizer digest and closed context (9.957648ms)
+✔ actual read_monday_client_boards raw admission normalizer digest and closed context (1.265759ms)
+✔ actual get_client_context raw admission normalizer digest and closed context (7.721105ms)
+✔ actual search_client_knowledge raw admission normalizer digest and closed context (1.570108ms)
+✔ actual query_knowledge_graph raw admission normalizer digest and closed context (1.302154ms)
+✔ actual search_memory raw admission normalizer digest and closed context (1.807837ms)
+✔ actual search_research_sources raw admission normalizer digest and closed context (1.254843ms)
+✔ actual search_legislative_research raw admission normalizer digest and closed context (2.604759ms)
+✔ actual get_legal_reference raw admission normalizer digest and closed context (1.268814ms)
+✔ actual query_global_data raw admission normalizer digest and closed context (3.074927ms)
+✔ actual search_committee_hearings raw admission normalizer digest and closed context (1.801758ms)
+✔ actual search_legiwatch_news raw admission normalizer digest and closed context (3.701122ms)
+✔ actual actions.query raw admission normalizer digest and closed context (3.054247ms)
+✔ actual search_client_knowledge output callback strips only request carrier (0.524231ms)
+✔ actual query_knowledge_graph output callback strips only request carrier (0.455357ms)
+✔ actual search_memory output callback strips only request carrier (0.228705ms)
+✔ actual search_research_sources output callback strips only request carrier (0.256377ms)
+✔ actual query_global_data output callback strips only request carrier (0.545864ms)
+✔ actual actions.query output callback strips only request carrier (0.450069ms)
+✔ client request references cannot substitute current trusted resolution or scope (0.852946ms)
+✔ partial action descriptor remains disabled while one full same-native successor owns mapping (0.309497ms)
+✔ supersession mutations cannot broaden the concrete same-native replacement exception (79.100807ms)
+✔ all original139/96selected/43deferred remain tracked with84typed/83mapped/13pending (6.105148ms)
+✔ all84 actual production operations reject before authority source or budget ports (8.860093ms)
+✔ private loader composes pending-only memory proposal through whole public command (3.184383ms)
+✔ gateway lifetime extraction preserves shrink-only deadline error identity and exact uncertainty behavior (0.928971ms)
+✔ lifetime cancellation suppresses not-yet-started work and removes owned timer (0.234093ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2599.388996

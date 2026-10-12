@@ -1,0 +1,10 @@
+{
+  "scope": "IMMUTABLE_SOURCE_COMPARISON_NOT_RUNTIME",
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "source": "ea94aff840424843b4b6efbfc21fb9d195f7ff54",
+  "packet": "095ff4fc",
+  "checks": 398,
+  "passed": 398,
+  "failures": [],
+  "lifetimeRawSummary": " and late completion starts no subsequent work (22.838732ms)\n✔ parked body is bounded and late completion starts no subsequent work (21.990869ms)\n✔ canonical production gateway stays unavailable and never requests source credentials (7.834754ms)\nℹ tests 147\nℹ suites 0\nℹ pass 147\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 4883.859592\n"
+}

@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/backend-execution-integration-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-backend-execution-integration-review-20261012",
+  "sourceHead": "1d2c1a0cb142f5e51189ac49222ba2092c20e941",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T21:29:46.405576+00:00",
+  "durationSeconds": 2.672,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 333583,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/corrected-canonical-freeze.stdout.bin",
+      "bytes": 2722,
+      "sha256": "9de73dc97c178535ba3adc87ad875bda37d886fd14428ff3fbe468b279a97fff"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/corrected-canonical-freeze.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,7 @@
+{
+  "scope": "reviewer read-only inspection",
+  "initialAssumption": "An ad-hoc read-only catalog inspection used originalTools instead of the actual originals key.",
+  "observedFailure": "TypeError: Cannot read properties of undefined (reading '0')",
+  "correction": "Use the existing originals key. No production or test assertion changed; the executable source audit reads that actual key.",
+  "sourceDefect": false
+}
