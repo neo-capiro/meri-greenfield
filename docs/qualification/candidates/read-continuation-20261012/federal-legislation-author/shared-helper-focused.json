@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-federal-legislation.test.mjs"
+  ],
+  "cwd": "/workspace/meri-federal-legislation-20261012",
+  "sourceHead": "bcf36777b6f3fab94bec144c129e9143c18c8857",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T17:01:41.326446+00:00",
+  "durationSeconds": 0.316,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 170618,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/federal-legislation-author/shared-helper-focused.stdout.bin",
+      "bytes": 3276,
+      "sha256": "d96960c1958baaeed63c75f8d5974599c769da8e97b57a792d045e65fc4b111d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/federal-legislation-author/shared-helper-focused.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Root allocated shared congressional selector helper for two actual families; same32 controls retained plus direct primitive/context helper control.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

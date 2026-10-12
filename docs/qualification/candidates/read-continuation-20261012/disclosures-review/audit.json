@@ -1,0 +1,338 @@
+{
+  "base": "283c30f2b0d9e990caa5d680843a19281318df9c",
+  "source": "88c9257e10822396c30cc99fb277ab145aac7218",
+  "sourceTree": "8fe0985f01179c177f1cf273d1eaa24282160d85",
+  "author": "894aa91717e41619e6b8c140769fd41f1afee4ce",
+  "authorTree": "91c964216c6c7340090007382093997c66b78996",
+  "reviewHeadAtAudit": "1ce77b7505037a4e01e70e99baa710b8769e64c2",
+  "originalsPreserved": 5473,
+  "checks": [
+    {
+      "name": "originals preserved source",
+      "pass": true
+    },
+    {
+      "name": "originals preserved author",
+      "pass": true
+    },
+    {
+      "name": "originals preserved review",
+      "pass": true
+    },
+    {
+      "name": "exact frozen bytes packages/contracts/retrieval-0.2/disclosures-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact frozen bytes packages/contracts/retrieval-0.2/disclosures.schema.json",
+      "pass": true
+    },
+    {
+      "name": "exact frozen bytes packages/contracts/test/retrieval-disclosures.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "only allocated source additions",
+      "pass": true
+    },
+    {
+      "name": "metadata only after source",
+      "pass": true
+    },
+    {
+      "name": "private pinned hash apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "private observed hash apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "private pinned hash apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "name": "private observed hash apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "name": "private pinned hash apps/api/src/lda-intel/lda-intel.service.ts",
+      "pass": true
+    },
+    {
+      "name": "private observed hash apps/api/src/lda-intel/lda-intel.service.ts",
+      "pass": true
+    },
+    {
+      "name": "private pinned hash apps/api/src/lda-intel/lda-intel.controller.ts",
+      "pass": true
+    },
+    {
+      "name": "private observed hash apps/api/src/lda-intel/lda-intel.controller.ts",
+      "pass": true
+    },
+    {
+      "name": "private pinned hash apps/api/src/meri/meri.controller.ts",
+      "pass": true
+    },
+    {
+      "name": "private observed hash apps/api/src/meri/meri.controller.ts",
+      "pass": true
+    },
+    {
+      "name": "private pinned hash apps/api/src/auth/roles.guard.ts",
+      "pass": true
+    },
+    {
+      "name": "private observed hash apps/api/src/auth/roles.guard.ts",
+      "pass": true
+    },
+    {
+      "name": "private pinned hash apps/api/src/auth/roles.decorator.ts",
+      "pass": true
+    },
+    {
+      "name": "private observed hash apps/api/src/auth/roles.decorator.ts",
+      "pass": true
+    },
+    {
+      "name": "private pinned hash apps/api/src/meri/tool-service-secret.guard.ts",
+      "pass": true
+    },
+    {
+      "name": "private observed hash apps/api/src/meri/tool-service-secret.guard.ts",
+      "pass": true
+    },
+    {
+      "name": "private pinned hash packages/shared/src/index.ts",
+      "pass": true
+    },
+    {
+      "name": "private observed hash packages/shared/src/index.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned unique identity SecFiling.id",
+      "pass": true
+    },
+    {
+      "name": "pinned unique identity SecFiling.accessionNumber",
+      "pass": true
+    },
+    {
+      "name": "pinned unique identity FaraRegistration.id",
+      "pass": true
+    },
+    {
+      "name": "pinned unique identity FaraRegistration.registrationNumber",
+      "pass": true
+    },
+    {
+      "name": "pinned unique identity LdaFiling.filingUuid",
+      "pass": true
+    },
+    {
+      "name": "pinned date-only SecFiling",
+      "pass": true
+    },
+    {
+      "name": "pinned date-only FaraRegistration",
+      "pass": true
+    },
+    {
+      "name": "projected row exact fields Sec",
+      "pass": true
+    },
+    {
+      "name": "projected envelope fields Sec",
+      "pass": true
+    },
+    {
+      "name": "fifty row transport cap Sec",
+      "pass": true
+    },
+    {
+      "name": "projected row exact fields Fara",
+      "pass": true
+    },
+    {
+      "name": "projected envelope fields Fara",
+      "pass": true
+    },
+    {
+      "name": "fifty row transport cap Fara",
+      "pass": true
+    },
+    {
+      "name": "projected row exact fields Lda",
+      "pass": true
+    },
+    {
+      "name": "projected envelope fields Lda",
+      "pass": true
+    },
+    {
+      "name": "fifty row transport cap Lda",
+      "pass": true
+    },
+    {
+      "name": "empty global options context",
+      "pass": true
+    },
+    {
+      "name": "single canonical snapshot import",
+      "pass": true
+    },
+    {
+      "name": "only factory exported",
+      "pass": true
+    },
+    {
+      "name": "no effects in pure family",
+      "pass": true
+    },
+    {
+      "name": "separate row/count searchSecFilings",
+      "pass": true
+    },
+    {
+      "name": "no mutation/provider call in inspected method searchSecFilings",
+      "pass": true
+    },
+    {
+      "name": "separate row/count searchFaraRegistrations",
+      "pass": true
+    },
+    {
+      "name": "no mutation/provider call in inspected method searchFaraRegistrations",
+      "pass": true
+    },
+    {
+      "name": "separate row/count getFilings",
+      "pass": true
+    },
+    {
+      "name": "no mutation/provider call in inspected method getFilings",
+      "pass": true
+    },
+    {
+      "name": "controller role metadata apps/api/src/meri/meri.controller.ts",
+      "pass": true
+    },
+    {
+      "name": "controller role metadata apps/api/src/lda-intel/lda-intel.controller.ts",
+      "pass": true
+    },
+    {
+      "name": "conditional secret guard present",
+      "pass": true
+    },
+    {
+      "name": "role rank owner exists",
+      "pass": true
+    },
+    {
+      "name": "LDA storage client identity is Int nullable",
+      "pass": true
+    },
+    {
+      "name": "LDA no tenant field",
+      "pass": true
+    },
+    {
+      "name": "LDA stored nullable Decimal income",
+      "pass": true
+    },
+    {
+      "name": "LDA stored nullable Decimal expenses",
+      "pass": true
+    },
+    {
+      "name": "owned group absent prefreeze-independent",
+      "pass": true
+    },
+    {
+      "name": "raw stream identity docs/qualification/candidates/read-continuation-20261012/disclosures-review/prefreeze-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw stream identity docs/qualification/candidates/read-continuation-20261012/disclosures-review/prefreeze-independent.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "stderr empty prefreeze-independent",
+      "pass": true
+    },
+    {
+      "name": "owned group absent operation-coercion",
+      "pass": true
+    },
+    {
+      "name": "raw stream identity docs/qualification/candidates/read-continuation-20261012/disclosures-review/operation-coercion.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw stream identity docs/qualification/candidates/read-continuation-20261012/disclosures-review/operation-coercion.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "stderr empty operation-coercion",
+      "pass": true
+    },
+    {
+      "name": "owned group absent exact-source-tests",
+      "pass": true
+    },
+    {
+      "name": "raw stream identity docs/qualification/candidates/read-continuation-20261012/disclosures-review/exact-source-tests.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw stream identity docs/qualification/candidates/read-continuation-20261012/disclosures-review/exact-source-tests.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "stderr empty exact-source-tests",
+      "pass": true
+    },
+    {
+      "name": "negative preimage retained packages/contracts/retrieval-0.2/disclosures-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "negative preimage retained packages/contracts/retrieval-0.2/disclosures.schema.json",
+      "pass": true
+    },
+    {
+      "name": "no entire private bodies copied",
+      "pass": true
+    },
+    {
+      "name": "source whitespace",
+      "pass": true
+    }
+  ],
+  "sourceIdentities": [
+    {
+      "path": "packages/contracts/retrieval-0.2/disclosures-validation.mjs",
+      "bytes": 5641,
+      "sha256": "bc3a2884e72ac84de87658e6b540398e7ba20e24ea512bdf9254acafe0b91da1",
+      "blob": "341abe8abc3efe9f8103e471902ca2481363fc47"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/disclosures.schema.json",
+      "bytes": 15855,
+      "sha256": "80e6c104e75821e9cfe2861b19073b1e83ea17f87a3efd5e90b77edd4eba8c3f",
+      "blob": "760abc2be5cb0fc9b96ec909fc3a21359c9fdf7e"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-disclosures.test.mjs",
+      "bytes": 14784,
+      "sha256": "a65252212259bd11d701aebe57f4cb55a80c88c2b53ebb40bb44853052d16280",
+      "blob": "3570974f79c302c618e2d6e548880fede86ed8d4"
+    }
+  ],
+  "privateBodiesPublished": false,
+  "privateSourceExecuted": false,
+  "runtime": "UNRUN_UNAVAILABLE"
+}

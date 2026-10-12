@@ -1,0 +1,7 @@
+{
+  "previousCommit": "5611011",
+  "incorrectInterpretation": "hasMore used returned groups after trimming",
+  "correction": "listed is captured at helper line302 before trimming; hasMore uses pre-trim groups, returned+omitted",
+  "evidence": "Independent AST re-read of listed declaration and build closure; source unchanged",
+  "authorAlertAcknowledged": true
+}

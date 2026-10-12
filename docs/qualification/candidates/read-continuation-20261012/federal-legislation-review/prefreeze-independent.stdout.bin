@@ -1,0 +1,88 @@
+✖ independent bill invalid unavailable found and ordinary vote branches admit (9.453583ms)
+✔ default congress is explicit trusted context with no model authority fields (1.80637ms)
+✔ bill designation grammar preserves canonical and explicit congress precedence (3.855005ms)
+✔ bill invalid and unavailable branches cannot claim resolved or successful data (1.589093ms)
+✖ bill source owner labels and resolved bill/congress stay correlated (1.458205ms)
+✔ stored unknown null and empty statuses retain exact label semantics (1.171223ms)
+✔ actions and direct floor votes have separate fifteen-row windows without count proof (2.756921ms)
+✔ governing rule uniqueness and three-vote bound do not imply history completeness (0.776129ms)
+✔ bill date fields preserve date-only latestAction but general status/action instants (0.884462ms)
+✔ each bill action and vote history descends while tied dates remain admissible (0.868618ms)
+✔ opaque partyTotals and signed Int storage fields are not turned into tally or outcome proof (1.327138ms)
+✔ floor votes count is returned length and request bound not a global source count (4.066813ms)
+✔ floor exact bill/chamber/congress selectors refuse substitution (0.614846ms)
+✔ invalid floor bill/chamber become no filter rather than an invented scoped request (0.427173ms)
+✖ floor member not-found and ambiguous branches are empty and conditional (0.265249ms)
+✔ ambiguity requires bounded multiple distinct candidates and no resolved member (0.899554ms)
+✔ canonical member result matches requested identity and keeps conditional vote records (0.531921ms)
+✔ multiple matched member records are preserved but empty resolved nested match fails closed (0.298379ms)
+✔ votes without a matching source member cannot silently enter unfiltered success branch (0.297467ms)
+✔ full vote identity uniqueness and descending time keep ties without fabricated roll sequence (0.442126ms)
+✔ all nullable fields remain required and unprojected data cannot leak (1.400749ms)
+✔ operation selector, raw inputs and trusted options admit no coercion/accessor effects (0.210998ms)
+✔ nested arbitrary JSON rejects effects and non-JSON values without interpreting party totals (0.426792ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 20
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 282.18939
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-federal-legislation-independent.test.mjs:31:1
+✖ independent bill invalid unavailable found and ordinary vote branches admit (9.453583ms)
+  AssertionError [ERR_ASSERTION]: Invalid FederalBillStatusOutput
+  
+  false !== true
+  
+      at validateShape (file:///workspace/meri-federal-legislation-review-20261012/packages/contracts/test/retrieval-federal-legislation-independent.test.mjs:12:83)
+      at assertFederalLegislationOutput (file:///workspace/meri-federal-legislation-20261012/packages/contracts/retrieval-0.2/federal-legislation-validation.mjs:108:5)
+      at TestContext.<anonymous> (file:///workspace/meri-federal-legislation-review-20261012/packages/contracts/test/retrieval-federal-legislation-independent.test.mjs:32:3)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-federal-legislation-independent.test.mjs:47:1
+✖ bill source owner labels and resolved bill/congress stay correlated (1.458205ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at reject (file:///workspace/meri-federal-legislation-review-20261012/packages/contracts/test/retrieval-federal-legislation-independent.test.mjs:28:61)
+      at mutants (file:///workspace/meri-federal-legislation-review-20261012/packages/contracts/test/retrieval-federal-legislation-independent.test.mjs:29:93)
+      at TestContext.<anonymous> (file:///workspace/meri-federal-legislation-review-20261012/packages/contracts/test/retrieval-federal-legislation-independent.test.mjs:48:3)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-federal-legislation-independent.test.mjs:85:1
+✖ floor member not-found and ambiguous branches are empty and conditional (0.265249ms)
+  Error: Federal source refusal/warning note mismatch
+      at fail (file:///workspace/meri-federal-legislation-20261012/packages/contracts/retrieval-0.2/federal-legislation-validation.mjs:4:28)
+      at notes (file:///workspace/meri-federal-legislation-20261012/packages/contracts/retrieval-0.2/federal-legislation-validation.mjs:60:72)
+      at votes (file:///workspace/meri-federal-legislation-20261012/packages/contracts/retrieval-0.2/federal-legislation-validation.mjs:90:7)
+      at assertFederalLegislationOutput (file:///workspace/meri-federal-legislation-20261012/packages/contracts/retrieval-0.2/federal-legislation-validation.mjs:109:47)
+      at TestContext.<anonymous> (file:///workspace/meri-federal-legislation-review-20261012/packages/contracts/test/retrieval-federal-legislation-independent.test.mjs:86:94)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)

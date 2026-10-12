@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-bill-text-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-bill-text-review-20261012",
+  "sourceHead": "a6516d222252cd1447c9b1e46aed5aa392ccbae2",
+  "sourceDiffSha256": "7ce3e57d340ee0332ad8a323826f2ada43afaac09bbfffa89c8a4fe43bbbb1bd",
+  "sourceDiffBytes": 5994,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T17:11:52.309052+00:00",
+  "durationSeconds": 0.318,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 175598,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/independent-expanded.stdout.bin",
+      "bytes": 6701,
+      "sha256": "5c018df58a675ff20da73a2c570ccd2a556eab1c6efee5d7ba100384c07f10e4"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/independent-expanded.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "New locator framing, six-window, exact10500 serialization and EOF controls on repaired7caaac3; prior64 unchanged.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

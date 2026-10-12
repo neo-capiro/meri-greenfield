@@ -1,0 +1,73 @@
+{
+  "scope": "metadata-only discovery; no source/runtime acceptance",
+  "base": "01c75641b62bb586d130feda3468c0ddb4286e8f",
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-READ-CONTINUATION-REMAINING-DISCOVERY-20261012.md",
+      "bytes": 5791,
+      "sha256": "22cd0b657c2f470e36787d629929ff58f1efd6ec394911820328cef24e8c0e21"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/remaining-discovery/candidate-families.json",
+      "bytes": 14995,
+      "sha256": "a2edc5440636efa84a660410eefe3e05a4dad100727319430e348f951cb6c7ae"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/remaining-discovery/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/remaining-discovery/corrections.json",
+      "bytes": 1563,
+      "sha256": "874b641f752df28760623233e778828676ee6c4dbd06fce9b1f5aca8d5df6ab9"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/remaining-discovery/inventory-snapshot.json",
+      "bytes": 19812,
+      "sha256": "9c39d6402a27bb05bf46f7128ed4bc0d689bbc7e1ae438ffeb0c7f3011ab6630"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/remaining-discovery/metadata-verification.json",
+      "bytes": 1348,
+      "sha256": "fd029ff1ddfe77dfde27d21163352beeeb1fc4f49f342bc4fcf564503cf52cec"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/remaining-discovery/metadata-verification.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/remaining-discovery/metadata-verification.stdout.bin",
+      "bytes": 13435,
+      "sha256": "ea51312f1495b6a997233d7a6eb41d7bed84e1b4a79ab803ac6f70e04af6f051"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/remaining-discovery/outline.md",
+      "bytes": 1936,
+      "sha256": "d7d2a2c66c47b25fa2e0f35d4d2d22177771921ce593e94ced90dd09b0be5f0c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/remaining-discovery/pending-disposition.json",
+      "bytes": 38227,
+      "sha256": "2f58200999a00007cd1729d340f81b99217218280cd643c70a4affa19c28e4f8"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/remaining-discovery/reference-identities.json",
+      "bytes": 7373,
+      "sha256": "ab6a80b493760c645c44abd14fcf19b7516326f95ad563485f95426ea4ca1464"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/remaining-discovery/selected-command-boundaries.json",
+      "bytes": 3388,
+      "sha256": "1907db0f7abeb5efae8ce775afdb104550aec050e61cc42b1eec0ab54e408e5e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/remaining-discovery/verify-discovery.py",
+      "bytes": 3412,
+      "sha256": "ef549ea00d3108ca1320e03617b91ee4e8ef1a8b1c29a8a1cb759c6b479e22c8"
+    }
+  ],
+  "selfExcluded": true,
+  "supersedesManifestAt": "b3c405d15742f85a33743658a885fd024236b191"
+}

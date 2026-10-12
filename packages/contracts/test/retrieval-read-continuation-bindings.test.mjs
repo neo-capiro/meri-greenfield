@@ -1,3 +1,5 @@
+// Explicit next reviewed additions; prior descriptor values and hashes remain unchanged.
+const nextIds = ["search_sec_filings", "search_fara_registrations", "search_lda_filings", "search_acquisition_personnel", "get_acquisition_person", "get_bill_status", "search_floor_votes", "search_congress_bills", "read_bill_text"];
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -44,15 +46,15 @@ function output(id) {
 }
 
 test('reviewed continuation preserves139 originals and the exact prior21 descriptors',()=>{
-  assertCatalog(catalog);assert.equal(catalog.catalogVersion,'0.2.5');
+  assertCatalog(catalog);assert.equal(catalog.catalogVersion,'0.2.6');
   assert.equal(catalog.originals.length,139);assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);
   assert.equal(catalog.originals.filter(x=>x.disposition==='deferred').length,43);
-  assert.equal(catalog.operations.length,37);assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,36);
-  assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.state==='pending').length,60);
+  assert.equal(catalog.operations.length,46);assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,45);
+  assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.state==='pending').length,51);
   const baseline=JSON.parse(readFileSync(new URL('../../../docs/qualification/candidates/read-continuation-20261012/integration/pr24-catalog-baseline.json',import.meta.url)));
-  assert.deepEqual(catalog.operations.filter(x=>!additions.includes(x.operation.id)),baseline.operations);
+  assert.deepEqual(catalog.operations.filter(x=>!additions.includes(x.operation.id)&&!nextIds.includes(x.operation.id)),baseline.operations);
   for(const old of baseline.originals)assert.deepEqual(catalog.originals.find(x=>x.id===old.id),
-    additions.includes(old.id)?{...old,state:'mapped',replacement:{id:old.id,version:'0.2.0'}}:old);
+    (additions.includes(old.id)||nextIds.includes(old.id))?{...old,state:'mapped',replacement:{id:old.id,version:'0.2.0'}}:old);
 });
 
 for(const id of additions) {

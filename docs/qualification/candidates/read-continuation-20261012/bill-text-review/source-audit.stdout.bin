@@ -1,0 +1,189 @@
+{
+  "scope": "SOURCE_METADATA_ONLY",
+  "source": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "observed": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+  "passed": 44,
+  "failed": 1,
+  "results": [
+    {
+      "name": "apps/api/src/meri/meri-tools.service.ts: byte size",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-tools.service.ts: SHA256",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-tools.service.ts: observed bytes unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/schema.prisma: byte size",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/schema.prisma: SHA256",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/schema.prisma: observed bytes unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/lda-intel/lda-intel.service.ts: byte size",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/lda-intel/lda-intel.service.ts: SHA256",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/lda-intel/lda-intel.service.ts: observed bytes unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-bill-text-search.ts: byte size",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-bill-text-search.ts: SHA256",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-bill-text-search.ts: observed bytes unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-bill-status-tool.spec.ts: byte size",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-bill-status-tool.spec.ts: SHA256",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-bill-status-tool.spec.ts: observed bytes unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-bill-text-search.spec.ts: byte size",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-bill-text-search.spec.ts: SHA256",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-bill-text-search.spec.ts: observed bytes unchanged",
+      "passed": true
+    },
+    {
+      "name": "packages/shared/src/index.ts: byte size",
+      "passed": true
+    },
+    {
+      "name": "packages/shared/src/index.ts: SHA256",
+      "passed": true
+    },
+    {
+      "name": "packages/shared/src/index.ts: observed bytes unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri.controller.ts: byte size",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri.controller.ts: SHA256",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri.controller.ts: observed bytes unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/auth/roles.guard.ts: byte size",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/auth/roles.guard.ts: SHA256",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/auth/roles.guard.ts: observed bytes unchanged",
+      "passed": true
+    },
+    {
+      "name": "searchCongressBills: exists",
+      "passed": true
+    },
+    {
+      "name": "searchCongressBills: no actor authority parameters",
+      "passed": true
+    },
+    {
+      "name": "readBillText: exists",
+      "passed": true
+    },
+    {
+      "name": "readBillText: no actor authority parameters",
+      "passed": true
+    },
+    {
+      "name": "locatedBillText: exists",
+      "passed": true
+    },
+    {
+      "name": "locatedBillText: no actor authority parameters",
+      "passed": false
+    },
+    {
+      "name": "CongressBill committees: Json",
+      "passed": true
+    },
+    {
+      "name": "CongressBill subjects: String[]",
+      "passed": true
+    },
+    {
+      "name": "CongressBill peCodes: String[]",
+      "passed": true
+    },
+    {
+      "name": "CongressBill cosponsorsCount: Int",
+      "passed": true
+    },
+    {
+      "name": "CongressBill introducedDate: DateTime?",
+      "passed": true
+    },
+    {
+      "name": "CongressBill lastSyncedAt: DateTime",
+      "passed": true
+    },
+    {
+      "name": "BILL_TEXT_PAGE_CHARS=9000",
+      "passed": true
+    },
+    {
+      "name": "BILL_TEXT_PASSAGE_CHARS=1000",
+      "passed": true
+    },
+    {
+      "name": "MAX_BILL_TEXT_PASSAGES=6",
+      "passed": true
+    },
+    {
+      "name": "BILL_TEXT_RESPONSE_BUDGET=10500",
+      "passed": true
+    },
+    {
+      "name": "BILL_TEXT_BILLS_PER_PAGE=8",
+      "passed": true
+    },
+    {
+      "name": "BILL_TEXT_MAX_BILLS_PER_PAGE=10",
+      "passed": true
+    }
+  ]
+}

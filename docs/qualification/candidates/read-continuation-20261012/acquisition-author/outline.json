@@ -1,0 +1,17 @@
+{
+  "base":"ec960fa92ad01836a5df8f6220e67a88a657eab1",
+  "sourcePin":"fd8765ec01d292013758606204f2c9d886cd31c1",
+  "discoveryFreeze":"72e2af961ea3a430fc0f26dba00f386ad06fbb51",
+  "operations":["search_acquisition_personnel","get_acquisition_person"],
+  "modules":["acquisition-personnel.schema.json","acquisition-personnel-validation.mjs","retrieval-acquisition-personnel.test.mjs"],
+  "factory":"createAcquisitionPersonnelValidators({validateShape,schema})",
+  "definitions":["AcquisitionPersonnelSearchInput/Output","AcquisitionPersonDetailInput/Output"],
+  "context":{"search":["actorRole"],"detail":[],"roleSource":"Exact trusted TenantRole, not model arguments; shape validation does not qualify current authority"},
+  "reuse":"Unchanged canonical snapshotOperationData; strict test-only Ajv until root-owned loader integration",
+  "normalization":"Advertised selectors only; trim/UTF16 caps, strict integer limit1..50/default20 and page1..100/default1; successful detail UUID storage identity lowercase after trimmed/capped required string",
+  "privacy":"Frozen list nonnull email only exact capiro_admin; opaque headshot and detail/source metadata grant no contact-use authority and carry no blanket redaction guarantee",
+  "counts":"Fuzzy total is paged candidate ID count before final filters; non-fuzzy separate count may race; neither proves completeness",
+  "effects":"Both original methods await unconditional audit inserts in withTenant; detail missing record audits before throwing. No source/audit/SQL execution or effect-free claim",
+  "observedDrift":"3/8 discovery references changed: current owner/listDTO/detailDTO add role-gated contact fields and detail nonadmin metadata stripping. Frozen source contract cannot silently bind current producer; runtime privacy qualification remains blocked",
+  "tests":["two positive closed projections","trusted role/privacy and model spoof rejection","opaque inert JSON","typed defaults/UTF16 normalization","fuzzy and nonfuzzy count limits","request/output exact identity/filter/page binding","detail source observedAt order and null/error boundary","canonical resolver request/hash/context","original/public preservation and owned-process cleanup"]
+}

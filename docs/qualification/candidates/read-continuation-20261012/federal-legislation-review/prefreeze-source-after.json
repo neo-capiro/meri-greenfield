@@ -1,0 +1,18 @@
+{
+  "files": [
+    {
+      "path": "packages/contracts/retrieval-0.2/federal-legislation-validation.mjs",
+      "bytes": 7555,
+      "sha256": "a811e83bd2da32bf17d6844cc7a59ec7ed3fe0eb05b39dd81c56251858df27a8",
+      "sha256After": "a811e83bd2da32bf17d6844cc7a59ec7ed3fe0eb05b39dd81c56251858df27a8",
+      "unchanged": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/federal-legislation.schema.json",
+      "bytes": 25210,
+      "sha256": "85cfe00e8af8932dc9da56cc6b7393ba6e64875447c11cdf9ebb79e7ddb4ea7f",
+      "sha256After": "85cfe00e8af8932dc9da56cc6b7393ba6e64875447c11cdf9ebb79e7ddb4ea7f",
+      "unchanged": true
+    }
+  ]
+}

@@ -1,0 +1,285 @@
+✔ billtext independent: search_congress_bills refuses model authority and extra context (3.423435ms)
+✔ billtext independent: read_bill_text refuses model authority and extra context (0.721584ms)
+✔ billtext independent: operation and shape names are inert (0.283506ms)
+✔ billtext independent: getters prototypes symbols and cyclic input refuse before invocation (0.217997ms)
+✔ billtext independent: normalization has isolated snapshots (1.195156ms)
+✔ billtext independent: whitespace query falls back to search (0.490377ms)
+✔ billtext independent: trusted defaultCongress resolves shorthand without clock (0.73838ms)
+✔ billtext independent: text mode has distinct default and clamped maximum (0.275724ms)
+✔ billtext independent: strict scalar admission is deliberate and fails closed (0.654794ms)
+✔ billtext independent: UTF16 source selector bounds (0.688805ms)
+✔ billtext independent: cursor is incompatible with locator query (0.625941ms)
+✔ billtext independent: whitespace tuple JSON retains byte-canonical legacy admission (0.660052ms)
+✔ billtext independent: cursor offset zero refuses (0.497377ms)
+✔ billtext independent: cursor offset negative refuses (0.195794ms)
+✔ billtext independent: cursor offset fraction refuses (0.121863ms)
+✔ billtext independent: cursor offset aboveLimit refuses (0.110666ms)
+✔ billtext independent: cursor offset unsafe refuses (0.111908ms)
+✔ billtext independent: cursor bill binding refuses (0.164697ms)
+✔ billtext independent: cursor nonV4 binding refuses (0.114993ms)
+✔ billtext independent: cursor hashCase binding refuses (0.100391ms)
+✔ billtext independent: cursor hashLength binding refuses (0.147231ms)
+✔ billtext independent: cursor requested version rejects substitution (0.215924ms)
+✔ billtext independent: cursor encoding and tuple shape are closed (0.339911ms)
+✔ billtext independent: raw metadata projection and opaque JSON remain admitted (3.733862ms)
+✔ billtext independent: stored nullable values and integer scalar types remain exact (0.908545ms)
+✔ billtext independent: metadata dates and row arrays reject malformed projection (0.637278ms)
+✖ billtext independent: metadata window and count correlation (0.839462ms)
+✖ billtext independent: direct designation has canonical resolved identity (0.273862ms)
+✔ billtext independent: text and metadata branches cannot substitute (0.772602ms)
+✖ billtext independent: text result and exact request query correlate (0.281883ms)
+✖ billtext independent: unknown total on empty later page does not fabricate continuation (0.197567ms)
+✖ billtext independent: omitted groups preserve pre-trimming continuation count (0.23299ms)
+✖ billtext independent: next page exists precisely when hasMore (0.260592ms)
+✔ billtext independent: returned group count is not totalBills (0.424948ms)
+✖ billtext independent: grouped mixed versions retain individual lineage (0.547753ms)
+✔ billtext independent: passage zero offset requires null cursor (0.256926ms)
+✖ billtext independent: passage positive offset binds tuple offset and bill (0.411669ms)
+✔ billtext independent: UTF16 search snippet ceiling (0.308463ms)
+✔ billtext independent: hard JSON ceiling counts serialized escapes (0.349585ms)
+✖ billtext independent: unavailable current evidence is local qualified absence (20.161601ms)
+✖ billtext independent: available whole text baseline and nullable source dates (0.697999ms)
+✔ billtext independent: available billId refuses substitution (0.280161ms)
+✔ billtext independent: available trust refuses substitution (0.28004ms)
+✔ billtext independent: available authoritativeOwner refuses substitution (0.231618ms)
+✔ billtext independent: available currentStatus refuses substitution (0.553111ms)
+✔ billtext independent: available found refuses substitution (0.284477ms)
+✔ billtext independent: available fetchedAt refuses substitution (0.210326ms)
+✔ billtext independent: available textHash refuses substitution (0.195824ms)
+✔ billtext independent: available revisionId refuses substitution (0.253801ms)
+✔ billtext independent: read explicit version binds output (4.281736ms)
+✖ billtext independent: terminal resumed page remains truncated and not contentComplete (0.516566ms)
+✖ billtext independent: full firstpage continuation binds output lineage (0.496796ms)
+✔ billtext independent: stale returned lineage refuses against input cursor (0.848214ms)
+✖ billtext independent: offset and returned UTF16 length align (0.343526ms)
+✔ billtext independent: 9001 UTF16 page refuses despite fewer Unicode points (0.570197ms)
+✖ billtext independent: high-surrogate boundary allows 8999-unit page (0.408004ms)
+✔ billtext independent: short nonterminal arbitrary page refuses (0.318138ms)
+✔ billtext independent: totalCharacters cannot precede endOffset (0.270867ms)
+✖ billtext independent: locator empty match stays explicitly incomplete (0.424678ms)
+✔ billtext independent: locator request query and output coverage agree (0.380221ms)
+✔ billtext independent: output getters and toJSON cannot execute (0.291218ms)
+ℹ tests 61
+ℹ suites 0
+ℹ pass 46
+ℹ fail 15
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 459.376699
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-bill-text-independent.test.mjs:46:1
+✖ billtext independent: metadata window and count correlation (0.839462ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-bill-text-review-20261012/packages/contracts/test/retrieval-bill-text-independent.test.mjs:46:257)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-bill-text-independent.test.mjs:47:1
+✖ billtext independent: direct designation has canonical resolved identity (0.273862ms)
+  Error: CongressBillSearchOutput: data/resolvedBy must be equal to constant, data must have required property 'mode', data must have required property 'textQuery', data must have required property 'results', data must have required property 'totalBills', data must have required property 'perPage', data must have required property 'hasMore', data must have required property 'note', data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must match exactly one schema in oneOf
+      at validateShape (file:///workspace/meri-bill-text-review-20261012/packages/contracts/test/retrieval-bill-text-independent.test.mjs:12:126)
+      at validateBillTextShape (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:19:120)
+      at Object.assertBillTextOutput (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:119:97)
+      at check (file:///workspace/meri-bill-text-review-20261012/packages/contracts/test/retrieval-bill-text-independent.test.mjs:16:46)
+      at TestContext.<anonymous> (file:///workspace/meri-bill-text-review-20261012/packages/contracts/test/retrieval-bill-text-independent.test.mjs:47:128)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at packages/contracts/test/retrieval-bill-text-independent.test.mjs:49:1
+✖ billtext independent: text result and exact request query correlate (0.281883ms)
+  Error: Bill text-search omission disclosure
+      at fail (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:5:28)
+      at assertSearch (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:55:108)
+      at Object.assertBillTextOutput (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:120:18)
+      at check (file:///workspace/meri-bill-text-review-20261012/packages/contracts/test/retrieval-bill-text-independent.test.mjs:16:46)
+      at TestContext.<anonymous> (file:///workspace/meri-bill-text-review-20261012/packages/contracts/test/retrieval-bill-text-independent.test.mjs:49:81)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at packages/contracts/test/retrieval-bill-text-independent.test.mjs:50:1
+✖ billtext independent: unknown total on empty later page does not fabricate continuation (0.197567ms)
+  Error: Bill text-search omission disclosure
+      at fail (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:5:28)
+      at assertSearch (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:55:108)
+      at Object.assertBillTextOutput (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:120:18)
+      at check (file:///workspace/meri-bill-text-review-20261012/packages/contracts/test/retrieval-bill-text-independent.test.mjs:16:46)
+      at TestContext.<anonymous> (file:///workspace/meri-bill-text-review-20261012/packages/contracts/test/retrieval-bill-text-independent.test.mjs:50:101)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at packages/contracts/test/retrieval-bill-text-independent.test.mjs:51:1
+✖ billtext independent: omitted groups preserve pre-trimming continuation count (0.23299ms)
+  Error: Bill text-search omission disclosure
+      at fail (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:5:28)
+      at assertSearch (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:55:108)
+      at Object.assertBillTextOutput (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:120:18)
+      at check (file:///workspace/meri-bill-text-review-20261012/packages/contracts/test/retrieval-bill-text-independent.test.mjs:16:46)
+      at TestContext.<anonymous> (file:///workspace/meri-bill-text-review-20261012/packages/contracts/test/retrieval-bill-text-independent.test.mjs:51:157)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at packages/contracts/test/retrieval-bill-text-independent.test.mjs:52:1
+✖ billtext independent: next page exists precisely when hasMore (0.260592ms)
+  Error: Bill text-search omission disclosure
+      at fail (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:5:28)
+      at assertSearch (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:55:108)
+      at Object.assertBillTextOutput (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:120:18)
+      at check (file:///workspace/meri-bill-text-review-20261012/packages/contracts/test/retrieval-bill-text-independent.test.mjs:16:46)
+      at TestContext.<anonymous> (file:///workspace/meri-bill-text-review-20261012/packages/contracts/test/retrieval-bill-text-independent.test.mjs:52:136)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at packages/contracts/test/retrieval-bill-text-independent.test.mjs:54:1
+✖ billtext independent: grouped mixed versions retain individual lineage (0.547753ms)
+  Error: Bill text-search omission disclosure
+      at fail (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:5:28)
+      at assertSearch (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:55:108)
+      at Object.assertBillTextOutput (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:120:18)
+      at check (file:///workspace/meri-bill-text-review-20261012/packages/contracts/test/retrieval-bill-text-independent.test.mjs:16:46)
+      at TestContext.<anonymous> (file:///workspace/meri-bill-text-review-20261012/packages/contracts/test/retrieval-bill-text-independent.test.mjs:54:214)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at packages/contracts/test/retrieval-bill-text-independent.test.mjs:56:1
+✖ billtext independent: passage positive offset binds tuple offset and bill (0.411669ms)
+  Error: Bill text-search omission disclosure
+      at fail (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:5:28)
+      at assertSearch (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:55:108)
+      at Object.assertBillTextOutput (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:120:18)
+      at check (file:///workspace/meri-bill-text-review-20261012/packages/contracts/test/retrieval-bill-text-independent.test.mjs:16:46)
+      at TestContext.<anonymous> (file:///workspace/meri-bill-text-review-20261012/packages/contracts/test/retrieval-bill-text-independent.test.mjs:56:191)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at packages/contracts/test/retrieval-bill-text-independent.test.mjs:60:1
+✖ billtext independent: unavailable current evidence is local qualified absence (20.161601ms)
+  Error: Unavailable bill disclosure mismatch
+      at fail (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:5:28)
+      at assertRead (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:83:28)
+      at Object.assertBillTextOutput (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:120:79)
+      at check (file:///workspace/meri-bill-text-review-20261012/packages/contracts/test/retrieval-bill-text-independent.test.mjs:16:46)
+      at TestContext.<anonymous> (file:///workspace/meri-bill-text-review-20261012/packages/contracts/test/retrieval-bill-text-independent.test.mjs:60:91)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at packages/contracts/test/retrieval-bill-text-independent.test.mjs:61:1
+✖ billtext independent: available whole text baseline and nullable source dates (0.697999ms)
+  Error: Bill sequential coverage substitution
+      at fail (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:5:28)
+      at assertRead (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:113:178)
+      at Object.assertBillTextOutput (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:120:79)
+      at check (file:///workspace/meri-bill-text-review-20261012/packages/contracts/test/retrieval-bill-text-independent.test.mjs:16:46)
+      at TestContext.<anonymous> (file:///workspace/meri-bill-text-review-20261012/packages/contracts/test/retrieval-bill-text-independent.test.mjs:61:91)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at packages/contracts/test/retrieval-bill-text-independent.test.mjs:64:1
+✖ billtext independent: terminal resumed page remains truncated and not contentComplete (0.516566ms)
+  Error: Bill sequential coverage substitution
+      at fail (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:5:28)
+      at assertRead (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:113:178)
+      at Object.assertBillTextOutput (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:120:79)
+      at check (file:///workspace/meri-bill-text-review-20261012/packages/contracts/test/retrieval-bill-text-independent.test.mjs:16:46)
+      at TestContext.<anonymous> (file:///workspace/meri-bill-text-review-20261012/packages/contracts/test/retrieval-bill-text-independent.test.mjs:64:131)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at packages/contracts/test/retrieval-bill-text-independent.test.mjs:65:1
+✖ billtext independent: full firstpage continuation binds output lineage (0.496796ms)
+  Error: Bill sequential coverage substitution
+      at fail (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:5:28)
+      at assertRead (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:113:178)
+      at Object.assertBillTextOutput (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:120:79)
+      at check (file:///workspace/meri-bill-text-review-20261012/packages/contracts/test/retrieval-bill-text-independent.test.mjs:16:46)
+      at TestContext.<anonymous> (file:///workspace/meri-bill-text-review-20261012/packages/contracts/test/retrieval-bill-text-independent.test.mjs:65:143)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at packages/contracts/test/retrieval-bill-text-independent.test.mjs:67:1
+✖ billtext independent: offset and returned UTF16 length align (0.343526ms)
+  Error: Bill sequential coverage substitution
+      at fail (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:5:28)
+      at assertRead (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:113:178)
+      at Object.assertBillTextOutput (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:120:79)
+      at check (file:///workspace/meri-bill-text-review-20261012/packages/contracts/test/retrieval-bill-text-independent.test.mjs:16:46)
+      at TestContext.<anonymous> (file:///workspace/meri-bill-text-review-20261012/packages/contracts/test/retrieval-bill-text-independent.test.mjs:67:166)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at packages/contracts/test/retrieval-bill-text-independent.test.mjs:69:1
+✖ billtext independent: high-surrogate boundary allows 8999-unit page (0.408004ms)
+  Error: Bill sequential coverage substitution
+      at fail (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:5:28)
+      at assertRead (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:113:178)
+      at Object.assertBillTextOutput (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:120:79)
+      at check (file:///workspace/meri-bill-text-review-20261012/packages/contracts/test/retrieval-bill-text-independent.test.mjs:16:46)
+      at TestContext.<anonymous> (file:///workspace/meri-bill-text-review-20261012/packages/contracts/test/retrieval-bill-text-independent.test.mjs:69:140)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at packages/contracts/test/retrieval-bill-text-independent.test.mjs:72:1
+✖ billtext independent: locator empty match stays explicitly incomplete (0.424678ms)
+  Error: BillTextReadOutput: data must have required property 'requestedVersionCode', data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data/currentStatus must be equal to constant, data/found must be equal to constant, data/coverage must NOT have additional properties, data/coverage must NOT have additional properties, data/coverage must NOT have additional properties, data/coverage must NOT have additional properties, data/coverage must NOT have additional properties, data/coverage/complete must be equal to constant, data/coverage/truncated must be equal to constant, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data/coverage/locator must have required property 'offset', data/coverage/locator must have required property 'endOffset', data/coverage/locator must NOT have additional properties, data/queryParts must be array, data must match exactly one schema in oneOf
+      at validateShape (file:///workspace/meri-bill-text-review-20261012/packages/contracts/test/retrieval-bill-text-independent.test.mjs:12:126)
+      at validateBillTextShape (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:19:120)
+      at Object.assertBillTextOutput (file:///workspace/meri-bill-text-review-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:119:97)
+      at check (file:///workspace/meri-bill-text-review-20261012/packages/contracts/test/retrieval-bill-text-independent.test.mjs:16:46)
+      at TestContext.<anonymous> (file:///workspace/meri-bill-text-review-20261012/packages/contracts/test/retrieval-bill-text-independent.test.mjs:72:83)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)

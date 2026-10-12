@@ -1,0 +1,47 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "check:contracts:distribution"
+  ],
+  "cwd": "/workspace/meri-acquisition-personnel-20261012",
+  "sourceHead": "2a35e072d13fe93e3b57a9d47544df472cdcd8d4",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T16:52:20.616069+00:00",
+  "durationSeconds": 6.758,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 163383,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 163532,
+      "status": 0
+    },
+    {
+      "pid": 163773,
+      "status": 0
+    },
+    {
+      "pid": 163813,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/public-distribution.stdout.bin",
+      "bytes": 2046,
+      "sha256": "d25534967a99b64a5e8cbd8eac03762f4bf52856846e9a5150caa579498e94db"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/public-distribution.stderr.bin",
+      "bytes": 1040,
+      "sha256": "cbbd466f3bf458f7f516c133ea486c1aada38d325ec9a80b698c26da8c18237f"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

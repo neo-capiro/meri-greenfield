@@ -1,0 +1,43 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "check"
+  ],
+  "cwd": "/workspace/meri-acquisition-personnel-review-20261012",
+  "sourceHead": "acd9f7e659c5251d9f6877b74edd0b341212bc32",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T16:55:45.831677+00:00",
+  "durationSeconds": 15.237,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 167090,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 167250,
+      "status": 0
+    },
+    {
+      "pid": 167290,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-review/full-source.stdout.bin",
+      "bytes": 81718,
+      "sha256": "efed0e15204d2746181b774329e6b531cfbaaad3de9997507cfb5f4a6f13ad27"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-review/full-source.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

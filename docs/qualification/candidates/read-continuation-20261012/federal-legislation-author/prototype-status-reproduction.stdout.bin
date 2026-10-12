@@ -1,0 +1,62 @@
+✔ bill normalization requires explicit trusted Congress and uses no ambient clock (4.198952ms)
+✔ all eight designation kinds support documented punctuation and explicit Congress (1.018601ms)
+✔ canonical IDs retain zeroes while designation numbers normalize under producer grammar (0.233401ms)
+✔ bill alias/default refusal preserves primary selector precedence and UTF-16 cap (0.269185ms)
+✔ floor input normalizes optional filters and explicitly drops invalid bill/chamber (1.074766ms)
+✔ floor text windows preserve UTF-16 and canonical member versus name distinction (0.302045ms)
+✔ floor numeric parsing preserves effective truthiness and bounded typed admission (1.073724ms)
+✔ model arguments cannot inject current authority or defaultCongress (0.744469ms)
+✔ all bill branches and nonempty vote projection round-trip as inert DTOs (6.593151ms)
+✔ invalid request cannot become available/absent bill and no-match identity remains exact (1.140694ms)
+✔ absent bill warning is required and cannot claim status from memory (0.667934ms)
+✔ stored statuses preserve known labels, null/empty/unknown fallback without deriving stage (2.385295ms)
+✔ rule failure and missing bill floor votes remain distinct with both warnings (1.305202ms)
+✔ no bill floor vote does not infer chamber passage from governing-rule vote (0.329455ms)
+✔ bounds15 actions and15 bill votes with3 per governing rule, no small rule-count cap (9.889487ms)
+✔ nullable sponsor/action/rule soft-reference fields remain required and distinct (0.605731ms)
+✔ opaque partyTotals and signed integer source values never derive vote outcomes (0.786402ms)
+✔ bill actions/votes/rule observations descend with ties permitted (1.203629ms)
+✔ serialized timestamps are finite; only latestAction date is a stored Date (0.614934ms)
+✔ floor no-match requires explicit note rather than a fabricated vote (0.410647ms)
+✔ unknown direct member and unresolved name never release unscoped votes (0.585921ms)
+✔ ambiguous name candidates retain2..8 shape and an exact clarification note (0.532962ms)
+✔ resolved direct member preserves canonical identity while name resolution stays external (0.76519ms)
+✔ resolved member position arrays may contain multiple Bioguide/LIS matches but not be absent (0.721855ms)
+✔ resolved member with no matching votes preserves explicit no-inference warning (0.241824ms)
+✔ floor exact bill/chamber/congress selectors and returned counts correlate (0.797179ms)
+✔ floor max25 and request limit are independent of no total/completeness promise (2.239737ms)
+✔ duplicate rule/roll-call identities are refused without collapsing separate tuples (1.009277ms)
+✔ nested tuple boundaries reject fields projected only by different read modes (0.862347ms)
+✔ closed outputs refuse truth/current-policy/full-evidence claims (2.844155ms)
+✔ hostile operation/context/input/result admission executes no caller code (0.302164ms)
+✔ canonical admission rejects prototypes, hidden fields, undefined, cycles and nonfinite JSON (0.363276ms)
+✔ shared congressional identity helper has strict primitive admission and no ambient fallback (0.235434ms)
+✖ inherited prototype-key statuses cannot invent a label omitted by the pinned source (0.511599ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 33
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 296.047002
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-federal-legislation.test.mjs:230:1
+✖ inherited prototype-key statuses cannot invent a label omitted by the pinned source (0.511599ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-federal-legislation-20261012/packages/contracts/test/retrieval-federal-legislation.test.mjs:233:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }

@@ -1,0 +1,110 @@
+✔ billtext independent: search_congress_bills refuses model authority and extra context (3.297976ms)
+✔ billtext independent: read_bill_text refuses model authority and extra context (0.616306ms)
+✔ billtext independent: operation and shape names are inert (0.196546ms)
+✔ billtext independent: getters prototypes symbols and cyclic input refuse before invocation (0.222534ms)
+✔ billtext independent: normalization has isolated snapshots (1.309498ms)
+✔ billtext independent: whitespace query falls back to search (0.450707ms)
+✔ billtext independent: trusted defaultCongress resolves shorthand without clock (0.575585ms)
+✔ billtext independent: text mode has distinct default and clamped maximum (0.271518ms)
+✔ billtext independent: strict scalar admission is deliberate and fails closed (0.883037ms)
+✔ billtext independent: UTF16 source selector bounds (0.680573ms)
+✔ billtext independent: cursor is incompatible with locator query (0.502826ms)
+✔ billtext independent: whitespace tuple JSON retains byte-canonical legacy admission (0.44539ms)
+✔ billtext independent: cursor offset zero refuses (0.377768ms)
+✔ billtext independent: cursor offset negative refuses (0.288834ms)
+✔ billtext independent: cursor offset fraction refuses (0.11958ms)
+✔ billtext independent: cursor offset aboveLimit refuses (0.142324ms)
+✔ billtext independent: cursor offset unsafe refuses (0.099269ms)
+✔ billtext independent: cursor bill binding refuses (0.162744ms)
+✔ billtext independent: cursor nonV4 binding refuses (0.19274ms)
+✔ billtext independent: cursor hashCase binding refuses (0.114512ms)
+✔ billtext independent: cursor hashLength binding refuses (0.101112ms)
+✔ billtext independent: cursor requested version rejects substitution (0.195224ms)
+✔ billtext independent: cursor encoding and tuple shape are closed (0.307672ms)
+✔ billtext independent: raw metadata projection and opaque JSON remain admitted (3.599048ms)
+✔ billtext independent: stored nullable values and integer scalar types remain exact (1.003508ms)
+✔ billtext independent: metadata dates and row arrays reject malformed projection (0.580542ms)
+✔ billtext independent: metadata window and separate count race (2.425775ms)
+✔ billtext independent: direct designation has canonical resolved identity (0.786302ms)
+✔ billtext independent: text and metadata branches cannot substitute (0.972041ms)
+✔ billtext independent: text result and exact request query correlate (0.544538ms)
+✔ billtext independent: unknown total on empty later page does not fabricate continuation (0.358279ms)
+✔ billtext independent: omitted groups preserve pre-trimming continuation count (2.948511ms)
+✔ billtext independent: next page exists precisely when hasMore (1.18451ms)
+✔ billtext independent: returned group count is not totalBills (0.986373ms)
+✔ billtext independent: grouped mixed versions retain individual lineage (0.431889ms)
+✔ billtext independent: passage zero offset requires null cursor (0.260281ms)
+✔ billtext independent: passage positive offset binds tuple offset and bill (0.577938ms)
+✔ billtext independent: search snippet has no invented1000-unit cap (2.68819ms)
+✔ billtext independent: hard JSON ceiling counts serialized escapes (1.216208ms)
+✔ billtext independent: unavailable current evidence is local qualified absence (3.294911ms)
+✔ billtext independent: available whole text baseline and nullable source dates (0.573191ms)
+✔ billtext independent: available billId refuses substitution (0.453762ms)
+✔ billtext independent: available trust refuses substitution (0.35273ms)
+✔ billtext independent: available authoritativeOwner refuses substitution (0.330897ms)
+✔ billtext independent: available currentStatus refuses substitution (0.182774ms)
+✔ billtext independent: available found refuses substitution (0.162143ms)
+✔ billtext independent: available fetchedAt refuses substitution (0.244748ms)
+✔ billtext independent: available textHash refuses substitution (0.163245ms)
+✔ billtext independent: available revisionId refuses substitution (0.202605ms)
+✔ billtext independent: read explicit version binds output (0.221113ms)
+✔ billtext independent: terminal resumed page remains truncated and not contentComplete (1.928588ms)
+✔ billtext independent: full firstpage continuation binds output lineage (2.258704ms)
+✔ billtext independent: stale returned lineage refuses against input cursor (0.852511ms)
+✔ billtext independent: offset and returned UTF16 length align (0.341032ms)
+✔ billtext independent: 9001 UTF16 page refuses despite fewer Unicode points (0.404538ms)
+✔ billtext independent: high-surrogate boundary allows 8999-unit page (0.447362ms)
+✔ billtext independent: short nonterminal arbitrary page refuses (0.272179ms)
+✔ billtext independent: totalCharacters cannot precede endOffset (0.203186ms)
+✔ billtext independent: locator empty match stays explicitly incomplete (0.61856ms)
+✔ billtext independent: locator request query and output coverage agree (0.280802ms)
+✔ billtext independent: output getters and toJSON cannot execute (0.958581ms)
+✖ billtext independent: metadata activeSince binds latestActionDate rather than updateDate (0.942627ms)
+✔ billtext independent: direct designation ignores activeSince by original branch (0.212599ms)
+✖ billtext independent: text branch Congress prefix applies but metadata-only dates do not (2.175819ms)
+ℹ tests 64
+ℹ suites 0
+ℹ pass 62
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 265.773435
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-bill-text-independent.test.mjs:76:1
+✖ billtext independent: metadata activeSince binds latestActionDate rather than updateDate (0.942627ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-bill-text-review-20261012/packages/contracts/test/retrieval-bill-text-independent.test.mjs:76:388)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-bill-text-independent.test.mjs:78:1
+✖ billtext independent: text branch Congress prefix applies but metadata-only dates do not (2.175819ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-bill-text-review-20261012/packages/contracts/test/retrieval-bill-text-independent.test.mjs:78:196)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }

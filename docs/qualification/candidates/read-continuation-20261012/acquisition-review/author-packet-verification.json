@@ -1,0 +1,132 @@
+{
+  "authorPacket": "bf212799ce1c601c361577aaf5af7ac48ec4db73",
+  "manifestSha256": "5ec3c12ae3c3f08e90cb2e6ed2c12c175a90eb89118cff94c52fad83289e220e",
+  "passed": 31,
+  "failed": 0,
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-READ-CONTINUATION-ACQUISITION-AUTHOR-20261012.md",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/alias-repair-focused.json",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/alias-repair-focused.stderr.bin",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/alias-repair-focused.stdout.bin",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/alias-repair-source.patch",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/alias-repair.json",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/build-schema.py",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/focused-initial-source.patch",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/focused-initial.json",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/focused-initial.stderr.bin",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/focused-initial.stdout.bin",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/full-evidence-whitespace.json",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/full-evidence-whitespace.stderr.bin",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/full-evidence-whitespace.stdout.bin",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/initial-source-preservation.json",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/observed-drift.json",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/outline.json",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/public-distribution.json",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/public-distribution.stderr.bin",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/public-distribution.stdout.bin",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/reference-identities.json",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/repaired-root-check.json",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/repaired-root-check.stderr.bin",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/repaired-root-check.stdout.bin",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/root-source-check.json",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/root-source-check.stderr.bin",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/root-source-check.stdout.bin",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/scope-revision-current-policy.json",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/source-preservation.json",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/verify-packet.py",
+      "passed": true
+    }
+  ]
+}

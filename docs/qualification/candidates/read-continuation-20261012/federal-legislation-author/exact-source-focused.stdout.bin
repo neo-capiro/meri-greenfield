@@ -1,0 +1,42 @@
+✔ bill normalization requires explicit trusted Congress and uses no ambient clock (4.450408ms)
+✔ all eight designation kinds support documented punctuation and explicit Congress (1.140864ms)
+✔ canonical IDs retain zeroes while designation numbers normalize under producer grammar (0.197447ms)
+✔ bill alias/default refusal preserves primary selector precedence and UTF-16 cap (0.388764ms)
+✔ floor input normalizes optional filters and explicitly drops invalid bill/chamber (1.109468ms)
+✔ floor text windows preserve UTF-16 and canonical member versus name distinction (0.308393ms)
+✔ floor numeric parsing preserves effective truthiness and bounded typed admission (0.943338ms)
+✔ model arguments cannot inject current authority or defaultCongress (0.953943ms)
+✔ all bill branches and nonempty vote projection round-trip as inert DTOs (8.047996ms)
+✔ invalid request cannot become available/absent bill and no-match identity remains exact (1.074855ms)
+✔ absent bill warning is required and cannot claim status from memory (0.66553ms)
+✔ stored statuses preserve known labels, null/empty/unknown fallback without deriving stage (2.45524ms)
+✔ rule failure and missing bill floor votes remain distinct with both warnings (1.708858ms)
+✔ no bill floor vote does not infer chamber passage from governing-rule vote (0.376346ms)
+✔ bounds15 actions and15 bill votes with3 per governing rule, no small rule-count cap (11.127984ms)
+✔ nullable sponsor/action/rule soft-reference fields remain required and distinct (0.735155ms)
+✔ opaque partyTotals and signed integer source values never derive vote outcomes (1.472363ms)
+✔ bill actions/votes/rule observations descend with ties permitted (1.634596ms)
+✔ serialized timestamps are finite; only latestAction date is a stored Date (0.720713ms)
+✔ floor no-match requires explicit note rather than a fabricated vote (0.484098ms)
+✔ unknown direct member and unresolved name never release unscoped votes (0.579011ms)
+✔ ambiguous name candidates retain2..8 shape and an exact clarification note (0.697779ms)
+✔ resolved direct member preserves canonical identity while name resolution stays external (0.596897ms)
+✔ resolved member position arrays may contain multiple Bioguide/LIS matches but not be absent (0.714844ms)
+✔ resolved member with no matching votes preserves explicit no-inference warning (0.244808ms)
+✔ floor exact bill/chamber/congress selectors and returned counts correlate (0.984169ms)
+✔ floor max25 and request limit are independent of no total/completeness promise (2.897636ms)
+✔ duplicate rule/roll-call identities are refused without collapsing separate tuples (0.489406ms)
+✔ nested tuple boundaries reject fields projected only by different read modes (0.984971ms)
+✔ closed outputs refuse truth/current-policy/full-evidence claims (2.950725ms)
+✔ hostile operation/context/input/result admission executes no caller code (0.354513ms)
+✔ canonical admission rejects prototypes, hidden fields, undefined, cycles and nonfinite JSON (0.770078ms)
+✔ shared congressional identity helper has strict primitive admission and no ambient fallback (0.238298ms)
+✔ inherited prototype-key statuses cannot invent a label omitted by the pinned source (3.592029ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 266.451331

@@ -1,0 +1,33 @@
+✔ search_acquisition_personnel: current role required, exact and model independent (18.695617ms)
+✔ search_acquisition_personnel: only exact current capiro_admin admits each contact field (2.654909ms)
+✔ search_acquisition_personnel: hostile request/context/result objects are inert (0.4059ms)
+✔ search_acquisition_personnel: immutable normalized snapshot and closed projections (4.695596ms)
+✔ search_acquisition_personnel: finite dates, unconstrained stored status/confidence and no invented first-last order (0.901755ms)
+✔ get_acquisition_person: current role required, exact and model independent (11.35343ms)
+✔ get_acquisition_person: only exact current capiro_admin admits each contact field (2.670012ms)
+✔ get_acquisition_person: hostile request/context/result objects are inert (0.31263ms)
+✔ get_acquisition_person: immutable normalized snapshot and closed projections (2.784884ms)
+✔ get_acquisition_person: finite dates, unconstrained stored status/confidence and no invented first-last order (0.807533ms)
+✔ list: defaults, strict page/limit and no owner-only model selectors (1.434295ms)
+✔ list: query precedence and UTF-16 normalization (0.489866ms)
+✔ list: fuzzy total is paged candidate count, no-query count can race (0.884459ms)
+✔ list: exact scalar and either-PE filter binding with independent role authority (0.846852ms)
+✔ list: headshot preserves untyped JSON values without URL or privacy fiction (1.046613ms)
+✔ list: uploaded contact fields are trimmed nonempty strings, email stays stored (2.373917ms)
+✔ detail: UUID normalization has no version/variant assumption and binds returned person (1.207174ms)
+✔ detail: non-admin object metadata must omit both protected keys regardless of value (2.677884ms)
+✔ detail: established redaction is shallow and preserves nonobject/source metadata (2.155659ms)
+✔ detail: admin uploaded contact projection corresponds exactly to raw metadata (2.596852ms)
+✔ detail: no invented source cap, chronology/identity stays meaningful (4.429375ms)
+✔ list: nullable query alias has exact fallback without broad coercion (1.924281ms)
+✔ list: alias clipping precedes owner fuzzy trim and effective count semantics (0.696397ms)
+✔ opaque current metadata never invokes nested coercion/getter/proxy hooks (0.471529ms)
+✔ canonical resolver separates immutable model arguments from rechecked current role (182.125314ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 409.605524

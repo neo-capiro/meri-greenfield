@@ -1,0 +1,1097 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:federal-legislation:0.2.0",
+  "$comment": "Private stored-source projection. authoritativeOwner is a literal backend owner label, not current authorization/source proof. defaultCongress is trusted adapter calendar context, not a model permission. Strings, governing-rule/member-position array caps and JSON ceilings are Meri transport admission where no native cap exists. partyTotals remains opaque inert JSON; no tally/outcome derivation.",
+  "$defs": {
+    "FederalLegislationContext": {
+      "type": "object",
+      "properties": {
+        "defaultCongress": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483647
+        }
+      },
+      "required": [
+        "defaultCongress"
+      ],
+      "additionalProperties": false
+    },
+    "FederalBillStatusLabels": {
+      "const": {
+        "introduced": "Introduced",
+        "committee": "In committee",
+        "reported": "Reported out of committee",
+        "rule_pending": "Rule granted (floor pending)",
+        "rule_failed": "Rule failed \u2014 stalled on the floor",
+        "floor": "On the floor",
+        "passed_chamber": "Passed a chamber",
+        "resolving": "Resolving differences",
+        "to_president": "Sent to the President",
+        "enacted": "Enacted",
+        "failed": "Failed",
+        "vetoed": "Vetoed"
+      }
+    },
+    "FederalInvalidBillNote": {
+      "const": "Provide a bill id (\"119-hr-8800\") or designation (\"H.R. 8800\")."
+    },
+    "FederalNoBillVoteNote": {
+      "const": "No recorded roll-call vote on this bill itself. Do NOT infer that it passed or failed a chamber from the absence of a vote."
+    },
+    "FederalRuleFailedNote": {
+      "const": "The rule governing this bill FAILED \u2014 the bill did NOT advance to the floor under that rule; it is stalled, not pending passage."
+    },
+    "FederalNoVotesNote": {
+      "const": "No roll-call vote on record matches that. Say so explicitly \u2014 do not infer a vote outcome or tally."
+    },
+    "FederalBillStatusRequest": {
+      "type": "object",
+      "properties": {
+        "billId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "query": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "FederalFloorVotesRequest": {
+      "type": "object",
+      "properties": {
+        "billId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "query": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "member": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "chamber": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "congress": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "limit": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "FederalBillStatusInput": {
+      "type": "object",
+      "properties": {
+        "billId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 80
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "billId"
+      ],
+      "additionalProperties": false
+    },
+    "FederalFloorVotesInput": {
+      "type": "object",
+      "properties": {
+        "billId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 80
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "query": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 200
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "member": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 80
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "bioguideId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 80
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "chamber": {
+          "anyOf": [
+            {
+              "enum": [
+                "house",
+                "senate"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "congress": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": -2147483648,
+              "maximum": 2147483647
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 25
+        }
+      },
+      "required": [
+        "billId",
+        "query",
+        "member",
+        "bioguideId",
+        "chamber",
+        "congress",
+        "limit"
+      ],
+      "additionalProperties": false
+    },
+    "FederalBillAction": {
+      "type": "object",
+      "properties": {
+        "date": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 64
+        },
+        "text": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "type": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "chamber": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "date",
+        "text",
+        "type",
+        "chamber"
+      ],
+      "additionalProperties": false
+    },
+    "FederalBillFloorVote": {
+      "type": "object",
+      "properties": {
+        "chamber": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "rollNumber": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "question": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "result": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "voteType": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "voteDate": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 64
+        },
+        "yeas": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "nays": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "present": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "notVoting": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "partyTotals": {},
+        "sourceUrl": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "chamber",
+        "rollNumber",
+        "question",
+        "result",
+        "voteType",
+        "voteDate",
+        "yeas",
+        "nays",
+        "present",
+        "notVoting",
+        "partyTotals",
+        "sourceUrl"
+      ],
+      "additionalProperties": false
+    },
+    "FederalRuleVote": {
+      "type": "object",
+      "properties": {
+        "rollNumber": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "result": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "yeas": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "nays": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "voteDate": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 64
+        },
+        "question": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sourceUrl": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "rollNumber",
+        "result",
+        "yeas",
+        "nays",
+        "voteDate",
+        "question",
+        "sourceUrl"
+      ],
+      "additionalProperties": false
+    },
+    "FederalGoverningRule": {
+      "type": "object",
+      "properties": {
+        "ruleBillId": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "ruleTitle": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ruleStatus": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ruleLatestAction": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ruleVotes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FederalRuleVote"
+          },
+          "maxItems": 3
+        }
+      },
+      "required": [
+        "ruleBillId",
+        "ruleTitle",
+        "ruleStatus",
+        "ruleLatestAction",
+        "ruleVotes"
+      ],
+      "additionalProperties": false
+    },
+    "FederalMemberPosition": {
+      "type": "object",
+      "properties": {
+        "voteCast": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "party": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "state": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "voteCast",
+        "party",
+        "state"
+      ],
+      "additionalProperties": false
+    },
+    "FederalSearchVote": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "congress": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "session": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "billId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "chamber": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "rollNumber": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "question": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "result": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "voteType": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "voteDate": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 64
+        },
+        "yeas": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "nays": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "present": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "notVoting": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "partyTotals": {},
+        "sourceUrl": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "memberVotes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FederalMemberPosition"
+          },
+          "maxItems": 10000
+        }
+      },
+      "required": [
+        "id",
+        "congress",
+        "session",
+        "billId",
+        "title",
+        "chamber",
+        "rollNumber",
+        "question",
+        "result",
+        "voteType",
+        "voteDate",
+        "yeas",
+        "nays",
+        "present",
+        "notVoting",
+        "partyTotals",
+        "sourceUrl"
+      ],
+      "additionalProperties": false
+    },
+    "FederalVoteMember": {
+      "type": "object",
+      "properties": {
+        "bioguideId": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "fullName": {
+          "type": "string",
+          "maxLength": 1048576
+        }
+      },
+      "required": [
+        "bioguideId",
+        "fullName"
+      ],
+      "additionalProperties": false
+    },
+    "FederalAmbiguousMember": {
+      "type": "object",
+      "properties": {
+        "bioguideId": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "fullName": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "chamber": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "state": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "party": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "isCurrent": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "bioguideId",
+        "fullName",
+        "chamber",
+        "state",
+        "party",
+        "isCurrent"
+      ],
+      "additionalProperties": false
+    },
+    "FederalBillInvalidOutput": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "get_bill_status"
+        },
+        "authoritativeOwner": {
+          "const": "congress_bill_status"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 64
+        },
+        "currentStatus": {
+          "const": "invalid_request"
+        },
+        "found": {
+          "const": false
+        },
+        "note": {
+          "$ref": "#/$defs/FederalInvalidBillNote"
+        }
+      },
+      "required": [
+        "tool",
+        "authoritativeOwner",
+        "generatedAt",
+        "currentStatus",
+        "found",
+        "note"
+      ],
+      "additionalProperties": false
+    },
+    "FederalBillUnavailableOutput": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "get_bill_status"
+        },
+        "authoritativeOwner": {
+          "const": "congress_bill_status"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 64
+        },
+        "currentStatus": {
+          "const": "unavailable"
+        },
+        "billId": {
+          "type": "string",
+          "maxLength": 80
+        },
+        "found": {
+          "const": false
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 1048576
+        }
+      },
+      "required": [
+        "tool",
+        "authoritativeOwner",
+        "generatedAt",
+        "currentStatus",
+        "billId",
+        "found",
+        "note"
+      ],
+      "additionalProperties": false
+    },
+    "FederalBillAvailableOutput": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "get_bill_status"
+        },
+        "authoritativeOwner": {
+          "const": "congress_bill_status"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 64
+        },
+        "currentStatus": {
+          "const": "available"
+        },
+        "billId": {
+          "type": "string",
+          "maxLength": 80
+        },
+        "found": {
+          "const": true
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "congress": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "status": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "statusLabel": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "statusAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "maxLength": 64
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "latestAction": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 1048576
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "date": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time",
+                  "maxLength": 64
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "text",
+            "date"
+          ],
+          "additionalProperties": false
+        },
+        "sponsor": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 1048576
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "bioguideId": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 1048576
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "name",
+            "bioguideId"
+          ],
+          "additionalProperties": false
+        },
+        "cosponsorsCount": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "recentActions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FederalBillAction"
+          },
+          "maxItems": 15
+        },
+        "floorVotes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FederalBillFloorVote"
+          },
+          "maxItems": 15
+        },
+        "governingRules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FederalGoverningRule"
+          },
+          "maxItems": 10000
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 1048576
+        }
+      },
+      "required": [
+        "tool",
+        "authoritativeOwner",
+        "generatedAt",
+        "currentStatus",
+        "billId",
+        "found",
+        "title",
+        "congress",
+        "status",
+        "statusLabel",
+        "statusAt",
+        "latestAction",
+        "sponsor",
+        "cosponsorsCount",
+        "recentActions",
+        "floorVotes",
+        "governingRules"
+      ],
+      "additionalProperties": false
+    },
+    "FederalBillStatusOutput": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/FederalBillInvalidOutput"
+        },
+        {
+          "$ref": "#/$defs/FederalBillUnavailableOutput"
+        },
+        {
+          "$ref": "#/$defs/FederalBillAvailableOutput"
+        }
+      ]
+    },
+    "FederalFloorVotesOutput": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "search_floor_votes"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 64
+        },
+        "votesFound": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 25
+        },
+        "votes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FederalSearchVote"
+          },
+          "maxItems": 25
+        },
+        "member": {
+          "$ref": "#/$defs/FederalVoteMember"
+        },
+        "ambiguousMember": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FederalAmbiguousMember"
+          },
+          "maxItems": 8,
+          "minItems": 2
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 1048576
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "votesFound",
+        "votes"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
