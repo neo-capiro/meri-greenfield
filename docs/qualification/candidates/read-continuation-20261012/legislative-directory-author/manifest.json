@@ -1,0 +1,126 @@
+{
+  "status": "CANDIDATE_AWAITING_INDEPENDENT_REVIEW",
+  "sourceFreeze": "c511b4bf6ee3f30674f3bd7badae79df82a61aab",
+  "memberCount": 23,
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-LEGISLATIVE-DIRECTORY-AUTHOR-20261012.md",
+      "bytes": 8788,
+      "sha256": "c64bc17782a1491a3da1d5abb5c5fec15ac0cc5ed4954ac73eaebca2849f9347"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/cleanup.json",
+      "bytes": 218,
+      "sha256": "e4165d382d3ae4be0563cfaba6becd0f0979cba19d73ea4bfd39d121125a0f13"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/duplicate-before.json",
+      "bytes": 1413,
+      "sha256": "63a4b07a6df90cffd313b4fa4b4ce02fa8ee71916c465b0fa6bd79d5c93c3565"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/duplicate-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/duplicate-before.stdout.bin",
+      "bytes": 1032,
+      "sha256": "6c3567eddf74e9ce513b71a0e0fe4cb02dba70b7bc7231d3b4a2dddce0fae1d8"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/focused-first.json",
+      "bytes": 1353,
+      "sha256": "7fa6376beec2e400e6b44c54285c25053fece2e9be8d94834e128cc7b43fd705"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/focused-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/focused-first.stdout.bin",
+      "bytes": 2673,
+      "sha256": "059e27f545f2b036190e331b6fc8d4dab2db1cd44ed7678ec37f1f26b03f891b"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/focused-repaired.json",
+      "bytes": 1394,
+      "sha256": "b95ecdabf35b652e5d71faaf4840e07357aefd18ed46d6439329743715f2c44d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/focused-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/focused-repaired.stdout.bin",
+      "bytes": 2766,
+      "sha256": "57a80f69089d08f95818c61370a1da5e6b0e1d9b8633376f826b05f92a0817b2"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/integration-interface.json",
+      "bytes": 1387,
+      "sha256": "bf6001bb96cc6f71c3d7e7fbb3ef1822a11af984f937e03d2c62a2371054ceb7"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/outline.md",
+      "bytes": 3292,
+      "sha256": "3c204c4e02824f65cafb1961e53cffda203373d5ef3ed61abd12216df71f13bf"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/reference-identities.json",
+      "bytes": 6497,
+      "sha256": "765939cda88a8463e3d2c045f2f58ea5344f751768807fb83b81a2a2dd549062"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/source-audit.json",
+      "bytes": 1359,
+      "sha256": "ad43ce5ac17026142e403e2b8efaa0b5c05b54f965eb25ed33e479f207e3f6b2"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/source-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/source-audit.stdout.bin",
+      "bytes": 784,
+      "sha256": "f37d0a3eba62e58fe3dc6fdec69042cb0de010500b137fdcf3bca3bb0be79821"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/verify-source.py",
+      "bytes": 3697,
+      "sha256": "56383db9ae2457a821c72c589f7b2f00d7785ccb17460459f7951881cc8156c2"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/whitespace.json",
+      "bytes": 696,
+      "sha256": "281e1ee6821f67ed097aaf44f33e5f4ab7166ed63d206893419d21ae74b16385"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/legislative-directory-validation.mjs",
+      "bytes": 8511,
+      "sha256": "c41959f5b8cbee875ecee37f42c9085ef2adde0314f6dbbdcfe2617d3674f6d1"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/legislative-directory.schema.json",
+      "bytes": 15111,
+      "sha256": "24c14bfb6a68ee9bb0699663f14a6348196ab069e35034a801fe1766cd3698fb"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-legislative-directory.test.mjs",
+      "bytes": 16607,
+      "sha256": "ef4f48813b9290bd6be4553bd37bcc379d5c1f7d2ac3af4563b44c4227f6e86a"
+    }
+  ],
+  "excluded": {
+    "manifest.json": "self-referential hash",
+    "manifest-validation.json": "post-manifest verification receipt"
+  }
+}
