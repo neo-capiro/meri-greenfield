@@ -4,8 +4,10 @@ import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import catalog from '../retrieval-0.2/catalog.json' with {type:'json'};
 import {canonicalSha256} from '../validate.mjs';
-import {assertCatalog, resolveOperationContract} from '../retrieval-0.2/validate.mjs';
+import {assertCatalog, resolveOperationContract, validateShape} from '../retrieval-0.2/validate.mjs';
 import {CATALOG_OPERATION_BINDINGS} from '../retrieval-0.2/catalog-validation.mjs';
+import {createPublicDataValidators} from '../retrieval-0.2/public-data-validation.mjs';
+import {createStateLegislationValidators} from '../retrieval-0.2/state-legislation-validation.mjs';
 
 // Independent pre-candidate baseline and literal synthetic projections. All
 // calls below use the real canonical resolver; no family compiler or adapter.
@@ -166,11 +168,12 @@ test('funding canonical available requirements retain stale count, query and exa
   const id=funding[1],raw={...request(id),offset:4,limit:1};
   const data={source:'sam_gov',sourceRecordId:V,requirements:[{id:'requirement-4',attachmentId:null,requirementType:'eligibility',
     statement:'Synthetic requirement',sourceExcerpt:'A😀B',excerptStart:2,excerptEnd:6,sourcePage:null,fileName:null,
-    extractionMethod:'synthetic',extractionModel:null,confidence:'source label',reviewStatus:'pending',supersededAt:null}],
+    extractionMethod:'synthetic',extractionModel:'synthetic-model',confidence:'source label',reviewStatus:'pending',supersededAt:null}],
     coverage:'available',coverageExplanation:'Reported retained document window.',documentTextStatus:[],generatedAt:T,
     pagination:{offset:4,limit:1,total:0,hasMore:true,nextOffset:5}};
   const page={...output(id),state:'available',data};verify(id,page,raw);
   const bad=clone(page);bad.data.requirements[0].excerptEnd--;assert.throws(()=>verify(id,bad,raw));
+  const invalidModel=clone(page);invalidModel.data.requirements[0].extractionModel=null;assert.throws(()=>verify(id,invalidModel,raw));
   assert.throws(()=>verify(id,page,{...raw,offset:3}));
   assert.throws(()=>verify(id,page,{...raw,sourceRecordId:U}));
 });
@@ -237,3 +240,31 @@ test('state and reports preserve domain repairs via canonical output, without ca
   const g=output(GAO);g.data[0].summary='😀'.repeat(201);assert.throws(()=>verify(GAO,g));
   const c=resolve(CRS).normalizeInput({});assert.equal(c.metadata.activeOnly,true);assert.equal(c.metadata.sourceConnected,false);
 });
+
+for(const [group,create,prefix,id] of [['public-data',createPublicDataValidators,'PublicData',ECON],
+  ['state-legislation',createStateLegislationValidators,'StateLegislation',BILL]]){
+  const schema=JSON.parse(readFileSync(new URL(`../retrieval-0.2/${group}.schema.json`,import.meta.url)));
+  const family=create({schema,validateShape});
+  test(`independent hostile operation selector refusal before coercion: ${group}`,()=>{
+    let effects=0;
+    const mark=()=>{effects++;return id;};
+    const selector={get [Symbol.toPrimitive](){effects++;return mark;}};
+    const proxy=new Proxy({}, {get(){effects++;return mark;}});
+    for(const value of [selector,proxy,{toString:mark},new String(id),null,undefined,1,Symbol('id')]){
+      for(const name of [`${prefix[0].toLowerCase()+prefix.slice(1)}InputDefinition`,`${prefix[0].toLowerCase()+prefix.slice(1)}OutputDefinition`])
+        assert.throws(()=>family[name](value));
+      assert.throws(()=>family[`normalize${prefix}Input`](value,{},{}));
+      assert.throws(()=>family[`assert${prefix}Output`](value,output(id),{},{}));
+      assert.throws(()=>resolveOperationContract({id:value,version:'0.2.0'}));
+    }
+    assert.equal(effects,0);
+  });
+  test(`independent hostile shape selector refusal before coercion: ${group}`,()=>{
+    let effects=0;
+    const key=Object.keys(schema.$defs)[0],mark=()=>{effects++;return key;};
+    for(const selector of [{[Symbol.toPrimitive]:mark},{get toString(){effects++;return mark;}},
+      new Proxy({}, {get(){effects++;return mark;}})])
+      assert.throws(()=>family[`validate${prefix}Shape`](selector,{}));
+    assert.equal(effects,0);
+  });
+}
