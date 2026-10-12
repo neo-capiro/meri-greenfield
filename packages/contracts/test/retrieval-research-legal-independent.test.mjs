@@ -175,12 +175,13 @@ const ln=(id=SEARCH,r=sr,c=lc)=>legal.normalizeResearchLegalLegislationInput(id,
 const authority='Source quotations retain their document identity. Meri relevance is an inference for review; keyword grammar and current folder decisions control assignments.';
 const wrap=(result,id=SEARCH)=>({tool:id,generatedAt:at,result,authority});
 const uncheckedMessage='Positive matches use retained source versions. Search completeness requires a qualified provider inventory.';
-const searchResult=(items=[])=>({scope:ls,items,interpretedQuery:null,versionPolicy:'any_retained',searchedKinds:'all',scanned:items.length,cursor:null,coverage:{complete:false,reason:'SOURCE_DOCUMENT_INVENTORY_NOT_QUALIFIED',manifestId:null,billIds:[],retainedVersionsOnly:true},message:uncheckedMessage});
+const searchResult=(items=[])=>({scope:{...ls},items,interpretedQuery:null,versionPolicy:'any_retained',searchedKinds:'all',scanned:items.length,cursor:null,coverage:{complete:false,reason:'SOURCE_DOCUMENT_INVENTORY_NOT_QUALIFIED',manifestId:null,billIds:[],retainedVersionsOnly:true},message:uncheckedMessage});
 const lp=(p=wrap(searchResult()),r=sr,c=lc,id=SEARCH)=>legal.assertResearchLegalLegislationOutput(id,p,r,c);
 const version=(id='doc:a')=>({id,billId:'bill:a',jurisdiction:'FL',sessionKey:'2026',revision:'revision opaque',contentHash:'',extractorVersion:'unknown',sourceUrl:null,kind:null,publishedDate:null,observedAt:at,complete:false,title:null,isCurrent:false});
-const item=(id='doc:a')=>({...version(id),billTitle:null,billIdentifier:null,sponsor:null,chamber:null,lastAction:null,versionType:null,excerpt:{quote:'',start:0,end:0},evaluation:null});
-const refs=(rows=[])=>({scope:ls,referenceId:'',edition:null,rows,related:[],coverage:{complete:false,reason:'SELECTED_INGESTED_REFERENCES_ONLY'}});
-const rules=(rows=[])=>({scope:ls,rows,adopted:[],coverage:{complete:false,reason:'SELECTED_NOTICES_AND_HISTORY_ONLY'}});
+const item=(id='doc:a')=>({...version(id),billTitle:'',billIdentifier:'',sponsor:null,chamber:null,lastAction:null,versionType:null,excerpt:{quote:'',start:0,end:0},evaluation:null});
+const compiled={raw:'needle',parserVersion:'legiwatch-query-v1',status:'supported',ast:{kind:'term',value:'needle',wildcard:'none'},reasons:[],interpretation:'needle'};
+const refs=(rows=[])=>({scope:{...ls},referenceId:'',edition:null,rows,related:[],coverage:{complete:false,reason:'SELECTED_INGESTED_REFERENCES_ONLY'}});
+const rules=(rows=[])=>({scope:{...ls},rows,adopted:[],coverage:{complete:false,reason:'SELECTED_NOTICES_AND_HISTORY_ONLY'}});
 
 test('legal independent: exact family schema and two operation selectors',()=>{
  assert.equal(legalSchema.$id,'urn:meri:retrieval:research-legal-legislation:0.2.0');
@@ -242,11 +243,11 @@ test('legal independent: search exposes exact item keys but never hidden section
  const x=item();for(const key of Object.keys(x)){const bad=structuredClone(x);delete bad[key];assert.throws(()=>lp(wrap(searchResult([bad]))),key);}assert.throws(()=>lp(wrap(searchResult([{...x,sections:[]}]))));
 });
 test('legal independent: search scan can exceed returned matches but never less',()=>{
- lp(wrap({...searchResult(),scanned:25}));assert.throws(()=>lp(wrap({...searchResult([item()]),scanned:0})));assert.throws(()=>lp(wrap({...searchResult(),scanned:26})));
+ lp(wrap({...searchResult(),scanned:25,interpretedQuery:compiled}),{...sr,query:'needle'});assert.throws(()=>lp(wrap({...searchResult([item()]),scanned:0})));assert.throws(()=>lp(wrap({...searchResult(),scanned:26})));
 });
 test('legal independent: cursor after refers to scanned row rather than returned last match',()=>{
  const cursor=Buffer.from(JSON.stringify({binding:'opaque binding',fingerprint:'opaque fingerprint',after:'scanned:25'})).toString('base64url');
- lp(wrap({...searchResult(),scanned:25,cursor}));
+ lp(wrap({...searchResult(),scanned:25,cursor,interpretedQuery:compiled}),{...sr,query:'needle'});
 });
 test('legal independent: selected current and kind constraints are branch specific',()=>{
  assert.throws(()=>lp(wrap({...searchResult([item()]),versionPolicy:'current_extractions'}),{...sr,versionPolicy:'current_extractions'}));
