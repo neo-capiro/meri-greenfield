@@ -1,0 +1,112 @@
+{
+  "method": "Python urllib.request through unchanged environment proxy; no retries or alternate proxy/network config",
+  "maxConcurrentRequests": 4,
+  "metadataResponseByteCap": 1500000,
+  "timeoutScope": "Per socket operation, not hard total watchdog",
+  "records": [
+    {
+      "name": "InRelease",
+      "url": "https://apt.postgresql.org/pub/repos/apt/dists/trixie-pgdg/InRelease",
+      "startedAt": "2026-10-12T08:09:40.273983+00:00",
+      "perResponseCapBytes": 1500000,
+      "socketTimeoutSeconds": 10,
+      "kind": "OFFICIAL_METADATA_ONLY",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+      "endedAt": "2026-10-12T08:09:40.300520+00:00",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "raw/InRelease"
+    },
+    {
+      "name": "Release",
+      "url": "https://apt.postgresql.org/pub/repos/apt/dists/trixie-pgdg/Release",
+      "startedAt": "2026-10-12T08:09:40.274683+00:00",
+      "perResponseCapBytes": 1500000,
+      "socketTimeoutSeconds": 10,
+      "kind": "OFFICIAL_METADATA_ONLY",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+      "endedAt": "2026-10-12T08:09:40.296767+00:00",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "raw/Release"
+    },
+    {
+      "name": "Release.gpg",
+      "url": "https://apt.postgresql.org/pub/repos/apt/dists/trixie-pgdg/Release.gpg",
+      "startedAt": "2026-10-12T08:09:40.275090+00:00",
+      "perResponseCapBytes": 1500000,
+      "socketTimeoutSeconds": 10,
+      "kind": "OFFICIAL_METADATA_ONLY",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+      "endedAt": "2026-10-12T08:09:40.294725+00:00",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "raw/Release.gpg"
+    },
+    {
+      "name": "ACCC4CF8.asc",
+      "url": "https://www.postgresql.org/media/keys/ACCC4CF8.asc",
+      "startedAt": "2026-10-12T08:09:40.275477+00:00",
+      "perResponseCapBytes": 1500000,
+      "socketTimeoutSeconds": 10,
+      "kind": "OFFICIAL_METADATA_ONLY",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+      "endedAt": "2026-10-12T08:09:40.297754+00:00",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "raw/ACCC4CF8.asc"
+    },
+    {
+      "name": "main-Packages.bz2",
+      "url": "https://apt.postgresql.org/pub/repos/apt/dists/trixie-pgdg/main/binary-amd64/Packages.bz2",
+      "startedAt": "2026-10-12T08:09:40.294787+00:00",
+      "perResponseCapBytes": 1500000,
+      "socketTimeoutSeconds": 10,
+      "kind": "OFFICIAL_METADATA_ONLY",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+      "endedAt": "2026-10-12T08:09:40.302819+00:00",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "raw/main-Packages.bz2"
+    },
+    {
+      "name": "17-Packages.bz2",
+      "url": "https://apt.postgresql.org/pub/repos/apt/dists/trixie-pgdg/17/binary-amd64/Packages.bz2",
+      "startedAt": "2026-10-12T08:09:40.296803+00:00",
+      "perResponseCapBytes": 1500000,
+      "socketTimeoutSeconds": 10,
+      "kind": "OFFICIAL_METADATA_ONLY",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+      "endedAt": "2026-10-12T08:09:40.304410+00:00",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "raw/17-Packages.bz2"
+    },
+    {
+      "name": "main-Sources.bz2",
+      "url": "https://apt.postgresql.org/pub/repos/apt/dists/trixie-pgdg/main/source/Sources.bz2",
+      "startedAt": "2026-10-12T08:09:40.297772+00:00",
+      "perResponseCapBytes": 1500000,
+      "socketTimeoutSeconds": 10,
+      "kind": "OFFICIAL_METADATA_ONLY",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+      "endedAt": "2026-10-12T08:09:40.305823+00:00",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "raw/main-Sources.bz2"
+    },
+    {
+      "name": "postgresql-17_17.11-1.pgdg13+2.dsc",
+      "url": "https://apt.postgresql.org/pub/repos/apt/pool/main/p/postgresql-17/postgresql-17_17.11-1.pgdg13+2.dsc",
+      "startedAt": "2026-10-12T08:09:40.300561+00:00",
+      "perResponseCapBytes": 1500000,
+      "socketTimeoutSeconds": 10,
+      "kind": "OFFICIAL_METADATA_ONLY",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+      "endedAt": "2026-10-12T08:09:40.307701+00:00",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "raw/postgresql-17_17.11-1.pgdg13+2.dsc"
+    }
+  ]
+}

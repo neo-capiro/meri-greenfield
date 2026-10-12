@@ -1,0 +1,16 @@
+{
+  "collectionSource": "collection-source.py.txt",
+  "sourceSha256": "71d963812643c3bbce19a8921891b92a354ed578283e0d66bbf6c27f554d22aa",
+  "classification": "Archival transcription of the submitted python stdin heredoc; committed after capture, not a pre-execution pinned collector",
+  "argv": [
+    "python",
+    "-"
+  ],
+  "cwd": "/workspace/meri-pgdg-metadata-20261012",
+  "ordinaryMetadataProcessOnly": true,
+  "targetRuntimeProvenanceClaimed": false,
+  "result": "8 preserved zero-byte proxy403 failures; no retry or changed proxy/config. All requests completed within the tool call.",
+  "webFallback": "web-fallback.json stores exact returned tool text as a JSON value, preserving spaces/newlines; not reconstructed origin bytes. No signature file or public key was synthesized.",
+  "priorEvidence": "All accepted native-prefix author/review records reused unchanged; no old failure/body normalized or overwritten",
+  "writeSet": "Only newly allocated task/report and pgdg-metadata-20261012/author evidence. No target or system write."
+}

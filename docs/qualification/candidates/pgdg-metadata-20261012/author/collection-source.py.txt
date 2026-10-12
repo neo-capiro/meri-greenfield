@@ -1,0 +1,25 @@
+import urllib.request,urllib.error,pathlib,json,hashlib,datetime,concurrent.futures
+b=pathlib.Path('docs/qualification/candidates/pgdg-metadata-20261012/author')
+items={
+'InRelease':'https://apt.postgresql.org/pub/repos/apt/dists/trixie-pgdg/InRelease',
+'Release':'https://apt.postgresql.org/pub/repos/apt/dists/trixie-pgdg/Release',
+'Release.gpg':'https://apt.postgresql.org/pub/repos/apt/dists/trixie-pgdg/Release.gpg',
+'ACCC4CF8.asc':'https://www.postgresql.org/media/keys/ACCC4CF8.asc',
+'main-Packages.bz2':'https://apt.postgresql.org/pub/repos/apt/dists/trixie-pgdg/main/binary-amd64/Packages.bz2',
+'17-Packages.bz2':'https://apt.postgresql.org/pub/repos/apt/dists/trixie-pgdg/17/binary-amd64/Packages.bz2',
+'main-Sources.bz2':'https://apt.postgresql.org/pub/repos/apt/dists/trixie-pgdg/main/source/Sources.bz2',
+'postgresql-17_17.11-1.pgdg13+2.dsc':'https://apt.postgresql.org/pub/repos/apt/pool/main/p/postgresql-17/postgresql-17_17.11-1.pgdg13+2.dsc',
+}
+def read(item):
+ n,u=item;r={'name':n,'url':u,'startedAt':datetime.datetime.now(datetime.timezone.utc).isoformat(),'perResponseCapBytes':1500000,'socketTimeoutSeconds':10,'kind':'OFFICIAL_METADATA_ONLY'}
+ try:
+  with urllib.request.urlopen(urllib.request.Request(u,headers={'User-Agent':'Meri-readonly-metadata/1.0'}),timeout=10) as s:
+   data=s.read(1500001);r.update(status=s.status,finalUrl=s.url,headers={k:v for k,v in s.headers.items() if k.lower() in ('content-type','content-length','date','etag','last-modified')})
+   if len(data)>1500000:raise ValueError('metadata body exceeds cap')
+ except urllib.error.HTTPError as e:
+  data=e.read(4096);r.update(status=e.code,error=str(e),errorBodyTruncated=len(data)==4096)
+ except Exception as e:data=b'';r.update(error=str(e))
+ (b/'raw'/n).write_bytes(data);r.update(endedAt=datetime.datetime.now(datetime.timezone.utc).isoformat(),bytes=len(data),sha256=hashlib.sha256(data).hexdigest(),path='raw/'+n);return r
+with concurrent.futures.ThreadPoolExecutor(max_workers=4) as ex:rows=list(ex.map(read,items.items()))
+(b/'retrievals.json').write_text(json.dumps({'method':'Python urllib.request through unchanged environment proxy; no retries or alternate proxy/network config','maxConcurrentRequests':4,'metadataResponseByteCap':1500000,'timeoutScope':'Per socket operation, not hard total watchdog','records':rows},indent=2)+'\n')
+print(json.dumps([{k:r.get(k) for k in ('name','status','bytes','error')} for r in rows],indent=2))
