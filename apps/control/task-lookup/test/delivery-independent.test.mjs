@@ -15,7 +15,7 @@ function harness(options={}){
  };
  const gateway={async executeOwned(raw,credential,delivery,signal){s.calls.push('gateway');s.gateway={raw,credential,delivery,signal};const r=JSON.parse(raw).arguments;const {clientId:ignored,...request}=r;return JSON.stringify(envelope(request,original));}};
  const authorize=async call=>{s.calls.push(call.phase);s.auth.push(call);return {authorized:true,bindingSha256:call.binding.bindingSha256,expiresAtMs:NOW+9000};};
- Object.assign(store,options.store?.(s,store)??{});Object.assign(gateway,options.gateway?.(s,gateway)??{});
+ Object.assign(store,options.store?.(s,{...store})??{});Object.assign(gateway,options.gateway?.(s,{...gateway})??{});
  const delivery=createTaskLookupDelivery({gateway,store,authorize:options.authorize?.(s,authorize)??authorize,clock:()=>s.now});
  return {c,s,store,gateway,delivery,lookup:(extra={})=>delivery.lookup({request:{},context:c,credential:'synthetic-capability',...extra}),read:(extra={})=>delivery.read({resultReference:c.resultReference,context:readContext(),...extra})};
 }
