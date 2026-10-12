@@ -1,0 +1,14 @@
+{
+  "node": "v24.19.0",
+  "pg": "8.23.1",
+  "pgClientType": "function",
+  "PostgresStoreType": "function",
+  "FixtureRegistryType": "function",
+  "publicSchemaSha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b",
+  "ajv": "8.20.0",
+  "ajvFormats": "3.0.1",
+  "canonicalize": "5.1.0",
+  "connectionsCreated": 0,
+  "scope": "IMPORT_METADATA_ONLY",
+  "retainedFailure": "First metadata print requested canonicalize/package.json through an unexported package subpath; corrected to filesystem metadata without changing source/dependencies."
+}

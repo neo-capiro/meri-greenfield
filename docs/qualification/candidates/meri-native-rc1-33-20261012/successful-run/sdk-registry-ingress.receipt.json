@@ -1,0 +1,38 @@
+{
+  "at": "2026-10-12T15:39:00.756470+00:00",
+  "name": "sdk-registry-ingress",
+  "platform_terminal_exit": 0,
+  "footer": {
+    "tests": 1,
+    "pass": 1,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "cases": [
+    "real mTLS credentials reach PostgreSQL current-fence decisions across A and B"
+  ],
+  "parent_pid": 66039,
+  "live_owned_group_members": 0,
+  "post_terminal_group_metadata": [],
+  "backend_connections_absent": true,
+  "migrated_sdk_tables": [
+    [
+      "commits"
+    ],
+    [
+      "grants"
+    ],
+    [
+      "runs"
+    ]
+  ],
+  "counts": {
+    "runs": 1,
+    "grants": 2,
+    "commits": 1
+  },
+  "loopback_mTLS_listeners": "Existing exact test creates two127.0.0.1:0 TLS1.3 mTLS listeners, waits for connections0 and closes each through t.after before terminal exit. No live Node group remains.",
+  "raw_stdout_sha256": "322c82a92a4dd4cb46a2c75bca5303ad48b256b3cfef203e6d5ab595d09547ec"
+}

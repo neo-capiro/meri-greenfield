@@ -1,0 +1,46 @@
+TAP version 13
+# Subtest: committed A remains immutable; B gets a fresh grant and exact original receipt
+ok 1 - committed A remains immutable; B gets a fresh grant and exact original receipt
+  ---
+  duration_ms: 164.468775
+  type: 'test'
+  ...
+# Subtest: bad readback, policy and original clock continuity refuse without publication
+ok 2 - bad readback, policy and original clock continuity refuse without publication
+  ---
+  duration_ms: 83.803387
+  type: 'test'
+  ...
+# Subtest: lost COMMIT acknowledgement reconciles to one original receipt
+ok 3 - lost COMMIT acknowledgement reconciles to one original receipt
+  ---
+  duration_ms: 28.691012
+  type: 'test'
+  ...
+# Subtest: database time after run lock wait refuses an expired grant
+ok 4 - database time after run lock wait refuses an expired grant
+  ---
+  duration_ms: 824.970769
+  type: 'test'
+  ...
+# Subtest: database guards prevent commit, grant and stable run rebinding
+ok 5 - database guards prevent commit, grant and stable run rebinding
+  ---
+  duration_ms: 37.006468
+  type: 'test'
+  ...
+# Subtest: verified certificate fingerprint resolves only its admitted A or B audience
+ok 6 - verified certificate fingerprint resolves only its admitted A or B audience
+  ---
+  duration_ms: 87.352477
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1667.58366

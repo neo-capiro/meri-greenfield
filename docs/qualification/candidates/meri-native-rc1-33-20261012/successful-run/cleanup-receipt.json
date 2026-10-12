@@ -1,0 +1,149 @@
+{
+  "at": "2026-10-12T15:43:11.448089+00:00",
+  "within_original_fresh_cleanup_deadline": true,
+  "new_command_groups": [
+    {
+      "command": "rc1-python-state",
+      "parent_pid": 62190,
+      "metadata": [],
+      "live_members": 0,
+      "parent_pid_present": false
+    },
+    {
+      "command": "sdk-registry-ingress",
+      "parent_pid": 66039,
+      "metadata": [],
+      "live_members": 0,
+      "parent_pid_present": false
+    },
+    {
+      "command": "sdk-registry",
+      "parent_pid": 67613,
+      "metadata": [],
+      "live_members": 0,
+      "parent_pid_present": false
+    },
+    {
+      "command": "sdk-revocation-postgres",
+      "parent_pid": 68861,
+      "metadata": [],
+      "live_members": 0,
+      "parent_pid_present": false
+    }
+  ],
+  "live_owned_test_processes": 0,
+  "test_backends": [],
+  "owned_tls_listener_absence_basis": "Exact Node ingress test awaited both registered t.after ingress.close hooks before successful terminal TAP; all newly owned command groups have no live members, and no credential-using Node process remains. No FD-directory/socket-inode scanner used.",
+  "owned_live_credential_listeners": 0,
+  "deleted_owned_private_keys": [
+    "/workspace/scratch/meri-native-rc1-source-check-20261012T142905Z/rc1/.task-inputs/sdk-fixture-ingress-1/certs/ca1.key",
+    "/workspace/scratch/meri-native-rc1-source-check-20261012T142905Z/rc1/.task-inputs/sdk-fixture-ingress-1/certs/ca2.key",
+    "/workspace/scratch/meri-native-rc1-source-check-20261012T142905Z/rc1/.task-inputs/sdk-fixture-ingress-1/certs/server.key",
+    "/workspace/scratch/meri-native-rc1-source-check-20261012T142905Z/rc1/.task-inputs/sdk-fixture-ingress-1/certs/client-trusted.key",
+    "/workspace/scratch/meri-native-rc1-source-check-20261012T142905Z/rc1/.task-inputs/sdk-fixture-ingress-1/certs/client-trusted-b.key",
+    "/workspace/scratch/meri-native-rc1-source-check-20261012T142905Z/rc1/.task-inputs/sdk-fixture-ingress-1/certs/client-untrusted.key"
+  ],
+  "remaining_private_key_count": 0,
+  "public_certificates_retained": true,
+  "original_schema_oid": 16389,
+  "original_row_hashes_match": true,
+  "original_row_hashes": {
+    "budget": {
+      "rows": 1,
+      "sha256": "1a8b23c94afd9b4af70bc6306c328275a0e5130fc271232cdfc55a358cda54d9"
+    },
+    "runs": {
+      "rows": 1,
+      "sha256": "b92f7d4757c3918bc71e82d89d919a8f028176faa53c72a5215d06f7bad49f3a"
+    },
+    "grants": {
+      "rows": 1,
+      "sha256": "1080d3928a510b1e692f54a3ab51b40ff2bb881cf8112522c02f7c915eeef3e4"
+    },
+    "requests": {
+      "rows": 1,
+      "sha256": "c56f7da70e84178cbc29215b9ad85563f13e3208e6a79c9728a2e39dc47d7105"
+    }
+  },
+  "original_unknown_liability": [
+    [
+      "old",
+      "UNKNOWN",
+      1076,
+      null
+    ]
+  ],
+  "prior_partial_schema_oid": 24577,
+  "prior_partial_budget_and_request_rows_unchanged": true,
+  "repeat_schema_oid": 24814,
+  "schemas_after": [
+    [
+      16389,
+      "meri_qualification"
+    ],
+    [
+      24577,
+      "meri_qualification_rc1_20261012"
+    ],
+    [
+      24814,
+      "meri_qualification_rc1_20261012_repeat1"
+    ]
+  ],
+  "sdk_final": {
+    "database_identity": [
+      "meri_qualification_sdk_fixture_rc1_20261012",
+      "qualification_owner"
+    ],
+    "counts": {
+      "runs": 11,
+      "grants": 14,
+      "commits": 6
+    },
+    "grant_states": [
+      [
+        "ACTIVE",
+        8
+      ],
+      [
+        "REVOKED",
+        6
+      ]
+    ],
+    "schema_oid": 25502,
+    "database_privileges": "{qualification_owner=CTc/qualification_owner}",
+    "public_schema_privileges": "{pg_database_owner=UC/pg_database_owner}"
+  },
+  "hba_unchanged": true,
+  "new_database_role_or_password": false,
+  "container_kept_running": true,
+  "host5432_untouched": true,
+  "producer_log_unchanged": true,
+  "reviewed_source_hashes_unchanged": true,
+  "historical_exited_pid_records": [
+    [
+      "37280",
+      "1",
+      "37179",
+      "Z",
+      "python"
+    ],
+    [
+      "37281",
+      "1",
+      "37179",
+      "Z",
+      "python"
+    ],
+    [
+      "37282",
+      "1",
+      "37179",
+      "Z",
+      "python"
+    ]
+  ],
+  "historical_pid_records_claimed_reaped": false,
+  "pid1_or_borrowed_process_action": false,
+  "no_protected_proc_access": true
+}

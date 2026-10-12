@@ -1,0 +1,60 @@
+{
+  "verdict": "ACCEPT_SOURCE_ONLY",
+  "reviewed_at": "2026-10-12T15:27:29Z",
+  "amendment_deadline": "2026-10-12T15:27:47Z",
+  "source_sha256": "5c68577d7e20c783d62100f486f5f20e3d01817917842a51b8614765a8c17a17",
+  "author_test_sha256": "ddc9233ace7bec3dc6ca3daca410c9349a52dce5a1baaa24ec8b82022dce4c34",
+  "prior_review_preserved": {
+    "path": "/workspace/scratch/meri-native-supervision-review-20261012/independent-review.json",
+    "sha256": "0aaf3dba6652fc2f36256aa43f3c81fd29727b9f3293dcccfc3c3a82a7c10c1e"
+  },
+  "intermediate_finding": {
+    "reviewed_unchecked_stamp_source_sha256": "999cfdcd3dc6d7b60598de30276663e70e9786dfee24c537f9e013a36e639f11",
+    "verdict": "HOLD_SOURCE_UNTIL_STAMP_FAILURE_CHECKED",
+    "reason": "set -C alone does not stop the subsequent exec when the separate PID-stamp printf fails",
+    "resolution": "Each exclusive printf PID stamp now has || exit 125 before unchanged third-line exec"
+  },
+  "independent_source_audit": {
+    "chunk_id": "d86006",
+    "wall_time_seconds": 0.00003303,
+    "exit_code": 0,
+    "original_token_count": 110,
+    "output": "{\"verdict\": \"PASS\", \"exact_correction_sha256\": \"5c68577d7e20c783d62100f486f5f20e3d01817917842a51b8614765a8c17a17\", \"exact_author_test_sha256\": \"ddc9233ace7bec3dc6ca3daca410c9349a52dce5a1baaa24ec8b82022dce4c34\", \"four_command_env_argv_counts_unchanged\": true, \"checked_exclusive_pid_receipts\": true, \"no_protected_path_dependency\": true, \"prior_independent_review_sha256\": \"0aaf3dba6652fc2f36256aa43f3c81fd29727b9f3293dcccfc3c3a82a7c10c1e\"}\n"
+  },
+  "author_source_checks_independently_rerun": {
+    "chunk_id": "48e21a",
+    "wall_time_seconds": 0.000027592,
+    "exit_code": 0,
+    "original_token_count": 271,
+    "output": "test_direct_platform_commands_preserve_deadline_output_and_environment (__main__.CorrectionTests.test_direct_platform_commands_preserve_deadline_output_and_environment) ... ok\ntest_exact_approved_case_and_source_sequence_is_preserved (__main__.CorrectionTests.test_exact_approved_case_and_source_sequence_is_preserved) ... ok\ntest_execution_has_no_custom_process_monitor_or_protected_path_dependency (__main__.CorrectionTests.test_execution_has_no_custom_process_monitor_or_protected_path_dependency) ... ok\ntest_exited_historical_records_are_not_claimed_reaped_or_live (__main__.CorrectionTests.test_exited_historical_records_are_not_claimed_reaped_or_live) ... ok\ntest_metadata_normalization_preserves_actual_security_changes (__main__.CorrectionTests.test_metadata_normalization_preserves_actual_security_changes) ... ok\ntest_renewal_is_required_and_original_failed_state_is_preserved (__main__.CorrectionTests.test_renewal_is_required_and_original_failed_state_is_preserved) ... ok\n\n----------------------------------------------------------------------\nRan 6 tests in 0.002s\n\nOK\n"
+  },
+  "harmless_behavior": {
+    "successful_probe": {
+      "chunk_id": "ad9b26",
+      "wall_time_seconds": 0.000031067,
+      "exit_code": 0,
+      "original_token_count": 0,
+      "output": ""
+    },
+    "observed_pid_and_child": {
+      "chunk_id": "90f463",
+      "wall_time_seconds": 0.000024187,
+      "exit_code": 0,
+      "original_token_count": 45,
+      "output": "{\"pid_stamp\": 56507, \"observed\": {\"timeout_parent_pid\": 56507, \"normal_child_exit\": 0, \"normal_child_reaped\": true}, \"stamp_matches_timeout_parent\": true, \"stderr_empty\": true}\n"
+    },
+    "preexisting_stamp_refusal": {
+      "chunk_id": "113cc0",
+      "wall_time_seconds": 0.000039149,
+      "exit_code": 125,
+      "original_token_count": 35,
+      "output": "/bin/bash: line 2: /workspace/scratch/meri-native-supervision-review-20261012/pid-stamp-probe.parent.pid: cannot overwrite existing file\n"
+    },
+    "assertions": "Success exit 0: stamp PID56507 equals actual GNUtimeout parent PID, normal child exit0 and owning parent wait reaping. Existing stamp returns125 before executing harmless sentinel; original stamp retained."
+  },
+  "scope": "One exclusive public shell PID stamp precedes exec; no running custom monitor, protected FD/environ/socket-inode read, shared PID1 action, install, provider/cloud call, fixture attempt or database action.",
+  "cleanup_semantics": "Prior source review remains authoritative: historical37280/37281/37282 are exited unreaped Z records, never claimed reaped. Post-terminal supported public owned-process metadata can distinguish live resources; unresolved live ownership is HOLD. Terminal parent alone does not prove all descendants reaped.",
+  "qualification_verdict": "HOLD_RENEWAL_REQUIRED",
+  "minimum_repeat": "Unchanged one-attempt23→1→6→3 scope, fresh720/900s T0 deadlines and live-resource cleanup predicate, new meri_qualification_rc1_20261012_repeat1 archive, original OID16389/prior partial OID24577 preserved. Fresh admission and explicit renewal precede any fixture mutation.",
+  "remaining_source_blockers": []
+}

@@ -1,0 +1,34 @@
+{
+  "status": "PASS_33_LOCAL_RC1_CASES; LIVE_RESOURCE_CLEANUP_VERIFIED",
+  "at": "2026-10-12T15:43:11.448459+00:00",
+  "t0": "2026-10-12T15:31:54+00:00",
+  "work_deadline": "2026-10-12T15:43:54+00:00",
+  "cleanup_deadline": "2026-10-12T15:46:54+00:00",
+  "elapsed_seconds": 677.448464,
+  "all_tests_finished_within_work_deadline": true,
+  "source_commit": "2f06feccca731d6cd388612cd568185ecc29668f",
+  "source_tree": "39165ddad3989434908087f4571b70bea000a98d",
+  "correction_sha256": "5c68577d7e20c783d62100f486f5f20e3d01817917842a51b8614765a8c17a17",
+  "group_pass_counts": [
+    23,
+    1,
+    6,
+    3
+  ],
+  "total_passed": 33,
+  "skipped": 0,
+  "attempts_per_group_in_this_window": 1,
+  "provider_cloud_calls": 0,
+  "provider_cloud_call_basis": "Exact selected tests use synthetic counting, HTTPX MockTransport, local PostgreSQL/mTLS and injected checkpoint storage; clean credential-free environments with local LiteLLM cost map. No provider/cloud/client-S3 path or command executed.",
+  "provider_cloud_incremental_cost_usd": 0,
+  "original_prepared_environment_preserved": true,
+  "private_keys_deleted": 6,
+  "cleanup_receipt_sha256": "1520d93bd801fe315eb296c8aac9ef405c5dc41357ca1e61683c5205baef68de",
+  "retained_databases": [
+    "meri_qualification_test",
+    "meri_qualification_sdk_fixture_rc1_20261012"
+  ],
+  "retained_rc1_schema": "meri_qualification_rc1_20261012_repeat1",
+  "historical_zombies_unreaped_and_recorded": true,
+  "scope_limits": "Local synthetic PostgreSQL/current-fence/mTLS behavior only; not original full L1 security/auth isolation, native SDK/model loop, ECS identity, cloud provider, browser/Temporal or G1 acceptance. Nine separately blocked real tool-budget cases and migration0003 unrun."
+}

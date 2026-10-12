@@ -1,0 +1,23 @@
+{
+  "at": "2026-10-12T15:43:11.422019+00:00",
+  "name": "sdk-revocation-postgres",
+  "platform_terminal_exit": 0,
+  "footer": {
+    "tests": 3,
+    "pass": 3,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "cases": [
+    "real PostgreSQL serializes concurrent owner revocations with one immutable timestamp",
+    "real PostgreSQL lost acknowledgement requires explicit exact-binding readback",
+    "real PostgreSQL wrong binding/peer cannot change current grant"
+  ],
+  "parent_pid": 68861,
+  "live_owned_members": 0,
+  "database": "meri_qualification_sdk_fixture_rc1_20261012",
+  "migration_or_reset_performed": false,
+  "raw_stdout_sha256": "cc60175592b65f9f0aa26afa561529e103c91ae3d15cad5160f8663c1b182a0e"
+}

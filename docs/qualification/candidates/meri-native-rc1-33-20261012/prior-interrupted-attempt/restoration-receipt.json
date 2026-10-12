@@ -1,0 +1,220 @@
+{
+  "at": "2026-10-12T15:10:17.923911+00:00",
+  "status": "ORIGINAL_ENVIRONMENT_RESTORED; ATTEMPT_FAILED; EXITED_PID_REAPING_HOLD",
+  "t0": "2026-10-12T15:04:39+00:00",
+  "original_cleanup_deadline": "2026-10-12T15:19:39+00:00",
+  "within_original_cleanup_deadline": true,
+  "original_restoration": {
+    "schema_oid": 16389,
+    "oid_matches": true,
+    "all_four_table_row_hashes_match": true,
+    "row_hashes": {
+      "budget": {
+        "rows": 1,
+        "sha256": "1a8b23c94afd9b4af70bc6306c328275a0e5130fc271232cdfc55a358cda54d9"
+      },
+      "runs": {
+        "rows": 1,
+        "sha256": "b92f7d4757c3918bc71e82d89d919a8f028176faa53c72a5215d06f7bad49f3a"
+      },
+      "grants": {
+        "rows": 1,
+        "sha256": "1080d3928a510b1e692f54a3ab51b40ff2bb881cf8112522c02f7c915eeef3e4"
+      },
+      "requests": {
+        "rows": 1,
+        "sha256": "c56f7da70e84178cbc29215b9ad85563f13e3208e6a79c9728a2e39dc47d7105"
+      }
+    },
+    "original_liability": [
+      [
+        "old",
+        "UNKNOWN",
+        1076,
+        null
+      ]
+    ],
+    "schemas": [
+      [
+        16389,
+        "meri_qualification"
+      ],
+      [
+        24577,
+        "meri_qualification_rc1_20261012"
+      ]
+    ],
+    "test_backends": [],
+    "hba_unchanged": true
+  },
+  "retained_partial_rc1_state": {
+    "schema_oid": 24577,
+    "budget": [
+      [
+        1,
+        10000000,
+        9998924,
+        false
+      ]
+    ],
+    "request_liability": [
+      [
+        "process-race-2",
+        "UNKNOWN",
+        1076,
+        null
+      ]
+    ],
+    "schema_objects": [
+      [
+        "budget",
+        "r"
+      ],
+      [
+        "budget_liabilities",
+        "v"
+      ],
+      [
+        "budget_pkey",
+        "i"
+      ],
+      [
+        "grants",
+        "r"
+      ],
+      [
+        "grants_capability_sha256_key",
+        "i"
+      ],
+      [
+        "grants_pkey",
+        "i"
+      ],
+      [
+        "one_unknown_per_grant",
+        "i"
+      ],
+      [
+        "one_unknown_tool_per_grant",
+        "i"
+      ],
+      [
+        "requests",
+        "r"
+      ],
+      [
+        "requests_pkey",
+        "i"
+      ],
+      [
+        "runs",
+        "r"
+      ],
+      [
+        "runs_pkey",
+        "i"
+      ],
+      [
+        "tool_grant_bindings",
+        "r"
+      ],
+      [
+        "tool_grant_bindings_pkey",
+        "i"
+      ],
+      [
+        "tool_reservations",
+        "r"
+      ],
+      [
+        "tool_reservations_pkey",
+        "i"
+      ],
+      [
+        "tool_reservations_reservation_id_key",
+        "i"
+      ],
+      [
+        "tool_run_allocations",
+        "r"
+      ],
+      [
+        "tool_run_allocations_pkey",
+        "i"
+      ]
+    ]
+  },
+  "remaining_exited_kernel_entries": [
+    {
+      "pid": 37280,
+      "ppid": 1,
+      "pgid": 37179,
+      "state": "Z",
+      "status_fields": {
+        "Name": "python",
+        "State": "Z (zombie)",
+        "PPid": "1",
+        "FDSize": "0",
+        "Threads": "1"
+      }
+    },
+    {
+      "pid": 37281,
+      "ppid": 1,
+      "pgid": 37179,
+      "state": "Z",
+      "status_fields": {
+        "Name": "python",
+        "State": "Z (zombie)",
+        "PPid": "1",
+        "FDSize": "0",
+        "Threads": "1"
+      }
+    },
+    {
+      "pid": 37282,
+      "ppid": 1,
+      "pgid": 37179,
+      "state": "Z",
+      "status_fields": {
+        "Name": "python",
+        "State": "Z (zombie)",
+        "PPid": "1",
+        "FDSize": "0",
+        "Threads": "1"
+      }
+    }
+  ],
+  "no_live_owned_test_processes": true,
+  "physical_pid_absence_verified": false,
+  "sdk_database_created": false,
+  "certificate_pairs_created": 0,
+  "private_keys_created": 0,
+  "private_keys_present": false,
+  "new_tls_listeners_created": 0,
+  "container_retained_running": true,
+  "host_endpoint": "127.0.0.1:55432",
+  "producer_log_unchanged": true,
+  "reviewed_source_hashes_unchanged": true,
+  "test_command_attempts": 1,
+  "test_command_retried": false,
+  "completed_test_groups": 0,
+  "observed_completed_method_count": 3,
+  "observed_completed_methods": [
+    "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_actual_database_lock_contention_never_exceeds_cap",
+    "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_cancelled_wait_keeps_actual_committed_unknown",
+    "apps.proxy.qualification.test.test_postgres_state.PostgresTests.test_capability_count_model_body_and_pricing_mismatch"
+  ],
+  "python_command_exit": -15,
+  "unrun_groups": [
+    "sdk-registry-ingress",
+    "sdk-registry",
+    "sdk-revocation-postgres"
+  ],
+  "partial_result_limit": "Three unittest method ok lines are partial evidence; suite interrupted during cross-process contention and has no terminal unittest result. No33-case qualification pass.",
+  "monitor_fault": "Monitor tried to inspect fd directory of an exited child; /proc denied access. Monitoring exception terminated owned test group, leaving three exited children adopted by PID1. No Meri test assertion failed in captured output.",
+  "cleanup_continuation": "The schema restoration transaction succeeded. Its first follow-up metadata assertion incorrectly compared tuple rows with JSON list rows for HBA; read-only normalized comparison confirms HBA unchanged. Original failed terminal receipt and raw streams retained. No SQL/schema action retried.",
+  "remaining_blocker": "Workspace PID1 must reap three exited child entries; they are not running and FDSize is0. No borrowed-parent/process/security action was attempted. Fresh run admission and corrected exit-aware/subreaping supervision are needed before another qualification attempt.",
+  "provider_cloud_calls": 0,
+  "provider_cloud_basis": "Only exact Python fixture command ran in credential-free environment with local LiteLLM cost map, synthetic counter and MockTransport; sampled sockets were loopback only. No SDK/provider/cloud command executed."
+}

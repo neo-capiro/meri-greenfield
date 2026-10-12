@@ -1,0 +1,28 @@
+{
+  "at": "2026-10-12T15:29:24.428868+00:00",
+  "verdict": "ACCEPT_SOURCE_CORRECTION_ONLY; NATIVE_QUALIFICATION_HOLD_UNTIL_RENEWED_SCOPE",
+  "exact_artifact_hashes": {
+    "/workspace/scratch/meri-native-supervision-fix-20261012/execution-correction.json": "5c68577d7e20c783d62100f486f5f20e3d01817917842a51b8614765a8c17a17",
+    "/workspace/scratch/meri-native-supervision-fix-20261012/test_execution_correction.py": "ddc9233ace7bec3dc6ca3daca410c9349a52dce5a1baaa24ec8b82022dce4c34",
+    "/workspace/scratch/meri-native-supervision-fix-20261012/author-source-tests-sealed.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/workspace/scratch/meri-native-supervision-fix-20261012/author-source-tests-sealed.stderr.log": "078b5c83fa89bbd96463285b54cc4264cd142491d1126290fb7e0b33920e2b0e",
+    "/workspace/scratch/meri-native-supervision-fix-20261012/author-preservation-receipt.json": "2a07635f52af93efbf8abefc792c6566fd01964a347936356cbf65b1271bf88c",
+    "/workspace/scratch/meri-native-supervision-review-20261012/independent-review-final.json": "6938f10dc5221e5732fb4d48fcfdb8077e3e61b224836186dec1c7e0fefd0320"
+  },
+  "prior_partial_rc1_budget_requests_objects_unchanged": true,
+  "partial_schema_oid": 24577,
+  "author_source_tests_passed": 6,
+  "independent_source_tests_passed": 4,
+  "independent_child_ownership_tests_passed": 4,
+  "independent_platform_completion_probes": [
+    0,
+    124
+  ],
+  "independent_pid_stamp_probes": [
+    "success_PID_matches_GNUtimeout",
+    "preexisting_stamp_exit125_before_test"
+  ],
+  "no_new_fixture_attempt": true,
+  "historical_zombies_claimed_reaped": false,
+  "minimal_renewal": "Same33cases23->1->6->3 once; fresh720/900s T0; original55432 instance/owner/data; preserve old24577 archive and use newmeri_qualification_rc1_20261012_repeat1; explicitly adopt terminal platform completion plus noLIVEownedprocess/backend/listener cleanup; keep historicalZrecords separate/unreaped; no nine-budget cases, oldadmission reuse, auth change or source modification."
+}

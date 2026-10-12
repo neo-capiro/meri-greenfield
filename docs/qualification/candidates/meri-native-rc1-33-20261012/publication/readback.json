@@ -1,0 +1,335 @@
+{
+  "verdict": "PUBLISHED_SAFE_EVIDENCE_ONLY; NO_G1_ADMISSION",
+  "repository": "neo-capiro/meri-greenfield",
+  "branch": "task/meri-native-rc1-33-evidence-20261012",
+  "source_commit": "2f06feccca731d6cd388612cd568185ecc29668f",
+  "source_tree": "39165ddad3989434908087f4571b70bea000a98d",
+  "evidence_freeze_commit": "c0a9cda9702a80f1f8581447ec8ad976f37a4ba8",
+  "evidence_freeze_tree": "fb92784bc16a17fb9d830166122ddcc12c69d03f",
+  "evidence_freeze_url": "https://github.com/neo-capiro/meri-greenfield/commit/c0a9cda9702a80f1f8581447ec8ad976f37a4ba8",
+  "immutable_report_url": "https://github.com/neo-capiro/meri-greenfield/blob/c0a9cda9702a80f1f8581447ec8ad976f37a4ba8/docs/qualification/candidates/meri-native-rc1-33-20261012/REPORT.md",
+  "artifact_manifest_sha256": "45e0c09e3c11c6c02f14fd2449ba36344b74d92e690aed5a5c81141384d9d863",
+  "terminal_sha256": "afa5e7159d077ea1c77f71640f482b8bced83312bee2128ed2756587d454e3db",
+  "source_test_manifest_sha256": "26f678a2c1d2456b7b4ad59da1a980b9ae5b3cbd4a55ebd67b5b1631bf742bc8",
+  "file_count": 32,
+  "unique_blobs_read_back": 28,
+  "all32_utf8_bytes_match_expected": true,
+  "remote_tree_matches_local_staged_tree": true,
+  "new_branch_only": true,
+  "existing_source_branch_head_unchanged": "2f06feccca731d6cd388612cd568185ecc29668f",
+  "main_merge": false,
+  "pr": {
+    "number": 23,
+    "url": "https://github.com/neo-capiro/meri-greenfield/pull/23",
+    "draft": true,
+    "state": "open",
+    "merged": false,
+    "head": "c0a9cda9702a80f1f8581447ec8ad976f37a4ba8",
+    "base": "2f06feccca731d6cd388612cd568185ecc29668f"
+  },
+  "secret_payload_scan": {
+    "findings": [],
+    "selection": "Explicit exact receipts/raw test output/public certificate metadata; no .key payload, credentials, environment-value dump, private product source or SQL snapshots."
+  },
+  "preserved_raw_log_diff_check": {
+    "status": "EXPECTED_RAW_EVIDENCE_WHITESPACE",
+    "path": "docs/qualification/candidates/meri-native-rc1-33-20261012/prior-interrupted-attempt/rc1-python-state.stderr.log",
+    "line": 4,
+    "explanation": "Original incomplete test line ends in trailing whitespace; exact original bytes intentionally retained."
+  },
+  "no_runtime_actions": true,
+  "no_installs": true,
+  "no_database_changes": true,
+  "no_provider_cloud_calls": true,
+  "readbacks": [
+    {
+      "git_blob_sha1": "bb4db6b0bd507b9dc2bb0194e98441fbadfda862",
+      "paths": [
+        "docs/qualification/candidates/meri-native-rc1-33-20261012/README.md"
+      ],
+      "expected_sha256s": [
+        "4569775afa7e6a45c328ad5b10372aeb62412d637ca6b6aac61fac9bf51d3ed3"
+      ],
+      "exact_utf8_content_match": true
+    },
+    {
+      "git_blob_sha1": "a35200e1357e02f913680acc02c2ab5374bcbf21",
+      "paths": [
+        "docs/qualification/candidates/meri-native-rc1-33-20261012/REPORT.md"
+      ],
+      "expected_sha256s": [
+        "bc6e5b6eb53571794a34020a3df9f6d1499bcd0b1fbd65b0985b6c4170f35929"
+      ],
+      "exact_utf8_content_match": true
+    },
+    {
+      "git_blob_sha1": "4775754d6ad3e4bb6ccc8f2046431c66b0e811db",
+      "paths": [
+        "docs/qualification/candidates/meri-native-rc1-33-20261012/artifact-manifest.json"
+      ],
+      "expected_sha256s": [
+        "45e0c09e3c11c6c02f14fd2449ba36344b74d92e690aed5a5c81141384d9d863"
+      ],
+      "exact_utf8_content_match": true
+    },
+    {
+      "git_blob_sha1": "c7a92bd8f618b6d1158a5f2cc479d6be3bd7ac21",
+      "paths": [
+        "docs/qualification/candidates/meri-native-rc1-33-20261012/dependencies/dependency-import-verification.json"
+      ],
+      "expected_sha256s": [
+        "d23d57faadf16d474fbe5fc5e92f44e286214a8c5678df738f750fbef09f9ad7"
+      ],
+      "exact_utf8_content_match": true
+    },
+    {
+      "git_blob_sha1": "52d6ff72e500294db10ad89755ce5f9b19c0716b",
+      "paths": [
+        "docs/qualification/candidates/meri-native-rc1-33-20261012/dependencies/package-install-final.receipt.json"
+      ],
+      "expected_sha256s": [
+        "f5424a38ca83b31342d2d13d81f22c1c5c496ff8a4a58f9bbf3397a90758b52e"
+      ],
+      "exact_utf8_content_match": true
+    },
+    {
+      "git_blob_sha1": "23e185809473b5c699da9ca37174505123c722b4",
+      "paths": [
+        "docs/qualification/candidates/meri-native-rc1-33-20261012/dependencies/producer-setup-verification.safe-summary.json"
+      ],
+      "expected_sha256s": [
+        "d3e92c75de24e7ed9a4a779a45fa289fecf2c06e90b79c342a0c480abf57c6d3"
+      ],
+      "exact_utf8_content_match": true
+    },
+    {
+      "git_blob_sha1": "f636a491c55a4318b777ba437b2758d9b3946f97",
+      "paths": [
+        "docs/qualification/candidates/meri-native-rc1-33-20261012/prior-interrupted-attempt/rc1-python-state.stderr.log"
+      ],
+      "expected_sha256s": [
+        "027d6ea06c4304e70c240b2e698ce4b46e22bf3629896f2b41f77b472e48504f"
+      ],
+      "exact_utf8_content_match": true
+    },
+    {
+      "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "paths": [
+        "docs/qualification/candidates/meri-native-rc1-33-20261012/prior-interrupted-attempt/rc1-python-state.stdout.log",
+        "docs/qualification/candidates/meri-native-rc1-33-20261012/successful-run/rc1-python-state.stdout.log",
+        "docs/qualification/candidates/meri-native-rc1-33-20261012/successful-run/sdk-registry-ingress.stderr.log",
+        "docs/qualification/candidates/meri-native-rc1-33-20261012/successful-run/sdk-registry.stderr.log",
+        "docs/qualification/candidates/meri-native-rc1-33-20261012/successful-run/sdk-revocation-postgres.stderr.log"
+      ],
+      "expected_sha256s": [
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      ],
+      "exact_utf8_content_match": true
+    },
+    {
+      "git_blob_sha1": "c49403650ca8387850dd64e76bc4fa3707ce54ea",
+      "paths": [
+        "docs/qualification/candidates/meri-native-rc1-33-20261012/prior-interrupted-attempt/restoration-receipt.json"
+      ],
+      "expected_sha256s": [
+        "db98e5dfd2107823d3157e8c67479580b518d4d58b9e152fa8ca7937eea6bd0d"
+      ],
+      "exact_utf8_content_match": true
+    },
+    {
+      "git_blob_sha1": "e444c4a0133575c207d2900ba4d71a523c3d12f4",
+      "paths": [
+        "docs/qualification/candidates/meri-native-rc1-33-20261012/prior-interrupted-attempt/terminal-receipt.json"
+      ],
+      "expected_sha256s": [
+        "e57b8ef403bc472e8d0b8e12d6450382ed68cea30bdeaf6bf8ff887fb71876d7"
+      ],
+      "exact_utf8_content_match": true
+    },
+    {
+      "git_blob_sha1": "eac2b7dab620d73774f5b537c7a10070dbe7d1a9",
+      "paths": [
+        "docs/qualification/candidates/meri-native-rc1-33-20261012/source-pin-identities.json"
+      ],
+      "expected_sha256s": [
+        "f240b516a94ad4448e6accdc4b4450d2ed8fd20e98b07e3126bb9e3b3dd6a027"
+      ],
+      "exact_utf8_content_match": true
+    },
+    {
+      "git_blob_sha1": "09806a99abcd0a70b88696b1c4d504cac3028e0e",
+      "paths": [
+        "docs/qualification/candidates/meri-native-rc1-33-20261012/successful-run/approved-repeat-start.json"
+      ],
+      "expected_sha256s": [
+        "6e3434630088f2f1f929ea18f3fed486020e7ed306f74142c2d263175424becb"
+      ],
+      "exact_utf8_content_match": true
+    },
+    {
+      "git_blob_sha1": "9933737aaff85130e9c888d3fa06246a3d654593",
+      "paths": [
+        "docs/qualification/candidates/meri-native-rc1-33-20261012/successful-run/certificate-receipt.json"
+      ],
+      "expected_sha256s": [
+        "a724d7fdf5ea21d122d3b8f40798990c7c7dfb6eb1362324fdcf8b5157153345"
+      ],
+      "exact_utf8_content_match": true
+    },
+    {
+      "git_blob_sha1": "bc892fc75e7349640c407f52595232f5c9ef3263",
+      "paths": [
+        "docs/qualification/candidates/meri-native-rc1-33-20261012/successful-run/cleanup-receipt.json"
+      ],
+      "expected_sha256s": [
+        "1520d93bd801fe315eb296c8aac9ef405c5dc41357ca1e61683c5205baef68de"
+      ],
+      "exact_utf8_content_match": true
+    },
+    {
+      "git_blob_sha1": "1fdc3aa165fad4eef52dbc8d8e1a9822cb4967eb",
+      "paths": [
+        "docs/qualification/candidates/meri-native-rc1-33-20261012/successful-run/rc1-python-state.receipt.json"
+      ],
+      "expected_sha256s": [
+        "ebcc5791280d3cd6be084031738a7487f2202bad2dfd3d9ddff3eacb7e46a3bd"
+      ],
+      "exact_utf8_content_match": true
+    },
+    {
+      "git_blob_sha1": "738aca034b97b0de0140f7d20ce8c87db9edc834",
+      "paths": [
+        "docs/qualification/candidates/meri-native-rc1-33-20261012/successful-run/rc1-python-state.stderr.log"
+      ],
+      "expected_sha256s": [
+        "7c39a97e2beb0ac99f0c9777d1341ecc0ab3e77efcdebfe013c060973e5d8c03"
+      ],
+      "exact_utf8_content_match": true
+    },
+    {
+      "git_blob_sha1": "58f3b04f55fc6d91ada69c27d21e54e1e15ee98d",
+      "paths": [
+        "docs/qualification/candidates/meri-native-rc1-33-20261012/successful-run/sdk-database-setup.json"
+      ],
+      "expected_sha256s": [
+        "c4b3e5ff7a8ca3d8e2579312200805becf32270e56dd19a29195d1bf2d1add8a"
+      ],
+      "exact_utf8_content_match": true
+    },
+    {
+      "git_blob_sha1": "b230e474643a027ed9cb102c0bf00ba7b1fc9339",
+      "paths": [
+        "docs/qualification/candidates/meri-native-rc1-33-20261012/successful-run/sdk-registry-ingress.receipt.json"
+      ],
+      "expected_sha256s": [
+        "7b08c10be293f76880ee724080cb2abf17a7a82b53ef4c47a90c61c73c32c45a"
+      ],
+      "exact_utf8_content_match": true
+    },
+    {
+      "git_blob_sha1": "24fd790971d7d092ee11f29edf3e5331ab8d00ed",
+      "paths": [
+        "docs/qualification/candidates/meri-native-rc1-33-20261012/successful-run/sdk-registry-ingress.stdout.log"
+      ],
+      "expected_sha256s": [
+        "322c82a92a4dd4cb46a2c75bca5303ad48b256b3cfef203e6d5ab595d09547ec"
+      ],
+      "exact_utf8_content_match": true
+    },
+    {
+      "git_blob_sha1": "71a9d0ea56cbb59701996c35b2390aff86eff81e",
+      "paths": [
+        "docs/qualification/candidates/meri-native-rc1-33-20261012/successful-run/sdk-registry.receipt.json"
+      ],
+      "expected_sha256s": [
+        "7d9634f566fac64b4907310895cac7255a1465260610eb35f5f84848ac44bb64"
+      ],
+      "exact_utf8_content_match": true
+    },
+    {
+      "git_blob_sha1": "469ad0f3d84aee5090f059770d4d04a66448f7d1",
+      "paths": [
+        "docs/qualification/candidates/meri-native-rc1-33-20261012/successful-run/sdk-registry.stdout.log"
+      ],
+      "expected_sha256s": [
+        "891aef8fc4250c4ff0fd9a4af9fe6ee33b30a7953e788fc29c13d1f2f0f98c28"
+      ],
+      "exact_utf8_content_match": true
+    },
+    {
+      "git_blob_sha1": "26c5d556cc4c6a452b9eba5d1a77031c4f5456e7",
+      "paths": [
+        "docs/qualification/candidates/meri-native-rc1-33-20261012/successful-run/sdk-revocation-postgres.receipt.json"
+      ],
+      "expected_sha256s": [
+        "6db83671ab87ff339ab09c857e87328071ea33d0dee3a7a4771593fd04f5472a"
+      ],
+      "exact_utf8_content_match": true
+    },
+    {
+      "git_blob_sha1": "ae910f1a8a330e6f47df45f1f8ec1450527a03bb",
+      "paths": [
+        "docs/qualification/candidates/meri-native-rc1-33-20261012/successful-run/sdk-revocation-postgres.stdout.log"
+      ],
+      "expected_sha256s": [
+        "cc60175592b65f9f0aa26afa561529e103c91ae3d15cad5160f8663c1b182a0e"
+      ],
+      "exact_utf8_content_match": true
+    },
+    {
+      "git_blob_sha1": "907392fb7c1c7f6a4a78487207483df6f9bbc84e",
+      "paths": [
+        "docs/qualification/candidates/meri-native-rc1-33-20261012/successful-run/setup-initial-readonly-refusal.json"
+      ],
+      "expected_sha256s": [
+        "1c0a41559ce97102897952af625e6acc852cddfe8b424f860e92872c087214eb"
+      ],
+      "exact_utf8_content_match": true
+    },
+    {
+      "git_blob_sha1": "948109e7a9a8565f8291e57946d28a14e6b4cdb2",
+      "paths": [
+        "docs/qualification/candidates/meri-native-rc1-33-20261012/successful-run/source-test-receipts.json"
+      ],
+      "expected_sha256s": [
+        "26f678a2c1d2456b7b4ad59da1a980b9ae5b3cbd4a55ebd67b5b1631bf742bc8"
+      ],
+      "exact_utf8_content_match": true
+    },
+    {
+      "git_blob_sha1": "50bf41660a27a0642ec555ed4335f2d66fdbc4ca",
+      "paths": [
+        "docs/qualification/candidates/meri-native-rc1-33-20261012/successful-run/terminal-receipt.json"
+      ],
+      "expected_sha256s": [
+        "afa5e7159d077ea1c77f71640f482b8bced83312bee2128ed2756587d454e3db"
+      ],
+      "exact_utf8_content_match": true
+    },
+    {
+      "git_blob_sha1": "241fb735d285eddbd48b7f79bed623a524b21bfb",
+      "paths": [
+        "docs/qualification/candidates/meri-native-rc1-33-20261012/supervision-correction/completion-receipt.json"
+      ],
+      "expected_sha256s": [
+        "44f82d290efd92b5a4edc651ab9877d9f17fca1faca3694523d3c9a46b10263b"
+      ],
+      "exact_utf8_content_match": true
+    },
+    {
+      "git_blob_sha1": "cefe46bba0acf398bcc96c25ea02f35081a763f3",
+      "paths": [
+        "docs/qualification/candidates/meri-native-rc1-33-20261012/supervision-correction/independent-review-final.json"
+      ],
+      "expected_sha256s": [
+        "6938f10dc5221e5732fb4d48fcfdb8077e3e61b224836186dec1c7e0fefd0320"
+      ],
+      "exact_utf8_content_match": true
+    }
+  ],
+  "metadata_followup_policy": "A later commit may add only publication metadata under this directory. The immutable 32-file evidence freeze and manifest remain unchanged."
+}
