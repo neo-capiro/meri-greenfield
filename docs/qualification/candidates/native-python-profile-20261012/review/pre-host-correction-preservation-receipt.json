@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "sourceCommit": "2965a26f63d38330455cdfd9cefc0b6fe002a663",
+  "sourceTree": "37863b493a6f19446a8c0594af7fb975243a731b",
+  "baseCommit": "1e6d430cf9c239caca4198aea42a762f13021cd5",
+  "baseTrackedFilesUnchanged": 3215,
+  "newFilesOnly": 11,
+  "authorManifestRowsVerified": 10,
+  "sourceWorktreeClean": true,
+  "nativeExecution": false,
+  "processLimits": "Every read-only Git subprocess check_output returned and was waited with timeout10s. Python/Node check tools returned exit0; no native process or background job was created. No Windows process-tree teardown is claimed.",
+  "readCommandCorrection": "An initial compound read exited1 because reviewer requested author/check-packet.py; actual file is check-packet.mjs, then read/reviewed successfully. No test/source failed or changed."
+}
