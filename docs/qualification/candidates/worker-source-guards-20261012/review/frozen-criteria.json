@@ -1,0 +1,41 @@
+{
+  "reviewer": "Codex /root/memory_reviewer",
+  "frozen_at_utc": "2026-10-12T03:48:43.160146+00:00",
+  "intake_base_commit": "ca4118c55d090559fdfde4075dedb2e71d411503",
+  "accepted_fixture_dependency": "0ea9b778c983108f664455e7fc4e195a0a33148a",
+  "scope": "Independent source-guard review; no existing-file changes, no runner/image/cloud/native/provider/model activity.",
+  "expected_current_context": "0f9cc23fb20d3d292fc5f2759a570ec5b022a5b9068d17ac545251803f73e903",
+  "expected_current_assembler": "48f065d0ad61f98ba571c89dcd62141e6f8c9b272f0d371331d74a0dabf87851",
+  "historical_context": "18836912a03fc035d69c0cfc57d1f407e5c46af1bdd37c21a761f5d42dc84dda",
+  "historical_assembler": "67c1cf554e80c62eeb56b6dcb9be00106adf9b1b8b40beba85249de662b835eb",
+  "criteria": [
+    {
+      "id": "G1",
+      "assertion": "Exact returned candidate SHA/tree and accepted fixture dependency are bound; existing source-guard edits are restricted to collector two source pins and two expected-source-pin assertions/name clarification."
+    },
+    {
+      "id": "G2",
+      "assertion": "Recompute the canonical 53-member current context and exact unchanged assembler bytes from candidate source; pins match both. Preserve historical constants and failure evidence."
+    },
+    {
+      "id": "G3",
+      "assertion": "All original negative controls remain byte-preserved except the explicitly authorized expected-source literals/name; prior manifest is rejected and altered current bytes, missing/extra/duplicate members are refused."
+    },
+    {
+      "id": "G4",
+      "assertion": "Source-only context flags remain SOURCE_ONLY and commitAuthority:false; source acceptance does not supply fresh review, caller authority, executable runner approval, build/spend approval, image admission or G1 runtime evidence."
+    },
+    {
+      "id": "G5",
+      "assertion": "Existing principal, account/region/profile, Python executable/hash and actual-owner execution closure guards remain unchanged. Windows-bound real-owner check remains a truthful unsupported-host failure or unrun check, never a skipped or weakened assertion."
+    },
+    {
+      "id": "G6",
+      "assertion": "Local mocked/offline guard and packaging tests verify actual admission logic without network/cloud/native executable execution; all failures and environment limits remain visible."
+    },
+    {
+      "id": "G7",
+      "assertion": "Review independent source mismatch counterexamples against exact freeze; no root/shared/source edits and no background processes left. Return ACCEPT_SOURCE/HOLD for source guard repair only."
+    }
+  ]
+}
