@@ -37,7 +37,7 @@ export function createTaskLookupDelivery(configuration){
    uuid(resultReference);const c=readContext(context,clock());l=lifetime(c.deadlineMs,signal);
    await authority(l,'before_read',authBinding(null,c.currentBinding,c.scopes,resultReference,null));
    const record=retained(await l.run(()=>readStored({tenantId:c.currentBinding.tenantId,resultReference},l.check)));
-   if(record.binding.context.binding.tenantId!==c.currentBinding.tenantId||record.binding.context.resultReference!==resultReference)deny('ACCESS_DENIED');
+   if(record.binding.context.binding.tenantId!==c.currentBinding.tenantId||record.binding.context.resultReference.toLowerCase()!==resultReference.toLowerCase())deny('ACCESS_DENIED');
    await authority(l,'before_release',authBinding(record.binding,c.currentBinding,c.scopes,resultReference,record.resultSha256));l.check();return delivery(record,true);
   }catch(error){const safe=['DEADLINE','CANCELLED','ACCESS_DENIED'].includes(code(error))?code(error):'LOOKUP_UNAVAILABLE';throw Object.assign(new Error(safe),{code:safe,outcome:'NOT_DISPATCHED'});}finally{l?.close();}
  }
