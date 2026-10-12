@@ -1,0 +1,45 @@
+{
+  "schema": "meri-source-publication-receipt/1",
+  "observedAt": "2026-10-12T04:10:06Z",
+  "pullRequest": {
+    "url": "https://github.com/neo-capiro/meri-greenfield/pull/14",
+    "number": 14,
+    "state": "open",
+    "draft": true,
+    "merged": false,
+    "base": "task/meri-image-source-preparation-20261012",
+    "baseSha": "690bac4cd44112b161d8e02818aeae7639ce237a",
+    "head": "task/meri-g1-executable-source-20261012",
+    "initialPublishedHead": "f648af9692ea3ab91c7ccdf3f54e02cd7f7156c8"
+  },
+  "sourceReviewIntegration": "2d570b0015637572beb413f813f6e486751216ad",
+  "reportEvidenceHead": "f648af9692ea3ab91c7ccdf3f54e02cd7f7156c8",
+  "reportEvidenceTree": "0c186864c8c4258392e88665f52de8e84abf9a79",
+  "receiptBoundary": "This later receipt-only commit does not alter tested source. Its own Git identity is recorded by the containing commit and final remote verification.",
+  "preservedOriginalHeads": {
+    "main": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc",
+    "PR7": "5ee46446b5f60034916f00b2a665b3e2bef9cf60",
+    "PR8": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+    "PR9": "c57b7d26df7de2acbd8c7d8edc7098f7d495053a",
+    "PR13": "690bac4cd44112b161d8e02818aeae7639ce237a"
+  },
+  "publishedOwnerBranches": {
+    "task/meri-inventory-fixture-repair-20261012": "0ea9b778c983108f664455e7fc4e195a0a33148a",
+    "review/meri-inventory-fixture-20261012": "703461e51e5dd191a9ef775c05bd5aae772678a6",
+    "review/meri-worker-source-guards-20261012": "ae0332c7211473288bc71b72bfb90a3e9d3d8396",
+    "task/meri-g1-next-behavior-20261012": "4c1c6c7e382d3bab6aa32c0ea1dfd228482c7dee",
+    "review/meri-g1-next-behavior-20261012": "db7b45d80860ce1462b9b6154da3403dfc282da5",
+    "review/meri-worker-baseline-20261012": "2418ec8a88bfcb0e0bc9ad2efe501fefe782798f",
+    "task/meri-linux-alternatives-20261012": "a8493f55aa4e60b16d64f07bb002c1ba92d0020f",
+    "task/meri-native-interpreter-recovery-20261012": "d8032f5836ec641376bfc121a1be058ad40b8286",
+    "preserve/meri-worker-baseline-f118ff55-20261012": "f118ff55dfb96ba4b44099953e6c9724064b723d"
+  },
+  "sourceStatus": "ACCEPT_SOURCE_ONLY",
+  "G1": "OPEN",
+  "imageRuntime": "HOLD",
+  "all54ImageObligations": "OPEN",
+  "paidProviderCalls": 0,
+  "cloudBuildPushLaunch": 0,
+  "mainMerged": false,
+  "frontendOrCapirov2Edited": false
+}
