@@ -1,0 +1,148 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "scope": "Standalone metadata-only diagnostic source proposal",
+  "authorCommit": "dc4a046028bdfb798dc2b1888721afc45f2e97a3",
+  "sourceSha256": "9514b8e8ad0aff24e1eea7e782dd32178d856011fafcb750ce2c0f9a715c6efd",
+  "independentPassed": 17,
+  "authorCasesIndependentlyReplayed": 12,
+  "nativeExecuted": false,
+  "nativeCauseEstablished": false,
+  "runnerQualified": false,
+  "buildAuthorized": false,
+  "runtimeAccepted": false,
+  "g1Accepted": false,
+  "evidence": {
+    ".gitattributes": {
+      "bytes": 50,
+      "sha256": "c6f6dd8f4ac51495ea461a4feb6857c7a1ecbc4ab64841ab2f62ef4d6daf1778"
+    },
+    "final-author11.json": {
+      "bytes": 833,
+      "sha256": "111e53729144866dd674236732fca8d4591076d17aac97c2e66ce7f6f05cdea7"
+    },
+    "final-author11.stderr.txt": {
+      "bytes": 110,
+      "sha256": "1607edbfae007ff56d6138df5d24d28abfe4b1ef27902563e1bb9ad258e5c4ec"
+    },
+    "final-author11.stdout.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "final-dc4-author12.json": {
+      "bytes": 842,
+      "sha256": "50d2b0d551a7bd3d94795e3480581b7e85bcd984d910f955fec35968e3877fd7"
+    },
+    "final-dc4-author12.stderr.txt": {
+      "bytes": 111,
+      "sha256": "7c4ce78e536c0c2cdb85730c9c8381839f365b3a2b9d77c5cc9eaede9427b0df"
+    },
+    "final-dc4-author12.stdout.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "final-dc4-independent16.json": {
+      "bytes": 781,
+      "sha256": "94b0f9e726c038107aad7330b7092e5c884bd14ec15600ceb489715b8cff3cca"
+    },
+    "final-dc4-independent16.stderr.txt": {
+      "bytes": 1779,
+      "sha256": "0e77652fce65eae85ad88ab24d56981a4ad3779f0e5f0fcba43e722dfe2cb55f"
+    },
+    "final-dc4-independent16.stdout.txt": {
+      "bytes": 111,
+      "sha256": "b6ff4195adb341a857f44e872ee61f73cd237aa5fd096856565ca05badec464e"
+    },
+    "final-dc4-integrity.json": {
+      "bytes": 766,
+      "sha256": "f661769376c305263a99f394159c12e6a843295eac5ebb646bd00a2989ffbdb0"
+    },
+    "final-dc4-integrity.stderr.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "final-dc4-integrity.stdout.txt": {
+      "bytes": 581,
+      "sha256": "39dc0a1ba382bfcc020c69678981af2cf7b9805654f5ab127f2ea8ffddc77205"
+    },
+    "final-dc4-syntax1.json": {
+      "bytes": 762,
+      "sha256": "506a698419bc3f8cee67f4996561a9f4bdbcef4d3566deb632a4692e31ff460f"
+    },
+    "final-dc4-syntax1.stderr.txt": {
+      "bytes": 215,
+      "sha256": "29257dd0b5408b05aaba0dc11fe5a9af7108c80a0433a1e05dd592b80a31cd26"
+    },
+    "final-dc4-syntax1.stdout.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "final-independent16.json": {
+      "bytes": 774,
+      "sha256": "e8b4814971faddacf564745d99a78cdffe614962d9f73a3921076aea21faeb8f"
+    },
+    "final-independent16.stderr.txt": {
+      "bytes": 1779,
+      "sha256": "0e77652fce65eae85ad88ab24d56981a4ad3779f0e5f0fcba43e722dfe2cb55f"
+    },
+    "final-independent16.stdout.txt": {
+      "bytes": 111,
+      "sha256": "b9535d4a963031b76d4ad435f02a45aa7efa09374bcb0d718763ac22a517eeba"
+    },
+    "freeze_integrity.py": {
+      "bytes": 2095,
+      "sha256": "674058e2a161e0ddf2cc618dd03c1172570294e7424ecb1eb12166ba51041817"
+    },
+    "independent_controls.py": {
+      "bytes": 11784,
+      "sha256": "a1c9746ed14efd4792f3eb344665b8a4b9e11d70a94beb852978162d1d9428a0"
+    },
+    "initial-freeze-integrity-stop.json": {
+      "bytes": 909,
+      "sha256": "e92038bcc83c9d74279d1919027cd5e14dfb9a63b7423ea1b16e26443713db7e"
+    },
+    "prefreeze-help.json": {
+      "bytes": 845,
+      "sha256": "7f1331ba54430dce199a2d216956f8d30b61faca829e967b02e454900ceef106"
+    },
+    "prefreeze-help.stderr.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "prefreeze-help.stdout.txt": {
+      "bytes": 573,
+      "sha256": "00bafc96e13d9267505ae945a20b2c45aa4553850274986b77c979f28efb33a5"
+    },
+    "prefreeze-independent16.json": {
+      "bytes": 782,
+      "sha256": "ad6b960e82f5d295fd9f7a7c547022f2516d5ff21219a9f6dd807996b95284e0"
+    },
+    "prefreeze-independent16.stderr.txt": {
+      "bytes": 1779,
+      "sha256": "cfcd7fdd663b591c9d93744ac4963bce73ecbd73919e310df857e934d81bbe8d"
+    },
+    "prefreeze-independent16.stdout.txt": {
+      "bytes": 111,
+      "sha256": "b9535d4a963031b76d4ad435f02a45aa7efa09374bcb0d718763ac22a517eeba"
+    },
+    "prefreeze-wrong-host.json": {
+      "bytes": 977,
+      "sha256": "179df9de1fd3a1b9d1e977136b904e95697bb79e15b81e8826b46baea702ca67"
+    },
+    "prefreeze-wrong-host.stderr.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "prefreeze-wrong-host.stdout.txt": {
+      "bytes": 277,
+      "sha256": "ab736e95fd7ca4db25e5662a24f58a5cbe4e6ed23d62d9151d74c06b9722eb25"
+    },
+    "run-check.py": {
+      "bytes": 1669,
+      "sha256": "81d2afe95d0aae49012cc01b6869097aa7ae221fb6c463bf1837c3ae5a00cb88"
+    },
+    "syntax_controls.py": {
+      "bytes": 1552,
+      "sha256": "e5c3b4df20ceb329ba7861dadf47da46aaa782a7cef0bab2584ce62daa328ccd"
+    }
+  }
+}

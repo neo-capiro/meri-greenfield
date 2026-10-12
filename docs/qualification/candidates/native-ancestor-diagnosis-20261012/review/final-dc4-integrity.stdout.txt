@@ -1,0 +1,14 @@
+{
+  "verdict": "PASS_EXACT_SOURCE_INTEGRITY",
+  "base": "90b4dc8472da13cdee9f49cdc0b4c8306ecbdc73",
+  "authorCommit": "dc4a046028bdfb798dc2b1888721afc45f2e97a3",
+  "allBaseFilesUnchanged": 2243,
+  "source": {
+    "path": "docs/qualification/candidates/native-ancestor-diagnosis-20261012/inspect-ancestor-metadata.py",
+    "bytes": 6297,
+    "sha256": "9514b8e8ad0aff24e1eea7e782dd32178d856011fafcb750ce2c0f9a715c6efd"
+  },
+  "originalDiagnosticSha256": "3780982e6906e6798232d9a7d7f1c5efa07f6dd7b9a25356976a2a73ed026bd3",
+  "authorRawFilesVerified": 12,
+  "nativeExecuted": false
+}

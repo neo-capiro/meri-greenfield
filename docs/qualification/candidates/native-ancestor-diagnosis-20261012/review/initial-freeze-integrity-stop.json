@@ -1,0 +1,11 @@
+{
+  "status": "INTEGRITY_STOP_RETAINED",
+  "expectedAuthorCommit": "783563fb4b9609d1866da890dbacfc4bf81709f0",
+  "expectedSourceSha256": "c08397884fad41ceb5e5aaac548a1d54d69ef3aba6b143bc426fe6dd882fc5bf",
+  "operation": "Inline exact Git object versus author working-tree bytes assertion",
+  "observedErrorClass": "AssertionError",
+  "cause": "Author started requested role-specific syntax follow-up before finalization; working-tree source no longer matched old frozen object.",
+  "outcome": "Acceptance report and acceptance.json generation stopped. A subsequent shell commit stored test receipts only with a premature acceptance title; d7d98d0 remains preserved and did not contain a final verdict.",
+  "rawCaptureLimitation": "Original assertion appeared in the tool output, not a dedicated raw stream file; this is an authored failure receipt, not reconstructed raw output.",
+  "nativeExecuted": false
+}
