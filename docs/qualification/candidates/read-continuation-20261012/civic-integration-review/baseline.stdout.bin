@@ -1,0 +1,430 @@
+✖ all original139 rows,56 descriptors and callback implementations survive seven exact additions (8.400822ms)
+✔ every schema pin resolves exact bytes while every descriptor remains unavailable (12.976116ms)
+✖ get_state_bill_status: real canonical normalizer/output callback accepts detached data and canonical digest (0.248183ms)
+✖ get_state_bill_status: context allowlist, original request and output callback stripping are enforced (0.213721ms)
+✔ get_state_bill_status: foreign family, model authority fields and hostile input remain refused without effects (1.121906ms)
+✖ get_state_bill_status: catalog fingerprint, mapping and promotion mutations fail closed (2.24293ms)
+✖ search_state_floor_votes: real canonical normalizer/output callback accepts detached data and canonical digest (0.129845ms)
+✖ search_state_floor_votes: context allowlist, original request and output callback stripping are enforced (0.157056ms)
+✔ search_state_floor_votes: foreign family, model authority fields and hostile input remain refused without effects (0.573522ms)
+✖ search_state_floor_votes: catalog fingerprint, mapping and promotion mutations fail closed (2.02311ms)
+✖ query_regulatory_dockets: real canonical normalizer/output callback accepts detached data and canonical digest (0.129595ms)
+✖ query_regulatory_dockets: context allowlist, original request and output callback stripping are enforced (0.150346ms)
+✔ query_regulatory_dockets: foreign family, model authority fields and hostile input remain refused without effects (0.554293ms)
+✖ query_regulatory_dockets: catalog fingerprint, mapping and promotion mutations fail closed (1.820115ms)
+✖ find_contacts: real canonical normalizer/output callback accepts detached data and canonical digest (0.083586ms)
+✖ find_contacts: context allowlist, original request and output callback stripping are enforced (0.102814ms)
+✔ find_contacts: foreign family, model authority fields and hostile input remain refused without effects (0.520602ms)
+✖ find_contacts: catalog fingerprint, mapping and promotion mutations fail closed (1.790651ms)
+✖ resolve_entity: real canonical normalizer/output callback accepts detached data and canonical digest (0.078407ms)
+✖ resolve_entity: context allowlist, original request and output callback stripping are enforced (0.112048ms)
+✔ resolve_entity: foreign family, model authority fields and hostile input remain refused without effects (0.717598ms)
+✖ resolve_entity: catalog fingerprint, mapping and promotion mutations fail closed (1.761667ms)
+✖ search_tracked_bills: real canonical normalizer/output callback accepts detached data and canonical digest (0.124767ms)
+✖ search_tracked_bills: context allowlist, original request and output callback stripping are enforced (0.065678ms)
+✔ search_tracked_bills: foreign family, model authority fields and hostile input remain refused without effects (0.561503ms)
+✖ search_tracked_bills: catalog fingerprint, mapping and promotion mutations fail closed (1.861637ms)
+✖ query_intelligence: real canonical normalizer/output callback accepts detached data and canonical digest (0.105057ms)
+✖ query_intelligence: context allowlist, original request and output callback stripping are enforced (0.058738ms)
+✔ query_intelligence: foreign family, model authority fields and hostile input remain refused without effects (0.560903ms)
+✖ query_intelligence: catalog fingerprint, mapping and promotion mutations fail closed (2.347737ms)
+✔ production gateway rejects all63 before any authority/budget port and has no activation option (11.045496ms)
+✖ state unresolved selection refuses state-wide result broadening and preserves source reasons (0.223966ms)
+✖ regulatory count race and selected upcoming window remain different projections (0.155103ms)
+✖ contacts preserve explicit selector refusal, normalized domain and no implied profile writes (0.214953ms)
+✖ entity effective Congress is trusted context, absent and candidate facts are not authority (0.162664ms)
+✖ tracked callbacks bind full task/actor/client context and preserve exact resolver assertion (0.265379ms)
+✖ summary keeps opaque nonempty output and UTF16 selector truncation without completeness claims (0.138538ms)
+ℹ tests 37
+ℹ suites 0
+ℹ pass 9
+ℹ fail 28
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1786.455522
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-civic-integration-independent.test.mjs:35:1
+✖ all original139 rows,56 descriptors and callback implementations survive seven exact additions (8.400822ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  56 !== 63
+  
+      at TestContext.<anonymous> (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:36:32)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 56,
+    expected: 63,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-civic-integration-independent.test.mjs:54:2
+✖ get_state_bill_status: real canonical normalizer/output callback accepts detached data and canonical digest (0.248183ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:87:69)
+      at resolve (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:19:19)
+      at TestContext.<anonymous> (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:55:51)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-civic-integration-independent.test.mjs:62:2
+✖ get_state_bill_status: context allowlist, original request and output callback stripping are enforced (0.213721ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:87:69)
+      at resolve (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:19:19)
+      at TestContext.<anonymous> (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:64:20)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-civic-integration-independent.test.mjs:82:2
+✖ get_state_bill_status: catalog fingerprint, mapping and promotion mutations fail closed (2.24293ms)
+  TypeError: Cannot read properties of undefined (reading 'inputSchema')
+      at d.outputSchema.id (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:83:31)
+      at TestContext.<anonymous> (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:84:28)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-civic-integration-independent.test.mjs:54:2
+✖ search_state_floor_votes: real canonical normalizer/output callback accepts detached data and canonical digest (0.129845ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:87:69)
+      at resolve (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:19:19)
+      at TestContext.<anonymous> (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:55:51)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-civic-integration-independent.test.mjs:62:2
+✖ search_state_floor_votes: context allowlist, original request and output callback stripping are enforced (0.157056ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:87:69)
+      at resolve (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:19:19)
+      at TestContext.<anonymous> (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:64:20)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-civic-integration-independent.test.mjs:82:2
+✖ search_state_floor_votes: catalog fingerprint, mapping and promotion mutations fail closed (2.02311ms)
+  TypeError: Cannot read properties of undefined (reading 'inputSchema')
+      at d.outputSchema.id (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:83:31)
+      at TestContext.<anonymous> (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:84:28)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-civic-integration-independent.test.mjs:54:2
+✖ query_regulatory_dockets: real canonical normalizer/output callback accepts detached data and canonical digest (0.129595ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:87:69)
+      at resolve (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:19:19)
+      at TestContext.<anonymous> (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:55:51)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-civic-integration-independent.test.mjs:62:2
+✖ query_regulatory_dockets: context allowlist, original request and output callback stripping are enforced (0.150346ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:87:69)
+      at resolve (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:19:19)
+      at TestContext.<anonymous> (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:64:20)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-civic-integration-independent.test.mjs:82:2
+✖ query_regulatory_dockets: catalog fingerprint, mapping and promotion mutations fail closed (1.820115ms)
+  TypeError: Cannot read properties of undefined (reading 'inputSchema')
+      at d.outputSchema.id (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:83:31)
+      at TestContext.<anonymous> (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:84:28)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-civic-integration-independent.test.mjs:54:2
+✖ find_contacts: real canonical normalizer/output callback accepts detached data and canonical digest (0.083586ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:87:69)
+      at resolve (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:19:19)
+      at TestContext.<anonymous> (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:55:51)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-civic-integration-independent.test.mjs:62:2
+✖ find_contacts: context allowlist, original request and output callback stripping are enforced (0.102814ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:87:69)
+      at resolve (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:19:19)
+      at TestContext.<anonymous> (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:64:20)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-civic-integration-independent.test.mjs:82:2
+✖ find_contacts: catalog fingerprint, mapping and promotion mutations fail closed (1.790651ms)
+  TypeError: Cannot read properties of undefined (reading 'inputSchema')
+      at d.outputSchema.id (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:83:31)
+      at TestContext.<anonymous> (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:84:28)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-civic-integration-independent.test.mjs:54:2
+✖ resolve_entity: real canonical normalizer/output callback accepts detached data and canonical digest (0.078407ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:87:69)
+      at resolve (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:19:19)
+      at TestContext.<anonymous> (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:55:51)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-civic-integration-independent.test.mjs:62:2
+✖ resolve_entity: context allowlist, original request and output callback stripping are enforced (0.112048ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:87:69)
+      at resolve (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:19:19)
+      at TestContext.<anonymous> (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:64:20)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-civic-integration-independent.test.mjs:82:2
+✖ resolve_entity: catalog fingerprint, mapping and promotion mutations fail closed (1.761667ms)
+  TypeError: Cannot read properties of undefined (reading 'inputSchema')
+      at d.outputSchema.id (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:83:31)
+      at TestContext.<anonymous> (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:84:28)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-civic-integration-independent.test.mjs:54:2
+✖ search_tracked_bills: real canonical normalizer/output callback accepts detached data and canonical digest (0.124767ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:87:69)
+      at resolve (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:19:19)
+      at TestContext.<anonymous> (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:55:51)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-civic-integration-independent.test.mjs:62:2
+✖ search_tracked_bills: context allowlist, original request and output callback stripping are enforced (0.065678ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:87:69)
+      at resolve (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:19:19)
+      at TestContext.<anonymous> (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:64:20)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-civic-integration-independent.test.mjs:82:2
+✖ search_tracked_bills: catalog fingerprint, mapping and promotion mutations fail closed (1.861637ms)
+  TypeError: Cannot read properties of undefined (reading 'inputSchema')
+      at d.outputSchema.id (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:83:31)
+      at TestContext.<anonymous> (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:84:28)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-civic-integration-independent.test.mjs:54:2
+✖ query_intelligence: real canonical normalizer/output callback accepts detached data and canonical digest (0.105057ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:87:69)
+      at resolve (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:19:19)
+      at TestContext.<anonymous> (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:55:51)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-civic-integration-independent.test.mjs:62:2
+✖ query_intelligence: context allowlist, original request and output callback stripping are enforced (0.058738ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:87:69)
+      at resolve (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:19:19)
+      at TestContext.<anonymous> (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:64:20)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-civic-integration-independent.test.mjs:82:2
+✖ query_intelligence: catalog fingerprint, mapping and promotion mutations fail closed (2.347737ms)
+  TypeError: Cannot read properties of undefined (reading 'inputSchema')
+      at d.outputSchema.id (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:83:31)
+      at TestContext.<anonymous> (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:84:28)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-civic-integration-independent.test.mjs:96:1
+✖ state unresolved selection refuses state-wide result broadening and preserves source reasons (0.223966ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:87:69)
+      at resolve (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:19:19)
+      at check (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:33:67)
+      at TestContext.<anonymous> (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:97:166)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at packages/contracts/test/retrieval-civic-integration-independent.test.mjs:103:1
+✖ regulatory count race and selected upcoming window remain different projections (0.155103ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:87:69)
+      at resolve (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:19:19)
+      at check (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:33:67)
+      at TestContext.<anonymous> (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:104:2)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at packages/contracts/test/retrieval-civic-integration-independent.test.mjs:109:1
+✖ contacts preserve explicit selector refusal, normalized domain and no implied profile writes (0.214953ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:87:69)
+      at resolve (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:19:19)
+      at check (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:33:67)
+      at TestContext.<anonymous> (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:110:2)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at packages/contracts/test/retrieval-civic-integration-independent.test.mjs:116:1
+✖ entity effective Congress is trusted context, absent and candidate facts are not authority (0.162664ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:87:69)
+      at resolve (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:19:19)
+      at TestContext.<anonymous> (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:117:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-civic-integration-independent.test.mjs:123:1
+✖ tracked callbacks bind full task/actor/client context and preserve exact resolver assertion (0.265379ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:87:69)
+      at resolve (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:19:19)
+      at TestContext.<anonymous> (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:124:17)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-civic-integration-independent.test.mjs:132:1
+✖ summary keeps opaque nonempty output and UTF16 selector truncation without completeness claims (0.138538ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:87:69)
+      at resolve (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:19:19)
+      at TestContext.<anonymous> (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:133:19)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

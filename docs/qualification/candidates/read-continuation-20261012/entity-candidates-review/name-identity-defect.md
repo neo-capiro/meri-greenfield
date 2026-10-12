@@ -1,0 +1,7 @@
+# Preserved independent source defect
+
+Candidate49db57c9259f0180fad4f619bf745e541d935db9 passed29 initial independent controls. Further source review found missing phase-specific uniqueness: each name-search family reads an unjoined primary-key table, so repeated(entityType,canonicalId) rows in that family cannot represent the producer result. Three appended independent counterexamples fail unchanged against that exact source:29pass/3fail, no skips, sourceDiff0, owned process237952 absent. Full raw stdout/stderr and receipt are retained as name-duplicates-before.*. Verdict at this freeze is HOLD.
+
+The requested correction is name-phase-only uniqueness. Crosswalk lookups can legitimately repeat a canonical identity, including identical projected matchedBy values from case-distinct crosswalk idValue rows. Those must remain valid; no global deduplication is authorized. Name primary keys are case-sensitive stored strings, and the same raw key may exist in different entity-type tables. A further positive control protects these distinctions while all three failing controls remain unchanged.
+
+Author acknowledged the defect and identified one invalid positive synthetic fixture that reused a member ID to test current-first ordering. The allowed fixture correction changes only the second row ID, retaining the current-order assertion and preimage. No production fix was made by the reviewer.

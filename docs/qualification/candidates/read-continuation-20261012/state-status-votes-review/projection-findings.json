@@ -1,0 +1,42 @@
+{
+  "scope": "Metadata and independently derived behavior only; no private implementation body retained/imported/executed",
+  "sourcePin": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "observedPin": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+  "locations": {
+    "wrapper": "apps/api/src/meri/meri-tools.service.ts:3727-3767,5553-5756,9948-9954,10044-10048,10490-10498",
+    "identityAndLabels": "packages/shared/src/index.ts:934,938-973,1009-1046,1523-1551",
+    "storedModels": "apps/api/prisma/schema.prisma:6651-6720,6769-6784,6811-6833,6870-6882",
+    "liveMiss": "apps/api/src/meri/meri-state-bill-live.ts:111-167",
+    "httpPolicy": "apps/api/src/meri/meri.controller.ts:310-312,512-514; auth/roles.guard.ts; meri/tool-service-secret.guard.ts"
+  },
+  "identity": [
+    "Canonical syntax lowercases, removes whitespace and periods, and takes precedence over hint; no state-code allowlist is imposed by the pinned grammar.",
+    "Designation hint is tried first against whole designation; embedded two-letter state fallback follows. Bill-number hyphens are stripped and leading zeros are preserved.",
+    "Source resolver selects newest synced stored candidate by state and billNumber; missing designation can invoke live fallback. Pure syntax cannot establish latest/current session or actual resolved existence.",
+    "Direct found lookup constrains only stored id; separate state/sessionKey/identifier fields are not inferred from its spelling.",
+    "Candidate designation output requires canonical source-convention state/bill spelling and a single session key. This is explicit wire narrowing of malformed stored identifiers, not a database constraint or current-session guarantee."
+  ],
+  "branches": [
+    "Status unresolved has no billId; resolved absent retains billId; found includes projected data. Exact clarification/absence notes do not become affirmative status evidence.",
+    "Status query is alias only when billId absent/blank. Vote query always filters motion; it is not billId alias.",
+    "Supplied unresolved bill returns empty votes and reason before search predicates; never broadens to state-wide results.",
+    "Requested direct bill wins over separate state hint. Without bill selection the state filter is only a lowercased billKey prefix.",
+    "Unsupported chamber is deliberately no-filter in producer; upper/lower exact filters remain."
+  ],
+  "projection": [
+    "Actions and status votes each take15, floor votes limit1..25 default10. Floor votesFound equals rows returned, not full matching count.",
+    "SQLDate fields serialize canonical UTC midnight; statusAt/generatedAt are canonical wire instants. PostgreSQL descending dates place NULL first; ties have unspecified secondary order.",
+    "Signed Int tallies, sponsorCount and nullable importance retain stored semantics. No tally sum, positivity, rollcall identity uniqueness, or outcome inference is introduced.",
+    "Status null means Unknown; empty/ordinary unknown text is preserved. Inherited object-table names produce undefined labels omitted by serialization; candidate validates omission, not a fabricated fallback.",
+    "Missing companion enrichment is identifier/status/statusLabel all null; present identifier with null status means Unknown. Related key must survive producer truthy filter; link type remains stored string.",
+    "Empty rollcall and dead-by-deadline notes are cumulative; absence of votes never proves passage or failure.",
+    "Nullable motion cannot match query, but SQL owns substring/collation; no JavaScript casefold equivalence is claimed."
+  ],
+  "authorityAndEffects": [
+    "Canonical HTTP controller RolesGuard declares standard_user; tools endpoint also has configuration-dependent service-secret guard. Global stored reads are not actor/client-wall proof.",
+    "Model options are closed empty; no authority, tenant, actor, resolved context or freshness receipt is invented.",
+    "Live designation miss can reserve quota, query LegiScan, normalize and persist. Source-only pure syntax neither calls nor qualifies any of those effects.",
+    "New family is not registered or connected in this author freeze. Existing public contracts/catalog/gateway/runtime files remain byte-identical; source connectivity disabled remains in force."
+  ],
+  "reviewFailure": "Strict Ajv could not compile initial primitive multi-type limit schema: initial independent22PASS/9FAIL. Root-compatible anyOf repair independently replayed unchanged31 controls plus22 author =>53PASS. Preimages/raw preserved; initial uncommitted source receipt records its non-atomic capture limitation."
+}

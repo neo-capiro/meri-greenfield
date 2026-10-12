@@ -1,0 +1,34 @@
+{
+  "command": [
+    "python3",
+    "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/audit.py",
+    "5203255"
+  ],
+  "cwd": "/workspace/meri-civic-integration-review-20261012",
+  "sourceHead": "aba427cd54c354ac9642ab9e9c94ce56236a541a",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T18:37:54.762016+00:00",
+  "durationSeconds": 0.265,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 251604,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/complete-audit.stdout.bin",
+      "bytes": 1535,
+      "sha256": "369a6c2542badb0ae1cb71b1005b3cfa365ac1ae6e73a0a9a5c6b3014ab3ee15"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/complete-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

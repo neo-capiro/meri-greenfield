@@ -1,0 +1,34 @@
+✔ operation, shape and context selectors are inert and closed (1.918893ms)
+✔ trusted defaultCongress is mandatory positive Int32 on every branch (1.936069ms)
+✔ normalization preserves second query trim, lowercase type and source numeric/string clamp (1.610951ms)
+✔ UTF16 query clipping and expanding lowercase preserve unsupported type outcome (2.670503ms)
+✔ closed typed inputs refuse aliases, coercion objects and caller authority (0.420302ms)
+✔ getters and proxy traps are not executed at the JSON boundary (0.192128ms)
+✔ normalized input and metadata are detached and frozen without an ambient clock (0.274573ms)
+✔ missing query has its own refusal even with selectors and rejects candidates (0.447993ms)
+✔ unsupported type returns only the exact no-match envelope (0.969697ms)
+✔ direct member and committee keys normalize case and bind returned identity (1.195406ms)
+✔ canonical federal helper handles explicit Congress and zero-preserving IDs (0.699791ms)
+✔ state key/designation dependency is reused without a live lookup or session clock (0.881905ms)
+✔ stored state/session/congress fields are not inferred from canonical keys (0.540813ms)
+✔ all five variants have precise nulls and currentness placement (0.854204ms)
+✔ stored strings remain unrestricted on name/crosswalk paths and member district remains signed (0.222805ms)
+✔ arbitrary crosswalk namespaces including empty and duplicate canonical IDs survive (0.2925ms)
+✔ crosswalk does not support committee or federal bill projections (0.283376ms)
+✔ direct crosswalk and name phases cannot mix, while a missed direct ID may fall back (0.413031ms)
+✔ name-family order and current-first are local to each family (0.57948ms)
+✔ name lookup preserves the ASCII-letter predicate and hidden lastName match (0.408984ms)
+✔ type filter applies across all match paths and no invented current-only restriction (0.303707ms)
+✔ returned count and cap do not imply total or corpus coverage (1.142486ms)
+✔ only an empty result may carry the correlated no-match note (0.295003ms)
+✔ finite canonical generatedAt and SQLDate midnight are distinct boundaries (0.47297ms)
+✔ projection rejects hidden columns, wrong identity type and arbitrary methods (0.522545ms)
+✔ accepted output is detached from the caller object (0.140502ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 204.355988

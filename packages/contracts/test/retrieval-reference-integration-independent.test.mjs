@@ -11,6 +11,7 @@ import {fixture,limits,NOW,uuid} from '../../../apps/gateway/test/fixtures.mjs';
 const evidence=new URL('../../../docs/qualification/candidates/read-continuation-20261012/reference-integration-review/',import.meta.url);
 const baseline=JSON.parse(readFileSync(new URL('baseline.json',evidence))).catalog;
 const oldBindings=JSON.parse(readFileSync(new URL('baseline-bindings.json',evidence)));
+const civicIds=["get_state_bill_status", "search_state_floor_votes", "query_regulatory_dockets", "find_contacts", "resolve_entity", "search_tracked_bills", "query_intelligence"];
 const ids=['get_committee_roster','list_members','get_pe_contractors','get_pe_bills','get_pe_report_language','get_state_rule_status','get_certification_status','search_intel_articles','list_global_datasets','get_representation'];
 const [ROSTER,MEMBERS,CONTRACTORS,BILLS,REPORT,RULE,CERT,INTEL,DATASETS,FACILITY]=ids;
 const T='2026-10-12T12:00:00.000Z',AFTER='2026-10-12T12:00:00.001Z',BEFORE='2026-10-12T11:59:59.999Z';
@@ -40,15 +41,15 @@ function output(id){
 const check=(id,page=output(id),req=request(id),context=ctx(id))=>resolve(id).assertOutput(page,{...context,request:req});
 
 test('exact PR28 descriptors and callback source survive in single registry with full original inventory',()=>{
- assertCatalog(catalog);assert.equal(catalog.operations.length,56);assert.equal(bindings.length,56);
- assert.equal(new Set(bindings.map(x=>x.id)).size,56);
- assert.deepEqual(catalog.operations.filter(x=>!ids.includes(x.operation.id)),baseline.operations);
+ assertCatalog(catalog);assert.equal(catalog.operations.length,63);assert.equal(bindings.length,63);
+ assert.equal(new Set(bindings.map(x=>x.id)).size,63);
+ assert.deepEqual(catalog.operations.filter(x=>!ids.includes(x.operation.id)&&!civicIds.includes(x.operation.id)),baseline.operations);
  assert.equal(catalog.originals.length,139);assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);
  assert.equal(catalog.originals.filter(x=>x.disposition==='deferred').length,43);
- assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,55);
- assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.replacement===null).length,41);
- for(const old of baseline.originals)assert.deepEqual(catalog.originals.find(x=>x.id===old.id),ids.includes(old.id)?{...old,state:'mapped',replacement:{id:old.id,version:'0.2.0'}}:old);
- const serialized=JSON.parse(JSON.stringify(bindings.filter(x=>!ids.includes(x.id)),(k,v)=>typeof v==='function'?{source:v.toString()}:v));assert.deepEqual(serialized,oldBindings);
+ assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,62);
+ assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.replacement===null).length,34);
+ for(const old of baseline.originals)assert.deepEqual(catalog.originals.find(x=>x.id===old.id),(ids.includes(old.id)||civicIds.includes(old.id))?{...old,state:'mapped',replacement:{id:old.id,version:'0.2.0'}}:old);
+ const serialized=JSON.parse(JSON.stringify(bindings.filter(x=>!ids.includes(x.id)&&!civicIds.includes(x.id)),(k,v)=>typeof v==='function'?{source:v.toString()}:v));assert.deepEqual(serialized,oldBindings);
  for(const id of ['query_global_data','save_memory','create_task','create_word','schedule_task','run_analysis']){
   const old=baseline.originals.find(x=>x.id===id);assert.deepEqual(catalog.originals.find(x=>x.id===id),old);assert.throws(()=>resolve(id));
  }
@@ -96,7 +97,7 @@ for(const id of ids){
  });
 }
 
-test('actual production gateway keeps all56 unavailable without any authority or budget effects',async()=>{
+test('actual production gateway keeps all63 unavailable without any authority or budget effects',async()=>{
  const f=fixture(),options={authorityPorts:f.ports,budget:f.budget,limits,now:()=>NOW,newId:()=>uuid('8')};
  const gateway=createSourceDisabledGateway(options);assert.equal(gateway.sourceEnabled,false);assert.deepEqual(await gateway.discover(),[]);
  for(const id of catalog.operations.map(x=>x.operation.id))await assert.rejects(gateway.execute(JSON.stringify({operation:{id,version:'0.2.0'},arguments:ids.includes(id)?request(id):{}}),'synthetic-opaque'),/UNAVAILABLE/);

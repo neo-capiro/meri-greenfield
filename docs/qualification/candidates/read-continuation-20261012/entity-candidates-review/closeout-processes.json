@@ -1,0 +1,41 @@
+{
+  "scope": "OWNED_LOCAL_SOURCE_CHECK_GROUPS_ONLY",
+  "groups": [
+    {
+      "receipt": "docs/qualification/candidates/read-continuation-20261012/entity-candidates-review/author-packet-audit.json",
+      "pgid": 246203,
+      "absent": true,
+      "killRequired": false,
+      "timedOut": false
+    },
+    {
+      "receipt": "docs/qualification/candidates/read-continuation-20261012/entity-candidates-review/independent-first.json",
+      "pgid": 237616,
+      "absent": true,
+      "killRequired": false,
+      "timedOut": false
+    },
+    {
+      "receipt": "docs/qualification/candidates/read-continuation-20261012/entity-candidates-review/name-duplicates-before.json",
+      "pgid": 237952,
+      "absent": true,
+      "killRequired": false,
+      "timedOut": false
+    },
+    {
+      "receipt": "docs/qualification/candidates/read-continuation-20261012/entity-candidates-review/repaired-family.json",
+      "pgid": 238380,
+      "absent": true,
+      "killRequired": false,
+      "timedOut": false
+    },
+    {
+      "receipt": "docs/qualification/candidates/read-continuation-20261012/entity-candidates-review/source-audit.json",
+      "pgid": 245604,
+      "absent": true,
+      "killRequired": false,
+      "timedOut": false
+    }
+  ],
+  "allAbsent": true
+}

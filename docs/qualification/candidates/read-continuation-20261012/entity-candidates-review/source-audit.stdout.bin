@@ -1,0 +1,233 @@
+{
+  "scope": "INDEPENDENT_SOURCE_ONLY",
+  "source": "788c0419c9489dfdd4906a50b59661595a072713",
+  "sourceTree": "cc42292346660c99160b1f98725804e59e92a8ad",
+  "base": "a3e946c1fa264ae7b33205f5b87804ee1ef75773",
+  "originalFilesVerified": 6110,
+  "checks": [
+    {
+      "check": "every original complete blob/mode preserved",
+      "pass": true
+    },
+    {
+      "check": "only three new family files and exact helper prerequisite",
+      "pass": true
+    },
+    {
+      "check": "state helper exact accepted bytes",
+      "pass": true
+    },
+    {
+      "check": "congress helper unchanged",
+      "pass": true
+    },
+    {
+      "check": "working source exact packages/contracts/retrieval-0.2/entity-candidates.schema.json",
+      "pass": true
+    },
+    {
+      "check": "working source exact packages/contracts/retrieval-0.2/entity-candidates-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "working source exact packages/contracts/test/retrieval-entity-candidates.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "working source exact packages/contracts/retrieval-0.2/state-bill-identity.mjs",
+      "pass": true
+    },
+    {
+      "check": "candidate is review ancestor",
+      "pass": true
+    },
+    {
+      "check": "eight independent pairs",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/src/meri/meri-tools.service.ts fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/src/meri/meri-tools.service.ts 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "paired no drift apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "check": "reference packages/shared/src/index.ts fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "reference packages/shared/src/index.ts 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "paired no drift packages/shared/src/index.ts",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/prisma/schema.prisma fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/prisma/schema.prisma 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "paired no drift apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/src/meri/meri-resolve-entity.spec.ts fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/src/meri/meri-resolve-entity.spec.ts 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "paired no drift apps/api/src/meri/meri-resolve-entity.spec.ts",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/src/meri/meri.controller.ts fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/src/meri/meri.controller.ts 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "paired no drift apps/api/src/meri/meri.controller.ts",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/src/auth/roles.guard.ts fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/src/auth/roles.guard.ts 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "paired no drift apps/api/src/auth/roles.guard.ts",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/src/meri/meri-tool-request-control.ts fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/src/meri/meri-tool-request-control.ts 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "paired no drift apps/api/src/meri/meri-tool-request-control.ts",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/src/meri/tool-service-secret.guard.ts fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/src/meri/tool-service-secret.guard.ts 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "paired no drift apps/api/src/meri/tool-service-secret.guard.ts",
+      "pass": true
+    },
+    {
+      "check": "canonical helper pin packages/contracts/retrieval-0.2/congressional-identity.mjs",
+      "pass": true
+    },
+    {
+      "check": "canonical helper pin packages/contracts/retrieval-0.2/state-bill-identity.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact private source schema ID",
+      "pass": true
+    },
+    {
+      "check": "required trusted context",
+      "pass": true
+    },
+    {
+      "check": "trusted positive Int32",
+      "pass": true
+    },
+    {
+      "check": "closed exact projection EntityMemberCandidate",
+      "pass": true
+    },
+    {
+      "check": "closed exact projection EntityCommitteeCandidate",
+      "pass": true
+    },
+    {
+      "check": "closed exact projection EntityFederalBillCandidate",
+      "pass": true
+    },
+    {
+      "check": "closed exact projection EntityStateBillCandidate",
+      "pass": true
+    },
+    {
+      "check": "closed exact projection EntityStateLegislatorCandidate",
+      "pass": true
+    },
+    {
+      "check": "reuse congress helper",
+      "pass": true
+    },
+    {
+      "check": "reuse accepted state helper",
+      "pass": true
+    },
+    {
+      "check": "reuse inert snapshot",
+      "pass": true
+    },
+    {
+      "check": "no source clock/provider API",
+      "pass": true
+    },
+    {
+      "check": "authored whitespace",
+      "pass": true
+    }
+  ],
+  "passed": 49,
+  "failed": 0,
+  "sourceIdentities": [
+    {
+      "path": "packages/contracts/retrieval-0.2/entity-candidates.schema.json",
+      "bytes": 9020,
+      "sha256": "2b8eb948781d2e0c486b58f09fafbe821a6216942eb5ee33797135392f78d100",
+      "blob": "bde08b51608b2410e077d322111fdebf360ff039"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/entity-candidates-validation.mjs",
+      "bytes": 7365,
+      "sha256": "2ef046fa6166f5e9011c89081a5f58b0413b0a5ee2d1bd12bbdc8c580f723090",
+      "blob": "3fcfac43cf9565148bd35b4d2fb2e0a98eac1e46"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-entity-candidates.test.mjs",
+      "bytes": 13727,
+      "sha256": "34767d375d11663d7136d389aaf14f8278dd9ffa59bbb09d2909f2ddfaf53b11",
+      "blob": "4ba8adbc4b9b82b529341fcae96f78c31b72a15d"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/state-bill-identity.mjs",
+      "bytes": 1240,
+      "sha256": "25d86301366971f622f88fcdcf45ccf25036b677f38a5612283ac595872c6ad7",
+      "blob": "29ffd6bfb45931c355100f05139521a202d62a55"
+    }
+  ]
+}

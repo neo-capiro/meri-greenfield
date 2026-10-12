@@ -1,0 +1,27 @@
+{
+  "reason": "Make room for next isolated source author/reviewer; retain source,evidence,locks, seven required read-contract packages and complete shared donor.",
+  "removedOnly": [
+    {
+      "path": "/workspace/meri-selected-reads-next-20261012/node_modules/@aws-cdk",
+      "packageJsonSha256": null,
+      "kind": "owned-completed-integration-installed-cache"
+    },
+    {
+      "path": "/workspace/meri-selected-reads-next-20261012/node_modules/.bin",
+      "packageJsonSha256": null,
+      "kind": "owned-completed-integration-installed-cache"
+    },
+    {
+      "path": "/workspace/meri-facility-representation-20261012/node_modules/@aws-cdk",
+      "packageJsonSha256": null,
+      "kind": "owned-completed-integration-installed-cache"
+    },
+    {
+      "path": "/workspace/meri-facility-representation-20261012/node_modules/.bin",
+      "packageJsonSha256": null,
+      "kind": "owned-completed-integration-installed-cache"
+    }
+  ],
+  "fullDonorRetained": "/workspace/meri-read-continuation-20261012",
+  "remainingFreeMiB": 143
+}

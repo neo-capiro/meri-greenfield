@@ -1,5 +1,5 @@
 // Explicit reviewed continuation allowlist; historical baseline hashes stay unchanged.
-const continuationIds = ["search_cbo_cost_estimates", "search_federal_grants", "search_federal_awards", "search_gao_reports", "search_state_bills", "get_state_legislator", "search_crs_reports", "query_economic_data", "get_district_nexus_context", "get_district_nexus_changes", "read_client_documents", "search_funding_opportunities", "get_funding_opportunity_requirements", "get_funding_opportunity", "get_opportunity_client_context", "get_opportunity_government_landscape", "search_sec_filings", "search_fara_registrations", "search_lda_filings", "search_acquisition_personnel", "get_acquisition_person", "get_bill_status", "search_floor_votes", "search_congress_bills", "read_bill_text", "get_committee_roster", "list_members", "get_pe_contractors", "get_pe_bills", "get_pe_report_language", "get_state_rule_status", "get_certification_status", "search_intel_articles", "list_global_datasets", "get_representation"];
+const continuationIds = ["search_cbo_cost_estimates", "search_federal_grants", "search_federal_awards", "search_gao_reports", "search_state_bills", "get_state_legislator", "search_crs_reports", "query_economic_data", "get_district_nexus_context", "get_district_nexus_changes", "read_client_documents", "search_funding_opportunities", "get_funding_opportunity_requirements", "get_funding_opportunity", "get_opportunity_client_context", "get_opportunity_government_landscape", "search_sec_filings", "search_fara_registrations", "search_lda_filings", "search_acquisition_personnel", "get_acquisition_person", "get_bill_status", "search_floor_votes", "search_congress_bills", "read_bill_text", "get_committee_roster", "list_members", "get_pe_contractors", "get_pe_bills", "get_pe_report_language", "get_state_rule_status", "get_certification_status", "search_intel_articles", "list_global_datasets", "get_representation", "get_state_bill_status", "search_state_floor_votes", "query_regulatory_dockets", "find_contacts", "resolve_entity", "search_tracked_bills", "query_intelligence"];
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -15,7 +15,7 @@ test('independent literal recommendation and outcome source proofs satisfy uncha
   assert.equal(assertActionItemReadInput({}).mode,'unscoped_legacy_pending');
 });
 test('partial binding preserves every original row and fourteen descriptors',()=>{
-  assertCatalog(catalog);assert.equal(catalog.operations.length,56);
+  assertCatalog(catalog);assert.equal(catalog.operations.length,63);
   const priorRows = structuredClone(catalog.originals);
   for (const id of ['lookup_client_registry','get_business_development_context','get_business_development_evidence',
     'get_business_development_recent_changes','get_research_portfolio','get_research_portfolio_changes',...continuationIds]) {
@@ -26,8 +26,8 @@ test('partial binding preserves every original row and fourteen descriptors',()=
   }
   assert.equal(sha(priorRows),baseline.originalsSha256);
   assert.equal(sha(catalog.operations.filter(x=>baseline.originalIds.includes(x.operation.id))),baseline.originalOperationsSha256);
-  assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,55);
-  assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.replacement===null).length,41);
+  assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,62);
+  assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.replacement===null).length,34);
   const c=contract();assert.equal(c.binding.nativeCoverage,'partial');assert.deepEqual(c.descriptor.aliases,[]);
   assert.equal(catalog.originals.find(x=>x.id===operation.id).replacement,null);
 });

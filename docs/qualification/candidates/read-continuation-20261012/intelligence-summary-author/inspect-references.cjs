@@ -1,0 +1,32 @@
+// Read immutable private source as AST/data; emit only content-free metadata.
+const ts=require('/workspace/meri-read-continuation-20261012/packages/contracts/node_modules/typescript');
+const {execFileSync}=require('node:child_process'),{createHash}=require('node:crypto');
+const frozen='fd8765ec01d292013758606204f2c9d886cd31c1',observed='4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace';
+const targets={
+ 'apps/api/src/meri/meri-tools.service.ts':['queryIntelligence','optionalString'],
+ 'apps/api/src/lobby-intel/lobby-intel.service.ts':['getAiContext','surgingIssuesRows','trendingTopicsRows','mapIssueRow','mapLegacyIssue'],
+ 'apps/api/src/federal-spending/federal-spending.service.ts':['getAiContext','lookupByClientName','toContractor','decToNumber'],
+ 'apps/api/src/lda-intel/lda-intel.service.ts':['getCongressBills'],
+ 'apps/api/src/hearing-discovery/hearing-geography.ts':['federalHearingWhere'],
+ 'apps/api/src/prisma/prisma.service.ts':['withSystem'],
+ 'apps/api/src/meri/meri-tool-request-control.ts':[],
+ 'packages/meriv2-core/src/registry/tool-execution-control.ts':[],
+};
+const git=(...args)=>execFileSync('git',args,{cwd:'/workspace/capirov2',maxBuffer:8000000});
+const ref=n=>!n?null:ts.isIdentifier(n)?n.text:n.kind===ts.SyntaxKind.ThisKeyword?'this':ts.isPropertyAccessExpression(n)?(ref(n.expression)||'<expression>')+'.'+n.name.text:null;
+const records=[];
+for(const [path,wanted] of Object.entries(targets)){
+ const versions=[frozen,observed].map(commit=>{const b=git('show',commit+':'+path);return {commit,blob:git('rev-parse',commit+':'+path).toString().trim(),bytes:b.length,sha256:createHash('sha256').update(b).digest('hex')};});
+ const body=git('show',frozen+':'+path).toString(),file=ts.createSourceFile(path,body,ts.ScriptTarget.Latest,true),symbols=[];
+ function visit(n){const name=ref(n.name);if(wanted.includes(name)&&(ts.isMethodDeclaration(n)||ts.isFunctionDeclaration(n)||(ts.isVariableDeclaration(n)&&n.initializer&&(ts.isArrowFunction(n.initializer)||ts.isFunctionExpression(n.initializer))))){
+  const calls=new Set(),sql=[],selectors=[],objectKeys=[],literals=[];
+  function walk(x){if(ts.isCallExpression(x)){const c=ref(x.expression);if(c)calls.add(c);if(c&&/optionalString|clampInt|getCongressBills/.test(c))selectors.push({call:c,args:x.arguments.map(a=>ts.isNumericLiteral(a)?Number(a.text):ts.isStringLiteral(a)?a.text:ref(a)||ts.SyntaxKind[a.kind])});}
+   if(ts.isTaggedTemplateExpression(x)){const raw=x.template.getText(file);sql.push({tag:ref(x.tag),line:file.getLineAndCharacterOfPosition(x.getStart(file)).line+1,statement:raw.match(/\b(SELECT|INSERT|UPDATE|DELETE|CREATE|DROP|ALTER)\b/i)?.[1]?.toUpperCase()||'unknown',mutatingVerbPresent:/\b(INSERT|UPDATE|DELETE|CREATE|DROP|ALTER)\b/i.test(raw),transactionConfiguration:raw.includes('set_config')});}
+   if(ts.isObjectLiteralExpression(x))objectKeys.push({line:file.getLineAndCharacterOfPosition(x.getStart(file)).line+1,keys:x.properties.map(p=>ref(p.name)||'[computed-or-spread]')});
+   if(ts.isReturnStatement(x))literals.push({line:file.getLineAndCharacterOfPosition(x.getStart(file)).line+1,kind:ts.SyntaxKind[x.expression?.kind]});
+   ts.forEachChild(x,walk);
+  }walk(n);symbols.push({name,line:file.getLineAndCharacterOfPosition(n.getStart(file)).line+1,end:file.getLineAndCharacterOfPosition(n.end).line+1,calls:[...calls],sql,selectors,objectKeys,returns:literals});}
+  ts.forEachChild(n,visit);
+ }visit(file);records.push({path,versions,unchanged:versions[0].blob===versions[1].blob,symbols});
+}
+console.log(JSON.stringify({frozen,observed,privateBodiesPublished:false,sourceExecuted:false,references:records},null,2));

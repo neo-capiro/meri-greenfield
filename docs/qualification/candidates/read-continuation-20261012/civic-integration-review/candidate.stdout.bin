@@ -1,0 +1,85 @@
+✔ all original139 rows,56 descriptors and callback implementations survive seven exact additions (10.45452ms)
+✔ every schema pin resolves exact bytes while every descriptor remains unavailable (14.01497ms)
+✔ get_state_bill_status: real canonical normalizer/output callback accepts detached data and canonical digest (4.19922ms)
+✔ get_state_bill_status: context allowlist, original request and output callback stripping are enforced (1.676019ms)
+✔ get_state_bill_status: foreign family, model authority fields and hostile input remain refused without effects (2.698736ms)
+✔ get_state_bill_status: catalog fingerprint, mapping and promotion mutations fail closed (48.977718ms)
+✔ search_state_floor_votes: real canonical normalizer/output callback accepts detached data and canonical digest (1.933356ms)
+✔ search_state_floor_votes: context allowlist, original request and output callback stripping are enforced (1.503399ms)
+✔ search_state_floor_votes: foreign family, model authority fields and hostile input remain refused without effects (1.805233ms)
+✔ search_state_floor_votes: catalog fingerprint, mapping and promotion mutations fail closed (43.663232ms)
+✔ query_regulatory_dockets: real canonical normalizer/output callback accepts detached data and canonical digest (1.907236ms)
+✔ query_regulatory_dockets: context allowlist, original request and output callback stripping are enforced (0.745911ms)
+✔ query_regulatory_dockets: foreign family, model authority fields and hostile input remain refused without effects (1.945574ms)
+✔ query_regulatory_dockets: catalog fingerprint, mapping and promotion mutations fail closed (50.758174ms)
+✔ find_contacts: real canonical normalizer/output callback accepts detached data and canonical digest (1.861167ms)
+✔ find_contacts: context allowlist, original request and output callback stripping are enforced (0.494813ms)
+✔ find_contacts: foreign family, model authority fields and hostile input remain refused without effects (1.727756ms)
+✔ find_contacts: catalog fingerprint, mapping and promotion mutations fail closed (23.455677ms)
+✔ resolve_entity: real canonical normalizer/output callback accepts detached data and canonical digest (1.839655ms)
+✔ resolve_entity: context allowlist, original request and output callback stripping are enforced (1.155947ms)
+✔ resolve_entity: foreign family, model authority fields and hostile input remain refused without effects (1.507024ms)
+✔ resolve_entity: catalog fingerprint, mapping and promotion mutations fail closed (21.862924ms)
+✔ search_tracked_bills: real canonical normalizer/output callback accepts detached data and canonical digest (4.488655ms)
+✔ search_tracked_bills: context allowlist, original request and output callback stripping are enforced (1.967116ms)
+✔ search_tracked_bills: foreign family, model authority fields and hostile input remain refused without effects (2.280757ms)
+✔ search_tracked_bills: catalog fingerprint, mapping and promotion mutations fail closed (24.06371ms)
+✔ query_intelligence: real canonical normalizer/output callback accepts detached data and canonical digest (0.803808ms)
+✔ query_intelligence: context allowlist, original request and output callback stripping are enforced (0.376846ms)
+✔ query_intelligence: foreign family, model authority fields and hostile input remain refused without effects (1.789159ms)
+✔ query_intelligence: catalog fingerprint, mapping and promotion mutations fail closed (22.863757ms)
+✔ production gateway rejects all63 before any authority/budget port and has no activation option (8.55811ms)
+✔ state unresolved selection refuses state-wide result broadening and preserves source reasons (1.29067ms)
+✔ regulatory count race and selected upcoming window remain different projections (0.713422ms)
+✔ contacts preserve explicit selector refusal, normalized domain and no implied profile writes (1.401936ms)
+✖ entity effective Congress is trusted context, absent and candidate facts are not authority (1.474495ms)
+✔ tracked callbacks bind full task/actor/client context and preserve exact resolver assertion (3.343394ms)
+✔ summary keeps opaque nonempty output and UTF16 selector truncation without completeness claims (0.442555ms)
+✖ entity output callback receives effective Congress and cannot rebind a direct bill candidate (1.594176ms)
+ℹ tests 38
+ℹ suites 0
+ℹ pass 36
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2137.02523
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-civic-integration-independent.test.mjs:116:1
+✖ entity effective Congress is trusted context, absent and candidate facts are not authority (1.474495ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + '119-hr-7'
+  - 'hr7-119'
+  
+      at TestContext.<anonymous> (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:118:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '119-hr-7',
+    expected: 'hr7-119',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-civic-integration-independent.test.mjs:138:1
+✖ entity output callback receives effective Congress and cannot rebind a direct bill candidate (1.594176ms)
+  Error: Direct candidate identity mismatch
+      at fail (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/entity-candidates-validation.mjs:6:33)
+      at directIdentity (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/entity-candidates-validation.mjs:59:67)
+      at Object.assertEntityCandidatesOutput (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/entity-candidates-validation.mjs:83:9)
+      at Object.outputAssert (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/catalog-validation.mjs:34:61)
+      at Object.assertOutput (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:99:24)
+      at check (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:33:79)
+      at TestContext.<anonymous> (file:///workspace/meri-civic-integration-review-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:141:2)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)

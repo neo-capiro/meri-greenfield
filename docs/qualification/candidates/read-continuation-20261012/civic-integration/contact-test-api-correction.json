@@ -1,0 +1,9 @@
+{
+  "path": "packages/contracts/test/retrieval-tenant-contacts.test.mjs",
+  "beforeSha256": "da9c5abbfeffc839167dab80bffac080e2b11428205457b3c9091c6d0daf851f",
+  "afterSha256": "9c1b2d8918361d9457c29a1a5169096010749f05f265f3a5e4ef2eede43d7669",
+  "old": "const p=page(),prior=structuredClone(p);assert.equal(check(p,QUERY),p);assert.deepEqual(p,prior);",
+  "new": "const p=page(),prior=structuredClone(p),accepted=check(p,QUERY);assert.deepEqual(accepted,p);assert.notEqual(accepted,p);assert.deepEqual(p,prior);",
+  "reason": "Preserved first repaired replay61/63failed exactly author+reviewer old alias-identity expectations; deep values and no input mutation remain asserted, with detached identity now required.",
+  "existingCaseRemoved": false
+}

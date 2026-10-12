@@ -1,0 +1,17 @@
+{
+  "authority": "Parent explicitly approved reuse of accepted dependency base after owned partial copy ENOSPC",
+  "installationOrDependencyMutation": false,
+  "secondFailure": "First root link succeeded; second package-level link initially failed ENOSPC. After parent owned cache cleanup, missing link was created. No source/test execution happened in either failure.",
+  "links": [
+    {
+      "path": "node_modules",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules",
+      "readOnlyUse": true
+    },
+    {
+      "path": "packages/contracts/node_modules",
+      "target": "/workspace/meri-read-continuation-20261012/packages/contracts/node_modules",
+      "readOnlyUse": true
+    }
+  ]
+}

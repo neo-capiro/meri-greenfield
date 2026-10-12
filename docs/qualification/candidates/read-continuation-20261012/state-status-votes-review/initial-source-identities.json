@@ -1,0 +1,24 @@
+{
+  "sourceRoot": "/workspace/meri-state-status-votes-20261012",
+  "head": "a25516ae8d2c44638800e492e439e212098dc750",
+  "prefreeze": true,
+  "files": [
+    {
+      "path": "packages/contracts/retrieval-0.2/state-bill-identity.mjs",
+      "bytes": 1240,
+      "sha256": "25d86301366971f622f88fcdcf45ccf25036b677f38a5612283ac595872c6ad7"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/state-status-votes-validation.mjs",
+      "bytes": 8614,
+      "sha256": "43587a404705d7a589000c0bd228beb74be4880c12ebc71c17ca5fca93cfeaa1"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/state-status-votes.schema.json",
+      "bytes": 12878,
+      "sha256": "ac017527b6d8da90b91e61c550623144a8eed4cd89a3b020c4a23acd27a8fde2"
+    }
+  ],
+  "capturedImmediatelyAfterRun": true,
+  "limitation": "Author may edit before freeze; current bytes recorded after capture, not atomic process-level read pin."
+}

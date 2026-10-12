@@ -1,0 +1,19 @@
+{
+  "recordedAt": "2026-10-12T18:25:43.137572+00:00",
+  "reason": "Make space for current isolated source review and exact local public-contract dependencies. Prior source/evidence/locks retained; donor untouched.",
+  "removed": [
+    {
+      "path": "/workspace/meri-selected-reads-next-20261012/packages/contracts/node_modules",
+      "ownCompletedIntegrationHead": "a3e946c1fa264ae7b33205f5b87804ee1ef75773",
+      "installedFiles": 2836,
+      "onlyIgnoredInstalledDependencyCache": true
+    },
+    {
+      "path": "/workspace/meri-reference-reads-20261012/packages/contracts/node_modules",
+      "ownCompletedIntegrationHead": "c1c9bfde7dd466a0474589a224a99b44277adbc9",
+      "installedFiles": 2836,
+      "onlyIgnoredInstalledDependencyCache": true
+    }
+  ],
+  "donorRetained": "/workspace/meri-read-continuation-20261012"
+}

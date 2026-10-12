@@ -1,0 +1,181 @@
+{
+  "authorPacket": "e46b425fd68a106e67dc5afdebf611ec33b201ea",
+  "source": "d48c9620e30c3686217095cb45b24f1b0c8218a2",
+  "manifestSha256": "5da126a136e96c21916f522c204d137d80a88cdd892fab540201a98915e9df43",
+  "checks": [
+    {
+      "name": "Unique bounded relative membership",
+      "passed": true
+    },
+    {
+      "name": "Exact packet member docs/coordination/reports/CODEX-INTELLIGENCE-SUMMARY-AUTHOR-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "Exact packet member docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/audit-packet.py",
+      "passed": true
+    },
+    {
+      "name": "Exact packet member docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "name": "Exact packet member docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/cleanup.json",
+      "passed": true
+    },
+    {
+      "name": "Exact packet member docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/documentation-correction.json",
+      "passed": true
+    },
+    {
+      "name": "Exact packet member docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/focused.json",
+      "passed": true
+    },
+    {
+      "name": "Exact packet member docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/focused.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Exact packet member docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/focused.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Exact packet member docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/inspect-references-before.cjs.txt",
+      "passed": true
+    },
+    {
+      "name": "Exact packet member docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/inspect-references.cjs",
+      "passed": true
+    },
+    {
+      "name": "Exact packet member docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/metadata-audit-repaired.json",
+      "passed": true
+    },
+    {
+      "name": "Exact packet member docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/metadata-audit-repaired.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Exact packet member docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/metadata-audit-repaired.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Exact packet member docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/metadata-audit.json",
+      "passed": true
+    },
+    {
+      "name": "Exact packet member docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/metadata-audit.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Exact packet member docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/metadata-audit.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Exact packet member docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/outline.md",
+      "passed": true
+    },
+    {
+      "name": "Exact packet member docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/reference-identities-before.json",
+      "passed": true
+    },
+    {
+      "name": "Exact packet member docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/reference-identities.json",
+      "passed": true
+    },
+    {
+      "name": "Exact packet member docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/source-findings.json",
+      "passed": true
+    },
+    {
+      "name": "Exact packet member docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/verify-manifest.py",
+      "passed": true
+    },
+    {
+      "name": "Exact packet member packages/contracts/retrieval-0.2/intelligence-summary-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Exact packet member packages/contracts/retrieval-0.2/intelligence-summary.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Exact packet member packages/contracts/test/retrieval-intelligence-summary.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "Source freeze retained packages/contracts/retrieval-0.2/intelligence-summary-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Source freeze retained packages/contracts/retrieval-0.2/intelligence-summary.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Source freeze retained packages/contracts/test/retrieval-intelligence-summary.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "Original metadata failure preserved",
+      "passed": true
+    },
+    {
+      "name": "Collector repair passes unchanged assertion names",
+      "passed": true
+    },
+    {
+      "name": "Original preservation count retained",
+      "passed": true
+    },
+    {
+      "name": "Owned group absent focused",
+      "passed": true
+    },
+    {
+      "name": "Raw captured bytes docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/focused.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Raw captured bytes docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/focused.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Owned group absent metadata-audit",
+      "passed": true
+    },
+    {
+      "name": "Raw captured bytes docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/metadata-audit.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Raw captured bytes docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/metadata-audit.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Owned group absent metadata-audit-repaired",
+      "passed": true
+    },
+    {
+      "name": "Raw captured bytes docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/metadata-audit-repaired.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Raw captured bytes docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/metadata-audit-repaired.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Declared manifest verifier35 pass",
+      "passed": true
+    },
+    {
+      "name": "Source-only truth limits retained",
+      "passed": true
+    },
+    {
+      "name": "Configured lobby branch clarified",
+      "passed": true
+    }
+  ],
+  "passed": 43,
+  "failed": 0
+}

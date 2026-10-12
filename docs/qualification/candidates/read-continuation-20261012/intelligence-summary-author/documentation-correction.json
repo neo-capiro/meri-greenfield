@@ -1,0 +1,8 @@
+{
+  "priorPacket": "f5082ffd85964268c539852aae4a13ed7a5a1dec",
+  "sourceUnchanged": "d48c9620e30c3686217095cb45b24f1b0c8218a2",
+  "finding": "Independent packet audit identified ambiguous lobbying fallback wording. Actual helper chooses configured source alternatives; it is not failover after failed SELECT.",
+  "changed": "Author report and source-findings downstream[0].effects only; federal fallback statement remains correct.",
+  "priorManifestSha256": "bfa443f50d8b42280494ff2c762d154ea67d9d00f1cb945041ba585b44ebfa4b",
+  "productTestsRerun": false
+}

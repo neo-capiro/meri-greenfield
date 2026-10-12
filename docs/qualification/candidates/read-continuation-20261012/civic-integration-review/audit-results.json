@@ -1,0 +1,1098 @@
+{
+  "base": "c1c9bfde7dd466a0474589a224a99b44277adbc9",
+  "candidate": "fcf0d0bff20c4ed1b81d0896ce71403b592d27fc",
+  "candidateTree": "074b322f8aa6e4c1f0500278030a678f1d5e2ef3",
+  "checkCount": 162,
+  "passed": 162,
+  "failed": 0,
+  "baseFileCount": 6528,
+  "unchangedOriginalFiles": 6509,
+  "changedOriginalPaths": [
+    "apps/gateway/test/action-item-context-independent.test.mjs",
+    "apps/gateway/test/capability-next-independent.test.mjs",
+    "apps/gateway/test/mail-context-independent.test.mjs",
+    "apps/gateway/test/memory-context-independent.test.mjs",
+    "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+    "packages/contracts/retrieval-0.2/catalog.json",
+    "packages/contracts/retrieval-0.2/validate.mjs",
+    "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+    "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+    "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+    "packages/contracts/test/retrieval-mail.test.mjs",
+    "packages/contracts/test/retrieval-memory-binding.test.mjs",
+    "packages/contracts/test/retrieval-next-bindings.test.mjs",
+    "packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+    "packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+    "packages/contracts/test/retrieval-reference-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-selected-next-bindings.test.mjs",
+    "packages/contracts/test/retrieval-selected-next-independent.test.mjs"
+  ],
+  "sourceFiles": {
+    "packages/contracts/retrieval-0.2/catalog-validation.mjs": "7e5f881eb5f9b2f791242e13f1f6ec72536153b0b049862bfe2882193904acb9",
+    "packages/contracts/retrieval-0.2/catalog.json": "b40aa7b795083ab4e4a13e7df36ea9cc7e1356c12f7fd11a57594bf2b4d5133a",
+    "packages/contracts/retrieval-0.2/entity-candidates-validation.mjs": "2ef046fa6166f5e9011c89081a5f58b0413b0a5ee2d1bd12bbdc8c580f723090",
+    "packages/contracts/retrieval-0.2/entity-candidates.schema.json": "2b8eb948781d2e0c486b58f09fafbe821a6216942eb5ee33797135392f78d100",
+    "packages/contracts/retrieval-0.2/intelligence-summary-validation.mjs": "7140959d4b77abbd835b6bb3179c88da516be43999b56ba79953ee659730d9d0",
+    "packages/contracts/retrieval-0.2/intelligence-summary.schema.json": "cd589df078359153d23e83ada2fb9a5fea46fa18552809a97ebfa10cafa0bd24",
+    "packages/contracts/retrieval-0.2/regulatory-dockets-validation.mjs": "f9e8cf5f48c15b52590ba4ab5f7ad24efea0064f5b03c719a186fe0c552de1d7",
+    "packages/contracts/retrieval-0.2/regulatory-dockets.schema.json": "67780fed6830f53dbb4fa0f76a681666b426a41408046f5c778be3efdb810654",
+    "packages/contracts/retrieval-0.2/state-bill-identity.mjs": "25d86301366971f622f88fcdcf45ccf25036b677f38a5612283ac595872c6ad7",
+    "packages/contracts/retrieval-0.2/state-status-votes-validation.mjs": "43587a404705d7a589000c0bd228beb74be4880c12ebc71c17ca5fca93cfeaa1",
+    "packages/contracts/retrieval-0.2/state-status-votes.schema.json": "ac017527b6d8da90b91e61c550623144a8eed4cd89a3b020c4a23acd27a8fde2",
+    "packages/contracts/retrieval-0.2/tenant-contacts-validation.mjs": "793b0880b4a1a8cf4d77ad39ee857b1222289d732a7ba9704b4acbae06989767",
+    "packages/contracts/retrieval-0.2/tenant-contacts.schema.json": "065ff9d94072c8d54cb1f490957be23c952334ee2c9184bbeb76f5d82c59f691",
+    "packages/contracts/retrieval-0.2/tracked-bills-validation.mjs": "697ba30c8cfbf7c02e5b815104e909fd2183633891ccc835373d568e44b6bc67",
+    "packages/contracts/retrieval-0.2/tracked-bills.schema.json": "726efeaa4fd06c37790e05da94380f95e1ab97c694d0d8d5ada60a1579ee4cf5",
+    "packages/contracts/retrieval-0.2/validate.mjs": "034a75f274dcfdeb151694c5a4fe907b8edf1b908864341614487ad18ee538c2"
+  },
+  "checks": [
+    {
+      "name": "PR30 ancestor",
+      "passed": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "exact16 old-test allowlist",
+      "passed": true,
+      "actual": [
+        "apps/gateway/test/action-item-context-independent.test.mjs",
+        "apps/gateway/test/capability-next-independent.test.mjs",
+        "apps/gateway/test/mail-context-independent.test.mjs",
+        "apps/gateway/test/memory-context-independent.test.mjs",
+        "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+        "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+        "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+        "packages/contracts/test/retrieval-mail.test.mjs",
+        "packages/contracts/test/retrieval-memory-binding.test.mjs",
+        "packages/contracts/test/retrieval-next-bindings.test.mjs",
+        "packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+        "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+        "packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+        "packages/contracts/test/retrieval-reference-integration-independent.test.mjs",
+        "packages/contracts/test/retrieval-selected-next-bindings.test.mjs",
+        "packages/contracts/test/retrieval-selected-next-independent.test.mjs"
+      ],
+      "expected": [
+        "apps/gateway/test/action-item-context-independent.test.mjs",
+        "apps/gateway/test/capability-next-independent.test.mjs",
+        "apps/gateway/test/mail-context-independent.test.mjs",
+        "apps/gateway/test/memory-context-independent.test.mjs",
+        "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+        "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+        "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+        "packages/contracts/test/retrieval-mail.test.mjs",
+        "packages/contracts/test/retrieval-memory-binding.test.mjs",
+        "packages/contracts/test/retrieval-next-bindings.test.mjs",
+        "packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+        "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+        "packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+        "packages/contracts/test/retrieval-reference-integration-independent.test.mjs",
+        "packages/contracts/test/retrieval-selected-next-bindings.test.mjs",
+        "packages/contracts/test/retrieval-selected-next-independent.test.mjs"
+      ]
+    },
+    {
+      "name": "only canonical3 and16 old expectations change",
+      "passed": true,
+      "actual": [
+        "apps/gateway/test/action-item-context-independent.test.mjs",
+        "apps/gateway/test/capability-next-independent.test.mjs",
+        "apps/gateway/test/mail-context-independent.test.mjs",
+        "apps/gateway/test/memory-context-independent.test.mjs",
+        "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+        "packages/contracts/retrieval-0.2/catalog.json",
+        "packages/contracts/retrieval-0.2/validate.mjs",
+        "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+        "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+        "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+        "packages/contracts/test/retrieval-mail.test.mjs",
+        "packages/contracts/test/retrieval-memory-binding.test.mjs",
+        "packages/contracts/test/retrieval-next-bindings.test.mjs",
+        "packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+        "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+        "packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+        "packages/contracts/test/retrieval-reference-integration-independent.test.mjs",
+        "packages/contracts/test/retrieval-selected-next-bindings.test.mjs",
+        "packages/contracts/test/retrieval-selected-next-independent.test.mjs"
+      ],
+      "expected": [
+        "apps/gateway/test/action-item-context-independent.test.mjs",
+        "apps/gateway/test/capability-next-independent.test.mjs",
+        "apps/gateway/test/mail-context-independent.test.mjs",
+        "apps/gateway/test/memory-context-independent.test.mjs",
+        "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+        "packages/contracts/retrieval-0.2/catalog.json",
+        "packages/contracts/retrieval-0.2/validate.mjs",
+        "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+        "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+        "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+        "packages/contracts/test/retrieval-mail.test.mjs",
+        "packages/contracts/test/retrieval-memory-binding.test.mjs",
+        "packages/contracts/test/retrieval-next-bindings.test.mjs",
+        "packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+        "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+        "packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+        "packages/contracts/test/retrieval-reference-integration-independent.test.mjs",
+        "packages/contracts/test/retrieval-selected-next-bindings.test.mjs",
+        "packages/contracts/test/retrieval-selected-next-independent.test.mjs"
+      ]
+    },
+    {
+      "name": "test before hash packages/contracts/test/retrieval-selected-next-bindings.test.mjs",
+      "passed": true,
+      "actual": "623660c698e19d655d202f989773b9efa19352e23c0ad0e345305614b5dd9f21",
+      "expected": "623660c698e19d655d202f989773b9efa19352e23c0ad0e345305614b5dd9f21"
+    },
+    {
+      "name": "test after hash packages/contracts/test/retrieval-selected-next-bindings.test.mjs",
+      "passed": true,
+      "actual": "f24bf56a62ef651f606c45a170fd5e4d467c97a666667abc79ec4718352fbd26",
+      "expected": "f24bf56a62ef651f606c45a170fd5e4d467c97a666667abc79ec4718352fbd26"
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-selected-next-bindings.test.mjs \"get_representation\"",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-selected-next-bindings.test.mjs .length,41)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-selected-next-bindings.test.mjs .length,55)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-selected-next-bindings.test.mjs .length,56)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-selected-next-bindings.test.mjs '0.2.7'",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "complete test correspondence packages/contracts/test/retrieval-selected-next-bindings.test.mjs",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "test before hash packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+      "passed": true,
+      "actual": "38c5af077a9c332e8bcfa6f97ac2661ed32bf8ad2b6b3d74346b6378bea7a071",
+      "expected": "38c5af077a9c332e8bcfa6f97ac2661ed32bf8ad2b6b3d74346b6378bea7a071"
+    },
+    {
+      "name": "test after hash packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+      "passed": true,
+      "actual": "06c303281600a86c12cc3ad3a41a9247ec73e62a98b35153f3f840c06c64b3c3",
+      "expected": "06c303281600a86c12cc3ad3a41a9247ec73e62a98b35153f3f840c06c64b3c3"
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-next-integration-independent.test.mjs \"get_representation\"",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-next-integration-independent.test.mjs .length,41)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-next-integration-independent.test.mjs .length,55)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-next-integration-independent.test.mjs .length,56)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-next-integration-independent.test.mjs .size,56)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-next-integration-independent.test.mjs all 56",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "complete test correspondence packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "test before hash packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+      "passed": true,
+      "actual": "0b71f799f3b00f0f2d7dfe6a9a8a901e619be37b9f5d1a2bfa79aba5084c9ef6",
+      "expected": "0b71f799f3b00f0f2d7dfe6a9a8a901e619be37b9f5d1a2bfa79aba5084c9ef6"
+    },
+    {
+      "name": "test after hash packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+      "passed": true,
+      "actual": "e5b73821b6bd50f8e6cd69eb626abea79b66a2bd63111ac2feecf17f30330896",
+      "expected": "e5b73821b6bd50f8e6cd69eb626abea79b66a2bd63111ac2feecf17f30330896"
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-read-continuation-bindings.test.mjs \"get_representation\"",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-read-continuation-bindings.test.mjs .length,41)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-read-continuation-bindings.test.mjs .length,55)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-read-continuation-bindings.test.mjs .length,56)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-read-continuation-bindings.test.mjs '0.2.7'",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "complete test correspondence packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "test before hash packages/contracts/test/retrieval-mail.test.mjs",
+      "passed": true,
+      "actual": "23da9369de303b4bb65f95bf730997a5bc8c4cb689ddb44faa331c53909bd358",
+      "expected": "23da9369de303b4bb65f95bf730997a5bc8c4cb689ddb44faa331c53909bd358"
+    },
+    {
+      "name": "test after hash packages/contracts/test/retrieval-mail.test.mjs",
+      "passed": true,
+      "actual": "0ee0bd974a50cd1eb7ac1e62f8620fc0a8eaf18a56931927e4144e8702ee486f",
+      "expected": "0ee0bd974a50cd1eb7ac1e62f8620fc0a8eaf18a56931927e4144e8702ee486f"
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-mail.test.mjs .length,55)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-mail.test.mjs .length,56)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "complete test correspondence packages/contracts/test/retrieval-mail.test.mjs",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "test before hash packages/contracts/test/retrieval-next-bindings.test.mjs",
+      "passed": true,
+      "actual": "b83c2c804cdaf82eef3df95ca206a9d61e1b7f589adf83ec6c0a8622f728d083",
+      "expected": "b83c2c804cdaf82eef3df95ca206a9d61e1b7f589adf83ec6c0a8622f728d083"
+    },
+    {
+      "name": "test after hash packages/contracts/test/retrieval-next-bindings.test.mjs",
+      "passed": true,
+      "actual": "bfb259fa2a1f71ec8b8755e11532ef279729fdac08fc6e82937e3d7d72df678f",
+      "expected": "bfb259fa2a1f71ec8b8755e11532ef279729fdac08fc6e82937e3d7d72df678f"
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-next-bindings.test.mjs \"get_representation\"",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-next-bindings.test.mjs .length, 41)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-next-bindings.test.mjs .length, 55)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-next-bindings.test.mjs .length, 56)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "complete test correspondence packages/contracts/test/retrieval-next-bindings.test.mjs",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "test before hash packages/contracts/test/retrieval-action-item-independent.test.mjs",
+      "passed": true,
+      "actual": "946f736fe9a39ec0636ebbb6b579f3d2e972cdfc46cec2f9600a228b15948231",
+      "expected": "946f736fe9a39ec0636ebbb6b579f3d2e972cdfc46cec2f9600a228b15948231"
+    },
+    {
+      "name": "test after hash packages/contracts/test/retrieval-action-item-independent.test.mjs",
+      "passed": true,
+      "actual": "09c95b8ee81d201eb5373693a30f060fde18bb83e2f8ed071598286d45bfa07a",
+      "expected": "09c95b8ee81d201eb5373693a30f060fde18bb83e2f8ed071598286d45bfa07a"
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-action-item-independent.test.mjs \"get_representation\"",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-action-item-independent.test.mjs .length,41)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-action-item-independent.test.mjs .length,55)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-action-item-independent.test.mjs .length,56)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "complete test correspondence packages/contracts/test/retrieval-action-item-independent.test.mjs",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "test before hash packages/contracts/test/retrieval-action-item-binding.test.mjs",
+      "passed": true,
+      "actual": "478a133e178607f77c9c7114871775c9f7503ffdb265844113cbbdaab5100542",
+      "expected": "478a133e178607f77c9c7114871775c9f7503ffdb265844113cbbdaab5100542"
+    },
+    {
+      "name": "test after hash packages/contracts/test/retrieval-action-item-binding.test.mjs",
+      "passed": true,
+      "actual": "1e76e4bd8c6cc36ad680000315f2171a72619ca4284f6cda4b70c9d966981b8c",
+      "expected": "1e76e4bd8c6cc36ad680000315f2171a72619ca4284f6cda4b70c9d966981b8c"
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-action-item-binding.test.mjs \"get_representation\"",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-action-item-binding.test.mjs .length,41)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-action-item-binding.test.mjs .length,55)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-action-item-binding.test.mjs .length,56)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "complete test correspondence packages/contracts/test/retrieval-action-item-binding.test.mjs",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "test before hash packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+      "passed": true,
+      "actual": "1ec73e847adb94108c7ec7131282213c7fe93f86acfd5202f1c63ab4c9a678e5",
+      "expected": "1ec73e847adb94108c7ec7131282213c7fe93f86acfd5202f1c63ab4c9a678e5"
+    },
+    {
+      "name": "test after hash packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+      "passed": true,
+      "actual": "9f1c3a23d6d2aeb5e62949e2cdfcaade08bd05691aad43e58b483009bed8f501",
+      "expected": "9f1c3a23d6d2aeb5e62949e2cdfcaade08bd05691aad43e58b483009bed8f501"
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-read-continuation-independent.test.mjs \"get_representation\"",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-read-continuation-independent.test.mjs .length,41)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-read-continuation-independent.test.mjs .length,55)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-read-continuation-independent.test.mjs .length,56)",
+      "passed": true,
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-read-continuation-independent.test.mjs .size,56)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-read-continuation-independent.test.mjs '0.2.7'",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-read-continuation-independent.test.mjs all56",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-read-continuation-independent.test.mjs   for(const id of ['get_research_evidence','get_state_bill_status','search_state_floor_votes','search_sam_opportunities'])assert.throws(()=>resolve(id));",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "complete test correspondence packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "test before hash packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+      "passed": true,
+      "actual": "2aa490331a4f7b98aff75de1c1dae3a77c1eaad1655e8ccd2d60c9975e561397",
+      "expected": "2aa490331a4f7b98aff75de1c1dae3a77c1eaad1655e8ccd2d60c9975e561397"
+    },
+    {
+      "name": "test after hash packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+      "passed": true,
+      "actual": "97919bd10739e3081bfe08a8c56b304fbbdde392c09d009361c234576bfa8854",
+      "expected": "97919bd10739e3081bfe08a8c56b304fbbdde392c09d009361c234576bfa8854"
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-catalog-bindings.test.mjs .length,41)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-catalog-bindings.test.mjs .length,55)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-catalog-bindings.test.mjs .length,56)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "complete test correspondence packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "test before hash packages/contracts/test/retrieval-selected-next-independent.test.mjs",
+      "passed": true,
+      "actual": "defce3d6f652a6b8d2be095d9a6faa5a0127236acb5f43d9965cd827862b5e20",
+      "expected": "defce3d6f652a6b8d2be095d9a6faa5a0127236acb5f43d9965cd827862b5e20"
+    },
+    {
+      "name": "test after hash packages/contracts/test/retrieval-selected-next-independent.test.mjs",
+      "passed": true,
+      "actual": "7e411d26344c0323478b56c8999f02c0dfbdf6847824438ef8ba0aecbabac723",
+      "expected": "7e411d26344c0323478b56c8999f02c0dfbdf6847824438ef8ba0aecbabac723"
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-selected-next-independent.test.mjs \"get_representation\"",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-selected-next-independent.test.mjs .length,41)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-selected-next-independent.test.mjs .length,55)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-selected-next-independent.test.mjs .length,56)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "complete test correspondence packages/contracts/test/retrieval-selected-next-independent.test.mjs",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "test before hash packages/contracts/test/retrieval-memory-binding.test.mjs",
+      "passed": true,
+      "actual": "021d9fee5fe251cc77acccdf745768e7788739ad811d3ccfb71b7e3a82ec6490",
+      "expected": "021d9fee5fe251cc77acccdf745768e7788739ad811d3ccfb71b7e3a82ec6490"
+    },
+    {
+      "name": "test after hash packages/contracts/test/retrieval-memory-binding.test.mjs",
+      "passed": true,
+      "actual": "34742593d3a273a96e6c0644d27f3619187d76b0e96397f3b53e8432c817edd4",
+      "expected": "34742593d3a273a96e6c0644d27f3619187d76b0e96397f3b53e8432c817edd4"
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-memory-binding.test.mjs \"get_representation\"",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-memory-binding.test.mjs .length,41)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-memory-binding.test.mjs .length,56)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "complete test correspondence packages/contracts/test/retrieval-memory-binding.test.mjs",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "test before hash apps/gateway/test/mail-context-independent.test.mjs",
+      "passed": true,
+      "actual": "f7ed9bc7bd8891ed4ea79f96febd3e2f3137ca4653377faddd8ee65f749bc60a",
+      "expected": "f7ed9bc7bd8891ed4ea79f96febd3e2f3137ca4653377faddd8ee65f749bc60a"
+    },
+    {
+      "name": "test after hash apps/gateway/test/mail-context-independent.test.mjs",
+      "passed": true,
+      "actual": "bde80f33b56da0d09f3af0201ababda1b113e8ff37b36156c86c63fa835dade9",
+      "expected": "bde80f33b56da0d09f3af0201ababda1b113e8ff37b36156c86c63fa835dade9"
+    },
+    {
+      "name": "replacement count apps/gateway/test/mail-context-independent.test.mjs .length,55)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "complete test correspondence apps/gateway/test/mail-context-independent.test.mjs",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "test before hash apps/gateway/test/capability-next-independent.test.mjs",
+      "passed": true,
+      "actual": "a6fe1b15f21050c7f0db6e6a27595c0adfd274d5f5aa9480e303dd1742f86f22",
+      "expected": "a6fe1b15f21050c7f0db6e6a27595c0adfd274d5f5aa9480e303dd1742f86f22"
+    },
+    {
+      "name": "test after hash apps/gateway/test/capability-next-independent.test.mjs",
+      "passed": true,
+      "actual": "bd4fa17f9c217f0da94f92818ee9e44270076f85e1393e41d27937101ecc16f2",
+      "expected": "bd4fa17f9c217f0da94f92818ee9e44270076f85e1393e41d27937101ecc16f2"
+    },
+    {
+      "name": "replacement count apps/gateway/test/capability-next-independent.test.mjs .length,56)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count apps/gateway/test/capability-next-independent.test.mjs all56",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "complete test correspondence apps/gateway/test/capability-next-independent.test.mjs",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "test before hash apps/gateway/test/action-item-context-independent.test.mjs",
+      "passed": true,
+      "actual": "dc5f4a00527a2efbde17dbe230d45d7626a6860666a10796c9c01cead90e2e12",
+      "expected": "dc5f4a00527a2efbde17dbe230d45d7626a6860666a10796c9c01cead90e2e12"
+    },
+    {
+      "name": "test after hash apps/gateway/test/action-item-context-independent.test.mjs",
+      "passed": true,
+      "actual": "a6b680f58fff69206218a240cb964accbf1a58bc7a59278272d1136bf718e7ab",
+      "expected": "a6b680f58fff69206218a240cb964accbf1a58bc7a59278272d1136bf718e7ab"
+    },
+    {
+      "name": "replacement count apps/gateway/test/action-item-context-independent.test.mjs .length,56)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count apps/gateway/test/action-item-context-independent.test.mjs all56",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "complete test correspondence apps/gateway/test/action-item-context-independent.test.mjs",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "test before hash apps/gateway/test/memory-context-independent.test.mjs",
+      "passed": true,
+      "actual": "70ac54996c4e71de3a2bba219654d54ec03f2dc022f030fdb92007bb790738c6",
+      "expected": "70ac54996c4e71de3a2bba219654d54ec03f2dc022f030fdb92007bb790738c6"
+    },
+    {
+      "name": "test after hash apps/gateway/test/memory-context-independent.test.mjs",
+      "passed": true,
+      "actual": "5350464c5fa208bf9883a5290dd780dbd6226031b4b613f4c7da9c596b57ce5b",
+      "expected": "5350464c5fa208bf9883a5290dd780dbd6226031b4b613f4c7da9c596b57ce5b"
+    },
+    {
+      "name": "replacement count apps/gateway/test/memory-context-independent.test.mjs .length,56)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "complete test correspondence apps/gateway/test/memory-context-independent.test.mjs",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "test before hash packages/contracts/test/retrieval-reference-integration-independent.test.mjs",
+      "passed": true,
+      "actual": "8ebe39627331adef1d40cf191f729c54cc3c80c1b8b43d956d9dd5fe462404b1",
+      "expected": "8ebe39627331adef1d40cf191f729c54cc3c80c1b8b43d956d9dd5fe462404b1"
+    },
+    {
+      "name": "test after hash packages/contracts/test/retrieval-reference-integration-independent.test.mjs",
+      "passed": true,
+      "actual": "bed345c2189a15cc41ad94184580c7fb8e7ba52e0552e524f3f183bbe5a683c9",
+      "expected": "bed345c2189a15cc41ad94184580c7fb8e7ba52e0552e524f3f183bbe5a683c9"
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-reference-integration-independent.test.mjs const ids=['get_committee_roster'",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-reference-integration-independent.test.mjs !ids.includes(x.operation.id)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-reference-integration-independent.test.mjs !ids.includes(x.id)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-reference-integration-independent.test.mjs ids.includes(old.id)?",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-reference-integration-independent.test.mjs .length,41)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-reference-integration-independent.test.mjs .length,55)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-reference-integration-independent.test.mjs .length,56)",
+      "passed": true,
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-reference-integration-independent.test.mjs .size,56)",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "replacement count packages/contracts/test/retrieval-reference-integration-independent.test.mjs all56",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "complete test correspondence packages/contracts/test/retrieval-reference-integration-independent.test.mjs",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "six reviewed families",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "no pending family",
+      "passed": true,
+      "actual": [],
+      "expected": []
+    },
+    {
+      "name": "state-status-votes runtime not accepted",
+      "passed": true,
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "state-status-votes source tree",
+      "passed": true,
+      "actual": "f7942b8aa8e3011336bc56cc568ddd0e7c4d52cf",
+      "expected": "f7942b8aa8e3011336bc56cc568ddd0e7c4d52cf"
+    },
+    {
+      "name": "state-status-votes independent review object",
+      "passed": true,
+      "actual": 40,
+      "expected": 40
+    },
+    {
+      "name": "accepted source bytes packages/contracts/retrieval-0.2/state-status-votes-validation.mjs",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "accepted source bytes packages/contracts/retrieval-0.2/state-status-votes.schema.json",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "accepted source bytes packages/contracts/retrieval-0.2/state-bill-identity.mjs",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "accepted family test bytes packages/contracts/test/retrieval-state-status-votes.test.mjs",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "accepted family test bytes packages/contracts/test/retrieval-state-status-votes-independent.test.mjs",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "regulatory-dockets runtime not accepted",
+      "passed": true,
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "regulatory-dockets source tree",
+      "passed": true,
+      "actual": "485860a7d9b2d4cf1e9f19a45c00cd80213ca088",
+      "expected": "485860a7d9b2d4cf1e9f19a45c00cd80213ca088"
+    },
+    {
+      "name": "regulatory-dockets independent review object",
+      "passed": true,
+      "actual": 40,
+      "expected": 40
+    },
+    {
+      "name": "accepted source bytes packages/contracts/retrieval-0.2/regulatory-dockets-validation.mjs",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "accepted source bytes packages/contracts/retrieval-0.2/regulatory-dockets.schema.json",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "accepted family test bytes packages/contracts/test/retrieval-regulatory-dockets.test.mjs",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "accepted family test bytes packages/contracts/test/retrieval-regulatory-dockets-independent.test.mjs",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "tenant-contacts runtime not accepted",
+      "passed": true,
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "tenant-contacts source tree",
+      "passed": true,
+      "actual": "2a84b8964b23b4ebd178bfe619376680b9a21f6f",
+      "expected": "2a84b8964b23b4ebd178bfe619376680b9a21f6f"
+    },
+    {
+      "name": "tenant-contacts independent review object",
+      "passed": true,
+      "actual": 40,
+      "expected": 40
+    },
+    {
+      "name": "accepted source bytes packages/contracts/retrieval-0.2/tenant-contacts-validation.mjs",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "accepted source bytes packages/contracts/retrieval-0.2/tenant-contacts.schema.json",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "accepted family test bytes packages/contracts/test/retrieval-tenant-contacts.test.mjs",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "accepted family test bytes packages/contracts/test/retrieval-tenant-contacts-independent.test.mjs",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "contact repair accepted",
+      "passed": true,
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "contact repair review object",
+      "passed": true,
+      "actual": 40,
+      "expected": 40
+    },
+    {
+      "name": "entity-candidates runtime not accepted",
+      "passed": true,
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "entity-candidates source tree",
+      "passed": true,
+      "actual": "cc42292346660c99160b1f98725804e59e92a8ad",
+      "expected": "cc42292346660c99160b1f98725804e59e92a8ad"
+    },
+    {
+      "name": "entity-candidates independent review object",
+      "passed": true,
+      "actual": 40,
+      "expected": 40
+    },
+    {
+      "name": "accepted source bytes packages/contracts/retrieval-0.2/entity-candidates-validation.mjs",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "accepted source bytes packages/contracts/retrieval-0.2/entity-candidates.schema.json",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "accepted family test bytes packages/contracts/test/retrieval-entity-candidates.test.mjs",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "accepted family test bytes packages/contracts/test/retrieval-entity-candidates-independent.test.mjs",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "tracked-bills runtime not accepted",
+      "passed": true,
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "tracked-bills source tree",
+      "passed": true,
+      "actual": "4339a033ca9d43096f838c89caa02b1e5c93e59d",
+      "expected": "4339a033ca9d43096f838c89caa02b1e5c93e59d"
+    },
+    {
+      "name": "tracked-bills independent review object",
+      "passed": true,
+      "actual": 40,
+      "expected": 40
+    },
+    {
+      "name": "accepted source bytes packages/contracts/retrieval-0.2/tracked-bills-validation.mjs",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "accepted source bytes packages/contracts/retrieval-0.2/tracked-bills.schema.json",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "accepted family test bytes packages/contracts/test/retrieval-tracked-bills.test.mjs",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "accepted family test bytes packages/contracts/test/retrieval-tracked-bills-independent.test.mjs",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "intelligence-summary runtime not accepted",
+      "passed": true,
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "intelligence-summary source tree",
+      "passed": true,
+      "actual": "ec6f6d798d428578219aa6f3e4fa9493ae204d92",
+      "expected": "ec6f6d798d428578219aa6f3e4fa9493ae204d92"
+    },
+    {
+      "name": "intelligence-summary independent review object",
+      "passed": true,
+      "actual": 40,
+      "expected": 40
+    },
+    {
+      "name": "accepted source bytes packages/contracts/retrieval-0.2/intelligence-summary-validation.mjs",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "accepted source bytes packages/contracts/retrieval-0.2/intelligence-summary.schema.json",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "accepted family test bytes packages/contracts/test/retrieval-intelligence-summary.test.mjs",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "accepted family test bytes packages/contracts/test/retrieval-intelligence-summary-independent.test.mjs",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "frozen reviewer controls tracked",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    }
+  ],
+  "scope": "OFFLINE_SOURCE_CORRESPONDENCE_NO_RUNTIME_ACCEPTANCE"
+}

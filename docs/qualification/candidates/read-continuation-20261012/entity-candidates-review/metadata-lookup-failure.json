@@ -1,0 +1,14 @@
+{
+  "classification": "REVIEW_METADATA_LOOKUP_ERROR_NOT_SOURCE_FAILURE",
+  "evidenceKind": "tool-readback summary, not original raw streams",
+  "command": [
+    "git",
+    "show",
+    "4c3b35c9d0c1709bfeb61280474c7186d516a618:docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/MANIFEST.json"
+  ],
+  "exitCode": 128,
+  "stderrReadback": "fatal: path 'docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/MANIFEST.json' does not exist in '4c3b35c9d0c1709bfeb61280474c7186d516a618'",
+  "cause": "Reviewer used uppercase filename; actual manifest.json had already appeared in read-only tree listing.",
+  "resolution": "Correct lowercase immutable manifest and all 16 members independently verified in author-packet-audit, 68/68 pass.",
+  "sourceChanged": false
+}

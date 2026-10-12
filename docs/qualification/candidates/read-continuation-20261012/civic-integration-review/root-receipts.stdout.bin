@@ -1,0 +1,619 @@
+{
+  "rootPacket": "fcf0d0bff20c4ed1b81d0896ce71403b592d27fc",
+  "receipts": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration/focused-canonical.json",
+      "sha256": "da7ffffbd2fec2eaff331a6ae4bd88513df6de9de98ac2489d7e41ea125f19b0",
+      "sourceHead": "a35a8323024b37ebb245f1a3c67084c19ef2f0c3",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "packages/contracts/test/retrieval-reference-integration-independent.test.mjs",
+        "packages/contracts/test/retrieval-selected-next-bindings.test.mjs"
+      ],
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "ownedPidAndPgid": 250869,
+      "timedOut": false,
+      "reapedDescendants": [],
+      "streams": [
+        {
+          "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration/focused-canonical.stdout.bin",
+          "bytes": 8738,
+          "sha256": "ff769a8be5c025ccc42daf0a2403263c2f8a8a6867c9e9848d3910f8f04745c1",
+          "verified": true
+        },
+        {
+          "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration/focused-canonical.stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "verified": true
+        }
+      ],
+      "testSummaries": [
+        [
+          "tests",
+          "81"
+        ],
+        [
+          "pass",
+          "81"
+        ],
+        [
+          "fail",
+          "0"
+        ]
+      ]
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration/focused-state-mapping.json",
+      "sha256": "8a0d42c47458bbcb4a8fdf45f0b317a8e976a7dd14c97f3329e51d5cc6a3e36a",
+      "sourceHead": "1c1fc211b5032487dbbec27531fd301e7030e5f1",
+      "command": [
+        "node",
+        "--test",
+        "packages/contracts/test/retrieval-read-continuation-independent.test.mjs"
+      ],
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "ownedPidAndPgid": 254484,
+      "timedOut": false,
+      "reapedDescendants": [],
+      "streams": [
+        {
+          "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration/focused-state-mapping.stdout.bin",
+          "bytes": 6673,
+          "sha256": "06d979ccf9fc720ce1386b2e8263407e112254de230b9cc35ec09411284794e2",
+          "verified": true
+        },
+        {
+          "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration/focused-state-mapping.stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "verified": true
+        }
+      ],
+      "testSummaries": [
+        [
+          "tests",
+          "62"
+        ],
+        [
+          "pass",
+          "62"
+        ],
+        [
+          "fail",
+          "0"
+        ]
+      ]
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration/combined-first.json",
+      "sha256": "ac78bae9aa54e0464ce08b5dc1e0801d173bf3fd0362c3326d45db8aff1b2d6e",
+      "sourceHead": "520325559e052029440e63d96e6b5ce23a8d5c72",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "packages/contracts/test/boundaries.test.mjs",
+        "packages/contracts/test/public-package.test.mjs",
+        "packages/contracts/test/retrieval-acquisition-personnel-independent.test.mjs",
+        "packages/contracts/test/retrieval-acquisition-personnel.test.mjs",
+        "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+        "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+        "packages/contracts/test/retrieval-bill-text-independent.test.mjs",
+        "packages/contracts/test/retrieval-bill-text.test.mjs",
+        "packages/contracts/test/retrieval-business-development-independent.test.mjs",
+        "packages/contracts/test/retrieval-business-development.test.mjs",
+        "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+        "packages/contracts/test/retrieval-certification-status-independent.test.mjs",
+        "packages/contracts/test/retrieval-certification-status.test.mjs",
+        "packages/contracts/test/retrieval-client-documents-independent.test.mjs",
+        "packages/contracts/test/retrieval-client-documents.test.mjs",
+        "packages/contracts/test/retrieval-client-registry-independent.test.mjs",
+        "packages/contracts/test/retrieval-client-registry.test.mjs",
+        "packages/contracts/test/retrieval-data-search.test.mjs",
+        "packages/contracts/test/retrieval-dataset-metadata-independent.test.mjs",
+        "packages/contracts/test/retrieval-dataset-metadata.test.mjs",
+        "packages/contracts/test/retrieval-disclosures-independent.test.mjs",
+        "packages/contracts/test/retrieval-disclosures.test.mjs",
+        "packages/contracts/test/retrieval-district-nexus-independent.test.mjs",
+        "packages/contracts/test/retrieval-district-nexus.test.mjs",
+        "packages/contracts/test/retrieval-entity-candidates-independent.test.mjs",
+        "packages/contracts/test/retrieval-entity-candidates.test.mjs",
+        "packages/contracts/test/retrieval-facility-representation-independent.test.mjs",
+        "packages/contracts/test/retrieval-facility-representation.test.mjs",
+        "packages/contracts/test/retrieval-federal-legislation-independent.test.mjs",
+        "packages/contracts/test/retrieval-federal-legislation.test.mjs",
+        "packages/contracts/test/retrieval-federal-market.test.mjs",
+        "packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs",
+        "packages/contracts/test/retrieval-funding-opportunities.test.mjs",
+        "packages/contracts/test/retrieval-intelligence-summary-independent.test.mjs",
+        "packages/contracts/test/retrieval-intelligence-summary.test.mjs",
+        "packages/contracts/test/retrieval-legislative-directory-independent.test.mjs",
+        "packages/contracts/test/retrieval-legislative-directory.test.mjs",
+        "packages/contracts/test/retrieval-mail.test.mjs",
+        "packages/contracts/test/retrieval-meeting-source.test.mjs",
+        "packages/contracts/test/retrieval-memory-binding.test.mjs",
+        "packages/contracts/test/retrieval-memory-proposals.test.mjs",
+        "packages/contracts/test/retrieval-memory-review-policy.test.mjs",
+        "packages/contracts/test/retrieval-next-bindings.test.mjs",
+        "packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+        "packages/contracts/test/retrieval-operational-reads.test.mjs",
+        "packages/contracts/test/retrieval-pe-references-independent.test.mjs",
+        "packages/contracts/test/retrieval-pe-references.test.mjs",
+        "packages/contracts/test/retrieval-public-data-independent.test.mjs",
+        "packages/contracts/test/retrieval-public-data.test.mjs",
+        "packages/contracts/test/retrieval-public-reports-independent.test.mjs",
+        "packages/contracts/test/retrieval-public-reports.test.mjs",
+        "packages/contracts/test/retrieval-r2.test.mjs",
+        "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+        "packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+        "packages/contracts/test/retrieval-reference-integration-independent.test.mjs",
+        "packages/contracts/test/retrieval-regulatory-dockets-independent.test.mjs",
+        "packages/contracts/test/retrieval-regulatory-dockets.test.mjs",
+        "packages/contracts/test/retrieval-research-portfolio-independent.test.mjs",
+        "packages/contracts/test/retrieval-research-portfolio.test.mjs",
+        "packages/contracts/test/retrieval-rule-status-independent.test.mjs",
+        "packages/contracts/test/retrieval-rule-status.test.mjs",
+        "packages/contracts/test/retrieval-selected-next-bindings.test.mjs",
+        "packages/contracts/test/retrieval-selected-next-independent.test.mjs",
+        "packages/contracts/test/retrieval-state-legislation-independent.test.mjs",
+        "packages/contracts/test/retrieval-state-legislation.test.mjs",
+        "packages/contracts/test/retrieval-state-status-votes-independent.test.mjs",
+        "packages/contracts/test/retrieval-state-status-votes.test.mjs",
+        "packages/contracts/test/retrieval-stored-intelligence-independent.test.mjs",
+        "packages/contracts/test/retrieval-stored-intelligence.test.mjs",
+        "packages/contracts/test/retrieval-tenant-contacts-independent.test.mjs",
+        "packages/contracts/test/retrieval-tenant-contacts.test.mjs",
+        "packages/contracts/test/retrieval-tracked-bills-independent.test.mjs",
+        "packages/contracts/test/retrieval-tracked-bills.test.mjs",
+        "packages/contracts/test/sdk-fixture-contract.test.mjs",
+        "packages/contracts/test/sdk-fixture-wire.test.mjs",
+        "packages/contracts/test/sdk-native-evidence.test.mjs",
+        "apps/gateway/test/action-item-context-independent.test.mjs",
+        "apps/gateway/test/action-item-context.test.mjs",
+        "apps/gateway/test/authority-deadline.test.mjs",
+        "apps/gateway/test/capability-next-independent.test.mjs",
+        "apps/gateway/test/durable-tool-budget.test.mjs",
+        "apps/gateway/test/gateway.test.mjs",
+        "apps/gateway/test/mail-context-independent.test.mjs",
+        "apps/gateway/test/mail-context.test.mjs",
+        "apps/gateway/test/memory-context-independent.test.mjs",
+        "apps/gateway/test/memory-context.test.mjs",
+        "apps/gateway/test/postgres-budget-admission.test.mjs",
+        "apps/gateway/test/postgres-tool-budget.test.mjs",
+        "apps/gateway/test/tool-budget-outcome.test.mjs",
+        "apps/gateway/test/tool-invocation-owner.test.mjs",
+        "apps/gateway/test/tool-invocation-transaction.test.mjs",
+        "evals/qualification/hermes-session.test.mjs"
+      ],
+      "exitCode": 1,
+      "ownedProcessGroupAbsent": true,
+      "ownedPidAndPgid": 251876,
+      "timedOut": false,
+      "reapedDescendants": [
+        {
+          "pid": 252350,
+          "status": 0
+        },
+        {
+          "pid": 252370,
+          "status": 0
+        }
+      ],
+      "streams": [
+        {
+          "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration/combined-first.stdout.bin",
+          "bytes": 236649,
+          "sha256": "57032291165a24fe34028b07eaedd64a1b772d170cd63c5b79e28e23a479d096",
+          "verified": true
+        },
+        {
+          "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration/combined-first.stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "verified": true
+        }
+      ],
+      "testSummaries": [
+        [
+          "tests",
+          "2554"
+        ],
+        [
+          "pass",
+          "2553"
+        ],
+        [
+          "fail",
+          "1"
+        ]
+      ]
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration/combined-final.json",
+      "sha256": "1c8d8106c69761e6abdb797b2611d7dc13f4d85d64ac6daf25e0dcebcf4a5758",
+      "sourceHead": "8be4b07781315625766a4df306d76ff4617bed73",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "packages/contracts/test/boundaries.test.mjs",
+        "packages/contracts/test/public-package.test.mjs",
+        "packages/contracts/test/retrieval-acquisition-personnel-independent.test.mjs",
+        "packages/contracts/test/retrieval-acquisition-personnel.test.mjs",
+        "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+        "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+        "packages/contracts/test/retrieval-bill-text-independent.test.mjs",
+        "packages/contracts/test/retrieval-bill-text.test.mjs",
+        "packages/contracts/test/retrieval-business-development-independent.test.mjs",
+        "packages/contracts/test/retrieval-business-development.test.mjs",
+        "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+        "packages/contracts/test/retrieval-certification-status-independent.test.mjs",
+        "packages/contracts/test/retrieval-certification-status.test.mjs",
+        "packages/contracts/test/retrieval-client-documents-independent.test.mjs",
+        "packages/contracts/test/retrieval-client-documents.test.mjs",
+        "packages/contracts/test/retrieval-client-registry-independent.test.mjs",
+        "packages/contracts/test/retrieval-client-registry.test.mjs",
+        "packages/contracts/test/retrieval-data-search.test.mjs",
+        "packages/contracts/test/retrieval-dataset-metadata-independent.test.mjs",
+        "packages/contracts/test/retrieval-dataset-metadata.test.mjs",
+        "packages/contracts/test/retrieval-disclosures-independent.test.mjs",
+        "packages/contracts/test/retrieval-disclosures.test.mjs",
+        "packages/contracts/test/retrieval-district-nexus-independent.test.mjs",
+        "packages/contracts/test/retrieval-district-nexus.test.mjs",
+        "packages/contracts/test/retrieval-entity-candidates-independent.test.mjs",
+        "packages/contracts/test/retrieval-entity-candidates.test.mjs",
+        "packages/contracts/test/retrieval-facility-representation-independent.test.mjs",
+        "packages/contracts/test/retrieval-facility-representation.test.mjs",
+        "packages/contracts/test/retrieval-federal-legislation-independent.test.mjs",
+        "packages/contracts/test/retrieval-federal-legislation.test.mjs",
+        "packages/contracts/test/retrieval-federal-market.test.mjs",
+        "packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs",
+        "packages/contracts/test/retrieval-funding-opportunities.test.mjs",
+        "packages/contracts/test/retrieval-intelligence-summary-independent.test.mjs",
+        "packages/contracts/test/retrieval-intelligence-summary.test.mjs",
+        "packages/contracts/test/retrieval-legislative-directory-independent.test.mjs",
+        "packages/contracts/test/retrieval-legislative-directory.test.mjs",
+        "packages/contracts/test/retrieval-mail.test.mjs",
+        "packages/contracts/test/retrieval-meeting-source.test.mjs",
+        "packages/contracts/test/retrieval-memory-binding.test.mjs",
+        "packages/contracts/test/retrieval-memory-proposals.test.mjs",
+        "packages/contracts/test/retrieval-memory-review-policy.test.mjs",
+        "packages/contracts/test/retrieval-next-bindings.test.mjs",
+        "packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+        "packages/contracts/test/retrieval-operational-reads.test.mjs",
+        "packages/contracts/test/retrieval-pe-references-independent.test.mjs",
+        "packages/contracts/test/retrieval-pe-references.test.mjs",
+        "packages/contracts/test/retrieval-public-data-independent.test.mjs",
+        "packages/contracts/test/retrieval-public-data.test.mjs",
+        "packages/contracts/test/retrieval-public-reports-independent.test.mjs",
+        "packages/contracts/test/retrieval-public-reports.test.mjs",
+        "packages/contracts/test/retrieval-r2.test.mjs",
+        "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+        "packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+        "packages/contracts/test/retrieval-reference-integration-independent.test.mjs",
+        "packages/contracts/test/retrieval-regulatory-dockets-independent.test.mjs",
+        "packages/contracts/test/retrieval-regulatory-dockets.test.mjs",
+        "packages/contracts/test/retrieval-research-portfolio-independent.test.mjs",
+        "packages/contracts/test/retrieval-research-portfolio.test.mjs",
+        "packages/contracts/test/retrieval-rule-status-independent.test.mjs",
+        "packages/contracts/test/retrieval-rule-status.test.mjs",
+        "packages/contracts/test/retrieval-selected-next-bindings.test.mjs",
+        "packages/contracts/test/retrieval-selected-next-independent.test.mjs",
+        "packages/contracts/test/retrieval-state-legislation-independent.test.mjs",
+        "packages/contracts/test/retrieval-state-legislation.test.mjs",
+        "packages/contracts/test/retrieval-state-status-votes-independent.test.mjs",
+        "packages/contracts/test/retrieval-state-status-votes.test.mjs",
+        "packages/contracts/test/retrieval-stored-intelligence-independent.test.mjs",
+        "packages/contracts/test/retrieval-stored-intelligence.test.mjs",
+        "packages/contracts/test/retrieval-tenant-contacts-independent.test.mjs",
+        "packages/contracts/test/retrieval-tenant-contacts.test.mjs",
+        "packages/contracts/test/retrieval-tracked-bills-independent.test.mjs",
+        "packages/contracts/test/retrieval-tracked-bills.test.mjs",
+        "packages/contracts/test/sdk-fixture-contract.test.mjs",
+        "packages/contracts/test/sdk-fixture-wire.test.mjs",
+        "packages/contracts/test/sdk-native-evidence.test.mjs",
+        "apps/gateway/test/action-item-context-independent.test.mjs",
+        "apps/gateway/test/action-item-context.test.mjs",
+        "apps/gateway/test/authority-deadline.test.mjs",
+        "apps/gateway/test/capability-next-independent.test.mjs",
+        "apps/gateway/test/durable-tool-budget.test.mjs",
+        "apps/gateway/test/gateway.test.mjs",
+        "apps/gateway/test/mail-context-independent.test.mjs",
+        "apps/gateway/test/mail-context.test.mjs",
+        "apps/gateway/test/memory-context-independent.test.mjs",
+        "apps/gateway/test/memory-context.test.mjs",
+        "apps/gateway/test/postgres-budget-admission.test.mjs",
+        "apps/gateway/test/postgres-tool-budget.test.mjs",
+        "apps/gateway/test/tool-budget-outcome.test.mjs",
+        "apps/gateway/test/tool-invocation-owner.test.mjs",
+        "apps/gateway/test/tool-invocation-transaction.test.mjs",
+        "evals/qualification/hermes-session.test.mjs"
+      ],
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "ownedPidAndPgid": 255874,
+      "timedOut": false,
+      "reapedDescendants": [
+        {
+          "pid": 256360,
+          "status": 0
+        },
+        {
+          "pid": 256380,
+          "status": 0
+        }
+      ],
+      "streams": [
+        {
+          "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration/combined-final.stdout.bin",
+          "bytes": 235794,
+          "sha256": "aaa650c14a8a5c705cc1ef071d62677093365b1adbbc77f857cd7d78fdae8c78",
+          "verified": true
+        },
+        {
+          "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration/combined-final.stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "verified": true
+        }
+      ],
+      "testSummaries": [
+        [
+          "tests",
+          "2554"
+        ],
+        [
+          "pass",
+          "2554"
+        ],
+        [
+          "fail",
+          "0"
+        ]
+      ]
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration/public-distribution.json",
+      "sha256": "e914640cb4f4b5b071c0ec9bf89ec0119f7e3d9cd04d6bd7f8583de4bc4ede5f",
+      "sourceHead": "8be4b07781315625766a4df306d76ff4617bed73",
+      "command": [
+        "npm",
+        "run",
+        "check:contracts:distribution"
+      ],
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "ownedPidAndPgid": 254873,
+      "timedOut": false,
+      "reapedDescendants": [
+        {
+          "pid": 254951,
+          "status": 0
+        },
+        {
+          "pid": 255191,
+          "status": 0
+        },
+        {
+          "pid": 255210,
+          "status": 0
+        }
+      ],
+      "streams": [
+        {
+          "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration/public-distribution.stdout.bin",
+          "bytes": 2044,
+          "sha256": "494d8cdb9d2693e1e7150fb7d580e20a1a9f8ceb1376ca14221d35c7a160dcd4",
+          "verified": true
+        },
+        {
+          "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration/public-distribution.stderr.bin",
+          "bytes": 1040,
+          "sha256": "cbbd466f3bf458f7f516c133ea486c1aada38d325ec9a80b698c26da8c18237f",
+          "verified": true
+        }
+      ],
+      "testSummaries": [
+        [
+          "tests",
+          "7"
+        ],
+        [
+          "pass",
+          "7"
+        ],
+        [
+          "fail",
+          "0"
+        ]
+      ]
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration/source-audit-final.json",
+      "sha256": "48108dbb99f9c59743b9bafc7cc137c1816cbc84b1ed77bc6d43eb7ab04e2baf",
+      "sourceHead": "8be4b07781315625766a4df306d76ff4617bed73",
+      "command": [
+        "python3",
+        "docs/qualification/candidates/read-continuation-20261012/civic-integration/audit.py"
+      ],
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "ownedPidAndPgid": 255278,
+      "timedOut": false,
+      "reapedDescendants": [],
+      "streams": [
+        {
+          "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration/source-audit-final.stdout.bin",
+          "bytes": 1514,
+          "sha256": "7d21f70d030018b24119f42f08a4430cfb40dfa0ac21ab7dde4242080015f342",
+          "verified": true
+        },
+        {
+          "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration/source-audit-final.stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "verified": true
+        }
+      ],
+      "testSummaries": []
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration/family-packets.json",
+      "sha256": "27861b669174ed4b2fa74780911d89cc5110639dfce86a112cc261a63320e5c5",
+      "sourceHead": "8be4b07781315625766a4df306d76ff4617bed73",
+      "command": [
+        "python3",
+        "docs/qualification/candidates/read-continuation-20261012/civic-integration/verify-family-packets.py"
+      ],
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "ownedPidAndPgid": 255279,
+      "timedOut": false,
+      "reapedDescendants": [],
+      "streams": [
+        {
+          "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration/family-packets.stdout.bin",
+          "bytes": 3930,
+          "sha256": "082e6f5a7cb87ad0278e44408ad469d14d51885b511706283aad88edca169aef",
+          "verified": true
+        },
+        {
+          "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration/family-packets.stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "verified": true
+        }
+      ],
+      "testSummaries": []
+    }
+  ],
+  "checks": [
+    {
+      "name": "focused-canonical docs/qualification/candidates/read-continuation-20261012/civic-integration/focused-canonical.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "focused-canonical docs/qualification/candidates/read-continuation-20261012/civic-integration/focused-canonical.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "focused-canonical owned group exited/reaped without timeout",
+      "passed": true
+    },
+    {
+      "name": "focused-canonical exact tested production source",
+      "passed": true,
+      "changed": []
+    },
+    {
+      "name": "focused-state-mapping docs/qualification/candidates/read-continuation-20261012/civic-integration/focused-state-mapping.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "focused-state-mapping docs/qualification/candidates/read-continuation-20261012/civic-integration/focused-state-mapping.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "focused-state-mapping owned group exited/reaped without timeout",
+      "passed": true
+    },
+    {
+      "name": "focused-state-mapping exact tested production source",
+      "passed": true,
+      "changed": []
+    },
+    {
+      "name": "combined-first docs/qualification/candidates/read-continuation-20261012/civic-integration/combined-first.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "combined-first docs/qualification/candidates/read-continuation-20261012/civic-integration/combined-first.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "combined-first owned group exited/reaped without timeout",
+      "passed": true
+    },
+    {
+      "name": "combined-first exact tested production source",
+      "passed": true,
+      "changed": []
+    },
+    {
+      "name": "combined-final docs/qualification/candidates/read-continuation-20261012/civic-integration/combined-final.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "combined-final docs/qualification/candidates/read-continuation-20261012/civic-integration/combined-final.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "combined-final owned group exited/reaped without timeout",
+      "passed": true
+    },
+    {
+      "name": "combined-final exact tested production source",
+      "passed": true,
+      "changed": []
+    },
+    {
+      "name": "public-distribution docs/qualification/candidates/read-continuation-20261012/civic-integration/public-distribution.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "public-distribution docs/qualification/candidates/read-continuation-20261012/civic-integration/public-distribution.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "public-distribution owned group exited/reaped without timeout",
+      "passed": true
+    },
+    {
+      "name": "public-distribution exact tested production source",
+      "passed": true,
+      "changed": []
+    },
+    {
+      "name": "source-audit-final docs/qualification/candidates/read-continuation-20261012/civic-integration/source-audit-final.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "source-audit-final docs/qualification/candidates/read-continuation-20261012/civic-integration/source-audit-final.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "source-audit-final owned group exited/reaped without timeout",
+      "passed": true
+    },
+    {
+      "name": "source-audit-final exact tested production source",
+      "passed": true,
+      "changed": []
+    },
+    {
+      "name": "family-packets docs/qualification/candidates/read-continuation-20261012/civic-integration/family-packets.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "family-packets docs/qualification/candidates/read-continuation-20261012/civic-integration/family-packets.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "family-packets owned group exited/reaped without timeout",
+      "passed": true
+    },
+    {
+      "name": "family-packets exact tested production source",
+      "passed": true,
+      "changed": []
+    }
+  ],
+  "passed": 28,
+  "failed": 0,
+  "scope": "READ_ONLY_ROOT_EVIDENCE_VERIFICATION_NOT_RERUN_OR_RUNTIME_ACCEPTANCE"
+}

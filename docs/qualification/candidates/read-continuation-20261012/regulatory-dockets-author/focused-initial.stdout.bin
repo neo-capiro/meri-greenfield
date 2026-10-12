@@ -1,0 +1,31 @@
+✔ exact family definitions and operation identifiers refuse coercion (2.367016ms)
+✔ defaults and optional bool/null behavior preserve branch semantics (0.846242ms)
+✔ strict integer limit and days admission intentionally excludes legacy clamps (0.65233ms)
+✔ optional selectors trim clip UTF16 and retain case without aliases (0.885541ms)
+✔ branch-irrelevant supplied selectors remain hash-bound without becoming filters (2.236731ms)
+✔ metadata denies source authority and current clock qualification (0.276906ms)
+✔ request and output are not mutated (0.49289ms)
+✔ ordinary total is independent including empty or fewer-count observations (0.748555ms)
+✔ ordinary request filters bind exact projected fields and row limit (0.954805ms)
+✔ ordinary posted dates descend among nonnull values with null placement unqualified (0.600342ms)
+✔ all raw stored scalars are required and nullable fields remain explicit (1.795158ms)
+✔ no UUID format title clipping enum or stored date relationship is fabricated (0.249014ms)
+✔ single-query row and document uniqueness both hold (0.349245ms)
+✔ upcoming total counts capped service window before wrapper slicing (3.590015ms)
+✔ upcoming window selectors and output branches cannot substitute (1.102918ms)
+✔ upcoming has nonnull ascending end dates and excludes withdrawn rows (0.553992ms)
+✔ elapsed upcoming span admits inclusive boundary and refuses one millisecond excess (0.402044ms)
+✔ generatedAt never acts as query clock cutoff freshness or comment eligibility (0.555024ms)
+✔ canonical date policy is explicit for every nullable or required date (2.226035ms)
+✔ unprojected coverage query fields and invalid counts refuse (1.205232ms)
+✔ hostile input and output are rejected without executing hooks (0.341063ms)
+✔ cycles sparse arrays nonfinite symbols and foreign prototypes refuse (0.237687ms)
+✔ real canonical resolver binds requests digests empty context and unavailable descriptor (2.015599ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 386.603255

@@ -1,0 +1,8 @@
+{
+  "scope": "REVIEWER_DEPENDENCY_PREPARATION_NOT_SOURCE_FAILURE",
+  "commandDescription": "Python shutil.copytree of existing local facility-review node_modules, symlinks=False, before candidate",
+  "error": "shutil.Error: [Errno 28] No space left on device while copying aws-cdk-lib and subsequent packages",
+  "originalToolOutput": "Original tool readback was truncated; this is an honest structured summary, not complete original stderr.",
+  "cleanup": "Removed only newly created partial untracked /workspace/meri-regulatory-dockets-review-20261012/node_modules; preserved all source, evidence and other worktrees.",
+  "lookupFailure": "Guessed meri-tool-execution-context.ts absent in both pins; source import will resolve actual filename; no existence inferred."
+}

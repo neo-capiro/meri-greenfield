@@ -1,0 +1,162 @@
+{
+  "base": "c1c9bfde7dd466a0474589a224a99b44277adbc9",
+  "source": "d48c9620e30c3686217095cb45b24f1b0c8218a2",
+  "head": "ddcd315c6ce5ace9d8c3b99ed2beb15215bfc74b",
+  "originalCount": 6528,
+  "originalChanged": [],
+  "sourceFiles": [
+    {
+      "path": "packages/contracts/retrieval-0.2/intelligence-summary.schema.json",
+      "bytes": 806,
+      "sha256": "cd589df078359153d23e83ada2fb9a5fea46fa18552809a97ebfa10cafa0bd24"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/intelligence-summary-validation.mjs",
+      "bytes": 2746,
+      "sha256": "7140959d4b77abbd835b6bb3179c88da516be43999b56ba79953ee659730d9d0"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-intelligence-summary.test.mjs",
+      "bytes": 7247,
+      "sha256": "fac48b362c5b813eabcbb687f1e5d127fdfe2053beb408ffa0c43aacdc96c889"
+    }
+  ],
+  "checks": [
+    {
+      "name": "All original tracked blobs preserved",
+      "passed": true
+    },
+    {
+      "name": "Exact author source packages/contracts/retrieval-0.2/intelligence-summary.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Exact author source packages/contracts/retrieval-0.2/intelligence-summary-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Exact author source packages/contracts/test/retrieval-intelligence-summary.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "Pinned metadata fd8765e:apps/api/src/meri/meri-tools.service.ts",
+      "passed": true
+    },
+    {
+      "name": "Pinned metadata 4be13b0:apps/api/src/meri/meri-tools.service.ts",
+      "passed": true
+    },
+    {
+      "name": "No observed drift apps/api/src/meri/meri-tools.service.ts",
+      "passed": true
+    },
+    {
+      "name": "Pinned metadata fd8765e:apps/api/src/lobby-intel/lobby-intel.service.ts",
+      "passed": true
+    },
+    {
+      "name": "Pinned metadata 4be13b0:apps/api/src/lobby-intel/lobby-intel.service.ts",
+      "passed": true
+    },
+    {
+      "name": "No observed drift apps/api/src/lobby-intel/lobby-intel.service.ts",
+      "passed": true
+    },
+    {
+      "name": "Pinned metadata fd8765e:apps/api/src/federal-spending/federal-spending.service.ts",
+      "passed": true
+    },
+    {
+      "name": "Pinned metadata 4be13b0:apps/api/src/federal-spending/federal-spending.service.ts",
+      "passed": true
+    },
+    {
+      "name": "No observed drift apps/api/src/federal-spending/federal-spending.service.ts",
+      "passed": true
+    },
+    {
+      "name": "Pinned metadata fd8765e:apps/api/src/lda-intel/lda-intel.service.ts",
+      "passed": true
+    },
+    {
+      "name": "Pinned metadata 4be13b0:apps/api/src/lda-intel/lda-intel.service.ts",
+      "passed": true
+    },
+    {
+      "name": "No observed drift apps/api/src/lda-intel/lda-intel.service.ts",
+      "passed": true
+    },
+    {
+      "name": "Pinned metadata fd8765e:apps/api/src/hearing-discovery/hearing-geography.ts",
+      "passed": true
+    },
+    {
+      "name": "Pinned metadata 4be13b0:apps/api/src/hearing-discovery/hearing-geography.ts",
+      "passed": true
+    },
+    {
+      "name": "No observed drift apps/api/src/hearing-discovery/hearing-geography.ts",
+      "passed": true
+    },
+    {
+      "name": "Pinned metadata fd8765e:apps/api/src/prisma/prisma.service.ts",
+      "passed": true
+    },
+    {
+      "name": "Pinned metadata 4be13b0:apps/api/src/prisma/prisma.service.ts",
+      "passed": true
+    },
+    {
+      "name": "No observed drift apps/api/src/prisma/prisma.service.ts",
+      "passed": true
+    },
+    {
+      "name": "Pinned metadata fd8765e:apps/api/src/meri/meri-tool-request-control.ts",
+      "passed": true
+    },
+    {
+      "name": "Pinned metadata 4be13b0:apps/api/src/meri/meri-tool-request-control.ts",
+      "passed": true
+    },
+    {
+      "name": "No observed drift apps/api/src/meri/meri-tool-request-control.ts",
+      "passed": true
+    },
+    {
+      "name": "Pinned metadata fd8765e:packages/meriv2-core/src/registry/tool-execution-control.ts",
+      "passed": true
+    },
+    {
+      "name": "Pinned metadata 4be13b0:packages/meriv2-core/src/registry/tool-execution-control.ts",
+      "passed": true
+    },
+    {
+      "name": "No observed drift packages/meriv2-core/src/registry/tool-execution-control.ts",
+      "passed": true
+    },
+    {
+      "name": "Canonical private schema URN",
+      "passed": true
+    },
+    {
+      "name": "Exact public0.1 files unchanged",
+      "passed": true
+    },
+    {
+      "name": "Exact canonical catalog/loader/registry unchanged",
+      "passed": true
+    },
+    {
+      "name": "Dependency manifests/locks unchanged",
+      "passed": true
+    },
+    {
+      "name": "No source app changes",
+      "passed": true
+    }
+  ],
+  "passed": 33,
+  "failed": 0,
+  "privateSourceExecuted": false,
+  "runtimeAccepted": false
+}

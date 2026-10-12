@@ -1,0 +1,473 @@
+{
+  "base": "c1c9bfde7dd466a0474589a224a99b44277adbc9",
+  "explicitNewOperationIds": [
+    "get_state_bill_status",
+    "search_state_floor_votes",
+    "query_regulatory_dockets",
+    "find_contacts",
+    "resolve_entity",
+    "search_tracked_bills",
+    "query_intelligence"
+  ],
+  "changes": [
+    {
+      "path": "packages/contracts/test/retrieval-selected-next-bindings.test.mjs",
+      "beforeSha256": "623660c698e19d655d202f989773b9efa19352e23c0ad0e345305614b5dd9f21",
+      "afterSha256": "f24bf56a62ef651f606c45a170fd5e4d467c97a666667abc79ec4718352fbd26",
+      "replacements": [
+        {
+          "old": "\"get_representation\"",
+          "new": "\"get_representation\", \"get_state_bill_status\", \"search_state_floor_votes\", \"query_regulatory_dockets\", \"find_contacts\", \"resolve_entity\", \"search_tracked_bills\", \"query_intelligence\"",
+          "count": 1
+        },
+        {
+          "old": ".length,41)",
+          "new": ".length,34)",
+          "count": 1
+        },
+        {
+          "old": ".length,55)",
+          "new": ".length,62)",
+          "count": 1
+        },
+        {
+          "old": ".length,56)",
+          "new": ".length,63)",
+          "count": 1
+        },
+        {
+          "old": "'0.2.7'",
+          "new": "'0.2.8'",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit seven-ID mapping allowlist and canonical count/version expectations; original behavioral controls retained."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+      "beforeSha256": "38c5af077a9c332e8bcfa6f97ac2661ed32bf8ad2b6b3d74346b6378bea7a071",
+      "afterSha256": "06c303281600a86c12cc3ad3a41a9247ec73e62a98b35153f3f840c06c64b3c3",
+      "replacements": [
+        {
+          "old": "\"get_representation\"",
+          "new": "\"get_representation\", \"get_state_bill_status\", \"search_state_floor_votes\", \"query_regulatory_dockets\", \"find_contacts\", \"resolve_entity\", \"search_tracked_bills\", \"query_intelligence\"",
+          "count": 1
+        },
+        {
+          "old": ".length,41)",
+          "new": ".length,34)",
+          "count": 1
+        },
+        {
+          "old": ".length,55)",
+          "new": ".length,62)",
+          "count": 1
+        },
+        {
+          "old": ".length,56)",
+          "new": ".length,63)",
+          "count": 1
+        },
+        {
+          "old": ".size,56)",
+          "new": ".size,63)",
+          "count": 1
+        },
+        {
+          "old": "all 56",
+          "new": "all 63",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit seven-ID mapping allowlist and canonical count/version expectations; original behavioral controls retained."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+      "beforeSha256": "0b71f799f3b00f0f2d7dfe6a9a8a901e619be37b9f5d1a2bfa79aba5084c9ef6",
+      "afterSha256": "e5b73821b6bd50f8e6cd69eb626abea79b66a2bd63111ac2feecf17f30330896",
+      "replacements": [
+        {
+          "old": "\"get_representation\"",
+          "new": "\"get_representation\", \"get_state_bill_status\", \"search_state_floor_votes\", \"query_regulatory_dockets\", \"find_contacts\", \"resolve_entity\", \"search_tracked_bills\", \"query_intelligence\"",
+          "count": 1
+        },
+        {
+          "old": ".length,41)",
+          "new": ".length,34)",
+          "count": 1
+        },
+        {
+          "old": ".length,55)",
+          "new": ".length,62)",
+          "count": 1
+        },
+        {
+          "old": ".length,56)",
+          "new": ".length,63)",
+          "count": 1
+        },
+        {
+          "old": "'0.2.7'",
+          "new": "'0.2.8'",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit seven-ID mapping allowlist and canonical count/version expectations; original behavioral controls retained."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-mail.test.mjs",
+      "beforeSha256": "23da9369de303b4bb65f95bf730997a5bc8c4cb689ddb44faa331c53909bd358",
+      "afterSha256": "0ee0bd974a50cd1eb7ac1e62f8620fc0a8eaf18a56931927e4144e8702ee486f",
+      "replacements": [
+        {
+          "old": ".length,55)",
+          "new": ".length,62)",
+          "count": 1
+        },
+        {
+          "old": ".length,56)",
+          "new": ".length,63)",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit seven-ID mapping allowlist and canonical count/version expectations; original behavioral controls retained."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-next-bindings.test.mjs",
+      "beforeSha256": "b83c2c804cdaf82eef3df95ca206a9d61e1b7f589adf83ec6c0a8622f728d083",
+      "afterSha256": "bfb259fa2a1f71ec8b8755e11532ef279729fdac08fc6e82937e3d7d72df678f",
+      "replacements": [
+        {
+          "old": "\"get_representation\"",
+          "new": "\"get_representation\", \"get_state_bill_status\", \"search_state_floor_votes\", \"query_regulatory_dockets\", \"find_contacts\", \"resolve_entity\", \"search_tracked_bills\", \"query_intelligence\"",
+          "count": 1
+        },
+        {
+          "old": ".length, 41)",
+          "new": ".length, 34)",
+          "count": 1
+        },
+        {
+          "old": ".length, 55)",
+          "new": ".length, 62)",
+          "count": 1
+        },
+        {
+          "old": ".length, 56)",
+          "new": ".length, 63)",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit seven-ID mapping allowlist and canonical count/version expectations; original behavioral controls retained."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+      "beforeSha256": "946f736fe9a39ec0636ebbb6b579f3d2e972cdfc46cec2f9600a228b15948231",
+      "afterSha256": "09c95b8ee81d201eb5373693a30f060fde18bb83e2f8ed071598286d45bfa07a",
+      "replacements": [
+        {
+          "old": "\"get_representation\"",
+          "new": "\"get_representation\", \"get_state_bill_status\", \"search_state_floor_votes\", \"query_regulatory_dockets\", \"find_contacts\", \"resolve_entity\", \"search_tracked_bills\", \"query_intelligence\"",
+          "count": 1
+        },
+        {
+          "old": ".length,41)",
+          "new": ".length,34)",
+          "count": 1
+        },
+        {
+          "old": ".length,55)",
+          "new": ".length,62)",
+          "count": 1
+        },
+        {
+          "old": ".length,56)",
+          "new": ".length,63)",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit seven-ID mapping allowlist and canonical count/version expectations; original behavioral controls retained."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+      "beforeSha256": "478a133e178607f77c9c7114871775c9f7503ffdb265844113cbbdaab5100542",
+      "afterSha256": "1e76e4bd8c6cc36ad680000315f2171a72619ca4284f6cda4b70c9d966981b8c",
+      "replacements": [
+        {
+          "old": "\"get_representation\"",
+          "new": "\"get_representation\", \"get_state_bill_status\", \"search_state_floor_votes\", \"query_regulatory_dockets\", \"find_contacts\", \"resolve_entity\", \"search_tracked_bills\", \"query_intelligence\"",
+          "count": 1
+        },
+        {
+          "old": ".length,41)",
+          "new": ".length,34)",
+          "count": 1
+        },
+        {
+          "old": ".length,55)",
+          "new": ".length,62)",
+          "count": 1
+        },
+        {
+          "old": ".length,56)",
+          "new": ".length,63)",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit seven-ID mapping allowlist and canonical count/version expectations; original behavioral controls retained."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+      "beforeSha256": "1ec73e847adb94108c7ec7131282213c7fe93f86acfd5202f1c63ab4c9a678e5",
+      "afterSha256": "9f1c3a23d6d2aeb5e62949e2cdfcaade08bd05691aad43e58b483009bed8f501",
+      "replacements": [
+        {
+          "old": "\"get_representation\"",
+          "new": "\"get_representation\", \"get_state_bill_status\", \"search_state_floor_votes\", \"query_regulatory_dockets\", \"find_contacts\", \"resolve_entity\", \"search_tracked_bills\", \"query_intelligence\"",
+          "count": 1
+        },
+        {
+          "old": ".length,41)",
+          "new": ".length,34)",
+          "count": 1
+        },
+        {
+          "old": ".length,55)",
+          "new": ".length,62)",
+          "count": 1
+        },
+        {
+          "old": ".length,56)",
+          "new": ".length,63)",
+          "count": 2
+        },
+        {
+          "old": ".size,56)",
+          "new": ".size,63)",
+          "count": 1
+        },
+        {
+          "old": "'0.2.7'",
+          "new": "'0.2.8'",
+          "count": 1
+        },
+        {
+          "old": "all56",
+          "new": "all63",
+          "count": 1
+        },
+        {
+          "old": "  for(const id of ['get_research_evidence','get_state_bill_status','search_state_floor_votes','search_sam_opportunities'])assert.throws(()=>resolve(id));",
+          "new": "  for(const id of ['get_research_evidence','search_sam_opportunities'])assert.throws(()=>resolve(id));\n  for(const id of ['get_state_bill_status','search_state_floor_votes']){const d=resolve(id).descriptor;assert.deepEqual(d.operation,{id,version:'0.2.0'});assert.equal(d.handler,null);assert.equal(d.availability,'unimplemented');}",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit seven-ID mapping allowlist and canonical count/version expectations; original behavioral controls retained. Preserved combined2553/2554 failure: the two accepted state operations now positively resolve exact unavailable descriptors; other unmapped-operation refusals remain."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+      "beforeSha256": "2aa490331a4f7b98aff75de1c1dae3a77c1eaad1655e8ccd2d60c9975e561397",
+      "afterSha256": "97919bd10739e3081bfe08a8c56b304fbbdde392c09d009361c234576bfa8854",
+      "replacements": [
+        {
+          "old": ".length,41)",
+          "new": ".length,34)",
+          "count": 1
+        },
+        {
+          "old": ".length,55)",
+          "new": ".length,62)",
+          "count": 1
+        },
+        {
+          "old": ".length,56)",
+          "new": ".length,63)",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit seven-ID mapping allowlist and canonical count/version expectations; original behavioral controls retained."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-selected-next-independent.test.mjs",
+      "beforeSha256": "defce3d6f652a6b8d2be095d9a6faa5a0127236acb5f43d9965cd827862b5e20",
+      "afterSha256": "7e411d26344c0323478b56c8999f02c0dfbdf6847824438ef8ba0aecbabac723",
+      "replacements": [
+        {
+          "old": "\"get_representation\"",
+          "new": "\"get_representation\", \"get_state_bill_status\", \"search_state_floor_votes\", \"query_regulatory_dockets\", \"find_contacts\", \"resolve_entity\", \"search_tracked_bills\", \"query_intelligence\"",
+          "count": 1
+        },
+        {
+          "old": ".length,41)",
+          "new": ".length,34)",
+          "count": 1
+        },
+        {
+          "old": ".length,55)",
+          "new": ".length,62)",
+          "count": 1
+        },
+        {
+          "old": ".length,56)",
+          "new": ".length,63)",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit seven-ID mapping allowlist and canonical count/version expectations; original behavioral controls retained."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-memory-binding.test.mjs",
+      "beforeSha256": "021d9fee5fe251cc77acccdf745768e7788739ad811d3ccfb71b7e3a82ec6490",
+      "afterSha256": "34742593d3a273a96e6c0644d27f3619187d76b0e96397f3b53e8432c817edd4",
+      "replacements": [
+        {
+          "old": "\"get_representation\"",
+          "new": "\"get_representation\", \"get_state_bill_status\", \"search_state_floor_votes\", \"query_regulatory_dockets\", \"find_contacts\", \"resolve_entity\", \"search_tracked_bills\", \"query_intelligence\"",
+          "count": 1
+        },
+        {
+          "old": ".length,41)",
+          "new": ".length,34)",
+          "count": 1
+        },
+        {
+          "old": ".length,56)",
+          "new": ".length,63)",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit seven-ID mapping allowlist and canonical count/version expectations; original behavioral controls retained."
+    },
+    {
+      "path": "apps/gateway/test/mail-context-independent.test.mjs",
+      "beforeSha256": "f7ed9bc7bd8891ed4ea79f96febd3e2f3137ca4653377faddd8ee65f749bc60a",
+      "afterSha256": "bde80f33b56da0d09f3af0201ababda1b113e8ff37b36156c86c63fa835dade9",
+      "replacements": [
+        {
+          "old": ".length,55)",
+          "new": ".length,62)",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit seven-ID mapping allowlist and canonical count/version expectations; original behavioral controls retained."
+    },
+    {
+      "path": "apps/gateway/test/capability-next-independent.test.mjs",
+      "beforeSha256": "a6fe1b15f21050c7f0db6e6a27595c0adfd274d5f5aa9480e303dd1742f86f22",
+      "afterSha256": "bd4fa17f9c217f0da94f92818ee9e44270076f85e1393e41d27937101ecc16f2",
+      "replacements": [
+        {
+          "old": ".length,56)",
+          "new": ".length,63)",
+          "count": 1
+        },
+        {
+          "old": "all56",
+          "new": "all63",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit seven-ID mapping allowlist and canonical count/version expectations; original behavioral controls retained."
+    },
+    {
+      "path": "apps/gateway/test/action-item-context-independent.test.mjs",
+      "beforeSha256": "dc5f4a00527a2efbde17dbe230d45d7626a6860666a10796c9c01cead90e2e12",
+      "afterSha256": "a6b680f58fff69206218a240cb964accbf1a58bc7a59278272d1136bf718e7ab",
+      "replacements": [
+        {
+          "old": ".length,56)",
+          "new": ".length,63)",
+          "count": 1
+        },
+        {
+          "old": "all56",
+          "new": "all63",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit seven-ID mapping allowlist and canonical count/version expectations; original behavioral controls retained."
+    },
+    {
+      "path": "apps/gateway/test/memory-context-independent.test.mjs",
+      "beforeSha256": "70ac54996c4e71de3a2bba219654d54ec03f2dc022f030fdb92007bb790738c6",
+      "afterSha256": "5350464c5fa208bf9883a5290dd780dbd6226031b4b613f4c7da9c596b57ce5b",
+      "replacements": [
+        {
+          "old": ".length,56)",
+          "new": ".length,63)",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit seven-ID mapping allowlist and canonical count/version expectations; original behavioral controls retained."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-reference-integration-independent.test.mjs",
+      "beforeSha256": "8ebe39627331adef1d40cf191f729c54cc3c80c1b8b43d956d9dd5fe462404b1",
+      "afterSha256": "bed345c2189a15cc41ad94184580c7fb8e7ba52e0552e524f3f183bbe5a683c9",
+      "replacements": [
+        {
+          "old": "const ids=['get_committee_roster'",
+          "new": "const civicIds=[\"get_state_bill_status\", \"search_state_floor_votes\", \"query_regulatory_dockets\", \"find_contacts\", \"resolve_entity\", \"search_tracked_bills\", \"query_intelligence\"];\nconst ids=['get_committee_roster'",
+          "count": 1
+        },
+        {
+          "old": "!ids.includes(x.operation.id)",
+          "new": "!ids.includes(x.operation.id)&&!civicIds.includes(x.operation.id)",
+          "count": 1
+        },
+        {
+          "old": "!ids.includes(x.id)",
+          "new": "!ids.includes(x.id)&&!civicIds.includes(x.id)",
+          "count": 1
+        },
+        {
+          "old": "ids.includes(old.id)?",
+          "new": "(ids.includes(old.id)||civicIds.includes(old.id))?",
+          "count": 1
+        },
+        {
+          "old": ".length,41)",
+          "new": ".length,34)",
+          "count": 1
+        },
+        {
+          "old": ".length,55)",
+          "new": ".length,62)",
+          "count": 1
+        },
+        {
+          "old": ".length,56)",
+          "new": ".length,63)",
+          "count": 2
+        },
+        {
+          "old": ".size,56)",
+          "new": ".size,63)",
+          "count": 1
+        },
+        {
+          "old": "all56",
+          "new": "all63",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit seven-ID mapping allowlist and canonical count/version expectations; original behavioral controls retained."
+    }
+  ]
+}

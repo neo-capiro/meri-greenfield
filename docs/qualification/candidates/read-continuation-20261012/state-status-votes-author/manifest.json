@@ -1,0 +1,130 @@
+{
+  "sourceCommit": "a25516ae8d2c44638800e492e439e212098dc750",
+  "sourceTree": "f7942b8aa8e3011336bc56cc568ddd0e7c4d52cf",
+  "scope": "Author source/evidence, independent acceptance separate; all runtime effects UNRUN",
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-STATE-STATUS-VOTES-AUTHOR-20261012.md",
+      "bytes": 9223,
+      "sha256": "50b47926bfa36287016242fea2963ee78dfa1bdca143998e2b9dfd883f6f3849"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/dependency-copy-failure.json",
+      "bytes": 555,
+      "sha256": "920aea3e54cdff70d830cdf9841b377475cabb9f27cec7bd7b068a80a43c3b94"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/focused-initial.json",
+      "bytes": 1317,
+      "sha256": "34c1ad1b89708084d6de92f262593d56f6816b2162472e0e14a492bf9045ce37"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/focused-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/focused-initial.stdout.bin",
+      "bytes": 2182,
+      "sha256": "d92cfd70990768ea5df45a5602d10c7cc4536352a53f169829d21f4405a779ce"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/focused-schema-repair.json",
+      "bytes": 1439,
+      "sha256": "215397fa182cd5c75aff30f741095f4d9adde92a6b9f62e9dd9d378444650e4e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/focused-schema-repair.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/focused-schema-repair.stdout.bin",
+      "bytes": 2081,
+      "sha256": "98f5f8b940327450582af1f7c66283d928fc5ee5066a97a5dae9a2d6ab251039"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/initial-source/retrieval-state-status-votes.test.mjs",
+      "bytes": 13746,
+      "sha256": "4c199d928bf8e5955156e0ab9ba11849aa2cb9688e5ae645aa22c850587e1ed7"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/initial-source/state-bill-identity.mjs",
+      "bytes": 1240,
+      "sha256": "25d86301366971f622f88fcdcf45ccf25036b677f38a5612283ac595872c6ad7"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/initial-source/state-status-votes-validation.mjs",
+      "bytes": 8614,
+      "sha256": "43587a404705d7a589000c0bd228beb74be4880c12ebc71c17ca5fca93cfeaa1"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/initial-source/state-status-votes.schema.json",
+      "bytes": 12763,
+      "sha256": "7d0a95b191566fe26d13164006b56c3562ea9416a17ae19dbc19f237abb11e9b"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/initial-source.json",
+      "bytes": 1276,
+      "sha256": "7835924759f599775b2e8dec0e81769816b8fb79edbcdac8f8befad2db1303f8"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/outline.json",
+      "bytes": 3075,
+      "sha256": "0f5dcb7350af273d8b31d8e956d1d40d277ffa9e9af03ca29e7832375f10f9f2"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/reference-identities.json",
+      "bytes": 2513,
+      "sha256": "ff222238220c9cd98cc14f34b6c278312ff9532c12001c3cc78f62b9e84ae420"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/root-source-check.json",
+      "bytes": 1319,
+      "sha256": "815640039ca76afeb8a015febe83f06b11c1e0efe417fae5d7dc4903278c20a9"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/root-source-check.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/root-source-check.stdout.bin",
+      "bytes": 134555,
+      "sha256": "4643b7086af8791c3b4d90b2d4c3853a53a4edef900fc44f1fce21d5a77e39a7"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/verification.json",
+      "bytes": 5825,
+      "sha256": "1ef4247eff21bac3612f6978ad73ff72e40a72642ecd273410d60720a380224a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/verify.py",
+      "bytes": 4268,
+      "sha256": "de72dcc806e1c944d9c24950074c56d0c7f48a79233058b7ae11ba8084b5f83b"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/whitespace-raw.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/whitespace-raw.stdout.bin",
+      "bytes": 1144,
+      "sha256": "64fa6c87dd1d943a9fc62862c62617a2e437a7123bb863441abdc3a441417293"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/whitespace.json",
+      "bytes": 603,
+      "sha256": "218b308d5aaff4ac1007ede406755086cc19a6c8eb5f36c29011fb4c4eb15937"
+    }
+  ],
+  "excluded": [
+    "manifest.json (self-reference)"
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-read-continuation-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-civic-reads-20261012",
+  "sourceHead": "1c1fc211b5032487dbbec27531fd301e7030e5f1",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-12T18:41:14.534087+00:00",
+  "durationSeconds": 2.431,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 254484,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration/focused-state-mapping.stdout.bin",
+      "bytes": 6673,
+      "sha256": "06d979ccf9fc720ce1386b2e8263407e112254de230b9cc35ec09411284794e2"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration/focused-state-mapping.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

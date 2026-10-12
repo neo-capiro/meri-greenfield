@@ -1,0 +1,53 @@
+{
+  "base": "a3e946c1fa264ae7b33205f5b87804ee1ef75773",
+  "scope": "Two DTO-only private contract operations; canonical registry/loader and source adapters remain root-owned.",
+  "operations": [
+    "get_state_bill_status",
+    "search_state_floor_votes"
+  ],
+  "factory": "createStateStatusVotesValidators({validateShape,schema})",
+  "schemaId": "urn:meri:retrieval:state-status-votes:0.2.0",
+  "stems": [
+    "StateBillStatus",
+    "StateFloorVotes"
+  ],
+  "contextKeys": [],
+  "ownedProduction": [
+    "state-status-votes.schema.json",
+    "state-status-votes-validation.mjs",
+    "state-bill-identity.mjs (root explicitly allocated after proposal)"
+  ],
+  "reuse": [
+    "snapshotOperationData",
+    "existing state-legislation StateBillStatusLabels constant",
+    "source-only shared state selector grammar; no resolver DB/provider implementation"
+  ],
+  "normalization": "Closed nullable string selectors; trim then UTF16 clip; status billId takes precedence over query. Votes limit accepts source numeric/string finite conversion and clamp. Unknown context and authority fields refuse. GeneratedAt canonical ISO; SQLDate timestamps midnight UTC; stored signed Int values remain signed.",
+  "scopeLimits": [
+    "Pure key/designation syntax, never current session selection, lookup, quota reservation or upsert",
+    "Exact canonical keys and designation state/bill-number correlation do not prove source provenance or latest session",
+    "No arbitrary URL/id grammar for stored raw scalar fields beyond selector correlation",
+    "No row-scope grants, model loop, active handler or runtime claims"
+  ],
+  "tests": [
+    "all missing/invalid/live-unresolved/resolved-absent/found branches",
+    "unresolved requested bill cannot broaden votes",
+    "key/designation normalization and hint precedence",
+    "nullable signed scalar/date/order/count/note boundaries",
+    "inert JSON and no authority context",
+    "original state family and broad/public regressions"
+  ],
+  "dependencies": "Initial physical copy failed ENOSPC; removed only lane-owned partial copies and borrowed existing /workspace/meri-source-continuation-20261012 root/contracts dependency symlinks read-only. No installation/scripts, lock edits or donor changes.",
+  "toolingFailures": [
+    {
+      "kind": "read-only discovery",
+      "detail": "An overlong requested source line range raised IndexError after earlier spans were printed. Rerun bounded end to actual line count; no source or test failure and no private stdout retained."
+    },
+    {
+      "kind": "read-only absent path",
+      "detail": "Stored-intelligence validator is not present in this earlier base; existing state family used as canonical pattern instead. No source changes."
+    }
+  ],
+  "canonicalSourceCommit": "a25516ae8d2c44638800e492e439e212098dc750",
+  "preFreezeSourceFidelityCorrection": "Independent source read identified inherited Object.prototype status names serialize with an omitted label; draft corrected before immutable freeze. This is distinct from the later observed strict-Ajv compilation failure."
+}

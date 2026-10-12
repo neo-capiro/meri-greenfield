@@ -1,0 +1,16 @@
+{
+  "scope": "ONLY_OWNED_BORROWED_LINKS_REMOVED",
+  "installationOrTargetMutation": false,
+  "removed": [
+    {
+      "path": "node_modules",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules",
+      "targetPreserved": true
+    },
+    {
+      "path": "packages/contracts/node_modules",
+      "target": "/workspace/meri-read-continuation-20261012/packages/contracts/node_modules",
+      "targetPreserved": true
+    }
+  ]
+}

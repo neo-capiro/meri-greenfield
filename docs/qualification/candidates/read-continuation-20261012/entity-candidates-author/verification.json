@@ -1,0 +1,215 @@
+{
+  "scope": "OFFLINE_PRESERVATION_ONLY",
+  "sourceCommit": "788c0419c9489dfdd4906a50b59661595a072713",
+  "sourceTree": "cc42292346660c99160b1f98725804e59e92a8ad",
+  "originalFilesPreserved": 6110,
+  "sourceFiles": [
+    {
+      "path": "packages/contracts/retrieval-0.2/entity-candidates.schema.json",
+      "bytes": 9020,
+      "sha256": "2b8eb948781d2e0c486b58f09fafbe821a6216942eb5ee33797135392f78d100"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/entity-candidates-validation.mjs",
+      "bytes": 7365,
+      "sha256": "2ef046fa6166f5e9011c89081a5f58b0413b0a5ee2d1bd12bbdc8c580f723090"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-entity-candidates.test.mjs",
+      "bytes": 13727,
+      "sha256": "34767d375d11663d7136d389aaf14f8278dd9ffa59bbb09d2909f2ddfaf53b11"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/state-bill-identity.mjs",
+      "bytes": 1240,
+      "sha256": "25d86301366971f622f88fcdcf45ccf25036b677f38a5612283ac595872c6ad7"
+    }
+  ],
+  "passed": 41,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "source:packages/contracts/retrieval-0.2/entity-candidates.schema.json",
+      "passed": true
+    },
+    {
+      "name": "source:packages/contracts/retrieval-0.2/entity-candidates-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "source:packages/contracts/test/retrieval-entity-candidates.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "source:packages/contracts/retrieval-0.2/state-bill-identity.mjs",
+      "passed": true
+    },
+    {
+      "name": "only-three-family-additions",
+      "passed": true
+    },
+    {
+      "name": "only-exact-prerequisite-addition",
+      "passed": true
+    },
+    {
+      "name": "accepted-state-helper-unchanged",
+      "passed": true
+    },
+    {
+      "name": "canonical-dependency-unchanged:packages/contracts/retrieval-0.2/congressional-identity.mjs",
+      "passed": true
+    },
+    {
+      "name": "canonical-dependency-unchanged:packages/contracts/retrieval-0.2/operation-contracts.mjs",
+      "passed": true
+    },
+    {
+      "name": "all-originals-preserved",
+      "passed": true
+    },
+    {
+      "name": "reference:frozen:apps/api/src/meri/meri-tools.service.ts",
+      "passed": true
+    },
+    {
+      "name": "reference:observed:apps/api/src/meri/meri-tools.service.ts",
+      "passed": true
+    },
+    {
+      "name": "unchanged-reference:apps/api/src/meri/meri-tools.service.ts",
+      "passed": true
+    },
+    {
+      "name": "reference:frozen:apps/api/prisma/schema.prisma",
+      "passed": true
+    },
+    {
+      "name": "reference:observed:apps/api/prisma/schema.prisma",
+      "passed": true
+    },
+    {
+      "name": "unchanged-reference:apps/api/prisma/schema.prisma",
+      "passed": true
+    },
+    {
+      "name": "reference:frozen:packages/shared/src/index.ts",
+      "passed": true
+    },
+    {
+      "name": "reference:observed:packages/shared/src/index.ts",
+      "passed": true
+    },
+    {
+      "name": "unchanged-reference:packages/shared/src/index.ts",
+      "passed": true
+    },
+    {
+      "name": "no-private-bodies",
+      "passed": true
+    },
+    {
+      "name": "initial-test-retained",
+      "passed": true
+    },
+    {
+      "name": "only-approved-fixture-change-before-appended-test",
+      "passed": true
+    },
+    {
+      "name": "one-additive-author-test",
+      "passed": true
+    },
+    {
+      "name": "completed:focused-initial",
+      "passed": true
+    },
+    {
+      "name": "source-diff:focused-initial",
+      "passed": true
+    },
+    {
+      "name": "capture-helper:focused-initial",
+      "passed": true
+    },
+    {
+      "name": "raw:docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/focused-initial.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "raw:docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/focused-initial.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "completed:focused-name-uniqueness-repair",
+      "passed": true
+    },
+    {
+      "name": "source-diff:focused-name-uniqueness-repair",
+      "passed": true
+    },
+    {
+      "name": "capture-helper:focused-name-uniqueness-repair",
+      "passed": true
+    },
+    {
+      "name": "raw:docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/focused-name-uniqueness-repair.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "raw:docs/qualification/candidates/read-continuation-20261012/entity-candidates-author/focused-name-uniqueness-repair.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "seven-small-dependency-packages",
+      "passed": true
+    },
+    {
+      "name": "copied-dependency:ajv",
+      "passed": true
+    },
+    {
+      "name": "copied-dependency:ajv-formats",
+      "passed": true
+    },
+    {
+      "name": "copied-dependency:canonicalize",
+      "passed": true
+    },
+    {
+      "name": "copied-dependency:fast-uri",
+      "passed": true
+    },
+    {
+      "name": "copied-dependency:fast-deep-equal",
+      "passed": true
+    },
+    {
+      "name": "copied-dependency:json-schema-traverse",
+      "passed": true
+    },
+    {
+      "name": "copied-dependency:require-from-string",
+      "passed": true
+    }
+  ],
+  "actualChecks": {
+    "initialAuthor": "26/26PASS",
+    "repairedAuthor": "27/27PASS",
+    "independentOriginal": "29PASS/3FAIL of32 preserved in reviewer93eca51e",
+    "broadPublic": "NOT RUN; combined verification root-owned",
+    "nativeProviderSQL": "UNRUN"
+  },
+  "ownedProcessGroups": [
+    {
+      "pgid": 237297,
+      "absent": true,
+      "reapedDescendants": []
+    },
+    {
+      "pgid": 238156,
+      "absent": true,
+      "reapedDescendants": []
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "scope": "Independently derived source metadata; no private implementation imported/executed or body published",
+  "sourcePin": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "observedPin": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+  "locations": {
+    "wrapper": "apps/api/src/meri/meri-tools.service.ts:8480-8491,9789-9829,9948-9967",
+    "owner": "apps/api/src/intelligence/intelligence.service.ts:4407-4472",
+    "models": "apps/api/prisma/schema.prisma:TrackedBill,CongressBill,CongressBillAction,Client",
+    "httpPolicy": "apps/api/src/meri/meri.controller.ts:310-312,512-514; auth/roles.guard.ts; meri/tool-service-secret.guard.ts"
+  },
+  "inputAndScope": [
+    "Required primitive nonblank client selector trims and slices to80 UTF16 units. Source accepts UUID identity or client name; no pagination or limit input is consumed.",
+    "Visibility helper queries tenantId, excludes archived client status, resolves UUID directly or case-insensitive exact name with ambiguity refusal. No actor or client-wall predicate is present in this helper.",
+    "Tracking owner uses withTenant(tenantId), where clientId, createdAt descending; no take or limit. Global congressional enrichment is separate and does not rebind tracking tenant.",
+    "Meri adds explicit binding/subject/clientReference context and binding/subject/data wrapper. These are trusted adapter assertions, not old producer fields or proof of current visibility. No connected context producer is supplied in this family.",
+    "Raw UUID can be correlated case-insensitively to canonical subject UUID. Name-to-ID resolution must remain external; pure contracts must not invent a resolver or locale equivalence."
+  ],
+  "outerProjection": [
+    "Raw data has tool,generatedAt,clientId,total,bills. Total is bills.length, not corpus size or legislative relevance.",
+    "Each row has id,billId,note,createdAt,bill. Actual Prisma-returned nullable note is present; global bill lookup miss yields bill:null while tracking row remains.",
+    "TrackedBill.id is UUID primary key; clientId is UUID; unique(clientId,billId) supports row-ID and per-client bill-ID uniqueness. billId is otherwise stored String, not a forced canonical federal designation.",
+    "Creation timestamp is general DateTime, descending with ties unconstrained. It is not latest legislative action chronology."
+  ],
+  "globalProjection": [
+    "Nested fields: identifier from CongressBill.id,title,latestActionDate,latestActionText,status,actionTexts,sponsorName,sponsorParty,subjectNames.",
+    "Title and identifier are stored strings; latestActionText,status,sponsorName,sponsorParty nullable. No enum or status-label computation exists.",
+    "latestActionDate is nullable SQLDate; canonical Date wire representation is midnight UTC. Outer createdAt and generatedAt are instants with time of day.",
+    "actionTexts is SQL ARRAY of action text, no imposed output limit; no chronological order can be inferred from opaque text. subjectNames uses stored subjects with empty-array fallback.",
+    "Arrays preserve duplicates/empty strings; no title truncation,50-row cap, pagination or coverage fields are introduced. Generic canonical resource limits may refuse oversized JSON; they cannot silently truncate."
+  ],
+  "gates": [
+    "Source controller standard_user RolesGuard and configurable tool service-secret guard remain external. Canonical subject lineage is shape/correlation validation, not live actor/client wall enforcement.",
+    "No tracking write or provider call observed in this selected read path, but actual database connection, tenant isolation, fresh scope, query semantics and release reauthorization remain UNRUN.",
+    "Family remains private source-only and disconnected until separately reviewed canonical integration; all original source-disabled/public/catalog/runtime state preserved."
+  ]
+}

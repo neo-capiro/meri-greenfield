@@ -1,0 +1,33 @@
+{
+  "command": [
+    "python3",
+    "docs/qualification/candidates/read-continuation-20261012/civic-integration/verify-family-packets.py"
+  ],
+  "cwd": "/workspace/meri-civic-reads-20261012",
+  "sourceHead": "8be4b07781315625766a4df306d76ff4617bed73",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-12T18:42:22.663197+00:00",
+  "durationSeconds": 0.77,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 255279,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration/family-packets.stdout.bin",
+      "bytes": 3930,
+      "sha256": "082e6f5a7cb87ad0278e44408ad469d14d51885b511706283aad88edca169aef"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration/family-packets.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

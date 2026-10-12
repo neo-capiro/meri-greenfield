@@ -1,0 +1,103 @@
+{
+  "source": "d48c9620e30c3686217095cb45b24f1b0c8218a2",
+  "authorPacket": "e46b425fd68a106e67dc5afdebf611ec33b201ea",
+  "verdict": "ACCEPT_SOURCE",
+  "scope": "standalone private family only; runtime remains HOLD",
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-INTELLIGENCE-SUMMARY-REVIEW-20261012.md",
+      "bytes": 5876,
+      "sha256": "24da4090eabe32c2d9b3a1af52ff9ef46dfc8c21ec4b35a7fb8ac6afb0a4b4fd"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-review/audit-author-final.json",
+      "bytes": 1412,
+      "sha256": "a6ea18c17973cff35efdd6708331bfea196c7c0935e339af8246add616da889c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-review/audit-author-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-review/audit-author-final.stdout.bin",
+      "bytes": 6784,
+      "sha256": "beb9ad66a1952f841b35b6c7829e6fbc86036f2b91a613112a400db9536ec3d3"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-review/audit-author.py",
+      "bytes": 2962,
+      "sha256": "e47cd40195ed54d56372678f15b56724d0657fd5ad07c2f24166b99f7c51e617"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-review/audit-final.py",
+      "bytes": 3012,
+      "sha256": "d6ffc21f6e3a4533f13611b193c78335c7569b188e834e8aa13d460f6db1922c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-review/audit-source.json",
+      "bytes": 1399,
+      "sha256": "5f1b8149689ec8d5768d7e687e45a5040b9de115903fd1d282568e9289887fcc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-review/audit-source.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-review/audit-source.stdout.bin",
+      "bytes": 4789,
+      "sha256": "69ed9b44f6265e752f3dd22ab040186a5e6698db9119db4793226429ed73b848"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-review/author-packet-binding.json",
+      "bytes": 686,
+      "sha256": "eeff1b826db254f5b60dbe157c3523b8ba8ce62819cdef260b137516ad000aa4"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-review/criteria.json",
+      "bytes": 2315,
+      "sha256": "438f190a1d436e96db7901e8f2fc511e3e3f7ab57f51c3cd8e841241155c378f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-review/dependency-receipt.json",
+      "bytes": 804,
+      "sha256": "2d2e8b005b542aa94436f27c0a0769714ec96879d191b6ae19d68a76bb3d49b0"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-review/focused-first.json",
+      "bytes": 1411,
+      "sha256": "4a6cd0541b21dbb3dfa0b636a364ff81e060da01a9a480f069f87dde4924c110"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-review/focused-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-review/focused-first.stdout.bin",
+      "bytes": 4328,
+      "sha256": "7c67fc1521278b6f945a2407141cc7a2a7176125462cbe7120cc50613c8d61bc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-review/independent-source-findings.json",
+      "bytes": 3134,
+      "sha256": "cbf69e62afbc4c9c0979bf2f3e9c3afb67a07cf80a0b9d940f4f4c747945c024"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-review/reference-identities.json",
+      "bytes": 5282,
+      "sha256": "6fb7414783767b488ff6c2d6bafc7febdd6b81fe23462f2b0e26719e7682fc86"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-intelligence-summary-independent.test.mjs",
+      "bytes": 7968,
+      "sha256": "7ef5bfd8a06ed921767225042a993c9a1aade0c64f0732245776d0980882aa07"
+    }
+  ]
+}

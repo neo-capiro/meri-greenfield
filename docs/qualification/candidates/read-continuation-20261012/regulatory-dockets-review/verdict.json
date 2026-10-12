@@ -1,0 +1,69 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "source": "57e09ebfda15d6057bdf4bfb7fc84b4061eac03f",
+  "sourceTree": "485860a7d9b2d4cf1e9f19a45c00cd80213ca088",
+  "runtimeAccepted": false,
+  "productionEditsByReviewer": false,
+  "initialIndependentTests": 26,
+  "finalIndependentTests": 28,
+  "focusedFamilyTests": 51,
+  "auditPassed": 58,
+  "auditFailed": 0,
+  "originalFilesVerified": 6110,
+  "sourceIdentities": [
+    {
+      "path": "packages/contracts/retrieval-0.2/regulatory-dockets.schema.json",
+      "bytes": 3639,
+      "sha256": "67780fed6830f53dbb4fa0f76a681666b426a41408046f5c778be3efdb810654",
+      "blob": "221bd2bab9bc6bcaa5c810c1a3a2680ca18922b2"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/regulatory-dockets-validation.mjs",
+      "bytes": 5349,
+      "sha256": "f9e8cf5f48c15b52590ba4ab5f7ad24efea0064f5b03c719a186fe0c552de1d7",
+      "blob": "9955d6f2c26c3575cc5e63f580ff0dbc09690815"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-regulatory-dockets.test.mjs",
+      "bytes": 12615,
+      "sha256": "9735c10f9a99e8cc717ff199ebf39b587520fabb9536caabfa89f8a49c026a64",
+      "blob": "cf8b1f55be3fb76c5f1b35a28be580371ddcf0a8"
+    }
+  ],
+  "ownedGroupsAbsent": [
+    {
+      "pidAndPgid": 223089,
+      "absent": true
+    },
+    {
+      "pidAndPgid": 223546,
+      "absent": true
+    },
+    {
+      "pidAndPgid": 230640,
+      "absent": true
+    },
+    {
+      "pidAndPgid": 232685,
+      "absent": true
+    }
+  ],
+  "unrun": [
+    "broad root source suite",
+    "public distribution",
+    "gateway integration",
+    "native and all runtime/services"
+  ],
+  "limitations": [
+    "No actual source clock or current comment eligibility proof",
+    "Ordinary null placement remains adapter qualification",
+    "Root-approved strict integer and wire timestamp admission intentionally narrower than producer",
+    "Source/global-data provenance and authority remain unqualified"
+  ],
+  "authorPacket": {
+    "freeze": "6d0ce36bed11605d49f97c363ee0ce29657a6293",
+    "manifestSha256": "66718412380284a6d9034eca9157a3b967b1bcbbc1c9fa74b5855e8788a8f3cd",
+    "members": 12,
+    "independentChecksPassed": 44
+  }
+}

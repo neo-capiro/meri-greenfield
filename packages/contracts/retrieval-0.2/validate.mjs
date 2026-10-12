@@ -1,3 +1,9 @@
+import { createStateStatusVotesValidators } from './state-status-votes-validation.mjs';
+import { createRegulatoryDocketsValidators } from './regulatory-dockets-validation.mjs';
+import { createTenantContactsValidators } from './tenant-contacts-validation.mjs';
+import { createEntityCandidatesValidators } from './entity-candidates-validation.mjs';
+import { createTrackedBillsValidators } from './tracked-bills-validation.mjs';
+import { createIntelligenceSummaryValidators } from './intelligence-summary-validation.mjs';
 import { createLegislativeDirectoryValidators } from './legislative-directory-validation.mjs';
 import { createPeReferenceValidators } from './pe-references-validation.mjs';
 import { createRuleStatusValidators } from './rule-status-validation.mjs';
@@ -33,7 +39,7 @@ import addFormats from 'ajv-formats';
 import { canonicalSha256 } from '../validate.mjs';
 
 export const contractVersion = '0.2.0';
-const groups = ['common', 'catalog', 'retrieval', 'skill', 'mail', 'meeting-source', 'operational-reads', 'federal-market', 'data-search', 'memory-proposals', 'client-registry', 'research-portfolio', 'business-development', 'funding-opportunities', 'client-documents', 'public-data', 'district-nexus', 'state-legislation', 'public-reports', 'disclosures', 'acquisition-personnel', 'federal-legislation', 'bill-text', 'legislative-directory', 'pe-references', 'rule-status', 'certification-status', 'stored-intelligence', 'dataset-metadata', 'facility-representation'];
+const groups = ['common', 'catalog', 'retrieval', 'skill', 'mail', 'meeting-source', 'operational-reads', 'federal-market', 'data-search', 'memory-proposals', 'client-registry', 'research-portfolio', 'business-development', 'funding-opportunities', 'client-documents', 'public-data', 'district-nexus', 'state-legislation', 'public-reports', 'disclosures', 'acquisition-personnel', 'federal-legislation', 'bill-text', 'legislative-directory', 'pe-references', 'rule-status', 'certification-status', 'stored-intelligence', 'dataset-metadata', 'facility-representation', 'state-status-votes', 'regulatory-dockets', 'tenant-contacts', 'entity-candidates', 'tracked-bills', 'intelligence-summary'];
 const schemaBytes = groups.map(group => readFileSync(new URL(`./${group}.schema.json`, import.meta.url)));
 const schemas = schemaBytes.map(raw => JSON.parse(raw));
 const ajv = new Ajv({ strict: true, allErrors: true });
@@ -233,6 +239,13 @@ const storedIntelligenceValidators = createStoredIntelligenceValidators({validat
 const datasetMetadataValidators = createDatasetMetadataValidators({validateShape, schema: schemas[groups.indexOf('dataset-metadata')]});
 const facilityRepresentationValidators = createFacilityRepresentationValidators({validateShape, assertSubject, canonicalSha256});
 
+const stateStatusVotesValidators = createStateStatusVotesValidators({validateShape, schema: schemas[groups.indexOf('state-status-votes')]});
+const regulatoryDocketsValidators = createRegulatoryDocketsValidators({validateShape, schema: schemas[groups.indexOf('regulatory-dockets')]});
+const tenantContactsValidators = createTenantContactsValidators({validateShape});
+const entityCandidatesValidators = createEntityCandidatesValidators({validateShape, schema: schemas[groups.indexOf('entity-candidates')]});
+const trackedBillsValidators = createTrackedBillsValidators({validateShape, assertSubject, canonicalSha256});
+const intelligenceSummaryValidators = createIntelligenceSummaryValidators({validateShape, schema: schemas[groups.indexOf('intelligence-summary')]});
+
 export function assertSkillManifest(manifest, catalog) {
   validateShape('SkillManifest', manifest); assertCatalog(catalog);
   unique(manifest.requiredSources.map(source => `${source.sourceId}:${source.purpose}`), 'required skill source');
@@ -275,4 +288,5 @@ export const {resolveOperationContract} = createOperationContracts({catalog: sou
     ...researchPortfolioValidators, ...businessDevelopmentValidators,
     ...fundingOpportunitiesValidators, ...clientDocumentsValidators, ...publicDataValidators, ...districtNexusValidators, ...stateLegislationValidators, ...publicReportsValidators,
     ...disclosuresValidators, ...acquisitionPersonnelValidators, ...federalLegislationValidators, ...billTextValidators,
-    ...legislativeDirectoryValidators, ...peReferenceValidators, ...ruleStatusValidators, ...certificationStatusValidators, ...storedIntelligenceValidators, ...datasetMetadataValidators, ...facilityRepresentationValidators})});
+    ...legislativeDirectoryValidators, ...peReferenceValidators, ...ruleStatusValidators, ...certificationStatusValidators, ...storedIntelligenceValidators, ...datasetMetadataValidators, ...facilityRepresentationValidators,
+    ...stateStatusVotesValidators, ...regulatoryDocketsValidators, ...tenantContactsValidators, ...entityCandidatesValidators, ...trackedBillsValidators, ...intelligenceSummaryValidators})});

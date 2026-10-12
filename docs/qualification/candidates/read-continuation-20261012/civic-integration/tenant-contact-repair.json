@@ -1,0 +1,24 @@
+{
+  "originalAcceptedSource": "0aba55ef096a68a3cfd92f770783dec3fddfea22",
+  "independentNegativeFreeze": "bf1aae0ea7d366388bc18d55f818c2c79a3758db",
+  "reason": "Return the detached validated projection, not a mutable caller alias; use the mandatory catalog schema namespace.",
+  "intentionalApiChange": "Direct family result object identity changes; deep value semantics and validation remain unchanged. Prior strict caller-identity assertion is preserved and superseded explicitly.",
+  "changes": [
+    {
+      "path": "packages/contracts/retrieval-0.2/tenant-contacts-validation.mjs",
+      "beforeSha256": "f37700031b97356093da2d2d95d79d62246618f2707fd0afdb9d238db5ec6818",
+      "afterSha256": "793b0880b4a1a8cf4d77ad39ee857b1222289d732a7ba9704b4acbae06989767",
+      "old": "return result;",
+      "new": "return page;",
+      "occurrences": 2
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/tenant-contacts.schema.json",
+      "beforeSha256": "401cf35dcb570393cd239e548feaac6b143c4adcfe6e52cd913588fee9e8a934",
+      "afterSha256": "065ff9d94072c8d54cb1f490957be23c952334ee2c9184bbeb76f5d82c59f691",
+      "old": "https://meri.invalid/retrieval/0.2/tenant-contacts.schema.json",
+      "new": "urn:meri:retrieval:tenant-contacts:0.2.0",
+      "occurrences": 1
+    }
+  ]
+}

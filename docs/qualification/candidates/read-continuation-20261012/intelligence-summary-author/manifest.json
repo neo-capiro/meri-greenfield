@@ -1,0 +1,138 @@
+{
+  "source": "d48c9620e30c3686217095cb45b24f1b0c8218a2",
+  "sourceTree": "ec6f6d798d428578219aa6f3e4fa9493ae204d92",
+  "base": "c1c9bfde7dd466a0474589a224a99b44277adbc9",
+  "outsideEvidence": [
+    "docs/coordination/reports/CODEX-INTELLIGENCE-SUMMARY-AUTHOR-20261012.md",
+    "packages/contracts/retrieval-0.2/intelligence-summary.schema.json",
+    "packages/contracts/retrieval-0.2/intelligence-summary-validation.mjs",
+    "packages/contracts/test/retrieval-intelligence-summary.test.mjs"
+  ],
+  "exclusions": [
+    "manifest.json self reference",
+    "verification.json derived result"
+  ],
+  "files": [
+    {
+      "path": "docs/coordination/reports/CODEX-INTELLIGENCE-SUMMARY-AUTHOR-20261012.md",
+      "bytes": 4486,
+      "sha256": "fb16e946d83fa74be8c04162d851238240777e671200a767436b9c2d6272f07a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/audit-packet.py",
+      "bytes": 4747,
+      "sha256": "3f93a995789c816b3413ded0152b4bb955a3ac6ada196510d79a943b9ca0551d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/cleanup.json",
+      "bytes": 199,
+      "sha256": "05abc1784fcfa50d52ba818dcd68a06cab4ed823b78293c1c83a515a1019ae8a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/documentation-correction.json",
+      "bytes": 557,
+      "sha256": "a0e78b592f20454ea41cfb506e95a83c737777379d468eb0227a506e8e6327b4"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/focused.json",
+      "bytes": 1309,
+      "sha256": "037c99a92b08794996065edd54fe71faab44d8292a44bab672d1df393e8014d3"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/focused.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/focused.stdout.bin",
+      "bytes": 1829,
+      "sha256": "c01c334539603939f33d51182974f45ca6c6e82ab958a8c2bcca350ee9a28fd4"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/inspect-references-before.cjs.txt",
+      "bytes": 3508,
+      "sha256": "7667e7b8cca10835b2bd758ca654558c86944ce5b4d3cd2ec4cade24a67e9f36"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/inspect-references.cjs",
+      "bytes": 3631,
+      "sha256": "c37d5659a1c7a214a01d62b8237d85542bf7935745309988c18d4ad24f1dc0cd"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/metadata-audit-repaired.json",
+      "bytes": 1449,
+      "sha256": "c3e3351e626bd23bf96109ce9b8789e61c53be0497052592447112e162d22b0e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/metadata-audit-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/metadata-audit-repaired.stdout.bin",
+      "bytes": 6104,
+      "sha256": "4e0f6e493fb7ccc4e79b15c84b6e74cbce2a34548c91eec48c1f1d853d5aa164"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/metadata-audit.json",
+      "bytes": 1348,
+      "sha256": "ab48547b5c6a8e52fd89ae890e4b1d3c86d3efc58c8713422accd48369640eff"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/metadata-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/metadata-audit.stdout.bin",
+      "bytes": 6105,
+      "sha256": "b6ca6c229d46f20f2856db11a9330df91d9b55af664672efb7ba15a821e3848a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/outline.md",
+      "bytes": 2520,
+      "sha256": "fc2e929d75e576f389c7802d88e34dd22f36fceafeab4d51785d9d930b1273fd"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/reference-identities-before.json",
+      "bytes": 21767,
+      "sha256": "5b5f890284e788ee7433a3ec5931048c3cf76f89db5d8d380cbf379186dee858"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/reference-identities.json",
+      "bytes": 22019,
+      "sha256": "8aebd6c6e9f8b128198cc2e5462ae07921c8abc48b7050f039aa0e1b6dcfcda8"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/source-findings.json",
+      "bytes": 3228,
+      "sha256": "e60633b29fc45fbb42ddf7e7b4bdc1a5d24efde0cd11f082b2510d8bf15ef2a9"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/verify-manifest.py",
+      "bytes": 1448,
+      "sha256": "baa2a841e019cf727267c9ec13d94479c5e68f201b11532ddebde49f94b30e2f"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/intelligence-summary-validation.mjs",
+      "bytes": 2746,
+      "sha256": "7140959d4b77abbd835b6bb3179c88da516be43999b56ba79953ee659730d9d0"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/intelligence-summary.schema.json",
+      "bytes": 806,
+      "sha256": "cd589df078359153d23e83ada2fb9a5fea46fa18552809a97ebfa10cafa0bd24"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-intelligence-summary.test.mjs",
+      "bytes": 7247,
+      "sha256": "fac48b362c5b813eabcbb687f1e5d127fdfe2053beb408ffa0c43aacdc96c889"
+    }
+  ],
+  "preservedInitialPacket": "f5082ffd85964268c539852aae4a13ed7a5a1dec"
+}

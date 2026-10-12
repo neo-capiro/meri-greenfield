@@ -1,0 +1,357 @@
+{
+  "base": "a3e946c1fa264ae7b33205f5b87804ee1ef75773",
+  "source": "e020f4ff2af3c23412adf2fd634f8362140eeb51",
+  "sourceTree": "4339a033ca9d43096f838c89caa02b1e5c93e59d",
+  "authorMetadata": "076c4a437eb717cbc1dd8541f76f141c0a6d1b2d",
+  "authorTree": "f0c0803393c81f6db143a88a84940f8e751aa102",
+  "reviewHeadAtAudit": "9ad742706d517495198e646eb8b6bfb65552f249",
+  "originalsPreserved": 6110,
+  "checks": [
+    {
+      "name": "all original bytes source",
+      "pass": true
+    },
+    {
+      "name": "all original bytes author",
+      "pass": true
+    },
+    {
+      "name": "all original bytes review",
+      "pass": true
+    },
+    {
+      "name": "exact source packages/contracts/retrieval-0.2/tracked-bills-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact source packages/contracts/retrieval-0.2/tracked-bills.schema.json",
+      "pass": true
+    },
+    {
+      "name": "exact source packages/contracts/test/retrieval-tracked-bills.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "source adds only allocated files",
+      "pass": true
+    },
+    {
+      "name": "author metadata only after source",
+      "pass": true
+    },
+    {
+      "name": "pinned apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "observed unchanged apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned apps/api/src/intelligence/intelligence.service.ts",
+      "pass": true
+    },
+    {
+      "name": "observed unchanged apps/api/src/intelligence/intelligence.service.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "name": "observed unchanged apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "name": "pinned apps/api/src/meri/meri.controller.ts",
+      "pass": true
+    },
+    {
+      "name": "observed unchanged apps/api/src/meri/meri.controller.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned apps/api/src/auth/roles.guard.ts",
+      "pass": true
+    },
+    {
+      "name": "observed unchanged apps/api/src/auth/roles.guard.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned apps/api/src/meri/tool-service-secret.guard.ts",
+      "pass": true
+    },
+    {
+      "name": "observed unchanged apps/api/src/meri/tool-service-secret.guard.ts",
+      "pass": true
+    },
+    {
+      "name": "canonical admission sole import",
+      "pass": true
+    },
+    {
+      "name": "no runtime/native/clock effects",
+      "pass": true
+    },
+    {
+      "name": "only family factory exported",
+      "pass": true
+    },
+    {
+      "name": "result uses detached validated page",
+      "pass": true
+    },
+    {
+      "name": "context exact keys",
+      "pass": true
+    },
+    {
+      "name": "raw selector only",
+      "pass": true
+    },
+    {
+      "name": "normalized client uuid",
+      "pass": true
+    },
+    {
+      "name": "result wrapper exact",
+      "pass": true
+    },
+    {
+      "name": "raw data exact fields",
+      "pass": true
+    },
+    {
+      "name": "full rows no guessed cap",
+      "pass": true
+    },
+    {
+      "name": "no silent truncation",
+      "pass": true
+    },
+    {
+      "name": "full return count",
+      "pass": true
+    },
+    {
+      "name": "tracking exact wire fields",
+      "pass": true
+    },
+    {
+      "name": "tracking UUID identity",
+      "pass": true
+    },
+    {
+      "name": "tracking nullable note",
+      "pass": true
+    },
+    {
+      "name": "nullable global enrichment",
+      "pass": true
+    },
+    {
+      "name": "global projection exact",
+      "pass": true
+    },
+    {
+      "name": "stored nullable latestActionText",
+      "pass": true
+    },
+    {
+      "name": "stored nullable status",
+      "pass": true
+    },
+    {
+      "name": "stored nullable sponsorName",
+      "pass": true
+    },
+    {
+      "name": "stored nullable sponsorParty",
+      "pass": true
+    },
+    {
+      "name": "stored full string array actionTexts",
+      "pass": true
+    },
+    {
+      "name": "stored full string array subjectNames",
+      "pass": true
+    },
+    {
+      "name": "title no truncation/cap",
+      "pass": true
+    },
+    {
+      "name": "source required selector80",
+      "pass": true
+    },
+    {
+      "name": "visibility precedes tenant listing",
+      "pass": true
+    },
+    {
+      "name": "source raw total returned",
+      "pass": true
+    },
+    {
+      "name": "visibility excludes archived",
+      "pass": true
+    },
+    {
+      "name": "visibility tenant name branch",
+      "pass": true
+    },
+    {
+      "name": "visibility no actor wall proof",
+      "pass": true
+    },
+    {
+      "name": "listing tenant and exact client",
+      "pass": true
+    },
+    {
+      "name": "listing createdAt descending",
+      "pass": true
+    },
+    {
+      "name": "listing no take/limit",
+      "pass": true
+    },
+    {
+      "name": "nullable lookup fallback",
+      "pass": true
+    },
+    {
+      "name": "actual per-client uniqueness",
+      "pass": true
+    },
+    {
+      "name": "actual UUID tracking primary",
+      "pass": true
+    },
+    {
+      "name": "global id selector not tenant",
+      "pass": true
+    },
+    {
+      "name": "SQL full action array no limit",
+      "pass": true
+    },
+    {
+      "name": "subjects array fallback",
+      "pass": true
+    },
+    {
+      "name": "HTTP role declaration",
+      "pass": true
+    },
+    {
+      "name": "HTTP secret remains external",
+      "pass": true
+    },
+    {
+      "name": "owned group absent initial-independent",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/read-continuation-20261012/tracked-bills-review/initial-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/read-continuation-20261012/tracked-bills-review/initial-independent.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "stderr empty initial-independent",
+      "pass": true
+    },
+    {
+      "name": "owned group absent snapshot-independent",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/read-continuation-20261012/tracked-bills-review/snapshot-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/read-continuation-20261012/tracked-bills-review/snapshot-independent.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "stderr empty snapshot-independent",
+      "pass": true
+    },
+    {
+      "name": "owned group absent final-independent",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/read-continuation-20261012/tracked-bills-review/final-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/read-continuation-20261012/tracked-bills-review/final-independent.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "stderr empty final-independent",
+      "pass": true
+    },
+    {
+      "name": "failure source stable before/after initial",
+      "pass": true
+    },
+    {
+      "name": "mutation source same retained preimage",
+      "pass": true
+    },
+    {
+      "name": "preimage packages/contracts/retrieval-0.2/tracked-bills-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "preimage packages/contracts/retrieval-0.2/tracked-bills.schema.json",
+      "pass": true
+    },
+    {
+      "name": "first24 controls preserved",
+      "pass": true
+    },
+    {
+      "name": "all26 controls unchanged",
+      "pass": true
+    },
+    {
+      "name": "no full private bodies copied",
+      "pass": true
+    },
+    {
+      "name": "source whitespace",
+      "pass": true
+    }
+  ],
+  "sourceIdentities": [
+    {
+      "path": "packages/contracts/retrieval-0.2/tracked-bills-validation.mjs",
+      "bytes": 3527,
+      "sha256": "697ba30c8cfbf7c02e5b815104e909fd2183633891ccc835373d568e44b6bc67",
+      "blob": "910e0c4fac6d8df8d694e3054ad19e4c8e765016"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/tracked-bills.schema.json",
+      "bytes": 4920,
+      "sha256": "726efeaa4fd06c37790e05da94380f95e1ab97c694d0d8d5ada60a1579ee4cf5",
+      "blob": "5a60361b76016dc9a2f5f91dd92aea0dd3cb45b5"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-tracked-bills.test.mjs",
+      "bytes": 12094,
+      "sha256": "9666aeec7f29e93f20cb530decb7303b4219554da5c452f64c5ea06bce1a8b96",
+      "blob": "9a512e42edc3f6bfa88a7aaa3a37d432890d3059"
+    }
+  ],
+  "privateSourceExecuted": false,
+  "runtime": "UNRUN_UNAVAILABLE"
+}

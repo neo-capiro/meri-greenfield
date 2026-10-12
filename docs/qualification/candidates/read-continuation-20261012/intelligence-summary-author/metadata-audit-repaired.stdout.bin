@@ -1,0 +1,216 @@
+{
+  "source": "d48c9620e30c3686217095cb45b24f1b0c8218a2",
+  "base": "c1c9bfde7dd466a0474589a224a99b44277adbc9",
+  "originalBlobsPreserved": 6528,
+  "checks": 47,
+  "passed": 47,
+  "failed": 0,
+  "results": [
+    {
+      "name": "all6528 originals unchanged",
+      "pass": true
+    },
+    {
+      "name": "only three source additions plus prior outline",
+      "pass": true
+    },
+    {
+      "name": "exact source tree",
+      "pass": true
+    },
+    {
+      "name": "working source matches freeze:packages/contracts/retrieval-0.2/intelligence-summary.schema.json",
+      "pass": true
+    },
+    {
+      "name": "working source matches freeze:packages/contracts/retrieval-0.2/intelligence-summary-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "working source matches freeze:packages/contracts/test/retrieval-intelligence-summary.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "eight reference pairs",
+      "pass": true
+    },
+    {
+      "name": "independent pin:fd8765ec:apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "independent pin:4be13b0b:apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "reference drift absent:apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "independent pin:fd8765ec:apps/api/src/lobby-intel/lobby-intel.service.ts",
+      "pass": true
+    },
+    {
+      "name": "independent pin:4be13b0b:apps/api/src/lobby-intel/lobby-intel.service.ts",
+      "pass": true
+    },
+    {
+      "name": "reference drift absent:apps/api/src/lobby-intel/lobby-intel.service.ts",
+      "pass": true
+    },
+    {
+      "name": "independent pin:fd8765ec:apps/api/src/federal-spending/federal-spending.service.ts",
+      "pass": true
+    },
+    {
+      "name": "independent pin:4be13b0b:apps/api/src/federal-spending/federal-spending.service.ts",
+      "pass": true
+    },
+    {
+      "name": "reference drift absent:apps/api/src/federal-spending/federal-spending.service.ts",
+      "pass": true
+    },
+    {
+      "name": "independent pin:fd8765ec:apps/api/src/lda-intel/lda-intel.service.ts",
+      "pass": true
+    },
+    {
+      "name": "independent pin:4be13b0b:apps/api/src/lda-intel/lda-intel.service.ts",
+      "pass": true
+    },
+    {
+      "name": "reference drift absent:apps/api/src/lda-intel/lda-intel.service.ts",
+      "pass": true
+    },
+    {
+      "name": "independent pin:fd8765ec:apps/api/src/hearing-discovery/hearing-geography.ts",
+      "pass": true
+    },
+    {
+      "name": "independent pin:4be13b0b:apps/api/src/hearing-discovery/hearing-geography.ts",
+      "pass": true
+    },
+    {
+      "name": "reference drift absent:apps/api/src/hearing-discovery/hearing-geography.ts",
+      "pass": true
+    },
+    {
+      "name": "independent pin:fd8765ec:apps/api/src/prisma/prisma.service.ts",
+      "pass": true
+    },
+    {
+      "name": "independent pin:4be13b0b:apps/api/src/prisma/prisma.service.ts",
+      "pass": true
+    },
+    {
+      "name": "reference drift absent:apps/api/src/prisma/prisma.service.ts",
+      "pass": true
+    },
+    {
+      "name": "independent pin:fd8765ec:apps/api/src/meri/meri-tool-request-control.ts",
+      "pass": true
+    },
+    {
+      "name": "independent pin:4be13b0b:apps/api/src/meri/meri-tool-request-control.ts",
+      "pass": true
+    },
+    {
+      "name": "reference drift absent:apps/api/src/meri/meri-tool-request-control.ts",
+      "pass": true
+    },
+    {
+      "name": "independent pin:fd8765ec:packages/meriv2-core/src/registry/tool-execution-control.ts",
+      "pass": true
+    },
+    {
+      "name": "independent pin:4be13b0b:packages/meriv2-core/src/registry/tool-execution-control.ts",
+      "pass": true
+    },
+    {
+      "name": "reference drift absent:packages/meriv2-core/src/registry/tool-execution-control.ts",
+      "pass": true
+    },
+    {
+      "name": "exact optional selector and bills arguments",
+      "pass": true
+    },
+    {
+      "name": "eight stored count owners",
+      "pass": true
+    },
+    {
+      "name": "projected exact three keys",
+      "pass": true
+    },
+    {
+      "name": "downstream read SQL:surgingIssuesRows",
+      "pass": true
+    },
+    {
+      "name": "downstream read SQL:lookupByClientName",
+      "pass": true
+    },
+    {
+      "name": "system transaction configuration disclosed",
+      "pass": true
+    },
+    {
+      "name": "local numeric helper traced:mapIssueRow",
+      "pass": true
+    },
+    {
+      "name": "local numeric helper traced:mapLegacyIssue",
+      "pass": true
+    },
+    {
+      "name": "local numeric helper traced:decToNumber",
+      "pass": true
+    },
+    {
+      "name": "focused exact source",
+      "pass": true
+    },
+    {
+      "name": "bounded focused exit and owned group absent",
+      "pass": true
+    },
+    {
+      "name": "focused raw stream:docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/focused.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "focused raw stream:docs/qualification/candidates/read-continuation-20261012/intelligence-summary-author/focused.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "actual21 focused pass",
+      "pass": true
+    },
+    {
+      "name": "canonical JSON owner only import",
+      "pass": true
+    },
+    {
+      "name": "no runtime/native/provider/SQL implementation",
+      "pass": true
+    }
+  ],
+  "sourceIdentities": [
+    {
+      "path": "packages/contracts/retrieval-0.2/intelligence-summary.schema.json",
+      "bytes": 806,
+      "sha256": "cd589df078359153d23e83ada2fb9a5fea46fa18552809a97ebfa10cafa0bd24"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/intelligence-summary-validation.mjs",
+      "bytes": 2746,
+      "sha256": "7140959d4b77abbd835b6bb3179c88da516be43999b56ba79953ee659730d9d0"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-intelligence-summary.test.mjs",
+      "bytes": 7247,
+      "sha256": "fac48b362c5b813eabcbb687f1e5d127fdfe2053beb408ffa0c43aacdc96c889"
+    }
+  ],
+  "scope": "SOURCE_ONLY_NOT_RUNTIME_OR_CURRENT_AUTHORITY"
+}
