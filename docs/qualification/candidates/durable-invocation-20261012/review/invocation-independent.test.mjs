@@ -114,3 +114,23 @@ test('control rejects outer accessor/proxy without executing injected code',asyn
  assert.throws(()=>bindToolInvocationControl({get gateway(){effects++;throw Error('private');},contextJson:'{}',producerJson:'{}'}));
  assert.throws(()=>bindToolInvocationControl(new Proxy({},{getPrototypeOf(){effects++;throw Error('private');}})));assert.equal(effects,0);
 });
+
+test('cancel during live accounting first write cannot start the next accounting write',async()=>{
+ const {h,c}=await setup();const gate=h.parkAt('UPDATE meri_qualification.budget SET consumed_micro_usd'),a=new AbortController();
+ const promise=c.execute(requestJson,h.credential,deliveryId,a.signal),rejected=assert.rejects(promise);await gate.ready;a.abort();const atCancel=h.commands.length;gate.resume();await rejected;await new Promise(r=>setImmediate(r));
+ assert.equal(h.commands.slice(atCancel).filter(x=>x.sql.startsWith('UPDATE meri_qualification.tool_reservations SET')).length,0,'second accounting write started after cancellation');
+ assert.equal(reserved(h).state,'UNKNOWN');assert.equal(h.state().budget.consumed_micro_usd,'0');assert.ok(produced(h).completion);
+});
+
+test('replayed preparation preserves the original deadline rather than granting a fresh request window',async()=>{
+ const {h,c}=await setup();const first=await h.enabledGateway().prepareInvocation(h.delivery(),requestJson);h.setClock(first.deadlineMs+1);
+ const again=await h.enabledGateway().prepareInvocation(h.delivery(),requestJson);assert.equal(again.deadlineMs,first.deadlineMs);assert.equal(again.invocationJson,first.invocationJson);
+ await assert.rejects(c.execute(requestJson,h.credential,deliveryId));assert.equal(handlerCount(h),0);assert.equal(h.state().reservations.size,0);
+});
+
+test('cancel during produced reservation count query cannot start a later reservation INSERT',async()=>{
+ const {h,c}=await setup();const gate=h.parkAt('SELECT count(*) AS calls'),a=new AbortController();
+ const promise=c.execute(requestJson,h.credential,deliveryId,a.signal),rejected=assert.rejects(promise);await gate.ready;a.abort();const atCancel=h.commands.length;gate.resume();await rejected;await new Promise(r=>setImmediate(r));
+ assert.equal(h.commands.slice(atCancel).filter(x=>x.sql.startsWith('INSERT INTO meri_qualification.tool_reservations')).length,0,'reservation INSERT started after cancellation');
+ assert.equal(h.state().reservations.size,0);assert.equal(handlerCount(h),0);
+});

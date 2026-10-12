@@ -1,0 +1,28 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-name-pattern=cancel during produced reservation",
+    "docs/qualification/candidates/durable-invocation-20261012/review/invocation-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-durable-invocation-review-20261012",
+  "startUnixSeconds": 1791789875.0780845,
+  "elapsedSeconds": 1.0222344398498535,
+  "exitCode": 1,
+  "ownedPidAndGroup": 100188,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "reapedDescendants": [],
+  "streams": {
+    "stdout": {
+      "path": "produced-reservation-cancel.stdout.txt",
+      "bytes": 1039,
+      "sha256": "a40f686b63e79fa2536e56f72cf3060a39caf89e6a62462298e98d0a85ce1d18"
+    },
+    "stderr": {
+      "path": "produced-reservation-cancel.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

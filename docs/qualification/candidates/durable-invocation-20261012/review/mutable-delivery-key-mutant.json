@@ -1,0 +1,30 @@
+{
+  "command": [
+    "node",
+    "--import",
+    "./docs/qualification/candidates/durable-invocation-20261012/review/mutable-delivery-key-mutant.mjs",
+    "--test",
+    "--test-name-pattern=same run/delivery key",
+    "docs/qualification/candidates/durable-invocation-20261012/review/invocation-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-durable-invocation-review-20261012",
+  "startUnixSeconds": 1791789759.965473,
+  "elapsedSeconds": 1.06805419921875,
+  "exitCode": 1,
+  "ownedPidAndGroup": 99829,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "reapedDescendants": [],
+  "streams": {
+    "stdout": {
+      "path": "mutable-delivery-key-mutant.stdout.txt",
+      "bytes": 1052,
+      "sha256": "4ca6834ad58bcfa99aed828ac9749dfc03ea54297831a874ec59d58429d39c90"
+    },
+    "stderr": {
+      "path": "mutable-delivery-key-mutant.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

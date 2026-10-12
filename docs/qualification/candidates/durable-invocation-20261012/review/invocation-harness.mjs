@@ -68,7 +68,7 @@ export function harness() {
   const json=()=>JSON.stringify(invocation),expected={operation,argumentsSha256:canonicalSha256({review:true})};
   const owner=()=>createPostgresToolBudget({pool,allocationJson:JSON.stringify(allocation),now:()=>f.state.now});
   const gateway=()=>createDurableSourceDisabledGateway({pool,allocationJson:JSON.stringify(allocation),authorityPorts:f.ports,limits,now:()=>f.state.now,newId:randomUUID});
-  const enabledGateway=()=>createDurableToolDispatch({pool,allocationJson:JSON.stringify(allocation),catalog:{entry:()=>f.entry,discoverable:()=>[f.entry]},authority:f.authority,limits,now:()=>f.state.now,newId:randomUUID,sourceEnabled:true});
+  const enabledGateway=(extra={})=>createDurableToolDispatch({pool,allocationJson:JSON.stringify(allocation),catalog:{entry:()=>f.entry,discoverable:()=>[f.entry]},authority:f.authority,limits,now:()=>f.state.now,newId:randomUUID,sourceEnabled:true,...extra});
   const producer={namespace:'review-sdk',executionId:'synthetic-original-execution'};
   const context=()=>{const {invocationId,...facts}=invocation;return facts;};
   const delivery=(deliveryId='synthetic-stable-delivery')=>JSON.stringify({context:context(),producer,deliveryId});
