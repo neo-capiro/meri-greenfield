@@ -6,6 +6,7 @@ import { createOperationalReadValidators } from './operational-reads-validation.
 import { createFederalMarketValidators } from './federal-market-validation.mjs';
 import { createDataSearchValidators } from './data-search-validation.mjs';
 import { createMemoryProposalValidators } from './memory-proposals-validation.mjs';
+import { createClientRegistryValidators } from './client-registry-validation.mjs';
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import Ajv from 'ajv/dist/2020.js';
@@ -13,7 +14,7 @@ import addFormats from 'ajv-formats';
 import { canonicalSha256 } from '../validate.mjs';
 
 export const contractVersion = '0.2.0';
-const groups = ['common', 'catalog', 'retrieval', 'skill', 'mail', 'meeting-source', 'operational-reads', 'federal-market', 'data-search', 'memory-proposals'];
+const groups = ['common', 'catalog', 'retrieval', 'skill', 'mail', 'meeting-source', 'operational-reads', 'federal-market', 'data-search', 'memory-proposals', 'client-registry'];
 const schemaBytes = groups.map(group => readFileSync(new URL(`./${group}.schema.json`, import.meta.url)));
 const schemas = schemaBytes.map(raw => JSON.parse(raw));
 const ajv = new Ajv({ strict: true, allErrors: true });
@@ -176,6 +177,9 @@ export const {
 
 const memoryProposalValidators = createMemoryProposalValidators({validateShape, assertSubject, unique});
 export const {normalizeMemoryProposalInput, assertMemoryProposalReadResult} = memoryProposalValidators;
+
+const clientRegistryValidators = createClientRegistryValidators({validateShape});
+export const {normalizeClientRegistryInput, assertClientRegistryResult} = clientRegistryValidators;
 
 export function assertSkillManifest(manifest, catalog) {
   validateShape('SkillManifest', manifest); assertCatalog(catalog);
