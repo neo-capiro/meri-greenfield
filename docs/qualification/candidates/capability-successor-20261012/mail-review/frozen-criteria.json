@@ -1,0 +1,19 @@
+{
+  "base": "5b1b5985bc73cbfe901c17e65acf9fd50b3d7e33",
+  "scope": "Independent source review only; no source adapter, production activation or runtime acceptance",
+  "reviewOwner": "/root/memory_reviewer",
+  "criteria": [
+    {"id":"MAIL1","assertion":"Exercise canonical operation resolver, actual current authority and actual dispatcher for list and search first and subsequent pages. No replacement validator, duplicated filter digest algorithm or hand-built alternate dispatcher."},
+    {"id":"MAIL2","assertion":"Bind retained continuation to full task binding, operation/version, policy, canonical normalized selection/filter, requested offset and asOf anchor, and full trusted subject including authorizationDecisionId. Reject changed decision at prepare/before/effect/release/final and between pages; preserve the separate accepted memory decision-rotation convention."},
+    {"id":"MAIL3","assertion":"Prior pages come only from configured trusted retained-context ports using raw inert JSON receipts. Reject absent/corrupt/overbound/stale/future/wrong-key/wrong-digest/expired context, injected model context and accessor/proxy values without executing getters. Snapshot/freeze data supplied across awaited ports."},
+    {"id":"MAIL4","assertion":"Pass the original retained page into the canonical mail validator. Preserve nextOffset/asOf, filter/limit/folder/query restrictions, full subject/binding/window continuity, unknown enumeration, null snapshot/version, incomplete preview, required decisive reads and no evidence/absence promotion."},
+    {"id":"MAIL5","assertion":"Use existing absolute dispatch lifetime around load and retain; publish fresh authority or retained expiry as soon as known. Park load/retain/settle independently, shorten current authority deadlines, cancel and release late promises; result release and later effects must remain suppressed. No physical cancellation claim."},
+    {"id":"MAIL6","assertion":"Authorization remains current before reservation/effect/result retention and final release. Refusal before reservation has no budget/effect calls; uncertainty after attempted reservation stays accounted; late settlement/refusal is not a retry/refund or renewed authority."},
+    {"id":"MAIL7","assertion":"Retention only for valid continuable output; bind exact canonical output/request and receipt hashes with bounded expiry. Terminal or unknown-total pages do not fabricate continuation; retaining a page does not make it approved evidence or successful publication."},
+    {"id":"MAIL8","assertion":"Only allocated mail context module and narrow operation-context/tool-dispatch edits, plus new author tests/docs. All schemas/validators/public contracts/locks/other existing source and original tests stay preserved; original memory behavior and disabled canonical gateway remain intact."},
+    {"id":"MAIL9","assertion":"Preserve meaningful raw failures, exact candidate commits and independent evidence. Report ACCEPT_SOURCE/HOLD with passed/failed/unrun, no private data or source connection, no proxy/worker/scripts/native/SQL/provider/cloud execution, no nested agents or dormant jobs."}
+  ],
+  "productionSourceEdited": false,
+  "authorCandidateInspected": false,
+  "runtimeAccepted": false
+}
