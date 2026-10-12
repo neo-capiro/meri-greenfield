@@ -19,6 +19,30 @@
       "kind": "KeyError",
       "capture": "Tool output only; no private content",
       "reason": "Assumed header row3; actual sparse workbook header is row7. Read actual nonempty row keys, no workbook edit."
+    },
+    {
+      "kind": "incorrectRepairGuidance",
+      "capture": "Author preserved failed projection repair; reviewer own draft not yet executed",
+      "reason": "Suggested binding.id/version from resolved canonical descriptor; actual catalog.json nested operation.id/version. Corrected after reading raw catalog. Partial nativeCoverage is separate canonical-registry metadata, not catalog field."
+    },
+    {
+      "kind": "KeyErrorBlankDocxParagraph",
+      "retained": "plan-exact.stderr.bin",
+      "preimage": "audit-pre-blank-paragraph-fix.py.txt",
+      "reason": "Reviewer assumed author paragraph array omitted blanks; author correctly preserves all315 including8 blank paragraphs. Corrected to compare all315 and separately count307 nonempty. No author edit."
+    },
+    {
+      "kind": "BlankCellsAndNativeJoinAssumptions",
+      "retained": "plan-corrected.stdout.bin",
+      "passed": 1987,
+      "failed": 245,
+      "preimage": "audit-pre-cell-join-fix.py.txt",
+      "reason": "106 rows omit genuinely blank fields;139 native rows use exact catalog mapping/deferred/pending source states rather than generic group pending text. Adjusted comparisons to actual nonempty cells and exact canonical state+row, keeping no-product-completion and runtime limits mandatory. No author edit."
+    },
+    {
+      "kind": "MissingOptionalReceiptFilename",
+      "capture": "Tool output only; no private content",
+      "reason": "Probed verification.json not present in final plan packet; used authoritative manifest member list and actual final receipt instead. No author/source defect."
     }
   ],
   "draftFinding": {
