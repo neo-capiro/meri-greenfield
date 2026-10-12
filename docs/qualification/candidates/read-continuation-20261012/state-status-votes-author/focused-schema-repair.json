@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-state-status-votes.test.mjs"
+  ],
+  "cwd": "/workspace/meri-state-status-votes-20261012",
+  "sourceHead": "a3e946c1fa264ae7b33205f5b87804ee1ef75773",
+  "sourceDiffSha256": "fd2578fe7f14d316d476c5514f898153db8dd505bf8c295e2d8edd890335e010",
+  "sourceDiffBytes": 38566,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T18:01:06.747139+00:00",
+  "durationSeconds": 0.315,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 223303,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/focused-schema-repair.stdout.bin",
+      "bytes": 2081,
+      "sha256": "98f5f8b940327450582af1f7c66283d928fc5ee5066a97a5dae9a2d6ab251039"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-author/focused-schema-repair.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Strict Ajv initial compilation refused multi-type limit. Replaced with explicit anyOf, retained original schema/test/source preimages; no behavioral assertion removed.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

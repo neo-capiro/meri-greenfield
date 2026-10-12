@@ -1,0 +1,30 @@
+✔ state helper is primitive-only, inert and clock-free (1.824542ms)
+✔ canonical key normalization overrides state hint and retains special-session suffix (3.338757ms)
+✔ designation hint first, prefix fallback and DC hyphen normalization (0.272159ms)
+✔ status alias precedence and blank/null fallback preserve source selectors (0.347302ms)
+✔ source clamp and UTF16 trimming/caps remain numeric/string compatible (0.9184ms)
+✔ closed request and context cannot carry authority or member selectors (1.567401ms)
+✔ hostile getters/proxies/selectors are rejected without execution (0.353781ms)
+✔ missing and syntactically invalid status cannot return successful data (0.830799ms)
+✔ all four live lookup refusal suffixes retain unavailable versus not-found wording (1.573595ms)
+✔ resolved absent branch and direct canonical key equality (1.03161ms)
+✔ found projection keeps raw nullable fields and no invented key-to-stored-field CHECK (1.226863ms)
+✔ known, empty and unknown labels and inherited-name omission are distinct (1.086242ms)
+✔ companions keep missing versus present-null status and inherited label omission (0.56558ms)
+✔ source caveats follow empty vote history and dead-by-deadline status (0.594573ms)
+✔ unresolved supplied bill never broadens to state-wide floor votes (0.588985ms)
+✔ floor votes bind one selected session without claiming which session is current (0.628675ms)
+✔ state prefix, effective chamber and query null predicate preserve filter boundaries (0.719431ms)
+✔ empty floor search retains precise note and no member outcome claim (0.324017ms)
+✔ signed Int tallies remain independent and raw IDs/URLs have no invented format (0.429705ms)
+✔ counts and 15/25 windows are enforced without completeness invention (1.69037ms)
+✔ canonical instants, SQLDate midnight and descending null/tie ordering (1.026232ms)
+✔ closed output rejects injected authority, private columns and wrong operation (0.953643ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 236.905241
