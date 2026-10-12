@@ -1,0 +1,30 @@
+✔ one actual gateway port call persists exact result and public events (31.575119ms)
+✔ repeat lookup cannot redispatch (6.457104ms)
+✔ reject binding substitution before ports (0.446921ms)
+✔ reject client substitution before ports (0.35322ms)
+✔ reject slots substitution before ports (0.368975ms)
+✔ reject request substitution before ports (0.323847ms)
+✔ unknown claim acknowledgement prevents success and no automatic repeat (1.325402ms)
+✔ unknown markDispatching acknowledgement prevents success and no automatic repeat (1.572834ms)
+✔ unknown complete acknowledgement prevents success and no automatic repeat (4.226943ms)
+✔ revocation at before_claim suppresses release (1.315447ms)
+✔ revocation at before_dispatch suppresses release (1.606084ms)
+✔ revocation at before_store suppresses release (3.005197ms)
+✔ revocation at before_release suppresses release (3.603206ms)
+✔ parked claim deadline remains bounded (20.934418ms)
+✔ parked markDispatching deadline remains bounded (21.439079ms)
+✔ parked complete deadline remains bounded (21.11916ms)
+✔ fresh authority publishes shortened deadline before parked store (16.140072ms)
+✔ error event is sanitized observation only (2.475531ms)
+✔ revoked reconnect cannot load or expose stored result (3.734393ms)
+✔ tampered retained result rejected before release (5.388748ms)
+✔ hostile request/options do not invoke getters or proxy traps (0.298769ms)
+✔ preabort allocates no ports (0.703858ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2661.853392

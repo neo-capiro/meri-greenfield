@@ -1,0 +1,149 @@
+✖ one actual gateway port call persists exact result and public events (22.632473ms)
+✖ repeat lookup cannot redispatch (4.167954ms)
+✔ reject binding substitution before ports (1.140884ms)
+✔ reject client substitution before ports (0.348975ms)
+✔ reject slots substitution before ports (0.333852ms)
+✔ reject request substitution before ports (0.307842ms)
+✔ unknown claim acknowledgement prevents success and no automatic repeat (1.702068ms)
+✔ unknown markDispatching acknowledgement prevents success and no automatic repeat (1.772744ms)
+✔ unknown complete acknowledgement prevents success and no automatic repeat (3.26085ms)
+✔ revocation at before_claim suppresses release (1.030578ms)
+✔ revocation at before_dispatch suppresses release (1.172923ms)
+✖ revocation at before_store suppresses release (3.026649ms)
+✖ revocation at before_release suppresses release (2.763934ms)
+✔ parked claim deadline remains bounded (21.684057ms)
+✔ parked markDispatching deadline remains bounded (20.796315ms)
+✖ parked complete deadline remains bounded (2.91416ms)
+✔ fresh authority publishes shortened deadline before parked store (15.573032ms)
+✔ error event is sanitized observation only (2.147768ms)
+✖ revoked reconnect cannot load or expose stored result (3.269784ms)
+✖ tampered retained result rejected before release (2.459326ms)
+✔ hostile request/options do not invoke getters or proxy traps (0.295324ms)
+✔ preabort allocates no ports (0.668665ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 15
+ℹ fail 7
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2677.745536
+
+✖ failing tests:
+
+test at apps/control/task-lookup/delivery.test.mjs:7:1
+✖ one actual gateway port call persists exact result and public events (22.632473ms)
+  Error: LOOKUP_UNAVAILABLE
+      at Object.lookup (file:///workspace/meri-task-lookup-control-20261012/apps/control/task-lookup/delivery.mjs:31:24)
+      at async TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-20261012/apps/control/task-lookup/delivery.test.mjs:7:123)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    code: 'LOOKUP_UNAVAILABLE',
+    outcome: 'UNKNOWN',
+    events: [ { contractVersion: '0.1.0', eventId: '00000000-0000-4000-8000-000000000013', binding: [Object], sequence: 1, createdAt: '2030-03-17T17:46:40.000Z', scopes: [Array], type: 'tool.started', data: [Object] }, { contractVersion: '0.1.0', eventId: '00000000-0000-4000-8000-000000000014', binding: [Object], sequence: 2, createdAt: '2030-03-17T17:46:40.000Z', scopes: [Array], type: 'run.error', data: [Object] } ]
+  }
+
+test at apps/control/task-lookup/delivery.test.mjs:8:1
+✖ repeat lookup cannot redispatch (4.167954ms)
+  Error: LOOKUP_UNAVAILABLE
+      at Object.lookup (file:///workspace/meri-task-lookup-control-20261012/apps/control/task-lookup/delivery.mjs:31:24)
+      at async TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-20261012/apps/control/task-lookup/delivery.test.mjs:8:79)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'LOOKUP_UNAVAILABLE',
+    outcome: 'UNKNOWN',
+    events: [ { contractVersion: '0.1.0', eventId: '00000000-0000-4000-8000-000000000013', binding: [Object], sequence: 1, createdAt: '2030-03-17T17:46:40.000Z', scopes: [Array], type: 'tool.started', data: [Object] }, { contractVersion: '0.1.0', eventId: '00000000-0000-4000-8000-000000000014', binding: [Object], sequence: 2, createdAt: '2030-03-17T17:46:40.000Z', scopes: [Array], type: 'run.error', data: [Object] } ]
+  }
+
+test at apps/control/task-lookup/delivery.test.mjs:11:87
+✖ revocation at before_store suppresses release (3.026649ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: LOOKUP_UNAVAILABLE
+      at async TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-20261012/apps/control/task-lookup/delivery.test.mjs:11:302)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: LOOKUP_UNAVAILABLE
+        at Object.lookup (file:///workspace/meri-task-lookup-control-20261012/apps/control/task-lookup/delivery.mjs:31:24)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-20261012/apps/control/task-lookup/delivery.test.mjs:11:302)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/task-lookup/delivery.test.mjs:11:87
+✖ revocation at before_release suppresses release (2.763934ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: LOOKUP_UNAVAILABLE
+      at async TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-20261012/apps/control/task-lookup/delivery.test.mjs:11:302)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: LOOKUP_UNAVAILABLE
+        at Object.lookup (file:///workspace/meri-task-lookup-control-20261012/apps/control/task-lookup/delivery.mjs:31:24)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-20261012/apps/control/task-lookup/delivery.test.mjs:11:302)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/task-lookup/delivery.test.mjs:12:60
+✖ parked complete deadline remains bounded (2.91416ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: LOOKUP_UNAVAILABLE
+      at async TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-20261012/apps/control/task-lookup/delivery.test.mjs:12:205)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: LOOKUP_UNAVAILABLE
+        at Object.lookup (file:///workspace/meri-task-lookup-control-20261012/apps/control/task-lookup/delivery.mjs:31:24)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-20261012/apps/control/task-lookup/delivery.test.mjs:12:205)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/task-lookup/delivery.test.mjs:15:1
+✖ revoked reconnect cannot load or expose stored result (3.269784ms)
+  Error: LOOKUP_UNAVAILABLE
+      at Object.lookup (file:///workspace/meri-task-lookup-control-20261012/apps/control/task-lookup/delivery.mjs:31:24)
+      at async TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-20261012/apps/control/task-lookup/delivery.test.mjs:15:101)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'LOOKUP_UNAVAILABLE',
+    outcome: 'UNKNOWN',
+    events: [ { contractVersion: '0.1.0', eventId: '00000000-0000-4000-8000-000000000013', binding: [Object], sequence: 1, createdAt: '2030-03-17T17:46:40.000Z', scopes: [Array], type: 'tool.started', data: [Object] }, { contractVersion: '0.1.0', eventId: '00000000-0000-4000-8000-000000000014', binding: [Object], sequence: 2, createdAt: '2030-03-17T17:46:40.000Z', scopes: [Array], type: 'run.error', data: [Object] } ]
+  }
+
+test at apps/control/task-lookup/delivery.test.mjs:16:1
+✖ tampered retained result rejected before release (2.459326ms)
+  Error: LOOKUP_UNAVAILABLE
+      at Object.lookup (file:///workspace/meri-task-lookup-control-20261012/apps/control/task-lookup/delivery.mjs:31:24)
+      at async TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-20261012/apps/control/task-lookup/delivery.test.mjs:16:96)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'LOOKUP_UNAVAILABLE',
+    outcome: 'UNKNOWN',
+    events: [ { contractVersion: '0.1.0', eventId: '00000000-0000-4000-8000-000000000013', binding: [Object], sequence: 1, createdAt: '2030-03-17T17:46:40.000Z', scopes: [Array], type: 'tool.started', data: [Object] }, { contractVersion: '0.1.0', eventId: '00000000-0000-4000-8000-000000000014', binding: [Object], sequence: 2, createdAt: '2030-03-17T17:46:40.000Z', scopes: [Array], type: 'run.error', data: [Object] } ]
+  }

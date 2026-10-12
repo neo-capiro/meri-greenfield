@@ -1,0 +1,111 @@
+node:internal/modules/esm/resolve:271
+    throw new ERR_MODULE_NOT_FOUND(
+          ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/meri-task-slice-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs' imported from /workspace/meri-task-slice-20261012/apps/gateway/test/action-item-context-independent.test.mjs
+    at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+    at moduleResolve (node:internal/modules/esm/resolve:865:10)
+    at defaultResolve (node:internal/modules/esm/resolve:992:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+    at #resolve (node:internal/modules/esm/loader:683:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33)
+    at ModuleJob.link (node:internal/modules/esm/module_job:253:17) {
+  code: 'ERR_MODULE_NOT_FOUND',
+  url: 'file:///workspace/meri-task-slice-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs'
+}
+
+Node.js v24.19.0
+✖ apps/gateway/test/action-item-context-independent.test.mjs (103.743757ms)
+✔ actual resolver and authority deliver normalized client filters then validate proof-bound recommendation (18.968026ms)
+✔ existing opaque cursor mode crosses actual normalization with honest partial coverage (3.68948ms)
+✔ unsupported model request refuses before reservation or handler: {} (0.732611ms)
+✔ unsupported model request refuses before reservation or handler: {"clientId":null} (0.405138ms)
+✔ unsupported model request refuses before reservation or handler: {"actionItemId":"88888888-8888-4888-8888-888888888888"} (0.534163ms)
+✔ unsupported model request refuses before reservation or handler: {"clientId":"synthetic-client","limit":51} (0.546602ms)
+✔ unsupported model request refuses before reservation or handler: {"clientId":"synthetic-client","actorId":"other"} (0.247101ms)
+✔ current policy/source/grant/revocation/fence refusal precedes source handler (1.055776ms)
+✔ current policy/source/grant/revocation/fence refusal precedes source handler (0.897969ms)
+✔ current policy/source/grant/revocation/fence refusal precedes source handler (0.827714ms)
+✔ current policy/source/grant/revocation/fence refusal precedes source handler (0.364568ms)
+✔ current policy/source/grant/revocation/fence refusal precedes source handler (0.384508ms)
+✔ foreign requested client is a request, not an authorization grant (0.75215ms)
+✔ actual action result validation rejects actor substitution (1.857962ms)
+✔ actual action result validation rejects tenant substitution (1.595408ms)
+✔ actual action result validation rejects fence substitution (1.93656ms)
+✔ actual action result validation rejects client substitution (1.593114ms)
+✔ actual action result validation rejects subject substitution (1.564131ms)
+✔ actual action result validation rejects content substitution (1.636339ms)
+✔ actual action result validation rejects proof substitution (1.57689ms)
+✔ actual action result validation rejects acceptedTask substitution (1.367435ms)
+✔ actual action result validation rejects completed substitution (1.498712ms)
+✔ actual action result validation rejects delivery substitution (1.477821ms)
+✔ actual action result validation rejects evidence substitution (1.698303ms)
+✔ actual action result validation rejects absence substitution (1.19759ms)
+✔ actual action result validation rejects enumeration substitution (1.466644ms)
+✔ actual action result validation rejects fresh substitution (1.446334ms)
+✔ post-handler revocation prevents settlement/result release and retains uncertain budget (1.555668ms)
+✔ cancellation after source work prevents result release (1.007574ms)
+✔ unknown settlement never releases a validated action result (1.985694ms)
+✔ production catalog and gateway remain unavailable despite the new private contract (15.605382ms)
+✔ complete action profile resolves the currently selected UUID through actual canonical contract (4.81742ms)
+✔ unqualified action list/name resolution remains unavailable (0.445129ms)
+✔ unqualified action list/name resolution remains unavailable (0.287742ms)
+✔ unqualified action list/name resolution remains unavailable (0.198859ms)
+✔ current policy subject must select the exact requested single client (0.344548ms)
+✔ current policy subject must select the exact requested single client (0.2195ms)
+✔ current policy subject must select the exact requested single client (0.175504ms)
+✔ current policy subject must select the exact requested single client (0.169374ms)
+✔ later context observations refuse changed binding/policy/client while allowing fresh decision IDs (1.688407ms)
+✔ complete action envelope rejects wrong operation/digest and extra fields before family validation (1.013864ms)
+✔ all97 canonical entries and complete action handler remain unavailable (13.90747ms)
+✔ initial identity: capability expiry immediately bounds the next parked authority port (29.871076ms)
+✔ before reservation: capability expiry immediately bounds the next parked authority port (22.293103ms)
+✔ before reservation: run before business immediately bounds the next parked authority port (24.78661ms)
+✔ before reservation: run before source immediately bounds the next parked authority port (22.465552ms)
+✔ before effect: capability expiry immediately bounds the next parked authority port (23.903062ms)
+✔ before effect: run before business immediately bounds the next parked authority port (22.914837ms)
+✔ before effect: run before source immediately bounds the next parked authority port (21.241752ms)
+✔ before release: capability expiry immediately bounds the next parked authority port (24.981923ms)
+✔ before release: run before business immediately bounds the next parked authority port (24.443027ms)
+✔ before release: run before source immediately bounds the next parked authority port (24.531115ms)
+✔ after settlement: capability expiry immediately bounds the next parked authority port (24.016622ms)
+✔ after settlement: run before business immediately bounds the next parked authority port (23.041137ms)
+✔ after settlement: run before source immediately bounds the next parked authority port (22.618917ms)
+✔ an initial capability completing after cancellation cannot start current-run lookup (21.731057ms)
+✔ stale or invalid deadline facts fail closed before the subsequent port (2.079835ms)
+✔ a capability issuance timestamp that cannot become an epoch time cannot dispatch (0.351569ms)
+✔ production catalog exposes no tools, has no activation override, performs zero effects (22.861476ms)
+✔ external object/proxy/getter/toJSON and thrown proxy are never inspected (0.308704ms)
+✔ invalid canonical domain arguments refuse before reservation or handler (3.429113ms)
+✔ raw authority injection is rejected before any trusted port or effect (0.467773ms)
+✔ a mismatched trusted catalog cannot dispatch a substituted or raw SQL operation (0.311969ms)
+✔ actual federal defaults precede canonical digest and resource reservation (6.283012ms)
+✔ canonical raw federal output without qualified lineage cannot be released (1.99584ms)
+✔ the original run deadline stops parked business/source lookup before any reservation (41.048057ms)
+✔ expiry, wrong audience, stale fence, missing grants and disabled source refuse (2.4886ms)
+✔ revocation during reservation prevents handler and preserves uncertain reservation (0.947975ms)
+✔ replacement during source-policy lookup is rejected by the final current-run read (0.69211ms)
+✔ revocation during handler or settlement never releases the result (3.198537ms)
+✔ malformed or oversized raw output and foreign lineage cannot escape (4.004558ms)
+✔ uncertain/malformed budget acknowledgements never dispatch or refund (0.606151ms)
+✔ deadline validates before allocation, shrinks absolutely and closes owned timer/listener (0.256776ms)
+✔ timeout suppresses late work without claiming physical stop or refund (21.064806ms)
+✔ configuration and import allocate no live resource (0.606942ms)
+✔ a deadline shortened during the handler bounds parked settlement and preserves uncertainty (22.127674ms)
+ℹ tests 77
+ℹ suites 0
+ℹ pass 76
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5697.38869
+
+✖ failing tests:
+
+test at apps/gateway/test/action-item-context-independent.test.mjs:1:1
+✖ apps/gateway/test/action-item-context-independent.test.mjs (103.743757ms)
+  'test failed'

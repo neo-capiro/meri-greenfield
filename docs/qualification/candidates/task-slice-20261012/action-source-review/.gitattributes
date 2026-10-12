@@ -1,0 +1,2 @@
+resolver-repaired.stdout.bin -text -diff
+whitespace-before.stdout.bin -text -diff
