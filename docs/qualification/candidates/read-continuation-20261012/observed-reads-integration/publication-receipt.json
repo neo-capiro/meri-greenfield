@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "publication": {
+    "pr": 32,
+    "url": "https://github.com/neo-capiro/meri-greenfield/pull/32",
+    "state": "open",
+    "draft": true,
+    "merged": false,
+    "base": "task/meri-civic-reads-20261012",
+    "baseSha": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+    "head": "task/meri-observed-reads-20261012",
+    "headSha": "088147285d0aea90230a570ac8ea71e6dc144d56",
+    "observedAt": "2026-10-12T19:31:24Z"
+  },
+  "source": "753566baf2d230ed241941dcdeca41625277cb1d",
+  "independentReview": "ab637c786bb344719bb096630314949b4b99e657",
+  "packetCommit": "088147285d0aea90230a570ac8ea71e6dc144d56",
+  "packetManifest": {
+    "members": 257,
+    "sha256": "c86f5eb997e3bdda0d188e57ba2aaa64e2c587e1ffb2432fea74830af2211357"
+  },
+  "remoteAnchors": {
+    "main": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc",
+    "rc1Tag": "meri-rc1-20261012",
+    "rc1TagObject": "b157217e69d36da1b53fa5944a0781a2f53a2f79",
+    "rc1Peeled": "2f06feccca731d6cd388612cd568185ecc29668f"
+  },
+  "verdict": "ACCEPT_SOURCE",
+  "runtimeAccepted": false,
+  "receiptExcludedFromFrozenManifest": true
+}
