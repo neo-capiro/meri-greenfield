@@ -1,0 +1,75 @@
+{
+  "verdict": "ACCEPT_SOURCE_PACKET",
+  "execution": "HOLD",
+  "sourceCommit": "32ce5d9bfa67ab8487e159d252acf0f1707bc72e",
+  "sourceTree": "20c3191ba6258d4a460f7f035e1abfe7760f6fae",
+  "baseCommit": "1e6d430cf9c239caca4198aea42a762f13021cd5",
+  "baseTrackedFilesUnchanged": 3215,
+  "newFilesOnly": 13,
+  "authorManifestRowsVerified": 12,
+  "sourceWorktreeClean": true,
+  "independentChecksPassed": 58,
+  "negativeControlsRejected": 6,
+  "authorChecksPassed": 7,
+  "targetModuleImports": 0,
+  "nativeExecutions": 0,
+  "privateZipReads": 0,
+  "processCleanup": "Read-only Git children used check_output with10s timeout; each completed and was waited. Local Python and Node checks returned exit0, empty stderr. No background job or native process created. Windows descendant containment/physical teardown not evaluated.",
+  "reviewEvidence": [
+    {
+      "path": "author-replay.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "author-replay.stdout.json",
+      "bytes": 902,
+      "sha256": "153d7ea2aa6842d7d85b7b847f3b261153037353c7e3df622b236ec6bed23317"
+    },
+    {
+      "path": "frozen-inputs.json",
+      "bytes": 1445,
+      "sha256": "40969ab4f3ae9e7a1b99052693cacc8f9731b8e8b3f7f550ac4f9e2da6e2463f"
+    },
+    {
+      "path": "independent-checks.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "independent-checks.stdout.json",
+      "bytes": 3082,
+      "sha256": "f6fe4d78a48930a12ec407da247a581f151e7647a77e0d0b50d9ded5a5ee5048"
+    },
+    {
+      "path": "pre-host-correction-author-replay.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pre-host-correction-author-replay.stdout.json",
+      "bytes": 902,
+      "sha256": "153d7ea2aa6842d7d85b7b847f3b261153037353c7e3df622b236ec6bed23317"
+    },
+    {
+      "path": "pre-host-correction-independent-checks.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pre-host-correction-independent-checks.stdout.json",
+      "bytes": 2927,
+      "sha256": "d353b6fe3d4413052c101fa94d432ed1353599c23adf242c3c1c9642b177da92"
+    },
+    {
+      "path": "pre-host-correction-preservation-receipt.json",
+      "bytes": 814,
+      "sha256": "742c43d29af9e8c8ac8a6a5f4cf48c4319a2f55828cc91562e1d29d4dd02f52f"
+    },
+    {
+      "path": "verify-packet.py",
+      "bytes": 6459,
+      "sha256": "894a22dfb8554dca7032b31660fc4668d129ad7f8ea71d172f1cb687441df1eb"
+    }
+  ]
+}
