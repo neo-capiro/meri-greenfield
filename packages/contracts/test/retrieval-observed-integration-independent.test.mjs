@@ -8,6 +8,7 @@ import {resolveOperationContract,assertCatalog} from '../retrieval-0.2/validate.
 import {CATALOG_OPERATION_BINDINGS as bindings} from '../retrieval-0.2/catalog-validation.mjs';
 import {createSourceDisabledGateway} from '../../../apps/gateway/index.mjs';
 import {fixture,limits,NOW,uuid} from '../../../apps/gateway/test/fixtures.mjs';
+const backendIds=["query_outreach", "search_program_elements", "get_program_element", "get_pe_budget_timeline"];
 const ids=['search_public_web','scrape_web_page','search_sam_opportunities','get_florida_budget_project'];
 const [SEARCH,PAGE,SAM,FLORIDA]=ids,T='2026-10-12T12:00:00.000Z',U='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',V='bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
 const ev=new URL('../../../docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/',import.meta.url);
@@ -26,13 +27,13 @@ const check=(id,page=output(id),req=request(id),ctx=context(id))=>resolve(id).as
 const samRow=()=>({id:U,noticeId:'notice',solicitationNumber:null,title:'Synthetic notice',noticeType:'stored',agency:null,office:null,pscCode:null,naicsCode:'541100',postedDate:null,responseDeadline:null,description:'Synthetic description.',sourceUrl:null,active:true});
 
 test('original139 rows and63 descriptors/callbacks survive exactly four full mappings',()=>{
- assertCatalog(catalog);assert.equal(catalog.operations.length,67);assert.equal(bindings.length,67);assert.deepEqual(catalog.operations.filter(x=>!ids.includes(x.operation.id)),oldCatalog.operations);
- assert.equal(catalog.originals.length,139);assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);assert.equal(catalog.originals.filter(x=>x.disposition==='deferred').length,43);assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,66);assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.replacement===null).length,30);
- for(const old of oldCatalog.originals)assert.deepEqual(catalog.originals.find(x=>x.id===old.id),ids.includes(old.id)?{...old,state:'mapped',replacement:{id:old.id,version:'0.2.0'}}:old);
- assert.deepEqual(JSON.parse(JSON.stringify(bindings.filter(x=>!ids.includes(x.id)),(k,v)=>typeof v==='function'?{source:v.toString()}:v)),oldBindings);assert.equal(catalog.originals.find(x=>x.id==='query_action_items').replacement,null);
+ assertCatalog(catalog);assert.equal(catalog.operations.length,71);assert.equal(bindings.length,71);assert.deepEqual(catalog.operations.filter(x=>!ids.includes(x.operation.id)&&!backendIds.includes(x.operation.id)),oldCatalog.operations);
+ assert.equal(catalog.originals.length,139);assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);assert.equal(catalog.originals.filter(x=>x.disposition==='deferred').length,43);assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,70);assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.replacement===null).length,26);
+ for(const old of oldCatalog.originals)assert.deepEqual(catalog.originals.find(x=>x.id===old.id),(ids.includes(old.id)||backendIds.includes(old.id))?{...old,state:'mapped',replacement:{id:old.id,version:'0.2.0'}}:old);
+ assert.deepEqual(JSON.parse(JSON.stringify(bindings.filter(x=>!ids.includes(x.id)&&!backendIds.includes(x.id)),(k,v)=>typeof v==='function'?{source:v.toString()}:v)),oldBindings);assert.equal(catalog.originals.find(x=>x.id==='query_action_items').replacement,null);
  for(const id of ['query_global_data','save_memory','create_task','run_analysis'])assert.throws(()=>resolve(id));
 });
-test('all67 descriptors have exact schema byte pins and no implementation admission',()=>{
+test('all71 descriptors have exact schema byte pins and no implementation admission',()=>{
  for(const b of bindings){const d=resolve(b.id).descriptor,bytes=readFileSync(new URL(`../retrieval-0.2/${b.group}.schema.json`,import.meta.url)),s=JSON.parse(bytes);for(const [field,def]of[['inputSchema',b.input],['outputSchema',b.output]])assert.deepEqual(d[field],{id:`${s.$id}#/$defs/${def}`,sha256:createHash('sha256').update(bytes).digest('hex')});assert.equal(d.handler,null);assert.equal(d.availability,'unimplemented');assert.equal(d.qualification,'pending');assert.equal(d.retry.maxRetries,0);}
 });
 for(const id of ids){

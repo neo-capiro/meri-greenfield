@@ -1,3 +1,5 @@
+import { createOutreachQueryValidators } from './outreach-query-validation.mjs';
+import { createProgramElementValidators } from './program-elements-validation.mjs';
 import { createPublicWebValidators } from './public-web-validation.mjs';
 import { createSamOpportunitiesValidators } from './sam-opportunities-validation.mjs';
 import { createFloridaBudgetValidators } from './florida-budget-validation.mjs';
@@ -42,7 +44,7 @@ import addFormats from 'ajv-formats';
 import { canonicalSha256 } from '../validate.mjs';
 
 export const contractVersion = '0.2.0';
-const groups = ['common', 'catalog', 'retrieval', 'skill', 'mail', 'meeting-source', 'operational-reads', 'federal-market', 'data-search', 'memory-proposals', 'client-registry', 'research-portfolio', 'business-development', 'funding-opportunities', 'client-documents', 'public-data', 'district-nexus', 'state-legislation', 'public-reports', 'disclosures', 'acquisition-personnel', 'federal-legislation', 'bill-text', 'legislative-directory', 'pe-references', 'rule-status', 'certification-status', 'stored-intelligence', 'dataset-metadata', 'facility-representation', 'state-status-votes', 'regulatory-dockets', 'tenant-contacts', 'entity-candidates', 'tracked-bills', 'intelligence-summary', 'public-web', 'sam-opportunities', 'florida-budget'];
+const groups = ['common', 'catalog', 'retrieval', 'skill', 'mail', 'meeting-source', 'operational-reads', 'federal-market', 'data-search', 'memory-proposals', 'client-registry', 'research-portfolio', 'business-development', 'funding-opportunities', 'client-documents', 'public-data', 'district-nexus', 'state-legislation', 'public-reports', 'disclosures', 'acquisition-personnel', 'federal-legislation', 'bill-text', 'legislative-directory', 'pe-references', 'rule-status', 'certification-status', 'stored-intelligence', 'dataset-metadata', 'facility-representation', 'state-status-votes', 'regulatory-dockets', 'tenant-contacts', 'entity-candidates', 'tracked-bills', 'intelligence-summary', 'public-web', 'sam-opportunities', 'florida-budget', 'outreach-query', 'program-elements'];
 const schemaBytes = groups.map(group => readFileSync(new URL(`./${group}.schema.json`, import.meta.url)));
 const schemas = schemaBytes.map(raw => JSON.parse(raw));
 const ajv = new Ajv({ strict: true, allErrors: true });
@@ -253,6 +255,9 @@ const publicWebValidators = createPublicWebValidators({validateShape, schema: sc
 const samOpportunitiesValidators = createSamOpportunitiesValidators({validateShape, schema: schemas[groups.indexOf('sam-opportunities')]});
 const floridaBudgetValidators = createFloridaBudgetValidators({validateShape, schema: schemas[groups.indexOf('florida-budget')]});
 
+const outreachQueryValidators = createOutreachQueryValidators({validateShape, schema: schemas[groups.indexOf('outreach-query')]});
+const programElementValidators = createProgramElementValidators({validateShape, schema: schemas[groups.indexOf('program-elements')]});
+
 export function assertSkillManifest(manifest, catalog) {
   validateShape('SkillManifest', manifest); assertCatalog(catalog);
   unique(manifest.requiredSources.map(source => `${source.sourceId}:${source.purpose}`), 'required skill source');
@@ -297,4 +302,5 @@ export const {resolveOperationContract} = createOperationContracts({catalog: sou
     ...disclosuresValidators, ...acquisitionPersonnelValidators, ...federalLegislationValidators, ...billTextValidators,
     ...legislativeDirectoryValidators, ...peReferenceValidators, ...ruleStatusValidators, ...certificationStatusValidators, ...storedIntelligenceValidators, ...datasetMetadataValidators, ...facilityRepresentationValidators,
     ...stateStatusVotesValidators, ...regulatoryDocketsValidators, ...tenantContactsValidators, ...entityCandidatesValidators, ...trackedBillsValidators, ...intelligenceSummaryValidators,
-    ...publicWebValidators, ...samOpportunitiesValidators, floridaBudgetValidators})});
+    ...publicWebValidators, ...samOpportunitiesValidators, floridaBudgetValidators,
+    ...outreachQueryValidators, ...programElementValidators})});

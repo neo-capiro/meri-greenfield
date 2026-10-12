@@ -12,6 +12,22 @@ const searched = result => ({input: result.input, metadata: {clientScope: result
 const federal = result => ({input: result.query, metadata: {queryScope: result.queryScope, clientScope: result.clientScope}});
 
 export const CATALOG_OPERATION_BINDINGS = Object.freeze([
+  Object.freeze({id: 'query_outreach', nativeId: 'query_outreach', group: 'outreach-query', input: 'OutreachQueryInput', output: 'OutreachQueryOutput', version: '0.2.0',
+    contextKeys: Object.freeze(["clientResolution"]),
+    normalize: (v, request, context, binding) => (v.normalizeOutreachQueryInput(binding.id, request, clock(context, binding.contextKeys))),
+    outputAssert: (v, page, request, context, binding) => v.assertOutreachQueryOutput(binding.id, page, request, clock(context, binding.contextKeys))}),
+  Object.freeze({id: 'search_program_elements', nativeId: 'search_program_elements', group: 'program-elements', input: 'ProgramElementSearchInput', output: 'ProgramElementSearchOutput', version: '0.2.0',
+    contextKeys: Object.freeze(["evidenceAccuracyMode"]),
+    normalize: (v, request, context, binding) => ({input: v.normalizeProgramElementInput(binding.id, request, clock(context, binding.contextKeys))}),
+    outputAssert: (v, page, request, context, binding) => v.assertProgramElementOutput(binding.id, page, request, clock(context, binding.contextKeys))}),
+  Object.freeze({id: 'get_program_element', nativeId: 'get_program_element', group: 'program-elements', input: 'ProgramElementDetailInput', output: 'ProgramElementDetailOutput', version: '0.2.0',
+    contextKeys: Object.freeze(["evidenceAccuracyMode"]),
+    normalize: (v, request, context, binding) => ({input: v.normalizeProgramElementInput(binding.id, request, clock(context, binding.contextKeys))}),
+    outputAssert: (v, page, request, context, binding) => v.assertProgramElementOutput(binding.id, page, request, clock(context, binding.contextKeys))}),
+  Object.freeze({id: 'get_pe_budget_timeline', nativeId: 'get_pe_budget_timeline', group: 'program-elements', input: 'ProgramElementTimelineInput', output: 'ProgramElementTimelineOutput', version: '0.2.0',
+    contextKeys: Object.freeze(["evidenceAccuracyMode"]),
+    normalize: (v, request, context, binding) => ({input: v.normalizeProgramElementInput(binding.id, request, clock(context, binding.contextKeys))}),
+    outputAssert: (v, page, request, context, binding) => v.assertProgramElementOutput(binding.id, page, request, clock(context, binding.contextKeys))}),
   Object.freeze({id: 'search_public_web', nativeId: 'search_public_web', group: 'public-web', input: 'PublicWebSearchInput', output: 'PublicWebSearchOutput', version: '0.2.0',
     contextKeys: Object.freeze([]),
     normalize: (v, request, context, binding) => (v.normalizePublicWebInput(binding.id, request, clock(context, binding.contextKeys))),

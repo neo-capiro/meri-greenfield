@@ -1,7 +1,7 @@
 {
   "contractVersion": "0.2.0",
   "catalogId": "meri.retrieval",
-  "catalogVersion": "0.2.9",
+  "catalogVersion": "0.2.10",
   "sourceRegistryCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
   "originals": [
     {
@@ -748,22 +748,31 @@
       "id": "search_program_elements",
       "disposition": "selected",
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "search_program_elements",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "get_program_element",
       "disposition": "selected",
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "get_program_element",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "get_pe_budget_timeline",
       "disposition": "selected",
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "get_pe_budget_timeline",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "get_pe_buyer_workspace",
@@ -942,8 +951,11 @@
       "id": "query_outreach",
       "disposition": "selected",
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "query_outreach",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "read_client_documents",
@@ -5859,6 +5871,278 @@
       ],
       "fixtureIds": [
         "catalog.binding.get_florida_budget_project"
+      ]
+    },
+    {
+      "operation": {
+        "id": "query_outreach",
+        "version": "0.2.0"
+      },
+      "displayName": "Query outreach",
+      "whenToUse": "Inspect the declared source projection through a qualified source owner under current authorization.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Source requirements are design declarations; current grants, feature flags, availability and producer authority remain unqualified.",
+        "Local source validation does not qualify current identity, source access, result release or runtime.",
+        "Exact records and campaign lists preserve distinct creator/tenant/client policy obligations. Trusted client-resolution facts are correlated assertions, never current grants or client visibility proof.",
+        "Complete projected record, meeting, prep and metadata-only debrief fields remain separate from campaign-list fields. Opaque stored JSON is inert data, not trusted instructions; body truncation preserves the source projection.",
+        "Observed campaign totals describe the fetched source slice. Hidden updatedAt sorting is not reconstructed from createdAt, and no send, source read or mutation is implemented."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "outreach_query",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:outreach-query:0.2.0#/$defs/OutreachQueryInput",
+        "sha256": "b82eb8024c2e68461f68e29c15b0e518ae5b93c0e1bc13fffd6ea58319801708"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:outreach-query:0.2.0#/$defs/OutreachQueryOutput",
+        "sha256": "b82eb8024c2e68461f68e29c15b0e518ae5b93c0e1bc13fffd6ea58319801708"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.query_outreach"
+      ]
+    },
+    {
+      "operation": {
+        "id": "search_program_elements",
+        "version": "0.2.0"
+      },
+      "displayName": "Search program elements",
+      "whenToUse": "Inspect the declared source projection through a qualified source owner under current authorization.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Source requirements are design declarations; current grants, feature flags, availability and producer authority remain unqualified.",
+        "Local source validation does not qualify current identity, source access, result release or runtime.",
+        "Search, full detail and budget timelines preserve distinct fiscal years, budget stages, chamber/cycle and provenance projections; stored or asserted claims do not establish actual source truth or currentness.",
+        "Trusted evidence-accuracy mode selects the declared source projection without granting authority. Exact legacy serialization and normalized monetary wire behavior require a qualified source adapter.",
+        "Private Decimal fields preserve precision without coercion into derived numeric funding claims. Current querying, source completeness, identity resolution and producer qualification remain unavailable."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "program_elements",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:program-elements:0.2.0#/$defs/ProgramElementSearchInput",
+        "sha256": "ebfc84bab72005e26dee338fcce33905cb2e4e2a5046440226a48fabf02f4477"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:program-elements:0.2.0#/$defs/ProgramElementSearchOutput",
+        "sha256": "ebfc84bab72005e26dee338fcce33905cb2e4e2a5046440226a48fabf02f4477"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.search_program_elements"
+      ]
+    },
+    {
+      "operation": {
+        "id": "get_program_element",
+        "version": "0.2.0"
+      },
+      "displayName": "Get program element",
+      "whenToUse": "Inspect the declared source projection through a qualified source owner under current authorization.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Source requirements are design declarations; current grants, feature flags, availability and producer authority remain unqualified.",
+        "Local source validation does not qualify current identity, source access, result release or runtime.",
+        "Search, full detail and budget timelines preserve distinct fiscal years, budget stages, chamber/cycle and provenance projections; stored or asserted claims do not establish actual source truth or currentness.",
+        "Trusted evidence-accuracy mode selects the declared source projection without granting authority. Exact legacy serialization and normalized monetary wire behavior require a qualified source adapter.",
+        "Private Decimal fields preserve precision without coercion into derived numeric funding claims. Current querying, source completeness, identity resolution and producer qualification remain unavailable."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "program_elements",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:program-elements:0.2.0#/$defs/ProgramElementDetailInput",
+        "sha256": "ebfc84bab72005e26dee338fcce33905cb2e4e2a5046440226a48fabf02f4477"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:program-elements:0.2.0#/$defs/ProgramElementDetailOutput",
+        "sha256": "ebfc84bab72005e26dee338fcce33905cb2e4e2a5046440226a48fabf02f4477"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.get_program_element"
+      ]
+    },
+    {
+      "operation": {
+        "id": "get_pe_budget_timeline",
+        "version": "0.2.0"
+      },
+      "displayName": "Get pe budget timeline",
+      "whenToUse": "Inspect the declared source projection through a qualified source owner under current authorization.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Source requirements are design declarations; current grants, feature flags, availability and producer authority remain unqualified.",
+        "Local source validation does not qualify current identity, source access, result release or runtime.",
+        "Search, full detail and budget timelines preserve distinct fiscal years, budget stages, chamber/cycle and provenance projections; stored or asserted claims do not establish actual source truth or currentness.",
+        "Trusted evidence-accuracy mode selects the declared source projection without granting authority. Exact legacy serialization and normalized monetary wire behavior require a qualified source adapter.",
+        "Private Decimal fields preserve precision without coercion into derived numeric funding claims. Current querying, source completeness, identity resolution and producer qualification remain unavailable."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "program_elements",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:program-elements:0.2.0#/$defs/ProgramElementTimelineInput",
+        "sha256": "ebfc84bab72005e26dee338fcce33905cb2e4e2a5046440226a48fabf02f4477"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:program-elements:0.2.0#/$defs/ProgramElementTimelineOutput",
+        "sha256": "ebfc84bab72005e26dee338fcce33905cb2e4e2a5046440226a48fabf02f4477"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.get_pe_budget_timeline"
       ]
     }
   ]
