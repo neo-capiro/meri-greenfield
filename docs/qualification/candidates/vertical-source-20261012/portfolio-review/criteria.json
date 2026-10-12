@@ -1,0 +1,16 @@
+{
+  "base": "e5fb3963de787bbd7b7663316c368f15814897da",
+  "status": "FROZEN_BEFORE_ROOT_CANDIDATE",
+  "scope": "Explicitly authorized projected Portfolio review, retained snapshot and current continuity; no unrestricted history/raw members",
+  "criteria": [
+    "Closed inert EvidenceInput uses explicit origin review/snapshot/current_continuity; exact review/snapshot UUID required in corresponding branch; no model authority/client-access spoofing.",
+    "Reuse existing detail normalizer and trusted exact single Portfolio subject; enforce record/Portfolio/tenant current context correlation through canonical authority.",
+    "GET only existing reviews four lanes, snapshots/:record and annual-review paths with encoded IDs; no analytics GET, writes or broader collection inference.",
+    "Review exact selection from complete bounded lane arrays; duplicate/inconsistent matches refuse rather than choose first; missing exact record returns UNAVAILABLE and never corpus absence.",
+    "Preserve all relevant stored/current scalar and opaque evidence projections plus actual clientAccessRequirements; opaque content remains untrusted and no authority inferred.",
+    "Four-lane review reads explicitly non-atomic; current continuity explicitly derived/current; snapshots explicitly retained, not current-fact guarantee; no fabricated completeness/freshness or source resolution.",
+    "Original private/read family schemas/validators and public0.1 preserved unless exact root allocation; one canonical registry, no copied legacy implementation or JSON walker.",
+    "Actual connected read adapter tests cover current authority revocation, exact endpoint/request identity, response substitution, hostile getters/proxies, bounded size, cancellation/deadline/late-result suppression and no mutation.",
+    "Source/local synthetic controls only; source connectivity/runtime/current policy/provider/SQL/database unqualified. Exact candidate commit and raw failures required for final verdict."
+  ]
+}
