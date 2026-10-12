@@ -129,6 +129,16 @@ Repaired author suite **28/28 PASS**, `country-null-repaired.*`, PG **159567
 absent**, exit0/no timeout/kill. Original failure outputs/assertions stay in the
 evidence packet. Exact committed-source checks and preservation follow below.
 
+A second independent finding at source commit
+`6e4f0c56912ba64f67b1a827450bf0b6d97afb89` showed that Object.hasOwn coerced a
+non-string operation argument, allowing an effectful Symbol.toPrimitive getter.
+The independent original30 controls retained **29/30 PASS**. Author reproduced
+**28/29 PASS** in `operation-coercion-reproduction.*`, PG **160655 absent**, and
+preserved the changed test bytes/hash alongside the immutable failed source
+commit. The repair checks the selector's primitive string type before any property
+key conversion. This narrows standalone admission without changing canonical
+string operation identities or widening authority.
+
 Independent review and canonical root integration remain separate. Live source
 queries, role/entitlement adapters, providers, database, native execution and G1
 runtime qualification are **UNRUN**. Source acceptance is not runtime acceptance;

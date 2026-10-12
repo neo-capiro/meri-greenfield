@@ -5,7 +5,7 @@ import {snapshotOperationData} from './operation-contracts.mjs';
 const fail=message=>{throw new Error(message);};
 const families=Object.freeze({search_sec_filings:'Sec',search_fara_registrations:'Fara',search_lda_filings:'Lda'});
 function family(operation) {
-  if (!Object.hasOwn(families,operation)) fail('Unknown disclosures operation');
+  if (typeof operation!=='string' || !Object.hasOwn(families,operation)) fail('Unknown disclosures operation');
   return families[operation];
 }
 const optional=(value,max)=>typeof value==='string' && value.trim() ? value.trim().slice(0,max) : null;

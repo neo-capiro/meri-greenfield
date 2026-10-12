@@ -195,3 +195,9 @@ test('canonical data boundary refuses hidden fields, symbols, cycles and alterna
   const page=lda();page.data[0].issueCodes=[page];assert.throws(()=>check(LDA,page,{}));
   assert.throws(()=>normalize('search_lda_contributions',{}));assert.throws(()=>normalize('constructor',{}));
 });
+test('operation selector refuses object coercion without invoking caller code',()=>{
+  let effects=0;
+  const operation={get [Symbol.toPrimitive](){effects++;return ()=>SEC;}};
+  assert.throws(()=>normalize(operation,{}));assert.equal(effects,0);
+  assert.throws(()=>check(new Proxy({},{get(){effects++;return ()=>SEC;}}),sec(),{}));assert.equal(effects,0);
+});
