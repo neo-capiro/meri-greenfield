@@ -1,0 +1,134 @@
+{
+  "source": "57e09ebfda15d6057bdf4bfb7fc84b4061eac03f",
+  "scope": "INDEPENDENT_SOURCE_REVIEW_ONLY",
+  "excluded": [
+    "MANIFEST.json (self recursion)"
+  ],
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-REGULATORY-DOCKETS-REVIEW-20261012.md",
+      "bytes": 5961,
+      "sha256": "4967318ed1d9a66a3b94696863ac0b1a1c1a65d62a59d25fcd1a435200c22f24"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-review/audit.py",
+      "bytes": 5485,
+      "sha256": "738888826e2bed5d340494df466c82d4d5f4d68014d27faa658112f744e86291"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-review/author-packet.json",
+      "bytes": 1412,
+      "sha256": "4c6c77ebe4cf1550b3e712db8762a005c1e8f0d6e88c8b17d341fd28ab564b4f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-review/author-packet.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-review/author-packet.stdout.bin",
+      "bytes": 5487,
+      "sha256": "4a06f496c77d45bd19dbebf0145cf6d0bcc60070c4608f245dfdd3f56fb11515"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-review/criteria.md",
+      "bytes": 4674,
+      "sha256": "9577002d6bd785e6dcd1f41b1d078e021bd5398936b2b699f0ad5dad8c4a878e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-review/dependency-link-cleanup.json",
+      "bytes": 445,
+      "sha256": "c27c09d3dbc55c266061ec6632306cc1c9636f8030ac49a1a7a9770ef4c3c5b1"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-review/dependency-links.json",
+      "bytes": 715,
+      "sha256": "4019a9e1343f9ad1934f8e90e9816ecaaf11a27daa1ce68a8f8faaa5ea7a19a1"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-review/family-combined.json",
+      "bytes": 1404,
+      "sha256": "4522ecd6fc9f3f35e0293ca4feafceb14c1fb5c0d0421051b012bb31a9e684d4"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-review/family-combined.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-review/family-combined.stdout.bin",
+      "bytes": 4794,
+      "sha256": "5ea6da4c1df81f9407ce442a357f866d3f98ceadb29647f801a2f632ed08a42e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-review/independent-first.json",
+      "bytes": 1340,
+      "sha256": "ff735efe8f433a3a072b92fc9449ff2c95fa1843296425f7fe26ef9613a31309"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-review/independent-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-review/independent-first.stdout.bin",
+      "bytes": 2607,
+      "sha256": "f0bc79811fbae47be9deac26c47ab9f41874f1eeb0845fe67449266ac56960f5"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-review/inspection-clarification.md",
+      "bytes": 911,
+      "sha256": "459f74e8aaad1b0564f0b14fc57dbf0ba40451c9da0e6b705fd9e59aa30bae44"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-review/interface-before-replay.md",
+      "bytes": 1085,
+      "sha256": "cce1b5f095e89648053d3c44a7fba82e69d5e08da71a14e3271fd20b6a5667aa"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-review/preparation-failure.json",
+      "bytes": 772,
+      "sha256": "7916323337ff6d6d3f6df82d50b163dc21240eafd96e2494bd9f3c8f43bd0e59"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-review/reference-identities.json",
+      "bytes": 4588,
+      "sha256": "330ec9ea03a22e80404dd3d177004bfe488a05735ab6f7e9cf578b6663ada940"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-review/source-audit.json",
+      "bytes": 1347,
+      "sha256": "b4a173ec5f5af483a8ee53bbbebb029245234f11c5dd5df1fe59450b7ed4e171"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-review/source-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-review/source-audit.stdout.bin",
+      "bytes": 7645,
+      "sha256": "50638ada8d672bd951314b4cc0bb259cc76f1c35a23035c35917362aa34191b0"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-review/verdict.json",
+      "bytes": 2146,
+      "sha256": "2437542fafa35889d90ffc042130bf4ee8452cb0da42db6797c2a00fc90f459d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-review/verify-author-packet.py",
+      "bytes": 3163,
+      "sha256": "20a39ca5ad72a6c16b9460dfea678dfb84fb2394729c1eb9918753907ac48a41"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-regulatory-dockets-independent.test.mjs",
+      "bytes": 13089,
+      "sha256": "08dcbdc95fc18664c2d6fa81904f1f6dfe3e16bc2d0b6e39ae3ffc5cf9fce784"
+    }
+  ]
+}

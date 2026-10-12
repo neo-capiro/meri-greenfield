@@ -1,0 +1,262 @@
+{
+  "scope": "INDEPENDENT_SOURCE_ONLY_NOT_RUNTIME",
+  "base": "a3e946c1fa264ae7b33205f5b87804ee1ef75773",
+  "source": "57e09ebfda15d6057bdf4bfb7fc84b4061eac03f",
+  "originalFilesVerified": 6110,
+  "checks": [
+    {
+      "check": "exact source tree",
+      "pass": true
+    },
+    {
+      "check": "every original file blob and mode preserved",
+      "pass": true
+    },
+    {
+      "check": "only four allocated additions",
+      "pass": true
+    },
+    {
+      "check": "working source exactly pinned packages/contracts/retrieval-0.2/regulatory-dockets.schema.json",
+      "pass": true
+    },
+    {
+      "check": "working source exactly pinned packages/contracts/retrieval-0.2/regulatory-dockets-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "working source exactly pinned packages/contracts/test/retrieval-regulatory-dockets.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "source is review ancestor",
+      "pass": true
+    },
+    {
+      "check": "explicit shared/public preservation packages/contracts/meri.schema.json",
+      "pass": true
+    },
+    {
+      "check": "explicit shared/public preservation packages/contracts/validate.mjs",
+      "pass": true
+    },
+    {
+      "check": "explicit shared/public preservation packages/contracts/package.json",
+      "pass": true
+    },
+    {
+      "check": "explicit shared/public preservation packages/contracts/retrieval-0.2/catalog.json",
+      "pass": true
+    },
+    {
+      "check": "explicit shared/public preservation packages/contracts/retrieval-0.2/operation-contracts.mjs",
+      "pass": true
+    },
+    {
+      "check": "seven paired references",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/src/meri/meri-tools.service.ts fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/src/meri/meri-tools.service.ts 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "paired no drift apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/src/regulatory-docket/regulatory-docket.service.ts fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/src/regulatory-docket/regulatory-docket.service.ts 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "paired no drift apps/api/src/regulatory-docket/regulatory-docket.service.ts",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/prisma/schema.prisma fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/prisma/schema.prisma 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "paired no drift apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/src/meri/meri-tools.firmdata.spec.ts fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/src/meri/meri-tools.firmdata.spec.ts 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "paired no drift apps/api/src/meri/meri-tools.firmdata.spec.ts",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/src/meri/meri.controller.ts fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/src/meri/meri.controller.ts 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "paired no drift apps/api/src/meri/meri.controller.ts",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/src/auth/roles.guard.ts fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/src/auth/roles.guard.ts 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "paired no drift apps/api/src/auth/roles.guard.ts",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/src/meri/meri-tool-request-control.ts fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "reference apps/api/src/meri/meri-tool-request-control.ts 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "paired no drift apps/api/src/meri/meri-tool-request-control.ts",
+      "pass": true
+    },
+    {
+      "check": "exact private schema ID",
+      "pass": true
+    },
+    {
+      "check": "three cohesive definitions",
+      "pass": true
+    },
+    {
+      "check": "complete raw projection",
+      "pass": true
+    },
+    {
+      "check": "generic storage ID",
+      "pass": true
+    },
+    {
+      "check": "closed properties RegulatoryDocketsQueryInput",
+      "pass": true
+    },
+    {
+      "check": "closed properties RegulatoryDocketRow",
+      "pass": true
+    },
+    {
+      "check": "closed properties RegulatoryDocketsQueryOutput",
+      "pass": true
+    },
+    {
+      "check": "row cap from wrapper",
+      "pass": true
+    },
+    {
+      "check": "approved strict integer boundary limit",
+      "pass": true
+    },
+    {
+      "check": "approved strict integer boundary days",
+      "pass": true
+    },
+    {
+      "check": "canonical inert helper only import",
+      "pass": true
+    },
+    {
+      "check": "no source clock access",
+      "pass": true
+    },
+    {
+      "check": "qualification limitation retained",
+      "pass": true
+    },
+    {
+      "check": "bounded clean successful receipt independent-first",
+      "pass": true
+    },
+    {
+      "check": "captured stream docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-review/independent-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "captured stream docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-review/independent-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact test counts independent-first",
+      "pass": true
+    },
+    {
+      "check": "capture helper bound independent-first",
+      "pass": true
+    },
+    {
+      "check": "bounded clean successful receipt family-combined",
+      "pass": true
+    },
+    {
+      "check": "captured stream docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-review/family-combined.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "captured stream docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-review/family-combined.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact test counts family-combined",
+      "pass": true
+    },
+    {
+      "check": "capture helper bound family-combined",
+      "pass": true
+    },
+    {
+      "check": "authored whitespace",
+      "pass": true
+    }
+  ],
+  "passed": 58,
+  "failed": 0,
+  "sourceIdentities": [
+    {
+      "path": "packages/contracts/retrieval-0.2/regulatory-dockets.schema.json",
+      "bytes": 3639,
+      "sha256": "67780fed6830f53dbb4fa0f76a681666b426a41408046f5c778be3efdb810654",
+      "blob": "221bd2bab9bc6bcaa5c810c1a3a2680ca18922b2"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/regulatory-dockets-validation.mjs",
+      "bytes": 5349,
+      "sha256": "f9e8cf5f48c15b52590ba4ab5f7ad24efea0064f5b03c719a186fe0c552de1d7",
+      "blob": "9955d6f2c26c3575cc5e63f580ff0dbc09690815"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-regulatory-dockets.test.mjs",
+      "bytes": 12615,
+      "sha256": "9735c10f9a99e8cc717ff199ebf39b587520fabb9536caabfa89f8a49c026a64",
+      "blob": "cf8b1f55be3fb76c5f1b35a28be580371ddcf0a8"
+    }
+  ]
+}
