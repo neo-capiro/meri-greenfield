@@ -102,3 +102,16 @@ test('actual durable journal/source output cannot be substituted before facade r
  const service=t.create({executor:{async execute(...args){const value=structuredClone(await actual.execute(...args));value.outcome.receipt.commandSha256='f'.repeat(64);return value;}}});
  await assert.rejects(service.executeApproved(p.proposal,t.f.execution,'synthetic'));assert.equal(t.f.state.fetches,1);assert.equal([...t.f.pg.rows.values()][0].state,'OUTCOME');
 });
+
+test('caller cancellation after actual executor outcome suppresses release without rollback claim',async()=>{
+ const t=setup(),p=await t.create().prepare(t.raw),actual=t.f.create(),controller=new AbortController();
+ const service=t.create({executor:{async execute(...args){const value=await actual.execute(...args);controller.abort();return value;}}});
+ await assert.rejects(service.executeApproved(p.proposal,t.f.execution,'synthetic',controller.signal),/CANCELLED/);
+ assert.equal(t.f.state.fetches,1);assert.equal([...t.f.pg.rows.values()][0].state,'OUTCOME');
+});
+test('cancellation during final canonical output validation suppresses release',async()=>{
+ const t=setup(),p=await t.create().prepare(t.raw),controller=new AbortController();
+ const validators={...t.validators,assertCommandToolOutput(...args){const value=t.validators.assertCommandToolOutput(...args);controller.abort();return value;}};
+ await assert.rejects(t.create({validators}).executeApproved(p.proposal,t.f.execution,'synthetic',controller.signal),/CANCELLED/);
+ assert.equal(t.f.state.fetches,1);assert.equal([...t.f.pg.rows.values()][0].state,'OUTCOME');
+});

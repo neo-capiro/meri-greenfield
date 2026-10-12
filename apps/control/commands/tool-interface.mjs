@@ -55,8 +55,12 @@ export function createCommandToolInterface(options){
   });
   // Metadata has its own bounded phase. The existing executor owns execution
   // authority/expiry/lifetime; no second unsynchronized total-request timer.
+  if(signal?.aborted)deny('CANCELLED');
   const result=await executor.execute({proposal:prepared.proposal,execution},credential,signal);
-  return data(validators.assertCommandToolOutput(action,trusted.outputShape,result,prepared.request,{commandContext:trusted.commandContext,command:prepared.proposal.command}));
+  if(signal?.aborted)deny('CANCELLED');
+  const admitted=data(validators.assertCommandToolOutput(action,trusted.outputShape,result,prepared.request,{commandContext:trusted.commandContext,command:prepared.proposal.command}));
+  if(signal?.aborted)deny('CANCELLED');
+  return admitted;
  }
  return Object.freeze({prepare,executeApproved});
 }
