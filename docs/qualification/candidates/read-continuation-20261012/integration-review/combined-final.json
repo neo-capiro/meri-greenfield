@@ -1,0 +1,43 @@
+{
+  "command": [
+    "bash",
+    "-c",
+    "node --test --test-concurrency=1 packages/contracts/test/*.test.mjs apps/gateway/test/*.test.mjs evals/qualification/hermes-session.test.mjs"
+  ],
+  "cwd": "/workspace/meri-read-continuation-integration-review-20261012",
+  "sourceHead": "6deca5c872e0682cb5ce44e62a58d51b9a6cce1d",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T16:59:05.060858+00:00",
+  "durationSeconds": 63.049,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 169289,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 169735,
+      "status": 0
+    },
+    {
+      "pid": 169762,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/integration-review/combined-final.stdout.bin",
+      "bytes": 125923,
+      "sha256": "bf00a9c89a6adcdba65d62c8e01584f39d0360e8b32ae3fa6284750d57616718"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/integration-review/combined-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Final candidate includes four explicit gateway expectation corrections; replay all applicable prior source suites plus62 independent controls",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
