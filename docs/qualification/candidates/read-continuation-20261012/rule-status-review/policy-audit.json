@@ -1,0 +1,33 @@
+{
+  "command": [
+    "node",
+    "docs/qualification/candidates/read-continuation-20261012/rule-status-review/policy-audit.mjs"
+  ],
+  "cwd": "/workspace/meri-rule-status-review-20261012",
+  "sourceHead": "88d28e8c05741d31c1b583c1974e981cb9c9534f",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T17:34:08.973211+00:00",
+  "durationSeconds": 0.415,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 193888,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-review/policy-audit.stdout.bin",
+      "bytes": 895,
+      "sha256": "4bd429477f32fb5b55cc4a2678ee887ce9a538b760239fe9e3a929fbb3aecded"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-review/policy-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
