@@ -1,0 +1,55 @@
+[
+  {
+    "label": "whitespace-complete",
+    "command": [
+      "git",
+      "diff",
+      "--check",
+      "e5fb3963de787bbd7b7663316c368f15814897da",
+      "HEAD"
+    ],
+    "exitCode": 2,
+    "streams": [
+      {
+        "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/whitespace-complete.stdout.bin",
+        "bytes": 3226,
+        "sha256": "d096db761592f7973bdfd96663f8a0ad30e444dcbdc02f1695e1fa5da2b29636"
+      },
+      {
+        "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/whitespace-complete.stderr.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ]
+  },
+  {
+    "label": "whitespace-authored",
+    "command": [
+      "git",
+      "diff",
+      "--check",
+      "e5fb3963de787bbd7b7663316c368f15814897da",
+      "HEAD",
+      "--",
+      "apps/artifacts",
+      "packages/contracts/artifacts-0.2",
+      "packages/contracts/test/artifact-execution-independent.test.mjs",
+      "packages/contracts/test/artifact-execution-independent-general.test.mjs",
+      "docs/coordination/tasks/CODEX-ARTIFACT-EXECUTION-REVIEW-20261012.md",
+      "docs/coordination/reports/CODEX-ARTIFACT-EXECUTION-REVIEW-20261012.md"
+    ],
+    "exitCode": 2,
+    "streams": [
+      {
+        "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/whitespace-authored.stdout.bin",
+        "bytes": 54,
+        "sha256": "ce61ecb50d28ca54aa95d633cf146376bc06882471672056f9729a2f2beaff49"
+      },
+      {
+        "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/whitespace-authored.stderr.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ]
+  }
+]

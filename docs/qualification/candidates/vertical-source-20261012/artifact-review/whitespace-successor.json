@@ -1,0 +1,42 @@
+{
+  "acceptedSource": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
+  "tree": "2bedef6f8857afd44f57e0925e0183908ce46742",
+  "testedFunctionalSource": "814ecf1baa1b5890545576a0815257199505103a",
+  "changedPaths": [
+    "apps/artifacts/process.mjs"
+  ],
+  "before": {
+    "bytes": 3449,
+    "sha256": "56eae7666ae6528f05a6e0f5803f0ef5876e3e0cd0aae3785e8dd858e04a0878"
+  },
+  "after": {
+    "bytes": 3448,
+    "sha256": "902a4804e6d7e30d343a3aa918546b26a6c4b6684b6bbd2446c1530055069faa"
+  },
+  "exactChange": "Removed one extra final LF; all other bytes unchanged.",
+  "testRerun": "Not needed for trailing blank removal; original115/115 receipt retained.",
+  "checks": {
+    "onlyDeclaredFile": true,
+    "exactOneByteDeletion": true,
+    "workingSourceMatches": true
+  },
+  "authoredWhitespace": {
+    "command": [
+      "git",
+      "diff",
+      "--check",
+      "e5fb3963de787bbd7b7663316c368f15814897da",
+      "HEAD",
+      "--",
+      "apps/artifacts",
+      "packages/contracts/artifacts-0.2",
+      "packages/contracts/test/artifact-execution-independent.test.mjs",
+      "packages/contracts/test/artifact-execution-independent-general.test.mjs",
+      "docs/coordination/tasks/CODEX-ARTIFACT-EXECUTION-REVIEW-20261012.md",
+      "docs/coordination/reports/CODEX-ARTIFACT-EXECUTION-REVIEW-20261012.md"
+    ],
+    "exitCode": 0,
+    "stdoutBytes": 0,
+    "stderrBytes": 0
+  }
+}
