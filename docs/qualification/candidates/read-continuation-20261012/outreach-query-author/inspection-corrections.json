@@ -1,0 +1,14 @@
+{
+  "beforeProductCode": true,
+  "corrections": [
+    {
+      "initial": "Property-only AST walker omitted assignment at queryOutreach8940; author initially inferred discarded resolver return.",
+      "corrected": "Targeted statement-kind AST showed BinaryExpression with assignment token: clientId receives ensureClientVisible result. Root approved explicit trusted resolution context before code."
+    },
+    {
+      "initial": "Catalog glob used capability-catalog-0.2 directory absent in base.",
+      "corrected": "No data lost; canonical catalog unchanged and root owns integration."
+    }
+  ],
+  "privateBodiesPublished": false
+}
