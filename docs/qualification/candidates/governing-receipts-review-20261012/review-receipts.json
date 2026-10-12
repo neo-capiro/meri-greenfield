@@ -9,7 +9,7 @@
         "python",
         "-I",
         "-B",
-        "docs/qualification/candidates/governing-receipts-review-20261012/initial-audit.py.txt",
+        "docs/qualification/candidates/governing-receipts-review-20261012/audit.py",
         "39b6da63289241b368a5003d47e98352c7cbc817"
       ],
       "recordedChildExitCode": 0,
@@ -28,7 +28,7 @@
         "bytes": 0,
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
-      "meaning": "Initial mechanical oracle encoded incorrect only-G0 status assumption."
+      "meaning": "Initial mechanical oracle encoded incorrect only-G0 status assumption. Actual argv used audit.py; its exact exercised source is retained separately as initial-audit.py.txt."
     },
     {
       "name": "semantic-frozen-before",
@@ -115,5 +115,6 @@
   "processScope": "Synchronous local Python and Git only; no service/background/runtime processes created. All tool invocations returned.",
   "productsExecuted": false,
   "networkCalls": false,
-  "authorCodeExecuted": false
+  "authorCodeExecuted": false,
+  "receiptClarification": "Post-seal metadata correction: initial command argv now records the actual audit.py execution path; the retained initial-audit.py.txt is source evidence, never asserted executed by that name. Prior receipt remains at85a0c6b1."
 }
