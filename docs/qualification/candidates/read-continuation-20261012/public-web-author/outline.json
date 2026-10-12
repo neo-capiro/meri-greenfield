@@ -1,0 +1,32 @@
+{
+  "base": "c1c9bfde7dd466a0474589a224a99b44277adbc9",
+  "operations": [
+    "search_public_web",
+    "scrape_web_page"
+  ],
+  "schemaId": "urn:meri:retrieval:public-web:0.2.0",
+  "contextKeys": [],
+  "modules": [
+    "public-web.schema.json",
+    "public-web-validation.mjs",
+    "retrieval-public-web.test.mjs"
+  ],
+  "api": [
+    "createPublicWebValidators({validateShape,schema})",
+    "normalizePublicWebInput(id,request,options={}) returns frozen {input,metadata}",
+    "assertPublicWebOutput(id,value,request,options={})",
+    "validatePublicWebShape(def,value)",
+    "publicWebInputDefinition/OutputDefinition(id)"
+  ],
+  "ownership": "Author owns only new schema/validator/test/report/evidence. Root owns canonical loader/catalog. Independent reviewer follows; no self acceptance.",
+  "dependencies": [
+    "existing snapshotOperationData inert JSON canonical owner",
+    "existing strict Ajv 2020 test compiler; no new dependency or lock change"
+  ],
+  "normalization": "Typed string/null selectors; required query240 and URL2000 trim then UTF16 clip. Source finite numeric/string clamp for limit1..12/default6 and maxChars500..20000/default4000 or12000 exact extract mode. Mode arbitrary trimmed/clipped20 defaultsummary. No ambient clock.",
+  "behavior": "Provider-specific discovered search projections; exact total==returned, no deduplication. Page HTML/PDF exact different fields; SHA256 lowerhex syntax, untrusted external/public_url labels, coverage UTF16 lengths and truncation correlations. Input/final URL syntactic HTTP(S) no credentials only, no DNS/private-host security implementation. Redirect final URL need not equal requested URL.",
+  "intentionalAdmission": "Reject non-JSON/accessors/proxies/unknown fields/complex coercion. Require canonical ISO generatedAt. This private producer projection includes mode/maxChars although old advertised scrape schema exposed URL only.",
+  "authority": "No source adapter/handler/network/provider/PDF/HTML parser/browser/model/SQL/infra execution. Raw hash binding/SSRF/redirect/security/freshness/current actor/service authorization remain runtime prerequisites; new adapter must use approved supported SDK/tools/sandbox.",
+  "tests": "Focused local pure contracts only, strict shape/relational controls and hostile JSON; preserve all failures, bounded owned process cleanup, exact metadata/source preservation audit.",
+  "boundMinutes": 45
+}
