@@ -8,7 +8,7 @@ import { deny } from './operation-result.mjs';
 export function assertOperationArguments(entry, request) {
   const profile = entry.contract.binding?.dispatchProfile;
   if (profile === undefined) return;
-  if (!['memory-proposals/1', 'mail-candidates/1'].includes(profile)) deny('GATEWAY_CONFIGURATION');
+  if (!['memory-proposals/1', 'mail-candidates/1', 'dataset-metadata/1'].includes(profile)) deny('GATEWAY_CONFIGURATION');
   try { validateShape(entry.contract.binding.input, request); } catch { deny('INVALID_ARGUMENTS'); }
 }
 
@@ -18,7 +18,10 @@ export async function prepareOperationContext({ entry, request, identity, author
     options: () => ({ nowMs: now(), actorId: identity.claims.binding.actorId }),
     observeAuthority() {}, async retain() {},
   });
-  if (!['memory-proposals/1', 'mail-candidates/1'].includes(profile)) deny('GATEWAY_CONFIGURATION');
+  if (!['memory-proposals/1', 'mail-candidates/1', 'dataset-metadata/1'].includes(profile)) deny('GATEWAY_CONFIGURATION');
+  if (profile === 'dataset-metadata/1') return Object.freeze({ authority: null,
+    options: () => ({}), observeAuthority() {}, async retain() {},
+  });
   let normalized;
   if (profile === 'mail-candidates/1') {
     try { normalized = entry.contract.normalizeInput(request, { nowMs: now(), actorId: identity.claims.binding.actorId }); }

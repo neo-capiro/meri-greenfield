@@ -105,6 +105,7 @@ export const CATALOG_OPERATION_BINDINGS = Object.freeze([
     normalize: (v, request, context, binding) => (v.normalizeStoredIntelligenceInput(binding.id, request, clock(context, binding.contextKeys))),
     outputAssert: (v, page, request, context, binding) => v.assertStoredIntelligenceOutput(binding.id, page, request, clock(context, binding.contextKeys))}),
   Object.freeze({id: 'list_global_datasets', nativeId: 'list_global_datasets', group: 'dataset-metadata', input: 'DatasetMetadataListInput', output: 'DatasetMetadataListOutput', version: '0.2.0',
+    dispatchProfile: 'dataset-metadata/1',
     contextKeys: Object.freeze([]),
     normalize: (v, request, context, binding) => (v.normalizeDatasetMetadataInput(binding.id, request, clock(context, binding.contextKeys))),
     outputAssert: (v, page, request, context, binding) => v.assertDatasetMetadataOutput(binding.id, page, request, clock(context, binding.contextKeys))}),
