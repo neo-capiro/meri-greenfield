@@ -1,0 +1,370 @@
+{
+  "decision": "ACCEPT_SOURCE_PACKET",
+  "reviewedCommit": "c60bc58092c9ed34f2c5d718afe4d678f6cf79d4",
+  "previousAcceptedPlan": "f3db1505cbd2987244875097712d78a69da190c3",
+  "planSha256": "9e786e216e6c43de8202d7bd407975fc70987e53bd87ff2a9fc01840de094f04",
+  "checks": 61,
+  "passed": 61,
+  "failed": [],
+  "runtimeTests": "UNRUN",
+  "nativeEntriesImportedOrExecuted": false,
+  "scope": "Narrow roadmap delta; static Git/AST/data only; no repeat of prior183 controls",
+  "checksDetail": [
+    {
+      "name": "exact-integrated-tree",
+      "passed": true
+    },
+    {
+      "name": "narrow-plan-delta8plus2",
+      "passed": true
+    },
+    {
+      "name": "accepted-ancestry:f3db1505cbd2987244875097712d78a69da190c3",
+      "passed": true
+    },
+    {
+      "name": "accepted-ancestry:a9d5d849fe3065ee1aec2b17806e6b6219a511c7",
+      "passed": true
+    },
+    {
+      "name": "accepted-ancestry:724850cb6cc84c8381fb52aec23b582e0e3b5872",
+      "passed": true
+    },
+    {
+      "name": "accepted-ancestry:c7a6b079feb0b4e57310d8068ab106347fa3c24f",
+      "passed": true
+    },
+    {
+      "name": "accepted-ancestry:ea7b0bae9b630f750f7f329a144f3cc34f959b00",
+      "passed": true
+    },
+    {
+      "name": "accepted-ancestry:ea5fe073513ab49ae61d9c291ccd11ff3803b32b",
+      "passed": true
+    },
+    {
+      "name": "native-source-exact:run-supervised.py",
+      "passed": true
+    },
+    {
+      "name": "native-source-exact:supervision.py",
+      "passed": true
+    },
+    {
+      "name": "native-source-exact:source-checks.py",
+      "passed": true
+    },
+    {
+      "name": "budget-source-exact:postgres-budget.integration.mjs",
+      "passed": true
+    },
+    {
+      "name": "budget-source-exact:postgres-budget-native-fixture.mjs",
+      "passed": true
+    },
+    {
+      "name": "budget-source-exact:postgres-budget-child.mjs",
+      "passed": true
+    },
+    {
+      "name": "budget-source-exact:postgres-budget-admission.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "clock-at-function-entry",
+      "passed": true
+    },
+    {
+      "name": "immutable-missing-pins",
+      "passed": true
+    },
+    {
+      "name": "blocked-before-fs",
+      "passed": true
+    },
+    {
+      "name": "publication-and-hard-limit-not-accepted",
+      "passed": true
+    },
+    {
+      "name": "explicit-executable-and-fresh-slot",
+      "passed": true
+    },
+    {
+      "name": "canonical-diagnostic-unchanged",
+      "passed": true
+    },
+    {
+      "name": "native-read-and-EOF-boundaries",
+      "passed": true
+    },
+    {
+      "name": "native-review-limited-accept",
+      "passed": true
+    },
+    {
+      "name": "nine-case-source-structure",
+      "passed": true
+    },
+    {
+      "name": "native-name-outside-ordinary-discovery",
+      "passed": true
+    },
+    {
+      "name": "explicit-admission-before-load",
+      "passed": true
+    },
+    {
+      "name": "original30s-before-fork-send",
+      "passed": true
+    },
+    {
+      "name": "child-reservation-clipped",
+      "passed": true
+    },
+    {
+      "name": "synthetic-post-commit-loss-labelled",
+      "passed": true
+    },
+    {
+      "name": "password-and-engine-identity-required",
+      "passed": true
+    },
+    {
+      "name": "unavailable-gateway-retained",
+      "passed": true
+    },
+    {
+      "name": "budget-source-only-accept",
+      "passed": true
+    },
+    {
+      "name": "frozen-or-production-unchanged:docs/qualification/candidates/g1-execution-options-20261012",
+      "passed": true
+    },
+    {
+      "name": "frozen-or-production-unchanged:docs/qualification/candidates/ubuntu-source-assessment-20261012",
+      "passed": true
+    },
+    {
+      "name": "frozen-or-production-unchanged:docs/plans/MERI-DEPLOYMENT.md",
+      "passed": true
+    },
+    {
+      "name": "frozen-or-production-unchanged:packages/contracts",
+      "passed": true
+    },
+    {
+      "name": "frozen-or-production-unchanged:apps/gateway/index.mjs",
+      "passed": true
+    },
+    {
+      "name": "frozen-or-production-unchanged:apps/gateway/budget/postgres-tool-budget.mjs",
+      "passed": true
+    },
+    {
+      "name": "frozen-or-production-unchanged:apps/gateway/budget/postgres-budget-store.mjs",
+      "passed": true
+    },
+    {
+      "name": "frozen-or-production-unchanged:apps/proxy/qualification/state/migrations",
+      "passed": true
+    },
+    {
+      "name": "image-decision-byte-unchanged",
+      "passed": true
+    },
+    {
+      "name": "L1-authority-text-unchanged",
+      "passed": true
+    },
+    {
+      "name": "L1-durable-gaps-not-erased",
+      "passed": true
+    },
+    {
+      "name": "no-new-test-action-authority",
+      "passed": true
+    },
+    {
+      "name": "remaining-producer-api-and-restart-gaps",
+      "passed": true
+    },
+    {
+      "name": "critical-path-byte-unchanged",
+      "passed": true
+    },
+    {
+      "name": "link:MERI-DEPLOYMENT.md",
+      "passed": true
+    },
+    {
+      "name": "link:../qualification/candidates/g1-native-path-20261012/integration/pr-stack-observation.json",
+      "passed": true
+    },
+    {
+      "name": "link:../qualification/candidates/g1-native-path-20261012/integration/pr-stack-ancestry.json",
+      "passed": true
+    },
+    {
+      "name": "link:../coordination/reports/MERI-MEMORY-SOURCE-INTEGRATION-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "link:../../apps/control/qualification-sdk-fixture/service/control.mjs",
+      "passed": true
+    },
+    {
+      "name": "link:../../apps/gateway/budget/README.md",
+      "passed": true
+    },
+    {
+      "name": "link:../../apps/control/qualification-temporal/README.md",
+      "passed": true
+    },
+    {
+      "name": "link:../../apps/worker/qualification/README.md",
+      "passed": true
+    },
+    {
+      "name": "link:../coordination/reports/MERI-G1-RECOVERY-SANDBOX-INTEGRATION-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "link:../coordination/reports/MERI-NATIVE-SUPERVISOR-REVIEW-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "link:../qualification/candidates/g1-execution-options-20261012/author/image-options.json",
+      "passed": true
+    },
+    {
+      "name": "link:../qualification/candidates/ubuntu-source-assessment-20261012/author/obligations-54.json",
+      "passed": true
+    },
+    {
+      "name": "link:../coordination/reports/MERI-G1-EXECUTION-OPTIONS-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "link:../qualification/candidates/g1-execution-options-20261012/author/execution-plan.json",
+      "passed": true
+    },
+    {
+      "name": "link:../../apps/gateway/test/postgres-budget.integration.mjs",
+      "passed": true
+    }
+  ],
+  "sourceIdentities": [
+    {
+      "ref": "f3db1505cbd2987244875097712d78a69da190c3",
+      "path": "docs/plans/MERI-G1-SOURCE-TO-NATIVE.md",
+      "bytes": 19783,
+      "sha256": "da59996bed741513e16ef139be5b6c4b87e00894e8f9759c42c2a9848872ba68"
+    },
+    {
+      "ref": "c60bc58092c9ed34f2c5d718afe4d678f6cf79d4",
+      "path": "docs/plans/MERI-G1-SOURCE-TO-NATIVE.md",
+      "bytes": 22314,
+      "sha256": "9e786e216e6c43de8202d7bd407975fc70987e53bd87ff2a9fc01840de094f04"
+    },
+    {
+      "ref": "c60bc58092c9ed34f2c5d718afe4d678f6cf79d4",
+      "path": "docs/qualification/candidates/native-supervisor-20261012/author/run-supervised.py",
+      "bytes": 16402,
+      "sha256": "ccb6dba27ef3c2991df96c553ba21b097eeb243e4c86666b3cb8a8b7df7dfe3f"
+    },
+    {
+      "ref": "c60bc58092c9ed34f2c5d718afe4d678f6cf79d4",
+      "path": "docs/qualification/candidates/native-supervisor-20261012/author/supervision.py",
+      "bytes": 7846,
+      "sha256": "418ad3d9a5537f5ab4f97ddc748ab3529e4d491919e171c52754f772d69be142"
+    },
+    {
+      "ref": "c60bc58092c9ed34f2c5d718afe4d678f6cf79d4",
+      "path": "docs/coordination/reports/MERI-NATIVE-SUPERVISOR-REVIEW-20261012.md",
+      "bytes": 8928,
+      "sha256": "8d56ac69f9b8d62950d2ceb75e4e868f08b6c40d6803da067bdc6340e52cffc1"
+    },
+    {
+      "ref": "c60bc58092c9ed34f2c5d718afe4d678f6cf79d4",
+      "path": "apps/gateway/test/postgres-budget.integration.mjs",
+      "bytes": 13079,
+      "sha256": "85c5b91c6424397c8d85f49770717ca459df2a247905690b539194ef88285693"
+    },
+    {
+      "ref": "c60bc58092c9ed34f2c5d718afe4d678f6cf79d4",
+      "path": "apps/gateway/test/postgres-budget-native-fixture.mjs",
+      "bytes": 10049,
+      "sha256": "a4a4cc8205668d72e15b2df46408f20172c1adc5914590b871f9ac206065f22a"
+    },
+    {
+      "ref": "c60bc58092c9ed34f2c5d718afe4d678f6cf79d4",
+      "path": "docs/coordination/reports/MERI-G1-BUDGET-NATIVE-TESTS-REVIEW-20261012.md",
+      "bytes": 16444,
+      "sha256": "9038ab07a49f9db58c3de827cc4a683e1febaf0a612dc816ce19d5bcc1684fe5"
+    }
+  ],
+  "links": [
+    {
+      "link": "MERI-DEPLOYMENT.md",
+      "exists": true
+    },
+    {
+      "link": "../qualification/candidates/g1-native-path-20261012/integration/pr-stack-observation.json",
+      "exists": true
+    },
+    {
+      "link": "../qualification/candidates/g1-native-path-20261012/integration/pr-stack-ancestry.json",
+      "exists": true
+    },
+    {
+      "link": "../coordination/reports/MERI-MEMORY-SOURCE-INTEGRATION-20261012.md",
+      "exists": true
+    },
+    {
+      "link": "../../apps/control/qualification-sdk-fixture/service/control.mjs",
+      "exists": true
+    },
+    {
+      "link": "../../apps/gateway/budget/README.md",
+      "exists": true
+    },
+    {
+      "link": "../../apps/control/qualification-temporal/README.md",
+      "exists": true
+    },
+    {
+      "link": "../../apps/worker/qualification/README.md",
+      "exists": true
+    },
+    {
+      "link": "../coordination/reports/MERI-G1-RECOVERY-SANDBOX-INTEGRATION-20261012.md",
+      "exists": true
+    },
+    {
+      "link": "../coordination/reports/MERI-NATIVE-SUPERVISOR-REVIEW-20261012.md",
+      "exists": true
+    },
+    {
+      "link": "../qualification/candidates/g1-execution-options-20261012/author/image-options.json",
+      "exists": true
+    },
+    {
+      "link": "../qualification/candidates/ubuntu-source-assessment-20261012/author/obligations-54.json",
+      "exists": true
+    },
+    {
+      "link": "../coordination/reports/MERI-G1-EXECUTION-OPTIONS-20261012.md",
+      "exists": true
+    },
+    {
+      "link": "../qualification/candidates/g1-execution-options-20261012/author/execution-plan.json",
+      "exists": true
+    },
+    {
+      "link": "../../apps/gateway/test/postgres-budget.integration.mjs",
+      "exists": true
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "decision": "ACCEPT_SOURCE_PACKET",
+  "integratedCommit": "c60bc58092c9ed34f2c5d718afe4d678f6cf79d4",
+  "integratedTree": "f46871502fbf61612a2193708dc441fd153034af",
+  "planSha256": "9e786e216e6c43de8202d7bd407975fc70987e53bd87ff2a9fc01840de094f04",
+  "previousAcceptedPlan": "f3db1505cbd2987244875097712d78a69da190c3",
+  "checkedAtUtc": "2026-10-12T06:08:35.467763+00:00",
+  "checks": 61,
+  "exitCode": 0,
+  "nativeEntriesImportedOrExecuted": false,
+  "backgroundProcessesCreated": 0,
+  "priorReviewFilesEdited": false,
+  "limitations": "Narrow static roadmap delta; underlying native/test source acceptance remains attributed to exact independent owners, all actual native cases UNRUN; no private wrapper reinspection.",
+  "initialCheckerFailure": "SyntaxError unmatched parenthesis before any checks; original bytes/streams retained; corrected only reviewer checker punctuation."
+}

@@ -1,0 +1,4 @@
+  File "/workspace/meri-g1-native-path-review-20261012/docs/qualification/candidates/g1-native-path-20261012/review/final-delta/check-delta.py", line 59
+    ck('password-and-engine-identity-required',all(x in helper for x in ["typeof c.password !== 'string'",'password:c.password','pg_control_system()',"verifyDatabase(pool,c,{empty=false}"])) and 'verifyDatabase(owner.pool,admission,{empty:true})' in b)
+                                                                                                                                                                                                                                                           ^
+SyntaxError: unmatched ')'
