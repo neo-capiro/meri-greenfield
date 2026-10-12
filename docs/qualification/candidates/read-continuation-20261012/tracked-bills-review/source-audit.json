@@ -1,0 +1,35 @@
+{
+  "command": [
+    "python3",
+    "docs/qualification/candidates/read-continuation-20261012/tracked-bills-review/audit.py",
+    "e020f4ff2af3c23412adf2fd634f8362140eeb51",
+    "e020f4ff2af3c23412adf2fd634f8362140eeb51"
+  ],
+  "cwd": "/workspace/meri-tracked-bills-review-20261012",
+  "sourceHead": "563bef68dcba5b3566e999624a1f1d91f98a1cfd",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T18:24:53.426875+00:00",
+  "durationSeconds": 0.215,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 245057,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tracked-bills-review/source-audit.stdout.bin",
+      "bytes": 57,
+      "sha256": "65fbdd0203f9666b0e39cdc2ef2316004f9565162c54ae8f8e43d28282ff1d3d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tracked-bills-review/source-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
