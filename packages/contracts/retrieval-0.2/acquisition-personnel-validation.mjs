@@ -36,6 +36,10 @@ export function createAcquisitionPersonnelValidators({validateShape,schema}){
   const trusted=admittedContext(id,context),input=snapshotOperationData(request);
   validateAcquisitionPersonnelShape(acquisitionPersonnelInputDefinition(id),input);
   if(id===SEARCH){
+   // The established wrapper prefers a nonblank query; q is its fallback.
+   const selected=[input.query,input.q].find(value=>typeof value==='string'&&value.trim());
+   delete input.q;delete input.query;
+   if(selected!==undefined)input.query=selected;
    for(const [key,cap] of [['query',240],['service',60],['organization',200],['role',60],['peCode',32]]){
     if(!Object.hasOwn(input,key))continue;
     const value=input[key].trim().slice(0,cap);if(value)input[key]=value;else delete input[key];
