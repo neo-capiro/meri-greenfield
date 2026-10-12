@@ -1,0 +1,45 @@
+{
+  "reviewer": "Codex /root/memory_reviewer",
+  "frozen_at_utc": "2026-10-12T03:20:32.782391+00:00",
+  "base_commit": "90b4dc8472da13cdee9f49cdc0b4c8306ecbdc73",
+  "scope": "Independent package and license source evidence review only; no source changes, installs, artifact execution, external actions or legal clearance.",
+  "criteria": [
+    {
+      "id": "C1",
+      "assertion": "Final producer commit/tree and changed paths are exact; only assigned evidence/report paths differ; source and lock bytes remain unchanged."
+    },
+    {
+      "id": "C2",
+      "assertion": "Independently derive dependency inventory and Linux amd64/glibc/Python target selection from the candidate locks and recipe; every selected artifact is accounted for with exact version and integrity, and platform exclusions are justified."
+    },
+    {
+      "id": "C3",
+      "assertion": "Rehash every available selected raw package artifact against lock/metadata integrity; counts must reconcile with package inspection records and any duplicate archive/name distinctions."
+    },
+    {
+      "id": "C4",
+      "assertion": "Verify notice copies against archive member bytes and inventory. Distinguish package license labels from actual LICENSE/NOTICE/COPYING/third-party texts; record missing upstream notices as explicit remaining attribution gates."
+    },
+    {
+      "id": "C5",
+      "assertion": "Check lxml wheel platform/ABI and static embedded-parser evidence. Do not treat dynamic-link absence, metadata labels, or an embedded version string alone as runtime qualification or full bundled-component inventory."
+    },
+    {
+      "id": "C6",
+      "assertion": "Preserve commercial Claude SDK/runtime license boundary; permitted metadata and hash-only license tracking must not imply an open-source license or redistribute restricted bodies."
+    },
+    {
+      "id": "C7",
+      "assertion": "Validate standardwebhooks package/subdirectory/source-revision attribution and distinguish npm package license from repository-root license; qualify any remaining source-provenance gap."
+    },
+    {
+      "id": "C8",
+      "assertion": "Reproduce meaningful local data-only checks; preserve discrepancies and failed commands without changing acceptance assertions to fit the packet."
+    },
+    {
+      "id": "C9",
+      "assertion": "Source evidence cannot admit an image. State residual attribution, supported patched image, scan, SBOM, runtime, approval and authorization gates; no cloud build/push/run or legal clearance claim."
+    }
+  ],
+  "decision_rule": "ACCEPT_SOURCE_EVIDENCE only if packet claims are reproducible and all unresolved gaps accurately bounded; otherwise HOLD with specific corrections. Either outcome leaves image/runtime/legal admission ungranted."
+}
