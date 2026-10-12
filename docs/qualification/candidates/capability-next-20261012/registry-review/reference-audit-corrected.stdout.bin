@@ -1,0 +1,166 @@
+{
+  "referenceCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "observedCommit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+  "identities": [
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "bytes": 415704,
+      "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194",
+      "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "currentBlob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea"
+    },
+    {
+      "path": "apps/api/src/meri/meri-tools.create-client.spec.ts",
+      "bytes": 11033,
+      "sha256": "8532f76d6847f9bc61c63c0218f74cbf7e2833e879646888ba520627d43dbd2a",
+      "blob": "2e69bb733da25a7864703f08aaead809d18396d9",
+      "currentBlob": "2e69bb733da25a7864703f08aaead809d18396d9"
+    },
+    {
+      "path": "apps/api/prisma/schema.prisma",
+      "bytes": 968034,
+      "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0",
+      "blob": "cdf1923217edae6e7624993796a5671922b61ac0",
+      "currentBlob": "cdf1923217edae6e7624993796a5671922b61ac0"
+    }
+  ],
+  "checks": [
+    {
+      "name": "pinned-bytes:apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "no-observed-drift:apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned-bytes:apps/api/src/meri/meri-tools.create-client.spec.ts",
+      "pass": true
+    },
+    {
+      "name": "no-observed-drift:apps/api/src/meri/meri-tools.create-client.spec.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned-bytes:apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "name": "no-observed-drift:apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "name": "required-name-limit300",
+      "pass": true
+    },
+    {
+      "name": "tenant-and-global-access-are-distinct",
+      "pass": true
+    },
+    {
+      "name": "tenant-projection-three-fields",
+      "pass": true
+    },
+    {
+      "name": "lda-projection-six-fields",
+      "pass": true
+    },
+    {
+      "name": "result-projection-four-fields",
+      "pass": true
+    },
+    {
+      "name": "candidate-source-limit-five",
+      "pass": true
+    },
+    {
+      "name": "description-summary-limit200",
+      "pass": true
+    },
+    {
+      "name": "candidate-exact-identity-exclusion",
+      "pass": true
+    },
+    {
+      "name": "LdaPick-scalars-and-nullability",
+      "pass": true
+    },
+    {
+      "name": "selector-trim-then-UTF16-slice",
+      "pass": true
+    },
+    {
+      "name": "summary-bound-measured-in-JS-string-length",
+      "pass": true
+    },
+    {
+      "name": "summary-truncation-reserves-three-units-for-tail",
+      "pass": true
+    },
+    {
+      "name": "storage-scalar-projection:Client",
+      "pass": true
+    },
+    {
+      "name": "storage-scalar-projection:LdaClient",
+      "pass": true
+    },
+    {
+      "name": "reference-tests-exercise-lookup",
+      "pass": false
+    }
+  ],
+  "passed": 20,
+  "failed": 1,
+  "declarationLines": {
+    "lookupClientRegistry": 9045,
+    "requiredString": 9942,
+    "optionalString": 9948,
+    "LdaPick": 10267,
+    "summarizeText": 10285
+  },
+  "sourceProjectionFields": {
+    "tenantClient": [
+      "id",
+      "name",
+      "website"
+    ],
+    "lda": [
+      "ldaClientId",
+      "name",
+      "state",
+      "description",
+      "totalFilings",
+      "latestFilingYear"
+    ],
+    "result": [
+      "existingClient",
+      "ldaExactMatch",
+      "ldaCandidates",
+      "guidance"
+    ]
+  },
+  "storage": {
+    "Client": {
+      "id": "String",
+      "name": "String",
+      "website": "String?"
+    },
+    "LdaClient": {
+      "id": "Int",
+      "name": "String",
+      "state": "String?",
+      "generalDescription": "String?",
+      "totalFilings": "Int",
+      "latestFilingYear": "Int?"
+    }
+  },
+  "outcomeLocations": [],
+  "privateSourceBodiesPublished": false,
+  "privateSourceExecuted": false,
+  "limits": [
+    "Reference queries are observations of frozen source, not actual authorization/current source availability.",
+    "UTF-16 description limit is proven by helper source; JSON Schema Unicode maxLength alone is insufficient.",
+    "No success projection proves absence, freshness, full enumeration or grants."
+  ]
+}
