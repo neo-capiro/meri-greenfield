@@ -1,0 +1,38 @@
+{
+  "command": [
+    "npm",
+    "ci",
+    "--prefix",
+    "packages/contracts",
+    "--ignore-scripts",
+    "--cache",
+    "/tmp/meri-memory-binding-npm-cache-20261012"
+  ],
+  "cwd": "/workspace/meri-memory-binding-20261012",
+  "sourceHead": "7ba0e9d10ebf684e162dcc7c143915afdbf00f32",
+  "sourceDiffSha256": "0d7ab5004f950a52e98145f27eddb718a41a2c32f64d4034632366291d158ef1",
+  "sourceDiffBytes": 9183,
+  "captureSha256": "b40eb10f9f967deeb1a4dbee0c1d806076604c3975960145bcf9badeaed9be94",
+  "startedAt": "2026-10-12T02:13:35.284362+00:00",
+  "durationSeconds": 1.117,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 9465,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/memory-read-binding-20261012/author/install-contracts.stdout.bin",
+      "bytes": 25,
+      "sha256": "1d41eb5f721bb9d5710254973769ef57dc59f277b97c8647bf6ffaff5426b4ba"
+    },
+    {
+      "path": "docs/qualification/candidates/memory-read-binding-20261012/author/install-contracts.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Bounded source binding check; immutable label records this attempt separately.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

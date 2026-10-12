@@ -1,0 +1,47 @@
+{
+  "base": "7ba0e9d10ebf684e162dcc7c143915afdbf00f32",
+  "files": [
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog.json",
+      "baseline": "catalog.json.original.txt",
+      "bytes": 76401,
+      "sha256": "731ed180fb4070eee4da92a9b7e7dfe3014f1524c83bf2c3c28732bd961707f5"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "baseline": "catalog-validation.mjs.original.txt",
+      "bytes": 11365,
+      "sha256": "8fbf9c152c7a08678150f122bdfa0dec33253dc877509f72ef0e1b17ac9b8307"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/operation-contracts.mjs",
+      "baseline": "operation-contracts.mjs.original.txt",
+      "bytes": 5255,
+      "sha256": "e76240850b6436b49ee8dba87b75579c3e59bc6187b35c7ea6353286f1ec943a"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/validate.mjs",
+      "baseline": "validate.mjs.original.txt",
+      "bytes": 17098,
+      "sha256": "43c537f453720eb6691ee3ca82636c85eeff3e6b0c9598088ada0a631838e523"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+      "baseline": "retrieval-catalog-bindings.test.mjs.original.txt",
+      "bytes": 13570,
+      "sha256": "e5f9eb9b368e3bcd92453c3738246bc252407026eb5c0e5683ecae459deac047"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-memory-proposals.test.mjs",
+      "baseline": "retrieval-memory-proposals.test.mjs.original.txt",
+      "bytes": 12801,
+      "sha256": "481245db627dd200414785f64e5b963003530c08f23caab9abade0ad204a4387"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-mail.test.mjs",
+      "baseline": "retrieval-mail.test.mjs.original.txt",
+      "bytes": 29989,
+      "sha256": "9ffa83f7c443c1fb917664ebc0a04ccd5994e7bd2c0f639f8c264b86feaee747"
+    }
+  ]
+}

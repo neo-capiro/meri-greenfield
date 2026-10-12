@@ -174,8 +174,8 @@ export const {
   dataSearchSchemaId, validateDataSearchShape, normalizeDataSearchInput, assertDataSearchResult,
 } = dataSearchValidators;
 
-export const {normalizeMemoryProposalInput, assertMemoryProposalReadResult} =
-  createMemoryProposalValidators({validateShape, assertSubject, unique});
+const memoryProposalValidators = createMemoryProposalValidators({validateShape, assertSubject, unique});
+export const {normalizeMemoryProposalInput, assertMemoryProposalReadResult} = memoryProposalValidators;
 
 export function assertSkillManifest(manifest, catalog) {
   validateShape('SkillManifest', manifest); assertCatalog(catalog);
@@ -215,4 +215,4 @@ const sourceCatalog = JSON.parse(readFileSync(new URL('./catalog.json', import.m
 export const {resolveOperationContract} = createOperationContracts({catalog: sourceCatalog,
   bindings: CATALOG_OPERATION_BINDINGS, assertCatalog, canonicalSha256,
   validators: Object.freeze({...mailValidators, ...meetingValidators, ...operationalReadValidators,
-    ...federalMarketValidators, ...dataSearchValidators})});
+    ...federalMarketValidators, ...dataSearchValidators, ...memoryProposalValidators})});

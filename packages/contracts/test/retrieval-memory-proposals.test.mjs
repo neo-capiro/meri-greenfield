@@ -117,11 +117,12 @@ test('inert admission refuses getters/proxies/cycles/sparse data without invocat
   const cycle={};cycle.limit=cycle;assert.throws(()=>normalize(cycle,options()));
   const value=page();value.candidates=new Array(1);assert.throws(()=>check(value,{},options()));
 });
-test('operation remains unmapped/unavailable and public exports stay separate', () => {
+test('operation is mapped but unavailable and public exports stay separate', () => {
   const catalog=JSON.parse(readFileSync(new URL('../retrieval-0.2/catalog.json',import.meta.url)));
   assertCatalog(catalog);const row=catalog.originals.find(row=>row.id==='list_memory_proposals');
-  assert.equal(row.replacement,null);assert.equal(row.state,'pending');
-  assert.throws(()=>resolveOperationContract({id:'memory.list_own_proposals',version:'0.2.0'}));
+  assert.deepEqual(row.replacement,{id:'memory.list_own_proposals',version:'0.2.0'});assert.equal(row.state,'mapped');
+  const {descriptor}=resolveOperationContract({id:'memory.list_own_proposals',version:'0.2.0'});
+  assert.equal(descriptor.availability,'unimplemented');assert.equal(descriptor.handler,null);
   const pkg=JSON.parse(readFileSync(new URL('../package.json',import.meta.url)));
   assert.equal(pkg.version,'0.1.0');assert.ok(!JSON.stringify(pkg.exports).includes('memory-proposals'));
 });
