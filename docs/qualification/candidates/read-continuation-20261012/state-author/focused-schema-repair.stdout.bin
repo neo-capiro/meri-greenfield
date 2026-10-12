@@ -1,0 +1,28 @@
+✔ state requests preserve defaults, blank omission and frozen detached inputs (4.124688ms)
+✔ finite scalar limit coercion and bounded defaults remain observable (0.608885ms)
+✔ UTF-16 selectors clip exactly and expanded state overflow refuses explicitly (0.714573ms)
+✔ model authority fields, malformed types and extra context refuse (0.983789ms)
+✔ bill persisted scalar domain keeps nullable and negative count facts (3.104756ms)
+✔ known status labels, superseded, free-form unknown and prototype names correlate (2.510462ms)
+✔ exact bill filters cannot substitute state/session/status but query is not exact title (0.860423ms)
+✔ bill count/page race admits total0 with rows only with zero-count note (0.381153ms)
+✔ bill note presence follows count and requested window remains bounded (0.682856ms)
+✔ bill title semantic ceiling measures UTF-16 units (0.627293ms)
+✔ bill SQL date keeps UTC midnight and generatedAt remains producer canonical instant (0.801003ms)
+✔ missing or blank legislator query keeps explicit non-result branch (1.679724ms)
+✔ no legislator match correlates original normalized query and optional state (0.387623ms)
+✔ one bounded name result preserves opaque committees and need not prove global uniqueness (0.464017ms)
+✔ crosswalk namespace may be unknown or empty and ignores state hint (0.530587ms)
+✔ ambiguity preserves candidates with explicit clarification and no attributed match (0.84469ms)
+✔ legislator variants cannot mix match, note or privileged fields (0.651279ms)
+✔ hostile object graphs refuse before invoking accessors (0.385039ms)
+✔ output is detached without modifying caller and no source-authority extension admits (0.623888ms)
+✔ family and definition identifiers are closed (0.238989ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 216.678535
