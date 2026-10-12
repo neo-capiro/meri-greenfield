@@ -1,0 +1,414 @@
+{
+  "source": "cee27278cc58ab35f72763faa8c9b49ff80c8725",
+  "sourceTree": "61fec84a056f537917717c025de06f2c9fe0d463",
+  "authorPacket": "bb4593fee1cbd8bd0649656ac0cb8d9b65488156",
+  "authorManifestSha256": "2c4174cb845f162f2192080648e294f548b5f06a5f37be91bcbb3ed949a1b073",
+  "authorManifestMembers": 36,
+  "originalTrackedEntries": 8797,
+  "checks": 98,
+  "passed": 98,
+  "failed": 0,
+  "rows": [
+    {
+      "name": "all original mode/blob entries preserved cee27278cc58ab35f72763faa8c9b49ff80c8725",
+      "pass": true,
+      "detail": {
+        "originals": 8797,
+        "differences": []
+      }
+    },
+    {
+      "name": "all original mode/blob entries preserved bb4593fee1cbd8bd0649656ac0cb8d9b65488156",
+      "pass": true,
+      "detail": {
+        "originals": 8797,
+        "differences": []
+      }
+    },
+    {
+      "name": "new production scope exact",
+      "pass": true
+    },
+    {
+      "name": "exact reviewed product apps/artifacts/postgres-analysis.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact reviewed product apps/artifacts/test/artifact-postgres-analysis.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "accepted public budget owner imported",
+      "pass": true
+    },
+    {
+      "name": "accepted sandbox boundary imported",
+      "pass": true
+    },
+    {
+      "name": "no direct SQL/driver/subprocess imports",
+      "pass": true
+    },
+    {
+      "name": "source disabled by default",
+      "pass": true
+    },
+    {
+      "name": "typed analysis excluded",
+      "pass": true
+    },
+    {
+      "name": "canonical unchanged apps/artifacts/sandbox-analysis.mjs",
+      "pass": true
+    },
+    {
+      "name": "canonical unchanged packages/contracts/artifacts-0.2/artifact-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "canonical unchanged apps/artifacts/postgres-service.mjs",
+      "pass": true
+    },
+    {
+      "name": "canonical unchanged apps/gateway/index.mjs",
+      "pass": true
+    },
+    {
+      "name": "canonical unchanged apps/gateway/budget/postgres-tool-budget.mjs",
+      "pass": true
+    },
+    {
+      "name": "canonical unchanged apps/gateway/budget/tool-budget-execution.mjs",
+      "pass": true
+    },
+    {
+      "name": "canonical unchanged packages/runtime/operation-lifetime.mjs",
+      "pass": true
+    },
+    {
+      "name": "canonical unchanged packages/contracts/meri.schema.json",
+      "pass": true
+    },
+    {
+      "name": "canonical unchanged packages/contracts/validate.mjs",
+      "pass": true
+    },
+    {
+      "name": "canonical unchanged packages/contracts/retrieval-0.2/catalog.json",
+      "pass": true
+    },
+    {
+      "name": "author manifest binds exact source",
+      "pass": true
+    },
+    {
+      "name": "manifest names unique",
+      "pass": true
+    },
+    {
+      "name": "author member apps/artifacts/postgres-analysis.mjs",
+      "pass": true
+    },
+    {
+      "name": "author member apps/artifacts/test/artifact-postgres-analysis.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "author member docs/coordination/reports/CODEX-ARTIFACT-ANALYSIS-BUDGET-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "author member docs/coordination/tasks/CODEX-ARTIFACT-ANALYSIS-BUDGET-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/api.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/authority-before.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/authority-before.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/authority-before.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/authority-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/authority-repaired.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/authority-repaired.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/cancellation-before.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/cancellation-before.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/cancellation-before.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/failures-and-repairs.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/first.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/first.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/first.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/pre-authority/api.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/pre-authority/failures-and-repairs.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/pre-authority/manifest.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/pre-authority/provenance.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/pre-authority/report.md",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/pre-authority/source-preservation.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/pre-authority/verify-result.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/pre-authority/verify.py",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/references.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/repaired.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/repaired.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/repaired.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/run-focused.py",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/source-preservation.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/verifier-initial-manifest.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/verifier-initial-verify-result.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/verifier-initial-verify.py",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/verify.py",
+      "pass": true
+    },
+    {
+      "name": "author group receipt docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/authority-before.json",
+      "pass": true
+    },
+    {
+      "name": "author source diff docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/authority-before.json",
+      "pass": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/authority-before.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/authority-before.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "author physical group readback docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/authority-before.json",
+      "pass": true
+    },
+    {
+      "name": "author group receipt docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/authority-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "author source diff docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/authority-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/authority-repaired.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/authority-repaired.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "author physical group readback docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/authority-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "author group receipt docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/cancellation-before.json",
+      "pass": true
+    },
+    {
+      "name": "author source diff docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/cancellation-before.json",
+      "pass": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/cancellation-before.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/cancellation-before.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "author physical group readback docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/cancellation-before.json",
+      "pass": true
+    },
+    {
+      "name": "author group receipt docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/first.json",
+      "pass": true
+    },
+    {
+      "name": "author source diff docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/first.json",
+      "pass": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/first.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/first.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "author physical group readback docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/first.json",
+      "pass": true
+    },
+    {
+      "name": "author group receipt docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/repaired.json",
+      "pass": true
+    },
+    {
+      "name": "author source diff docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/repaired.json",
+      "pass": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/repaired.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/repaired.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "author physical group readback docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/repaired.json",
+      "pass": true
+    },
+    {
+      "name": "review capture clean source first.json",
+      "pass": true
+    },
+    {
+      "name": "review owned group absent first.json",
+      "pass": true
+    },
+    {
+      "name": "review physical group readback first.json",
+      "pass": true
+    },
+    {
+      "name": "review stream docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/first.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "review stream docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/first.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "review capture clean source repaired.json",
+      "pass": true
+    },
+    {
+      "name": "review owned group absent repaired.json",
+      "pass": true
+    },
+    {
+      "name": "review physical group readback repaired.json",
+      "pass": true
+    },
+    {
+      "name": "review stream docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "review stream docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "review capture clean source authority-before.json",
+      "pass": true
+    },
+    {
+      "name": "review owned group absent authority-before.json",
+      "pass": true
+    },
+    {
+      "name": "review physical group readback authority-before.json",
+      "pass": true
+    },
+    {
+      "name": "review stream docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/authority-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "review stream docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review/authority-before.stderr.bin",
+      "pass": true
+    }
+  ],
+  "scope": "source and metadata only; no runtime or engine acceptance"
+}

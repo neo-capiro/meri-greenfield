@@ -1,0 +1,19 @@
+{
+  "ownedDependencyLinksRemoved": [
+    "ajv",
+    "ajv-formats",
+    "canonicalize",
+    "fast-deep-equal",
+    "fast-uri",
+    "json-schema-traverse",
+    "require-from-string"
+  ],
+  "borrowedTargetsChanged": false,
+  "reviewProcessGroups": [
+    394451,
+    394659,
+    396061
+  ],
+  "allGroupsAbsent": "Independently rechecked in audit-final.json; author groups also checked",
+  "programOrNativeExecution": false
+}
