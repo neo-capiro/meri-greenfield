@@ -42,7 +42,7 @@ The repair adds only request-bound truncated-window length and HTML ellipsis che
 python3 -B docs/qualification/candidates/read-continuation-20261012/public-web-author/capture-reaped.py focused-truncation-repaired node --test packages/contracts/test/retrieval-public-web.test.mjs
 ```
 
-Controls include provider-specific fields, raw publication/URL distinctions, repeated search rows, empty results, HTML/PDF nulls and branch rules, complete/partial coverage, signed URL-independent hash syntax, UTF-16 boundaries, unknown fields/context, hostile selectors/getters/proxies, immutability and actual canonical resolver argument hashing using a test-only unavailable descriptor. The test does not edit or qualify the canonical catalog.
+Controls include provider-specific fields, raw publication/URL distinctions, repeated search rows, empty results, HTML/PDF nulls and branch rules, complete/partial coverage, raw-byte hash syntax, UTF-16 boundaries, unknown fields/context, hostile selectors/getters/proxies, immutability and actual canonical resolver argument hashing using a test-only unavailable descriptor. The test does not edit or qualify the canonical catalog.
 
 Offline integrity verification passes **78/78**. It binds all three source files, ten complete private reference pairs (all unchanged between `fd8765ec01d292013758606204f2c9d886cd31c1` and `4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace`), all raw captures and **6,528 original complete file blobs/modes**. Only metadata is retained from private references. The canonical loader/catalog, public0.1 files, original tests and dependency notices remain unchanged. Seven existing installed packages (1,374,227 bytes) were physically reused; no package installation or donor mutation occurred.
 
