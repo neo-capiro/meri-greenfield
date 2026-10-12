@@ -1,0 +1,131 @@
+{
+  "scope": "REFERENCE_METADATA_ONLY_NO_PRIVATE_BODIES",
+  "references": [
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+          "bytes": 415704,
+          "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+          "bytes": 415704,
+          "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-tools.list-members.spec.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "3016b387dbd79ec40233cea5dd32cc956273c0bb",
+          "bytes": 4126,
+          "sha256": "be0941cc62cb44a621f137d2074e1d8597177b4b65f2fbb849ff1c8f1b6eeb11"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "3016b387dbd79ec40233cea5dd32cc956273c0bb",
+          "bytes": 4126,
+          "sha256": "be0941cc62cb44a621f137d2074e1d8597177b4b65f2fbb849ff1c8f1b6eeb11"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-committee-roster-representation-tool.spec.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "650bd98be9fb723a8bf97a9afaa1ac1df9a26fd6",
+          "bytes": 19699,
+          "sha256": "e63975be01cc7240fc3d18c365f8ed6b888eb86d31b640ae15e29ff9a643ec0c"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "650bd98be9fb723a8bf97a9afaa1ac1df9a26fd6",
+          "bytes": 19699,
+          "sha256": "e63975be01cc7240fc3d18c365f8ed6b888eb86d31b640ae15e29ff9a643ec0c"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/prisma/schema.prisma",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "cdf1923217edae6e7624993796a5671922b61ac0",
+          "bytes": 968034,
+          "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "cdf1923217edae6e7624993796a5671922b61ac0",
+          "bytes": 968034,
+          "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "packages/shared/src/index.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "62eb32931826f77abd985bc142f6a65adad6a23a",
+          "bytes": 273389,
+          "sha256": "1a713331de044768f7bd8631db4762a08a3c3541a1bbc064c67bbff46fc9a75f"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "62eb32931826f77abd985bc142f6a65adad6a23a",
+          "bytes": 273389,
+          "sha256": "1a713331de044768f7bd8631db4762a08a3c3541a1bbc064c67bbff46fc9a75f"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "packages/shared/src/us-states.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "26911d2f758f7ea56347b12efcf596b7119ac574",
+          "bytes": 1573,
+          "sha256": "ad65aa6cd523c745c5fa835abe30b0d4e6bb060bc5c1765af4c707ad1f8e0e8b"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "26911d2f758f7ea56347b12efcf596b7119ac574",
+          "bytes": 1573,
+          "sha256": "ad65aa6cd523c745c5fa835abe30b0d4e6bb060bc5c1765af4c707ad1f8e0e8b"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/common/us-states.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "03f8a81e77ebf3969dcff8853bbf4cab9887a5fc",
+          "bytes": 2792,
+          "sha256": "f080718a458d1ac24e75b1b99315b30faea6ee0ab2234ce2c1a49dbd6026ae74"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "03f8a81e77ebf3969dcff8853bbf4cab9887a5fc",
+          "bytes": 2792,
+          "sha256": "f080718a458d1ac24e75b1b99315b30faea6ee0ab2234ce2c1a49dbd6026ae74"
+        }
+      ],
+      "unchanged": true
+    }
+  ]
+}
