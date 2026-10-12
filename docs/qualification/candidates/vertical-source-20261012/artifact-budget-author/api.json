@@ -1,0 +1,48 @@
+{
+  "module": "apps/artifacts/postgres-service.mjs",
+  "export": "createPostgresArtifactService",
+  "requiredFactoryKeys": [
+    "pool",
+    "allocationJson",
+    "producerContext",
+    "descriptor",
+    "context",
+    "validators",
+    "authority",
+    "authorize",
+    "versions",
+    "objects",
+    "executor",
+    "now",
+    "ids",
+    "newReservationId",
+    "limits"
+  ],
+  "optionalFactoryKeys": {
+    "sourceEnabled": false
+  },
+  "applicationInput": [
+    "deliveryId",
+    "baseVersionId",
+    "request"
+  ],
+  "inputAuthority": "Stable delivery ID is supplied by trusted SDK/control delivery owner, not a model authority field. Raw request is canonical artifact request; context/descriptor are factory-only.",
+  "methods": [
+    "prepareInvocation(value,signal)",
+    "execute(value,credential,signal)",
+    "reconcileInvocation(value)",
+    "bindTrustedGrant(invocationJson)"
+  ],
+  "result": "Unchanged accepted artifact service result, current authorization-bearing execution receipt plus version/inspection.",
+  "completionHash": "canonicalSha256(exact committed {version,spec,specSha256,requestSha256,inspection,expectedParentVersionId})",
+  "requestHash": "canonicalSha256({request,context,baseVersionId})",
+  "rawIdentity": "{operation,arguments:{intentSha256:requestHash}}",
+  "accountedOutputBytes": "Committed version.object.bytes; response metadata independently limited by limits.maxResponseBytes.",
+  "remainingGates": [
+    "Actual PostgreSQL engine/restart qualification",
+    "Production authorization/object/version ports",
+    "Native Office/render/recalculation/general-program qualification",
+    "Root canonical registry/dispatcher composition"
+  ],
+  "generalSandbox": "Refused before budget or execution; existing separate sandbox boundary remains source-only and requires its own budget composition before runtime use."
+}
