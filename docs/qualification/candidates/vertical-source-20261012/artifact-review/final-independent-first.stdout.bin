@@ -1,0 +1,363 @@
+✔ independent real TXT keeps Unicode and exact CRLF bytes (85.005822ms)
+✔ independent real DOCX retains ordered paragraphs, bullets and table cells (170.82618ms)
+✔ independent real XLSX separates literal cells from formulas and discloses cache (196.702845ms)
+✔ independent real PPTX retains editable text, table and speaker notes (140.76739ms)
+✔ independent real analysis computes totals from nontrivial input (304.733525ms)
+✔ independent real analysis refuses ambiguous null join keys (234.259996ms)
+✔ independent integer arithmetic cannot silently wrap positive finite inputs negative (259.704175ms)
+✔ independent PPTX refuses PNG whose IDAT CRC is invalid (58.788309ms)
+✔ independent real workbook cell revision preserves prior bytes and removes stale values (331.900961ms)
+✔ independent process success binds EOF and retained byte hashes (36.92781ms)
+✔ independent process stdout overflow retains truthful bytes and closes group (30.800341ms)
+✔ independent process stderr overflow retains truthful bytes and closes group (51.452442ms)
+✔ independent process nonzero retains exact error and closure (37.761733ms)
+✔ independent process deadline closes exact owned group (108.24267ms)
+✔ independent process cancelled admission starts no child (2.771328ms)
+✖ independent service creates, inspects and downloads exact detached version (60.538625ms)
+✖ independent revision preserves original and uses explicit parent lineage (1.507457ms)
+✖ independent historical provenance survives current resumed binding (1.23685ms)
+✔ independent wrong authority requestSha256 blocks every execution effect (1.197661ms)
+✔ independent wrong authority scopesSha256 blocks every execution effect (0.659111ms)
+✔ independent wrong authority resourceSha256 blocks every execution effect (0.514854ms)
+✔ independent wrong authority binding blocks every execution effect (0.930009ms)
+✔ independent wrong authority decision blocks every execution effect (0.612642ms)
+✖ independent revoke after generation leaves no committed object or version (4.775391ms)
+✔ independent output inspection hash mismatch cannot publish (1.168978ms)
+✖ independent wrong storage tuple becomes explicit unknown effect (0.903248ms)
+✖ independent wrong commit receipt cannot report success (1.825464ms)
+✔ independent late returned authority stops next port (0.448154ms)
+✖ independent late returned object commit preserves uncertainty (0.886622ms)
+✔ independent abort before start allocates no ports (0.41922ms)
+✖ independent intent binds exact asset tuples and evidence (0.789527ms)
+✖ independent read refuses changed stored inspection format (0.716837ms)
+✖ independent download refuses mime inconsistent with original spec (1.03091ms)
+✔ independent invalid ID allocation releases lifetime timer (0.391409ms)
+✔ independent failed budget settlement is disclosed even before storage (0.828876ms)
+✔ independent late budget reservation is uncertain and admits no executor (0.583858ms)
+✔ independent mismatched reservation never settles an untrusted ticket (0.569807ms)
+✖ independent late settlement after commit keeps effect and budget uncertainty (0.826522ms)
+✔ independent word request is admitted and detached (4.830912ms)
+✔ independent workbook request is admitted and detached (1.279403ms)
+✔ independent slides request is admitted and detached (1.009878ms)
+✔ independent analysis request is admitted and detached (1.885495ms)
+✔ independent exact text preserves whitespace and final newline (0.456576ms)
+✔ independent request refuses arbitrary analysis code (0.626382ms)
+✔ independent request refuses executable and destination selectors (1.062768ms)
+✔ independent request refuses operation-format substitution (1.785714ms)
+✔ independent request refuses unknown formula executable and URL options (0.536256ms)
+✔ independent inert input rejects proxy and getter without invoking it (0.400072ms)
+✔ independent inert input rejects nonfinite and sparse data (0.469016ms)
+✔ independent request rejects hidden keys and unknown rich text fields (0.414504ms)
+✔ independent request enforces bounded content arrays and cells (1.239533ms)
+✔ independent context is detached and grants no request-selected authority (2.318366ms)
+✔ independent context rejects foreign scope and asset scope (0.90507ms)
+✔ independent context refuses unknown authority flags and oversized output budget (0.313401ms)
+✔ independent scope and evidence boundaries preserve source identity (1.19784ms)
+ℹ tests 55
+ℹ suites 0
+ℹ pass 44
+ℹ fail 11
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1879.028895
+
+✖ failing tests:
+
+test at apps/artifacts/test/artifact-service-independent.test.mjs:23:1
+✖ independent service creates, inspects and downloads exact detached version (60.538625ms)
+  Error: ARTIFACT_INSPECTION_MISMATCH
+      at inspectBytes (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:17:89)
+      at generate (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:68:56)
+      ... 2 lines matching cause stack trace ...
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    code: 'ARTIFACT_INSPECTION_MISMATCH',
+    cause: Error: data/details must have required property 'encoding', data/details must have required property 'whitespace', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'paragraphs', data/details must have required property 'tables', data/details must have required property 'pictures', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'sheets', data/details must have required property 'formulas', data/details must have required property 'formulaCache', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'slides', data/details must have required property 'editable', data/details must have required property 'visualInspection', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'rows', data/details must have required property 'columns', data/details must have required property 'chart', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'conversionCompleted', data/details must have required property 'renderInspection', data/details must have required property 'sourceDocxSha256', data/details must NOT have additional properties, data must match exactly one schema in oneOf
+        at validateShape (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-service-independent.test.mjs:12:170)
+        at Object.inspection (file:///workspace/meri-artifact-execution-review-20261012/packages/contracts/artifacts-0.2/artifact-validation.mjs:49:57)
+        at inspectBytes (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:17:37)
+        at generate (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:68:56)
+        at async TestContext.<anonymous> (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-service-independent.test.mjs:23:153)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3),
+    lifetime: { unsettledOperations: 0, physicalStopProven: false },
+    budgetSettlementUnknown: false,
+    budgetReservationUnknown: false,
+    budget: { ticketId: 'ticket', requestSha256: 'e1a49dcaf687820fb894c1de305aa1efafec34c02918a6afcf666b4a3ed4dc2a', binding: { tenantId: 't', actorId: 'a', conversationId: '20000000-0000-4000-8000-000000000001', runId: '20000000-0000-4000-8000-000000000002', attemptId: '20000000-0000-4000-8000-000000000003', workerId: '20000000-0000-4000-8000-000000000004', writerFence: 1 } }
+  }
+
+test at apps/artifacts/test/artifact-service-independent.test.mjs:24:1
+✖ independent revision preserves original and uses explicit parent lineage (1.507457ms)
+  Error: ARTIFACT_INSPECTION_MISMATCH
+      at inspectBytes (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:17:89)
+      at generate (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:68:56)
+      ... 2 lines matching cause stack trace ...
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'ARTIFACT_INSPECTION_MISMATCH',
+    cause: Error: data/details must have required property 'encoding', data/details must have required property 'whitespace', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'paragraphs', data/details must have required property 'tables', data/details must have required property 'pictures', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'sheets', data/details must have required property 'formulas', data/details must have required property 'formulaCache', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'slides', data/details must have required property 'editable', data/details must have required property 'visualInspection', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'rows', data/details must have required property 'columns', data/details must have required property 'chart', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'conversionCompleted', data/details must have required property 'renderInspection', data/details must have required property 'sourceDocxSha256', data/details must NOT have additional properties, data must match exactly one schema in oneOf
+        at validateShape (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-service-independent.test.mjs:12:170)
+        at Object.inspection (file:///workspace/meri-artifact-execution-review-20261012/packages/contracts/artifacts-0.2/artifact-validation.mjs:49:57)
+        at inspectBytes (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:17:37)
+        at generate (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:68:56)
+        at async TestContext.<anonymous> (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-service-independent.test.mjs:24:141)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    lifetime: { unsettledOperations: 0, physicalStopProven: false },
+    budgetSettlementUnknown: false,
+    budgetReservationUnknown: false,
+    budget: { ticketId: 'ticket', requestSha256: 'e1a49dcaf687820fb894c1de305aa1efafec34c02918a6afcf666b4a3ed4dc2a', binding: { tenantId: 't', actorId: 'a', conversationId: '20000000-0000-4000-8000-000000000001', runId: '20000000-0000-4000-8000-000000000002', attemptId: '20000000-0000-4000-8000-000000000003', workerId: '20000000-0000-4000-8000-000000000004', writerFence: 1 } }
+  }
+
+test at apps/artifacts/test/artifact-service-independent.test.mjs:25:1
+✖ independent historical provenance survives current resumed binding (1.23685ms)
+  Error: ARTIFACT_INSPECTION_MISMATCH
+      at inspectBytes (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:17:89)
+      at generate (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:68:56)
+      ... 2 lines matching cause stack trace ...
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'ARTIFACT_INSPECTION_MISMATCH',
+    cause: Error: data/details must have required property 'encoding', data/details must have required property 'whitespace', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'paragraphs', data/details must have required property 'tables', data/details must have required property 'pictures', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'sheets', data/details must have required property 'formulas', data/details must have required property 'formulaCache', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'slides', data/details must have required property 'editable', data/details must have required property 'visualInspection', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'rows', data/details must have required property 'columns', data/details must have required property 'chart', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'conversionCompleted', data/details must have required property 'renderInspection', data/details must have required property 'sourceDocxSha256', data/details must NOT have additional properties, data must match exactly one schema in oneOf
+        at validateShape (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-service-independent.test.mjs:12:170)
+        at Object.inspection (file:///workspace/meri-artifact-execution-review-20261012/packages/contracts/artifacts-0.2/artifact-validation.mjs:49:57)
+        at inspectBytes (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:17:37)
+        at generate (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:68:56)
+        at async TestContext.<anonymous> (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-service-independent.test.mjs:25:135)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    lifetime: { unsettledOperations: 0, physicalStopProven: false },
+    budgetSettlementUnknown: false,
+    budgetReservationUnknown: false,
+    budget: { ticketId: 'ticket', requestSha256: 'e1a49dcaf687820fb894c1de305aa1efafec34c02918a6afcf666b4a3ed4dc2a', binding: { tenantId: 't', actorId: 'a', conversationId: '20000000-0000-4000-8000-000000000001', runId: '20000000-0000-4000-8000-000000000002', attemptId: '20000000-0000-4000-8000-000000000003', workerId: '20000000-0000-4000-8000-000000000004', writerFence: 1 } }
+  }
+
+test at apps/artifacts/test/artifact-service-independent.test.mjs:27:1
+✖ independent revoke after generation leaves no committed object or version (4.775391ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /ARTIFACT_AUTHORITY/. Input:
+  
+  'Error: ARTIFACT_INSPECTION_MISMATCH'
+  
+      at async TestContext.<anonymous> (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-service-independent.test.mjs:27:227)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: ARTIFACT_INSPECTION_MISMATCH
+        at inspectBytes (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:17:89)
+        at generate (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:68:56)
+        ... 4 lines matching cause stack trace ...
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+      [cause]: Error: data/details must have required property 'encoding', data/details must have required property 'whitespace', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'paragraphs', data/details must have required property 'tables', data/details must have required property 'pictures', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'sheets', data/details must have required property 'formulas', data/details must have required property 'formulaCache', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'slides', data/details must have required property 'editable', data/details must have required property 'visualInspection', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'rows', data/details must have required property 'columns', data/details must have required property 'chart', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'conversionCompleted', data/details must have required property 'renderInspection', data/details must have required property 'sourceDocxSha256', data/details must NOT have additional properties, data must match exactly one schema in oneOf
+          at validateShape (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-service-independent.test.mjs:12:170)
+          at Object.inspection (file:///workspace/meri-artifact-execution-review-20261012/packages/contracts/artifacts-0.2/artifact-validation.mjs:49:57)
+          at inspectBytes (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:17:37)
+          at generate (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:68:56)
+          at async waitForActual (node:assert:646:5)
+          at async strict.rejects (node:assert:769:25)
+          at async TestContext.<anonymous> (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-service-independent.test.mjs:27:227)
+          at async Test.run (node:internal/test_runner/test:1389:7)
+          at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+    },
+    expected: /ARTIFACT_AUTHORITY/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/artifacts/test/artifact-service-independent.test.mjs:29:1
+✖ independent wrong storage tuple becomes explicit unknown effect (0.903248ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: ARTIFACT_INSPECTION_MISMATCH
+      at async TestContext.<anonymous> (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-service-independent.test.mjs:29:190)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: ARTIFACT_INSPECTION_MISMATCH
+        at inspectBytes (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:17:89)
+        at generate (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:68:56)
+        ... 4 lines matching cause stack trace ...
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+      [cause]: Error: data/details must have required property 'encoding', data/details must have required property 'whitespace', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'paragraphs', data/details must have required property 'tables', data/details must have required property 'pictures', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'sheets', data/details must have required property 'formulas', data/details must have required property 'formulaCache', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'slides', data/details must have required property 'editable', data/details must have required property 'visualInspection', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'rows', data/details must have required property 'columns', data/details must have required property 'chart', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'conversionCompleted', data/details must have required property 'renderInspection', data/details must have required property 'sourceDocxSha256', data/details must NOT have additional properties, data must match exactly one schema in oneOf
+          at validateShape (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-service-independent.test.mjs:12:170)
+          at Object.inspection (file:///workspace/meri-artifact-execution-review-20261012/packages/contracts/artifacts-0.2/artifact-validation.mjs:49:57)
+          at inspectBytes (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:17:37)
+          at generate (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:68:56)
+          at async waitForActual (node:assert:646:5)
+          at async strict.rejects (node:assert:769:25)
+          at async TestContext.<anonymous> (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-service-independent.test.mjs:29:190)
+          at async Test.run (node:internal/test_runner/test:1389:7)
+          at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+    },
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/artifacts/test/artifact-service-independent.test.mjs:30:1
+✖ independent wrong commit receipt cannot report success (1.825464ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: ARTIFACT_INSPECTION_MISMATCH
+      at async TestContext.<anonymous> (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-service-independent.test.mjs:30:207)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: ARTIFACT_INSPECTION_MISMATCH
+        at inspectBytes (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:17:89)
+        at generate (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:68:56)
+        ... 4 lines matching cause stack trace ...
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+      [cause]: Error: data/details must have required property 'encoding', data/details must have required property 'whitespace', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'paragraphs', data/details must have required property 'tables', data/details must have required property 'pictures', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'sheets', data/details must have required property 'formulas', data/details must have required property 'formulaCache', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'slides', data/details must have required property 'editable', data/details must have required property 'visualInspection', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'rows', data/details must have required property 'columns', data/details must have required property 'chart', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'conversionCompleted', data/details must have required property 'renderInspection', data/details must have required property 'sourceDocxSha256', data/details must NOT have additional properties, data must match exactly one schema in oneOf
+          at validateShape (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-service-independent.test.mjs:12:170)
+          at Object.inspection (file:///workspace/meri-artifact-execution-review-20261012/packages/contracts/artifacts-0.2/artifact-validation.mjs:49:57)
+          at inspectBytes (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:17:37)
+          at generate (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:68:56)
+          at async waitForActual (node:assert:646:5)
+          at async strict.rejects (node:assert:769:25)
+          at async TestContext.<anonymous> (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-service-independent.test.mjs:30:207)
+          at async Test.run (node:internal/test_runner/test:1389:7)
+          at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+    },
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/artifacts/test/artifact-service-independent.test.mjs:32:1
+✖ independent late returned object commit preserves uncertainty (0.886622ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: ARTIFACT_INSPECTION_MISMATCH
+      at async TestContext.<anonymous> (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-service-independent.test.mjs:32:200)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: ARTIFACT_INSPECTION_MISMATCH
+        at inspectBytes (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:17:89)
+        at generate (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:68:56)
+        ... 4 lines matching cause stack trace ...
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+      [cause]: Error: data/details must have required property 'encoding', data/details must have required property 'whitespace', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'paragraphs', data/details must have required property 'tables', data/details must have required property 'pictures', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'sheets', data/details must have required property 'formulas', data/details must have required property 'formulaCache', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'slides', data/details must have required property 'editable', data/details must have required property 'visualInspection', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'rows', data/details must have required property 'columns', data/details must have required property 'chart', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'conversionCompleted', data/details must have required property 'renderInspection', data/details must have required property 'sourceDocxSha256', data/details must NOT have additional properties, data must match exactly one schema in oneOf
+          at validateShape (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-service-independent.test.mjs:12:170)
+          at Object.inspection (file:///workspace/meri-artifact-execution-review-20261012/packages/contracts/artifacts-0.2/artifact-validation.mjs:49:57)
+          at inspectBytes (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:17:37)
+          at generate (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:68:56)
+          at async waitForActual (node:assert:646:5)
+          at async strict.rejects (node:assert:769:25)
+          at async TestContext.<anonymous> (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-service-independent.test.mjs:32:200)
+          at async Test.run (node:internal/test_runner/test:1389:7)
+          at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+    },
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/artifacts/test/artifact-service-independent.test.mjs:34:1
+✖ independent intent binds exact asset tuples and evidence (0.789527ms)
+  Error: ARTIFACT_INSPECTION_MISMATCH
+      at inspectBytes (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:17:89)
+      at generate (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:68:56)
+      ... 2 lines matching cause stack trace ...
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'ARTIFACT_INSPECTION_MISMATCH',
+    cause: Error: data/details must have required property 'encoding', data/details must have required property 'whitespace', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'paragraphs', data/details must have required property 'tables', data/details must have required property 'pictures', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'sheets', data/details must have required property 'formulas', data/details must have required property 'formulaCache', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'slides', data/details must have required property 'editable', data/details must have required property 'visualInspection', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'rows', data/details must have required property 'columns', data/details must have required property 'chart', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'conversionCompleted', data/details must have required property 'renderInspection', data/details must have required property 'sourceDocxSha256', data/details must NOT have additional properties, data must match exactly one schema in oneOf
+        at validateShape (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-service-independent.test.mjs:12:170)
+        at Object.inspection (file:///workspace/meri-artifact-execution-review-20261012/packages/contracts/artifacts-0.2/artifact-validation.mjs:49:57)
+        at inspectBytes (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:17:37)
+        at generate (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:68:56)
+        at async TestContext.<anonymous> (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-service-independent.test.mjs:34:113)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    lifetime: { unsettledOperations: 0, physicalStopProven: false },
+    budgetSettlementUnknown: false,
+    budgetReservationUnknown: false,
+    budget: { ticketId: 'ticket', requestSha256: 'e1a49dcaf687820fb894c1de305aa1efafec34c02918a6afcf666b4a3ed4dc2a', binding: { tenantId: 't', actorId: 'a', conversationId: '20000000-0000-4000-8000-000000000001', runId: '20000000-0000-4000-8000-000000000002', attemptId: '20000000-0000-4000-8000-000000000003', workerId: '20000000-0000-4000-8000-000000000004', writerFence: 1 } }
+  }
+
+test at apps/artifacts/test/artifact-service-independent.test.mjs:35:1
+✖ independent read refuses changed stored inspection format (0.716837ms)
+  Error: ARTIFACT_INSPECTION_MISMATCH
+      at inspectBytes (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:17:89)
+      at generate (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:68:56)
+      ... 2 lines matching cause stack trace ...
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'ARTIFACT_INSPECTION_MISMATCH',
+    cause: Error: data/details must have required property 'encoding', data/details must have required property 'whitespace', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'paragraphs', data/details must have required property 'tables', data/details must have required property 'pictures', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'sheets', data/details must have required property 'formulas', data/details must have required property 'formulaCache', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'slides', data/details must have required property 'editable', data/details must have required property 'visualInspection', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'rows', data/details must have required property 'columns', data/details must have required property 'chart', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'conversionCompleted', data/details must have required property 'renderInspection', data/details must have required property 'sourceDocxSha256', data/details must NOT have additional properties, data must match exactly one schema in oneOf
+        at validateShape (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-service-independent.test.mjs:12:170)
+        at Object.inspection (file:///workspace/meri-artifact-execution-review-20261012/packages/contracts/artifacts-0.2/artifact-validation.mjs:49:57)
+        at inspectBytes (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:17:37)
+        at generate (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:68:56)
+        at async TestContext.<anonymous> (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-service-independent.test.mjs:35:112)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    lifetime: { unsettledOperations: 0, physicalStopProven: false },
+    budgetSettlementUnknown: false,
+    budgetReservationUnknown: false,
+    budget: { ticketId: 'ticket', requestSha256: 'e1a49dcaf687820fb894c1de305aa1efafec34c02918a6afcf666b4a3ed4dc2a', binding: { tenantId: 't', actorId: 'a', conversationId: '20000000-0000-4000-8000-000000000001', runId: '20000000-0000-4000-8000-000000000002', attemptId: '20000000-0000-4000-8000-000000000003', workerId: '20000000-0000-4000-8000-000000000004', writerFence: 1 } }
+  }
+
+test at apps/artifacts/test/artifact-service-independent.test.mjs:36:1
+✖ independent download refuses mime inconsistent with original spec (1.03091ms)
+  Error: ARTIFACT_INSPECTION_MISMATCH
+      at inspectBytes (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:17:89)
+      at generate (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:68:56)
+      ... 2 lines matching cause stack trace ...
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'ARTIFACT_INSPECTION_MISMATCH',
+    cause: Error: data/details must have required property 'encoding', data/details must have required property 'whitespace', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'paragraphs', data/details must have required property 'tables', data/details must have required property 'pictures', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'sheets', data/details must have required property 'formulas', data/details must have required property 'formulaCache', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'slides', data/details must have required property 'editable', data/details must have required property 'visualInspection', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'rows', data/details must have required property 'columns', data/details must have required property 'chart', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'conversionCompleted', data/details must have required property 'renderInspection', data/details must have required property 'sourceDocxSha256', data/details must NOT have additional properties, data must match exactly one schema in oneOf
+        at validateShape (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-service-independent.test.mjs:12:170)
+        at Object.inspection (file:///workspace/meri-artifact-execution-review-20261012/packages/contracts/artifacts-0.2/artifact-validation.mjs:49:57)
+        at inspectBytes (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:17:37)
+        at generate (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:68:56)
+        at async TestContext.<anonymous> (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-service-independent.test.mjs:36:120)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    lifetime: { unsettledOperations: 0, physicalStopProven: false },
+    budgetSettlementUnknown: false,
+    budgetReservationUnknown: false,
+    budget: { ticketId: 'ticket', requestSha256: 'e1a49dcaf687820fb894c1de305aa1efafec34c02918a6afcf666b4a3ed4dc2a', binding: { tenantId: 't', actorId: 'a', conversationId: '20000000-0000-4000-8000-000000000001', runId: '20000000-0000-4000-8000-000000000002', attemptId: '20000000-0000-4000-8000-000000000003', workerId: '20000000-0000-4000-8000-000000000004', writerFence: 1 } }
+  }
+
+test at apps/artifacts/test/artifact-service-independent.test.mjs:42:1
+✖ independent late settlement after commit keeps effect and budget uncertainty (0.826522ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: ARTIFACT_BUDGET_SETTLEMENT_UNKNOWN
+      at async TestContext.<anonymous> (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-service-independent.test.mjs:42:225)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: ARTIFACT_BUDGET_SETTLEMENT_UNKNOWN
+        at generate (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:85:199)
+        at async waitForActual (node:assert:646:5)
+        ... 3 lines matching cause stack trace ...
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+      [cause]: Error: ARTIFACT_INSPECTION_MISMATCH
+          at inspectBytes (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:17:89)
+          at generate (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:68:56)
+          ... 4 lines matching cause stack trace ...
+          at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+        [cause]: Error: data/details must have required property 'encoding', data/details must have required property 'whitespace', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'paragraphs', data/details must have required property 'tables', data/details must have required property 'pictures', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'sheets', data/details must have required property 'formulas', data/details must have required property 'formulaCache', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'slides', data/details must have required property 'editable', data/details must have required property 'visualInspection', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'rows', data/details must have required property 'columns', data/details must have required property 'chart', data/details must NOT have additional properties, data/format must be equal to constant, data/details must have required property 'conversionCompleted', data/details must have required property 'renderInspection', data/details must have required property 'sourceDocxSha256', data/details must NOT have additional properties, data must match exactly one schema in oneOf
+            at validateShape (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-service-independent.test.mjs:12:170)
+            at Object.inspection (file:///workspace/meri-artifact-execution-review-20261012/packages/contracts/artifacts-0.2/artifact-validation.mjs:49:57)
+            at inspectBytes (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:17:37)
+            at generate (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:68:56)
+            at async waitForActual (node:assert:646:5)
+            at async strict.rejects (node:assert:769:25)
+            at async TestContext.<anonymous> (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-service-independent.test.mjs:42:225)
+            at async Test.run (node:internal/test_runner/test:1389:7)
+            at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+      }
+    },
+    operator: 'rejects',
+    diff: 'simple'
+  }

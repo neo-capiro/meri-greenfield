@@ -1,0 +1,27 @@
+✔ all four typed requests compile under strict private/public schemas (45.557242ms)
+✔ reject code, external inputs, malformed Unicode, unsafe functions and shape drift (1.278962ms)
+✔ context rejects foreign provenance and assets (11.750368ms)
+✔ exact UTF8 TXT download plus current-attempt authorization and owned cleanup (88.373254ms)
+✔ actual Word package contains rich runs, tables and embedded chart (1294.761957ms)
+✔ actual XLSX distinguishes literal formulas and preserves declared formulas with unverified cache (222.285186ms)
+✔ actual editable PptxGenJS deck includes notes, chart, table and multiple slides (138.662905ms)
+✔ actual pandas join, typed delta and chart produce inspectable result bundle (1531.522104ms)
+✔ immutable revision preserves original exact bytes and rejects stale parent (164.452927ms)
+✔ denied authority stops before generation (2.459866ms)
+✔ changed authorization intent is rejected (1.567646ms)
+✔ changed budget binding is rejected (2.225695ms)
+✔ unqualified inspection cannot claim rendered, native-opened or recalculated (4.210017ms)
+✔ revocation after generation prevents any object commit (1.798703ms)
+✔ executor deadlines remain cancellation, not successful artifact publication (32.432069ms)
+✔ post-commit budget failure is explicit unknown effect (4.429006ms)
+✔ read integrity detects corrupted object bytes (60.858237ms)
+✔ fixed Office conversion source arguments have no user option/path channel (0.442194ms)
+✔ general analysis is unavailable without admitted native port (2.153076ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3757.329951

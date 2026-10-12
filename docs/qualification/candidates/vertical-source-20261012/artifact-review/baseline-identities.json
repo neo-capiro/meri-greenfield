@@ -1,0 +1,71 @@
+{
+  "base": "e5fb3963de787bbd7b7663316c368f15814897da",
+  "references": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 6582,
+      "sha256": "a0650949b74e5aee709bd8b3c9d480f95f5b898778ac8f7b3927eb54b141437a",
+      "blob": "fe8cefa588409d8562f0e6d939a6da7d120c0d87"
+    },
+    {
+      "path": "docs/IMPLEMENTATION-STANDARDS.md",
+      "bytes": 11082,
+      "sha256": "d4f10f964ee207187abacd967649a1cfc9bdd468072dc01f859268f08b719959",
+      "blob": "7f680395e07d1114667a800f3f8ed77010a3eac2"
+    },
+    {
+      "path": "docs/plans/MERI-DEPLOYMENT.md",
+      "bytes": 86848,
+      "sha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388",
+      "blob": "c9849375e463e88a064b256f715db7858cd369df"
+    },
+    {
+      "path": "docs/COMPONENTS.md",
+      "bytes": 8930,
+      "sha256": "d41dae59bf7b350a3a2c8c95bad55a3f571e1220060bea3f52798f8f9f98f3a7",
+      "blob": "65e2b07f6c73012357b620fcedc5eecd44e8ea76"
+    },
+    {
+      "path": "docs/coordination/r2/skills.json",
+      "bytes": 25018,
+      "sha256": "bfd0b14953b858d351a58a778f435f2d546c1a420050ee6c31ae5e489f1f17b6",
+      "blob": "842611cf4916b00486bf555034f8e50b74d2c456"
+    },
+    {
+      "path": "docs/coordination/r2/capabilities.json",
+      "bytes": 307002,
+      "sha256": "7207b38fd415c1254c5b8cbf80ec0a2910f399f8e65aa7f85b7b9b9f3c2dd4f1",
+      "blob": "78e155390e13948ec3a9a543214b810d8399ce05"
+    },
+    {
+      "path": "packages/contracts/meri.schema.json",
+      "bytes": 50043,
+      "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b",
+      "blob": "d7b3c22491ae81c5e875243754413aa7d35097e3"
+    },
+    {
+      "path": "packages/contracts/validate.mjs",
+      "bytes": 3311,
+      "sha256": "c2449fd55300b31bdc1e829b5d918a531f1c4b2c675085a5b4707726ddd36d10",
+      "blob": "2effe37084e7d20c20a33dc0104baea237f7d309"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/artifact-file.schema.json",
+      "bytes": 3494,
+      "sha256": "9c51a6777683990384467ab1c62acb07500411e6c08d5b89a0e8182513d91537",
+      "blob": "0a207d8fed971a26b053551e36e05c965ebd5914"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/artifact-file-validation.mjs",
+      "bytes": 5641,
+      "sha256": "56d5bdfdfe4876d3a0e6157226516a193e6ad75a9bf0b7e258cb3b2d044c0c04",
+      "blob": "3b883350b3435a7a5b08ad458c2d32068c47a9c9"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/operation-contracts.mjs",
+      "bytes": 5544,
+      "sha256": "f09b6b3a8b0186b3e2f05a17135ce40bac9ed728796493501ce7d8d4d647adfd",
+      "blob": "f5ba11b19952a58023971ca434de2506e96035b8"
+    }
+  ]
+}
