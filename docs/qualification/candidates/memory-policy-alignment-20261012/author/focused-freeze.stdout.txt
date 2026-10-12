@@ -1,0 +1,20 @@
+✔ policy is a private description without live admission or authorization output (1.288026ms)
+✔ only the two established administrator roles appear in the shared approval exception (1.442799ms)
+✔ shared proposal wording preserves pending state and the subsequent approval exception (0.401764ms)
+✔ firm and client approval descriptions preserve different standard-reviewer requirements (0.155394ms)
+✔ administrator self-approval never promises self-rejection or withdrawal of another proposal (0.228934ms)
+✔ administrators retain current actor, tenant, wall, client and database obligations (0.156596ms)
+✔ personal ownership and automated proposal descriptions do not inherit shared privileges (0.230437ms)
+✔ wording is derived only from the canonical descriptor and every requirement resolves (0.366832ms)
+✔ unknown scopes/actions and supplied authorization facts cannot select a policy result (1.9628ms)
+✔ policy arrays and descriptions cannot be modified by callers (0.274142ms)
+✔ selector getters, proxies, inherited selectors and hidden authority are refused without effects (0.326811ms)
+✔ private description imports without configuration, services or persistent process handles (40.268781ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 135.412025

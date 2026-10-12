@@ -1,0 +1,198 @@
+{
+  "runtime": "v24.19.0",
+  "checks": [
+    {
+      "name": "focused",
+      "exitCode": 0,
+      "passed": 10,
+      "failed": 0,
+      "stdout": {
+        "path": "docs/qualification/candidates/memory-policy-alignment-20261012/author/focused.stdout.txt",
+        "bytes": 1117,
+        "sha256": "9fa1680c32ded16232a706fe9a90d4f88850850a8251c53eb9de570c8edc6db7"
+      },
+      "stderr": {
+        "path": "docs/qualification/candidates/memory-policy-alignment-20261012/author/focused.stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "focused-strict",
+      "exitCode": 1,
+      "passed": 11,
+      "failed": 1,
+      "stdout": {
+        "path": "docs/qualification/candidates/memory-policy-alignment-20261012/author/focused-strict.stdout.txt",
+        "bytes": 2325,
+        "sha256": "5f7d34f3509065c8dee9fb9ab8cc604602b84cc748be34582a0494a9094f680b"
+      },
+      "stderr": {
+        "path": "docs/qualification/candidates/memory-policy-alignment-20261012/author/focused-strict.stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "import-resource-diagnostic",
+      "exitCode": 0,
+      "stdout": {
+        "path": "docs/qualification/candidates/memory-policy-alignment-20261012/author/import-resource-diagnostic.stdout.txt",
+        "bytes": 72,
+        "sha256": "6fd4de372bd7a2847a627ee2cff6e7d865096e13e0816fce37816b2599e086f3"
+      },
+      "stderr": {
+        "path": "docs/qualification/candidates/memory-policy-alignment-20261012/author/import-resource-diagnostic.stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "import-child-resource-diagnostic",
+      "exitCode": 0,
+      "stdout": {
+        "path": "docs/qualification/candidates/memory-policy-alignment-20261012/author/import-child-resource-diagnostic.stdout.txt",
+        "bytes": 110,
+        "sha256": "ed209e6135d6f3b408828be9f91eeb88c04720737764c521c0ba04f8c4d73856"
+      },
+      "stderr": {
+        "path": "docs/qualification/candidates/memory-policy-alignment-20261012/author/import-child-resource-diagnostic.stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "focused-final",
+      "exitCode": 0,
+      "passed": 12,
+      "failed": 0,
+      "stdout": {
+        "path": "docs/qualification/candidates/memory-policy-alignment-20261012/author/focused-final.stdout.txt",
+        "bytes": 1339,
+        "sha256": "819be45faa8e816739e18f42ce4fe92aa1201bbf4a831a04512569d222c479de"
+      },
+      "stderr": {
+        "path": "docs/qualification/candidates/memory-policy-alignment-20261012/author/focused-final.stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "focused-freeze",
+      "exitCode": 0,
+      "passed": 12,
+      "failed": 0,
+      "stdout": {
+        "path": "docs/qualification/candidates/memory-policy-alignment-20261012/author/focused-freeze.stdout.txt",
+        "bytes": 1339,
+        "sha256": "29fb0d6c5bb93afc5517e4dde4719b4bc6cf03e7757f9aabba92742ac238e5a7"
+      },
+      "stderr": {
+        "path": "docs/qualification/candidates/memory-policy-alignment-20261012/author/focused-freeze.stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "root-install",
+      "exitCode": 0,
+      "stdout": {
+        "path": "docs/qualification/candidates/memory-policy-alignment-20261012/author/root-install.stdout.txt",
+        "bytes": 25,
+        "sha256": "87ce98749cbda0c632c25e9c4963c21076562a49f92ed1e744dbc6bafbc85f82"
+      },
+      "stderr": {
+        "path": "docs/qualification/candidates/memory-policy-alignment-20261012/author/root-install.stderr.txt",
+        "bytes": 208,
+        "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+      }
+    },
+    {
+      "name": "contracts-install",
+      "exitCode": 0,
+      "stdout": {
+        "path": "docs/qualification/candidates/memory-policy-alignment-20261012/author/contracts-install.stdout.txt",
+        "bytes": 25,
+        "sha256": "1d41eb5f721bb9d5710254973769ef57dc59f277b97c8647bf6ffaff5426b4ba"
+      },
+      "stderr": {
+        "path": "docs/qualification/candidates/memory-policy-alignment-20261012/author/contracts-install.stderr.txt",
+        "bytes": 208,
+        "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+      }
+    },
+    {
+      "name": "source-characterization",
+      "exitCode": 0,
+      "stdout": {
+        "path": "docs/qualification/candidates/memory-policy-alignment-20261012/author/source-characterization.stdout.txt",
+        "bytes": 14869,
+        "sha256": "4a301964bb9bc81e21abb4300459fdd35eee87fc4763bbf92b3fa88192a33188"
+      },
+      "stderr": {
+        "path": "docs/qualification/candidates/memory-policy-alignment-20261012/author/source-characterization.stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "source-characterization-asserted",
+      "exitCode": 0,
+      "stdout": {
+        "path": "docs/qualification/candidates/memory-policy-alignment-20261012/author/source-characterization-asserted.stdout.txt",
+        "bytes": 14869,
+        "sha256": "4a301964bb9bc81e21abb4300459fdd35eee87fc4763bbf92b3fa88192a33188"
+      },
+      "stderr": {
+        "path": "docs/qualification/candidates/memory-policy-alignment-20261012/author/source-characterization-asserted.stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "full-final",
+      "exitCode": 0,
+      "passed": 232,
+      "failed": 0,
+      "stdout": {
+        "path": "docs/qualification/candidates/memory-policy-alignment-20261012/author/full-final.stdout.txt",
+        "bytes": 21754,
+        "sha256": "53b71c07b5fb364743c5347a43dc034a3722267b94e26b2ae0d52f3822bfe395"
+      },
+      "stderr": {
+        "path": "docs/qualification/candidates/memory-policy-alignment-20261012/author/full-final.stderr.txt",
+        "bytes": 208,
+        "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+      }
+    },
+    {
+      "name": "public-final",
+      "exitCode": 0,
+      "passed": 7,
+      "failed": 0,
+      "stdout": {
+        "path": "docs/qualification/candidates/memory-policy-alignment-20261012/author/public-final.stdout.txt",
+        "bytes": 2045,
+        "sha256": "296322de33e658496f4fef4e5a903d1c9087a0cbd154b32943af1cf7f5b2d9c8"
+      },
+      "stderr": {
+        "path": "docs/qualification/candidates/memory-policy-alignment-20261012/author/public-final.stderr.txt",
+        "bytes": 1040,
+        "sha256": "cbbd466f3bf458f7f516c133ea486c1aada38d325ec9a80b698c26da8c18237f"
+      }
+    }
+  ],
+  "commands": {
+    "focused": "node --test packages/contracts/test/retrieval-memory-review-policy.test.mjs",
+    "full": "npm run check",
+    "public": "npm run check:contracts:distribution",
+    "characterization": "timeout 20s node docs/qualification/candidates/memory-policy-alignment-20261012/author/characterize-pinned-policy.mjs",
+    "rootInstall": "npm ci --ignore-scripts --no-audit --no-fund --cache /tmp/meri-memory-policy-author-root-cache",
+    "contractsInstall": "npm ci --prefix packages/contracts --ignore-scripts --no-audit --no-fund --cache /tmp/meri-memory-policy-author-contracts-cache"
+  },
+  "limits": [
+    "All source characterization synthetic and private bodies never emitted. Service/DB/assignment/wall queries not executed.",
+    "Null context helper fallbacks are not proof of valid trusted service context.",
+    "Initial import failure compares resource inventory; corrected check requires bounded natural child exit, exact exports and no configuration."
+  ]
+}

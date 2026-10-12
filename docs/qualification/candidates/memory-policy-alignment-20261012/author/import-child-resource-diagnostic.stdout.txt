@@ -1,0 +1,1 @@
+{"status":0,"stdout":"{\"before\":[],\"immediate\":[\"PipeWrap\"],\"drained\":[\"PipeWrap\"]}\n","stderr":""}

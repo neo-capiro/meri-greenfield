@@ -1,0 +1,20 @@
+{
+  "base": "7ba0e9d10ebf684e162dcc7c143915afdbf00f32",
+  "unchangedExistingTrackedFiles": 1965,
+  "unchangedExistingContractFiles": 53,
+  "trackedDiffEmpty": true,
+  "source": [
+    {
+      "path": "packages/contracts/retrieval-0.2/memory-review-policy.mjs",
+      "sha256": "088d64a80ea10eaad4e9c6bd6028fb128a96d79f5ce7af3c60a314fa13894ff8",
+      "bytes": 8319
+    },
+    {
+      "path": "packages/contracts/test/retrieval-memory-review-policy.test.mjs",
+      "sha256": "89305181c698699a3576f96179a481d982a8b3dbce0b544ed7d1af765307ae19",
+      "bytes": 7972
+    }
+  ],
+  "publicExportsCatalogBindingsLocksChanged": false,
+  "privateSourceBodiesIncluded": false
+}
