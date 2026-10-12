@@ -1,5 +1,5 @@
 /** Concrete pg8.23.1-compatible borrowed pool; never connects or migrates on import. */
-import {data,keys,options,same,deny,code,method,retained} from './binding.mjs';
+import {data,keys,options,same,deny,code,method,retained,storedBinding,storedEvent} from './binding.mjs';
 export function createPostgresTaskLookupStore(configuration){
  const {pool}=options(configuration,['pool']);
  const connect=method(pool,'connect');
@@ -19,7 +19,7 @@ export function createPostgresTaskLookupStore(configuration){
   const rows=(await q('SELECT payload,state,record FROM meri_task_lookup.lookups WHERE tenant_id=$1 AND lookup_id=$2 FOR UPDATE',[b.context.binding.tenantId,b.context.lookupId])).rows;
   if(rows.length!==1)deny('LOOKUP_STORE_UNKNOWN');const row=data(rows[0]);keys(row,['payload','state','record']);if(!same(row.payload,b))deny('LOOKUP_CONFLICT');return row;
  }
- async function claim(binding,started,check){const b=data(binding),e=data(started),c=b.context;
+ async function claim(binding,started,check){const b=storedBinding(binding),e=storedEvent(started,b,'tool.started'),c=b.context;
   return transaction(async q=>{
    const r=await q("INSERT INTO meri_task_lookup.lookups(tenant_id,lookup_id,result_reference,payload,state) VALUES($1,$2,$3,$4::jsonb,'CLAIMED') ON CONFLICT DO NOTHING RETURNING lookup_id",[c.binding.tenantId,c.lookupId,c.resultReference,JSON.stringify(b)]);
    if(r.rows.length!==1)deny('LOOKUP_REPLAY');
@@ -27,13 +27,13 @@ export function createPostgresTaskLookupStore(configuration){
    return response(b,'CLAIMED');
   },check);
  }
- async function markDispatching(binding,check){const b=data(binding);return transaction(async q=>{const row=await locked(q,b);if(row.state!=='CLAIMED')deny('LOOKUP_REPLAY');await q("UPDATE meri_task_lookup.lookups SET state='DISPATCHING' WHERE tenant_id=$1 AND lookup_id=$2",[b.context.binding.tenantId,b.context.lookupId]);return response(b,'DISPATCHING');},check);}
- async function complete(binding,value,check){const b=data(binding),record=retained(value);if(!same(record.binding,b))deny('LOOKUP_CONFLICT');return transaction(async q=>{
+ async function markDispatching(binding,check){const b=storedBinding(binding);return transaction(async q=>{const row=await locked(q,b);if(row.state!=='CLAIMED')deny('LOOKUP_REPLAY');await q("UPDATE meri_task_lookup.lookups SET state='DISPATCHING' WHERE tenant_id=$1 AND lookup_id=$2",[b.context.binding.tenantId,b.context.lookupId]);return response(b,'DISPATCHING');},check);}
+ async function complete(binding,value,check){const b=storedBinding(binding),record=retained(value);if(!same(record.binding,b))deny('LOOKUP_CONFLICT');return transaction(async q=>{
   const row=await locked(q,b);if(row.state!=='DISPATCHING')deny('LOOKUP_STORE_UNKNOWN');
   await q("UPDATE meri_task_lookup.lookups SET state='RESULT',record=$3::jsonb WHERE tenant_id=$1 AND lookup_id=$2",[b.context.binding.tenantId,b.context.lookupId,JSON.stringify(record)]);
   const changed=await q("UPDATE meri_task_lookup.events SET event=$3::jsonb WHERE tenant_id=$1 AND lookup_id=$2 AND kind='terminal' AND event IS NULL",[b.context.binding.tenantId,b.context.lookupId,JSON.stringify(record.events[1])]);if(changed.rowCount!==1)deny('LOOKUP_STORE_UNKNOWN');return response(b,'RESULT');
  },check);}
- async function recordError(binding,errorEvent,check){const b=data(binding),e=data(errorEvent);return transaction(async q=>{
+ async function recordError(binding,errorEvent,check){const b=storedBinding(binding),e=storedEvent(errorEvent,b,'run.error');return transaction(async q=>{
   const row=await locked(q,b);if(!['CLAIMED','DISPATCHING'].includes(row.state))deny('LOOKUP_STORE_UNKNOWN');
   await q("UPDATE meri_task_lookup.lookups SET state='ERROR' WHERE tenant_id=$1 AND lookup_id=$2",[b.context.binding.tenantId,b.context.lookupId]);
   const changed=await q("UPDATE meri_task_lookup.events SET event=$3::jsonb WHERE tenant_id=$1 AND lookup_id=$2 AND kind='terminal' AND event IS NULL",[b.context.binding.tenantId,b.context.lookupId,JSON.stringify(e)]);if(changed.rowCount!==1)deny('LOOKUP_STORE_UNKNOWN');return response(b,'ERROR');
