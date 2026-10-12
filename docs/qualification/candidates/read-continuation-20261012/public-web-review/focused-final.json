@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-public-web-independent.test.mjs",
+    "packages/contracts/test/retrieval-public-web.test.mjs"
+  ],
+  "cwd": "/workspace/meri-public-web-contracts-review-20261012",
+  "sourceHead": "01e788e444c6834472c37a66fcbfb27e1f683745",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T18:45:13.777490+00:00",
+  "durationSeconds": 0.466,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 258356,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/focused-final.stdout.bin",
+      "bytes": 5573,
+      "sha256": "4585967213f4f16cb71ab9d8b7a627dba7592972ca21dccc2a2b4e9a9b79d38d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/focused-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
