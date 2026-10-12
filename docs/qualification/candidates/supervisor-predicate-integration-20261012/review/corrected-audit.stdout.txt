@@ -1,0 +1,212 @@
+{
+  "verdict": "ACCEPT_DOCUMENT_INTEGRATION",
+  "rootFreeze": "e5e851f381d14359c00cca1b5438fe13f4fadfb0",
+  "rootTree": "ebae2f0eb44e0a41b91ccfe65a84c01cbc230991",
+  "base": "15f671a65365e3401f0ce07b46deb4cf63538346",
+  "checks": [
+    {
+      "name": "sole changed pre-existing file is canonical roadmap",
+      "passed": true
+    },
+    {
+      "name": "all other original files including production source preserved",
+      "passed": true
+    },
+    {
+      "name": "new files remain within allocated evidence and documentation",
+      "passed": true
+    },
+    {
+      "name": "PR19 base ancestry",
+      "passed": true
+    },
+    {
+      "name": "original exact delta matches integrated cherry-pick 7591d8670e53fa49876aa762b0407b8baf2c66ba",
+      "passed": true
+    },
+    {
+      "name": "integrated cherry-pick ancestry 26ad60bc96a4c04315b33064cf78832bb9b95970",
+      "passed": true
+    },
+    {
+      "name": "original exact delta matches integrated cherry-pick 33e2ab2fbfa42c635f1ee69368da7fa24bc3cb91",
+      "passed": true
+    },
+    {
+      "name": "integrated cherry-pick ancestry 7f236d6b95f7d0476e55e46a6d77af36655e3a25",
+      "passed": true
+    },
+    {
+      "name": "original exact delta matches integrated cherry-pick 76355bfe516260ba758dee44f9fcf454e317cd71",
+      "passed": true
+    },
+    {
+      "name": "integrated cherry-pick ancestry 1d2e42a1821e9927aa0f17813de1b8eaff6416da",
+      "passed": true
+    },
+    {
+      "name": "original exact delta matches integrated cherry-pick e98df5f1502a732cc22d6bc6d3911e4e8e956bfc",
+      "passed": true
+    },
+    {
+      "name": "integrated cherry-pick ancestry ed0fb1fee6363952b0798e406862f963f9bc70b4",
+      "passed": true
+    },
+    {
+      "name": "exact accepted lane additions preserved 7591d8670e53fa49876aa762b0407b8baf2c66ba",
+      "passed": true
+    },
+    {
+      "name": "exact accepted lane additions preserved 33e2ab2fbfa42c635f1ee69368da7fa24bc3cb91",
+      "passed": true
+    },
+    {
+      "name": "exact accepted lane additions preserved 76355bfe516260ba758dee44f9fcf454e317cd71",
+      "passed": true
+    },
+    {
+      "name": "exact accepted lane additions preserved e98df5f1502a732cc22d6bc6d3911e4e8e956bfc",
+      "passed": true
+    },
+    {
+      "name": "public recount has35 complete pairs and12 differences",
+      "passed": true
+    },
+    {
+      "name": "only reported access-time fields differ at0..2",
+      "passed": true
+    },
+    {
+      "name": "recorded four-term rejection remains false",
+      "passed": true
+    },
+    {
+      "name": "exact missing helper remains unreviewed",
+      "passed": true
+    },
+    {
+      "name": "recount retains native and admission holds",
+      "passed": true
+    },
+    {
+      "name": "eight retained proxy403 attempts have zero bodies",
+      "passed": true
+    },
+    {
+      "name": "PGDG authentication and supported-prefix gaps remain",
+      "passed": true
+    },
+    {
+      "name": "external metadata intake ceilings are finite",
+      "passed": true
+    },
+    {
+      "name": "no setup permission or launcher is claimed",
+      "passed": true
+    },
+    {
+      "name": "captured PR19 exact head/base remains draft unmerged",
+      "passed": true
+    },
+    {
+      "name": "both root documents pin exact missing helper",
+      "passed": true
+    },
+    {
+      "name": "current execution absence is scoped to continuation",
+      "passed": true
+    },
+    {
+      "name": "known original receipt is not requested again",
+      "passed": true
+    },
+    {
+      "name": "canonical capability and gate boundaries retained",
+      "passed": true
+    },
+    {
+      "name": "scope owners remain canonical",
+      "passed": true
+    },
+    {
+      "name": "separate wrapper bindings remain visible",
+      "passed": true
+    },
+    {
+      "name": "frozen L1 remains not executable and unauthorized",
+      "passed": true
+    },
+    {
+      "name": "integrated historical-pin failures remain visible",
+      "passed": true
+    },
+    {
+      "name": "root check stream hashes pgdg-author",
+      "passed": true
+    },
+    {
+      "name": "root check process cleanup pgdg-author",
+      "passed": true
+    },
+    {
+      "name": "root check stream hashes pgdg-review",
+      "passed": true
+    },
+    {
+      "name": "root check process cleanup pgdg-review",
+      "passed": true
+    },
+    {
+      "name": "root check stream hashes pgdg-review-exact",
+      "passed": true
+    },
+    {
+      "name": "root check process cleanup pgdg-review-exact",
+      "passed": true
+    },
+    {
+      "name": "root check stream hashes predicate-author",
+      "passed": true
+    },
+    {
+      "name": "root check process cleanup predicate-author",
+      "passed": true
+    },
+    {
+      "name": "root replay exit outcomes preserved",
+      "passed": true
+    },
+    {
+      "name": "bounded personal Windows-home path screen",
+      "passed": true
+    },
+    {
+      "name": "no missing private helper body added",
+      "passed": true
+    }
+  ],
+  "passed": 45,
+  "failed": [],
+  "originalFiles": 4696,
+  "unchangedOriginalFiles": 4695,
+  "changedOriginalFiles": [
+    "docs/plans/MERI-G1-SOURCE-TO-NATIVE.md"
+  ],
+  "newFiles": 81,
+  "documentHashes": [
+    {
+      "path": "docs/plans/MERI-G1-SOURCE-TO-NATIVE.md",
+      "bytes": 36339,
+      "sha256": "f66f86f78877a799528a849746a34e5021134aa5fb1d8eb1418da7abba42de0b"
+    },
+    {
+      "path": "docs/coordination/reports/MERI-SUPERVISOR-PREDICATE-INTEGRATION-20261012.md",
+      "bytes": 8186,
+      "sha256": "e7df69c0d6f979145df486c9db9640753c672633865bcd755b92491cb54b3863"
+    }
+  ],
+  "privateInputAccessed": false,
+  "nativeOrTargetProcessExecuted": false,
+  "networkRetrievalPerformed": false,
+  "limits": "Independent integration review of accepted public facts and exact Git objects. No independent remeasurement of private inputs, authentication or native predicates."
+}
