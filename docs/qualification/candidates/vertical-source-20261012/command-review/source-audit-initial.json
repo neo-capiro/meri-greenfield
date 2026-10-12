@@ -1,0 +1,36 @@
+{
+  "command": [
+    "python3",
+    "-I",
+    "-B",
+    "-S",
+    "docs/qualification/candidates/vertical-source-20261012/command-review/audit-source.py"
+  ],
+  "cwd": "/workspace/meri-command-execution-review-20261012",
+  "sourceHead": "44d380b45544fbfec4c2ca5fdb921366d327d4e9",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T22:29:45.533508+00:00",
+  "durationSeconds": 0.032,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 370920,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/source-audit-initial.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/source-audit-initial.stderr.bin",
+      "bytes": 1677,
+      "sha256": "ebf52fe6a9c0ab439a277510698138962b5100736598ff3633b6aaaf9524c6c6"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

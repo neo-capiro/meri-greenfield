@@ -1,0 +1,11 @@
+✔ actual journal accepts native pg timestamptz Date rows without exposing mutable driver values (4.163198ms)
+✔ lost COMMIT acknowledgement remains typed uncertainty when release also throws (1.884353ms)
+✔ failed BEGIN acknowledgement evicts the borrowed connection rather than returning it healthy (0.555415ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 492.628973

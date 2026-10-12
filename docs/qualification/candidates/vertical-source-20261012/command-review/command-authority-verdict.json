@@ -1,0 +1,23 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "sourceFreeze": "50576f78db514dbd09de2d4b34f1ef82e1d18967",
+  "files": [
+    {
+      "path": "apps/gateway/index.mjs",
+      "bytes": 3056,
+      "sha256": "027437460183939150410481421188cf733b74002b03fd00007cf8dfc8c362ee"
+    },
+    {
+      "path": "apps/gateway/authorization/current-tool-authority.mjs",
+      "bytes": 6613,
+      "sha256": "794e1f54f6966d2d852d0483606c76410ed684d889ca24c7ea78dac6f2c01043"
+    }
+  ],
+  "independentCases": 18,
+  "pass": 18,
+  "failed": 0,
+  "capture": "command-authority-final.json",
+  "review": "The canonical engine sequence, current policy, current source and final current-run checks are preserved; only constrained action selection and a fixed public command factory are added. Existing default remains tool.read. No source activation or approval decision is supplied.",
+  "nativeTests": "UNRUN",
+  "runtimeAdmission": false
+}

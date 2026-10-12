@@ -1,0 +1,30 @@
+✔ actual canonical producer/accounting path: task.create (96.753833ms)
+✔ actual canonical producer/accounting path: task.update (38.093588ms)
+✔ actual canonical producer/accounting path: memory.propose (19.062096ms)
+✔ actual canonical producer/accounting path: artifact.file (22.481317ms)
+✔ default unavailable and personal pending refusal allocate no invocation/effect (7.158311ms)
+✔ two owners of exact delivery retain one source effect and one fixed charge (20.489753ms)
+✔ restart-style repeated exact command reads persisted outcome without a second hold/effect (18.147142ms)
+✔ same delivery changed immutable command is conflict before new effect (25.958203ms)
+✔ canonical stored revoked denies before effect (4.569148ms)
+✔ canonical stored expired denies before effect (4.018822ms)
+✔ canonical stored wrong-fence denies before effect (3.862206ms)
+✔ canonical stored quarantined denies before effect (3.517608ms)
+✔ existing model UNKNOWN liability blocks new canonical command reservation (10.070129ms)
+✔ lost prepare commit ACK does not automatically redispatch/refund (5.306508ms)
+✔ lost reserve commit ACK does not automatically redispatch/refund (15.157457ms)
+✔ lost marker commit ACK does not automatically redispatch/refund (17.628322ms)
+✔ lost settle commit ACK does not automatically redispatch/refund (19.907268ms)
+✔ aborted parked marker COMMIT retains proof/hold without later automatic accounting; explicit historical reconcile charges once (28.825023ms)
+✔ fresh shortened release deadline fences parked marker ACK and keeps liability (12.611399ms)
+✔ source failure after reservation retains UNKNOWN without marker or charge (12.677629ms)
+✔ new authorized executor attempt reads original durable receipt without rebinding effect authority (18.301924ms)
+✔ current read authority revocation cannot expose retained command outcome (16.859636ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2948.447997

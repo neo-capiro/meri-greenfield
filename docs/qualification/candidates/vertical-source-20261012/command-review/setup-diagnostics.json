@@ -1,0 +1,20 @@
+{
+  "auditorRootIndex": {
+    "before": "parents[6] selected /workspace, not Git root",
+    "after": "parents[5]",
+    "raw": "source-audit-initial.*",
+    "productionDefect": false
+  },
+  "sparseCheckout": {
+    "attempt": "git sparse-checkout add --no-cone ...",
+    "exitCode": 129,
+    "stderr": "error: unknown option `no-cone`",
+    "resolution": "existing non-cone configuration; repeated add without unsupported flag",
+    "productionChange": false
+  },
+  "emptyRedirectFile": {
+    "path": "source-audit.json",
+    "bytes": 0,
+    "reason": "First failed root-index invocation created an empty stdout redirect; actual failure captured separately unchanged."
+  }
+}

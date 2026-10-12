@@ -1,0 +1,24 @@
+{
+  "decision": "ACCEPT_SOURCE",
+  "base": "e5fb3963de787bbd7b7663316c368f15814897da",
+  "source": "ca506ba1591b35eae5d389e551787017328eea73",
+  "sourceTree": "f235ecf6d5017a35f9f913dd97b81b98b77b7fef",
+  "authorPacket": "5a8d11399d8a4b65a5b04d73f9f22e5de54a157f",
+  "independentControls": 113,
+  "exactInitialControls": 111,
+  "updatedDurableControls": 22,
+  "sourceAudit": {
+    "passed": 8773,
+    "total": 8773
+  },
+  "authorPacketAudit": {
+    "passed": 135,
+    "total": 135
+  },
+  "unchangedOriginalEntries": 8672,
+  "baseEntries": 8678,
+  "runtime": "HOLD / UNRUN",
+  "personalPendingMemory": "HOLD_BEFORE_EFFECT",
+  "sourceEnabled": false,
+  "scope": "Concrete guarded source composition, not native execution or full personal memory parity"
+}

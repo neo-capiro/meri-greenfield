@@ -1,0 +1,24 @@
+{
+  "base": "e5fb3963de787bbd7b7663316c368f15814897da",
+  "throughAcceptance": "8d23dc14",
+  "commits": [
+    "78522bf790d79f730b01737a85c040d1a8447c7d",
+    "a0c12ebdd9825c1bc36438f813ef908fe1565792",
+    "2e2eee81cb54ad780a5ef10f269d42b2c55b1c4f",
+    "44fb2016509dd4a1810aa26ff172ae7c9a6d94c1",
+    "ac13497c6636e1f469ccf5539883857acd4b81fa",
+    "964027750ca84f8a445bca622d857f86d1af3c52",
+    "e6962da00af723e5008e1f5b1a491105765e4e81",
+    "b1b11d835ebb4731207e24dc48bebc060f3bbd6d",
+    "eeda0b8e6ed9dc759b35929c3c0a3503749ffd07",
+    "cff44ef9f4369513bb7c2119cd7c332d94650855",
+    "57a03f192f9f04afc98637d17aca30dd8f5b8c02",
+    "17fbb033d182b830c535e6e724ba4d65027f4dd2",
+    "60ed68308d5b521d96300d1e0a52920be98cea84",
+    "c6026e9903ac57daa342fb41a4410b8db1bcd568",
+    "026ed2dee383992e4fa772eff0c01e24de4acaac",
+    "44d380b45544fbfec4c2ca5fdb921366d327d4e9",
+    "8d23dc14faae74703d9b10ccd7129043170e0913"
+  ],
+  "excludes": "Dependency merges83a95d52,7f7e45c2,5e603c69; import author/root source separately first. Final evidence commit supplied separately."
+}

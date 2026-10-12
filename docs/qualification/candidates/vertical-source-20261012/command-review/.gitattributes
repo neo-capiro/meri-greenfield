@@ -1,0 +1,3 @@
+# Preserve raw process streams byte-for-byte, including assertion whitespace.
+*.stdout.bin -text -diff
+*.stderr.bin -text -diff
