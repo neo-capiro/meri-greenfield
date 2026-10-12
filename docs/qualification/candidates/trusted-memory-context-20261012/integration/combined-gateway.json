@@ -1,0 +1,41 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/gateway/test/gateway.test.mjs",
+    "apps/gateway/test/authority-deadline.test.mjs",
+    "apps/gateway/test/memory-context.test.mjs",
+    "apps/gateway/test/memory-context-independent.test.mjs",
+    "docs/qualification/candidates/gateway-independent-resume-20261012/budget-containment.test.mjs",
+    "docs/qualification/candidates/gateway-independent-resume-20261012/inner-authority-deadlines.test.mjs",
+    "docs/qualification/candidates/gateway-independent-resume-20261012/issued-at.test.mjs",
+    "docs/qualification/candidates/gateway-independent-resume-20261012/late-cancellation.test.mjs"
+  ],
+  "cwd": "/workspace/meri-g1-source-continuation-20261012",
+  "sourceHead": "7fadbbf987b85755a39898527509e17953f1a750",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "ac429ace91582a4837113c14078319c29e507a4e2ec31ef33b2d476a0a8d14c9",
+  "startedAt": "2026-10-12T03:02:26.326440+00:00",
+  "durationSeconds": 9.419,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 27005,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/trusted-memory-context-20261012/integration/combined-gateway.stdout.bin",
+      "bytes": 19482,
+      "sha256": "376a68dd79cc0ae0a81c81e4009474b6a68ae7e21654bcd180bfeb70d4e0ac4a"
+    },
+    {
+      "path": "docs/qualification/candidates/trusted-memory-context-20261012/integration/combined-gateway.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "checkReason": "Independent integration verification of the reviewed trusted memory gateway context; owned local process groups only.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

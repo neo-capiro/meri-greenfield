@@ -1,0 +1,43 @@
+✔ retained equal-time descending UUID boundary succeeds and replayed identity refuses (14.794976ms)
+✔ a proposal timestamp must denote a finite instant before coverage is admitted (0.530216ms)
+✔ nonfinite timestamp must not defeat within-page descending order (2.867278ms)
+✔ nonfinite timestamp must not admit a newer continuation result (0.693472ms)
+✔ disabled continuation remains unavailable and does not fabricate completion (6.151902ms)
+✔ cross-client metadata can appear in personal proposer queue only as unapproved data (3.675031ms)
+✔ inert guards refuse hostile retained context without getters or proxy traps (0.309244ms)
+✔ boundaries remain literal: maximum previews accepted and supplementary cursor refused (0.95217ms)
+✔ pinned real helper retains exact admin vocabulary and firm/client approval differences (23.909401ms)
+✔ helper inputs still require trusted service facts; null fallback is not proven denial (1.669328ms)
+✔ actual candidate rule outcomes preserve pending shared and recognized automated review (0.144106ms)
+✔ actual method guards keep approve, reject and withdrawal distinct in all18 scoped cases (0.178248ms)
+✔ policy is descriptive, private, deeply frozen and exposes no authorization evaluator (1.465342ms)
+✔ only exact administrator roles receive the shared approval exception (0.53941ms)
+✔ shared proposer rejection is distinct from approval and proposer withdrawal (0.348253ms)
+✔ private ownership and recognized automated proposal flows stay separate (0.268073ms)
+✔ descriptions require current trusted authority, wall checks and existing guards (0.343186ms)
+✔ wording explicitly preserves the administrator assignment exception (0.307612ms)
+✔ text selection rejects accessors and proxies without invoking them (0.23989ms)
+✔ text selection rejects hidden fields, symbol authority and custom prototypes (0.256085ms)
+✔ text accepts only closed scope/action fields and never caller authority facts (0.864378ms)
+✔ one canonical fourteen-operation registry preserves old descriptors and139/96/43 scope (40.020892ms)
+✔ new descriptor pins the existing raw private schema, no executable or approval authority (5.288204ms)
+✔ old13 context grammar refuses memory subject/previous keys on input and output (98.311833ms)
+✔ memory uses only subject/previous context and refuses missing/model-supplied authority (13.453201ms)
+✔ normalization snapshots caller data, binds server selection, and hashes materialized defaults (5.533574ms)
+✔ classification can never imply approved facts, evidence readiness or global absence (10.552272ms)
+✔ result actor/tenant/selected-client substitution refuses through canonical registry (4.718259ms)
+✔ retained continuation binds original request, scope, cursor, limit and monotonic order (10.793786ms)
+✔ hostile request/context/output/retained data invokes no getters or proxies (5.441445ms)
+✔ forged catalog enablement, schema, registry mapping and duplicate operation refuse (52.746531ms)
+✔ source-disabled gateway composes actual new14 catalog with zero discovery and zero effects (22.339611ms)
+✔ private registry registration does not export memory through public0.1 (0.464938ms)
+✔ wording selection refuses getters without evaluating them (1.098811ms)
+✔ wording selection refuses proxies before caller traps execute (3.083773ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3794.785525

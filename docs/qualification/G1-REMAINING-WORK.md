@@ -1,6 +1,46 @@
 # G1 remaining scope and sequence
 
-## Memory source continuation — 12 October 2026 UTC
+## Trusted memory gateway continuation — 12 October 2026 UTC
+
+**G0 accepted / G1 OPEN; G2–G7 unentered. ACCEPT_SOURCE only.** PR11 is preserved
+at `5db2714b6dcbd3109c528e0afafcb654216133ca`. The independently reviewed gateway
+now consumes the accepted memory family with fresh server-authorized subject,
+run-bound retained pagination and validated private result lineage. Canonical
+raw memory schemas and public 0.1 are unchanged. This closes the source context
+composition gap described in the historical PR11 section below; real trusted
+authority/storage/source adapters and native recovery remain unqualified.
+
+The [combined review](../coordination/reports/MERI-TRUSTED-MEMORY-INTEGRATION-20261012.md)
+records source `7fadbbf987b85755a39898527509e17953f1a750`, 244 root, 146 gateway,
+35 preserved independent and 7 public tests, generated/type checks and the
+original shortened release deadline control. All pass; failed baseline and
+intermediate controls remain preserved. Scope stays **139 original / 96 selected /
+43 deferred; 14 bound unavailable / 82 selected unmapped**, with 14 skill intents
+still unqualified. No catalog count or availability changed.
+
+The [exact capirov2 wording handoff](../coordination/reports/CAPIRO-MEMORY-WORDING-HANDOFF-20261012.md)
+is independently accepted for its existing source owner. It changes reason/message
+text and misleading comments to describe the approved administrator exception;
+it does not change pending creation, authorization or JSON shape. That producer
+implementation remains outside this backend workstream.
+
+The parent independently verified the original native ZIP and reports one
+collector exit 2 with exact generic stderr, 0.416425-second duration, EOF, no
+timeout/overflow and unchanged tracked source. The failing stage remains UNKNOWN;
+missing files do not establish whether AWS CLI was invoked. This consumer still
+cannot materialize the original ZIP through its supported Library route. The
+[separate metadata diagnostic](../coordination/reports/MERI-NATIVE-DIAGNOSTIC-SOURCE-REVIEW-20261012.md)
+has source review only and requires parent binding/admission before native use;
+the original collector has not been rerun or altered.
+
+Supported patched image/dependency/license closure, actual task identity,
+authentication/expiry/revocation, durable budgets, native checkpoint task-A/B
+recovery and stale rejection, browser/renderer sandbox, egress/watchdog/teardown
+and artifact inspection remain open. The old 47-finding image must never launch.
+Existing Aurora remains selected; no paid-model or cloud/security/database/network
+action is authorized here. No frontend, main merge or runtime acceptance occurred.
+
+## Preserved PR11 memory source checkpoint — 12 October 2026 UTC
 
 **G0 accepted / G1 OPEN; G2–G7 unentered. Source acceptance does not admit runtime.** Preserved PR10 stays at `7ba0e9d10ebf684e162dcc7c143915afdbf00f32`; this continuation uses a separate branch and draft PR.
 
