@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-tracked-bills-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-tracked-bills-review-20261012",
+  "sourceHead": "bcd0d6b6115b49b873047744b38c4abce604bc62",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T18:19:47.136533+00:00",
+  "durationSeconds": 1.977,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 237153,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tracked-bills-review/initial-independent.stdout.bin",
+      "bytes": 5977,
+      "sha256": "bf1f3a890ade083f02b38303de97e6086a49e09cfec195e39b06e18ab65f0e02"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tracked-bills-review/initial-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
