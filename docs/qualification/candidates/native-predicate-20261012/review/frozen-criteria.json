@@ -1,0 +1,84 @@
+{
+  "base": "15f671a65365e3401f0ce07b46deb4cf63538346",
+  "criteria": [
+    {
+      "id": "NP1",
+      "assertion": "Independently verify exact raw60160/23776-byte private members against supplied SHA256 before parsing; never execute/import/compile collector or any proposed native source."
+    },
+    {
+      "id": "NP2",
+      "assertion": "Map actual original JSON pointers and actual collector comparison predicates using read-only source/data analysis, not prior truncated derivative assumptions; distinguish full record equality, selected identity metadata, executable named/opened brackets, hash completeness and acceptance."
+    },
+    {
+      "id": "NP3",
+      "assertion": "Recompute every relevant comparison across complete supplied before/after records, retaining field-level difference names/ordinal roles only; no private path/body publication, no invented causality or claim that current evidence is fresh."
+    },
+    {
+      "id": "NP4",
+      "assertion": "Account for exact open/read/close/hash/error/deadline order and numerical/boolean conditions governing acceptance; separate EOF, byte count/cap, object identity, timestamps and external lifecycle evidence."
+    },
+    {
+      "id": "NP5",
+      "assertion": "Compare canonical inventory/wrapper ownership and invariants separately from private collector; no automatic atime exemption, timestamp restoration, guard waiver or rejected-record promotion. Any supported adaptation requires prior root path/semantics allocation."
+    },
+    {
+      "id": "NP6",
+      "assertion": "Review any allocated source correction through actual owner call paths and meaningful synthetic inert/AST controls, preserving originals, negative controls and raw failures. Never run private collector/diagnostic/supervisor/target interpreter or native APIs."
+    },
+    {
+      "id": "NP7",
+      "assertion": "Use exact known evidence roles; avoid generic packet resend. Name only smallest still-missing record/field/provenance input, distinguishing technical source gap from action authority/watchdog/physical teardown/native admission."
+    },
+    {
+      "id": "NP8",
+      "assertion": "Pin exact author source/report SHA/tree and reviewer evidence; preserve base contracts/catalog/locks/migrations/frozen packets and source/runtime scope. All native flags remain false unless genuinely separately admitted evidence exists, which this task cannot produce."
+    }
+  ],
+  "sourceAnchors": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 6582,
+      "sha256": "a0650949b74e5aee709bd8b3c9d480f95f5b898778ac8f7b3927eb54b141437a"
+    },
+    {
+      "path": "docs/IMPLEMENTATION-STANDARDS.md",
+      "bytes": 11082,
+      "sha256": "d4f10f964ee207187abacd967649a1cfc9bdd468072dc01f859268f08b719959"
+    },
+    {
+      "path": "docs/plans/MERI-DEPLOYMENT.md",
+      "bytes": 86848,
+      "sha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388"
+    },
+    {
+      "path": "scripts/qualification/worker_runner_inventory.py",
+      "bytes": 13224,
+      "sha256": "7615e26a5d038ff2fa054cde3cdb04077def5636874f848c97e050dae9df03e9"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/author/run-supervised.py",
+      "bytes": 16775,
+      "sha256": "380dfc349ac5283f49b7d8a8360a4dc9d7c2a43516361d1d1c387290620ec595"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/author/evidence-writer.py",
+      "bytes": 8831,
+      "sha256": "8715d7999e4c9d7ab1422f7360a6a9cff5053da57687dacda861ef69d5e42afc"
+    }
+  ],
+  "privateMembers": [
+    {
+      "name": "candidate-hash-and-paths.json",
+      "bytes": 60160,
+      "sha256": "1817c1d72c2bbfafba943d0cbff4314ac210694a481565b5036a986087659d84"
+    },
+    {
+      "name": "collect.ps1",
+      "bytes": 23776,
+      "sha256": "729298afadd57a97fe8325ff862d0e208befd9392b4befa5f91053dddfcd25e1"
+    }
+  ],
+  "authorFindingsRead": false,
+  "privateSourceExecuted": false,
+  "nativeExecution": false
+}
