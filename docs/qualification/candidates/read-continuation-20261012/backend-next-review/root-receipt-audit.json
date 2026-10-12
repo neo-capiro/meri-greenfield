@@ -1,0 +1,37 @@
+{
+  "command": [
+    "python",
+    "-I",
+    "-B",
+    "-S",
+    "docs/qualification/candidates/read-continuation-20261012/backend-next-review/audit-root-receipts.py",
+    "9e8a6c8a2fe66d7b62813fd74163904fddaaf186"
+  ],
+  "cwd": "/workspace/meri-backend-next-review-20261012",
+  "sourceHead": "d17dcd155ba1d53c3360fa796c6577b5d44ec8a1",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T20:08:59.957275+00:00",
+  "durationSeconds": 0.166,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 299480,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-review/root-receipt-audit.stdout.bin",
+      "bytes": 9370,
+      "sha256": "b218f403675329ef3b8a3c88c41cea99ece51e389d7e7185f119b48a3f62511c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-review/root-receipt-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
