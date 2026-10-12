@@ -1,0 +1,18 @@
+{
+  "schema": "meri.critical-applicability-proposals.v1",
+  "status": "SOURCE_ONLY_UNKNOWN_PENDING_VENDOR_AND_ALL_COPY_REVIEW",
+  "sourceEvidenceCommit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+  "imageDigest": "sha256:8d1ec09aa78f47a11019089dacde93289fc66a39f55bd4357e59eeb25d9b52ac",
+  "proposals": [
+    {"cve":"CVE-2026-88647","acceptedDisposition":"OPEN","acceptedApplicability":null,"introducedVersion":null,"fixedVersion":null,"operationLead":"Reporter issue1802: gnutls_x509_crt_check_hostname2/unsupported-SAN CN fallback","installedVersion":"3.8.9-3+deb13u4","allCopyCoverage":null,"nextEvidence":"Maintainer verdict, exact introduced/fixed commits, Debian selected3.8.13 patchset applicability and actual consumer profile/flags"},
+    {"cve":"CVE-2026-95210","acceptedDisposition":"OPEN","acceptedApplicability":null,"introducedVersion":null,"fixedVersion":null,"operationLead":"Invalid certificate extension acceptance; exact API/OID/flags unknown","installedVersion":"3.8.9-3+deb13u4","allCopyCoverage":null,"nextEvidence":"CNA/reporter/vendor exact extension/OID/API/status behavior and explicit Debian revision/all-copy adjudication"},
+    {"cve":"CVE-2026-52490","acceptedDisposition":"OPEN","acceptedApplicability":null,"componentSplitLead":"Installed libtiff6 library versus distinct uninstalled libtiff-tools; no tiffcrop/tiff2pdf name in declared-root metadata","installedVersion":"4.7.0-3+deb13u3","allCopyCoverage":null,"nextEvidence":"Accepted vendor/source function exclusion for libtiff6 and every shipped native/renamed/static copy; digest-bound owner disposition"}
+  ],
+  "buildAuthorized": false,
+  "nativeExecutionAuthorized": false,
+  "newAwsWritesAuthorized": false,
+  "newModelCallsAuthorized": false,
+  "scanAdmitted": false,
+  "runtimeAdmitted": false,
+  "g1Admitted": false
+}

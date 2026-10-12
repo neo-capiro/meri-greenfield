@@ -434,10 +434,19 @@ test('asserts no freshness, coverage, authorization or date format on result sha
   assert.deepEqual(schema.$defs.FederalMarketNullableText.anyOf, [{ type: 'string' }, { type: 'null' }]);
   assert.equal(schema.$defs[outputDefinition.search_federal_subawards].properties.asOf.$ref, '#/$defs/FederalMarketNullableText');
   assert.equal(schema.$defs.FederalMarketFutureSignal.properties.date.$ref, '#/$defs/FederalMarketNullableText');
-  // The output extension adds no export, handler, availability or catalog entry.
+  // Private output bindings add no public export or live handler availability.
   assert.equal(Object.hasOwn(schema.$defs, 'FederalMarketOutputOperationId'), false);
   const catalog = JSON.parse(readFileSync(new URL('../retrieval-0.2/catalog.json', import.meta.url)));
-  assert.equal(JSON.stringify(catalog).includes('SearchFederalContractAwardsOutput'), false);
+  assert.equal(JSON.stringify(catalog).includes('SearchFederalContractAwardsOutput'), true);
+  for (const id of FEDERAL_MARKET_OPERATION_IDS) {
+    const descriptor = catalog.operations.find(row => row.operation.id === id);
+    assert.equal(descriptor.outputSchema.id, `${schema.$id}#/$defs/${outputDefinition[id]}`);
+    assert.equal(descriptor.handler, null); assert.equal(descriptor.availability, 'unimplemented');
+    assert.equal(descriptor.qualification, 'pending');
+    const mapping = catalog.originals.find(row => row.id === id);
+    assert.equal(mapping.state, 'mapped');
+    assert.deepEqual(mapping.replacement, { id, version: '0.2.0' });
+  }
 });
 
 test('canonical structural owner resolves federal definitions without widening the federal family', () => {

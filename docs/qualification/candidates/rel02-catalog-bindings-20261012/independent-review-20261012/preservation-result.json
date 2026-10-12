@@ -1,0 +1,170 @@
+{
+  "sourceCommit": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+  "base": "00af1a681116a4d23ac6195124372e1fec2c42e0",
+  "characterizationMigrations": [
+    {
+      "path": "packages/contracts/test/retrieval-data-search.test.mjs",
+      "caseCount": 16,
+      "approvedOriginalTitle": "declares every schema reference locally and closes every result shape",
+      "currentTitle": "declares every schema reference locally and closes every result shape",
+      "allOtherBodiesAndOutsideBytesIdentical": true,
+      "retainedOriginalSha256": "ed1614966269edae40952af90baa615893b838aa1f8a89930b2ad240a2346642"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-federal-market.test.mjs",
+      "caseCount": 20,
+      "approvedOriginalTitle": "asserts no freshness, coverage, authorization or date format on result shapes",
+      "currentTitle": "asserts no freshness, coverage, authorization or date format on result shapes",
+      "allOtherBodiesAndOutsideBytesIdentical": true,
+      "retainedOriginalSha256": "aa7db71d4233e8d2a5dbade93b2f4e8c215fd2714e7ae955b3c6cf165975a1a6"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-mail.test.mjs",
+      "caseCount": 37,
+      "approvedOriginalTitle": "concrete catalog preserves every ledger ID/boundary and only three unavailable mappings",
+      "currentTitle": "concrete catalog preserves every ledger ID/boundary and thirteen unavailable mappings",
+      "allOtherBodiesAndOutsideBytesIdentical": true,
+      "retainedOriginalSha256": "5324967d8dbffe3357ccaef7c09c13af67a320fbb9d72aa93f6322a9a69cb5cf"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-meeting-source.test.mjs",
+      "caseCount": 19,
+      "approvedOriginalTitle": "no catalog operation, descriptor or skill exposes the pending meeting source contract",
+      "currentTitle": "private meeting catalog registration exposes no live handler, public export or skill",
+      "allOtherBodiesAndOutsideBytesIdentical": true,
+      "retainedOriginalSha256": "55530a58f9e7d47fcef5a0713168d1c05cdf1697bcc7f2ceaf116c9a07126ef6"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-operational-reads.test.mjs",
+      "caseCount": 15,
+      "approvedOriginalTitle": "no catalog operation, descriptor or skill exposes the pending operational-read contracts",
+      "currentTitle": "private task registration keeps action items unmapped and exposes no live handler or skill",
+      "allOtherBodiesAndOutsideBytesIdentical": true,
+      "retainedOriginalSha256": "20a103d89d53f780a74258c3818a6d46380f4420cb80de6da5c12be4646e721f"
+    }
+  ],
+  "protectedRows": [
+    {
+      "path": "packages/contracts/retrieval-0.2/common.schema.json",
+      "bytes": 15134,
+      "sha256": "7d7ac22eff809cc31e84d1fc9b2fada1b56c316f73e50115207b579de0d92c4b"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog.schema.json",
+      "bytes": 16814,
+      "sha256": "95eec52796389bbe2e515637024280015993f3a74d971b7680aacddea4e34488"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/retrieval.schema.json",
+      "bytes": 21023,
+      "sha256": "6058aa0d735b595a093907eec8bf7e4e8f4eb96952f497caa3c1eb00f3ad1a8c"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/skill.schema.json",
+      "bytes": 9072,
+      "sha256": "146a78397cf72fbb899769fe23a83ab609fd8d67803f543ab5a76dba7a37ee7e"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/data-search.schema.json",
+      "bytes": 25959,
+      "sha256": "96e5d1ebc461dc53db86e2fd14e2863d93d5c651e134382a2da5daefd3836fec"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/federal-market.schema.json",
+      "bytes": 40586,
+      "sha256": "5ebd54c7a1e5d3a2ef99f5a69e76293aec227fbe50874f21ba69ea987417bada"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/mail.schema.json",
+      "bytes": 30679,
+      "sha256": "d45681f76ba5f5d7f65b7385ab1e1c3deb9626d4166e55fc6039e88bc3d804e6"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/meeting-source.schema.json",
+      "bytes": 37907,
+      "sha256": "b7ec6ecbdaab3fcccac3b83b9530828c90bda96685385b6f49f929fbd2776664"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/operational-reads.schema.json",
+      "bytes": 31381,
+      "sha256": "a8556220e2285239e9d46aba97954594f245daad20ab126c1733f2360d3f109c"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/data-search-validation.mjs",
+      "bytes": 18029,
+      "sha256": "5049b9177664275f763ab97f92fe722ae5d4e2064ca8400f6448d89027f5cd43"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/federal-market-validation.mjs",
+      "bytes": 8669,
+      "sha256": "eebf8b073bc8b25e6c7aea415c269cb034eb9976d45ab6ae0411d709e11295df"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/mail-validation.mjs",
+      "bytes": 15957,
+      "sha256": "e15eec9ea611daa70d8605e8b350c20535fab27f516937897914eeb55d6f8cdc"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/meeting-source-validation.mjs",
+      "bytes": 23313,
+      "sha256": "5fc7e262efc9be933c760ee089e02f58e4a8d74a958c8e412c216846bbba8ac2"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/operational-reads-validation.mjs",
+      "bytes": 21346,
+      "sha256": "81be7fe48c5d34f9352e145d9c47dc2e143ffc0b985a5f1ac26e0be07c344a42"
+    },
+    {
+      "path": "packages/contracts/package.json",
+      "bytes": 1291,
+      "sha256": "5ffd1042ab28e234a4803344f34a882bd0695580914d21136e7c13e43c7ddbe7"
+    },
+    {
+      "path": "packages/contracts/package-lock.json",
+      "bytes": 24995,
+      "sha256": "dae8c670bb76b9c570f174d8749a8c59179cf865d5d6ec83b64a67bb5b2b06a6"
+    },
+    {
+      "path": "packages/contracts/generate.mjs",
+      "bytes": 4538,
+      "sha256": "80c645d6c1ef206e7e67d2d553c4277d33c2f4980c9cddcd2862c4bb1b54e06e"
+    },
+    {
+      "path": "packages/contracts/validate.mjs",
+      "bytes": 3311,
+      "sha256": "c2449fd55300b31bdc1e829b5d918a531f1c4b2c675085a5b4707726ddd36d10"
+    },
+    {
+      "path": "packages/contracts/meri.schema.json",
+      "bytes": 50043,
+      "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b"
+    }
+  ],
+  "originalThreeMailDescriptorsByteEquivalent": true,
+  "all139OriginalIdsDispositionsBoundariesPreserved": true,
+  "changedOriginals": [
+    "search_capiro_data",
+    "list_upcoming_meetings",
+    "query_tasks",
+    "query_debriefs",
+    "read_client_meetings",
+    "search_federal_contract_awards",
+    "search_federal_subawards",
+    "search_contract_vehicles",
+    "search_procurement_forecasts",
+    "get_district_federal_market"
+  ],
+  "operations": 13,
+  "selected": 96,
+  "deferred": 43,
+  "pendingSelected": 83,
+  "allHandlersNullAndRetriesZero": true,
+  "queryActionItems": {
+    "id": "query_action_items",
+    "disposition": "selected",
+    "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+    "replacement": null,
+    "state": "pending"
+  },
+  "gitLazyFetchDisabled": true
+}

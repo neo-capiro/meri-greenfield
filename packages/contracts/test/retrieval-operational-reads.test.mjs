@@ -399,10 +399,16 @@ test('operational-read schema objects stay closed and package public exports sta
   assert(!JSON.stringify(pkg.exports).includes('retrieval-0.2'));
   assert(!pkg.files.includes('retrieval-0.2'));
 });
-test('no catalog operation, descriptor or skill exposes the pending operational-read contracts', () => {
+test('private task registration keeps action items unmapped and exposes no live handler or skill', () => {
   const catalog = JSON.parse(readFileSync(new URL('../retrieval-0.2/catalog.json', import.meta.url)));
   assertCatalog(catalog);
-  for (const id of ['query_tasks', 'query_action_items', 'operational-reads.task-read', 'operational-reads.action-item-read']) {
+  const task = catalog.operations.find(operation => operation.operation.id === 'query_tasks');
+  assert.ok(task); assert.equal(task.handler, null); assert.equal(task.availability, 'unimplemented');
+  assert.equal(task.qualification, 'pending'); assert.equal(task.operation.version, '0.2.0');
+  assert.deepEqual(catalog.originals.find(row => row.id === 'query_tasks').replacement, { id: 'query_tasks', version: '0.2.0' });
+  const actionItems = catalog.originals.find(row => row.id === 'query_action_items');
+  assert.equal(actionItems.state, 'pending'); assert.equal(actionItems.replacement, null);
+  for (const id of ['query_action_items', 'operational-reads.task-read', 'operational-reads.action-item-read']) {
     assert(!catalog.operations.some(operation => operation.operation.id === id || operation.aliases.includes(id)));
   }
   for (const operation of catalog.operations) { assert.equal(operation.handler, null); assert.equal(operation.availability, 'unimplemented'); }

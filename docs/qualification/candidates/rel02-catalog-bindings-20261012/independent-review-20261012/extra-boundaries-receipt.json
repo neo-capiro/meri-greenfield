@@ -1,0 +1,26 @@
+{
+  "sourceCommit": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+  "argv": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "docs/qualification/candidates/rel02-catalog-bindings-20261012/independent-review-20261012/extra-boundaries.mjs"
+  ],
+  "supervisorTimeoutSeconds": 15,
+  "physicalExitCode": 0,
+  "timedOut": false,
+  "elapsedSeconds": 0.941,
+  "ownedProcessGroupAbsent": true,
+  "streams": {
+    "stdout": {
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/independent-review-20261012/extra-boundaries.stdout.bin",
+      "bytes": 280,
+      "sha256": "fa46f7918e670d9ad10a26497ee41011e8e395bac8c621f5bac09715b0072f41"
+    },
+    "stderr": {
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/independent-review-20261012/extra-boundaries.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "scriptSha256": "f8a0dc369d2ca3dcb64a01563137714e2506c14677940106537827d5f5f9312d",
+  "activation": false
+}

@@ -1,0 +1,3452 @@
+{
+  "formatVersion": 1,
+  "classification": "SOURCE_ONLY_CONTEXT_FREEZE",
+  "acceptedCatalogSource": {
+    "commit": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+    "tree": "8c7166aa86be9f3fa4fdecafeda46dbdc0cfb89d"
+  },
+  "acceptedSessionStoreRepair": {
+    "commit": "680f09cef6e97bee101d09c9d39ab325c0af2007",
+    "tree": "32f6528b10154098a0a95ee3ed1cc99099ca4194"
+  },
+  "parentIntegrationReported": "2367; full integration ref is parent-owned, not inferred",
+  "coverage": {
+    "definition": "All persisted known source/context byte inputs, concrete recorded argv files, owned code/evidence, static local import closure and explicitly labeled resumption references.",
+    "limitation": "No OS file-read audit or complete pre-compaction command transcript exists. Exhaustive over persisted known inputs; usage labels do not claim every resumption reference was manually read in full. Not a complete installed-dependency or SBOM manifest.",
+    "snapshot": "Current rows bind accepted475; historical versions retain separate refs. Existing source/tests/evidence are unchanged.",
+    "captureRepair": "First metadata assembly wrongly treated the absolute Node argv as a repository path and stopped before creating files; fixed by admitting only paths in exact accepted Git tree. No product/check execution occurred."
+  },
+  "files": [
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "AGENTS.md",
+      "gitBlob": "fe8cefa588409d8562f0e6d939a6da7d120c0d87",
+      "bytes": 6582,
+      "sha256": "a0650949b74e5aee709bd8b3c9d480f95f5b898778ac8f7b3927eb54b141437a",
+      "usage": [
+        "policy-and-adopted-plan/resume-context"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/control/qualification-sdk-fixture/ingress/test/fixture-data.mjs",
+      "gitBlob": "a186497ac04c653551a1a30125ab1d434ba15241",
+      "bytes": 7002,
+      "sha256": "81761aab65440714d4cfd74d90d563896bf6dd997882cd483b6c966e3ee39ae0",
+      "usage": [
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/control/qualification-sdk-fixture/service/checkpoint-store.mjs",
+      "gitBlob": "5bd6cc10aadc5f38765ea46b8d956043672ba327",
+      "bytes": 8744,
+      "sha256": "a6cf5cf9f9086afea593a27e3a81c7d0fbc4679153a5e6a7631ee8582c453890",
+      "usage": [
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/control/qualification-sdk-fixture/service/native-evidence-publisher.mjs",
+      "gitBlob": "afee4280d62f75921fc7cb83fa39900d386865c1",
+      "bytes": 5749,
+      "sha256": "d60b34265a8c34379aceb90a0fe6bf5f634508d037382f34543fb201bbf13e64",
+      "usage": [
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/control/qualification-sdk-fixture/service/native-evidence.mjs",
+      "gitBlob": "05c275297540e4ebd6cb4050ed8187cf6049fa25",
+      "bytes": 6989,
+      "sha256": "a1bd96960ee00886cece2ee10ba3115366251d34ff9bd6903c28f79489c9539f",
+      "usage": [
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/control/qualification-sdk-fixture/service/s3-objects.mjs",
+      "gitBlob": "0287682fa0946300aa37fc1be4dac8336be23d15",
+      "bytes": 7885,
+      "sha256": "c853ccd4689d81db9c79dbca78ef294fd8fe7c33a8c740f07b9f1566243502f9",
+      "usage": [
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/control/qualification-sdk-fixture/service/test/fake-s3.mjs",
+      "gitBlob": "0f2b3c99b39bb0984767147649a41d35786dcd6e",
+      "bytes": 2028,
+      "sha256": "fa68899be8c7e92cb4efc225cac2bdb3fadb954a00d411d4ec3426a6ecd04554",
+      "usage": [
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/control/qualification-sdk-fixture/service/test/fixture.mjs",
+      "gitBlob": "003a96d71336ae2a42935a2edd39d918ff02b4b1",
+      "bytes": 1331,
+      "sha256": "3471de26bbd40f271b8270a857d1e0d0d6a78022790cb07cc4471683bc04b95d",
+      "usage": [
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/control/qualification-sdk-fixture/service/test/native-evidence-publisher.test.mjs",
+      "gitBlob": "bd2782ac1f6bf544664d003b4d2c36dab2c7dadb",
+      "bytes": 13020,
+      "sha256": "c4e20fb150bdefb6ccd36e7d5b658aeffa80c80c056eb2b6deeeeead99452e95",
+      "usage": [
+        "recorded-command-argv/actual-check-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/control/qualification-sdk-fixture/service/test/native-evidence.test.mjs",
+      "gitBlob": "d1a99a639e32c47cbbab6dc1087898ce748d0b03",
+      "bytes": 10139,
+      "sha256": "e1b8f9eddfd3aad8f0d64f76126dff9c82cc9f841a2315d4ee71885ba7450c3b",
+      "usage": [
+        "recorded-command-argv/actual-check-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/control/qualification-sdk-fixture/service/test/s3-checkpoint.test.mjs",
+      "gitBlob": "c718fa454b9288dc07b9a6a880c94ca13d5e24f8",
+      "bytes": 10185,
+      "sha256": "f9211259d2731259733a3ac115f828ec324cd2ec5ba98436a36412ce006c40ec",
+      "usage": [
+        "recorded-command-argv/actual-check-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/control/qualification-sdk-fixture/state/errors.mjs",
+      "gitBlob": "a03e62e09ad714b3c49535bfe1d7453520cb44e4",
+      "bytes": 982,
+      "sha256": "4bc40e78cb615881b5e396a3967944150d0a1fd0a3298f34494782af27c7041d",
+      "usage": [
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/control/qualification-sdk-fixture/state/receipt.mjs",
+      "gitBlob": "0132bd9a0146929afe913ab71b4dd0648a5bd248",
+      "bytes": 4248,
+      "sha256": "88f0d7f07ef9bf5e9cb84a8743a9012587e738b14c6a160e744e28dfcc5bad17",
+      "usage": [
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/.dockerignore",
+      "gitBlob": "c7dae8069acd7f4a9eb52cb58233f54c4c1f7d36",
+      "bytes": 1542,
+      "sha256": "7bab997b99912abb20f7b87a0dc93e4024acdb4b0ccb1bc9449b464834a7c54b",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/Dockerfile",
+      "gitBlob": "2317a4615dfb941158e15688d78421ebbbc6cdd6",
+      "bytes": 18786,
+      "sha256": "3f86ae7ca55e8bbfb2814f1b335b7df8159daf9b5008df60f1165ba879c40f36",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/README.md",
+      "gitBlob": "cb1ae8e04df51da1f13786235a0be715bbcb91f1",
+      "bytes": 13158,
+      "sha256": "c606fd180c1d57461dba0e94310cd4410ac3a051f61f76d92ae9b38a3e2a6a0e",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/checkpoint/bound-session-store.mjs",
+      "gitBlob": "d5b936d5d31aa5a0242276db7bb6db764de8c91f",
+      "bytes": 6925,
+      "sha256": "c4100a00783a43bf89f3e4ed34bee155169d3aff611c84deb8a94d329320cdce",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input",
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/checkpoint/fixture-channel.mjs",
+      "gitBlob": "c19b6d13a44e37ff7bad5f3dc243262551706925",
+      "bytes": 11858,
+      "sha256": "160929a1ac8ce647574fac5740294d117ab70230d0a040b6d37ca4ef5712ad0b",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input",
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/checkpoint/fixture-channel.test.mjs",
+      "gitBlob": "399c25ad10f4d2949a945fba664c7739408b8190",
+      "bytes": 16419,
+      "sha256": "3d8eb0e88e6ae45c6f55b1303e1f2075344c044ed0eba4e39a0f7ca26994612c",
+      "usage": [
+        "recorded-command-argv/actual-check-input",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/checkpoint/fixture-sentinel.mjs",
+      "gitBlob": "50c92785b6e2316daf3b299555c4f8d46c4d6a5b",
+      "bytes": 8266,
+      "sha256": "4e5779fa84f149a4867e556e5fc7d20c644cd440a69f0ad4c6a7c4e8160324fd",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input",
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/checkpoint/fixture-sentinel.test.mjs",
+      "gitBlob": "c269addaaff054ded85aaac3b9c1c5352a992de0",
+      "bytes": 14919,
+      "sha256": "73a14fea4fc24fd0a05f68523c4f9dbbbaf500dfd62f80225f8e93996f4e8ed7",
+      "usage": [
+        "recorded-command-argv/actual-check-input",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/checkpoint/fixture-transport.mjs",
+      "gitBlob": "80ddde5b38c8502815ee9e56dc9835ee19af06e6",
+      "bytes": 13008,
+      "sha256": "3b802df4571cd2e170890c9bfd77be995997736ff4e5e003c3248946e3b3d31c",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input",
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/checkpoint/fixture-transport.test.mjs",
+      "gitBlob": "0d05f657418be0a1a231d5c17f1526cc09022071",
+      "bytes": 30179,
+      "sha256": "8c676e68f2bb670dee4ed7405d29c009ef757387a49902e96a99fa99e3d6a3c5",
+      "usage": [
+        "recorded-command-argv/actual-check-input",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/checkpoint/native-capture-boundaries.test.mjs",
+      "gitBlob": "44f25267df4c08d618a73f2de75abf2b5b60dbc4",
+      "bytes": 4323,
+      "sha256": "dfbb4caed570339793bc32a2bfb6cd01abf98d3c4cd34626a86dd64034f7086e",
+      "usage": [
+        "recorded-command-argv/actual-check-input",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/checkpoint/native-session-files.mjs",
+      "gitBlob": "ac138c990adeae889c1a4624acab523324669c37",
+      "bytes": 12049,
+      "sha256": "543e05c230bf614cd5cf73f2d69877f1311ec0faf9d7ca205429161a75b842e1",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input",
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/checkpoint/native-session-files.test.mjs",
+      "gitBlob": "b39c1d43117a3a3f31ebcc55308d79d77f4dbf91",
+      "bytes": 10948,
+      "sha256": "defd486e0160412b8c7dde2c87d9cc93b57e0bb57248342b2c2b65f695bb44b3",
+      "usage": [
+        "recorded-command-argv/actual-check-input",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/checkpoint/promptfooconfig.json",
+      "gitBlob": "871cd0b4d7d6418283c50e77ccd45cca2ec919cb",
+      "bytes": 2814,
+      "sha256": "b9aceaf0ebd22fd84fc28cd3b1579cd2ac8233f1911e4d74ef557c16143e496c",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/checkpoint/resume-admission.mjs",
+      "gitBlob": "673897f40e40271b785e848b8429452d5b6889ff",
+      "bytes": 5948,
+      "sha256": "81b15faafc9f27b4e4107d7034708fd0f83a18caf09cbb367f03b7ef77701c9d",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input",
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/checkpoint/resume-admission.test.mjs",
+      "gitBlob": "3c2e70c5d25d23bc0b245c7887b188c8b4ac53d9",
+      "bytes": 8022,
+      "sha256": "5e53aaaf445c70dd7a56a55a3ea1ab2936a6eff86ed78b2dd04b072a79dfdb4f",
+      "usage": [
+        "recorded-command-argv/actual-check-input",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/checkpoint/session-store-data.mjs",
+      "gitBlob": "5466ef8e25f6b6a1e24e615139e5540ffb6114f7",
+      "bytes": 4601,
+      "sha256": "ba1897e62fee64a2b4e03e9a6c1a9e111cd2044af1c3d5dda295c09bcb884993",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input",
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/checkpoint/session-store-eval-provider.mjs",
+      "gitBlob": "42d7f4803629ecd609816a18d0396f8c96ba6d07",
+      "bytes": 3625,
+      "sha256": "da3942891abe57982f58acc85186b52aca421a3ee40ff7eedd471a14d9862439",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/checkpoint/session-store.test.mjs",
+      "gitBlob": "e3cd7da9b60d606df2a87c80cd3e0d1ac985001d",
+      "bytes": 17013,
+      "sha256": "2e115e03e32d7bd9a9abd0b6c7e8df480528e023bf318d0f0639af4d91fc6389",
+      "usage": [
+        "recorded-command-argv/actual-check-input",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/checkpoint/verify-session-store.mjs",
+      "gitBlob": "8792c27599c7dc31181367e6e5cb3d31c53524a2",
+      "bytes": 2887,
+      "sha256": "bdfac290cea0157676d6949c31a7bc7b546312eedd25849f26fad4d626c4d53a",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input",
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/component-pins.json",
+      "gitBlob": "ba955f3ce77307bebaf3c27728a4cf93b5c960be",
+      "bytes": 36019,
+      "sha256": "2f2c5d52fbee23bbdb206456235664b9dbbdf5c3526ccc065d499ed0a61f5aed",
+      "usage": [
+        "canonical-helper-package-pin/source-and-check-context",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/package-lock.json",
+      "gitBlob": "93afb40b97d0ed80b790660c3c8129e04a59f4e2",
+      "bytes": 68705,
+      "sha256": "d3d4c5362e0c7dc1392ef9cad2048d00c564f1ff70d98c3e10108e50aa56147a",
+      "usage": [
+        "canonical-helper-package-pin/source-and-check-context",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/package.json",
+      "gitBlob": "83efb204cb9fd8475b8a4db8f3167119df5cfa26",
+      "bytes": 1143,
+      "sha256": "a32e658933bd058d2524cfb2112cf770e5be81827dbf5e789ddecbcab86e5d80",
+      "usage": [
+        "canonical-helper-package-pin/source-and-check-context",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/probes/artifacts.mjs",
+      "gitBlob": "97d3ccd7b94b1596fae8af8be0300b259bc4870e",
+      "bytes": 15220,
+      "sha256": "3155bd31447f37b27c512cc2522a46947241c0f3fd74d738bed54920486757d6",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input",
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/probes/artifacts.py",
+      "gitBlob": "b3504a60cec4feec286871266ed237a7c59ff970",
+      "bytes": 8349,
+      "sha256": "b75d7eacc12c88fc87b23c7aab6bfa22adbb22eee99b4236f01ac90bde858d15",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/probes/browser.mjs",
+      "gitBlob": "e30bc8b0c60f5d405f3f11b9c0217a7bbec4ba2b",
+      "bytes": 33634,
+      "sha256": "c09bd204a86c0cbfcdfa397b9b1f6938b078f7b4b3c6989a59d3588db2c481e0",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input",
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/probes/image-inventory.py",
+      "gitBlob": "48bec444698cab9f78d5db00f3947a2af52486bf",
+      "bytes": 17978,
+      "sha256": "c7d682e67b5b3064947c92bebdce785aa04c3e00238fc8fb769d4a828479de58",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/probes/image-inventory.test.mjs",
+      "gitBlob": "fa925e21671b4e590cd471e3ed1e82a3290fbe62",
+      "bytes": 25547,
+      "sha256": "6f43c0d24e97f766aa588b6773dd6a3399074b35e6ad226e47e73adde27627e7",
+      "usage": [
+        "recorded-command-argv/actual-check-input",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/probes/native-namespace-observer.mjs",
+      "gitBlob": "a341c24b4765b4005b18eec554ee4b312c317dd7",
+      "bytes": 11069,
+      "sha256": "6c4ff8b525c414f93f0d0d29653b1e8a68db5fc520d4f414cf88d0b3e08b23c4",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input",
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/probes/native-namespace-observer.test.mjs",
+      "gitBlob": "aa698aa8cbc1dfd0423f95c428a2aaa7d4106b1b",
+      "bytes": 10823,
+      "sha256": "e4888c1871f87bbd5a7ab9bf578a95a3c4ba357838088052cfefc7252e91143f",
+      "usage": [
+        "recorded-command-argv/actual-check-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/probes/native-observations.mjs",
+      "gitBlob": "4883956527e67ef9cdd99e0b1e3bbc3fa5716553",
+      "bytes": 7072,
+      "sha256": "fea49e07f71dccbea3d6c21cab8d1e4502b79a2d1ff05085dbd2a0e2089b2b15",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input",
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/probes/native-observations.test.mjs",
+      "gitBlob": "96ad204a15c3e9f538cfb967cdff0fda75732fa8",
+      "bytes": 10049,
+      "sha256": "5a64c4704acb99a98a6406365b7171da356677c4421ced1a459272515f3402a4",
+      "usage": [
+        "recorded-command-argv/actual-check-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/probes/native-stream-observer.mjs",
+      "gitBlob": "83b3d84e0012d9dd4896ebf57c18af01a7c56e78",
+      "bytes": 3459,
+      "sha256": "66fa0dec53eb9cc3d98a79d45a0cc8290281efc46dce7baa05e1f0721771beba",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input",
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/probes/native-stream-observer.test.mjs",
+      "gitBlob": "0600dc2892250e7e1a135741ead53516cb4dcd76",
+      "bytes": 4718,
+      "sha256": "34bfe89c3ba0b9a3231c951eb500edc0f70ef00838fc50527a357054455b338f",
+      "usage": [
+        "recorded-command-argv/actual-check-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/probes/office-export.mjs",
+      "gitBlob": "5fadcc2556aa377fbf64913f43006940a3d524c7",
+      "bytes": 51040,
+      "sha256": "78a3526f0e7ea738f675433a5289c49552011cef7267a2c9057827fb42ab5156",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input",
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/probes/office-export.test.mjs",
+      "gitBlob": "cada9978d77c410974e7c912336ab7e826b53928",
+      "bytes": 42459,
+      "sha256": "da1087cd155c64a85a5d9dd818db275688f6e8610719d665007a8649e3423dde",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/probes/office-reconstruct.mjs",
+      "gitBlob": "ee97f951488c2c3e63d287ad0b8e78050d075529",
+      "bytes": 24134,
+      "sha256": "133d8c5adbfae930aa5e59d7d633e73482994106382cebef35b065d059303205",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input",
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/probes/runtime.mjs",
+      "gitBlob": "0d03204ebbd431731ef775e6bb42d4bc98178273",
+      "bytes": 16139,
+      "sha256": "56873762181926b276fc8283ceb9485d9fd55ef788bd4204b55feef241236716",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input",
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/probes/sdk-capture-options.mjs",
+      "gitBlob": "b3fda1d1579f2d96aed9ccfd76a34dda3138b740",
+      "bytes": 17469,
+      "sha256": "964f4f1958dd0707198fcd21611018b9a9337e90e5f434ed24ce47beb3986b0e",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input",
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/probes/sdk-capture.mjs",
+      "gitBlob": "f4a88923d76071f626d1c4185df3d951e8709bb1",
+      "bytes": 52572,
+      "sha256": "027117958a878cce722650c57bd0fe6132c5be69a440a3b3b9cd6f83213e6083",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input",
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/probes/sdk-capture.test.mjs",
+      "gitBlob": "0a1fff8bc3d0122ab272ba6435c7923ae798ee5d",
+      "bytes": 62953,
+      "sha256": "4eca411e364d3da83b2e1afe5451f94b69a32e023b5733cf5ad4382008b73f84",
+      "usage": [
+        "recorded-command-argv/actual-check-input",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/probes/sdk-discovery-options.mjs",
+      "gitBlob": "55d9aba11a9b73fbdc67ed18aab3ac492553b21b",
+      "bytes": 6113,
+      "sha256": "868d470804fbc6aa3cfad5a9a2f39ca5ac2b71881c020b20db122efa7b16479b",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input",
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/probes/sdk-discovery-options.test.mjs",
+      "gitBlob": "17f6c19c24c8dc18d1d878532b462c2e05dfa6b6",
+      "bytes": 8608,
+      "sha256": "dd1e03d0f0641bf7133cb29e3c2259f0c9a1779aae8e3a29618e92b045f096f2",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/probes/sdk-discovery-tools.mjs",
+      "gitBlob": "5c8eb172459f516d7fe55304556f266a625e0378",
+      "bytes": 3924,
+      "sha256": "462dc2e956ee9ada8d64df32bc67a79aa58ceb16292d45219869effd2db776a7",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input",
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/probes/sdk-discovery-tools.test.mjs",
+      "gitBlob": "77f797014fa84ef1b612a0ae6113884291d7a09f",
+      "bytes": 9593,
+      "sha256": "eab916e8abd61493f768e425a705f7f814317d354221a2e1eacff8c5823f893a",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/probes/sdk-interruption-loopback.mjs",
+      "gitBlob": "c7708d03e4284662ad04409d8f1217a07f47a860",
+      "bytes": 11540,
+      "sha256": "784658878a08952fe665bcf13868830dba06402ccbb99b9d7a44cafc41fdf40d",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input",
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/probes/sdk-interruption-loopback.test.mjs",
+      "gitBlob": "b2f21ee253f632b712ecfc6362d9074e18aa4c8e",
+      "bytes": 12941,
+      "sha256": "93188dbcbafd58291270c522542c9ed91815161dd03641ef9b1f4fa790d2f222",
+      "usage": [
+        "recorded-command-argv/actual-check-input",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/probes/sdk-interruption-options.mjs",
+      "gitBlob": "a1461381c43d729007098bf70351d5737b173e6d",
+      "bytes": 2425,
+      "sha256": "132da9c8b37f258309a041bc4d8426a613b20e2fc35f622cd577f1b565c7d182",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input",
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/probes/sdk-interruption.mjs",
+      "gitBlob": "75803a2a6079cc687708f3628ffc462c50a3e1e4",
+      "bytes": 12617,
+      "sha256": "2764babd954e95f07caf964ac14e57ee8a5a7d148d1527f97d1af4ea16b9040f",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input",
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/probes/sdk-interruption.test.mjs",
+      "gitBlob": "2047a97d6ea67e015c14548e548392cb2dd9ce4b",
+      "bytes": 21053,
+      "sha256": "93ab5df298ad95c5169f76247d5e0093bab585e9eec7bb46b3350cb61ffc1daa",
+      "usage": [
+        "recorded-command-argv/actual-check-input",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/probes/static.test.mjs",
+      "gitBlob": "eeb15ee6497f46cb19c02e91eeb696a02703faef",
+      "bytes": 66109,
+      "sha256": "910044c4c16b9d8e523bef960d80aac5f66632817afd9a103cf3e277b762e6e1",
+      "usage": [
+        "recorded-command-argv/actual-check-input",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/requirements.lock.txt",
+      "gitBlob": "40ae212b4089621ed69cf059f876f3cee7118bb6",
+      "bytes": 1383,
+      "sha256": "47bb048b9750b074c7d33faba9f9c3873b7b461eaa4360bf57cb08d4f55c9765",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/sdk-options.mjs",
+      "gitBlob": "4f8f2097b616469bf353904c18c23ee238019a50",
+      "bytes": 5402,
+      "sha256": "174efdfcf4731845d65c1f32de4c73e8a9032ccf1522022ab7675ccc7e6a5d9e",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input",
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "apps/worker/qualification/vendor/capiro-meri-contracts-0.1.0.tgz",
+      "gitBlob": "ad34bb186699fd0af365b973ca5de9e820802c0c",
+      "bytes": 48823,
+      "sha256": "2f15ade9458cbffe960b7cc36c6fb77cb54cc2a0eca4bc7c0f918b77cfacd4ee",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/IMPLEMENTATION-STANDARDS.md",
+      "gitBlob": "7f680395e07d1114667a800f3f8ed77010a3eac2",
+      "bytes": 11082,
+      "sha256": "d4f10f964ee207187abacd967649a1cfc9bdd468072dc01f859268f08b719959",
+      "usage": [
+        "policy-and-adopted-plan/resume-context"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/coordination/r2/audit-findings.json",
+      "gitBlob": "dadcff9c5c38757aa8fa5bdda74dfe236147a1ae",
+      "bytes": 11060,
+      "sha256": "001342c23aac5da0a89917ac89f1f1b7788249d5d9ef59fcd747e367af32ac06",
+      "usage": [
+        "adopted-R2-canonical-metadata"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/coordination/r2/capabilities.json",
+      "gitBlob": "78e155390e13948ec3a9a543214b810d8399ce05",
+      "bytes": 307002,
+      "sha256": "7207b38fd415c1254c5b8cbf80ec0a2910f399f8e65aa7f85b7b9b9f3c2dd4f1",
+      "usage": [
+        "adopted-R2-canonical-metadata"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/coordination/r2/gates.json",
+      "gitBlob": "72126e3b1ba7c8ee453520311a55012802ccb8bd",
+      "bytes": 8743,
+      "sha256": "edb425d2bb70e346bf2006ad62748f93f1bc8cfc63b16d3ffba7ce5b6159f887",
+      "usage": [
+        "adopted-R2-canonical-metadata"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/coordination/r2/requirements.json",
+      "gitBlob": "71ea443ef46fcdf5f8f4e58c22331f07e32272dd",
+      "bytes": 9960,
+      "sha256": "d04848106740cec3c5f8fc45aa3477ce4cc9e4c26af7e19ba163d1ccc5445beb",
+      "usage": [
+        "adopted-R2-canonical-metadata"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/coordination/r2/skills.json",
+      "gitBlob": "842611cf4916b00486bf555034f8e50b74d2c456",
+      "bytes": 25018,
+      "sha256": "bfd0b14953b858d351a58a778f435f2d546c1a420050ee6c31ae5e489f1f17b6",
+      "usage": [
+        "adopted-R2-canonical-metadata"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/coordination/r2/tickets.json",
+      "gitBlob": "805dcdf3c0ca4a97eb4575bc6bce5dd13e1f26cf",
+      "bytes": 8332,
+      "sha256": "88fdf415d837c493fbec4b04ad3c33a0c329ed64dac3041990e8f2a11ade86d7",
+      "usage": [
+        "adopted-R2-canonical-metadata"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/coordination/reports/CODEX-G1-REL02-CANONICAL-VALIDATORS-20261011.md",
+      "gitBlob": "74a4ac5d74b607fafda098df3e97ee35dc227808",
+      "bytes": 4407,
+      "sha256": "dc3cc18a7454d776022a4148674cabb5931251f3ca0ff9f98e2d9b1531dbc557",
+      "usage": [
+        "typed-family-scoping/resume-reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/coordination/reports/CODEX-G1-REL02-DATA-SEARCH-20261011.md",
+      "gitBlob": "b98e288527fae7c16f687a4305713e309096b62d",
+      "bytes": 4721,
+      "sha256": "7c6e528c3c714dbe4b502d183374d940533a91c59e1fa8aba203a499b4f902dc",
+      "usage": [
+        "typed-family-scoping/resume-reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/coordination/reports/CODEX-G1-REL02-FEDERAL-COMPOSITION-20261011.md",
+      "gitBlob": "c34ac53bf7695eace2570370ff955c188f0d10fa",
+      "bytes": 5947,
+      "sha256": "f5dd4443920517b11ecb541bbdb1e8499e3edb91ce78fd98c46a899c699534f5",
+      "usage": [
+        "typed-family-scoping/resume-reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/coordination/reports/CODEX-G1-REL02-FEDERAL-INPUTS-REMOTE.md",
+      "gitBlob": "e244a3545e7e887780da3f8ba841516f5d6d1405",
+      "bytes": 10991,
+      "sha256": "39d625e79a4d2871dd8ce00bbbc5c06c3497cf3fc4bffc1b2aa44497d02044da",
+      "usage": [
+        "typed-family-scoping/resume-reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/coordination/reports/CODEX-G1-REL02-FEDERAL-RESULTS-REMOTE.md",
+      "gitBlob": "1d050baa6d3def5962c83feaa2447518c072cf6e",
+      "bytes": 16080,
+      "sha256": "0538acabc5789fa63183c79af335248b7b4828728b183ce0bff744890f8b6085",
+      "usage": [
+        "typed-family-scoping/resume-reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/coordination/reports/CODEX-G1-REL02-FEDERAL-RESULTS-REVIEW-20261011.md",
+      "gitBlob": "c1d904f897fd2e46e9c7c00bc84a8ca00f442320",
+      "bytes": 3590,
+      "sha256": "81ce7d59a187786f67979fe47e3e777b80663d73d1973f4d1ee6d6186fb64560",
+      "usage": [
+        "typed-family-scoping/resume-reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/coordination/reports/CODEX-G1-REL02-FOUR-GAP-METADATA-REMOTE.md",
+      "gitBlob": "a75bbd8ee38f8b8c76928c52f5c3867efa02937b",
+      "bytes": 19976,
+      "sha256": "8f6e30c15de30623d2ffac5c487246dde909f4bed69c73c03b841bad3f1e29d1",
+      "usage": [
+        "typed-family-scoping/resume-reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/coordination/reports/CODEX-G1-REL02-MAIL-CONTRACT-OUTLINE.md",
+      "gitBlob": "d74dc0722da5416fc1a52336cdcffb715f470bd2",
+      "bytes": 21786,
+      "sha256": "65290888caf3d3564a6c6900259cc8b9965c6ae7324e7742bfd1224a218212f1",
+      "usage": [
+        "typed-family-scoping/resume-reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/coordination/reports/CODEX-G1-REL02-MAIL-FIRST-CONTRACT.md",
+      "gitBlob": "cfef0b1a310e031969146335e52be841485fc98d",
+      "bytes": 5543,
+      "sha256": "73ebc3f9d0aea689e0aa6be9f32f087d502fad457b5be1cd78449a94fd4b17ea",
+      "usage": [
+        "typed-family-scoping/resume-reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/coordination/reports/CODEX-G1-REL02-MAIL-LEGACY-METADATA.md",
+      "gitBlob": "1ee978c741e07457c37010e82bde670b3975d539",
+      "bytes": 11241,
+      "sha256": "533d0967b2b677a3ca9232d046462436d6d975763231a818054371ecb2fb3ba5",
+      "usage": [
+        "typed-family-scoping/resume-reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/coordination/reports/CODEX-G1-REL02-MAIL-LIST-SEARCH-CONTRACT.md",
+      "gitBlob": "3c2fec4fbbffcff61a91e0c8a1580f0302c713a6",
+      "bytes": 5383,
+      "sha256": "9d150ee1c4f19e14907e360884b06627d2c1f7dea75c978bf79106f0111d4b6d",
+      "usage": [
+        "typed-family-scoping/resume-reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/coordination/reports/CODEX-G1-REL02-MAIL-LIST-SEARCH-OUTLINE.md",
+      "gitBlob": "a2ab5277de6300cc89393886a140d0773fa22dd5",
+      "bytes": 14730,
+      "sha256": "a615eefc7439eafae3e4e78182a85fdd5b82f960578df9e5558d943723c61007",
+      "usage": [
+        "typed-family-scoping/resume-reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/coordination/reports/CODEX-G1-REL02-MEETING-SOURCE-REMOTE.md",
+      "gitBlob": "104b1a4e7e6475595a902755916fe84fb1b7c529",
+      "bytes": 23539,
+      "sha256": "c8f828b1106750159c03ecac14eb043b3bd8b360773c29e54bfa8e37df14a74d",
+      "usage": [
+        "typed-family-scoping/resume-reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/coordination/reports/CODEX-G1-REL02-OPERATIONAL-READS-REMOTE.md",
+      "gitBlob": "933ff575ab90968b33db8bc1945981f5a8b92498",
+      "bytes": 14399,
+      "sha256": "edb9f74e408dd93bf9c6390737728e61b8842f3a9c28912ae77bdea58050c62b",
+      "usage": [
+        "typed-family-scoping/resume-reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/coordination/reports/CODEX-G1-REL02-REMAINING-CAPABILITY-METADATA.md",
+      "gitBlob": "e208ea25e4d412c3d540b52fd0c770271748773a",
+      "bytes": 28005,
+      "sha256": "bb3fa6df076a7580670f4d0725a096eef4ab980f9782a60522d6163d86327398",
+      "usage": [
+        "typed-family-scoping/resume-reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/coordination/reports/CODEX-R2-REL02-CONTRACTS.md",
+      "gitBlob": "96dc559bf70e017033d44fb5edb165b066c8fbe0",
+      "bytes": 9951,
+      "sha256": "57be1dce62471bcde42d477704bf37fe1c742982f65866b4aff1522bc815cf4c",
+      "usage": [
+        "typed-family-scoping/resume-reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/coordination/reports/CODEX-R2-REL02-INDEPENDENT.md",
+      "gitBlob": "c0cc90b3d384f93cedf644d93725b2d63719e2f8",
+      "bytes": 12229,
+      "sha256": "f9d93aa26dbc375d6d404e3a502b3404b60f5bff0116e5f44282a4e0e5a46b9c",
+      "usage": [
+        "typed-family-scoping/resume-reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/coordination/reports/CODEX-REL02-CANONICAL-COMPOSITION-ACCEPTANCE-20261011.md",
+      "gitBlob": "c7178bbfa9ac6efade9b40a710669abea872bd2c",
+      "bytes": 6423,
+      "sha256": "9a4b8cb85aedbdaa235588cdbb39dc5e075871b616327d69e906aa546c3dc117",
+      "usage": [
+        "typed-family-scoping/resume-reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/coordination/reports/CODEX-REL02-CATALOG-BINDINGS-20261012.md",
+      "gitBlob": "d554e60106c5f135296217d171311eaf1b37a62d",
+      "bytes": 7193,
+      "sha256": "c4298feb4032ecd5a7a581d8f11f78155e354b31b09ae40872a551a982c93977",
+      "usage": [
+        "authored-task-or-report",
+        "typed-family-scoping/resume-reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/coordination/reports/CODEX-REL02-DATA-SEARCH-COMPOSITION-20261011.md",
+      "gitBlob": "5d68ab195215e6670ca4e8657046779210a56e74",
+      "bytes": 9250,
+      "sha256": "203a49af2c70078ef3f7a2eee821b65872dfde042f8e9491d8db36fd72527a5f",
+      "usage": [
+        "typed-family-scoping/resume-reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/coordination/reports/CODEX-SESSIONSTORE-CONSOLIDATION-20261011.md",
+      "gitBlob": "65cfa03859484bf466d63a597f3559fb322a6d28",
+      "bytes": 12431,
+      "sha256": "25cac62524600fe567220d9faff63a6ba61d4b9973aae54df999f880eee9bb52",
+      "usage": [
+        "source-review-history"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/coordination/reports/CODEX-SESSIONSTORE-INDEPENDENT-20261011.md",
+      "gitBlob": "59e1da6e966f24ced532b0fd16ad0e7c3236ab05",
+      "bytes": 7157,
+      "sha256": "2dfe7a0439f44d4a8e4fa6b9e1f02688f0771172565952b3e738a66e516e3caf",
+      "usage": [
+        "source-review-history"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/coordination/reports/CODEX-SESSIONSTORE-REPAIR-INDEPENDENT-20261011.md",
+      "gitBlob": "aa0c73f5256e9ff0b8305443ac9040f6510839d0",
+      "bytes": 8380,
+      "sha256": "d6d272fda9305781e7269978de2f8c2dd2fff3460dd9a52f62ac27613769f9c9",
+      "usage": [
+        "source-review-history"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/coordination/reports/PORTFOLIO-NATIVE-CAPTURE-RACE.md",
+      "gitBlob": "58367745022b1d599afbf4707430b0d3f93c35c5",
+      "bytes": 7485,
+      "sha256": "af8efe74c328e119f5f87fbc0199ea4d9e474dc58a384c1c42846e7a638782af",
+      "usage": [
+        "historical-source-review",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/coordination/reports/PORTFOLIO-SESSIONSTORE-CANDIDATE.md",
+      "gitBlob": "36f912eed71ad1643bc21df52a5c0814cc0ba482",
+      "bytes": 5924,
+      "sha256": "1200a32649a4900bd1395f94b87b9b81d0ec5a98dc96902acfbe5ac867a7a554",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input",
+        "source-review-history"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/coordination/tasks/CODEX-REL02-CATALOG-BINDINGS-20261012.md",
+      "gitBlob": "5ea78825f7940490d35c85080b44c88245865f57",
+      "bytes": 5199,
+      "sha256": "518585d07c0984f194a3b2c07dcd91b4956d3d654ed9b235b90934aedf3d1c48",
+      "usage": [
+        "authored-task-or-report"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/coordination/tasks/CODEX-SESSIONSTORE-CONSOLIDATION-20261011.md",
+      "gitBlob": "163957f20838073a1187eb31b8ecc288aae25c10",
+      "bytes": 5112,
+      "sha256": "c9f126eaa7d9a6ea96bc9ee05912e1546a25d55af2b72bfc21bb1e0b3544b0b3",
+      "usage": [
+        "task-and-scope-history"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/handover/20261011/CONTINUATION-INSTRUCTIONS.md",
+      "gitBlob": "4d07982667a31f21c0d0b497a62932c6392a9036",
+      "bytes": 13012,
+      "sha256": "37cdc0af9397bd53d7f4e91c6ef7d727508d238056447bd789dc5695f150748f",
+      "usage": [
+        "policy-and-adopted-plan/resume-context"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/handover/20261011/REMOTE-PICKUP.md",
+      "gitBlob": "1ff3044f4dcdfce562c41a4a71faf413bc4620d1",
+      "bytes": 9221,
+      "sha256": "5845e7759f40e423ca59402e3570bb925e534c173d37802ad000caef5c06809d",
+      "usage": [
+        "policy-and-adopted-plan/resume-context"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/plans/MERI-DEPLOYMENT.md",
+      "gitBlob": "c9849375e463e88a064b256f715db7858cd369df",
+      "bytes": 86848,
+      "sha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388",
+      "usage": [
+        "policy-and-adopted-plan/resume-context"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/catalog-bounded-final.json",
+      "gitBlob": "3994575f726b1cb69f9b36d29aa9067cd85cf634",
+      "bytes": 767,
+      "sha256": "651b01345401b9a4364c4c09549a5300877cb5f5309ba1e2c60b77e24986f2d3",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/catalog-bounded-final.stderr.bin",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/catalog-bounded-final.stdout.bin",
+      "gitBlob": "fa52a7cf1644e5a54e34d8bc623d48ee4b7589a2",
+      "bytes": 1529,
+      "sha256": "93eda682dc50727cd0fbef93dc328d94077d0643aecf14806f2967a4c9e49fa0",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/catalog-focused-final.json",
+      "gitBlob": "344428edcb7dfa4145d2771701f23c7b2fa97ddc",
+      "bytes": 766,
+      "sha256": "32fe3adbeb2fdb372bfccf97a42181df30149ccca5b4b11622f8b8663ffc0a93",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/catalog-focused-final.stderr.bin",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/catalog-focused-final.stdout.bin",
+      "gitBlob": "199b72af2e153cb10fa7154f6f32500cf92ae11c",
+      "bytes": 3010,
+      "sha256": "a2ac878be9831d593569df12b0466c7bf9ffa11b4c762a9b6c929bb59b2edc91",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/catalog-focused-repaired.json",
+      "gitBlob": "6fc725114e48c5633142f1bd605d94d5e2518816",
+      "bytes": 766,
+      "sha256": "36bac2681a2de1861cc11726e5d2ef105354d60c7ae2b3f0fb282cfbe11f7152",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/catalog-focused-repaired.stderr.bin",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/catalog-focused-repaired.stdout.bin",
+      "gitBlob": "c105f7aca26d43a6a969f8cd0eded6e8401dfa5b",
+      "bytes": 1221,
+      "sha256": "d9b7abce10a28fc17993c51a1614b559b14761c0735aed897e0c11e25aea65f3",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/catalog-focused.json",
+      "gitBlob": "7e85f2bf2af086b4ecdcc3b68b6189f66fae9ede",
+      "bytes": 767,
+      "sha256": "11327fdfc4118a7cfcb3a14a5b1c6e033c1cc7301d50df2cff12281430e3b483",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/catalog-focused.stderr.bin",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/catalog-focused.stdout.bin",
+      "gitBlob": "e7941cdf20a0f3332d2a64fc3475198b60a7b076",
+      "bytes": 5648,
+      "sha256": "d90f86e1be8ce4c319da8cdfbdd7618d2a8b46b39e22fb674f4456e77754c1b1",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/evidence-index.json",
+      "gitBlob": "2a3a64b6e3606f6994e5e8a1d9ea0a0250e53964",
+      "bytes": 6085,
+      "sha256": "46efdb94ab8ed1d92fc2e626302a42819776a7828103f89fa0abc2f08d9e9a40",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/expected-catalog-expansion-failure.json",
+      "gitBlob": "04051c87454aed977c265a539b02e5335dfeb5d9",
+      "bytes": 807,
+      "sha256": "dffa96804bf9cfbf8a1a95aaca2a28b61e0b8f78df6cd60c19a0af9b2dddcce3",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/expected-catalog-expansion-failure.stderr.bin",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/expected-catalog-expansion-failure.stdout.bin",
+      "gitBlob": "baacbcef7aca9708bb619ed301d2416e4df8d4eb",
+      "bytes": 1060,
+      "sha256": "e6b623519855c48adbdc644d9c2564d80734c154aec508b473c3004afdcdb511",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/failed-catalog-validation.mjs.txt",
+      "gitBlob": "f854888416997bb502df495fc7201de732cefbcf",
+      "bytes": 11360,
+      "sha256": "9b1403499cdd7686c258c9b5b1ead872e1a170357e78708af970eb90272120d8",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/invalid-calendar-fixture.test.mjs.txt",
+      "gitBlob": "28965a1137838a7b5f86f0d154fb770877bc4cd5",
+      "bytes": 12951,
+      "sha256": "2f23b88b50562d7a799b8ebc85c3e3ccba8aa1a0fe9913a27cb18145a502c07a",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/original-retrieval-data-search.test.mjs.txt",
+      "gitBlob": "730192687f9bcd1a55a904e64ca99de1df8705ac",
+      "bytes": 32852,
+      "sha256": "ed1614966269edae40952af90baa615893b838aa1f8a89930b2ad240a2346642",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/original-retrieval-federal-market.test.mjs.txt",
+      "gitBlob": "8a10b041bc8f8722baff192745923acb8b2ece18",
+      "bytes": 34411,
+      "sha256": "aa7db71d4233e8d2a5dbade93b2f4e8c215fd2714e7ae955b3c6cf165975a1a6",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/original-retrieval-mail.test.mjs.txt",
+      "gitBlob": "409500bd82eb73d65c4849c34bbaf8a4325212dc",
+      "bytes": 29920,
+      "sha256": "5324967d8dbffe3357ccaef7c09c13af67a320fbb9d72aa93f6322a9a69cb5cf",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/original-retrieval-meeting-source.test.mjs.txt",
+      "gitBlob": "c86291214c90784b1388373d459f8b4f7716387b",
+      "bytes": 33382,
+      "sha256": "55530a58f9e7d47fcef5a0713168d1c05cdf1697bcc7f2ceaf116c9a07126ef6",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/original-retrieval-operational-reads.test.mjs.txt",
+      "gitBlob": "06750d9b233faa20630d1917664d39ea79f7cd40",
+      "bytes": 30460,
+      "sha256": "20a103d89d53f780a74258c3818a6d46380f4420cb80de6da5c12be4646e721f",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/public-distribution-final.json",
+      "gitBlob": "f2e86471027c59457ed9785824e534add6bf2661",
+      "bytes": 751,
+      "sha256": "dcceaeefaf04f14165860dd1c48700ba77764636390a671a93f3e7eb37109472",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/public-distribution-final.stderr.bin",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/public-distribution-final.stdout.bin",
+      "gitBlob": "a3ba8bef6579aee15e689b080db57351d5407b05",
+      "bytes": 1947,
+      "sha256": "2820ce57d0a4907ba4bc8d65ff71e1f38558909739a5031d7ee71aeb68625556",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/public-distribution.json",
+      "gitBlob": "38850311ee679562f87fcd6b4a9bb4321d3afd71",
+      "bytes": 751,
+      "sha256": "d7e42318b59cf393aeb2470047fe231889c6871e9fb8ce4d00d65b2be49938ac",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/public-distribution.stderr.bin",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/public-distribution.stdout.bin",
+      "gitBlob": "96dbb031232be62ab75770763885e435c42e30fb",
+      "bytes": 1946,
+      "sha256": "c72e5f2851a91c53f8e8b9ef154d94e37fedbb2c8b432c350134b0af4d26b9d9",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/resource-cleanup.json",
+      "gitBlob": "909ebb9c0654176c151e5c332fb903398961966e",
+      "bytes": 7095,
+      "sha256": "ebcefce6c3af6bf68fb01df637fcf41af8125183215b9118b05730b15959cf45",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/root-contract-hermes-final.json",
+      "gitBlob": "3344824fee653814559559bfbe2307333805cf98",
+      "bytes": 1470,
+      "sha256": "43b0ec5400bc7c07e8158f7521225b6851e81d7bff6c416db9fa9cc7c606c311",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/root-contract-hermes-final.stderr.bin",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/root-contract-hermes-final.stdout.bin",
+      "gitBlob": "e2adcf9e29dbf02c30c3621c1a9880da86ef5051",
+      "bytes": 18694,
+      "sha256": "26d980dac64efe4607b908a76ddc4cf65c66b303c3b8da42ea03e2a8b2721e24",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/root-contract-hermes.json",
+      "gitBlob": "ffe29174239f1a712d039099dac9a7bf406c00e5",
+      "bytes": 1469,
+      "sha256": "167c0f9280caebc96c1aa6e27f32b387b4b2d8d0b9f72291d2fa8a130d927587",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/root-contract-hermes.stderr.bin",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/root-contract-hermes.stdout.bin",
+      "gitBlob": "03a974b9dedf4a7d87739022eb723364c91ef261",
+      "bytes": 22570,
+      "sha256": "f0e7349b918e29211486b7a6112235d111b37be83bb9648f76d420a153c2fd9f",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/source-preservation.json",
+      "gitBlob": "639383a542f9e2b3208c88ec18c733c88a693614",
+      "bytes": 6133,
+      "sha256": "0101aaa68f647a6ce12ce95c0601cabcadc700aed07875f535fcf6b78423ad4d",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/baseline-classification-before-count-correction.json",
+      "gitBlob": "de1702c6b4d0175d69cf4f02df1fd52667bceeef",
+      "bytes": 1271,
+      "sha256": "ddf6e96195b359bb94d519878922ccfbbfe7d2b4951e9c6cb54df2b520e1e9e5",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/baseline-classification.json",
+      "gitBlob": "99655c0301b218d322243bee85fa8eb11cba05d3",
+      "bytes": 1398,
+      "sha256": "c6e9394a456481bb075de54ff197742d3d6bf2ece5672b8e04b7618c27d7c34c",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/borrowed-parent-original-control.json",
+      "gitBlob": "3f6baae03815ba623a7481d4701131e7638f794e",
+      "bytes": 1140,
+      "sha256": "dd729ba084f72024baf93d690a06b17d387303c69638e12d29f1517a0985fccf",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/borrowed-parent-original-control.stderr.bin",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/borrowed-parent-original-control.stdout.bin",
+      "gitBlob": "0db8cc91bb689e1faef17d72c7deefafe409bc53",
+      "bytes": 2078,
+      "sha256": "a24d2ebbb05de4d9d2ee5dfa328396be45fa042fbf5d8980c3617b561f324dba",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/check-summary.json",
+      "gitBlob": "87317abd8945b58325966b8f647a99f202d614ba",
+      "bytes": 280,
+      "sha256": "9aa74d85924efd4e51c7d5321a701d0fe8586535ba5925d66b819fbd964d9910",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/deterministic-config-assertions.json",
+      "gitBlob": "ebb196bb670fac742f769c20569798ba2338e9f9",
+      "bytes": 1040,
+      "sha256": "a756e3f4e434ab44caf1242df6c680bface6794d76cf03b70e5d0e8e1bd73abc",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/deterministic-config-assertions.stderr.bin",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/deterministic-config-assertions.stdout.bin",
+      "gitBlob": "7bfcb6863bad57af700a4daf0e249dacba7542f9",
+      "bytes": 2380,
+      "sha256": "47184a032c3a273cc01e6d2a7c327e422dcc01c8b9965099bf36574d91f6250b",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/evidence-index.json",
+      "gitBlob": "fc4d8387604f6978cd287a032ab49e708c50728c",
+      "bytes": 14843,
+      "sha256": "068b8f319b0df090a3faa6698349a77185dbdfce669bb557645810179abf9265",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/existing-sdk-evidence-restored-dependencies.json",
+      "gitBlob": "4e3050b0994599457cfdc719b00e02d954e683a6",
+      "bytes": 2258,
+      "sha256": "e46328b3d98380502a150a4471ec5e1321037c4313007369ed2328d0b75ab936",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/existing-sdk-evidence-restored-dependencies.stderr.bin",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/existing-sdk-evidence-restored-dependencies.stdout.bin",
+      "gitBlob": "12477f144f887f8f1c25da43646e47b04b8aae1c",
+      "bytes": 32519,
+      "sha256": "f49621658681a39faf94b4f2332d5001af468fba5f17fe21152ccbe8ba02ac48",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/existing-sdk-evidence.json",
+      "gitBlob": "66ab1bee00796153250108ca65395c3ef6cdc7d7",
+      "bytes": 2258,
+      "sha256": "2ed3f1b994a233f82ce86794a4531247915ef7c56b5e7cc5ebb36abdd0d6e93c",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/existing-sdk-evidence.stderr.bin",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/existing-sdk-evidence.stdout.bin",
+      "gitBlob": "96202de4e030176bc139f6bab0a98a0854d091c0",
+      "bytes": 36145,
+      "sha256": "8b0048b70e1c2e999c2969bc6503acb524c1b45e0b1bd05811cf68b9902f225a",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/final-check-summary.json",
+      "gitBlob": "eb6f0233d83efff8287a001992eb654f556e0848",
+      "bytes": 757,
+      "sha256": "8ae473676d299a96db6bd5822bf315346edd8383dc1973b31dfded034d629d98",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/fixed-sdk-source-pins-final.json",
+      "gitBlob": "da487178b7e78a67f230898591b595ee2b959915",
+      "bytes": 695,
+      "sha256": "5a35d42f19de39aea2981428064ab36572d2c44f0b148db508e30ca3c09f1511",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/fixed-sdk-source-pins-final.stderr.bin",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/fixed-sdk-source-pins-final.stdout.bin",
+      "gitBlob": "bcb48c96fbfe59f61d482288213d85b8602e0d68",
+      "bytes": 69,
+      "sha256": "c8d7c07562d4a07cccd13da9fa712e4beb599e8f62382a42f73ca31c379d3465",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/focused-source-refreshed-pin.json",
+      "gitBlob": "32990cc763a31d953e25a3d8fdfefe19deef9cb5",
+      "bytes": 1285,
+      "sha256": "c15af9364abe2fe0eab839c53e9e6de4493a3cfdd172c93cabd869af1b59b32b",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/focused-source-refreshed-pin.stderr.bin",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/focused-source-refreshed-pin.stdout.bin",
+      "gitBlob": "5af3515da4cb7419e8382241618e40a9fa0fd9cb",
+      "bytes": 12055,
+      "sha256": "a8dfa37774a8f37d9c8356204ed3374be52fae22f1172c8c96386b73bdada843",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/focused-source.json",
+      "gitBlob": "d5fe2c71a25f5b85bddfb9605d4003624d8a8c14",
+      "bytes": 1206,
+      "sha256": "70011f2f2e10bac1e7f78a236baf3a70674d86ccb00f9a94abd27ad33ec8c8e6",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/focused-source.stderr.bin",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/focused-source.stdout.bin",
+      "gitBlob": "2481580c3c20bfdfc7c075cfe4378e6fb06ec8a0",
+      "bytes": 13006,
+      "sha256": "5a959b7f77b329ded7233d6a6e4908d440dd0bb69cb79de5d81290e9a19f4d32",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/fresh-fixed-context-final.json",
+      "gitBlob": "44aa55c03fdf507e558624b858da0afe0cb09c35",
+      "bytes": 814,
+      "sha256": "9eee87a80388b4be7c077609ec9c1ef283ff817d38f901244e52a1bdf832b37b",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/fresh-fixed-context-final.manifest.json",
+      "gitBlob": "5b56c18f3be83583352080216e74031ea5432d38",
+      "bytes": 11180,
+      "sha256": "94216667decf5e4feed05914b3f295148d9437ee1c00b224ca4e92625b5b876f",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/fresh-fixed-context-final.stderr.bin",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/fresh-fixed-context-final.stdout.bin",
+      "gitBlob": "370d4484cde7a939afeb346c94fbfaabe76ab6e7",
+      "bytes": 63,
+      "sha256": "41ee601bf3e78b144719690b279dfb123ffe5a01233e051c051c45510e24bcf0",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/fresh-fixed-context-final.summary.json",
+      "gitBlob": "6dbd2f0172e788d2354455f4f94bcceef0225ca8",
+      "bytes": 235,
+      "sha256": "a618683d47ba87def8c38c76b05093608486d64b1d6c970b61b8ede38baae21f",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/independent-review/adversarial-probes.json",
+      "gitBlob": "c0d622030436533c595782cd31a12fdbe975a7fb",
+      "bytes": 961,
+      "sha256": "1922efa3daa99604ad311434dda06763a9e2bfdcab2c538898ecf85443abd8cf",
+      "usage": [
+        "related-independent-review/reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/independent-review/adversarial-probes.mjs",
+      "gitBlob": "e721ef5adeb79c76559fb531af3e25be4f6a9778",
+      "bytes": 2015,
+      "sha256": "5e367153cce7d38f917f7ea2e2e09dee27835f9ac5ac4d69c69082c38b140b92",
+      "usage": [
+        "related-independent-review/reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/independent-review/adversarial-probes.stderr.bin",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "usage": [
+        "related-independent-review/reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/independent-review/adversarial-probes.stdout.bin",
+      "gitBlob": "ba3703a7c582197332da4fba709a663f4aae5964",
+      "bytes": 171,
+      "sha256": "9488c04f0dfa1e3df6d120ea0b808fb5eb7048598bf55f19799b372916bda402",
+      "usage": [
+        "related-independent-review/reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/independent-review/focused.json",
+      "gitBlob": "4b6ec15a68d5631cc1b49ee4d5209111501d398d",
+      "bytes": 740,
+      "sha256": "c3bdc4a68db3785e893123932816c5f2076fe87ece42b8784a7251b1338b3ad0",
+      "usage": [
+        "related-independent-review/reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/independent-review/focused.stderr.bin",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "usage": [
+        "related-independent-review/reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/independent-review/focused.stdout.bin",
+      "gitBlob": "fa8857403fe5f61a3f7240592e06479cad1e37d2",
+      "bytes": 3319,
+      "sha256": "142de6c5949cbdd4e8dae5a0643af3cfb466df1da60cbc9e0e5b31c250351d48",
+      "usage": [
+        "related-independent-review/reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/independent-review/native-mode-probe.json",
+      "gitBlob": "92a2442f8ecb91a9d938f3b938735caa1c97bd57",
+      "bytes": 951,
+      "sha256": "58e89a6712c4f50bb15c69f29480fc6a743b5e39f9731f15e98d9f693d722487",
+      "usage": [
+        "related-independent-review/reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/independent-review/native-mode-probe.mjs",
+      "gitBlob": "e52fb6fe8622138c5d1df26d9b04d256d178a0eb",
+      "bytes": 1458,
+      "sha256": "ddb837938dcbf605008b52b4a7f98935be44d5ad80084270829e8ad25f4ba162",
+      "usage": [
+        "related-independent-review/reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/independent-review/native-mode-probe.stderr.bin",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "usage": [
+        "related-independent-review/reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/independent-review/native-mode-probe.stdout.bin",
+      "gitBlob": "8dc05c02fe83b6433668bfd9ee378e43d29d1ad4",
+      "bytes": 97,
+      "sha256": "e903ea8024aa4ecf4405b6cc0a469ea59680678d4bc6b63eb21781b4653e9a7e",
+      "usage": [
+        "related-independent-review/reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/independent-review/review.json",
+      "gitBlob": "7102cdee1ddaf8b4419542c0a44bacafbf51849d",
+      "bytes": 3442,
+      "sha256": "156bd7d28078467f205a950af4a49a887c95117d45806c402d70335a07ed7f76",
+      "usage": [
+        "related-independent-review/reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/independent-review/source-preservation.json",
+      "gitBlob": "65a1fc7450920976b5bb317e23b9b006490fb286",
+      "bytes": 4674,
+      "sha256": "c0237f1843f1fd68aece6adaee7cb722d61070de20560f6bfdb60a872baf0fc8",
+      "usage": [
+        "related-independent-review/reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/inert-admission-repair-config.json",
+      "gitBlob": "68e2c9a4391bbc4a668c2d5f326bc3f71065b7a8",
+      "bytes": 1040,
+      "sha256": "e70f05ecff63be8a5566660051b784ee8493577043fa787ec447b553788f61a1",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/inert-admission-repair-config.stderr.bin",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/inert-admission-repair-config.stdout.bin",
+      "gitBlob": "7bfcb6863bad57af700a4daf0e249dacba7542f9",
+      "bytes": 2380,
+      "sha256": "47184a032c3a273cc01e6d2a7c327e422dcc01c8b9965099bf36574d91f6250b",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/inert-admission-repair-focused.json",
+      "gitBlob": "7d9a116b7563e1daa816bb7e1bc2f0181f4f31d1",
+      "bytes": 1228,
+      "sha256": "cd756a897cdcb693255bdec5099f0ebdae20a403735771244a575ad178a4e5c1",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/inert-admission-repair-focused.stderr.bin",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/inert-admission-repair-focused.stdout.bin",
+      "gitBlob": "506732baab8df5d36753191b4fae99dfe45546a6",
+      "bytes": 3979,
+      "sha256": "17b2e1b5ca604ee8f921f9438ed62fc70dcd983a08ac3963c4ba56bdfac8980b",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/inert-admission-repair-static.json",
+      "gitBlob": "d64f9f8e3bf82df4c307ab59f04b57cce96c473d",
+      "bytes": 1284,
+      "sha256": "8dfbb31c3ba2d6eeeefda0cb86b56a605acaa3018a41a7c69a779df10b16fae0",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/inert-admission-repair-static.stderr.bin",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/inert-admission-repair-static.stdout.bin",
+      "gitBlob": "8d0e3a574781afc1bc3bd7418fc9a418c42bad90",
+      "bytes": 12710,
+      "sha256": "d18bc7cad58d68c3e03eb7a778be50c3b055629065979bd602bf54814c37616d",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/inert-admission-repair/adversarial-probes.json",
+      "gitBlob": "c0d622030436533c595782cd31a12fdbe975a7fb",
+      "bytes": 961,
+      "sha256": "1922efa3daa99604ad311434dda06763a9e2bfdcab2c538898ecf85443abd8cf",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/inert-admission-repair/adversarial-probes.mjs",
+      "gitBlob": "e721ef5adeb79c76559fb531af3e25be4f6a9778",
+      "bytes": 2015,
+      "sha256": "5e367153cce7d38f917f7ea2e2e09dee27835f9ac5ac4d69c69082c38b140b92",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/inert-admission-repair/adversarial-probes.stderr.bin",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/inert-admission-repair/adversarial-probes.stdout.bin",
+      "gitBlob": "ba3703a7c582197332da4fba709a663f4aae5964",
+      "bytes": 171,
+      "sha256": "9488c04f0dfa1e3df6d120ea0b808fb5eb7048598bf55f19799b372916bda402",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/inert-admission-repair/owned-cleanup.json",
+      "gitBlob": "57f43d364e4ce1788eabc04326a08364f4bf5014",
+      "bytes": 419,
+      "sha256": "51bac9e0ec674eaf424df1c5c6fbe691d77f173769616601992ccbe049836733",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/inert-admission-repair/prior-cf9-evidence-index.json",
+      "gitBlob": "67435694f69bb6fa23a51798b4cadf071a8100d0",
+      "bytes": 10856,
+      "sha256": "afde3cc1768ee729b7b450ea5edf44dc0822b75aba00924928636bbd861f383e",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/inert-admission-repair/repair-preservation.json",
+      "gitBlob": "f2a6cd55c02872b9f0f819acd9c56a27025cafaa",
+      "bytes": 12327,
+      "sha256": "f7187350ce5a998b3965ea88a8dbc86e48f8dedb5232bad0efe702c783966f79",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/native-sessionstore-and-boundaries.json",
+      "gitBlob": "9ca159e9207455dada2a219b47b3054b4849e59b",
+      "bytes": 1227,
+      "sha256": "d48d7f6d13716f1a87ef08a73f31de40b6f8e75895a6eb36b10695784ca5b41e",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/native-sessionstore-and-boundaries.stderr.bin",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/native-sessionstore-and-boundaries.stdout.bin",
+      "gitBlob": "58387e03dc0855777310fa23574bf76ec266f357",
+      "bytes": 3315,
+      "sha256": "31dcfbab7fb97fcade7114b857829c41cd1b710ef648e52bba87d60e11d497f5",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/owned-temporary-cleanup-1.json",
+      "gitBlob": "3587524d7e8d40094d26246da80da343ab1623c9",
+      "bytes": 834,
+      "sha256": "bc6d43d1fa983895a4e77c5a90e375b9d5e1e8f81d545e1950790b2239cdaf82",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/owned-temporary-cleanup-2.json",
+      "gitBlob": "cb1cbecaa0ce26ec2c6956818743b373af8b40b8",
+      "bytes": 386,
+      "sha256": "a6904710c8f169da6963d9f839575a01dde938ea4f29c44d83104024fa7b29a5",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/owned-temporary-cleanup-final.json",
+      "gitBlob": "86b6bdf85e7d827e006cad6c866caeb7e531a66b",
+      "bytes": 703,
+      "sha256": "efaa2649cbfef29e05287ad46772c644d67598146332e2cf4958459982be8cda",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/preparation-failure.json",
+      "gitBlob": "bf1f12ebf3b10e74a77460882c4551bcbf121bf2",
+      "bytes": 590,
+      "sha256": "cd05467b224e952e0bb345992daf8d6bdb35fabb2926c50191ed4fffdafa38fd",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/repair-independent-review/focused44.json",
+      "gitBlob": "6606377b3b8e7222d15d37dc37518d53dfebc182",
+      "bytes": 1206,
+      "sha256": "a0006855a5e912d9decc5cf9bcf68965574263f8d09e3e0bbbfe3cbaae6b3bd8",
+      "usage": [
+        "related-independent-review/reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/repair-independent-review/focused44.stderr.bin",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "usage": [
+        "related-independent-review/reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/repair-independent-review/focused44.stdout.bin",
+      "gitBlob": "3a5e7c631c4bcbf796550a1d61cbb5250811509d",
+      "bytes": 3976,
+      "sha256": "6e23c83722d4db156c3db47a1d8a568101fee7ff881812e5d8a2d6921f6b76f2",
+      "usage": [
+        "related-independent-review/reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/repair-independent-review/original-replay-and-boundaries.json",
+      "gitBlob": "9283c8964f1a88de90e0a61881f23ce661293865",
+      "bytes": 1085,
+      "sha256": "a9149d4634e642f3023d4ea09bcd74d3451111d123887699ea4f5f54896e1797",
+      "usage": [
+        "related-independent-review/reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/repair-independent-review/original-replay-and-boundaries.mjs",
+      "gitBlob": "b3678de9e6c6c2fa01cfa2cac31a67fc50f5900a",
+      "bytes": 6093,
+      "sha256": "9f2438e012178784e2d02dec7cdfa236a556bab94da150b9da4acfcaf817cb15",
+      "usage": [
+        "related-independent-review/reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/repair-independent-review/original-replay-and-boundaries.stderr.bin",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "usage": [
+        "related-independent-review/reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/repair-independent-review/original-replay-and-boundaries.stdout.bin",
+      "gitBlob": "8685358f50b0b763418a905a18d02564d1b0e297",
+      "bytes": 430,
+      "sha256": "09dbe43fdde66b64bef936a9b5176a75d89a1fa74e44efb618a1492b54507204",
+      "usage": [
+        "related-independent-review/reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/repair-independent-review/preservation.json",
+      "gitBlob": "cf2cbceae8b12dd874d82b5fb66484ae06387458",
+      "bytes": 19103,
+      "sha256": "8ea829a7a145028d876d8852039048ccfe6c7a73cb47442372a6c57aaa6a55cc",
+      "usage": [
+        "related-independent-review/reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/repair-independent-review/review.json",
+      "gitBlob": "ccbb60c578a0d60c495b5e104693b4ce25e5f352",
+      "bytes": 3431,
+      "sha256": "9ab6461067aeaf4f04ed89733d0da0509a05da8f2be7c70824234dba503024d1",
+      "usage": [
+        "related-independent-review/reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/repair-independent-review/static137.json",
+      "gitBlob": "580aea7f81a026efcea54ccef7f1aef726b47edd",
+      "bytes": 1263,
+      "sha256": "543239748eccfdf185cad5b11936dd14117e566767e029cb5e65fb92d2d3a7ab",
+      "usage": [
+        "related-independent-review/reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/repair-independent-review/static137.stderr.bin",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "usage": [
+        "related-independent-review/reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/repair-independent-review/static137.stdout.bin",
+      "gitBlob": "b6a12b299c67e56e884e82a18d2a822600cdc315",
+      "bytes": 12706,
+      "sha256": "370698ae35bfdbb1b88621962c072d8afe0dec5d44d7eed24297f9cb0b79ead5",
+      "usage": [
+        "related-independent-review/reference"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/source-pin-advancement.json",
+      "gitBlob": "e2f8a25cf3a47314366a999ca64d4b39e831ae4f",
+      "bytes": 425,
+      "sha256": "5aed2d6c4a7f45746d31819de87d143b43ffa97d7df6a3f69be938ebfcba132f",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/source-preservation.json",
+      "gitBlob": "48b3f5705bbd1122c179ceed58bf04accc714620",
+      "bytes": 4320,
+      "sha256": "8a4e8903befe408c36d69c5f02c34e0e22c94d3af88bc6277c3f7fbdd3d63220",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/unchanged-image-inventory-focused.json",
+      "gitBlob": "b0a801c28fa0af89fe504eb009886078df25b194",
+      "bytes": 1073,
+      "sha256": "a156445dd7f1f2bb10a9d9109d51f347ba742ee4ec4537457c3c54ed8105f421",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/unchanged-image-inventory-focused.stderr.bin",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/unchanged-image-inventory-focused.stdout.bin",
+      "gitBlob": "3773da242aa06dd0edaf13c6eb4efc5115b18b66",
+      "bytes": 2405,
+      "sha256": "4a43ce8b0331a289bc53812acc4e3176cf50fa54fc85e213d7fc1d47c9fb5855",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/unchanged-procfs-baseline.json",
+      "gitBlob": "56d5fe12708c61ac324b863c1feea4f5ef15b4d8",
+      "bytes": 1132,
+      "sha256": "2bd505cb6cee087ab26bb1c04dfe288353b873e7b88119b9789f513c28358ca2",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/unchanged-procfs-baseline.stderr.bin",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/unchanged-procfs-baseline.stdout.bin",
+      "gitBlob": "6563e7666f36a7026618bc6681f81e9f9379b37a",
+      "bytes": 223,
+      "sha256": "97483d41aae0d98558301f06f29108527a857ad7d9475aaf6b1b24db32571a86",
+      "usage": [
+        "authored-or-preserved-evidence/input-and-lineage",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "evals/qualification/hermes-session.test.mjs",
+      "gitBlob": "5c9cc1eea61d899c03b1d9f6e222018becb8e499",
+      "bytes": 2105,
+      "sha256": "49c8ecfc57dc54aed699986b124602f5b49fab668803d2c68a6c9b7217f03131",
+      "usage": [
+        "recorded-command-argv/actual-check-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "package-lock.json",
+      "gitBlob": "1df76d455fb2c978f178137357c99438f2cb8a8e",
+      "bytes": 12067,
+      "sha256": "b2293773bf4ddc6d23425b7d718b79575384679999b86fd3caad78e6eda4a42d",
+      "usage": [
+        "canonical-helper-package-pin/source-and-check-context",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "package.json",
+      "gitBlob": "c8dd175aaa8dc7edc3d715294e8cdadba643ac7b",
+      "bytes": 1936,
+      "sha256": "42f84c0309a87d043a4023f657a6b1932ac5c1ca9e51eca8874e33085cb64d98",
+      "usage": [
+        "canonical-helper-package-pin/source-and-check-context",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/generate.mjs",
+      "gitBlob": "a5ce60ef8ffa2925c767165c5947aeb1b9e89125",
+      "bytes": 4538,
+      "sha256": "80c645d6c1ef206e7e67d2d553c4277d33c2f4980c9cddcd2862c4bb1b54e06e",
+      "usage": [
+        "canonical-helper-package-pin/source-and-check-context"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/meri.schema.json",
+      "gitBlob": "d7b3c22491ae81c5e875243754413aa7d35097e3",
+      "bytes": 50043,
+      "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b",
+      "usage": [
+        "canonical-helper-package-pin/source-and-check-context",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/package.json",
+      "gitBlob": "4731aff07da77ede83700de8de6d9a015131bcc2",
+      "bytes": 1291,
+      "sha256": "5ffd1042ab28e234a4803344f34a882bd0695580914d21136e7c13e43c7ddbe7",
+      "usage": [
+        "canonical-helper-package-pin/source-and-check-context"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/qualification-sdk/fixture.schema.json",
+      "gitBlob": "ba6207f79be5dda007b7a89cd69be00ae8a53b15",
+      "bytes": 26397,
+      "sha256": "fbf0655ab6960ac5c486c08ba70b2a31310086ca282f0e9a1f41c08430ebfa13",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/qualification-sdk/native-evidence.mjs",
+      "gitBlob": "2ff2d20a3eab5d4c3a326c33260c953858dca1fb",
+      "bytes": 3849,
+      "sha256": "0f587aefd26e189fd9099b1639910da6ec37725b5729c4ba5d98a4695ec5fcde",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input",
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/qualification-sdk/native-evidence.schema.json",
+      "gitBlob": "aa2bfc00d5a481e07c22aa1c35ffc0e51491fe21",
+      "bytes": 11751,
+      "sha256": "5f9ac8980940bf4928b2d655fa5e299208f3d6dbf8f1adceceb9727cb69f62f5",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/qualification-sdk/validate.mjs",
+      "gitBlob": "827e3c6f29cd77ef62fa9d341df2e2c45c7be187",
+      "bytes": 14049,
+      "sha256": "2d0bd74171e390c370ad8d9e599f7c46ce4751e5efd6ba2c18923090b749b86c",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input",
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/qualification-sdk/wire.mjs",
+      "gitBlob": "f643c958081f531922121a368cf02c265a85fdd7",
+      "bytes": 1925,
+      "sha256": "f8f506ceeca820f3957b67f8bcbfc36c80f009356baba83b32ac99afe401ad9a",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input",
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "gitBlob": "ce1883b1162a6ac54db204326adac4bea6782e27",
+      "bytes": 11365,
+      "sha256": "8fbf9c152c7a08678150f122bdfa0dec33253dc877509f72ef0e1b17ac9b8307",
+      "usage": [
+        "catalog-schema-family-resolver/input",
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/retrieval-0.2/catalog.json",
+      "gitBlob": "75635a943fa4cc95c6bfcbc8de2c969552d393d4",
+      "bytes": 76401,
+      "sha256": "731ed180fb4070eee4da92a9b7e7dfe3014f1524c83bf2c3c28732bd961707f5",
+      "usage": [
+        "catalog-schema-family-resolver/input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/retrieval-0.2/catalog.schema.json",
+      "gitBlob": "51a764cfeb94a0e6fdce99c2bab3ce62d6b95853",
+      "bytes": 16814,
+      "sha256": "95eec52796389bbe2e515637024280015993f3a74d971b7680aacddea4e34488",
+      "usage": [
+        "catalog-schema-family-resolver/input",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/retrieval-0.2/common.schema.json",
+      "gitBlob": "2f13b30da97a8d459f399b64326b3ebe1f619588",
+      "bytes": 15134,
+      "sha256": "7d7ac22eff809cc31e84d1fc9b2fada1b56c316f73e50115207b579de0d92c4b",
+      "usage": [
+        "catalog-schema-family-resolver/input",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/retrieval-0.2/data-search-validation.mjs",
+      "gitBlob": "9c155d85299b84d1749c208a4dd91e835b43941a",
+      "bytes": 18029,
+      "sha256": "5049b9177664275f763ab97f92fe722ae5d4e2064ca8400f6448d89027f5cd43",
+      "usage": [
+        "catalog-schema-family-resolver/input",
+        "source-preservation-or-fixed-context/actual-byte-input",
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/retrieval-0.2/data-search.schema.json",
+      "gitBlob": "f9513267ab11ec3237f05ecadbdac32c32b6fc04",
+      "bytes": 25959,
+      "sha256": "96e5d1ebc461dc53db86e2fd14e2863d93d5c651e134382a2da5daefd3836fec",
+      "usage": [
+        "catalog-schema-family-resolver/input",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/retrieval-0.2/federal-market-validation.mjs",
+      "gitBlob": "49e32e9eb288d91b78c6482f03c973d4862bdbf9",
+      "bytes": 8669,
+      "sha256": "eebf8b073bc8b25e6c7aea415c269cb034eb9976d45ab6ae0411d709e11295df",
+      "usage": [
+        "catalog-schema-family-resolver/input",
+        "source-preservation-or-fixed-context/actual-byte-input",
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/retrieval-0.2/federal-market.schema.json",
+      "gitBlob": "04b4f788ed0a9964bf586109727a56d48bc957ef",
+      "bytes": 40586,
+      "sha256": "5ebd54c7a1e5d3a2ef99f5a69e76293aec227fbe50874f21ba69ea987417bada",
+      "usage": [
+        "catalog-schema-family-resolver/input",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/retrieval-0.2/mail-validation.mjs",
+      "gitBlob": "54fd3f1998f358eb60dbea7490eb990085b44523",
+      "bytes": 15957,
+      "sha256": "e15eec9ea611daa70d8605e8b350c20535fab27f516937897914eeb55d6f8cdc",
+      "usage": [
+        "catalog-schema-family-resolver/input",
+        "source-preservation-or-fixed-context/actual-byte-input",
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/retrieval-0.2/mail.schema.json",
+      "gitBlob": "40148b9b889c4f3f08ad768ce7b2a12c23f328b5",
+      "bytes": 30679,
+      "sha256": "d45681f76ba5f5d7f65b7385ab1e1c3deb9626d4166e55fc6039e88bc3d804e6",
+      "usage": [
+        "catalog-schema-family-resolver/input",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/retrieval-0.2/meeting-source-validation.mjs",
+      "gitBlob": "dd019496ccc5f6715676c6a6d5cedeeb6a679e5d",
+      "bytes": 23313,
+      "sha256": "5fc7e262efc9be933c760ee089e02f58e4a8d74a958c8e412c216846bbba8ac2",
+      "usage": [
+        "catalog-schema-family-resolver/input",
+        "source-preservation-or-fixed-context/actual-byte-input",
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/retrieval-0.2/meeting-source.schema.json",
+      "gitBlob": "8142217c2e85930ad386bbaf7b421c18aef62cc0",
+      "bytes": 37907,
+      "sha256": "b7ec6ecbdaab3fcccac3b83b9530828c90bda96685385b6f49f929fbd2776664",
+      "usage": [
+        "catalog-schema-family-resolver/input",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/retrieval-0.2/operation-contracts.mjs",
+      "gitBlob": "7a83e26ae24d6baf91b734316d0fe7be81f2b87d",
+      "bytes": 5255,
+      "sha256": "e76240850b6436b49ee8dba87b75579c3e59bc6187b35c7ea6353286f1ec943a",
+      "usage": [
+        "catalog-schema-family-resolver/input",
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/retrieval-0.2/operational-reads-validation.mjs",
+      "gitBlob": "b58d63bef3759798f91638924ab8a7454c50d2b4",
+      "bytes": 21346,
+      "sha256": "81be7fe48c5d34f9352e145d9c47dc2e143ffc0b985a5f1ac26e0be07c344a42",
+      "usage": [
+        "catalog-schema-family-resolver/input",
+        "source-preservation-or-fixed-context/actual-byte-input",
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/retrieval-0.2/operational-reads.schema.json",
+      "gitBlob": "fa5b7daf9b93c1344cb4f4ef1985b0a2cb3031ab",
+      "bytes": 31381,
+      "sha256": "a8556220e2285239e9d46aba97954594f245daad20ab126c1733f2360d3f109c",
+      "usage": [
+        "catalog-schema-family-resolver/input",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/retrieval-0.2/retrieval.schema.json",
+      "gitBlob": "cc18ee2600cfc0714a5088a9d62ce2f9710b8461",
+      "bytes": 21023,
+      "sha256": "6058aa0d735b595a093907eec8bf7e4e8f4eb96952f497caa3c1eb00f3ad1a8c",
+      "usage": [
+        "catalog-schema-family-resolver/input",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/retrieval-0.2/skill.schema.json",
+      "gitBlob": "73da0d331097e739373722b6b0bf1984f0d45c1f",
+      "bytes": 9072,
+      "sha256": "146a78397cf72fbb899769fe23a83ab609fd8d67803f543ab5a76dba7a37ee7e",
+      "usage": [
+        "catalog-schema-family-resolver/input",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/retrieval-0.2/validate.mjs",
+      "gitBlob": "d35754b46b023d104c85b37a70ca52fcb502a577",
+      "bytes": 16841,
+      "sha256": "405983458447c4dc2221f7fff944446862ebe9be15c2df4e1b8ba0fde1b7c52d",
+      "usage": [
+        "catalog-schema-family-resolver/input",
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/test/boundaries.test.mjs",
+      "gitBlob": "764fd9aca4420d64709a336fe4a8de30334401cb",
+      "bytes": 5199,
+      "sha256": "521f72c4fed9333db9eeca4e3b7a34e01ff94cb69b61f876e023f58c5f7afa7e",
+      "usage": [
+        "recorded-command-argv/actual-check-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/test/native-evidence-fixture.mjs",
+      "gitBlob": "f8823d05b697991c2f8483a32ba3513cbac40dec",
+      "bytes": 3746,
+      "sha256": "f8560005230f043284c4a879a4ab72a8bd115c202d9f407614226e57f5a8e35c",
+      "usage": [
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/test/public-package.test.mjs",
+      "gitBlob": "58a792968c016f2d28370c851b7c9cfb9f79728f",
+      "bytes": 6135,
+      "sha256": "707a08a5b4b63338c1e1cd4c0f6e9166fd4d3fdcd78d15a094b3a4618c400e4d",
+      "usage": [
+        "recorded-command-argv/actual-check-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+      "gitBlob": "8c3e757ef29d3c24cad4898416ac4bb059708726",
+      "bytes": 13570,
+      "sha256": "e5f9eb9b368e3bcd92453c3738246bc252407026eb5c0e5683ecae459deac047",
+      "usage": [
+        "recorded-command-argv/actual-check-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/test/retrieval-data-search.test.mjs",
+      "gitBlob": "f18ed7e14494451f5c7bc8ae3b3184b2bd5cde10",
+      "bytes": 33403,
+      "sha256": "8c54528ece9781bce90d05754da499ceaac0b3d121328f1112e43b6b47449fc1",
+      "usage": [
+        "recorded-command-argv/actual-check-input",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/test/retrieval-federal-market.test.mjs",
+      "gitBlob": "b58209fb658e952bdf1d6996462f07450b6e062e",
+      "bytes": 34970,
+      "sha256": "f42aff67c1b8c9832c774feab4dc5fba50097720793fef5efca99e9e076b0016",
+      "usage": [
+        "recorded-command-argv/actual-check-input",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/test/retrieval-mail.test.mjs",
+      "gitBlob": "3211c2499d21090b525f6238bf3a7858fa24e419",
+      "bytes": 29989,
+      "sha256": "9ffa83f7c443c1fb917664ebc0a04ccd5994e7bd2c0f639f8c264b86feaee747",
+      "usage": [
+        "recorded-command-argv/actual-check-input",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/test/retrieval-meeting-source.test.mjs",
+      "gitBlob": "b9f039e75a07e49060dc6127c5ee904c2d52ec94",
+      "bytes": 33626,
+      "sha256": "cb2972660effd42f4eed8bdf20d1ea8580a9db6e38700cdd56e80eb44615f479",
+      "usage": [
+        "recorded-command-argv/actual-check-input",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/test/retrieval-operational-reads.test.mjs",
+      "gitBlob": "96d60542f401dedaa1ce5d1e25a4490c1d4dd71f",
+      "bytes": 31046,
+      "sha256": "fb31ba2aca26600e2404ef6137c9a568e0fd27ed00299f4bc5b3a3ff1d3bdfb0",
+      "usage": [
+        "recorded-command-argv/actual-check-input",
+        "source-preservation-or-fixed-context/actual-byte-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/test/retrieval-r2.test.mjs",
+      "gitBlob": "09938c0424c5b9d09496a63b33c6c84cfeef7a43",
+      "bytes": 21021,
+      "sha256": "474228f11a79bc865233509bc1aba02533d4975a5c0b0371e47529aff9d48a23",
+      "usage": [
+        "recorded-command-argv/actual-check-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/test/sdk-fixture-contract.test.mjs",
+      "gitBlob": "05903eed0fa09a425312ce5fbf38d19a864a1a5e",
+      "bytes": 18023,
+      "sha256": "98f2e73b0ebda0f8e896d07ed02b6f3b0351892dc5241cac98df584da1a3cc93",
+      "usage": [
+        "recorded-command-argv/actual-check-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/test/sdk-fixture-wire.test.mjs",
+      "gitBlob": "9baf896d605f1b84411733e4045eddbd06d9e2db",
+      "bytes": 11632,
+      "sha256": "0a292a418855ab4f3f07f096a618772928e06533fa05b41db4d4d6a56506abcc",
+      "usage": [
+        "recorded-command-argv/actual-check-input",
+        "source-preservation-or-fixed-context/actual-byte-input",
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/test/sdk-native-evidence.test.mjs",
+      "gitBlob": "b3c3f245045b7072bf0105f9c427288fd598f5dc",
+      "bytes": 6919,
+      "sha256": "46aa59d850f26786dd5c8a24eea4c8a3fd573c0b2ce082b85ea45a6e3387a64e",
+      "usage": [
+        "recorded-command-argv/actual-check-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "packages/contracts/validate.mjs",
+      "gitBlob": "2effe37084e7d20c20a33dc0104baea237f7d309",
+      "bytes": 3311,
+      "sha256": "c2449fd55300b31bdc1e829b5d918a531f1c4b2c675085a5b4707726ddd36d10",
+      "usage": [
+        "canonical-helper-package-pin/source-and-check-context",
+        "source-preservation-or-fixed-context/actual-byte-input",
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "scripts/qualification/sdk-native-evidence-owner.mjs",
+      "gitBlob": "a21e44a46d430ea595725eb2e0e03e9ab679b350",
+      "bytes": 7065,
+      "sha256": "e3dc2b73e5b5bee2f2464a57da6a4397b5f44083c6585dd27dc32730244c597f",
+      "usage": [
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "scripts/qualification/sdk-native-evidence-owner.test.mjs",
+      "gitBlob": "06a61802e3219c455b7a9eb50dec64786bc6daf1",
+      "bytes": 18349,
+      "sha256": "4915dbfd39a90cf8081645e333d55e8064049678893e181af56a318d18b0fb75",
+      "usage": [
+        "recorded-command-argv/actual-check-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "scripts/qualification/sdk-stale-worker-challenge.mjs",
+      "gitBlob": "4a1d657858d921ba0e427158b1a3dd6f57ac906b",
+      "bytes": 3542,
+      "sha256": "8cf5066f6c1be96b88bc99111da914bb88ad2dcd5fe4c75acaffc562382b01b3",
+      "usage": [
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "scripts/qualification/sdk-stale-worker-challenge.test.mjs",
+      "gitBlob": "5d86eb9f230c551237fbb90efb574a679126456b",
+      "bytes": 4974,
+      "sha256": "6532e5d81839d107e2bf74eef56f58dee4492d8d3464a736c45890ccb1304077",
+      "usage": [
+        "recorded-command-argv/actual-check-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "scripts/qualification/worker_context.py",
+      "gitBlob": "f4413a9627c6f8cb4b8baec86a487391942046b8",
+      "bytes": 11723,
+      "sha256": "48f065d0ad61f98ba571c89dcd62141e6f8c9b272f0d371331d74a0dabf87851",
+      "usage": [
+        "recorded-command-argv/actual-check-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "scripts/qualification/worker_image_build.py",
+      "gitBlob": "22c6e871340bfd2638c1e5560af9589deb4b5e48",
+      "bytes": 33018,
+      "sha256": "7a50f535486e343aa534f32d7359c8281021dbe4ee5f88bb654ebb45675464b9",
+      "usage": [
+        "canonical-helper-package-pin/source-and-check-context"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "scripts/qualification/worker_image_scan.py",
+      "gitBlob": "c5fb75725b7af476441837f8752345253c66b510",
+      "bytes": 9958,
+      "sha256": "d85a402b80df5a701dcc1f132c10eeab93885c9ada8aa1e46a90a08ef5dc27e0",
+      "usage": [
+        "canonical-helper-package-pin/source-and-check-context"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "scripts/qualification/worker_source_pins.py",
+      "gitBlob": "b10dbb1ec2af227e6ed15408bc92e692d9980cdd",
+      "bytes": 4310,
+      "sha256": "1708650ce0e347a974bd8621018c8ad8723985d68ecb1f707a98b40a57df2a6a",
+      "usage": [
+        "recorded-command-argv/actual-check-input"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "scripts/sdk-capture/json-records.mjs",
+      "gitBlob": "fa8ab20d712358feede92b337e86547dd732a5fa",
+      "bytes": 6814,
+      "sha256": "8b889617a9565b7f1b5d29863b772b71f2c880a5fd1606b8a8b68ac2163be02d",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input",
+        "static-local-import/used-module-closure"
+      ]
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "path": "scripts/sdk-capture/protocol.mjs",
+      "gitBlob": "77daa19549383ffe9d09c8893cfbd6811c382e6a",
+      "bytes": 5151,
+      "sha256": "c20499a3a9e29069f6a59b58c7262fda6dfddd03068d7a49d6d73003f07e4a9e",
+      "usage": [
+        "source-preservation-or-fixed-context/actual-byte-input",
+        "static-local-import/used-module-closure"
+      ]
+    }
+  ],
+  "historicalSourceInputs": [
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "a5c41c7afdd9ec235ac3a0184a96e4c457ef2f90",
+      "path": "apps/worker/qualification/checkpoint/native-session-files.mjs",
+      "bytes": 11588,
+      "sha256": "6bc9b3559975dfb2ea585da076687e46e04051904ae8f88e200e4768b40b2b9d"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "a5c41c7afdd9ec235ac3a0184a96e4c457ef2f90",
+      "path": "apps/worker/qualification/component-pins.json",
+      "bytes": 36019,
+      "sha256": "6c08b00a43ef6155333c0a891bd92eb0275e18767c3159282ccdef3e13c0793a"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "65d9c750639e0d370985827983f24019a3f585ab",
+      "path": "apps/worker/qualification/checkpoint/bound-session-store.mjs",
+      "bytes": 7025,
+      "sha256": "2ca4e6e4957f606e1a8c64ded9a24c2dfc3ff4877b328526a8b74c0dd351c322"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "65d9c750639e0d370985827983f24019a3f585ab",
+      "path": "apps/worker/qualification/checkpoint/native-session-files.mjs",
+      "bytes": 12049,
+      "sha256": "543e05c230bf614cd5cf73f2d69877f1311ec0faf9d7ca205429161a75b842e1"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "65d9c750639e0d370985827983f24019a3f585ab",
+      "path": "apps/worker/qualification/checkpoint/session-store.test.mjs",
+      "bytes": 10987,
+      "sha256": "ac06de2d19aa5033f3d5cdde99e14751c2403b9fedd33cba382de5154d3c84e4"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "65d9c750639e0d370985827983f24019a3f585ab",
+      "path": "apps/worker/qualification/checkpoint/verify-session-store.mjs",
+      "bytes": 2417,
+      "sha256": "ed95128e06578040f441e9902b55d1262b61bee655ae270ea5cd0c0a0f684234"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "65d9c750639e0d370985827983f24019a3f585ab",
+      "path": "apps/worker/qualification/component-pins.json",
+      "bytes": 26143,
+      "sha256": "0f7441ea20b9eaf50a421cc456e2df02f3cc7e7c2de5f16fd54c2fded27cca5e"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "cf9eb76a0f9ea797151a2684bc83592ae1033c9f",
+      "path": "apps/worker/qualification/checkpoint/bound-session-store.mjs",
+      "bytes": 7025,
+      "sha256": "2ca4e6e4957f606e1a8c64ded9a24c2dfc3ff4877b328526a8b74c0dd351c322"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "cf9eb76a0f9ea797151a2684bc83592ae1033c9f",
+      "path": "apps/worker/qualification/checkpoint/native-session-files.mjs",
+      "bytes": 12049,
+      "sha256": "543e05c230bf614cd5cf73f2d69877f1311ec0faf9d7ca205429161a75b842e1"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "cf9eb76a0f9ea797151a2684bc83592ae1033c9f",
+      "path": "apps/worker/qualification/checkpoint/session-store.test.mjs",
+      "bytes": 10987,
+      "sha256": "ac06de2d19aa5033f3d5cdde99e14751c2403b9fedd33cba382de5154d3c84e4"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "cf9eb76a0f9ea797151a2684bc83592ae1033c9f",
+      "path": "apps/worker/qualification/checkpoint/verify-session-store.mjs",
+      "bytes": 2417,
+      "sha256": "ed95128e06578040f441e9902b55d1262b61bee655ae270ea5cd0c0a0f684234"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "cf9eb76a0f9ea797151a2684bc83592ae1033c9f",
+      "path": "apps/worker/qualification/component-pins.json",
+      "bytes": 36019,
+      "sha256": "2f2c5d52fbee23bbdb206456235664b9dbbdf5c3526ccc065d499ed0a61f5aed"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "680f09cef6e97bee101d09c9d39ab325c0af2007",
+      "path": "apps/worker/qualification/checkpoint/bound-session-store.mjs",
+      "bytes": 6925,
+      "sha256": "c4100a00783a43bf89f3e4ed34bee155169d3aff611c84deb8a94d329320cdce"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "680f09cef6e97bee101d09c9d39ab325c0af2007",
+      "path": "apps/worker/qualification/checkpoint/native-session-files.mjs",
+      "bytes": 12049,
+      "sha256": "543e05c230bf614cd5cf73f2d69877f1311ec0faf9d7ca205429161a75b842e1"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "680f09cef6e97bee101d09c9d39ab325c0af2007",
+      "path": "apps/worker/qualification/checkpoint/session-store.test.mjs",
+      "bytes": 17013,
+      "sha256": "2e115e03e32d7bd9a9abd0b6c7e8df480528e023bf318d0f0639af4d91fc6389"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "680f09cef6e97bee101d09c9d39ab325c0af2007",
+      "path": "apps/worker/qualification/checkpoint/verify-session-store.mjs",
+      "bytes": 2887,
+      "sha256": "bdfac290cea0157676d6949c31a7bc7b546312eedd25849f26fad4d626c4d53a"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "680f09cef6e97bee101d09c9d39ab325c0af2007",
+      "path": "apps/worker/qualification/component-pins.json",
+      "bytes": 36019,
+      "sha256": "2f2c5d52fbee23bbdb206456235664b9dbbdf5c3526ccc065d499ed0a61f5aed"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "00af1a681116a4d23ac6195124372e1fec2c42e0",
+      "path": "packages/contracts/retrieval-0.2/catalog.json",
+      "bytes": 49718,
+      "sha256": "940d768aab94cc2b513a177ade216c675a74ff4021d99ec04b1b059f80b4d264"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "00af1a681116a4d23ac6195124372e1fec2c42e0",
+      "path": "packages/contracts/retrieval-0.2/validate.mjs",
+      "bytes": 19407,
+      "sha256": "0b01b7be420bfbd71506a088f717b209babee7623269ad2370f175b408657711"
+    }
+  ],
+  "scratchHelperReferences": [
+    {
+      "path": "/workspace/scratch/853fba62b1f1/meri-rel02-catalog-bindings-20261012/.task-inputs/catalog-row-bindings.json",
+      "bytes": 1916,
+      "sha256": "494cc838f28da8799f65dcd3b880968731fe07215e63615ef2a3266142ba61aa",
+      "availability": "local scratch helper, not committed; retained command/source evidence supplies reproducible results",
+      "usage": "owned-check-or-proof-helper"
+    },
+    {
+      "path": "/workspace/scratch/853fba62b1f1/meri-rel02-catalog-bindings-20261012/.task-inputs/capture.py",
+      "bytes": 1630,
+      "sha256": "cb234d22c3ff29589eaff64a92ac887d9ad92d3f77899205756c304317ec1696",
+      "availability": "local scratch helper, not committed; retained command/source evidence supplies reproducible results",
+      "usage": "owned-check-or-proof-helper"
+    },
+    {
+      "path": "/workspace/scratch/853fba62b1f1/meri-sessionstore-consolidation-20261011/.task-inputs/evaluate-sessionstore.mjs",
+      "bytes": 1120,
+      "sha256": "1a74ea58aa03a3fc864329aa9aeffa60feb297004e260e89c00ae14397b8fe2f",
+      "availability": "local scratch helper, not committed; retained command/source evidence supplies reproducible results",
+      "usage": "owned-check-or-proof-helper"
+    },
+    {
+      "path": "/workspace/scratch/853fba62b1f1/meri-sessionstore-consolidation-20261011/.task-inputs/run-sessionstore-checks.py",
+      "bytes": 4093,
+      "sha256": "ba3d456b06cbd314a800a12ef8d764213112a0d68a3edb672a4b65bc9cc968eb",
+      "availability": "local scratch helper, not committed; retained command/source evidence supplies reproducible results",
+      "usage": "owned-check-or-proof-helper"
+    },
+    {
+      "path": "/workspace/scratch/853fba62b1f1/meri-sessionstore-consolidation-20261011/.task-inputs/candidate-native-session-files.mjs",
+      "bytes": 12049,
+      "sha256": "543e05c230bf614cd5cf73f2d69877f1311ec0faf9d7ca205429161a75b842e1",
+      "availability": "local scratch helper, not committed; retained command/source evidence supplies reproducible results",
+      "usage": "owned-check-or-proof-helper"
+    }
+  ],
+  "dependencies": {
+    "nodeVersion": "24.19.0",
+    "nodeBinarySha256": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12",
+    "state": "Physical copies of accepted local root/contracts/service dependency trees; no install/lock change; complete installed-tree attestation absent"
+  },
+  "finalPriorChecks": {
+    "sessionStoreFocused": 44,
+    "sessionStoreStatic": 137,
+    "sessionStoreSDK": 369,
+    "sessionStoreDirectConfigAssertions": 7,
+    "catalogContractHermes": 201,
+    "catalogFocused": 14,
+    "publicTests": 7,
+    "outcome": "PASS; all original failures retained; no new tests during freeze"
+  },
+  "remainingHolds": [
+    "No qualified actual SDK transcript mirroring, awaitable durable checkpoint acknowledgement or production SessionStore transport.",
+    "A interrupt/quiescence + transcript/workspace durable checkpoint + B replacement/resume + complete subagent/compaction state and stale writes rejection remain unproved end-to-end.",
+    "Trusted transport authentication/atomic commit fence is an injected dependency; adapter is optional and not runtime-wired.",
+    "Native borrowed-parent identity checks do not prove hostile filesystem atomicity, reverted mutations or Windows reparse completeness.",
+    "13 private descriptors remain null/unimplemented/pending/zero retries; zero live tools/handlers. 83 selected IDs unmapped; query_action_items legacy unscoped mode unclosed.",
+    "Source requirements are design-only labels, not current endpoints/principals/grants. Trusted actor/client/mailbox/memory/source authorization and actual producers remain unconnected.",
+    "Measured coverage/provenance, memory lifecycle, snapshots/cursors, decisive reads/revocation and real SDK/proxy discovery remain qualification dependencies.",
+    "G1, old-image vulnerabilities, fresh build/runtime wiring, AWS shipping action authority and production release remain parent-owned HOLDs. No shipping/AWS/provider authority in this lane.",
+    "Raw failed stdout whitespace and earlier scanner/procfs/dependency failures remain preserved; passing source checks do not qualify host/runtime."
+  ]
+}

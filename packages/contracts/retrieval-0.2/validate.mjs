@@ -1,3 +1,5 @@
+import { createOperationContracts } from './operation-contracts.mjs';
+import { createCatalogValidators, CATALOG_OPERATION_BINDINGS } from './catalog-validation.mjs';
 import { createMailValidators } from './mail-validation.mjs';
 import { createMeetingValidators } from './meeting-source-validation.mjs';
 import { createOperationalReadValidators } from './operational-reads-validation.mjs';
@@ -13,8 +15,6 @@ export const contractVersion = '0.2.0';
 const groups = ['common', 'catalog', 'retrieval', 'skill', 'mail', 'meeting-source', 'operational-reads', 'federal-market', 'data-search'];
 const schemaBytes = groups.map(group => readFileSync(new URL(`./${group}.schema.json`, import.meta.url)));
 const schemas = schemaBytes.map(raw => JSON.parse(raw));
-const mailSchemaId = 'urn:meri:retrieval:mail:0.2.0';
-const mailSchemaSha256 = createHash('sha256').update(schemaBytes[groups.indexOf('mail')]).digest('hex');
 const ajv = new Ajv({ strict: true, allErrors: true });
 addFormats(ajv);
 ajv.addSchema(JSON.parse(readFileSync(new URL('../meri.schema.json', import.meta.url))));
@@ -80,49 +80,9 @@ export function assertSubject(subject, binding = null) {
   return subject;
 }
 
-export function assertCatalog(catalog) {
-  validateShape('Catalog', catalog);
-  unique(catalog.originals.map(row => row.id), 'native capability');
-  const selected = catalog.originals.filter(row => row.disposition === 'selected');
-  if (selected.length !== 96 || catalog.originals.length - selected.length !== 43) fail('D012 disposition mismatch');
-  const operations = new Map();
-  const aliases = new Map();
-  for (const operation of catalog.operations) {
-    const id = key(operation.operation);
-    if (operations.has(id)) fail('Duplicate operation version');
-    if (['query_data', 'query_sql', 'execute_sql', 'raw_sql'].includes(operation.operation.id)) fail('Unrestricted query operation forbidden');
-    if (operation.availability === 'enabled' && (operation.qualification !== 'qualified' || operation.handler === null)) fail('Unavailable handler cannot be exposed');
-    const mailDefinitions = { 'mail.read_thread@0.2.0': ['MailThreadInput','MailThreadSourcePage'], 'mail.list_messages@0.2.0': ['MailListInput','MailCandidateSourcePage'], 'mail.search_messages@0.2.0': ['MailSearchInput','MailCandidateSourcePage'] };
-    if (mailDefinitions[id] && ['inputSchema', 'outputSchema'].some((field, index) =>
-      operation[field].id !== `${mailSchemaId}#/$defs/${mailDefinitions[id][index]}` || operation[field].sha256 !== mailSchemaSha256)) fail('Mail schema byte pin mismatch');
-    if (operation.sideEffect === 'none' ? operation.approvalBoundary !== 'none' : operation.approvalBoundary === 'none') fail('Side-effect approval mismatch');
-    if (operation.handler && (operation.handler.module.split('/').some(part => !part || part === '.' || part === '..') || !/^[a-zA-Z0-9_./-]+$/.test(operation.handler.module))) fail('Invalid handler metadata path');
-    unique(operation.sourceRequirements.map(row => `${row.sourceId}:${row.purpose}`), 'operation source purpose');
-    operations.set(id, operation);
-    for (const alias of operation.aliases) {
-      if (aliases.has(alias)) fail('Ambiguous alias');
-      aliases.set(alias, id);
-    }
-  }
-  for (const operation of catalog.operations) {
-    if (operation.replacement && !operations.has(key(operation.replacement))) fail('Unavailable replacement operation');
-    const visited = new Set([key(operation.operation)]);
-    let replacement = operation.replacement;
-    while (replacement) {
-      if (visited.has(key(replacement))) fail('Cyclic operation replacement');
-      const target = operations.get(key(replacement));
-      if (!target) fail('Unavailable replacement operation');
-      visited.add(key(replacement)); replacement = target.replacement;
-    }
-  }
-  for (const [alias, target] of aliases) if (catalog.operations.some(operation => operation.operation.id === alias && key(operation.operation) !== target)) fail('Alias shadows canonical operation');
-  for (const original of catalog.originals) {
-    if ((original.state === 'mapped') !== (original.replacement !== null)) fail('Incomplete preservation mapping');
-    if (original.replacement && !operations.has(key(original.replacement))) fail('Missing mapped operation');
-    if (aliases.has(original.id) && (original.replacement === null || aliases.get(original.id) !== key(original.replacement))) fail('Alias contradicts preservation mapping');
-  }
-  return catalog;
-}
+export const {assertCatalog} = createCatalogValidators({validateShape, schemaRecords:
+  groups.map((group, index) => ({group, schema: schemas[index],
+    sha256: createHash('sha256').update(schemaBytes[index]).digest('hex')}))});
 
 // Shared declarations only; this does not decide current source authorization.
 function assertSourceInventory(envelope) {
@@ -245,3 +205,10 @@ export function assertSkillContinuity(previous, next) {
 
 // Structural and consistency checks only: never authenticate, authorize,
 // resolve an entity/timezone boundary, load handlers, or enable source access.
+
+// Fixed source catalog snapshot; no operation handler is loaded or enabled.
+const sourceCatalog = JSON.parse(readFileSync(new URL('./catalog.json', import.meta.url)));
+export const {resolveOperationContract} = createOperationContracts({catalog: sourceCatalog,
+  bindings: CATALOG_OPERATION_BINDINGS, assertCatalog, canonicalSha256,
+  validators: Object.freeze({...mailValidators, ...meetingValidators, ...operationalReadValidators,
+    ...federalMarketValidators, ...dataSearchValidators})});

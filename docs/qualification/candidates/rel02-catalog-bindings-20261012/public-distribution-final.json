@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/npm",
+    "run",
+    "check",
+    "--prefix",
+    "packages/contracts"
+  ],
+  "cwd": "/workspace/scratch/853fba62b1f1/meri-rel02-catalog-bindings-20261012",
+  "startedAtEpochSeconds": 1791765275.2769554,
+  "endedAtEpochSeconds": 1791765281.2964578,
+  "exitCode": 0,
+  "timeoutSeconds": 120,
+  "timedOut": false,
+  "ownedProcessGroupAbsent": true,
+  "environment": "replacement PATH/LANG/LC_ALL/TMPDIR only; not OS network sandbox",
+  "stdout": {
+    "bytes": 1947,
+    "sha256": "2820ce57d0a4907ba4bc8d65ff71e1f38558909739a5031d7ee71aeb68625556"
+  },
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

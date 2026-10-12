@@ -1,0 +1,35 @@
+{
+  "argv": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "--test",
+    "packages/contracts/test/boundaries.test.mjs",
+    "packages/contracts/test/public-package.test.mjs",
+    "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+    "packages/contracts/test/retrieval-data-search.test.mjs",
+    "packages/contracts/test/retrieval-federal-market.test.mjs",
+    "packages/contracts/test/retrieval-mail.test.mjs",
+    "packages/contracts/test/retrieval-meeting-source.test.mjs",
+    "packages/contracts/test/retrieval-operational-reads.test.mjs",
+    "packages/contracts/test/retrieval-r2.test.mjs",
+    "packages/contracts/test/sdk-fixture-contract.test.mjs",
+    "packages/contracts/test/sdk-fixture-wire.test.mjs",
+    "packages/contracts/test/sdk-native-evidence.test.mjs",
+    "evals/qualification/hermes-session.test.mjs"
+  ],
+  "cwd": "/workspace/scratch/853fba62b1f1/meri-rel02-catalog-bindings-20261012",
+  "startedAtEpochSeconds": 1791764843.330459,
+  "endedAtEpochSeconds": 1791764847.484496,
+  "exitCode": 1,
+  "timeoutSeconds": 120,
+  "timedOut": false,
+  "ownedProcessGroupAbsent": true,
+  "environment": "replacement PATH/LANG/LC_ALL/TMPDIR only; not OS network sandbox",
+  "stdout": {
+    "bytes": 22570,
+    "sha256": "f0e7349b918e29211486b7a6112235d111b37be83bb9648f76d420a153c2fd9f"
+  },
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

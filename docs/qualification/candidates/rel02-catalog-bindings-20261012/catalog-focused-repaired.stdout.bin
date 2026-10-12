@@ -1,0 +1,19 @@
+✔ registers exactly the ten typed additions while preserving all139/96/43 boundaries (6.103992ms)
+✔ every binding resolves the correct existing definition and exact raw schema hash (3.452326ms)
+✔ allknown input/output hash, foreign definition and version substitutions refuse (124.572408ms)
+✔ missing, foreign and incorrectly remapped registered operations refuse (6.189699ms)
+✔ aliases, cycles and forbidden unrestricted query identifiers retain refusal guards (11.350852ms)
+✔ everycurrent descriptor stays pending/null; fabricated executable metadata cannot expose it (25.595877ms)
+✔ resolver refuses unknown versions and unsafe references without invoking getters (0.611411ms)
+✔ family default materialization and argument digest happen before dispatch (3.277148ms)
+✔ data-search normalized domains, cursors and conditional memory retain canonical behavior (1.744179ms)
+✔ mail defaults/context and meeting inventory/body modes reuse their original domain rules (10.164324ms)
+✔ federal output uses actual family paging invariants and retains unproven total relation (0.889721ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1159.060151

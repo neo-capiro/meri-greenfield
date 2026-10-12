@@ -431,11 +431,17 @@ test('declares every schema reference locally and closes every result shape', ()
   // No second catalog, alias table or operation registry is introduced.
   assert.equal(Object.hasOwn(schema.$defs, 'Catalog'), false);
   assert.equal(Object.hasOwn(schema.$defs, 'OperationDescriptor'), false);
-  // The candidate is not registered anywhere.
+  // Private catalog registration is pending; it adds no live handler or public export.
   const catalog = JSON.parse(readFileSync(new URL('../retrieval-0.2/catalog.json', import.meta.url), 'utf8'));
   const selected = catalog.originals.find(entry => entry.id === 'search_capiro_data');
   assert.equal(selected?.disposition, 'selected');
-  assert.equal(selected?.state, 'pending');
+  assert.equal(selected?.state, 'mapped');
+  assert.deepEqual(selected.replacement, { id: 'search_capiro_data', version: '0.2.0' });
+  const descriptor = catalog.operations.find(row => row.operation.id === 'search_capiro_data');
+  assert.equal(descriptor.handler, null); assert.equal(descriptor.availability, 'unimplemented');
+  assert.equal(descriptor.qualification, 'pending');
+  assert.equal(descriptor.inputSchema.id, `${schema.$id}#/$defs/DataSearchInput`);
+  assert.equal(descriptor.outputSchema.id, `${schema.$id}#/$defs/SearchCapiroDataResult`);
   assert.equal(JSON.stringify(catalog).includes('data-search.schema.json'), false);
 });
 

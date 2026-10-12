@@ -1,0 +1,39 @@
+{
+  "schema": "meri.critical-applicability-doc-verification.v1",
+  "completedAt": "2026-10-12T00:24:14.542103+00:00",
+  "checks": [
+    {
+      "check": "JSON decoding",
+      "status": "PASS"
+    },
+    {
+      "check": "three verified official Git blob identities; n/a affected fields and unknown ranges preserved",
+      "status": "PASS"
+    },
+    {
+      "check": "exact metadata input identities and three OPEN critical rows;26901 entries and named utility absence",
+      "status": "PASS"
+    },
+    {
+      "check": "conditional proposals retain unknown applicability and false action/admission flags",
+      "status": "PASS"
+    },
+    {
+      "check": "relative report artifact links",
+      "status": "PASS"
+    },
+    {
+      "check": "all previously tracked source/report/evidence bytes unchanged",
+      "status": "PASS"
+    },
+    {
+      "check": "git diff --cached --check and exactly7 new claimed paths",
+      "status": "PASS"
+    }
+  ],
+  "limitations": [
+    "Original CVE bytes were received in connector tool results and independently checked against Git blob identity; factual derivatives retained.",
+    "Only read-only documentation and retained metadata inspection occurred.",
+    "No package/source archive acquisition, executable proof-of-concept, binary symbol inspection, native/application test, AWS/provider action or outreach."
+  ]
+}

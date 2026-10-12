@@ -1,0 +1,41 @@
+{
+  "sourceCommit": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+  "argv": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "--test",
+    "packages/contracts/test/boundaries.test.mjs",
+    "packages/contracts/test/public-package.test.mjs",
+    "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+    "packages/contracts/test/retrieval-data-search.test.mjs",
+    "packages/contracts/test/retrieval-federal-market.test.mjs",
+    "packages/contracts/test/retrieval-mail.test.mjs",
+    "packages/contracts/test/retrieval-meeting-source.test.mjs",
+    "packages/contracts/test/retrieval-operational-reads.test.mjs",
+    "packages/contracts/test/retrieval-r2.test.mjs",
+    "packages/contracts/test/sdk-fixture-contract.test.mjs",
+    "packages/contracts/test/sdk-fixture-wire.test.mjs",
+    "packages/contracts/test/sdk-native-evidence.test.mjs",
+    "evals/qualification/hermes-session.test.mjs"
+  ],
+  "supervisorTimeoutSeconds": 60,
+  "physicalExitCode": 0,
+  "timedOut": false,
+  "elapsedSeconds": 5.05,
+  "ownedProcessGroupAbsent": true,
+  "ownedTempEntriesBeforeOwnerCleanup": [],
+  "ownedTempRootRemoved": true,
+  "streams": {
+    "stdout": {
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/independent-review-20261012/all201-final-local-layout.stdout.bin",
+      "bytes": 18713,
+      "sha256": "5bceb796feb896ccbbca6f9fd188429f3997136ca07e9fb1314b762189ef1623"
+    },
+    "stderr": {
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/independent-review-20261012/all201-final-local-layout.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "nodeSha256": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12",
+  "rerunReason": "physical local Ajv/formats/fast-deep-equal restores original runtime source-comment paths; no source edits; remaining dependencies borrowed"
+}

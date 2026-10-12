@@ -366,11 +366,14 @@ test('meeting schema objects stay closed and package public exports stay 0.1 onl
   assert(!JSON.stringify(pkg.exports).includes('retrieval-0.2'));
   assert(!pkg.files.includes('retrieval-0.2'));
 });
-test('no catalog operation, descriptor or skill exposes the pending meeting source contract', () => {
+test('private meeting catalog registration exposes no live handler, public export or skill', () => {
   const catalog = JSON.parse(readFileSync(new URL('../retrieval-0.2/catalog.json', import.meta.url)));
   assertCatalog(catalog);
   for (const id of ['meeting.list_upcoming_meetings', 'meeting.query_debriefs', 'meeting.read_client_meetings', 'list_upcoming_meetings', 'query_debriefs', 'read_client_meetings']) {
-    assert(!catalog.operations.some(operation => operation.operation.id === id || operation.aliases.includes(id)));
+    const descriptor = catalog.operations.find(operation => operation.operation.id === id || operation.aliases.includes(id));
+    assert.ok(descriptor); assert.equal(descriptor.handler, null);
+    assert.equal(descriptor.availability, 'unimplemented'); assert.equal(descriptor.qualification, 'pending');
+    assert.equal(descriptor.operation.version, '0.2.0');
   }
   for (const operation of catalog.operations) { assert.equal(operation.handler, null); assert.equal(operation.availability, 'unimplemented'); }
   const manifest = { contractVersion: '0.2.0', skillId: 'quick_skill.meeting_prep', skillVersion: '1.0.0', prose: { id: 'urn:meri:synthetic:meeting', sha256: 'a'.repeat(64) }, requiredSources: [{ sourceId: 'meeting', authority: 'authoritative', purpose: 'evidence' }], allowedOperations: [{ id: 'meeting.read_client_meetings', version: '0.2.0' }], subjectKinds: ['client'], windowBases: ['unbounded'], completion: { requireAllSources: true, allowDisclosedPartial: true, negativeClaims: 'complete-covered-only', rubric: [{ id: 'read', requirement: 'Read authorized meeting sources', evidenceRequired: true }] }, approval: { mutations: 'separate-immutable-proposal', autoCreateTasks: false }, budgets: { maxTurns: 4, maxToolCalls: 4, maxRecoveryAttempts: 1, maxRuntimeSeconds: 30, maxCostMicroUSD: 1000, maxOutputBytes: 10000 }, versionPolicy: { existingRuns: 'pin-immutable', resume: 'exact-or-explicit-migration', fork: 'preserve-unless-explicit-reselection' } };

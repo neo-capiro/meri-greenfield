@@ -1,0 +1,26 @@
+{
+  "sourceCommit": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+  "argv": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "docs/qualification/candidates/rel02-catalog-bindings-20261012/independent-review-20261012/preservation.mjs"
+  ],
+  "supervisorTimeoutSeconds": 15,
+  "physicalExitCode": 0,
+  "timedOut": false,
+  "elapsedSeconds": 0.533,
+  "ownedProcessGroupAbsent": true,
+  "streams": {
+    "stdout": {
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/independent-review-20261012/preservation.stdout.bin",
+      "bytes": 96,
+      "sha256": "49f1407a38a10cc352e265f6977a5d8d7d1c088f587b86556513a0b1dfcac971"
+    },
+    "stderr": {
+      "path": "docs/qualification/candidates/rel02-catalog-bindings-20261012/independent-review-20261012/preservation.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "scriptSha256": "62684ecf89205b3d4cc97827de266c530928d136fc2a00fa156a2a95037e0b1c",
+  "activation": false
+}

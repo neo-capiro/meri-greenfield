@@ -1,0 +1,161 @@
+{
+  "schema": "meri.critical-applicability-metadata.v1",
+  "measuredAt": "2026-10-12T00:21:39.823761+00:00",
+  "sourceEvidenceCommit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+  "imageDigest": "sha256:8d1ec09aa78f47a11019089dacde93289fc66a39f55bd4357e59eeb25d9b52ac",
+  "inputs": {
+    "historical-artifacts/00-image-inventory.json": {
+      "bytes": 5684552,
+      "sha256": "6b7675aa90422a9572a902012cebef87c78af7c6669f9b1fed20668e1b17c74c"
+    },
+    "historical-artifacts/01-os-installed-packages.txt": {
+      "bytes": 8570,
+      "sha256": "1fa4f64de64341e41eb02988cb362a393102949122b331a44334049aee121c83"
+    },
+    "canonical-repaired-scan-hold-scaffold.json": {
+      "bytes": 66474,
+      "sha256": "b32216ba93c2ce480fb1cc9d44d6f738f4279b10410fce294cf6c3e7de6fbcd6"
+    }
+  },
+  "coverage": {
+    "complete": true,
+    "scope": "declared roots/aliases; names do not prove renamed features absent"
+  },
+  "inventorySummary": {
+    "candidates": 2,
+    "elapsedMs": 20784,
+    "entries": 26901,
+    "errors": 0,
+    "exclusions": [
+      "/dev",
+      "/opt/meri-worker/image-inventory.json",
+      "/proc",
+      "/run",
+      "/sys"
+    ],
+    "expectationFailures": 0,
+    "expectations": 4,
+    "files": 22667,
+    "limitsExceeded": null,
+    "privilegeEntries": 2,
+    "roots": [
+      "/bin",
+      "/etc",
+      "/home",
+      "/lib",
+      "/lib64",
+      "/opt/meri-browsers",
+      "/opt/meri-venv",
+      "/opt/meri-worker",
+      "/packages",
+      "/root",
+      "/sbin",
+      "/scripts",
+      "/usr",
+      "/var/lib/dpkg"
+    ],
+    "symlinks": 1024,
+    "unexpectedPrivilegeEntries": 0
+  },
+  "inventoryTruncated": false,
+  "packageLineCount": 325,
+  "observedPackages": [
+    "libcurl3t64-gnutls=8.14.1-2+deb13u5",
+    "libcurl4t64=8.14.1-2+deb13u5",
+    "libgnutls30t64=3.8.9-3+deb13u4",
+    "libtiff6=4.7.0-3+deb13u3"
+  ],
+  "libtiffToolsPackageObserved": false,
+  "exactBasenameMatches": {
+    "tiffcrop": [],
+    "tiff2pdf": []
+  },
+  "caseInsensitivePathMentions": {
+    "tiffcrop": [],
+    "tiff2pdf": []
+  },
+  "observedNativeFiles": [
+    {
+      "gid": 0,
+      "mode": "0644",
+      "path": "/usr/lib/x86_64-linux-gnu/libcurl-gnutls.so.4.8.0",
+      "sha256": "2bb1c5c8ee8800820269aee650e3c316a9dea080f4888cf69612badf48bf56d0",
+      "size": 963560,
+      "type": "file",
+      "uid": 0
+    },
+    {
+      "gid": 0,
+      "mode": "0644",
+      "path": "/usr/lib/x86_64-linux-gnu/libgnutls.so.30.40.3",
+      "sha256": "4b14edde42e7cbeefd8a6d88d035e096f2e6412a535388bb1d073a1c196e2822",
+      "size": 2246712,
+      "type": "file",
+      "uid": 0
+    },
+    {
+      "gid": 0,
+      "mode": "0644",
+      "path": "/usr/lib/x86_64-linux-gnu/libtiff.so.6.1.0",
+      "sha256": "7f2309b13404f98171b54c07f75ad7c54673cec26ecaa874ac5273feda916c6f",
+      "size": 604168,
+      "type": "file",
+      "uid": 0
+    }
+  ],
+  "scanRows": [
+    {
+      "index": 7,
+      "cve": "CVE-2026-95210",
+      "severity": "CRITICAL",
+      "provider": {
+        "name": "gnutls28",
+        "version": "3.8.9-3+deb13u4"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      }
+    },
+    {
+      "index": 17,
+      "cve": "CVE-2026-88647",
+      "severity": "CRITICAL",
+      "provider": {
+        "name": "gnutls28",
+        "version": "3.8.9-3+deb13u4"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      }
+    },
+    {
+      "index": 38,
+      "cve": "CVE-2026-52490",
+      "severity": "CRITICAL",
+      "provider": {
+        "name": "tiff",
+        "version": "4.7.0-3+deb13u3"
+      },
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      }
+    }
+  ],
+  "limitations": [
+    "Complete coverage means declared roots and aliases; it is not universal image-byte, build-source, ELF-symbol or every-static-copy verification.",
+    "No utility basename/path mention or package row is not proof that renamed/static copies contain no vulnerable code.",
+    "No binary APIs were inspected or executed."
+  ]
+}

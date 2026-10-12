@@ -1,0 +1,52 @@
+✔ registers exactly the ten typed additions while preserving all139/96/43 boundaries (5.32807ms)
+✔ every binding resolves the correct existing definition and exact raw schema hash (3.918012ms)
+✔ allknown input/output hash, foreign definition and version substitutions refuse (144.600136ms)
+✔ missing, foreign and incorrectly remapped registered operations refuse (7.126358ms)
+✔ aliases, cycles and forbidden unrestricted query identifiers retain refusal guards (11.934252ms)
+✔ everycurrent descriptor stays pending/null; fabricated executable metadata cannot expose it (34.937199ms)
+✔ resolver refuses unknown versions and unsafe references without invoking getters (0.716776ms)
+✔ family default materialization and argument digest happen before dispatch (3.801291ms)
+✔ data-search normalized domains, cursors and conditional memory retain canonical behavior (2.092192ms)
+✖ mail defaults/context and meeting inventory/body modes reuse their original domain rules (7.601708ms)
+✔ federal output uses actual family paging invariants and retains unproven total relation (1.114642ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 10
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1288.103268
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-catalog-bindings.test.mjs:118:1
+✖ mail defaults/context and meeting inventory/body modes reuse their original domain rules (7.601708ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /ClientMeetingInventoryPage/. Input:
+  
+  "Error: ClientMeetingSourceBodyPage: data must have required property 'kind', data must have required property 'contractVersion', data must have required property 'operation', data must have required property 'requestId', data must have required property 'traceId', data must have required property 'binding', data must have required property 'subject', data must have required property 'window', data must have required property 'argumentsSha256', data must have required property 'appliedFilters', data must have required property 'sources', data must have required property 'coverage', data must have required property 'selection', data must have required property 'scope', data must have required property 'snapshotVersionId', data must have required property 'pageCoverage', data must have required property 'returned', data must have required property 'meeting', data must have required property 'source', data must have required property 'continuation', data must have required property 'evidenceReady', data must have required property 'negativeAssertion'"
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/853fba62b1f1/meri-rel02-catalog-bindings-20261012/packages/contracts/test/retrieval-catalog-bindings.test.mjs:126:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: ClientMeetingSourceBodyPage: data must have required property 'kind', data must have required property 'contractVersion', data must have required property 'operation', data must have required property 'requestId', data must have required property 'traceId', data must have required property 'binding', data must have required property 'subject', data must have required property 'window', data must have required property 'argumentsSha256', data must have required property 'appliedFilters', data must have required property 'sources', data must have required property 'coverage', data must have required property 'selection', data must have required property 'scope', data must have required property 'snapshotVersionId', data must have required property 'pageCoverage', data must have required property 'returned', data must have required property 'meeting', data must have required property 'source', data must have required property 'continuation', data must have required property 'evidenceReady', data must have required property 'negativeAssertion'
+        at validateShape (file:///workspace/scratch/853fba62b1f1/meri-rel02-catalog-bindings-20261012/packages/contracts/retrieval-0.2/validate.mjs:28:28)
+        at Object.assertClientMeetingSourceBodyPage (file:///workspace/scratch/853fba62b1f1/meri-rel02-catalog-bindings-20261012/packages/contracts/retrieval-0.2/meeting-source-validation.mjs:263:28)
+        at Object.outputAssert (file:///workspace/scratch/853fba62b1f1/meri-rel02-catalog-bindings-20261012/packages/contracts/retrieval-0.2/catalog-validation.mjs:29:183)
+        at Object.assertOutput (file:///workspace/scratch/853fba62b1f1/meri-rel02-catalog-bindings-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:69:24)
+        at file:///workspace/scratch/853fba62b1f1/meri-rel02-catalog-bindings-20261012/packages/contracts/test/retrieval-catalog-bindings.test.mjs:126:63
+        at getActual (node:assert:611:5)
+        at strict.throws (node:assert:759:24)
+        at TestContext.<anonymous> (file:///workspace/scratch/853fba62b1f1/meri-rel02-catalog-bindings-20261012/packages/contracts/test/retrieval-catalog-bindings.test.mjs:126:10)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1382:25),
+    expected: /ClientMeetingInventoryPage/,
+    operator: 'throws',
+    diff: 'simple'
+  }

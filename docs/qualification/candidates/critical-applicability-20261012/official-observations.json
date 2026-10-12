@@ -1,0 +1,139 @@
+{
+  "retrievalDate": "2026-10-12",
+  "observations": [
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-88647",
+      "ref": "turn177view0",
+      "facts": "Trixie3.8.9-3+deb13u4 and unstable3.8.13-1 vulnerable; introduced/fixed version not supplied; upstream assessment pending."
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-95210",
+      "ref": "turn177view1",
+      "facts": "Same unresolved distro versions and assessment status; certificate invalid-extension description does not delimit affected versions."
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-52490",
+      "ref": "turn177view2",
+      "facts": "Operation process_command_opts in tools/tiffcrop.c; Trixie4.7.0-3+deb13u3 vulnerable; unstable4.7.2-1 fixed; tracker points to upstreamb04e935cb6242f22cc8b63c99a372cf3ea825e4e."
+    },
+    {
+      "url": "https://gitlab.com/gnutls/gnutls/-/issues/1802",
+      "ref": "turn183view0",
+      "facts": "Reporter describes URI or unsupported SAN type allowing CN fallback in gnutls_x509_crt_check_hostname2; names lib/x509/hostname-verify.c and short commit165ae258. Retrieved page has no maintainer adjudication, introduced-version proof or accepted patch."
+    },
+    {
+      "url": "https://metadata.ftp-master.debian.org/changelogs//main/g/gnutls28/gnutls28_3.8.9-3%2Bdeb13u4_changelog",
+      "ref": "turn184view2",
+      "facts": "Exact3.8.9u4 maintainer entry dated2026-05-10 imports the3.8.13 patchset from CentOS10 security release; drops patches irrelevant to3.8.9; lists other CVEs. This is backport evidence, not closure for88647/95210."
+    },
+    {
+      "url": "https://www.gnutls.org/manual/html_node/X509-certificate-API.html",
+      "refs": [
+        "turn181view4",
+        "turn181view5"
+      ],
+      "facts": "Current3.8.13 manual documents hostname2(cert,hostname,flags), introduced API3.3.0, and distinct certificate verification/output status. API introduction is not vulnerability introduction. Negative return alone is not certificate-validation result; verify output status must be inspected. No exact Debian binary semantics proven."
+    },
+    {
+      "url": "https://packages.debian.org/trixie/libgnutls30t64",
+      "ref": "turn183view1",
+      "facts": "Exact3.8.9-3+deb13u4 runtime package; sourcegnutls28."
+    },
+    {
+      "url": "https://packages.debian.org/trixie/amd64/libgnutls30t64/filelist",
+      "ref": "turn183view2",
+      "facts": "Runtime list includes libgnutls.so.30 and libgnutls.so.30.40.3; those exact paths are present in retained image metadata."
+    },
+    {
+      "url": "https://packages.debian.org/trixie/libtiff6",
+      "ref": "turn180view2",
+      "facts": "Exact4.7.0-3+deb13u3 shared-library binary package, source tiff; distinct libtiff-tools package."
+    },
+    {
+      "url": "https://packages.debian.org/trixie/amd64/libtiff6/filelist",
+      "ref": "turn180view3",
+      "facts": "Five paths: libtiff.so.6 symlink, libtiff.so.6.1.0, two changelogs and copyright; no tiffcrop/tiff2pdf utility."
+    },
+    {
+      "url": "https://packages.debian.org/trixie/amd64/libtiff-tools/filelist",
+      "ref": "turn180view4",
+      "facts": "Different binary package lists /usr/bin/tiffcrop and /usr/bin/tiff2pdf."
+    },
+    {
+      "url": "https://gitlab.com/libtiff/libtiff/-/work_items/846",
+      "ref": "turn178view4",
+      "facts": "Reporter locates unsigned multiplication in tiffcrop optionS/process_command_opts and writeImageSections, names4.7.1; no maintainer adjudication retrieved. No proof-of-concept acquired/executed."
+    },
+    {
+      "url": "https://metadata.ftp-master.debian.org/changelogs//main/t/tiff/tiff_4.7.0-3%2Bdeb13u3_changelog",
+      "ref": "turn182view2",
+      "facts": "Exactu3 changelog entry dated2026-07-10 fixes pixarlog12912; retrieved entry does not establish52490 repair."
+    },
+    {
+      "url": "https://www.rfc-editor.org/rfc/rfc6125.html#section-6.4.4",
+      "ref": "turn187view0",
+      "facts": "Specifies identifier-type conditions for CN fallback, including URI-ID; a vendor/profile applicability question, not binary evidence."
+    },
+    {
+      "url": "https://www.rfc-editor.org/rfc/rfc9525.html",
+      "ref": "turn187view1",
+      "facts": "Obsoletes6125 and excludes CN as service identity source; no inference that installed GnuTLS is compliant/fixed/exempt."
+    }
+  ],
+  "retrievalLimits": [
+    {
+      "urls": [
+        "https://cveawg.mitre.org/api/cve/CVE-2026-88647",
+        "https://cveawg.mitre.org/api/cve/CVE-2026-95210",
+        "https://cveawg.mitre.org/api/cve/CVE-2026-52490",
+        "https://bugs.debian.org/1150522"
+      ],
+      "outcome": "Unavailable through web reader; official CVE factual records subsequently obtained through approved GitHub connector."
+    },
+    {
+      "urls": [
+        "https://www.cve.org/CVERecord?id=CVE-2026-88647",
+        "https://www.cve.org/CVERecord?id=CVE-2026-95210"
+      ],
+      "outcome": "JavaScript shell only, no usable record fields."
+    },
+    {
+      "urls": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-88647",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-95210",
+        "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2026-88647",
+        "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2026-95210"
+      ],
+      "outcome": "No usable record content; no additional affected-version proof."
+    },
+    {
+      "urls": [
+        "https://raw.githubusercontent.com/CVEProject/cvelistV5/main/cves/2026/88xxx/CVE-2026-88647.json",
+        "https://raw.githubusercontent.com/CVEProject/cvelistV5/main/cves/2026/95xxx/CVE-2026-95210.json"
+      ],
+      "outcome": "Web reader DisabledError; approved purpose-built GitHub file reader obtained these public records and original Git blob hashes were independently checked."
+    },
+    {
+      "urls": [
+        "https://www.gnutls.org/security.html"
+      ],
+      "outcome": "No matching88647/95210 text in retrieved page; absence is not a fix/dispute decision."
+    },
+    {
+      "urls": [
+        "https://manpages.debian.org/trixie/gnutls-doc/gnutls_x509_crt_check_hostname2.3.en.html",
+        "https://manpages.debian.org/trixie/gnutls-doc/gnutls_x509_crt_verify.3.en.html",
+        "https://gist.github.com/lkloliver/4aad23689202720c4068f43b3c6069c7",
+        "https://gist.github.com/lkloliver/f98ec3de1a871fdfc02b70b8b9ba7642"
+      ],
+      "outcome": "Unavailable; no source/code or executable reproduction obtained."
+    },
+    {
+      "outcome": "One constrained two-query official-domain search produced unrelated domain results; these were not used as security evidence or broadened into a mass search."
+    }
+  ],
+  "limitations": [
+    "Web retrieval/crawl timestamps are not proof of an uncached origin response.",
+    "Facts are documentation/component leads only; no native bytes, symbols, source build or runtime call graph was inspected."
+  ]
+}
