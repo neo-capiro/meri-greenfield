@@ -26,8 +26,10 @@ const match = (changes = {}) => ({id: 'ocd-person/synthetic', name: 'Synthetic P
 const ambiguous = (changes = {}) => ({id: 'ocd-person/synthetic', name: 'Synthetic Person', state: 'XX',
   chamber: null, district: null, party: null, ...changes});
 const single = (changes = {}) => ({tool: legislator, generatedAt: at, matchesFound: 1, matches: [match()], ...changes});
-const absent = (changes = {}) => ({tool: legislator, generatedAt: at, matchesFound: 0, matches: [], note: 'Synthetic observed no match.', ...changes});
-const multiple = (changes = {}) => absent({ambiguousLegislator: [ambiguous(), ambiguous({id: 'ocd-person/other'})], ...changes});
+const absent = (changes = {}) => ({tool: legislator, generatedAt: at, matchesFound: 0, matches: [],
+  note: 'No state legislator matched "Synthetic". Say so explicitly — do not fabricate a legislator.', ...changes});
+const multiple = (changes = {}) => absent({ambiguousLegislator: [ambiguous(), ambiguous({id: 'ocd-person/other'})],
+  note: '"Synthetic" matches 2 state legislators — ask the user which (by state/chamber/district) before attributing anything to them.', ...changes});
 const request = {query: 'Synthetic'};
 const check = (id, value, input = id === bills ? {} : request) => v.assertStateLegislationOutput(id, value, input);
 const refuse = (id, value, input) => assert.throws(() => check(id, value, input));
@@ -68,9 +70,7 @@ for (const [id, fallback, maximum] of [[bills, 20, 50], [legislator, 5, 8]]) {
     assert.equal(normalized.input.query, 'Synthetic'); assert.equal(normalized.input.state, 'XX');
     assert.ok(Object.isFrozen(normalized)); assert.ok(Object.isFrozen(normalized.input));
     assert.ok(Object.isFrozen(normalized.metadata));
-    assert.equal(normalized.metadata.sourceConnected, false);
-    assert.equal(normalized.metadata.producerQualified, false);
-    assert.equal(normalized.metadata.absenceEvidence, false);
+    assert.deepEqual(normalized.metadata, {});
     assert.throws(() => {normalized.input.state = 'YY';}, TypeError);
   });
 }
@@ -103,7 +103,8 @@ test('state bills independent: nullable projection and opaque stored strings sur
   const value = billPage({data: [bill({id: '', state: 'not-a-code', session: '', identifier: '', title: '',
     chamber: '', sponsorName: '', sponsorParty: '', latestActionText: '', url: 'stored-relative-link', stateUrl: '',
     subjects: ['', 'duplicated', 'duplicated'], sponsorCount: -2147483648})]});
-  const saved = structuredClone(value); assert.equal(check(bills, value), value); assert.deepEqual(value, saved);
+  const saved = structuredClone(value), returned = check(bills, value);
+  assert.notEqual(returned, value); assert.deepEqual(returned, value); assert.deepEqual(value, saved);
   check(bills, billPage({data: [bill({sponsorCount: 2147483647})]}));
 });
 
@@ -122,7 +123,7 @@ test('state bills independent: all thirteen stored status labels and unknown/nul
 
 test('state bills independent: count races and count-conditioned note, no absence/completeness claim', () => {
   for (const [total, data] of [[0, []], [0, [bill()]], [1, []], [90, [bill()]]]) {
-    const value = billPage({total, data, ...(total === 0 ? {note: 'Synthetic no-record note.'} : {})});
+    const value = billPage({total, data, ...(total === 0 ? {note: 'No state bill on record matches that. Say so explicitly — do not describe a bill from memory.'} : {})});
     check(bills, value);
     const altered = structuredClone(value);
     if (total === 0) delete altered.note; else altered.note = 'Unsupported note branch';
@@ -157,11 +158,13 @@ test('state bills independent: SQL dates are serialized canonical UTC midnight',
 
 test('state legislator independent: three exact projection variants and bounded observation', () => {
   for (const value of [single(), absent(), multiple()]) {
-    const saved = structuredClone(value); assert.equal(check(legislator, value), value); assert.deepEqual(value, saved);
+    const saved = structuredClone(value), returned = check(legislator, value);
+    assert.notEqual(returned, value); assert.deepEqual(returned, value); assert.deepEqual(value, saved);
   }
   check(legislator, single(), {query: 'Synthetic', limit: 1});
   refuse(legislator, multiple(), {query: 'Synthetic', limit: 1});
-  check(legislator, absent(), {}); check(legislator, absent(), {query: ' \t '});
+  const missing = absent({note: 'Provide a legislator name or an OpenStates/LegiScan id.'});
+  check(legislator, missing, {}); check(legislator, missing, {query: ' \t '});
   refuse(legislator, single(), {}); refuse(legislator, multiple(), {});
 });
 
