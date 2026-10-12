@@ -29,9 +29,11 @@ Root allocated exactly four new finite context members and exactly three 53→57
 | Public generated distribution | 7/7 pass | `public-distribution.*` |
 | Finite context tests at exact final source freeze | 17/17 pass | `context-freeze.*` |
 | Original static + Office plus new focused controls before final CLI phase addition | 177/177 pass | `lifecycle-preabort-repair.*` |
-| Git diff whitespace check | pass | source freeze |
+| Source/coordination-only Git diff whitespace check | pass | `packet-hygiene.json` |
 
 All evidence paths above are under `docs/qualification/candidates/sandbox-lifecycle-20261012/author/`. Receipts retain commands, exits, stdout/stderr hashes, source HEAD/diff identities and owned-process cleanup. `source-freeze.json` verifies that the final worker receipt's source HEAD plus recorded diff exactly equals the frozen source. Earlier preliminary diff receipts preceded staging new modules and therefore omitted those untracked files; the final worker receipt and full source manifest establish the final tested bytes.
+
+The whole evidence packet diff check reports original trailing whitespace in retained failed-test stdout. Those bytes are intentionally preserved; `packet-hygiene.json` distinguishes this from the clean source/coordination check.
 
 Preserved negative/failure evidence:
 
