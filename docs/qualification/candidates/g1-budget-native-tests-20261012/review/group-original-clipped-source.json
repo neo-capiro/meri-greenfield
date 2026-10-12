@@ -1,0 +1,27 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/g1-budget-native-tests-20261012/review/group-deadline-source.test.mjs"
+  ],
+  "cwd": "/workspace/meri-g1-budget-native-tests-review-20261012",
+  "startUnixSeconds": 1791784905.2921834,
+  "elapsedSeconds": 0.16434669494628906,
+  "exitCode": 1,
+  "ownedPidAndGroup": 76928,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "reapedDescendants": [],
+  "streams": {
+    "stdout": {
+      "path": "group-original-clipped-source.stdout.txt",
+      "bytes": 91472,
+      "sha256": "5a111c42e4cd28e2c687fb0b03379c12f9550b553e68e139ac588facbb4c2f40"
+    },
+    "stderr": {
+      "path": "group-original-clipped-source.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

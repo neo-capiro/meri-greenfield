@@ -1,0 +1,20 @@
+{
+  "kind": "read-only installed primary source inspection",
+  "pathOwner": "prior isolated source worktree",
+  "files": {
+    "node_modules/pg/package.json": {
+      "sha256": "b1e53333a3d0c2c47c49a5cb919d221135dc03145df740925b899bc2baacc435",
+      "bytes": 1668,
+      "version": "8.23.1"
+    },
+    "node_modules/pg-pool/package.json": {
+      "sha256": "0a9924def9e06f791b09a44eaefb227f323a39199887f6ce17b44cb5a9193134",
+      "bytes": 1083,
+      "version": "3.14.0"
+    },
+    "node_modules/pg-pool/index.js": {
+      "sha256": "6f304776edaabde2954cbf8c4366fa6d9512bfba0e408e78cc56b3c46c69d058",
+      "bytes": 14460
+    }
+  }
+}

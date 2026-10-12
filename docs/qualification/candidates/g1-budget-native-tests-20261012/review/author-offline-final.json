@@ -1,0 +1,27 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "/workspace/meri-g1-budget-native-tests-20261012/apps/gateway/test/postgres-budget-admission.test.mjs"
+  ],
+  "cwd": "/workspace/meri-g1-budget-native-tests-review-20261012",
+  "startUnixSeconds": 1791784692.461497,
+  "elapsedSeconds": 0.2707087993621826,
+  "exitCode": 0,
+  "ownedPidAndGroup": 76278,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "reapedDescendants": [],
+  "streams": {
+    "stdout": {
+      "path": "author-offline-final.stdout.txt",
+      "bytes": 2507,
+      "sha256": "3e3b01f813118f10ca6ecc0845af39bd86f7e3f0a2b232c90d329e9e466aece5"
+    },
+    "stderr": {
+      "path": "author-offline-final.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}
