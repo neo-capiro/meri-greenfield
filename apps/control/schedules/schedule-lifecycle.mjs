@@ -99,6 +99,9 @@ export function createScheduleLifecycle(options) {
       const originalRuns=await inspectOriginalRuns({workflowClient,references:refs,limit:s.historyLimit,lifetime,read:(phase,fn)=>c.rpc(workflowConnection,phase,fn,{selection:s,originalReferences:refs.slice(0,s.historyLimit)})});
       await current('before_release');lifetime.check();
       return frozenScheduleData({operation:s.operation,rows,hasMore:page.hasMore,nextAfterScheduleId:page.hasMore&&rows.length?rows.at(-1).projection.scheduleId:null,originalRuns,coverage:{complete:false,currentRetryVerified:false}});
+    } catch(error) {
+      const code=['DEADLINE','CANCELLED'].includes(scheduleErrorCode(error))?scheduleErrorCode(error):'SCHEDULE_FAILED';
+      throw Object.assign(new Error(code),{code});
     } finally {lifetime.close();}
   }
   return Object.freeze({execute,list});
