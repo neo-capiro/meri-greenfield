@@ -1,0 +1,31 @@
+✔ independent staged artifact catalog retains139/96/43 and89typed88mapped8pending (1.050269ms)
+✔ independent all85 prior descriptors and original boundaries remain exact (4.268098ms)
+✔ independent every descriptor stays unavailable and effect-free at catalog boundary (0.302936ms)
+✔ independent create_word exact binding uses caller schema and current schema digest (0.702767ms)
+✔ independent create_word normalizes through actual canonical domain and detaches (15.924128ms)
+✔ independent create_word output enforces domain provenance and detached values (16.552242ms)
+✔ independent create_word rejects authority injection and hostile input (0.738481ms)
+✔ independent create_excel exact binding uses caller schema and current schema digest (0.329977ms)
+✔ independent create_excel normalizes through actual canonical domain and detaches (1.766737ms)
+✔ independent create_excel output enforces domain provenance and detached values (2.181992ms)
+✔ independent create_excel rejects authority injection and hostile input (0.660203ms)
+✔ independent create_powerpoint exact binding uses caller schema and current schema digest (0.235434ms)
+✔ independent create_powerpoint normalizes through actual canonical domain and detaches (1.106484ms)
+✔ independent create_powerpoint output enforces domain provenance and detached values (1.73589ms)
+✔ independent create_powerpoint rejects authority injection and hostile input (0.619701ms)
+✔ independent run_analysis exact binding uses caller schema and current schema digest (0.209996ms)
+✔ independent run_analysis normalizes through actual canonical domain and detaches (0.887905ms)
+✔ independent run_analysis output enforces domain provenance and detached values (1.531874ms)
+✔ independent run_analysis rejects authority injection and hostile input (0.424589ms)
+✔ independent private internal artifact names cannot shadow global contract definitions (0.751139ms)
+✔ independent canonical cross-field validators are connected (0.647123ms)
+✔ independent catalog refuses schema digest and empty source requirement corruption (14.754559ms)
+✔ independent original operation/version and output request are mandatory (0.89764ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2600.182002
