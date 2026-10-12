@@ -1,0 +1,34 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "docs/qualification/candidates/inventory-fixture-repair-20261012/author/verify-repair.py"
+  ],
+  "cwd": "/workspace/meri-inventory-fixture-repair-20261012",
+  "sourceHead": "690bac4cd44112b161d8e02818aeae7639ce237a",
+  "sourceDiffSha256": "84c1cb4facf5520def600dc1898b4cbdf57fbea668acfb46958e96b403d60395",
+  "sourceDiffBytes": 2905,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T03:42:45.272779+00:00",
+  "durationSeconds": 0.366,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 35326,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/inventory-fixture-repair-20261012/author/repair-controls.stdout.bin",
+      "bytes": 796,
+      "sha256": "05005932817c989e87e747a5a05b0b859056a38464601f8f852ad87ac692ed75"
+    },
+    {
+      "path": "docs/qualification/candidates/inventory-fixture-repair-20261012/author/repair-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Verify exact original-test preservation, challenge new test with isolated size-blind mutant, measure canonical source-only context without changing shared pins.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

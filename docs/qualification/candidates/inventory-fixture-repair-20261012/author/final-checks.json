@@ -1,0 +1,37 @@
+{
+  "result": "PASS",
+  "existingChangedPaths": [
+    "apps/worker/qualification/probes/image-inventory.test.mjs"
+  ],
+  "commandReceipts": [
+    {
+      "label": "baseline-original",
+      "exitCode": 1,
+      "ownedPidAndPgid": 34930,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "repaired-suite",
+      "exitCode": 0,
+      "ownedPidAndPgid": 35102,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "repair-controls",
+      "exitCode": 0,
+      "ownedPidAndPgid": 35326,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "context-suite",
+      "exitCode": 0,
+      "ownedPidAndPgid": 35350,
+      "ownedProcessGroupAbsent": true
+    }
+  ],
+  "gitDiffCheckExit": 0,
+  "productionProbeSha256": "c7d682e67b5b3064947c92bebdce785aa04c3e00238fc8fb769d4a828479de58",
+  "testSha256": "845473b633ded89e8c94d1fe59637cee87418a7c0a2cdc3d2fe131971961b1b3",
+  "noOriginalAssertionRemoved": true,
+  "noSharedPinChanged": true
+}

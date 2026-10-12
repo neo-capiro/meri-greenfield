@@ -78,6 +78,9 @@ test('enumerates fabricated roots deterministically and retains candidate byte h
   const tiff = write(dir, 'usr/bin/tiffcrop', 'synthetic tiff');
   const md5 = write(dir, 'opt/libdigestmd5.so.2', 'synthetic md5');
   write(dir, 'usr/lib/jvm/bin/java', 'java');
+  // Finish fixture membership before comparing full directory metadata.
+  // The result is excluded, but creating its directory entry changes the root.
+  write(dir, 'inventory-result.json', '{}');
   const first = scan(dir), second = scan(dir);
   assert.equal(first.status, 0, first.stderr + JSON.stringify(first.manifest.errors));
   assert.equal(second.status, 0, second.stderr + JSON.stringify(second.manifest.errors));
@@ -383,4 +386,42 @@ for platform,out in [('linux',m.OUTPUT_PATH),('linux','/opt//meri-worker/image-i
 print(json.dumps(facts));sys.exit(0 if all(f['passed'] for f in facts) else 1)
 `);
   assert.equal(r.status, 0, r.stderr + r.stdout); assert.equal(JSON.parse(r.stdout).length, 4);
+});
+
+test('directory sizes remain captured and size-only changes before descent fail closed', () => {
+  const r = runPython(POSIX_FIXTURE + `
+facts=[]
+for scenario in ['stable','size-only-before-descent']:
+    state={'size':4096}
+    def lstat(path):
+        if path=='/':return st(1)
+        if path=='/static':return st(20,size=128)
+        if path=='/static/child':return st(21,size=state['size'])
+        raise AssertionError(path)
+    def walk(root,**kwargs):
+        yield '/static',['child'],[]
+        if scenario=='size-only-before-descent':state['size']=8192
+        yield '/static/child',[],[]
+    manifest,code=run(['/static'],lstat,walk)
+    entries={entry['path']:entry for entry in manifest['entries']}
+    facts.append({'scenario':scenario,'code':code,'ok':manifest['ok'],
+                  'complete':manifest['coverage']['complete'],
+                  'rootSize':entries['/static']['size'],
+                  'childSize':entries['/static/child']['size'],
+                  'errors':manifest['errors']})
+print(json.dumps(facts))
+`);
+  assert.equal(r.status, 0, r.stderr + r.stdout);
+  const [stable, changed] = JSON.parse(r.stdout);
+  assert.deepEqual(stable, {
+    scenario: 'stable', code: 0, ok: true, complete: true,
+    rootSize: 128, childSize: 4096, errors: [],
+  });
+  assert.equal(changed.scenario, 'size-only-before-descent');
+  assert.equal(changed.code, 1);
+  assert.equal(changed.ok, false);
+  assert.equal(changed.complete, false);
+  assert.equal(changed.rootSize, 128);
+  assert.equal(changed.childSize, 4096);
+  assert.ok(changed.errors.some((error) => /directory\/ancestor identity changed:\/static\/child/.test(error.error)));
 });
