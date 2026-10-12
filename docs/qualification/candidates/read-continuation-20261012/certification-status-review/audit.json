@@ -1,0 +1,357 @@
+{
+  "base": "4566cef6417428d46274a14f7937ca11df66ae9d",
+  "source": "fa59df3739a2c43310b86de416d2f455a8715dce",
+  "sourceTree": "6dcc5ddff9b5e04aa64fd084104eb168825c8dca",
+  "authorMetadata": "1142bbd7dabd927653ec5c810b86f8ecba89f0ba",
+  "authorTree": "7725e16e434a709a8aeeeb0386d50d44ee521dc0",
+  "reviewHeadAtAudit": "5ab375ed92797f19b1c7ec82f4006a3d1bdd3316",
+  "originalsPreserved": 6001,
+  "checks": [
+    {
+      "name": "all original bytes source",
+      "pass": true
+    },
+    {
+      "name": "all original bytes author",
+      "pass": true
+    },
+    {
+      "name": "all original bytes review",
+      "pass": true
+    },
+    {
+      "name": "exact source packages/contracts/retrieval-0.2/certification-status-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact source packages/contracts/retrieval-0.2/certification-status.schema.json",
+      "pass": true
+    },
+    {
+      "name": "exact source packages/contracts/test/retrieval-certification-status.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "source adds only allocated files",
+      "pass": true
+    },
+    {
+      "name": "closeout metadata only",
+      "pass": true
+    },
+    {
+      "name": "pinned apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "observed unchanged apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned apps/api/src/external/fedramp/fedramp.client.ts",
+      "pass": true
+    },
+    {
+      "name": "observed unchanged apps/api/src/external/fedramp/fedramp.client.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned apps/api/src/external/fedramp/fedramp.client.spec.ts",
+      "pass": true
+    },
+    {
+      "name": "observed unchanged apps/api/src/external/fedramp/fedramp.client.spec.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned apps/api/src/meri/meri.controller.ts",
+      "pass": true
+    },
+    {
+      "name": "observed unchanged apps/api/src/meri/meri.controller.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned apps/api/src/meri/meri-tool-request-control.ts",
+      "pass": true
+    },
+    {
+      "name": "observed unchanged apps/api/src/meri/meri-tool-request-control.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned apps/api/src/auth/roles.guard.ts",
+      "pass": true
+    },
+    {
+      "name": "observed unchanged apps/api/src/auth/roles.guard.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned packages/meriv2-core/src/grounding/status-provenance.ts",
+      "pass": true
+    },
+    {
+      "name": "observed unchanged packages/meriv2-core/src/grounding/status-provenance.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned packages/meriv2-core/src/grounding/status-provenance.spec.ts",
+      "pass": true
+    },
+    {
+      "name": "observed unchanged packages/meriv2-core/src/grounding/status-provenance.spec.ts",
+      "pass": true
+    },
+    {
+      "name": "only canonical inert import",
+      "pass": true
+    },
+    {
+      "name": "only factory export",
+      "pass": true
+    },
+    {
+      "name": "no provider runtime clock effects",
+      "pass": true
+    },
+    {
+      "name": "no private source package import",
+      "pass": true
+    },
+    {
+      "name": "closed explicit locale only",
+      "pass": true
+    },
+    {
+      "name": "locale canonical and supported admission",
+      "pass": true
+    },
+    {
+      "name": "casing takes explicit context",
+      "pass": true
+    },
+    {
+      "name": "exact request fields",
+      "pass": true
+    },
+    {
+      "name": "only fedramp",
+      "pass": true
+    },
+    {
+      "name": "query is not silently truncated",
+      "pass": true
+    },
+    {
+      "name": "no fabricated echo CertificationStatusAbsent",
+      "pass": true
+    },
+    {
+      "name": "snapshot assertion CertificationStatusAbsent",
+      "pass": true
+    },
+    {
+      "name": "no fabricated echo CertificationStatusAmbiguous",
+      "pass": true
+    },
+    {
+      "name": "snapshot assertion CertificationStatusAmbiguous",
+      "pass": true
+    },
+    {
+      "name": "no fabricated echo CertificationStatusSingle",
+      "pass": true
+    },
+    {
+      "name": "snapshot assertion CertificationStatusSingle",
+      "pass": true
+    },
+    {
+      "name": "three output variants",
+      "pass": true
+    },
+    {
+      "name": "absence provenance optional",
+      "pass": true
+    },
+    {
+      "name": "absence assertion exact",
+      "pass": true
+    },
+    {
+      "name": "record contains program and all9 source fields",
+      "pass": true
+    },
+    {
+      "name": "record agencies no unique guarantee",
+      "pass": true
+    },
+    {
+      "name": "candidate count safe full count",
+      "pass": true
+    },
+    {
+      "name": "candidate window2..10",
+      "pass": true
+    },
+    {
+      "name": "no candidate uniqueness guarantee",
+      "pass": true
+    },
+    {
+      "name": "pinned exact vocabulary FEDRAMP_STATUS_VOCABULARY",
+      "pass": true
+    },
+    {
+      "name": "pinned exact vocabulary FEDRAMP_IMPACT_LEVEL_VOCABULARY",
+      "pass": true
+    },
+    {
+      "name": "pinned source URL",
+      "pass": true
+    },
+    {
+      "name": "original wrapper locale is ambient",
+      "pass": true
+    },
+    {
+      "name": "original exact ID before name branch",
+      "pass": true
+    },
+    {
+      "name": "original first10 and full count",
+      "pass": true
+    },
+    {
+      "name": "original optional first record provenance",
+      "pass": true
+    },
+    {
+      "name": "no original query or generation echo",
+      "pass": true
+    },
+    {
+      "name": "source15s per fetch",
+      "pass": true
+    },
+    {
+      "name": "source8MiB data bound",
+      "pass": true
+    },
+    {
+      "name": "body fully read before postread check",
+      "pass": true
+    },
+    {
+      "name": "source retry remains actual external call",
+      "pass": true
+    },
+    {
+      "name": "selected wrapper no actor tenant proof",
+      "pass": true
+    },
+    {
+      "name": "provenance engine treats verification separately",
+      "pass": true
+    },
+    {
+      "name": "owned group absent initial-independent",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/read-continuation-20261012/certification-status-review/initial-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/read-continuation-20261012/certification-status-review/initial-independent.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "stderr empty initial-independent",
+      "pass": true
+    },
+    {
+      "name": "owned group absent identity-independent",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/read-continuation-20261012/certification-status-review/identity-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/read-continuation-20261012/certification-status-review/identity-independent.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "stderr empty identity-independent",
+      "pass": true
+    },
+    {
+      "name": "owned group absent exact-source-tests",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/read-continuation-20261012/certification-status-review/exact-source-tests.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/read-continuation-20261012/certification-status-review/exact-source-tests.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "stderr empty exact-source-tests",
+      "pass": true
+    },
+    {
+      "name": "preimage initial-source/packages/contracts/retrieval-0.2/certification-status-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "preimage initial-source/packages/contracts/retrieval-0.2/certification-status.schema.json",
+      "pass": true
+    },
+    {
+      "name": "preimage identity-negative-source/packages/contracts/retrieval-0.2/certification-status-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "preimage identity-negative-source/packages/contracts/retrieval-0.2/certification-status.schema.json",
+      "pass": true
+    },
+    {
+      "name": "behavioral replay stable before after",
+      "pass": true
+    },
+    {
+      "name": "no private bodies in new tracked files",
+      "pass": true
+    },
+    {
+      "name": "source whitespace",
+      "pass": true
+    }
+  ],
+  "sourceIdentities": [
+    {
+      "path": "packages/contracts/retrieval-0.2/certification-status-validation.mjs",
+      "bytes": 3105,
+      "sha256": "122dbd5c095a4c791dcd7c02a2941bbf4e3656d2653bf8d4893ba07cf5ab0f62",
+      "blob": "efecb9cce738ed09f2b96b1ddcd8d15843fe5162"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/certification-status.schema.json",
+      "bytes": 6517,
+      "sha256": "31aa9a8aeb6e1dee3871b6bf7c919e1ed48ca1bc8f161a335a80fec158c9dc8f",
+      "blob": "4f47033811b62e2cc28323e8e063ffb0a3f9ee52"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-certification-status.test.mjs",
+      "bytes": 11863,
+      "sha256": "1d37858af451fe8690c3fba7415d9714a6c3e4ffc70d16ec74bd095a2626eac2",
+      "blob": "8773bd1a5236a9e3e01e3d0ce463a9ee9e22b11d"
+    }
+  ],
+  "privateSourceExecuted": false,
+  "runtime": "UNRUN_UNAVAILABLE"
+}
