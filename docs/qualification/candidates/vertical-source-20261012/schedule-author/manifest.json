@@ -1,6 +1,7 @@
 {
   "sourceFreeze": "b5d0f55108a375ce15eed97d3a7a6926558221af",
   "base": "e5fb3963de787bbd7b7663316c368f15814897da",
+  "priorPacket": "12be35ac",
   "members": [
     {
       "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/audit-result.json",
@@ -13,9 +14,19 @@
       "sha256": "c3cc4423fc1a456df63067bda59c04444f503c68f03e8c2426520a4939f7b499"
     },
     {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/authored-whitespace.json",
+      "bytes": 258,
+      "sha256": "e28f7fa8ee5c83d791b76ab0f0e6e1d46aafcbcfc0ba4513bc8190df6d37d687"
+    },
+    {
       "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/capture-reaped.py",
       "bytes": 3390,
       "sha256": "845f3924ad4b66ef71ab09872bedc2cd012334b0ae16c2a7e7f1d798b614855a"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/cleanup.json",
+      "bytes": 1423,
+      "sha256": "db5575504b82c4ef0d94c6c3dc7932f471f017ab21bf31c1abc944235c57e8e7"
     },
     {
       "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/contracts-author.json",
@@ -241,6 +252,21 @@
       "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/update-proxy-negative.stdout.bin",
       "bytes": 844,
       "sha256": "0a2ccc153b1ebd4d36ff8ffdcecd8d41fe502a9ae6856daf28820839f504f3ca"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/whitespace.json",
+      "bytes": 405,
+      "sha256": "9257cc81f590d5f87dc8d3f23aef8bd6cba58bce78850272ca7f3afdfaee4892"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-author/whitespace.stdout.bin",
+      "bytes": 792,
+      "sha256": "3891129cce2144d7edd3b830bbc2e2c8553ec284165f71ba59eb250ab78f640a"
     }
   ],
   "scope": "SOURCE_ONLY; no live PostgreSQL/Temporal qualification"

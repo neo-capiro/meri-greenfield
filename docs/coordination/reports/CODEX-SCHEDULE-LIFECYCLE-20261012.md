@@ -48,3 +48,5 @@ All original assertions remain; regressions are appended. Raw failures and immut
 - Raw list authority/store/history error leakage reproduced0/3; list now uses the same inert scrubber as mutations.
 
 No test result closes a real runtime gate. Live database migration/concurrency/crash/role isolation, actual Temporal service behavior, retry/converter configuration, exclusive schedule ownership, current approval/policy producer, future task/template enforcement and explicit uncertain-outcome reconciliation remain unqualified. Root owns canonical route/capability integration. All source connectivity stays disabled; G1 remains OPEN. No service, SQL, provider/model, native, cloud, resource, credential or security-state action occurred.
+
+Final cleanup removed only this lane's seven minimal dependency copies (1,374,227 bytes); donor directories were untouched. Full `git diff --check` returns2 solely for spaces in the retained synthetic raw list-error failure output; exact792-byte diagnostic is preserved. Source/contracts/coordination-only whitespace check passes. No original raw failure was normalized.
