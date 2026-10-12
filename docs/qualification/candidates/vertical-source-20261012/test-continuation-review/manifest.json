@@ -1,0 +1,146 @@
+{
+  "verdict": "ACCEPT_SOURCE_TEST_ONLY",
+  "source": "2955ec6cfd1b38908cc62d9a1f5a8800bf7f5bdc",
+  "authorPacket": "a8ea67254e7f229413e4a31b05f7e3bc334cfd74",
+  "reviewHeadBeforeManifest": "06cf82fa95615053ec7cd3ef1178cbb23ec0bf6f",
+  "reviewOnlyCommitOrderBeforeManifest": [
+    "b83f74eba65655587a549765e777bb1cf923c22c",
+    "1cd4c76a068720635dc27fc4358985d283035323",
+    "27043d8de3fa96dbe4d77b470ecb289507a6009d",
+    "f0e900134c43685431e811bd6b87ca57865f6687",
+    "88e59819097823ebf97c5ad0c552f460e055f9f2",
+    "0711736ed8813f93f79f9c0c9de142a3e1094676",
+    "06cf82fa95615053ec7cd3ef1178cbb23ec0bf6f"
+  ],
+  "excludeAuthorDependencyMerges": [
+    "f7718cc1626b0ea0d26e643c4d6cbc6341350a39",
+    "d1ba424033712ec508b846a7ba35f81883518f90"
+  ],
+  "independentTests": 15,
+  "sourceAuditChecks": 9366,
+  "packetAuditChecks": 174,
+  "authorFocusedTests": 455,
+  "selfExcluded": true,
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-VERTICAL-TEST-CONTINUATION-REVIEW-20261012.md",
+      "bytes": 4459,
+      "sha256": "1aa6faea256ddb72d62ace5be023c17e98d210eb3ff83e71584643235ea6bb03"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-VERTICAL-TEST-CONTINUATION-REVIEW-20261012.md",
+      "bytes": 2842,
+      "sha256": "592072d826ee1394a6f9d10fa65bc5e4237b5536712a69ce2c9857a709b3ce42"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-review/.gitattributes",
+      "bytes": 76,
+      "sha256": "209b0ff8c2d83ea1957c0cadef7c634b4f3d2054925048dd67dfebeafbd927ef"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-review/audit-packet.py",
+      "bytes": 4074,
+      "sha256": "5cdacef2dcf1bcbb261de015a6c8b97d09797824af45eaaedd432cbaf4ed43ea"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-review/audit-result.json",
+      "bytes": 7564,
+      "sha256": "5f3c6c6ddfa01be0abf50773de616e3249bf3114603cbcd655444eca51f8555d"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-review/audit.py",
+      "bytes": 4050,
+      "sha256": "176a9f120a35be952a4580cce565a88496700d20038b87702b44726a42a02d5f"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-review/cleanup-final.json",
+      "bytes": 1614,
+      "sha256": "5cc92e4f86fa5da61bd10b51966cc1a32e1f2826b290d4215d77a2dfd8ff0c86"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-review/expectation-mutations.test.mjs",
+      "bytes": 2592,
+      "sha256": "37970be44e66d1c7b485260fbe1248d11e315767e98f6dea00bbbf0350a914b2"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-review/independent-audit.json",
+      "bytes": 1424,
+      "sha256": "12713e118cdcf0b20204944dfb7849b5964a98db48b759b6538a9e202c5c14ee"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-review/independent-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-review/independent-audit.stdout.bin",
+      "bytes": 6680,
+      "sha256": "7ec9e759f12fb6f49eac3fbdd83b66b5a4027be9c49570c3c68938919420c39c"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-review/independent-forward.patch",
+      "bytes": 64260,
+      "sha256": "216d10c012b0de08d1a237e1588b995a6d6e65fbc2e2f95de468fd82c746cdc5"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-review/independent-inverse.json",
+      "bytes": 1383,
+      "sha256": "2c2c63095f431f69b87a0cf68d6a9f0225cf18e3b2cee0c5ef6c3d18bfcce1f2"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-review/independent-inverse.patch",
+      "bytes": 64260,
+      "sha256": "af1c66be6795b4d13474d4124a2f206d2a5c1c5f6c7b3a04fd58cf9c97a6b254"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-review/independent-inverse.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-review/independent-inverse.stdout.bin",
+      "bytes": 1500,
+      "sha256": "2e013cdc67f765b3650675619124fe05952ca5f59fa8fd9d55c8fb3cef32d15a"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-review/independent-packet.json",
+      "bytes": 1385,
+      "sha256": "c316bbe263db9ca99f8b87010db60a4feb09126e455df8d4affaf24909392fd7"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-review/independent-packet.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-review/independent-packet.stdout.bin",
+      "bytes": 1372,
+      "sha256": "f016068e4aa174ca8ef45596ba1b018c13e7591898d0dc0c618fa7462eced665"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-review/initial-failure-census.json",
+      "bytes": 9040,
+      "sha256": "ea55add6804993e27441b1a53a127324ad138eccb1ed89bbce1ce05ca4f05b9b"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-review/packet-audit-result.json",
+      "bytes": 1564,
+      "sha256": "380e94ffd0f522883015aea29ff4d4b1216e48e59fc86b6f3d553c557eb95946"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-review/patch-whitespace-before.json",
+      "bytes": 5138,
+      "sha256": "1ea2efe15b1b433381c75ace118a5069074430628525c903b84a7b9f56487ba7"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-review/semantic-diff-review.json",
+      "bytes": 6597,
+      "sha256": "cbec921b3df69183161340d359e87dbfebc97e900d68fdc4385bb656fc8ef8e2"
+    }
+  ]
+}
