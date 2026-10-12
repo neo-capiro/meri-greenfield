@@ -17,7 +17,7 @@ function identity(value,source=value){
   const procurement=['procurement','p_1','p1','p_40','p40','procurement_line','procurement_line_item','procurement_blin'];
   let expected=rdte.includes(type)?'pe':procurement.includes(type)?'procurement_line_item':null;
   if(expected===null){
-    if(['rdte','rdt_and_e','r_d_t_e','research_development','research_and_development'].some(x=>appropriation.includes(x)))expected='pe';
+    if(['rdte','rdt_and_e','r_d_t_e'].includes(appropriation)||appropriation.includes('research_development')||appropriation.includes('research_and_development'))expected='pe';
     else if(appropriation==='proc'||appropriation.includes('procurement'))expected='procurement_line_item';
     else expected=/^\d{7}[A-Z][A-Z0-9]*$/.test(code)?'pe':/^\d{4}[A-Z]{1,2}[0-9A-Z]{2,14}$/.test(code)?'procurement_line_item':'other';
   }
@@ -43,6 +43,7 @@ function claimSemantics(value){
 }
 function claim(value,mode){
   if(value===null)return;
+  if((mode===undefined||mode==='enforce')&&['enactmentStatus','vehicleType'].some(key=>!Object.hasOwn(value,key)))fail('Source claim labels are required');
   const expected=stages[value.stage];
   if(value.stageLabel!==expected[0]||value.legislativeVehicle!==expected[1]||value.isProjection!==(value.cycleClass==='outyear'))fail('Funding claim stage/vehicle/cycle mismatch');
   const enactment=value.stage==='enacted'?'enacted':value.stage==='none'||value.cycleClass==='historical'?'unknown':['current','outyear'].includes(value.cycleClass)?'not_enacted':'unknown';
@@ -112,7 +113,8 @@ export function createProgramElementValidators({validateShape,schema}) {
       if(input.service!==null&&row.service===null||input.budgetActivity!==null&&row.budgetActivity===null)fail('Selected nonempty finder field cannot be null');
       const funding=row.funding;
       if(funding.note!==schema.$defs.ProgramElementFundingNote.const)fail('Finder funding caution changed');
-      if(row.currentFundingClaim!==null&&(!funding.current||row.currentFundingClaim.value!==funding.current.value||row.currentFundingClaim.fiscalYear!==funding.current.fy))fail('Finder current claim mismatch');
+      const current=funding.current,stage=current?.stage==='conference'?'appropriations_conference':current?.stage??'none';
+      observeClaim(row.currentFundingClaim,current?.value??null,current?.fy??null,stage,null);
       if(funding.current){const expected=ladder[funding.current.stage];if(funding.current.stageLabel!==expected[0]||funding.current.vehicle!==expected[1])fail('Finder funding stage/vehicle mismatch');}
       if(funding.currentVsRequest!==null&&(!funding.current||!funding.request||funding.current.stage==='request'||funding.current.fy===null||funding.current.fy!==funding.request.fy))fail('Cross-year comparison is not source comparison');
       searchClaims(row);
@@ -124,24 +126,37 @@ export function createProgramElementValidators({validateShape,schema}) {
     // Legacy detail cache keys uppercase, so a cached stored selector may differ in case.
     if(pe.peCode.toUpperCase()!==input.peCode.toUpperCase())fail('Detail selector substitution');
     instant(pe.lastSyncedAt);if(pe.retiredAt!==null)instant(pe.retiredAt);years(pe.years,pe.peCode,mode,page.currentCycleFy);
-    if(pe.currentCycleFy!==null&&page.currentCycleFy!==pe.currentCycleFy)fail('Detail catalog cycle mismatch');
+    if(page.currentCycleFy!==pe.currentCycleFy)fail('Detail catalog cycle mismatch');
     currentClaim(page,pe.years);
   }
   function timeline(page,input,mode){
-    if(page.peCode!==input.peCode)fail('Timeline selector substitution');years(page.years,page.peCode,mode,page.currentCycleFy);currentClaim(page,page.years);
+    if(page.peCode!==input.peCode)fail('Timeline selector substitution');
+    const markYears=page.years.filter(row=>['hascMark','sascMark','ndaaConference','hacDMark','sacDMark','conference'].some(key=>row[key]!==null));
+    const cycleRows=markYears.length?markYears:page.years.filter(row=>row.request!==null);
+    const cycle=cycleRows.length?cycleRows[cycleRows.length-1].fy:null;
+    if(page.currentCycleFy!==cycle)fail('Timeline cycle differs from returned mark/request years');
+    years(page.years,page.peCode,mode,page.currentCycleFy);currentClaim(page,page.years);
     for(const row of page.years){
+      if(mode==='enforce'&&['originalUnit','originalValue','source'].some(key=>!Object.hasOwn(row.fundingClaim,key)))fail('Timeline provenance envelope is required');
       const selected=picked(row),selectedStage=selected.stage==='appropriations_conference'?'conference':selected.stage;
       if(row.currentStage!==selectedStage||!moneyEquals(row.current,selected.value)||row.cycle!==row.fundingClaim.cycleClass)fail('Timeline current/cycle mismatch');
       const conflicts=row.requestConflictValuesM;
       const hasConflict=row.request!==null&&cents(row.request)===0n&&conflicts?.length>0;
-      const expectedDelta=row.request!==null&&selected.value!==null&&selectedStage!=='request'&&!hasConflict?Number(cents(selected.value)-cents(row.request))/100:null;
+      // Derived source arithmetic uses the two rounded numeric operands; raw wire stays exact.
+      const expectedDelta=row.request!==null&&selected.value!==null&&selectedStage!=='request'&&!hasConflict?row.current-Number(cents(row.request))/100:null;
       if(!closeNumber(row.currentDeltaVsRequestM,expectedDelta))fail('Timeline current delta differs from same-row request');
-      if(conflicts!==null&&(conflicts.some(x=>x===0)||new Set(conflicts).size!==conflicts.length))fail('Conflicting requests must be unique nonzero observations');
+      if(conflicts!==null&&(!hasConflict||conflicts.some(x=>x===0)||new Set(conflicts).size!==conflicts.length))fail('Conflicting requests must be unique nonzero observations');
       const forecast=['predictedConferenceAmount','predictedConferenceAmountCiLow','predictedConferenceAmountCiHigh','predictedConferenceConfidence'];
       if(!forecast.every(k=>row[k]===null)&&!forecast.every(k=>row[k]!==null))fail('Incomplete prediction projection');
       const expected=ladder[row.currentStage];if(row.currentStageLabel!==expected[0]||row.currentVehicle!==expected[1])fail('Timeline stage/vehicle mismatch');
       if(row.request!==null&&/^-?0(?:\.0{1,2})?$/.test(row.request)&&row.requestConflictValuesM?.some(x=>x!==0)&&row.currentDeltaVsRequestM!==null)fail('Conflicting zero request cannot support delta');
-      for(const key of Object.keys(row.missingMarks))if(row.missingMarks[key]==='not_applicable'||(row[key]!==null)!==(row.missingMarks[key]==='present'))fail('Present zero/nonzero mark misclassified');
+      const auth=['hascMark','sascMark','ndaaConference'],approps=['hacDMark','sacDMark','conference','enacted'];
+      for(const key of Object.keys(row.missingMarks)){
+        const track=auth.includes(key)?auth:approps.includes(key)?approps:['request'];
+        const process=row.cycle==='current'||row.cycle==='historical';
+        const status=row[key]!==null?'present':!process?'not_started':track.some(peer=>row[peer]!==null)?'candidate_gap':'unknown_coverage';
+        if(row.missingMarks[key]!==status)fail('Missing mark differs from its legislative track');
+      }
     }
     const ids=new Set(),types=new Set();let previous=-Infinity;
     for(const item of page.milestones){
