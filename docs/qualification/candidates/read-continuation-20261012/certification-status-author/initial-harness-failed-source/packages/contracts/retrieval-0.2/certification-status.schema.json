@@ -1,0 +1,281 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:certification-status:0.2.0",
+  "title": "Private certification source snapshot; validation is not verification",
+  "$defs": {
+    "CertificationStatusContext": {
+      "type": "object",
+      "properties": {
+        "comparisonLocale": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "comparisonLocale"
+      ],
+      "additionalProperties": false
+    },
+    "CertificationStatusRequest": {
+      "type": "object",
+      "properties": {
+        "program": {
+          "const": "fedramp"
+        },
+        "query": {
+          "type": "string",
+          "maxLength": 1048576
+        }
+      },
+      "required": [
+        "program",
+        "query"
+      ],
+      "additionalProperties": false
+    },
+    "CertificationStatusInput": {
+      "type": "object",
+      "properties": {
+        "program": {
+          "const": "fedramp"
+        },
+        "query": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        }
+      },
+      "required": [
+        "program",
+        "query"
+      ],
+      "additionalProperties": false
+    },
+    "CertificationStatusVocabulary": {
+      "enum": [
+        "Agency Authorization In Process",
+        "FedRAMP Certified",
+        "FedRAMP In Process",
+        "Initial Implementation",
+        "Legacy FedRAMP Ready",
+        "Unknown"
+      ]
+    },
+    "CertificationImpactVocabulary": {
+      "enum": [
+        "High",
+        "LI-SaaS",
+        "Low",
+        "Moderate",
+        "Unknown"
+      ]
+    },
+    "CertificationMarketplaceUrl": {
+      "const": "https://fedramp.gov/marketplace/products/"
+    },
+    "CertificationStatusRecord": {
+      "type": "object",
+      "properties": {
+        "productId": {
+          "type": "string",
+          "pattern": "^FR[0-9]+$",
+          "maxLength": 1048576
+        },
+        "cspName": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        },
+        "csoName": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        },
+        "status": {
+          "$ref": "#/$defs/CertificationStatusVocabulary"
+        },
+        "impactLevel": {
+          "$ref": "#/$defs/CertificationImpactVocabulary"
+        },
+        "authorizationDate": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "maxLength": 64
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sponsoringAgencies": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 1048576,
+            "minLength": 1
+          },
+          "maxItems": 10000
+        },
+        "sourceUrl": {
+          "$ref": "#/$defs/CertificationMarketplaceUrl"
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 64
+        },
+        "program": {
+          "const": "fedramp"
+        }
+      },
+      "required": [
+        "productId",
+        "cspName",
+        "csoName",
+        "status",
+        "impactLevel",
+        "authorizationDate",
+        "sponsoringAgencies",
+        "sourceUrl",
+        "observedAt",
+        "program"
+      ],
+      "additionalProperties": false
+    },
+    "CertificationStatusAbsent": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "get_certification_status"
+        },
+        "program": {
+          "const": "fedramp"
+        },
+        "searchedEntireDataset": {
+          "const": true
+        },
+        "found": {
+          "const": false
+        },
+        "evidenceOfAbsence": {
+          "const": true
+        },
+        "note": {
+          "const": "No matching product or CSP name was found in the complete fetched FedRAMP Marketplace dataset."
+        },
+        "sourceUrl": {
+          "$ref": "#/$defs/CertificationMarketplaceUrl"
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 64
+        }
+      },
+      "required": [
+        "tool",
+        "program",
+        "searchedEntireDataset",
+        "found",
+        "evidenceOfAbsence",
+        "note"
+      ],
+      "additionalProperties": false
+    },
+    "CertificationStatusAmbiguous": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "get_certification_status"
+        },
+        "program": {
+          "const": "fedramp"
+        },
+        "searchedEntireDataset": {
+          "const": true
+        },
+        "found": {
+          "const": true
+        },
+        "ambiguous": {
+          "const": true
+        },
+        "candidateCount": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 9007199254740991
+        },
+        "candidates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CertificationStatusRecord"
+          },
+          "minItems": 2,
+          "maxItems": 10
+        },
+        "note": {
+          "const": "Several products match. No product was selected; disambiguation is required."
+        }
+      },
+      "required": [
+        "tool",
+        "program",
+        "searchedEntireDataset",
+        "found",
+        "ambiguous",
+        "candidateCount",
+        "candidates",
+        "note"
+      ],
+      "additionalProperties": false
+    },
+    "CertificationStatusSingle": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "get_certification_status"
+        },
+        "program": {
+          "const": "fedramp"
+        },
+        "searchedEntireDataset": {
+          "const": true
+        },
+        "found": {
+          "const": true
+        },
+        "ambiguous": {
+          "const": false
+        },
+        "record": {
+          "$ref": "#/$defs/CertificationStatusRecord"
+        }
+      },
+      "required": [
+        "tool",
+        "program",
+        "searchedEntireDataset",
+        "found",
+        "ambiguous",
+        "record"
+      ],
+      "additionalProperties": false
+    },
+    "CertificationStatusOutput": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/CertificationStatusAbsent"
+        },
+        {
+          "$ref": "#/$defs/CertificationStatusAmbiguous"
+        },
+        {
+          "$ref": "#/$defs/CertificationStatusSingle"
+        }
+      ]
+    }
+  }
+}
