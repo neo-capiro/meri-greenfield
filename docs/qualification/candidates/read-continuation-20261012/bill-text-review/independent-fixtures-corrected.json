@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-bill-text-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-bill-text-review-20261012",
+  "sourceHead": "f6f1beee87246c5511f76df27cc2531165147993",
+  "sourceDiffSha256": "9ad1c9a75b73a660ee49a016ec34f2a45caa3307717e5769ead24e32eaa3fd03",
+  "sourceDiffBytes": 14537,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T17:09:41.343146+00:00",
+  "durationSeconds": 0.315,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 174175,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/independent-fixtures-corrected.stdout.bin",
+      "bytes": 5236,
+      "sha256": "8dda1ab19f129a5f129633d04d479f8341531e284623b3e32e0502d687a916ef"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/independent-fixtures-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Correct pre-candidate synthetic fixtures to exact wire notes/literals and source facts; retain46/15 original plus exact checker. No production changes.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,277 @@
+{
+  "source": "079c9fd8c88375f55d6f3d5cadd16763c98e63c7",
+  "sourceTree": "292208a5a5909a8be5713b8560673383ea635fcb",
+  "scope": "review evidence only; self excluded",
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-READ-CONTINUATION-BILL-TEXT-REVIEW-20261012.md",
+      "bytes": 4057,
+      "sha256": "9c81ef507b8651599ada65d0ff29b67135ad85ca4485866b84643d25ad4fcb3f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/author-receipt-audit.json",
+      "bytes": 6381,
+      "sha256": "8844e96c9c282ffd2b26ec03bd86af05d48d681a4693b36157798eb3af772725"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/count-correction.json",
+      "bytes": 364,
+      "sha256": "04bdf519f7d228b88696f04e241586dd20316240aaacebb4a12c128b76205d2a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/criteria.md",
+      "bytes": 3360,
+      "sha256": "4ee1792ad7dda5f35c11c712fb264f1ee863b690d84fef88897ce504e8d16466"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/date-format-before.json",
+      "bytes": 1356,
+      "sha256": "18f63708b28d07c3f1091a3006f90d282271ed801d35953822e60fe0330bbcd0"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/date-format-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/date-format-before.stdout.bin",
+      "bytes": 7763,
+      "sha256": "04a4efaf6fa1882729e337df24e095629dc3544ccac26c1141cc82c5d5a1e659"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/final-whitespace.json",
+      "bytes": 1254,
+      "sha256": "032e6e1cbd0e5522bdcbcb77d5513ebbf8e3737b1c3013c3dd732c586bb42ebb"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/final-whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/final-whitespace.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/fixture-corrections.json",
+      "bytes": 784,
+      "sha256": "cf6a506dd1d32df2f5d0428ec5f3263f9b4630f447950a96747e40e9e45d352d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/independent-expanded.json",
+      "bytes": 1365,
+      "sha256": "b0e5f965e53b43ea208fcc945c147fa6bf029de2a1f6b21930f90c92c2ff9444"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/independent-expanded.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/independent-expanded.stdout.bin",
+      "bytes": 6701,
+      "sha256": "5c018df58a675ff20da73a2c570ccd2a556eab1c6efee5d7ba100384c07f10e4"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/independent-final.json",
+      "bytes": 1322,
+      "sha256": "89cabfb73dd6c8a8db666bd389e3a096fca0721f85d331183532e57c63f33c93"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/independent-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/independent-final.stdout.bin",
+      "bytes": 6806,
+      "sha256": "889e7aca2ea3aea121dc73396ce956d1b37ed478a9b235f1895fe6b6ec3cb15d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/independent-first.json",
+      "bytes": 1305,
+      "sha256": "c601bd80082d096c06e69edb9e5e4dfc5ec9e7331f4380b8e95eeb998d8d45c7"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/independent-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/independent-first.stdout.bin",
+      "bytes": 25721,
+      "sha256": "53f2db1ee777ec3180fd0cd7d70bef4f8a7025ea30c2dc31e82f7d150b09304e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/independent-first.test.mjs.txt",
+      "bytes": 16008,
+      "sha256": "f074997efe9a52e3c1989f25415d4e0164637184e7c0f406a6c010025a9eb86e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/independent-fixtures-corrected.json",
+      "bytes": 1424,
+      "sha256": "b7fedbde49bb928c1612fde73c78d19a9d46cfb98a944165094a4cac9c6353a2"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/independent-fixtures-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/independent-fixtures-corrected.stdout.bin",
+      "bytes": 5236,
+      "sha256": "8dda1ab19f129a5f129633d04d479f8341531e284623b3e32e0502d687a916ef"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/output-uuid-before.json",
+      "bytes": 1371,
+      "sha256": "0307a5fd864ac399e0c227ad838b22e249f39d6a85728c7e8b09a534d77ba966"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/output-uuid-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/output-uuid-before.stdout.bin",
+      "bytes": 9761,
+      "sha256": "5db1409da7f0b94935c524b28543ec1fdf4c3c60cffcac11e09175d720dedcd3"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/packet-audit.json",
+      "bytes": 1356,
+      "sha256": "264c8c532c43d6a2aebe3d0fed071198fb288a458643c7c75a2ad8e54bedeb4c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/packet-audit.py",
+      "bytes": 3340,
+      "sha256": "c2309844ee792d81dcb4aee6597f835a7d25aec10c63f5dfc85300159d181ba4"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/packet-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/packet-audit.stdout.bin",
+      "bytes": 5673,
+      "sha256": "db1b5917f96daa9065fe0ce28ef73adaad15f7fa29890602348ac82e92cda548"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/selector-before.json",
+      "bytes": 1362,
+      "sha256": "398a6d06feb699a9a57417994e772a40760211869e78e130b7aa9db43a200ed5"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/selector-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/selector-before.stdout.bin",
+      "bytes": 7469,
+      "sha256": "95b15711955db922ab3ef9fc08e70150b66f41c5d30b4f47e335520cbb9877fe"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/selector-findings.json",
+      "bytes": 671,
+      "sha256": "e83a3f7f909312c10b3135bb72fcf878e2026fc2c0f51a9866e23c058773837d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/selector-repaired.json",
+      "bytes": 1326,
+      "sha256": "1771eb28b92428d783931d64165af34b1943f1cfee6fd2135c0a6ffa7b7dd386"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/selector-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/selector-repaired.stdout.bin",
+      "bytes": 5548,
+      "sha256": "98c442a09e32ceb36ce6d042cbc9296160561b947312a7c359e12384408b7e41"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/source-audit-correction.json",
+      "bytes": 307,
+      "sha256": "7840a6f00a03f7da18173cad9c69c0d45f39db89b9b37a64bb1aee4c8f32317c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/source-audit-initial.cjs.txt",
+      "bytes": 2940,
+      "sha256": "43a538191cebc974c5fae77f368e7ea5ba03cda6bdec1b9698629183b7bb16b2"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/source-audit-repaired.json",
+      "bytes": 1388,
+      "sha256": "4ca09e6de2b850918c0025e61f4637e47d8680f521c55fc80c317b288e7dd6ab"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/source-audit-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/source-audit-repaired.stdout.bin",
+      "bytes": 4546,
+      "sha256": "a8dffba2d8def4bafc95824e74e7022891bcee811cdc377fe61668c1f346832b"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/source-audit.cjs",
+      "bytes": 2949,
+      "sha256": "e0d6c202c6454fac90db8e6ca17d8b88c917ffe8fb14c17af382a65fc84115e7"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/source-audit.json",
+      "bytes": 1306,
+      "sha256": "9a6cb69997cadc4f30c427fac8f87bf828ea3de0a90065627b876fc69674c1e4"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/source-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/source-audit.stdout.bin",
+      "bytes": 4547,
+      "sha256": "b0f5a5683dac1ce5da6017d9a72064dc59634d674a28db7fadd94a2cc3647018"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/source-facts.json",
+      "bytes": 2131,
+      "sha256": "fbb1f62c0db8dcffb1a7c56bec368a8d1ef6dd220892b4bd01730cf278b75a5f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/uuid-hash-facts.json",
+      "bytes": 1642,
+      "sha256": "330491905fc055bf1cf3e596a0976505b6c37437285cca211301b0b059723459"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/uuid-repaired-final.json",
+      "bytes": 1356,
+      "sha256": "b28eb947b542397dfc0daac8375067ea852cfea9d50c5bfb74fb91676469901d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/uuid-repaired-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/uuid-repaired-final.stdout.bin",
+      "bytes": 6888,
+      "sha256": "dcf94765cd2704206267f1fb92154e78ecaff3aa993358571af9c49d305ecf1d"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-bill-text-independent.test.mjs",
+      "bytes": 23411,
+      "sha256": "883394d00ffd43e33443507f97c3f02c5f9eb722715636ef1a7046d23efaced6"
+    }
+  ]
+}

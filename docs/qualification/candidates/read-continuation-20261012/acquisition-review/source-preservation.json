@@ -1,0 +1,1482 @@
+{
+  "status": "PASS",
+  "sourceCommit": "fbe72ed67b953a991f590ed40767e27c17ee114b",
+  "sourceTree": "a0d9132e46baf413f36441b2fe8d0c6c1797e43d",
+  "base": "ec960fa92ad01836a5df8f6220e67a88a657eab1",
+  "originalPaths": 5544,
+  "unchangedOriginalPaths": 5544,
+  "sourceFiles": [
+    {
+      "path": "packages/contracts/retrieval-0.2/acquisition-personnel.schema.json",
+      "bytes": 11702,
+      "sha256": "7407ecb11c145fca7c75a88360a118f1db2870dd45cf9d1c85756e5427b37fa2"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/acquisition-personnel-validation.mjs",
+      "bytes": 7167,
+      "sha256": "1076e18f7e0c53e8a95957a5555e555abb1212f45d3ecf3144f857d40e1ac41f"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-acquisition-personnel.test.mjs",
+      "bytes": 17124,
+      "sha256": "77f6584b7fd6719b58f98d337f6034d3b767aa4f99b60a03918acb75450294b7"
+    }
+  ],
+  "checks": [
+    {
+      "name": "all-original-paths-unchanged",
+      "passed": true,
+      "actual": [],
+      "expected": []
+    },
+    {
+      "name": "exact-three-new-family-files",
+      "passed": true,
+      "actual": [
+        "packages/contracts/retrieval-0.2/acquisition-personnel-validation.mjs",
+        "packages/contracts/retrieval-0.2/acquisition-personnel.schema.json",
+        "packages/contracts/test/retrieval-acquisition-personnel.test.mjs"
+      ],
+      "expected": [
+        "packages/contracts/retrieval-0.2/acquisition-personnel-validation.mjs",
+        "packages/contracts/retrieval-0.2/acquisition-personnel.schema.json",
+        "packages/contracts/test/retrieval-acquisition-personnel.test.mjs"
+      ]
+    },
+    {
+      "name": "exact-source:packages/contracts/retrieval-0.2/acquisition-personnel.schema.json",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "exact-source:packages/contracts/retrieval-0.2/acquisition-personnel-validation.mjs",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "exact-source:packages/contracts/test/retrieval-acquisition-personnel.test.mjs",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "reference-drift-accounted:apps/api/src/meri/meri-tools.service.ts",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "reference-drift-accounted:apps/api/prisma/schema.prisma",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "reference-drift-accounted:apps/api/src/acquisition-personnel/acquisition-personnel-read.service.ts",
+      "passed": true,
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "reference-drift-accounted:apps/api/src/acquisition-personnel/dto/list-personnel.dto.ts",
+      "passed": true,
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "reference-drift-accounted:apps/api/src/acquisition-personnel/dto/person-detail.dto.ts",
+      "passed": true,
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "reference-drift-accounted:apps/api/src/meri/meri.controller.ts",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "reference-drift-accounted:apps/api/src/auth/roles.guard.ts",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "reference-drift-accounted:packages/shared/src/index.ts",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "source-not-executed",
+      "passed": true,
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "private-bodies-not-published",
+      "passed": true,
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "initial-independent:exit",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "initial-independent:cleanup",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "initial-independent:timeout",
+      "passed": true,
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "initial-independent:kill",
+      "passed": true,
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "initial-independent:counts",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "initial-independent:stream:.bin",
+      "passed": true,
+      "actual": "fd177993fe97b115f918889d2f11f4e13307d2bd1e934bba662c6a59b64f6573",
+      "expected": "fd177993fe97b115f918889d2f11f4e13307d2bd1e934bba662c6a59b64f6573"
+    },
+    {
+      "name": "initial-independent:stream:.bin",
+      "passed": true,
+      "actual": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expected": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "repaired-independent:exit",
+      "passed": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "repaired-independent:cleanup",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "repaired-independent:timeout",
+      "passed": true,
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "repaired-independent:kill",
+      "passed": true,
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "repaired-independent:counts",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "repaired-independent:stream:.bin",
+      "passed": true,
+      "actual": "c727e85a657d69b2305bad05a625e6d62566b1a43a0a0ee96659734ca3b5eadb",
+      "expected": "c727e85a657d69b2305bad05a625e6d62566b1a43a0a0ee96659734ca3b5eadb"
+    },
+    {
+      "name": "repaired-independent:stream:.bin",
+      "passed": true,
+      "actual": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expected": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "expanded-independent:exit",
+      "passed": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "expanded-independent:cleanup",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "expanded-independent:timeout",
+      "passed": true,
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "expanded-independent:kill",
+      "passed": true,
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "expanded-independent:counts",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "expanded-independent:stream:.bin",
+      "passed": true,
+      "actual": "755a96e8053bec83b8732f0699a9e87573f353c40673af7cabecc7c3f165af45",
+      "expected": "755a96e8053bec83b8732f0699a9e87573f353c40673af7cabecc7c3f165af45"
+    },
+    {
+      "name": "expanded-independent:stream:.bin",
+      "passed": true,
+      "actual": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expected": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "full-source:exit",
+      "passed": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "full-source:cleanup",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "full-source:timeout",
+      "passed": true,
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "full-source:kill",
+      "passed": true,
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "full-source:counts",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "full-source:stream:.bin",
+      "passed": true,
+      "actual": "efed0e15204d2746181b774329e6b531cfbaaad3de9997507cfb5f4a6f13ad27",
+      "expected": "efed0e15204d2746181b774329e6b531cfbaaad3de9997507cfb5f4a6f13ad27"
+    },
+    {
+      "name": "full-source:stream:.bin",
+      "passed": true,
+      "actual": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d",
+      "expected": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    {
+      "name": "public-distribution:exit",
+      "passed": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "public-distribution:cleanup",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "public-distribution:timeout",
+      "passed": true,
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "public-distribution:kill",
+      "passed": true,
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "public-distribution:counts",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "public-distribution:stream:.bin",
+      "passed": true,
+      "actual": "7e52cb345368dafc8dd1b6eb61930f8c70efa8bb692e0cf45601d2e7e455784a",
+      "expected": "7e52cb345368dafc8dd1b6eb61930f8c70efa8bb692e0cf45601d2e7e455784a"
+    },
+    {
+      "name": "public-distribution:stream:.bin",
+      "passed": true,
+      "actual": "cbbd466f3bf458f7f516c133ea486c1aada38d325ec9a80b698c26da8c18237f",
+      "expected": "cbbd466f3bf458f7f516c133ea486c1aada38d325ec9a80b698c26da8c18237f"
+    },
+    {
+      "name": "exact-three-current-reference-drifts",
+      "passed": true,
+      "actual": 3,
+      "expected": 3
+    },
+    {
+      "name": "schema-repair-only-query-alias",
+      "passed": true,
+      "actual": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "urn:meri:retrieval:acquisition-personnel:0.2.0",
+        "title": "Pinned acquisition personnel read projections; no live source or policy authority",
+        "$defs": {
+          "AcquisitionUuid": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "AcquisitionInstant": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "AcquisitionSearchContext": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "actorRole": {
+                "enum": [
+                  "capiro_admin",
+                  "user_admin",
+                  "standard_user",
+                  "client_portal_user"
+                ]
+              }
+            },
+            "required": [
+              "actorRole"
+            ]
+          },
+          "AcquisitionDetailContext": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "actorRole": {
+                "enum": [
+                  "capiro_admin",
+                  "user_admin",
+                  "standard_user",
+                  "client_portal_user"
+                ]
+              }
+            },
+            "required": [
+              "actorRole"
+            ]
+          },
+          "AcquisitionPersonnelSearchInput": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "query": {
+                "type": "string"
+              },
+              "service": {
+                "type": "string"
+              },
+              "organization": {
+                "type": "string"
+              },
+              "role": {
+                "type": "string"
+              },
+              "peCode": {
+                "type": "string"
+              },
+              "limit": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 50,
+                "default": 20
+              },
+              "page": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100,
+                "default": 1
+              }
+            },
+            "required": []
+          },
+          "AcquisitionPersonDetailInput": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "id"
+            ]
+          },
+          "AcquisitionPersonnelRow": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/AcquisitionUuid"
+              },
+              "fullName": {
+                "type": "string"
+              },
+              "service": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "organization": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "title": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "role": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "pePrimary": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "peSecondary": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "emailDomain": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "publicProfileUrl": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "confidence": {
+                "type": "number"
+              },
+              "status": {
+                "type": "string"
+              },
+              "firstSeenAt": {
+                "$ref": "#/$defs/AcquisitionInstant"
+              },
+              "lastSeenAt": {
+                "$ref": "#/$defs/AcquisitionInstant"
+              },
+              "email": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "phone": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "parentOffice": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "department": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "headshotUrl": {},
+              "sourceCount": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "id",
+              "fullName",
+              "service",
+              "organization",
+              "title",
+              "role",
+              "pePrimary",
+              "peSecondary",
+              "emailDomain",
+              "publicProfileUrl",
+              "confidence",
+              "status",
+              "firstSeenAt",
+              "lastSeenAt",
+              "email",
+              "phone",
+              "parentOffice",
+              "department",
+              "headshotUrl",
+              "sourceCount"
+            ]
+          },
+          "AcquisitionSourceMention": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/AcquisitionUuid"
+              },
+              "source": {
+                "type": "string"
+              },
+              "sourceUrl": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "snippet": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "observedAt": {
+                "$ref": "#/$defs/AcquisitionInstant"
+              },
+              "confidence": {
+                "type": "number"
+              },
+              "metadata": {}
+            },
+            "required": [
+              "id",
+              "source",
+              "sourceUrl",
+              "snippet",
+              "observedAt",
+              "confidence",
+              "metadata"
+            ]
+          },
+          "AcquisitionPerson": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/AcquisitionUuid"
+              },
+              "fullName": {
+                "type": "string"
+              },
+              "service": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "organization": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "title": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "role": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "pePrimary": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "peSecondary": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "emailDomain": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "publicProfileUrl": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "confidence": {
+                "type": "number"
+              },
+              "status": {
+                "type": "string"
+              },
+              "firstSeenAt": {
+                "$ref": "#/$defs/AcquisitionInstant"
+              },
+              "lastSeenAt": {
+                "$ref": "#/$defs/AcquisitionInstant"
+              },
+              "nameKey": {
+                "type": "string"
+              },
+              "programOfRecord": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "email": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "phone": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "parentOffice": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "department": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "metadata": {},
+              "sources": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/AcquisitionSourceMention"
+                }
+              }
+            },
+            "required": [
+              "id",
+              "fullName",
+              "service",
+              "organization",
+              "title",
+              "role",
+              "pePrimary",
+              "peSecondary",
+              "emailDomain",
+              "publicProfileUrl",
+              "confidence",
+              "status",
+              "firstSeenAt",
+              "lastSeenAt",
+              "nameKey",
+              "programOfRecord",
+              "email",
+              "phone",
+              "parentOffice",
+              "department",
+              "metadata",
+              "sources"
+            ]
+          },
+          "AcquisitionPersonnelSearchOutput": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "tool": {
+                "const": "search_acquisition_personnel"
+              },
+              "generatedAt": {
+                "$ref": "#/$defs/AcquisitionInstant"
+              },
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/AcquisitionPersonnelRow"
+                },
+                "maxItems": 50
+              },
+              "total": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "page": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100
+              },
+              "limit": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 50
+              }
+            },
+            "required": [
+              "tool",
+              "generatedAt",
+              "data",
+              "total",
+              "page",
+              "limit"
+            ]
+          },
+          "AcquisitionPersonDetailOutput": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "tool": {
+                "const": "get_acquisition_person"
+              },
+              "generatedAt": {
+                "$ref": "#/$defs/AcquisitionInstant"
+              },
+              "person": {
+                "$ref": "#/$defs/AcquisitionPerson"
+              }
+            },
+            "required": [
+              "tool",
+              "generatedAt",
+              "person"
+            ]
+          }
+        }
+      },
+      "expected": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "urn:meri:retrieval:acquisition-personnel:0.2.0",
+        "title": "Pinned acquisition personnel read projections; no live source or policy authority",
+        "$defs": {
+          "AcquisitionUuid": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "AcquisitionInstant": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "AcquisitionSearchContext": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "actorRole": {
+                "enum": [
+                  "capiro_admin",
+                  "user_admin",
+                  "standard_user",
+                  "client_portal_user"
+                ]
+              }
+            },
+            "required": [
+              "actorRole"
+            ]
+          },
+          "AcquisitionDetailContext": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "actorRole": {
+                "enum": [
+                  "capiro_admin",
+                  "user_admin",
+                  "standard_user",
+                  "client_portal_user"
+                ]
+              }
+            },
+            "required": [
+              "actorRole"
+            ]
+          },
+          "AcquisitionPersonnelSearchInput": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "query": {
+                "type": "string"
+              },
+              "service": {
+                "type": "string"
+              },
+              "organization": {
+                "type": "string"
+              },
+              "role": {
+                "type": "string"
+              },
+              "peCode": {
+                "type": "string"
+              },
+              "limit": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 50,
+                "default": 20
+              },
+              "page": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100,
+                "default": 1
+              }
+            },
+            "required": []
+          },
+          "AcquisitionPersonDetailInput": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "id"
+            ]
+          },
+          "AcquisitionPersonnelRow": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/AcquisitionUuid"
+              },
+              "fullName": {
+                "type": "string"
+              },
+              "service": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "organization": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "title": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "role": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "pePrimary": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "peSecondary": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "emailDomain": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "publicProfileUrl": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "confidence": {
+                "type": "number"
+              },
+              "status": {
+                "type": "string"
+              },
+              "firstSeenAt": {
+                "$ref": "#/$defs/AcquisitionInstant"
+              },
+              "lastSeenAt": {
+                "$ref": "#/$defs/AcquisitionInstant"
+              },
+              "email": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "phone": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "parentOffice": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "department": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "headshotUrl": {},
+              "sourceCount": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "id",
+              "fullName",
+              "service",
+              "organization",
+              "title",
+              "role",
+              "pePrimary",
+              "peSecondary",
+              "emailDomain",
+              "publicProfileUrl",
+              "confidence",
+              "status",
+              "firstSeenAt",
+              "lastSeenAt",
+              "email",
+              "phone",
+              "parentOffice",
+              "department",
+              "headshotUrl",
+              "sourceCount"
+            ]
+          },
+          "AcquisitionSourceMention": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/AcquisitionUuid"
+              },
+              "source": {
+                "type": "string"
+              },
+              "sourceUrl": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "snippet": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "observedAt": {
+                "$ref": "#/$defs/AcquisitionInstant"
+              },
+              "confidence": {
+                "type": "number"
+              },
+              "metadata": {}
+            },
+            "required": [
+              "id",
+              "source",
+              "sourceUrl",
+              "snippet",
+              "observedAt",
+              "confidence",
+              "metadata"
+            ]
+          },
+          "AcquisitionPerson": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/AcquisitionUuid"
+              },
+              "fullName": {
+                "type": "string"
+              },
+              "service": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "organization": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "title": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "role": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "pePrimary": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "peSecondary": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "emailDomain": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "publicProfileUrl": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "confidence": {
+                "type": "number"
+              },
+              "status": {
+                "type": "string"
+              },
+              "firstSeenAt": {
+                "$ref": "#/$defs/AcquisitionInstant"
+              },
+              "lastSeenAt": {
+                "$ref": "#/$defs/AcquisitionInstant"
+              },
+              "nameKey": {
+                "type": "string"
+              },
+              "programOfRecord": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "email": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "phone": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "parentOffice": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "department": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "metadata": {},
+              "sources": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/AcquisitionSourceMention"
+                }
+              }
+            },
+            "required": [
+              "id",
+              "fullName",
+              "service",
+              "organization",
+              "title",
+              "role",
+              "pePrimary",
+              "peSecondary",
+              "emailDomain",
+              "publicProfileUrl",
+              "confidence",
+              "status",
+              "firstSeenAt",
+              "lastSeenAt",
+              "nameKey",
+              "programOfRecord",
+              "email",
+              "phone",
+              "parentOffice",
+              "department",
+              "metadata",
+              "sources"
+            ]
+          },
+          "AcquisitionPersonnelSearchOutput": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "tool": {
+                "const": "search_acquisition_personnel"
+              },
+              "generatedAt": {
+                "$ref": "#/$defs/AcquisitionInstant"
+              },
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/AcquisitionPersonnelRow"
+                },
+                "maxItems": 50
+              },
+              "total": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "page": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100
+              },
+              "limit": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 50
+              }
+            },
+            "required": [
+              "tool",
+              "generatedAt",
+              "data",
+              "total",
+              "page",
+              "limit"
+            ]
+          },
+          "AcquisitionPersonDetailOutput": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "tool": {
+                "const": "get_acquisition_person"
+              },
+              "generatedAt": {
+                "$ref": "#/$defs/AcquisitionInstant"
+              },
+              "person": {
+                "$ref": "#/$defs/AcquisitionPerson"
+              }
+            },
+            "required": [
+              "tool",
+              "generatedAt",
+              "person"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "validator-repair-only-alias-normalization",
+      "passed": true,
+      "actual": "// Explicitly pinned current read projections and privacy constraints only.\n// This family never executes the source's mandatory audit writes or grants roles.\nimport {snapshotOperationData} from './operation-contracts.mjs';\nconst fail=message=>{throw new Error(message);};\nexport const ACQUISITION_PERSONNEL_OPERATION_IDS=Object.freeze(['search_acquisition_personnel','get_acquisition_person']);\nconst [SEARCH,DETAIL]=ACQUISITION_PERSONNEL_OPERATION_IDS;\nfunction instant(value){const at=typeof value==='string'?Date.parse(value):NaN;if(!Number.isFinite(at)||new Date(at).toISOString()!==value)fail('Acquisition timestamp must be a canonical comparable JSON instant');return at;}\nfunction unique(rows){const ids=new Set();for(const row of rows){const id=row.id.toLowerCase();if(ids.has(id))fail('Duplicate acquisition UUID');ids.add(id);}}\nexport function createAcquisitionPersonnelValidators({validateShape,schema}){\n if(typeof validateShape!=='function'||!schema?.$defs)fail('Acquisition validator configuration');\n const definitions=new Set(Object.keys(schema.$defs));\n const outputs=new Map(Object.entries(schema.$defs).filter(([,value])=>ACQUISITION_PERSONNEL_OPERATION_IDS.includes(value.properties?.tool?.const)).map(([name,value])=>[value.properties.tool.const,name]));\n if(outputs.size!==2)fail('Acquisition schema operation mismatch');\n function acquisitionPersonnelOutputDefinition(id){if(!outputs.has(id))fail('Unknown acquisition operation');return outputs.get(id);}\n function acquisitionPersonnelInputDefinition(id){return acquisitionPersonnelOutputDefinition(id).replace(/Output$/,'Input');}\n function validateAcquisitionPersonnelShape(definition,value){\n  if(!definitions.has(definition))fail('Unknown acquisition definition');\n  const data=snapshotOperationData(value);validateShape(definition,data);\n  if(outputs.get(data?.tool)!==definition)return value;\n  instant(data.generatedAt);\n  const people=data.tool===SEARCH?data.data:[data.person];unique(people);\n  for(const person of people){instant(person.firstSeenAt);instant(person.lastSeenAt);}\n  if(data.tool===DETAIL){\n   unique(data.person.sources);let prior=Infinity;\n   for(const source of data.person.sources){const at=instant(source.observedAt);if(at>prior)fail('Acquisition sources must be newest first');prior=at;}\n  }\n  return value;\n }\n function admittedContext(id,context){\n  acquisitionPersonnelOutputDefinition(id);\n  const trusted=snapshotOperationData(context);\n  validateAcquisitionPersonnelShape(id===SEARCH?'AcquisitionSearchContext':'AcquisitionDetailContext',trusted);\n  return trusted;\n }\n function normalizeAcquisitionPersonnelInput(id,request,context={}){\n  const trusted=admittedContext(id,context),input=snapshotOperationData(request);\n  validateAcquisitionPersonnelShape(acquisitionPersonnelInputDefinition(id),input);\n  if(id===SEARCH){\n   for(const [key,cap] of [['query',240],['service',60],['organization',200],['role',60],['peCode',32]]){\n    if(!Object.hasOwn(input,key))continue;\n    const value=input[key].trim().slice(0,cap);if(value)input[key]=value;else delete input[key];\n   }\n   // The selected owner's fuzzy lookup applies trim again after wrapper clipping.\n   if(input.query!==undefined)input.query=input.query.trim();\n   input.limit??=schema.$defs.AcquisitionPersonnelSearchInput.properties.limit.default;\n   input.page??=schema.$defs.AcquisitionPersonnelSearchInput.properties.page.default;\n  }else{\n   input.id=input.id.trim().slice(0,80).toLowerCase();\n   validateAcquisitionPersonnelShape('AcquisitionUuid',input.id);\n  }\n  return Object.freeze({input:Object.freeze(input),metadata:Object.freeze({\n   authoritative:false,sourceConnected:false,producerQualified:false,absenceEvidence:false,\n   inventoryPin:'fd8765ec01d292013758606204f2c9d886cd31c1',\n   producerPolicyPin:'4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace',currentAuthorityQualified:false,\n   auditWriteRequired:true,opaqueDataUntrusted:true,\n   ...(id===SEARCH?{countScope:input.query?'paged-fuzzy-candidates-before-filters':'separate-local-count',emailProjection:trusted.actorRole==='capiro_admin'?'stored-email-or-null':'null-only'}:{sourceWindow:'unpaged-producer-array',notFound:'exception-after-audit'}),\n  })});\n }\n function assertAcquisitionPersonnelOutput(id,value,request,context={}){\n  const {input}=normalizeAcquisitionPersonnelInput(id,request,context),trusted=admittedContext(id,context),data=snapshotOperationData(value);\n  validateAcquisitionPersonnelShape(acquisitionPersonnelOutputDefinition(id),data);\n  if(id===SEARCH){\n   if(data.page!==input.page||data.limit!==input.limit||data.data.length>input.limit)fail('Acquisition page/limit substitution');\n   if(input.query&&(data.total>input.limit||data.total<data.data.length))fail('Acquisition fuzzy candidate window count mismatch');\n   for(const row of data.data){\n    if(input.service!==undefined&&row.service!==input.service||input.role!==undefined&&row.role!==input.role||input.peCode!==undefined&&row.pePrimary!==input.peCode&&!row.peSecondary.includes(input.peCode))fail('Acquisition exact selector substitution');\n   }\n  }else if(data.person.id.toLowerCase()!==input.id)fail('Acquisition person identity substitution');\n  const people=id===SEARCH?data.data:[data.person];\n  for(const person of people){\n   if(trusted.actorRole!=='capiro_admin'&&['email','phone','parentOffice','department'].some(key=>person[key]!==null))\n    fail('Acquisition contact fields require trusted capiro_admin');\n   for(const key of ['phone','parentOffice','department'])if(person[key]!==null&&(!person[key]||person[key].trim()!==person[key]))\n    fail('Acquisition uploaded contact field must be nonempty normalized text or null');\n  }\n  if(id===DETAIL){\n   const metadata=data.person.metadata,record=metadata!==null&&typeof metadata==='object'&&!Array.isArray(metadata);\n   if(trusted.actorRole!=='capiro_admin'){\n    if(record&&['uploadedDirectoryContact','uploadedDirectoryPrevious'].some(key=>Object.hasOwn(metadata,key)))\n     fail('Acquisition current non-admin metadata redaction missing');\n   }else{\n    const contact=record?metadata.uploadedDirectoryContact:null;\n    const fields=contact!==null&&typeof contact==='object'&&!Array.isArray(contact)?contact:{};\n    for(const key of ['phone','parentOffice','department']){\n     const expected=typeof fields[key]==='string'?(fields[key].trim()||null):null;\n     if(data.person[key]!==expected)fail('Acquisition uploaded contact metadata mismatch');\n    }\n   }\n  }\n  // Opaque metadata/headshot values are inert data, not privacy attestations or\n  // contact-use authority. Do not reimplement fuzzy matching/DB collation here.\n  return value;\n }\n return Object.freeze({acquisitionPersonnelSchemaId:schema.$id,ACQUISITION_PERSONNEL_OPERATION_IDS,\n  acquisitionPersonnelInputDefinition,acquisitionPersonnelOutputDefinition,normalizeAcquisitionPersonnelInput,\n  validateAcquisitionPersonnelShape,assertAcquisitionPersonnelOutput});\n}\n",
+      "expected": "// Explicitly pinned current read projections and privacy constraints only.\n// This family never executes the source's mandatory audit writes or grants roles.\nimport {snapshotOperationData} from './operation-contracts.mjs';\nconst fail=message=>{throw new Error(message);};\nexport const ACQUISITION_PERSONNEL_OPERATION_IDS=Object.freeze(['search_acquisition_personnel','get_acquisition_person']);\nconst [SEARCH,DETAIL]=ACQUISITION_PERSONNEL_OPERATION_IDS;\nfunction instant(value){const at=typeof value==='string'?Date.parse(value):NaN;if(!Number.isFinite(at)||new Date(at).toISOString()!==value)fail('Acquisition timestamp must be a canonical comparable JSON instant');return at;}\nfunction unique(rows){const ids=new Set();for(const row of rows){const id=row.id.toLowerCase();if(ids.has(id))fail('Duplicate acquisition UUID');ids.add(id);}}\nexport function createAcquisitionPersonnelValidators({validateShape,schema}){\n if(typeof validateShape!=='function'||!schema?.$defs)fail('Acquisition validator configuration');\n const definitions=new Set(Object.keys(schema.$defs));\n const outputs=new Map(Object.entries(schema.$defs).filter(([,value])=>ACQUISITION_PERSONNEL_OPERATION_IDS.includes(value.properties?.tool?.const)).map(([name,value])=>[value.properties.tool.const,name]));\n if(outputs.size!==2)fail('Acquisition schema operation mismatch');\n function acquisitionPersonnelOutputDefinition(id){if(!outputs.has(id))fail('Unknown acquisition operation');return outputs.get(id);}\n function acquisitionPersonnelInputDefinition(id){return acquisitionPersonnelOutputDefinition(id).replace(/Output$/,'Input');}\n function validateAcquisitionPersonnelShape(definition,value){\n  if(!definitions.has(definition))fail('Unknown acquisition definition');\n  const data=snapshotOperationData(value);validateShape(definition,data);\n  if(outputs.get(data?.tool)!==definition)return value;\n  instant(data.generatedAt);\n  const people=data.tool===SEARCH?data.data:[data.person];unique(people);\n  for(const person of people){instant(person.firstSeenAt);instant(person.lastSeenAt);}\n  if(data.tool===DETAIL){\n   unique(data.person.sources);let prior=Infinity;\n   for(const source of data.person.sources){const at=instant(source.observedAt);if(at>prior)fail('Acquisition sources must be newest first');prior=at;}\n  }\n  return value;\n }\n function admittedContext(id,context){\n  acquisitionPersonnelOutputDefinition(id);\n  const trusted=snapshotOperationData(context);\n  validateAcquisitionPersonnelShape(id===SEARCH?'AcquisitionSearchContext':'AcquisitionDetailContext',trusted);\n  return trusted;\n }\n function normalizeAcquisitionPersonnelInput(id,request,context={}){\n  const trusted=admittedContext(id,context),input=snapshotOperationData(request);\n  validateAcquisitionPersonnelShape(acquisitionPersonnelInputDefinition(id),input);\n  if(id===SEARCH){\n   for(const [key,cap] of [['query',240],['service',60],['organization',200],['role',60],['peCode',32]]){\n    if(!Object.hasOwn(input,key))continue;\n    const value=input[key].trim().slice(0,cap);if(value)input[key]=value;else delete input[key];\n   }\n   // The selected owner's fuzzy lookup applies trim again after wrapper clipping.\n   if(input.query!==undefined)input.query=input.query.trim();\n   input.limit??=schema.$defs.AcquisitionPersonnelSearchInput.properties.limit.default;\n   input.page??=schema.$defs.AcquisitionPersonnelSearchInput.properties.page.default;\n  }else{\n   input.id=input.id.trim().slice(0,80).toLowerCase();\n   validateAcquisitionPersonnelShape('AcquisitionUuid',input.id);\n  }\n  return Object.freeze({input:Object.freeze(input),metadata:Object.freeze({\n   authoritative:false,sourceConnected:false,producerQualified:false,absenceEvidence:false,\n   inventoryPin:'fd8765ec01d292013758606204f2c9d886cd31c1',\n   producerPolicyPin:'4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace',currentAuthorityQualified:false,\n   auditWriteRequired:true,opaqueDataUntrusted:true,\n   ...(id===SEARCH?{countScope:input.query?'paged-fuzzy-candidates-before-filters':'separate-local-count',emailProjection:trusted.actorRole==='capiro_admin'?'stored-email-or-null':'null-only'}:{sourceWindow:'unpaged-producer-array',notFound:'exception-after-audit'}),\n  })});\n }\n function assertAcquisitionPersonnelOutput(id,value,request,context={}){\n  const {input}=normalizeAcquisitionPersonnelInput(id,request,context),trusted=admittedContext(id,context),data=snapshotOperationData(value);\n  validateAcquisitionPersonnelShape(acquisitionPersonnelOutputDefinition(id),data);\n  if(id===SEARCH){\n   if(data.page!==input.page||data.limit!==input.limit||data.data.length>input.limit)fail('Acquisition page/limit substitution');\n   if(input.query&&(data.total>input.limit||data.total<data.data.length))fail('Acquisition fuzzy candidate window count mismatch');\n   for(const row of data.data){\n    if(input.service!==undefined&&row.service!==input.service||input.role!==undefined&&row.role!==input.role||input.peCode!==undefined&&row.pePrimary!==input.peCode&&!row.peSecondary.includes(input.peCode))fail('Acquisition exact selector substitution');\n   }\n  }else if(data.person.id.toLowerCase()!==input.id)fail('Acquisition person identity substitution');\n  const people=id===SEARCH?data.data:[data.person];\n  for(const person of people){\n   if(trusted.actorRole!=='capiro_admin'&&['email','phone','parentOffice','department'].some(key=>person[key]!==null))\n    fail('Acquisition contact fields require trusted capiro_admin');\n   for(const key of ['phone','parentOffice','department'])if(person[key]!==null&&(!person[key]||person[key].trim()!==person[key]))\n    fail('Acquisition uploaded contact field must be nonempty normalized text or null');\n  }\n  if(id===DETAIL){\n   const metadata=data.person.metadata,record=metadata!==null&&typeof metadata==='object'&&!Array.isArray(metadata);\n   if(trusted.actorRole!=='capiro_admin'){\n    if(record&&['uploadedDirectoryContact','uploadedDirectoryPrevious'].some(key=>Object.hasOwn(metadata,key)))\n     fail('Acquisition current non-admin metadata redaction missing');\n   }else{\n    const contact=record?metadata.uploadedDirectoryContact:null;\n    const fields=contact!==null&&typeof contact==='object'&&!Array.isArray(contact)?contact:{};\n    for(const key of ['phone','parentOffice','department']){\n     const expected=typeof fields[key]==='string'?(fields[key].trim()||null):null;\n     if(data.person[key]!==expected)fail('Acquisition uploaded contact metadata mismatch');\n    }\n   }\n  }\n  // Opaque metadata/headshot values are inert data, not privacy attestations or\n  // contact-use authority. Do not reimplement fuzzy matching/DB collation here.\n  return value;\n }\n return Object.freeze({acquisitionPersonnelSchemaId:schema.$id,ACQUISITION_PERSONNEL_OPERATION_IDS,\n  acquisitionPersonnelInputDefinition,acquisitionPersonnelOutputDefinition,normalizeAcquisitionPersonnelInput,\n  validateAcquisitionPersonnelShape,assertAcquisitionPersonnelOutput});\n}\n"
+    },
+    {
+      "name": "original-author-assertions-recovered",
+      "passed": true,
+      "actual": "import test from 'node:test';\nimport assert from 'node:assert/strict';\nimport {readFileSync} from 'node:fs';\nimport Ajv from 'ajv/dist/2020.js';\nimport addFormats from 'ajv-formats';\nimport {createAcquisitionPersonnelValidators,ACQUISITION_PERSONNEL_OPERATION_IDS} from '../retrieval-0.2/acquisition-personnel-validation.mjs';\nimport {createOperationContracts} from '../retrieval-0.2/operation-contracts.mjs';\nimport {canonicalSha256} from '../validate.mjs';\n// Compiler is a test seam; canonical loader/catalog are exclusively root-owned.\nconst schema=JSON.parse(readFileSync(new URL('../retrieval-0.2/acquisition-personnel.schema.json',import.meta.url)));\nconst ajv=new Ajv({strict:true,allErrors:true});addFormats(ajv);ajv.addSchema(schema);\nconst checks=new Map(Object.keys(schema.$defs).map(name=>[name,ajv.compile({$ref:`${schema.$id}#/$defs/${name}`})]));\nconst v=createAcquisitionPersonnelValidators({schema,validateShape(name,value){const check=checks.get(name);if(!check?.(value))throw new Error(`${name}: ${ajv.errorsText(check?.errors)}`);return value;}});\nconst [search,detail]=ACQUISITION_PERSONNEL_OPERATION_IDS;\nconst id='abcdefab-1234-0000-0000-000000000001',other='abcdefab-1234-0000-0000-000000000002';\nconst stamp='2026-10-12T12:00:00.000Z';\nconst regular={actorRole:'standard_user'},admin={actorRole:'capiro_admin'};\nconst req=op=>op===search?{}:{id};\nfunction common(){return{id,fullName:'Synthetic Person',service:null,organization:null,title:null,role:null,pePrimary:null,peSecondary:[],emailDomain:null,publicProfileUrl:null,confidence:0.5,status:'unclassified',firstSeenAt:stamp,lastSeenAt:stamp,email:null,phone:null,parentOffice:null,department:null};}\nfunction mention(n=1){return{id:`00000000-0000-0000-0000-${String(n).padStart(12,'0')}`,source:'synthetic-source',sourceUrl:null,snippet:null,observedAt:stamp,confidence:0.4,metadata:{}};}\nfunction page(){return{tool:search,generatedAt:stamp,data:[{...common(),headshotUrl:null,sourceCount:0}],total:1,page:1,limit:20};}\nfunction person(){return{tool:detail,generatedAt:stamp,person:{...common(),nameKey:'synthetic person',programOfRecord:null,metadata:{},sources:[]}};}\nconst make=op=>op===search?page():person();\nconst row=p=>p.data?.[0]??p.person;\n\ntest('two distinct operation definitions and pinned factory identity',()=>{\n assert.equal(v.acquisitionPersonnelSchemaId,'urn:meri:retrieval:acquisition-personnel:0.2.0');\n assert.equal(new Set(ACQUISITION_PERSONNEL_OPERATION_IDS.map(v.acquisitionPersonnelInputDefinition)).size,2);\n for(const op of ['__proto__','constructor','get_program_element_personnel','link_crm_contact'])assert.throws(()=>v.normalizeAcquisitionPersonnelInput(op,{},regular));\n});\nfor(const op of ACQUISITION_PERSONNEL_OPERATION_IDS){\n test(`${op}: immutable request and output with explicit unqualified metadata`,()=>{\n  const request=req(op),saved=structuredClone(request),p=make(op),before=structuredClone(p),n=v.normalizeAcquisitionPersonnelInput(op,request,regular);\n  assert.deepEqual(request,saved);assert.notEqual(n.input,request);assert.ok(Object.isFrozen(n.input));assert.ok(Object.isFrozen(n.metadata));\n  for(const key of ['authoritative','sourceConnected','producerQualified','absenceEvidence','currentAuthorityQualified'])assert.equal(n.metadata[key],false);\n  assert.equal(n.metadata.auditWriteRequired,true);assert.equal(n.metadata.producerPolicyPin,'4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace');\n  assert.equal(v.assertAcquisitionPersonnelOutput(op,p,request,regular),p);assert.deepEqual(p,before);\n });\n test(`${op}: both operations require exact trusted role context`,()=>{\n  for(const context of [undefined,{},null,[],{actorRole:'admin'},{actorRole:'capiro_admin '},{actorRole:'CAPIRO_ADMIN'},{actorRole:'capiro_admin',tenantId:'invented'},{role:'capiro_admin'}]){\n   assert.throws(()=>v.normalizeAcquisitionPersonnelInput(op,req(op),context));assert.throws(()=>v.assertAcquisitionPersonnelOutput(op,make(op),req(op),context));\n  }\n  for(const actorRole of ['capiro_admin','user_admin','standard_user','client_portal_user'])v.assertAcquisitionPersonnelOutput(op,make(op),req(op),{actorRole});\n });\n test(`${op}: actor hints in model arguments cannot elevate privilege`,()=>{\n  for(const key of ['actorRole','actorId','tenantId','userId','isAdmin','asOf','include_superseded','email'])assert.throws(()=>v.normalizeAcquisitionPersonnelInput(op,{...req(op),[key]:'capiro_admin'},regular));\n });\n test(`${op}: non-admin top-level contact fields must all be null`,()=>{\n  for(const actorRole of ['user_admin','standard_user','client_portal_user'])for(const key of ['email','phone','parentOffice','department']){\n   const p=make(op);row(p)[key]='synthetic';assert.throws(()=>v.assertAcquisitionPersonnelOutput(op,p,req(op),{actorRole}),/trusted capiro_admin/);\n  }\n });\n test(`${op}: exact current projection closes omitted/extra fields`,()=>{\n  for(const key of ['approvedFacts','contactUse','roles','crmLinkBlocked','supersededAt','complete']){const p=make(op);row(p)[key]=true;assert.throws(()=>v.assertAcquisitionPersonnelOutput(op,p,req(op),regular));}\n  for(const key of ['phone','parentOffice','department','email']){const p=make(op);delete row(p)[key];assert.throws(()=>v.assertAcquisitionPersonnelOutput(op,p,req(op),regular));}\n  const p=make(op);p.tool=op===search?detail:search;assert.throws(()=>v.assertAcquisitionPersonnelOutput(op,p,req(op),regular));\n });\n test(`${op}: finite confidence and dates without invented confidence/lifecycle ranges`,()=>{\n  const p=make(op);row(p).confidence=-2;row(p).firstSeenAt='2026-10-13T12:00:00.000Z';v.assertAcquisitionPersonnelOutput(op,p,req(op),regular);\n  row(p).confidence=5;v.assertAcquisitionPersonnelOutput(op,p,req(op),regular);\n  for(const value of [NaN,Infinity]){row(p).confidence=value;assert.throws(()=>v.assertAcquisitionPersonnelOutput(op,p,req(op),regular));}\n  for(const key of ['generatedAt','firstSeenAt','lastSeenAt']){const p=make(op);(key==='generatedAt'?p:row(p))[key]='2026-06-30T23:59:60Z';assert.throws(()=>v.assertAcquisitionPersonnelOutput(op,p,req(op),regular));}\n });\n}\ntest('search defaults/range are strict while source string trim and UTF16 caps remain explicit',()=>{\n assert.deepEqual(v.normalizeAcquisitionPersonnelInput(search,{},regular).input,{limit:20,page:1});\n const n=v.normalizeAcquisitionPersonnelInput(search,{query:' '+ 'q'.repeat(239)+'\ud83d\ude00 ',service:' '+ 's'.repeat(70),organization:'o'.repeat(201),role:'r'.repeat(61),peCode:'p'.repeat(33)},regular).input;\n assert.equal(n.query,'q'.repeat(239)+'\\ud83d');assert.equal(n.service.length,60);assert.equal(n.organization.length,200);assert.equal(n.role.length,60);assert.equal(n.peCode.length,32);\n assert.deepEqual(v.normalizeAcquisitionPersonnelInput(search,{query:' \\t ',service:' '},regular).input,{limit:20,page:1});\n assert.equal(v.normalizeAcquisitionPersonnelInput(search,{query:'q'.repeat(239)+' X'},regular).input.query,'q'.repeat(239));\n for(const field of ['limit','page'])for(const value of [0,-1,1.5,'10',null,true,undefined,field==='limit'?51:101])assert.throws(()=>v.normalizeAcquisitionPersonnelInput(search,{[field]:value},regular));\n for(const input of [{q:'hidden alias'},{pe_code:'hidden selector'},{sort:'confidence'},{pe_aligned:'aligned'}])assert.throws(()=>v.normalizeAcquisitionPersonnelInput(search,input,regular));\n});\ntest('search every registered limit/page boundary and echoed selection',()=>{\n for(const limit of [1,50])for(const pageNumber of [1,100]){const p=page();p.limit=limit;p.page=pageNumber;v.assertAcquisitionPersonnelOutput(search,p,{limit,page:pageNumber},regular);}\n for(const mutate of [p=>p.page++,p=>p.limit++,p=>p.data.push({...p.data[0],id:other})]){const p=page();p.limit=1;mutate(p);assert.throws(()=>v.assertAcquisitionPersonnelOutput(search,p,{limit:1},regular));}\n});\ntest('fuzzy totals count a bounded candidate window before remaining filters, not all matches',()=>{\n for(const [count,total] of [[0,0],[0,5],[1,1],[1,20]]){const p=page();if(!count)p.data=[];p.total=total;v.assertAcquisitionPersonnelOutput(search,p,{query:'Synthetic'},regular);}\n for(const total of [0,21]){const p=page();p.total=total;assert.throws(()=>v.assertAcquisitionPersonnelOutput(search,p,{query:'Synthetic'},regular),/candidate window/);}\n assert.equal(v.normalizeAcquisitionPersonnelInput(search,{query:'Synthetic'},regular).metadata.countScope,'paged-fuzzy-candidates-before-filters');\n});\ntest('unfiltered totals are separate observations and may be smaller than returned rows',()=>{\n const p=page();p.total=0;v.assertAcquisitionPersonnelOutput(search,p,{},regular);p.total=10000;v.assertAcquisitionPersonnelOutput(search,p,{},regular);\n assert.equal(v.normalizeAcquisitionPersonnelInput(search,{},regular).metadata.countScope,'separate-local-count');\n});\ntest('exact service/role/PE filter bindings do not confer caller authority',()=>{\n const p=page();Object.assign(p.data[0],{service:'Army',role:'capiro_admin',peSecondary:['PE-1']});\n v.assertAcquisitionPersonnelOutput(search,p,{service:'Army',role:'capiro_admin',peCode:'PE-1'},regular);\n for(const request of [{service:'Navy'},{role:'PM'},{peCode:'PE-2'}])assert.throws(()=>v.assertAcquisitionPersonnelOutput(search,p,request,regular),/selector substitution/);\n p.data[0].email='synthetic@example.invalid';assert.throws(()=>v.assertAcquisitionPersonnelOutput(search,p,{role:'capiro_admin'},regular),/trusted capiro_admin/);\n});\ntest('list admin email is stored text; headshot is opaque inert JSON, not a string assertion',()=>{\n for(const headshotUrl of [null,false,0,'',[],{untrusted:'synthetic'}]){const p=page();Object.assign(p.data[0],{email:' synthetic@example.invalid ',phone:'123',parentOffice:'Office',department:'Dept',headshotUrl});v.assertAcquisitionPersonnelOutput(search,p,{},admin);}\n for(const phone of ['', ' 123','123 ']){const p=page();p.data[0].phone=phone;assert.throws(()=>v.assertAcquisitionPersonnelOutput(search,p,{},admin),/normalized text/);}\n});\ntest('detail UUID request normalization matches actual UUID identity without invented version restriction',()=>{\n for(const inputId of ['00000000-0000-0000-0000-000000000000',id.toUpperCase()]){const p=person();p.person.id=inputId.toLowerCase();v.assertAcquisitionPersonnelOutput(detail,p,{id:' '+inputId+' '},regular);}\n assert.equal(v.normalizeAcquisitionPersonnelInput(detail,{id:' '+id.toUpperCase()+' '},regular).input.id,id);\n for(const inputId of ['', ' ', 'not-uuid',id+'x',null,4])assert.throws(()=>v.normalizeAcquisitionPersonnelInput(detail,{id:inputId},regular));\n assert.throws(()=>v.assertAcquisitionPersonnelOutput(detail,person(),{id:other},regular),/identity substitution/);\n const absent=person();absent.person=null;assert.throws(()=>v.assertAcquisitionPersonnelOutput(detail,absent,{id},regular));\n assert.equal(v.normalizeAcquisitionPersonnelInput(detail,{id},regular).metadata.notFound,'exception-after-audit');\n});\ntest('detail top-level headshot is not projected, and source metadata remains opaque',()=>{\n const p=person();p.person.headshotUrl='synthetic';assert.throws(()=>v.assertAcquisitionPersonnelOutput(detail,p,{id},regular));\n const opaque=person();opaque.person.sources=[mention()];opaque.person.sources[0].metadata={uploadedDirectoryContact:{email:'opaque@example.invalid'}};v.assertAcquisitionPersonnelOutput(detail,opaque,{id},regular);\n});\ntest('current nonadmin object metadata omits both specified containers without broad invented redaction',()=>{\n for(const key of ['uploadedDirectoryContact','uploadedDirectoryPrevious'])for(const value of [null,[],{},'opaque']){const p=person();p.person.metadata={[key]:value};assert.throws(()=>v.assertAcquisitionPersonnelOutput(detail,p,{id},regular),/redaction missing/);}\n for(const metadata of [null,[],[{uploadedDirectoryContact:'opaque'}],false,5,'opaque',{nested:{uploadedDirectoryContact:'opaque'},email:'opaque@example.invalid'}]){const p=person();p.person.metadata=metadata;v.assertAcquisitionPersonnelOutput(detail,p,{id},regular);}\n});\ntest('admin detail upload-derived fields correlate with retained metadata after trim',()=>{\n const p=person();p.person.metadata={uploadedDirectoryContact:{phone:' 123 ',parentOffice:' Office ',department:' Dept '},uploadedDirectoryPrevious:{opaque:true}};\n Object.assign(p.person,{email:'stored@example.invalid',phone:'123',parentOffice:'Office',department:'Dept'});v.assertAcquisitionPersonnelOutput(detail,p,{id},admin);\n for(const key of ['phone','parentOffice','department']){const wrong=structuredClone(p);wrong.person[key]='invented';assert.throws(()=>v.assertAcquisitionPersonnelOutput(detail,wrong,{id},admin),/metadata mismatch/);}\n for(const metadata of [null,[],{}, {uploadedDirectoryContact:[]},{uploadedDirectoryContact:{phone:123,parentOffice:' ',department:false}}]){const empty=person();empty.person.metadata=metadata;v.assertAcquisitionPersonnelOutput(detail,empty,{id},admin);}\n});\ntest('detail sources preserve full unpaged array, descending observation and UUID uniqueness',()=>{\n const p=person();p.person.sources=Array.from({length:65},(_,i)=>mention(i));v.assertAcquisitionPersonnelOutput(detail,p,{id},regular);\n const reversed=person();reversed.person.sources=[mention(1),{...mention(2),observedAt:'2026-10-13T12:00:00.000Z'}];assert.throws(()=>v.assertAcquisitionPersonnelOutput(detail,reversed,{id},regular),/newest first/);\n const dup=person();dup.person.sources=[mention(),mention()];assert.throws(()=>v.assertAcquisitionPersonnelOutput(detail,dup,{id},regular),/Duplicate/);\n for(const key of ['complete','hasMore','nextOffset']){const wrong=person();wrong.person[key]=true;assert.throws(()=>v.assertAcquisitionPersonnelOutput(detail,wrong,{id},regular));}\n});\ntest('inert admission rejects hooks on model input, role context and opaque result metadata',()=>{\n let hooks=0;const accessor=Object.defineProperty({},'actorRole',{enumerable:true,get(){hooks++;return'capiro_admin';}});\n assert.throws(()=>v.normalizeAcquisitionPersonnelInput(search,{},accessor));\n const proxy=new Proxy({},{get(){hooks++;},ownKeys(){hooks++;return[];}});assert.throws(()=>v.normalizeAcquisitionPersonnelInput(search,proxy,regular));\n const p=person();p.person.metadata={toJSON(){hooks++;return{};}};assert.throws(()=>v.assertAcquisitionPersonnelOutput(detail,p,{id},regular));\n p.person.metadata={};p.person.metadata.self=p.person.metadata;assert.throws(()=>v.assertAcquisitionPersonnelOutput(detail,p,{id},regular));\n p.person.metadata={bad:NaN};assert.throws(()=>v.assertAcquisitionPersonnelOutput(detail,p,{id},regular));assert.equal(hooks,0);\n});\ntest('actual canonical resolver pins request/hash and restricts both trusted context boundaries',()=>{\n const bindings=ACQUISITION_PERSONNEL_OPERATION_IDS.map(op=>({id:op,version:'0.2.0',contextKeys:['actorRole'],normalize:(_,request,context)=>v.normalizeAcquisitionPersonnelInput(op,request,context),outputAssert:(_,value,request,context)=>v.assertAcquisitionPersonnelOutput(op,value,request,{actorRole:context.actorRole})}));\n const catalog={operations:bindings.map(b=>({operation:{id:b.id,version:b.version},handler:null,status:'unavailable'}))};\n const r=createOperationContracts({catalog,bindings,validators:v,assertCatalog(){},canonicalSha256});\n for(const op of ACQUISITION_PERSONNEL_OPERATION_IDS){const c=r.resolveOperationContract({id:op,version:'0.2.0'}),n=c.normalizeInput(req(op),regular);assert.ok(Object.isFrozen(n.request));assert.equal(n.argumentsSha256,canonicalSha256(n.input));c.assertOutput(make(op),{request:n.request,...regular});assert.throws(()=>c.normalizeInput(req(op),{...regular,nowMs:1}));assert.throws(()=>c.assertOutput(make(op),{request:n.request}));}\n});",
+      "expected": "import test from 'node:test';\nimport assert from 'node:assert/strict';\nimport {readFileSync} from 'node:fs';\nimport Ajv from 'ajv/dist/2020.js';\nimport addFormats from 'ajv-formats';\nimport {createAcquisitionPersonnelValidators,ACQUISITION_PERSONNEL_OPERATION_IDS} from '../retrieval-0.2/acquisition-personnel-validation.mjs';\nimport {createOperationContracts} from '../retrieval-0.2/operation-contracts.mjs';\nimport {canonicalSha256} from '../validate.mjs';\n// Compiler is a test seam; canonical loader/catalog are exclusively root-owned.\nconst schema=JSON.parse(readFileSync(new URL('../retrieval-0.2/acquisition-personnel.schema.json',import.meta.url)));\nconst ajv=new Ajv({strict:true,allErrors:true});addFormats(ajv);ajv.addSchema(schema);\nconst checks=new Map(Object.keys(schema.$defs).map(name=>[name,ajv.compile({$ref:`${schema.$id}#/$defs/${name}`})]));\nconst v=createAcquisitionPersonnelValidators({schema,validateShape(name,value){const check=checks.get(name);if(!check?.(value))throw new Error(`${name}: ${ajv.errorsText(check?.errors)}`);return value;}});\nconst [search,detail]=ACQUISITION_PERSONNEL_OPERATION_IDS;\nconst id='abcdefab-1234-0000-0000-000000000001',other='abcdefab-1234-0000-0000-000000000002';\nconst stamp='2026-10-12T12:00:00.000Z';\nconst regular={actorRole:'standard_user'},admin={actorRole:'capiro_admin'};\nconst req=op=>op===search?{}:{id};\nfunction common(){return{id,fullName:'Synthetic Person',service:null,organization:null,title:null,role:null,pePrimary:null,peSecondary:[],emailDomain:null,publicProfileUrl:null,confidence:0.5,status:'unclassified',firstSeenAt:stamp,lastSeenAt:stamp,email:null,phone:null,parentOffice:null,department:null};}\nfunction mention(n=1){return{id:`00000000-0000-0000-0000-${String(n).padStart(12,'0')}`,source:'synthetic-source',sourceUrl:null,snippet:null,observedAt:stamp,confidence:0.4,metadata:{}};}\nfunction page(){return{tool:search,generatedAt:stamp,data:[{...common(),headshotUrl:null,sourceCount:0}],total:1,page:1,limit:20};}\nfunction person(){return{tool:detail,generatedAt:stamp,person:{...common(),nameKey:'synthetic person',programOfRecord:null,metadata:{},sources:[]}};}\nconst make=op=>op===search?page():person();\nconst row=p=>p.data?.[0]??p.person;\n\ntest('two distinct operation definitions and pinned factory identity',()=>{\n assert.equal(v.acquisitionPersonnelSchemaId,'urn:meri:retrieval:acquisition-personnel:0.2.0');\n assert.equal(new Set(ACQUISITION_PERSONNEL_OPERATION_IDS.map(v.acquisitionPersonnelInputDefinition)).size,2);\n for(const op of ['__proto__','constructor','get_program_element_personnel','link_crm_contact'])assert.throws(()=>v.normalizeAcquisitionPersonnelInput(op,{},regular));\n});\nfor(const op of ACQUISITION_PERSONNEL_OPERATION_IDS){\n test(`${op}: immutable request and output with explicit unqualified metadata`,()=>{\n  const request=req(op),saved=structuredClone(request),p=make(op),before=structuredClone(p),n=v.normalizeAcquisitionPersonnelInput(op,request,regular);\n  assert.deepEqual(request,saved);assert.notEqual(n.input,request);assert.ok(Object.isFrozen(n.input));assert.ok(Object.isFrozen(n.metadata));\n  for(const key of ['authoritative','sourceConnected','producerQualified','absenceEvidence','currentAuthorityQualified'])assert.equal(n.metadata[key],false);\n  assert.equal(n.metadata.auditWriteRequired,true);assert.equal(n.metadata.producerPolicyPin,'4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace');\n  assert.equal(v.assertAcquisitionPersonnelOutput(op,p,request,regular),p);assert.deepEqual(p,before);\n });\n test(`${op}: both operations require exact trusted role context`,()=>{\n  for(const context of [undefined,{},null,[],{actorRole:'admin'},{actorRole:'capiro_admin '},{actorRole:'CAPIRO_ADMIN'},{actorRole:'capiro_admin',tenantId:'invented'},{role:'capiro_admin'}]){\n   assert.throws(()=>v.normalizeAcquisitionPersonnelInput(op,req(op),context));assert.throws(()=>v.assertAcquisitionPersonnelOutput(op,make(op),req(op),context));\n  }\n  for(const actorRole of ['capiro_admin','user_admin','standard_user','client_portal_user'])v.assertAcquisitionPersonnelOutput(op,make(op),req(op),{actorRole});\n });\n test(`${op}: actor hints in model arguments cannot elevate privilege`,()=>{\n  for(const key of ['actorRole','actorId','tenantId','userId','isAdmin','asOf','include_superseded','email'])assert.throws(()=>v.normalizeAcquisitionPersonnelInput(op,{...req(op),[key]:'capiro_admin'},regular));\n });\n test(`${op}: non-admin top-level contact fields must all be null`,()=>{\n  for(const actorRole of ['user_admin','standard_user','client_portal_user'])for(const key of ['email','phone','parentOffice','department']){\n   const p=make(op);row(p)[key]='synthetic';assert.throws(()=>v.assertAcquisitionPersonnelOutput(op,p,req(op),{actorRole}),/trusted capiro_admin/);\n  }\n });\n test(`${op}: exact current projection closes omitted/extra fields`,()=>{\n  for(const key of ['approvedFacts','contactUse','roles','crmLinkBlocked','supersededAt','complete']){const p=make(op);row(p)[key]=true;assert.throws(()=>v.assertAcquisitionPersonnelOutput(op,p,req(op),regular));}\n  for(const key of ['phone','parentOffice','department','email']){const p=make(op);delete row(p)[key];assert.throws(()=>v.assertAcquisitionPersonnelOutput(op,p,req(op),regular));}\n  const p=make(op);p.tool=op===search?detail:search;assert.throws(()=>v.assertAcquisitionPersonnelOutput(op,p,req(op),regular));\n });\n test(`${op}: finite confidence and dates without invented confidence/lifecycle ranges`,()=>{\n  const p=make(op);row(p).confidence=-2;row(p).firstSeenAt='2026-10-13T12:00:00.000Z';v.assertAcquisitionPersonnelOutput(op,p,req(op),regular);\n  row(p).confidence=5;v.assertAcquisitionPersonnelOutput(op,p,req(op),regular);\n  for(const value of [NaN,Infinity]){row(p).confidence=value;assert.throws(()=>v.assertAcquisitionPersonnelOutput(op,p,req(op),regular));}\n  for(const key of ['generatedAt','firstSeenAt','lastSeenAt']){const p=make(op);(key==='generatedAt'?p:row(p))[key]='2026-06-30T23:59:60Z';assert.throws(()=>v.assertAcquisitionPersonnelOutput(op,p,req(op),regular));}\n });\n}\ntest('search defaults/range are strict while source string trim and UTF16 caps remain explicit',()=>{\n assert.deepEqual(v.normalizeAcquisitionPersonnelInput(search,{},regular).input,{limit:20,page:1});\n const n=v.normalizeAcquisitionPersonnelInput(search,{query:' '+ 'q'.repeat(239)+'\ud83d\ude00 ',service:' '+ 's'.repeat(70),organization:'o'.repeat(201),role:'r'.repeat(61),peCode:'p'.repeat(33)},regular).input;\n assert.equal(n.query,'q'.repeat(239)+'\\ud83d');assert.equal(n.service.length,60);assert.equal(n.organization.length,200);assert.equal(n.role.length,60);assert.equal(n.peCode.length,32);\n assert.deepEqual(v.normalizeAcquisitionPersonnelInput(search,{query:' \\t ',service:' '},regular).input,{limit:20,page:1});\n assert.equal(v.normalizeAcquisitionPersonnelInput(search,{query:'q'.repeat(239)+' X'},regular).input.query,'q'.repeat(239));\n for(const field of ['limit','page'])for(const value of [0,-1,1.5,'10',null,true,undefined,field==='limit'?51:101])assert.throws(()=>v.normalizeAcquisitionPersonnelInput(search,{[field]:value},regular));\n for(const input of [{q:'hidden alias'},{pe_code:'hidden selector'},{sort:'confidence'},{pe_aligned:'aligned'}])assert.throws(()=>v.normalizeAcquisitionPersonnelInput(search,input,regular));\n});\ntest('search every registered limit/page boundary and echoed selection',()=>{\n for(const limit of [1,50])for(const pageNumber of [1,100]){const p=page();p.limit=limit;p.page=pageNumber;v.assertAcquisitionPersonnelOutput(search,p,{limit,page:pageNumber},regular);}\n for(const mutate of [p=>p.page++,p=>p.limit++,p=>p.data.push({...p.data[0],id:other})]){const p=page();p.limit=1;mutate(p);assert.throws(()=>v.assertAcquisitionPersonnelOutput(search,p,{limit:1},regular));}\n});\ntest('fuzzy totals count a bounded candidate window before remaining filters, not all matches',()=>{\n for(const [count,total] of [[0,0],[0,5],[1,1],[1,20]]){const p=page();if(!count)p.data=[];p.total=total;v.assertAcquisitionPersonnelOutput(search,p,{query:'Synthetic'},regular);}\n for(const total of [0,21]){const p=page();p.total=total;assert.throws(()=>v.assertAcquisitionPersonnelOutput(search,p,{query:'Synthetic'},regular),/candidate window/);}\n assert.equal(v.normalizeAcquisitionPersonnelInput(search,{query:'Synthetic'},regular).metadata.countScope,'paged-fuzzy-candidates-before-filters');\n});\ntest('unfiltered totals are separate observations and may be smaller than returned rows',()=>{\n const p=page();p.total=0;v.assertAcquisitionPersonnelOutput(search,p,{},regular);p.total=10000;v.assertAcquisitionPersonnelOutput(search,p,{},regular);\n assert.equal(v.normalizeAcquisitionPersonnelInput(search,{},regular).metadata.countScope,'separate-local-count');\n});\ntest('exact service/role/PE filter bindings do not confer caller authority',()=>{\n const p=page();Object.assign(p.data[0],{service:'Army',role:'capiro_admin',peSecondary:['PE-1']});\n v.assertAcquisitionPersonnelOutput(search,p,{service:'Army',role:'capiro_admin',peCode:'PE-1'},regular);\n for(const request of [{service:'Navy'},{role:'PM'},{peCode:'PE-2'}])assert.throws(()=>v.assertAcquisitionPersonnelOutput(search,p,request,regular),/selector substitution/);\n p.data[0].email='synthetic@example.invalid';assert.throws(()=>v.assertAcquisitionPersonnelOutput(search,p,{role:'capiro_admin'},regular),/trusted capiro_admin/);\n});\ntest('list admin email is stored text; headshot is opaque inert JSON, not a string assertion',()=>{\n for(const headshotUrl of [null,false,0,'',[],{untrusted:'synthetic'}]){const p=page();Object.assign(p.data[0],{email:' synthetic@example.invalid ',phone:'123',parentOffice:'Office',department:'Dept',headshotUrl});v.assertAcquisitionPersonnelOutput(search,p,{},admin);}\n for(const phone of ['', ' 123','123 ']){const p=page();p.data[0].phone=phone;assert.throws(()=>v.assertAcquisitionPersonnelOutput(search,p,{},admin),/normalized text/);}\n});\ntest('detail UUID request normalization matches actual UUID identity without invented version restriction',()=>{\n for(const inputId of ['00000000-0000-0000-0000-000000000000',id.toUpperCase()]){const p=person();p.person.id=inputId.toLowerCase();v.assertAcquisitionPersonnelOutput(detail,p,{id:' '+inputId+' '},regular);}\n assert.equal(v.normalizeAcquisitionPersonnelInput(detail,{id:' '+id.toUpperCase()+' '},regular).input.id,id);\n for(const inputId of ['', ' ', 'not-uuid',id+'x',null,4])assert.throws(()=>v.normalizeAcquisitionPersonnelInput(detail,{id:inputId},regular));\n assert.throws(()=>v.assertAcquisitionPersonnelOutput(detail,person(),{id:other},regular),/identity substitution/);\n const absent=person();absent.person=null;assert.throws(()=>v.assertAcquisitionPersonnelOutput(detail,absent,{id},regular));\n assert.equal(v.normalizeAcquisitionPersonnelInput(detail,{id},regular).metadata.notFound,'exception-after-audit');\n});\ntest('detail top-level headshot is not projected, and source metadata remains opaque',()=>{\n const p=person();p.person.headshotUrl='synthetic';assert.throws(()=>v.assertAcquisitionPersonnelOutput(detail,p,{id},regular));\n const opaque=person();opaque.person.sources=[mention()];opaque.person.sources[0].metadata={uploadedDirectoryContact:{email:'opaque@example.invalid'}};v.assertAcquisitionPersonnelOutput(detail,opaque,{id},regular);\n});\ntest('current nonadmin object metadata omits both specified containers without broad invented redaction',()=>{\n for(const key of ['uploadedDirectoryContact','uploadedDirectoryPrevious'])for(const value of [null,[],{},'opaque']){const p=person();p.person.metadata={[key]:value};assert.throws(()=>v.assertAcquisitionPersonnelOutput(detail,p,{id},regular),/redaction missing/);}\n for(const metadata of [null,[],[{uploadedDirectoryContact:'opaque'}],false,5,'opaque',{nested:{uploadedDirectoryContact:'opaque'},email:'opaque@example.invalid'}]){const p=person();p.person.metadata=metadata;v.assertAcquisitionPersonnelOutput(detail,p,{id},regular);}\n});\ntest('admin detail upload-derived fields correlate with retained metadata after trim',()=>{\n const p=person();p.person.metadata={uploadedDirectoryContact:{phone:' 123 ',parentOffice:' Office ',department:' Dept '},uploadedDirectoryPrevious:{opaque:true}};\n Object.assign(p.person,{email:'stored@example.invalid',phone:'123',parentOffice:'Office',department:'Dept'});v.assertAcquisitionPersonnelOutput(detail,p,{id},admin);\n for(const key of ['phone','parentOffice','department']){const wrong=structuredClone(p);wrong.person[key]='invented';assert.throws(()=>v.assertAcquisitionPersonnelOutput(detail,wrong,{id},admin),/metadata mismatch/);}\n for(const metadata of [null,[],{}, {uploadedDirectoryContact:[]},{uploadedDirectoryContact:{phone:123,parentOffice:' ',department:false}}]){const empty=person();empty.person.metadata=metadata;v.assertAcquisitionPersonnelOutput(detail,empty,{id},admin);}\n});\ntest('detail sources preserve full unpaged array, descending observation and UUID uniqueness',()=>{\n const p=person();p.person.sources=Array.from({length:65},(_,i)=>mention(i));v.assertAcquisitionPersonnelOutput(detail,p,{id},regular);\n const reversed=person();reversed.person.sources=[mention(1),{...mention(2),observedAt:'2026-10-13T12:00:00.000Z'}];assert.throws(()=>v.assertAcquisitionPersonnelOutput(detail,reversed,{id},regular),/newest first/);\n const dup=person();dup.person.sources=[mention(),mention()];assert.throws(()=>v.assertAcquisitionPersonnelOutput(detail,dup,{id},regular),/Duplicate/);\n for(const key of ['complete','hasMore','nextOffset']){const wrong=person();wrong.person[key]=true;assert.throws(()=>v.assertAcquisitionPersonnelOutput(detail,wrong,{id},regular));}\n});\ntest('inert admission rejects hooks on model input, role context and opaque result metadata',()=>{\n let hooks=0;const accessor=Object.defineProperty({},'actorRole',{enumerable:true,get(){hooks++;return'capiro_admin';}});\n assert.throws(()=>v.normalizeAcquisitionPersonnelInput(search,{},accessor));\n const proxy=new Proxy({},{get(){hooks++;},ownKeys(){hooks++;return[];}});assert.throws(()=>v.normalizeAcquisitionPersonnelInput(search,proxy,regular));\n const p=person();p.person.metadata={toJSON(){hooks++;return{};}};assert.throws(()=>v.assertAcquisitionPersonnelOutput(detail,p,{id},regular));\n p.person.metadata={};p.person.metadata.self=p.person.metadata;assert.throws(()=>v.assertAcquisitionPersonnelOutput(detail,p,{id},regular));\n p.person.metadata={bad:NaN};assert.throws(()=>v.assertAcquisitionPersonnelOutput(detail,p,{id},regular));assert.equal(hooks,0);\n});\ntest('actual canonical resolver pins request/hash and restricts both trusted context boundaries',()=>{\n const bindings=ACQUISITION_PERSONNEL_OPERATION_IDS.map(op=>({id:op,version:'0.2.0',contextKeys:['actorRole'],normalize:(_,request,context)=>v.normalizeAcquisitionPersonnelInput(op,request,context),outputAssert:(_,value,request,context)=>v.assertAcquisitionPersonnelOutput(op,value,request,{actorRole:context.actorRole})}));\n const catalog={operations:bindings.map(b=>({operation:{id:b.id,version:b.version},handler:null,status:'unavailable'}))};\n const r=createOperationContracts({catalog,bindings,validators:v,assertCatalog(){},canonicalSha256});\n for(const op of ACQUISITION_PERSONNEL_OPERATION_IDS){const c=r.resolveOperationContract({id:op,version:'0.2.0'}),n=c.normalizeInput(req(op),regular);assert.ok(Object.isFrozen(n.request));assert.equal(n.argumentsSha256,canonicalSha256(n.input));c.assertOutput(make(op),{request:n.request,...regular});assert.throws(()=>c.normalizeInput(req(op),{...regular,nowMs:1}));assert.throws(()=>c.assertOutput(make(op),{request:n.request}));}\n});"
+    },
+    {
+      "name": "original-review-controls-unchanged-prefix",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    }
+  ],
+  "passed": 55,
+  "failed": 0,
+  "runtimeAccepted": false
+}

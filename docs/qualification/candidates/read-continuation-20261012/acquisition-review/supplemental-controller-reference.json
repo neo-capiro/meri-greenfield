@@ -1,0 +1,21 @@
+{
+  "references": [
+    {
+      "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "path": "apps/api/src/acquisition-personnel/acquisition-personnel.controller.ts",
+      "blob": "1cd5dd2f5f945b63876a36d2cc97815bdd44548c",
+      "bytes": 5526,
+      "sha256": "596d4e8f8e93b5baf8ecda4754e54c0059ce8afcc88e0a975520e8d51d6d893c"
+    },
+    {
+      "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "path": "apps/api/src/acquisition-personnel/acquisition-personnel.controller.ts",
+      "blob": "1cd5dd2f5f945b63876a36d2cc97815bdd44548c",
+      "bytes": 5526,
+      "sha256": "596d4e8f8e93b5baf8ecda4754e54c0059ce8afcc88e0a975520e8d51d6d893c"
+    }
+  ],
+  "unchanged": true,
+  "privateBodiesPublished": false,
+  "sourceExecuted": false
+}

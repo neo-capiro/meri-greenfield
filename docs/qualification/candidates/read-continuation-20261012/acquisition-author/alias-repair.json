@@ -1,0 +1,11 @@
+{
+  "initialSourceFreeze": "2a35e072d13fe93e3b57a9d47544df472cdcd8d4",
+  "reviewerFailureCommit": "6fda7c7",
+  "diagnosis": "Established q alias was rejected by advertised-only typed request schema; root confirmed exclusion was not authorized",
+  "repairFreeze": "fbe72ed67b953a991f590ed40767e27c17ee114b",
+  "behavior": "query and q admit string/null; first nonblank query wins else q, trim/UTF16 cap retained, q removed from effective selection; final owner fuzzy trim applied; same canonical digest for equal effective queries",
+  "tests": "Preserved original initial source/test bytes; added precedence/null/blank/UTF16/digest/count regression; changed only original alias-refusal expectation to an unsupported-selector refusal",
+  "initialAuthorPass": "26/26 does not negate independent failure",
+  "repairedAuthorPass": "27/27",
+  "scope": "No privacy/role/source activation changes"
+}

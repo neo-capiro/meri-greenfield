@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-bill-text.test.mjs"
+  ],
+  "cwd": "/workspace/meri-bill-text-20261012",
+  "sourceHead": "0bdd1ce12b9263ad522e87e5f6f5105dee16dade",
+  "sourceDiffSha256": "dd8a80e36b3c7b543fcd0ca2e227b76bce982769708da2d3a01bf28a164c5a8f",
+  "sourceDiffBytes": 5782,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T17:09:36.139410+00:00",
+  "durationSeconds": 0.467,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 174115,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-author/selector-repair-focused.stdout.bin",
+      "bytes": 2656,
+      "sha256": "819aec0637c26876aa17eab0a9b6179626fbf9758eed642e319a18cad059d675"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-author/selector-repair-focused.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Repair the two preserved output selector failures; preserve all original assertions and rerun focused controls.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,72 @@
+✔ distinct operations/schema and hostile operation references (2.380292ms)
+✔ trusted defaultCongress required; model arguments cannot inject authority (0.974986ms)
+✔ request normalization preserves query/search aliases and exact UTF16 caps (2.243291ms)
+✔ text and metadata limits/defaults differ; registered text limit is conservatively clamped (0.537318ms)
+✔ metadata returns all stored scalar/null fields and opaque committees without false total equality (3.409705ms)
+✔ metadata nullable dates, newer-first non-null order, unknown statuses stay distinct (1.178971ms)
+✔ direct designation has one exact bill, page1 and ignores metadata filters by original branch (0.72528ms)
+✔ designation miss can fall back to metadata page; no fabricated unavailable search envelope (0.512631ms)
+✔ text search scalar/null fields and same-bill cross-version passage cursor are preserved (1.932955ms)
+✔ search empty first versus later page retains different total availability (0.690268ms)
+✔ omitted bills count before trimming determines hasMore and required disclosure (0.521804ms)
+✔ text response ceiling measures JSON characters, not scalar-codepoint length (0.87157ms)
+✔ unavailable current text is explicit local coverage, including resumed stale pointer disappearance (3.180078ms)
+✔ sequential first/final/resumed-empty pages retain exact coverage booleans (1.428637ms)
+✔ valid nonfinal surrogate boundary can shorten sequential page by one UTF16 unit (0.675435ms)
+✔ sequential text length, cursor offset and coverage cannot substitute one another (1.408166ms)
+✔ cursor canonical base64url accepts whitespace JSON but rejects malformed scope/hash/offset (0.574163ms)
+✔ continuation output binds version, revision and text hash even without requested version (1.166813ms)
+✔ locator passes complete structural framing without treating excerpts as full content (1.647035ms)
+✔ locator six exact nonoverlapping windows and per-passage lineage (1.234716ms)
+✔ locator no-hit note prevents treating lack of exact wording as topic absence (0.488624ms)
+✔ locator rejects altered passage framing, unbound text and mixed cursor input (1.210929ms)
+✔ all branches preserve immutable input and deny accessors/cycles/proxy hooks (0.476947ms)
+✔ canonical resolver preserves original aliases/digest and exact trusted context (1.714777ms)
+✖ activeSince constrains metadata fallback dates but direct and text branches ignore it (1.00484ms)
+✖ text search congress filter binds the stored bill-ID prefix (0.583767ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 24
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 451.526277
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-bill-text.test.mjs:49:1
+✖ activeSince constrains metadata fallback dates but direct and text branches ignore it (1.00484ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-bill-text-20261012/packages/contracts/test/retrieval-bill-text.test.mjs:49:125)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-bill-text.test.mjs:50:1
+✖ text search congress filter binds the stored bill-ID prefix (0.583767ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-bill-text-20261012/packages/contracts/test/retrieval-bill-text.test.mjs:50:141)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }

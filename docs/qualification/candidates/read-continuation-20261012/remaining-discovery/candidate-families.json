@@ -1,0 +1,218 @@
+{
+  "scope": "DISCOVERY_ONLY; ten operations recommended for source-contract authoring, no source/runtime acceptance",
+  "common": {
+    "authority": "Meri request active guard and route roles are source prerequisites, not trusted authority obtained from the request/result DTO. New gateway must bind current tenant/actor/operation policy and deadlines independently. No connector is activated.",
+    "normalization": "optionalString accepts only strings, trims then UTF-16 slices; clampInt legacy-coerces finite numbers then truncates/clamps. A strict typed contract must disclose intentional admission narrowing; never silently change aliases or existing result branches.",
+    "wire": "Dates below are JSON wire strings/null corresponding to source Date fields; shape does not prove storage freshness or current-world truth. No candidate is a runtime acceptance."
+  },
+  "families": [
+    {
+      "family": "legislative-directory",
+      "operations": [
+        "get_committee_roster",
+        "list_members"
+      ],
+      "locators": [
+        "meri-tools.service.ts:5765-5828,5947-6143",
+        "shared/index.ts:1414,1936-1959",
+        "common/us-states.ts:17",
+        "schema.prisma:4210,4262,4294,6722,6942,6964"
+      ],
+      "input": {
+        "roster": "committee trim/cap200, jurisdiction lower/cap10 federal|state, chamber lower/cap10; state upper/cap2 required for state. Invalid/missing selectors return null committee/leadership and empty members.",
+        "members": "state trim/cap40 resolved via exact shared state map, chamber lower/cap10 house|senate else absent, limit1..100/default100. Invalid state refuses even with chamber; no valid state/chamber returns empty note."
+      },
+      "result": {
+        "roster": "Federal committee{id,name,chamber,jurisdiction,isSubcommittee,matchedBy}; members{id,name,party?,state?,side,rank?,title?}; nullable fields present. State committee{id,name,chamber?,jurisdiction,matchedBy}, NO state field; members{id,name,party?,chamber?,district?,role?}; rankingMember always null. Federal exact code is case-sensitive; state exact id is case-insensitive; normalized-name uniqueness otherwise resolver semantics. Chair/vice/ranking first source role matches; no cap.",
+        "members": "tool/generatedAt, filter only normal branch, matchesFound==returned rows, members{id,name,party?,state?,district?,chamber}, note; isCurrent true. District numeric for House else null. No global total.",
+        "scalarOwner": "Prisma CongressMember party/state nullable and district Int?; state chamber/district/party nullable; side string, rank Int?, title/role String?."
+      },
+      "effectsAndAuthority": {
+        "reads": "withSystem stored committee/member reads only in selected methods; missing person rows dropped from federal membership. No provider/write observed in these paths.",
+        "sort": "Federal rank uses null999; state roster retains returned source order. Name matcher result not independently provable from DTO."
+      },
+      "qualificationLimits": [
+        "Stored roster/current flags require adapter freshness qualification.",
+        "Current source/DTO/policy refs inspected here have no drift.",
+        "Parent allocated author during discovery; no mapping changed by this packet."
+      ],
+      "sourceContractRecommendation": "READY_FOR_AUTHOR_AND_INDEPENDENT_REVIEW",
+      "runtimeAccepted": false
+    },
+    {
+      "family": "program-element-reference",
+      "operations": [
+        "get_pe_contractors",
+        "get_pe_bills",
+        "get_pe_report_language"
+      ],
+      "locators": [
+        "meri-tools.service.ts:5280-5313",
+        "program-element-read.service.ts:90-117,1363-1500,1569-1585,1588-1829,2726-2829",
+        "meri-defense-budget-tool.helpers.ts:212-235",
+        "shared/funding-claim.ts:253-257,607-636"
+      ],
+      "input": {
+        "all": "Required peCode string trimmed/capped32. Owner checks existence for contractors/bills and throws missing-element error; provision owner trims and can return empty."
+      },
+      "result": {
+        "bills": "At most100 stored bills; fields id/congress/billType/billNumber/title/policyArea?/latestActionText?/latestActionDate?/url?/sponsor/committee?/peCodeCount; link nullable {type,confidence,evidence,status}; budgetPackage nullable {name,fiscalYear,track,stage}. Exact owner projection must be followed, including nullable storage types and fallback versioned links.",
+        "contractors": "Missing award table returns {data:[],todo}; normal returns namedPrimes/data/evidence/evidenceNote/todo:null. Data rows contractorName/amount/awards/source plus attribution; SQL top10. Named primes top25 with contractorName/location?/contractMethod?/totalCostM?/fy?/sourceUrl?/pageNumber?/publisher?/attribution. Evidence keeps governmentExhibit and federalAwards separate.",
+        "money": "24-month award window; federalAwards amountM/count and accepted_direct/candidate/unmatched_dollars buckets. Government R-3 exhibit money remains compatibility-table provenance, not canonical money or award obligations. Unmatched zeros are response bucket values, not exhaustive attribution proof.",
+        "reportLanguage": "ProvisionItem fields id/committee/fy/heading/text/pageStart?/pageEnd?/actionType?/sourceUrl?/matchBasis/reviewStatus/confidence/matchScope/attributionCaveat?. Exact matchScope pe_specific|program_level. Exposed reviewStatus accepted and candidate links retained; accepted program match branch. Dedup strongest match basis; sorted by source review/basis/FY, final cap50. Empty and program-level-only caveats from helper; no report absence proof.",
+        "wrapperEnvelopes": "Report language: tool/generatedAt/peCode/provisions and optional note. Bills: tool/generatedAt/bills, NO peCode echo. Contractors: tool/generatedAt plus spread result, NO peCode echo."
+      },
+      "effectsAndAuthority": {
+        "reads": "Stored Prisma reads, parameterized SQL versioned links/award compatibility data; no provider/model call in traced methods. ProgramElementReadService has other methods with different effects; no family-wide effect inference.",
+        "auth": "Legacy owner accepts ctx but selected methods are global stored reads; tenant current authority still needs canonical gateway/context binding."
+      },
+      "qualificationLimits": [
+        "Author must trace schema scalar/nulls and exact inline response fields, not copy implementation.",
+        "Missing-table response is supported source envelope, not a missing DTO.",
+        "Award obligations versus exhibit values and accepted/candidate attribution stay distinct.",
+        "No canonical snapshot/funding accuracy qualification inherited from a shape."
+      ],
+      "sourceContractRecommendation": "READY_FOR_AUTHOR_AND_INDEPENDENT_REVIEW",
+      "runtimeAccepted": false
+    },
+    {
+      "family": "stored-intelligence",
+      "operations": [
+        "search_intel_articles"
+      ],
+      "locators": [
+        "meri-tools.service.ts:6349-6392,10285",
+        "schema.prisma:7063"
+      ],
+      "input": {
+        "search": "query trim/cap240, source trim/cap60, limit1..50/default20; query matches title/summary case-insensitive or categories/topics exact array membership; optional source exact."
+      },
+      "result": {
+        "envelope": "tool/generatedAt/total/data; rows id/source/title/url/author?/publishedAt/summary/categories/topics. title summarizes UTF-16 cap240; summary cap400, null->empty; whitespace normalized, truncated values end three dots.",
+        "counts": "Independent concurrent list/count; total may be below returned length, no count completeness guarantee.",
+        "scalarOwner": "id/source/title/url String; author/summary nullable String; publishedAt DateTime non-null; categories/topics String[]."
+      },
+      "effectsAndAuthority": {
+        "reads": "Two separate withSystem stored queries, publishedAt descending; no provider/write in wrapper."
+      },
+      "qualificationLimits": [
+        "No live feed fetch/scrape implied.",
+        "Storage DateTime to wire policy must be declared; do not invent broader source bounds."
+      ],
+      "sourceContractRecommendation": "READY_FOR_AUTHOR_AND_INDEPENDENT_REVIEW",
+      "runtimeAccepted": false
+    },
+    {
+      "family": "rule-status",
+      "operations": [
+        "get_state_rule_status"
+      ],
+      "locators": [
+        "meri-tools.service.ts:6193-6347",
+        "shared/index.ts:1820-1884",
+        "schema.prisma:5761,7007"
+      ],
+      "input": {
+        "lookup": "query trim/cap200 required for lookup, state upper/cap2 optional. Without state try federal documentNumber first; then state id matching state if supplied; otherwise title/abstract search."
+      },
+      "result": {
+        "refusals": "found:false missing/no-match note; ambiguousMatches state+federal stored candidates, max6 each, not complete count.",
+        "found": "tool/generatedAt/found/jurisdiction/id/title/abstract?/agencyNames/ruleType/stage/stageLabel/publicationDate/commentPeriod{start?,end?,isOpen}/effectiveDate?/docketIds/sourceUrl/linkedBillKeys; state adds filingDate?/linkedRuleNumbers/sourceRevision?/coverage; conditional note. Preserve exact federal/state scalar types.",
+        "truth": "stage and isOpen derive source document type plus comment/effective dates and producer clock; no trusted asOf in input. Shape cannot attest current comment eligibility."
+      },
+      "effectsAndAuthority": {
+        "reads": "Stored federal/state rules only in wrapper; no ingestion/provider writes."
+      },
+      "qualificationLimits": [
+        "Do not conflate ambiguity window with absence.",
+        "Current clock/release authority and full stored projection must be independently qualified."
+      ],
+      "sourceContractRecommendation": "READY_FOR_AUTHOR_AND_INDEPENDENT_REVIEW",
+      "runtimeAccepted": false
+    },
+    {
+      "family": "certification-snapshot",
+      "operations": [
+        "get_certification_status"
+      ],
+      "locators": [
+        "meri-tools.service.ts:3849-3900",
+        "external/fedramp/fedramp.client.ts:12-21,53-122",
+        "meriv2-core/grounding/status-provenance.ts"
+      ],
+      "input": {
+        "lookup": "Only program fedramp; nonempty trimmed query. Exact case-insensitive productId preferred, otherwise CSP/CSO name substring matches."
+      },
+      "result": {
+        "variants": "All branches include tool/program/searchedEntireDataset:true. No-match found:false carries evidenceOfAbsence:true/note/sourceUrl/observedAt. Ambiguous found:true/ambiguous:true with full candidateCount and at most10 candidates. Single found:true/ambiguous:false with record. No query echo or generatedAt field is projected.",
+        "record": "program/productId/cspName/csoName/status/impactLevel/authorizationDate?/sponsoringAgencies/sourceUrl/observedAt; types declared by FedrampProductRecord and source vocabularies.",
+        "absence": "Retain source evidenceOfAbsence field as snapshot-scoped observation, never promote it to current/global negative authority."
+      },
+      "effectsAndAuthority": {
+        "effect": "Live HTTP marketplace fetch and parse, 15s AbortSignal timeout per fetch, declared and actual response cap8MiB, body arrayBuffer before actual size check. One retry except identified nonserver HTTP errors; no shared total budget shown. No cache in traced helper.",
+        "auth": "Governed egress/current-operation budget, full cancellation and provider/source provenance qualification required before connector execution."
+      },
+      "qualificationLimits": [
+        "Known HTTP/retry effect is not missing DTO.",
+        "No claim existing per-fetch timeout proves hard total duration or memory-bounded streaming."
+      ],
+      "sourceContractRecommendation": "READY_FOR_AUTHOR_AND_INDEPENDENT_REVIEW",
+      "runtimeAccepted": false
+    },
+    {
+      "family": "facility-representation",
+      "operations": [
+        "get_representation"
+      ],
+      "locators": [
+        "meri-tools.service.ts:6145-6191",
+        "clients/representation-resolver.service.ts:18-59,141-281",
+        "clients/district-code.util.ts",
+        "common/district-code.util.ts"
+      ],
+      "input": {
+        "lookup": "optional clientId trim/cap64; missing returns facilities[]/note. Optional state upper/cap2 filters rows after lookup."
+      },
+      "result": {
+        "rows": "facilityId/facilityName/city?/state?/representation. Unresolved {unresolved:true,reason:no_state|no_geocode}; resolved federal{house:null|FederalMemberSummary,senate:[]},state{lower:null|StateLegislatorSummary,upper:null|StateLegislatorSummary}.",
+        "types": "Federal summary bioguideId/fullName/party?/state?/district:number|null/chamber; state summary id/name/state/chamber?/district:string|null/party?/url?.",
+        "coverage": "Unresolved or missing district representative is not absence of political representation. No invented upper bound."
+      },
+      "effectsAndAuthority": {
+        "reads": "withTenant clientFacility lookup plus stored active/current federal/state legislators; no geocoding/provider/cache write in called representationForFacilities.",
+        "authority": "Traced wrapper/owner shows tenant context but no explicit client visibility assertion; do not infer authorized client access from supplied id. New trusted authorization must explicitly establish client scope."
+      },
+      "qualificationLimits": [
+        "Contract-ready exact DTO; client-access adapter/policy remains unqualified."
+      ],
+      "sourceContractRecommendation": "READY_FOR_AUTHOR_AND_INDEPENDENT_REVIEW",
+      "runtimeAccepted": false
+    },
+    {
+      "family": "dataset-metadata",
+      "operations": [
+        "list_global_datasets"
+      ],
+      "locators": [
+        "meri-tools.service.ts:4770-4777",
+        "meri/analytics/global-dataset-registry.ts:23-75,331-347"
+      ],
+      "input": {
+        "lookup": "No model selector consumed; owner function returns fixed registry summary."
+      },
+      "result": {
+        "envelope": "tool/generatedAt/datasets; each key/description/supportsAsOf/fields; fields name/type/description/filterable/groupable/aggregatable. Types string|number|boolean|date|timestamp|string[]. No raw SQL/table/expression is projected.",
+        "scope": "Describes registered query fields only; not row data, authorization to query them or proof of dataset coverage.",
+        "defaults": "supportsAsOf defaults false; filterable/groupable default true; aggregatable iff type is number."
+      },
+      "effectsAndAuthority": {
+        "effect": "Pure registry projection and generatedAt, no DB/provider call in invoked helper."
+      },
+      "qualificationLimits": [
+        "Separate from query_global_data, whose typed query/aggregation/tenant/global policy still needs its own review."
+      ],
+      "sourceContractRecommendation": "READY_FOR_AUTHOR_AND_INDEPENDENT_REVIEW",
+      "runtimeAccepted": false
+    }
+  ]
+}

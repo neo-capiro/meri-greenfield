@@ -1,0 +1,30 @@
+{
+  "sourceCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "observedCommit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+  "references": [
+    {
+      "path": "apps/api/src/program-element/federal-evidence/persistence.ts",
+      "bytes": 27729,
+      "sha256": "54ac4e5f052f8329645f0d951a9a97e6fe3ec7b05cdf8e9709aa721ffa945ad2",
+      "blob": "b7ac5de2f3481793c905986b6e4ae53c2ead1a26",
+      "observedBlob": "b7ac5de2f3481793c905986b6e4ae53c2ead1a26",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/prisma/migrations/20280924030000_federal_legislative_evidence/migration.sql",
+      "bytes": 11790,
+      "sha256": "f8a79d9eb19118f88e5497706986f3259a47c5f247c2c2adfa138a3a08f1efec",
+      "blob": "8f447f71f862ab25f7f7dfc084c1e44526ec26f3",
+      "observedBlob": "8f447f71f862ab25f7f7dfc084c1e44526ec26f3",
+      "unchanged": true
+    }
+  ],
+  "facts": [
+    "FederalEvidenceRevision.id is generic UUID (Prisma @db.Uuid, uuid default; migration UUID/gen_random_uuid default has no v4 storage constraint). Available output is generic UUID; input cursor remains explicit v4.",
+    "Persistence helper line96 computes SHA256 hexadecimal; contentHash427 hashes rawContent, extractionHash428 hashes extractedText. This establishes writer lowercase64 convention, not provenance proof or a database format constraint.",
+    "Original4980080 output UUID refusal preserved77/1; exact079c9fd replay78/78.",
+    "Root-approved metadata activeSince date/date-time admission preserved76/1 before and77/77 after; direct/text branch ignores this unused filter."
+  ],
+  "privateBodiesPublished": false,
+  "privateCodeExecuted": false
+}

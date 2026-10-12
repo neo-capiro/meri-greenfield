@@ -1,0 +1,17 @@
+[
+  {
+    "path": "packages/contracts/retrieval-0.2/disclosures.schema.json",
+    "bytes": 15855,
+    "sha256": "80e6c104e75821e9cfe2861b19073b1e83ea17f87a3efd5e90b77edd4eba8c3f"
+  },
+  {
+    "path": "packages/contracts/retrieval-0.2/disclosures-validation.mjs",
+    "bytes": 5503,
+    "sha256": "875e80298eeadaaac35c26ac0998d4df3ebf3a8e0ec887ca35ac5dfbc71c299d"
+  },
+  {
+    "path": "packages/contracts/test/retrieval-disclosures.test.mjs",
+    "bytes": 14369,
+    "sha256": "34db9a16d450a9d0ed720dfd68faba4f3c42a6c85139a23f59ac22408e58c56a"
+  }
+]

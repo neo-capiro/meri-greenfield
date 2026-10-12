@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-bill-text.test.mjs"
+  ],
+  "cwd": "/workspace/meri-bill-text-20261012",
+  "sourceHead": "0bdd1ce12b9263ad522e87e5f6f5105dee16dade",
+  "sourceDiffSha256": "9d96ffa0e628de6ac267aafda8b97434247a41045f54ffdd1dbfb3385446affa",
+  "sourceDiffBytes": 3315,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T17:09:15.264945+00:00",
+  "durationSeconds": 0.517,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 173981,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-author/selector-negative.stdout.bin",
+      "bytes": 4485,
+      "sha256": "b8db298d7327e09e4e82364ef974610e60feb2f406e6fc4518dc1792a382b0e4"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-author/selector-negative.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Author source review found missing activeSince/text-congress result correlation; run new negative controls before repair.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

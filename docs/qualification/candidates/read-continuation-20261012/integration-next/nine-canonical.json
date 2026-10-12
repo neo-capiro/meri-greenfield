@@ -1,0 +1,37 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "packages/contracts/test/retrieval-selected-next-bindings.test.mjs",
+    "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+    "packages/contracts/test/retrieval-read-continuation-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-selected-reads-next-20261012",
+  "sourceHead": "4566cef6417428d46274a14f7937ca11df66ae9d",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T17:20:29.114100+00:00",
+  "durationSeconds": 5.655,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 185621,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/integration-next/nine-canonical.stdout.bin",
+      "bytes": 12907,
+      "sha256": "dcdadd9d825e0be3507dc0aea12ef6f5e099752fb0410f77d40fa27d87dc37fd"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/integration-next/nine-canonical.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

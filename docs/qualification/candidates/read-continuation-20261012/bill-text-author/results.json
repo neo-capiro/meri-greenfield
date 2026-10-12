@@ -1,0 +1,181 @@
+{
+  "sourceFreeze": "079c9fd8c88375f55d6f3d5cadd16763c98e63c7",
+  "sourceTree": "292208a5a5909a8be5713b8560673383ea635fcb",
+  "receipts": [
+    {
+      "label": "date-admission-negative",
+      "sourceHead": "7caaac302ac90090cd34f9f23cda78eb0a0de69e",
+      "sourceDiffSha256": "06c39f51fb6d40a19b227a7d404cf3478e6680bc7bf272f53f06fe26bb4971be",
+      "exitCode": 1,
+      "counts": {
+        "tests": 27,
+        "pass": 26,
+        "fail": 1
+      },
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": 0
+    },
+    {
+      "label": "date-admission-repaired",
+      "sourceHead": "7caaac302ac90090cd34f9f23cda78eb0a0de69e",
+      "sourceDiffSha256": "e189e379a294110f67c4acd2680baf63e3ef2aad3fe7dec3031a0ebcab2729d3",
+      "exitCode": 0,
+      "counts": {
+        "tests": 27,
+        "pass": 27,
+        "fail": 0
+      },
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": 0
+    },
+    {
+      "label": "final-root-check",
+      "sourceHead": "4980080fc19315559de322e9010f16db7f4fea23",
+      "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exitCode": 0,
+      "counts": {
+        "tests": 955,
+        "pass": 955,
+        "fail": 0
+      },
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": 2
+    },
+    {
+      "label": "focused-initial",
+      "sourceHead": "03db5092332f61d4e9c509d14957be35ed122173",
+      "sourceDiffSha256": "68c0dfa4d65d779f531c4f3958bc5c925cdf88685349fb67d5c46066e5f640e8",
+      "exitCode": 0,
+      "counts": {
+        "tests": 24,
+        "pass": 24,
+        "fail": 0
+      },
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": 0
+    },
+    {
+      "label": "public-distribution",
+      "sourceHead": "0bdd1ce12b9263ad522e87e5f6f5105dee16dade",
+      "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exitCode": 0,
+      "counts": {
+        "tests": 7,
+        "pass": 7,
+        "fail": 0
+      },
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": 3
+    },
+    {
+      "label": "repaired-root-check",
+      "sourceHead": "7caaac302ac90090cd34f9f23cda78eb0a0de69e",
+      "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exitCode": 0,
+      "counts": {
+        "tests": 954,
+        "pass": 954,
+        "fail": 0
+      },
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": 2
+    },
+    {
+      "label": "revision-uuid-negative",
+      "sourceHead": "4980080fc19315559de322e9010f16db7f4fea23",
+      "sourceDiffSha256": "9a2fb2df08bed40f190b33c718d92e7ed9f7fcadf90d0b7d6d608b4aa44b3975",
+      "exitCode": 1,
+      "counts": {
+        "tests": 28,
+        "pass": 27,
+        "fail": 1
+      },
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": 0
+    },
+    {
+      "label": "revision-uuid-repaired",
+      "sourceHead": "4980080fc19315559de322e9010f16db7f4fea23",
+      "sourceDiffSha256": "b673d9974dab4cffa9f0d2d8613f462cc8f21bd426d7aeda0709fefb9ac816e6",
+      "exitCode": 0,
+      "counts": {
+        "tests": 28,
+        "pass": 28,
+        "fail": 0
+      },
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": 0
+    },
+    {
+      "label": "root-source-check",
+      "sourceHead": "0bdd1ce12b9263ad522e87e5f6f5105dee16dade",
+      "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exitCode": 0,
+      "counts": {
+        "tests": 952,
+        "pass": 952,
+        "fail": 0
+      },
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": 2
+    },
+    {
+      "label": "selector-negative",
+      "sourceHead": "0bdd1ce12b9263ad522e87e5f6f5105dee16dade",
+      "sourceDiffSha256": "9d96ffa0e628de6ac267aafda8b97434247a41045f54ffdd1dbfb3385446affa",
+      "exitCode": 1,
+      "counts": {
+        "tests": 26,
+        "pass": 24,
+        "fail": 2
+      },
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": 0
+    },
+    {
+      "label": "selector-repair-focused",
+      "sourceHead": "0bdd1ce12b9263ad522e87e5f6f5105dee16dade",
+      "sourceDiffSha256": "dd8a80e36b3c7b543fcd0ca2e227b76bce982769708da2d3a01bf28a164c5a8f",
+      "exitCode": 0,
+      "counts": {
+        "tests": 26,
+        "pass": 26,
+        "fail": 0
+      },
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": 0
+    }
+  ],
+  "repairs": [
+    {
+      "before": "0bdd1ce12b9263ad522e87e5f6f5105dee16dade",
+      "after": "7caaac302ac90090cd34f9f23cda78eb0a0de69e",
+      "reason": "Correlate successful metadata latestActionDate and text Congress selection",
+      "negative": "selector-negative"
+    },
+    {
+      "before": "7caaac302ac90090cd34f9f23cda78eb0a0de69e",
+      "after": "4980080fc19315559de322e9010f16db7f4fea23",
+      "reason": "Root-approved ISO date/explicit-zone metadata date admission; ignored branches unchanged",
+      "negative": "date-admission-negative"
+    },
+    {
+      "before": "4980080fc19315559de322e9010f16db7f4fea23",
+      "after": "079c9fd8c88375f55d6f3d5cadd16763c98e63c7",
+      "reason": "Stored UUID output is general UUID; cursor v4 rule unchanged",
+      "negative": "revision-uuid-negative"
+    }
+  ],
+  "reviewerAcceptance": {
+    "commit": "698f545e0410bb5a9c72be8593375c70b76f796e",
+    "disposition": "ACCEPT_SOURCE",
+    "source": "079c9fd8c88375f55d6f3d5cadd16763c98e63c7",
+    "independentTests": 78,
+    "metadataChecks": 45,
+    "preservationCaptureChecks": 54
+  },
+  "fullReplayLimit": "Full955 at4980080 predates output UUID relaxation. Exact final focused28 and independent78 pass. Parent owns broad final integration replay.",
+  "buildSchemaGenerator": "Derived author construction script; frozen JSON and its Git identity are authoritative.",
+  "hashBoundary": "Lowercase64 output hashes match immutable SHA256 hex writer convention. CHAR64 storage alone does not constrain hex or prove writer/current-row provenance. Cursor lowerhex syntax remains exact pinned source behavior.",
+  "runtimeQualification": "UNRUN; no source connectivity, SQL, services, native, provider, model or cloud execution"
+}

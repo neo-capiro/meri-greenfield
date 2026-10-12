@@ -1,0 +1,1 @@
+{"initial":{"passed":44,"failed":1},"cause":"Reviewer authority-parameter allowlist omitted the pure billId argument of locatedBillText; exact signature independently re-read as billId,row,query.","repair":"Add billId to review-only allowlist; no product/source predicate change.","originalPreserved":true}

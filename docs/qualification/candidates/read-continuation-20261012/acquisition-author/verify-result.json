@@ -1,0 +1,363 @@
+{
+  "scope": "OFFLINE_SOURCE_PACKET_ONLY",
+  "passed": 89,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "docs/coordination/reports/CODEX-READ-CONTINUATION-ACQUISITION-AUTHOR-20261012.md",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/alias-repair-focused.json",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/alias-repair-focused.stderr.bin",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/alias-repair-focused.stdout.bin",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/alias-repair-source.patch",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/alias-repair.json",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/build-schema.py",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/capture-reaped.py",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/focused-initial-source.patch",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/focused-initial.json",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/focused-initial.stderr.bin",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/focused-initial.stdout.bin",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/full-evidence-whitespace.json",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/full-evidence-whitespace.stderr.bin",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/full-evidence-whitespace.stdout.bin",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/initial-source-preservation.json",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/observed-drift.json",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/outline.json",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/public-distribution.json",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/public-distribution.stderr.bin",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/public-distribution.stdout.bin",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/reference-identities.json",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/repaired-root-check.json",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/repaired-root-check.stderr.bin",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/repaired-root-check.stdout.bin",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/root-source-check.json",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/root-source-check.stderr.bin",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/root-source-check.stdout.bin",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/scope-revision-current-policy.json",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/source-preservation.json",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/verify-packet.py",
+      "ok": true
+    },
+    {
+      "name": "original count",
+      "ok": true
+    },
+    {
+      "name": "all original blobs unchanged",
+      "ok": true
+    },
+    {
+      "name": "no original mutation declared",
+      "ok": true
+    },
+    {
+      "name": "exact new allocated source paths",
+      "ok": true
+    },
+    {
+      "name": "three source additions",
+      "ok": true
+    },
+    {
+      "name": "frozen source packages/contracts/retrieval-0.2/acquisition-personnel-validation.mjs",
+      "ok": true
+    },
+    {
+      "name": "working source packages/contracts/retrieval-0.2/acquisition-personnel-validation.mjs",
+      "ok": true
+    },
+    {
+      "name": "frozen source packages/contracts/retrieval-0.2/acquisition-personnel.schema.json",
+      "ok": true
+    },
+    {
+      "name": "working source packages/contracts/retrieval-0.2/acquisition-personnel.schema.json",
+      "ok": true
+    },
+    {
+      "name": "frozen source packages/contracts/test/retrieval-acquisition-personnel.test.mjs",
+      "ok": true
+    },
+    {
+      "name": "working source packages/contracts/test/retrieval-acquisition-personnel.test.mjs",
+      "ok": true
+    },
+    {
+      "name": "eight source references",
+      "ok": true
+    },
+    {
+      "name": "three current drift references",
+      "ok": true
+    },
+    {
+      "name": "reference apps/api/src/meri/meri-tools.service.ts",
+      "ok": true
+    },
+    {
+      "name": "drift flag apps/api/src/meri/meri-tools.service.ts",
+      "ok": true
+    },
+    {
+      "name": "reference apps/api/prisma/schema.prisma",
+      "ok": true
+    },
+    {
+      "name": "drift flag apps/api/prisma/schema.prisma",
+      "ok": true
+    },
+    {
+      "name": "reference apps/api/src/acquisition-personnel/acquisition-personnel-read.service.ts",
+      "ok": true
+    },
+    {
+      "name": "drift flag apps/api/src/acquisition-personnel/acquisition-personnel-read.service.ts",
+      "ok": true
+    },
+    {
+      "name": "reference apps/api/src/acquisition-personnel/dto/list-personnel.dto.ts",
+      "ok": true
+    },
+    {
+      "name": "drift flag apps/api/src/acquisition-personnel/dto/list-personnel.dto.ts",
+      "ok": true
+    },
+    {
+      "name": "reference apps/api/src/acquisition-personnel/dto/person-detail.dto.ts",
+      "ok": true
+    },
+    {
+      "name": "drift flag apps/api/src/acquisition-personnel/dto/person-detail.dto.ts",
+      "ok": true
+    },
+    {
+      "name": "reference apps/api/src/meri/meri.controller.ts",
+      "ok": true
+    },
+    {
+      "name": "drift flag apps/api/src/meri/meri.controller.ts",
+      "ok": true
+    },
+    {
+      "name": "reference apps/api/src/auth/roles.guard.ts",
+      "ok": true
+    },
+    {
+      "name": "drift flag apps/api/src/auth/roles.guard.ts",
+      "ok": true
+    },
+    {
+      "name": "reference packages/shared/src/index.ts",
+      "ok": true
+    },
+    {
+      "name": "drift flag packages/shared/src/index.ts",
+      "ok": true
+    },
+    {
+      "name": "both contexts current role",
+      "ok": true
+    },
+    {
+      "name": "current policy pin",
+      "ok": true
+    },
+    {
+      "name": "historical inventory pin",
+      "ok": true
+    },
+    {
+      "name": "owned capture focused-initial",
+      "ok": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/read-continuation-20261012/acquisition-author/focused-initial.stdout.bin",
+      "ok": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/read-continuation-20261012/acquisition-author/focused-initial.stderr.bin",
+      "ok": true
+    },
+    {
+      "name": "capture identity focused-initial",
+      "ok": true
+    },
+    {
+      "name": "staged patch focused-initial",
+      "ok": true
+    },
+    {
+      "name": "owned capture root-source-check",
+      "ok": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/read-continuation-20261012/acquisition-author/root-source-check.stdout.bin",
+      "ok": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/read-continuation-20261012/acquisition-author/root-source-check.stderr.bin",
+      "ok": true
+    },
+    {
+      "name": "capture identity root-source-check",
+      "ok": true
+    },
+    {
+      "name": "clean capture root-source-check",
+      "ok": true
+    },
+    {
+      "name": "owned capture public-distribution",
+      "ok": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/read-continuation-20261012/acquisition-author/public-distribution.stdout.bin",
+      "ok": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/read-continuation-20261012/acquisition-author/public-distribution.stderr.bin",
+      "ok": true
+    },
+    {
+      "name": "capture identity public-distribution",
+      "ok": true
+    },
+    {
+      "name": "clean capture public-distribution",
+      "ok": true
+    },
+    {
+      "name": "owned capture alias-repair-focused",
+      "ok": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/read-continuation-20261012/acquisition-author/alias-repair-focused.stdout.bin",
+      "ok": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/read-continuation-20261012/acquisition-author/alias-repair-focused.stderr.bin",
+      "ok": true
+    },
+    {
+      "name": "capture identity alias-repair-focused",
+      "ok": true
+    },
+    {
+      "name": "staged patch alias-repair-focused",
+      "ok": true
+    },
+    {
+      "name": "owned capture repaired-root-check",
+      "ok": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/read-continuation-20261012/acquisition-author/repaired-root-check.stdout.bin",
+      "ok": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/read-continuation-20261012/acquisition-author/repaired-root-check.stderr.bin",
+      "ok": true
+    },
+    {
+      "name": "capture identity repaired-root-check",
+      "ok": true
+    },
+    {
+      "name": "clean capture repaired-root-check",
+      "ok": true
+    },
+    {
+      "name": "repair/failure lineage",
+      "ok": true
+    }
+  ]
+}

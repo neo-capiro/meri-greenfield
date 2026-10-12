@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-selected-next-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-selected-next-integration-review-20261012",
+  "sourceHead": "37c179e90f70e2c54aab21051d1569153c799878",
+  "sourceDiffSha256": "4b170064e06d2a47632171f4be5856c4fc8e76f68d574348e23aa2415850908a",
+  "sourceDiffBytes": 4431,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T17:23:48.308727+00:00",
+  "durationSeconds": 1.972,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 188658,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/integration-next-review/independent-final.stdout.bin",
+      "bytes": 8230,
+      "sha256": "6212501657a5cc3a577e7687a336835bfc4256a240f161feb3760ed4114c6ba6"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/integration-next-review/independent-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Correct synthetic admin phone fixture with exact uploadedDirectoryContact source field; original85/1 and exact checker retained, source unchanged.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

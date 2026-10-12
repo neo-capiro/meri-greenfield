@@ -1,0 +1,29 @@
+✔ search_acquisition_personnel: current role required, exact and model independent (43.845593ms)
+✔ search_acquisition_personnel: only exact current capiro_admin admits each contact field (4.214813ms)
+✔ search_acquisition_personnel: hostile request/context/result objects are inert (0.527593ms)
+✔ search_acquisition_personnel: immutable normalized snapshot and closed projections (19.992031ms)
+✔ search_acquisition_personnel: finite dates, unconstrained stored status/confidence and no invented first-last order (1.576729ms)
+✔ get_acquisition_person: current role required, exact and model independent (15.305278ms)
+✔ get_acquisition_person: only exact current capiro_admin admits each contact field (3.213539ms)
+✔ get_acquisition_person: hostile request/context/result objects are inert (0.70522ms)
+✔ get_acquisition_person: immutable normalized snapshot and closed projections (4.405189ms)
+✔ get_acquisition_person: finite dates, unconstrained stored status/confidence and no invented first-last order (0.851399ms)
+✔ list: defaults, strict page/limit and no owner-only model selectors (1.294034ms)
+✔ list: query precedence and UTF-16 normalization (0.723898ms)
+✔ list: fuzzy total is paged candidate count, no-query count can race (1.292051ms)
+✔ list: exact scalar and either-PE filter binding with independent role authority (1.44425ms)
+✔ list: headshot preserves untyped JSON values without URL or privacy fiction (2.674028ms)
+✔ list: uploaded contact fields are trimmed nonempty strings, email stays stored (2.410302ms)
+✔ detail: UUID normalization has no version/variant assumption and binds returned person (0.807403ms)
+✔ detail: non-admin object metadata must omit both protected keys regardless of value (5.993827ms)
+✔ detail: established redaction is shallow and preserves nonobject/source metadata (2.401479ms)
+✔ detail: admin uploaded contact projection corresponds exactly to raw metadata (2.507298ms)
+✔ detail: no invented source cap, chronology/identity stays meaningful (6.443893ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 352.42944

@@ -1,0 +1,13 @@
+# Retained reviewer fixture/assumption failures
+
+Initial frozen23 controls passed20/failed3 at stable module a811e83b... and schema85cfe00e...; PG169606 absent, raw streams retained. Two failures used generic synthetic refusal notes where the source contract preserves exact warning/refusal wording. Fixtures now use the new Meri contract constant or exact contextual template already represented by that contract; missing/wrong note negatives remain required. They were fixture corrections, not source repairs.
+
+The third failure assumed CongressBill.congress must equal congress parsed from the selected bill ID. Producer selects by id and separately projects the stored Int column; schema has no cross-field constraint, and there is no congress predicate for get_bill_status. The corrected positive characterizes the independently stored column. Exact source-owner markers/bill ID remain negative controls. Floor-vote explicit congress filtering remains separately enforced. No production repair was requested. Original assertions survive in b93a542 and raw prefreeze output; none of these three are reported as passing source negatives.
+
+## Prototype-key label distinction and real candidate refusal gap
+
+Additional metadata inspection established that the pinned billStatusLabel uses a truthy status with `in` membership and that BILL_STATUS_META is an ordinary object literal (TypeScript AST; no private code execution). The helper .label read for inherited keys yields undefined, so the JSON result omits statusLabel. The earlier positive constructor/__proto__ controls therefore overstated ordinary unknown-string fallback and are preserved as reviewer assumptions in76fdbcf. They were changed to a precise negative: a candidate must not admit a fabricated fallback label for those inherited keys, and a real omitted-label source result remains schema-invalid. This independently reproduced25PASS/1FAIL; raw prototype-label.* and exact new-Meri source preimages are retained. Narrow source refusal was requested; the private Capiro implementation stays untouched.
+
+An initial introspection attempt searched for an exported metadata declaration and returned ValueError without any private body diagnostic. The declaration is non-exported and typed; corrected AST introspection confirmed ObjectLiteralExpression and no initializer calls. This was a read-only metadata-search correction, not an executed producer or source test failure.
+
+Root additionally allocated congressional-identity.mjs after identifying the second bill-text family consumer. The independent test adds one direct primitive/explicit-default-congress control for this shared helper; the prior26 behavioral groups are otherwise preserved after the documented assumptions above.

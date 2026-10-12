@@ -1,0 +1,17 @@
+{
+ "base":"01c75641b62bb586d130feda3468c0ddb4286e8f",
+ "sourcePin":"fd8765ec01d292013758606204f2c9d886cd31c1",
+ "observedPin":"4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+ "operations":["search_congress_bills","read_bill_text"],
+ "modules":["bill-text.schema.json","bill-text-validation.mjs","bill-text-cursor.mjs","retrieval-bill-text.test.mjs"],
+ "factory":"createBillTextValidators({validateShape,schema})",
+ "definitions":["CongressBillSearchInput/Output","BillTextReadInput/Output"],
+ "contextKeys":["defaultCongress"],
+ "dependency":"One canonical congressional-identity.mjs owned by gateway_author; resolveCongressionalBillId(selector,defaultCongress); no duplicate grammar/ambient clock",
+ "responsibilities":{"schema":"Closed direct/raw metadata/text search and unavailable/sequential/locator read variants","validation":"Canonical inert admission, established normalization, selectors/counts/coverage/UTF16 relations","cursor":"Canonical base64url decoding, closed tuple shape and lineage/offset correlation only; no retrieval/SQL/tokenizer"},
+ "limits":{"textSearch":"10500 JSON.stringify UTF16-character admission; a single giant producer result can be refused explicitly","sequential":"9000 UTF16 units with possible nonfinal surrogate adjustment","locator":"1000 units per passage, maximum6; exact rendered passage framing, not source matching proof"},
+ "approvedNarrowing":"Continuation tuple version must match output version even when requestedVersion omitted; rejects forged version substitution accepted by legacy selection. Valid source-issued continuations preserved",
+ "sourceTruthLimits":"Current pointer, extraction hash provenance, matching, rank, freshness and corpus completeness remain adapter qualification; DTO cannot prove current DB pointer",
+ "tests":["all distinct result branches","aliases/defaultCongress and exact selectors","raw metadata/null fields","cursor rejection/current lineage/offset","cross-version search passage behavior","coverage/count/cap and UTF16 boundaries","inert JSON/canonical resolver","original/public preservation and process cleanup"],
+ "authority":"Root approved API/context/cursor narrowing and10500 fail-closed ceiling; source only, null/unavailable futurebindings, no runtime or external execution"
+}

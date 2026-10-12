@@ -1,0 +1,1050 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:bill-text:0.2.0",
+  "$defs": {
+    "BillTextActionDateSelector": {
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "date"
+        },
+        {
+          "type": "string",
+          "format": "date-time"
+        }
+      ]
+    },
+    "BillTextInstant": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "BillTextRevisionId": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "BillTextHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "BillTextCursor": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024,
+      "pattern": "^[A-Za-z0-9_-]+$"
+    },
+    "BillTextContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "defaultCongress": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483647
+        }
+      },
+      "required": [
+        "defaultCongress"
+      ]
+    },
+    "CongressBillSearchInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "query": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "search": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "policyArea": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "activeSince": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "congress": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": -2147483648,
+              "maximum": 2147483647
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "page": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        },
+        "textQuery": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": []
+    },
+    "BillTextReadInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "billId": {
+          "type": "string"
+        },
+        "versionCode": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "query": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cursor": {
+          "$ref": "#/$defs/BillTextCursor"
+        }
+      },
+      "required": [
+        "billId"
+      ]
+    },
+    "CongressBillRaw": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "congress": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "billType": {
+          "type": "string"
+        },
+        "billNumber": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "introducedDate": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BillTextInstant"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sponsorName": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sponsorState": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sponsorParty": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sponsorBioguideId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "latestActionText": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "latestActionDate": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BillTextInstant"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "policyArea": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "subjects": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "peCodes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "committees": {},
+        "cosponsorsCount": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "originChamber": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "updateDate": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BillTextInstant"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "updateDateIncludingText": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BillTextInstant"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "statusAt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BillTextInstant"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lastSyncedAt": {
+          "$ref": "#/$defs/BillTextInstant"
+        }
+      },
+      "required": [
+        "id",
+        "congress",
+        "billType",
+        "billNumber",
+        "title",
+        "introducedDate",
+        "sponsorName",
+        "sponsorState",
+        "sponsorParty",
+        "sponsorBioguideId",
+        "latestActionText",
+        "latestActionDate",
+        "policyArea",
+        "subjects",
+        "peCodes",
+        "committees",
+        "cosponsorsCount",
+        "originChamber",
+        "updateDate",
+        "updateDateIncludingText",
+        "status",
+        "statusAt",
+        "url",
+        "lastSyncedAt"
+      ]
+    },
+    "CongressBillMetadataOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "search_congress_bills"
+        },
+        "generatedAt": {
+          "$ref": "#/$defs/BillTextInstant"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CongressBillRaw"
+          },
+          "maxItems": 50
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "page": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        },
+        "resolvedBy": {
+          "const": "bill-id"
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "data",
+        "total",
+        "page",
+        "limit"
+      ]
+    },
+    "BillTextSearchPassage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "snippet": {
+          "type": "string"
+        },
+        "startOffset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "readCursor": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BillTextCursor"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "snippet",
+        "startOffset",
+        "readCursor"
+      ]
+    },
+    "BillTextSearchResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "billId": {
+          "type": "string"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "versionCode": {
+          "type": "string"
+        },
+        "passages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/BillTextSearchPassage"
+          },
+          "minItems": 1,
+          "maxItems": 2
+        }
+      },
+      "required": [
+        "billId",
+        "title",
+        "versionCode",
+        "passages"
+      ]
+    },
+    "CongressBillTextSearchOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "search_congress_bills"
+        },
+        "generatedAt": {
+          "$ref": "#/$defs/BillTextInstant"
+        },
+        "mode": {
+          "const": "bill_text"
+        },
+        "textQuery": {
+          "type": "string"
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/BillTextSearchResult"
+          },
+          "maxItems": 10
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "totalBills": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "page": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "perPage": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "hasMore": {
+          "type": "boolean"
+        },
+        "nextPage": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 101
+        },
+        "omittedBills": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "mode",
+        "textQuery",
+        "results",
+        "total",
+        "totalBills",
+        "page",
+        "perPage",
+        "hasMore",
+        "note"
+      ]
+    },
+    "BillTextUnavailableOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "read_bill_text"
+        },
+        "authoritativeOwner": {
+          "const": "federal_evidence_current"
+        },
+        "billId": {
+          "type": "string"
+        },
+        "currentStatus": {
+          "const": "unavailable"
+        },
+        "found": {
+          "const": false
+        },
+        "requestedVersionCode": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "coverage": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "complete": {
+              "const": true
+            },
+            "truncated": {
+              "const": false
+            },
+            "nextCursor": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "complete",
+            "truncated",
+            "nextCursor"
+          ]
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool",
+        "authoritativeOwner",
+        "billId",
+        "currentStatus",
+        "found",
+        "requestedVersionCode",
+        "coverage",
+        "note"
+      ]
+    },
+    "BillTextSequentialOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "read_bill_text"
+        },
+        "authoritativeOwner": {
+          "const": "federal_evidence_current"
+        },
+        "billId": {
+          "type": "string"
+        },
+        "currentStatus": {
+          "const": "available"
+        },
+        "found": {
+          "const": true
+        },
+        "versionCode": {
+          "type": "string"
+        },
+        "revisionId": {
+          "$ref": "#/$defs/BillTextRevisionId"
+        },
+        "packageId": {
+          "type": "string"
+        },
+        "provider": {
+          "type": "string"
+        },
+        "lineageKey": {
+          "type": "string"
+        },
+        "versionHash": {
+          "$ref": "#/$defs/BillTextHash"
+        },
+        "textHash": {
+          "$ref": "#/$defs/BillTextHash"
+        },
+        "sourceLocator": {
+          "type": "string"
+        },
+        "sourceModifiedAt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BillTextInstant"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "publishedAt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BillTextInstant"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "fetchedAt": {
+          "$ref": "#/$defs/BillTextInstant"
+        },
+        "text": {
+          "type": "string"
+        },
+        "trust": {
+          "const": "external_untrusted"
+        },
+        "note": {
+          "type": "string"
+        },
+        "coverage": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "totalCharacters": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "pageComplete": {
+              "const": true
+            },
+            "contentComplete": {
+              "type": "boolean"
+            },
+            "paginationComplete": {
+              "type": "boolean"
+            },
+            "complete": {
+              "type": "boolean"
+            },
+            "truncated": {
+              "type": "boolean"
+            },
+            "nextCursor": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/BillTextCursor"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "locator": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "offset": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "endOffset": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "offset",
+                "endOffset"
+              ]
+            }
+          },
+          "required": [
+            "totalCharacters",
+            "pageComplete",
+            "contentComplete",
+            "paginationComplete",
+            "complete",
+            "truncated",
+            "nextCursor",
+            "locator"
+          ]
+        }
+      },
+      "required": [
+        "tool",
+        "authoritativeOwner",
+        "billId",
+        "currentStatus",
+        "found",
+        "versionCode",
+        "revisionId",
+        "packageId",
+        "provider",
+        "lineageKey",
+        "versionHash",
+        "textHash",
+        "sourceLocator",
+        "sourceModifiedAt",
+        "publishedAt",
+        "fetchedAt",
+        "text",
+        "trust",
+        "note",
+        "coverage"
+      ]
+    },
+    "BillTextLocatedPassage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "heading": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "startOffset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "endOffset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "matchedTerms": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "readCursor": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BillTextCursor"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "heading",
+        "startOffset",
+        "endOffset",
+        "matchedTerms",
+        "readCursor"
+      ]
+    },
+    "BillTextLocatedOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "read_bill_text"
+        },
+        "authoritativeOwner": {
+          "const": "federal_evidence_current"
+        },
+        "billId": {
+          "type": "string"
+        },
+        "currentStatus": {
+          "const": "available"
+        },
+        "found": {
+          "const": true
+        },
+        "versionCode": {
+          "type": "string"
+        },
+        "revisionId": {
+          "$ref": "#/$defs/BillTextRevisionId"
+        },
+        "packageId": {
+          "type": "string"
+        },
+        "provider": {
+          "type": "string"
+        },
+        "lineageKey": {
+          "type": "string"
+        },
+        "versionHash": {
+          "$ref": "#/$defs/BillTextHash"
+        },
+        "textHash": {
+          "$ref": "#/$defs/BillTextHash"
+        },
+        "sourceLocator": {
+          "type": "string"
+        },
+        "sourceModifiedAt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BillTextInstant"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "publishedAt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BillTextInstant"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "fetchedAt": {
+          "$ref": "#/$defs/BillTextInstant"
+        },
+        "text": {
+          "type": "string"
+        },
+        "trust": {
+          "const": "external_untrusted"
+        },
+        "note": {
+          "type": "string"
+        },
+        "query": {
+          "type": "string"
+        },
+        "queryParts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "totalHits": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "passages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/BillTextLocatedPassage"
+          },
+          "maxItems": 6
+        },
+        "coverage": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "totalCharacters": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "pageComplete": {
+              "const": true
+            },
+            "contentComplete": {
+              "type": "boolean"
+            },
+            "paginationComplete": {
+              "type": "boolean"
+            },
+            "complete": {
+              "type": "boolean"
+            },
+            "truncated": {
+              "type": "boolean"
+            },
+            "nextCursor": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/BillTextCursor"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "locator": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "query": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "query"
+              ]
+            }
+          },
+          "required": [
+            "totalCharacters",
+            "pageComplete",
+            "contentComplete",
+            "paginationComplete",
+            "complete",
+            "truncated",
+            "nextCursor",
+            "locator"
+          ]
+        }
+      },
+      "required": [
+        "tool",
+        "authoritativeOwner",
+        "billId",
+        "currentStatus",
+        "found",
+        "versionCode",
+        "revisionId",
+        "packageId",
+        "provider",
+        "lineageKey",
+        "versionHash",
+        "textHash",
+        "sourceLocator",
+        "sourceModifiedAt",
+        "publishedAt",
+        "fetchedAt",
+        "text",
+        "trust",
+        "note",
+        "query",
+        "queryParts",
+        "totalHits",
+        "passages",
+        "coverage"
+      ]
+    },
+    "CongressBillSearchOutput": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/CongressBillMetadataOutput"
+        },
+        {
+          "$ref": "#/$defs/CongressBillTextSearchOutput"
+        }
+      ]
+    },
+    "BillTextReadOutput": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/BillTextUnavailableOutput"
+        },
+        {
+          "$ref": "#/$defs/BillTextSequentialOutput"
+        },
+        {
+          "$ref": "#/$defs/BillTextLocatedOutput"
+        }
+      ]
+    }
+  }
+}

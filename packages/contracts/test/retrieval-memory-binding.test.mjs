@@ -1,5 +1,5 @@
 // Explicit reviewed continuation allowlist; the original13-descriptor hash is unchanged.
-const continuationIds = ["search_funding_opportunities", "get_funding_opportunity_requirements", "get_funding_opportunity", "get_opportunity_client_context", "get_opportunity_government_landscape", "read_client_documents", "query_economic_data", "search_federal_grants", "search_federal_awards", "get_district_nexus_context", "get_district_nexus_changes", "search_state_bills", "get_state_legislator", "search_cbo_cost_estimates", "search_gao_reports", "search_crs_reports"];
+const continuationIds = ["search_funding_opportunities", "get_funding_opportunity_requirements", "get_funding_opportunity", "get_opportunity_client_context", "get_opportunity_government_landscape", "read_client_documents", "query_economic_data", "search_federal_grants", "search_federal_awards", "get_district_nexus_context", "get_district_nexus_changes", "search_state_bills", "get_state_legislator", "search_cbo_cost_estimates", "search_gao_reports", "search_crs_reports", "search_sec_filings", "search_fara_registrations", "search_lda_filings", "search_acquisition_personnel", "get_acquisition_person", "get_bill_status", "search_floor_votes", "search_congress_bills", "read_bill_text"];
 // Independently specified synthetic DTOs; no source access or authorization.
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -180,8 +180,8 @@ test('catalog preserves the original thirteen descriptors and complete selected/
     'lookup_client_registry','get_business_development_context','get_business_development_evidence',
     'get_business_development_recent_changes','get_research_portfolio','get_research_portfolio_changes',...continuationIds].includes(value.operation.id))),
     'c60f90cf599299c1edb14538b653772b4f1d52b9c311636653aba7c08de29095');
-  assert.equal(catalog.operations.length,37);assert.equal(catalog.originals.length,139);
+  assert.equal(catalog.operations.length,46);assert.equal(catalog.originals.length,139);
   assert.equal(catalog.originals.filter(value=>value.disposition==='selected').length,96);
   assert.equal(catalog.originals.filter(value=>value.disposition==='deferred').length,43);
-  assert.equal(catalog.originals.filter(value=>value.disposition==='selected'&&value.state==='pending').length,60);
+  assert.equal(catalog.originals.filter(value=>value.disposition==='selected'&&value.state==='pending').length,51);
 });

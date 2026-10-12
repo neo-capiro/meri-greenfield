@@ -1,0 +1,40 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "packages/contracts/test/retrieval-disclosures.test.mjs",
+    "packages/contracts/test/retrieval-disclosures-independent.test.mjs",
+    "packages/contracts/test/retrieval-acquisition-personnel.test.mjs",
+    "packages/contracts/test/retrieval-acquisition-personnel-independent.test.mjs",
+    "packages/contracts/test/retrieval-federal-legislation.test.mjs",
+    "packages/contracts/test/retrieval-federal-legislation-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-selected-reads-next-20261012",
+  "sourceHead": "d6326c67566d182fe7a97e8f2ad19cb9b44f6fec",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T17:17:44.229640+00:00",
+  "durationSeconds": 1.671,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 184381,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/integration-next/seven-domain.stdout.bin",
+      "bytes": 16662,
+      "sha256": "c73baae95786b406851fd0a1229876417920eda1ddf2b7a7d8c502eb21b1970f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/integration-next/seven-domain.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

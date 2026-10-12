@@ -1,0 +1,35 @@
+✔ global reads default without any caller policy context (5.981266ms)
+✔ text aliases have exact primary precedence and blank/null fallback (0.47296ms)
+✔ every text normalization ceiling counts UTF-16 units and trims before slicing (1.063428ms)
+✔ limit follows finite number/string clamp and family defaults (0.635595ms)
+✔ LDA page is bounded1..100 and cannot expand to direct service maximum (0.514012ms)
+✔ LDA effective year preserves truthiness but refuses invalid database Int selectors (0.633121ms)
+✔ typed raw admission rejects ignored legacy objects/booleans and unknown authority keys (0.543556ms)
+✔ normalization leaves caller data unchanged and returns detached ordinary data (0.255443ms)
+✔ all three exact nonempty result projections validate without source effects (4.367262ms)
+✔ independent count races preserve total smaller than row count or page offset (0.954714ms)
+✔ total must remain a nonnegative safe integer rather than fabricated nullable/string metadata (0.727102ms)
+✔ rows cannot exceed normalized limit while independent totals remain unconstrained by row length (0.65213ms)
+✔ SEC exact CIK/form selectors remain case-sensitive and no zero-padding is invented (0.46605ms)
+✔ FARA exact status has no enum, and text searches need not survive projected summary (0.467392ms)
+✔ SEC/FARA summaries preserve empty/null-source and 300 UTF-16 bounds (1.944972ms)
+✔ SEC/FARA summary does not establish truncation status or a full-text result (0.551589ms)
+✔ stored disclosure dates serialize at UTC midnight; LDA timestamp can carry a time (0.911119ms)
+✔ observation order descends with equal times and nullable source dates preserved (0.972651ms)
+✔ LDA finite numeric projection preserves negative, zero, large rounded and null amounts (0.794654ms)
+✔ LDA uses source filing identity and nullable numeric source IDs, never tenant-client UUID (1.042826ms)
+✔ LDA keeps exact year/issue and original page/limit correlation (0.782466ms)
+✔ nullable projected fields are required and strings remain opaque (2.620096ms)
+✔ duplicates reject exact unique record identities without inventing unique fiscal periods (0.340772ms)
+✔ generated timestamp cannot become stale-proof or a malformed finite instant (0.396926ms)
+✔ closed envelopes reject invented cursor, snapshot, authority or completeness claims (2.300506ms)
+✔ canonical hostile data checks execute no getter/proxy effects (0.376475ms)
+✔ canonical data boundary refuses hidden fields, symbols, cycles and alternate prototypes (0.302925ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 250.258788

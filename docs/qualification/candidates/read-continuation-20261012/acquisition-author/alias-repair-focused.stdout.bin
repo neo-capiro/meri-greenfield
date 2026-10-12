@@ -1,0 +1,35 @@
+✔ two distinct operation definitions and pinned factory identity (1.448316ms)
+✔ search_acquisition_personnel: immutable request and output with explicit unqualified metadata (4.204668ms)
+✔ search_acquisition_personnel: both operations require exact trusted role context (1.71739ms)
+✔ search_acquisition_personnel: actor hints in model arguments cannot elevate privilege (0.442915ms)
+✔ search_acquisition_personnel: non-admin top-level contact fields must all be null (4.616667ms)
+✔ search_acquisition_personnel: exact current projection closes omitted/extra fields (1.646684ms)
+✔ search_acquisition_personnel: finite confidence and dates without invented confidence/lifecycle ranges (0.855685ms)
+✔ get_acquisition_person: immutable request and output with explicit unqualified metadata (2.10936ms)
+✔ get_acquisition_person: both operations require exact trusted role context (1.296839ms)
+✔ get_acquisition_person: actor hints in model arguments cannot elevate privilege (0.483787ms)
+✔ get_acquisition_person: non-admin top-level contact fields must all be null (2.270721ms)
+✔ get_acquisition_person: exact current projection closes omitted/extra fields (1.402297ms)
+✔ get_acquisition_person: finite confidence and dates without invented confidence/lifecycle ranges (0.723047ms)
+✔ search defaults/range are strict while source string trim and UTF16 caps remain explicit (1.016548ms)
+✔ search every registered limit/page boundary and echoed selection (1.937772ms)
+✔ fuzzy totals count a bounded candidate window before remaining filters, not all matches (0.708745ms)
+✔ unfiltered totals are separate observations and may be smaller than returned rows (0.313451ms)
+✔ exact service/role/PE filter bindings do not confer caller authority (0.8323ms)
+✔ list admin email is stored text; headshot is opaque inert JSON, not a string assertion (1.159312ms)
+✔ detail UUID request normalization matches actual UUID identity without invented version restriction (1.003763ms)
+✔ detail top-level headshot is not projected, and source metadata remains opaque (0.978971ms)
+✔ current nonadmin object metadata omits both specified containers without broad invented redaction (1.87665ms)
+✔ admin detail upload-derived fields correlate with retained metadata after trim (1.630359ms)
+✔ detail sources preserve full unpaged array, descending observation and UUID uniqueness (3.64689ms)
+✔ inert admission rejects hooks on model input, role context and opaque result metadata (0.659211ms)
+✔ actual canonical resolver pins request/hash and restricts both trusted context boundaries (2.265805ms)
+✔ query wins only when nonblank; q preserves null/blank fallback and canonical digest equivalence (1.805583ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 466.157279

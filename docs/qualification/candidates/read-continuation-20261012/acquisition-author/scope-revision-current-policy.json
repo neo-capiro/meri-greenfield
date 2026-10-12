@@ -1,0 +1,18 @@
+{
+  "authority": "Explicit parent instruction after material drift disclosure; no prior acquisition source acceptance",
+  "inventoryPin": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "producerPolicyPin": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+  "discoveryFreeze": "3826e720f1cfb603cd41f9564c69c88ab7c4a961",
+  "supersedes": "outline.json pinned-projection/detail-context/current-incompatibility choices; original outline preserved",
+  "contextKeys": {
+    "search_acquisition_personnel": [
+      "actorRole"
+    ],
+    "get_acquisition_person": [
+      "actorRole"
+    ]
+  },
+  "fields": "Current list adds phone,parentOffice,department; detail adds email and these three. Exact capiro_admin only for nonnull values. Email remains stored string; upload-derived strings trimmed/nonempty or null",
+  "metadata": "For nonadmins, only top-level object metadata keys uploadedDirectoryContact/uploadedDirectoryPrevious are removed. Arrays/null/primitives pass through. No universal PII assertion. For admin detail upload-derived values can be correlated against retained opaque metadata",
+  "bounds": "No source execution, audit/SQL adapter, current role authentication, runtime approval or handler activation"
+}

@@ -1,0 +1,55 @@
+✔ distinct operations/schema and hostile operation references (2.201758ms)
+✔ trusted defaultCongress required; model arguments cannot inject authority (1.073824ms)
+✔ request normalization preserves query/search aliases and exact UTF16 caps (2.487738ms)
+✔ text and metadata limits/defaults differ; registered text limit is conservatively clamped (0.648314ms)
+✔ metadata returns all stored scalar/null fields and opaque committees without false total equality (3.556274ms)
+✔ metadata nullable dates, newer-first non-null order, unknown statuses stay distinct (1.056628ms)
+✔ direct designation has one exact bill, page1 and ignores metadata filters by original branch (0.824299ms)
+✔ designation miss can fall back to metadata page; no fabricated unavailable search envelope (0.504267ms)
+✔ text search scalar/null fields and same-bill cross-version passage cursor are preserved (1.615057ms)
+✔ search empty first versus later page retains different total availability (0.687463ms)
+✔ omitted bills count before trimming determines hasMore and required disclosure (0.558749ms)
+✔ text response ceiling measures JSON characters, not scalar-codepoint length (0.826151ms)
+✔ unavailable current text is explicit local coverage, including resumed stale pointer disappearance (3.069042ms)
+✔ sequential first/final/resumed-empty pages retain exact coverage booleans (1.605963ms)
+✔ valid nonfinal surrogate boundary can shorten sequential page by one UTF16 unit (0.715645ms)
+✔ sequential text length, cursor offset and coverage cannot substitute one another (2.029359ms)
+✔ cursor canonical base64url accepts whitespace JSON but rejects malformed scope/hash/offset (0.532821ms)
+✔ continuation output binds version, revision and text hash even without requested version (0.74574ms)
+✔ locator passes complete structural framing without treating excerpts as full content (1.355026ms)
+✔ locator six exact nonoverlapping windows and per-passage lineage (0.999822ms)
+✔ locator no-hit note prevents treating lack of exact wording as topic absence (0.383286ms)
+✔ locator rejects altered passage framing, unbound text and mixed cursor input (1.227184ms)
+✔ all branches preserve immutable input and deny accessors/cycles/proxy hooks (0.436707ms)
+✔ canonical resolver preserves original aliases/digest and exact trusted context (1.475587ms)
+✔ activeSince constrains metadata fallback dates but direct and text branches ignore it (1.180934ms)
+✔ text search congress filter binds the stored bill-ID prefix (0.517187ms)
+✖ successful metadata date selectors require ISO dates or explicit zones, without constraining ignored branches (0.816898ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 26
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 439.475673
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-bill-text.test.mjs:52:1
+✖ successful metadata date selectors require ISO dates or explicit zones, without constraining ignored branches (0.816898ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-bill-text-20261012/packages/contracts/test/retrieval-bill-text.test.mjs:52:241)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }

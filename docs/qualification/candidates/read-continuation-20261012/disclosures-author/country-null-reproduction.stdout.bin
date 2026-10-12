@@ -1,0 +1,56 @@
+✔ global reads default without any caller policy context (4.696546ms)
+✔ text aliases have exact primary precedence and blank/null fallback (0.508454ms)
+✔ every text normalization ceiling counts UTF-16 units and trims before slicing (0.906231ms)
+✔ limit follows finite number/string clamp and family defaults (0.604708ms)
+✔ LDA page is bounded1..100 and cannot expand to direct service maximum (0.45276ms)
+✔ LDA effective year preserves truthiness but refuses invalid database Int selectors (0.586241ms)
+✔ typed raw admission rejects ignored legacy objects/booleans and unknown authority keys (0.736877ms)
+✔ normalization leaves caller data unchanged and returns detached ordinary data (0.274552ms)
+✔ all three exact nonempty result projections validate without source effects (3.862292ms)
+✔ independent count races preserve total smaller than row count or page offset (0.798901ms)
+✔ total must remain a nonnegative safe integer rather than fabricated nullable/string metadata (0.648133ms)
+✔ rows cannot exceed normalized limit while independent totals remain unconstrained by row length (0.616516ms)
+✔ SEC exact CIK/form selectors remain case-sensitive and no zero-padding is invented (0.575996ms)
+✔ FARA exact status has no enum, and text searches need not survive projected summary (0.53927ms)
+✖ selected FARA country cannot match a null stored country (0.58889ms)
+✔ SEC/FARA summaries preserve empty/null-source and 300 UTF-16 bounds (1.94398ms)
+✔ SEC/FARA summary does not establish truncation status or a full-text result (0.795034ms)
+✔ stored disclosure dates serialize at UTC midnight; LDA timestamp can carry a time (1.235957ms)
+✔ observation order descends with equal times and nullable source dates preserved (1.453033ms)
+✔ LDA finite numeric projection preserves negative, zero, large rounded and null amounts (0.948304ms)
+✔ LDA uses source filing identity and nullable numeric source IDs, never tenant-client UUID (1.816239ms)
+✔ LDA keeps exact year/issue and original page/limit correlation (0.656406ms)
+✔ nullable projected fields are required and strings remain opaque (2.440326ms)
+✔ duplicates reject exact unique record identities without inventing unique fiscal periods (0.485519ms)
+✔ generated timestamp cannot become stale-proof or a malformed finite instant (0.465799ms)
+✔ closed envelopes reject invented cursor, snapshot, authority or completeness claims (3.990835ms)
+✔ canonical hostile data checks execute no getter/proxy effects (0.254012ms)
+✔ canonical data boundary refuses hidden fields, symbols, cycles and alternate prototypes (0.242835ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 27
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 210.538361
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-disclosures.test.mjs:106:1
+✖ selected FARA country cannot match a null stored country (0.58889ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-disclosures-20261012/packages/contracts/test/retrieval-disclosures.test.mjs:108:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
