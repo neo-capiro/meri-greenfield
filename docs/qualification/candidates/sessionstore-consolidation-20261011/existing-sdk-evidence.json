@@ -1,0 +1,46 @@
+{
+  "argv": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "--test",
+    "--test-concurrency=1",
+    "packages/contracts/test/sdk-native-evidence.test.mjs",
+    "apps/control/qualification-sdk-fixture/service/test/native-evidence.test.mjs",
+    "apps/control/qualification-sdk-fixture/service/test/native-evidence-publisher.test.mjs",
+    "apps/control/qualification-sdk-fixture/service/test/s3-checkpoint.test.mjs",
+    "apps/worker/qualification/probes/native-observations.test.mjs",
+    "apps/worker/qualification/probes/native-stream-observer.test.mjs",
+    "apps/worker/qualification/probes/native-namespace-observer.test.mjs",
+    "apps/worker/qualification/probes/sdk-capture.test.mjs",
+    "apps/worker/qualification/probes/sdk-interruption.test.mjs",
+    "apps/worker/qualification/probes/sdk-interruption-loopback.test.mjs",
+    "apps/worker/qualification/checkpoint/fixture-channel.test.mjs",
+    "apps/worker/qualification/checkpoint/fixture-transport.test.mjs",
+    "apps/worker/qualification/checkpoint/native-session-files.test.mjs",
+    "apps/worker/qualification/checkpoint/resume-admission.test.mjs",
+    "apps/worker/qualification/checkpoint/fixture-sentinel.test.mjs",
+    "scripts/qualification/sdk-stale-worker-challenge.test.mjs",
+    "scripts/qualification/sdk-native-evidence-owner.test.mjs"
+  ],
+  "cwd": "/workspace/scratch/853fba62b1f1/meri-sessionstore-consolidation-20261011",
+  "startedAtEpochSeconds": 1791760793.0839262,
+  "endedAtEpochSeconds": 1791760813.2725532,
+  "timeoutSeconds": 120,
+  "timedOut": false,
+  "exitCode": 1,
+  "ownedProcessGroupAbsent": true,
+  "runtime": {
+    "version": "24.19.0",
+    "sha256": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12"
+  },
+  "nativeCaptureSha256": "543e05c230bf614cd5cf73f2d69877f1311ec0faf9d7ca205429161a75b842e1",
+  "temporaryRoot": "/workspace/scratch/853fba62b1f1/meri-sessionstore-consolidation-20261011/.task-inputs/check-tmp",
+  "networkIsolation": "not an OS network sandbox",
+  "stdout": {
+    "bytes": 36145,
+    "sha256": "8b0048b70e1c2e999c2969bc6503acb524c1b45e0b1bd05811cf68b9902f225a"
+  },
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

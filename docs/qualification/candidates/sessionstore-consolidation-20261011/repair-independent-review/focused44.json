@@ -1,0 +1,30 @@
+{
+  "sourceCommit": "680f09cef6e97bee101d09c9d39ab325c0af2007",
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "--test",
+    "--test-concurrency=1",
+    "apps/worker/qualification/checkpoint/native-session-files.test.mjs",
+    "apps/worker/qualification/checkpoint/native-capture-boundaries.test.mjs",
+    "apps/worker/qualification/checkpoint/session-store.test.mjs"
+  ],
+  "supervisorTimeoutSeconds": 60,
+  "timedOut": false,
+  "physicalExitCode": 0,
+  "elapsedSeconds": 0.802,
+  "ownedProcessGroupAbsent": true,
+  "tmpEntriesAfter": [],
+  "runtimeSha256": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12",
+  "streams": {
+    "stdout": {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/repair-independent-review/focused44.stdout.bin",
+      "bytes": 3976,
+      "sha256": "6e23c83722d4db156c3db47a1d8a568101fee7ff881812e5d8a2d6921f6b76f2"
+    },
+    "stderr": {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/repair-independent-review/focused44.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

@@ -20,6 +20,7 @@ import host_assets_build as authority
 import host_assets_source as source
 import worker_context
 import worker_image_collect as collector
+import worker_image_manifest as manifest_owner
 
 ROOT = Path(__file__).resolve().parents[2]
 # Reviewed private wire decoding is part of the immutable worker source baseline.
@@ -36,7 +37,7 @@ PYTHON = Path('C:/Users/Administrator/.cache/codex-runtimes/codex-primary-runtim
 PYTHON_SHA = '10d845f50a2af64e3500bb2fcb348b5bc98a75d8ddada63e45ba1da6a1fc79d1'
 HELPERS = ('worker_image_build.py', 'worker_image_collect.py', 'worker_context.py',
            'host_assets_build.py', 'host_assets_source.py', 'aws_evidence.py',
-           'teststate_request.py', 'readonly_shapes.py')
+           'teststate_request.py', 'readonly_shapes.py', 'worker_image_manifest.py')
 ORIGINAL = tuple(p for p, _ in worker_context.MEMBERS)+(collector.ASSEMBLER,)
 PACKAGING_CHANGES = {
     'apps/worker/qualification/.dockerignore',
@@ -100,10 +101,11 @@ def git_files(commit, names, capture=None, prefix='source'):
 def baseline(commit, capture=None):
     stable = tuple(p for p in ORIGINAL if p not in PACKAGING_CHANGES)
     old = git_files(REFERENCE, stable, capture, 'reference')
-    current = git_files(commit, ORIGINAL+(collector.COLLECTOR,), capture, 'candidate')
+    current = git_files(commit, ORIGINAL+(collector.COLLECTOR, manifest_owner.MANIFEST_OWNER), capture, 'candidate')
     need(all(current[p] == old[p] for p in stable), 'stable fixture source drift')
     need(all(current[p] == read(ROOT/p, 2*1024*1024) for p in ORIGINAL), 'candidate Git/current drift')
     need(current[collector.COLLECTOR] == read(ROOT/collector.COLLECTOR, 2*1024*1024), 'collector Git/current drift')
+    need(current[manifest_owner.MANIFEST_OWNER] == read(ROOT/manifest_owner.MANIFEST_OWNER, 2*1024*1024), 'manifest owner Git/current drift')
     need(sha(current[collector.ASSEMBLER]) == collector.ASSEMBLER_SHA, 'assembler reference pin')
     return current
 
@@ -219,9 +221,9 @@ def prepare(commit, path, authority_file, authority_sha, publish=False):
         for name, raw in sorted(files.items()):
             item = zipfile.ZipInfo(name, (1980, 1, 1, 0, 0, 0)); item.create_system = 3; item.external_attr = 0o100644 << 16
             archive.writestr(item, raw)
-    packed = buffer.getvalue(); count = 50 if publish else 48
-    need(len(files) == count and len(packed) <= 8*1024*1024, 'bounded exact archive')
-    base_names = ORIGINAL+(collector.COLLECTOR,)
+    packed = buffer.getvalue(); count = len(manifest_owner.archive_paths(publish))
+    need(set(files) == set(manifest_owner.archive_paths(publish)) and len(packed) <= 8*1024*1024, 'bounded exact archive')
+    base_names = ORIGINAL+(collector.COLLECTOR, manifest_owner.MANIFEST_OWNER)
     need(pins() == before and baseline(commit) == {p: files[p] for p in base_names}, 'prepare source stability')
     if publish: need(git_files(commit, (PUBLISHER, CLEANER)) == extra, 'publication source stability')
     request = {'schema': PUBLISH_SCHEMA if publish else SCHEMA, 'sourceCommit': commit, 'runUuid': token, 'helperFiles': before,
@@ -270,7 +272,7 @@ def load(evidence):
     need(content == expected_content, 'exact input rows')
     expected_files['worker-image-input.json'] = manifest_raw
     packed = read(evidence/'source.zip', 8*1024*1024)
-    count = 50 if publish else 48
+    count = len(manifest_owner.archive_paths(publish))
     need(request['archive'] == {'bytes': len(packed), 'sha256': sha(packed), 'entries': count, 'key': 'inputs/sdk-worker-image-'+token+'/source.zip'}
          and request['resultKey'] == 'results/sdk-worker-image-'+token+'/evidence.tar.gz'
          and request['inputSha256'] == sha(manifest_raw) and request['recipeSha256'] == sha(recipe(publish))
@@ -410,18 +412,36 @@ def reconcile(path):
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
-    parser.add_argument('action', choices=['prepare', 'prepare-publish', 'execute', 'reconcile']); parser.add_argument('--evidence', required=True)
+    parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False,
+        epilog='Exit 0: requested preparation/inspection/result returned; no admission implied. Exit 2: invalid arguments, refusal or failure. inspect-binding cannot authorize execution.')
+    parser.add_argument('action', choices=['prepare', 'prepare-publish', 'execute', 'reconcile', 'inspect-binding'])
+    parser.add_argument('--evidence')
     for name in ('source-commit', 'authority-file', 'authority-sha256', 'review-file', 'review-sha256'): parser.add_argument('--'+name)
+    parser.add_argument('--runner-binding-file', help='inspect-only new runner proposal; cannot authorize dispatch')
+    parser.add_argument('--runner-binding-sha256', help='external exact proposal SHA-256')
     args = parser.parse_args()
-    if args.action in ('prepare', 'prepare-publish'):
+    if args.action == 'inspect-binding':
+        need(args.runner_binding_file and args.runner_binding_sha256 and not args.evidence
+             and not any((args.source_commit, args.authority_file, args.authority_sha256, args.review_file, args.review_sha256)),
+             'inspect-binding requires proposal file/hash only; no evidence slot or execution authority')
+        import worker_build_binding
+        value = worker_build_binding.validate_proposal(
+            read(Path(args.runner_binding_file).absolute(), 4*1024*1024), args.runner_binding_sha256,
+            tuple('scripts/qualification/'+name for name in HELPERS) + ('scripts/qualification/worker_build_binding.py',))
+        result = {'status': 'SOURCE_ONLY_BINDING_PROPOSAL_NOT_EXECUTABLE', 'sourceCommit': value['sourceCommit'],
+                  'sourceTree': value['sourceTree'], 'awsCalls': 0, 'runnerQualified': False, 'buildAuthorized': False,
+                  'scanAdmitted': False, 'runtimeAdmitted': False, 'g1Admitted': False}
+    elif args.action in ('prepare', 'prepare-publish'):
+        need(args.evidence and not (args.runner_binding_file or args.runner_binding_sha256), 'prepare takes no runner override')
         need(args.source_commit and args.authority_file and args.authority_sha256 and not (args.review_file or args.review_sha256), 'prepare requires exact source and external authority pin')
         result = prepare(args.source_commit, args.evidence, args.authority_file, args.authority_sha256,
                          publish=args.action == 'prepare-publish')
     elif args.action == 'execute':
+        need(args.evidence and not (args.runner_binding_file or args.runner_binding_sha256), 'execute takes no runner override')
         need(args.review_file and args.review_sha256 and not (args.source_commit or args.authority_file or args.authority_sha256), 'execute requires separate review only')
         result = execute(args.evidence, args.review_file, args.review_sha256)
     else:
+        need(args.evidence and not (args.runner_binding_file or args.runner_binding_sha256), 'reconcile takes no runner override')
         need(not any((args.source_commit, args.authority_file, args.authority_sha256, args.review_file, args.review_sha256)), 'read-only reconciliation takes no authority overrides')
         result = reconcile(args.evidence)
     print(encoded(result).decode('ascii'), end='')

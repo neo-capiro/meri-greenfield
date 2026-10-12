@@ -1,0 +1,25 @@
+{
+  "sourceCommit": "09b962f86e52b9559c46b19c80d8c25fcd3410f5",
+  "command": [
+    "node",
+    "docs/qualification/candidates/sessionstore-consolidation-20261011/independent-review/native-mode-probe.mjs"
+  ],
+  "externalTimeoutSeconds": 15,
+  "timeout": false,
+  "exitCode": 0,
+  "elapsedSeconds": 0.06,
+  "processGroupAbsent": true,
+  "streams": {
+    "stdout": {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/independent-review/native-mode-probe.stdout.bin",
+      "bytes": 97,
+      "sha256": "e903ea8024aa4ecf4405b6cc0a469ea59680678d4bc6b63eb21781b4653e9a7e"
+    },
+    "stderr": {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/independent-review/native-mode-probe.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "scriptSha256": "ddb837938dcbf605008b52b4a7f98935be44d5ad80084270829e8ad25f4ba162"
+}

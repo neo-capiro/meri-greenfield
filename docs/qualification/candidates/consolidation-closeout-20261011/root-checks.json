@@ -1,0 +1,30 @@
+{
+  "status": "CORRECTED_DOCUMENT_WHITESPACE",
+  "retainedFailure": {
+    "commit": "fa88253",
+    "check": "git diff --cached --check",
+    "exitCode": 2,
+    "reason": "new blank line at EOF"
+  },
+  "files": [
+    {
+      "path": "docs/coordination/tasks/CODEX-CONSOLIDATION-CLOSEOUT-20261011.md",
+      "beforeSha256": "f4e41af69a7706b6a932f2f6ad4425e83fb2c34019a37568dbe6458f9a908f34",
+      "afterSha256": "69743f9919359c60ea3accf2b02463f3edf21b80b200df12f46db01a579cb9bf",
+      "change": "remove extra terminal blank line only"
+    },
+    {
+      "path": "docs/qualification/candidates/consolidation-closeout-20261011/branch-inventory.json",
+      "beforeSha256": "324a12664e7d9b9f4306d6fa71cea6795cfefef8e102de7b1eac3da865f7857f",
+      "afterSha256": "19450aa0ba2c1f066919c9829a65fb29eebca0e824b17bb819df15489368901e",
+      "change": "remove extra terminal blank line only"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-PLAN-ALIGNMENT-20261011.md",
+      "beforeSha256": "f87e2b3220d5428f4c4119992eab88e4c7099111a2c4beb0558e776ad6b0d6cf",
+      "afterSha256": "de5c1b4b0232f1d329f3e70fd3ecb6288f1692b8b583855916974872c77a9590",
+      "change": "remove extra terminal blank line only"
+    }
+  ],
+  "productCodeChanged": false
+}

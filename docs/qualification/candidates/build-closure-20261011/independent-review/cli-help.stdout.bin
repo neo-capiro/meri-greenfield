@@ -1,0 +1,33 @@
+usage: worker_image_build.py [-h] [--evidence EVIDENCE]
+                             [--source-commit SOURCE_COMMIT]
+                             [--authority-file AUTHORITY_FILE]
+                             [--authority-sha256 AUTHORITY_SHA256]
+                             [--review-file REVIEW_FILE]
+                             [--review-sha256 REVIEW_SHA256]
+                             [--runner-binding-file RUNNER_BINDING_FILE]
+                             [--runner-binding-sha256 RUNNER_BINDING_SHA256]
+                             {prepare,prepare-publish,execute,reconcile,inspect-binding}
+
+Fixed worker build-only preparation/one dispatch/read-only reconciliation. No
+image admission.
+
+positional arguments:
+  {prepare,prepare-publish,execute,reconcile,inspect-binding}
+
+options:
+  -h, --help            show this help message and exit
+  --evidence EVIDENCE
+  --source-commit SOURCE_COMMIT
+  --authority-file AUTHORITY_FILE
+  --authority-sha256 AUTHORITY_SHA256
+  --review-file REVIEW_FILE
+  --review-sha256 REVIEW_SHA256
+  --runner-binding-file RUNNER_BINDING_FILE
+                        inspect-only new runner proposal; cannot authorize
+                        dispatch
+  --runner-binding-sha256 RUNNER_BINDING_SHA256
+                        external exact proposal SHA-256
+
+Exit 0: requested preparation/inspection/result returned; no admission
+implied. Exit 2: invalid arguments, refusal or failure. inspect-binding cannot
+authorize execution.

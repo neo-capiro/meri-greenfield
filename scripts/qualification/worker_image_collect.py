@@ -22,12 +22,14 @@ if __name__ == '__main__':
     # Only this fixed CLI's sibling modules are needed under Python -I -S.
     sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+import worker_image_manifest as manifest_owner
+
 SCHEMA = 'meri-worker-image-input/1'
 PUBLISH_SCHEMA = 'meri-worker-image-input/2'
-ASSEMBLER = 'scripts/qualification/worker_context.py'
-COLLECTOR = 'scripts/qualification/worker_image_collect.py'
-PUBLISHER = 'scripts/qualification/worker_image_publish.py'
-CLEANER = 'scripts/clear-qualification-docker-config.py'
+ASSEMBLER = manifest_owner.ASSEMBLER
+COLLECTOR = manifest_owner.COLLECTOR
+PUBLISHER = manifest_owner.PUBLISHER
+CLEANER = manifest_owner.CLEANER
 CONTEXT_SHA = '18836912a03fc035d69c0cfc57d1f407e5c46af1bdd37c21a761f5d42dc84dda'
 ASSEMBLER_SHA = '67c1cf554e80c62eeb56b6dcb9be00106adf9b1b8b40beba85249de662b835eb'
 ARTIFACTS = {
@@ -113,7 +115,8 @@ def validate_input(root, manifest_raw, expected_sha):
          and value['contextManifestSha256'] == CONTEXT_SHA, 'worker input schema')
     need(type(value['runUuid']) is str and str(uuid.UUID(value['runUuid'])) == value['runUuid']
          and uuid.UUID(value['runUuid']).version == 4, 'fixed run UUID')
-    rows = value['members']; need(type(rows) is list and len(rows) == (49 if publish else 47), 'exact source/recipe records')
+    rows = value['members']
+    manifest_owner.require_source_membership(rows, publish)
     names = set()
     for row in rows:
         need(type(row) is dict and set(row) == {'path', 'bytes', 'sha256'}, 'source record')
@@ -422,9 +425,7 @@ def main():
     publish = manifest['schema'] == PUBLISH_SCHEMA
     if publish: need(os.environ.get('WORKER_IMAGE_MODE') == 'publish', 'explicit worker image mode')
     import worker_context
-    expected = {p for p, _ in worker_context.MEMBERS} | {ASSEMBLER, COLLECTOR, 'buildspec.json'}
-    if publish: expected |= {PUBLISHER, CLEANER}
-    need({r['path'] for r in manifest['members']} == expected, 'canonical worker membership')
+    manifest_owner.require_source_membership(manifest['members'], publish)
     output = root/'.meri-worker-evidence'; need(not output.exists(), 'exclusive collector output')
     need(shutil.disk_usage(root).free >= 2*1024*1024*1024, '2GiB free disk floor')
     output.mkdir(); end = time.monotonic()+(1620 if publish else 1500)

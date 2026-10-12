@@ -1,0 +1,81 @@
+{
+  "status": "PARTIAL_SOURCE_PREREQUISITE_HOLD",
+  "checks": [
+    {
+      "label": "owned-full-suite",
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "-m",
+        "unittest",
+        "test_worker_image_build",
+        "test_worker_image_publish"
+      ],
+      "exitCode": 1,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "84afee565f5966e6ceaa2cd0c289402c6c513063daf12d4dde4b0d046cba2392"
+    },
+    {
+      "label": "focused-contracts",
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "-m",
+        "unittest",
+        "test_worker_image_publish",
+        "test_worker_image_build.FreshRunnerBinding",
+        "test_worker_image_build.Controls.test_membership_rejects_extra_missing_duplicate_and_wrong_shape",
+        "test_worker_image_build.Controls.test_collector_full_source_preflight_and_drift",
+        "test_worker_image_build.Controls.test_source_missing_and_duplicate_before_output"
+      ],
+      "exitCode": 0,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "90d7f8cdc9c30dabbf7929bace08040cf605b617c8e5b948ca3285826a7b5587"
+    },
+    {
+      "label": "cli-help",
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "-I",
+        "-B",
+        "-S",
+        "scripts/qualification/worker_image_build.py",
+        "--help"
+      ],
+      "exitCode": 0,
+      "stdoutSha256": "6ae4d68a415a3f7520c57f08f318129dedc070a21c4a5d4a3f5e984fbbbeedab",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "cli-missing-binding",
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "-I",
+        "-B",
+        "-S",
+        "scripts/qualification/worker_image_build.py",
+        "inspect-binding"
+      ],
+      "exitCode": 2,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "183779173a03d4bddfc942be25d6c64cbd9191cc9dadfdb37a5ccf19028b1c4b"
+    },
+    {
+      "label": "diff-whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "historicalGatesUnchanged": true,
+  "awsCalls": 0,
+  "fullSuite": {
+    "tests": 45,
+    "passed": 43,
+    "failures": 1,
+    "errors": 1
+  }
+}

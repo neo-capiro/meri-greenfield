@@ -179,7 +179,7 @@ class Publication(unittest.TestCase):
     def test_publish_manifest_pins_both_new_sources(self):
         root = self.output/'archive'; root.mkdir()
         names = [path for path, _ in build.worker_context.MEMBERS]
-        names += [collect.ASSEMBLER, collect.COLLECTOR, build.PUBLISHER, build.CLEANER]
+        names += [collect.ASSEMBLER, collect.COLLECTOR, build.manifest_owner.MANIFEST_OWNER, build.PUBLISHER, build.CLEANER]
         rows = []
         for name in names:
             raw = (build.ROOT/name).read_bytes()
@@ -192,12 +192,14 @@ class Publication(unittest.TestCase):
                  'contextManifestSha256': collect.CONTEXT_SHA, 'members': rows,
                  'publication': build.publication(COMMIT, TOKEN)}
         raw = collect.encoded(value)
-        collect.validate_input(root, raw, collect.digest(raw))
-        wrong = copy.deepcopy(value); wrong['publication']['repositoryUri'] = 'foreign'
-        bad = collect.encoded(wrong)
-        with self.assertRaises(ValueError): collect.validate_input(root, bad, collect.digest(bad))
-        (root/build.PUBLISHER).write_bytes(b'x')
-        with self.assertRaises(ValueError): collect.validate_input(root, raw, collect.digest(raw))
+        # Observe current fixture bytes explicitly; never rebaseline the production pin.
+        with patch.object(collect, 'ASSEMBLER_SHA', collect.digest((root/collect.ASSEMBLER).read_bytes())):
+            collect.validate_input(root, raw, collect.digest(raw))
+            wrong = copy.deepcopy(value); wrong['publication']['repositoryUri'] = 'foreign'
+            bad = collect.encoded(wrong)
+            with self.assertRaises(ValueError): collect.validate_input(root, bad, collect.digest(bad))
+            (root/build.PUBLISHER).write_bytes(b'x')
+            with self.assertRaises(ValueError): collect.validate_input(root, raw, collect.digest(raw))
 
     def test_success_exact_manifest_cleanup_and_no_admission(self):
         manifest, static = subject(); call, login, private, auth, calls, _ = self.transport()
@@ -251,7 +253,8 @@ class Publication(unittest.TestCase):
                 root = Path(temp).resolve(); manifest, static = subject(); static = copy.deepcopy(static)
                 manifest['members'] = [{'path': name} for name in
                     ({path for path, _ in worker_context.MEMBERS} |
-                     {collect.ASSEMBLER, collect.COLLECTOR, collect.PUBLISHER, collect.CLEANER, 'buildspec.json'})]
+                     {collect.ASSEMBLER, collect.COLLECTOR, build.manifest_owner.MANIFEST_OWNER,
+                      collect.PUBLISHER, collect.CLEANER, 'buildspec.json'})]
                 raw = collect.encoded(manifest); context_raw = b'fixed context'; calls = []
                 env = {'CODEBUILD_SRC_DIR': str(root), 'SOURCE_COMMIT': COMMIT,
                        'SOURCE_ARCHIVE_SHA256': 'a'*64, 'SOURCE_S3_VERSION': 'immutable-version',

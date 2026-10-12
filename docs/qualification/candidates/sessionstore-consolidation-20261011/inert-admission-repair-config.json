@@ -1,0 +1,28 @@
+{
+  "argv": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    ".task-inputs/evaluate-sessionstore.mjs"
+  ],
+  "cwd": "/workspace/scratch/853fba62b1f1/meri-sessionstore-consolidation-20261011",
+  "startedAtEpochSeconds": 1791761859.6102502,
+  "endedAtEpochSeconds": 1791761860.0256753,
+  "timeoutSeconds": 120,
+  "timedOut": false,
+  "exitCode": 0,
+  "ownedProcessGroupAbsent": true,
+  "runtime": {
+    "version": "24.19.0",
+    "sha256": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12"
+  },
+  "nativeCaptureSha256": "543e05c230bf614cd5cf73f2d69877f1311ec0faf9d7ca205429161a75b842e1",
+  "temporaryRoot": "/workspace/scratch/853fba62b1f1/meri-sessionstore-consolidation-20261011/.task-inputs/check-tmp",
+  "networkIsolation": "not an OS network sandbox",
+  "stdout": {
+    "bytes": 2380,
+    "sha256": "47184a032c3a273cc01e6d2a7c327e422dcc01c8b9965099bf36574d91f6250b"
+  },
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

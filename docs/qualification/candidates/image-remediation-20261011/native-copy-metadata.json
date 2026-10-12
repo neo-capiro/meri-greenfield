@@ -1,0 +1,300 @@
+{
+  "schema": "meri.native-copy-research.v1",
+  "sourceInventory": {
+    "repositoryPath": "docs/qualification/aws-shipper-20261011-r1/historical-artifacts/00-image-inventory.json",
+    "bytes": 5684552,
+    "sha256": "6b7675aa90422a9572a902012cebef87c78af7c6669f9b1fed20668e1b17c74c"
+  },
+  "coverage": "METADATA_ONLY_NOT_ELF_OR_VERSION_INSPECTION",
+  "selectedFileCount": 30,
+  "files": [
+    {
+      "gid": 0,
+      "mode": "0755",
+      "path": "/opt/meri-browsers/chromium-1247/chrome-linux64/chrome",
+      "sha256": "adf078f8f80eb9e980a07b4418af23b0f4008a83bc5756d5588055bc4d76c5a0",
+      "size": 298011976,
+      "type": "file",
+      "uid": 0
+    },
+    {
+      "gid": 0,
+      "mode": "0755",
+      "path": "/opt/meri-venv/lib/python3.13/site-packages/lxml/_elementpath.cpython-313-x86_64-linux-gnu.so",
+      "sha256": "15ca8205b8b81335b4b53ae061df39beeff8d3d4008d505fc590d186f5bc3502",
+      "size": 209192,
+      "type": "file",
+      "uid": 0
+    },
+    {
+      "gid": 0,
+      "mode": "0755",
+      "path": "/opt/meri-venv/lib/python3.13/site-packages/lxml/builder.cpython-313-x86_64-linux-gnu.so",
+      "sha256": "62e9b9d50fc8cc88c35dc01530cf6b3afd3267b2b7199e5ced08c5fb7ef632b6",
+      "size": 120984,
+      "type": "file",
+      "uid": 0
+    },
+    {
+      "gid": 0,
+      "mode": "0755",
+      "path": "/opt/meri-venv/lib/python3.13/site-packages/lxml/etree.cpython-313-x86_64-linux-gnu.so",
+      "sha256": "053756324bbea21667e17477719a868210832d50bafa42e3c0def34a8fe99c1d",
+      "size": 5252048,
+      "type": "file",
+      "uid": 0
+    },
+    {
+      "gid": 0,
+      "mode": "0755",
+      "path": "/opt/meri-venv/lib/python3.13/site-packages/lxml/objectify.cpython-313-x86_64-linux-gnu.so",
+      "sha256": "a07a2fddd30f00d74bb031ac2dbcf65a1db3e43ad7c37bc2b2b514ee2d1203d9",
+      "size": 2920952,
+      "type": "file",
+      "uid": 0
+    },
+    {
+      "gid": 0,
+      "mode": "0755",
+      "path": "/opt/meri-venv/lib/python3.13/site-packages/lxml/sax.cpython-313-x86_64-linux-gnu.so",
+      "sha256": "95a7b26b204d2d764de70360163d7d9f940c3791f23510bc5edc787b6da51a6e",
+      "size": 182200,
+      "type": "file",
+      "uid": 0
+    },
+    {
+      "gid": 10001,
+      "mode": "0755",
+      "path": "/opt/meri-worker/node_modules/@anthropic-ai/claude-agent-sdk-linux-x64/claude",
+      "sha256": "4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358",
+      "size": 256113848,
+      "type": "file",
+      "uid": 10001
+    },
+    {
+      "gid": 10001,
+      "mode": "0644",
+      "path": "/opt/meri-worker/node_modules/@napi-rs/canvas-linux-x64-gnu/skia.linux-x64-gnu.node",
+      "sha256": "eff464d8c283ad1e73e36c636d9ec9a6469ae34c3c04b298794735c89f9c863a",
+      "size": 34794048,
+      "type": "file",
+      "uid": 10001
+    },
+    {
+      "gid": 0,
+      "mode": "0755",
+      "path": "/usr/bin/python3.13",
+      "sha256": "889c603f0d17cb54060951bcf4c4f9b8c9ebd9e52b392c70209bbb9755d797d9",
+      "size": 6832784,
+      "type": "file",
+      "uid": 0
+    },
+    {
+      "gid": 0,
+      "mode": "0644",
+      "path": "/usr/lib/x86_64-linux-gnu/libavahi-client.so.3.2.9",
+      "sha256": "897e41ebed37dc9df9c835be3b3fe3c5d99d0c82268f6ca0dde636fb7d5e7533",
+      "size": 75952,
+      "type": "file",
+      "uid": 0
+    },
+    {
+      "gid": 0,
+      "mode": "0644",
+      "path": "/usr/lib/x86_64-linux-gnu/libavahi-common.so.3.5.4",
+      "sha256": "5b19f788782062294cc624d230fe5e2e622718c47b7d5e8d1290b21e212323ed",
+      "size": 51568,
+      "type": "file",
+      "uid": 0
+    },
+    {
+      "gid": 0,
+      "mode": "0644",
+      "path": "/usr/lib/x86_64-linux-gnu/libblkid.so.1.1.0",
+      "sha256": "116b712c143ac68bb59f6d8e32ed8e05e0772c730a9ba55ec544dd28916af58c",
+      "size": 396256,
+      "type": "file",
+      "uid": 0
+    },
+    {
+      "gid": 0,
+      "mode": "0644",
+      "path": "/usr/lib/x86_64-linux-gnu/libcups.so.2",
+      "sha256": "4a1b185e46ed19f279a437d16619c0bfec8a0c21a25afc1b3e85320f4d219e4c",
+      "size": 657360,
+      "type": "file",
+      "uid": 0
+    },
+    {
+      "gid": 0,
+      "mode": "0644",
+      "path": "/usr/lib/x86_64-linux-gnu/libcurl-gnutls.so.4.8.0",
+      "sha256": "2bb1c5c8ee8800820269aee650e3c316a9dea080f4888cf69612badf48bf56d0",
+      "size": 963560,
+      "type": "file",
+      "uid": 0
+    },
+    {
+      "gid": 0,
+      "mode": "0644",
+      "path": "/usr/lib/x86_64-linux-gnu/libcurl.so.4.8.0",
+      "sha256": "8427e62c31f9dbe0291e24db9dd338e2e584033f781253f92d94a97acd2e4acf",
+      "size": 983720,
+      "type": "file",
+      "uid": 0
+    },
+    {
+      "gid": 0,
+      "mode": "0644",
+      "path": "/usr/lib/x86_64-linux-gnu/libexpat.so.1.12.3",
+      "sha256": "0fd7d092bd0bf5dcc29f31daaba2bad993b0d18a1ab771fb844e0a6dfa8efe18",
+      "size": 186520,
+      "type": "file",
+      "uid": 0
+    },
+    {
+      "gid": 0,
+      "mode": "0644",
+      "path": "/usr/lib/x86_64-linux-gnu/libexpatw.so.1.12.3",
+      "sha256": "6f6c1f68a47cb4bcfec35168be4c6c250a2d1ff1d5c8b5c0b860430200efeec1",
+      "size": 186504,
+      "type": "file",
+      "uid": 0
+    },
+    {
+      "gid": 0,
+      "mode": "0644",
+      "path": "/usr/lib/x86_64-linux-gnu/libgnutls.so.30.40.3",
+      "sha256": "4b14edde42e7cbeefd8a6d88d035e096f2e6412a535388bb1d073a1c196e2822",
+      "size": 2246712,
+      "type": "file",
+      "uid": 0
+    },
+    {
+      "gid": 0,
+      "mode": "0644",
+      "path": "/usr/lib/x86_64-linux-gnu/libmount.so.1.1.0",
+      "sha256": "1654d2cf948e3608cc0d38340807d4ddac1114315a3a77f7b274c4c859cb2181",
+      "size": 502512,
+      "type": "file",
+      "uid": 0
+    },
+    {
+      "gid": 0,
+      "mode": "0644",
+      "path": "/usr/lib/x86_64-linux-gnu/libnghttp2.so.14.28.3",
+      "sha256": "207268890b5be3043575c97af4e08c8326a12321a8a83e7278681b6b6f7d5ea8",
+      "size": 199152,
+      "type": "file",
+      "uid": 0
+    },
+    {
+      "gid": 0,
+      "mode": "0644",
+      "path": "/usr/lib/x86_64-linux-gnu/libpoppler.so.147.0.0",
+      "sha256": "8f199d8f320d485c8a0051676b8a0d6c6019900e5643b685afd7e304250ef340",
+      "size": 3969912,
+      "type": "file",
+      "uid": 0
+    },
+    {
+      "gid": 0,
+      "mode": "0644",
+      "path": "/usr/lib/x86_64-linux-gnu/libsasl2.so.2.0.25",
+      "sha256": "3f93968591811eb3972c3467c69c2968dd9cb2b51f7b7bb48de22ba8e17d13fd",
+      "size": 109232,
+      "type": "file",
+      "uid": 0
+    },
+    {
+      "gid": 0,
+      "mode": "0644",
+      "path": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33",
+      "sha256": "972bb2a18b71140dab0240f8a1f68ab3fb1d56bcd4c4f824a91b70888faf5a00",
+      "size": 2497768,
+      "type": "file",
+      "uid": 0
+    },
+    {
+      "gid": 0,
+      "mode": "0644",
+      "path": "/usr/lib/x86_64-linux-gnu/libtiff.so.6.1.0",
+      "sha256": "7f2309b13404f98171b54c07f75ad7c54673cec26ecaa874ac5273feda916c6f",
+      "size": 604168,
+      "type": "file",
+      "uid": 0
+    },
+    {
+      "gid": 0,
+      "mode": "0644",
+      "path": "/usr/lib/x86_64-linux-gnu/libuuid.so.1.3.0",
+      "sha256": "632fd43a9d8d6f3496833b7e62e7840f397163373dddf8b8eb0b2b7f36593117",
+      "size": 39048,
+      "type": "file",
+      "uid": 0
+    },
+    {
+      "gid": 0,
+      "mode": "0644",
+      "path": "/usr/lib/x86_64-linux-gnu/libxml2.so.2.9.14",
+      "sha256": "8f2643af68a9eba917929046806dabd1848867068d0eee0f6799288a8e886963",
+      "size": 1799256,
+      "type": "file",
+      "uid": 0
+    },
+    {
+      "gid": 0,
+      "mode": "0644",
+      "path": "/usr/lib/x86_64-linux-gnu/libxslt.so.1.1.35",
+      "sha256": "e743a69990386cfdac7fe26fce4e3ac554d42a9139baceb9bcbdbfd2963bf7f1",
+      "size": 272672,
+      "type": "file",
+      "uid": 0
+    },
+    {
+      "gid": 0,
+      "mode": "0644",
+      "path": "/usr/lib/x86_64-linux-gnu/libz.so.1.3.1",
+      "sha256": "85590dd58edf5445e18bc7193e5ebc01ac5841f1ae187e97705a662e90c6421e",
+      "size": 125376,
+      "type": "file",
+      "uid": 0
+    },
+    {
+      "gid": 0,
+      "mode": "0755",
+      "path": "/usr/local/bin/node",
+      "sha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+      "size": 126595440,
+      "type": "file",
+      "uid": 0
+    },
+    {
+      "gid": 0,
+      "mode": "0644",
+      "path": "/usr/share/gdb/auto-load/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33-gdb.py",
+      "sha256": "b2318ddd294072437b66997e58395ef33f822c37b060abbc3e61a7caa67c9724",
+      "size": 2387,
+      "type": "file",
+      "uid": 0
+    }
+  ],
+  "exactBasenameMatches": {
+    "tiffcrop": [],
+    "tiff2pdf": [],
+    "nghttpx": [],
+    "cupsd": [],
+    "avahi-daemon": [],
+    "tpm2daemon": [],
+    "gpgsm": [
+      "/usr/bin/gpgsm",
+      "/usr/share/doc/gpgsm"
+    ]
+  },
+  "limitations": [
+    "Actual ELF bytes, dynamic NEEDED symbols and build/SBOM manifests were not examined.",
+    "No basename match proves only that complete retained metadata lacks that exact path name; renamed/static/embedded copies remain unqualified.",
+    "A pinned lxml wheel is not proof that libxml2/libxslt/zlib are dynamically linked to Debian packages.",
+    "Node, SDK/Bun executable, Chromium and Skia addon may embed third-party libraries; versions/applicability/license closure remain unknown."
+  ]
+}

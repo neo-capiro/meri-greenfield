@@ -1,0 +1,26 @@
+test_existing_ecr_plural_operations_are_unchanged (scripts.qualification.aws_evidence_ecr_test.EcrTransport.test_existing_ecr_plural_operations_are_unchanged) ... ok
+test_failed_scan_retains_raw_error_without_retry (scripts.qualification.aws_evidence_ecr_test.EcrTransport.test_failed_scan_retains_raw_error_without_retry) ... ok
+test_incorrect_plural_and_foreign_scan_options_refuse_before_effects (scripts.qualification.aws_evidence_ecr_test.EcrTransport.test_incorrect_plural_and_foreign_scan_options_refuse_before_effects) ... ok
+test_non_utf8_stdout_is_retained_and_never_transcoded (scripts.qualification.aws_evidence_ecr_test.EcrTransport.test_non_utf8_stdout_is_retained_and_never_transcoded) ... ok
+test_scan_keeps_profile_and_deadline_refusals (scripts.qualification.aws_evidence_ecr_test.EcrTransport.test_scan_keeps_profile_and_deadline_refusals) ... ok
+test_singular_option_cannot_escape_to_another_command (scripts.qualification.aws_evidence_ecr_test.EcrTransport.test_singular_option_cannot_escape_to_another_command) ... ok
+test_singular_scan_keeps_exact_argv_raw_bytes_and_receipt (scripts.qualification.aws_evidence_ecr_test.EcrTransport.test_singular_scan_keeps_exact_argv_raw_bytes_and_receipt) ... ok
+test_default_profile_is_unchanged_and_worker_override_is_exact (scripts.qualification.aws_evidence_history_test.HistoryTransport.test_default_profile_is_unchanged_and_worker_override_is_exact) ... ok
+test_duplicate_flag_refuses_before_allocation (scripts.qualification.aws_evidence_history_test.HistoryTransport.test_duplicate_flag_refuses_before_allocation) ... ok
+test_exact_service_page_flag_and_raw_token_are_retained (scripts.qualification.aws_evidence_history_test.HistoryTransport.test_exact_service_page_flag_and_raw_token_are_retained) ... ok
+test_flag_cannot_escape_to_other_operations (scripts.qualification.aws_evidence_history_test.HistoryTransport.test_flag_cannot_escape_to_other_operations) ... ok
+test_body_hardlink_is_not_admitted (scripts.qualification.aws_evidence_timeout_test.CaptureDeadline.test_body_hardlink_is_not_admitted) ... ok
+test_checksum_is_actual_body_hash (scripts.qualification.aws_evidence_timeout_test.CaptureDeadline.test_checksum_is_actual_body_hash) ... ok
+test_explicit_upload_deadlines_forward_exactly (scripts.qualification.aws_evidence_timeout_test.CaptureDeadline.test_explicit_upload_deadlines_forward_exactly) ... ok
+test_fixed_upload_namespace_and_encryption (scripts.qualification.aws_evidence_timeout_test.CaptureDeadline.test_fixed_upload_namespace_and_encryption) ... ok
+test_metadata_binding_and_duplicate_keys (scripts.qualification.aws_evidence_timeout_test.CaptureDeadline.test_metadata_binding_and_duplicate_keys) ... ok
+test_missing_empty_relative_directory_or_oversized_body (scripts.qualification.aws_evidence_timeout_test.CaptureDeadline.test_missing_empty_relative_directory_or_oversized_body) ... ok
+test_no_duplicate_or_ambiguous_options (scripts.qualification.aws_evidence_timeout_test.CaptureDeadline.test_no_duplicate_or_ambiguous_options) ... ok
+test_ordinary_operations_keep_one_to_sixty (scripts.qualification.aws_evidence_timeout_test.CaptureDeadline.test_ordinary_operations_keep_one_to_sixty) ... ok
+test_timeout_is_retained_without_retry (scripts.qualification.aws_evidence_timeout_test.CaptureDeadline.test_timeout_is_retained_without_retry) ... ok
+test_timeout_type_and_range (scripts.qualification.aws_evidence_timeout_test.CaptureDeadline.test_timeout_type_and_range) ... ok
+
+----------------------------------------------------------------------
+Ran 21 tests in 0.043s
+
+OK

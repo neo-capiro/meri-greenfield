@@ -1,5 +1,6 @@
 // Opaque transcript-file preparation only. No SDK import or import-time IO.
-// The caller must exclusively own/quiesce the namespace and its ancestors.
+// The caller must exclusively own/quiesce the config namespace and prevent
+// ancestor replacement. Unrelated siblings above configDir may remain active.
 import * as fs from 'node:fs';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
@@ -42,16 +43,21 @@ function checked(p, kind) {
   return s;
 }
 function optionalStat(p) { try { return fs.lstatSync(p); } catch (e) { if (e.code === 'ENOENT') return null; throw e; } }
-function ancestors(p) {
-  const result = [];
+function ancestors(p, ownedRoot = p) {
+  const result = []; let borrowed = false;
   for (let cursor = p;; cursor = path.dirname(cursor)) {
-    result.push([cursor, identity(checked(cursor, 'dir'))]);
+    const s = checked(cursor, 'dir');
+    result.push([cursor, borrowed ? anchor(s) : identity(s), borrowed]);
+    if (cursor === ownedRoot) borrowed = true;
     if (path.dirname(cursor) === cursor) break;
   }
   return result;
 }
 function unchanged(rows) {
-  for (const [p, before] of rows) if (identity(fs.lstatSync(p)) !== before) fail('SOURCE_CHANGED');
+  for (const [p, before, borrowed] of rows) {
+    const after = borrowed ? anchor(checked(p, 'dir')) : identity(fs.lstatSync(p));
+    if (after !== before) fail('SOURCE_CHANGED');
+  }
 }
 function segment(name) {
   // Portable finite names also reject Windows device aliases, ADS and NFC collisions.
@@ -106,7 +112,9 @@ export function captureNativeSessionFiles(options) {
   const b = binding(options), config = absolute(options.configDir);
   const state = { ...policy(options), bytes: 0, files: 0, members: 0, observed: [] };
   const project = path.join(config, 'projects', b.projectKey);
-  const roots = ancestors(project);
+  // Shared parents can change metadata when other tasks allocate siblings.
+  // Keep their identity/type/owner anchors; snapshot full owned-root metadata.
+  const roots = ancestors(project, config);
   // These SDK namespaces need separate scoped capture/restore designs.
   for (const kind of ['file-history', 'scratch', 'session-env']) {
     const parent = path.join(config, kind);

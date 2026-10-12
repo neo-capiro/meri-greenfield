@@ -1,0 +1,15 @@
+{
+  "ownedTemporaryRoot": "/workspace/scratch/853fba62b1f1/meri-consolidation-closeout-20261011/.task-inputs/integrated-check-tmp",
+  "before": [
+    "meri-ws-0To7Ld"
+  ],
+  "deletedExactOwnedEntry": "meri-ws-0To7Ld",
+  "identityBefore": {
+    "dev": 27,
+    "ino": 1944291,
+    "mode": 16832
+  },
+  "after": [],
+  "borrowedDependenciesUntouched": true,
+  "allRecordedProcessGroupsAbsent": true
+}

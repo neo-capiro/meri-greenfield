@@ -1,0 +1,96 @@
+{
+  "retrievalDate": "2026-10-11",
+  "observations": [
+    {
+      "header": "CVE-2026-52490 (https://security-tracker.debian.org/tracker/CVE-2026-52490)\n\u3010turn165view0\u3011 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({\"ref_id\":\"https://security-tracker.debian.org/tracker/CVE-2026-52490\",\"lineno\":null}); Total lines: 30",
+      "dataLines": [
+        "L11: \u301019\u2020tiff\u3011 (\u301020\u2020PTS\u2020tracker.debian.org\u3011)  | bookworm, bookworm (security)  | 4.5.0-6+deb12u4  | vulnerable",
+        "L12:  | trixie (security), trixie  | 4.7.0-3+deb13u3  | vulnerable",
+        "L13:  | forky, sid  | 4.7.2-1  | fixed",
+        "L16: Package  | Type  | Release  | Fixed Version  | Urgency  | Origin  | Debian Bugs",
+        "L18: \u301019\u2020tiff\u3011  | source  | (unstable)  | 4.7.2-1  |  |  | \u301018\u20201147247\u2020bugs.debian.org\u3011",
+        "L21:     [trixie] - tiff <no-dsa> (Minor issue)",
+        "L23:     Fixed by: \u301022\u2020https://gitlab.com/libtiff/libtiff/-/commit/b04e935cb6242f22cc8b63c99a372cf3ea825e4e\u2020gitlab.com\u3011 (v4.7.2rc2)"
+      ]
+    },
+    {
+      "header": "\nCVE-2026-95210 (https://security-tracker.debian.org/tracker/CVE-2026-95210)\n\u3010turn165view1\u3011 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({\"ref_id\":\"https://security-tracker.debian.org/tracker/CVE-2026-95210\",\"lineno\":null}); Total lines: 29",
+      "dataLines": [
+        "L11: \u301019\u2020gnutls28\u3011 (\u301020\u2020PTS\u2020tracker.debian.org\u3011)  | bookworm, bookworm (security)  | 3.7.9-2+deb12u7  | vulnerable",
+        "L12:  | trixie (security), trixie  | 3.8.9-3+deb13u4  | vulnerable",
+        "L13:  | forky, sid  | 3.8.13-1  | vulnerable",
+        "L16: Package  | Type  | Release  | Fixed Version  | Urgency  | Origin  | Debian Bugs",
+        "L18: \u301019\u2020gnutls28\u3011  | source  | (unstable)  | (unfixed)  |  |  | \u301018\u20201150522\u2020bugs.debian.org\u3011",
+        "L22:     check, upstream contacted, wait for their assessment"
+      ]
+    },
+    {
+      "header": "\nCVE-2026-88647 (https://security-tracker.debian.org/tracker/CVE-2026-88647)\n\u3010turn165view2\u3011 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({\"ref_id\":\"https://security-tracker.debian.org/tracker/CVE-2026-88647\",\"lineno\":null}); Total lines: 29",
+      "dataLines": [
+        "L11: \u301019\u2020gnutls28\u3011 (\u301020\u2020PTS\u2020tracker.debian.org\u3011)  | bookworm, bookworm (security)  | 3.7.9-2+deb12u7  | vulnerable",
+        "L12:  | trixie (security), trixie  | 3.8.9-3+deb13u4  | vulnerable",
+        "L13:  | forky, sid  | 3.8.13-1  | vulnerable",
+        "L16: Package  | Type  | Release  | Fixed Version  | Urgency  | Origin  | Debian Bugs",
+        "L18: \u301019\u2020gnutls28\u3011  | source  | (unstable)  | (unfixed)  |  |  | \u301018\u20201150522\u2020bugs.debian.org\u3011",
+        "L22:     check, upstream contacted, wait for their assessment"
+      ]
+    },
+    {
+      "header": "\nCVE-2026-88648 (https://security-tracker.debian.org/tracker/CVE-2026-88648)\n\u3010turn165view3\u3011 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({\"ref_id\":\"https://security-tracker.debian.org/tracker/CVE-2026-88648\",\"lineno\":null}); Total lines: 29",
+      "dataLines": [
+        "L11: \u301019\u2020gnutls28\u3011 (\u301020\u2020PTS\u2020tracker.debian.org\u3011)  | bookworm, bookworm (security)  | 3.7.9-2+deb12u7  | vulnerable",
+        "L12:  | trixie (security), trixie  | 3.8.9-3+deb13u4  | vulnerable",
+        "L13:  | forky, sid  | 3.8.13-1  | vulnerable",
+        "L16: Package  | Type  | Release  | Fixed Version  | Urgency  | Origin  | Debian Bugs",
+        "L18: \u301019\u2020gnutls28\u3011  | source  | (unstable)  | (unfixed)  |  |  | \u301018\u20201150522\u2020bugs.debian.org\u3011",
+        "L22:     check, upstream contacted, wait for their assessment"
+      ]
+    },
+    {
+      "header": "\nInternal Error ()\n\u3010turn165view4\u3011 [wordlim: 200] Source: open({\"ref_id\":\"https://security-tracker.debian.org/tracker/CVE-2026-8924\",\"lineno\":null}); Total lines: 1",
+      "dataLines": []
+    },
+    {
+      "header": "\nInternal Error ()\n\u3010turn165view5\u3011 [wordlim: 200] Source: open({\"ref_id\":\"https://security-tracker.debian.org/tracker/CVE-2026-8927\",\"lineno\":null}); Total lines: 1",
+      "dataLines": []
+    },
+    {
+      "header": "\ncurl - trailing dot domain super cookie - CVE-2026-8924 (https://curl.se/docs/CVE-2026-8924.html)\n\u3010turn165view6\u3011 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({\"ref_id\":\"https://curl.se/docs/CVE-2026-8924.html\",\"lineno\":null}); Total lines: 119",
+      "dataLines": [
+        "L84: Severity: Low",
+        "L87:   * Affected versions: curl \u301053\u20207.46.0\u3011 to and including \u301054\u20208.20.0\u3011",
+        "L88:   * Not affected versions: curl < \u301053\u20207.46.0\u3011 and >= \u301055\u20208.21.0\u3011",
+        "L89:   * Not affected versions: curl >= \u301056\u20208.20.1\u2020rock-solid.curl.dev\u3011 in the 8.20.X branch",
+        "L90:   * Not affected versions: curl >= \u301056\u20208.16.1\u2020rock-solid.curl.dev\u3011 in the 8.16.X branch",
+        "L91:   * Not affected versions: curl >= \u301056\u20208.14.2\u2020rock-solid.curl.dev\u3011 in the 8.14.X branch",
+        "L92:   * Introduced-in: \u301057\u2020https://github.com/curl/curl/commit/e77b5b7453c1e8c\u2020github.com\u3011",
+        "L98:   * Fixed-in: \u301058\u2020https://github.com/curl/curl/commit/51beed175dbfc37da3113f6acc\u2020github.com\u3011"
+      ]
+    },
+    {
+      "header": "\ncurl - env-set cross-proxy Digest auth state leak - CVE-2026-8927 (https://curl.se/docs/CVE-2026-8927.html)\n\u3010turn165view7\u3011 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({\"ref_id\":\"https://curl.se/docs/CVE-2026-8927.html\",\"lineno\":null}); Total lines: 123",
+      "dataLines": [
+        "L89: Severity: Medium",
+        "L91:   * Affected versions: curl \u301054\u20207.12.0\u3011 to and including \u301055\u20208.20.0\u3011",
+        "L92:   * Not affected versions: curl < \u301054\u20207.12.0\u3011 and >= \u301056\u20208.21.0\u3011",
+        "L93:   * Not affected versions: curl >= \u301057\u20208.20.1\u2020rock-solid.curl.dev\u3011 in the 8.20.X branch",
+        "L94:   * Not affected versions: curl >= \u301057\u20208.16.1\u2020rock-solid.curl.dev\u3011 in the 8.16.X branch",
+        "L95:   * Not affected versions: curl >= \u301057\u20208.14.2\u2020rock-solid.curl.dev\u3011 in the 8.14.X branch",
+        "L96:   * Introduced-in: \u301058\u2020https://github.com/curl/curl/commit/fc6eff13b5414caf6edf\u2020github.com\u3011",
+        "L100:   * Fixed-in: \u301059\u2020https://github.com/curl/curl/commit/5c225384b8d52c6\u2020github.com\u3011"
+      ]
+    },
+    {
+      "header": "\ncurl - wrong STARTTLS connection reuse - CVE-2026-8286 (https://curl.se/docs/CVE-2026-8286.html)\n\u3010turn165view8\u3011 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({\"ref_id\":\"https://curl.se/docs/CVE-2026-8286.html\",\"lineno\":null}); Total lines: 125",
+      "dataLines": [
+        "L83: Severity: Low",
+        "L85:   * Affected versions: curl \u301053\u20207.30.0\u3011 to and including \u301054\u20208.20.0\u3011",
+        "L86:   * Not affected versions: curl < \u301053\u20207.30.0\u3011 and >= \u301055\u20208.21.0\u3011",
+        "L87:   * Not affected versions: curl >= \u301056\u20208.20.1\u2020rock-solid.curl.dev\u3011 in the 8.20.X branch",
+        "L88:   * Not affected versions: curl >= \u301056\u20208.16.1\u2020rock-solid.curl.dev\u3011 in the 8.16.X branch",
+        "L89:   * Not affected versions: curl >= \u301056\u20208.14.2\u2020rock-solid.curl.dev\u3011 in the 8.14.X branch",
+        "L90:   * Introduced-in: \u301057\u2020https://github.com/curl/curl/commit/a1701eea289fe7ea8065\u2020github.com\u3011"
+      ]
+    }
+  ]
+}

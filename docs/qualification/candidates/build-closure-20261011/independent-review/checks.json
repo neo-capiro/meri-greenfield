@@ -1,0 +1,125 @@
+{
+  "sourceCommit": "c0cef1430d3a0e2bd6b441a599f8fa8c3c0987fa",
+  "sourceTree": "8eff53f0ea6178c78a22fce9f05f30a58172aed9",
+  "checks": [
+    {
+      "label": "focused-contracts",
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-m",
+        "unittest",
+        "test_worker_image_publish",
+        "test_worker_image_build.FreshRunnerBinding",
+        "test_worker_image_build.Controls.test_membership_rejects_extra_missing_duplicate_and_wrong_shape",
+        "test_worker_image_build.Controls.test_collector_full_source_preflight_and_drift",
+        "test_worker_image_build.Controls.test_source_missing_and_duplicate_before_output"
+      ],
+      "cwd": "/workspace/scratch/853fba62b1f1/meri-build-closure-independent-20261011/scripts/qualification",
+      "start": "2026-10-11T23:28:32.625412+00:00",
+      "end": "2026-10-11T23:28:32.836201+00:00",
+      "timeoutSeconds": 30,
+      "exitCode": 0,
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "bytes": 117,
+        "sha256": "b89dc1c8e77c79517bf58fa5eb96a4312b302061a6fb534c891332ca78ff2099"
+      }
+    },
+    {
+      "label": "publisher-original-cases",
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-m",
+        "unittest",
+        "test_worker_image_publish"
+      ],
+      "cwd": "/workspace/scratch/853fba62b1f1/meri-build-closure-independent-20261011/scripts/qualification",
+      "start": "2026-10-11T23:28:32.836479+00:00",
+      "end": "2026-10-11T23:28:33.010756+00:00",
+      "timeoutSeconds": 30,
+      "exitCode": 0,
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "bytes": 107,
+        "sha256": "6bbebe1ad96eb5f292fac5606d8de50501b1719be4d19fd361a70738944d7e7c"
+      }
+    },
+    {
+      "label": "owned-full-suite",
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-m",
+        "unittest",
+        "test_worker_image_build",
+        "test_worker_image_publish"
+      ],
+      "cwd": "/workspace/scratch/853fba62b1f1/meri-build-closure-independent-20261011/scripts/qualification",
+      "start": "2026-10-11T23:28:33.010992+00:00",
+      "end": "2026-10-11T23:28:33.246950+00:00",
+      "timeoutSeconds": 30,
+      "exitCode": 1,
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "bytes": 2051,
+        "sha256": "d0c18482d3723e4dfb4cbb67ad1f524c5f703ddfd9d5c3e1e617c6875086c101"
+      }
+    },
+    {
+      "label": "cli-help",
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-I",
+        "-B",
+        "-S",
+        "scripts/qualification/worker_image_build.py",
+        "--help"
+      ],
+      "cwd": "/workspace/scratch/853fba62b1f1/meri-build-closure-independent-20261011",
+      "start": "2026-10-11T23:28:33.247267+00:00",
+      "end": "2026-10-11T23:28:33.308138+00:00",
+      "timeoutSeconds": 30,
+      "exitCode": 0,
+      "stdout": {
+        "bytes": 1465,
+        "sha256": "6ae4d68a415a3f7520c57f08f318129dedc070a21c4a5d4a3f5e984fbbbeedab"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "cli-missing-binding",
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-I",
+        "-B",
+        "-S",
+        "scripts/qualification/worker_image_build.py",
+        "inspect-binding"
+      ],
+      "cwd": "/workspace/scratch/853fba62b1f1/meri-build-closure-independent-20261011",
+      "start": "2026-10-11T23:28:33.308422+00:00",
+      "end": "2026-10-11T23:28:33.383448+00:00",
+      "timeoutSeconds": 30,
+      "exitCode": 2,
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "bytes": 76,
+        "sha256": "183779173a03d4bddfc942be25d6c64cbd9191cc9dadfdb37a5ccf19028b1c4b"
+      }
+    }
+  ]
+}

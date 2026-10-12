@@ -1,0 +1,27 @@
+{
+  "exclusivelyOwnedRoot": "/workspace/scratch/853fba62b1f1/meri-sessionstore-consolidation-20261011/.task-inputs/check-tmp",
+  "remainingBeforeCleanup": [
+    {
+      "path": "meri-native-files-EgNwKP",
+      "type": "directory",
+      "bytes": null
+    },
+    {
+      "path": "meri-native-files-EgNwKP/config",
+      "type": "directory",
+      "bytes": null
+    },
+    {
+      "path": "meri-native-files-EgNwKP/config/projects",
+      "type": "directory",
+      "bytes": null
+    },
+    {
+      "path": "meri-native-files-EgNwKP/config/projects/-workspace-conversation",
+      "type": "directory",
+      "bytes": null
+    }
+  ],
+  "allOwnedCheckGroupsAbsent": true,
+  "rootEmptyAfterCleanup": true
+}

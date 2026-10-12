@@ -1,0 +1,317 @@
+{
+  "kind": "source-qualification-evidence-only",
+  "stage": "inert-admission-repair",
+  "sourceBase": "cf9eb76a0f9ea797151a2684bc83592ae1033c9f",
+  "nativeSourceFreeze": "09b962f86e52b9559c46b19c80d8c25fcd3410f5",
+  "indexedFiles": 61,
+  "records": [
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/baseline-classification-before-count-correction.json",
+      "bytes": 1271,
+      "sha256": "ddf6e96195b359bb94d519878922ccfbbfe7d2b4951e9c6cb54df2b520e1e9e5"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/baseline-classification.json",
+      "bytes": 1398,
+      "sha256": "c6e9394a456481bb075de54ff197742d3d6bf2ece5672b8e04b7618c27d7c34c"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/borrowed-parent-original-control.json",
+      "bytes": 1140,
+      "sha256": "dd729ba084f72024baf93d690a06b17d387303c69638e12d29f1517a0985fccf"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/borrowed-parent-original-control.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/borrowed-parent-original-control.stdout.bin",
+      "bytes": 2078,
+      "sha256": "a24d2ebbb05de4d9d2ee5dfa328396be45fa042fbf5d8980c3617b561f324dba"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/check-summary.json",
+      "bytes": 280,
+      "sha256": "9aa74d85924efd4e51c7d5321a701d0fe8586535ba5925d66b819fbd964d9910"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/deterministic-config-assertions.json",
+      "bytes": 1040,
+      "sha256": "a756e3f4e434ab44caf1242df6c680bface6794d76cf03b70e5d0e8e1bd73abc"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/deterministic-config-assertions.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/deterministic-config-assertions.stdout.bin",
+      "bytes": 2380,
+      "sha256": "47184a032c3a273cc01e6d2a7c327e422dcc01c8b9965099bf36574d91f6250b"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/existing-sdk-evidence-restored-dependencies.json",
+      "bytes": 2258,
+      "sha256": "e46328b3d98380502a150a4471ec5e1321037c4313007369ed2328d0b75ab936"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/existing-sdk-evidence-restored-dependencies.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/existing-sdk-evidence-restored-dependencies.stdout.bin",
+      "bytes": 32519,
+      "sha256": "f49621658681a39faf94b4f2332d5001af468fba5f17fe21152ccbe8ba02ac48"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/existing-sdk-evidence.json",
+      "bytes": 2258,
+      "sha256": "2ed3f1b994a233f82ce86794a4531247915ef7c56b5e7cc5ebb36abdd0d6e93c"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/existing-sdk-evidence.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/existing-sdk-evidence.stdout.bin",
+      "bytes": 36145,
+      "sha256": "8b0048b70e1c2e999c2969bc6503acb524c1b45e0b1bd05811cf68b9902f225a"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/final-check-summary.json",
+      "bytes": 757,
+      "sha256": "8ae473676d299a96db6bd5822bf315346edd8383dc1973b31dfded034d629d98"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/fixed-sdk-source-pins-final.json",
+      "bytes": 695,
+      "sha256": "5a35d42f19de39aea2981428064ab36572d2c44f0b148db508e30ca3c09f1511"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/fixed-sdk-source-pins-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/fixed-sdk-source-pins-final.stdout.bin",
+      "bytes": 69,
+      "sha256": "c8d7c07562d4a07cccd13da9fa712e4beb599e8f62382a42f73ca31c379d3465"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/focused-source-refreshed-pin.json",
+      "bytes": 1285,
+      "sha256": "c15af9364abe2fe0eab839c53e9e6de4493a3cfdd172c93cabd869af1b59b32b"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/focused-source-refreshed-pin.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/focused-source-refreshed-pin.stdout.bin",
+      "bytes": 12055,
+      "sha256": "a8dfa37774a8f37d9c8356204ed3374be52fae22f1172c8c96386b73bdada843"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/focused-source.json",
+      "bytes": 1206,
+      "sha256": "70011f2f2e10bac1e7f78a236baf3a70674d86ccb00f9a94abd27ad33ec8c8e6"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/focused-source.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/focused-source.stdout.bin",
+      "bytes": 13006,
+      "sha256": "5a959b7f77b329ded7233d6a6e4908d440dd0bb69cb79de5d81290e9a19f4d32"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/fresh-fixed-context-final.json",
+      "bytes": 814,
+      "sha256": "9eee87a80388b4be7c077609ec9c1ef283ff817d38f901244e52a1bdf832b37b"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/fresh-fixed-context-final.manifest.json",
+      "bytes": 11180,
+      "sha256": "94216667decf5e4feed05914b3f295148d9437ee1c00b224ca4e92625b5b876f"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/fresh-fixed-context-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/fresh-fixed-context-final.stdout.bin",
+      "bytes": 63,
+      "sha256": "41ee601bf3e78b144719690b279dfb123ffe5a01233e051c051c45510e24bcf0"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/fresh-fixed-context-final.summary.json",
+      "bytes": 235,
+      "sha256": "a618683d47ba87def8c38c76b05093608486d64b1d6c970b61b8ede38baae21f"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/inert-admission-repair/adversarial-probes.json",
+      "bytes": 961,
+      "sha256": "1922efa3daa99604ad311434dda06763a9e2bfdcab2c538898ecf85443abd8cf"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/inert-admission-repair/adversarial-probes.mjs",
+      "bytes": 2015,
+      "sha256": "5e367153cce7d38f917f7ea2e2e09dee27835f9ac5ac4d69c69082c38b140b92"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/inert-admission-repair/adversarial-probes.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/inert-admission-repair/adversarial-probes.stdout.bin",
+      "bytes": 171,
+      "sha256": "9488c04f0dfa1e3df6d120ea0b808fb5eb7048598bf55f19799b372916bda402"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/inert-admission-repair/owned-cleanup.json",
+      "bytes": 419,
+      "sha256": "51bac9e0ec674eaf424df1c5c6fbe691d77f173769616601992ccbe049836733"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/inert-admission-repair/prior-cf9-evidence-index.json",
+      "bytes": 10856,
+      "sha256": "afde3cc1768ee729b7b450ea5edf44dc0822b75aba00924928636bbd861f383e"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/inert-admission-repair/repair-preservation.json",
+      "bytes": 12327,
+      "sha256": "f7187350ce5a998b3965ea88a8dbc86e48f8dedb5232bad0efe702c783966f79"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/inert-admission-repair-config.json",
+      "bytes": 1040,
+      "sha256": "e70f05ecff63be8a5566660051b784ee8493577043fa787ec447b553788f61a1"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/inert-admission-repair-config.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/inert-admission-repair-config.stdout.bin",
+      "bytes": 2380,
+      "sha256": "47184a032c3a273cc01e6d2a7c327e422dcc01c8b9965099bf36574d91f6250b"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/inert-admission-repair-focused.json",
+      "bytes": 1228,
+      "sha256": "cd756a897cdcb693255bdec5099f0ebdae20a403735771244a575ad178a4e5c1"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/inert-admission-repair-focused.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/inert-admission-repair-focused.stdout.bin",
+      "bytes": 3979,
+      "sha256": "17b2e1b5ca604ee8f921f9438ed62fc70dcd983a08ac3963c4ba56bdfac8980b"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/inert-admission-repair-static.json",
+      "bytes": 1284,
+      "sha256": "8dfbb31c3ba2d6eeeefda0cb86b56a605acaa3018a41a7c69a779df10b16fae0"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/inert-admission-repair-static.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/inert-admission-repair-static.stdout.bin",
+      "bytes": 12710,
+      "sha256": "d18bc7cad58d68c3e03eb7a778be50c3b055629065979bd602bf54814c37616d"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/native-sessionstore-and-boundaries.json",
+      "bytes": 1227,
+      "sha256": "d48d7f6d13716f1a87ef08a73f31de40b6f8e75895a6eb36b10695784ca5b41e"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/native-sessionstore-and-boundaries.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/native-sessionstore-and-boundaries.stdout.bin",
+      "bytes": 3315,
+      "sha256": "31dcfbab7fb97fcade7114b857829c41cd1b710ef648e52bba87d60e11d497f5"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/owned-temporary-cleanup-1.json",
+      "bytes": 834,
+      "sha256": "bc6d43d1fa983895a4e77c5a90e375b9d5e1e8f81d545e1950790b2239cdaf82"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/owned-temporary-cleanup-2.json",
+      "bytes": 386,
+      "sha256": "a6904710c8f169da6963d9f839575a01dde938ea4f29c44d83104024fa7b29a5"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/owned-temporary-cleanup-final.json",
+      "bytes": 703,
+      "sha256": "efaa2649cbfef29e05287ad46772c644d67598146332e2cf4958459982be8cda"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/preparation-failure.json",
+      "bytes": 590,
+      "sha256": "cd05467b224e952e0bb345992daf8d6bdb35fabb2926c50191ed4fffdafa38fd"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/source-pin-advancement.json",
+      "bytes": 425,
+      "sha256": "5aed2d6c4a7f45746d31819de87d143b43ffa97d7df6a3f69be938ebfcba132f"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/source-preservation.json",
+      "bytes": 4320,
+      "sha256": "8a4e8903befe408c36d69c5f02c34e0e22c94d3af88bc6277c3f7fbdd3d63220"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/unchanged-image-inventory-focused.json",
+      "bytes": 1073,
+      "sha256": "a156445dd7f1f2bb10a9d9109d51f347ba742ee4ec4537457c3c54ed8105f421"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/unchanged-image-inventory-focused.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/unchanged-image-inventory-focused.stdout.bin",
+      "bytes": 2405,
+      "sha256": "4a43ce8b0331a289bc53812acc4e3176cf50fa54fc85e213d7fc1d47c9fb5855"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/unchanged-procfs-baseline.json",
+      "bytes": 1132,
+      "sha256": "2bd505cb6cee087ab26bb1c04dfe288353b873e7b88119b9789f513c28358ca2"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/unchanged-procfs-baseline.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/unchanged-procfs-baseline.stdout.bin",
+      "bytes": 223,
+      "sha256": "97483d41aae0d98558301f06f29108527a857ad7d9475aaf6b1b24db32571a86"
+    }
+  ],
+  "g1Accepted": false,
+  "sessionStoreQualified": false,
+  "completeRecoveryCheckpoint": false
+}

@@ -1,0 +1,47 @@
+{
+  "retrievalDate": "2026-10-11",
+  "observations": [
+    {
+      "header": "Information on source package cups (https://security-tracker.debian.org/tracker/source-package/cups)\n\u3010turn169view0\u3011 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({\"ref_id\":\"https://security-tracker.debian.org/tracker/source-package/cups\",\"lineno\":null}); Total lines: 219",
+      "dataLines": [
+        "L20: \u30105\u2020TEMP-0000000-123A53\u3011  | vulnerable  | vulnerable  | vulnerable  | vulnerable ",
+        "L21: \u30106\u2020TEMP-0000000-71B844\u3011  | vulnerable  | vulnerable  | vulnerable  | vulnerable ",
+        "L24: \u30109\u2020CVE-2026-107890\u3011  | vulnerable  | vulnerable  | vulnerable  | vulnerable ",
+        "L25: \u301010\u2020CVE-2026-107888\u3011  | vulnerable  | vulnerable  | vulnerable  | vulnerable ",
+        "L26: \u301011\u2020CVE-2026-107886\u3011  | vulnerable  | vulnerable  | vulnerable  | vulnerable ",
+        "L27: \u301012\u2020CVE-2026-107885\u3011  | vulnerable  | vulnerable  | vulnerable  | vulnerable ",
+        "L28: \u301013\u2020CVE-2026-107655\u3011  | vulnerable  | vulnerable  | vulnerable  | vulnerable ",
+        "L29: \u301014\u2020CVE-2026-105326\u3011  | vulnerable  | vulnerable  | vulnerable  | vulnerable ",
+        "L30: \u301015\u2020CVE-2026-87876\u3011  | vulnerable  | vulnerable  | vulnerable  | vulnerable ",
+        "L31: \u301016\u2020CVE-2026-87875\u3011  | vulnerable  | vulnerable  | vulnerable  | vulnerable ",
+        "L35: \u301020\u2020CVE-2026-41079\u3011  | vulnerable  | vulnerable  | fixed  | fixed ",
+        "L36: \u301021\u2020CVE-2026-39316\u3011  | vulnerable  | vulnerable  | fixed  | fixed ",
+        "L37: \u301022\u2020CVE-2026-39314\u3011  | vulnerable  | vulnerable  | fixed  | fixed ",
+        "L39: \u301024\u2020CVE-2026-34980\u3011  | vulnerable  | vulnerable  | fixed  | fixed ",
+        "L40: \u301025\u2020CVE-2026-34979\u3011  | vulnerable  | vulnerable  | fixed  | fixed "
+      ]
+    },
+    {
+      "header": "\nInformation on source package avahi (https://security-tracker.debian.org/tracker/source-package/avahi)\n\u3010turn169view1\u3011 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({\"ref_id\":\"https://security-tracker.debian.org/tracker/source-package/avahi\",\"lineno\":null}); Total lines: 64",
+      "dataLines": [
+        "L19: \u30105\u2020CVE-2026-24401\u3011  | vulnerable (no DSA)  | vulnerable (no DSA)  | fixed  | fixed ",
+        "L20: \u30106\u2020CVE-2025-68471\u3011  | vulnerable (no DSA)  | vulnerable (no DSA)  | fixed  | fixed ",
+        "L21: \u30107\u2020CVE-2025-68468\u3011  | vulnerable (no DSA)  | vulnerable (no DSA)  | fixed  | fixed ",
+        "L22: \u30108\u2020CVE-2025-68276\u3011  | vulnerable (no DSA)  | vulnerable (no DSA)  | fixed  | fixed ",
+        "L24: \u301010\u2020CVE-2024-52616\u3011  | vulnerable (no DSA)  | vulnerable (no DSA)  | fixed  | fixed "
+      ]
+    },
+    {
+      "header": "\nCVE-2026-58055 (https://security-tracker.debian.org/tracker/CVE-2026-58055)\n\u3010turn169view2\u3011 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({\"ref_id\":\"https://security-tracker.debian.org/tracker/CVE-2026-58055\",\"lineno\":null}); Total lines: 31\n\n",
+      "dataLines": []
+    },
+    {
+      "header": "\nCVE-2026-18495 (https://security-tracker.debian.org/tracker/CVE-2026-18495)\n\u3010turn169view3\u3011 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({\"ref_id\":\"https://security-tracker.debian.org/tracker/CVE-2026-18495\",\"lineno\":null}); Total lines: 29\n\n",
+      "dataLines": []
+    },
+    {
+      "header": "\nCVE-2026-57062 (https://security-tracker.debian.org/tracker/CVE-2026-57062)\n\u3010turn169view4\u3011 [wordlim: 200] Crawled: yesterday; Content type: text/html; Source: open({\"ref_id\":\"https://security-tracker.debian.org/tracker/CVE-2026-57062\",\"lineno\":null}); Total lines: 31\n",
+      "dataLines": []
+    }
+  ]
+}

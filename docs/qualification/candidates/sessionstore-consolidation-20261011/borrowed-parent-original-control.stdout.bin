@@ -1,0 +1,27 @@
+✖ unrelated sibling creation above the owned config does not change captured bytes (5.7754ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 75.221186
+
+✖ failing tests:
+
+test at checkpoint/native-capture-boundaries.test.mjs:47:1
+✖ unrelated sibling creation above the owned config does not change captured bytes (5.7754ms)
+  Error: SOURCE_CHANGED
+      at fail (file:///workspace/scratch/853fba62b1f1/meri-sessionstore-consolidation-20261011/apps/worker/qualification/checkpoint/native-session-files.mjs:12:43)
+      at unchanged (file:///workspace/scratch/853fba62b1f1/meri-sessionstore-consolidation-20261011/apps/worker/qualification/checkpoint/native-session-files.mjs:54:77)
+      at captureNativeSessionFiles (file:///workspace/scratch/853fba62b1f1/meri-sessionstore-consolidation-20261011/apps/worker/qualification/checkpoint/native-session-files.mjs:142:44)
+      at file:///workspace/scratch/853fba62b1f1/meri-sessionstore-consolidation-20261011/apps/worker/qualification/checkpoint/native-capture-boundaries.test.mjs:50:62
+      at duringIO (file:///workspace/scratch/853fba62b1f1/meri-sessionstore-consolidation-20261011/apps/worker/qualification/checkpoint/native-capture-boundaries.test.mjs:35:9)
+      at duringRead (file:///workspace/scratch/853fba62b1f1/meri-sessionstore-consolidation-20261011/apps/worker/qualification/checkpoint/native-capture-boundaries.test.mjs:38:36)
+      at file:///workspace/scratch/853fba62b1f1/meri-sessionstore-consolidation-20261011/apps/worker/qualification/checkpoint/native-capture-boundaries.test.mjs:50:3
+      at fixture (file:///workspace/scratch/853fba62b1f1/meri-sessionstore-consolidation-20261011/apps/worker/qualification/checkpoint/native-capture-boundaries.test.mjs:22:16)
+      at TestContext.<anonymous> (file:///workspace/scratch/853fba62b1f1/meri-sessionstore-consolidation-20261011/apps/worker/qualification/checkpoint/native-capture-boundaries.test.mjs:47:96)
+      at Test.runInAsyncScope (node:async_hooks:227:14) {
+    code: 'SOURCE_CHANGED'
+  }

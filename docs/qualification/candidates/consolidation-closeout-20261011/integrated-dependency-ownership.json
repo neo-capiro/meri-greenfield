@@ -1,0 +1,22 @@
+[
+  {
+    "target": "node_modules",
+    "source": "/workspace/scratch/853fba62b1f1/meri-sessionstore-consolidation-20261011/node_modules",
+    "ownership": "new task-owned dependency copy; source untouched"
+  },
+  {
+    "target": "apps/control/qualification-sdk-fixture/service/node_modules",
+    "source": "/workspace/scratch/853fba62b1f1/meri-sessionstore-consolidation-20261011/apps/control/qualification-sdk-fixture/service/node_modules",
+    "ownership": "new task-owned dependency copy; source untouched"
+  },
+  {
+    "target": "apps/worker/qualification/node_modules",
+    "source": "/workspace/scratch/853fba62b1f1/meri-sessionstore-consolidation-20261011/apps/worker/qualification/node_modules",
+    "ownership": "new task-owned dependency copy; source untouched"
+  },
+  {
+    "target": "packages/contracts/node_modules",
+    "source": "/workspace/scratch/853fba62b1f1/meri-g1-combined-source/packages/contracts/node_modules",
+    "ownership": "new task-owned dependency copy; source untouched"
+  }
+]

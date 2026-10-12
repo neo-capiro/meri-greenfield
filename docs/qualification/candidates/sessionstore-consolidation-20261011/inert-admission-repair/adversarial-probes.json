@@ -1,0 +1,25 @@
+{
+  "sourceCommit": "09b962f86e52b9559c46b19c80d8c25fcd3410f5",
+  "command": [
+    "node",
+    "docs/qualification/candidates/sessionstore-consolidation-20261011/independent-review/adversarial-probes.mjs"
+  ],
+  "externalTimeoutSeconds": 15,
+  "timeout": false,
+  "exitCode": 0,
+  "elapsedSeconds": 0.332,
+  "processGroupAbsent": true,
+  "streams": {
+    "stdout": {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/independent-review/adversarial-probes.stdout.bin",
+      "bytes": 171,
+      "sha256": "9488c04f0dfa1e3df6d120ea0b808fb5eb7048598bf55f19799b372916bda402"
+    },
+    "stderr": {
+      "path": "docs/qualification/candidates/sessionstore-consolidation-20261011/independent-review/adversarial-probes.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "probeScriptSha256": "5e367153cce7d38f917f7ea2e2e09dee27835f9ac5ac4d69c69082c38b140b92"
+}

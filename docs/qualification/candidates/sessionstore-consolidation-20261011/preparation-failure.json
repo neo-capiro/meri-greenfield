@@ -1,0 +1,11 @@
+{
+  "stage": "first source-preservation helper",
+  "outcome": "FileNotFoundError",
+  "mistakenPath": "apps/worker/qualification/probes/image_inventory.py",
+  "actualPath": "apps/worker/qualification/probes/image-inventory.py",
+  "productSourceChangedByFailure": false,
+  "checksRerun": false,
+  "initialCommitPublishedLocallyAfterHelperFailure": "09b962f86e52b9559c46b19c80d8c25fcd3410f5",
+  "correction": "proof and owned temporary cleanup completed in documentation-only follow-up",
+  "rawBinaryStreams": "not separately retained; original tool command/result supplies failure receipt"
+}

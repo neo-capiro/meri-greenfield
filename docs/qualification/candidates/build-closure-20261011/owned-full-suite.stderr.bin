@@ -1,0 +1,29 @@
+.......F..............E......................
+======================================================================
+ERROR: test_real_owner_execution_closure_pins (test_worker_image_build.Controls.test_real_owner_execution_closure_pins)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/853fba62b1f1/meri-build-closure-20261011/scripts/qualification/test_worker_image_build.py", line 151, in test_real_owner_execution_closure_pins
+    rows = build.pins(); values = {r['path']: r for r in rows}
+           ^^^^^^^^^^^^
+  File "/workspace/scratch/853fba62b1f1/meri-build-closure-20261011/scripts/qualification/worker_image_build.py", line 59, in pins
+    need(Path(sys.executable) == PYTHON and sys.version_info[:3] == (3, 12, 14)
+  File "/workspace/scratch/853fba62b1f1/meri-build-closure-20261011/scripts/qualification/worker_image_collect.py", line 53, in need
+    raise ValueError(message)
+ValueError: fixed owner Python runtime
+
+======================================================================
+FAIL: test_context_manifest_pin_tracks_candidate_bytes (test_worker_image_build.Controls.test_context_manifest_pin_tracks_candidate_bytes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/853fba62b1f1/meri-build-closure-20261011/scripts/qualification/test_worker_image_build.py", line 159, in test_context_manifest_pin_tracks_candidate_bytes
+    self.assertEqual(build.context_manifest_sha(files), collect.CONTEXT_SHA)
+AssertionError: 'da96000546d9688bafd50ffb5d6101ce5a76300e65a47bfb5ea55a1273bd13a4' != '18836912a03fc035d69c0cfc57d1f407e5c46af1bdd37c21a761f5d42dc84dda'
+- da96000546d9688bafd50ffb5d6101ce5a76300e65a47bfb5ea55a1273bd13a4
++ 18836912a03fc035d69c0cfc57d1f407e5c46af1bdd37c21a761f5d42dc84dda
+
+
+----------------------------------------------------------------------
+Ran 45 tests in 0.085s
+
+FAILED (failures=1, errors=1)

@@ -429,14 +429,14 @@
   "interruptionPackaging": {
     "status": "SOURCE_ONLY",
     "contextAssembler": "scripts/qualification/worker_context.py",
-    "sourceCommit": "2201364be32bc99a5abe68ce96c4d1e18d1a1e8c",
+    "sourceCommit": "09b962f86e52b9559c46b19c80d8c25fcd3410f5",
     "records": [
       {
         "sourcePath": "apps/worker/qualification/checkpoint/native-session-files.mjs",
         "contextPath": "checkpoint/native-session-files.mjs",
         "imagePath": "/opt/meri-worker/checkpoint/native-session-files.mjs",
-        "bytes": 11588,
-        "sha256": "6bc9b3559975dfb2ea585da076687e46e04051904ae8f88e200e4768b40b2b9d"
+        "bytes": 12049,
+        "sha256": "543e05c230bf614cd5cf73f2d69877f1311ec0faf9d7ca205429161a75b842e1"
       },
       {
         "sourcePath": "scripts/sdk-capture/json-records.mjs",

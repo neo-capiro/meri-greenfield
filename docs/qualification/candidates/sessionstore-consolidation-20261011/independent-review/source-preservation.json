@@ -1,0 +1,91 @@
+{
+  "commit": "09b962f86e52b9559c46b19c80d8c25fcd3410f5",
+  "tree": "b045c081443d08ace456c08b30ad84acefa9dd30",
+  "base": "a5c41c7afdd9ec235ac3a0184a96e4c457ef2f90",
+  "originalPR2": "65d9c750639e0d370985827983f24019a3f585ab",
+  "candidatePaths": [
+    {
+      "path": "apps/worker/qualification/checkpoint/bound-session-store.mjs",
+      "bytes": 7025,
+      "sha256": "2ca4e6e4957f606e1a8c64ded9a24c2dfc3ff4877b328526a8b74c0dd351c322",
+      "candidatePR2BytesEqual": true
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/verify-session-store.mjs",
+      "bytes": 2417,
+      "sha256": "ed95128e06578040f441e9902b55d1262b61bee655ae270ea5cd0c0a0f684234",
+      "candidatePR2BytesEqual": true
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/session-store.test.mjs",
+      "bytes": 10987,
+      "sha256": "ac06de2d19aa5033f3d5cdde99e14751c2403b9fedd33cba382de5154d3c84e4",
+      "candidatePR2BytesEqual": true
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/session-store-eval-provider.mjs",
+      "bytes": 3625,
+      "sha256": "da3942891abe57982f58acc85186b52aca421a3ee40ff7eedd471a14d9862439",
+      "candidatePR2BytesEqual": true
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/promptfooconfig.json",
+      "bytes": 2814,
+      "sha256": "b9aceaf0ebd22fd84fc28cd3b1579cd2ac8233f1911e4d74ef557c16143e496c",
+      "candidatePR2BytesEqual": true
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/native-capture-boundaries.test.mjs",
+      "bytes": 4323,
+      "sha256": "dfbb4caed570339793bc32a2bfb6cd01abf98d3c4cd34626a86dd64034f7086e",
+      "candidatePR2BytesEqual": true
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/native-session-files.mjs",
+      "bytes": 12049,
+      "sha256": "543e05c230bf614cd5cf73f2d69877f1311ec0faf9d7ca205429161a75b842e1",
+      "candidatePR2BytesEqual": true
+    },
+    {
+      "path": "docs/coordination/reports/PORTFOLIO-SESSIONSTORE-CANDIDATE.md",
+      "bytes": 5924,
+      "sha256": "1200a32649a4900bd1395f94b87b9b81d0ec5a98dc96902acfbe5ac867a7a554",
+      "candidatePR2BytesEqual": true
+    },
+    {
+      "path": "docs/coordination/reports/PORTFOLIO-NATIVE-CAPTURE-RACE.md",
+      "bytes": 7485,
+      "sha256": "af8efe74c328e119f5f87fbc0199ea4d9e474dc58a384c1c42846e7a638782af",
+      "candidatePR2BytesEqual": true
+    }
+  ],
+  "original14NativeTestsByteIdentical": true,
+  "changedPaths": [
+    "apps/worker/qualification/checkpoint/bound-session-store.mjs",
+    "apps/worker/qualification/checkpoint/native-capture-boundaries.test.mjs",
+    "apps/worker/qualification/checkpoint/native-session-files.mjs",
+    "apps/worker/qualification/checkpoint/promptfooconfig.json",
+    "apps/worker/qualification/checkpoint/session-store-eval-provider.mjs",
+    "apps/worker/qualification/checkpoint/session-store.test.mjs",
+    "apps/worker/qualification/checkpoint/verify-session-store.mjs",
+    "docs/coordination/reports/CODEX-SESSIONSTORE-CONSOLIDATION-20261011.md",
+    "docs/coordination/reports/PORTFOLIO-NATIVE-CAPTURE-RACE.md",
+    "docs/coordination/reports/PORTFOLIO-SESSIONSTORE-CANDIDATE.md",
+    "docs/coordination/tasks/CODEX-SESSIONSTORE-CONSOLIDATION-20261011.md",
+    "docs/qualification/candidates/sessionstore-consolidation-20261011/borrowed-parent-original-control.json",
+    "docs/qualification/candidates/sessionstore-consolidation-20261011/borrowed-parent-original-control.stderr.bin",
+    "docs/qualification/candidates/sessionstore-consolidation-20261011/borrowed-parent-original-control.stdout.bin",
+    "docs/qualification/candidates/sessionstore-consolidation-20261011/check-summary.json",
+    "docs/qualification/candidates/sessionstore-consolidation-20261011/existing-sdk-evidence.json",
+    "docs/qualification/candidates/sessionstore-consolidation-20261011/existing-sdk-evidence.stderr.bin",
+    "docs/qualification/candidates/sessionstore-consolidation-20261011/existing-sdk-evidence.stdout.bin",
+    "docs/qualification/candidates/sessionstore-consolidation-20261011/focused-source.json",
+    "docs/qualification/candidates/sessionstore-consolidation-20261011/focused-source.stderr.bin",
+    "docs/qualification/candidates/sessionstore-consolidation-20261011/focused-source.stdout.bin",
+    "docs/qualification/candidates/sessionstore-consolidation-20261011/native-sessionstore-and-boundaries.json",
+    "docs/qualification/candidates/sessionstore-consolidation-20261011/native-sessionstore-and-boundaries.stderr.bin",
+    "docs/qualification/candidates/sessionstore-consolidation-20261011/native-sessionstore-and-boundaries.stdout.bin"
+  ],
+  "protectedSourceChanges": [],
+  "remoteOrLazyFetch": false
+}

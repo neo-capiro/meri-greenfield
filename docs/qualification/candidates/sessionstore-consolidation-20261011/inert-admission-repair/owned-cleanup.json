@@ -1,0 +1,11 @@
+{
+  "ownedTemporaryRoot": "/workspace/scratch/853fba62b1f1/meri-sessionstore-consolidation-20261011/.task-inputs/check-tmp",
+  "remainingBeforeCleanup": [
+    "meri-native-files-EgNwKP",
+    "meri-native-files-EgNwKP/config",
+    "meri-native-files-EgNwKP/config/projects",
+    "meri-native-files-EgNwKP/config/projects/-workspace-conversation"
+  ],
+  "emptyAfterCleanup": true,
+  "allCheckProcessGroupsAbsent": true
+}
