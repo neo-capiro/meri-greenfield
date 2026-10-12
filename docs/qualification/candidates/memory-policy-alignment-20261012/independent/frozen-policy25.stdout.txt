@@ -1,0 +1,33 @@
+✔ pinned real helper retains exact admin vocabulary and firm/client approval differences (1.326172ms)
+✔ helper inputs still require trusted service facts; null fallback is not proven denial (1.211159ms)
+✔ actual candidate rule outcomes preserve pending shared and recognized automated review (0.227702ms)
+✔ actual method guards keep approve, reject and withdrawal distinct in all18 scoped cases (0.223906ms)
+✔ policy is descriptive, private, deeply frozen and exposes no authorization evaluator (2.288527ms)
+✔ only exact administrator roles receive the shared approval exception (0.47263ms)
+✔ shared proposer rejection is distinct from approval and proposer withdrawal (0.27306ms)
+✔ private ownership and recognized automated proposal flows stay separate (0.178207ms)
+✔ descriptions require current trusted authority, wall checks and existing guards (0.241342ms)
+✔ wording explicitly preserves the administrator assignment exception (0.22617ms)
+✔ text selection rejects accessors and proxies without invoking them (0.294162ms)
+✔ text selection rejects hidden fields, symbol authority and custom prototypes (0.221723ms)
+✔ text accepts only closed scope/action fields and never caller authority facts (0.354552ms)
+✔ policy is a private description without live admission or authorization output (1.287223ms)
+✔ only the two established administrator roles appear in the shared approval exception (0.931979ms)
+✔ shared proposal wording preserves pending state and the subsequent approval exception (0.411799ms)
+✔ firm and client approval descriptions preserve different standard-reviewer requirements (0.214912ms)
+✔ administrator self-approval never promises self-rejection or withdrawal of another proposal (0.367242ms)
+✔ administrators retain current actor, tenant, wall, client and database obligations (0.227792ms)
+✔ personal ownership and automated proposal descriptions do not inherit shared privileges (0.276024ms)
+✔ wording is derived only from the canonical descriptor and every requirement resolves (0.340411ms)
+✔ unknown scopes/actions and supplied authorization facts cannot select a policy result (0.595093ms)
+✔ policy arrays and descriptions cannot be modified by callers (0.260431ms)
+✔ selector getters, proxies, inherited selectors and hidden authority are refused without effects (0.312058ms)
+✔ private description imports without configuration, services or persistent process handles (32.910731ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 117.71106

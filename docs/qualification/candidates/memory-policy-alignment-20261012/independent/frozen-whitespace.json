@@ -1,0 +1,28 @@
+{
+  "command": [
+    "git",
+    "diff",
+    "--check",
+    "7ba0e9d10ebf684e162dcc7c143915afdbf00f32",
+    "HEAD"
+  ],
+  "cwd": "/workspace/meri-memory-policy-review-20261012",
+  "startUnixSeconds": 1791772266.8960853,
+  "elapsedSeconds": 0.007954120635986328,
+  "exitCode": 0,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "fixtureRoot": null,
+  "streams": {
+    "stdout": {
+      "path": "frozen-whitespace.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stderr": {
+      "path": "frozen-whitespace.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

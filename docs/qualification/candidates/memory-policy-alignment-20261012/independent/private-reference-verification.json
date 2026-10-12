@@ -1,0 +1,141 @@
+{
+  "repository": "neo-capiro/capirov2",
+  "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "original14Reverified": true,
+  "files": [
+    {
+      "path": "apps/api/src/meri/meri-memory-proposal-read.ts",
+      "gitBlob": "148f458b8f17194e72aa01b1a35405df6052e71f",
+      "bytes": 3701,
+      "sha256": "c0791012a1025e690169d249c2a08b632e19e17ef57c51db300c6293f1782f69",
+      "privateBodyPublished": false
+    },
+    {
+      "path": "apps/api/src/meri/meri-memory-content.helpers.ts",
+      "gitBlob": "206af36d7bdd8211228a21cad1b53903aef9a301",
+      "bytes": 5709,
+      "sha256": "269859235ff3a5d1427f0448c366884b4b4d072e6c84f902059ed24edb567a2b",
+      "privateBodyPublished": false
+    },
+    {
+      "path": "apps/api/src/memory/governed-memory-candidate.service.ts",
+      "gitBlob": "913979ddb246b11c88b8d3c2e39da4ccfca96123",
+      "bytes": 21792,
+      "sha256": "00616d8adeaf7631fc5ad467feff8598a23e1dc8e76a60711157d3998324ccb1",
+      "privateBodyPublished": false
+    },
+    {
+      "path": "apps/api/src/memory/memory-candidate.service.ts",
+      "gitBlob": "75e317f6b1b45872f28e2e0533a9e645419ec7dd",
+      "bytes": 39448,
+      "sha256": "0dd0ed91a682ebb5f1104ebacbb0ae682b1735e1f7e77518b8d7de04dc24bbc9",
+      "privateBodyPublished": false
+    },
+    {
+      "path": "packages/shared/src/meri-read-outcome.ts",
+      "gitBlob": "412541d5a529a0fb34248a7120cea0222a1d2987",
+      "bytes": 35614,
+      "sha256": "691393b5aa888bc4ab5e6b3de73fe22bf8649722eded4de5722fee6aa590992c",
+      "privateBodyPublished": false
+    },
+    {
+      "path": "apps/api/src/memory/memory-candidate-rules.ts",
+      "gitBlob": "2ea105ac9b533f16ce6ed03f83d7a4b7672c7b2f",
+      "bytes": 6467,
+      "sha256": "17f48ff5ca477057ed622afca0412481e0ba9220c6891df12d21bf5f1c87ceaf",
+      "privateBodyPublished": false
+    },
+    {
+      "path": "apps/api/src/memory/memory-wall.helpers.ts",
+      "gitBlob": "48b9bf4b9246baac7cd3188d012ea7638aeb8a68",
+      "bytes": 7833,
+      "sha256": "91961048fd944885b8a06d229009259cf4866a4d40338d09685b1608f29a9255",
+      "privateBodyPublished": false
+    },
+    {
+      "path": "apps/api/src/memory/memory-review-admin-policy.ts",
+      "gitBlob": "1f214b076d172b13648f1bf842d7c83363b944d3",
+      "bytes": 687,
+      "sha256": "ce7d9b36b52b7b63d1a8bdcaf0bab2acf3c57187dedc5752a80f8e95f733adc3",
+      "privateBodyPublished": false
+    },
+    {
+      "path": "apps/api/src/memory/memory-review-switch.ts",
+      "gitBlob": "4a6da51d731d6ed0fdd17ff7f32955eb672dc63d",
+      "bytes": 878,
+      "sha256": "5d80d21bdb3f9f06fbf4ed9c980939295b5f61916f89994ffffd9e3e51958ecb",
+      "privateBodyPublished": false
+    },
+    {
+      "path": "apps/api/src/meri/meri-memory.helpers.ts",
+      "gitBlob": "823d7e59550c84f961beba1a3bfa836f87d5e420",
+      "bytes": 6507,
+      "sha256": "646fe989ad50770d2b4ea119bb596310361e08eb2e59cca6811494d9a3b9fa66",
+      "privateBodyPublished": false
+    },
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "gitBlob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "bytes": 415704,
+      "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194",
+      "privateBodyPublished": false
+    },
+    {
+      "path": "packages/shared/src/index.ts",
+      "gitBlob": "62eb32931826f77abd985bc142f6a65adad6a23a",
+      "bytes": 273389,
+      "sha256": "1a713331de044768f7bd8631db4762a08a3c3541a1bbc064c67bbff46fc9a75f",
+      "privateBodyPublished": false
+    },
+    {
+      "path": "apps/api/src/memory/memory-authorization.service.ts",
+      "gitBlob": "926d5a2cc08833c4ab4e27ea718128252477df96",
+      "bytes": 12831,
+      "sha256": "65331cb6735a79d8589bee389c3b2ebba1bd088ef89ec10c71f864bbe6699320",
+      "privateBodyPublished": false
+    },
+    {
+      "path": "apps/api/src/memory/memory-authorization.helpers.ts",
+      "gitBlob": "542f8362f834126b5dad16bef72ffa6998d0cf27",
+      "bytes": 7526,
+      "sha256": "a0c2ece14a7d8164d3a7c7a2f028ffe75a486c91f6fdda8b11fa48cab66c60e7",
+      "privateBodyPublished": false
+    },
+    {
+      "path": "apps/api/src/meri/memory-confidence.helpers.ts",
+      "gitBlob": "ffa60dea049a556ff5903a8c19ee94c90ac3b5da",
+      "bytes": 1135,
+      "sha256": "18a1482d11df9f98a66d3d106de2400956f5c092e2a91723b3e37814c681ed6c",
+      "privateBodyPublished": false
+    },
+    {
+      "path": "apps/api/prisma/migrations/20260818050000_memory_admin_self_approval_policy/migration.sql",
+      "gitBlob": "de01820eb1cf60733eafa04d43ac57562fbaa1e0",
+      "bytes": 5625,
+      "sha256": "0e75f3e48471117070595ce497cb89e7d0fbeca47e175b2eba5efa12fa3df599",
+      "privateBodyPublished": false
+    },
+    {
+      "path": "apps/api/prisma/migrations/20260818010000_memory_phase2_review_workflow_foundation/migration.sql",
+      "gitBlob": "307dcab8232542ae0f6916c0b43dd3fd5a100da1",
+      "bytes": 11843,
+      "sha256": "de539fe695e125e6a58ee12831b5e9c851e8d46634d244d871c9d054743b5ccd",
+      "privateBodyPublished": false
+    },
+    {
+      "path": "apps/api/prisma/migrations/20260815010000_memory_candidate_withdrawal/migration.sql",
+      "gitBlob": "97de046ed15e150d7ab471842ca3bf778843909b",
+      "bytes": 1371,
+      "sha256": "4c1a9b85039b3a0d914481d0ac9df6daa1db2fa964a4b218c91cf59c2878fcfb",
+      "privateBodyPublished": false
+    },
+    {
+      "path": "apps/api/src/memory/memory-access-grant.service.ts",
+      "gitBlob": "e1ed97f845553b6b9effafba3f8c88e469518eea",
+      "bytes": 7068,
+      "sha256": "9799f85bff928ae35db60e3c33c2c7b37ac32dc6adc90bb1f8ed5ae1194685e3",
+      "privateBodyPublished": false
+    }
+  ],
+  "semanticScope": "Pure authorization/admin/candidate-rule helpers and exact isolated disposition guard fragments; service/SQL dependencies statically inspected only; not full-file/runtime audit."
+}

@@ -1,0 +1,26 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/memory-policy-alignment-20261012/independent/policy-contract.test.mjs"
+  ],
+  "cwd": "/workspace/meri-memory-policy-review-20261012",
+  "startUnixSeconds": 1791771896.4716496,
+  "elapsedSeconds": 0.16727876663208008,
+  "exitCode": 1,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "fixtureRoot": null,
+  "streams": {
+    "stdout": {
+      "path": "prefreeze-policy-contract.stdout.txt",
+      "bytes": 4412,
+      "sha256": "8355dd6c97d80ada44f686a3b7be15a863e1c5caae35047188a2476a8fb0fa67"
+    },
+    "stderr": {
+      "path": "prefreeze-policy-contract.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}
