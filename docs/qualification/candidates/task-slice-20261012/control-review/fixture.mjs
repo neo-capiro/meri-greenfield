@@ -9,7 +9,7 @@ export const binding=()=>({tenantId:'synthetic-tenant',actorId:'synthetic-actor'
 export const scopes=()=>[{tenantId:'synthetic-tenant',kind:'client',resourceId:id(10),policyRevision:'revision-1'}];
 export const subject=()=>({kind:'client',entityType:'client',entityIds:[id(10)],tenantId:'synthetic-tenant',actorId:'synthetic-actor',authorizationDecisionId:id(11),policyRevision:'revision-1',scopes:scopes(),rosterVersionId:null});
 export const operation=Object.freeze({id:'actions.query',version:'0.2.0'});
-export function context(){return {lookupId:id(20),resultReference:id(21),requestId:id(22),binding:binding(),scopes:scopes(),selectedClientId:id(10),deliveryJson:JSON.stringify({invocationId:'synthetic-selected-lookup'}),slots:{started:{eventId:id(30),sequence:41},terminal:{eventId:id(31),sequence:42}},deadlineMs:NOW+10000};}
+export function context(){return {lookupId:id(20),resultReference:id(21),requestId:id(22),binding:binding(),scopes:scopes(),selectedClientId:id(10),deliveryJson:JSON.stringify({context:{binding:binding()},producer:{namespace:'synthetic-review',executionId:'synthetic-task'},deliveryId:'synthetic-lookup'}),slots:{started:{eventId:id(30),sequence:41},terminal:{eventId:id(31),sequence:42}},deadlineMs:NOW+10000};}
 export const readContext=()=>({currentBinding:binding(),scopes:scopes(),deadlineMs:NOW+10000});
 export function envelope(request={},c=context()){
  const args={...request,clientId:c.selectedClientId},options={binding:c.binding,clientResolution:{reference:c.selectedClientId,clientId:c.selectedClientId}};

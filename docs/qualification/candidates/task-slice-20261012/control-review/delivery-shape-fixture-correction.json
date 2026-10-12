@@ -1,0 +1,29 @@
+{
+  "beforeSha256": "ac268250edcbb53a13ed094a1b37858950afaa0f0bd4f38bf4605e533bbc5488",
+  "afterSha256": "d248cf1e8ea58b6d752c54e7e0f002eace5ab067ab86bd359697f5bd4980bd74",
+  "reason": "Initial reviewer deliveryJson used unrelated invocationId; actual agreed owned gateway seam requires context/producer/deliveryId. Only synthetic fixture corrected, no assertion or production edit.",
+  "firstReplay": "control-first.json",
+  "integrationLimit": "First capture ran with exact candidate source staged during metadata-only cherry-pick conflict; original source identities independently checked below. Dependency commit 019b47fc resolves only author metadata, no source changes.",
+  "source": [
+    {
+      "path": "apps/control/task-lookup/binding.mjs",
+      "sha256": "5d10d839bafe7aaa00491d7c4ab67385157264d2c25b71ec4b9a1d2263b1d480",
+      "exactOriginal": true
+    },
+    {
+      "path": "apps/control/task-lookup/delivery.mjs",
+      "sha256": "aa9570acbed941898d1554117586bb86c3b7f04d4b459099823aa5070bd835d9",
+      "exactOriginal": true
+    },
+    {
+      "path": "apps/control/task-lookup/postgres-results.mjs",
+      "sha256": "5cd7efdcfe3857f917bae2a2709475116391610488dbbed62a31a5ed4a252a38",
+      "exactOriginal": true
+    },
+    {
+      "path": "apps/control/task-lookup/migrations/0001_task_lookup.sql",
+      "sha256": "ae3197c4f898c5a8a493b2bee4cd6c5da16c62730ad3447e4f07ebfeaf1c100f",
+      "exactOriginal": true
+    }
+  ]
+}
