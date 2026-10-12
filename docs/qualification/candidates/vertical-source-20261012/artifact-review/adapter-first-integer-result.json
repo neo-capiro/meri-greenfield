@@ -1,0 +1,19 @@
+{
+  "columns": [
+    "group",
+    "value",
+    "scaled"
+  ],
+  "data": [
+    [
+      "N",
+      9007199254740991,
+      -2048
+    ]
+  ],
+  "semantics": {
+    "numeric": "pandas floating point; not arbitrary-precision accounting",
+    "nulls": "JSON null; null join keys refused",
+    "codeExecution": false
+  }
+}

@@ -1,0 +1,45 @@
+✔ independent real TXT keeps Unicode and exact CRLF bytes (56.383613ms)
+✔ independent real DOCX retains ordered paragraphs, bullets and table cells (142.18165ms)
+✔ independent real XLSX separates literal cells from formulas and discloses cache (180.221597ms)
+✔ independent real PPTX retains editable text, table and speaker notes (83.4394ms)
+✔ independent real analysis computes totals from nontrivial input (264.665998ms)
+✔ independent real analysis refuses ambiguous null join keys (265.321944ms)
+✖ independent integer arithmetic cannot silently wrap positive finite inputs negative (295.041898ms)
+✖ independent PPTX refuses PNG whose IDAT CRC is invalid (83.132749ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 6
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1451.752066
+
+✖ failing tests:
+
+test at apps/artifacts/test/artifact-adapters-independent.test.mjs:27:1
+✖ independent integer arithmetic cannot silently wrap positive finite inputs negative (295.041898ms)
+  AssertionError [ERR_ASSERTION]: Positive multiplication returned a negative wrapped integer
+      at TestContext.<anonymous> (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-adapters-independent.test.mjs:27:736)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at apps/artifacts/test/artifact-adapters-independent.test.mjs:28:1
+✖ independent PPTX refuses PNG whose IDAT CRC is invalid (83.132749ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-adapters-independent.test.mjs:28:200)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }

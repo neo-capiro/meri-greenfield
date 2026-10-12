@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/artifacts/test/artifact-adapters-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-artifact-execution-review-20261012",
+  "sourceHead": "fe983d2f1e2415f4b712665b325bd39410681d5f",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T22:20:34.450746+00:00",
+  "durationSeconds": 1.518,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 364884,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/first-adapters.stdout.bin",
+      "bytes": 2186,
+      "sha256": "fe12b43d5cea7b6ca68e4e4a5c454c6d510a77ce80eca58e0a8f007fb7ca2fc1"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/first-adapters.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
