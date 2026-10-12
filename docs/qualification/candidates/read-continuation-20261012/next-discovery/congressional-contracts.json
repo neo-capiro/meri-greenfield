@@ -1,56 +1,233 @@
 {
-  "status":"CONTRACT_REFERENCE_READY_NOT_IMPLEMENTATION_ACCEPTANCE",
-  "sourceCommit":"fd8765ec01d292013758606204f2c9d886cd31c1",
-  "priorityFamily":"federal-legislation-status-and-votes",
-  "authority":"Authenticated TenantContext and active Meri request control at the shared entry. All four wrappers take input only; no separate per-client wall predicate or model authority. Stored global congressional/source evidence reads; current gateway access, source entitlement and release remain required. Controller RolesGuard standard_user is source entry metadata, not runtime proof.",
-  "operations":[
+  "status": "CONTRACT_REFERENCE_READY_NOT_IMPLEMENTATION_ACCEPTANCE",
+  "sourceCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "priorityFamily": "federal-legislation-status-and-votes",
+  "authority": "Authenticated TenantContext and active Meri request control at the shared entry. All four wrappers take input only; no separate per-client wall predicate or model authority. Stored global congressional/source evidence reads; current gateway access, source entitlement and release remain required. Controller RolesGuard standard_user is source entry metadata, not runtime proof.",
+  "operations": [
     {
-      "id":"get_bill_status",
-      "producer":{"path":"apps/api/src/meri/meri-tools.service.ts","symbol":"getBillStatus","line":4095,"endLine":4230},
-      "input":{"billId":"optional string60, wins over query alias","query":"optional string60 fallback"},
-      "resolution":"resolveBillId3711..3717 is pure canonical ID normalization/validation or parsed designation using currentCongress default; no live provider resolver. Distinguish invalid selector and unavailable stored bill.",
-      "output":{"envelope":["tool","authoritativeOwner","currentStatus","generatedAt","found"],"owner":"congress_bill_status","variants":{"invalid_request":"found:false, note; no resolved billId","unavailable":"found:false, billId, note","available":"found:true, billId,title,congress,status,statusLabel,statusAt,latestAction,sponsor,cosponsorsCount,recentActions,floorVotes,governingRules; optional note"},"latestAction":["text","date"],"sponsor":["name","bioguideId"],"recentActions":["date","text","type","chamber"],"floorVote":["chamber","rollNumber","question","result","voteType","voteDate","yeas","nays","present","notVoting","partyTotals","sourceUrl"],"governingRule":["ruleBillId","ruleTitle","ruleStatus","ruleLatestAction","ruleVotes"],"governingRuleVote":["rollNumber","result","yeas","nays","voteDate","question","sourceUrl"]},
-      "models":["CongressBill","CongressBillAction","RollCallVote","BillRuleLink"],
-      "bounds":"Most recent15 actions,15 floor votes;3 latest votes per governing rule. Governing-rule link collection has no explicit producer cap. No page/total/continuation; source note can signal missing data. Nullable fields and partyTotals JSON follow exact Prisma types; statusLabel is shared label projection, not a new status authority.",
-      "effects":"Stored findUnique/findMany reads and pure mapping only in this call tree; no provider/ingestion or mutation found.",
-      "prerequisites":"New typed DTO and independent branch/alias/identity/refusal review; no source activation. CurrentStatus labels report stored owner availability and do not prove live freshness or full legislative history."
+      "id": "get_bill_status",
+      "producer": {
+        "path": "apps/api/src/meri/meri-tools.service.ts",
+        "symbol": "getBillStatus",
+        "line": 4095,
+        "endLine": 4230
+      },
+      "input": {
+        "billId": "optional string60, wins over query alias",
+        "query": "optional string60 fallback"
+      },
+      "resolution": "resolveBillId3711..3717 is pure canonical ID normalization/validation or parsed designation using currentCongress default; no live provider resolver. Distinguish invalid selector and unavailable stored bill.",
+      "output": {
+        "envelope": [
+          "tool",
+          "authoritativeOwner",
+          "currentStatus",
+          "generatedAt",
+          "found"
+        ],
+        "owner": "congress_bill_status",
+        "variants": {
+          "invalid_request": "found:false, note; no resolved billId",
+          "unavailable": "found:false, billId, note",
+          "available": "found:true, billId,title,congress,status,statusLabel,statusAt,latestAction,sponsor,cosponsorsCount,recentActions,floorVotes,governingRules; optional note"
+        },
+        "latestAction": [
+          "text",
+          "date"
+        ],
+        "sponsor": [
+          "name",
+          "bioguideId"
+        ],
+        "recentActions": [
+          "date",
+          "text",
+          "type",
+          "chamber"
+        ],
+        "floorVote": [
+          "chamber",
+          "rollNumber",
+          "question",
+          "result",
+          "voteType",
+          "voteDate",
+          "yeas",
+          "nays",
+          "present",
+          "notVoting",
+          "partyTotals",
+          "sourceUrl"
+        ],
+        "governingRule": [
+          "ruleBillId",
+          "ruleTitle",
+          "ruleStatus",
+          "ruleLatestAction",
+          "ruleVotes"
+        ],
+        "governingRuleVote": [
+          "rollNumber",
+          "result",
+          "yeas",
+          "nays",
+          "voteDate",
+          "question",
+          "sourceUrl"
+        ]
+      },
+      "models": [
+        "CongressBill",
+        "CongressBillAction",
+        "RollCallVote",
+        "BillRuleLink"
+      ],
+      "bounds": "Most recent15 actions,15 floor votes;3 latest votes per governing rule. Governing-rule link collection has no explicit producer cap. No page/total/continuation; source note can signal missing data. Nullable fields and partyTotals JSON follow exact Prisma types; statusLabel is shared label projection, not a new status authority.",
+      "effects": "Stored findUnique/findMany reads and pure mapping only in this call tree; no provider/ingestion or mutation found.",
+      "prerequisites": "New typed DTO and independent branch/alias/identity/refusal review; no source activation. CurrentStatus labels report stored owner availability and do not prove live freshness or full legislative history."
     },
     {
-      "id":"search_floor_votes",
-      "producer":{"path":"apps/api/src/meri/meri-tools.service.ts","symbol":"searchFloorVotes","line":4236,"endLine":4392},
-      "input":{"billId":"optional string60 then pure resolveBillId","query":"optional string200","member":"optional string80","chamber":"optional string10 then lowercase","congress":"truthy Number conversion","limit":"clamp1..25/default10"},
-      "resolution":"Optional member uses canonical member ID lookup or name candidates. No match and ambiguity have explicit empty-vote results; name candidate search capped8. Canonical bioguide/LIS linkage is not a request-scoped actor identity.",
-      "querySemantics":"Bill ID/chamber/congress filters and query contains question/title. Resolved member filters stored memberVotes by bioguide/LIS IDs. voteDate descending, no offset or total count.",
-      "output":{"envelope":["tool","generatedAt","votesFound","votes"],"optional":["note","member","ambiguousMember"],"vote":["id","chamber","congress","session","rollNumber","billId","question","result","voteType","voteDate","yeas","nays","present","notVoting","partyTotals","title","sourceUrl"],"conditionalVoteField":"memberVotes only when member resolved; rows voteCast,party,state","member":["bioguideId","fullName"],"ambiguousMemberRow":["bioguideId","fullName","chamber","state","party","isCurrent"]},
-      "models":["CongressMember","RollCallVote","RollCallVoteMember"],
-      "bounds":"votesFound is returned votes.length, not global total. Preserve ambiguity candidates separately from resolved member results; no invented hasMore or authoritative absence. Nullable stored scalars/dates and partyTotals JSON need exact Prisma projection.",
-      "effects":"Stored member/vote reads only; no live provider, ingestion or mutation in this producer.",
-      "prerequisites":"Independent typed DTO/normalization/current-member linkage review and truthful returned-window count. Unsupported/malformed new typed selectors may be stricter than legacy coercion only when declared."
+      "id": "search_floor_votes",
+      "producer": {
+        "path": "apps/api/src/meri/meri-tools.service.ts",
+        "symbol": "searchFloorVotes",
+        "line": 4236,
+        "endLine": 4392
+      },
+      "input": {
+        "billId": "optional string60 then pure resolveBillId",
+        "query": "optional string200",
+        "member": "optional string80",
+        "chamber": "optional string10 then lowercase",
+        "congress": "truthy Number conversion",
+        "limit": "clamp1..25/default10"
+      },
+      "resolution": "Optional member uses canonical member ID lookup or name candidates. No match and ambiguity have explicit empty-vote results; name candidate search capped8. Canonical bioguide/LIS linkage is not a request-scoped actor identity.",
+      "querySemantics": "Bill ID/chamber/congress filters and query contains question/title. Resolved member filters stored memberVotes by bioguide/LIS IDs. voteDate descending, no offset or total count.",
+      "output": {
+        "envelope": [
+          "tool",
+          "generatedAt",
+          "votesFound",
+          "votes"
+        ],
+        "optional": [
+          "note",
+          "member",
+          "ambiguousMember"
+        ],
+        "vote": [
+          "id",
+          "chamber",
+          "congress",
+          "session",
+          "rollNumber",
+          "billId",
+          "question",
+          "result",
+          "voteType",
+          "voteDate",
+          "yeas",
+          "nays",
+          "present",
+          "notVoting",
+          "partyTotals",
+          "title",
+          "sourceUrl"
+        ],
+        "conditionalVoteField": "memberVotes only when member resolved; rows voteCast,party,state",
+        "member": [
+          "bioguideId",
+          "fullName"
+        ],
+        "ambiguousMemberRow": [
+          "bioguideId",
+          "fullName",
+          "chamber",
+          "state",
+          "party",
+          "isCurrent"
+        ]
+      },
+      "models": [
+        "CongressMember",
+        "RollCallVote",
+        "MemberVote"
+      ],
+      "bounds": "votesFound is returned votes.length, not global total. Preserve ambiguity candidates separately from resolved member results; no invented hasMore or authoritative absence. Nullable stored scalars/dates and partyTotals JSON need exact Prisma projection.",
+      "effects": "Stored member/vote reads only; no live provider, ingestion or mutation in this producer.",
+      "prerequisites": "Independent typed DTO/normalization/current-member linkage review and truthful returned-window count. Unsupported/malformed new typed selectors may be stricter than legacy coercion only when declared."
     },
     {
-      "id":"search_congress_bills",
-      "producer":{"path":"apps/api/src/meri/meri-tools.service.ts","symbol":"searchCongressBills","line":3777,"endLine":3841},
-      "owners":["LdaIntelService.getCongressBills482..511","meri-bill-text-search.ts:BillTextSearchRow231..243","billTextSearchResponse297..360"],
-      "input":{"query":"optional240, wins over search alias","search":"optional240 fallback","policyArea":"optional120","activeSince":"optional30","congress":"truthy Number conversion","page":"clamp1..100/default1","limit":"metadata mode clamp1..50/default20; text mode clamp1..10/default8","textQuery":"optional300 selects separate bill_text branch"},
-      "variants":"Direct designation: stored single bill, total1,page1,resolvedBy. Metadata list: raw CongressBill rows with total/page/limit. Text search: mode bill_text, textQuery,results,total,totalBills,page,perPage,hasMore,optional nextPage/omittedBills,note. Do not merge these result shapes.",
-      "textSemantics":"Grouped bill/version results contain nullable title and passages(snippet,startOffset,readCursor). Fixed source SQL constant supplied to $queryRawUnsafe with selector/window values as separate arguments; this is a stored adapter read, not model-authored SQL.",
-      "textBounds":"8 default/10 maximum bills,10500 JSON.stringify characters response budget; response builder may pop whole results and disclose omittedBills. total is returned results length. totalBills may be null (including empty later page), and hasMore:false then is not complete absence proof.",
-      "effects":"Stored metadata/current evidence SQL reads; no provider or ingestion in this call tree. No copied SQL/legacy search implementation authorized.",
-      "prerequisites":"Separate review of metadata versus text contracts, safe selector/SQL adapter binding, exact cursor lineage and partial coverage. Reuse canonical Meri contracts/inert JSON admission; no second search engine."
+      "id": "search_congress_bills",
+      "producer": {
+        "path": "apps/api/src/meri/meri-tools.service.ts",
+        "symbol": "searchCongressBills",
+        "line": 3777,
+        "endLine": 3841
+      },
+      "owners": [
+        "LdaIntelService.getCongressBills482..511",
+        "meri-bill-text-search.ts:BillTextSearchRow231..243",
+        "billTextSearchResponse297..360"
+      ],
+      "input": {
+        "query": "optional240, wins over search alias",
+        "search": "optional240 fallback",
+        "policyArea": "optional120",
+        "activeSince": "optional30",
+        "congress": "truthy Number conversion",
+        "page": "clamp1..100/default1",
+        "limit": "metadata mode clamp1..50/default20; text mode clamp1..10/default8",
+        "textQuery": "optional300 selects separate bill_text branch"
+      },
+      "variants": "Direct designation: stored single bill, total1,page1,resolvedBy. Metadata list: raw CongressBill rows with total/page/limit. Text search: mode bill_text, textQuery,results,total,totalBills,page,perPage,hasMore,optional nextPage/omittedBills,note. Do not merge these result shapes.",
+      "textSemantics": "Grouped bill/version results contain nullable title and passages(snippet,startOffset,readCursor). Fixed source SQL constant supplied to $queryRawUnsafe with selector/window values as separate arguments; this is a stored adapter read, not model-authored SQL.",
+      "textBounds": "8 default/10 maximum bills,10500 JSON.stringify characters response budget; response builder may pop whole results and disclose omittedBills. total is returned results length. totalBills may be null (including empty later page), and hasMore:false then is not complete absence proof.",
+      "effects": "Stored metadata/current evidence SQL reads; no provider or ingestion in this call tree. No copied SQL/legacy search implementation authorized.",
+      "prerequisites": "Separate review of metadata versus text contracts, safe selector/SQL adapter binding, exact cursor lineage and partial coverage. Reuse canonical Meri contracts/inert JSON admission; no second search engine."
     },
     {
-      "id":"read_bill_text",
-      "producer":{"path":"apps/api/src/meri/meri-tools.service.ts","symbol":"readBillText","line":3903,"endLine":4029},
-      "owners":["FederalBillTextRow298..313","locatedBillText4036..4093","meri-bill-text-search.ts:billTextCursor166..176","locateBillTextPassages110..163"],
-      "input":{"billId":"required string60 then pure resolver","versionCode":"optional32","query":"optional300","cursor":"validated encoded continuation; incompatible with locator mode"},
-      "cursor":"Base64url JSON tuple [billId,versionCode,revisionId,extractionHash,offset]. Source validates lineage/identity/offset, selects current evidence and refuses stale cursor mismatch; not a transferable authority token.",
-      "output":"authoritativeOwner=federal_evidence_current; unavailable found:false includes requestedVersionCode/local coverage/note. Available found:true includes bill/version/revision/package/provider/lineage/versionHash/textHash/sourceLocator/sourceModifiedAt/publishedAt/fetchedAt/text/trust/coverage/note; trust=external_untrusted. Locator variant also query/queryParts/totalHits/passages.",
-      "bounds":"Sequential9000 UTF-16 units (boundary adjustment may shorten); locator1000-unit passages, maximum6; cursors bind revision/extraction hash. Locator coverage marks content/pagination incomplete and truncated, no nextCursor. Source complete flags refer to local current evidence/window, not complete bill corpus or live legislative status.",
-      "effects":"Fixed SQL text with billId/versionCode as separate arguments; stored current-evidence read only. No provider/download/ingestion call in method.",
-      "prerequisites":"Independent exact cursor/current-pointer/hash/offset refusal and UTF-16 review; current authorization and qualified stored source adapter; source unavailable until separately admitted."
+      "id": "read_bill_text",
+      "producer": {
+        "path": "apps/api/src/meri/meri-tools.service.ts",
+        "symbol": "readBillText",
+        "line": 3903,
+        "endLine": 4029
+      },
+      "owners": [
+        "FederalBillTextRow298..313",
+        "locatedBillText4036..4093",
+        "meri-bill-text-search.ts:billTextCursor166..176",
+        "locateBillTextPassages110..163"
+      ],
+      "input": {
+        "billId": "required string60 then pure resolver",
+        "versionCode": "optional32",
+        "query": "optional300",
+        "cursor": "validated encoded continuation; incompatible with locator mode"
+      },
+      "cursor": "Base64url JSON tuple [billId,versionCode,revisionId,extractionHash,offset]. Source validates lineage/identity/offset, selects current evidence and refuses stale cursor mismatch; not a transferable authority token.",
+      "output": "authoritativeOwner=federal_evidence_current; unavailable found:false includes requestedVersionCode/local coverage/note. Available found:true includes bill/version/revision/package/provider/lineage/versionHash/textHash/sourceLocator/sourceModifiedAt/publishedAt/fetchedAt/text/trust/coverage/note; trust=external_untrusted. Locator variant also query/queryParts/totalHits/passages.",
+      "bounds": "Sequential9000 UTF-16 units (boundary adjustment may shorten); locator1000-unit passages, maximum6; cursors bind revision/extraction hash. Locator coverage marks content/pagination incomplete and truncated, no nextCursor. Source complete flags refer to local current evidence/window, not complete bill corpus or live legislative status.",
+      "effects": "Fixed SQL text with billId/versionCode as separate arguments; stored current-evidence read only. No provider/download/ingestion call in method.",
+      "prerequisites": "Independent exact cursor/current-pointer/hash/offset refusal and UTF-16 review; current authorization and qualified stored source adapter; source unavailable until separately admitted."
     }
   ],
-  "sourceExecuted":false,
-  "privateBodiesPublished":false,
-  "catalogChanged":false
+  "sourceExecuted": false,
+  "privateBodiesPublished": false,
+  "catalogChanged": false,
+  "sharedHelperFacts": {
+    "path": "packages/shared/src/index.ts",
+    "symbols": {
+      "isValidCanonicalId": "938..940",
+      "normalizeCanonicalId": "948..973",
+      "formatBillId": "1063..1070",
+      "parseBillDesignation": "1078..1094",
+      "currentCongress": "1201..1203",
+      "billStatusLabel": "1369..1372"
+    },
+    "currentCongress": "Default parameter new Date(); formula floor((now.getFullYear()-1789)/2)+1 uses local calendar year, not UTC or January3 transition logic. New pure contracts need explicit trusted resolution context/source result, never ambient clock or model-provided authority.",
+    "billStatusLabel": "Recognized stored status uses BILL_STATUS_META label; otherwise status??Unknown. Unknown strings are preserved; null/undefined map Unknown, empty string remains empty. Do not invent a closed persisted status enum without exact Prisma field evidence."
+  }
 }
