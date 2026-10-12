@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/sandbox-lifecycle-20261012/review/precheck-signal-independent.test.mjs"
+  ],
+  "candidate": "60516dd4a4027c2e740cd374a37e0fb4d51d4214",
+  "exitCode": 0,
+  "change": "Only resolve exact-lock TypeScript from explicit reviewed source root; preserve donor-parser prior receipt",
+  "processReaped": true
+}

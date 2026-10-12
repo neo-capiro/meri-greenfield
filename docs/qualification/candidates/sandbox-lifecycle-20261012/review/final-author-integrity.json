@@ -1,0 +1,20 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "authorSourceFreeze": "bb44e802de14b5483c51ea1a58448ca23a5f11a0",
+  "authorSourceTree": "82c7559422819d3c83718da01bbb6fe0434153f6",
+  "authorEvidenceHead": "60516dd4a4027c2e740cd374a37e0fb4d51d4214",
+  "authorEvidenceTree": "4ec9f15b3a89ebb8afcb12342a9d0046dfa27fa8",
+  "sourceUnchangedAfterFreeze": true,
+  "authorPacketFilesVerified": 77,
+  "sourceFilesVerified": 12,
+  "contextMembersVerified": 57,
+  "contextBytes": 1026634,
+  "authorEvidenceManifestSha256": "c124e5bbd98c7825d2cda02b62aeb37412c3979efc1a222259727b8cf5e8bc78",
+  "authorSourceFreezeReceiptSha256": "0f82184476c8a76798be147d604f649481c82858c87f187e3f82f2be1cd7bfb3",
+  "authorReportSha256": "db218f021f21af2b746b998eaf42a993f4ff63e2f42030c0c7bba61c4ba09238",
+  "authorClean": true,
+  "borrowedWorkerSymlinkRemoved": true,
+  "localCommandsReaped": true,
+  "nativeRuntimeAcceptance": false,
+  "noCloudBuildOrPublication": true
+}
