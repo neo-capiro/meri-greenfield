@@ -1,0 +1,7 @@
+{
+  "worktreeCreatedFromExactBase": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+  "initialAttempt": "Allocated worktree not yet created; exec process creation failed before execution. Created authorized isolated sparse worktree and continued.",
+  "sourceDocsRead": "Pinned discovery commits are not members of PR31 base; filesystem misses recovered by exact git show.",
+  "instructions": "AGENTS/implementation standards/adopted R2 byte-identical to previously read c1c9bfd; git diff empty.",
+  "privateSourceExecuted": false
+}

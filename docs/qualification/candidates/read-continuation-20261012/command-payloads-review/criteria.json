@@ -1,0 +1,21 @@
+{
+  "base": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+  "reviewer": "memory_reviewer",
+  "candidateInspected": false,
+  "apiStatus": "Author must propose exact outline/trusted-context interface to root before implementation; no interface inferred by reviewer.",
+  "actions": [
+    "task.create",
+    "artifact.file"
+  ],
+  "criteria": [
+    "Trace exact task title/client/dueDate and six-field result plus artifact filing input/per-item projection from pinned metadata ad79e351 and65d1767, then independent private Git AST reads and current drift hashes. No private bodies or implementation copy.",
+    "Reuse public0.1 Command/ApprovalProposal/ExecutionRequest/CommandReceipt/ObjectReference and canonical hash/snapshot owners. Check exact action/version/hash/idempotency/attachment identity, immutable approved arguments and correlation; never construct another approval or authority engine.",
+    "Task inputs only advertised title/clientId/dueDate, explicit date/null/default/UTF16 compatibility; reject unadvertised description/owner/actor/status. Do not infer owner assignment or ordinary-task/client-wall permission.",
+    "Artifact filing binds1..10 immutable references exactly by object/version/hash/bytes/scopes, trusted destination and conversation; preserve ordering or explicit unambiguous matching, reject duplicates/extra/missing/altered items. Legacy attachment IDs are distinct identifiers and need qualified mapping.",
+    "Per-item saved/pending/failed, persistence, reused identity, indexing and partial sibling outcomes remain distinct. Quarantine is never readability; pending/ambiguous outcomes do not silently authorize retry/refund or new effects. Aggregate public receipt semantics require explicit root choice; no manufactured mapping.",
+    "Current trusted stable binding must agree across command/proposal/execution/receipt/context while immutable original attempt provenance and explicitly supported recovered executor attempts remain distinct. Shape checks prove no current authorization, durability or successful mutation.",
+    "Inert JSON before property access/coercion; hostile getters/proxies/cycles/symbols/hidden properties refuse without effects. Detached immutable admission and detached output snapshots retain original inputs. Reject unknown authority fields/context.",
+    "No task.update/Temporal schedule surface, memory auto-commit or governance policy decision. The adopted admin memory exception remains settled and outside this payload task.",
+    "Focused pure contract and source/packet-preservation checks only. Keep public contracts, registry,original tests,scope139/96/43 and all availability unchanged; no native/DB/SQL/provider/model/cloud/security/frontend action. Preserve all failures and owned process cleanup."
+  ]
+}
