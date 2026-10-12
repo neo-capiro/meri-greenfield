@@ -55,11 +55,22 @@ No operation becomes callable, and source connectivity remains disabled.
 
 Every invocation has a separate immutable raw stdout/stderr pair and receipt
 with exact command, exit, source diff hash, time bound, owned PID/process group
-and final group absence. The root, public and gateway runs bind source diff
+and final group absence. The initial root, public and gateway runs bind source diff
 SHA-256 `d6ece75280006bd29f30974a9ffc4633fac07522fb7eb1c59117d193d57b5b30`.
 The earlier focused capture preceded staging the new test, so its Git diff hash
 does not include that then-untracked file; the final root run includes it and
 the final source manifest records its bytes. No failing check was overwritten.
+
+Initial author freeze `dc641893fd7e2be3567bbc6c83dabe6290afae7c` is preserved.
+Early independent reviewer feedback identified missing R-02 scope traceability;
+the follow-up adds only that requirement ID to the new descriptor. Fresh
+`root-final` (232/232) and `gateway-final` (34/34) runs passed against that
+follow-up, with source head bound to the initial freeze and incremental diff
+SHA-256 `8df926a2869b0e5dc8a4e4168233e861f0e2543795562c442aa5e19ca6f9f8ea`.
+No public source changed, so public distribution was not repeated. The complete
+final delta from the assigned base and final file identities are recorded in
+[final preservation](../../qualification/candidates/memory-read-binding-20261012/author/preservation-final.json);
+the original receipts and source patch remain intact.
 
 The three intentional existing-test changes are only catalog count/mapping
 expectations and corresponding descriptions. The parent explicitly allocated
