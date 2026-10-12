@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-bill-text-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-bill-text-review-20261012",
+  "sourceHead": "a6516d222252cd1447c9b1e46aed5aa392ccbae2",
+  "sourceDiffSha256": "2cd08d8f9bedf2ab225b0c2e82042d5395e5dd19b97d4f4781ee8ee12ae4bb1d",
+  "sourceDiffBytes": 6424,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T17:12:33.353515+00:00",
+  "durationSeconds": 0.365,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 176256,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/date-format-before.stdout.bin",
+      "bytes": 7763,
+      "sha256": "04a4efaf6fa1882729e337df24e095629dc3544ccac26c1141cc82c5d5a1e659"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/date-format-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Independent confirmation of root-approved timezone-independent date admission;77 controls on pre-format7caa.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
