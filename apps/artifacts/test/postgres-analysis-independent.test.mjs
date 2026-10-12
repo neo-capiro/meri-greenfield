@@ -81,3 +81,15 @@ for(const field of ['deadline','bytes'])test(`changed current ${field} during ad
  const t=setup();await t.bind();t.state.proofHook=()=>{if(field==='deadline')t.state.runDeadline=NOW+6000;else t.db.f.claims.budgets.maxOutputBytes=512;};
  await assert.rejects(t.run());assert.equal(t.state.dispatches,0);assert.equal(t.row().completion,null);assert.equal(t.reservation().state,'UNKNOWN');
 });
+test('valid selected subject drift during admission cannot start a different-scope effect',async()=>{
+ const t=setup();await t.bind();t.state.proofHook=()=>{t.state.policyHook=row=>{row.subject.kind='entity';row.subject.entityType='organization';row.subject.entityIds=['another-selected-entity'];};};
+ await assert.rejects(t.run(),e=>e.code==='ANALYSIS_BUDGET_SETTLEMENT_UNKNOWN'&&e.cause.code==='ANALYSIS_BUDGET_AUTHORITY');assert.equal(t.state.dispatches,0);assert.equal(t.reservation().state,'UNKNOWN');
+});
+test('concurrent rejected reservation cannot inherit another delivery dispatch uncertainty',async()=>{
+ const t=setup(),entered=deferred(),gate=deferred(),controller=new AbortController();await t.bind();let first=true;t.state.portHook=async()=>{if(first){first=false;entered.resolve();await gate.promise;}};
+ const owner=t.owner(),pending=owner.execute(t.call,t.db.credential,controller.signal);await entered.promise;let sibling,error;
+ try{try{await owner.execute({...t.call,deliveryId:'rejected-sibling'},t.db.credential);}catch(e){sibling=e;}controller.abort();try{await pending;}catch(e){error=e;}}
+ finally{controller.abort();gate.resolve();await pending.catch(()=>{});await new Promise(r=>setImmediate(r));}
+ assert.equal(sibling.code,'ANALYSIS_BUDGET_RESERVATION_UNKNOWN');assert.equal(sibling.uncertainty.dispatchStarted,false);assert.equal(sibling.uncertainty.outputs,null);
+ assert.equal(error.code,'ANALYSIS_EFFECT_UNKNOWN');assert.equal(error.uncertainty.dispatchStarted,true);assert.notEqual(error.uncertainty.reservationId,sibling.uncertainty.reservationId);assert.equal(t.state.dispatches,1);assert.equal(t.db.state().budget.consumed_micro_usd,'0');
+});
