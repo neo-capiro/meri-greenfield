@@ -1,0 +1,103 @@
+{
+  "observedAt": "2026-10-12T19:12:58.650684+00:00",
+  "groups": [
+    {
+      "capture": "compatibility-negative.json",
+      "pgid": 265581,
+      "absentNow": true,
+      "reportedAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "capture": "compatibility-repaired.json",
+      "pgid": 265739,
+      "absentNow": true,
+      "reportedAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "capture": "direct-context-countercontrol.json",
+      "pgid": 263674,
+      "absentNow": true,
+      "reportedAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "capture": "final-source.json",
+      "pgid": 267313,
+      "absentNow": true,
+      "reportedAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "capture": "focused-freeze.json",
+      "pgid": 264617,
+      "absentNow": true,
+      "reportedAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "capture": "focused-initial.json",
+      "pgid": 263390,
+      "absentNow": true,
+      "reportedAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "capture": "focused-repaired.json",
+      "pgid": 263962,
+      "absentNow": true,
+      "reportedAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "capture": "pending-metadata-negative.json",
+      "pgid": 266857,
+      "absentNow": true,
+      "reportedAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "capture": "pending-metadata-repaired.json",
+      "pgid": 266904,
+      "absentNow": true,
+      "reportedAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "capture": "source-audit-repaired.json",
+      "pgid": 267348,
+      "absentNow": true,
+      "reportedAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "capture": "source-audit.json",
+      "pgid": 264652,
+      "absentNow": true,
+      "reportedAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "capture": "source-countercontrols.json",
+      "pgid": 263544,
+      "absentNow": true,
+      "reportedAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    }
+  ],
+  "allAbsent": true,
+  "scope": "Only owned local capture process groups inspected; no other owners touched."
+}

@@ -1,0 +1,113 @@
+✔ command independent: task defaults and final whitespace trim preserve exact three arguments (3.122592ms)
+✔ command independent: task UTF16 title admission rejects rather than truncates (0.874935ms)
+✔ command independent: no unadvertised task owner description or authority (0.867333ms)
+✔ command independent: client name resolution is exact trusted reference not actor authority (0.746091ms)
+✔ command independent: client UUID selector cannot substitute another destination (0.833242ms)
+✔ command independent: client context is closed and does not default binding (0.425259ms)
+✔ command independent: due date exact leap day and date-column midnight only (4.497168ms)
+✔ command independent: task direct command enforces normalized date title and zero attachments (4.320623ms)
+✔ command independent: task command uses exact original full binding (1.124109ms)
+✔ command independent: task public action version and scope are checked (0.746161ms)
+✔ command independent: exact six-field todo task result has no invented owner (2.176601ms)
+✔ command independent: task result title client dueDate and todo cannot drift (0.713032ms)
+✔ command independent: task creation timestamp finite canonical with no invented freshness (0.644148ms)
+✔ command independent: filing normalization returns exact public objects and two destination arguments (1.57717ms)
+✔ command independent: filing cardinality exactly1–10 (1.312783ms)
+✔ command independent: filing duplicate object versions and case aliases refuse (0.648685ms)
+✔ command independent: filing legacy attachment IDs cannot stand in for exact references (0.803377ms)
+✔ command independent: filing immutable reference fields use public grammar (0.817048ms)
+✔ command independent: filing same-tenant scopes do not fabricate scope union policy (0.77187ms)
+✔ command independent: destination selectors context and conversation cannot drift (0.474243ms)
+✔ command independent: filing command full producer binding and exact normalized args (1.416108ms)
+✔ command independent: filing result correlates exact digest and complete selected set (3.970627ms)
+✔ command independent: each exact object field including scopes contributes to result binding (1.049177ms)
+✔ command independent: pre-storage pending and failed preserve reason-only observations (0.476086ms)
+✔ command independent: persisted quarantine and rejected observations stay non-indexed (1.761818ms)
+✔ command independent: saved permits pending indexing but never reason or not_indexed (0.803568ms)
+✔ command independent: persisted tuple is all-or-none and saved cannot be pre-storage (1.179522ms)
+✔ command independent: pending failed reason and boolean reuse cannot be forged (0.786562ms)
+✔ command independent: partial siblings do not produce an aggregate receipt (1.593054ms)
+✔ command independent: per-item status cannot claim read authority or extra source facts (0.853973ms)
+✔ command independent: receipt immutable command identity fields all correlate (1.74345ms)
+✔ command independent: receipt permits recovered executor and supplied aggregate outcomes (1.389809ms)
+✔ command independent: receipt stable tenant actor conversation run still refuse drift (1.146823ms)
+✔ command independent: receipt scope exact set permits ordering only (1.257109ms)
+✔ command independent: optional generated version correlation keeps logical and storage versions distinct (1.972414ms)
+✔ command independent: generated and preview flags remain observations not admission (2.639546ms)
+✔ command independent: canonical proposal and recovered execution are reused for both actions (2.597844ms)
+✔ command independent: proposal binds every attachment version hash bytes and scope (0.553541ms)
+✔ command independent: task command and results are detached snapshots (0.299109ms)
+✔ command independent: filing results receipt and versions are detached deeply (1.371181ms)
+✔ command independent: getters proxies coercion and toJSON remain inert across entry surfaces (1.023097ms)
+✔ command independent: cycles hidden properties symbols prototypes and sparse refs refuse (0.223125ms)
+✖ command independent: blank optional task selectors stay null and cannot establish a client (0.321153ms)
+✖ command independent: date selector trims before strict date-only admission (0.153761ms)
+✖ command independent: found attachment filenames are strings even when empty (1.111651ms)
+✖ command independent: caught empty Error message remains an explicit failed reason string (0.31281ms)
+ℹ tests 46
+ℹ suites 0
+ℹ pass 42
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 420.971262
+
+✖ failing tests:
+
+test at packages/contracts/test/command-payloads-independent.test.mjs:76:1
+✖ command independent: blank optional task selectors stay null and cannot establish a client (0.321153ms)
+  Error: TaskCreateRaw: data/dueDate must match pattern "^\d{4}-\d{2}-\d{2}(?:T00:00:00\.000Z)?$", data/dueDate must be null, data/dueDate must match a schema in anyOf
+      at validateShape (file:///workspace/meri-command-payloads-review-20261012/packages/contracts/test/command-payloads-independent.test.mjs:13:108)
+      at Object.normalizeTaskCreateInput (file:///workspace/meri-command-payloads-review-20261012/packages/contracts/commands-0.2/task-create-validation.mjs:23:75)
+      at TestContext.<anonymous> (file:///workspace/meri-command-payloads-review-20261012/packages/contracts/test/command-payloads-independent.test.mjs:76:155)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/command-payloads-independent.test.mjs:77:1
+✖ command independent: date selector trims before strict date-only admission (0.153761ms)
+  Error: TaskCreateRaw: data/dueDate must match pattern "^\d{4}-\d{2}-\d{2}(?:T00:00:00\.000Z)?$", data/dueDate must be null, data/dueDate must match a schema in anyOf
+      at validateShape (file:///workspace/meri-command-payloads-review-20261012/packages/contracts/test/command-payloads-independent.test.mjs:13:108)
+      at Object.normalizeTaskCreateInput (file:///workspace/meri-command-payloads-review-20261012/packages/contracts/commands-0.2/task-create-validation.mjs:23:75)
+      at TestContext.<anonymous> (file:///workspace/meri-command-payloads-review-20261012/packages/contracts/test/command-payloads-independent.test.mjs:77:172)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/command-payloads-independent.test.mjs:78:1
+✖ command independent: found attachment filenames are strings even when empty (1.111651ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-command-payloads-review-20261012/packages/contracts/test/command-payloads-independent.test.mjs:78:257)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/command-payloads-independent.test.mjs:79:1
+✖ command independent: caught empty Error message remains an explicit failed reason string (0.31281ms)
+  Error: ArtifactFileResult: data/files/0/reason must NOT have fewer than 1 characters
+      at validateShape (file:///workspace/meri-command-payloads-review-20261012/packages/contracts/test/command-payloads-independent.test.mjs:13:108)
+      at Object.assertArtifactFileResult (file:///workspace/meri-command-payloads-review-20261012/packages/contracts/commands-0.2/artifact-file-validation.mjs:36:103)
+      at TestContext.<anonymous> (file:///workspace/meri-command-payloads-review-20261012/packages/contracts/test/command-payloads-independent.test.mjs:79:121)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

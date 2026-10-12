@@ -1,0 +1,6 @@
+{
+  "stage": "Initial allocated cwd lookup",
+  "result": "ENOENT; no process created for three reads",
+  "recovery": "Parent authorized creating allocated sparse worktree. git worktree add from exactcff71e1, sparse-checkout set and read-tree succeeded.",
+  "dependencies": "Seven existing minimal local packages copied; no install or donor mutation."
+}

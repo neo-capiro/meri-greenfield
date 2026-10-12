@@ -1,0 +1,31 @@
+{
+  "supersedes": "source-findings.json filing.preStoragePending and prior reviewer pre-storage-pending statements/positive fixtures",
+  "cause": "Reviewer initial metadata walker emitted StringLiteral kind without its literal value. Reviewer incorrectly classified line150 as pending; author exact literal audit exposed it. No producer source drift.",
+  "pin": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "path": "apps/api/src/meri/meri-client-filing.service.ts",
+  "verifiedObservations": [
+    {
+      "line": 145,
+      "statusLiteral": "failed",
+      "fileName": "null"
+    },
+    {
+      "line": 150,
+      "statusLiteral": "failed",
+      "fileName": "row.filename"
+    },
+    {
+      "line": 163,
+      "pendingPredicate": "document lifecycle quarantined"
+    },
+    {
+      "line": 167,
+      "status": "failed when failed lifecycle, else pending when quarantined, else saved"
+    }
+  ],
+  "consequence": "Pending requires complete persisted document tuple. Missing upload bytes/mediaType is pre-storage failed, not pending. Restoring this rule repairs an erroneous reviewer-requested relaxation.",
+  "initialCandidate": "0565003a32a7311658a86cfc7689036b6b450f57",
+  "repairedButStillWrongCandidate": "8c1f4a5f4287b282f478f3e18aeb376573e53ddd",
+  "privateBodiesPublished": false,
+  "runtimeAccepted": false
+}

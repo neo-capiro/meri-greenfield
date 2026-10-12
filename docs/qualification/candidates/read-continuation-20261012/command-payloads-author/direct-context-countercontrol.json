@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/command-task-create.test.mjs",
+    "packages/contracts/test/command-artifact-file.test.mjs"
+  ],
+  "cwd": "/workspace/meri-command-payloads-20261012",
+  "sourceHead": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T19:04:58.051442+00:00",
+  "durationSeconds": 0.468,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 263674,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/command-payloads-author/direct-context-countercontrol.stdout.bin",
+      "bytes": 7045,
+      "sha256": "59afd714b3f32a9011d65c3c6d63d074904713b1aae27066ca3aaf192d6907dc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/command-payloads-author/direct-context-countercontrol.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Add independent direct-entry UUID context correlation control before repair; original pending/date failures unchanged.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

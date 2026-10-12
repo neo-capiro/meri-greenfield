@@ -1,0 +1,34 @@
+{
+  "command": [
+    "python3",
+    "docs/qualification/candidates/read-continuation-20261012/command-payloads-review/audit-source.py",
+    "8c1f4a5f4287b282f478f3e18aeb376573e53ddd"
+  ],
+  "cwd": "/workspace/meri-command-payloads-review-20261012",
+  "sourceHead": "ee336f29c7d9c4e0ec7d9bf558a8f699f49bcc9c",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T19:11:00.097402+00:00",
+  "durationSeconds": 0.165,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 266488,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/command-payloads-review/source-audit.stdout.bin",
+      "bytes": 8076,
+      "sha256": "9502fef0feee3b692d789a66ba6f71a6d21363151c0f72032bc4b867d10840c4"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/command-payloads-review/source-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

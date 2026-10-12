@@ -1,0 +1,755 @@
+{
+  "source": "5fca98580c5d93c9f9aa4a3ed518e926e087846c",
+  "sourceTree": "f242534f5a55495a0d0f421eb97c2fd746d88748",
+  "familySource": "bdbb14603cfab0d52d483956f7f1a7e373abb3cb",
+  "authorPacket": "844b9b00639d3fa712e15ed5e0872702ee1a974d",
+  "familyReview": "757e3e691f4578781116d81fb516b5c9f454325a",
+  "originalBlobsPreserved": 6947,
+  "packetIdentities": [
+    {
+      "lane": "command-payloads-author",
+      "commit": "844b9b00639d3fa712e15ed5e0872702ee1a974d",
+      "members": 78,
+      "bytes": 19556,
+      "sha256": "5f1697ae617dec3262752824a3e8fcefcf1a66ba0120e0927c2b79c5dbc2f0cd"
+    },
+    {
+      "lane": "command-payloads-review",
+      "commit": "757e3e691f4578781116d81fb516b5c9f454325a",
+      "members": 61,
+      "bytes": 14842,
+      "sha256": "d93d45efbadabf7314c003c16f59521065b8d62016b3022ac0ae3564c2d0566a"
+    }
+  ],
+  "sourceIdentities": [
+    {
+      "path": "packages/contracts/commands-0.2/task-create.schema.json",
+      "bytes": 3827,
+      "sha256": "94e9893173bcf450d8aaabeebe69dc0c3c2b60e8f1d2f2ad22fd60487ed87869"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/task-create-validation.mjs",
+      "bytes": 3951,
+      "sha256": "5d90523200ed2d8589bd893075ff7ddb42a112b29b9c717bc81e72dd0370ada4"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/artifact-file.schema.json",
+      "bytes": 3494,
+      "sha256": "9c51a6777683990384467ab1c62acb07500411e6c08d5b89a0e8182513d91537"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/artifact-file-validation.mjs",
+      "bytes": 5641,
+      "sha256": "56d5bdfdfe4876d3a0e6157226516a193e6ad75a9bf0b7e258cb3b2d044c0c04"
+    },
+    {
+      "path": "packages/contracts/test/command-task-create.test.mjs",
+      "bytes": 9809,
+      "sha256": "bd633422dc010e15b63c3205d8d18e19885bcd34a10f6f5b488b46b4a53a3f17"
+    },
+    {
+      "path": "packages/contracts/test/command-artifact-file.test.mjs",
+      "bytes": 11370,
+      "sha256": "6701fa89be4249742ce6a2c74ee8767acfa5a4e28d206c19609e7275fa1ef925"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/validate.mjs",
+      "bytes": 2069,
+      "sha256": "6e9c32ed42d304bddeedd8b42851a895e52bc1767ecacc4b88e8001c75e22692"
+    }
+  ],
+  "checks": 172,
+  "passed": 172,
+  "failed": 0,
+  "results": [
+    {
+      "name": "exact root source tree",
+      "pass": true
+    },
+    {
+      "name": "all6947 originals byte-identical",
+      "pass": true
+    },
+    {
+      "name": "exact accepted family:packages/contracts/commands-0.2/task-create.schema.json",
+      "pass": true
+    },
+    {
+      "name": "exact accepted family:packages/contracts/commands-0.2/task-create-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact accepted family:packages/contracts/commands-0.2/artifact-file.schema.json",
+      "pass": true
+    },
+    {
+      "name": "exact accepted family:packages/contracts/commands-0.2/artifact-file-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact accepted family:packages/contracts/test/command-task-create.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact accepted family:packages/contracts/test/command-artifact-file.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact reviewed family test",
+      "pass": true
+    },
+    {
+      "name": "current connected loader exact root",
+      "pass": true
+    },
+    {
+      "name": "only six family files reviewed control and connected loader",
+      "pass": true
+    },
+    {
+      "name": "manifest preserved:command-payloads-author",
+      "pass": true
+    },
+    {
+      "name": "safe unique manifest paths:command-payloads-author",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:packages/contracts/commands-0.2/task-create.schema.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:packages/contracts/commands-0.2/task-create-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:packages/contracts/commands-0.2/artifact-file.schema.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:packages/contracts/commands-0.2/artifact-file-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:packages/contracts/test/command-task-create.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:packages/contracts/test/command-artifact-file.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/coordination/reports/CODEX-COMMAND-PAYLOADS-AUTHOR-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/api.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/cleanup-final.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-negative.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-preimage/packages/contracts/commands-0.2/artifact-file-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-preimage/packages/contracts/commands-0.2/artifact-file.schema.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-preimage/packages/contracts/commands-0.2/task-create-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-preimage/packages/contracts/commands-0.2/task-create.schema.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-preimage/packages/contracts/test/command-artifact-file.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-preimage/packages/contracts/test/command-task-create.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-preimage.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/direct-context-countercontrol.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/direct-context-countercontrol.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/direct-context-countercontrol.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/final-source.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/final-source.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/final-source.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-freeze.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-freeze.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-freeze.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-initial.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-diff-check.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-diff-check.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-diff-check.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source/artifact-file-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source/artifact-file.schema.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source/command-artifact-file.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source/command-task-create.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source/task-create-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source/task-create.schema.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction-preimage/packages/contracts/commands-0.2/artifact-file-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction-preimage/packages/contracts/commands-0.2/artifact-file.schema.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction-preimage/packages/contracts/commands-0.2/task-create-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction-preimage/packages/contracts/commands-0.2/task-create.schema.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction-preimage/packages/contracts/test/command-artifact-file.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction-preimage/packages/contracts/test/command-task-create.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction-preimage.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/pending-metadata-negative.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/pending-metadata-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/pending-metadata-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/pending-metadata-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/pending-metadata-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/pending-metadata-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/reference-identities.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/report-before-metadata-correction.md",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/setup-diagnostic.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-audit-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-audit-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-audit-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-audit.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-checks.initial.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-checks.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-countercontrols.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-countercontrols.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-countercontrols.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/verify-source.initial.py",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-author:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/verify-source.py",
+      "pass": true
+    },
+    {
+      "name": "packet exact source binding:command-payloads-author",
+      "pass": true
+    },
+    {
+      "name": "manifest preserved:command-payloads-review",
+      "pass": true
+    },
+    {
+      "name": "safe unique manifest paths:command-payloads-review",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/coordination/reports/CODEX-COMMAND-PAYLOADS-REVIEW-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/audit-packet.py",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/audit-source.py",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/author-packet-audit-corrected.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/author-packet-audit-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/author-packet-audit-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/author-packet-audit.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/author-packet-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/author-packet-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/blank-fixture-correction.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/blank-fixture-correction.patch",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/branch-correction.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/cleanup-final.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/compatibility-negative.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/compatibility-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/compatibility-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/criteria.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/final-review.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/independent-corrected.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/independent-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/independent-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/independent-final.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/independent-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/independent-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/independent-first.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/independent-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/independent-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/independent-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/independent-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/independent-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/inspection-corrections.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/pending-fixture-correction.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/pending-fixture-correction.patch",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/pending-negative.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/pending-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/pending-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/privacy-scan.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/reference-identities.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/repaired-unchanged.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/repaired-unchanged.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/repaired-unchanged.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/review-commits.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/review-findings.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/setup-receipt.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/source-audit-final.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/source-audit-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/source-audit-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/source-audit-restored-pending.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/source-audit-restored-pending.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/source-audit-restored-pending.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/source-audit.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/source-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/source-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/source-findings.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/whitespace-authored.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/whitespace-authored.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/whitespace-full.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/whitespace-full.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:docs/qualification/candidates/read-continuation-20261012/command-payloads-review/whitespace.json",
+      "pass": true
+    },
+    {
+      "name": "packet member:command-payloads-review:packages/contracts/test/command-payloads-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "packet exact source binding:command-payloads-review",
+      "pass": true
+    },
+    {
+      "name": "independent accepted exact author packet",
+      "pass": true
+    },
+    {
+      "name": "canonical owner unchanged:packages/contracts/meri.schema.json",
+      "pass": true
+    },
+    {
+      "name": "canonical owner unchanged:packages/contracts/validate.mjs",
+      "pass": true
+    },
+    {
+      "name": "canonical owner unchanged:packages/contracts/package.json",
+      "pass": true
+    },
+    {
+      "name": "canonical owner unchanged:packages/contracts/retrieval-0.2/operation-contracts.mjs",
+      "pass": true
+    },
+    {
+      "name": "canonical owner unchanged:packages/contracts/retrieval-0.2/catalog.json",
+      "pass": true
+    },
+    {
+      "name": "deliberate canonical imports",
+      "pass": true
+    },
+    {
+      "name": "strict Ajv and duplicate private names refusal",
+      "pass": true
+    },
+    {
+      "name": "fixed schema reads only",
+      "pass": true
+    },
+    {
+      "name": "unknown names refused before any data observation",
+      "pass": true
+    },
+    {
+      "name": "no execution dispatcher or network owner",
+      "pass": true
+    },
+    {
+      "name": "tested exact loader and family:connected-first",
+      "pass": true
+    },
+    {
+      "name": "owned group physically absent:connected-first",
+      "pass": true
+    },
+    {
+      "name": "raw stream:docs/qualification/candidates/command-contracts-integration-review/connected-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw stream:docs/qualification/candidates/command-contracts-integration-review/connected-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "actual143 pass no skips",
+      "pass": true
+    }
+  ],
+  "scope": "SOURCE_ONLY_NOT_AUTHORIZATION_STORAGE_OR_RUNTIME"
+}
