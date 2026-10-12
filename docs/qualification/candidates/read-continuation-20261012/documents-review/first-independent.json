@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-client-documents-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-client-documents-review-20261012",
+  "sourceHead": "f63a2c549f82570341fc2c1c04b68daa715efd83",
+  "sourceDiffSha256": "fabe4d294bebc6c7d6f71c429e538f12bf6d7d60df06a31f9e411abe1ed9c538",
+  "sourceDiffBytes": 2738,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T16:18:58.337226+00:00",
+  "durationSeconds": 1.482,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 146559,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/documents-review/first-independent.stdout.bin",
+      "bytes": 1951,
+      "sha256": "18dc42d55eabad5a16c85fac90b4b57a558d508fbf966f6cde3abcfe949f53db"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/documents-review/first-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

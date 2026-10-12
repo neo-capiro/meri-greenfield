@@ -1,0 +1,28 @@
+✔ independent nonempty list and Unicode read fixtures use exact source projections (10.799607ms)
+✔ list/read defaults and required client scope never derive authority from model fields (2.284673ms)
+✔ declared null numeric defaults and list/read bounds refuse coercion (1.591421ms)
+✔ actual input limits use trimmed UTF16 characters, not Unicode code-point counts (0.976167ms)
+✔ read cursor decodes closed client/document/query/content and offset binding (3.031806ms)
+✔ malformed mode-crossed cursors never become a source request (1.31123ms)
+✔ current context and full returned binding or subject cannot be substituted (7.776685ms)
+✔ document/client/content/provenance and record reference substitutions refuse (6.0796ms)
+✔ full-section returned text hash rejects content or digest substitution (1.479874ms)
+✔ UTF16 ranges correlate coverage, payload, provenance and returned text length (3.389303ms)
+✔ stale content and section extraction cursors refuse despite same document identity (1.218101ms)
+✔ list coverage, ordering, uniqueness and filename selector stay correlated (5.241736ms)
+✔ blocked metadata never silently becomes usable or a document content read (1.618332ms)
+✔ nullable listing metadata remains distinct from omission and invalid dates (3.40734ms)
+✔ closed projections refuse invented proof fields while inert metadata stays untrusted (3.127259ms)
+✔ readability section, count and character declarations must agree with coverage (2.272615ms)
+✔ extraction truncation cannot be erased by outer complete coverage (1.721396ms)
+✔ row provenance is paired and ordered when present (1.59739ms)
+✔ hostile request/context/result admission invokes no supplied property effects (1.397641ms)
+✔ opaque metadata refuses exotic, sparse, cyclic and hidden data without mutation (4.196115ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1433.425202
