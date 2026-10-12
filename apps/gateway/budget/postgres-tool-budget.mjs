@@ -2,6 +2,7 @@
 import { canonicalSha256 } from '../../../packages/contracts/validate.mjs';
 import { PostgresBudgetStore, refuse } from './postgres-budget-store.mjs';
 import { allocation, invocation, grantFacts, same, digest, integer } from './tool-budget-binding.mjs';
+import { outcomeExpectation, assertHistoricalGrant, outcomeSnapshot } from './tool-budget-outcome.mjs';
 
 const n = value => { try { if (!((typeof value === 'string' && /^(0|[1-9][0-9]*)$/.test(value)) || (Number.isSafeInteger(value) && value >= 0))) throw Error(); return BigInt(value); } catch { refuse('INVALID_STORED_MONEY'); } };
 const receipt = (reservationId, decision) => JSON.stringify({ reservationId, decision });
@@ -37,6 +38,19 @@ export function createPostgresToolBudget({ pool, allocationJson }) {
       const previous = (await client.query('SELECT * FROM meri_qualification.tool_grant_bindings WHERE grant_id=$1', [i.grantId])).rows[0];
       if (previous && !same(previous.facts, facts)) refuse('GRANT_BINDING_IMMUTABLE');
       if (!previous) await client.query('INSERT INTO meri_qualification.tool_grant_bindings(grant_id,run_id,facts) VALUES($1,$2,$3)', [i.grantId, i.binding.runId, facts]);
+    });
+  }
+  async function readInvocationOutcome(invocationJson, expectedJson) {
+    // Internal pool/allocation-bound owner read. Historical identity grants no effect.
+    const i = invocation(invocationJson, a); const expected = outcomeExpectation(expectedJson, a);
+    return store.transact(async client => {
+      const budget = await store.lock(client); const installed = await storedAllocation(client, i);
+      if (installed.run_id !== i.binding.runId) refuse('ALLOCATION_MISMATCH');
+      const bound = (await client.query('SELECT * FROM meri_qualification.tool_grant_bindings WHERE grant_id=$1', [i.grantId])).rows[0];
+      const grant = (await client.query('SELECT * FROM meri_qualification.grants WHERE grant_id=$1', [i.grantId])).rows[0];
+      assertHistoricalGrant(i, bound, grant);
+      const row = (await client.query('SELECT * FROM meri_qualification.tool_reservations WHERE invocation_id=$1', [i.invocationId])).rows[0];
+      return outcomeSnapshot({ allocation: a, invocation: i, expected, row, now: budget.now });
     });
   }
   function forInvocation(invocationJson) {
@@ -101,5 +115,5 @@ export function createPostgresToolBudget({ pool, allocationJson }) {
       },
     });
   }
-  return Object.freeze({ bindTrustedGrant, forInvocation });
+  return Object.freeze({ bindTrustedGrant, forInvocation, readInvocationOutcome });
 }
