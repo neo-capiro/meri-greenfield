@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "evals/task-lookup/test/eval-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-task-lookup-eval-review-20261012",
+  "sourceHead": "85e9251d7a872c836c5618e77b81357380610470",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "b65b7291f4743e3ee45993d9589338c021b2bfa1cba0cd1b4c7a73847f1e813b",
+  "startedAt": "2026-10-12T23:48:36.897552+00:00",
+  "durationSeconds": 4.133,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 415198,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/eval-review/actual-control-before.stdout.bin",
+      "bytes": 4863,
+      "sha256": "1d6d5ac70fb31e8a53bec7f8f9efec9285150910aae7f8ce5a129b37c4f3e370"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/eval-review/actual-control-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

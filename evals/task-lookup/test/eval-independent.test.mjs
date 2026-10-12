@@ -123,3 +123,7 @@ async function actualControlCapture(){
  return f;
 }
 test('actual control lookup/read callback observations score without invented DTOs',async()=>{const f=await actualControlCapture();assert.ok(f.o.authorization[1].binding.original.context);assert.equal(f.o.authorization[1].binding.original.request.operation.id,'actions.query');const r=scored(f);assert.equal(r.counts.passed,1,JSON.stringify(r.rows));});
+
+test('denied label without captured denied callback cannot satisfy expected denial',()=>{const f=evaluation('denied');f.o.authorization=[];assert.equal(scored(f).counts.failed,1);});
+test('all-authorized callback cannot establish a read denial',()=>{const f=evaluation('denied');f.o.authorization[0].receipt.authorized=true;assert.equal(scored(f).counts.failed,1);});
+test('clarify label alone stays ineligible until actual clarification contract exists',()=>{const r=scored(evaluation('clarify'));assert.equal(r.counts.ineligible,1);assert.equal(r.counts.passed,0);assert.equal(r.counts.total,1);assert.equal(r.allCasePassRate,0);});

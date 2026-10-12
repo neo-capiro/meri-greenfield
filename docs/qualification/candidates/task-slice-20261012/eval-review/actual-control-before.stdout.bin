@@ -1,0 +1,76 @@
+✔ independent approved-input shape freezes synthetic corpus without modifying input (6.758463ms)
+✔ wrong externally pinned approval hash refuses (1.025162ms)
+✔ case/source/config substitutions after approval refuse (1.879697ms)
+✔ changing synthetic to real without changing approval refuses (0.93102ms)
+✔ duplicate case IDs refuse instead of reducing denominator (0.540463ms)
+✔ one related group across two splits refuses (0.848646ms)
+✔ related oracle variants may remain in same split without losing cases (2.272317ms)
+✔ runner projection retains prompt/request but withholds expected gold (1.324322ms)
+✔ held-out projection is split-specific and omits gold (1.784083ms)
+✔ unknown split cannot silently select or omit cases (1.200074ms)
+✔ freeze detaches caller references (1.178793ms)
+✔ freeze refuses unknown schema/input authority flags (0.84393ms)
+✔ hostile accessors never execute during freeze (0.320953ms)
+✔ non-JSON scalar and unsafe case counts cannot produce frozen evidence (0.964901ms)
+✔ case referencing absent source cannot be admitted as covered (0.511699ms)
+✔ duplicate source snapshot IDs refuse instead of selecting arbitrary version (0.384929ms)
+✔ empty corpus remains unqualified with no fabricated real request count (0.274553ms)
+✔ even operator-pinned real label cannot manufacture qualified provenance (0.613432ms)
+✔ runner envelope pins source/config/case identities without approval body (1.162699ms)
+✔ actual closed returned observation and matching frozen gold score (23.636235ms)
+✔ expected denied and clarify remain independently observable (3.029456ms)
+✔ wrong route and wrong client argument are visible failures (5.139759ms)
+✔ wrong case/config/source/run identities cannot score (28.837657ms)
+✔ wrong run envelope corpus/config/source pin fails entire cohort (6.898985ms)
+✔ altered source records or missing coverage fails (8.322756ms)
+✔ current authorization actor/scope/receipt/denial cannot release success (17.56854ms)
+✔ current read attempt may change while original scope/binding remains (3.875208ms)
+✔ delivery/result reference and UI event correlation are required (8.752373ms)
+✔ task acceptance/completion assertions cannot pass recommendation lookup (8.993033ms)
+✔ page-only empty result does not prove whole-source absence or exhaustive coverage (4.533898ms)
+✔ missing observations stay in denominator (3.374765ms)
+✔ skipped/ineligible do not improve all-case denominator (3.655588ms)
+✔ failed observations stay failed even when expected branch is denied (2.510255ms)
+✔ duplicate known observations fail their case and remain diagnostic (2.845319ms)
+✔ foreign observation is diagnosed without displacing missing known case (2.009442ms)
+✔ malformed observation cannot silently disappear (2.182873ms)
+✔ zero corpus rates are null with no measured qualification (0.492791ms)
+✔ run time reversal refuses rather than reporting negative measurement (2.909706ms)
+✔ score result is detached from subsequent observation mutation (12.134824ms)
+✔ semantic gold removes only fresh transport entropy (2.102071ms)
+✔ semantic gold retains actual source/coverage/record/selected authority meaning (4.762492ms)
+✔ tampered freeze counts/pins/gold cannot be used by runner/scorer (4.321589ms)
+✔ run binding complete membership and stable identity are mandatory (12.483664ms)
+✔ expired authorization cannot be replayed as current release proof (8.076346ms)
+✔ skipped outcome cannot conceal returned bytes or false absence claims (2.674432ms)
+✔ returned observation requires both distinct ordered authorization phases (21.121353ms)
+✔ UI event ordering and distinct identity cannot be forged with shape-valid events (8.313211ms)
+✔ optional exact replay pin is independent from semantic match (4.840229ms)
+✖ actual control lookup/read callback observations score without invented DTOs (13.423997ms)
+ℹ tests 49
+ℹ suites 0
+ℹ pass 48
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4068.953731
+
+✖ failing tests:
+
+test at evals/task-lookup/test/eval-independent.test.mjs:125:1
+✖ actual control lookup/read callback observations score without invented DTOs (13.423997ms)
+  AssertionError [ERR_ASSERTION]: [{"caseId":"case-a","status":"failed","reasons":["EVAL_RELEASE_INTENT"],"observationSha256":"a7921907272d14e26c84792bedb48a228b7ca8e5f0129f3a3e0e056031adeee9"}]
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-eval-review-20261012/evals/task-lookup/test/eval-independent.test.mjs:125:303)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
