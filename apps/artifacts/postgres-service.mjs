@@ -78,11 +78,12 @@ export function createPostgresArtifactService(options){
         },
       };
       // Completion is the immutable committed storage record, not proof of delivery.
-      const versionPort={read:versions.read,async commit(value,abort){active();const record=v.snapshot(value);if(record.requestSha256!==requestSha256||record.version.object.bytes>maxBytes)fail('ARTIFACT_BUDGET_BINDING');const receipt=await versions.commit(value,abort);active();committed=record;return receipt;}};
+      const versionPort={read:(...args)=>versions.read(...args),async commit(value,abort){active();const record=v.snapshot(value);if(record.requestSha256!==requestSha256||record.version.object.bytes>maxBytes)fail('ARTIFACT_BUDGET_BINDING');const receipt=await versions.commit(value,abort);active();committed=record;return receipt;}};
       const executePort={async execute(value){active();const result=await executor.execute({...value,maxBytes:Math.min(value.maxBytes,maxBytes),deadlineMs:Math.min(value.deadlineMs,deadlineMs)});active();outputBytes=result.bytes?.length;if(!Number.isSafeInteger(outputBytes)||outputBytes>maxBytes)fail('ARTIFACT_OUTPUT_LIMIT');return result;}};
       const service=createArtifactService({validators:v,authorize:authorizeArtifact,budget,versions:versionPort,objects,executor:executePort,now,ids});
       const result=await (call.baseVersionId===null?service.create(call.request,trusted.context,{signal}):service.revise(call.baseVersionId,call.request,trusted.context,{signal}));
-      active();if(Buffer.byteLength(JSON.stringify(result))>trusted.limits.maxResponseBytes)fail('ARTIFACT_RESPONSE_LIMIT');return result;
+      try{active();if(Buffer.byteLength(JSON.stringify(result))>trusted.limits.maxResponseBytes)fail('ARTIFACT_RESPONSE_LIMIT');return result;}
+      catch(cause){throw Object.assign(new Error('ARTIFACT_EFFECT_UNKNOWN'),{code:'ARTIFACT_EFFECT_UNKNOWN',cause,versionId:result.version.versionId,versionCommitted:true});}
     }})});
   function admitted(value){if(!sourceEnabled)fail('UNAVAILABLE');const call=input(value);return {raw:JSON.stringify(call),delivery:delivery(call)};}
   return Object.freeze({sourceEnabled,
