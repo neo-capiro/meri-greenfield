@@ -2,6 +2,18 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:meri:retrieval:bill-text:0.2.0",
   "$defs": {
+    "BillTextActionDateSelector": {
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "date"
+        },
+        {
+          "type": "string",
+          "format": "date-time"
+        }
+      ]
+    },
     "BillTextInstant": {
       "type": "string",
       "format": "date-time"
