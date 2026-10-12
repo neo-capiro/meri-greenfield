@@ -1,0 +1,28 @@
+✔ actual dispatcher consumes concrete SQL reservation and settlement once (15.668471ms)
+✔ fresh adapter and reservation identity cannot replay settled invocation (6.62517ms)
+✔ parallel same invocation has one handler and one debit (4.836674ms)
+✔ lost reserve COMMIT acknowledgement retains UNKNOWN and suppresses effect (4.001189ms)
+✔ mixed model/tool holds enforce global exact bound without counting settled twice (4.592537ms)
+✔ installed run cap includes settled and unknown model liability (4.491565ms)
+✔ database revocation/expiry/stale fence blocks actual effect despite fresh synthetic gateway claims (4.759468ms)
+✔ trusted binding substitution cannot mutate admitted allocation (0.79214ms)
+✔ late reserve after deadline keeps hold and never starts handler (52.089135ms)
+✔ default composition stays disabled before any SQL or handler (1.079782ms)
+✔ success uses one transaction and releases one healthy connection (2.24526ms)
+✔ connect failure starts no transaction and creates no retry (1.451078ms)
+✔ ambiguous BEGIN acknowledgement evicts the potentially open transaction (0.392309ms)
+✔ acknowledged rollback preserves domain refusal and can release healthy (0.335383ms)
+✔ failed rollback evicts rather than returning dirty transaction to pool (0.395043ms)
+✔ lost COMMIT acknowledgement remains uncertain and never retries (0.383125ms)
+✔ release failure cannot overwrite lost COMMIT classification (0.314893ms)
+✔ release failure after acknowledged COMMIT never yields safe retry or success (0.295233ms)
+✔ lock samples authoritative database time after row-lock acknowledgement (7.731748ms)
+✔ missing budget and invalid database clock fail closed (0.576996ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 931.304342

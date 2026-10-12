@@ -1,0 +1,21 @@
+✔ actual dispatcher consumes concrete SQL reservation and settlement once (16.945907ms)
+✔ fresh adapter and reservation identity cannot replay settled invocation (7.35584ms)
+✔ parallel same invocation has one handler and one debit (5.020111ms)
+✔ lost reserve COMMIT acknowledgement retains UNKNOWN and suppresses effect (6.013204ms)
+✔ mixed model/tool holds enforce global exact bound without counting settled twice (4.918049ms)
+✔ installed run cap includes settled and unknown model liability (4.548373ms)
+✔ database revocation/expiry/stale fence blocks actual effect despite fresh synthetic gateway claims (4.743776ms)
+✔ trusted binding substitution cannot mutate admitted allocation (0.954694ms)
+✔ late reserve after deadline keeps hold and never starts handler (52.269282ms)
+✔ default composition stays disabled before any SQL or handler (1.009847ms)
+✔ installed manifest runtime bounds parked handler before longer authority deadline (12.325867ms)
+✔ installed manifest runtime bounds parked settlement before longer authority deadline (32.265592ms)
+✔ manifest body/hash, exact budgets and allowed operation are required before SQL (0.97179ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1017.205901

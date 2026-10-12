@@ -1,0 +1,17 @@
+{
+  "status": "Expected rejection of isolated mutant that removes both deadline publications",
+  "argv": [
+    "node",
+    "--test",
+    "--test-name-pattern=installed manifest runtime bounds",
+    "/workspace/meri-g1-durable-budget-review-20261012/docs/qualification/candidates/g1-durable-budget-20261012/review/dispatch-independent.test.mjs"
+  ],
+  "exit_code": 1,
+  "mutations": {
+    "postgres-tool-budget.mjs": "          if (typeof call.limitDeadline === 'function') call.limitDeadline(admittedDeadlineMs);\n",
+    "durable-tool-dispatch.mjs": "          if (bound.deadlineMs() !== undefined) limitDeadline(bound.deadlineMs());\n"
+  },
+  "production_source_changed": false,
+  "engine": "scripted SQL only",
+  "temporary_fixture_removed": true
+}

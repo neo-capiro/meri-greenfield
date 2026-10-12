@@ -1,0 +1,10 @@
+test_historical_settlement_is_not_new_authority_and_replay_cannot_debit (__main__.Controls.test_historical_settlement_is_not_new_authority_and_replay_cannot_debit) ... ok
+test_missing0002_refuses_before_mutating_consumed_or_releasing_hold (__main__.Controls.test_missing0002_refuses_before_mutating_consumed_or_releasing_hold) ... ok
+test_run_cap_includes_shared_unknown_and_settled_once (__main__.Controls.test_run_cap_includes_shared_unknown_and_settled_once) ... ok
+test_snapshot_reports_both_unknown_rows_without_readding_settled_consumption (__main__.Controls.test_snapshot_reports_both_unknown_rows_without_readding_settled_consumption) ... ok
+test_typed_slot_collision_retains_tool_unknown_and_quarantines_global_overrun (__main__.Controls.test_typed_slot_collision_retains_tool_unknown_and_quarantines_global_overrun) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.001s
+
+OK
