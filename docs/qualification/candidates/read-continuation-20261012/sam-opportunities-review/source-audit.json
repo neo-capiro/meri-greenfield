@@ -1,0 +1,35 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/audit.py",
+    "02bac2139b13dec288b5ca2c19edc3be85e2c6b2"
+  ],
+  "cwd": "/workspace/meri-sam-opportunities-review-20261012",
+  "sourceHead": "ca7969971232f5db283291875d3aa35a7d891eb7",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T18:55:51.191778+00:00",
+  "durationSeconds": 0.215,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 261216,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/source-audit.stdout.bin",
+      "bytes": 7167,
+      "sha256": "95e9683d8d3aaffa7f97bf7af2e770c9a6244d585f4b7269133876abe08ae821"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/source-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,33 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "source": "02bac2139b13dec288b5ca2c19edc3be85e2c6b2",
+  "sourceTree": "e38ab9d7dd189d7ea23deaeb4adb40bc7b5627ed",
+  "authorPacket": "6414cdae5324b43e612b1176e7096cbeb8b50636",
+  "sourceControls": {
+    "independent": 37,
+    "author": 35,
+    "total": 72,
+    "pass": 72,
+    "fail": 0
+  },
+  "sourceAudit": {
+    "pass": 48,
+    "fail": 0,
+    "originalFiles": 6528,
+    "referencePairs": 9
+  },
+  "authorPacketAudit": {
+    "pass": 93,
+    "fail": 0,
+    "manifestMembers": 25,
+    "manifestSha256": "6c68639043c921db30280a74ec81cc5734a43b1004ae9943d03cfcddf1a60de6"
+  },
+  "independentProductionDefects": [],
+  "preservedAuthorFailure": "Initial strict-Ajv notes tuple compilation failure at ac1c8d86; equivalent enum repair retains all behavioral assertion bodies",
+  "sourceConnectivity": false,
+  "actualClockCaptureQualified": false,
+  "runtimeAcceptance": false,
+  "ownedReviewGroupsAbsent": true,
+  "canonicalIntegration": "ROOT_OWNED_CONTEXT_FILTER_REQUIRED",
+  "broadPublicNativeProviderSQL": "UNRUN"
+}
