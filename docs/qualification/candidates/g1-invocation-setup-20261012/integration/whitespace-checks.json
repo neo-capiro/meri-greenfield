@@ -1,0 +1,80 @@
+{
+  "head": "f3468416bb8a83d215cc3947698123373e098fa4",
+  "checks": [
+    {
+      "label": "full",
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "6cfb1f9a4d8acd66c5bd8d38d892d656fa3cd89e",
+        "HEAD"
+      ],
+      "exitCode": 2,
+      "streams": [
+        {
+          "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/whitespace-full.stdout.bin",
+          "bytes": 75257,
+          "sha256": "c2c73ea2551194c42cb4eda80b079dc923558ef24dc10844c2361597d29dd355"
+        },
+        {
+          "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/whitespace-full.stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "label": "authored",
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "6cfb1f9a4d8acd66c5bd8d38d892d656fa3cd89e",
+        "HEAD",
+        "--",
+        "apps/control/test/tool-invocations.test.mjs",
+        "apps/control/tool-invocations.mjs",
+        "apps/gateway/budget/README.md",
+        "apps/gateway/budget/durable-tool-dispatch.mjs",
+        "apps/gateway/budget/postgres-budget-store.mjs",
+        "apps/gateway/budget/postgres-tool-budget.mjs",
+        "apps/gateway/budget/tool-budget-dispatch.mjs",
+        "apps/gateway/budget/tool-invocation-owner.mjs",
+        "apps/gateway/budget/tool-invocation-record.mjs",
+        "apps/gateway/dispatch/tool-dispatch.mjs",
+        "apps/gateway/test/tool-invocation-owner.test.mjs",
+        "apps/gateway/test/tool-invocation-transaction.test.mjs",
+        "apps/proxy/qualification/state/migrations/0003_tool_invocations.sql",
+        "apps/proxy/qualification/state/postgres_store.py",
+        "docs/coordination/reports/MERI-DURABLE-INVOCATION-20261012.md",
+        "docs/coordination/reports/MERI-DURABLE-INVOCATION-REVIEW-20261012.md",
+        "docs/coordination/reports/MERI-G1-INVOCATION-SETUP-20261012.md",
+        "docs/coordination/reports/MERI-NATIVE-PREFIX-20261012.md",
+        "docs/coordination/reports/MERI-NATIVE-PREFIX-REVIEW-20261012.md",
+        "docs/coordination/reports/MERI-SUPERVISOR-EXACT-INPUTS-20261012.md",
+        "docs/coordination/reports/MERI-SUPERVISOR-EXACT-INPUTS-REVIEW-20261012.md",
+        "docs/coordination/tasks/MERI-DURABLE-INVOCATION-20261012.md",
+        "docs/coordination/tasks/MERI-G1-INVOCATION-SETUP-20261012.md",
+        "docs/coordination/tasks/MERI-NATIVE-PREFIX-20261012.md",
+        "docs/plans/MERI-G1-SOURCE-TO-NATIVE.md",
+        "docs/qualification/candidates/g1-invocation-setup-20261012/integration/audit-integrated.py",
+        "docs/qualification/candidates/g1-invocation-setup-20261012/integration/capture-reaped.py"
+      ],
+      "exitCode": 0,
+      "streams": [
+        {
+          "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/whitespace-authored.stdout.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "docs/qualification/candidates/g1-invocation-setup-20261012/integration/whitespace-authored.stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    }
+  ],
+  "fullFailureReason": "Preserved raw upstream metadata/source whitespace; evidence intentionally not normalized."
+}

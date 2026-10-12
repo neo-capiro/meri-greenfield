@@ -1,0 +1,1011 @@
+docs/qualification/candidates/native-prefix-20261012/author/raw/common-pg-wrapper:315: trailing whitespace.
++the administrators. 
+docs/qualification/candidates/native-prefix-20261012/author/raw/host-dependency-query.stdout:1: trailing whitespace.
++debconf	1.5.91	installed	all	
+docs/qualification/candidates/native-prefix-20261012/author/raw/host-dependency-query.stdout:20: trailing whitespace.
++locales		not-installed		
+docs/qualification/candidates/native-prefix-20261012/author/raw/host-dependency-query.stdout:22: trailing whitespace.
++sensible-utils	0.0.25	installed	all	
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-10.txt:79: trailing whitespace.
++L139: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-10.txt:81: trailing whitespace.
++L141: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-10.txt:82: trailing whitespace.
++L142: cite71†salsa.debian.org/postgresql/postgresql-common†salsa.debian.org L143: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-10.txt:84: trailing whitespace.
++L145: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-10.txt:85: trailing whitespace.
++L146: cite72†cluster cite73†debian cite74†postgresql cite75†postgresql-common cite76†third-party L147: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-10.txt:87: trailing whitespace.
++L149: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-10.txt:88: trailing whitespace.
++L150: cite77†Readme L151: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-10.txt:89: trailing whitespace.
++L152: cite78†Activity L153: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-10.txt:90: trailing whitespace.
++L154: cite79†Custom properties L155: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-10.txt:92: trailing whitespace.
++L157: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-10.txt:94: trailing whitespace.
++L159: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-10.txt:96: trailing whitespace.
++L161: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-10.txt:98: trailing whitespace.
++L163: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-10.txt:100: trailing whitespace.
++L165: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-10.txt:101: trailing whitespace.
++L166: cite80†3 forks L167: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-10.txt:102: trailing whitespace.
++L168: cite81†Report repository L169: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-10.txt:104: trailing whitespace.
++L171: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-10.txt:105: trailing whitespace.
++L172: cite82†Branches cite83†Tags L173: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-10.txt:107: trailing whitespace.
++L175: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-10.txt:109: trailing whitespace.
++L177: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-10.txt:111: trailing whitespace.
++L179: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-10.txt:113: trailing whitespace.
++L181: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-10.txt:116: trailing whitespace.
++L284: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-10.txt:118: trailing whitespace.
++L286: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-10.txt:120: trailing whitespace.
++L288: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-10.txt:122: trailing whitespace.
++L290: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-10.txt:124: trailing whitespace.
++L292: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-10.txt:126: trailing whitespace.
++L294: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-10.txt:128: trailing whitespace.
++L296: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-10.txt:130: trailing whitespace.
++L298: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-10.txt:333: new blank line at EOF.
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-11.txt:3: trailing whitespace.
++L0: cite0†skip the navigation L1: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-11.txt:4: trailing whitespace.
++L2: cite1†Packages L3: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-11.txt:5: trailing whitespace.
++L4:   * cite2†About Debian†www.debian.org L5:   * cite3†Getting Debian†www.debian.org L6:   * cite4†Support†www.debian.org L7:   * cite5†Developers' Corner†www.debian.org L8: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-11.txt:8: trailing whitespace.
++L11: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-11.txt:136: trailing whitespace.
++L0: cite0†skip the navigation L1: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-11.txt:137: trailing whitespace.
++L2: cite1†Packages L3: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-11.txt:138: trailing whitespace.
++L4:   * cite2†About Debian†www.debian.org L5:   * cite3†Getting Debian†www.debian.org L6:   * cite4†Support†www.debian.org L7:   * cite5†Developers' Corner†www.debian.org L8: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-11.txt:141: trailing whitespace.
++L11: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-11.txt:276: new blank line at EOF.
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-3.txt:15: trailing whitespace.
++L0: September 24, 2026: cite0†PostgreSQL 19 Beta 4 Released! L1: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-3.txt:17: trailing whitespace.
++L3: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-3.txt:18: trailing whitespace.
++L4:   * cite1†Downloads L5:     * cite1†Packages L6:     * cite2†Source L7:   * cite3†Software Catalogue L8:   * cite4†File Browser L9: # Linux downloads (Debian) cite5†Image: Debian Logo L10: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-3.txt:21: trailing whitespace.
++L13: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-3.txt:23: trailing whitespace.
++L15: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-3.txt:26: trailing whitespace.
++L18: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-3.txt:28: trailing whitespace.
++L20: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-3.txt:34: trailing whitespace.
++L26: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-3.txt:36: trailing whitespace.
++L28: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-3.txt:42: trailing whitespace.
++L34: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-3.txt:46: trailing whitespace.
++L38: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-3.txt:48: trailing whitespace.
++L40: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-3.txt:53: trailing whitespace.
++L45: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-3.txt:61: trailing whitespace.
++L53: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-3.txt:64: trailing whitespace.
++L56: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-3.txt:67: trailing whitespace.
++L59: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-3.txt:69: trailing whitespace.
++L61: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-3.txt:75: trailing whitespace.
++L67: cite11†Policies | cite12†Code of Conduct | cite13†About PostgreSQL | cite14†Contact L68: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-3.txt:77: new blank line at EOF.
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:9: trailing whitespace.
++    
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:15: trailing whitespace.
++    
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:21: trailing whitespace.
++    
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:271: trailing whitespace.
++ | 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:273: trailing whitespace.
++ | 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:275: trailing whitespace.
++ | 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:280: trailing whitespace.
++ | 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:282: trailing whitespace.
++ | 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:284: trailing whitespace.
++ | 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:286: trailing whitespace.
++ | 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:288: trailing whitespace.
++ | 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:290: trailing whitespace.
++ | 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:292: trailing whitespace.
++ | 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:294: trailing whitespace.
++ | 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:297: trailing whitespace.
++ | 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:299: trailing whitespace.
++ | 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:316: trailing whitespace.
++Skip to content 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:318: trailing whitespace.
++  
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:320: trailing whitespace.
++ Search Gists 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:324: trailing whitespace.
++All gists Back to GitHub  Sign in   Sign up 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:326: trailing whitespace.
++  
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:328: trailing whitespace.
++ Sign in   Sign up  
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:334: trailing whitespace.
++Instantly share code, notes, and snippets. 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:338: trailing whitespace.
++Learn more about clone URLs 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:340: trailing whitespace.
++ Clone this repository at &lt;script src=&quot;https://gist.github.com/pongsanti/9ada5132813d562c841435f55c2a3dda.js&quot;&gt;&lt;/script&gt; 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:344: trailing whitespace.
++Download ZIP 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:346: trailing whitespace.
++Postgresql database command compilation 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:348: trailing whitespace.
++ Raw  
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:350: trailing whitespace.
++ postgres_command_cheat_sheet.sh  
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:352: trailing whitespace.
++# run sql script  
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:353: trailing whitespace.
++postgres=# \i path_to_sql_file  
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:355: trailing whitespace.
++# toggle expanded output [on|off|auto]  
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:356: trailing whitespace.
++postgres=#\x auto  
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:358: trailing whitespace.
++# list functions  
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:359: trailing whitespace.
++postgres=#\df  
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:361: trailing whitespace.
++Sign up for free to join this conversation on GitHub. Already have an account? Sign in to comment 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:365: trailing whitespace.
++   © 2026 GitHub, Inc. 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:484: trailing whitespace.
++    
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:489: trailing whitespace.
++    
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:493: trailing whitespace.
++    
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt:510: new blank line at EOF.
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-5.txt:3: trailing whitespace.
++L0: cite0†DEBSOURCES L1: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-5.txt:5: trailing whitespace.
++L3: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-5.txt:7: trailing whitespace.
++L5: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-5.txt:8: trailing whitespace.
++L6: cite1†Skip Quicknav L7: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-5.txt:9: trailing whitespace.
++L8:   * cite0†Home L9:   * cite2†Search L10:   * cite3†Documentation L11:   * cite4†Stats L12:   * cite5†About L13: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-5.txt:12: trailing whitespace.
++L16: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-5.txt:14: trailing whitespace.
++L18: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-5.txt:16: trailing whitespace.
++L20: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-5.txt:21: trailing whitespace.
++L26: file content (5 lines) | stat: -rwxr-xr-x 95 bytes  | cite11†parent folder | cite12†download L27: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-5.txt:22: trailing whitespace.
++L28:     cite13†1 L29:     cite14†2 L30:     cite15†3 L31:     cite16†4 L32:     cite17†5 L33: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-5.txt:24: trailing whitespace.
++L35: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-5.txt:26: trailing whitespace.
++L37: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-5.txt:28: trailing whitespace.
++L39: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-5.txt:32: trailing whitespace.
++L44: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-5.txt:39: trailing whitespace.
++L0: cite0†DEBSOURCES L1: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-5.txt:41: trailing whitespace.
++L3: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-5.txt:43: trailing whitespace.
++L5: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-5.txt:44: trailing whitespace.
++L6: cite1†Skip Quicknav L7: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-5.txt:45: trailing whitespace.
++L8:   * cite0†Home L9:   * cite2†Search L10:   * cite3†Documentation L11:   * cite4†Stats L12:   * cite5†About L13: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-5.txt:48: trailing whitespace.
++L16: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-5.txt:50: trailing whitespace.
++L18: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-5.txt:52: trailing whitespace.
++L20: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-5.txt:57: trailing whitespace.
++L26: file content (303 lines) | stat: -rw-r--r-- 9,801 bytes  | cite11†parent folder | cite12†download L27: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-5.txt:59: trailing whitespace.
++L332: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-5.txt:148: new blank line at EOF.
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-6.txt:171: trailing whitespace.
++L24: # DESCRIPTIONcite11†¶ L25: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-6.txt:173: trailing whitespace.
++L27: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-6.txt:175: trailing whitespace.
++L29: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-6.txt:179: trailing whitespace.
++L61: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-6.txt:181: trailing whitespace.
++L161: # NOTEScite52†¶ L162: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-6.txt:183: new blank line at EOF.
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-7.txt:3: trailing whitespace.
++L0: cite0†DEBSOURCES L1: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-7.txt:5: trailing whitespace.
++L3: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-7.txt:7: trailing whitespace.
++L5: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-7.txt:8: trailing whitespace.
++L6: cite1†Skip Quicknav L7: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-7.txt:9: trailing whitespace.
++L8:   * cite0†Home L9:   * cite2†Search L10:   * cite3†Documentation L11:   * cite4†Stats L12:   * cite5†About L13: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-7.txt:27: trailing whitespace.
++L32: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-7.txt:35: new blank line at EOF.
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:3: trailing whitespace.
++L0: cite0†skip the navigation L1: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:4: trailing whitespace.
++L2: cite1†Packages L3: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:5: trailing whitespace.
++L4:   * cite2†About Debian†www.debian.org L5:   * cite3†Getting Debian†www.debian.org L6:   * cite4†Support†www.debian.org L7:   * cite5†Developers' Corner†www.debian.org L8: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:7: trailing whitespace.
++L10: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:8: trailing whitespace.
++L11: [Input] [Select] [Input] cite1†all options L12: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:10: trailing whitespace.
++L14: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:12: trailing whitespace.
++L16: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:14: trailing whitespace.
++L18: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:17: trailing whitespace.
++L21: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:18: trailing whitespace.
++L22:   * cite9†Bug Reports†bugs.debian.org L23:   * cite10†Developer Information†tracker.debian.org L24:   * cite11†Debian Changelog†metadata.ftp-master.debian.org L25:   * cite12†Copyright File†metadata.ftp-master.debian.org L26:   * cite13†Debian Patch Tracker†sources.debian.org L27: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:20: trailing whitespace.
++L29: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:22: trailing whitespace.
++L34: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:27: trailing whitespace.
++L39: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:29: trailing whitespace.
++L41: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:32: trailing whitespace.
++L44: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:33: trailing whitespace.
++L45:   * cite22†postgresql-19 L46:   * cite23†postgresql-13 L47:   * cite24†postgresql-18 L48:   * cite25†postgresql-16 L49:   * cite26†postgresql-15 L50:   * cite27†libh2-java L51:   * cite28†odoo-14 L52:   * cite29†odoo-19 L53:   * cite30†gpac-modules-base L54:   * cite31†gpac L55:   * cite32†libh2-java-doc L56: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:36: trailing whitespace.
++L59: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:39: trailing whitespace.
++L62: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:42: trailing whitespace.
++L65: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:45: trailing whitespace.
++L68: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:47: trailing whitespace.
++L70: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:108: trailing whitespace.
++L141: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:110: trailing whitespace.
++L143: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:111: trailing whitespace.
++L144: cite80†Български (Bəlgarski) cite81†Deutsch cite82†suomi cite83†français cite84†magyar cite85†日本語 (Nihongo) cite86†Nederlands cite87†polski cite88†Português (br) cite89†Русский (Russkij) cite90†slovensky cite91†svenska cite92†Türkçe cite93†українська (ukrajins'ka) cite94†中文 (Zhongwen,简) cite95†中文 (Zhongwen,繁) L145: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:113: trailing whitespace.
++L147: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:116: trailing whitespace.
++L150: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:121: trailing whitespace.
++L0: cite0†skip the navigation L1: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:122: trailing whitespace.
++L2: cite1†Packages L3: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:123: trailing whitespace.
++L4:   * cite2†About Debian†www.debian.org L5:   * cite3†Getting Debian†www.debian.org L6:   * cite4†Support†www.debian.org L7:   * cite5†Developers' Corner†www.debian.org L8: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:125: trailing whitespace.
++L10: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:126: trailing whitespace.
++L11: [Input] [Select] [Input] cite1†all options L12: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:128: trailing whitespace.
++L14: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:130: trailing whitespace.
++L16: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:132: trailing whitespace.
++L18: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:135: trailing whitespace.
++L21: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:136: trailing whitespace.
++L22:   * cite9†Bug Reports†bugs.debian.org L23:   * cite10†Developer Information†tracker.debian.org L24:   * cite11†Debian Changelog†metadata.ftp-master.debian.org L25:   * cite12†Copyright File†metadata.ftp-master.debian.org L26:   * cite13†Debian Patch Tracker†sources.debian.org L27: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:138: trailing whitespace.
++L29: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:140: trailing whitespace.
++L34: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:145: trailing whitespace.
++L39: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:147: trailing whitespace.
++L41: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:150: trailing whitespace.
++L44: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:151: trailing whitespace.
++L45:   * cite22†postgresql-client-19 L46:   * cite23†postgresql-client-13 L47:   * cite24†postgresql-client-18 L48:   * cite25†postgresql-client-16 L49:   * cite26†postgresql-client-15 L50:   * cite27†postgresql-client L51:   * cite28†libpqxx-8.0 L52:   * cite29†libpqxx-doc L53:   * cite30†libpqxx-7.10 L54:   * cite31†libpqxx-7.8t64 L55:   * cite32†libpqxx-6.4 L56: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:154: trailing whitespace.
++L59: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:157: trailing whitespace.
++L62: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:160: trailing whitespace.
++L65: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:163: trailing whitespace.
++L68: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:183: trailing whitespace.
++L90: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:199: trailing whitespace.
++L108: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:201: trailing whitespace.
++L110: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:202: trailing whitespace.
++L111: cite62†Български (Bəlgarski) cite63†Deutsch cite64†suomi cite65†français cite66†magyar cite67†日本語 (Nihongo) cite68†Nederlands cite69†polski cite70†Português (br) cite71†Русский (Russkij) cite72†slovensky cite73†svenska cite74†Türkçe cite75†українська (ukrajins'ka) cite76†中文 (Zhongwen,简) cite77†中文 (Zhongwen,繁) L112: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:204: trailing whitespace.
++L114: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:207: trailing whitespace.
++L117: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:212: trailing whitespace.
++L0: cite0†skip the navigation L1: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:213: trailing whitespace.
++L2: cite1†Packages L3: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:214: trailing whitespace.
++L4:   * cite2†About Debian†www.debian.org L5:   * cite3†Getting Debian†www.debian.org L6:   * cite4†Support†www.debian.org L7:   * cite5†Developers' Corner†www.debian.org L8: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:216: trailing whitespace.
++L10: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:217: trailing whitespace.
++L11: [Input] [Select] [Input] cite1†all options L12: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:219: trailing whitespace.
++L14: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:221: trailing whitespace.
++L16: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:223: trailing whitespace.
++L18: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:226: trailing whitespace.
++L21: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:227: trailing whitespace.
++L22:   * cite14†Bug Reports†bugs.debian.org L23:   * cite15†Developer Information†tracker.debian.org L24:   * cite16†Debian Changelog†metadata.ftp-master.debian.org L25:   * cite17†Copyright File†metadata.ftp-master.debian.org L26:   * cite18†Debian Patch Tracker†sources.debian.org L27: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:229: trailing whitespace.
++L29: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:231: trailing whitespace.
++L34: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:236: trailing whitespace.
++L39: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:238: trailing whitespace.
++L41: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:241: trailing whitespace.
++L44: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:243: trailing whitespace.
++L57: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:245: trailing whitespace.
++L59: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:248: trailing whitespace.
++L62: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:250: trailing whitespace.
++L65: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:253: trailing whitespace.
++L68: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:256: trailing whitespace.
++L71: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:259: trailing whitespace.
++L74: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:261: trailing whitespace.
++L76: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:284: trailing whitespace.
++L101: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:286: trailing whitespace.
++L103: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:287: trailing whitespace.
++L104: cite63†Български (Bəlgarski) cite64†dansk cite65†Deutsch cite66†suomi cite67†français cite68†magyar cite69†Italiano cite70†日本語 (Nihongo) cite71†Nederlands cite72†polski cite73†Português (br) cite74†Русский (Russkij) cite75†slovensky cite76†svenska cite77†Türkçe cite78†українська (ukrajins'ka) cite79†中文 (Zhongwen,简) cite80†中文 (Zhongwen,繁) L105: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:289: trailing whitespace.
++L107: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:292: trailing whitespace.
++L110: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:298: trailing whitespace.
++L2: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:299: trailing whitespace.
++L3: cite1†Sign in L4: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:301: trailing whitespace.
++L6: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:303: trailing whitespace.
++L8: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:305: trailing whitespace.
++L10:       * cite2†GitHub CopilotWrite better code with AI L11:       * cite3†GitHub Copilot appDirect agents from issue to merge L12:       * cite4†MCP RegistryIntegrate external tools L13: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:308: trailing whitespace.
++L21:       * cite10†GitHub Advanced SecurityFind and fix vulnerabilities L22:       * cite11†Code securitySecure your code as you build L23:       * cite12†Secret protectionStop leaks before they start L24: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:310: trailing whitespace.
++L26:       * cite13†Why GitHub L27:       * cite14†Documentation†docs.github.com L28:       * cite15†Blog†github.blog L29:       * cite16†Changelog†github.blog L30:       * cite17†Marketplace L31: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:311: trailing whitespace.
++L32: cite18†View all features L33: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:314: trailing whitespace.
++L36:       * cite19†Enterprises L37:       * cite20†Small and medium teams L38:       * cite21†Startups L39:       * cite22†Nonprofits L40: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:316: trailing whitespace.
++L42:       * cite23†App Modernization L43:       * cite24†DevSecOps L44:       * cite25†DevOps L45:       * cite26†CI/CD L46:       * cite27†View all use cases L47: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:318: trailing whitespace.
++L49:       * cite28†Healthcare L50:       * cite29†Financial services L51:       * cite30†Manufacturing L52:       * cite31†Government L53:       * cite32†View all industries L54: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:319: trailing whitespace.
++L55: cite33†View all solutions L56: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:322: trailing whitespace.
++L59:       * cite34†AI L60:       * cite35†Software Development L61:       * cite36†DevOps L62:       * cite37†Security L63:       * cite38†View all topics L64: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:325: trailing whitespace.
++L72:       * cite14†Documentation†docs.github.com L73:       * cite44†Customer support†support.github.com L74:       * cite45†Community forum L75:       * cite46†Trust center L76:       * cite47†Partners L77: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:326: trailing whitespace.
++L78: cite48†View all resources L79: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:328: trailing whitespace.
++L81: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:331: trailing whitespace.
++L85:       * cite50†Security Lab†securitylab.github.com L86:       * cite51†Maintainer Community†maintainers.github.com L87:       * cite52†GitHub Stars†stars.github.com L88:       * cite53†Archive Program†archiveprogram.github.com L89: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:333: trailing whitespace.
++L91:       * cite54†Topics L92:       * cite55†Trending L93:       * cite56†Collections L94: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:335: trailing whitespace.
++L96: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:338: trailing whitespace.
++L100:       * cite10†GitHub Advanced SecurityEnterprise-grade security features L101:       * cite57†Copilot for BusinessEnterprise-grade AI features L102:       * cite58†Premium SupportEnterprise-grade 24/7 support L103: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:339: trailing whitespace.
++L104:   * cite59†Pricing L105: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:341: trailing whitespace.
++L107: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:342: trailing whitespace.
++L108: cite1†Sign in L109: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:343: trailing whitespace.
++L110: cite60†Sign up L111: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:346: trailing whitespace.
++L114: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt:347: trailing whitespace.
++L115:   1. cite61†credativ 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:11: trailing whitespace.
++L0: September 24, 2026: cite0†PostgreSQL 19 Beta 4 Released! L1: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:12: trailing whitespace.
++L2: cite1†Documentation → cite2†PostgreSQL 17 L3: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:13: trailing whitespace.
++L4: Supported Versions: cite3†17 L5: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:15: trailing whitespace.
++L7: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:17: trailing whitespace.
++L9: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:20: trailing whitespace.
++L12: cite4†Prev | cite4†Up | Appendix E. Release Notes  | cite2†Home |  cite5†Next L13: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:22: trailing whitespace.
++L15: ## E.1. Release 17.11 cite6†# L16: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:23: trailing whitespace.
++L17: cite7†E.1.1. Migration to Version 17.11 L18: cite8†E.1.2. Changes L19: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:25: trailing whitespace.
++L21: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:27: trailing whitespace.
++L23: ### E.1.1. Migration to Version 17.11 cite7†# L24: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:29: trailing whitespace.
++L26: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:31: trailing whitespace.
++L28: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:33: trailing whitespace.
++L30: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:35: trailing whitespace.
++L32: ### E.1.2. Changes cite8†# L33: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:36: trailing whitespace.
++L34:   * Restrict logical decoding output plugins to the set specified by a new server parameter `output_plugin_libraries` (Jacob Champion) cite11†§†postgr.es cite12†§†postgr.es L35: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:39: trailing whitespace.
++L38: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:42: trailing whitespace.
++L41: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:46: trailing whitespace.
++L46: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:49: trailing whitespace.
++L49: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:53: trailing whitespace.
++L54: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:55: trailing whitespace.
++L56: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:57: trailing whitespace.
++L59: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:59: trailing whitespace.
++L61:   * Fix buffer overrun with long time zone abbreviation in `to_char()` (Tom Lane) cite18†§†postgr.es L62: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:61: trailing whitespace.
++L64: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:63: trailing whitespace.
++L66:   * Fix buffer overrun in regexp match/split functions (Masahiko Sawada) cite19†§†postgr.es L67: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:65: trailing whitespace.
++L69: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:67: trailing whitespace.
++L71: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:69: trailing whitespace.
++L74: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:71: trailing whitespace.
++L76: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:74: trailing whitespace.
++L79: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:76: trailing whitespace.
++L81: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:78: trailing whitespace.
++L84: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:80: trailing whitespace.
++L86: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:81: trailing whitespace.
++L87:   * Harden `tsvector` and `tsquery` code against overly long values (both individual lexemes and total vector/query length) (Tom Lane) cite22†§†postgr.es cite23†§†postgr.es L88: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:84: trailing whitespace.
++L91: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:85: trailing whitespace.
++L92:   * Fix various places that mistakenly assumed they would not have to deal with more than `FUNC_MAX_ARGS` function arguments (Tom Lane) cite24†§†postgr.es cite25†§†postgr.es L93: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:88: trailing whitespace.
++L96: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:89: trailing whitespace.
++L97:   * Reject calls from SQL to functions that take or return type `internal` (Tom Lane) cite26†§†postgr.es cite27†§†postgr.es L98: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:91: trailing whitespace.
++L100: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:93: trailing whitespace.
++L102:   * Preserve the ownership of extended statistics objects when they are rebuilt by `ALTER TABLE` (Masahiko Sawada) cite28†§†postgr.es L103: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:95: trailing whitespace.
++L105: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:97: trailing whitespace.
++L107: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:99: trailing whitespace.
++L110: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:101: trailing whitespace.
++L112:   * Check for `USAGE` privilege on data types in places that formerly failed to check that (Nathan Bossart) cite30†§†postgr.es cite31†§†postgr.es cite32†§†postgr.es L113: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:104: trailing whitespace.
++L116: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:105: trailing whitespace.
++L117:   * Invalidate role-dependent cached plans after role changes (Ilya Staroverov, Shinya Kato, Nathan Bossart) cite33†§†postgr.es L118: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:108: trailing whitespace.
++L121: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:110: trailing whitespace.
++L124: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:112: trailing whitespace.
++L126: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:115: trailing whitespace.
++L130: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:116: trailing whitespace.
++L131:   * Fix out-of-bounds writes in ecpg applications caused by invalid `bytea` data received from the server (Michael Paquier) cite36†§†postgr.es L132: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:118: trailing whitespace.
++L134: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:120: trailing whitespace.
++L136:   * Do not do backquote expansion on the argument of psql's `\unrestrict` command (Nathan Bossart) cite37†§†postgr.es L137: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:122: trailing whitespace.
++L139: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:124: trailing whitespace.
++L141:   * Remove pg_dump's assumption that `pg_proc`.`protrftypes` cannot have more than `FUNC_MAX_ARGS` entries (Tom Lane) cite38†§†postgr.es L142: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:127: trailing whitespace.
++L145: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:128: trailing whitespace.
++L146:   * Harden PL/Perl against “tied” Perl arrays and hashes (Tom Lane) cite39†§†postgr.es L147: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:130: trailing whitespace.
++L149: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:132: trailing whitespace.
++L151:   * Fix integer overflows in memory-allocation calculations in PL/Perl and PL/Tcl (Heikki Linnakangas) cite40†§†postgr.es L152: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:134: trailing whitespace.
++L154: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:137: trailing whitespace.
++L158: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:139: trailing whitespace.
++L160:   * Fix integer overflows in `contrib/fuzzystrmatch`'s `levenshtein()` and `levenshtein_less_equal()` functions (Nathan Bossart) cite42†§†postgr.es L161: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:141: trailing whitespace.
++L163: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:144: trailing whitespace.
++L166: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:146: trailing whitespace.
++L168: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:148: trailing whitespace.
++L170: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:150: trailing whitespace.
++L173: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:152: trailing whitespace.
++L175: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:154: trailing whitespace.
++L178: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:157: trailing whitespace.
++L182: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:159: trailing whitespace.
++L185: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:160: trailing whitespace.
++L186:   * Fix planner's nullability and strictness checks for ``value` IN (`array`)` expressions (Ayush Tiwari) cite47†§†postgr.es L187: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:162: trailing whitespace.
++L189:   * Fix incorrect join removal logic (Matheus Alcantara, Richard Guo) cite48†§†postgr.es cite49†§†postgr.es L190: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:164: trailing whitespace.
++L192: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:166: trailing whitespace.
++L195: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:167: trailing whitespace.
++L196:   * Fix mis-optimization of `COUNT` window functions that have an `EXCLUDE` clause or lack `ORDER BY` (Chengpeng Yan, David Rowley) cite51†§†postgr.es L197: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:169: trailing whitespace.
++L199:   * Fix `ALTER COLUMN ... DROP EXPRESSION` to work when there are multiple levels of partitions (Alberto Piai) cite52†§†postgr.es L200: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:170: trailing whitespace.
++L201:   * Fix attaching partitions of indexes that are exclusion constraints (Japin Li) cite53†§†postgr.es L202: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:172: trailing whitespace.
++L204: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:174: trailing whitespace.
++L207: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:175: trailing whitespace.
++L208:   * Fix missing lock release for role membership grants in `DROP OWNED BY` (Jeff Davis) cite55†§†postgr.es L209: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:177: trailing whitespace.
++L211: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:179: trailing whitespace.
++L214: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:180: trailing whitespace.
++L215:   * Fix use of `REINDEX CONCURRENTLY` with a deferred uniqueness constraint (Nitin Motiani) cite57†§†postgr.es L216: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:182: trailing whitespace.
++L218: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:184: trailing whitespace.
++L221: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:185: trailing whitespace.
++L222:   * Fix incorrect NFC recomposition for Hangul U+11A7 (TBASE) (Diego Frias, Michael Paquier) cite59†§†postgr.es L223: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:187: trailing whitespace.
++L225: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:189: trailing whitespace.
++L228: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:190: trailing whitespace.
++L229:   * Defend against truncated UTF-8 characters in case-conversion logic (Jeff Davis) cite61†§†postgr.es L230: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:192: trailing whitespace.
++L233: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:193: trailing whitespace.
++L234:   * Fix `pg_get_publication_tables()` to not fail if a publishable table is dropped concurrently (Bharath Rupireddy) cite63†§†postgr.es L235:   * Prevent `satisfies_hash_partition()` from crashing with `VARIADIC NULL` (Robert Haas) cite64†§†postgr.es L236: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt:194: trailing whitespace.
++L237:   * Report invalid-weight errors more cleanly and consistently in `tsvector_filter()` and allied functions (Ewan Young) cite65†§†postgr.es 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:11: trailing whitespace.
++L0: September 24, 2026: cite0†PostgreSQL 19 Beta 4 Released! L1: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:12: trailing whitespace.
++L2: cite1†Documentation → cite2†PostgreSQL 17 L3: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:13: trailing whitespace.
++L4: Supported Versions: cite3†Current (cite4†18 ) / cite5†17 / cite6†16 L5: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:14: trailing whitespace.
++L6: Development Versions: cite7†19 / cite8†devel L7: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:16: trailing whitespace.
++L9: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:18: trailing whitespace.
++L11: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:21: trailing whitespace.
++L14: cite9†Prev | cite10†Up | Chapter 17. Installation from Source Code  | cite2†Home |  cite11†Next L15: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:23: trailing whitespace.
++L17: ## 17.3. Building and Installation with Autoconf and Make cite12†# L18: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:24: trailing whitespace.
++L19: cite13†17.3.1. Short Version L20: cite14†17.3.2. Installation Procedure L21: cite15†17.3.3. `configure` Options L22: cite16†17.3.4. `configure` Environment Variables L23: ### 17.3.1. Short Version cite13†# L24: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:37: trailing whitespace.
++L37: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:38: trailing whitespace.
++L38: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:40: trailing whitespace.
++L40: ### 17.3.2. Installation Procedure cite14†# L41: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:42: trailing whitespace.
++L43: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:44: trailing whitespace.
++L45: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:48: trailing whitespace.
++L49: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:55: trailing whitespace.
++L56: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:57: trailing whitespace.
++L58: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:60: trailing whitespace.
++L61: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:63: trailing whitespace.
++L64: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:64: trailing whitespace.
++L65: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:66: trailing whitespace.
++L67: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:68: trailing whitespace.
++L69: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:71: trailing whitespace.
++L72: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:73: trailing whitespace.
++L74: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:74: trailing whitespace.
++L75: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:76: trailing whitespace.
++L77: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:79: trailing whitespace.
++L80: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:80: trailing whitespace.
++L81: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:83: trailing whitespace.
++L84: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:85: trailing whitespace.
++L86: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:87: trailing whitespace.
++L88: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:88: trailing whitespace.
++L89: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:92: trailing whitespace.
++L93: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:94: trailing whitespace.
++L95: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:96: trailing whitespace.
++L97: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:98: trailing whitespace.
++L99: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:99: trailing whitespace.
++L100: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:102: trailing whitespace.
++L103: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:104: trailing whitespace.
++L105: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:105: trailing whitespace.
++L106: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:107: trailing whitespace.
++L108: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:109: trailing whitespace.
++L110: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:110: trailing whitespace.
++L111: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:112: trailing whitespace.
++L113: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:114: trailing whitespace.
++L115: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:119: trailing whitespace.
++L120: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:121: trailing whitespace.
++L122: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:127: trailing whitespace.
++L128: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:132: trailing whitespace.
++L133: ### 17.3.3. `configure` Options cite15†# L134: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:136: trailing whitespace.
++L139: `--prefix=`PREFIX`` cite21†# L140: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:137: trailing whitespace.
++L141: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:139: trailing whitespace.
++L143: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:141: trailing whitespace.
++L146: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:143: trailing whitespace.
++L149: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:144: trailing whitespace.
++L150: `--sysconfdir=`DIRECTORY`` cite24†# L151: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:145: trailing whitespace.
++L152: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:147: trailing whitespace.
++L154: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:148: trailing whitespace.
++L155: `--libdir=`DIRECTORY`` cite25†# L156: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:149: trailing whitespace.
++L157: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:151: trailing whitespace.
++L159: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:153: trailing whitespace.
++L162: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:154: trailing whitespace.
++L163: `--datarootdir=`DIRECTORY`` cite27†# L164: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:155: trailing whitespace.
++L165: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:157: trailing whitespace.
++L167: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:159: trailing whitespace.
++L170: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:160: trailing whitespace.
++L171: `--localedir=`DIRECTORY`` cite29†# L172: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:161: trailing whitespace.
++L173: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:163: trailing whitespace.
++L175: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:165: trailing whitespace.
++L178: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:166: trailing whitespace.
++L179: `--docdir=`DIRECTORY`` cite31†# L180: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:167: trailing whitespace.
++L181: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:169: trailing whitespace.
++L183: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:175: trailing whitespace.
++L190: #### 17.3.3.2. PostgreSQL Features cite33†# L191: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:177: trailing whitespace.
++L193: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:180: trailing whitespace.
++L197: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:181: trailing whitespace.
++L198: `--with-perl` cite36†# L199: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:182: trailing whitespace.
++L200: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:184: trailing whitespace.
++L202: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:185: trailing whitespace.
++L203: `--with-python` cite37†# L204: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:186: trailing whitespace.
++L205: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:188: trailing whitespace.
++L207: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:189: trailing whitespace.
++L208: `--with-tcl` cite38†# L209: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:190: trailing whitespace.
++L210: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:192: trailing whitespace.
++L212: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:194: trailing whitespace.
++L215: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:195: trailing whitespace.
++L216: `--with-llvm` cite40†# L217: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:196: trailing whitespace.
++L218: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:199: trailing whitespace.
++L221: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:202: trailing whitespace.
++L224: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:203: trailing whitespace.
++L225: `--with-lz4` cite42†# L226: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:204: trailing whitespace.
++L227: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:206: trailing whitespace.
++L229: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:207: trailing whitespace.
++L230: `--with-zstd` cite43†# L231: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:208: trailing whitespace.
++L232: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:210: trailing whitespace.
++L234: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:212: trailing whitespace.
++L237: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:213: trailing whitespace.
++L238: `--with-openssl` cite45†# L239: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:214: trailing whitespace.
++L240: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:216: trailing whitespace.
++L242: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:218: trailing whitespace.
++L245: `--with-ldap` cite47†# L246: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:219: trailing whitespace.
++L247: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:221: trailing whitespace.
++L249: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:223: trailing whitespace.
++L252: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:224: trailing whitespace.
++L253: `--with-bsd-auth` cite51†# L254: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:225: trailing whitespace.
++L255: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:227: trailing whitespace.
++L257: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:229: trailing whitespace.
++L260: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:230: trailing whitespace.
++L261: `--with-bonjour` cite54†# L262: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:231: trailing whitespace.
++L263: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:233: trailing whitespace.
++L265: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:235: trailing whitespace.
++L268: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:237: trailing whitespace.
++L270: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:239: trailing whitespace.
++L272: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:240: trailing whitespace.
++L273:   * `ossp` to use the cite57†OSSP UUID library†www.ossp.org L274: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:242: trailing whitespace.
++L277: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:243: trailing whitespace.
++L278: `--with-libxml` cite59†# L279: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:244: trailing whitespace.
++L280: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:248: trailing whitespace.
++L284: `--with-libxslt` cite60†# L285: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:249: trailing whitespace.
++L286: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:251: trailing whitespace.
++L288: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:252: trailing whitespace.
++L289: `--with-selinux` cite62†# L290: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:253: trailing whitespace.
++L291: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:255: trailing whitespace.
++L293: #### 17.3.3.3. Anti-Features cite64†# L294: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:257: trailing whitespace.
++L296: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:258: trailing whitespace.
++L297: `--without-icu` cite65†# L298: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:259: trailing whitespace.
++L299: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:261: trailing whitespace.
++L301: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:263: trailing whitespace.
++L304: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:264: trailing whitespace.
++L305: `--with-libedit-preferred` cite68†# L306: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:265: trailing whitespace.
++L307: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:267: trailing whitespace.
++L309: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:268: trailing whitespace.
++L310: `--without-zlib` cite69†# L311: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:269: trailing whitespace.
++L312: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:271: trailing whitespace.
++L314: `--disable-spinlocks` cite70†# L315: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:272: trailing whitespace.
++L316: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:274: trailing whitespace.
++L318: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:276: trailing whitespace.
++L321: #### 17.3.3.4. Build Process Details cite72†# L322: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:277: trailing whitespace.
++L323: `--with-includes=`DIRECTORIES`` cite73†# L324: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:278: trailing whitespace.
++L325: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:280: trailing whitespace.
++L327: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:282: trailing whitespace.
++L329: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:284: trailing whitespace.
++L332: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:286: trailing whitespace.
++L334: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:290: trailing whitespace.
++L339: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:292: trailing whitespace.
++L342: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:295: trailing whitespace.
++L346: #### 17.3.3.5. Miscellaneous cite79†# L347: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:297: trailing whitespace.
++L349: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:299: trailing whitespace.
++L352: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:301: trailing whitespace.
++L355: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:304: trailing whitespace.
++L359: `--with-blocksize=`BLOCKSIZE`` cite83†# L360: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:305: trailing whitespace.
++L361: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:307: trailing whitespace.
++L363: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:309: trailing whitespace.
++L366: #### 17.3.3.6. Developer Options cite85†# L367: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:312: trailing whitespace.
++L370: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:317: trailing whitespace.
++L377: `--enable-tap-tests` cite88†# L378: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:318: trailing whitespace.
++L379: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:320: trailing whitespace.
++L381: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:322: trailing whitespace.
++L384: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:324: trailing whitespace.
++L387: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt:329: new blank line at EOF.
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-pool-listing.txt:5: trailing whitespace.
++L2: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-pool-listing.txt:162: trailing whitespace.
++L0: cite0†DEBSOURCES L1: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-pool-listing.txt:164: trailing whitespace.
++L3: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-pool-listing.txt:166: trailing whitespace.
++L5: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-pool-listing.txt:167: trailing whitespace.
++L6: cite1†Skip Quicknav L7: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-pool-listing.txt:168: trailing whitespace.
++L8:   * cite0†Home L9:   * cite2†Search L10:   * cite3†Documentation L11:   * cite4†Stats L12:   * cite5†About L13: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-pool-listing.txt:171: trailing whitespace.
++L16: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-pool-listing.txt:174: trailing whitespace.
++L20: 
+docs/qualification/candidates/native-prefix-20261012/author/raw/web-pool-listing.txt:178: new blank line at EOF.
