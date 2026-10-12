@@ -1,0 +1,189 @@
+{
+  "verdict": "ACCEPT_SOURCE_AND_FINITE_INVOCATION_SCOPE",
+  "reviewed_at": "2026-10-12 16:59:49 UTC",
+  "started_at": "2026-10-12T16:43:23Z",
+  "task_deadline": "2026-10-12T17:03:23Z",
+  "native_qualification_result": "PENDING; NO REVIEWER NATIVE EXECUTION",
+  "source": {
+    "commit": "5a7db3f470a4df3f51e47fc8b2d41e6502f5430e",
+    "tree": "7566cad50cf320285ab373dff786a4ca13ddbecf",
+    "parent_qualified_source": "3f5302a96309ff4b615dedc3f6ba196b0eb5aeb0",
+    "base_rc1": "2f06feccca731d6cd388612cd568185ecc29668f",
+    "commit_receipt": {
+      "chunk_id": "2da149",
+      "wall_time_seconds": 0.00003325,
+      "exit_code": 0,
+      "original_token_count": 92,
+      "output": "5a7db3f470a4df3f51e47fc8b2d41e6502f5430e\n7566cad50cf320285ab373dff786a4ca13ddbecf\n3f5302a96309ff4b615dedc3f6ba196b0eb5aeb0\n\nA\tapps/gateway/test/postgres-invocation-admission.test.mjs\nA\tapps/gateway/test/postgres-invocation-fixture.mjs\nA\tapps/gateway/test/postgres-invocation.integration.mjs\nA\tdocs/qualification/candidates/meri-native-invocation-20261012/OUTLINE.md\n"
+    },
+    "exact_new_file_hashes": {
+      "apps/gateway/test/postgres-invocation-fixture.mjs": "5431b4df8fafdb10c0e3eef8fb8c4cd5f863a52d2572a258c4beb0358322d856",
+      "apps/gateway/test/postgres-invocation.integration.mjs": "9739bbb6864a41998eaf53a3ffd364fe52b65d8fbfdcfdad7a4d85aafecf6e60",
+      "apps/gateway/test/postgres-invocation-admission.test.mjs": "1f850dce97bbdf03f40a74e5d2ef9b40e077eec05e38fceceae69af5078f9fd4",
+      "docs/qualification/candidates/meri-native-invocation-20261012/OUTLINE.md": "5b48bd3a724e370da66f143e63d0e7ffaf58629c804b72c297e2b0754fa17111"
+    },
+    "unchanged_existing_files_and_hashes": {
+      "apps/gateway/test/postgres-budget-native-fixture.mjs": "6411a3b5b25664568979a4894fca2016735591f7bb87fa900928b66f33cfdf1e",
+      "apps/gateway/test/postgres-budget-container-fixture.mjs": "77efef99b2f1b45cd1dedca8df3a8d30415a2ae9f3792fd90b5f58a5388adc1a",
+      "apps/gateway/test/postgres-budget-admission.test.mjs": "92c1325c0951378b6de3256ae7e7b474fea19679fab6a1276841035fd5bc372e",
+      "apps/gateway/test/postgres-budget-container.test.mjs": "5e8aed71609764dbe86d82aee360b69209c5e8390f5fa2b4eb087b482f88fa72",
+      "apps/gateway/test/postgres-budget.integration.mjs": "85c5b91c6424397c8d85f49770717ca459df2a247905690b539194ef88285693",
+      "apps/gateway/test/postgres-budget-child.mjs": "493834c03bec2effaf0932049ad375e3624166ddcd230e8965dac32ff04bb9e9",
+      "apps/control/qualification-sdk-fixture/state/package-lock.json": "c5ab764dcd9dcd8dee88d2cab3e7412fb9752e3a869c0a1693839c0567d3973a",
+      "apps/proxy/qualification/state/migrations/0001_qualification_state.sql": "fa33f51c492361c280c4847ea08629f0c777cb6b0e9652f1e67f95543bda0dfc",
+      "apps/proxy/qualification/state/migrations/0002_tool_budget.sql": "53d3933a440ed0801411d3ed544f4c554f397b3338acaad1ce1addcce4ef5809",
+      "apps/proxy/qualification/state/migrations/0003_tool_invocations.sql": "8d0c6ab5e3027b637f7905bd19ac1d830095f1565f745d4e2954294b115137e5",
+      "apps/gateway/budget/tool-invocation-owner.mjs": "ede1672b79da5055f3ea8a2e1b8603c50d5ba9783914fab24195a8e6356aec75",
+      "apps/gateway/budget/postgres-tool-budget.mjs": "4f3d3336e2cdf01785cecd0ea22aeccea1e5c9a8d773b20492f8cd5fefb06ed4",
+      "apps/gateway/budget/postgres-budget-store.mjs": "2178dcfe773f288087644ab42403d637c1aeea97e42058a19d50f7b39e51f772",
+      "apps/control/tool-invocations.mjs": "96bb3dd5b64a64fd59ac57fda8bd1198ad32bf0401d8e4f9447ffb9301e7e70c"
+    },
+    "scope": "Exactly three new qualification files plus outline; production implementations, existing helpers/tests, migrations, contracts and lockfiles unchanged."
+  },
+  "independent_source_checks": {
+    "tests": 24,
+    "pass": 24,
+    "fail": 0,
+    "skipped": 0,
+    "stdout": "independent-source-tests-final.stdout.log",
+    "stderr": "independent-source-tests-final.stderr.log",
+    "method": "Original fixture and entry bytes evaluated in disposable in-memory VM modules; all native imports replaced with explicit stubs. Twelve native test functions registered but never executed.",
+    "coverage": [
+      "Every owned pool close is awaited after open/verify/observation/commit/rollback/release/close failures.",
+      "Synchronous action rejection is registered before actions start; other owners settle without unhandled rejections.",
+      "Late three-waiter metadata response fails the original1200ms cutoff before COMMIT.",
+      "Four ACK faults preserve exact SQL arguments and wait for underlying COMMIT resolution; driver failure is not relabeled.",
+      "Historical equality removes only observedAtMs and retains hold/charge/output/state differences.",
+      "Missing native or migration binding refuses before application/native resource stubs.",
+      "Absent/dirty invocation table and dirty budget admission closes owner without executing a native case.",
+      "Valid source entry registers exactly12 cases and closes the owner after hook."
+    ],
+    "retained_harness_failures": {
+      "stdout": "independent-source-tests.stdout.log",
+      "stderr": "independent-source-tests.stderr.log",
+      "source_before_correction": "independent-source.before-harness-correction.mjs",
+      "reason": "Initial VM harness passed a cross-realm object to the intentionally same-realm plain-object parser and expected an obsolete observation error name. Test boundary normalization and exact final error expectation corrected; no product assertions weakened."
+    }
+  },
+  "required_source_suite_independently_rerun": {
+    "tests": 117,
+    "pass": 117,
+    "fail": 0,
+    "skipped": 0,
+    "composition": {
+      "new_invocation_controls": 7,
+      "prior_admission_and_container": 78,
+      "canonical_invocation_owner": 22,
+      "canonical_transaction": 8,
+      "canonical_control": 2
+    },
+    "stdout": "author-source-tests.stdout.log",
+    "stderr": "author-source-tests.stderr.log",
+    "platform_session_id": 63567,
+    "terminal": {
+      "chunk_id": "ed8063",
+      "wall_time_seconds": 0.0000264,
+      "exit_code": 0,
+      "original_token_count": 0,
+      "output": ""
+    }
+  },
+  "review_findings_resolved": [
+    "Blocker rollback/release failures no longer skip remaining joins or owned pool closes; all close settlements are awaited.",
+    "Action promises are deferred before allSettled registration, preventing synchronous startup failures from orphaning other actions.",
+    "Observation clock/admission checks occur immediately after pg_stat_activity await and before accepting three waiters.",
+    "Success case asserts exact canonical completion hash and physical output byte count."
+  ],
+  "test_meaning": {
+    "native_cases": 12,
+    "composition": "One real trusted-control success, four real post-COMMIT ACK-loss phases, and seven concurrency/refusal/history cases.",
+    "canonical_owner_reused": true,
+    "canonical_normalization_and_private_owned_dispatch_reused": true,
+    "synthetic_handler_only": true,
+    "production_control_remains_source_disabled": true,
+    "actual_native_contention_requirement": "Three independent pool/backendPIDs must be observed waiting on real canonical budget-row lock;1200ms deadline remains below store2s lock timeout.",
+    "historical_marker_reconcile": "After revocation, actual historical marker must settle exactly once without redelivering payload or reexecuting handler.",
+    "unknown_holds": "Final combined revocation/expiry/fence replacement/quarantine preserves UNKNOWN; foreign completion facts cannot release/charge.",
+    "limits": "Synthetic authority/handler fixture evidence; no genuine SDK/provider/authentication or full G1 acceptance."
+  },
+  "operations": {
+    "path": "/workspace/scratch/meri-native-invocation-run-20261012/operations.py",
+    "sha256": "5f04058835316975f87e982e12c71a1ad06c1d457a84e3f6d946ddb2c36ef776",
+    "review_mode": "Source/AST only; not imported or executed",
+    "setup": "Original preserved under unique alias; unchanged0001/0002 create fresh canonical schema atomically. Ownership/native-base-env manifests precede COMMIT; separate terminal marker confirms commit.",
+    "migration0003": "Separate explicit prerequisite/transaction; fresh schema OID/object/row equality and absent invocation table required; hash matches unchanged8d0c6ab5e3027b637f7905bd19ac1d830095f1565f745d4e2954294b115137e5. Table empty and actual OID recorded before COMMIT; distinct terminal commit marker, qualification_result=false.",
+    "native_entry": "Requires explicit matching MERI_INVOCATION_PG_MIGRATION_SHA256 before application imports; refuses missing/dirty table. No DDL/reset inside entry/helper.",
+    "restoration": "After actual owned-process/backend cleanup, retain fresh invocation archive, restore original schema, compare all original/prior/SDK row/relationOID/security hashes.",
+    "transaction_checks": {
+      "verdict": "PASS",
+      "new_source_hashes": {
+        "apps/gateway/test/postgres-invocation-fixture.mjs": "5431b4df8fafdb10c0e3eef8fb8c4cd5f863a52d2572a258c4beb0358322d856",
+        "apps/gateway/test/postgres-invocation.integration.mjs": "9739bbb6864a41998eaf53a3ffd364fe52b65d8fbfdcfdad7a4d85aafecf6e60",
+        "apps/gateway/test/postgres-invocation-admission.test.mjs": "1f850dce97bbdf03f40a74e5d2ef9b40e077eec05e38fceceae69af5078f9fd4",
+        "docs/qualification/candidates/meri-native-invocation-20261012/OUTLINE.md": "5b48bd3a724e370da66f143e63d0e7ffaf58629c804b72c297e2b0754fa17111"
+      },
+      "operations_sha256": "5f04058835316975f87e982e12c71a1ad06c1d457a84e3f6d946ddb2c36ef776",
+      "unchanged_existing_source_files": 14,
+      "unchanged_source_hashes": {
+        "apps/gateway/test/postgres-budget-native-fixture.mjs": "6411a3b5b25664568979a4894fca2016735591f7bb87fa900928b66f33cfdf1e",
+        "apps/gateway/test/postgres-budget-container-fixture.mjs": "77efef99b2f1b45cd1dedca8df3a8d30415a2ae9f3792fd90b5f58a5388adc1a",
+        "apps/gateway/test/postgres-budget-admission.test.mjs": "92c1325c0951378b6de3256ae7e7b474fea19679fab6a1276841035fd5bc372e",
+        "apps/gateway/test/postgres-budget-container.test.mjs": "5e8aed71609764dbe86d82aee360b69209c5e8390f5fa2b4eb087b482f88fa72",
+        "apps/gateway/test/postgres-budget.integration.mjs": "85c5b91c6424397c8d85f49770717ca459df2a247905690b539194ef88285693",
+        "apps/gateway/test/postgres-budget-child.mjs": "493834c03bec2effaf0932049ad375e3624166ddcd230e8965dac32ff04bb9e9",
+        "apps/control/qualification-sdk-fixture/state/package-lock.json": "c5ab764dcd9dcd8dee88d2cab3e7412fb9752e3a869c0a1693839c0567d3973a",
+        "apps/proxy/qualification/state/migrations/0001_qualification_state.sql": "fa33f51c492361c280c4847ea08629f0c777cb6b0e9652f1e67f95543bda0dfc",
+        "apps/proxy/qualification/state/migrations/0002_tool_budget.sql": "53d3933a440ed0801411d3ed544f4c554f397b3338acaad1ce1addcce4ef5809",
+        "apps/proxy/qualification/state/migrations/0003_tool_invocations.sql": "8d0c6ab5e3027b637f7905bd19ac1d830095f1565f745d4e2954294b115137e5",
+        "apps/gateway/budget/tool-invocation-owner.mjs": "ede1672b79da5055f3ea8a2e1b8603c50d5ba9783914fab24195a8e6356aec75",
+        "apps/gateway/budget/postgres-tool-budget.mjs": "4f3d3336e2cdf01785cecd0ea22aeccea1e5c9a8d773b20492f8cd5fefb06ed4",
+        "apps/gateway/budget/postgres-budget-store.mjs": "2178dcfe773f288087644ab42403d637c1aeea97e42058a19d50f7b39e51f772",
+        "apps/control/tool-invocations.mjs": "96bb3dd5b64a64fd59ac57fda8bd1198ad32bf0401d8e4f9447ffb9301e7e70c"
+      },
+      "separate_migration_manifest_inside_transaction": true,
+      "setup_manifest_inside_transaction": true,
+      "migration_prerequisite_explicitly_not_qualification": true,
+      "sql_migrations_do_not_commit_outer_transaction": true,
+      "prior_nine_artifact_hashes_preserved": 15,
+      "prior33_artifact_hashes_preserved": 14,
+      "producer_log_preserved": true,
+      "prior_native_review_sha256": "ae8bf94b4d0d13849e5d4d524d19c441145d80c21ebb552dcc9a319cc2a5c680"
+    },
+    "execution_requirement": "Fixed clean env-i operations and accepted bounded direct platform lifecycle; do not inherit libpq/provider credentials."
+  },
+  "approved_scope_review": {
+    "additional_security_or_credential_confirmation_required_by_this_change": false,
+    "existing_endpoint": "127.0.0.1:55432",
+    "existing_database": "meri_qualification_test",
+    "existing_owner": "qualification_owner",
+    "original_oid": 16389,
+    "preserve_prior_oids": [
+      24577,
+      24814,
+      25602
+    ],
+    "preserve_sdk_oid": 25502,
+    "original_alias": "meri_qualification_setup_invocation_20261012",
+    "retained_archive": "meri_qualification_invocation_20261012",
+    "migration0003_prerequisite_is_not_native_qualification": true,
+    "native_cases": 12,
+    "attempts": 1,
+    "native_timeout_seconds": 90,
+    "kill_grace_seconds": 5,
+    "common_work_seconds": 720,
+    "cleanup_deadline_seconds": 900,
+    "T0": "Fresh frozen admission; every operation must fit remaining window; no reset/extension/retry.",
+    "no_new_roles_passwords_HBA_network_listeners_services_containers_packages_or_provider_cloud_calls": true,
+    "host5432_untouched": true,
+    "next_sdk_native_stage": "Outside this acceptance; actual SDK child remains held for separately established OS containment."
+  },
+  "preservation": {
+    "prior_nine_artifact_hashes_verified": 15,
+    "prior33_artifact_hashes_verified": 14,
+    "producer_log_preserved": true,
+    "prior_native_review_sha256": "ae8bf94b4d0d13849e5d4d524d19c441145d80c21ebb552dcc9a319cc2a5c680"
+  },
+  "reviewer_database_docker_network_native_actions": [],
+  "reviewer_source_edits": "Only allocated independent-review tests/evidence; author/product source untouched",
+  "remaining_source_findings": []
+}

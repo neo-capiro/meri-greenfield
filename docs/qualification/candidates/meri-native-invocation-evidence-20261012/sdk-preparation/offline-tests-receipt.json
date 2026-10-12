@@ -1,0 +1,47 @@
+{
+  "started_at": "2026-10-12T16:57:35.092783+00:00",
+  "ended_at": "2026-10-12T16:57:45.758771+00:00",
+  "argv": [
+    "/usr/bin/prlimit",
+    "--fsize=1048576:1048576",
+    "/usr/bin/timeout",
+    "--signal=TERM",
+    "--kill-after=5s",
+    "120s",
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "--test",
+    "--test-concurrency=1",
+    "apps/worker/qualification/probes/sdk-capture.test.mjs",
+    "apps/worker/qualification/probes/native-stream-observer.test.mjs"
+  ],
+  "source_commit": "3f5302a96309ff4b615dedc3f6ba196b0eb5aeb0",
+  "exit_code": 0,
+  "counts": {
+    "tests": null,
+    "pass": null,
+    "fail": null,
+    "cancelled": null,
+    "skipped": null,
+    "todo": null
+  },
+  "clean_environment_keys": [
+    "PATH",
+    "LANG",
+    "TMPDIR"
+  ],
+  "native_sdk_entry_invoked": false,
+  "native_binary_executed": false,
+  "injected_entries_independently_reviewed": true,
+  "per_stream_size_limit": 1048576,
+  "timeout_seconds": 120,
+  "kill_grace_seconds": 5,
+  "no_retries": true,
+  "offline-tests.stdout.log": {
+    "bytes": 6753,
+    "sha256": "26e33160f6ff8f9d8b6a5718eaf9deb526880e42d3608707f301fa095f2f1db3"
+  },
+  "offline-tests.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

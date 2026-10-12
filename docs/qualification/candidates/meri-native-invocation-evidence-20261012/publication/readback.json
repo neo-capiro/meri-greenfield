@@ -1,0 +1,657 @@
+{
+  "verdict": "PUBLISHED_SOURCE_AND_RECORDED_NATIVE_FUNCTIONAL_EVIDENCE_WITH_SAFE_SDK_PREPARATION; NO_G1_ADMISSION",
+  "repository": "neo-capiro/meri-greenfield",
+  "branch": "task/meri-native-invocation-evidence-20261012",
+  "local_tested_source_commit": "5a7db3f470a4df3f51e47fc8b2d41e6502f5430e",
+  "published_source_commit": "20c1bffbbe3305708f9f2ee53c16d102cf25ee2c",
+  "exact_source_tree": "7566cad50cf320285ab373dff786a4ca13ddbecf",
+  "local_parent": "3f5302a96309ff4b615dedc3f6ba196b0eb5aeb0",
+  "published_parent": "afb8f6729ffca8d64ee7e7de4a0a853bf0362aca",
+  "parent_exact_source_tree": "42692971ac7d18b0d45c4aea4252818b990577a5",
+  "metadata_differs_complete_trees_identical": true,
+  "evidence_freeze_commit": "69ad00b737c561ad55cefea3de532b738d355741",
+  "evidence_freeze_tree": "07ed3f9ca67c61e078405b23eea48e62b4f1ad35",
+  "source_files": 4,
+  "evidence_files": 61,
+  "all65_frozen_files_exact_utf8_readback": true,
+  "unique_blobs": 54,
+  "full_frozen_tree_matches_local_staged_tree": true,
+  "artifact_manifest_sha256": "6c58e7373664938f386d5ee6ed9abcc36106462ebc26d99cf20f8beaf9cb50f0",
+  "native_result": {
+    "cases": 12,
+    "pass": 12,
+    "fail": 0,
+    "skipped": 0,
+    "attempts": 1
+  },
+  "source_checks": {
+    "author": 117,
+    "independent": 24,
+    "independent_author_replay": 117
+  },
+  "terminal_sha256": "5295a5f1632192015d6579a9e59c618f2b40dc19e6789c234108ad8cfa46a6be",
+  "native_stdout_sha256": "1eddf297593d6860e554c20d7b3bd8d05be21f89c8ffc4d79a66d8744ffff23c",
+  "restoration_sha256": "681a00311a4fa48e1cc8632b4640b5ab3f8d44aea2665c0f2264931fe575c33d",
+  "postnative_review_sha256": "dc70accc238e3bce51ae90b05f23b7f03c5c27e0bb4c1cc74cda6368708d2b69",
+  "sdk": {
+    "installed_packages": 130,
+    "license_hashes": 127,
+    "cli_version": "2.1.295",
+    "cli_bytes": 256113848,
+    "cli_sha256": "4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358",
+    "cli_executed": false,
+    "offline_pass": 81,
+    "offline_skipped": 0,
+    "terminal_sha256": "d6fa9831012d9d9c1db048c16d12a8be197416353bd21cc2198dd7ccd4923ed2",
+    "package_verification_sha256": "731bf2fba9bb20b7206c90debc462a33b72029e8b0f7f47948dfae0d601565c3",
+    "latest_proposed_scope_sha256": "626f8efd13e9b7faa180cbfdbe36b360f7ad4363959dbb0112c8579ace737535",
+    "scope_correction_sha256": "97af70d0200924fc69f7355396b0d457cadcbf32216f6cd9751412e3b041d6ca",
+    "latest_pointer_sha256": "edd2948a8755a111368e9ab85a8493efe7828b4ee5fa9eea9ced4dc7f162833e",
+    "scope_status": "PROPOSED_DATA_ONLY_NOT_NATIVE_AUTHORITY",
+    "remaining": "Exact canonical frozen worker image/acquisition/build/source-security admission and reviewed fixed pre-child containment/lifecycle remain open; fixed bounds+grace must fit remaining original720/900 windows, otherwise HOLD+cleanup with no shrinking/reset/extension/retry."
+  },
+  "root_independent_readback_reported": {
+    "all4_invocation_source_files": true,
+    "all130_sdk_package_versions_and_manifest_hashes": true,
+    "all127_sdk_license_hashes": true,
+    "cli_hash_without_execution": true,
+    "scope_v2_changes_limited_to_declared_metadata_and_deadline_note": true,
+    "all9_old_sdk_terminal_hashes_unchanged": true
+  },
+  "pr": {
+    "number": 27,
+    "url": "https://github.com/neo-capiro/meri-greenfield/pull/27",
+    "head": "69ad00b737c561ad55cefea3de532b738d355741",
+    "base": "ac549600d054751da74bde3cbcdadbb116efa17f",
+    "state": "open",
+    "draft": true,
+    "merged": false
+  },
+  "preserved_prior_publication_heads": {
+    "PR23": "261410c4021b97cd63d3e876ddc9199a665c71bf",
+    "PR25": "ac549600d054751da74bde3cbcdadbb116efa17f"
+  },
+  "key_paths": {
+    "report": "docs/qualification/candidates/meri-native-invocation-evidence-20261012/REPORT.md",
+    "native_terminal": "docs/qualification/candidates/meri-native-invocation-evidence-20261012/native-run/terminal-receipt.json",
+    "native_review": "docs/qualification/candidates/meri-native-invocation-evidence-20261012/independent-source-review/native-receipt-review.json",
+    "sdk_terminal": "docs/qualification/candidates/meri-native-invocation-evidence-20261012/sdk-preparation/terminal-receipt.json",
+    "scope_v2": "docs/qualification/candidates/meri-native-invocation-evidence-20261012/sdk-preparation/next-security-scope.v2.json",
+    "latest_scope_pointer": "docs/qualification/candidates/meri-native-invocation-evidence-20261012/sdk-preparation/latest-proposal.json",
+    "manifest": "docs/qualification/candidates/meri-native-invocation-evidence-20261012/artifact-manifest.json"
+  },
+  "immutable_report_url": "https://github.com/neo-capiro/meri-greenfield/blob/69ad00b737c561ad55cefea3de532b738d355741/docs/qualification/candidates/meri-native-invocation-evidence-20261012/REPORT.md",
+  "excluded_payloads": [
+    "environment maps, inline-env/proxy config bodies",
+    "credentials/private keys/private product source",
+    "SDK binaries/tarballs/caches/installed payloads/dependency symlinks"
+  ],
+  "no_runtime_install_database_service_cloud_or_main_merge_actions_during_publication": true,
+  "owner_recorded_db_process_observations_not_independent_live_requery": true,
+  "transfer_blockers": [],
+  "file_readbacks": [
+    {
+      "git_blob_sha1": "51b0b0ecad61278d11334dab50a88bce9e3f4f3f",
+      "paths": [
+        "apps/gateway/test/postgres-invocation-admission.test.mjs"
+      ],
+      "sha256": [
+        "1f850dce97bbdf03f40a74e5d2ef9b40e077eec05e38fceceae69af5078f9fd4"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "1d30ff48f8b80f717dbc9cebe1e939cd042c16b4",
+      "paths": [
+        "apps/gateway/test/postgres-invocation-fixture.mjs"
+      ],
+      "sha256": [
+        "5431b4df8fafdb10c0e3eef8fb8c4cd5f863a52d2572a258c4beb0358322d856"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "e82b81e772d38ea3df835ccb6a10d802ab2c8cb1",
+      "paths": [
+        "apps/gateway/test/postgres-invocation.integration.mjs"
+      ],
+      "sha256": [
+        "9739bbb6864a41998eaf53a3ffd364fe52b65d8fbfdcfdad7a4d85aafecf6e60"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "4585386f2f09b950206d39a0d858f8ad61d71662",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-20261012/OUTLINE.md"
+      ],
+      "sha256": [
+        "5b48bd3a724e370da66f143e63d0e7ffaf58629c804b72c297e2b0754fa17111"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "e9d0fd90fe79bd26f94e57077ad07f7ac1ef728f",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/README.md"
+      ],
+      "sha256": [
+        "d577211dc159b148441a92c72640834da63ffa4f28b938580fbc608b9a4a02f2"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "71d093bd53a19e7cf2787153201a58c69fb30ca1",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/REPORT.md"
+      ],
+      "sha256": [
+        "0733bfa3fdaba86c961c33c509103ea4c1d2239994bf5fd09b09bde78ddd60af"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "02ad4fd07b8b50bd103bb3f6c3d3618b1dfda86d",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/artifact-manifest.json"
+      ],
+      "sha256": [
+        "6c58e7373664938f386d5ee6ed9abcc36106462ebc26d99cf20f8beaf9cb50f0"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/independent-source-review/author-source-tests.stderr.log",
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/independent-source-review/independent-source-tests-final.stderr.log",
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/independent-source-review/independent-source-tests.stderr.log",
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/native-run/migration-0003.stderr.log",
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/native-run/native-invocation.stderr.log",
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/native-run/restore.stderr.log",
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/native-run/setup.stderr.log",
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/native-run/source-controls-reviewed.stderr.log",
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/native-run/source-tests-reviewed.stderr.log",
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/sdk-preparation/docker-images.stderr.log",
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/sdk-preparation/offline-tests.stderr.log",
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/sdk-preparation/sdk-cli.readelf.stderr.log"
+      ],
+      "sha256": [
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "0fb616a952c62c455526df1484351a5c8814bcfe",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/independent-source-review/author-source-tests.stdout.log"
+      ],
+      "sha256": [
+        "c6e787333f7071d8ecfc5b36de33ddebe741420db32d4aa90f32f03e1ab1f495"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "cff7bc9fb97f69b8ae35bd7427be4031999f6d86",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/independent-source-review/independent-review-final.json"
+      ],
+      "sha256": [
+        "0b7053317b0bd7ee54437f302560635c3237da704c6a4df75d73187edfb1df23"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "ee3ce204ece4d58770d4c124f53bc31af31ba8dd",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/independent-source-review/independent-source-tests-final.stdout.log"
+      ],
+      "sha256": [
+        "d1e5ad18525bc6e76223dd4668d187784f6d77a00dae29eea977f38625ea1041"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "9548d9621071180d5a298499266f49d444d9bf37",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/independent-source-review/independent-source-tests.stdout.log"
+      ],
+      "sha256": [
+        "84eb7b7b4b2b94948e0de44d0eeafc9c6231aa5af323d5223193e3049de04806"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "324cad1c27e158a5ae95ffb911c2683b28a86f73",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/independent-source-review/independent-source.before-harness-correction.mjs"
+      ],
+      "sha256": [
+        "a7edda3ce1d72c590f273ee8449dfc8cb813e197fda3a1a99a42b93bb4e3d1c2"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "567d63dd33571cdcb42c1524a1492be648997f4c",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/independent-source-review/independent-source.test.mjs"
+      ],
+      "sha256": [
+        "08c2176a24b629fdc0977bf7703259ff4881f20c38dbcd7386076fce28da40e3"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "0226f0bb0ce4f592d67507debfbb3d11a7ee4362",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/independent-source-review/native-receipt-review.json"
+      ],
+      "sha256": [
+        "dc70accc238e3bce51ae90b05f23b7f03c5c27e0bb4c1cc74cda6368708d2b69"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "1a299180f483b66a2833f5ce0cb2b56a64431bc0",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/native-run/admission.json"
+      ],
+      "sha256": [
+        "54976383c28e5fca749c3018e1af3b494dae1d24fa94e45494e9223df25875ae"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "c56a836fd72bbe6c0302a2f2f48dccb7e1eceb96",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/native-run/admitted-configuration.safe.json"
+      ],
+      "sha256": [
+        "1f525a96ce6b7ab82f09c680476d27545ba073dffbd88f6ee33312d291ebae9d"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "9d72f32bd2428681a373f5d9db4f0694cffb9c69",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/native-run/executor-availability-20261012T164731Z.json"
+      ],
+      "sha256": [
+        "1e3bece7c49d0909cf6a62175852c8e3c11ad563d28dfdff1e557c0ba9f5c24f"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "8e70b11d1c2a312b125c636692cf3709dc3290c7",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/native-run/migration-0003-manifest.json"
+      ],
+      "sha256": [
+        "fd9b76fbd59ccf7d8f9c82b7129000a6bc41f527507679336ea2ec7ef4b02570"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "ba3cb384aa66e8e4c4d9fa955a287ad6f7b98711",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/native-run/migration-0003-terminal.json"
+      ],
+      "sha256": [
+        "3e7dd91256be4a2b8196ccdb822ec5d8070c5358c9293c93128f36a048ee5d6c"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "380375920e15f1367497e9b848978840f2322e13",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/native-run/migration-0003.stdout.log"
+      ],
+      "sha256": [
+        "2d5a27049dbb876a100e2e404e9b9a0c94330bdb37cf3dedf6db80e525b23e1b"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "75c28b214025f3e6cbf8720057036508e4c7856a",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/native-run/native-invocation.receipt.json"
+      ],
+      "sha256": [
+        "aa2d799ed0440780b16d94372270218e50908798d9c668d8ef3835ec129eb093"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "e47135775d94f2cd654dfdae604dda6ac1065c8a",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/native-run/native-invocation.stdout.log"
+      ],
+      "sha256": [
+        "1eddf297593d6860e554c20d7b3bd8d05be21f89c8ffc4d79a66d8744ffff23c"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "b13ca1ad2f7747434170e5461e646e2cb7e13ff6",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/native-run/operations.py"
+      ],
+      "sha256": [
+        "5f04058835316975f87e982e12c71a1ad06c1d457a84e3f6d946ddb2c36ef776"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "ad78ed1fd1aa1d94086f651dc40b4d20235ae6e6",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/native-run/preflight.json"
+      ],
+      "sha256": [
+        "d17fc757bb6815b16c021d53df21aaba7a8980fa38d5ea45edd73af69b490475"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "9f1c29a67c529005ee9e1ce310b82b266a621b01",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/native-run/process-cleanup.json"
+      ],
+      "sha256": [
+        "ddb52556b4ea77996b2584b041e24695b92919b0a94a0b44bc972a37dca51f74"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "d1df9a5d1f0a9dbb83d3da003a7aa2befaeea9ac",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/native-run/restoration-receipt.json"
+      ],
+      "sha256": [
+        "681a00311a4fa48e1cc8632b4640b5ab3f8d44aea2665c0f2264931fe575c33d"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "243bea26c49501f59acb5add2b4a1c82204375f4",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/native-run/restore.stdout.log"
+      ],
+      "sha256": [
+        "600dc104df922fa7e1d8737f49930dcdf1cb5d1c84014617cac451c6ceb822c0"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "6921f400518d6c84fb58e18aa01dab9d8d140ff1",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/native-run/setup-receipt.json"
+      ],
+      "sha256": [
+        "698bf024141f89a3744cf4c1c6b82e67b8882d3a5919efa3bffa96d0deaeb971"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "6d66426fb1bc6635234221f1d98caee57a7a54c7",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/native-run/setup-terminal.json"
+      ],
+      "sha256": [
+        "7ee18bd0bdd801d00fc9354fa835b3e537b92a33aa1ebdb7e7c1bc6289235d7e"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "52d79321df66913ca0bf8dc94b98c58cdde95b6f",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/native-run/setup.stdout.log"
+      ],
+      "sha256": [
+        "eb80ff9a0f1ccd72ebdf318d0cbd632c85ecf8c273b5a73f01e2e531ce725db9"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "af65c160eba2ea364946eb6f883b32f65ce4264c",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/native-run/source-controls-reviewed.stdout.log"
+      ],
+      "sha256": [
+        "e6008693c51e278fd1e9336eafb1d04c25219ee6f54b79e13c064339aeeaf3ff"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "da68b214c8aa8914c8247df01301f89c78cf17d1",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/native-run/source-receipt.json"
+      ],
+      "sha256": [
+        "6fb6d60250139cc86de27f4e783fb397e61e27faa8b2aa734d6a4edd8d06c148"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "31f4e4fa53d638fbcf6b72b23106ec011faaecbf",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/native-run/source-tests-reviewed.stdout.log"
+      ],
+      "sha256": [
+        "e6c04dba3c6399ec5bb1aaa8f5ee7afb00ab651a923a57181509d4d6f3c433fc"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "ae1631e019b4fa72cd3258ab720937b2fc057324",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/native-run/terminal-receipt.json"
+      ],
+      "sha256": [
+        "5295a5f1632192015d6579a9e59c618f2b40dc19e6789c234108ad8cfa46a6be"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "a7b493e33ebb71089879b3e0c63af2bda7fb7f36",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/sdk-preparation/docker-images.receipt.json"
+      ],
+      "sha256": [
+        "14722006cba19b5967674b9b2a10131b86979bc79d1ca263224810b41393e7c7"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "a7339ef69dfce8acd011f50a76ab1088779a8c18",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/sdk-preparation/docker-images.stdout.log"
+      ],
+      "sha256": [
+        "3e9a4d69dcd70315d9aaff44dc5afe426f2c9a32462dbadd69013e97077a67d1"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "835838332edf8e6646e92c07e5162eb424ad1227",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/sdk-preparation/independent-entry-review.json"
+      ],
+      "sha256": [
+        "71887d14cf40dd454ad422a06ee1e10aaf40e96a50199d54cc71b30eb2125a89"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "81465df68670f8bc85bad1bb0d5dcfb67e24ade0",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/sdk-preparation/install-receipt.safe.json"
+      ],
+      "sha256": [
+        "8de630c55ad3ac6d38e8ba0cc6b83a9e5415ba9e3d12da9088e1e398996b564c"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "64720b515d43b03c7f4ddcfd13d669e106a834c2",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/sdk-preparation/install.stderr.log"
+      ],
+      "sha256": [
+        "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "fe93951cfb207bb63fced20e1854f35ac2d630c8",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/sdk-preparation/install.stdout.log"
+      ],
+      "sha256": [
+        "f443539a2258953d9ddf5d3b07f202ff6a888d675d0cd8b2058c7b9d85edfc28"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "6e4fe2f0769c863efe0caed682ce48f83de78ccd",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/sdk-preparation/latest-proposal.json"
+      ],
+      "sha256": [
+        "edd2948a8755a111368e9ab85a8493efe7828b4ee5fa9eea9ced4dc7f162833e"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "03d36fb93847a214118c94d5c247ed2494bfbabd",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/sdk-preparation/next-security-scope.json"
+      ],
+      "sha256": [
+        "5510c79ad4604829d42ca4ab6db0c21d2efac1e168ee61d08eb6b9958e1bfa20"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "eb14fafcde98882f52e057bb4942cb02a58d9178",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/sdk-preparation/next-security-scope.v2.json"
+      ],
+      "sha256": [
+        "626f8efd13e9b7faa180cbfdbe36b360f7ad4363959dbb0112c8579ace737535"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "305c455dfd85ef9154145a2ddf0fdbfd01fb7735",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/sdk-preparation/offline-tests-receipt.json"
+      ],
+      "sha256": [
+        "7e3df086da0db90e93ee4a5823305fdc5697f839ffd7e0458e042dd3ef16c193"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "9361b19d009dfbef4a127d4f675736ac2d27249d",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/sdk-preparation/offline-tests-summary.json"
+      ],
+      "sha256": [
+        "e668e0f9cf1b6815025925131c03e9997b6ede7e25bccf4f761c0bc5841b1a84"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "61a1b3218ed8eba901a355fe9acd75f6900ae278",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/sdk-preparation/offline-tests.stdout.log"
+      ],
+      "sha256": [
+        "26e33160f6ff8f9d8b6a5718eaf9deb526880e42d3608707f301fa095f2f1db3"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "c4c6800dd368771b413e8591a6f19a57aafb3eeb",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/sdk-preparation/package-verification-initial-failure.json"
+      ],
+      "sha256": [
+        "62cff7f2d71137e8a9e04323aea5719c8b15439eea2202f6438b9f23d8ae68ef"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "fac25a6575152f18a3bb8201692699c509957d3c",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/sdk-preparation/package-verification.json"
+      ],
+      "sha256": [
+        "731bf2fba9bb20b7206c90debc462a33b72029e8b0f7f47948dfae0d601565c3"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "8f0e2d3c2239700702c0e8b38b7c75619f745ad5",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/sdk-preparation/preservation.json"
+      ],
+      "sha256": [
+        "30551f8d3b30e0738e7d44be8b49e234cc3d9617a77d1ee63b81d8ca03d52170"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "53362768f6facae2d62686d315ca7324d977ae86",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/sdk-preparation/scope-correction-receipt.json"
+      ],
+      "sha256": [
+        "97af70d0200924fc69f7355396b0d457cadcbf32216f6cd9751412e3b041d6ca"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "275a6c1e7653dee5bace943a83702d2c6fa22c2f",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/sdk-preparation/sdk-cli.readelf.stdout.log"
+      ],
+      "sha256": [
+        "43b3b3deab06f0100e3230a82792e77b8ef94b29e2896ac0a9e03ace78ac075d"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "21198e0926c6ce6dd47045ca854a1486852ee84e",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/sdk-preparation/source-receipt.json"
+      ],
+      "sha256": [
+        "63505b4ee4541dbafaad5a8cf2c0309092a8b49e9c9ca60bffac444c828c92d6"
+      ],
+      "exact_utf8_bytes_match": true
+    },
+    {
+      "git_blob_sha1": "63c1d813464ab09109c047d44e1277a882cb4098",
+      "paths": [
+        "docs/qualification/candidates/meri-native-invocation-evidence-20261012/sdk-preparation/terminal-receipt.json"
+      ],
+      "sha256": [
+        "d6fa9831012d9d9c1db048c16d12a8be197416353bd21cc2198dd7ccd4923ed2"
+      ],
+      "exact_utf8_bytes_match": true
+    }
+  ],
+  "metadata_policy": "Subsequent delta only publication metadata; frozen source/evidence objects unchanged."
+}

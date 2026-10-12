@@ -1,0 +1,7 @@
+{
+  "recorded_at": "2026-10-12T16:56:53.547228+00:00",
+  "status": "ARTIFACT_READER_PATH_ERROR",
+  "stage": "Cached package integrity inspection",
+  "cause": "Inspection used npm-cache/content-v2 instead of npm-cache/_cacache/content-v2. Installation already terminal exit0 and lock unchanged. No SDK or tests executed.",
+  "correction": "Use npm standard _cacache directory; retain this failure."
+}

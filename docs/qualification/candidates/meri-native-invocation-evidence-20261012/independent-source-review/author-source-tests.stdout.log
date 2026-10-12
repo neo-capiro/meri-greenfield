@@ -1,0 +1,712 @@
+TAP version 13
+# Subtest: control construction rejects effectful options before any capability access
+ok 1 - control construction rejects effectful options before any capability access
+  ---
+  duration_ms: 1.06302
+  type: 'test'
+  ...
+# Subtest: delivery correlation rejects objects without invoking serialization hooks
+ok 2 - delivery correlation rejects objects without invoking serialization hooks
+  ---
+  duration_ms: 0.844669
+  type: 'test'
+  ...
+# Subtest: pure admission returns frozen correlation only; importing child does not run it
+ok 3 - pure admission returns frozen correlation only; importing child does not run it
+  ---
+  duration_ms: 3.045019
+  type: 'test'
+  ...
+# Subtest: missing/unrecognized mode undefined refuses before native dependencies
+ok 4 - missing/unrecognized mode undefined refuses before native dependencies
+  ---
+  duration_ms: 0.621242
+  type: 'test'
+  ...
+# Subtest: missing/unrecognized mode yes refuses before native dependencies
+ok 5 - missing/unrecognized mode yes refuses before native dependencies
+  ---
+  duration_ms: 0.255315
+  type: 'test'
+  ...
+# Subtest: missing/unrecognized mode true refuses before native dependencies
+ok 6 - missing/unrecognized mode true refuses before native dependencies
+  ---
+  duration_ms: 0.205512
+  type: 'test'
+  ...
+# Subtest: missing/unrecognized mode  refuses before native dependencies
+ok 7 - missing/unrecognized mode  refuses before native dependencies
+  ---
+  duration_ms: 0.263337
+  type: 'test'
+  ...
+# Subtest: closed native binding rejects host=db.internal
+ok 8 - closed native binding rejects host=db.internal
+  ---
+  duration_ms: 0.336264
+  type: 'test'
+  ...
+# Subtest: closed native binding rejects host=localhost
+ok 9 - closed native binding rejects host=localhost
+  ---
+  duration_ms: 0.270266
+  type: 'test'
+  ...
+# Subtest: closed native binding rejects port=0
+ok 10 - closed native binding rejects port=0
+  ---
+  duration_ms: 0.266982
+  type: 'test'
+  ...
+# Subtest: closed native binding rejects port=6543
+ok 11 - closed native binding rejects port=6543
+  ---
+  duration_ms: 0.331156
+  type: 'test'
+  ...
+# Subtest: closed native binding rejects database=production
+ok 12 - closed native binding rejects database=production
+  ---
+  duration_ms: 0.337205
+  type: 'test'
+  ...
+# Subtest: closed native binding rejects user=postgres
+ok 13 - closed native binding rejects user=postgres
+  ---
+  duration_ms: 0.227443
+  type: 'test'
+  ...
+# Subtest: closed native binding rejects password=
+ok 14 - closed native binding rejects password=
+  ---
+  duration_ms: 0.225041
+  type: 'test'
+  ...
+# Subtest: closed native binding rejects systemIdentifier=-1
+ok 15 - closed native binding rejects systemIdentifier=-1
+  ---
+  duration_ms: 0.182799
+  type: 'test'
+  ...
+# Subtest: closed native binding rejects systemIdentifier=123
+ok 16 - closed native binding rejects systemIdentifier=123
+  ---
+  duration_ms: 0.203428
+  type: 'test'
+  ...
+# Subtest: closed native binding rejects serverStartTime=0
+ok 17 - closed native binding rejects serverStartTime=0
+  ---
+  duration_ms: 0.146355
+  type: 'test'
+  ...
+# Subtest: closed native binding rejects serverStartTime=bad
+ok 18 - closed native binding rejects serverStartTime=bad
+  ---
+  duration_ms: 0.125064
+  type: 'test'
+  ...
+# Subtest: closed native binding rejects serverVersion=16.15
+ok 19 - closed native binding rejects serverVersion=16.15
+  ---
+  duration_ms: 0.192313
+  type: 'test'
+  ...
+# Subtest: closed native binding rejects workDeadlineMs=1800000720000
+ok 20 - closed native binding rejects workDeadlineMs=1800000720000
+  ---
+  duration_ms: 0.145944
+  type: 'test'
+  ...
+# Subtest: closed native binding rejects cleanupDeadlineMs=1800000900000
+ok 21 - closed native binding rejects cleanupDeadlineMs=1800000900000
+  ---
+  duration_ms: 0.160285
+  type: 'test'
+  ...
+# Subtest: closed native binding rejects t0Ms=1800000000001
+ok 22 - closed native binding rejects t0Ms=1800000000001
+  ---
+  duration_ms: 0.205752
+  type: 'test'
+  ...
+# Subtest: closed native binding rejects stateLockSha256=x
+ok 23 - closed native binding rejects stateLockSha256=x
+  ---
+  duration_ms: 0.156469
+  type: 'test'
+  ...
+# Subtest: closed native binding rejects migrationSha256=null
+ok 24 - closed native binding rejects migrationSha256=null
+  ---
+  duration_ms: 0.203799
+  type: 'test'
+  ...
+# Subtest: ambient PGHOST cannot override native admission
+ok 25 - ambient PGHOST cannot override native admission
+  ---
+  duration_ms: 0.203539
+  type: 'test'
+  ...
+# Subtest: ambient PGPASSWORD cannot override native admission
+ok 26 - ambient PGPASSWORD cannot override native admission
+  ---
+  duration_ms: 0.133536
+  type: 'test'
+  ...
+# Subtest: ambient PGSERVICE cannot override native admission
+ok 27 - ambient PGSERVICE cannot override native admission
+  ---
+  duration_ms: 0.12953
+  type: 'test'
+  ...
+# Subtest: ambient AWS_ACCESS_KEY_ID cannot override native admission
+ok 28 - ambient AWS_ACCESS_KEY_ID cannot override native admission
+  ---
+  duration_ms: 0.126085
+  type: 'test'
+  ...
+# Subtest: ambient ANTHROPIC_API_KEY cannot override native admission
+ok 29 - ambient ANTHROPIC_API_KEY cannot override native admission
+  ---
+  duration_ms: 0.155809
+  type: 'test'
+  ...
+# Subtest: ambient OPENAI_API_KEY cannot override native admission
+ok 30 - ambient OPENAI_API_KEY cannot override native admission
+  ---
+  duration_ms: 0.176509
+  type: 'test'
+  ...
+# Subtest: ambient BEDROCK_ENDPOINT cannot override native admission
+ok 31 - ambient BEDROCK_ENDPOINT cannot override native admission
+  ---
+  duration_ms: 0.16366
+  type: 'test'
+  ...
+# Subtest: ambient NODE_OPTIONS cannot override native admission
+ok 32 - ambient NODE_OPTIONS cannot override native admission
+  ---
+  duration_ms: 0.117753
+  type: 'test'
+  ...
+# Subtest: ambient NODE_PATH cannot override native admission
+ok 33 - ambient NODE_PATH cannot override native admission
+  ---
+  duration_ms: 0.124072
+  type: 'test'
+  ...
+# Subtest: hash mismatch, extra keys, overflow, expiry and effectful environment fail closed
+ok 34 - hash mismatch, extra keys, overflow, expiry and effectful environment fail closed
+  ---
+  duration_ms: 0.798482
+  type: 'test'
+  ...
+# Subtest: source admission precedes dynamic application imports; no migration/reset/production activation
+ok 35 - source admission precedes dynamic application imports; no migration/reset/production activation
+  ---
+  duration_ms: 20.118216
+  type: 'test'
+  ...
+# Subtest: source keeps one original group cutoff before each fork and each barrier send
+ok 36 - source keeps one original group cutoff before each fork and each barrier send
+  ---
+  duration_ms: 3.471896
+  type: 'test'
+  ...
+# Subtest: explicit prepared trust profile is deeply frozen and binds mapped and server endpoints separately
+ok 37 - explicit prepared trust profile is deeply frozen and binds mapped and server endpoints separately
+  ---
+  duration_ms: 2.490826
+  type: 'test'
+  ...
+# Subtest: prepared admission rejects wrong host localhost
+ok 38 - prepared admission rejects wrong host localhost
+  ---
+  duration_ms: 0.486404
+  type: 'test'
+  ...
+# Subtest: prepared admission rejects wrong host 172.17.0.2
+ok 39 - prepared admission rejects wrong host 172.17.0.2
+  ---
+  duration_ms: 0.257067
+  type: 'test'
+  ...
+# Subtest: prepared admission rejects wrong port 5432
+ok 40 - prepared admission rejects wrong port 5432
+  ---
+  duration_ms: 0.172573
+  type: 'test'
+  ...
+# Subtest: prepared admission rejects wrong port 55433
+ok 41 - prepared admission rejects wrong port 55433
+  ---
+  duration_ms: 0.276126
+  type: 'test'
+  ...
+# Subtest: prepared admission rejects wrong database another_test
+ok 42 - prepared admission rejects wrong database another_test
+  ---
+  duration_ms: 0.158593
+  type: 'test'
+  ...
+# Subtest: prepared admission rejects wrong user postgres
+ok 43 - prepared admission rejects wrong user postgres
+  ---
+  duration_ms: 0.185122
+  type: 'test'
+  ...
+# Subtest: prepared admission rejects wrong password unused
+ok 44 - prepared admission rejects wrong password unused
+  ---
+  duration_ms: 0.138063
+  type: 'test'
+  ...
+# Subtest: prepared admission rejects wrong password undefined
+ok 45 - prepared admission rejects wrong password undefined
+  ---
+  duration_ms: 0.23835
+  type: 'test'
+  ...
+# Subtest: prepared descriptor rejects invalid id
+ok 46 - prepared descriptor rejects invalid id
+  ---
+  duration_ms: 0.27915
+  type: 'test'
+  ...
+# Subtest: prepared descriptor rejects invalid image
+ok 47 - prepared descriptor rejects invalid image
+  ---
+  duration_ms: 0.195156
+  type: 'test'
+  ...
+# Subtest: prepared descriptor rejects invalid serverHost
+ok 48 - prepared descriptor rejects invalid serverHost
+  ---
+  duration_ms: 0.181687
+  type: 'test'
+  ...
+# Subtest: prepared descriptor rejects invalid serverHost
+ok 49 - prepared descriptor rejects invalid serverHost
+  ---
+  duration_ms: 0.1981
+  type: 'test'
+  ...
+# Subtest: prepared descriptor rejects invalid serverHost
+ok 50 - prepared descriptor rejects invalid serverHost
+  ---
+  duration_ms: 4.546524
+  type: 'test'
+  ...
+# Subtest: prepared descriptor rejects invalid serverPort
+ok 51 - prepared descriptor rejects invalid serverPort
+  ---
+  duration_ms: 0.138053
+  type: 'test'
+  ...
+# Subtest: prepared descriptor rejects invalid serverPort
+ok 52 - prepared descriptor rejects invalid serverPort
+  ---
+  duration_ms: 0.172563
+  type: 'test'
+  ...
+# Subtest: prepared descriptor rejects invalid extra
+ok 53 - prepared descriptor rejects invalid extra
+  ---
+  duration_ms: 0.112946
+  type: 'test'
+  ...
+# Subtest: read-only identity refuses wrong container
+ok 54 - read-only identity refuses wrong container
+  ---
+  duration_ms: 0.160906
+  type: 'test'
+  ...
+# Subtest: read-only identity refuses wrong image
+ok 55 - read-only identity refuses wrong image
+  ---
+  duration_ms: 0.173575
+  type: 'test'
+  ...
+# Subtest: read-only identity refuses wrong name
+ok 56 - read-only identity refuses wrong name
+  ---
+  duration_ms: 0.101268
+  type: 'test'
+  ...
+# Subtest: read-only identity refuses wrong stopped
+ok 57 - read-only identity refuses wrong stopped
+  ---
+  duration_ms: 0.079276
+  type: 'test'
+  ...
+# Subtest: read-only identity refuses wrong purpose
+ok 58 - read-only identity refuses wrong purpose
+  ---
+  duration_ms: 0.079527
+  type: 'test'
+  ...
+# Subtest: read-only identity refuses wrong volume
+ok 59 - read-only identity refuses wrong volume
+  ---
+  duration_ms: 0.12219
+  type: 'test'
+  ...
+# Subtest: read-only identity refuses wrong mount destination
+ok 60 - read-only identity refuses wrong mount destination
+  ---
+  duration_ms: 0.096592
+  type: 'test'
+  ...
+# Subtest: read-only identity refuses wrong read-only mount
+ok 61 - read-only identity refuses wrong read-only mount
+  ---
+  duration_ms: 0.114619
+  type: 'test'
+  ...
+# Subtest: read-only identity refuses wrong inner address
+ok 62 - read-only identity refuses wrong inner address
+  ---
+  duration_ms: 0.119455
+  type: 'test'
+  ...
+# Subtest: read-only identity refuses wrong extra network
+ok 63 - read-only identity refuses wrong extra network
+  ---
+  duration_ms: 0.086296
+  type: 'test'
+  ...
+# Subtest: read-only identity refuses wrong public host
+ok 64 - read-only identity refuses wrong public host
+  ---
+  duration_ms: 0.075811
+  type: 'test'
+  ...
+# Subtest: read-only identity refuses wrong public port
+ok 65 - read-only identity refuses wrong public port
+  ---
+  duration_ms: 0.071996
+  type: 'test'
+  ...
+# Subtest: read-only identity refuses wrong duplicate mapping
+ok 66 - read-only identity refuses wrong duplicate mapping
+  ---
+  duration_ms: 0.187044
+  type: 'test'
+  ...
+# Subtest: read-only identity refuses wrong extra port
+ok 67 - read-only identity refuses wrong extra port
+  ---
+  duration_ms: 0.133696
+  type: 'test'
+  ...
+# Subtest: read-only identity refuses wrong malformed mapping
+ok 68 - read-only identity refuses wrong malformed mapping
+  ---
+  duration_ms: 0.080668
+  type: 'test'
+  ...
+# Subtest: read-only identity refuses wrong malformed mount
+ok 69 - read-only identity refuses wrong malformed mount
+  ---
+  duration_ms: 0.074339
+  type: 'test'
+  ...
+# Subtest: SQL identity still refuses wrong db
+ok 70 - SQL identity still refuses wrong db
+  ---
+  duration_ms: 0.831711
+  type: 'test'
+  ...
+# Subtest: SQL identity still refuses wrong usr
+ok 71 - SQL identity still refuses wrong usr
+  ---
+  duration_ms: 0.218581
+  type: 'test'
+  ...
+# Subtest: SQL identity still refuses wrong addr
+ok 72 - SQL identity still refuses wrong addr
+  ---
+  duration_ms: 0.189869
+  type: 'test'
+  ...
+# Subtest: SQL identity still refuses wrong port
+ok 73 - SQL identity still refuses wrong port
+  ---
+  duration_ms: 0.126726
+  type: 'test'
+  ...
+# Subtest: SQL identity still refuses wrong system
+ok 74 - SQL identity still refuses wrong system
+  ---
+  duration_ms: 0.146195
+  type: 'test'
+  ...
+# Subtest: SQL identity still refuses wrong started
+ok 75 - SQL identity still refuses wrong started
+  ---
+  duration_ms: 0.154017
+  type: 'test'
+  ...
+# Subtest: SQL identity still refuses wrong version
+ok 76 - SQL identity still refuses wrong version
+  ---
+  duration_ms: 0.140667
+  type: 'test'
+  ...
+# Subtest: SQL identity still refuses wrong fsync
+ok 77 - SQL identity still refuses wrong fsync
+  ---
+  duration_ms: 0.105805
+  type: 'test'
+  ...
+# Subtest: SQL identity still refuses wrong sync
+ok 78 - SQL identity still refuses wrong sync
+  ---
+  duration_ms: 0.192032
+  type: 'test'
+  ...
+# Subtest: container inspector remains bounded, local, read-only and excludes secret-bearing metadata
+ok 79 - container inspector remains bounded, local, read-only and excludes secret-bearing metadata
+  ---
+  duration_ms: 18.713779
+  type: 'test'
+  ...
+# Subtest: actual ambient password drift after admission refuses before Docker or pg loading
+ok 80 - actual ambient password drift after admission refuses before Docker or pg loading
+  ---
+  duration_ms: 1.006958
+  type: 'test'
+  ...
+# Subtest: fault control forwards SQL and fails only after acknowledged prepare COMMIT
+ok 81 - fault control forwards SQL and fails only after acknowledged prepare COMMIT
+  ---
+  duration_ms: 2.675438
+  type: 'test'
+  ...
+# Subtest: fault control forwards SQL and fails only after acknowledged claim COMMIT
+ok 82 - fault control forwards SQL and fails only after acknowledged claim COMMIT
+  ---
+  duration_ms: 0.252
+  type: 'test'
+  ...
+# Subtest: fault control forwards SQL and fails only after acknowledged marker COMMIT
+ok 83 - fault control forwards SQL and fails only after acknowledged marker COMMIT
+  ---
+  duration_ms: 0.19699
+  type: 'test'
+  ...
+# Subtest: fault control forwards SQL and fails only after acknowledged settle COMMIT
+ok 84 - fault control forwards SQL and fails only after acknowledged settle COMMIT
+  ---
+  duration_ms: 0.229287
+  type: 'test'
+  ...
+# Subtest: driver COMMIT refusal is not mislabeled as an acknowledged fault
+ok 85 - driver COMMIT refusal is not mislabeled as an acknowledged fault
+  ---
+  duration_ms: 0.37443
+  type: 'test'
+  ...
+# Subtest: native entry refuses absent admission and unbound0003 before pool/application imports
+ok 86 - native entry refuses absent admission and unbound0003 before pool/application imports
+  ---
+  duration_ms: 449.186761
+  type: 'test'
+  ...
+# Subtest: native source reuses canonical owner, keeps migrations separate, and proves actual contention
+ok 87 - native source reuses canonical owner, keeps migrations separate, and proves actual contention
+  ---
+  duration_ms: 2.708736
+  type: 'test'
+  ...
+# Subtest: actual control issues stable durable identity, canonical normalization and completion then accounts once
+ok 88 - actual control issues stable durable identity, canonical normalization and completion then accounts once
+  ---
+  duration_ms: 31.214177
+  type: 'test'
+  ...
+# Subtest: lost prepare acknowledgement survives reconstructed owner without duplicate effect/charge
+ok 89 - lost prepare acknowledgement survives reconstructed owner without duplicate effect/charge
+  ---
+  duration_ms: 4.690485
+  type: 'test'
+  ...
+# Subtest: lost claim acknowledgement survives reconstructed owner without duplicate effect/charge
+ok 90 - lost claim acknowledgement survives reconstructed owner without duplicate effect/charge
+  ---
+  duration_ms: 8.743173
+  type: 'test'
+  ...
+# Subtest: lost marker acknowledgement survives reconstructed owner without duplicate effect/charge
+ok 91 - lost marker acknowledgement survives reconstructed owner without duplicate effect/charge
+  ---
+  duration_ms: 9.748499
+  type: 'test'
+  ...
+# Subtest: lost settle acknowledgement survives reconstructed owner without duplicate effect/charge
+ok 92 - lost settle acknowledgement survives reconstructed owner without duplicate effect/charge
+  ---
+  duration_ms: 9.897378
+  type: 'test'
+  ...
+# Subtest: simultaneous deliveries converge to one producer row and one physical handler
+ok 93 - simultaneous deliveries converge to one producer row and one physical handler
+  ---
+  duration_ms: 10.521304
+  type: 'test'
+  ...
+# Subtest: same delivery refuses raw request and original-context substitution
+ok 94 - same delivery refuses raw request and original-context substitution
+  ---
+  duration_ms: 3.791085
+  type: 'test'
+  ...
+# Subtest: owned namespace cannot bypass producer through legacy execute or forInvocation
+ok 95 - owned namespace cannot bypass producer through legacy execute or forInvocation
+  ---
+  duration_ms: 2.791438
+  type: 'test'
+  ...
+# Subtest: abort at prepare ACK starts no next transaction/effect; explicit reconciliation remains historical
+ok 96 - abort at prepare ACK starts no next transaction/effect; explicit reconciliation remains historical
+  ---
+  duration_ms: 3.034174
+  type: 'test'
+  ...
+# Subtest: abort at marker ACK starts no next transaction/effect; explicit reconciliation remains historical
+ok 97 - abort at marker ACK starts no next transaction/effect; explicit reconciliation remains historical
+  ---
+  duration_ms: 5.947349
+  type: 'test'
+  ...
+# Subtest: UNKNOWN without completion stays held after revoked/expired replacement and cannot dispatch
+ok 98 - UNKNOWN without completion stays held after revoked/expired replacement and cannot dispatch
+  ---
+  duration_ms: 6.316131
+  type: 'test'
+  ...
+# Subtest: marker-backed historical reconciliation remains exact once after expiry/revocation/quarantine
+ok 99 - marker-backed historical reconciliation remains exact once after expiry/revocation/quarantine
+  ---
+  duration_ms: 6.200982
+  type: 'test'
+  ...
+# Subtest: foreign completion facts fail without charging unknown liability
+ok 100 - foreign completion facts fail without charging unknown liability
+  ---
+  duration_ms: 5.236456
+  type: 'test'
+  ...
+# Subtest: production control factory remains source-disabled, constructing inertly and never ending borrowed pool
+ok 101 - production control factory remains source-disabled, constructing inertly and never ending borrowed pool
+  ---
+  duration_ms: 6.425732
+  type: 'test'
+  ...
+# Subtest: general owner and actual gateway never expose completion submission or owned bound ports
+ok 102 - general owner and actual gateway never expose completion submission or owned bound ports
+  ---
+  duration_ms: 3.31123
+  type: 'test'
+  ...
+# Subtest: abort while first live accounting write parks cannot start terminal write; rollback retains marker for explicit recovery
+ok 103 - abort while first live accounting write parks cannot start terminal write; rollback retains marker for explicit recovery
+  ---
+  duration_ms: 6.28775
+  type: 'test'
+  ...
+# Subtest: expired marker acknowledgement cannot start live settlement but preserves historical completion
+ok 104 - expired marker acknowledgement cannot start live settlement but preserves historical completion
+  ---
+  duration_ms: 8.411957
+  type: 'test'
+  ...
+# Subtest: preaborted production delivery performs no SQL and effectful delivery ID is inert
+ok 105 - preaborted production delivery performs no SQL and effectful delivery ID is inert
+  ---
+  duration_ms: 1.49871
+  type: 'test'
+  ...
+# Subtest: caller options cannot replace the private canonical owner or producer
+ok 106 - caller options cannot replace the private canonical owner or producer
+  ---
+  duration_ms: 0.733707
+  type: 'test'
+  ...
+# Subtest: abort during produced reservation checks cannot start reservation INSERT
+ok 107 - abort during produced reservation checks cannot start reservation INSERT
+  ---
+  duration_ms: 3.479507
+  type: 'test'
+  ...
+# Subtest: original retained request deadline stops late marker ACK even while grant and schedule remain current
+ok 108 - original retained request deadline stops late marker ACK even while grant and schedule remain current
+  ---
+  duration_ms: 5.198791
+  type: 'test'
+  ...
+# Subtest: new preparation narrows COMMIT guard to shorter retained grant lifetime
+ok 109 - new preparation narrows COMMIT guard to shorter retained grant lifetime
+  ---
+  duration_ms: 2.543133
+  type: 'test'
+  ...
+# Subtest: already stopped live transaction does not acquire a borrowed connection
+ok 110 - already stopped live transaction does not acquire a borrowed connection
+  ---
+  duration_ms: 1.599708
+  type: 'test'
+  ...
+# Subtest: cancelled parked connect starts no next transaction port and releases its owned lease
+ok 111 - cancelled parked connect starts no next transaction port and releases its owned lease
+  ---
+  duration_ms: 0.273602
+  type: 'test'
+  ...
+# Subtest: cancelled parked BEGIN starts no next transaction port and releases its owned lease
+ok 112 - cancelled parked BEGIN starts no next transaction port and releases its owned lease
+  ---
+  duration_ms: 3.896899
+  type: 'test'
+  ...
+# Subtest: cancelled parked SET LOCAL statement_timeout = '5s' starts no next transaction port and releases its owned lease
+ok 113 - cancelled parked SET LOCAL statement_timeout = '5s' starts no next transaction port and releases its owned lease
+  ---
+  duration_ms: 0.164982
+  type: 'test'
+  ...
+# Subtest: cancelled parked SET LOCAL lock_timeout = '2s' starts no next transaction port and releases its owned lease
+ok 114 - cancelled parked SET LOCAL lock_timeout = '2s' starts no next transaction port and releases its owned lease
+  ---
+  duration_ms: 0.182308
+  type: 'test'
+  ...
+# Subtest: cancellation after operation prevents COMMIT and rolls back
+ok 115 - cancellation after operation prevents COMMIT and rolls back
+  ---
+  duration_ms: 0.202347
+  type: 'test'
+  ...
+# Subtest: late successful COMMIT ACK after cancellation remains typed uncertainty and evicts connection
+ok 116 - late successful COMMIT ACK after cancellation remains typed uncertainty and evicts connection
+  ---
+  duration_ms: 0.230709
+  type: 'test'
+  ...
+# Subtest: default historical transaction preserves operation and borrowed pool ownership
+ok 117 - default historical transaction preserves operation and borrowed pool ownership
+  ---
+  duration_ms: 0.363974
+  type: 'test'
+  ...
+1..117
+# tests 117
+# suites 0
+# pass 117
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2886.542095

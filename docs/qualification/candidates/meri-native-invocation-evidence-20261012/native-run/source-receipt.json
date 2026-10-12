@@ -1,0 +1,186 @@
+{
+  "source_commit": "5a7db3f470a4df3f51e47fc8b2d41e6502f5430e",
+  "source_tree": "7566cad50cf320285ab373dff786a4ca13ddbecf",
+  "parent_qualified_source": "3f5302a96309ff4b615dedc3f6ba196b0eb5aeb0",
+  "base_rc1": "2f06feccca731d6cd388612cd568185ecc29668f",
+  "files": [
+    {
+      "path": "apps/gateway/test/postgres-invocation.integration.mjs",
+      "sha256": "9739bbb6864a41998eaf53a3ffd364fe52b65d8fbfdcfdad7a4d85aafecf6e60",
+      "bytes": 11532,
+      "same_as_prior_qualified_source": null
+    },
+    {
+      "path": "apps/gateway/test/postgres-invocation-fixture.mjs",
+      "sha256": "5431b4df8fafdb10c0e3eef8fb8c4cd5f863a52d2572a258c4beb0358322d856",
+      "bytes": 7224,
+      "same_as_prior_qualified_source": null
+    },
+    {
+      "path": "apps/gateway/test/postgres-invocation-admission.test.mjs",
+      "sha256": "1f850dce97bbdf03f40a74e5d2ef9b40e077eec05e38fceceae69af5078f9fd4",
+      "bytes": 4981,
+      "same_as_prior_qualified_source": null
+    },
+    {
+      "path": "apps/gateway/test/postgres-budget-native-fixture.mjs",
+      "sha256": "6411a3b5b25664568979a4894fca2016735591f7bb87fa900928b66f33cfdf1e",
+      "bytes": 10818,
+      "same_as_prior_qualified_source": true
+    },
+    {
+      "path": "apps/gateway/test/postgres-budget-container-fixture.mjs",
+      "sha256": "77efef99b2f1b45cd1dedca8df3a8d30415a2ae9f3792fd90b5f58a5388adc1a",
+      "bytes": 2995,
+      "same_as_prior_qualified_source": true
+    },
+    {
+      "path": "apps/control/tool-invocations.mjs",
+      "sha256": "96bb3dd5b64a64fd59ac57fda8bd1198ad32bf0401d8e4f9447ffb9301e7e70c",
+      "bytes": 2738,
+      "same_as_prior_qualified_source": true
+    },
+    {
+      "path": "apps/gateway/budget/tool-invocation-owner.mjs",
+      "sha256": "ede1672b79da5055f3ea8a2e1b8603c50d5ba9783914fab24195a8e6356aec75",
+      "bytes": 9007,
+      "same_as_prior_qualified_source": true
+    },
+    {
+      "path": "apps/gateway/budget/tool-invocation-record.mjs",
+      "sha256": "dc3fc265fe10d2013d50a96441c9af8ec8032b16f4c74c2cd7f446ee588f47c3",
+      "bytes": 3580,
+      "same_as_prior_qualified_source": true
+    },
+    {
+      "path": "apps/gateway/budget/postgres-tool-budget.mjs",
+      "sha256": "4f3d3336e2cdf01785cecd0ea22aeccea1e5c9a8d773b20492f8cd5fefb06ed4",
+      "bytes": 12279,
+      "same_as_prior_qualified_source": true
+    },
+    {
+      "path": "apps/gateway/budget/postgres-budget-store.mjs",
+      "sha256": "2178dcfe773f288087644ab42403d637c1aeea97e42058a19d50f7b39e51f772",
+      "bytes": 2155,
+      "same_as_prior_qualified_source": true
+    },
+    {
+      "path": "apps/gateway/budget/durable-tool-dispatch.mjs",
+      "sha256": "508a706096f3de433418be642718bbb093bb00685ca4477640c2fd8af6428fdf",
+      "bytes": 263,
+      "same_as_prior_qualified_source": true
+    },
+    {
+      "path": "apps/gateway/budget/tool-budget-dispatch.mjs",
+      "sha256": "ee866f6abb29222b868d1950027b66a0115e5791122d66415d34dbdcb393ee35",
+      "bytes": 4693,
+      "same_as_prior_qualified_source": true
+    },
+    {
+      "path": "apps/proxy/qualification/state/migrations/0001_qualification_state.sql",
+      "sha256": "fa33f51c492361c280c4847ea08629f0c777cb6b0e9652f1e67f95543bda0dfc",
+      "bytes": 2467,
+      "same_as_prior_qualified_source": true
+    },
+    {
+      "path": "apps/proxy/qualification/state/migrations/0002_tool_budget.sql",
+      "sha256": "53d3933a440ed0801411d3ed544f4c554f397b3338acaad1ce1addcce4ef5809",
+      "bytes": 2391,
+      "same_as_prior_qualified_source": true
+    },
+    {
+      "path": "apps/proxy/qualification/state/migrations/0003_tool_invocations.sql",
+      "sha256": "8d0c6ab5e3027b637f7905bd19ac1d830095f1565f745d4e2954294b115137e5",
+      "bytes": 1097,
+      "same_as_prior_qualified_source": true
+    },
+    {
+      "path": "apps/control/qualification-sdk-fixture/state/package-lock.json",
+      "sha256": "c5ab764dcd9dcd8dee88d2cab3e7412fb9752e3a869c0a1693839c0567d3973a",
+      "bytes": 5739,
+      "same_as_prior_qualified_source": true
+    }
+  ],
+  "pinned_state_dependencies": [
+    {
+      "path": "node_modules/pg",
+      "version": "8.23.1"
+    },
+    {
+      "path": "node_modules/pg-cloudflare",
+      "version": "1.4.1"
+    },
+    {
+      "path": "node_modules/pg-connection-string",
+      "version": "2.14.1"
+    },
+    {
+      "path": "node_modules/pg-int8",
+      "version": "1.0.1"
+    },
+    {
+      "path": "node_modules/pg-pool",
+      "version": "3.14.0"
+    },
+    {
+      "path": "node_modules/pg-protocol",
+      "version": "1.16.1"
+    },
+    {
+      "path": "node_modules/pg-types",
+      "version": "2.2.0"
+    },
+    {
+      "path": "node_modules/pgpass",
+      "version": "1.0.5"
+    },
+    {
+      "path": "node_modules/postgres-array",
+      "version": "2.0.0"
+    },
+    {
+      "path": "node_modules/postgres-bytea",
+      "version": "1.0.1"
+    },
+    {
+      "path": "node_modules/postgres-date",
+      "version": "1.0.7"
+    },
+    {
+      "path": "node_modules/postgres-interval",
+      "version": "1.2.0"
+    },
+    {
+      "path": "node_modules/split2",
+      "version": "4.2.0"
+    },
+    {
+      "path": "node_modules/xtend",
+      "version": "4.0.2"
+    }
+  ],
+  "source_checks": {
+    "tests": 117,
+    "passed": 117,
+    "fail": 0,
+    "skips": 0,
+    "raw_streams": [
+      {
+        "name": "source-tests-reviewed.stdout.log",
+        "sha256": "e6c04dba3c6399ec5bb1aaa8f5ee7afb00ab651a923a57181509d4d6f3c433fc",
+        "bytes": 22973
+      },
+      {
+        "name": "source-tests-reviewed.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    ]
+  },
+  "tracked_worktree_clean": true,
+  "intentional_untracked_dependency_links": [
+    "node_modules",
+    "apps/control/qualification-sdk-fixture/state/node_modules"
+  ],
+  "source_qualifies_real_engine_only_when_native_cases_pass": true
+}

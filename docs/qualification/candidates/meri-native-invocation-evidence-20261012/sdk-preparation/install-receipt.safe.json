@@ -1,0 +1,42 @@
+{
+  "source_commit": "3f5302a96309ff4b615dedc3f6ba196b0eb5aeb0",
+  "started_at": "2026-10-12T16:52:46.921179+00:00",
+  "argv": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/npm",
+    "ci",
+    "--ignore-scripts",
+    "--no-audit",
+    "--no-fund",
+    "--include=optional",
+    "--registry=https://registry.npmjs.org",
+    "--userconfig=/workspace/scratch/meri-native-sdk-preparation-20261012/npm-user.empty.conf",
+    "--globalconfig=/workspace/scratch/meri-native-sdk-preparation-20261012/npm-global.empty.conf",
+    "--cache=/workspace/scratch/meri-native-sdk-preparation-20261012/npm-cache",
+    "--prefix=/workspace/scratch/meri-native-sdk-preparation-20261012/worktree/apps/worker/qualification",
+    "--fetch-retries=0",
+    "--fetch-timeout=30000",
+    "--strict-ssl=true"
+  ],
+  "cwd": "/workspace/scratch/meri-native-sdk-preparation-20261012/worktree/apps/worker/qualification",
+  "scripts_disabled": true,
+  "tls_strict": true,
+  "existing_public_ca_sha256": "7fa2d7d439db8bfa7c191457e61af5e3f4eb412314eb148766ac09e93786e4c3",
+  "proxy_credentials_absent": true,
+  "lock_sha256_before": "d3d4c5362e0c7dc1392ef9cad2048d00c564f1ff70d98c3e10108e50aa56147a",
+  "outer_timeout_seconds": 600,
+  "outer_kill_grace_seconds": 5,
+  "no_retries": true,
+  "ended_at": "2026-10-12T16:52:51.671341+00:00",
+  "exit_code": 0,
+  "lock_sha256_after": "d3d4c5362e0c7dc1392ef9cad2048d00c564f1ff70d98c3e10108e50aa56147a",
+  "install.stdout.log": {
+    "bytes": 26,
+    "sha256": "f443539a2258953d9ddf5d3b07f202ff6a888d675d0cd8b2058c7b9d85edfc28"
+  },
+  "install.stderr.log": {
+    "bytes": 208,
+    "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+  },
+  "transformation": "Install receipt projection excluding proxy argument/environment field; no npm configuration/cache or environment map copied.",
+  "original_receipt_sha256": "61b3845f0e265439e7791b6bc02e6231fb449300edcd96988b77408a40693aa8"
+}

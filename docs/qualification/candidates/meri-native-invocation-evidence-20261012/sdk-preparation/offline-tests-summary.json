@@ -1,0 +1,19 @@
+{
+  "recorded_at": "2026-10-12T17:03:24.631285+00:00",
+  "source_commit": "3f5302a96309ff4b615dedc3f6ba196b0eb5aeb0",
+  "platform_process_terminal_exit": 0,
+  "counts": {
+    "tests": 81,
+    "pass": 81,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "duration_ms": 10628.288825,
+  "reporter": "Node spec; retained original receipt initially used TAP-only count reader and recorded null counters. This separate summary decodes unchanged raw output; no test rerun.",
+  "original_receipt_sha256": "7e3df086da0db90e93ee4a5823305fdc5697f839ffd7e0458e042dd3ef16c193",
+  "raw_stdout_sha256": "26e33160f6ff8f9d8b6a5718eaf9deb526880e42d3608707f301fa095f2f1db3",
+  "raw_stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "native_sdk_query_binary_listener_not_started": true
+}

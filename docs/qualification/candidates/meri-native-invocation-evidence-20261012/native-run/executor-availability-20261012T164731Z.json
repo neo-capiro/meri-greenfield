@@ -1,0 +1,21 @@
+{
+  "at": "2026-10-12T16:47:31.021432+00:00",
+  "notification": "Disconnect notification received for 16:45 UTC",
+  "bounded_read_only_command_exit_code": 0,
+  "executor_available": true,
+  "retained_container_id": "5d55589bfbc222ea4c9ae5c0bba7b862a10b2c521e741792b86d9264c69af845",
+  "container_running": true,
+  "connected_endpoint": "127.0.0.1:55432",
+  "database": "meri_qualification_test",
+  "role": "qualification_owner",
+  "server_version_num": "160015",
+  "actual_server": "172.17.0.2:5432",
+  "original_schema_oid": 16389,
+  "other_test_backends": [],
+  "invocation_admission_setup_migration_native_run_markers_present": false,
+  "current_native_run_started": false,
+  "interrupted_mutation_retried": false,
+  "tests_or_cleanup_blocked": false,
+  "latest_source_checks": "117 passed; refined seven source controls passed",
+  "effect": "Read-only Docker inspection and PostgreSQL identity/backend/OID queries only"
+}

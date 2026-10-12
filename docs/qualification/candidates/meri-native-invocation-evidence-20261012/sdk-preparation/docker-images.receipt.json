@@ -1,0 +1,42 @@
+{
+  "started_at": "2026-10-12T16:53:50.288154+00:00",
+  "ended_at": "2026-10-12T16:53:50.303184+00:00",
+  "argv": [
+    "/usr/local/bin/docker",
+    "--config",
+    "/workspace/scratch/meri-native-sdk-preparation-20261012/docker-empty-config",
+    "--host",
+    "unix:///var/run/docker.sock",
+    "image",
+    "ls",
+    "--no-trunc",
+    "--digests",
+    "--format",
+    "{{json .}}"
+  ],
+  "clean_environment_keys": [
+    "PATH",
+    "LANG"
+  ],
+  "exit": 0,
+  "images": [
+    {
+      "Containers": "2",
+      "CreatedAt": "2026-10-01 17:34:13 +0000 UTC",
+      "CreatedSince": "10 days ago",
+      "Digest": "sha256:7b822b0aac60967beb1ea5e576b8602c94c300a157d187f385ae3e0da199b90a",
+      "ID": "sha256:f1447071e6c8449dcf4056aa0994c81d3566ce5ee232de36b04dc25696a116dd",
+      "Repository": "pgvector/pgvector",
+      "SharedSize": "N/A",
+      "Size": "445MB",
+      "Tag": "pg16",
+      "UniqueSize": "N/A",
+      "VirtualSize": "445.4MB"
+    }
+  ],
+  "scope": "IMAGE_IDS_NAMES_DIGESTS_ONLY_NO_INSPECT_CONFIG_NO_MUTATION",
+  "stdout_bytes": 377,
+  "stdout_sha256": "3e9a4d69dcd70315d9aaff44dc5afe426f2c9a32462dbadd69013e97077a67d1",
+  "stderr_bytes": 0,
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}
