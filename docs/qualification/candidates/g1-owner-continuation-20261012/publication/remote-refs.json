@@ -1,0 +1,15 @@
+{
+  "sourceReportHead": "cdb6a585716a1daba36bdaaa8ea6903c7595b3e5",
+  "allEightRefsMatched": true,
+  "manifestMembersMatched": 76,
+  "refs": {
+    "review/meri-budget-outcome-20261012": "5657a16b8589f587fab5a979bcdac973a9e2f221",
+    "review/meri-g1-plan-delta-20261012": "a401e32a3fea7a615582fa3ee484cb84f662539e",
+    "review/meri-l1-host-20261012": "ea0efc5a37f8148cfb4db674d4a6dcc61bc7ab12",
+    "review/meri-native-bindings-20261012": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+    "task/meri-budget-outcome-20261012": "028b1134e373734caea036ee5c38d35b20428d8b",
+    "task/meri-g1-owner-continuation-20261012": "cdb6a585716a1daba36bdaaa8ea6903c7595b3e5",
+    "task/meri-l1-host-20261012": "20f51409673a0bdae1a5a3de99e2cda41d5b549b",
+    "task/meri-native-bindings-20261012": "74f9692047be50beb8c59a0b0d7833f0cb682c76"
+  }
+}

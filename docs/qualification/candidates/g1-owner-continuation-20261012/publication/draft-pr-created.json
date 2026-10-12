@@ -1,0 +1,29 @@
+{
+  "kind": "DRAFT_SOURCE_CONTINUATION_PUBLICATION",
+  "pr": {
+    "number": 18,
+    "url": "https://github.com/neo-capiro/meri-greenfield/pull/18",
+    "state": "open",
+    "draft": true,
+    "merged": false,
+    "head": "task/meri-g1-owner-continuation-20261012",
+    "head_sha": "cdb6a585716a1daba36bdaaa8ea6903c7595b3e5",
+    "base": "task/meri-g1-native-path-20261012",
+    "base_sha": "263d0d174f9924a6030bb1c20100ff1115ffcda0"
+  },
+  "sourceReportHead": "cdb6a585716a1daba36bdaaa8ea6903c7595b3e5",
+  "sourceReportTree": "f8ed0f6a3ecc49325b06825d9deb21dddfb08690",
+  "publicationReceiptCommit": "This later commit records publication metadata only; final GitHub head is separately read back after push.",
+  "sourceDecisions": [
+    "ACCEPT_SOURCE: canonical historical budget outcome API",
+    "ACCEPT_SOURCE: reserved writer and partial wrapper composition",
+    "ACCEPT_SOURCE_EVIDENCE_ONLY: selected-host discovery/setup packet",
+    "ACCEPT_SOURCE: canonical roadmap delta"
+  ],
+  "nativeDecision": "HOLD",
+  "gates": "G0 accepted; G1 OPEN; G2-G7 unentered",
+  "sourceConnectivityEnabled": false,
+  "paidProviderCalls": 0,
+  "cloudActions": 0,
+  "mainMerged": false
+}
