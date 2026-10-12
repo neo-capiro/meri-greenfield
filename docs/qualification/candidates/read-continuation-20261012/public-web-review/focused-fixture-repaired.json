@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-public-web-independent.test.mjs",
+    "packages/contracts/test/retrieval-public-web.test.mjs"
+  ],
+  "cwd": "/workspace/meri-public-web-contracts-review-20261012",
+  "sourceHead": "2b444c87d2ea36fe3009a2298a9c1d727b027749",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T18:44:58.725708+00:00",
+  "durationSeconds": 0.566,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 258253,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/focused-fixture-repaired.stdout.bin",
+      "bytes": 6905,
+      "sha256": "61df9a72ca74918da9d9c3533ad35f36598e84eb8d58a0ae70fe2090c883d29c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/focused-fixture-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
