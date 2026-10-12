@@ -4,7 +4,7 @@ import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import catalog from '../retrieval-0.2/catalog.json' with {type:'json'};
 import {canonicalSha256} from '../validate.mjs';
-import {assertCatalog,resolveOperationContract} from '../retrieval-0.2/validate.mjs';
+import {assertCatalog,resolveOperationContract,validateShape} from '../retrieval-0.2/validate.mjs';
 import {CATALOG_OPERATION_BINDINGS as bindings} from '../retrieval-0.2/catalog-validation.mjs';
 import {createSourceDisabledGateway} from '../../../apps/gateway/index.mjs';
 import {fixture,limits,NOW,uuid} from '../../../apps/gateway/test/fixtures.mjs';
@@ -145,4 +145,15 @@ test('facility canonical callback checks every binding and exact full subject in
  for(const mutate of [p=>p.subject.authorizationDecisionId=U,p=>p.subject.entityIds=[V],p=>p.subject.policyRevision='new',p=>p.subject.scopes[0].resourceId=V]){const p=copy(page);mutate(p);assert.throws(()=>check(FACILITY,p,req));}
  assert.throws(()=>resolve(FACILITY).normalizeInput({clientId:V},scope()));assert.throws(()=>check(FACILITY,page,{clientId:U,state:'MD'}));
  assert.equal(resolve(FACILITY).normalizeInput({},scope()).input.clientId,null);
+});
+
+// Combined source repair: preserve the canonical SchemaRef owner and reject the
+// previously accepted standalone HTTPS identifiers rather than widening admission.
+test('directory and rule namespace repair preserves canonical URN-only SchemaRef admission',()=>{
+ for(const group of ['legislative-directory','rule-status']){
+  const s=schema(group);assert.equal(s.$id,`urn:meri:retrieval:${group}:0.2.0`);
+  const def=group==='rule-status'?'RuleStatusInput':'CommitteeRosterInput';
+  assert.doesNotThrow(()=>validateShape('SchemaRef',{id:`${s.$id}#/$defs/${def}`,sha256:'0'.repeat(64)}));
+  assert.throws(()=>validateShape('SchemaRef',{id:`https://meri.capiro.app/private/retrieval/0.2/${group}.schema.json#/$defs/${def}`,sha256:'0'.repeat(64)}));
+ }
 });

@@ -37,10 +37,18 @@ check('no original files deleted',all(path in current for path in old))
 check('original public0.1 package and dependencies untouched',all(current.get(p)==oid for p,oid in old.items() if (p.startswith('packages/contracts/') and not p.startswith(('packages/contracts/retrieval-0.2/','packages/contracts/test/'))) or p.endswith(('package-lock.json','package.json'))))
 check('runtime, worker, proxy and Python source unchanged',all(current.get(p)==oid for p,oid in old.items() if p.startswith(('apps/','scripts/'))))
 check('canonical bounded JSON snapshot owner unchanged',current['packages/contracts/retrieval-0.2/operation-contracts.mjs']==old['packages/contracts/retrieval-0.2/operation-contracts.mjs'])
+identity_changes={row['path']:row for row in expectations.get('familyIdentityChanges',[])}
+check('at most exact two authorized family identity changes',set(identity_changes).issubset({'packages/contracts/retrieval-0.2/legislative-directory.schema.json','packages/contracts/retrieval-0.2/rule-status.schema.json'}))
 for lane in pins['lanes']:
     for row in lane['files']:
         data=blob(candidate,row['path'])
-        check(f"accepted {lane['lane']} bytes: {row['path']}",len(data)==row['bytes'] and digest(data)==row['sha256'] and data==blob(lane['source'],row['path']))
+        original=blob(lane['source'],row['path'])
+        if row['path'] in identity_changes:
+            change=identity_changes[row['path']]
+            before,after=change['oldId'].encode(),change['newId'].encode()
+            check('exact authorized single schema identity replacement: '+row['path'],original.count(before)==1 and data==original.replace(before,after,1) and digest(data)==change['sha256'])
+        else:
+            check(f"accepted {lane['lane']} bytes: {row['path']}",len(data)==row['bytes'] and digest(data)==row['sha256'] and data==original)
     review_files=git('diff-tree','--no-commit-id','--name-only','-r',lane['independentReview']).decode().splitlines()
     check(f"independent verdict object exists: {lane['lane']}",len(review_files)>0)
 for row in expectations['reviewedExistingPatches']:
