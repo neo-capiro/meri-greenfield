@@ -141,3 +141,14 @@ locale equivalence still require a qualified adapter. The descriptor stays
 unavailable and source connectivity false. No provider/model, native/runtime,
 SQL/DB, service/cloud or infrastructure action occurred; no G1 gate, deployment,
 publication or inventory count change is claimed by this lane.
+
+## Immutable author closeout
+
+Source commit `fa59df3739a2c43310b86de416d2f455a8715dce`, tree
+`6dcc5ddff9b5e04aa64fd084104eb168825c8dca`, passed31/31 on its exact-source
+replay. PGID193759 was absent, without timeout or group kill. All6,001 original
+Git file identities are unchanged; the three-file source SHA256 manifest matches
+the committed source. Eight private reference identities match both pins.
+Whitespace checks passed before source commit. Independent prefreeze26/26 passed;
+final independent acceptance remains reviewer-owned. The metadata closeout changes
+no tested production code or test assertion.

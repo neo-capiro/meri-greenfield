@@ -1,0 +1,39 @@
+✔ program selector is exact and required, never defaulted or aliased (8.756259ms)
+✔ query trims only; no inherited240-character truncation or lowercase mutation (2.888851ms)
+✔ missing, blank and non-string query refuse instead of creating a dataset miss (0.708044ms)
+✔ model selectors cannot inject source authority, locale or alternate provider (0.582556ms)
+✔ explicit canonical comparison locale is required and closed (0.728164ms)
+✔ all three raw snapshot variants round-trip without caller mutation (0.981765ms)
+✔ canonical but unsupported locale is an explicit new context refusal (0.424137ms)
+✔ exact product ID takes precedence without requiring query in names (0.355484ms)
+✔ a non-exact single record must match a returned owner name (1.016808ms)
+✔ single record permits ID-looking name query when that ID is not the returned product (0.362645ms)
+✔ an observable exact ID makes ambiguous output impossible under pinned precedence (1.4777ms)
+✔ every ambiguous row must match a name when no returned exact ID matches (0.317548ms)
+✔ locale-sensitive matching is explicit for Turkish I, not host-selected (0.661093ms)
+✔ ambiguity retains full matched count with an exact first-ten window (1.971283ms)
+✔ duplicate parsed product IDs are not silently deduplicated or treated as one match (0.233221ms)
+✔ ambiguity cannot choose a record or claim absence (0.836547ms)
+✔ single branch cannot invent matched totals or carry unresolved candidates (0.607573ms)
+✔ all six status and five impact strings remain source vocabularies without synonym upgrades (2.135289ms)
+✔ record values are preserved without inventing authorization-date/status relationships (0.213451ms)
+✔ parsed product IDs require literal uppercase FR digits, no arbitrary canonical ID (0.663958ms)
+✔ names and sponsoring agencies preserve parser truthiness and duplicates (0.545389ms)
+✔ snapshot provenance points to the pinned marketplace and a canonical timestamp (0.567103ms)
+✔ one returned ambiguous page cannot mix observation timestamps (0.198618ms)
+✔ absence is a snapshot assertion with exact caveat, not a current negative grant (0.95818ms)
+✔ optional no-match provenance may be omitted together without invented clock/source keys (0.29281ms)
+✔ no query/generatedAt echo or authority wrapper is introduced on any branch (3.40049ms)
+✔ program discriminators and searched-dataset markers stay exact on records/envelopes (0.597968ms)
+✔ transport admission refuses excessive data rather than truncating a selected name (14.464086ms)
+✔ inert admission rejects accessor, proxy and coercion payloads without effects (0.831569ms)
+✔ outputs reject cycles, unknown nested fields and nonfinite data (0.49274ms)
+✔ parsed FR identifier cannot hide a trailing line terminator behind a name match (1.543089ms)
+ℹ tests 31
+ℹ suites 0
+ℹ pass 31
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 220.915805
