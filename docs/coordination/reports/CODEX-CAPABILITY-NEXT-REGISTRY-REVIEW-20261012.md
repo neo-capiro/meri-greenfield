@@ -56,6 +56,11 @@ inventory/plan and RC1/main references remain unchanged. The family is still
 unbound, with native row pending/null, in this reviewed composite. The separate
 integration reviewer must qualify root's binding and resulting counts.
 
+Authored whitespace checking found a redundant final blank line in the reviewer
+test. The current test was corrected without behavior changes. Both failed
+checks remain; only the exact preserved pre-fix snapshot has a whitespace
+attribute exemption so its failure bytes stay intact.
+
 ## Limits and cleanup
 
 The selected wire projection contains no provenance/snapshot/coverage envelope.
