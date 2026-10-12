@@ -1,0 +1,304 @@
+{
+  "authorHead": "e37a72402f8b4b7167e7efac9c4845caf5acef07",
+  "authorTree": "999028f27217c503c90bfa739dfcf053a103c728",
+  "source": "dabe2b50d94f0b12ef983292a1c18e1ef35d4675",
+  "authorManifestSha256": "3b873a6273fc774ac67d83d4562159621c399a4befb79d4ef94474f921b4fc14",
+  "authorManifestMembers": 37,
+  "authorCaptures": [
+    {
+      "label": "focused-initial",
+      "exitCode": 1,
+      "group": 262804,
+      "groupAbsent": true
+    },
+    {
+      "label": "focused-binding-repair",
+      "exitCode": 0,
+      "group": 262963,
+      "groupAbsent": true
+    },
+    {
+      "label": "client-cutoff-before",
+      "exitCode": 1,
+      "group": 263157,
+      "groupAbsent": true
+    },
+    {
+      "label": "focused-client-repair",
+      "exitCode": 0,
+      "group": 263259,
+      "groupAbsent": true
+    },
+    {
+      "label": "output-alias-before",
+      "exitCode": 1,
+      "group": 263781,
+      "groupAbsent": true
+    },
+    {
+      "label": "focused-output-repair",
+      "exitCode": 0,
+      "group": 263911,
+      "groupAbsent": true
+    },
+    {
+      "label": "focused-definition-alignment",
+      "exitCode": 0,
+      "group": 264107,
+      "groupAbsent": true
+    }
+  ],
+  "passed": 62,
+  "failed": 0,
+  "checks": [
+    {
+      "check": "author manifest37 exact hash",
+      "passed": true
+    },
+    {
+      "check": "manifest source pin",
+      "passed": true
+    },
+    {
+      "check": "author member docs/coordination/reports/CODEX-FLORIDA-BUDGET-AUTHOR-20261012.md",
+      "passed": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/audit.py",
+      "passed": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/authored-whitespace-check.json",
+      "passed": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/client-cutoff-before.json",
+      "passed": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/client-cutoff-before.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/client-cutoff-before.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/dependency-provenance.json",
+      "passed": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/failure-notes.json",
+      "passed": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-binding-repair.json",
+      "passed": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-binding-repair.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-binding-repair.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-client-repair.json",
+      "passed": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-client-repair.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-client-repair.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-definition-alignment.json",
+      "passed": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-definition-alignment.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-definition-alignment.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-initial.json",
+      "passed": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-initial.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-initial.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-output-repair.json",
+      "passed": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-output-repair.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-output-repair.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/outline.json",
+      "passed": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/output-alias-before.json",
+      "passed": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/output-alias-before.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/output-alias-before.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/reference-identities.json",
+      "passed": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/source-audit-bbc823e.json",
+      "passed": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/source-audit.json",
+      "passed": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/whitespace-check.json",
+      "passed": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/whitespace-check.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "author member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/whitespace-check.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "author member packages/contracts/retrieval-0.2/florida-budget-validation.mjs",
+      "passed": true
+    },
+    {
+      "check": "author member packages/contracts/retrieval-0.2/florida-budget.schema.json",
+      "passed": true
+    },
+    {
+      "check": "author member packages/contracts/test/retrieval-florida-budget.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "author closeout only allocated report/evidence",
+      "passed": true
+    },
+    {
+      "check": "author packet unchanged source packages/contracts/retrieval-0.2/florida-budget-validation.mjs",
+      "passed": true
+    },
+    {
+      "check": "author packet unchanged source packages/contracts/retrieval-0.2/florida-budget.schema.json",
+      "passed": true
+    },
+    {
+      "check": "author packet unchanged source packages/contracts/test/retrieval-florida-budget.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "author focused-initial expected exit and cleanup",
+      "passed": true
+    },
+    {
+      "check": "author focused-binding-repair expected exit and cleanup",
+      "passed": true
+    },
+    {
+      "check": "author client-cutoff-before expected exit and cleanup",
+      "passed": true
+    },
+    {
+      "check": "author focused-client-repair expected exit and cleanup",
+      "passed": true
+    },
+    {
+      "check": "author output-alias-before expected exit and cleanup",
+      "passed": true
+    },
+    {
+      "check": "author focused-output-repair expected exit and cleanup",
+      "passed": true
+    },
+    {
+      "check": "author focused-definition-alignment expected exit and cleanup",
+      "passed": true
+    },
+    {
+      "check": "final author capture exact source no diff",
+      "passed": true
+    },
+    {
+      "check": "final author raw30 pass",
+      "passed": true
+    },
+    {
+      "check": "review independent-before-repair group absent",
+      "passed": true
+    },
+    {
+      "check": "review stream docs/qualification/candidates/read-continuation-20261012/florida-budget-review/independent-before-repair.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "review stream docs/qualification/candidates/read-continuation-20261012/florida-budget-review/independent-before-repair.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "review final-focused group absent",
+      "passed": true
+    },
+    {
+      "check": "review stream docs/qualification/candidates/read-continuation-20261012/florida-budget-review/final-focused.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "review stream docs/qualification/candidates/read-continuation-20261012/florida-budget-review/final-focused.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "review source-audit group absent",
+      "passed": true
+    },
+    {
+      "check": "review stream docs/qualification/candidates/read-continuation-20261012/florida-budget-review/source-audit.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "review stream docs/qualification/candidates/read-continuation-20261012/florida-budget-review/source-audit.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "final combined60 pass",
+      "passed": true
+    }
+  ],
+  "limits": "Read-only exact committed evidence; no source/runtime/native execution."
+}
