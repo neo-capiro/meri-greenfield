@@ -1,0 +1,82 @@
+✔ attachment manifest and content defaults differ (14.707214ms)
+✔ attachment exact typed bounds and no model authority (1.904231ms)
+✔ attachment explicit locators require attachment and exclude cursor (0.657358ms)
+✔ attachment current context is required and detached (0.455595ms)
+✔ attachment synthetic cursor decoding is correlation not HMAC authentication (6.937656ms)
+✔ attachment cursor every scope dimension binds (1.879294ms)
+✔ attachment cursor mode query attachment and closed shape bind (1.139622ms)
+✔ attachment cursor permits safe continuation positions beyond explicit selector ceiling (0.301413ms)
+✔ attachment cursor bounded canonical encoding rejects padding malformed and short signature (0.823628ms)
+✔ attachment manifest empty is metadata-only and total unknown (28.685611ms)
+✔ attachment manifest unavailable items count toward requested window (0.701234ms)
+✔ attachment manifest next cursor binds query scope and completion (0.667784ms)
+✔ attachment manifest stored scalars and absent original bytes remain distinct (0.570828ms)
+✔ attachment pdf section projection (1.426063ms)
+✔ attachment pptx section projection (0.557258ms)
+✔ attachment xlsx section projection (0.526682ms)
+✔ attachment docx section projection (0.449165ms)
+✔ attachment text section projection (0.351449ms)
+✔ attachment whitespace section can have no records without claiming unavailable (0.335244ms)
+✔ attachment UTF16 coordinates bind astral text (0.667393ms)
+✔ attachment source, result and evidence identities bind exactly (1.677782ms)
+✔ attachment continued source hash and message cannot rotate (0.790978ms)
+✔ attachment completion flags are correlated rather than authority (1.196719ms)
+✔ attachment query miss contains no source row (0.532431ms)
+✔ attachment unavailable extraction and unsupported kinds cannot claim successful content (0.522325ms)
+✔ attachment source data are inert and detached (0.496025ms)
+✔ attachment coordinate branch must match exact reader format (0.423387ms)
+✔ attachment returned section cannot exceed extractor section count (0.624658ms)
+✔ attachment coordinate page must match selected section (0.35263ms)
+✔ attachment no-query text span cannot exceed requested character limit (0.376085ms)
+✔ attachment query miss cannot claim a nonempty character span (0.400982ms)
+✖ attachment first-page UUID lookup preserves equivalent-case returned ID (0.647173ms)
+✖ attachment first-page emitted cursor uses stored UUID while input cursor remains exact (0.473431ms)
+✔ attachment manifest defaults and empty query difference (13.353148ms)
+✔ attachment complete manifest does not establish content completeness (27.018326ms)
+✔ attachment source sections bind text, bytes receipt, locator and external trust (3.631298ms)
+✔ attachment cursor is correlated but fake HMAC is expressly not authenticated (6.931677ms)
+✔ attachment cursor stale version, noncanonical encoding and explicit locator conflict fail (0.548875ms)
+✔ attachment metadata permits signed stored page counts and absent original bytes (0.528464ms)
+✔ attachment partial/empty section is not complete even without next cursor (0.333872ms)
+✔ attachment detached return and hostile nested JSON (0.530588ms)
+✔ attachment coordinate kind and selected section stay bound (1.493755ms)
+✔ attachment no-query span obeys requested limit while query context can exceed it (0.849537ms)
+✔ attachment query miss has no returned character span (0.549786ms)
+ℹ tests 44
+ℹ suites 0
+ℹ pass 42
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 428.633246
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-client-knowledge-attachments-independent.test.mjs:53:1
+✖ attachment first-page UUID lookup preserves equivalent-case returned ID (0.647173ms)
+  Error: Attachment section selector mismatch
+      at fail (file:///workspace/meri-client-knowledge-review-20261012/packages/contracts/retrieval-0.2/client-knowledge-attachments-validation.mjs:4:33)
+      at Object.assertResult (file:///workspace/meri-client-knowledge-review-20261012/packages/contracts/retrieval-0.2/client-knowledge-attachments-validation.mjs:73:108)
+      at check (file:///workspace/meri-client-knowledge-review-20261012/packages/contracts/test/retrieval-client-knowledge-attachments-independent.test.mjs:17:66)
+      at TestContext.<anonymous> (file:///workspace/meri-client-knowledge-review-20261012/packages/contracts/test/retrieval-client-knowledge-attachments-independent.test.mjs:53:207)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-client-knowledge-attachments-independent.test.mjs:54:1
+✖ attachment first-page emitted cursor uses stored UUID while input cursor remains exact (0.473431ms)
+  Error: Attachment cursor selector substitution
+      at fail (file:///workspace/meri-client-knowledge-review-20261012/packages/contracts/retrieval-0.2/client-knowledge-attachments-validation.mjs:4:33)
+      at bindCursor (file:///workspace/meri-client-knowledge-review-20261012/packages/contracts/retrieval-0.2/client-knowledge-attachments-validation.mjs:33:7)
+      at Object.assertResult (file:///workspace/meri-client-knowledge-review-20261012/packages/contracts/retrieval-0.2/client-knowledge-attachments-validation.mjs:67:13)
+      at check (file:///workspace/meri-client-knowledge-review-20261012/packages/contracts/test/retrieval-client-knowledge-attachments-independent.test.mjs:17:66)
+      at TestContext.<anonymous> (file:///workspace/meri-client-knowledge-review-20261012/packages/contracts/test/retrieval-client-knowledge-attachments-independent.test.mjs:54:465)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)

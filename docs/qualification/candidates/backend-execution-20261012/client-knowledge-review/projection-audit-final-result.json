@@ -1,0 +1,56 @@
+{
+  "pin": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "passed": 10,
+  "total": 10,
+  "checks": [
+    {
+      "label": "limitation conditional AST",
+      "pass": true
+    },
+    {
+      "label": "metadata-only exact source literal",
+      "pass": true
+    },
+    {
+      "label": "empty exact source literal",
+      "pass": true
+    },
+    {
+      "label": "available null source",
+      "pass": true
+    },
+    {
+      "label": "summary prefix max minus three",
+      "pass": true
+    },
+    {
+      "label": "summary uses three-dot suffix",
+      "pass": true
+    },
+    {
+      "label": "history unlimited selector null supplied",
+      "pass": true
+    },
+    {
+      "label": "placement overlay from inferred confidence",
+      "pass": true
+    },
+    {
+      "label": "confidence string and numeric distinction retained",
+      "pass": true
+    },
+    {
+      "label": "no original source body included in receipt",
+      "pass": true
+    }
+  ],
+  "memoryLimitationHashes": {
+    "metadataOnly": "8c771f41d2ef809804318f47f1c0bba5d45f781f6057d62ed65d3a5f79b24451",
+    "empty": "910ba781802b245ea3efcd0d2a06e8a83dff8d85eb9c0940ace13c9818b62630"
+  },
+  "parser": {
+    "version": "5.9.3",
+    "sha256": "3ae902c92cc44dace175c0e69e13a4b0899f6983c6121d76b9ab8dd5795e7675"
+  },
+  "scope": "AST_DATA_ONLY_NO_PRIVATE_EXECUTION"
+}
