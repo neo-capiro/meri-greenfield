@@ -108,3 +108,18 @@ test('source failure after reservation retains UNKNOWN without marker or charge'
  await assert.rejects(c.run());assert.equal(c.row().state,'UNKNOWN');assert.equal(c.produced().completion,null);assert.equal(c.f.state.effects,1);
  assert.equal((await c.reconcile()).stage,'UNKNOWN');assert.equal(c.h.state().budget.consumed_micro_usd,'0');
 });
+
+test('new authorized executor attempt reads original durable receipt without rebinding effect authority',async()=>{
+ const c=await connected();await c.run();const original=structuredClone(c.f.state.sqlRows[0].executor);
+ c.f.execution.executorBinding.attemptId=id(71);c.f.execution.executorBinding.workerId=id(72);c.f.execution.executorBinding.writerFence=2;
+ const recovered=await c.make().readOutcome(c.f.value,c.h.credential);assert.equal(recovered.status,'observed');
+ assert.deepEqual(c.f.state.sqlRows[0].executor,original);assert.equal(c.f.state.effects,1);
+ await assert.rejects(c.make().execute(c.f.value,c.h.credential));assert.equal(c.f.state.effects,1);assert.equal(c.h.state().budget.consumed_micro_usd,'10');
+});
+
+test('current read authority revocation cannot expose retained command outcome',async()=>{
+ const c=await connected();await c.run();c.f.state.revoked=true;
+ await assert.rejects(c.read());assert.equal(c.f.state.effects,1);assert.equal(c.h.state().budget.consumed_micro_usd,'10');
+ assert.equal((await c.reconcile()).stage,'SETTLED'); // trusted historical accounting only; no returned command body
+ assert.equal((await c.reconcile()).resultDelivered,false);
+});
