@@ -3,13 +3,13 @@
   "files": [
     {
       "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/REPORT.md",
-      "bytes": 6953,
-      "sha256": "075c0d1aa972630482da83f2f873141d5a3fc8027175a473e381d147d1617bf8"
+      "bytes": 6981,
+      "sha256": "cf16f2ecb2b85edb8030ae4e6ce1be96542af3806e60f34deda9731e096347a4"
     },
     {
       "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/acceptance-receipt.json",
-      "bytes": 1220,
-      "sha256": "ac519374757f63bf788d4bcf162455b1350a41a4bf2f57a07b37d24baa53a9bf"
+      "bytes": 1272,
+      "sha256": "5c4dc75cf35c59a6422df1a97ba37c9f3acca5baf7fed4a044b6401a80ef3084"
     },
     {
       "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/audit-plan.py",
