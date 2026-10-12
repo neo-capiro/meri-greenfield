@@ -78,6 +78,13 @@
       "bytes": 6545,
       "sha256": "77e8dec72baca3bf43ef315c5ae65bfbb765f04e4e36d67e106e2d45ca779c72",
       "observedUnchanged": true
+    },
+    {
+      "path": "packages/shared/src/pe-source-coverage.ts",
+      "blob": "53dfa8b790afbeef53a6b40f833d373cd50c8133",
+      "bytes": 7723,
+      "sha256": "c4d60bc72ab8ae42e6f69998651eb997cbb38b16039d1799b647cde605e2c42d",
+      "observedUnchanged": true
     }
   ],
   "privateBodiesPublished": false

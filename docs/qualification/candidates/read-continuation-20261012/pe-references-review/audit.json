@@ -1,0 +1,399 @@
+{
+  "base": "2aa0a33bdaf36af1224cfdb840bc493e53cea9f3",
+  "source": "c9770ef235ae220159500b12bd1ab885f9ba9b45",
+  "sourceTree": "c06472d82474b129799169f01b0de7f83129f463",
+  "authorMetadata": "3348a42ff4275c6e60b195f8af03a7c017ced3a4",
+  "authorTree": "43c0b460898a98db4b785040f755c356ad2a8a68",
+  "reviewHeadAtAudit": "b3c77c5ad99e761114fcf6dbdeead433cc91963b",
+  "originalsPreserved": 5730,
+  "checks": [
+    {
+      "name": "all original bytes source",
+      "pass": true
+    },
+    {
+      "name": "all original bytes author",
+      "pass": true
+    },
+    {
+      "name": "all original bytes review",
+      "pass": true
+    },
+    {
+      "name": "exact source packages/contracts/retrieval-0.2/pe-references-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact source packages/contracts/retrieval-0.2/pe-contractors-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact source packages/contracts/retrieval-0.2/pe-references.schema.json",
+      "pass": true
+    },
+    {
+      "name": "exact source packages/contracts/test/retrieval-pe-references.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "source adds only allocated paths",
+      "pass": true
+    },
+    {
+      "name": "author followup metadata only",
+      "pass": true
+    },
+    {
+      "name": "pinned apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "unchanged apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned apps/api/src/program-element/program-element-read.service.ts",
+      "pass": true
+    },
+    {
+      "name": "unchanged apps/api/src/program-element/program-element-read.service.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned apps/api/src/meri/meri-defense-budget-tool.helpers.ts",
+      "pass": true
+    },
+    {
+      "name": "unchanged apps/api/src/meri/meri-defense-budget-tool.helpers.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned packages/shared/src/funding-claim.ts",
+      "pass": true
+    },
+    {
+      "name": "unchanged packages/shared/src/funding-claim.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "name": "unchanged apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "name": "pinned apps/api/src/meri/meri.controller.ts",
+      "pass": true
+    },
+    {
+      "name": "unchanged apps/api/src/meri/meri.controller.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned apps/api/src/auth/roles.guard.ts",
+      "pass": true
+    },
+    {
+      "name": "unchanged apps/api/src/auth/roles.guard.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned apps/api/src/meri/meri-tool-request-control.ts",
+      "pass": true
+    },
+    {
+      "name": "unchanged apps/api/src/meri/meri-tool-request-control.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned apps/api/src/program-element/program-element-read-provisions.spec.ts",
+      "pass": true
+    },
+    {
+      "name": "unchanged apps/api/src/program-element/program-element-read-provisions.spec.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned apps/api/src/program-element/program-element-read.service.spec.ts",
+      "pass": true
+    },
+    {
+      "name": "unchanged apps/api/src/program-element/program-element-read.service.spec.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned apps/api/src/meri/meri-defense-budget-tool.helpers.spec.ts",
+      "pass": true
+    },
+    {
+      "name": "unchanged apps/api/src/meri/meri-defense-budget-tool.helpers.spec.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned packages/shared/src/pe-source-coverage.ts",
+      "pass": true
+    },
+    {
+      "name": "unchanged packages/shared/src/pe-source-coverage.ts",
+      "pass": true
+    },
+    {
+      "name": "only canonical inert and cohesive helper imports",
+      "pass": true
+    },
+    {
+      "name": "internal helper no imports",
+      "pass": true
+    },
+    {
+      "name": "no source or runtime effects",
+      "pass": true
+    },
+    {
+      "name": "closed empty context",
+      "pass": true
+    },
+    {
+      "name": "three exact operations",
+      "pass": true
+    },
+    {
+      "name": "no PE echo invented for bills",
+      "pass": true
+    },
+    {
+      "name": "no PE echo invented for contractors",
+      "pass": true
+    },
+    {
+      "name": "report PE echo required",
+      "pass": true
+    },
+    {
+      "name": "only100 stored bills",
+      "pass": true
+    },
+    {
+      "name": "only50 stored provisions",
+      "pass": true
+    },
+    {
+      "name": "only10 award groups25 named rows",
+      "pass": true
+    },
+    {
+      "name": "link evidence nonnull string",
+      "pass": true
+    },
+    {
+      "name": "bill link excludes rejected only",
+      "pass": true
+    },
+    {
+      "name": "provisions accepted/candidate",
+      "pass": true
+    },
+    {
+      "name": "unrestricted finite projection confidence",
+      "pass": true
+    },
+    {
+      "name": "award rows remain Int32",
+      "pass": true
+    },
+    {
+      "name": "aggregate counts safe integers",
+      "pass": true
+    },
+    {
+      "name": "fixed24-month provenance",
+      "pass": true
+    },
+    {
+      "name": "money provenance classes separated",
+      "pass": true
+    },
+    {
+      "name": "fixed bucket classes",
+      "pass": true
+    },
+    {
+      "name": "unmatched coverage caveat retained",
+      "pass": true
+    },
+    {
+      "name": "loaded report coverage caveat retained",
+      "pass": true
+    },
+    {
+      "name": "native evidence String BillBudgetLineLink",
+      "pass": true
+    },
+    {
+      "name": "native evidence String FederalEvidenceMention",
+      "pass": true
+    },
+    {
+      "name": "bill native date-only",
+      "pass": true
+    },
+    {
+      "name": "provision confidence Float not auth",
+      "pass": true
+    },
+    {
+      "name": "owner no actor/tenant proof getBills",
+      "pass": true
+    },
+    {
+      "name": "owner no selected producer mutation getBills",
+      "pass": true
+    },
+    {
+      "name": "source excludes rejected",
+      "pass": true
+    },
+    {
+      "name": "owner no actor/tenant proof getContractors",
+      "pass": true
+    },
+    {
+      "name": "owner no selected producer mutation getContractors",
+      "pass": true
+    },
+    {
+      "name": "stored award window24months",
+      "pass": true
+    },
+    {
+      "name": "source group mixed direct evidence",
+      "pass": true
+    },
+    {
+      "name": "source top10 and25 returned named",
+      "pass": true
+    },
+    {
+      "name": "owner no actor/tenant proof getProvisionsForPe",
+      "pass": true
+    },
+    {
+      "name": "owner no selected producer mutation getProvisionsForPe",
+      "pass": true
+    },
+    {
+      "name": "owned group absent prefreeze-independent",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/read-continuation-20261012/pe-references-review/prefreeze-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/read-continuation-20261012/pe-references-review/prefreeze-independent.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "empty stderr prefreeze-independent",
+      "pass": true
+    },
+    {
+      "name": "owned group absent initial-negative-replay",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/read-continuation-20261012/pe-references-review/initial-negative-replay.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/read-continuation-20261012/pe-references-review/initial-negative-replay.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "empty stderr initial-negative-replay",
+      "pass": true
+    },
+    {
+      "name": "owned group absent repaired-prefreeze-independent",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/read-continuation-20261012/pe-references-review/repaired-prefreeze-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/read-continuation-20261012/pe-references-review/repaired-prefreeze-independent.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "empty stderr repaired-prefreeze-independent",
+      "pass": true
+    },
+    {
+      "name": "owned group absent exact-source-tests",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/read-continuation-20261012/pe-references-review/exact-source-tests.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/read-continuation-20261012/pe-references-review/exact-source-tests.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "empty stderr exact-source-tests",
+      "pass": true
+    },
+    {
+      "name": "retained exact initial packages/contracts/retrieval-0.2/pe-references-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained exact initial packages/contracts/retrieval-0.2/pe-contractors-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained exact initial packages/contracts/retrieval-0.2/pe-references.schema.json",
+      "pass": true
+    },
+    {
+      "name": "no entire private body in new tracked files",
+      "pass": true
+    },
+    {
+      "name": "source whitespace",
+      "pass": true
+    }
+  ],
+  "sourceIdentities": [
+    {
+      "path": "packages/contracts/retrieval-0.2/pe-references-validation.mjs",
+      "bytes": 3704,
+      "sha256": "31148c6057be537fe89c2e0d28d30901c8b104a94f992d6879e3260f4ee49215",
+      "blob": "2c3e12d66fc2fd9eca0b2be882c5ef68b523a389"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/pe-contractors-validation.mjs",
+      "bytes": 1704,
+      "sha256": "277d41406bbe28153230d7c066d5f2bc5e899dbb1457f370367c952a13f35e25",
+      "blob": "67883e8e924110d9c04d2f0fa87da345886b76c1"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/pe-references.schema.json",
+      "bytes": 20869,
+      "sha256": "d0d1faf695b5a38e29b5459d4899c0d8dade4f00552bf5b87ecd924900c7d372",
+      "blob": "e2018ca7b575457289fa1cb5df50400ebe3c9ebf"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-pe-references.test.mjs",
+      "bytes": 14396,
+      "sha256": "833592ed014e6d4b7e5824f659e4f350cdf26df6637b0328c3dd146fe5c777a5",
+      "blob": "9f3c78708dfb058b4c5cd605e4a832790e645f04"
+    }
+  ],
+  "privateSourceExecuted": false,
+  "native": "UNRUN_UNAVAILABLE"
+}
