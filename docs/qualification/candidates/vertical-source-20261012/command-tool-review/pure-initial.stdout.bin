@@ -1,0 +1,25 @@
+✔ task.create advertises raw request, delegates actual payload normalizer and correlates full command (7.66971ms)
+✔ task.create pending output needs complete trusted original proposal (16.715127ms)
+✔ task.create real executor output is exact-correlated and absence/extra outcome refused (45.374541ms)
+✔ task.update advertises raw request, delegates actual payload normalizer and correlates full command (10.180104ms)
+✔ task.update pending output needs complete trusted original proposal (14.410042ms)
+✔ task.update real executor output is exact-correlated and absence/extra outcome refused (14.511445ms)
+✔ memory.propose advertises raw request, delegates actual payload normalizer and correlates full command (3.918421ms)
+✔ memory.propose pending output needs complete trusted original proposal (5.330964ms)
+✔ memory.propose real executor output is exact-correlated and absence/extra outcome refused (10.160404ms)
+✔ artifact.file advertises raw request, delegates actual payload normalizer and correlates full command (6.955105ms)
+✔ artifact.file pending output needs complete trusted original proposal (7.694126ms)
+✔ artifact.file real executor output is exact-correlated and absence/extra outcome refused (13.297269ms)
+✔ model inputs cannot provide server command metadata or approved flags (5.407379ms)
+✔ closed context and hostile raw values are refused without executing accessors (0.547373ms)
+✔ proposal guard binds entire original metadata and returns detached data (2.293678ms)
+✔ all domain transformations retain explicit source limitations (2.971126ms)
+✔ normalized digest describes complete intent including immutable artifact version (2.000237ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3359.682618

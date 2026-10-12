@@ -1,0 +1,120 @@
+{
+  "groups": [
+    {
+      "receipt": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/audit-final.json",
+      "pgid": 383967,
+      "freshAbsent": true,
+      "timeout": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/audit-immutable.json",
+      "pgid": 384853,
+      "freshAbsent": true,
+      "timeout": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-final.json",
+      "pgid": 382484,
+      "freshAbsent": true,
+      "timeout": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-immutable-complete.json",
+      "pgid": 384524,
+      "freshAbsent": true,
+      "timeout": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-immutable-replay.json",
+      "pgid": 384701,
+      "freshAbsent": true,
+      "timeout": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-immutable.json",
+      "pgid": 384404,
+      "freshAbsent": true,
+      "timeout": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-initial.json",
+      "pgid": 382089,
+      "freshAbsent": true,
+      "timeout": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/exact-interface.json",
+      "pgid": 381287,
+      "freshAbsent": true,
+      "timeout": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/interface-initial.json",
+      "pgid": 379800,
+      "freshAbsent": true,
+      "timeout": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/output-before.json",
+      "pgid": 378172,
+      "freshAbsent": true,
+      "timeout": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/pure-initial.json",
+      "pgid": 379418,
+      "freshAbsent": true,
+      "timeout": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "docs/qualification/candidates/vertical-source-20261012/command-tool-interface/canonical-output.json",
+      "pgid": 378690,
+      "freshAbsent": true,
+      "timeout": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "docs/qualification/candidates/vertical-source-20261012/command-tool-interface/frozen-connected.json",
+      "pgid": 381191,
+      "freshAbsent": true,
+      "timeout": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "docs/qualification/candidates/vertical-source-20261012/command-tool-interface/initial-connected.json",
+      "pgid": 377668,
+      "freshAbsent": true,
+      "timeout": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "docs/qualification/candidates/vertical-source-20261012/command-tool-interface/late-release-repair.json",
+      "pgid": 380502,
+      "freshAbsent": true,
+      "timeout": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "docs/qualification/candidates/vertical-source-20261012/command-tool-interface/source-preservation.json",
+      "pgid": 381697,
+      "freshAbsent": true,
+      "timeout": false,
+      "killRequired": false
+    }
+  ],
+  "count": 16,
+  "allAbsent": true,
+  "ownDependencyCleanup": "Removed own seven-package copy and exact isolated83 symlink to that copy; donor unchanged. Source worktrees and Git objects retained.",
+  "nativeTeardownClaim": false
+}

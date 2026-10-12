@@ -1,0 +1,62 @@
+✔ task.create advertises raw request, delegates actual payload normalizer and correlates full command (38.78104ms)
+✔ task.create pending output needs complete trusted original proposal (17.728047ms)
+✔ task.create real executor output is exact-correlated and absence/extra outcome refused (2257.610527ms)
+✔ task.update advertises raw request, delegates actual payload normalizer and correlates full command (20.552851ms)
+✔ task.update pending output needs complete trusted original proposal (13.963337ms)
+✔ task.update real executor output is exact-correlated and absence/extra outcome refused (13.248522ms)
+✔ memory.propose advertises raw request, delegates actual payload normalizer and correlates full command (3.650677ms)
+✔ memory.propose pending output needs complete trusted original proposal (5.114507ms)
+✔ memory.propose real executor output is exact-correlated and absence/extra outcome refused (10.384628ms)
+✔ artifact.file advertises raw request, delegates actual payload normalizer and correlates full command (6.159168ms)
+✔ artifact.file pending output needs complete trusted original proposal (6.983457ms)
+✔ artifact.file real executor output is exact-correlated and absence/extra outcome refused (12.076812ms)
+✔ model inputs cannot provide server command metadata or approved flags (1.144961ms)
+✔ closed context and hostile raw values are refused without executing accessors (0.45881ms)
+✔ proposal guard binds entire original metadata and returns detached data (2.72811ms)
+✔ all domain transformations retain explicit source limitations (0.816497ms)
+✔ normalized digest describes complete intent including immutable artifact version (0.995356ms)
+✔ canonical create_task uses actual raw schema and command normalizer/output callbacks (20.241524ms)
+✔ canonical create_task production gateway remains unavailable before authority/budget (8.170721ms)
+✔ canonical update_task uses actual raw schema and command normalizer/output callbacks (18.122839ms)
+✔ canonical update_task production gateway remains unavailable before authority/budget (7.622677ms)
+✔ canonical save_memory uses actual raw schema and command normalizer/output callbacks (15.766558ms)
+✔ canonical save_memory production gateway remains unavailable before authority/budget (13.105528ms)
+✔ canonical save_chat_attachments uses actual raw schema and command normalizer/output callbacks (20.860945ms)
+✖ canonical save_chat_attachments production gateway remains unavailable before authority/budget (7.281935ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 24
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5013.070342
+
+✖ failing tests:
+
+test at packages/contracts/test/command-tool-interface-independent.test.mjs:67:2
+✖ canonical save_chat_attachments production gateway remains unavailable before authority/budget (7.281935ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /UNAVAILABLE/. Input:
+  
+  'GatewayDenied: INVALID_ARGUMENTS'
+  
+      at async TestContext.<anonymous> (file:///workspace/meri-command-tool-interface-review-20261012/packages/contracts/test/command-tool-interface-independent.test.mjs:71:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: GatewayDenied: INVALID_ARGUMENTS
+        at deny (file:///workspace/meri-vertical-source-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+        at rejectArgumentAuthority (file:///workspace/meri-vertical-source-20261012/apps/gateway/dispatch/operation-result.mjs:36:38)
+        at Object.execute (file:///workspace/meri-vertical-source-20261012/apps/gateway/dispatch/tool-dispatch.mjs:31:5)
+        at TestContext.<anonymous> (file:///workspace/meri-command-tool-interface-review-20261012/packages/contracts/test/command-tool-interface-independent.test.mjs:71:32)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1382:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+        at Test.postRun (node:internal/test_runner/test:1522:19)
+        at Test.run (node:internal/test_runner/test:1447:12)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    expected: /UNAVAILABLE/,
+    operator: 'rejects',
+    diff: 'simple'
+  }

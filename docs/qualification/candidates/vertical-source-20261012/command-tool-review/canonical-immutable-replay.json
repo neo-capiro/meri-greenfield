@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/command-tool-interface-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-command-tool-interface-review-20261012",
+  "sourceHead": "0e4eb69140dd25086b9a59b34e8c37722260c91c",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T22:52:13.410605+00:00",
+  "durationSeconds": 5.084,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 384701,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-immutable-replay.stdout.bin",
+      "bytes": 2654,
+      "sha256": "02d5b21ac6bab3a51f177ab853a0fdc5f95da1175833ce72e7daa78f78603b17"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/canonical-immutable-replay.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Correct sparse add syntax materialized actual gateway at exact83; two previous missing-module attempts retained. Unchanged25 controls.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
