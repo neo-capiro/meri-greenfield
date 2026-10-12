@@ -15,7 +15,8 @@ New mappings require complete coverage of the selected read boundary and
 independent source acceptance. No mapping is runtime qualification.
 
 Prioritize the frozen, explicit output projections for
-`lookup_client_registry`, then the three selected business-development reads.
+`lookup_client_registry`, the three selected business-development reads, and
+`get_research_portfolio` / `get_research_portfolio_changes`.
 A named TypeScript DTO is useful but not mandatory: the existing source rules
 also permit immutable producer projections and imported types. Do not invent
 fields or infer runtime guarantees from those projections. The first discovery
@@ -40,13 +41,21 @@ change, migration, new framework, or copied Capiro implementation.
   report/evidence only, in a separately allocated worktree. Its three operations
   remain distinct. Preserve source qualifiers, permissions and provider-call
   caveats; a legacy description is not proof that a producer cannot call SAM.
+- Gateway author owns new `research-portfolio.schema.json`,
+  `research-portfolio-validation.mjs`, its new contract test and author
+  report/evidence only, in a separately allocated worktree. Preserve current
+  conversation ownership, portfolio grants and client walls. The similarly named
+  `get_research_evidence` actually reads Clio session attachments at the frozen
+  producer, conflicting with its accepted portfolio boundary; leave it pending
+  and report the exact scope decision rather than widening D012 silently.
 - Root exclusively owns `validate.mjs`, `catalog-validation.mjs`, `catalog.json`,
   required operation-count assertions and integration tests/docs. Authors may
   use a test-only Ajv harness before loader integration. No second production
   compiler, registry or authorization implementation.
-- Gateway reviewer independently reviews registry source; memory reviewer
-  independently reviews business-development source. A third reviewer reviews
-  the combined candidate. Reviewers own new tests/evidence/reports only and
+- Native supervisor author (acting as independent reviewer for this task)
+  reviews registry source; memory reviewer reviews business-development source;
+  gateway reviewer reviews portfolio source. Readiness author, after read-only
+  discovery, reviews the combined candidate. Reviewers own new tests/evidence/reports only and
   return ACCEPT_SOURCE or HOLD at exact commits; authors repair defects.
 
 Source references are immutable Capiro
