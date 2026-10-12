@@ -22,5 +22,9 @@
   {
     "role": "supervisor-inputs-reviewer",
     "commit": "d6d2d7b0668f43aad93bd9fc4e2fa9df688be876"
+  },
+  {
+    "role": "root-documentation-reviewer",
+    "commit": "ec91e937d37dc06110a3fa1f75519907fd2c62b0"
   }
 ]
