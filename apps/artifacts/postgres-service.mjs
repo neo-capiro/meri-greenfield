@@ -1,0 +1,94 @@
+/** Owned artifact accounting over the canonical PostgreSQL budget owner. No startup I/O. */
+import {canonicalSha256,validateShape} from '../../packages/contracts/validate.mjs';
+import {createPostgresBudgetExecution} from '../gateway/index.mjs';
+import {createArtifactService} from './service.mjs';
+
+const fail=code=>{throw Object.assign(new Error(code),{code});};
+const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
+const own=(value,required,optional=[])=>{if(!value||Array.isArray(value)||required.some(k=>!Object.hasOwn(value,k))||Object.keys(value).some(k=>![...required,...optional].includes(k)))fail('ARTIFACT_BUDGET_CONFIGURATION');return value;};
+
+export function createPostgresArtifactService(options){
+  const {pool,allocationJson,producerContext,descriptor,context,validators:v,authority,authorize,versions,objects,executor,now,ids,newReservationId,limits,sourceEnabled=false}=own(options,
+    ['pool','allocationJson','producerContext','descriptor','context','validators','authority','authorize','versions','objects','executor','now','ids','newReservationId','limits'],['sourceEnabled']);
+  if(![v?.snapshot,v?.request,v?.context,authority?.check,authorize,versions?.commit,versions?.read,objects?.put,objects?.get,executor?.execute,now,ids,newReservationId].every(x=>typeof x==='function')||typeof sourceEnabled!=='boolean')fail('ARTIFACT_BUDGET_CONFIGURATION');
+  const trusted=v.snapshot({producerContext,descriptor,context,limits});trusted.context=v.context(trusted.context);
+  own(trusted.producerContext,['context','producer']);validateShape('RunBinding',trusted.context.binding);
+  own(trusted.descriptor,['operation','requiredGrants','sourceRequirements']);
+  if(!same(trusted.producerContext.context.binding,trusted.context.binding)||trusted.descriptor.operation?.version!=='0.2.0')fail('ARTIFACT_BUDGET_CONFIGURATION');
+  for(const key of ['maxRequestMs','maxResponseBytes'])if(!Number.isSafeInteger(trusted.limits[key])||trusted.limits[key]<1)fail('ARTIFACT_BUDGET_CONFIGURATION');
+  if(trusted.limits.maxRequestMs>3600000||trusted.limits.maxResponseBytes>16*1024*1024)fail('ARTIFACT_BUDGET_CONFIGURATION');
+  // Canonical owner validates the complete allocation. Only the output ceiling is read here.
+  const configuredAllocation=v.snapshot(JSON.parse(allocationJson));
+  function input(value){
+    const call=v.snapshot(typeof value==='string'?JSON.parse(value):value);own(call,['deliveryId','baseVersionId','request']);
+    if(typeof call.deliveryId!=='string'||!/^[A-Za-z0-9_.:@/-]{1,255}$/.test(call.deliveryId)||!(call.baseVersionId===null||typeof call.baseVersionId==='string'&&/^[0-9a-f-]{36}$/i.test(call.baseVersionId)))fail('ARTIFACT_BUDGET_INPUT');
+    call.request=v.request(call.request);
+    if(call.request.operation!==trusted.descriptor.operation.id)fail('ARTIFACT_BUDGET_OPERATION');
+    if(call.request.format==='sandbox')fail('ANALYSIS_SANDBOX_DISPATCH_REQUIRED');
+    if(trusted.context.analysisAdmission)fail('IRRELEVANT_ANALYSIS_ADMISSION');
+    return call;
+  }
+  const intent=call=>({request:call.request,context:trusted.context,baseVersionId:call.baseVersionId});
+  const requestIdentity=raw=>JSON.stringify({operation:trusted.descriptor.operation,arguments:{intentSha256:v.hash(intent(input(raw)))}});
+  const delivery=call=>JSON.stringify({...trusted.producerContext,deliveryId:call.deliveryId});
+  const ack=(raw,id,decision)=>{
+    if(typeof raw!=='string'||Buffer.byteLength(raw)>trusted.limits.maxResponseBytes)fail('ARTIFACT_BUDGET_RECEIPT');
+    const receipt=v.snapshot(JSON.parse(raw));own(receipt,['reservationId','decision']);
+    if(receipt.reservationId!==id||receipt.decision!==decision)fail('ARTIFACT_BUDGET_RECEIPT');
+  };
+  const durable=createPostgresBudgetExecution({pool,allocationJson,authority,limits:trusted.limits,now,requestIdentity,
+    createExecutor:ports=>({async execute(raw,credential,signal){
+      const call=input(raw),requestSha256=v.hash(intent(call));
+      let current,selection,ticketId,committed,outputBytes=null;
+      let deadlineMs=trusted.context.deadlineMs,maxBytes=Math.min(trusted.context.maxBytes,configuredAllocation.budgets.maxOutputBytes);
+      const active=()=>{if(signal?.aborted||!Number.isSafeInteger(now())||now()>=deadlineMs)fail('ARTIFACT_DEADLINE');};
+      const narrow=value=>{if(!Number.isSafeInteger(value))fail('ARTIFACT_BUDGET_DEADLINE');deadlineMs=Math.min(deadlineMs,value);active();};
+      async function authorizeArtifact(resource){
+        active();
+        current=v.snapshot(await ports.authority.check({credential,descriptor:v.snapshot(trusted.descriptor),input:v.snapshot(intent(call)),signal:resource.signal,limitDeadline:narrow}));
+        validateShape('CapabilityClaims',current.claims);validateShape('AuthorizationDecision',current.decision);
+        if(!same(current.binding,trusted.context.binding)||!same(current.claims.binding,trusted.context.binding)||!same(current.decision.scopes,trusted.context.scopes)||current.decision.decision!=='allowed'||current.decision.operation!==`${trusted.descriptor.operation.id}@${trusted.descriptor.operation.version}`||current.policyRevision!==current.claims.policyRevision||current.decision.policyRevision!==current.policyRevision||trusted.context.scopes.some(s=>s.policyRevision!==current.policyRevision||!current.claims.scopes.some(c=>same(c,s))))fail('ARTIFACT_BUDGET_AUTHORITY');
+        const subject=v.snapshot(current.subject);delete subject.authorizationDecisionId;
+        if(selection&&!same(selection,subject))fail('ARTIFACT_BUDGET_AUTHORITY');selection??=subject;
+        narrow(current.deadlineMs);narrow(Date.parse(current.claims.expiresAt));
+        maxBytes=Math.min(maxBytes,current.claims.budgets.maxOutputBytes);
+        if(outputBytes!==null&&outputBytes>maxBytes)fail('ARTIFACT_OUTPUT_LIMIT');
+        const receipt=v.snapshot(await authorize({...resource,deadlineMs:Math.min(resource.deadlineMs,deadlineMs)}));
+        // Publish even a shorter artifact release authority to the canonical marker owner.
+        if(resource.signal?.aborted)fail('ARTIFACT_DEADLINE');narrow(receipt.expiresAtMs);
+        // check() supplies the canonical owner a deadline publisher; a zero-effect repeat
+        // below is unnecessary: reserve/settle explicitly carry the narrower deadline.
+        return {...receipt,expiresAtMs:deadlineMs};
+      }
+      const budget={
+        async reserve(value){
+          active();if(!current||!same(value.binding,trusted.context.binding)||value.requestSha256!==requestSha256)fail('ARTIFACT_BUDGET_BINDING');
+          ticketId=newReservationId();
+          ack(await ports.budget.reserve({reservationId:ticketId,binding:value.binding,operation:trusted.descriptor.operation,argumentsSha256:requestSha256,budgets:current.claims.budgets,claims:current.claims,deadlineMs:Math.min(value.deadlineMs,deadlineMs),limitDeadline:narrow,signal:value.signal}),ticketId,'reserved');
+          active();return {ticketId,binding:value.binding,requestSha256,maxBytes,deadlineMs};
+        },
+        async settle(value){
+          active();if(value.ticketId!==ticketId||value.requestSha256!==requestSha256)fail('ARTIFACT_BUDGET_BINDING');
+          // Canonical UNKNOWN is already durable. A failed generator is never refunded
+          // or given a fabricated completed/failed-settled accounting receipt.
+          if(value.outcome!=='completed'||!committed)fail('ARTIFACT_FAILED_ACCOUNTING_UNKNOWN');
+          if(value.bytes!==committed.version.object.bytes||value.bytes>maxBytes)fail('ARTIFACT_OUTPUT_LIMIT');
+          ack(await ports.budget.settle({reservationId:ticketId,outcome:'completed',outputBytes:value.bytes,resultSha256:v.hash(committed),deadlineMs,signal:value.signal}),ticketId,'settled');
+          active();return {ticketId,requestSha256,bytes:value.bytes,outcome:value.outcome,status:'settled'};
+        },
+      };
+      // Completion is the immutable committed storage record, not proof of delivery.
+      const versionPort={read:versions.read,async commit(value,abort){active();const record=v.snapshot(value);if(record.requestSha256!==requestSha256||record.version.object.bytes>maxBytes)fail('ARTIFACT_BUDGET_BINDING');const receipt=await versions.commit(value,abort);active();committed=record;return receipt;}};
+      const executePort={async execute(value){active();const result=await executor.execute({...value,maxBytes:Math.min(value.maxBytes,maxBytes),deadlineMs:Math.min(value.deadlineMs,deadlineMs)});active();outputBytes=result.bytes?.length;if(!Number.isSafeInteger(outputBytes)||outputBytes>maxBytes)fail('ARTIFACT_OUTPUT_LIMIT');return result;}};
+      const service=createArtifactService({validators:v,authorize:authorizeArtifact,budget,versions:versionPort,objects,executor:executePort,now,ids});
+      const result=await (call.baseVersionId===null?service.create(call.request,trusted.context,{signal}):service.revise(call.baseVersionId,call.request,trusted.context,{signal}));
+      active();if(Buffer.byteLength(JSON.stringify(result))>trusted.limits.maxResponseBytes)fail('ARTIFACT_RESPONSE_LIMIT');return result;
+    }})});
+  function admitted(value){if(!sourceEnabled)fail('UNAVAILABLE');const call=input(value);return {raw:JSON.stringify(call),delivery:delivery(call)};}
+  return Object.freeze({sourceEnabled,
+    bindTrustedGrant:durable.bindTrustedGrant,
+    prepareInvocation(value,signal){const call=admitted(value);return durable.prepareInvocation(call.delivery,call.raw,signal);},
+    execute(value,credential,signal){const call=admitted(value);return durable.executeOwned(call.raw,credential,call.delivery,signal);},
+    reconcileInvocation(value){const call=input(value);return durable.reconcileInvocation(delivery(call),JSON.stringify(call));},
+  });
+}
