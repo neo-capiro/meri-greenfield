@@ -1,0 +1,4184 @@
+{
+  "schema": "meri-scope-authority-ledger/1",
+  "base": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+  "catalogCommit": "753566baf2d230ed241941dcdeca41625277cb1d",
+  "originalCount": 139,
+  "selectedCount": 96,
+  "deferredCount": 43,
+  "deferredReadOnly": 18,
+  "deferredWrites": 25,
+  "authorityBoundary": "Repository records human batch approval; no underlying primary transcript was available in inspected tracked records. Current explicit instructions prevail. No reclassification.",
+  "entries": [
+    {
+      "id": "manage_research_portfolio",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": false,
+      "reason": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 41
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/0"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 43,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 8,
+            "cells": [
+              "A8",
+              "B8",
+              "E8:G8"
+            ]
+          }
+        },
+        "category": "Research Portfolio workflows",
+        "coverageStatus": "Deferred by initial command scope",
+        "scopeText": "Generic research/drafting, data access and governed proposals do not recreate this source-side command. Initial source commands are memory proposals/review, task creation and artifact filing.",
+        "parityAction": "Select explicitly, implement a new typed command preserving domain policy/transaction invariants, bind approval to exact version/idempotency key and prove outcome/revocation fixtures; otherwise keep deferred.",
+        "dimensionDiffersFromNativeDisposition": false
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "get_research_portfolio_analytics",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": true,
+      "reason": "Portfolio analytics has domain scoring and aggregation semantics beyond source reads; fixture and scope not agreed.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 43
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/2"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 45,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 10,
+            "cells": [
+              "A10",
+              "B10",
+              "E10:G10"
+            ]
+          }
+        },
+        "category": "Research Portfolio workflows",
+        "coverageStatus": "Data access intent; scope and workflow unselected",
+        "scopeText": "Broad authorized source inventory is intended, but exact Research Portfolio or prospect conversation identity, grants, revision-bound reads and native workflow recipe are not selected in v1.",
+        "parityAction": "Add explicit resource/prospect scope contracts and decide each recipe. Preserve distinction between all-client Meri portfolio scope and Defense Research Portfolio resource; preserve expected versions, grants and source dates.",
+        "dimensionDiffersFromNativeDisposition": true
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "create_research_portfolio_snapshot",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": false,
+      "reason": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 45
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/4"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 47,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 12,
+            "cells": [
+              "A12",
+              "B12",
+              "E12:G12"
+            ]
+          }
+        },
+        "category": "Research Portfolio workflows",
+        "coverageStatus": "Deferred by initial command scope",
+        "scopeText": "Generic research/drafting, data access and governed proposals do not recreate this source-side command. Initial source commands are memory proposals/review, task creation and artifact filing.",
+        "parityAction": "Select explicitly, implement a new typed command preserving domain policy/transaction invariants, bind approval to exact version/idempotency key and prove outcome/revocation fixtures; otherwise keep deferred.",
+        "dimensionDiffersFromNativeDisposition": false
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "request_research_portfolio_output",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": false,
+      "reason": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 46
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/5"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 48,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 13,
+            "cells": [
+              "A13",
+              "B13",
+              "E13:G13"
+            ]
+          }
+        },
+        "category": "Research Portfolio workflows",
+        "coverageStatus": "Deferred by initial command scope",
+        "scopeText": "Generic research/drafting, data access and governed proposals do not recreate this source-side command. Initial source commands are memory proposals/review, task creation and artifact filing.",
+        "parityAction": "Select explicitly, implement a new typed command preserving domain policy/transaction invariants, bind approval to exact version/idempotency key and prove outcome/revocation fixtures; otherwise keep deferred.",
+        "dimensionDiffersFromNativeDisposition": false
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "save_research_portfolio_output_to_client",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": false,
+      "reason": "Portfolio-specific filing workflow is not selected; narrow verified-artifact filing is a separate proposed command.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 47
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/6"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 49,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 14,
+            "cells": [
+              "A14",
+              "B14",
+              "E14:G14"
+            ]
+          }
+        },
+        "category": "Research Portfolio workflows",
+        "coverageStatus": "Deferred by initial command scope",
+        "scopeText": "Generic research/drafting, data access and governed proposals do not recreate this source-side command. Initial source commands are memory proposals/review, task creation and artifact filing.",
+        "parityAction": "Select explicitly, implement a new typed command preserving domain policy/transaction invariants, bind approval to exact version/idempotency key and prove outcome/revocation fixtures; otherwise keep deferred.",
+        "dimensionDiffersFromNativeDisposition": false
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "watch_research_portfolio",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": false,
+      "reason": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 48
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/7"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 50,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 15,
+            "cells": [
+              "A15",
+              "B15",
+              "E15:G15"
+            ]
+          }
+        },
+        "category": "Research Portfolio workflows",
+        "coverageStatus": "Deferred by initial command scope",
+        "scopeText": "Generic research/drafting, data access and governed proposals do not recreate this source-side command. Initial source commands are memory proposals/review, task creation and artifact filing.",
+        "parityAction": "Select explicitly, implement a new typed command preserving domain policy/transaction invariants, bind approval to exact version/idempotency key and prove outcome/revocation fixtures; otherwise keep deferred.",
+        "dimensionDiffersFromNativeDisposition": false
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "update_research_portfolio_change_state",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": false,
+      "reason": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 49
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/8"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 51,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 16,
+            "cells": [
+              "A16",
+              "B16",
+              "E16:G16"
+            ]
+          }
+        },
+        "category": "Research Portfolio workflows",
+        "coverageStatus": "Deferred by initial command scope",
+        "scopeText": "Generic research/drafting, data access and governed proposals do not recreate this source-side command. Initial source commands are memory proposals/review, task creation and artifact filing.",
+        "parityAction": "Select explicitly, implement a new typed command preserving domain policy/transaction invariants, bind approval to exact version/idempotency key and prove outcome/revocation fixtures; otherwise keep deferred.",
+        "dimensionDiffersFromNativeDisposition": false
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "get_research_portfolio_bookmarks",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": true,
+      "reason": "Portfolio bookmark workflow is not required by defined v1; private-source access still needs an inventory decision.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 50
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/9"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 52,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 17,
+            "cells": [
+              "A17",
+              "B17",
+              "E17:G17"
+            ]
+          }
+        },
+        "category": "Research Portfolio workflows",
+        "coverageStatus": "Data access intent; scope and workflow unselected",
+        "scopeText": "Broad authorized source inventory is intended, but exact Research Portfolio or prospect conversation identity, grants, revision-bound reads and native workflow recipe are not selected in v1.",
+        "parityAction": "Add explicit resource/prospect scope contracts and decide each recipe. Preserve distinction between all-client Meri portfolio scope and Defense Research Portfolio resource; preserve expected versions, grants and source dates.",
+        "dimensionDiffersFromNativeDisposition": true
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "create_research_portfolio_bookmark",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": false,
+      "reason": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 51
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/10"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 53,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 18,
+            "cells": [
+              "A18",
+              "B18",
+              "E18:G18"
+            ]
+          }
+        },
+        "category": "Research Portfolio workflows",
+        "coverageStatus": "Deferred by initial command scope",
+        "scopeText": "Generic research/drafting, data access and governed proposals do not recreate this source-side command. Initial source commands are memory proposals/review, task creation and artifact filing.",
+        "parityAction": "Select explicitly, implement a new typed command preserving domain policy/transaction invariants, bind approval to exact version/idempotency key and prove outcome/revocation fixtures; otherwise keep deferred.",
+        "dimensionDiffersFromNativeDisposition": false
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "get_research_portfolio_fit",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": true,
+      "reason": "Portfolio fit scoring is a specialized business workflow; no agreed behavior or benchmark.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 52
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/11"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 54,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 19,
+            "cells": [
+              "A19",
+              "B19",
+              "E19:G19"
+            ]
+          }
+        },
+        "category": "Research Portfolio workflows",
+        "coverageStatus": "Data access intent; scope and workflow unselected",
+        "scopeText": "Broad authorized source inventory is intended, but exact Research Portfolio or prospect conversation identity, grants, revision-bound reads and native workflow recipe are not selected in v1.",
+        "parityAction": "Add explicit resource/prospect scope contracts and decide each recipe. Preserve distinction between all-client Meri portfolio scope and Defense Research Portfolio resource; preserve expected versions, grants and source dates.",
+        "dimensionDiffersFromNativeDisposition": true
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "get_research_portfolio_reviews",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": true,
+      "reason": "Portfolio review workflow parity is not agreed; relevant records may be inventoried separately.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 53
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/12"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 55,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 20,
+            "cells": [
+              "A20",
+              "B20",
+              "E20:G20"
+            ]
+          }
+        },
+        "category": "Research Portfolio workflows",
+        "coverageStatus": "Data access intent; scope and workflow unselected",
+        "scopeText": "Broad authorized source inventory is intended, but exact Research Portfolio or prospect conversation identity, grants, revision-bound reads and native workflow recipe are not selected in v1.",
+        "parityAction": "Add explicit resource/prospect scope contracts and decide each recipe. Preserve distinction between all-client Meri portfolio scope and Defense Research Portfolio resource; preserve expected versions, grants and source dates.",
+        "dimensionDiffersFromNativeDisposition": true
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "add_research_portfolio_review_note",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": false,
+      "reason": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 54
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/13"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 56,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 21,
+            "cells": [
+              "A21",
+              "B21",
+              "E21:G21"
+            ]
+          }
+        },
+        "category": "Research Portfolio workflows",
+        "coverageStatus": "Deferred by initial command scope",
+        "scopeText": "Generic research/drafting, data access and governed proposals do not recreate this source-side command. Initial source commands are memory proposals/review, task creation and artifact filing.",
+        "parityAction": "Select explicitly, implement a new typed command preserving domain policy/transaction invariants, bind approval to exact version/idempotency key and prove outcome/revocation fixtures; otherwise keep deferred.",
+        "dimensionDiffersFromNativeDisposition": false
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "get_research_portfolio_rules",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": true,
+      "reason": "Portfolio rule-management surface is not part of the initial workspace or command set.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 55
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/14"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 57,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 22,
+            "cells": [
+              "A22",
+              "B22",
+              "E22:G22"
+            ]
+          }
+        },
+        "category": "Research Portfolio workflows",
+        "coverageStatus": "Data access intent; scope and workflow unselected",
+        "scopeText": "Broad authorized source inventory is intended, but exact Research Portfolio or prospect conversation identity, grants, revision-bound reads and native workflow recipe are not selected in v1.",
+        "parityAction": "Add explicit resource/prospect scope contracts and decide each recipe. Preserve distinction between all-client Meri portfolio scope and Defense Research Portfolio resource; preserve expected versions, grants and source dates.",
+        "dimensionDiffersFromNativeDisposition": true
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "get_research_portfolio_imports",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": true,
+      "reason": "Portfolio import administration is separate scope; no import workflow selected.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 56
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/15"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 58,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 23,
+            "cells": [
+              "A23",
+              "B23",
+              "E23:G23"
+            ]
+          }
+        },
+        "category": "Research Portfolio workflows",
+        "coverageStatus": "Data access intent; scope and workflow unselected",
+        "scopeText": "Broad authorized source inventory is intended, but exact Research Portfolio or prospect conversation identity, grants, revision-bound reads and native workflow recipe are not selected in v1.",
+        "parityAction": "Add explicit resource/prospect scope contracts and decide each recipe. Preserve distinction between all-client Meri portfolio scope and Defense Research Portfolio resource; preserve expected versions, grants and source dates.",
+        "dimensionDiffersFromNativeDisposition": true
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "get_research_portfolio_operations",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": true,
+      "reason": "Portfolio operations diagnostics is a specialized workflow with unqualified permissions.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 57
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/16"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 59,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 24,
+            "cells": [
+              "A24",
+              "B24",
+              "E24:G24"
+            ]
+          }
+        },
+        "category": "Research Portfolio workflows",
+        "coverageStatus": "Data access intent; scope and workflow unselected",
+        "scopeText": "Broad authorized source inventory is intended, but exact Research Portfolio or prospect conversation identity, grants, revision-bound reads and native workflow recipe are not selected in v1.",
+        "parityAction": "Add explicit resource/prospect scope contracts and decide each recipe. Preserve distinction between all-client Meri portfolio scope and Defense Research Portfolio resource; preserve expected versions, grants and source dates.",
+        "dimensionDiffersFromNativeDisposition": true
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "prepare_research_portfolio_brief",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": false,
+      "reason": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 58
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/17"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 60,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 25,
+            "cells": [
+              "A25",
+              "B25",
+              "E25:G25"
+            ]
+          }
+        },
+        "category": "Research Portfolio workflows",
+        "coverageStatus": "Deferred by initial command scope",
+        "scopeText": "Generic research/drafting, data access and governed proposals do not recreate this source-side command. Initial source commands are memory proposals/review, task creation and artifact filing.",
+        "parityAction": "Select explicitly, implement a new typed command preserving domain policy/transaction invariants, bind approval to exact version/idempotency key and prove outcome/revocation fixtures; otherwise keep deferred.",
+        "dimensionDiffersFromNativeDisposition": false
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "prepare_research_portfolio_meeting",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": false,
+      "reason": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 59
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/18"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 61,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 26,
+            "cells": [
+              "A26",
+              "B26",
+              "E26:G26"
+            ]
+          }
+        },
+        "category": "Research Portfolio workflows",
+        "coverageStatus": "Deferred by initial command scope",
+        "scopeText": "Generic research/drafting, data access and governed proposals do not recreate this source-side command. Initial source commands are memory proposals/review, task creation and artifact filing.",
+        "parityAction": "Select explicitly, implement a new typed command preserving domain policy/transaction invariants, bind approval to exact version/idempotency key and prove outcome/revocation fixtures; otherwise keep deferred.",
+        "dimensionDiffersFromNativeDisposition": false
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "find_path_to",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": true,
+      "reason": "Relationship-path recommendation behavior and policy fixture are not sufficiently defined; graph record reads remain proposed.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 70
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/29"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 72,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 37,
+            "cells": [
+              "A37",
+              "B37",
+              "E37:G37"
+            ]
+          }
+        },
+        "category": "Relationship graph",
+        "coverageStatus": "Covered family; exact contract qualification pending",
+        "scopeText": "Selected in the standalone SDK/data/memory/artifact/task/schedule family. Existing code is behavior reference only; new contracts and fixtures still required.",
+        "parityAction": "Map exact behavior to a new authorized tool/workflow and acceptance fixture; preserve paging, source scopes, revocation and accurate receipts. For memory confirm/correct/forget explicitly name supported lifecycle verbs/holds; for schedules name run-now/resume/timezone semantics.",
+        "dimensionDiffersFromNativeDisposition": true
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "get_legiwatch_review",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": true,
+      "reason": "Saved LegiWatch review workflow and its state semantics require separate acceptance.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 98
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/57"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 100,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 65,
+            "cells": [
+              "A65",
+              "B65",
+              "E65:G65"
+            ]
+          }
+        },
+        "category": "LegiWatch and exact legislative research",
+        "coverageStatus": "Data access included; exact read workflow unselected",
+        "scopeText": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
+        "parityAction": "Select and specify equivalent typed reads/domain calculations as needed; preserve current deterministic status, eligibility, source authority, freshness, complete-vs-partial coverage, paging and temporal semantics. Add behavior/policy fixtures before declaring parity.",
+        "dimensionDiffersFromNativeDisposition": true
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "compare_florida_budget_amounts",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": true,
+      "reason": "Florida-specific budget comparison workflow needs explicit units, provenance and expected-value fixtures.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 101
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/60"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 103,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 68,
+            "cells": [
+              "A68",
+              "B68",
+              "E68:G68"
+            ]
+          }
+        },
+        "category": "LegiWatch and exact legislative research",
+        "coverageStatus": "Data access included; exact read workflow unselected",
+        "scopeText": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
+        "parityAction": "Select and specify equivalent typed reads/domain calculations as needed; preserve current deterministic status, eligibility, source authority, freshness, complete-vs-partial coverage, paging and temporal semantics. Add behavior/policy fixtures before declaring parity.",
+        "dimensionDiffersFromNativeDisposition": true
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "prepare_legiwatch_briefing",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": false,
+      "reason": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 102
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/61"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 104,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 69,
+            "cells": [
+              "A69",
+              "B69",
+              "E69:G69"
+            ]
+          }
+        },
+        "category": "LegiWatch and exact legislative research",
+        "coverageStatus": "Deferred by initial command scope",
+        "scopeText": "Generic research/drafting, data access and governed proposals do not recreate this source-side command. Initial source commands are memory proposals/review, task creation and artifact filing.",
+        "parityAction": "Select explicitly, implement a new typed command preserving domain policy/transaction invariants, bind approval to exact version/idempotency key and prove outcome/revocation fixtures; otherwise keep deferred.",
+        "dimensionDiffersFromNativeDisposition": false
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "compare_legislative_versions",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": true,
+      "reason": "Legislative version comparison behavior and legal-reference fidelity need separate qualification.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 105
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/64"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 107,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 72,
+            "cells": [
+              "A72",
+              "B72",
+              "E72:G72"
+            ]
+          }
+        },
+        "category": "LegiWatch and exact legislative research",
+        "coverageStatus": "Data access included; exact read workflow unselected",
+        "scopeText": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
+        "parityAction": "Select and specify equivalent typed reads/domain calculations as needed; preserve current deterministic status, eligibility, source authority, freshness, complete-vs-partial coverage, paging and temporal semantics. Add behavior/policy fixtures before declaring parity.",
+        "dimensionDiffersFromNativeDisposition": true
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "save_legislative_research",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": false,
+      "reason": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 106
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/65"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 108,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 73,
+            "cells": [
+              "A73",
+              "B73",
+              "E73:G73"
+            ]
+          }
+        },
+        "category": "LegiWatch and exact legislative research",
+        "coverageStatus": "Deferred by initial command scope",
+        "scopeText": "Generic research/drafting, data access and governed proposals do not recreate this source-side command. Initial source commands are memory proposals/review, task creation and artifact filing.",
+        "parityAction": "Select explicitly, implement a new typed command preserving domain policy/transaction invariants, bind approval to exact version/idempotency key and prove outcome/revocation fixtures; otherwise keep deferred.",
+        "dimensionDiffersFromNativeDisposition": false
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "preview_legiwatch_relevance",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": true,
+      "reason": "LegiWatch relevance scoring is a specialized proposal workflow outside the initial commands.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 107
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/66"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 109,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 74,
+            "cells": [
+              "A74",
+              "B74",
+              "E74:G74"
+            ]
+          }
+        },
+        "category": "LegiWatch and exact legislative research",
+        "coverageStatus": "Data access included; exact read workflow unselected",
+        "scopeText": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
+        "parityAction": "Select and specify equivalent typed reads/domain calculations as needed; preserve current deterministic status, eligibility, source authority, freshness, complete-vs-partial coverage, paging and temporal semantics. Add behavior/policy fixtures before declaring parity.",
+        "dimensionDiffersFromNativeDisposition": true
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "save_legiwatch_relevance",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": false,
+      "reason": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 108
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/67"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 110,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 75,
+            "cells": [
+              "A75",
+              "B75",
+              "E75:G75"
+            ]
+          }
+        },
+        "category": "LegiWatch and exact legislative research",
+        "coverageStatus": "Deferred by initial command scope",
+        "scopeText": "Generic research/drafting, data access and governed proposals do not recreate this source-side command. Initial source commands are memory proposals/review, task creation and artifact filing.",
+        "parityAction": "Select explicitly, implement a new typed command preserving domain policy/transaction invariants, bind approval to exact version/idempotency key and prove outcome/revocation fixtures; otherwise keep deferred.",
+        "dimensionDiffersFromNativeDisposition": false
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "apply_legiwatch_suggestion",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": false,
+      "reason": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 109
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/68"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 111,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 76,
+            "cells": [
+              "A76",
+              "B76",
+              "E76:G76"
+            ]
+          }
+        },
+        "category": "LegiWatch and exact legislative research",
+        "coverageStatus": "Deferred by initial command scope",
+        "scopeText": "Generic research/drafting, data access and governed proposals do not recreate this source-side command. Initial source commands are memory proposals/review, task creation and artifact filing.",
+        "parityAction": "Select explicitly, implement a new typed command preserving domain policy/transaction invariants, bind approval to exact version/idempotency key and prove outcome/revocation fixtures; otherwise keep deferred.",
+        "dimensionDiffersFromNativeDisposition": false
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "create_meeting_brief",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": false,
+      "reason": "Existing stored meeting-brief workflow is deferred; new local native brief generation is required separately.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 116
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/75"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 118,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 83,
+            "cells": [
+              "A83",
+              "B83",
+              "E83:G83"
+            ]
+          }
+        },
+        "category": "Mail, calendars and meetings",
+        "coverageStatus": "Draft capability covered; native persistence gap",
+        "scopeText": "Meeting briefs and policy documents can be created/revised/downloaded as artifacts. The exact native meeting association, existing record format and persist-to-domain behavior are not selected.",
+        "parityAction": "Specify whether output is a generic Meri artifact/client file or a native meeting/memo record. Add native adapter only if selected and preserve source association/receipts.",
+        "dimensionDiffersFromNativeDisposition": true
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "draft_policy_memo",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": false,
+      "reason": "Existing policy-memo workflow is deferred; new local artifact drafting is required separately.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 117
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/76"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 119,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 84,
+            "cells": [
+              "A84",
+              "B84",
+              "E84:G84"
+            ]
+          }
+        },
+        "category": "Artifacts, files and computation",
+        "coverageStatus": "Draft capability covered; native persistence gap",
+        "scopeText": "Meeting briefs and policy documents can be created/revised/downloaded as artifacts. The exact native meeting association, existing record format and persist-to-domain behavior are not selected.",
+        "parityAction": "Specify whether output is a generic Meri artifact/client file or a native meeting/memo record. Add native adapter only if selected and preserve source association/receipts.",
+        "dimensionDiffersFromNativeDisposition": true
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "save_note",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": false,
+      "reason": "Source note mutation is not selected; local drafting and native artifacts remain required.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 118
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/77"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 120,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 85,
+            "cells": [
+              "A85",
+              "B85",
+              "E85:G85"
+            ]
+          }
+        },
+        "category": "Artifacts, files and computation",
+        "coverageStatus": "Deferred by initial command scope",
+        "scopeText": "Generic research/drafting, data access and governed proposals do not recreate this source-side command. Initial source commands are memory proposals/review, task creation and artifact filing.",
+        "parityAction": "Select explicitly, implement a new typed command preserving domain policy/transaction invariants, bind approval to exact version/idempotency key and prove outcome/revocation fixtures; otherwise keep deferred.",
+        "dimensionDiffersFromNativeDisposition": false
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "send_email",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": false,
+      "reason": "External send is outside the initial source command set; mailbox identity, immutable approval and delivery idempotency unqualified.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 120
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/79"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 122,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 87,
+            "cells": [
+              "A87",
+              "B87",
+              "E87:G87"
+            ]
+          }
+        },
+        "category": "Mail, calendars and meetings",
+        "coverageStatus": "Deferred by initial command scope",
+        "scopeText": "Generic research/drafting, data access and governed proposals do not recreate this source-side command. Initial source commands are memory proposals/review, task creation and artifact filing.",
+        "parityAction": "Select explicitly, implement a new typed command preserving domain policy/transaction invariants, bind approval to exact version/idempotency key and prove outcome/revocation fixtures; otherwise keep deferred.",
+        "dimensionDiffersFromNativeDisposition": false
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "reply_email",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": false,
+      "reason": "External reply is outside initial commands; thread ownership and provider outcome reconciliation unqualified.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 125
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/84"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 127,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 92,
+            "cells": [
+              "A92",
+              "B92",
+              "E92:G92"
+            ]
+          }
+        },
+        "category": "Mail, calendars and meetings",
+        "coverageStatus": "Deferred by initial command scope",
+        "scopeText": "Generic research/drafting, data access and governed proposals do not recreate this source-side command. Initial source commands are memory proposals/review, task creation and artifact filing.",
+        "parityAction": "Select explicitly, implement a new typed command preserving domain policy/transaction invariants, bind approval to exact version/idempotency key and prove outcome/revocation fixtures; otherwise keep deferred.",
+        "dimensionDiffersFromNativeDisposition": false
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "confirm_memory",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": false,
+      "reason": "Direct canonical memory confirmation is beyond initial sourced proposals; review/lifecycle policy must be separately qualified.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 127
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/86"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 129,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 94,
+            "cells": [
+              "A94",
+              "B94",
+              "E94:G94"
+            ]
+          }
+        },
+        "category": "Memory lifecycle",
+        "coverageStatus": "Covered family; exact contract qualification pending",
+        "scopeText": "Selected in the standalone SDK/data/memory/artifact/task/schedule family. Existing code is behavior reference only; new contracts and fixtures still required.",
+        "parityAction": "Map exact behavior to a new authorized tool/workflow and acceptance fixture; preserve paging, source scopes, revocation and accurate receipts. For memory confirm/correct/forget explicitly name supported lifecycle verbs/holds; for schedules name run-now/resume/timezone semantics.",
+        "dimensionDiffersFromNativeDisposition": true
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "correct_memory",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": false,
+      "reason": "Direct canonical memory correction is deferred; v1 can propose a sourced correction without editing active memory.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 128
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/87"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 130,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 95,
+            "cells": [
+              "A95",
+              "B95",
+              "E95:G95"
+            ]
+          }
+        },
+        "category": "Memory lifecycle",
+        "coverageStatus": "Covered family; exact contract qualification pending",
+        "scopeText": "Selected in the standalone SDK/data/memory/artifact/task/schedule family. Existing code is behavior reference only; new contracts and fixtures still required.",
+        "parityAction": "Map exact behavior to a new authorized tool/workflow and acceptance fixture; preserve paging, source scopes, revocation and accurate receipts. For memory confirm/correct/forget explicitly name supported lifecycle verbs/holds; for schedules name run-now/resume/timezone semantics.",
+        "dimensionDiffersFromNativeDisposition": true
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "forget_memory",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": false,
+      "reason": "Canonical revocation/deletion and legal-hold workflow is deferred; application retention/deletion remains mandatory.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 129
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/88"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 131,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 96,
+            "cells": [
+              "A96",
+              "B96",
+              "E96:G96"
+            ]
+          }
+        },
+        "category": "Memory lifecycle",
+        "coverageStatus": "Covered family; exact contract qualification pending",
+        "scopeText": "Selected in the standalone SDK/data/memory/artifact/task/schedule family. Existing code is behavior reference only; new contracts and fixtures still required.",
+        "parityAction": "Map exact behavior to a new authorized tool/workflow and acceptance fixture; preserve paging, source scopes, revocation and accurate receipts. For memory confirm/correct/forget explicitly name supported lifecycle verbs/holds; for schedules name run-now/resume/timezone semantics.",
+        "dimensionDiffersFromNativeDisposition": true
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "get_pe_buyer_workspace",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": true,
+      "reason": "Buyer-workspace composition and specialized analysis are not defined as initial parity.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 133
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/92"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 135,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 100,
+            "cells": [
+              "A100",
+              "B100",
+              "E100:G100"
+            ]
+          }
+        },
+        "category": "Defense budget and acquisition",
+        "coverageStatus": "Data access included; exact read workflow unselected",
+        "scopeText": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
+        "parityAction": "Select and specify equivalent typed reads/domain calculations as needed; preserve current deterministic status, eligibility, source authority, freshness, complete-vs-partial coverage, paging and temporal semantics. Add behavior/policy fixtures before declaring parity.",
+        "dimensionDiffersFromNativeDisposition": true
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "create_client",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": false,
+      "reason": "Client creation is outside initial commands; source transaction and audit invariants not qualified.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 156
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/115"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 158,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 123,
+            "cells": [
+              "A123",
+              "B123",
+              "E123:G123"
+            ]
+          }
+        },
+        "category": "Operational client context and tasks",
+        "coverageStatus": "Deferred by initial command scope",
+        "scopeText": "Generic research/drafting, data access and governed proposals do not recreate this source-side command. Initial source commands are memory proposals/review, task creation and artifact filing.",
+        "parityAction": "Select explicitly, implement a new typed command preserving domain policy/transaction invariants, bind approval to exact version/idempotency key and prove outcome/revocation fixtures; otherwise keep deferred.",
+        "dimensionDiffersFromNativeDisposition": false
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "update_client_profile",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": false,
+      "reason": "Client profile mutation is outside initial commands; field/lifecycle policy not qualified.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 159
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/118"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 161,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 126,
+            "cells": [
+              "A126",
+              "B126",
+              "E126:G126"
+            ]
+          }
+        },
+        "category": "Operational client context and tasks",
+        "coverageStatus": "Deferred by initial command scope",
+        "scopeText": "Generic research/drafting, data access and governed proposals do not recreate this source-side command. Initial source commands are memory proposals/review, task creation and artifact filing.",
+        "parityAction": "Select explicitly, implement a new typed command preserving domain policy/transaction invariants, bind approval to exact version/idempotency key and prove outcome/revocation fixtures; otherwise keep deferred.",
+        "dimensionDiffersFromNativeDisposition": false
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "explain_opportunity_match",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": true,
+      "reason": "Opportunity match scoring/explanation parity has no accepted rubric or independent expected values.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 164
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/123"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 166,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 131,
+            "cells": [
+              "A131",
+              "B131",
+              "E131:G131"
+            ]
+          }
+        },
+        "category": "Funding opportunity decision workflows",
+        "coverageStatus": "Data access included; exact read workflow unselected",
+        "scopeText": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
+        "parityAction": "Select and specify equivalent typed reads/domain calculations as needed; preserve current deterministic status, eligibility, source authority, freshness, complete-vs-partial coverage, paging and temporal semantics. Add behavior/policy fixtures before declaring parity.",
+        "dimensionDiffersFromNativeDisposition": true
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "compare_funding_opportunities",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": true,
+      "reason": "Funding comparison workflow has unagreed scoring and explanation requirements.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 167
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/126"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 169,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 134,
+            "cells": [
+              "A134",
+              "B134",
+              "E134:G134"
+            ]
+          }
+        },
+        "category": "Funding opportunity decision workflows",
+        "coverageStatus": "Data access included; exact read workflow unselected",
+        "scopeText": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
+        "parityAction": "Select and specify equivalent typed reads/domain calculations as needed; preserve current deterministic status, eligibility, source authority, freshness, complete-vs-partial coverage, paging and temporal semantics. Add behavior/policy fixtures before declaring parity.",
+        "dimensionDiffersFromNativeDisposition": true
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "build_opportunity_action_plan",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": true,
+      "reason": "Funding action-plan workflow parity is not established by opportunity source access.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 168
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/127"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 170,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 135,
+            "cells": [
+              "A135",
+              "B135",
+              "E135:G135"
+            ]
+          }
+        },
+        "category": "Funding opportunity decision workflows",
+        "coverageStatus": "Data access included; exact read workflow unselected",
+        "scopeText": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
+        "parityAction": "Select and specify equivalent typed reads/domain calculations as needed; preserve current deterministic status, eligibility, source authority, freshness, complete-vs-partial coverage, paging and temporal semantics. Add behavior/policy fixtures before declaring parity.",
+        "dimensionDiffersFromNativeDisposition": true
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "get_business_development_brief",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": true,
+      "reason": "BizDev brief composition and persisted-versus-generated behavior need explicit scope and fixtures.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 175
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/134"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 177,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 142,
+            "cells": [
+              "A142",
+              "B142",
+              "E142:G142"
+            ]
+          }
+        },
+        "category": "Prospect business development",
+        "coverageStatus": "Data access intent; scope and workflow unselected",
+        "scopeText": "Broad authorized source inventory is intended, but exact Research Portfolio or prospect conversation identity, grants, revision-bound reads and native workflow recipe are not selected in v1.",
+        "parityAction": "Add explicit resource/prospect scope contracts and decide each recipe. Preserve distinction between all-client Meri portfolio scope and Defense Research Portfolio resource; preserve expected versions, grants and source dates.",
+        "dimensionDiffersFromNativeDisposition": true
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "resolve_business_development_source",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": true,
+      "reason": "BizDev source resolution behavior may involve provider actions; precise boundary is unqualified.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 176
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/135"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 178,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 143,
+            "cells": [
+              "A143",
+              "B143",
+              "E143:G143"
+            ]
+          }
+        },
+        "category": "Prospect business development",
+        "coverageStatus": "Data access intent; scope and workflow unselected",
+        "scopeText": "Broad authorized source inventory is intended, but exact Research Portfolio or prospect conversation identity, grants, revision-bound reads and native workflow recipe are not selected in v1.",
+        "parityAction": "Add explicit resource/prospect scope contracts and decide each recipe. Preserve distinction between all-client Meri portfolio scope and Defense Research Portfolio resource; preserve expected versions, grants and source dates.",
+        "dimensionDiffersFromNativeDisposition": true
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    },
+    {
+      "id": "save_business_development_brief",
+      "disposition": "deferred",
+      "sourceState": "deferred",
+      "replacement": null,
+      "registryReadOnly": false,
+      "reason": "BizDev-specific saved brief workflow is outside initial commands.",
+      "reasonMeaning": "Historical proposal rationale, not independently requalified current technical impossibility and not permanent cancellation.",
+      "reasonOrigin": {
+        "date": "2026-10-09",
+        "kind": "recorded_proposal",
+        "citation": {
+          "reference": "7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3:docs/CAPABILITY-SCOPE.md",
+          "locator": {
+            "line": 177
+          }
+        },
+        "humanAuthorshipOfReasonProven": false
+      },
+      "catalogCitation": {
+        "reference": "753566baf2d230ed241941dcdeca41625277cb1d:packages/contracts/retrieval-0.2/catalog.json",
+        "locator": {
+          "jsonPointer": "/originals/136"
+        }
+      },
+      "acceptedLedgerCitation": {
+        "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/CAPABILITY-SCOPE.md",
+        "locator": {
+          "line": 179,
+          "acceptanceHeaderLines": [
+            3,
+            13,
+            15
+          ]
+        }
+      },
+      "authority": {
+        "classification": "recorded_human_batch_approval",
+        "decision": "D011",
+        "recordedDecisionDate": "2026-10-10",
+        "citation": {
+          "reference": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              9,
+              11
+            ]
+          }
+        },
+        "independentPrimaryHumanTranscriptLocated": false,
+        "individualHumanReasonOrApprovalLocated": false,
+        "scope": "Documented first-release selection/defer decision; not a runtime pass, permanent abandonment or authorization to narrow later full-completion instructions."
+      },
+      "g0Acceptance": {
+        "kind": "Codex discovery acceptance, separate from human scope decision",
+        "citation": {
+          "reference": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b:docs/coordination/DECISIONS.md",
+          "locator": {
+            "lines": [
+              15,
+              17
+            ]
+          }
+        }
+      },
+      "r2Workbook": {
+        "citation": {
+          "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+          "locator": {
+            "sheet": "Current native tools",
+            "row": 144,
+            "cells": [
+              "A144",
+              "B144",
+              "E144:G144"
+            ]
+          }
+        },
+        "category": "Prospect business development",
+        "coverageStatus": "Deferred by initial command scope",
+        "scopeText": "Generic research/drafting, data access and governed proposals do not recreate this source-side command. Initial source commands are memory proposals/review, task creation and artifact filing.",
+        "parityAction": "Select explicitly, implement a new typed command preserving domain policy/transaction invariants, bind approval to exact version/idempotency key and prove outcome/revocation fixtures; otherwise keep deferred.",
+        "dimensionDiffersFromNativeDisposition": false
+      },
+      "r2ReconciliationCitation": {
+        "reference": "e14564e6ca4747fe97cf911ede3c816a295ba59c:docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "locator": {
+          "section": "Scope and discrepancies"
+        }
+      },
+      "unprovenEvidence": [
+        "Underlying10October chat approval and its exact presented ledger attachment/version",
+        "Individual human authorship of this technical rationale",
+        "Any later human decision making this deferral permanent or cancelling related required product behavior"
+      ],
+      "dispositionChangedByThisAudit": false
+    }
+  ]
+}

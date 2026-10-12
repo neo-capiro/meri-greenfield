@@ -1,0 +1,14 @@
+{
+  "scope": "Evidence not found in inspected local tracked planning, decision, handover and inventory records; absence is not proof it never existed elsewhere.",
+  "items": [
+    {"id":"primary-approval","knownReference":"D011 at3406ed7e01af3aef85aeebc00fc49f6f41002bc5 describes acceptance in this chat on10October2026","missing":"Underlying human conversation export/message identifier and exact ledger version shown at approval","effect":"Recorded batch approval remains evidence; direct primary approval cannot independently be authenticated here."},
+    {"id":"individual-reasons","knownReference":"All43 exact reasons first found in7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3 proposal","missing":"Human-authored row-specific reasons or separate43 approvals","effect":"Do not attribute proposal technical judgments directly to Neo or treat them as current impossibility."},
+    {"id":"later-four-row-resolution","knownReference":"R2 workbook Current native tools rows37,94,95,96; e14564e6 adoption retains earlier disposition","missing":"Separate direct human instruction specifically resolving native deferral versus covered-family labels, beyond the repository's Codex reconciliation","effect":"Keep native dispositions and mandatory graph/memory product requirements distinct; no autonomous reclassification."},
+    {"id":"earlier-workbook","knownReference":"Available exact R2 workbook docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx","missing":"Earlier pre-R2 workbook binary; original filename, hash and location are not established","effect":"No claim to have compared an unavailable earlier workbook; current exact43 proposal predates R2 and is preserved inGit."},
+    {"id":"permanent-exclusion","knownReference":"Scope and handovers describe first-release deferrals and explicit later selection; current parent requests full-completion reconciliation","missing":"Any decision permanently cancelling these43 IDs or their related required product behavior","effect":"Deferral is not deletion; this audit does not authorize reduced completion or new live side effects."}
+  ],
+  "boundedSearch": ["Tracked file-name inventory at basecff71e1, including DOCX/XLSX/plans and approval/transcript-like filenames", "Decision and scope Git history through the original bootstrap and10October adoption", "R2 plan/workbook and adoption report", "11–12October handover source/reference indexes and continuation instructions"],
+  "notSearched": ["Private chat stores or session credentials", "External Library or remote services", "Other owners' local private records", "Unrelated implementation bodies"],
+  "requestedScopeChange": false,
+  "requestedApproval": false
+}

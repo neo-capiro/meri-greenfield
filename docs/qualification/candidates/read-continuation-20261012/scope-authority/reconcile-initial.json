@@ -1,0 +1,15 @@
+{
+  "command": [
+    "python",
+    "-I",
+    "-B",
+    "-S",
+    "docs/qualification/candidates/read-continuation-20261012/scope-authority/reconcile.py"
+  ],
+  "exitCode": 0,
+  "durationSeconds": 0.532570321993262,
+  "stdoutSha256": "2f6526c60d8974c3daf5fd12299bbd72cb414de3d224d6ad0707218dcf6a9c8c",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "scope": "Offline Git/OOXML metadata only; no runtime or network activity",
+  "childReaped": true
+}

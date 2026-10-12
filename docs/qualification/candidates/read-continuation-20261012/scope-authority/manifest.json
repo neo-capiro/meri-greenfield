@@ -1,0 +1,96 @@
+{
+  "base": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+  "catalogCommit": "753566baf2d230ed241941dcdeca41625277cb1d",
+  "scope": "READ_ONLY_SCOPE_AUTHORITY_RESEARCH_NO_PRODUCT_CHANGE",
+  "exclusions": [
+    "manifest self-reference",
+    "packet-verification.json derived receipt"
+  ],
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-SCOPE-AUTHORITY-20261012.md",
+      "bytes": 11712,
+      "sha256": "d5395a245829d1834c38525597ca3ef4aef0c484eb8dcf3d00f6c2ed3e62ae2e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/scope-authority/authority-timeline.json",
+      "bytes": 4703,
+      "sha256": "4a38022a45866c3484d6956b01d0f776da062cc25872e8d141cc316dbb0832c5"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/scope-authority/deferred-ledger.json",
+      "bytes": 172574,
+      "sha256": "29f5ab62752ec6998bafd5c0ebfd891057dc7ad038f0ea83cc6119c96ac59f2e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/scope-authority/input-lineage.json",
+      "bytes": 5828,
+      "sha256": "4974c84de142f5b0be34f26f50f889a8ecf0004ec14bcb9e4d7e6dfdef565cf6"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/scope-authority/missing-evidence.json",
+      "bytes": 2698,
+      "sha256": "3d67bf4bab91a9f34a96fb3fcfb2a3e415744b3ce5f500e8fd6b52e0e96652ea"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/scope-authority/offline-checks.json",
+      "bytes": 23802,
+      "sha256": "5f8e4840246867b9c9824658aeb9a546f35a7b715dd1984f8bdf5c3fd45d32a9"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/scope-authority/outline.json",
+      "bytes": 1090,
+      "sha256": "a95fadeceba8cbdbf22a2adc3bb147735ab3b97084e5457a2dc601060777e7cb"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/scope-authority/reconcile-initial.json",
+      "bytes": 489,
+      "sha256": "9c56eca502245f051dd47084b69c699747f6287f703df8aaa2a3159aad1066eb"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/scope-authority/reconcile-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/scope-authority/reconcile-initial.stdout.bin",
+      "bytes": 50,
+      "sha256": "2f6526c60d8974c3daf5fd12299bbd72cb414de3d224d6ad0707218dcf6a9c8c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/scope-authority/reconcile.py",
+      "bytes": 12860,
+      "sha256": "85e36abf95603b483bdf110f2a819047d65adb152c8386ef4511c038ead0fce0"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/scope-authority/reference-identities.json",
+      "bytes": 14721,
+      "sha256": "b566e6179982dd2a32169ac401ae433bc469a3c148e15ca528fa8cafe6196c89"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/scope-authority/research-diagnostics.json",
+      "bytes": 1490,
+      "sha256": "0f8bd0986ff8e926a531d96a727310230b92e2c52a31c09fd4ede5d326f360ee"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/scope-authority/verification.json",
+      "bytes": 36375,
+      "sha256": "d8255c710e5e8c176e1a199667c25d3dcb3d642a948557efec5e0e57080c5dcb"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/scope-authority/verification.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/scope-authority/verify.py",
+      "bytes": 2837,
+      "sha256": "3768c3feffbeacf6a3415ae0541e984e3a44ba600ab9baa18608f3259295b8b1"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/scope-authority/whitespace.json",
+      "bytes": 125,
+      "sha256": "90d6db45b4ae48bb7cbce757d56dcf5ec2fec58c5f401fd8a185aa49fe50bf2d"
+    }
+  ]
+}
