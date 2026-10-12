@@ -1,0 +1,503 @@
+{
+  "passed": 123,
+  "failed": 0,
+  "originalFilesUnchanged": 5651,
+  "referenceCount": 16,
+  "privateBodiesPublished": false,
+  "sourceProducerExecuted": false,
+  "runtimeAccepted": false,
+  "checks": [
+    {
+      "check": "exact canonical catalog bytes",
+      "passed": true
+    },
+    {
+      "check": "original139 and selected96 deferred43",
+      "passed": true
+    },
+    {
+      "check": "mapped36 pending60 typed unavailable37",
+      "passed": true
+    },
+    {
+      "check": "full60 preserved exactly once",
+      "passed": true
+    },
+    {
+      "check": "ten distinct recommended selected reads",
+      "passed": true
+    },
+    {
+      "check": "nine prior allocations excluded",
+      "passed": true
+    },
+    {
+      "check": "all recommended runtime false",
+      "passed": true
+    },
+    {
+      "check": "all pending selected remain unchanged",
+      "passed": true
+    },
+    {
+      "check": "11 command or analysis and30 otherreads",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-tools.service.ts:fd8765e length",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-tools.service.ts:fd8765e SHA",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-tools.service.ts:fd8765e blob",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-tools.service.ts:4be13b0 length",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-tools.service.ts:4be13b0 SHA",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-tools.service.ts:4be13b0 blob",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-tools.service.ts: exact no drift",
+      "passed": true
+    },
+    {
+      "check": "packages/shared/src/index.ts:fd8765e length",
+      "passed": true
+    },
+    {
+      "check": "packages/shared/src/index.ts:fd8765e SHA",
+      "passed": true
+    },
+    {
+      "check": "packages/shared/src/index.ts:fd8765e blob",
+      "passed": true
+    },
+    {
+      "check": "packages/shared/src/index.ts:4be13b0 length",
+      "passed": true
+    },
+    {
+      "check": "packages/shared/src/index.ts:4be13b0 SHA",
+      "passed": true
+    },
+    {
+      "check": "packages/shared/src/index.ts:4be13b0 blob",
+      "passed": true
+    },
+    {
+      "check": "packages/shared/src/index.ts: exact no drift",
+      "passed": true
+    },
+    {
+      "check": "apps/api/prisma/schema.prisma:fd8765e length",
+      "passed": true
+    },
+    {
+      "check": "apps/api/prisma/schema.prisma:fd8765e SHA",
+      "passed": true
+    },
+    {
+      "check": "apps/api/prisma/schema.prisma:fd8765e blob",
+      "passed": true
+    },
+    {
+      "check": "apps/api/prisma/schema.prisma:4be13b0 length",
+      "passed": true
+    },
+    {
+      "check": "apps/api/prisma/schema.prisma:4be13b0 SHA",
+      "passed": true
+    },
+    {
+      "check": "apps/api/prisma/schema.prisma:4be13b0 blob",
+      "passed": true
+    },
+    {
+      "check": "apps/api/prisma/schema.prisma: exact no drift",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri.controller.ts:fd8765e length",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri.controller.ts:fd8765e SHA",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri.controller.ts:fd8765e blob",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri.controller.ts:4be13b0 length",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri.controller.ts:4be13b0 SHA",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri.controller.ts:4be13b0 blob",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri.controller.ts: exact no drift",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-tool-request-control.ts:fd8765e length",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-tool-request-control.ts:fd8765e SHA",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-tool-request-control.ts:fd8765e blob",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-tool-request-control.ts:4be13b0 length",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-tool-request-control.ts:4be13b0 SHA",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-tool-request-control.ts:4be13b0 blob",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-tool-request-control.ts: exact no drift",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/common/us-states.ts:fd8765e length",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/common/us-states.ts:fd8765e SHA",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/common/us-states.ts:fd8765e blob",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/common/us-states.ts:4be13b0 length",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/common/us-states.ts:4be13b0 SHA",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/common/us-states.ts:4be13b0 blob",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/common/us-states.ts: exact no drift",
+      "passed": true
+    },
+    {
+      "check": "packages/shared/src/us-states.ts:fd8765e length",
+      "passed": true
+    },
+    {
+      "check": "packages/shared/src/us-states.ts:fd8765e SHA",
+      "passed": true
+    },
+    {
+      "check": "packages/shared/src/us-states.ts:fd8765e blob",
+      "passed": true
+    },
+    {
+      "check": "packages/shared/src/us-states.ts:4be13b0 length",
+      "passed": true
+    },
+    {
+      "check": "packages/shared/src/us-states.ts:4be13b0 SHA",
+      "passed": true
+    },
+    {
+      "check": "packages/shared/src/us-states.ts:4be13b0 blob",
+      "passed": true
+    },
+    {
+      "check": "packages/shared/src/us-states.ts: exact no drift",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/program-element/program-element-read.service.ts:fd8765e length",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/program-element/program-element-read.service.ts:fd8765e SHA",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/program-element/program-element-read.service.ts:fd8765e blob",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/program-element/program-element-read.service.ts:4be13b0 length",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/program-element/program-element-read.service.ts:4be13b0 SHA",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/program-element/program-element-read.service.ts:4be13b0 blob",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/program-element/program-element-read.service.ts: exact no drift",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-defense-budget-tool.helpers.ts:fd8765e length",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-defense-budget-tool.helpers.ts:fd8765e SHA",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-defense-budget-tool.helpers.ts:fd8765e blob",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-defense-budget-tool.helpers.ts:4be13b0 length",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-defense-budget-tool.helpers.ts:4be13b0 SHA",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-defense-budget-tool.helpers.ts:4be13b0 blob",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/meri-defense-budget-tool.helpers.ts: exact no drift",
+      "passed": true
+    },
+    {
+      "check": "packages/shared/src/funding-claim.ts:fd8765e length",
+      "passed": true
+    },
+    {
+      "check": "packages/shared/src/funding-claim.ts:fd8765e SHA",
+      "passed": true
+    },
+    {
+      "check": "packages/shared/src/funding-claim.ts:fd8765e blob",
+      "passed": true
+    },
+    {
+      "check": "packages/shared/src/funding-claim.ts:4be13b0 length",
+      "passed": true
+    },
+    {
+      "check": "packages/shared/src/funding-claim.ts:4be13b0 SHA",
+      "passed": true
+    },
+    {
+      "check": "packages/shared/src/funding-claim.ts:4be13b0 blob",
+      "passed": true
+    },
+    {
+      "check": "packages/shared/src/funding-claim.ts: exact no drift",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/clients/representation-resolver.service.ts:fd8765e length",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/clients/representation-resolver.service.ts:fd8765e SHA",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/clients/representation-resolver.service.ts:fd8765e blob",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/clients/representation-resolver.service.ts:4be13b0 length",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/clients/representation-resolver.service.ts:4be13b0 SHA",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/clients/representation-resolver.service.ts:4be13b0 blob",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/clients/representation-resolver.service.ts: exact no drift",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/clients/district-code.util.ts:fd8765e length",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/clients/district-code.util.ts:fd8765e SHA",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/clients/district-code.util.ts:fd8765e blob",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/clients/district-code.util.ts:4be13b0 length",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/clients/district-code.util.ts:4be13b0 SHA",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/clients/district-code.util.ts:4be13b0 blob",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/clients/district-code.util.ts: exact no drift",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/common/district-code.util.ts:fd8765e length",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/common/district-code.util.ts:fd8765e SHA",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/common/district-code.util.ts:fd8765e blob",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/common/district-code.util.ts:4be13b0 length",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/common/district-code.util.ts:4be13b0 SHA",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/common/district-code.util.ts:4be13b0 blob",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/common/district-code.util.ts: exact no drift",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/external/fedramp/fedramp.client.ts:fd8765e length",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/external/fedramp/fedramp.client.ts:fd8765e SHA",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/external/fedramp/fedramp.client.ts:fd8765e blob",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/external/fedramp/fedramp.client.ts:4be13b0 length",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/external/fedramp/fedramp.client.ts:4be13b0 SHA",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/external/fedramp/fedramp.client.ts:4be13b0 blob",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/external/fedramp/fedramp.client.ts: exact no drift",
+      "passed": true
+    },
+    {
+      "check": "packages/meriv2-core/src/grounding/status-provenance.ts:fd8765e length",
+      "passed": true
+    },
+    {
+      "check": "packages/meriv2-core/src/grounding/status-provenance.ts:fd8765e SHA",
+      "passed": true
+    },
+    {
+      "check": "packages/meriv2-core/src/grounding/status-provenance.ts:fd8765e blob",
+      "passed": true
+    },
+    {
+      "check": "packages/meriv2-core/src/grounding/status-provenance.ts:4be13b0 length",
+      "passed": true
+    },
+    {
+      "check": "packages/meriv2-core/src/grounding/status-provenance.ts:4be13b0 SHA",
+      "passed": true
+    },
+    {
+      "check": "packages/meriv2-core/src/grounding/status-provenance.ts:4be13b0 blob",
+      "passed": true
+    },
+    {
+      "check": "packages/meriv2-core/src/grounding/status-provenance.ts: exact no drift",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/global-dataset-registry.ts:fd8765e length",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/global-dataset-registry.ts:fd8765e SHA",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/global-dataset-registry.ts:fd8765e blob",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/global-dataset-registry.ts:4be13b0 length",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/global-dataset-registry.ts:4be13b0 SHA",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/global-dataset-registry.ts:4be13b0 blob",
+      "passed": true
+    },
+    {
+      "check": "apps/api/src/meri/analytics/global-dataset-registry.ts: exact no drift",
+      "passed": true
+    },
+    {
+      "check": "all original tracked files unchanged",
+      "passed": true
+    },
+    {
+      "check": "no shared source/catalog changes",
+      "passed": true
+    }
+  ]
+}

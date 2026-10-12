@@ -1,0 +1,23 @@
+[
+  {
+    "kind": "inspection-error",
+    "observation": "Initial catalog parser guessed mappingState and raised KeyError. Correct field state; no mutation.",
+    "resolution": "Snapshot uses exact canonical state."
+  },
+  {
+    "kind": "count-correction",
+    "observation": "First progress message said eight provisional candidates but enumerated seven.",
+    "resolution": "Final explicit list has ten unique IDs across seven families."
+  },
+  {
+    "kind": "draft-projection-correction",
+    "priorDraftSha256": "ed3c23a702d57ffb9cb6c75ddf56546765303ea836112c356ec437477a872d2f",
+    "observation": "Draft certification summary inferred a query echo and omitted searchedEntireDataset; exact AST return projection disproved the echo.",
+    "resolution": "Final certification variant records searchedEntireDataset:true, no query/generatedAt. PE wrapper envelope precision added: peCode only report-language."
+  },
+  {
+    "kind": "projection-precision",
+    "observation": "A preliminary state-roster sketch left potential state shorthand unresolved.",
+    "resolution": "Exact return projection has no committee.state field; author was notified before source freeze."
+  }
+]
