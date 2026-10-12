@@ -1,0 +1,43 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "check"
+  ],
+  "cwd": "/workspace/meri-bill-text-20261012",
+  "sourceHead": "7caaac302ac90090cd34f9f23cda78eb0a0de69e",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T17:09:47.763544+00:00",
+  "durationSeconds": 16.456,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 174246,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 174384,
+      "status": 0
+    },
+    {
+      "pid": 174440,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-author/repaired-root-check.stdout.bin",
+      "bytes": 89371,
+      "sha256": "fec7c1c3c8b871c202f13aff3db193ff6b2688d3166c053448f6120917371127"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-author/repaired-root-check.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    }
+  ],
+  "rerunReason": "Source selector correlation repairs; rerun full source checks at exact repaired freeze.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
