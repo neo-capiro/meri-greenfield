@@ -1,0 +1,31 @@
+{
+  "observedAtUtc": "2026-10-12 05:29:35 UTC",
+  "operation": "CREATE_DRAFT_CONTINUATION_PR",
+  "repository": "neo-capiro/meri-greenfield",
+  "url": "https://github.com/neo-capiro/meri-greenfield/pull/16",
+  "number": 16,
+  "state": "open",
+  "draft": true,
+  "merged": false,
+  "headBranch": "task/meri-g1-recovery-sandbox-20261012",
+  "headAtCreation": "86bcde2bf6a6b8de659a016d367485b0cbce71d1",
+  "baseBranch": "task/meri-g1-owner-budget-20261012",
+  "baseSha": "14be9fc614568a74133b89f2b229e50c9b030322",
+  "sourceCommit": "d5a1b0aa2f77d9c215f1a092d7c329b93492cb55",
+  "sourceTree": "750fa31f9c6ed76199fd85b2624d73a96a193b5f",
+  "reportEvidenceCommit": "86bcde2bf6a6b8de659a016d367485b0cbce71d1",
+  "reportEvidenceTree": "f097fd884f848001b34f346fb2875ca637378aeb",
+  "evidenceManifestSha256": "dcc01b08218d7d0a2e1b113050d5b9f5aff865294030274885013e97e77b603e",
+  "sourceDecision": "ACCEPT_SOURCE",
+  "runtimeDecision": "HOLD",
+  "sourceConnectivityEnabled": false,
+  "publishedLaneHeads": {
+    "temporalAuthor": "9a9d52ee2686346e3549e53a707aaccc5e8fbed6",
+    "temporalReviewer": "5c8896eca041df5336e15daf2b5784c63749621a",
+    "sandboxAuthor": "60516dd4a4027c2e740cd374a37e0fb4d51d4214",
+    "sandboxReviewer": "80f0ec84a1d4c93529e32d9e47430c87cec17c28",
+    "executionOptions": "8e50b8b7efeed2a9b251ad5658b58934246f16a4"
+  },
+  "privateSupervisorPacket": "BLOCKED_TRANSFER_BODY_UNAVAILABLE",
+  "noNativeQualificationOrCloudSpend": true
+}
