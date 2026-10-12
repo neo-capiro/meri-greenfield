@@ -1,0 +1,30 @@
+{
+  "source": "753566baf2d230ed241941dcdeca41625277cb1d",
+  "focused": {
+    "passed": 755,
+    "failed": 0,
+    "skipped": 0,
+    "receipt": "focused.json"
+  },
+  "sourceAudit": {
+    "passed": 7415,
+    "failed": 0,
+    "originalTracked": 6947,
+    "receipt": "source-audit.json"
+  },
+  "familyPackets": {
+    "passed": 171,
+    "failed": 0,
+    "receipt": "family-packets.json"
+  },
+  "publicContracts": {
+    "passed": 7,
+    "failed": 0,
+    "generated": "PASS",
+    "types": "PASS",
+    "receipt": "public-contracts.json"
+  },
+  "combinedIndependentReview": "PENDING",
+  "expandedSourceSuite": "NOT_YET_RUN",
+  "runtimeAccepted": false
+}
