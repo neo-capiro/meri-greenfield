@@ -2,6 +2,9 @@ import {types} from 'node:util';
 import {frozenScheduleData,denySchedule} from '../../../packages/contracts/schedules-0.2/lifecycle-validation.mjs';
 import {sdkMethod} from './temporal-schedule-mutations.mjs';
 
+// SDK1.24 helpers.ts labels the pinned protobuf enum; future codes stay UNKNOWN.
+const STATUS_NAMES=Object.freeze(['UNSPECIFIED','RUNNING','COMPLETED','FAILED','CANCELLED','TERMINATED','CONTINUED_AS_NEW','TIMED_OUT','PAUSED']);
+
 function field(value,key,optional=false) {
   if(!value||types.isProxy(value))denySchedule('SCHEDULE_HISTORY');
   const d=Object.getOwnPropertyDescriptor(value,key);
@@ -22,6 +25,7 @@ export async function inspectOriginalRuns({workflowClient,references,limit,read,
     if(field(d,'workflowId')!==ref.workflowId||field(d,'runId')!==ref.firstExecutionRunId)denySchedule('SCHEDULE_HISTORY_ID');
     const status=field(d,'status'),name=field(status,'name'),code=field(status,'code'),historyLength=field(d,'historyLength');
     if(typeof name!=='string'||name.length>64||!Number.isSafeInteger(code)||!Number.isSafeInteger(historyLength)||historyLength<0)denySchedule('SCHEDULE_HISTORY');
+    if(name!==(Object.hasOwn(STATUS_NAMES,code)?STATUS_NAMES[code]:'UNKNOWN'))denySchedule('SCHEDULE_HISTORY_STATUS');
     const end=field(d,'closeTime',true);
     output.push({workflowId:ref.workflowId,runId:ref.firstExecutionRunId,status:{name,code},historyLength,startTime:instant(field(d,'startTime')),closeTime:end===undefined?null:instant(end)});
   }
