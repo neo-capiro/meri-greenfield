@@ -1,0 +1,95 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "canonicalSource": "fecf97a4a8b742c6c09b781d3b799816e8b548e4",
+  "testSource": "46b0ec6ce52cd7acc8405a9b8d2d0e33e082f806",
+  "rootReceipts": "9e8a6c8a2fe66d7b62813fd74163904fddaaf186",
+  "passed": 19,
+  "failed": 0,
+  "checks": [
+    {
+      "check": "original-baseline docs/qualification/candidates/read-continuation-20261012/backend-next-review/original-baseline.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "original-baseline docs/qualification/candidates/read-continuation-20261012/backend-next-review/original-baseline.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "original-baseline owned cleanup",
+      "pass": true
+    },
+    {
+      "check": "exact-candidate docs/qualification/candidates/read-continuation-20261012/backend-next-review/exact-candidate.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact-candidate docs/qualification/candidates/read-continuation-20261012/backend-next-review/exact-candidate.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact-candidate owned cleanup",
+      "pass": true
+    },
+    {
+      "check": "fixture-corrected docs/qualification/candidates/read-continuation-20261012/backend-next-review/fixture-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "fixture-corrected docs/qualification/candidates/read-continuation-20261012/backend-next-review/fixture-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "fixture-corrected owned cleanup",
+      "pass": true
+    },
+    {
+      "check": "source-audit docs/qualification/candidates/read-continuation-20261012/backend-next-review/source-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source-audit docs/qualification/candidates/read-continuation-20261012/backend-next-review/source-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source-audit owned cleanup",
+      "pass": true
+    },
+    {
+      "check": "packet-audit docs/qualification/candidates/read-continuation-20261012/backend-next-review/packet-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "packet-audit docs/qualification/candidates/read-continuation-20261012/backend-next-review/packet-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet-audit owned cleanup",
+      "pass": true
+    },
+    {
+      "check": "root-receipt-audit docs/qualification/candidates/read-continuation-20261012/backend-next-review/root-receipt-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "root-receipt-audit docs/qualification/candidates/read-continuation-20261012/backend-next-review/root-receipt-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "root-receipt-audit owned cleanup",
+      "pass": true
+    },
+    {
+      "check": "final29 test bytes match root tested source",
+      "pass": true
+    }
+  ],
+  "captureGroups": [
+    290186,
+    294897,
+    296054,
+    296309,
+    296327,
+    299480
+  ],
+  "runtimeAccepted": false
+}
