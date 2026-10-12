@@ -1,0 +1,652 @@
+{
+  "scope": "OFFLINE_SOURCE_EVIDENCE_ONLY",
+  "source": "256248fee5be45e5f203bbc74cc5b0c0e2f738f7",
+  "passed": 161,
+  "failed": 0,
+  "checks": [
+    {
+      "check": "contained docs/coordination/reports/CODEX-READ-CONTINUATION-FUNDING-AUTHOR-20261012.md",
+      "passed": true
+    },
+    {
+      "check": "member docs/coordination/reports/CODEX-READ-CONTINUATION-FUNDING-AUTHOR-20261012.md",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/build-schema.py",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/build-schema.py",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/focused-final.json",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/focused-final.json",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/focused-final.patch",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/focused-final.patch",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/focused-final.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/focused-final.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/focused-final.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/focused-final.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/focused-first.json",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/focused-first.json",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/focused-first.patch",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/focused-first.patch",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/focused-first.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/focused-first.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/focused-first.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/focused-first.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/focused-second.json",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/focused-second.json",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/focused-second.patch",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/focused-second.patch",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/focused-second.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/focused-second.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/focused-second.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/focused-second.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/landscape-repair-focused.json",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/landscape-repair-focused.json",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/landscape-repair-focused.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/landscape-repair-focused.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/landscape-repair-focused.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/landscape-repair-focused.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/landscape-repair.patch",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/landscape-repair.patch",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/original-contracts.json",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/original-contracts.json",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/original-contracts.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/original-contracts.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/original-contracts.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/original-contracts.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/outline.json",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/outline.json",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/public-distribution.json",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/public-distribution.json",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/public-distribution.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/public-distribution.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/public-distribution.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/public-distribution.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/reference-identities.json",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/reference-identities.json",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/repaired-contracts.json",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/repaired-contracts.json",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/repaired-contracts.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/repaired-contracts.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/repaired-contracts.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/repaired-contracts.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/requirement-repair-focused.json",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/requirement-repair-focused.json",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/requirement-repair-focused.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/requirement-repair-focused.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/requirement-repair-focused.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/requirement-repair-focused.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/requirement-repair.patch",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/requirement-repair.patch",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/source-preservation.json",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/source-preservation.json",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/verify-packet.py",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/verify-packet.py",
+      "passed": true
+    },
+    {
+      "check": "source tree",
+      "passed": true
+    },
+    {
+      "check": "all originals unchanged",
+      "passed": true
+    },
+    {
+      "check": "exact allocated additions",
+      "passed": true
+    },
+    {
+      "check": "source packages/contracts/retrieval-0.2/funding-envelope-validation.mjs",
+      "passed": true
+    },
+    {
+      "check": "working source packages/contracts/retrieval-0.2/funding-envelope-validation.mjs",
+      "passed": true
+    },
+    {
+      "check": "source packages/contracts/retrieval-0.2/funding-opportunities-validation.mjs",
+      "passed": true
+    },
+    {
+      "check": "working source packages/contracts/retrieval-0.2/funding-opportunities-validation.mjs",
+      "passed": true
+    },
+    {
+      "check": "source packages/contracts/retrieval-0.2/funding-opportunities.schema.json",
+      "passed": true
+    },
+    {
+      "check": "working source packages/contracts/retrieval-0.2/funding-opportunities.schema.json",
+      "passed": true
+    },
+    {
+      "check": "source packages/contracts/retrieval-0.2/funding-requirements-validation.mjs",
+      "passed": true
+    },
+    {
+      "check": "working source packages/contracts/retrieval-0.2/funding-requirements-validation.mjs",
+      "passed": true
+    },
+    {
+      "check": "source packages/contracts/test/retrieval-funding-opportunities.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "working source packages/contracts/test/retrieval-funding-opportunities.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "pinned reference apps/api/src/meri/meri-tools.service.ts",
+      "passed": true
+    },
+    {
+      "check": "pinned reference apps/api/src/funding-opportunities/meri-opportunity-tools.adapter.ts",
+      "passed": true
+    },
+    {
+      "check": "pinned reference apps/api/src/funding-opportunities/meri-opportunity-tools.spec.ts",
+      "passed": true
+    },
+    {
+      "check": "pinned reference apps/api/src/funding-opportunities/meri-opportunity-tools.adapter.deadlines.spec.ts",
+      "passed": true
+    },
+    {
+      "check": "pinned reference apps/api/src/funding-opportunities/requirements/opportunity-requirement.service.ts",
+      "passed": true
+    },
+    {
+      "check": "pinned reference apps/api/src/funding-opportunities/requirements/opportunity-requirement.schema.ts",
+      "passed": true
+    },
+    {
+      "check": "pinned reference apps/api/src/funding-opportunities/requirements/opportunity-requirement-pagination.spec.ts",
+      "passed": true
+    },
+    {
+      "check": "pinned reference apps/api/src/funding-opportunities/government-landscape.types.ts",
+      "passed": true
+    },
+    {
+      "check": "pinned reference apps/api/src/funding-opportunities/government-landscape.service.ts",
+      "passed": true
+    },
+    {
+      "check": "pinned reference apps/api/src/funding-opportunities/funding-opportunities.types.ts",
+      "passed": true
+    },
+    {
+      "check": "pinned reference apps/api/src/funding-opportunities/funding-opportunity-access.ts",
+      "passed": true
+    },
+    {
+      "check": "pinned reference apps/api/src/funding-opportunities/funding-opportunities-flag.guard.ts",
+      "passed": true
+    },
+    {
+      "check": "pinned reference apps/api/src/funding-opportunities/funding-opportunity-v2-legacy-adapter.ts",
+      "passed": true
+    },
+    {
+      "check": "pinned reference packages/shared/src/funding-opportunities-v2.ts",
+      "passed": true
+    },
+    {
+      "check": "pinned reference packages/shared/src/schedule/deadline.ts",
+      "passed": true
+    },
+    {
+      "check": "pinned reference apps/api/src/funding-opportunities/acquisition-position.ts",
+      "passed": true
+    },
+    {
+      "check": "pinned reference apps/api/src/funding-opportunities/opportunity-recommendation.ts",
+      "passed": true
+    },
+    {
+      "check": "pinned reference apps/api/src/funding-opportunities/funding-opportunity-v2-search.service.ts",
+      "passed": true
+    },
+    {
+      "check": "pinned reference apps/api/src/funding-opportunities/funding-opportunity-identity.ts",
+      "passed": true
+    },
+    {
+      "check": "pinned reference apps/api/src/funding-opportunities/opportunity-document-text.service.ts",
+      "passed": true
+    },
+    {
+      "check": "focused-first outcome",
+      "passed": true
+    },
+    {
+      "check": "focused-first cleanup",
+      "passed": true
+    },
+    {
+      "check": "focused-first capture identity",
+      "passed": true
+    },
+    {
+      "check": "focused-first stream docs/qualification/candidates/read-continuation-20261012/funding-author/focused-first.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "focused-first stream docs/qualification/candidates/read-continuation-20261012/funding-author/focused-first.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "compiler failure preserved",
+      "passed": true
+    },
+    {
+      "check": "focused-first exact failed/passed source diff",
+      "passed": true
+    },
+    {
+      "check": "focused-second outcome",
+      "passed": true
+    },
+    {
+      "check": "focused-second cleanup",
+      "passed": true
+    },
+    {
+      "check": "focused-second capture identity",
+      "passed": true
+    },
+    {
+      "check": "focused-second stream docs/qualification/candidates/read-continuation-20261012/funding-author/focused-second.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "focused-second stream docs/qualification/candidates/read-continuation-20261012/funding-author/focused-second.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "focused-second count",
+      "passed": true
+    },
+    {
+      "check": "focused-second exact failed/passed source diff",
+      "passed": true
+    },
+    {
+      "check": "focused-final outcome",
+      "passed": true
+    },
+    {
+      "check": "focused-final cleanup",
+      "passed": true
+    },
+    {
+      "check": "focused-final capture identity",
+      "passed": true
+    },
+    {
+      "check": "focused-final stream docs/qualification/candidates/read-continuation-20261012/funding-author/focused-final.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "focused-final stream docs/qualification/candidates/read-continuation-20261012/funding-author/focused-final.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "focused-final count",
+      "passed": true
+    },
+    {
+      "check": "focused-final exact failed/passed source diff",
+      "passed": true
+    },
+    {
+      "check": "original-contracts outcome",
+      "passed": true
+    },
+    {
+      "check": "original-contracts cleanup",
+      "passed": true
+    },
+    {
+      "check": "original-contracts capture identity",
+      "passed": true
+    },
+    {
+      "check": "original-contracts stream docs/qualification/candidates/read-continuation-20261012/funding-author/original-contracts.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "original-contracts stream docs/qualification/candidates/read-continuation-20261012/funding-author/original-contracts.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "original-contracts count",
+      "passed": true
+    },
+    {
+      "check": "original-contracts frozen source",
+      "passed": true
+    },
+    {
+      "check": "public-distribution outcome",
+      "passed": true
+    },
+    {
+      "check": "public-distribution cleanup",
+      "passed": true
+    },
+    {
+      "check": "public-distribution capture identity",
+      "passed": true
+    },
+    {
+      "check": "public-distribution stream docs/qualification/candidates/read-continuation-20261012/funding-author/public-distribution.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "public-distribution stream docs/qualification/candidates/read-continuation-20261012/funding-author/public-distribution.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "public-distribution count",
+      "passed": true
+    },
+    {
+      "check": "public-distribution frozen source",
+      "passed": true
+    },
+    {
+      "check": "requirement-repair-focused outcome",
+      "passed": true
+    },
+    {
+      "check": "requirement-repair-focused cleanup",
+      "passed": true
+    },
+    {
+      "check": "requirement-repair-focused capture identity",
+      "passed": true
+    },
+    {
+      "check": "requirement-repair-focused stream docs/qualification/candidates/read-continuation-20261012/funding-author/requirement-repair-focused.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "requirement-repair-focused stream docs/qualification/candidates/read-continuation-20261012/funding-author/requirement-repair-focused.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "requirement-repair-focused count",
+      "passed": true
+    },
+    {
+      "check": "requirement-repair-focused exact failed/passed source diff",
+      "passed": true
+    },
+    {
+      "check": "landscape-repair-focused outcome",
+      "passed": true
+    },
+    {
+      "check": "landscape-repair-focused cleanup",
+      "passed": true
+    },
+    {
+      "check": "landscape-repair-focused capture identity",
+      "passed": true
+    },
+    {
+      "check": "landscape-repair-focused stream docs/qualification/candidates/read-continuation-20261012/funding-author/landscape-repair-focused.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "landscape-repair-focused stream docs/qualification/candidates/read-continuation-20261012/funding-author/landscape-repair-focused.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "landscape-repair-focused count",
+      "passed": true
+    },
+    {
+      "check": "landscape-repair-focused exact failed/passed source diff",
+      "passed": true
+    },
+    {
+      "check": "repaired-contracts outcome",
+      "passed": true
+    },
+    {
+      "check": "repaired-contracts cleanup",
+      "passed": true
+    },
+    {
+      "check": "repaired-contracts capture identity",
+      "passed": true
+    },
+    {
+      "check": "repaired-contracts stream docs/qualification/candidates/read-continuation-20261012/funding-author/repaired-contracts.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "repaired-contracts stream docs/qualification/candidates/read-continuation-20261012/funding-author/repaired-contracts.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "repaired-contracts count",
+      "passed": true
+    },
+    {
+      "check": "repaired-contracts frozen source",
+      "passed": true
+    }
+  ]
+}

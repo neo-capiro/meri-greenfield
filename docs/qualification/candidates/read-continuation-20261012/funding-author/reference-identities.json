@@ -1,0 +1,149 @@
+{
+  "repository": "neo-capiro/capirov2",
+  "pin": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "observedHead": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+  "references": [
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "pinnedBlob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "observedBlob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "drift": false,
+      "locators": "2038-2086 advertised requests; 2821-2864 delegation"
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/meri-opportunity-tools.adapter.ts",
+      "pinnedBlob": "ce2ec030bbadc55e102d9fb54384b1c592c4ff5f",
+      "observedBlob": "ce2ec030bbadc55e102d9fb54384b1c592c4ff5f",
+      "drift": false,
+      "locators": "121-180 envelopes/caps; 227-301 gates; 303-497 search/requirements/detail; 559-690 client/landscape; 858-995 DTOs; 1116-1275 exact projections/refusal ceiling"
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/meri-opportunity-tools.spec.ts",
+      "pinnedBlob": "570afaa0082bff88711226eeddaceb5ada4d569a",
+      "observedBlob": "570afaa0082bff88711226eeddaceb5ada4d569a",
+      "drift": false,
+      "locators": "365-485 gate and refusal; 819-925 clocks/caps; 996-1223 search, summary, requirement and evidence contracts"
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/meri-opportunity-tools.adapter.deadlines.spec.ts",
+      "pinnedBlob": "686fa0c5547458ddba02225177392d01be726661",
+      "observedBlob": "686fa0c5547458ddba02225177392d01be726661",
+      "drift": false,
+      "locators": "35-61 off/enforce output facts"
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/requirements/opportunity-requirement.service.ts",
+      "pinnedBlob": "5d049d2d89a974fa805752ac54e6bd4a1250c44d",
+      "observedBlob": "5d049d2d89a974fa805752ac54e6bd4a1250c44d",
+      "drift": false,
+      "locators": "41-73 read DTO; 147-245 defaults/page/read projection and coverage"
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/requirements/opportunity-requirement.schema.ts",
+      "pinnedBlob": "ee5f981a955964af2d20074a89e8432075fc5640",
+      "observedBlob": "ee5f981a955964af2d20074a89e8432075fc5640",
+      "drift": false,
+      "locators": "42-103 extraction/review vocabulary and excerpt boundary; 137-145 exact span source check"
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/requirements/opportunity-requirement-pagination.spec.ts",
+      "pinnedBlob": "a24f5fc7a10441a71ca0f46b1caae5180cad8629",
+      "observedBlob": "a24f5fc7a10441a71ca0f46b1caae5180cad8629",
+      "drift": false,
+      "locators": "49-135 continuation, stale counts, exhausted pages and document coverage"
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/government-landscape.types.ts",
+      "pinnedBlob": "25da288d8578f500fbec047171becff90c2e49d7",
+      "observedBlob": "25da288d8578f500fbec047171becff90c2e49d7",
+      "drift": false,
+      "locators": "41-129 declared sources/item/report/coverage types"
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/government-landscape.service.ts",
+      "pinnedBlob": "952079395b3a9f8e0ec02be90636fffc0b5cd752",
+      "observedBlob": "952079395b3a9f8e0ec02be90636fffc0b5cd752",
+      "drift": false,
+      "locators": "75-96 wired sources; 258-388 current wall, projected basis and full pre-cap packet"
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/funding-opportunities.types.ts",
+      "pinnedBlob": "dbeea62a160266463f216786de164ea0052ca0dd",
+      "observedBlob": "dbeea62a160266463f216786de164ea0052ca0dd",
+      "drift": false,
+      "locators": "53-75 sources/kinds; 151-174 decision/scalars; 262-323 signals/money; 375-476 DTOs"
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/funding-opportunity-access.ts",
+      "pinnedBlob": "7c0c09cd467d6a4eb7d24ae8f3b3c06f6da78e5f",
+      "observedBlob": "7c0c09cd467d6a4eb7d24ae8f3b3c06f6da78e5f",
+      "drift": false,
+      "locators": "21-37 current active client/memory wall visibility"
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/funding-opportunities-flag.guard.ts",
+      "pinnedBlob": "9312a847be2058adcd4745062025cbf559b77ed8",
+      "observedBlob": "9312a847be2058adcd4745062025cbf559b77ed8",
+      "drift": false,
+      "locators": "6-96 flag names; 150-230 explicit tenant guard and separate route flags"
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/funding-opportunity-v2-legacy-adapter.ts",
+      "pinnedBlob": "660fe807d9cadea2274278449a55b2fa833252ba",
+      "observedBlob": "660fe807d9cadea2274278449a55b2fa833252ba",
+      "drift": false,
+      "locators": "15-30 nullable projection DTO; 58-82 reachable field/default projection"
+    },
+    {
+      "path": "packages/shared/src/funding-opportunities-v2.ts",
+      "pinnedBlob": "5bb5d2a100fe0e312092e0b69c65314abfe8ffa4",
+      "observedBlob": "5bb5d2a100fe0e312092e0b69c65314abfe8ffa4",
+      "drift": false,
+      "locators": "53-102 profile gaps/criteria; 151-170 freshness; 195-205 read response; 388-432 normalization"
+    },
+    {
+      "path": "packages/shared/src/schedule/deadline.ts",
+      "pinnedBlob": "f16e2aee4f71a5b0bd2b57b881a189e6e64a496f",
+      "observedBlob": "f16e2aee4f71a5b0bd2b57b881a189e6e64a496f",
+      "drift": false,
+      "locators": "6-11 deadline DTO; 52-78 arithmetic/unknown semantics"
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/acquisition-position.ts",
+      "pinnedBlob": "6ffdd5cc9abafc73c94a4f7669a38a170acb3244",
+      "observedBlob": "6ffdd5cc9abafc73c94a4f7669a38a170acb3244",
+      "drift": false,
+      "locators": "64-145 declared states, evidence and position DTO"
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/opportunity-recommendation.ts",
+      "pinnedBlob": "5c8c9a995233a46fe095dc957942ce43f9f5665e",
+      "observedBlob": "5c8c9a995233a46fe095dc957942ce43f9f5665e",
+      "drift": false,
+      "locators": "87-90 recommendation bands; 136-152 reason vocabulary"
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/funding-opportunity-v2-search.service.ts",
+      "pinnedBlob": "58f26631019a716b01894829a192b910b65db566",
+      "observedBlob": "58f26631019a716b01894829a192b910b65db566",
+      "drift": false,
+      "locators": "115-142 public projection; 347-365 query alias/canonical normalization"
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/funding-opportunity-identity.ts",
+      "pinnedBlob": "4c11e3f4c9ba3bdf24f9f6a1374e221160bbdcdb",
+      "observedBlob": "4c11e3f4c9ba3bdf24f9f6a1374e221160bbdcdb",
+      "drift": false,
+      "locators": "178-182 SAM request identity boundary"
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/opportunity-document-text.service.ts",
+      "pinnedBlob": "619364bdf32cd342fbfd8e3013ec2e36ccea339d",
+      "observedBlob": "619364bdf32cd342fbfd8e3013ec2e36ccea339d",
+      "drift": false,
+      "locators": "48-70 document availability/extraction DTO"
+    }
+  ],
+  "privateBodiesPublished": false,
+  "sourceExecuted": false
+}

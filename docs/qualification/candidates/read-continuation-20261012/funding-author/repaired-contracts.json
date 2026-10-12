@@ -1,0 +1,43 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "check"
+  ],
+  "cwd": "/workspace/meri-funding-reads-20261012",
+  "sourceHead": "256248fee5be45e5f203bbc74cc5b0c0e2f738f7",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T16:26:48.294257+00:00",
+  "durationSeconds": 12.433,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 150222,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 150316,
+      "status": 0
+    },
+    {
+      "pid": 150342,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-author/repaired-contracts.stdout.bin",
+      "bytes": 50433,
+      "sha256": "e88b5e2cd4c0d7e62b8d73cec7d19dac61946a3d8d86edade3bbb63f62253f98"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-author/repaired-contracts.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    }
+  ],
+  "rerunReason": "Revalidate complete original source suite after independent short-page and landscape identity repairs.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
