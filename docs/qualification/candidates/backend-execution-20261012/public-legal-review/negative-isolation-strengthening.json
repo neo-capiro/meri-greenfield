@@ -1,0 +1,5 @@
+{
+  "reason": "Initial ordinary-provenance negatives inherited a placeholder content hash from the base fixture, so hash refusal could mask the targeted field refusal.",
+  "change": "Base fixture now computes its valid payload hash before independent identity/source-key mutations. All existing assertions remain; production unchanged.",
+  "previousReviewPacket": "13bdb2fe1f74534d572bd945afc06f53922a3e6b"
+}
