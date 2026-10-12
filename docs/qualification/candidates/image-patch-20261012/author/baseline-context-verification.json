@@ -1,0 +1,24 @@
+{
+  "sourceCommit": "90b4dc8472da13cdee9f49cdc0b4c8306ecbdc73",
+  "status": "SOURCE_ONLY_UNCHANGED_BASE_NOT_PATCHED",
+  "contexts": [
+    {
+      "path": "/tmp/meri-image-patch-20261012-context-a",
+      "verified": true,
+      "manifestSha256": "94216667decf5e4feed05914b3f295148d9437ee1c00b224ca4e92625b5b876f",
+      "members": 53,
+      "totalBytes": 994568
+    },
+    {
+      "path": "/tmp/meri-image-patch-20261012-context-b",
+      "verified": true,
+      "manifestSha256": "94216667decf5e4feed05914b3f295148d9437ee1c00b224ca4e92625b5b876f",
+      "members": 53,
+      "totalBytes": 994568
+    }
+  ],
+  "identicalManifest": true,
+  "collectorContextPin": "18836912a03fc035d69c0cfc57d1f407e5c46af1bdd37c21a761f5d42dc84dda",
+  "collectorAssemblerPin": "67c1cf554e80c62eeb56b6dcb9be00106adf9b1b8b40beba85249de662b835eb",
+  "actualAssemblerSha256": "48f065d0ad61f98ba571c89dcd62141e6f8c9b272f0d371331d74a0dabf87851"
+}
