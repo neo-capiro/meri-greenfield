@@ -1,0 +1,56 @@
+[
+  {
+    "path": "packages/contracts/retrieval-0.2/public-web-validation.mjs",
+    "originalSource": "c7d2bb344d56552d271c3f8d508b99cb8e2bb970",
+    "expectedSource": "c7d2bb344d56552d271c3f8d508b99cb8e2bb970",
+    "sha256": "52dbdc869bdfa02dde58aea07bdc2f4e28b8cb7a1de47a17967310641b766596"
+  },
+  {
+    "path": "packages/contracts/retrieval-0.2/public-web.schema.json",
+    "originalSource": "c7d2bb344d56552d271c3f8d508b99cb8e2bb970",
+    "expectedSource": "c7d2bb344d56552d271c3f8d508b99cb8e2bb970",
+    "sha256": "6371852e951a3bf5110a309173e35da4ca7cc33b38425d43a98936c8b0aac65a"
+  },
+  {
+    "path": "packages/contracts/test/retrieval-public-web.test.mjs",
+    "originalSource": "c7d2bb344d56552d271c3f8d508b99cb8e2bb970",
+    "expectedSource": "c7d2bb344d56552d271c3f8d508b99cb8e2bb970",
+    "sha256": "deddab0e9c6e13b639e856cd8c89e53809d8c8f9267bca4d21943e66ead154f6"
+  },
+  {
+    "path": "packages/contracts/retrieval-0.2/sam-opportunities-validation.mjs",
+    "originalSource": "02bac2139b13dec288b5ca2c19edc3be85e2c6b2",
+    "expectedSource": "02bac2139b13dec288b5ca2c19edc3be85e2c6b2",
+    "sha256": "048e15c68213ca83ad4f3ca0b42ba2dc1a9c24fd71a7c893c42cdd700c0b809a"
+  },
+  {
+    "path": "packages/contracts/retrieval-0.2/sam-opportunities.schema.json",
+    "originalSource": "02bac2139b13dec288b5ca2c19edc3be85e2c6b2",
+    "expectedSource": "02bac2139b13dec288b5ca2c19edc3be85e2c6b2",
+    "sha256": "6777e85fa0966fe62be54e7467943e5b88ccca0f5df9a8ca6a6bd5f99e598222"
+  },
+  {
+    "path": "packages/contracts/test/retrieval-sam-opportunities.test.mjs",
+    "originalSource": "02bac2139b13dec288b5ca2c19edc3be85e2c6b2",
+    "expectedSource": "02bac2139b13dec288b5ca2c19edc3be85e2c6b2",
+    "sha256": "5d64926f9474ebcc7ab19610acbdc75a52056301ab7ff1e21467db9e156363b5"
+  },
+  {
+    "path": "packages/contracts/retrieval-0.2/florida-budget-validation.mjs",
+    "originalSource": "dabe2b50d94f0b12ef983292a1c18e1ef35d4675",
+    "expectedSource": "dabe2b50d94f0b12ef983292a1c18e1ef35d4675",
+    "sha256": "386e8ccde7b2cdbba9743e2f6d0218ff8ef3d8b54d2364b5b7d4861ae387b9eb"
+  },
+  {
+    "path": "packages/contracts/retrieval-0.2/florida-budget.schema.json",
+    "originalSource": "dabe2b50d94f0b12ef983292a1c18e1ef35d4675",
+    "expectedSource": "dabe2b50d94f0b12ef983292a1c18e1ef35d4675",
+    "sha256": "338f182a21716ec38778d8728509f87ed9fbaaf82c70d29ee7d3297e1673f8db"
+  },
+  {
+    "path": "packages/contracts/test/retrieval-florida-budget.test.mjs",
+    "originalSource": "dabe2b50d94f0b12ef983292a1c18e1ef35d4675",
+    "expectedSource": "dabe2b50d94f0b12ef983292a1c18e1ef35d4675",
+    "sha256": "fce74bf830de78ea0e42e76aa2e090b8060742c4eb9d63c59dda5fe208ed086e"
+  }
+]

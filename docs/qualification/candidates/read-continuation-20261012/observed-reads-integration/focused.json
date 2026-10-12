@@ -1,0 +1,57 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "packages/contracts/test/retrieval-selected-next-bindings.test.mjs",
+    "packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+    "packages/contracts/test/retrieval-mail.test.mjs",
+    "packages/contracts/test/retrieval-next-bindings.test.mjs",
+    "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+    "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+    "packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+    "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+    "packages/contracts/test/retrieval-selected-next-independent.test.mjs",
+    "packages/contracts/test/retrieval-memory-binding.test.mjs",
+    "apps/gateway/test/mail-context-independent.test.mjs",
+    "apps/gateway/test/capability-next-independent.test.mjs",
+    "apps/gateway/test/action-item-context-independent.test.mjs",
+    "apps/gateway/test/memory-context-independent.test.mjs",
+    "packages/contracts/test/retrieval-reference-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-civic-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-public-web.test.mjs",
+    "packages/contracts/test/retrieval-public-web-independent.test.mjs",
+    "packages/contracts/test/retrieval-sam-opportunities.test.mjs",
+    "packages/contracts/test/retrieval-sam-opportunities-independent.test.mjs",
+    "packages/contracts/test/retrieval-florida-budget.test.mjs",
+    "packages/contracts/test/retrieval-florida-budget-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-observed-reads-20261012",
+  "sourceHead": "753566baf2d230ed241941dcdeca41625277cb1d",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-12T19:13:52.932349+00:00",
+  "durationSeconds": 37.27,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 268355,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration/focused.stdout.bin",
+      "bytes": 72074,
+      "sha256": "af95a3eea4cf017b957390568c0d22e4de2e2255fef913fc2a27afb505912ed0"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration/focused.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
