@@ -1,0 +1,275 @@
+{
+  "scope": "READ_ONLY_GIT_METADATA",
+  "passed": 66,
+  "failed": 0,
+  "sourceCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "observedCommit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+  "meriBase": "e94865529c5a1e97c79893527895f0b4b73be35f",
+  "catalogSha256": "33162db1ff4a5acbf384548fcd5890393753d265023f46a8c7792e28b42011ff",
+  "checks": [
+    {
+      "name": "raw identity: apps/api/src/meri/meri-tools.service.ts",
+      "passed": true
+    },
+    {
+      "name": "Git identity: apps/api/src/meri/meri-tools.service.ts",
+      "passed": true
+    },
+    {
+      "name": "observed no drift: apps/api/src/meri/meri-tools.service.ts",
+      "passed": true
+    },
+    {
+      "name": "raw identity: apps/api/prisma/schema.prisma",
+      "passed": true
+    },
+    {
+      "name": "Git identity: apps/api/prisma/schema.prisma",
+      "passed": true
+    },
+    {
+      "name": "observed no drift: apps/api/prisma/schema.prisma",
+      "passed": true
+    },
+    {
+      "name": "raw identity: packages/shared/src/index.ts",
+      "passed": true
+    },
+    {
+      "name": "Git identity: packages/shared/src/index.ts",
+      "passed": true
+    },
+    {
+      "name": "observed no drift: packages/shared/src/index.ts",
+      "passed": true
+    },
+    {
+      "name": "raw identity: apps/api/src/meri/meri-state-bill-status-tool.spec.ts",
+      "passed": true
+    },
+    {
+      "name": "Git identity: apps/api/src/meri/meri-state-bill-status-tool.spec.ts",
+      "passed": true
+    },
+    {
+      "name": "observed no drift: apps/api/src/meri/meri-state-bill-status-tool.spec.ts",
+      "passed": true
+    },
+    {
+      "name": "raw identity: apps/api/src/meri/meri-state-bill-live.ts",
+      "passed": true
+    },
+    {
+      "name": "Git identity: apps/api/src/meri/meri-state-bill-live.ts",
+      "passed": true
+    },
+    {
+      "name": "observed no drift: apps/api/src/meri/meri-state-bill-live.ts",
+      "passed": true
+    },
+    {
+      "name": "raw identity: apps/api/src/meri/meri-cbo-tool.spec.ts",
+      "passed": true
+    },
+    {
+      "name": "Git identity: apps/api/src/meri/meri-cbo-tool.spec.ts",
+      "passed": true
+    },
+    {
+      "name": "observed no drift: apps/api/src/meri/meri-cbo-tool.spec.ts",
+      "passed": true
+    },
+    {
+      "name": "raw identity: apps/api/src/district-nexus/r5-action-layer/r5-meri-district-tools.ts",
+      "passed": true
+    },
+    {
+      "name": "Git identity: apps/api/src/district-nexus/r5-action-layer/r5-meri-district-tools.ts",
+      "passed": true
+    },
+    {
+      "name": "observed no drift: apps/api/src/district-nexus/r5-action-layer/r5-meri-district-tools.ts",
+      "passed": true
+    },
+    {
+      "name": "raw identity: apps/api/src/district-nexus/r5-action-layer/r5-types.ts",
+      "passed": true
+    },
+    {
+      "name": "Git identity: apps/api/src/district-nexus/r5-action-layer/r5-types.ts",
+      "passed": true
+    },
+    {
+      "name": "observed no drift: apps/api/src/district-nexus/r5-action-layer/r5-types.ts",
+      "passed": true
+    },
+    {
+      "name": "raw identity: apps/api/src/district-nexus/r5-action-layer/r5-flag.guard.ts",
+      "passed": true
+    },
+    {
+      "name": "Git identity: apps/api/src/district-nexus/r5-action-layer/r5-flag.guard.ts",
+      "passed": true
+    },
+    {
+      "name": "observed no drift: apps/api/src/district-nexus/r5-action-layer/r5-flag.guard.ts",
+      "passed": true
+    },
+    {
+      "name": "raw identity: apps/api/src/district-nexus/r5-action-layer/r5-district-context.service.ts",
+      "passed": true
+    },
+    {
+      "name": "Git identity: apps/api/src/district-nexus/r5-action-layer/r5-district-context.service.ts",
+      "passed": true
+    },
+    {
+      "name": "observed no drift: apps/api/src/district-nexus/r5-action-layer/r5-district-context.service.ts",
+      "passed": true
+    },
+    {
+      "name": "raw identity: apps/api/src/district-nexus/r5-action-layer/r5-meri-district-tools.spec.ts",
+      "passed": true
+    },
+    {
+      "name": "Git identity: apps/api/src/district-nexus/r5-action-layer/r5-meri-district-tools.spec.ts",
+      "passed": true
+    },
+    {
+      "name": "observed no drift: apps/api/src/district-nexus/r5-action-layer/r5-meri-district-tools.spec.ts",
+      "passed": true
+    },
+    {
+      "name": "raw identity: apps/api/src/district-nexus/r5-action-layer/r5-district-context.spec.ts",
+      "passed": true
+    },
+    {
+      "name": "Git identity: apps/api/src/district-nexus/r5-action-layer/r5-district-context.spec.ts",
+      "passed": true
+    },
+    {
+      "name": "observed no drift: apps/api/src/district-nexus/r5-action-layer/r5-district-context.spec.ts",
+      "passed": true
+    },
+    {
+      "name": "raw identity: apps/api/src/district-nexus/district-nexus-flag.guard.ts",
+      "passed": true
+    },
+    {
+      "name": "Git identity: apps/api/src/district-nexus/district-nexus-flag.guard.ts",
+      "passed": true
+    },
+    {
+      "name": "observed no drift: apps/api/src/district-nexus/district-nexus-flag.guard.ts",
+      "passed": true
+    },
+    {
+      "name": "raw identity: apps/api/src/common/us-states.ts",
+      "passed": true
+    },
+    {
+      "name": "Git identity: apps/api/src/common/us-states.ts",
+      "passed": true
+    },
+    {
+      "name": "observed no drift: apps/api/src/common/us-states.ts",
+      "passed": true
+    },
+    {
+      "name": "canonical catalog unchanged",
+      "passed": true
+    },
+    {
+      "name": "139 originals retained",
+      "passed": true
+    },
+    {
+      "name": "96 selected retained",
+      "passed": true
+    },
+    {
+      "name": "43 deferred retained",
+      "passed": true
+    },
+    {
+      "name": "20 mappings retained",
+      "passed": true
+    },
+    {
+      "name": "76 pending selected retained",
+      "passed": true
+    },
+    {
+      "name": "21 typed unavailable retained",
+      "passed": true
+    },
+    {
+      "name": "seven distinct proposals, no alternate mapping",
+      "passed": true
+    },
+    {
+      "name": "selected pending source candidate: get_district_nexus_context",
+      "passed": true
+    },
+    {
+      "name": "no current bound operation: get_district_nexus_context",
+      "passed": true
+    },
+    {
+      "name": "selected pending source candidate: get_district_nexus_changes",
+      "passed": true
+    },
+    {
+      "name": "no current bound operation: get_district_nexus_changes",
+      "passed": true
+    },
+    {
+      "name": "selected pending source candidate: search_state_bills",
+      "passed": true
+    },
+    {
+      "name": "no current bound operation: search_state_bills",
+      "passed": true
+    },
+    {
+      "name": "selected pending source candidate: get_state_legislator",
+      "passed": true
+    },
+    {
+      "name": "no current bound operation: get_state_legislator",
+      "passed": true
+    },
+    {
+      "name": "selected pending source candidate: search_cbo_cost_estimates",
+      "passed": true
+    },
+    {
+      "name": "no current bound operation: search_cbo_cost_estimates",
+      "passed": true
+    },
+    {
+      "name": "selected pending source candidate: search_gao_reports",
+      "passed": true
+    },
+    {
+      "name": "no current bound operation: search_gao_reports",
+      "passed": true
+    },
+    {
+      "name": "selected pending source candidate: search_crs_reports",
+      "passed": true
+    },
+    {
+      "name": "no current bound operation: search_crs_reports",
+      "passed": true
+    },
+    {
+      "name": "state effect-boundary remains pending: get_state_bill_status",
+      "passed": true
+    },
+    {
+      "name": "state effect-boundary remains pending: search_state_floor_votes",
+      "passed": true
+    }
+  ]
+}

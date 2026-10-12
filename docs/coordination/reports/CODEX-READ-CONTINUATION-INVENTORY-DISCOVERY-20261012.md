@@ -176,8 +176,9 @@ findings are recorded here. The common wrapper blob is
 `e831800b20113b0bca35b357d93e04e8140deae7` respectively. The live-fallback owner
 blob is `01c312dfa17bfa0838c06e1ee2bc59fa6c58187f`.
 
-Metadata verification rechecks exact immutable bytes, drift, selected/pending
-status for every proposed ID and preservation of the canonical catalog. This is
+Metadata verification passed **66/66** checks of exact immutable bytes, drift,
+selected/pending status for every proposed ID and preservation of the canonical
+catalog. Its owned local process group exited and was recorded absent. This is
 discovery, not independent acceptance of future authored contracts. No private
 source body, legacy implementation or customer data was copied; no source was
 imported/executed. No native/proxy/runtime/worker/infra/frontend, SQL, service,
