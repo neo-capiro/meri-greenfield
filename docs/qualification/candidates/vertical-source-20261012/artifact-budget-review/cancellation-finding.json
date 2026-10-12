@@ -1,0 +1,8 @@
+{
+  "source": "5647415bb4d8e7548741fb9af7fb92a0df2d6cf6",
+  "testFreeze": "aea805c71b0625d318158721cf7bc007174055d2",
+  "pass": 30,
+  "fail": 2,
+  "finding": "Outer owned dispatch lifetime wins caller cancellation while put/commit await is pending, losing artifact effect-unknown annotation and version identity. Existing service and owner remain unchanged. Reviewer controls preserve exact pending effect and finally release the fake port; no unbounded job remains.",
+  "requestedRepair": "Application execution boundary must preserve original cancellation cause and truthful per-call potential effect/identity; no refund, auto retry or false marker/settlement."
+}

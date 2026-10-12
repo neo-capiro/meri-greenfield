@@ -96,5 +96,5 @@ for(const phase of ['putHook','commitHook'])test(`outer cancellation during ${ph
   t.state[phase]=async()=>{entered.resolve();await gate.promise;};
   const pending=t.owner().execute(t.call,t.db.credential,controller.signal);await entered.promise;controller.abort();
   let error;try{await pending;}catch(e){error=e;}finally{gate.resolve();await new Promise(resolve=>setImmediate(resolve));}
-  assert.equal(error?.code,'ARTIFACT_EFFECT_UNKNOWN');assert.equal(typeof error.versionId,'string');assert.equal(t.reservation().state,'UNKNOWN');assert.equal(t.row().completion,null);
+  assert.equal(error?.code,'ARTIFACT_EFFECT_UNKNOWN',JSON.stringify({name:error?.name,message:error?.message,ownKeys:Object.keys(error??{}),stored:t.state.stored,committed:t.state.committed,reservation:t.reservation()?.state,completion:t.row()?.completion}));assert.equal(typeof error.versionId,'string');assert.equal(t.reservation().state,'UNKNOWN');assert.equal(t.row().completion,null);
 });
