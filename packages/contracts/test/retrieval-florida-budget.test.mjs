@@ -26,7 +26,7 @@ const check=(value,request={},ctx=context())=>v.assertResult(id,value,request,ct
 
 test('single private operation and schema definitions are exact',()=>{
  assert.equal(v.schemaId,'urn:meri:retrieval:florida-budget:0.2.0');assert.deepEqual(v.operationIds,[id]);
- assert.equal(v.inputDefinition(id),'FloridaBudgetRequest');assert.equal(v.outputDefinition(id),'FloridaBudgetOutput');
+ assert.equal(v.inputDefinition(id),'FloridaBudgetInput');assert.equal(v.outputDefinition(id),'FloridaBudgetOutput');
  for(const bad of ['search_legiwatch_news','__proto__','constructor',null])assert.throws(()=>v.normalizeInput(bad,{},context()));
 });
 test('defaults retain frozen fiscal year and untrimmed fiscal/query selection',()=>{
@@ -80,7 +80,7 @@ test('scope substitutions reject session, folder, client and jurisdiction change
  assert.throws(()=>v.normalizeInput(id,req,context({folderId:'else',sessionKey:'2026'})));
 });
 test('empty response is selected data with no completeness or absence inference',()=>{
- const p=output();assert.equal(check(p),p);assert.equal(v.classifyResult(id,p).absenceEvidence,false);
+ const p=output();assert.deepEqual(check(p),p);assert.notStrictEqual(check(p),p);assert.equal(v.classifyResult(id,p).absenceEvidence,false);
  for(const key of ['complete','total','hasMore','awardedAmount']){const q=output();q.result[key]=0;assert.throws(()=>check(q));}
 });
 test('full projected arrays preserve opaque JSON and nullable fields',()=>{
@@ -168,4 +168,19 @@ test('client UUID identity survives trailing whitespace introduced by the80unit 
  const raw=`${cid}${' '.repeat(44)}x`,selector=raw.slice(0,80);
  const valid=resolved(selector,cid);assert.equal(v.normalizeInput(id,{clientId:raw},valid).input.clientId,cid);
  assert.throws(()=>v.normalizeInput(id,{clientId:raw},resolved(selector,other)));
+});
+
+test('validated Florida output is detached from subsequent caller mutation',()=>{
+ const original=output();original.result.projects=[project()];
+ const accepted=check(original);assert.notStrictEqual(accepted,original);
+ original.result.projects[0].title='Mutated after admission';original.result.scope.sessionKey='foreign';
+ assert.equal(accepted.result.projects[0].title,'Synthetic publisher item');assert.equal(accepted.result.scope.sessionKey,'');
+});
+
+
+test('normalized catalog definition does not impose effective fields on raw requests',()=>{
+ assert.equal(v.inputDefinition(id),'FloridaBudgetInput');assert(checks.get('FloridaBudgetRequest')({}));
+ assert.equal(checks.get('FloridaBudgetInput')({}),false);
+ const normalized=v.normalizeInput(id,{},context());assert(checks.get('FloridaBudgetInput')(normalized.input));
+ assert.equal(normalized.input.fiscalYear,'2026-27');
 });
