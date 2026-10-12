@@ -58,6 +58,14 @@ export const CATALOG_OPERATION_BINDINGS = Object.freeze([
     contextKeys: Object.freeze(['subject', 'previous']),
     normalize: (v, request, context, binding) => ({input: v.normalizeMemoryProposalInput(request, context)}),
     outputAssert: (v, page, request, context, binding) => v.assertMemoryProposalReadResult(page, request, clock(context, binding.contextKeys))}),
+  Object.freeze({id: 'query_action_items', nativeId: 'query_action_items', nativeCoverage: 'partial', group: 'operational-reads', input: 'ActionItemReadInput', output: 'ActionItemClientScopedPage', version: '0.2.0',
+    normalize: (v, request, context, binding) => {
+      if (typeof context.actorId !== 'string' || !context.actorId) fail('Explicit trusted actorId required');
+      const result = v.assertActionItemReadInput(request, clock(context, ['actorId']));
+      if (result.mode !== 'client_scoped') fail('Unscoped action-item mode remains unqualified');
+      return selected(result);
+    },
+    outputAssert: (v, page, request, context, binding) => v.assertActionItemClientScopedPage(page, request, clock(context, ['actorId']))}),
 ]);
 
 export function createCatalogValidators({validateShape, schemaRecords}) {
@@ -121,7 +129,11 @@ function assertCatalog(catalog) {
     for (const binding of CATALOG_OPERATION_BINDINGS) {
       const operation = operations.get(key({id: binding.id, version: binding.version}));
       const original = catalog.originals.find(row => row.id === binding.nativeId);
-      if (!operation || !original || original.state !== 'mapped' ||
+      if (!operation || !original) fail('Registered preservation mapping mismatch');
+      if (binding.nativeCoverage === 'partial') {
+        if (original.state !== 'pending' || original.replacement !== null || operation.aliases.length !== 0)
+          fail('Partial native coverage cannot claim a replacement or compatibility alias');
+      } else if (original.state !== 'mapped' ||
           key(original.replacement ?? {}) !== key(operation.operation)) fail('Registered preservation mapping mismatch');
       if (operation.handler !== null || operation.availability !== 'unimplemented' ||
           operation.qualification !== 'pending' || operation.retry.maxRetries !== 0 ||

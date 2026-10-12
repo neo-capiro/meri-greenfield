@@ -1,0 +1,72 @@
+{
+  "receipts": [
+    {
+      "receipt": "baseline.json",
+      "processGroup": 121210,
+      "members": [],
+      "groupAbsent": true,
+      "allMembersExited": true
+    },
+    {
+      "receipt": "pre-characterization-update.json",
+      "processGroup": 121767,
+      "members": [],
+      "groupAbsent": true,
+      "allMembersExited": true
+    },
+    {
+      "receipt": "final-source.json",
+      "processGroup": 122072,
+      "members": [
+        {
+          "pid": 122384,
+          "ppid": 1,
+          "pgid": 122072,
+          "state": "Z",
+          "command": "esbuild"
+        },
+        {
+          "pid": 122403,
+          "ppid": 1,
+          "pgid": 122072,
+          "state": "Z",
+          "command": "esbuild"
+        }
+      ],
+      "groupAbsent": false,
+      "allMembersExited": true
+    },
+    {
+      "receipt": "public-distribution.json",
+      "processGroup": 122071,
+      "members": [
+        {
+          "pid": 122135,
+          "ppid": 1,
+          "pgid": 122071,
+          "state": "Z",
+          "command": "esbuild"
+        },
+        {
+          "pid": 122303,
+          "ppid": 1,
+          "pgid": 122071,
+          "state": "Z",
+          "command": "esbuild"
+        },
+        {
+          "pid": 122350,
+          "ppid": 1,
+          "pgid": 122071,
+          "state": "Z",
+          "command": "esbuild"
+        }
+      ],
+      "groupAbsent": false,
+      "allMembersExited": true
+    }
+  ],
+  "physicalGroupCleanup": "FAIL_EXITED_ZOMBIES_ADOPTED_BY_PID1",
+  "liveOwnedProcesses": 0,
+  "notes": "Tests passed; complete process-group removal did not. Original receipts retain groupAbsent:false. Do not signal or otherwise touch PID1. Final integrated checks use root existing subreaper. No dormant running work or native resources."
+}

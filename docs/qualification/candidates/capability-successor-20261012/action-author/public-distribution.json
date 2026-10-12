@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "npm",
+    "run",
+    "check",
+    "--prefix",
+    "packages/contracts"
+  ],
+  "exit": 0,
+  "seconds": 6.825,
+  "processGroup": 122071,
+  "processGroupAbsent": false,
+  "native": false
+}

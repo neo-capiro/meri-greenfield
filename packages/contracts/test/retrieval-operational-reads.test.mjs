@@ -399,7 +399,7 @@ test('operational-read schema objects stay closed and package public exports sta
   assert(!JSON.stringify(pkg.exports).includes('retrieval-0.2'));
   assert(!pkg.files.includes('retrieval-0.2'));
 });
-test('private task registration keeps action items unmapped and exposes no live handler or skill', () => {
+test('private task and partial action registration keep native action items unmapped and expose no live handler or skill', () => {
   const catalog = JSON.parse(readFileSync(new URL('../retrieval-0.2/catalog.json', import.meta.url)));
   assertCatalog(catalog);
   const task = catalog.operations.find(operation => operation.operation.id === 'query_tasks');
@@ -408,7 +408,9 @@ test('private task registration keeps action items unmapped and exposes no live 
   assert.deepEqual(catalog.originals.find(row => row.id === 'query_tasks').replacement, { id: 'query_tasks', version: '0.2.0' });
   const actionItems = catalog.originals.find(row => row.id === 'query_action_items');
   assert.equal(actionItems.state, 'pending'); assert.equal(actionItems.replacement, null);
-  for (const id of ['query_action_items', 'operational-reads.task-read', 'operational-reads.action-item-read']) {
+  assert.ok(catalog.operations.some(operation => operation.operation.id === 'query_action_items'));
+  assert.deepEqual(catalog.operations.find(operation => operation.operation.id === 'query_action_items').aliases, []);
+  for (const id of ['operational-reads.task-read', 'operational-reads.action-item-read']) {
     assert(!catalog.operations.some(operation => operation.operation.id === id || operation.aliases.includes(id)));
   }
   for (const operation of catalog.operations) { assert.equal(operation.handler, null); assert.equal(operation.availability, 'unimplemented'); }

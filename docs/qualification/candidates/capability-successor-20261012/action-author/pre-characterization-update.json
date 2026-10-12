@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+    "apps/gateway/test/action-item-context.test.mjs",
+    "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+    "packages/contracts/test/retrieval-mail.test.mjs",
+    "packages/contracts/test/retrieval-memory-binding.test.mjs",
+    "packages/contracts/test/retrieval-operational-reads.test.mjs",
+    "apps/gateway/test/memory-context-independent.test.mjs"
+  ],
+  "exit": 1,
+  "seconds": 4.265,
+  "processGroup": 121767,
+  "processGroupAbsent": true,
+  "native": false
+}
