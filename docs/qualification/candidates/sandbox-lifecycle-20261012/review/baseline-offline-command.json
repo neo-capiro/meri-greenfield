@@ -1,0 +1,73 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "apps/worker/qualification/probes/static.test.mjs",
+    "apps/worker/qualification/probes/office-export.test.mjs"
+  ],
+  "cwd": "/workspace/meri-image-patch-author-20261012",
+  "base": "14be9fc614568a74133b89f2b229e50c9b030322",
+  "borrowed_read_only_dependency_worktree": true,
+  "exact_source_verification": [
+    {
+      "path": "apps/worker/qualification/probes/static.test.mjs",
+      "sha256": "910044c4c16b9d8e523bef960d80aac5f66632817afd9a103cf3e277b762e6e1",
+      "exact_PR15_bytes": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/office-export.test.mjs",
+      "sha256": "da1087cd155c64a85a5d9dd818db275688f6e8610719d665007a8649e3423dde",
+      "exact_PR15_bytes": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/office-export.mjs",
+      "sha256": "78a3526f0e7ea738f675433a5289c49552011cef7267a2c9057827fb42ab5156",
+      "exact_PR15_bytes": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/office-reconstruct.mjs",
+      "sha256": "133d8c5adbfae930aa5e59d7d633e73482994106382cebef35b065d059303205",
+      "exact_PR15_bytes": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/runtime.mjs",
+      "sha256": "56873762181926b276fc8283ceb9485d9fd55ef788bd4204b55feef241236716",
+      "exact_PR15_bytes": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/browser.mjs",
+      "sha256": "c09bd204a86c0cbfcdfa397b9b1f6938b078f7b4b3c6989a59d3588db2c481e0",
+      "exact_PR15_bytes": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/artifacts.mjs",
+      "sha256": "3155bd31447f37b27c512cc2522a46947241c0f3fd74d738bed54920486757d6",
+      "exact_PR15_bytes": true
+    },
+    {
+      "path": "apps/worker/qualification/sdk-options.mjs",
+      "sha256": "174efdfcf4731845d65c1f32de4c73e8a9032ccf1522022ab7675ccc7e6a5d9e",
+      "exact_PR15_bytes": true
+    },
+    {
+      "path": "apps/worker/qualification/package.json",
+      "sha256": "a32e658933bd058d2524cfb2112cf770e5be81827dbf5e789ddecbcab86e5d80",
+      "exact_PR15_bytes": true
+    },
+    {
+      "path": "apps/worker/qualification/package-lock.json",
+      "sha256": "d3d4c5362e0c7dc1392ef9cad2048d00c564f1ff70d98c3e10108e50aa56147a",
+      "exact_PR15_bytes": true
+    },
+    {
+      "path": "apps/worker/qualification/component-pins.json",
+      "sha256": "2f2c5d52fbee23bbdb206456235664b9dbbdf5c3526ccc065d499ed0a61f5aed",
+      "exact_PR15_bytes": true
+    }
+  ],
+  "exit_code": 1,
+  "seconds": 20.523109308998755,
+  "reaped": true,
+  "stdout_sha256": "b1c36d5e4ec983679ae74c89346123681f030bcbc33f8c9d730916498dd538b4",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}
