@@ -1,6 +1,7 @@
 # Research Portfolio read contract author
 
-Source freeze `deec763c57ba57cc4d7e7915d55b0f8719e13021`; independent acceptance
+Initial source freeze `deec763c57ba57cc4d7e7915d55b0f8719e13021`, superseded by
+the narrow independent paging repair below; independent acceptance
 pending. Base
 `e0163fb65a639a28d9423e929058b40b48cc556d`, branch
 `task/meri-research-portfolio-20261012`. No current source authorization,
@@ -128,6 +129,23 @@ ownership, scope-receipt integrity, current grants/client walls, live source
 projection fidelity, cursor ownership, timeout/release checks and native
 qualification are **UNRUN**. No supplied synthetic context proves those checks.
 Production connectivity remains disabled; G1 remains OPEN.
+
+## Independent paging repair
+
+Independent review of source `deec763c57ba57cc4d7e7915d55b0f8719e13021`
+reported 21/22 passing groups and one genuine projection defect: one returned
+event with a non-null continuation was accepted for requested limit 2. Frozen
+producer blob `60cc3c51644ae5b8c93fb93a684c544713a97349` returns a non-null cursor
+only when more than `limit` visible events exist, after slicing exactly `limit`
+rows. The validator now requires a full requested page for non-null continuation.
+A focused regression preserves valid full-page continuation and valid short
+final pages. Earlier 24-pass author captures remain unchanged; the independent
+failure remains in the reviewer's `first-independent.*` evidence. This is
+projection fidelity, not a cursor authenticity or source authorization claim.
+Repair check: **25/25 PASS**, exit 0, no timeout; group **138263 absent** with
+no kill required. `portfolio-continuation-repair.json` captures the exact
+parent SHA plus tested source diff hash. `continuation-repair-source.json`
+records the resulting source file identities.
 
 Source preservation receipt: `source-freeze.json`. All 5054 of 5055 original
 tracked files retain their base blob except the one root-authored canonical

@@ -139,6 +139,12 @@ test('changes represents page continuation without source-history completeness',
   check(CHANGES,last,{cursor:'event-b',limit:1},context());
   const empty=changes();empty.data.items=[];check(CHANGES,empty,{cursor:'event-b'},context());
 });
+test('non-null continuation requires the full requested page from the pinned producer projection', () => {
+  const page=changes();page.data.nextCursor='event-b';
+  assert.throws(()=>check(CHANGES,page,{limit:2},context()));
+  check(CHANGES,page,{limit:1},context());
+  page.data.nextCursor=null;check(CHANGES,page,{limit:2},context());
+});
 test('changes refuses nonprogress, foreign next cursor, excess rows and empty continuation', () => {
   for(const [page,request] of [
     [{...changes(),data:{items:[],nextCursor:'event-b'}},{}],
