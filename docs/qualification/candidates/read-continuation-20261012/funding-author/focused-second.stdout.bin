@@ -1,0 +1,46 @@
+✔ five distinct operation definitions and exact schema bytes (1.918292ms)
+✔ search_funding_opportunities: valid bounded projection (9.984232ms)
+✔ search_funding_opportunities: six states preserve null refusal and exact asOf (2.938967ms)
+✔ search_funding_opportunities: closed selector and output cannot add authority or raw fields (1.587395ms)
+✔ get_funding_opportunity_requirements: valid bounded projection (2.478894ms)
+✔ get_funding_opportunity_requirements: six states preserve null refusal and exact asOf (1.75708ms)
+✔ get_funding_opportunity_requirements: closed selector and output cannot add authority or raw fields (0.649786ms)
+✔ get_funding_opportunity: valid bounded projection (1.062517ms)
+✔ get_funding_opportunity: six states preserve null refusal and exact asOf (1.672193ms)
+✔ get_funding_opportunity: closed selector and output cannot add authority or raw fields (0.875576ms)
+✔ get_opportunity_client_context: valid bounded projection (3.608943ms)
+✔ get_opportunity_client_context: six states preserve null refusal and exact asOf (1.458211ms)
+✔ get_opportunity_client_context: closed selector and output cannot add authority or raw fields (0.740743ms)
+✔ get_opportunity_government_landscape: valid bounded projection (1.817991ms)
+✔ get_opportunity_government_landscape: six states preserve null refusal and exact asOf (1.320904ms)
+✔ get_opportunity_government_landscape: closed selector and output cannot add authority or raw fields (0.672921ms)
+✔ trusted asOf is required, exact canonical and never current authorization (0.891409ms)
+✔ search effective defaults preserve trimmed query and actual 10000 page clamp (0.995405ms)
+✔ input bounds refuse coercion and enforce UTF-16 query before trimming (1.631441ms)
+✔ original refusal remains possible for unsupported source but cannot release available payload (0.876527ms)
+✔ inert admission refuses proxies, getters, symbols, cycles, non-finite and hidden fields before hooks (0.308343ms)
+✔ 24000 JSON characters admits exact ceiling and refuses one more; UTF-8 bytes differ (2.10318ms)
+✔ search count pagination and unknown capped coverage remain distinct (5.758152ms)
+✔ summary exact UTF-16 continuation clamps requested offset to held text length (1.076568ms)
+✔ missing/link-only summaries and source requirements handoff retain limits (1.101365ms)
+✔ money channels, missing values and eligibility cannot be blended (2.51566ms)
+✔ human decision retains nullable audit fields independent of machine recommendation (0.568314ms)
+✔ client context five-row caps remain separate from broad counts (1.255567ms)
+✔ next deadline and thirty-day count apply to sampled top rows only (1.020153ms)
+✔ requirements retain rejected and superseded rows; acceptance is not quote verification (0.5785ms)
+✔ requirements preserve unknown/stale totals and positive continuation (0.519421ms)
+✔ requirements exhausted pages retain available coverage when known total is positive (0.29932ms)
+✔ requirements no documents/no text/read none found remain distinct reports (0.42563ms)
+✔ requirements quote spans/count/clock/identity cannot be substituted (2.160496ms)
+✔ landscape 40 rows retain original fingerprint and pre-truncation counts (2.835741ms)
+✔ landscape source coverage, empty reports and losses cannot collapse denial (2.513126ms)
+✔ landscape inference remains inference and raw provider fields cannot widen it (0.803287ms)
+✔ canonical resolver retains original request and excludes model clock/foreign context (2.356922ms)
+ℹ tests 38
+ℹ suites 0
+ℹ pass 38
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 594.402513

@@ -1,0 +1,88 @@
+{
+  "frozenCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "observedCommit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+  "changedReferences": [
+    {
+      "path": "apps/api/src/acquisition-personnel/acquisition-personnel-read.service.ts",
+      "frozenBlob": "0cbf97bc74d25bc5d400e5cef8d8e1cf1e72654a",
+      "observedBlob": "a7e6cca69e56327f54c164d698db03a399fbb614",
+      "observedBytes": 45580,
+      "observedSha256": "dde4b6ce8e8b0445a275ea781b6eb068b428cb93777efcb936c3432ac20d2940"
+    },
+    {
+      "path": "apps/api/src/acquisition-personnel/dto/list-personnel.dto.ts",
+      "frozenBlob": "e0973405ae4c63ca57c0c47e80afbe05524cf7cd",
+      "observedBlob": "70da3a164210d0024a7dc0a5cc6ec771c2619632",
+      "observedBytes": 3382,
+      "observedSha256": "69cf487f34702c3c337509b8c9d1f14976613b664282684d4585ed47321b613f"
+    },
+    {
+      "path": "apps/api/src/acquisition-personnel/dto/person-detail.dto.ts",
+      "frozenBlob": "3b96aaa243e0fadd8780ae3eecba7148105d5fe2",
+      "observedBlob": "f3ab73cff7f8c802c935ce47d20b1003e52e479f",
+      "observedBytes": 793,
+      "observedSha256": "ec0e55cf7556aedef11d10db4be54bcadc066080526501dee6add17d30722efc"
+    }
+  ],
+  "sourceReviewOnly": true,
+  "privateBodiesPublished": false,
+  "sourceExecuted": false,
+  "facts": [
+    {
+      "symbol": "listPersonnel",
+      "frozenLines": [
+        66,
+        199
+      ],
+      "observedLines": [
+        84,
+        222
+      ],
+      "unchangedPrivacyRule": "email remains stored p.email only for exact capiro_admin, else null",
+      "newObservedFields": [
+        "phone",
+        "parentOffice",
+        "department"
+      ],
+      "newObservedFieldRule": "Each is null for non-capiro_admin; admin values come from uploadedContactField(metadata, field)."
+    },
+    {
+      "symbol": "getPersonDetail",
+      "frozenLines": [
+        201,
+        257
+      ],
+      "observedLines": [
+        224,
+        289
+      ],
+      "newObservedFields": [
+        "email",
+        "phone",
+        "parentOffice",
+        "department"
+      ],
+      "newObservedFieldRule": "Each is null for non-capiro_admin; email from stored column, other fields from uploadedContactField.",
+      "metadataDifference": "Frozen metadata is unfiltered. Observed metadata is raw only for exact capiro_admin, otherwise publicPersonnelMetadata."
+    },
+    {
+      "symbol": "publicPersonnelMetadata",
+      "observedLines": [
+        45,
+        50
+      ],
+      "effect": "For object/non-array metadata, removes uploadedDirectoryContact and uploadedDirectoryPrevious and returns remaining members. Non-object/array inputs pass through; no claim of universal PII redaction."
+    },
+    {
+      "symbol": "uploadedContactField",
+      "observedLines": [
+        34,
+        43
+      ],
+      "effect": "Reads uploaded contact field under object checks; returns trimmed nonempty string or null."
+    }
+  ],
+  "consequence": "Frozen contract readiness is version-specific. It cannot establish that current metadata privacy is preserved. No automatic activation or adoption of new role/privacy semantics. Root must explicitly select reviewed projection scope; current adapter remains HOLD until qualified against effective current policy.",
+  "producerAudit": "Both observed methods still call tx.auditLog.create; no claim the newer owner is effect-free.",
+  "correctionPreserved": "Earlier email-is-metadata shorthand is corrected in acquisition-contracts.json; no private implementation copied."
+}

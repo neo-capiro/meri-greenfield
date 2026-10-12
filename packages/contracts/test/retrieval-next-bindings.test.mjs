@@ -1,3 +1,5 @@
+// Explicit reviewed continuation allowlist; historical baseline hashes stay unchanged.
+const continuationIds = ["search_cbo_cost_estimates", "search_federal_grants", "search_federal_awards", "search_gao_reports", "search_state_bills", "get_state_legislator", "search_crs_reports", "query_economic_data", "get_district_nexus_context", "get_district_nexus_changes", "read_client_documents", "search_funding_opportunities", "get_funding_opportunity_requirements", "get_funding_opportunity", "get_opportunity_client_context", "get_opportunity_government_landscape"];
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import catalog from '../retrieval-0.2/catalog.json' with {type:'json'};
@@ -13,7 +15,7 @@ const additions = ['lookup_client_registry', 'get_business_development_context',
 test('selected read additions preserve every prior descriptor and original accepted boundary', () => {
   // Literal hashes of accepted PR22 catalog content, computed independently of
   // the new registry. Adding descriptors must not silently rewrite old contracts.
-  assert.equal(canonicalSha256(catalog.operations.filter(row => !additions.includes(row.operation.id))),
+  assert.equal(canonicalSha256(catalog.operations.filter(row => !additions.includes(row.operation.id)&&!continuationIds.includes(row.operation.id))),
     '7302157d3d1059774b198b48f47591db55b85fa63a1bf025d2741ec4b1187b2b');
   assert.equal(canonicalSha256(catalog.originals.map(({id, disposition, boundary}) => ({id, disposition, boundary}))),
     '3cdea92ff8d789f30b540af232f92cca5d239412278cb4a1f78374f4a29fe392');
@@ -25,9 +27,9 @@ test('selected read additions preserve every prior descriptor and original accep
     assert.equal(descriptor.handler, null); assert.equal(descriptor.availability, 'unimplemented');
     assert.equal(descriptor.qualification, 'pending'); assert.equal(descriptor.sideEffect, 'none');
   }
-  assert.equal(catalog.operations.length, 21);
-  assert.equal(catalog.originals.filter(row => row.state === 'mapped').length, 20);
-  assert.equal(catalog.originals.filter(row => row.disposition === 'selected' && row.state === 'pending').length, 76);
+  assert.equal(catalog.operations.length, 37);
+  assert.equal(catalog.originals.filter(row => row.state === 'mapped').length, 36);
+  assert.equal(catalog.originals.filter(row => row.disposition === 'selected' && row.state === 'pending').length, 60);
   for (const id of ['query_action_items', 'get_research_evidence']) {
     assert.equal(catalog.originals.find(row => row.id === id).state, 'pending');
     assert.equal(catalog.originals.find(row => row.id === id).replacement, null);

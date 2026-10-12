@@ -1,0 +1,48 @@
+diff --git a/packages/contracts/retrieval-0.2/funding-opportunities-validation.mjs b/packages/contracts/retrieval-0.2/funding-opportunities-validation.mjs
+index f5ceeef..a49899b 100644
+--- a/packages/contracts/retrieval-0.2/funding-opportunities-validation.mjs
++++ b/packages/contracts/retrieval-0.2/funding-opportunities-validation.mjs
+@@ -66,6 +66,9 @@ export function createFundingOpportunitiesValidators({ validateShape, schema })
+     else if (id === 'get_opportunity_client_context') assertFundingClientContext(data.data, data, input);
+     else {
+       if (source !== 'sam_gov') fail('Government landscape is SAM-only');
++      // The composer validates the UUID after trimming before any source port.
++      // Invalid/unsupported request refusal envelopes above remain admissible.
++      validateFundingOpportunitiesShape('FundingSamRecordId', input.sourceRecordId.trim());
+       assertFundingLandscape(data.data, data, schema.$defs.FundingLandscapeSource.enum);
+     }
+     return value;
+diff --git a/packages/contracts/retrieval-0.2/funding-opportunities.schema.json b/packages/contracts/retrieval-0.2/funding-opportunities.schema.json
+index ed1bd1d..2cb164f 100644
+--- a/packages/contracts/retrieval-0.2/funding-opportunities.schema.json
++++ b/packages/contracts/retrieval-0.2/funding-opportunities.schema.json
+@@ -3,6 +3,10 @@
+   "$id": "urn:meri:retrieval:funding-opportunities:0.2.0",
+   "title": "Private unavailable funding read projections",
+   "$defs": {
++    "FundingSamRecordId": {
++      "type": "string",
++      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
++    },
+     "FundingSource": {
+       "enum": [
+         "grants_gov",
+diff --git a/packages/contracts/test/retrieval-funding-opportunities.test.mjs b/packages/contracts/test/retrieval-funding-opportunities.test.mjs
+index 4bab97e..882b394 100644
+--- a/packages/contracts/test/retrieval-funding-opportunities.test.mjs
++++ b/packages/contracts/test/retrieval-funding-opportunities.test.mjs
+@@ -30,7 +30,7 @@ const fixtures=new Map([[searchId,search],[requirementsId,requirements],[detailI
+ const check=(id,value=fixtures.get(id)(),request=req(id),clock=options)=>v.assertFundingOpportunitiesOutput(id,value,request,clock);
+ function mutation(id,fn,request){const output=fixtures.get(id)();fn(output);assert.throws(()=>check(id,output,request));}
+ 
+-test('five distinct operation definitions and exact schema bytes',()=>{assert.equal(IDS.length,5);assert.equal(v.fundingOpportunitiesSchemaId,'urn:meri:retrieval:funding-opportunities:0.2.0');assert.equal(createHash('sha256').update(raw).digest('hex'),'10695bd750e188fa0897d29da594482cfa13325cc81a2f9f23e323c73bc545b4');for(const id of IDS){assert.match(v.fundingOpportunitiesInputDefinition(id),/Input$/);assert.match(v.fundingOpportunitiesOutputDefinition(id),/Output$/);}for(const id of ['__proto__','compare_funding_opportunities','build_opportunity_action_plan'])assert.throws(()=>v.fundingOpportunitiesInputDefinition(id));});
++test('five distinct operation definitions and exact schema bytes',()=>{assert.equal(IDS.length,5);assert.equal(v.fundingOpportunitiesSchemaId,'urn:meri:retrieval:funding-opportunities:0.2.0');assert.equal(createHash('sha256').update(raw).digest('hex'),'0d31594c3aaecd707da722cfb8cd951e7f42802c13c86805aaedb9397dc9d56b');for(const id of IDS){assert.match(v.fundingOpportunitiesInputDefinition(id),/Input$/);assert.match(v.fundingOpportunitiesOutputDefinition(id),/Output$/);}for(const id of ['__proto__','compare_funding_opportunities','build_opportunity_action_plan'])assert.throws(()=>v.fundingOpportunitiesInputDefinition(id));});
+ for(const id of IDS){
+  test(`${id}: valid bounded projection`,()=>check(id));
+  test(`${id}: six states preserve null refusal and exact asOf`,()=>{for(const state of ['disabled','denied','not_found','unsupported_source','invalid_request']){const out={tool:id,state,asOf:stamp,explanation:state==='denied'?'Not available for this client.':'Synthetic refusal; no absence claim.',data:null};check(id,out);assert.throws(()=>check(id,{...out,data:{}}));assert.throws(()=>check(id,{...out,truncated:[]}));}mutation(id,out=>out.state='unavailable');mutation(id,out=>out.asOf='2026-10-12T12:00:00.001Z');});
+@@ -62,3 +62,5 @@ test('canonical resolver retains original request and excludes model clock/forei
+ test('deadline object property order does not change the typed sampled fact',()=>{const out=context();const d={at:'2026-10-13T12:00:00.000Z',dateOnly:'2026-10-13',timeZone:null,basis:'explicit_datetime',daysRemaining:1,status:'open'};out.data.topContracts[0].deadline=d;out.data.nextDeadline=Object.fromEntries(Object.entries(d).reverse());out.data.counts.deadlinesIn30Days=1;check(contextId,out);});
+ 
+ test('short requirement pages cannot invent an unseen extra-row continuation',()=>{for(const total of [null,0,1]){const out=requirements();Object.assign(out.data.pagination,{total,hasMore:true,nextOffset:1});assert.throws(()=>check(requirementsId,out));}const known=requirements();Object.assign(known.data.pagination,{total:2,hasMore:true,nextOffset:1});check(requirementsId,known);});
++
++test('landscape available data requires the composer SAM UUID boundary without blocking refusals',()=>{const request={...req(landscapeId),sourceRecordId:'not-a-sam-uuid'};assert.throws(()=>check(landscapeId,landscape(),request));check(landscapeId,{tool:landscapeId,state:'invalid_request',explanation:'Synthetic invalid request',asOf:stamp,data:null},request);check(landscapeId,landscape(),{...req(landscapeId),sourceRecordId:`  ${recordId.toUpperCase()}  `});});

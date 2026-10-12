@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-funding-opportunities.test.mjs"
+  ],
+  "cwd": "/workspace/meri-funding-reads-20261012",
+  "sourceHead": "e94865529c5a1e97c79893527895f0b4b73be35f",
+  "sourceDiffSha256": "b5d211bce6197bec4f2b5b1543818927e8d41a9e9387710ee79dcba017870b50",
+  "sourceDiffBytes": 106288,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T16:19:23.672283+00:00",
+  "durationSeconds": 0.568,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 146740,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-author/focused-first.stdout.bin",
+      "bytes": 2035,
+      "sha256": "5d5fc6b54ac04a1f5f6e6ddb553b609b31f511b976622125e86b9028ed34ec37"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-author/focused-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

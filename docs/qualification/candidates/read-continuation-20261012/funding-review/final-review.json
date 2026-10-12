@@ -1,0 +1,81 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "sourceCommit": "256248fee5be45e5f203bbc74cc5b0c0e2f738f7",
+  "sourceTree": "53800b1b138121dcc39971bad722c8da94cbfc30",
+  "authorEvidenceCommit": "09bab225cbfe55c24cb40ea79e9578ba72799e40",
+  "authorManifestSha256": "271262e7e9d2e5d19fecdecfe6dea4024760d89ad620dbb7bf06a78d8cfa9dd2",
+  "reviewOnlyCommitsBeforeFinal": [
+    "f87516a14c3bfd2850588912d693a5bbc3719089",
+    "066287682cd18be228932dd1104af464178341c6",
+    "63ac47850dd76fe70a8dda2e7579d90853aa2f59",
+    "7c349b5813d33d3cda4b91f514522e3de7e655dd",
+    "74041273f40974798568aeb92e00928c4880e10f",
+    "71fceefbf651106c709b45996595f3971547676e",
+    "c8f10da412be6fdd714aa6b000d7eb09cb6edadf",
+    "25669bedfc5e393c342ad705441e55401fdf740a",
+    "46325550e405027a37f08f9696948925e965768e",
+    "8e85622a27d3c852444d9b1eb00f549fb6f3fd37"
+  ],
+  "sourceChangesByReviewer": false,
+  "privateProducerExecuted": false,
+  "runtimeAccepted": false,
+  "independentControls": {
+    "pass": 49,
+    "fail": 0
+  },
+  "fullSource": {
+    "pass": 585,
+    "fail": 0
+  },
+  "publicDistribution": {
+    "generated": true,
+    "types": true,
+    "pass": 7,
+    "fail": 0
+  },
+  "preservation": {
+    "pass": 35,
+    "fail": 0,
+    "originalPaths": 5267,
+    "originalChanges": 0
+  },
+  "authorPacket": {
+    "pass": 42,
+    "fail": 0
+  },
+  "sourceDefects": 2,
+  "retainedReviewerFixtureFailures": 5,
+  "retainedSourceFailureRuns": [
+    {
+      "label": "requirement-short-page",
+      "pass": 47,
+      "fail": 1
+    },
+    {
+      "label": "landscape-invalid-id",
+      "pass": 47,
+      "fail": 2
+    }
+  ],
+  "report": {
+    "path": "docs/coordination/reports/CODEX-READ-CONTINUATION-FUNDING-REVIEW-20261012.md",
+    "bytes": 9133,
+    "sha256": "920cab597b36d1d62479e9d55ebd74e8a0952cb19a7689053b7c439ff76370cd"
+  },
+  "test": {
+    "path": "packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs",
+    "bytes": 26714,
+    "sha256": "5eabd0a813bfaf14465ddf46fd773bfd191b99b3562fa5a07a2adb9c9c07b472"
+  },
+  "cleanup": {
+    "groups": 10,
+    "allAbsent": true,
+    "noTimeoutOrKill": true,
+    "reapedExitedDescendants": 10
+  },
+  "remaining": [
+    "Root canonical registry/loader/resolver/gateway integration",
+    "Current source/role/tenant/client/document authority and lineage",
+    "Real provider/budget/cancellation/runtime qualification; source connectivity unavailable"
+  ]
+}

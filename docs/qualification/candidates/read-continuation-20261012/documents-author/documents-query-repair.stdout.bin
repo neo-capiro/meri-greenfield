@@ -1,0 +1,35 @@
+✔ list/read defaults and nullish numeric defaults preserve explicit selected client (7.061602ms)
+✔ raw selectors refuse authority injection, explicit null text and foreign client (2.901209ms)
+✔ UTF-16 selector bounds differ from Unicode code point schema counts (1.36412ms)
+✔ mode-specific bounds and explicit range/list/cursor exclusions (1.643991ms)
+✔ closed canonical context requires current selected-client subject (0.510587ms)
+✔ read cursor retains content/query/section hash and exact decoded selection (2.006475ms)
+✔ listing cursor remains a bounded identity hint, not a signed query or grant (0.57203ms)
+✔ exact listing metadata retains extraction and scan disclosure without content proof (9.724973ms)
+✔ listing next cursor requires a full sorted page and partial coverage (1.112192ms)
+✔ continued listing cannot upgrade to full listing completeness or repeat previous identity (1.249458ms)
+✔ list total, returned count, filename query and mode variants are correlated (3.906621ms)
+✔ complete text extraction checks full section hash, UTF-16 reference and external trust (3.085757ms)
+✔ partial read preserves hash and exact next UTF-16 offset (2.046366ms)
+✔ incoming continuation refuses changed document bytes and extraction hash (1.6501ms)
+✔ a physical next section resets offset and omits previous section hash (1.009757ms)
+✔ unreadable PDF reports gap without evidence or automatic traversal (2.286316ms)
+✔ section-local no-match may advance but does not become complete evidence (0.816256ms)
+✔ search match remains incomplete and uses query-bound cursor context (0.856947ms)
+✔ reported query matches require a record actually containing the literal query (0.788094ms)
+✔ Unicode lowercase index expansion is not mistaken for evidence of a returned match (0.824439ms)
+✔ OCR partial/readability metadata cannot silently claim ordinary complete extraction (2.341659ms)
+✔ readability reports cannot upgrade an empty section or a non-PDF source (1.102076ms)
+✔ empty extraction is not an empty evidence record or a claim about other sections (0.722095ms)
+✔ UTF-16 text and serialized JSON ceiling are independent of character schema bounds (2.693923ms)
+✔ closed output shapes, timestamps and exact binding/subject correlation fail closed (3.540981ms)
+✔ metadata is bounded inert reported JSON and cannot mutate the caller input (1.302988ms)
+✔ canonical admission refuses getters/proxies/hidden fields/cycles without invoking them (1.657151ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1689.22831

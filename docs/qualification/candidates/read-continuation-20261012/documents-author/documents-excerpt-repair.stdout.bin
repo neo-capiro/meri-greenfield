@@ -1,0 +1,32 @@
+✔ list/read defaults and nullish numeric defaults preserve explicit selected client (4.770599ms)
+✔ raw selectors refuse authority injection, explicit null text and foreign client (2.147867ms)
+✔ UTF-16 selector bounds differ from Unicode code point schema counts (0.823337ms)
+✔ mode-specific bounds and explicit range/list/cursor exclusions (1.395888ms)
+✔ closed canonical context requires current selected-client subject (0.545209ms)
+✔ read cursor retains content/query/section hash and exact decoded selection (1.858913ms)
+✔ listing cursor remains a bounded identity hint, not a signed query or grant (0.567082ms)
+✔ exact listing metadata retains extraction and scan disclosure without content proof (8.512941ms)
+✔ listing next cursor requires a full sorted page and partial coverage (1.333644ms)
+✔ continued listing cannot upgrade to full listing completeness or repeat previous identity (1.344821ms)
+✔ list total, returned count, filename query and mode variants are correlated (4.66539ms)
+✔ complete text extraction checks full section hash, UTF-16 reference and external trust (2.924264ms)
+✔ partial read preserves hash and exact next UTF-16 offset (2.41598ms)
+✔ incoming continuation refuses changed document bytes and extraction hash (1.468737ms)
+✔ a physical next section resets offset and omits previous section hash (1.001986ms)
+✔ unreadable PDF reports gap without evidence or automatic traversal (2.517632ms)
+✔ section-local no-match may advance but does not become complete evidence (0.784408ms)
+✔ search match remains incomplete and uses query-bound cursor context (0.786181ms)
+✔ OCR partial/readability metadata cannot silently claim ordinary complete extraction (1.482999ms)
+✔ empty extraction is not an empty evidence record or a claim about other sections (0.617117ms)
+✔ UTF-16 text and serialized JSON ceiling are independent of character schema bounds (1.224009ms)
+✔ closed output shapes, timestamps and exact binding/subject correlation fail closed (2.326336ms)
+✔ metadata is bounded inert reported JSON and cannot mutate the caller input (1.001815ms)
+✔ canonical admission refuses getters/proxies/hidden fields/cycles without invoking them (0.747223ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1172.272732

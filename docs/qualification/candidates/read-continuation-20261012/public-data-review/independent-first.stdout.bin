@@ -1,0 +1,92 @@
+✔ independent default operation identities and supported definitions (4.180965ms)
+✔ query_economic_data rejects caller authority and unknown keys (1.373475ms)
+✔ search_federal_grants rejects caller authority and unknown keys (2.318855ms)
+✔ search_federal_awards rejects caller authority and unknown keys (0.557608ms)
+✔ limit coercion null remains 20 (0.387312ms)
+✔ limit coercion "" remains 1 (0.244418ms)
+✔ limit coercion " " remains 1 (0.259129ms)
+✔ limit coercion "-2.2" remains 1 (0.241463ms)
+✔ limit coercion "49.99" remains 49 (0.121302ms)
+✔ limit coercion "5e1" remains 50 (0.203005ms)
+✔ limit coercion "Infinity" remains 20 (0.238949ms)
+✔ limit coercion "NaN" remains 20 (0.114963ms)
+✖ UTF-16 truncation remains before uppercase without invented ASCII restriction (0.431709ms)
+✔ UTF-16 trim truncation and source alias precedence (0.252239ms)
+✔ irrelevant selectors retained and zero year omitted without claiming source coverage (5.685546ms)
+✔ typed year refusal "2026.5" (0.32596ms)
+✔ typed year refusal "bad" (0.145709ms)
+✔ typed year refusal 2147483648 (0.15326ms)
+✔ typed year refusal true (0.524328ms)
+✔ typed year refusal [] (0.115463ms)
+✔ strict page refusal "001" (0.177677ms)
+✔ strict page refusal "+1" (0.110747ms)
+✔ strict page refusal "1e2" (0.183105ms)
+✔ strict page refusal "1.0" (0.07379ms)
+✔ strict page refusal " 1 " (0.087562ms)
+✔ strict page refusal 10001 (0.140641ms)
+✔ strict page refusal 0 (0.142904ms)
+✔ strict page refusal 1.2 (0.18652ms)
+✔ unknown source error is distinct from known empty results (0.670257ms)
+✔ opaque Census JSON retains values and does not invent numeric ranges (2.001809ms)
+✔ Census exact selector checks do not turn geography into authority (0.417778ms)
+✔ BLS bounded nested points keep reported period strings and negative values (2.341419ms)
+✔ BEA duplicate visible tuples permitted, nullable value and units required (0.813513ms)
+✔ search_federal_grants requires trusted mode and freezes normalized metadata (0.437378ms)
+✔ search_federal_awards requires trusted mode and freezes normalized metadata (0.9915ms)
+✔ economic does not admit an irrelevant trusted policy container (0.166471ms)
+✔ search_federal_grants mode controls field presence (14.186904ms)
+✔ search_federal_awards mode controls field presence (1.738023ms)
+✔ truthy source text keeps structured unknown "2026-03-08T09:00:00Z" (0.655915ms)
+✔ truthy source text keeps structured unknown " " (0.531889ms)
+✔ truthy source text keeps structured unknown "rolling: next cycle" (0.540572ms)
+✔ New York DST transition 2026-03-08 uses actual elapsed ceiling (0.917329ms)
+✔ New York DST transition 2026-11-01 uses actual elapsed ceiling (0.549937ms)
+✔ exact final millisecond and first next-day millisecond remain distinct (0.862036ms)
+✔ grant asOf echo and @db.Date canonical UTC serialization remain exact (0.642016ms)
+✔ grant Float and legacy award converted Decimal remain numbers including negative adjustments (0.648655ms)
+✔ award UUID storage constraint and opaque non-URL narrative remain distinct (0.405129ms)
+✔ award action/signing/latest/modified/performance/sync date kinds cannot substitute (0.79167ms)
+✔ all three result narrative UTF-16 boundaries are enforced beyond JSON codepoint lengths (0.43885ms)
+✔ separate count observation does not pretend atomic total >= rows (0.531789ms)
+✔ award last-window 9999/500000 exact continuation (0.4192ms)
+✔ award last-window 10000/500000 exact continuation (0.155514ms)
+✔ award last-window 10000/500001 exact continuation (0.133771ms)
+✔ query_economic_data no injected authority, source availability or total claim (2.380418ms)
+✔ search_federal_grants no injected authority, source availability or total claim (0.623327ms)
+✔ search_federal_awards no injected authority, source availability or total claim (0.769386ms)
+✔ inert admission rejects accessors/proxies without reading them (0.242895ms)
+✔ nonfinite, sparse, cyclic, hidden, symbol and function data refuse (0.318779ms)
+ℹ tests 58
+ℹ suites 0
+ℹ pass 57
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 473.090499
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-public-data-independent.test.mjs:55:1
+✖ UTF-16 truncation remains before uppercase without invented ASCII restriction (0.431709ms)
+  AssertionError [ERR_ASSERTION]: PublicEconomicInput: data/state must NOT have more than 2 characters
+  
+  false !== true
+  
+      at validateShape (file:///workspace/meri-public-data-reads-review-20261012/packages/contracts/test/retrieval-public-data-independent.test.mjs:13:10)
+      at Object.normalizePublicDataInput (file:///workspace/meri-public-data-reads-review-20261012/packages/contracts/retrieval-0.2/public-data-validation.mjs:55:5)
+      at norm (file:///workspace/meri-public-data-reads-review-20261012/packages/contracts/test/retrieval-public-data-independent.test.mjs:19:58)
+      at TestContext.<anonymous> (file:///workspace/meri-public-data-reads-review-20261012/packages/contracts/test/retrieval-public-data-independent.test.mjs:56:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

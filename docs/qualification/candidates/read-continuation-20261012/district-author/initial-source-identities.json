@@ -1,0 +1,17 @@
+[
+  {
+    "path": "packages/contracts/retrieval-0.2/district-nexus.schema.json",
+    "bytes": 16317,
+    "sha256": "5ed5df5dfe380e68ddd2c6b367bac4f314620d3381e6e8649b2c92dae8c3df36"
+  },
+  {
+    "path": "packages/contracts/retrieval-0.2/district-nexus-validation.mjs",
+    "bytes": 4491,
+    "sha256": "089c236f35d513ce7b0b2eedd3f44c68e350469f267b36b827cbd6ac3b2fe891"
+  },
+  {
+    "path": "packages/contracts/test/retrieval-district-nexus.test.mjs",
+    "bytes": 15516,
+    "sha256": "537b973739c09b7510948c485989e1f0bb72c88747d393cde7d5bf855e33efe8"
+  }
+]

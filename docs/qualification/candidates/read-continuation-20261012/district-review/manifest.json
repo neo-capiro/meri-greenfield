@@ -1,0 +1,126 @@
+{
+  "scope": "INDEPENDENT_SOURCE_REVIEW_ONLY",
+  "selfExcluded": true,
+  "files": [
+    {
+      "path": "packages/contracts/test/retrieval-district-nexus-independent.test.mjs",
+      "bytes": 15191,
+      "sha256": "e65a593904d494f14dcfeb9b1403a84dcb48b058627bdf1778a3ad09f5b3de23"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-READ-CONTINUATION-DISTRICT-REVIEW-20261012.md",
+      "bytes": 8526,
+      "sha256": "1d13f8d9e7b4b6f627bcc64c224116a655f7f4193be2efa9ae3ea95b66769e4c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/district-review/.gitattributes",
+      "bytes": 50,
+      "sha256": "1bee6826ab8565b1a50079d470700a548e73e2363ea12450cf37ea13454b9eba"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/district-review/audit.json",
+      "bytes": 9032,
+      "sha256": "941d76f9659e72877b0b333ab4af0d6542e4a8a4b07d8d45f5b3bae1d81c9050"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/district-review/audit.py",
+      "bytes": 6819,
+      "sha256": "ec2d5729eed787ce2322d5eaefb3fe1cb06f790bb5e5121b60d553fef8d04487"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/district-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/district-review/corrected-prefreeze-independent.json",
+      "bytes": 1399,
+      "sha256": "80b07f5d0aee91f43f75928bbff2d1f1a12e700f5664b56377e40331d3810d3f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/district-review/corrected-prefreeze-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/district-review/corrected-prefreeze-independent.stdout.bin",
+      "bytes": 2884,
+      "sha256": "88a51d372ce1f7bc4fc01434b7baf4f860c9e5bd212df35ca7754c5bc8cf2dc2"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/district-review/criteria.md",
+      "bytes": 2489,
+      "sha256": "d7a739cfccf50a5d3af4031ecb84012e2fbd341ab0f0dfd78c180cea018991e9"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/district-review/exact-source-tests.json",
+      "bytes": 1392,
+      "sha256": "e664f0d03d08c434be11b9a82cd54e08904ee058b5ee59b597c88a0cc03660a4"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/district-review/exact-source-tests.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/district-review/exact-source-tests.stdout.bin",
+      "bytes": 5161,
+      "sha256": "8c0ef520c24caafadcfdfea42f042e228c065cb1a38aadcc813a2889e22c924c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/district-review/final-audit.json",
+      "bytes": 1300,
+      "sha256": "45eb72b3a0b399ab944ab49a6c0938c7f1e5e71b4691d5467191297db887fe0c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/district-review/final-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/district-review/final-audit.stdout.bin",
+      "bytes": 111,
+      "sha256": "ded9303b16b0ab4f1f1852fe4a2b5103945a2c8356dfd8976b48d0bca716e035"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/district-review/prefreeze-independent.json",
+      "bytes": 1320,
+      "sha256": "38f7a8bfbd4979274bcc7df37a4de025ae11ee809f31ca19ee3b0379e7cbd578"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/district-review/prefreeze-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/district-review/prefreeze-independent.stdout.bin",
+      "bytes": 3830,
+      "sha256": "1e7feff155507ae9c7876565ecfe1048c82e66f417ac335940ea61701344e0ed"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/district-review/prefreeze-source-after.json",
+      "bytes": 683,
+      "sha256": "e6a9f4abe7e3fe967b96c22ec61d3b82198eb45d532b3f6f52a513165e472764"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/district-review/prefreeze-source-before.json",
+      "bytes": 455,
+      "sha256": "b2464b2282fe46cab4bff9dab8e4195b5ed9e5e4062c66c4c882a6c09006be15"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/district-review/reference-identities.json",
+      "bytes": 3103,
+      "sha256": "c9f9c2426725210bb1a71b705786941c87de9dcaebb1bfa5f9c316a9753d33fb"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/district-review/reviewer-assumption-correction.md",
+      "bytes": 947,
+      "sha256": "98fc2d5310c2ae8db87673e45458845db119122c708c9cb7004f673efd4c9557"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/district-review/source-characterization-initial.json",
+      "bytes": 682,
+      "sha256": "4dfc588bb86caf1973b15e7bc04fbdf88e1c7a9470d1a341614eea167b04280e"
+    }
+  ]
+}

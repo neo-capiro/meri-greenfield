@@ -1,0 +1,1066 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:public-data:0.2.0",
+  "title": "Private synced public data read projections; validation grants no source authority",
+  "$defs": {
+    "PublicEconomicRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "state": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "district": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "seriesId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "query": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "datasetName": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "dataset": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "year": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "limit": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": []
+    },
+    "PublicGrantRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "query": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "agency": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "limit": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": []
+    },
+    "PublicAwardRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "query": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "agency": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "peCode": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "page": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "limit": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": []
+    },
+    "PublicEconomicInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 20
+        },
+        "state": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2
+        },
+        "district": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10
+        },
+        "seriesId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "query": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 240
+        },
+        "datasetName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "year": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        }
+      },
+      "required": [
+        "source",
+        "limit"
+      ]
+    },
+    "PublicGrantInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "query": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 240
+        },
+        "agency": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 240
+        },
+        "status": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 30
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        }
+      },
+      "required": [
+        "limit"
+      ]
+    },
+    "PublicAwardInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "query": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 240
+        },
+        "agency": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 240
+        },
+        "peCode": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 16
+        },
+        "page": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        }
+      },
+      "required": [
+        "page",
+        "limit"
+      ]
+    },
+    "PublicDataPolicyContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "evidenceAccuracyMode": {
+          "enum": [
+            "off",
+            "shadow",
+            "enforce"
+          ]
+        }
+      },
+      "required": [
+        "evidenceAccuracyMode"
+      ]
+    },
+    "CensusDistrictRow": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "district": {
+          "type": "string"
+        },
+        "congress": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "totalPopulation": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "medianHouseholdIncome": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "medianAge": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "percentBachelorPlus": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "percentPoverty": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "unemploymentRate": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "laborForceSize": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "topIndustries": {
+          "description": "Opaque stored Prisma JSON; its members have no declared row DTO. Canonical inert JSON admission remains required."
+        }
+      },
+      "required": [
+        "id",
+        "state",
+        "district",
+        "congress",
+        "totalPopulation",
+        "medianHouseholdIncome",
+        "medianAge",
+        "percentBachelorPlus",
+        "percentPoverty",
+        "unemploymentRate",
+        "laborForceSize",
+        "topIndustries"
+      ]
+    },
+    "BlsPoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "year": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "period": {
+          "type": "string"
+        },
+        "value": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "year",
+        "period",
+        "value"
+      ]
+    },
+    "BlsSeriesRow": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "seriesId": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "surveyName": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "periodType": {
+          "type": "string"
+        },
+        "recentDataPoints": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/BlsPoint"
+          },
+          "maxItems": 12
+        }
+      },
+      "required": [
+        "seriesId",
+        "title",
+        "surveyName",
+        "periodType",
+        "recentDataPoints"
+      ]
+    },
+    "BeaRow": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "datasetName": {
+          "type": "string"
+        },
+        "tableName": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 240
+        },
+        "year": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "period": {
+          "type": "string"
+        },
+        "value": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "units": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "datasetName",
+        "tableName",
+        "description",
+        "year",
+        "period",
+        "value",
+        "units"
+      ]
+    },
+    "EconomicCensusOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "query_economic_data"
+        },
+        "source": {
+          "const": "census"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CensusDistrictRow"
+          },
+          "maxItems": 50
+        }
+      },
+      "required": [
+        "tool",
+        "source",
+        "generatedAt",
+        "data"
+      ]
+    },
+    "EconomicBlsOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "query_economic_data"
+        },
+        "source": {
+          "const": "bls"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/BlsSeriesRow"
+          },
+          "maxItems": 50
+        }
+      },
+      "required": [
+        "tool",
+        "source",
+        "generatedAt",
+        "data"
+      ]
+    },
+    "EconomicBeaOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "query_economic_data"
+        },
+        "source": {
+          "const": "bea"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/BeaRow"
+          },
+          "maxItems": 50
+        }
+      },
+      "required": [
+        "tool",
+        "source",
+        "generatedAt",
+        "data"
+      ]
+    },
+    "EconomicUnknownOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "query_economic_data"
+        },
+        "error": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        }
+      },
+      "required": [
+        "tool",
+        "error"
+      ]
+    },
+    "PublicEconomicOutput": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/EconomicCensusOutput"
+        },
+        {
+          "$ref": "#/$defs/EconomicBlsOutput"
+        },
+        {
+          "$ref": "#/$defs/EconomicBeaOutput"
+        },
+        {
+          "$ref": "#/$defs/EconomicUnknownOutput"
+        }
+      ]
+    },
+    "GrantDeadline": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "dateOnly": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        },
+        "timeZone": {
+          "enum": [
+            "America/New_York",
+            null
+          ]
+        },
+        "basis": {
+          "enum": [
+            "date_only_end_of_day",
+            "unknown"
+          ]
+        },
+        "daysRemaining": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "status": {
+          "enum": [
+            "open",
+            "closed",
+            "unknown"
+          ]
+        },
+        "rawText": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 16777216
+        }
+      },
+      "required": [
+        "at",
+        "dateOnly",
+        "timeZone",
+        "basis",
+        "daysRemaining",
+        "status"
+      ]
+    },
+    "PublicGrantRow": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 240
+        },
+        "agency": {
+          "type": "string"
+        },
+        "subAgency": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "opportunityNumber": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "category": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "awardCeiling": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "awardFloor": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "estimatedFunding": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "openDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "closeDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "deadlineStatus": {
+          "enum": [
+            "open",
+            "closed",
+            "unknown"
+          ]
+        },
+        "deadline": {
+          "$ref": "#/$defs/GrantDeadline"
+        },
+        "syncedStatus": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "eligibility": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "agency",
+        "subAgency",
+        "opportunityNumber",
+        "category",
+        "awardCeiling",
+        "awardFloor",
+        "estimatedFunding",
+        "openDate",
+        "closeDate",
+        "deadlineStatus",
+        "syncedStatus",
+        "eligibility",
+        "url"
+      ]
+    },
+    "PublicGrantOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "search_federal_grants"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "asOf": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PublicGrantRow"
+          },
+          "maxItems": 50
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "asOf",
+        "total",
+        "data"
+      ]
+    },
+    "PublicAwardDates": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "latestActionDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "baseAwardSignedDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "sourceLastModifiedDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "popStartDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "popEndDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "capiroSyncedAt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "semantics": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        }
+      },
+      "required": [
+        "latestActionDate",
+        "baseAwardSignedDate",
+        "sourceLastModifiedDate",
+        "popStartDate",
+        "popEndDate",
+        "capiroSyncedAt",
+        "semantics"
+      ]
+    },
+    "PublicAwardRow": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "contractorName": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "awardingAgency": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "awardingSubTier": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "amount": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 240
+        },
+        "peCode": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "recipientState": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "popCongressionalDistrict": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "actionDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "piid": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "latestActionDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "baseAwardSignedDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "sourceLastModifiedDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "popStartDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "popEndDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "lastSyncedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "dates": {
+          "$ref": "#/$defs/PublicAwardDates"
+        }
+      },
+      "required": [
+        "id",
+        "contractorName",
+        "awardingAgency",
+        "awardingSubTier",
+        "amount",
+        "description",
+        "peCode",
+        "recipientState",
+        "popCongressionalDistrict",
+        "actionDate",
+        "piid",
+        "latestActionDate",
+        "baseAwardSignedDate",
+        "sourceLastModifiedDate",
+        "popStartDate",
+        "popEndDate",
+        "lastSyncedAt"
+      ]
+    },
+    "PublicAwardOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "search_federal_awards"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "page": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000
+        },
+        "pageSize": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        },
+        "hasMore": {
+          "type": "boolean"
+        },
+        "nextPage": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 2,
+          "maximum": 10000
+        },
+        "paginationLimitReached": {
+          "type": "boolean"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PublicAwardRow"
+          },
+          "maxItems": 50
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "total",
+        "page",
+        "pageSize",
+        "hasMore",
+        "nextPage",
+        "paginationLimitReached",
+        "data"
+      ]
+    }
+  }
+}

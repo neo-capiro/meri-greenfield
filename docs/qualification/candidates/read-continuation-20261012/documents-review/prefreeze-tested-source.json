@@ -1,0 +1,35 @@
+{
+  "sourceRoot": "/workspace/meri-client-documents-20261012",
+  "sourceFreeze": null,
+  "readOnlyPrefreeze": true,
+  "records": [
+    {
+      "path": "packages/contracts/retrieval-0.2/client-documents-validation.mjs",
+      "bytes": 12207,
+      "sha256": "e9c6e42b162542b96d26e0219d3a1de34a8df204f12c23d26e73395847ce3443"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/client-documents.schema.json",
+      "bytes": 21288,
+      "sha256": "71dd53119af2c0226372916e3645765687e8653da2f48b60d55c1a7a75c05247"
+    }
+  ],
+  "unchangedAfterCheck": true,
+  "independentTest": {
+    "path": "packages/contracts/test/retrieval-client-documents-independent.test.mjs",
+    "bytes": 15215,
+    "sha256": "670bda8b5a165845b589357a38d7f7b6c0168def1a2df934a121469d74219da3"
+  },
+  "checks": {
+    "passed": 22,
+    "failed": 2
+  },
+  "failureKinds": [
+    "Matched query may lack matching returned text",
+    "Matched partial query may omit evidence record"
+  ],
+  "fixtureCorrectionsBeforeFirstRun": [
+    "Prefix read cursors with document: as actual producer grammar",
+    "Optional source-root selection for prefreeze isolated author source"
+  ]
+}

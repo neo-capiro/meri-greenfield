@@ -1,0 +1,92 @@
+{
+  "isRegistry": false,
+  "changesMappings": false,
+  "status": "DISCOVERY_ONLY_NOT_ACCEPTANCE",
+  "readySlices": [
+    {
+      "name": "district-nexus",
+      "operationIds": [
+        "get_district_nexus_context",
+        "get_district_nexus_changes"
+      ],
+      "owner": "R5MeriDistrictTools / R5DistrictContextService / R5FlagGuard",
+      "suggestedModules": [
+        "district-nexus.schema.json",
+        "district-nexus-validation.mjs"
+      ],
+      "referenceKeys": [
+        "r5-meri-district-tools.ts",
+        "r5-types.ts",
+        "r5-flag.guard.ts",
+        "r5-district-context.service.ts",
+        "schema.prisma"
+      ],
+      "coverageLimits": [
+        "Actor-specific client wall not established by tenant-only producer context",
+        "Reported context truncation does not certify complete gaps",
+        "Source-state-to-FIPS resolution requires recognized geography",
+        "No count/continuation or complete absence proof"
+      ]
+    },
+    {
+      "name": "state-legislation",
+      "operationIds": [
+        "search_state_bills",
+        "get_state_legislator"
+      ],
+      "owner": "Stored StateBill / StateLegislator / EntityCrosswalk projections",
+      "suggestedModules": [
+        "state-legislation.schema.json",
+        "state-legislation-validation.mjs"
+      ],
+      "referenceKeys": [
+        "meri-tools.service.ts",
+        "schema.prisma",
+        "index.ts",
+        "meri-state-bill-status-tool.spec.ts"
+      ],
+      "coverageLimits": [
+        "Crosswalk lookup precedes name search and ignores state hint",
+        "Ambiguous and no-match remain separate; no invented identity",
+        "Committees remains inert reported JSON",
+        "Source output status permits nullable/unknown persisted vocabulary"
+      ]
+    },
+    {
+      "name": "public-reports",
+      "operationIds": [
+        "search_cbo_cost_estimates",
+        "search_gao_reports",
+        "search_crs_reports"
+      ],
+      "owner": "Stored CBO / GAO / CRS report producers",
+      "suggestedModules": [
+        "public-reports.schema.json",
+        "public-reports-validation.mjs"
+      ],
+      "referenceKeys": [
+        "meri-tools.service.ts",
+        "schema.prisma",
+        "meri-cbo-tool.spec.ts"
+      ],
+      "coverageLimits": [
+        "CBO count is returned-window only; GAO/CRS totals are local matching counts",
+        "No full-text or public-universe completeness claim",
+        "CRS filters active records",
+        "Declare date serialization, UTF16 excerpts and strict new input admission"
+      ]
+    }
+  ],
+  "additionalEffectBoundary": {
+    "operationIds": [
+      "get_state_bill_status",
+      "search_state_floor_votes"
+    ],
+    "sourceContractsCanBeAuthored": true,
+    "owner": "resolveStateBillKey / lookupStateBillLive / LegiScan ingestion owner",
+    "interface": "StateBillLiveOutcome + StateBillLiveDeps",
+    "effect": "Missing designation may reserve shared provider quota and upsert normalized state bill",
+    "nextAction": "Specify passive designation resolution and unavailable handling, or separately govern ingestion/provider effect; do not silently reduce coverage or inherit writes."
+  },
+  "remainingScopeDecision": "Clio-versus-portfolio evidence only; administrator memory self-approval is approved in canonical policy."
+}

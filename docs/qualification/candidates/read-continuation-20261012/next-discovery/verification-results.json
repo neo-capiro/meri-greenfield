@@ -1,0 +1,392 @@
+{
+  "checks": [
+    {
+      "name": "disclosures:apps/api/src/meri/meri-tools.service.ts bytes/hash",
+      "passed": true
+    },
+    {
+      "name": "disclosures:apps/api/src/meri/meri-tools.service.ts frozen blob",
+      "passed": true
+    },
+    {
+      "name": "disclosures:apps/api/src/meri/meri-tools.service.ts drift metadata",
+      "passed": true
+    },
+    {
+      "name": "disclosures:apps/api/prisma/schema.prisma bytes/hash",
+      "passed": true
+    },
+    {
+      "name": "disclosures:apps/api/prisma/schema.prisma frozen blob",
+      "passed": true
+    },
+    {
+      "name": "disclosures:apps/api/prisma/schema.prisma drift metadata",
+      "passed": true
+    },
+    {
+      "name": "disclosures:apps/api/src/lda-intel/lda-intel.service.ts bytes/hash",
+      "passed": true
+    },
+    {
+      "name": "disclosures:apps/api/src/lda-intel/lda-intel.service.ts frozen blob",
+      "passed": true
+    },
+    {
+      "name": "disclosures:apps/api/src/lda-intel/lda-intel.service.ts drift metadata",
+      "passed": true
+    },
+    {
+      "name": "disclosures:apps/api/src/meri/meri.controller.ts bytes/hash",
+      "passed": true
+    },
+    {
+      "name": "disclosures:apps/api/src/meri/meri.controller.ts frozen blob",
+      "passed": true
+    },
+    {
+      "name": "disclosures:apps/api/src/meri/meri.controller.ts drift metadata",
+      "passed": true
+    },
+    {
+      "name": "disclosures:apps/api/src/lda-intel/lda-intel.controller.ts bytes/hash",
+      "passed": true
+    },
+    {
+      "name": "disclosures:apps/api/src/lda-intel/lda-intel.controller.ts frozen blob",
+      "passed": true
+    },
+    {
+      "name": "disclosures:apps/api/src/lda-intel/lda-intel.controller.ts drift metadata",
+      "passed": true
+    },
+    {
+      "name": "disclosures:apps/api/src/auth/roles.guard.ts bytes/hash",
+      "passed": true
+    },
+    {
+      "name": "disclosures:apps/api/src/auth/roles.guard.ts frozen blob",
+      "passed": true
+    },
+    {
+      "name": "disclosures:apps/api/src/auth/roles.guard.ts drift metadata",
+      "passed": true
+    },
+    {
+      "name": "disclosures:apps/api/src/auth/roles.decorator.ts bytes/hash",
+      "passed": true
+    },
+    {
+      "name": "disclosures:apps/api/src/auth/roles.decorator.ts frozen blob",
+      "passed": true
+    },
+    {
+      "name": "disclosures:apps/api/src/auth/roles.decorator.ts drift metadata",
+      "passed": true
+    },
+    {
+      "name": "disclosures:apps/api/src/meri/tool-service-secret.guard.ts bytes/hash",
+      "passed": true
+    },
+    {
+      "name": "disclosures:apps/api/src/meri/tool-service-secret.guard.ts frozen blob",
+      "passed": true
+    },
+    {
+      "name": "disclosures:apps/api/src/meri/tool-service-secret.guard.ts drift metadata",
+      "passed": true
+    },
+    {
+      "name": "disclosures:packages/shared/src/index.ts bytes/hash",
+      "passed": true
+    },
+    {
+      "name": "disclosures:packages/shared/src/index.ts frozen blob",
+      "passed": true
+    },
+    {
+      "name": "disclosures:packages/shared/src/index.ts drift metadata",
+      "passed": true
+    },
+    {
+      "name": "acquisition:apps/api/src/meri/meri-tools.service.ts bytes/hash",
+      "passed": true
+    },
+    {
+      "name": "acquisition:apps/api/src/meri/meri-tools.service.ts frozen blob",
+      "passed": true
+    },
+    {
+      "name": "acquisition:apps/api/src/meri/meri-tools.service.ts drift metadata",
+      "passed": true
+    },
+    {
+      "name": "acquisition:apps/api/prisma/schema.prisma bytes/hash",
+      "passed": true
+    },
+    {
+      "name": "acquisition:apps/api/prisma/schema.prisma frozen blob",
+      "passed": true
+    },
+    {
+      "name": "acquisition:apps/api/prisma/schema.prisma drift metadata",
+      "passed": true
+    },
+    {
+      "name": "acquisition:apps/api/src/acquisition-personnel/acquisition-personnel-read.service.ts bytes/hash",
+      "passed": true
+    },
+    {
+      "name": "acquisition:apps/api/src/acquisition-personnel/acquisition-personnel-read.service.ts frozen blob",
+      "passed": true
+    },
+    {
+      "name": "acquisition:apps/api/src/acquisition-personnel/acquisition-personnel-read.service.ts drift metadata",
+      "passed": true
+    },
+    {
+      "name": "acquisition:apps/api/src/acquisition-personnel/dto/list-personnel.dto.ts bytes/hash",
+      "passed": true
+    },
+    {
+      "name": "acquisition:apps/api/src/acquisition-personnel/dto/list-personnel.dto.ts frozen blob",
+      "passed": true
+    },
+    {
+      "name": "acquisition:apps/api/src/acquisition-personnel/dto/list-personnel.dto.ts drift metadata",
+      "passed": true
+    },
+    {
+      "name": "acquisition:apps/api/src/acquisition-personnel/dto/person-detail.dto.ts bytes/hash",
+      "passed": true
+    },
+    {
+      "name": "acquisition:apps/api/src/acquisition-personnel/dto/person-detail.dto.ts frozen blob",
+      "passed": true
+    },
+    {
+      "name": "acquisition:apps/api/src/acquisition-personnel/dto/person-detail.dto.ts drift metadata",
+      "passed": true
+    },
+    {
+      "name": "acquisition:apps/api/src/meri/meri.controller.ts bytes/hash",
+      "passed": true
+    },
+    {
+      "name": "acquisition:apps/api/src/meri/meri.controller.ts frozen blob",
+      "passed": true
+    },
+    {
+      "name": "acquisition:apps/api/src/meri/meri.controller.ts drift metadata",
+      "passed": true
+    },
+    {
+      "name": "acquisition:apps/api/src/auth/roles.guard.ts bytes/hash",
+      "passed": true
+    },
+    {
+      "name": "acquisition:apps/api/src/auth/roles.guard.ts frozen blob",
+      "passed": true
+    },
+    {
+      "name": "acquisition:apps/api/src/auth/roles.guard.ts drift metadata",
+      "passed": true
+    },
+    {
+      "name": "acquisition:packages/shared/src/index.ts bytes/hash",
+      "passed": true
+    },
+    {
+      "name": "acquisition:packages/shared/src/index.ts frozen blob",
+      "passed": true
+    },
+    {
+      "name": "acquisition:packages/shared/src/index.ts drift metadata",
+      "passed": true
+    },
+    {
+      "name": "congressional:apps/api/src/meri/meri-tools.service.ts bytes/hash",
+      "passed": true
+    },
+    {
+      "name": "congressional:apps/api/src/meri/meri-tools.service.ts frozen blob",
+      "passed": true
+    },
+    {
+      "name": "congressional:apps/api/src/meri/meri-tools.service.ts drift metadata",
+      "passed": true
+    },
+    {
+      "name": "congressional:apps/api/prisma/schema.prisma bytes/hash",
+      "passed": true
+    },
+    {
+      "name": "congressional:apps/api/prisma/schema.prisma frozen blob",
+      "passed": true
+    },
+    {
+      "name": "congressional:apps/api/prisma/schema.prisma drift metadata",
+      "passed": true
+    },
+    {
+      "name": "congressional:apps/api/src/lda-intel/lda-intel.service.ts bytes/hash",
+      "passed": true
+    },
+    {
+      "name": "congressional:apps/api/src/lda-intel/lda-intel.service.ts frozen blob",
+      "passed": true
+    },
+    {
+      "name": "congressional:apps/api/src/lda-intel/lda-intel.service.ts drift metadata",
+      "passed": true
+    },
+    {
+      "name": "congressional:apps/api/src/meri/meri-bill-text-search.ts bytes/hash",
+      "passed": true
+    },
+    {
+      "name": "congressional:apps/api/src/meri/meri-bill-text-search.ts frozen blob",
+      "passed": true
+    },
+    {
+      "name": "congressional:apps/api/src/meri/meri-bill-text-search.ts drift metadata",
+      "passed": true
+    },
+    {
+      "name": "congressional:apps/api/src/meri/meri-bill-status-tool.spec.ts bytes/hash",
+      "passed": true
+    },
+    {
+      "name": "congressional:apps/api/src/meri/meri-bill-status-tool.spec.ts frozen blob",
+      "passed": true
+    },
+    {
+      "name": "congressional:apps/api/src/meri/meri-bill-status-tool.spec.ts drift metadata",
+      "passed": true
+    },
+    {
+      "name": "congressional:apps/api/src/meri/meri-bill-text-search.spec.ts bytes/hash",
+      "passed": true
+    },
+    {
+      "name": "congressional:apps/api/src/meri/meri-bill-text-search.spec.ts frozen blob",
+      "passed": true
+    },
+    {
+      "name": "congressional:apps/api/src/meri/meri-bill-text-search.spec.ts drift metadata",
+      "passed": true
+    },
+    {
+      "name": "congressional:packages/shared/src/index.ts bytes/hash",
+      "passed": true
+    },
+    {
+      "name": "congressional:packages/shared/src/index.ts frozen blob",
+      "passed": true
+    },
+    {
+      "name": "congressional:packages/shared/src/index.ts drift metadata",
+      "passed": true
+    },
+    {
+      "name": "congressional:apps/api/src/meri/meri.controller.ts bytes/hash",
+      "passed": true
+    },
+    {
+      "name": "congressional:apps/api/src/meri/meri.controller.ts frozen blob",
+      "passed": true
+    },
+    {
+      "name": "congressional:apps/api/src/meri/meri.controller.ts drift metadata",
+      "passed": true
+    },
+    {
+      "name": "congressional:apps/api/src/auth/roles.guard.ts bytes/hash",
+      "passed": true
+    },
+    {
+      "name": "congressional:apps/api/src/auth/roles.guard.ts frozen blob",
+      "passed": true
+    },
+    {
+      "name": "congressional:apps/api/src/auth/roles.guard.ts drift metadata",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/acquisition-personnel/acquisition-personnel-read.service.ts observed bytes/hash",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/acquisition-personnel/dto/list-personnel.dto.ts observed bytes/hash",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/acquisition-personnel/dto/person-detail.dto.ts observed bytes/hash",
+      "passed": true
+    },
+    {
+      "name": "all139 originals",
+      "passed": true
+    },
+    {
+      "name": "96 selected43 deferred",
+      "passed": true
+    },
+    {
+      "name": "base mapped20",
+      "passed": true
+    },
+    {
+      "name": "search_sec_filings selected pending at base",
+      "passed": true
+    },
+    {
+      "name": "search_fara_registrations selected pending at base",
+      "passed": true
+    },
+    {
+      "name": "search_lda_filings selected pending at base",
+      "passed": true
+    },
+    {
+      "name": "search_acquisition_personnel selected pending at base",
+      "passed": true
+    },
+    {
+      "name": "get_acquisition_person selected pending at base",
+      "passed": true
+    },
+    {
+      "name": "get_bill_status selected pending at base",
+      "passed": true
+    },
+    {
+      "name": "search_floor_votes selected pending at base",
+      "passed": true
+    },
+    {
+      "name": "search_congress_bills selected pending at base",
+      "passed": true
+    },
+    {
+      "name": "read_bill_text selected pending at base",
+      "passed": true
+    },
+    {
+      "name": "nine unique traced operations",
+      "passed": true
+    },
+    {
+      "name": "16 current candidates excluded",
+      "passed": true
+    },
+    {
+      "name": "source/catalog/runtime bytes unchanged",
+      "passed": true
+    }
+  ],
+  "passed": 96,
+  "failed": 0,
+  "sourceExecuted": false,
+  "scope": "READ_ONLY_METADATA_NOT_IMPLEMENTATION_ACCEPTANCE"
+}

@@ -1,0 +1,126 @@
+{
+  "status": "DISCOVERY_ONLY_NOT_ACCEPTANCE",
+  "evidenceCommit": "d43f86ea8444137942372577ec0b0b1a17f1f5bd",
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-READ-CONTINUATION-NEXT-DISCOVERY-20261012.md",
+      "bytes": 4731,
+      "sha256": "9012f5e366c867a5374c0ae91ee1270794328224e21c3c3dd9bbf1db8e9515f1"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/next-discovery/acquisition-contracts.json",
+      "bytes": 6435,
+      "sha256": "1b961d2da25857ea1b22f652dfca62ae0a4e6ae9696a4bec5b23cc8f14a5a582"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/next-discovery/acquisition-observed-drift.json",
+      "bytes": 3494,
+      "sha256": "5b278fd8a6d7a3af8d7fe4297b82d2d27a30d0f53da1367a510485a77d155e7a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/next-discovery/acquisition-reference-identities.json",
+      "bytes": 2850,
+      "sha256": "6ad18cfb34788196243a042e45744b58782ce37bad6d1bb46fcae6ceeb421fcf"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/next-discovery/allocation-update.json",
+      "bytes": 647,
+      "sha256": "97b197e5b211b538ccc897abd6928bd8400f94bf6533244cc3feecc7f94e4852"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/next-discovery/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/next-discovery/congressional-contracts.json",
+      "bytes": 11287,
+      "sha256": "a2a04e278b601e333960a0f697d55820a29213bb37c7229587aa3804e05598aa"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/next-discovery/congressional-corrections.json",
+      "bytes": 314,
+      "sha256": "6ea2977998a3fb211e65002f8e31941ac008e886541c8b9801b255a4404adfef"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/next-discovery/congressional-reference-identities.json",
+      "bytes": 3121,
+      "sha256": "7745d940beed07bfae6cb7b49354f330d6abe3153598e716c58f162788198061"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/next-discovery/disclosures-contracts.json",
+      "bytes": 7432,
+      "sha256": "3d7547018115b33c433521c89a96a7570e66de975c41c2da6adef4e2de701864"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/next-discovery/disclosures-reference-identities.json",
+      "bytes": 3111,
+      "sha256": "98467d04e1ff4ad76af449942add4763d52f4a117e5e3d574a670ffafabb1f09"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/next-discovery/inspect-source.cjs",
+      "bytes": 2466,
+      "sha256": "49b7791b9eb632a03999bda73f91a5126e2be151a65a2e3ad7ced1b2477a0e6b"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/next-discovery/metadata-verification.json",
+      "bytes": 1314,
+      "sha256": "f572bdfe35f1de016221be5ca3dd3fe8a67e96aae0b8a84db9b1f3205d70040e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/next-discovery/metadata-verification.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/next-discovery/metadata-verification.stdout.bin",
+      "bytes": 44,
+      "sha256": "6fde7f082281ebb938071153c0e6070a63e26220685be31dc8f91c1a583506fd"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/next-discovery/observation-notes.json",
+      "bytes": 311,
+      "sha256": "456157f21a567af8cab8fe38a80103aa0db8c50f01bd851ce63cb7def01d78bd"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/next-discovery/outline.md",
+      "bytes": 1272,
+      "sha256": "810a6c1ff48d4bd22bcfa50ec92e94111bfce8e6122a4290059d4cf60a27a523"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/next-discovery/remaining-leads.json",
+      "bytes": 2039,
+      "sha256": "b86ad7e1f5b0f9d9e5abe481e8ccd86b3a17eb9719a5611e8213f8c0ab1b310b"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/next-discovery/verification-results.json",
+      "bytes": 11014,
+      "sha256": "9dd3bbd71071d4268c6e57c59285a18304b271d830951d227d417505f770bf4a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/next-discovery/verify.py",
+      "bytes": 3301,
+      "sha256": "17ffd4238b27228bcf9e8a45b13c57da1967f114d3b069f371fdd56c31f0c37e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/next-discovery/whitespace.json",
+      "bytes": 1242,
+      "sha256": "aee2adb3510080361cdaab0faa31b29098bc85c7e510aff07958f67228eac7dc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/next-discovery/whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/next-discovery/whitespace.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "memberCount": 23,
+  "exclusions": [
+    "manifest itself"
+  ],
+  "scope": "Nine traced selected operation contracts; no mapping/runtime change"
+}

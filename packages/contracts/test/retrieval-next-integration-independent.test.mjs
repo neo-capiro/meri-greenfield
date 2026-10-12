@@ -1,3 +1,5 @@
+// Explicit reviewed continuation allowlist; historical baseline hashes stay unchanged.
+const continuationIds = ["search_cbo_cost_estimates", "search_federal_grants", "search_federal_awards", "search_gao_reports", "search_state_bills", "get_state_legislator", "search_crs_reports", "query_economic_data", "get_district_nexus_context", "get_district_nexus_changes", "read_client_documents", "search_funding_opportunities", "get_funding_opportunity_requirements", "get_funding_opportunity", "get_opportunity_client_context", "get_opportunity_government_landscape"];
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -60,26 +62,26 @@ const request=id=>id===REG?{name:'  Synthetic selector  '}:id.startsWith('get_bu
 const context=id=>id.startsWith('get_research')?scope():{};
 const validate=(id,value,req=request(id),ctx=context(id))=>resolve(id).assertOutput(value,{...ctx,request:req});
 
-test('independent exact baseline: only six original mappings change; all prior descriptors survive',()=>{
+test('independent exact baseline: only the six prior and16 reviewed continuation mappings change; all prior descriptors survive',()=>{
   assertCatalog(catalog);
   assert.equal(catalog.originals.length,139);
   assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);
   assert.equal(catalog.originals.filter(x=>x.disposition==='deferred').length,43);
-  assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,20);
-  assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.replacement===null).length,76);
-  assert.equal(catalog.operations.length,21);
-  assert.deepEqual(catalog.operations.filter(x=>!names.includes(x.operation.id)),baseline.descriptors);
+  assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,36);
+  assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.replacement===null).length,60);
+  assert.equal(catalog.operations.length,37);
+  assert.deepEqual(catalog.operations.filter(x=>!names.includes(x.operation.id)&&!continuationIds.includes(x.operation.id)),baseline.descriptors);
   for(const old of baseline.originals){
     const current=catalog.originals.find(x=>x.id===old.id);assert.ok(current);
-    assert.deepEqual(current,names.includes(old.id)?{...old,state:'mapped',replacement:{id:old.id,version:'0.2.0'}}:old);
+    assert.deepEqual(current,(names.includes(old.id)||continuationIds.includes(old.id))?{...old,state:'mapped',replacement:{id:old.id,version:'0.2.0'}}:old);
   }
   assert.equal(resolve('query_action_items').binding.nativeCoverage,'partial');
   for(const id of ['get_research_evidence','get_business_development_brief','create_client'])
     assert.throws(()=>resolve(id));
 });
 
-test('all 21 canonical descriptors resolve exact raw schema definitions without collisions',()=>{
-  assert.equal(new Set(CATALOG_OPERATION_BINDINGS.map(x=>x.id)).size,21);
+test('all 37 canonical descriptors resolve exact raw schema definitions without collisions',()=>{
+  assert.equal(new Set(CATALOG_OPERATION_BINDINGS.map(x=>x.id)).size,37);
   for(const binding of CATALOG_OPERATION_BINDINGS){
     const {descriptor}=resolve(binding.id);
     const raw=readFileSync(new URL(`../retrieval-0.2/${binding.group}.schema.json`,import.meta.url));

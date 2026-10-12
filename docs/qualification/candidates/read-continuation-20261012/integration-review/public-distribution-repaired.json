@@ -1,0 +1,47 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "check:contracts:distribution"
+  ],
+  "cwd": "/workspace/meri-read-continuation-integration-review-20261012",
+  "sourceHead": "c4e2699856d06bf5497bc81f7d7b0681eeca55cd",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T16:54:09.458150+00:00",
+  "durationSeconds": 5.429,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 165589,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 165724,
+      "status": 0
+    },
+    {
+      "pid": 165945,
+      "status": 0
+    },
+    {
+      "pid": 165965,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/integration-review/public-distribution-repaired.stdout.bin",
+      "bytes": 2044,
+      "sha256": "0b4b34eeea702f7371db03b0c661c136cdc3beb74a3cd2ca594d63d1c1f36d0b"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/integration-review/public-distribution-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Repeat after locally copying existing package-level dependencies; no source change or install",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

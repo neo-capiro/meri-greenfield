@@ -1,0 +1,149 @@
+{
+  "scope": "OFFLINE_EXACT_SOURCE_AND_EVIDENCE_AUDIT",
+  "candidate": "4aaba8adeef8543548bfed15cf82b26e1afcc6bd",
+  "candidateTree": "7fa9ce2fd74c5d4fe7700c1c0c97c55bf3b63579",
+  "priorPublication": "fd78590bff1b8551b145a7eafa0ed5f8e23d7bcc",
+  "passed": 5034,
+  "total": 5034,
+  "privateDefinitionCount": 305,
+  "domainReviewManifestMembers": 168,
+  "sourceFiles": [
+    {
+      "family": "funding",
+      "path": "packages/contracts/retrieval-0.2/funding-opportunities.schema.json",
+      "acceptedCommit": "256248fee5be45e5f203bbc74cc5b0c0e2f738f7",
+      "acceptedSha256": "0d31594c3aaecd707da722cfb8cd951e7f42802c13c86805aaedb9397dc9d56b",
+      "candidateSha256": "0d31594c3aaecd707da722cfb8cd951e7f42802c13c86805aaedb9397dc9d56b",
+      "bytes": 62966,
+      "delta": "none"
+    },
+    {
+      "family": "funding",
+      "path": "packages/contracts/retrieval-0.2/funding-opportunities-validation.mjs",
+      "acceptedCommit": "256248fee5be45e5f203bbc74cc5b0c0e2f738f7",
+      "acceptedSha256": "ec4e6124c3587b772a901a788282c3275e81e429b7af1e3199d2b0532313808b",
+      "candidateSha256": "ec4e6124c3587b772a901a788282c3275e81e429b7af1e3199d2b0532313808b",
+      "bytes": 5097,
+      "delta": "none"
+    },
+    {
+      "family": "funding",
+      "path": "packages/contracts/retrieval-0.2/funding-envelope-validation.mjs",
+      "acceptedCommit": "256248fee5be45e5f203bbc74cc5b0c0e2f738f7",
+      "acceptedSha256": "8606b31647d1ff627cf5a7ba8b41e1cfc236a23d38028d2e210b21e15f0b51f5",
+      "candidateSha256": "8606b31647d1ff627cf5a7ba8b41e1cfc236a23d38028d2e210b21e15f0b51f5",
+      "bytes": 10887,
+      "delta": "none"
+    },
+    {
+      "family": "funding",
+      "path": "packages/contracts/retrieval-0.2/funding-requirements-validation.mjs",
+      "acceptedCommit": "256248fee5be45e5f203bbc74cc5b0c0e2f738f7",
+      "acceptedSha256": "7ac1c0f69ec55f30004ff125f6eddc2f9c8dae1d007e405f425bdd1898e73491",
+      "candidateSha256": "7ac1c0f69ec55f30004ff125f6eddc2f9c8dae1d007e405f425bdd1898e73491",
+      "bytes": 2331,
+      "delta": "none"
+    },
+    {
+      "family": "documents",
+      "path": "packages/contracts/retrieval-0.2/client-documents.schema.json",
+      "acceptedCommit": "6e37343f7289ed8374b722d638f5d6e467f9808a",
+      "acceptedSha256": "71dd53119af2c0226372916e3645765687e8653da2f48b60d55c1a7a75c05247",
+      "candidateSha256": "71dd53119af2c0226372916e3645765687e8653da2f48b60d55c1a7a75c05247",
+      "bytes": 21288,
+      "delta": "none"
+    },
+    {
+      "family": "documents",
+      "path": "packages/contracts/retrieval-0.2/client-documents-validation.mjs",
+      "acceptedCommit": "6e37343f7289ed8374b722d638f5d6e467f9808a",
+      "acceptedSha256": "a545d51cda2e8d430ebb66f739524f55fc243ac87a923ea96dc140bab50c10e9",
+      "candidateSha256": "a545d51cda2e8d430ebb66f739524f55fc243ac87a923ea96dc140bab50c10e9",
+      "bytes": 12683,
+      "delta": "none"
+    },
+    {
+      "family": "public-data",
+      "path": "packages/contracts/retrieval-0.2/public-data.schema.json",
+      "acceptedCommit": "31093cd5b6aaaf246a870eb4f473a6639cc2a7df",
+      "acceptedSha256": "f6795b5b9e14bca87e068b561f6a7bdeb6e7dffc775a738b9bac6f9e6b0e1ea2",
+      "candidateSha256": "f6795b5b9e14bca87e068b561f6a7bdeb6e7dffc775a738b9bac6f9e6b0e1ea2",
+      "bytes": 21799,
+      "delta": "none"
+    },
+    {
+      "family": "public-data",
+      "path": "packages/contracts/retrieval-0.2/public-data-validation.mjs",
+      "acceptedCommit": "31093cd5b6aaaf246a870eb4f473a6639cc2a7df",
+      "acceptedSha256": "6b1e2714392c8905ed9de89c5df0c18798bd8ea363247521eec6124a08f1c856",
+      "candidateSha256": "23adf109a1a7cb4144a1081a809c048d1aa7c9da37d3be32efc84b2a51f100b4",
+      "bytes": 6512,
+      "delta": "two-non-string-selector-guards-only"
+    },
+    {
+      "family": "public-data",
+      "path": "packages/contracts/retrieval-0.2/public-data-deadlines.mjs",
+      "acceptedCommit": "31093cd5b6aaaf246a870eb4f473a6639cc2a7df",
+      "acceptedSha256": "6ab0d995ce678b0b627fdc05f298fdc558b809725c11b75b4a48f77ec2bcf6cd",
+      "candidateSha256": "6ab0d995ce678b0b627fdc05f298fdc558b809725c11b75b4a48f77ec2bcf6cd",
+      "bytes": 3613,
+      "delta": "none"
+    },
+    {
+      "family": "district",
+      "path": "packages/contracts/retrieval-0.2/district-nexus.schema.json",
+      "acceptedCommit": "c651a0ab75f416a06c91eff07a463d697adb0fa4",
+      "acceptedSha256": "5ed5df5dfe380e68ddd2c6b367bac4f314620d3381e6e8649b2c92dae8c3df36",
+      "candidateSha256": "5ed5df5dfe380e68ddd2c6b367bac4f314620d3381e6e8649b2c92dae8c3df36",
+      "bytes": 16317,
+      "delta": "none"
+    },
+    {
+      "family": "district",
+      "path": "packages/contracts/retrieval-0.2/district-nexus-validation.mjs",
+      "acceptedCommit": "c651a0ab75f416a06c91eff07a463d697adb0fa4",
+      "acceptedSha256": "089c236f35d513ce7b0b2eedd3f44c68e350469f267b36b827cbd6ac3b2fe891",
+      "candidateSha256": "089c236f35d513ce7b0b2eedd3f44c68e350469f267b36b827cbd6ac3b2fe891",
+      "bytes": 4491,
+      "delta": "none"
+    },
+    {
+      "family": "state",
+      "path": "packages/contracts/retrieval-0.2/state-legislation.schema.json",
+      "acceptedCommit": "3444e7fd48fe07a9df23fe5ee460cea22f886012",
+      "acceptedSha256": "3fda16e5e04acb44007ee71de22e887b84fd72a6c9059feceb7c5043fd028dcb",
+      "candidateSha256": "3fda16e5e04acb44007ee71de22e887b84fd72a6c9059feceb7c5043fd028dcb",
+      "bytes": 9172,
+      "delta": "none"
+    },
+    {
+      "family": "state",
+      "path": "packages/contracts/retrieval-0.2/state-legislation-validation.mjs",
+      "acceptedCommit": "3444e7fd48fe07a9df23fe5ee460cea22f886012",
+      "acceptedSha256": "69362d21add57558dfeecc40b19c79a9a034d54314f36f1086ea90d4b4724682",
+      "candidateSha256": "4688259e8c9741f65c03810bb4dae6f34adb4b09dc0bc7e5d78f29a7103ef023",
+      "bytes": 5660,
+      "delta": "two-non-string-selector-guards-only"
+    },
+    {
+      "family": "reports",
+      "path": "packages/contracts/retrieval-0.2/public-reports.schema.json",
+      "acceptedCommit": "d86c0710b534fad7626856075bb873715e54b596",
+      "acceptedSha256": "9b066631d4201ed291e23bc87c07946a1de0d34e5689acf2ef4b9fc58cadc45f",
+      "candidateSha256": "9b066631d4201ed291e23bc87c07946a1de0d34e5689acf2ef4b9fc58cadc45f",
+      "bytes": 7748,
+      "delta": "none"
+    },
+    {
+      "family": "reports",
+      "path": "packages/contracts/retrieval-0.2/public-reports-validation.mjs",
+      "acceptedCommit": "d86c0710b534fad7626856075bb873715e54b596",
+      "acceptedSha256": "ee9f65b7f4df1f870c92752855a6fd11378824214fcf16b1073092e9c53a980b",
+      "candidateSha256": "ee9f65b7f4df1f870c92752855a6fd11378824214fcf16b1073092e9c53a980b",
+      "bytes": 6200,
+      "delta": "none"
+    }
+  ],
+  "failed": [],
+  "checksSha256": "110693e9fe1ae89f4b300e31cfff86a56b169be7ea6635d9b18a472d80feec53"
+}

@@ -1,0 +1,21 @@
+{
+  "chronologicalCommitsBeforeManifestFreeze": [
+    "e7a07f5b4ae7dee338631fcb79ffe94ff2803d4d",
+    "9c9c61f4153529e119695d5e96c3ccaf9e89bc13",
+    "1e36c1a043cde5404b99c8ab6712bcab3b3b2b7e",
+    "e745da4a00387b21cd9486e8e5c62cb01a35de0f",
+    "cb1d4e26ba7372d67f15f5d16f1f80184e21b749",
+    "c4e2699856d06bf5497bc81f7d7b0681eeca55cd",
+    "5adf92a31e9ff6b7cf8854eb6ff8da2185304075",
+    "73f257de78974fef2e4ea137c420295d7c8c5cde",
+    "6e0a780f2fbedffbc6bf1c043b37cc1643bf20cb",
+    "6ff1fba553fc78c43f88930c589ec189dd5619c8"
+  ],
+  "finalManifestCommit": "resolve from final report delivery; this file avoids a self-referential commit hash",
+  "ownershipValidated": true,
+  "allowedPaths": [
+    "docs/qualification/candidates/read-continuation-20261012/integration-review/",
+    "docs/coordination/reports/CODEX-READ-CONTINUATION-INTEGRATION-REVIEW-20261012.md",
+    "packages/contracts/test/retrieval-read-continuation-independent.test.mjs"
+  ]
+}

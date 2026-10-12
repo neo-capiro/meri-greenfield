@@ -1,0 +1,55 @@
+✔ independent context and changes nonempty projections plus disabled variants admit (13.130483ms)
+✔ explicit client selectors trim and geography uppercases without implicit conversation fallback (4.976949ms)
+✔ geography syntax does not fabricate a recognized state resolver or normalize numeric districts (1.250659ms)
+✔ input/output variants remain closed and operation selection is explicit (3.680963ms)
+✔ since normalizes offset instants, admits inclusive same time and rejects malformed values (1.978223ms)
+✔ subject is exactly one client and current actor/tenant correlation cannot be bypassed (0.945791ms)
+✔ each binding field and returned subject decision lineage must remain exact even disabled (4.884561ms)
+✖ current scope relation and foreign returned client/geography refuse (3.339629ms)
+✔ disabled schema cannot smuggle availability, source data or authorization evidence (2.690683ms)
+✔ null, zero, negative and string facts are distinct values and required nullable fields remain present (3.068511ms)
+✔ all declared sections, amount stages, fact bases and coverage variants stay source claims (7.779011ms)
+✔ reported opaque as-of and freshness strings are not converted into verified timestamps (1.449328ms)
+✔ fact geography is scoped but statewide/national nullable district is preserved (2.123021ms)
+✔ source reference strings and non-URL labels remain opaque without invented permissions (1.547756ms)
+✔ forty facts are bounded and context forty alone does not assert truncation (6.051605ms)
+✔ twenty-nine gaps with false truncation preserve exact-thirty original-gap underreport caveat (5.139063ms)
+✔ context gaps can remain without facts; no-record/complete conclusions are invented (1.215277ms)
+✔ observed descending order and inclusive lower bound allow ties but reject stale/out-of-order (1.21088ms)
+✔ exactly twenty changes reports truncation even without proof of a twenty-first (1.657461ms)
+✔ database change strings stay extensible with character rather than UTF16 storage limits (0.801014ms)
+✔ effective date may be null or after observation without manufacturing an observation cutoff (1.751522ms)
+✔ ledger failure remains available empty with gap and cannot also supply successful changes (0.612321ms)
+✔ empty available changes plus other gaps preserve uncertainty and thirty-gap cap (2.364724ms)
+✔ timestamps in generated result require finite instants and JSON shape (1.863581ms)
+✔ hostile inputs and context accessors or proxies cause no caller-controlled effects (0.428544ms)
+✔ returned result accessors and proxies never run while nested extra keys refuse (1.964833ms)
+✔ normalization returns a detached selection without rewriting original payload (0.254673ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 26
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1311.195561
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-district-nexus-independent.test.mjs:64:1
+✖ current scope relation and foreign returned client/geography refuse (3.339629ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-district-nexus-review-20261012/packages/contracts/test/retrieval-district-nexus-independent.test.mjs:66:67)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }

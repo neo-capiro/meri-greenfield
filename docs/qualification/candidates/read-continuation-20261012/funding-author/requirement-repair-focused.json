@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-funding-opportunities.test.mjs"
+  ],
+  "cwd": "/workspace/meri-funding-reads-20261012",
+  "sourceHead": "c7e6b15ecd99f5a185cb3826f9b471d2438854c8",
+  "sourceDiffSha256": "df9594111c9b46b9dd091cba929bc40eaf55b24b1935fee8cec44c3519a14d63",
+  "sourceDiffBytes": 7339,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T16:25:16.190819+00:00",
+  "durationSeconds": 0.619,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 149782,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-author/requirement-repair-focused.stdout.bin",
+      "bytes": 3846,
+      "sha256": "b00987a394a7455849ffec499e07357931a8e0c8e6b7aa7484988f6be60a817c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-author/requirement-repair-focused.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Independent47/48 control found short-page invented hasMore; require an actual remaining known total for short pages. Preserve full-page stale/null totals.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,32 @@
+✔ requires explicit client and normalizes state/district without mutating input/context (11.359934ms)
+✔ since preserves inclusive instant and producer parseable ISO-prefix grammar (2.599355ms)
+✔ geography grammar preserves at-large and does not assert a recognized-state crosswalk (1.183407ms)
+✔ raw selectors cannot choose a foreign client or inject authority/limits/cursor (1.656879ms)
+✔ context is closed canonical lineage with one selected client (0.896857ms)
+✔ both operations preserve the closed disabled result (4.330034ms)
+✔ available context and changes retain their exact nonempty projection (3.769753ms)
+✔ fact stages, zero/null and source coverage remain distinct reported values (3.438876ms)
+✔ all fact sections and basis values retain their typed provenance (1.988487ms)
+✔ nullable source/freshness fields and date-only source metadata are not fabricated (0.935635ms)
+✔ fact geography permits statewide context but cannot replace the selected district (1.437559ms)
+✔ bounds context at 40 facts and 30 projected gaps (6.143247ms)
+✔ reported context truncation allows gap omission without imposing fact completeness (4.438207ms)
+✔ changes respects 20-result truncation without inventing a 21st row/cursor/total (2.437511ms)
+✔ since is inclusive and observation order descending with ties allowed (1.387434ms)
+✔ future effective dates and observations after generation are distinct reported timestamps (0.959902ms)
+✔ database string fields are bounded but no invented change/source/severity enum is imposed (1.377239ms)
+✔ ledger failure is an available empty read with explicit gap, never absence proof (1.030037ms)
+✔ changes gaps remain changes-only, bounded at30 and distinct from feature disabled (1.126802ms)
+✔ closed change projection carries no baseline discriminator, raw values, tenant claim or source health (2.173344ms)
+✔ available selectors and every current binding/subject member remain correlated (3.310503ms)
+✔ closed output rejects additional authority/absence/completeness claims at every boundary (5.021523ms)
+✔ canonical admission refuses getters/proxies without executing their effects (0.452069ms)
+✔ canonical admission refuses symbols, prototypes, cycles, undefined and nonfinite fields (0.521023ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1238.150328

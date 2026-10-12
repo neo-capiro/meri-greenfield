@@ -1,0 +1,33 @@
+{
+  "command": [
+    "python",
+    "docs/qualification/candidates/read-continuation-20261012/next-discovery/verify.py"
+  ],
+  "cwd": "/workspace/meri-next-read-discovery-20261012",
+  "sourceHead": "d47f85f40db38502830608a005bf53d1ab9173d7",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T16:58:32.367236+00:00",
+  "durationSeconds": 0.215,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 168683,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/next-discovery/metadata-verification.stdout.bin",
+      "bytes": 44,
+      "sha256": "6fde7f082281ebb938071153c0e6070a63e26220685be31dc8f91c1a583506fd"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/next-discovery/metadata-verification.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

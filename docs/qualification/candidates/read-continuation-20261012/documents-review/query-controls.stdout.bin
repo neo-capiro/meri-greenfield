@@ -1,0 +1,72 @@
+✔ independent nonempty list and Unicode read fixtures use exact source projections (11.478127ms)
+✔ list/read defaults and required client scope never derive authority from model fields (2.713357ms)
+✔ declared null numeric defaults and list/read bounds refuse coercion (1.645653ms)
+✔ actual input limits use trimmed UTF16 characters, not Unicode code-point counts (0.686742ms)
+✔ read cursor decodes closed client/document/query/content and offset binding (3.402252ms)
+✔ malformed mode-crossed cursors never become a source request (1.01153ms)
+✔ current context and full returned binding or subject cannot be substituted (5.132382ms)
+✔ document/client/content/provenance and record reference substitutions refuse (3.967281ms)
+✔ full-section returned text hash rejects content or digest substitution (1.134555ms)
+✔ UTF16 ranges correlate coverage, payload, provenance and returned text length (2.902521ms)
+✔ stale content and section extraction cursors refuse despite same document identity (1.175947ms)
+✔ list coverage, ordering, uniqueness and filename selector stay correlated (2.310833ms)
+✔ blocked metadata never silently becomes usable or a document content read (1.49735ms)
+✔ nullable listing metadata remains distinct from omission and invalid dates (2.203561ms)
+✔ closed projections refuse invented proof fields while inert metadata stays untrusted (1.965152ms)
+✔ readability section, count and character declarations must agree with coverage (2.147286ms)
+✔ extraction truncation cannot be erased by outer complete coverage (1.394516ms)
+✔ row provenance is paired and ordered when present (1.629879ms)
+✔ hostile request/context/result admission invokes no supplied property effects (0.666131ms)
+✔ opaque metadata refuses exotic, sparse, cyclic and hidden data without mutation (3.049041ms)
+✖ matched query contains its literal case-insensitive match in returned evidence (1.101676ms)
+✖ matched partial query cannot omit evidence while retaining a continuation claim (1.33759ms)
+✔ partial continuation advances UTF16 offsets, preserves section hash and denies stale extraction (3.158045ms)
+✔ unreadable section blocks automatic traversal and never manufactures an evidence record (2.067627ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 22
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1267.837901
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-client-documents-independent.test.mjs:123:1
+✖ matched query contains its literal case-insensitive match in returned evidence (1.101676ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at reject (file:///workspace/meri-client-documents-review-20261012/packages/contracts/test/retrieval-client-documents-independent.test.mjs:33:38)
+      at TestContext.<anonymous> (file:///workspace/meri-client-documents-review-20261012/packages/contracts/test/retrieval-client-documents-independent.test.mjs:125:128)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-client-documents-independent.test.mjs:127:1
+✖ matched partial query cannot omit evidence while retaining a continuation claim (1.33759ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at reject (file:///workspace/meri-client-documents-review-20261012/packages/contracts/test/retrieval-client-documents-independent.test.mjs:33:38)
+      at TestContext.<anonymous> (file:///workspace/meri-client-documents-review-20261012/packages/contracts/test/retrieval-client-documents-independent.test.mjs:130:44)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }

@@ -1,0 +1,200 @@
+{
+  "sourceCommit": "256248fee5be45e5f203bbc74cc5b0c0e2f738f7",
+  "authorEvidenceCommit": "09bab225cbfe55c24cb40ea79e9578ba72799e40",
+  "verdict": "ACCEPT_SOURCE",
+  "exclusions": [
+    "manifest.json (self)"
+  ],
+  "entries": [
+    {
+      "path": "docs/coordination/reports/CODEX-READ-CONTINUATION-FUNDING-REVIEW-20261012.md",
+      "bytes": 9133,
+      "sha256": "920cab597b36d1d62479e9d55ebd74e8a0952cb19a7689053b7c439ff76370cd"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs",
+      "bytes": 26714,
+      "sha256": "5eabd0a813bfaf14465ddf46fd773bfd191b99b3562fa5a07a2adb9c9c07b472"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-review/author-packet-verification.json",
+      "bytes": 6408,
+      "sha256": "c074781611ab1158cbb28f963f98eb0742e69b5ffc3d2e8a87252579ff5c1191"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-review/candidate-expanded.json",
+      "bytes": 1318,
+      "sha256": "b7f783b5b80d0cc4aac42262801505b20b43096105ac5ce3f8f8a881c59acdd9"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-review/candidate-expanded.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-review/candidate-expanded.stdout.bin",
+      "bytes": 4734,
+      "sha256": "08efd56c09c0ed684a24aae1dbd565a90ef9d61033ffc30f2563df0d8fb97353"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-review/candidate-first.json",
+      "bytes": 1313,
+      "sha256": "3761547328f2368c011ffa53f86115d4c06e98e804bbd2677df3537640b44a41"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-review/candidate-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-review/candidate-first.stdout.bin",
+      "bytes": 15762,
+      "sha256": "1dee5c58e231737ee5526995ae849b1384358bfd7d2d148f2595ee02e596eb65"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-review/final-review.json",
+      "bytes": 2394,
+      "sha256": "cc237bbdf4f5c15885bc0f8cc2c5178480b4a1002339d35f0e1ced1a62f88938"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-review/final-whitespace.json",
+      "bytes": 1255,
+      "sha256": "e272aa1dce51cbaf5f4cec7b348536ef9d807127afd6cae03616a2e6e8371a5e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-review/final-whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-review/final-whitespace.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-review/frozen-criteria.json",
+      "bytes": 2581,
+      "sha256": "6393c33226c371118e70503257439f2f36fcee26668c1ff05843ded417ce6449"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-review/full-source.json",
+      "bytes": 1339,
+      "sha256": "ff316480928f8df256cdcd98152407dfb4fa03f3b9e0434cc2e4264fd6cacb60"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-review/full-source.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-review/full-source.stdout.bin",
+      "bytes": 54884,
+      "sha256": "1df83ff8dd0fd7d6e69a3b7f9c24a91602508a3bec88a5d19bf4fc362492683e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-review/landscape-invalid-id.json",
+      "bytes": 1322,
+      "sha256": "237d641fb87aa25ec373f494642b5c93fbbedbf8ba9f07fa5bbd2044d66b2c0a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-review/landscape-invalid-id.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-review/landscape-invalid-id.stdout.bin",
+      "bytes": 6943,
+      "sha256": "02a6a99fc39381788f413daa8e70d2d7720d76c724e1102baa9614aeb738deff"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-review/public-distribution.json",
+      "bytes": 1428,
+      "sha256": "3f0c285957628010d1e74e60540ad35bb71c2350467f7245e24b32ac19d74d2e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-review/public-distribution.stderr.bin",
+      "bytes": 1040,
+      "sha256": "cbbd466f3bf458f7f516c133ea486c1aada38d325ec9a80b698c26da8c18237f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-review/public-distribution.stdout.bin",
+      "bytes": 2047,
+      "sha256": "e0e1a40ee36a0cc177aaa32b661cada7d0ab80cfbaeadf9365ee0669ce6643cb"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-review/reference-identities.json",
+      "bytes": 9137,
+      "sha256": "cdac1cdafb1387ea9683b407867b09b65f7fddc0e33ea683f44aff0872a69482"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-review/repaired-full-source.json",
+      "bytes": 1357,
+      "sha256": "1721fbfaeb702646d8142c04e959a5ae3d2f79be738d69d752854ab85ee68ded"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-review/repaired-full-source.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-review/repaired-full-source.stdout.bin",
+      "bytes": 55290,
+      "sha256": "8fd6f40b41747e0d52efe9e59d1b99a839b3fd3a1ebb7887bedbefe2963b1092"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-review/repaired-independent.json",
+      "bytes": 1322,
+      "sha256": "92539d464e23e80ebd1a4fa9dc111c15eaaa8c3f5e60a7dc0ecba933b22ec0d7"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-review/repaired-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-review/repaired-independent.stdout.bin",
+      "bytes": 4946,
+      "sha256": "b9b406917b792f9e6ec8e3fb0175a98b4563410cd697e62d2e3ccf8fda70b4bf"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-review/repaired-public-distribution.json",
+      "bytes": 1447,
+      "sha256": "d3718a6aeb97ed4af295c09496866c5bbce75fda197ac4d22c69229dc5699c8e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-review/repaired-public-distribution.stderr.bin",
+      "bytes": 1040,
+      "sha256": "cbbd466f3bf458f7f516c133ea486c1aada38d325ec9a80b698c26da8c18237f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-review/repaired-public-distribution.stdout.bin",
+      "bytes": 2046,
+      "sha256": "1f9331eba6b66a39034a91a0d2eb1d65836f07e977075d7247dec56f12635aae"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-review/requirement-short-page.json",
+      "bytes": 1326,
+      "sha256": "be82687db2fc1bb9e083029f3fb3a3996bb6cc790c1f7961fb11df6428b97775"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-review/requirement-short-page.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-review/requirement-short-page.stdout.bin",
+      "bytes": 5843,
+      "sha256": "fbbb292955a9b41b4b2f589d38e64a7c253fb78ef6d5a64f07ed1c11b3dd816a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-review/source-preservation.json",
+      "bytes": 5108,
+      "sha256": "a194b1c15d3c870c81ebc0024cd100c114d92eef6a681a54f5d46934806649fc"
+    }
+  ]
+}

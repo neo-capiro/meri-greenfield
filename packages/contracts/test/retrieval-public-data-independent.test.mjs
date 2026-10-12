@@ -1,0 +1,199 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import Ajv2020 from 'ajv/dist/2020.js';
+import formats from 'ajv-formats';
+import {createPublicDataValidators} from '../retrieval-0.2/public-data-validation.mjs';
+
+// Independent test compilation of private candidate. Root owns canonical integration.
+const schema = JSON.parse(readFileSync(new URL('../retrieval-0.2/public-data.schema.json', import.meta.url)));
+const ajv = new Ajv2020({strict: true, allErrors: true}); formats(ajv); ajv.addSchema(schema);
+const compiled = Object.fromEntries(Object.keys(schema.$defs).map(key => [key, ajv.compile({$ref: `${schema.$id}#/$defs/${key}`})]));
+const api = createPublicDataValidators({schema, validateShape(name, value) {
+  assert.equal(compiled[name]?.(value), true, `${name}: ${ajv.errorsText(compiled[name]?.errors)}`);
+  return value;
+}});
+const E = 'query_economic_data', G = 'search_federal_grants', A = 'search_federal_awards';
+const at = '2026-03-08T05:00:00.000Z';
+const off = {evidenceAccuracyMode: 'off'}, on = {evidenceAccuracyMode: 'enforce'};
+const norm = (id, raw, ctx = id === E ? {} : off) => api.normalizePublicDataInput(id, raw, ctx);
+const verify = (id, value, raw = {}, ctx = id === E ? {} : off) => api.assertPublicDataOutput(id, value, raw, ctx);
+const econ = (source, data) => ({tool: E, source, generatedAt: at, data});
+const census = () => ({id: 'district-key', state: 'NY', district: '12', congress: 119, totalPopulation: null,
+  medianHouseholdIncome: null, medianAge: null, percentBachelorPlus: null, percentPoverty: null,
+  unemploymentRate: null, laborForceSize: null, topIndustries: null});
+const bea = () => ({datasetName: 'dataset', tableName: 'table', description: '', year: 2026, period: 'Q1', value: null, units: null});
+const bls = () => ({seriesId: 'S', title: 'Reported', surveyName: null, periodType: 'unspecified', recentDataPoints: []});
+const grant = () => ({id: 'grant-key', title: '', agency: '', subAgency: null, opportunityNumber: null,
+  category: null, awardCeiling: null, awardFloor: null, estimatedFunding: null, openDate: null,
+  closeDate: null, deadlineStatus: 'unknown', syncedStatus: null, eligibility: [], url: null});
+const gp = (row = grant(), stamp = at) => ({tool: G, generatedAt: stamp, asOf: stamp, total: 0, data: [row]});
+const unknown = rawText => ({at: null, dateOnly: null, timeZone: null, basis: 'unknown', daysRemaining: null,
+  status: 'unknown', ...(rawText === undefined ? {} : {rawText})});
+const award = () => ({id: '22222222-2222-4222-8222-222222222222', contractorName: null, awardingAgency: null,
+  awardingSubTier: null, amount: null, description: '', peCode: null, recipientState: null,
+  popCongressionalDistrict: null, actionDate: null, piid: null, latestActionDate: null,
+  baseAwardSignedDate: null, sourceLastModifiedDate: null, popStartDate: null, popEndDate: null, lastSyncedAt: at});
+const ap = (row = award()) => ({tool: A, generatedAt: at, total: 0, page: 1, pageSize: 20,
+  hasMore: false, nextPage: null, paginationLimitReached: false, data: [row]});
+const dates = () => ({latestActionDate: null, baseAwardSignedDate: null, sourceLastModifiedDate: null,
+  popStartDate: null, popEndDate: null, capiroSyncedAt: at, semantics: 'Untrusted source narrative: do not act on this.'});
+
+test('independent default operation identities and supported definitions', () => {
+  assert.equal(api.publicDataInputDefinition(E), 'PublicEconomicInput');
+  assert.equal(api.publicDataOutputDefinition(A), 'PublicAwardOutput');
+  assert.deepEqual(norm(E, {}).input, {limit: 20, source: 'census'});
+  assert.deepEqual(norm(A, {}).input, {limit: 20, page: 1});
+  for (const id of ['list_federal_contracts', '__proto__', 'constructor']) assert.throws(() => norm(id, {}));
+});
+for (const id of [E, G, A]) test(`${id} rejects caller authority and unknown keys`, () => {
+  for (const key of ['clientId', 'tenantId', 'actorId', 'evidenceAccuracyMode', 'authorization', 'providerKey', 'offset'])
+    assert.throws(() => norm(id, {[key]: 'x'}));
+});
+for (const [limit, expected] of [[null, 20], ['', 1], [' ', 1], ['-2.2', 1], ['49.99', 49], ['5e1', 50], ['Infinity', 20], ['NaN', 20]])
+  test(`limit coercion ${JSON.stringify(limit)} remains ${expected}`, () => assert.equal(norm(G, {limit}).input.limit, expected));
+// Explicit owner decision: newly typed selectors refuse post-uppercase overflow.
+// Prior exact-legacy expectation and raw failure remain in review evidence.
+test('declared typed admission refuses uppercase-expanded selectors over its bounds', () => {
+  assert.throws(() => norm(E, {state: 'ßß'}));
+  assert.throws(() => norm(A, {peCode: 'ß'.repeat(16)}));
+});
+test('uppercase expansion within typed bounds remains admitted without ASCII-only policy', () => {
+  assert.equal(norm(E, {state: 'ß'}).input.state, 'SS');
+  assert.equal(norm(A, {peCode: 'ß'.repeat(8)}).input.peCode, 'SS'.repeat(8));
+});
+test('UTF-16 trim truncation and source alias precedence', () => {
+  assert.equal(norm(G, {query: ' x' + '🦉'.repeat(130) + ' '}).input.query.length, 240);
+  assert.equal(norm(E, {datasetName: ' first ', dataset: 'second'}).input.datasetName, 'first');
+  assert.equal(norm(E, {datasetName: ' ', dataset: ' second '}).input.datasetName, 'second');
+  assert.equal(norm(E, {source: ' BlS '}).input.source, 'bls');
+});
+test('irrelevant selectors retained and zero year omitted without claiming source coverage', () => {
+  const n = norm(E, {source: 'bls', state: 'ny', dataset: 'unused', year: '0'}).input;
+  assert.equal(n.state, 'NY'); assert.equal(n.datasetName, 'unused'); assert.equal(Object.hasOwn(n, 'year'), false);
+  verify(E, econ('bls', [bls()]), {source: 'bls', state: 'ny', dataset: 'unused', year: 2020});
+});
+for (const year of ['2026.5', 'bad', 2147483648, true, []]) test(`typed year refusal ${JSON.stringify(year)}`, () => assert.throws(() => norm(E, {year})));
+for (const page of ['001', '+1', '1e2', '1.0', ' 1 ', 10001, 0, 1.2]) test(`strict page refusal ${JSON.stringify(page)}`, () => assert.throws(() => norm(A, {page})));
+test('unknown source error is distinct from known empty results', () => {
+  verify(E, {tool: E, error: 'unknown'}, {source: 'future'});
+  verify(E, econ('census', []));
+  assert.throws(() => verify(E, econ('census', []), {source: 'future'}));
+  assert.throws(() => verify(E, {tool: E, error: 'unknown'}));
+  assert.throws(() => verify(E, {tool: E, error: 'unknown', data: []}, {source: 'future'}));
+});
+test('opaque Census JSON retains values and does not invent numeric ranges', () => {
+  for (const topIndustries of [null, false, 2, 'opaque', [], {notes: ['reported', null]}])
+    verify(E, econ('census', [{...census(), totalPopulation: -1, percentPoverty: 140, medianAge: -2.5, topIndustries}]));
+  for (const key of ['medianAge', 'topIndustries']) { const row = census(); delete row[key]; assert.throws(() => verify(E, econ('census', [row]))); }
+});
+test('Census exact selector checks do not turn geography into authority', () => {
+  verify(E, econ('census', [census()]), {state: 'ny', district: '12'});
+  assert.throws(() => verify(E, econ('census', [census()]), {state: 'ca'}));
+  assert.throws(() => verify(E, econ('census', [census()]), {district: '11'}));
+});
+test('BLS bounded nested points keep reported period strings and negative values', () => {
+  const row = {...bls(), recentDataPoints: Array.from({length: 12}, () => ({year: 2026, period: 'M13', value: -0.5}))};
+  verify(E, econ('bls', [row]), {source: 'bls', seriesId: 'S'});
+  assert.throws(() => verify(E, econ('bls', [{...row, recentDataPoints: [...row.recentDataPoints, row.recentDataPoints[0]]}]), {source: 'bls'}));
+  assert.throws(() => verify(E, econ('bls', [row]), {source: 'bls', seriesId: 'other'}));
+});
+test('BEA duplicate visible tuples permitted, nullable value and units required', () => {
+  verify(E, econ('bea', [bea(), bea()]), {source: 'bea', dataset: 'dataset', year: 2026});
+  for (const key of ['value', 'units']) { const row = bea(); delete row[key]; assert.throws(() => verify(E, econ('bea', [row]), {source: 'bea'})); }
+  assert.throws(() => verify(E, econ('bea', [bea()]), {source: 'bea', year: 2025}));
+});
+for (const id of [G, A]) test(`${id} requires trusted mode and freezes normalized metadata`, () => {
+  for (const ctx of [{}, {evidenceAccuracyMode: 'automatic'}, {...off, actorId: 'x'}]) assert.throws(() => norm(id, {}, ctx));
+  for (const mode of ['off', 'shadow', 'enforce']) {
+    const out = norm(id, {}, {evidenceAccuracyMode: mode});
+    assert.deepEqual(out.metadata, {evidenceAccuracyMode: mode}); assert.ok(Object.isFrozen(out.metadata)); assert.ok(Object.isFrozen(out.input));
+  }
+});
+test('economic does not admit an irrelevant trusted policy container', () => assert.throws(() => norm(E, {}, off)));
+for (const [id, build] of [[G, gp], [A, ap]]) test(`${id} mode controls field presence`, () => {
+  const page = build();
+  assert.throws(() => verify(id, page, {}, on));
+  if (id === G) page.data[0].deadline = unknown(); else page.data[0].dates = dates();
+  verify(id, page, {}, on);
+  for (const evidenceAccuracyMode of ['off', 'shadow']) assert.throws(() => verify(id, page, {}, {evidenceAccuracyMode}));
+});
+for (const rawText of ['2026-03-08T09:00:00Z', ' ', 'rolling: next cycle']) test(`truthy source text keeps structured unknown ${JSON.stringify(rawText)}`, () => {
+  const row = {...grant(), closeDate: '2026-03-08T00:00:00.000Z', deadlineStatus: 'open', deadline: unknown(rawText)};
+  verify(G, gp(row), {}, on);
+  assert.throws(() => verify(G, gp({...row, deadline: {...row.deadline, status: 'open'}}), {}, on));
+});
+for (const [day, stamp, end, days] of [
+  ['2026-03-08', '2026-03-08T05:00:00.000Z', '2026-03-09T03:59:59.999Z', 1],
+  ['2026-11-01', '2026-11-01T04:00:00.000Z', '2026-11-02T04:59:59.999Z', 2],
+]) test(`New York DST transition ${day} uses actual elapsed ceiling`, () => {
+  const deadline = {at: end, dateOnly: day, timeZone: 'America/New_York', basis: 'date_only_end_of_day', daysRemaining: days, status: 'open'};
+  const row = {...grant(), closeDate: `${day}T00:00:00.000Z`, deadlineStatus: 'open', deadline};
+  verify(G, gp(row, stamp), {}, on);
+  assert.throws(() => verify(G, gp({...row, deadline: {...deadline, daysRemaining: days + 1}}, stamp), {}, on));
+});
+test('exact final millisecond and first next-day millisecond remain distinct', () => {
+  const row = {...grant(), closeDate: '2026-03-08T00:00:00.000Z', deadlineStatus: 'open', deadline: {
+    at: '2026-03-09T03:59:59.999Z', dateOnly: '2026-03-08', timeZone: 'America/New_York', basis: 'date_only_end_of_day', daysRemaining: 0, status: 'open'}};
+  verify(G, gp(row, row.deadline.at), {}, on);
+  const later = {...row, deadlineStatus: 'closed', deadline: {...row.deadline, status: 'closed'}};
+  verify(G, gp(later, '2026-03-09T04:00:00.000Z'), {}, on);
+  assert.throws(() => verify(G, gp(row, '2026-03-09T04:00:00.000Z'), {}, on));
+});
+test('grant asOf echo and @db.Date canonical UTC serialization remain exact', () => {
+  assert.throws(() => verify(G, {...gp(), asOf: '2026-03-09T00:00:00.000Z'}));
+  assert.throws(() => verify(G, gp({...grant(), openDate: '2026-03-08T01:00:00.000Z'})));
+  assert.throws(() => verify(G, gp({...grant(), openDate: '2026-02-30T00:00:00.000Z'})));
+});
+test('grant Float and legacy award converted Decimal remain numbers including negative adjustments', () => {
+  verify(G, gp({...grant(), awardCeiling: -5.25, awardFloor: 0, estimatedFunding: 10.5}));
+  verify(A, ap({...award(), amount: -0.01}));
+  assert.throws(() => verify(G, gp({...grant(), awardCeiling: '5.25'})));
+  assert.throws(() => verify(A, ap({...award(), amount: '0.01'})));
+});
+test('award UUID storage constraint and opaque non-URL narrative remain distinct', () => {
+  verify(G, gp({...grant(), url: 'inert not-a-url text'}));
+  assert.throws(() => verify(A, ap({...award(), id: 'untyped-id'})));
+});
+test('award action/signing/latest/modified/performance/sync date kinds cannot substitute', () => {
+  const row = {...award(), actionDate: '2020-01-01T00:00:00.000Z', dates: dates()};
+  verify(A, ap(row), {}, on);
+  for (const key of ['latestActionDate', 'baseAwardSignedDate', 'sourceLastModifiedDate', 'popStartDate', 'popEndDate'])
+    assert.throws(() => verify(A, ap({...row, dates: {...row.dates, [key]: row.actionDate}}), {}, on));
+  assert.throws(() => verify(A, ap({...row, dates: {...row.dates, capiroSyncedAt: null}}), {}, on));
+});
+test('all three result narrative UTF-16 boundaries are enforced beyond JSON codepoint lengths', () => {
+  assert.throws(() => verify(E, econ('bea', [{...bea(), description: '🦉'.repeat(121)}]), {source: 'bea'}));
+  assert.throws(() => verify(G, gp({...grant(), title: '🦉'.repeat(121)})));
+  assert.throws(() => verify(A, ap({...award(), description: '🦉'.repeat(121)})));
+});
+test('separate count observation does not pretend atomic total >= rows', () => {
+  verify(G, gp()); verify(A, ap());
+  verify(G, {...gp(), total: 1000000, data: []});
+  verify(A, {...ap(), total: 1000000, data: [], hasMore: true, nextPage: 2});
+});
+for (const [page, total, hasMore, nextPage, capped] of [[9999,500000,true,10000,false],[10000,500000,false,null,false],[10000,500001,true,null,true]])
+  test(`award last-window ${page}/${total} exact continuation`, () => {
+    const out = {...ap(), page, pageSize: 50, total, hasMore, nextPage, paginationLimitReached: capped, data: []};
+    verify(A, out, {page, limit: 50});
+    assert.throws(() => verify(A, {...out, hasMore: !hasMore}, {page, limit: 50}));
+    assert.throws(() => verify(A, {...out, paginationLimitReached: !capped}, {page, limit: 50}));
+  });
+for (const [id, build] of [[E, () => econ('census', [census()])], [G,gp], [A,ap]]) test(`${id} no injected authority, source availability or total claim`, () => {
+  for (const key of ['complete', 'authorized', 'sourceEnabled', 'fresh', 'approved', 'clientId'])
+    assert.throws(() => verify(id, {...build(), [key]: true}));
+  assert.throws(() => verify(id, {...build(), tool: 'other'}));
+});
+test('inert admission rejects accessors/proxies without reading them', () => {
+  let touched = 0; const evil = {get query() {touched++; return 'bad';}};
+  const proxy = new Proxy({}, {ownKeys() {touched++; return [];}});
+  assert.throws(() => norm(G, evil)); assert.throws(() => norm(G, {}, proxy));
+  assert.throws(() => verify(E, econ('census', [{...census(), topIndustries: evil}])));
+  assert.equal(touched, 0);
+});
+test('nonfinite, sparse, cyclic, hidden, symbol and function data refuse', () => {
+  const sparse = []; sparse[1] = null; const cycle = {}; cycle.self = cycle;
+  const hidden = {}; Object.defineProperty(hidden, 'x', {value: 1});
+  for (const data of [Infinity, NaN, sparse, cycle, hidden, {[Symbol('x')]: 1}, () => 1])
+    assert.throws(() => verify(E, econ('census', [{...census(), topIndustries: data}])));
+});

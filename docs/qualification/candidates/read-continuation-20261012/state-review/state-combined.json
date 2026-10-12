@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-state-legislation.test.mjs",
+    "packages/contracts/test/retrieval-state-legislation-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-state-legislation-review-20261012",
+  "sourceHead": "be43e84226fa0d133acb77fd340af5a093b7dd6e",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T16:39:09.992067+00:00",
+  "durationSeconds": 0.315,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 155418,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-review/state-combined.stdout.bin",
+      "bytes": 4447,
+      "sha256": "7a32cae05feaac4ca8b75b64c87d45a669dc7fa7060b17e0aaf9f3c991100d0a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-review/state-combined.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

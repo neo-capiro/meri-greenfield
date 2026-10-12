@@ -1,0 +1,94 @@
+✔ search_cbo_cost_estimates: closed inputs, defaults and immutable snapshot (5.207414ms)
+✔ search_cbo_cost_estimates: hostile data stays inert (0.606232ms)
+✔ search_cbo_cost_estimates: exact envelope, projection and wire date (15.95223ms)
+✔ search_cbo_cost_estimates: row limit follows request without hidden source fields (0.818301ms)
+✔ search_gao_reports: closed inputs, defaults and immutable snapshot (2.361342ms)
+✔ search_gao_reports: hostile data stays inert (0.310998ms)
+✔ search_gao_reports: exact envelope, projection and wire date (7.802499ms)
+✔ search_gao_reports: row limit follows request without hidden source fields (0.442126ms)
+✔ search_crs_reports: closed inputs, defaults and immutable snapshot (1.124752ms)
+✔ search_crs_reports: hostile data stays inert (0.446632ms)
+✔ search_crs_reports: exact envelope, projection and wire date (6.426629ms)
+✔ search_crs_reports: row limit follows request without hidden source fields (0.77789ms)
+✔ CBO: empty record note is mandatory and exact (0.619131ms)
+✔ CBO: source note label precedes lowercase filtering and cap (0.390338ms)
+✔ CBO: Unicode lowercase expansion and code-unit truncation remain producer compatible (0.244097ms)
+✔ CBO: filter relationships and stored projection do not invent scores (0.656958ms)
+✔ search_gao_reports: concurrent totals and nullable storage fields (0.433993ms)
+✔ search_gao_reports: UTF-16 excerpt cap accepts exact literal boundary (0.530699ms)
+✔ search_gao_reports: excerpt normalization rejects impossible whitespace without trimming stored arrays (0.575166ms)
+✖ search_gao_reports: nullable date wire representation (0.667425ms)
+✔ search_crs_reports: concurrent totals and nullable storage fields (0.317227ms)
+✔ search_crs_reports: UTF-16 excerpt cap accepts exact literal boundary (0.278919ms)
+✔ search_crs_reports: excerpt normalization rejects impossible whitespace without trimming stored arrays (0.40563ms)
+✖ search_crs_reports: nullable date wire representation (0.182214ms)
+✔ GAO: reportType exact filter and declared nullable Int (0.439882ms)
+✔ CRS: active-only source selection is not an invented projected flag (0.238039ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 24
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 206.472787
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-public-reports-independent.test.mjs:108:3
+✖ search_gao_reports: nullable date wire representation (0.667425ms)
+  AssertionError [ERR_ASSERTION]: Got unwanted exception.
+  Actual message: "Public report dates require canonical JSON instants, with UTC midnight for stored dates"
+      at TestContext.<anonymous> (file:///workspace/meri-public-reports-review-20261012/packages/contracts/test/retrieval-public-reports-independent.test.mjs:110:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: Error: Public report dates require canonical JSON instants, with UTC midnight for stored dates
+        at fail (file:///workspace/meri-public-reports-review-20261012/packages/contracts/retrieval-0.2/public-reports-validation.mjs:3:33)
+        at instant (file:///workspace/meri-public-reports-review-20261012/packages/contracts/retrieval-0.2/public-reports-validation.mjs:11:5)
+        at validatePublicReportsShape (file:///workspace/meri-public-reports-review-20261012/packages/contracts/retrieval-0.2/public-reports-validation.mjs:54:20)
+        at Object.assertPublicReportsOutput (file:///workspace/meri-public-reports-review-20261012/packages/contracts/retrieval-0.2/public-reports-validation.mjs:88:5)
+        at check (file:///workspace/meri-public-reports-review-20261012/packages/contracts/test/retrieval-public-reports-independent.test.mjs:19:51)
+        at file:///workspace/meri-public-reports-review-20261012/packages/contracts/test/retrieval-public-reports-independent.test.mjs:110:31
+        at getActual (node:assert:611:5)
+        at strict.doesNotThrow (node:assert:779:32)
+        at TestContext.<anonymous> (file:///workspace/meri-public-reports-review-20261012/packages/contracts/test/retrieval-public-reports-independent.test.mjs:110:12)
+        at Test.runInAsyncScope (node:async_hooks:227:14),
+    expected: undefined,
+    operator: 'doesNotThrow',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-public-reports-independent.test.mjs:108:3
+✖ search_crs_reports: nullable date wire representation (0.182214ms)
+  AssertionError [ERR_ASSERTION]: Got unwanted exception.
+  Actual message: "Public report dates require canonical JSON instants, with UTC midnight for stored dates"
+      at TestContext.<anonymous> (file:///workspace/meri-public-reports-review-20261012/packages/contracts/test/retrieval-public-reports-independent.test.mjs:110:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: Error: Public report dates require canonical JSON instants, with UTC midnight for stored dates
+        at fail (file:///workspace/meri-public-reports-review-20261012/packages/contracts/retrieval-0.2/public-reports-validation.mjs:3:33)
+        at instant (file:///workspace/meri-public-reports-review-20261012/packages/contracts/retrieval-0.2/public-reports-validation.mjs:11:5)
+        at validatePublicReportsShape (file:///workspace/meri-public-reports-review-20261012/packages/contracts/retrieval-0.2/public-reports-validation.mjs:54:20)
+        at Object.assertPublicReportsOutput (file:///workspace/meri-public-reports-review-20261012/packages/contracts/retrieval-0.2/public-reports-validation.mjs:88:5)
+        at check (file:///workspace/meri-public-reports-review-20261012/packages/contracts/test/retrieval-public-reports-independent.test.mjs:19:51)
+        at file:///workspace/meri-public-reports-review-20261012/packages/contracts/test/retrieval-public-reports-independent.test.mjs:110:31
+        at getActual (node:assert:611:5)
+        at strict.doesNotThrow (node:assert:779:32)
+        at TestContext.<anonymous> (file:///workspace/meri-public-reports-review-20261012/packages/contracts/test/retrieval-public-reports-independent.test.mjs:110:12)
+        at Test.runInAsyncScope (node:async_hooks:227:14),
+    expected: undefined,
+    operator: 'doesNotThrow',
+    diff: 'simple'
+  }

@@ -1,0 +1,216 @@
+{
+  "repository": "neo-capiro/capirov2",
+  "pin": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "observedHead": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+  "references": [
+    {
+      "path": "apps/api/src/funding-opportunities/meri-opportunity-tools.adapter.ts",
+      "pinnedBlob": "ce2ec030bbadc55e102d9fb54384b1c592c4ff5f",
+      "observedBlob": "ce2ec030bbadc55e102d9fb54384b1c592c4ff5f",
+      "drift": false,
+      "bytes": 52923,
+      "sha256": "5f7e77815be258c1310cd7ce14277e20fed8277418b5adc5d0b73cb771ed475a",
+      "pinnedMatched": true,
+      "observedMatched": true
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/requirements/opportunity-requirement.service.ts",
+      "pinnedBlob": "5d049d2d89a974fa805752ac54e6bd4a1250c44d",
+      "observedBlob": "5d049d2d89a974fa805752ac54e6bd4a1250c44d",
+      "drift": false,
+      "bytes": 13923,
+      "sha256": "988c95c27d5a32bb96a54af2a21e24c029ad8e573ff67b1c7bab7a75a2f004c0",
+      "pinnedMatched": true,
+      "observedMatched": true
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/requirements/opportunity-requirement.schema.ts",
+      "pinnedBlob": "ee5f981a955964af2d20074a89e8432075fc5640",
+      "observedBlob": "ee5f981a955964af2d20074a89e8432075fc5640",
+      "drift": false,
+      "bytes": 11468,
+      "sha256": "56a3e891fce39a550faf638393f9028f0be65c48fb54da5d9ba1a670c27473fb",
+      "pinnedMatched": true,
+      "observedMatched": true
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/government-landscape.types.ts",
+      "pinnedBlob": "25da288d8578f500fbec047171becff90c2e49d7",
+      "observedBlob": "25da288d8578f500fbec047171becff90c2e49d7",
+      "drift": false,
+      "bytes": 5461,
+      "sha256": "1f89aa3b2ec7e99a4e35aeadf72532f1254927817863aed8a5204e914b74aabe",
+      "pinnedMatched": true,
+      "observedMatched": true
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/government-landscape.service.ts",
+      "pinnedBlob": "952079395b3a9f8e0ec02be90636fffc0b5cd752",
+      "observedBlob": "952079395b3a9f8e0ec02be90636fffc0b5cd752",
+      "drift": false,
+      "bytes": 27987,
+      "sha256": "908090e31350d7376e1ba669beaebc8a56b27e59cfe5d947e177463c29e559b0",
+      "pinnedMatched": true,
+      "observedMatched": true
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/funding-opportunities.types.ts",
+      "pinnedBlob": "dbeea62a160266463f216786de164ea0052ca0dd",
+      "observedBlob": "dbeea62a160266463f216786de164ea0052ca0dd",
+      "drift": false,
+      "bytes": 23603,
+      "sha256": "aa9c47cafb9d14581503c65f7a628a1057775def9b28bfa6a4315121bffacedf",
+      "pinnedMatched": true,
+      "observedMatched": true
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/funding-opportunity-access.ts",
+      "pinnedBlob": "7c0c09cd467d6a4eb7d24ae8f3b3c06f6da78e5f",
+      "observedBlob": "7c0c09cd467d6a4eb7d24ae8f3b3c06f6da78e5f",
+      "drift": false,
+      "bytes": 1358,
+      "sha256": "09dfdead6061ad88e205cb28d1116944f81c60730b3e0a5260aa271d97cec3d6",
+      "pinnedMatched": true,
+      "observedMatched": true
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/funding-opportunities-flag.guard.ts",
+      "pinnedBlob": "9312a847be2058adcd4745062025cbf559b77ed8",
+      "observedBlob": "9312a847be2058adcd4745062025cbf559b77ed8",
+      "drift": false,
+      "bytes": 12826,
+      "sha256": "b1f893751c90c2162a04d2a42eb1a30f49b979ef0dbf46bc3cc15c6e38941a57",
+      "pinnedMatched": true,
+      "observedMatched": true
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/funding-opportunity-v2-legacy-adapter.ts",
+      "pinnedBlob": "660fe807d9cadea2274278449a55b2fa833252ba",
+      "observedBlob": "660fe807d9cadea2274278449a55b2fa833252ba",
+      "drift": false,
+      "bytes": 5748,
+      "sha256": "011c944bd739c2b88a483ea2b18ddfe968e275b30a742b2609a62d42651146dc",
+      "pinnedMatched": true,
+      "observedMatched": true
+    },
+    {
+      "path": "packages/shared/src/funding-opportunities-v2.ts",
+      "pinnedBlob": "5bb5d2a100fe0e312092e0b69c65314abfe8ffa4",
+      "observedBlob": "5bb5d2a100fe0e312092e0b69c65314abfe8ffa4",
+      "drift": false,
+      "bytes": 14664,
+      "sha256": "37fe8499b219d9eb29e288744ca840149fe35f5f7ac5e328a58a03add2257893",
+      "role": "Independent imported owner trace"
+    },
+    {
+      "path": "packages/shared/src/funding-opportunities-v2-detail.ts",
+      "pinnedBlob": "0d2d19bf9696eddb7f9cf612d9c08e20ae51d43c",
+      "observedBlob": "0d2d19bf9696eddb7f9cf612d9c08e20ae51d43c",
+      "drift": false,
+      "bytes": 6645,
+      "sha256": "dd7783ced2d5ca22c98db2c35b456b686516edb75245d1daaf906ff55497114b",
+      "role": "Independent imported owner trace"
+    },
+    {
+      "path": "packages/shared/src/funding-opportunities-v2-workflow.ts",
+      "pinnedBlob": "afe21a295344cc4859fc7a790752eec3e746c2c7",
+      "observedBlob": "afe21a295344cc4859fc7a790752eec3e746c2c7",
+      "drift": false,
+      "bytes": 1582,
+      "sha256": "34bb6c27b11dfb483f7894b4286fec6de46ac91df0b50bc6e69bef070340e823",
+      "role": "Independent imported owner trace"
+    },
+    {
+      "path": "packages/shared/src/schedule/deadline.ts",
+      "pinnedBlob": "f16e2aee4f71a5b0bd2b57b881a189e6e64a496f",
+      "observedBlob": "f16e2aee4f71a5b0bd2b57b881a189e6e64a496f",
+      "drift": false,
+      "bytes": 2333,
+      "sha256": "69aab17c2a329fcfded00e7f3e8ebf3ebffebb1800b37e555efacb6901f08c9e",
+      "role": "Independent imported owner trace"
+    },
+    {
+      "path": "packages/shared/src/index.ts",
+      "pinnedBlob": "62eb32931826f77abd985bc142f6a65adad6a23a",
+      "observedBlob": "62eb32931826f77abd985bc142f6a65adad6a23a",
+      "drift": false,
+      "bytes": 273389,
+      "sha256": "1a713331de044768f7bd8631db4762a08a3c3541a1bbc064c67bbff46fc9a75f",
+      "role": "Independent imported owner trace"
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/funding-opportunity-v2-search.service.ts",
+      "pinnedBlob": "58f26631019a716b01894829a192b910b65db566",
+      "observedBlob": "58f26631019a716b01894829a192b910b65db566",
+      "drift": false,
+      "bytes": 20014,
+      "sha256": "e529feb5f9075344451f70c55025831eab39440a5a333d3b4702bfe5d3fbe182",
+      "role": "Independent imported owner trace"
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/funding-opportunity-v2-detail.service.ts",
+      "pinnedBlob": "d13173ebb65f5bcb3d147e9aef8382757130b9ae",
+      "observedBlob": "d13173ebb65f5bcb3d147e9aef8382757130b9ae",
+      "drift": false,
+      "bytes": 27089,
+      "sha256": "045240dc46966e942ce3a832beba5a5e0ea92acc0dba47b04bc82ba9e6f92196",
+      "role": "Independent imported owner trace"
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/funding-opportunity-identity.ts",
+      "pinnedBlob": "4c11e3f4c9ba3bdf24f9f6a1374e221160bbdcdb",
+      "observedBlob": "4c11e3f4c9ba3bdf24f9f6a1374e221160bbdcdb",
+      "drift": false,
+      "bytes": 13171,
+      "sha256": "dd4701aaf444b11ec0dd1981297e0b99d8e80e78aba48ec0b6df91c5884a83b9",
+      "role": "Independent imported owner trace"
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/opportunity-document-text.service.ts",
+      "pinnedBlob": "619364bdf32cd342fbfd8e3013ec2e36ccea339d",
+      "observedBlob": "619364bdf32cd342fbfd8e3013ec2e36ccea339d",
+      "drift": false,
+      "bytes": 11037,
+      "sha256": "a750e7b8deb77f1b61c0c97d62def9f8c6b8ee04791d5acba2836f0e7064946f",
+      "role": "Independent imported owner trace"
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/opportunity-recommendation.ts",
+      "pinnedBlob": "5c8c9a995233a46fe095dc957942ce43f9f5665e",
+      "observedBlob": "5c8c9a995233a46fe095dc957942ce43f9f5665e",
+      "drift": false,
+      "bytes": 20571,
+      "sha256": "9f1f2534858bae53f839a26b41733249ea9516d7f0536529d224c7c1d873e597",
+      "role": "Independent imported owner trace"
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/acquisition-position.ts",
+      "pinnedBlob": "6ffdd5cc9abafc73c94a4f7669a38a170acb3244",
+      "observedBlob": "6ffdd5cc9abafc73c94a4f7669a38a170acb3244",
+      "drift": false,
+      "bytes": 16363,
+      "sha256": "b4a01880aea7104433ea6788e286fb039de4e6b2233aa4cc6020190ffa2d0143",
+      "role": "Independent imported owner trace"
+    },
+    {
+      "path": "apps/api/src/common/meri-evidence-accuracy-flags.ts",
+      "pinnedBlob": "85da1c54f1ea81e505bed6e97ca9ac697234b8cb",
+      "observedBlob": "85da1c54f1ea81e505bed6e97ca9ac697234b8cb",
+      "drift": false,
+      "bytes": 943,
+      "sha256": "8ad0a799f03ebdc11301969123c48b817d0669efc8240d7be154ff3745ade161",
+      "role": "Independent imported owner trace"
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/sam-set-aside.ts",
+      "pinnedBlob": "a72619a366169e644970c86b0a6d775dc6be2685",
+      "observedBlob": "a72619a366169e644970c86b0a6d775dc6be2685",
+      "drift": false,
+      "bytes": 1826,
+      "sha256": "6e9382b1c0b45d694f8cc12c09567d6bd79183f45526dd831864e6db0ce25e3e",
+      "role": "Independent imported owner trace"
+    }
+  ],
+  "privateBodiesPublished": false,
+  "privateSourceExecuted": false
+}

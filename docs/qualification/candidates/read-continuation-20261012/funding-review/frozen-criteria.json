@@ -1,0 +1,43 @@
+{
+  "base": "e94865529c5a1e97c79893527895f0b4b73be35f",
+  "sourcePin": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "observedHead": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+  "criteria": [
+    {
+      "id": "F1",
+      "assertion": "Independently hash and trace five actual request/result projections and every relevant imported DTO, requirement/review/access/flag/document/client/landscape owner. Publish metadata and conclusions only; disclose drift."
+    },
+    {
+      "id": "F2",
+      "assertion": "Closed operation-specific inputs, canonical inert JSON snapshots, defaults and exact source bounds; no coercion or caller authority. Distinct success/refusal envelopes preserve disabled/denied/unsupported/unavailable truth limits."
+    },
+    {
+      "id": "F3",
+      "assertion": "Output operation, opportunity/client/query/asOf binding, canonical projection closure and 24000 JavaScript JSON-character ceiling; do not substitute UTF-8 bytes or Unicode code points for source code units."
+    },
+    {
+      "id": "F4",
+      "assertion": "Search five-row bounds and grant versus contract value semantics preserve actual source projection, counts/partial/truncation and optional/null distinctions; no invented funding amount or absence guarantee."
+    },
+    {
+      "id": "F5",
+      "assertion": "Requirements page identity/order/cursor/filters/review-status semantics follow actual frozen producer and schema; distinguish extracted content/review assertions from current document access or approval."
+    },
+    {
+      "id": "F6",
+      "assertion": "Detail and client context preserve policy/client/grant/document prerequisites, source dates/provenance and refusal behavior. Landscape cap40, pre-truncation counts and fingerprint use actual source semantics without invented completeness/currentness."
+    },
+    {
+      "id": "F7",
+      "assertion": "Hostile accessors/proxies/hidden keys/cycles/nonfinite/oversized data refuse without side effects. Immutable normalization and standalone output assertion scope use canonical admission, no second compiler/authority/producer."
+    },
+    {
+      "id": "F8",
+      "assertion": "Preserve all original tests/public contracts/locks/catalog and root integration ownership. Retain failures and exact before/after freezes, independently replay meaningful controls with owned cleanup and report exact ACCEPT_SOURCE/HOLD; all runtime/source connectivity unavailable."
+    }
+  ],
+  "criteriaBeforeAuthorSourceReview": true,
+  "privateBodiesPublished": false,
+  "privateSourceExecuted": false,
+  "runtimeAccepted": false
+}

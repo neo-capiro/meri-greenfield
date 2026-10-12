@@ -1,0 +1,144 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "sourceCommit": "31093cd5b6aaaf246a870eb4f473a6639cc2a7df",
+  "sourceTree": "d3e75ff6046a0e1b51aeb4c3644c7670b94f1d22",
+  "reviewEvidenceCommit": "59a89f629f0fbbe3201cfd68f3a4fdac5c976ba2",
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-READ-CONTINUATION-PUBLIC-DATA-REVIEW-20261012.md",
+      "bytes": 8333,
+      "sha256": "0ea9aec8381e0a9f83311b1f325ca38815e568dd335ab3760208e8ad10757225"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-data-review/adversarial-matrix.json",
+      "bytes": 2131,
+      "sha256": "a770becb3dbe446bd5a5fa576c88ec5b6a0f8b722e177fac22b9f36f0c5794cf"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-data-review/audit-results.json",
+      "bytes": 10057,
+      "sha256": "7749a8b2c9ffa140592b37291127daa69e88e0fc78603a99136a98f3cff6edb5"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-data-review/audit.py",
+      "bytes": 5907,
+      "sha256": "a693e38e1a64c8d9b5f46a88d4792709b5812666e011b0407f79ca5cf45e0bf4"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-data-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-data-review/compatibility-decision.json",
+      "bytes": 1179,
+      "sha256": "077047af6c0fc6cbf4544ee25ceec52e7106917af5daff6ac42783e2a42f8008"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-data-review/criteria.json",
+      "bytes": 1563,
+      "sha256": "e6b295897990087d84e4e354385c9e9a4fbc2c3ef1e0b085bc561a02c1d8a140"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-data-review/discovery-corrections.json",
+      "bytes": 870,
+      "sha256": "1eb625469d18b790c8fc596023bcd1aa9aac8372583283d2a772ed654edba770"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-data-review/independent-admission.json",
+      "bytes": 1326,
+      "sha256": "80626de103615f4f7ea09f32d4df189123f7b84ee68938d3fb1e4e570429477f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-data-review/independent-admission.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-data-review/independent-admission.stdout.bin",
+      "bytes": 4282,
+      "sha256": "3099d0544914239606069ddb1fb1c14d5098eda6c751cb2ae530f0de2a43e141"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-data-review/independent-first.json",
+      "bytes": 1318,
+      "sha256": "a3a73d3f6e184c022b4e84da3537d68aa961d7c6d46fb9d9de9303e11c2a9d82"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-data-review/independent-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-data-review/independent-first.stdout.bin",
+      "bytes": 5676,
+      "sha256": "68c44ba058397d4f5fd523c67a72fd4f3940dc70398f66fcdede4feea697bad8"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-data-review/independent-first.test.mjs.txt",
+      "bytes": 14502,
+      "sha256": "0837fe4ab2e44205987e14366bf680bc803e1c8cebf16902f29eb9c2210ed0c7"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-data-review/reference-identities.json",
+      "bytes": 9437,
+      "sha256": "90db18f896fbdd4ac412c385af721a199264fe533bff11f3d7a74d8fb6d5b7fb"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-data-review/source-audit.json",
+      "bytes": 1312,
+      "sha256": "de93768373965705e3d37fbaafb6f009cabbaa9061a4150b729890e67eae44f2"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-data-review/source-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-data-review/source-audit.stdout.bin",
+      "bytes": 44,
+      "sha256": "3cd0a49d1eb17beb0306791d6b59982a5c878b1ab033d20f7aeb2fa193a629fe"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-data-review/whitespace-authored.json",
+      "bytes": 1508,
+      "sha256": "46705f2caa3e7e83fbcba5ee274e1656d266b50aa56d4cc83ac8c1bbdb2c2aff"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-data-review/whitespace-authored.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-data-review/whitespace-authored.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-data-review/whitespace-full.json",
+      "bytes": 1271,
+      "sha256": "2402de8f8aac1865cb588953f202cdc08723efd2926ab76d4f8e720a72ba524f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-data-review/whitespace-full.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-data-review/whitespace-full.stdout.bin",
+      "bytes": 268,
+      "sha256": "30de9cdfaafa0b286cf3265d4d4058e777038a6ea870e676b708244ed067bc2e"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-public-data-independent.test.mjs",
+      "bytes": 14866,
+      "sha256": "8914c724f062ff7743c22fbb1d0ef697e1833047367aaf44580b24d27cf2b4c5"
+    }
+  ],
+  "memberCount": 26,
+  "exclusions": [
+    "This manifest itself"
+  ],
+  "runtimeVerdict": "HOLD",
+  "canonicalBindingVerdict": "NOT_YET_REVIEWED"
+}

@@ -1,0 +1,52 @@
+{
+  "repository": "neo-capiro/capirov2",
+  "sourceCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "observedCommit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+  "meriBase": "f45f155d0128ae4ac269989f60121e4f04b207de",
+  "scope": "INDEPENDENT_STATE_SOURCE_REVIEW_CRITERIA",
+  "privateBodiesPublished": false,
+  "sourceExecuted": false,
+  "references": [
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194",
+      "bytes": 415704,
+      "observedBlob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/prisma/schema.prisma",
+      "blob": "cdf1923217edae6e7624993796a5671922b61ac0",
+      "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0",
+      "bytes": 968034,
+      "observedBlob": "cdf1923217edae6e7624993796a5671922b61ac0",
+      "unchanged": true
+    },
+    {
+      "path": "packages/shared/src/index.ts",
+      "blob": "62eb32931826f77abd985bc142f6a65adad6a23a",
+      "sha256": "1a713331de044768f7bd8631db4762a08a3c3541a1bbc064c67bbff46fc9a75f",
+      "bytes": 273389,
+      "observedBlob": "62eb32931826f77abd985bc142f6a65adad6a23a",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-state-bill-status-tool.spec.ts",
+      "blob": "609a25e82ed3cf9f994ff352b3c90586486554a8",
+      "sha256": "5a03f936e0817a350dcb65cb79f2a909169a082da00884c122d0f7e3c879aae4",
+      "bytes": 12380,
+      "observedBlob": "609a25e82ed3cf9f994ff352b3c90586486554a8",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-state-bill-live.ts",
+      "blob": "01c312dfa17bfa0838c06e1ee2bc59fa6c58187f",
+      "sha256": "3692b6ec053f80d085fe4c47185eb7b2bcd528181ddb01d6f86a82782cf09049",
+      "bytes": 6366,
+      "observedBlob": "01c312dfa17bfa0838c06e1ee2bc59fa6c58187f",
+      "unchanged": true
+    }
+  ],
+  "discoveryFreeze": "d34da1a39aa68dd6f8af41ca5caee730ad1cdbfe"
+}

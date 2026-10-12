@@ -1,0 +1,170 @@
+{
+  "decision": "ACCEPT_SOURCE",
+  "source": "6e37343f7289ed8374b722d638f5d6e467f9808a",
+  "sourceTree": "12d8f588011843693a18fa9d4f5a2e9a51f55b32",
+  "authorEvidence": "751ece0f3b8aa024174f46beff415daca60a102f",
+  "checks": {
+    "firstIndependent": {
+      "passed": 20,
+      "failed": 0
+    },
+    "queryControls": {
+      "passed": 22,
+      "failed": 2
+    },
+    "repairedDraft": {
+      "passed": 29,
+      "failed": 0
+    },
+    "exactFreeze": {
+      "independentPassed": 29,
+      "authorPassed": 27,
+      "failed": 0
+    },
+    "sourceAudit": {
+      "initialFailure": "Reviewer ternary matcher assumed inverse spelling; raw failure preserved",
+      "correctedPassed": 62,
+      "correctedFailed": 0
+    }
+  },
+  "sourceEnabled": false,
+  "runtimeAccepted": false,
+  "selfExcluded": true,
+  "files": [
+    {
+      "path": "packages/contracts/test/retrieval-client-documents-independent.test.mjs",
+      "bytes": 17519,
+      "sha256": "39815277012f9952e4049958f39db6212c42c2e91ce769f283f1d10242edb4f7"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-READ-CONTINUATION-DOCUMENTS-REVIEW-20261012.md",
+      "bytes": 14089,
+      "sha256": "8d6f710a4055d0057b20765af9ee215c94172e325b382434f39ef1b7bea589b3"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/documents-review/.gitattributes",
+      "bytes": 50,
+      "sha256": "1bee6826ab8565b1a50079d470700a548e73e2363ea12450cf37ea13454b9eba"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/documents-review/audit-source-initial.py",
+      "bytes": 7039,
+      "sha256": "19a5c39e9a5afa7c55d5846f4cec4b745bd0acad2975f79d9ab453ffb8d63300"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/documents-review/audit-source.py",
+      "bytes": 7047,
+      "sha256": "287d5889a9413d0ef305504221c26cbc6eef9a070c443cc7cbde379ed9e2e80c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/documents-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/documents-review/exact-freeze.json",
+      "bytes": 1374,
+      "sha256": "4f912a2b11f73f4255bdbd147d8d0a3b264c688f9f9e8c6182ab7c1eb6421e33"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/documents-review/exact-freeze.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/documents-review/exact-freeze.stdout.bin",
+      "bytes": 5338,
+      "sha256": "8b0ba255d3e990cd74ca13232245be9dcf924d98d1f2c69d6aa72cf05f91455e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/documents-review/first-independent.json",
+      "bytes": 1321,
+      "sha256": "3805468d5312c9d9febcbc58018555cd2e66ce804fa6de5799e0e3350278dce9"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/documents-review/first-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/documents-review/first-independent.stdout.bin",
+      "bytes": 1951,
+      "sha256": "18dc42d55eabad5a16c85fac90b4b57a558d508fbf966f6cde3abcfe949f53db"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/documents-review/initial-references.json",
+      "bytes": 1984,
+      "sha256": "2abc54a8d2ab01ab24db19f13a679cf8dc16e0cc3e990ac63fd94ced63eb6a58"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/documents-review/prefreeze-tested-source.json",
+      "bytes": 1152,
+      "sha256": "4a6b343d9f98eb94172910f794ce7b687dcd65d1e27216a3443123415561d968"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/documents-review/query-controls.json",
+      "bytes": 1315,
+      "sha256": "acc9e6cb2cee0c53003df674e3e63fc829e459b12eff440ac3e0846cca398a24"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/documents-review/query-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/documents-review/query-controls.stdout.bin",
+      "bytes": 4617,
+      "sha256": "b89d39ff82678071a4c962bf40156266a031dfe83e3b7a1fa0651569e1b42466"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/documents-review/repaired-draft-tested-source.json",
+      "bytes": 726,
+      "sha256": "9ccc7b6486579f363ecfdade2d2121c6ba6fe982906fdd49d72377639142cbd8"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/documents-review/repaired-draft.json",
+      "bytes": 1315,
+      "sha256": "49d832efafde4e6edaa0250a529e98960049f111bae8c4127facf185f3acffb2"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/documents-review/repaired-draft.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/documents-review/repaired-draft.stdout.bin",
+      "bytes": 2838,
+      "sha256": "c51c443b178a6ba2fe8f25c6cdffd52f9f66a3ed2e6f9d53029282fe39f077cd"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/documents-review/source-audit-corrected.json",
+      "bytes": 1496,
+      "sha256": "c9f91eac55603e84cef05ee5b834beea8eedb8351c5e1705d6f6d23eb9e2d1b6"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/documents-review/source-audit-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/documents-review/source-audit-corrected.stdout.bin",
+      "bytes": 8630,
+      "sha256": "521080764c91d4917bc1b679f32cc90942b5a567a7f071ccc4a010a5fc25322a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/documents-review/source-audit.json",
+      "bytes": 1517,
+      "sha256": "7f807edfb7c66138948554142afddd316093737f78071e5f158c728d152c47b4"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/documents-review/source-audit.stderr.bin",
+      "bytes": 631,
+      "sha256": "7354c81ab79fbc5e891b873978d7b23a4e11523ca720c9d5a04b95ff91343799"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/documents-review/source-audit.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

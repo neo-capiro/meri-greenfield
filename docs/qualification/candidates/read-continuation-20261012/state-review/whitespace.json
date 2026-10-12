@@ -1,0 +1,36 @@
+{
+  "command": [
+    "git",
+    "diff",
+    "--check",
+    "f45f155d0128ae4ac269989f60121e4f04b207de",
+    "HEAD"
+  ],
+  "cwd": "/workspace/meri-state-legislation-review-20261012",
+  "sourceHead": "be43e84226fa0d133acb77fd340af5a093b7dd6e",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T16:40:02.387414+00:00",
+  "durationSeconds": 0.008,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 155991,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-review/whitespace.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-review/whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

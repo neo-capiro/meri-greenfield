@@ -1,0 +1,23 @@
+{
+  "candidate": "31093cd5b6aaaf246a870eb4f473a6639cc2a7df",
+  "firstResult": {
+    "passed": 57,
+    "failed": 1,
+    "expectation": "Exact legacy uppercase expansion for every Unicode string"
+  },
+  "originalTest": {
+    "path": "independent-first.test.mjs.txt",
+    "bytes": 14502,
+    "sha256": "0837fe4ab2e44205987e14366bf680bc803e1c8cebf16902f29eb9c2210ed0c7"
+  },
+  "ownerDecision": "Typed normalized state <=2 and PE <=16 reject uppercasing expansion beyond those limits. No second truncation or ASCII-only policy.",
+  "independentAssessment": "Disclosed narrower new selector admission; no valid geographic or PE selector regression demonstrated. This is not exact legacy normalization for arbitrary Unicode.",
+  "storageFacts": {
+    "CensusDistrict.state": "String, no db length annotation",
+    "FederalAward.peCode": "String?, db.VarChar(16)",
+    "FederalGrant.openDate": "DateTime?, db.Date",
+    "FederalGrant.closeDate": "DateTime?, db.Date",
+    "FederalAward.id": "String, db.Uuid"
+  },
+  "changes": "Original test retained verbatim, new test asserts authorized typed restriction and separate positive expansion-within-bounds control. Production unchanged."
+}

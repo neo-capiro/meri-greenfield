@@ -1,0 +1,47 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "check:contracts:distribution"
+  ],
+  "cwd": "/workspace/meri-funding-reads-20261012",
+  "sourceHead": "c7e6b15ecd99f5a185cb3826f9b471d2438854c8",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T16:20:48.602161+00:00",
+  "durationSeconds": 7.942,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 147239,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 147377,
+      "status": 0
+    },
+    {
+      "pid": 147630,
+      "status": 0
+    },
+    {
+      "pid": 147657,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-author/public-distribution.stdout.bin",
+      "bytes": 2045,
+      "sha256": "dc3085486594239007ce70009249d3db028be54a973ca1fedce4f36c93ffa71e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-author/public-distribution.stderr.bin",
+      "bytes": 1040,
+      "sha256": "cbbd466f3bf458f7f516c133ea486c1aada38d325ec9a80b698c26da8c18237f"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

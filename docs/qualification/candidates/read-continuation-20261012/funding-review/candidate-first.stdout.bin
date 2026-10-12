@@ -1,0 +1,194 @@
+✔ search_funding_opportunities: closed immutable input and trusted asOf metadata (36.93646ms)
+✖ search_funding_opportunities: all refusal states remain null-data reports (118.941323ms)
+✔ search_funding_opportunities: exact operation and trusted instant binding (0.807053ms)
+✔ search_funding_opportunities: hostile request/result observations do not run (0.271559ms)
+✔ get_funding_opportunity_requirements: closed immutable input and trusted asOf metadata (4.054925ms)
+✖ get_funding_opportunity_requirements: all refusal states remain null-data reports (19.847212ms)
+✔ get_funding_opportunity_requirements: exact operation and trusted instant binding (1.80275ms)
+✔ get_funding_opportunity_requirements: hostile request/result observations do not run (0.174081ms)
+✔ get_funding_opportunity: closed immutable input and trusted asOf metadata (2.51489ms)
+✖ get_funding_opportunity: all refusal states remain null-data reports (66.168976ms)
+✔ get_funding_opportunity: exact operation and trusted instant binding (0.700693ms)
+✔ get_funding_opportunity: hostile request/result observations do not run (0.249916ms)
+✔ get_opportunity_client_context: closed immutable input and trusted asOf metadata (1.768087ms)
+✖ get_opportunity_client_context: all refusal states remain null-data reports (77.824479ms)
+✔ get_opportunity_client_context: exact operation and trusted instant binding (0.500802ms)
+✔ get_opportunity_client_context: hostile request/result observations do not run (0.206571ms)
+✔ get_opportunity_government_landscape: closed immutable input and trusted asOf metadata (6.89866ms)
+✖ get_opportunity_government_landscape: all refusal states remain null-data reports (25.916896ms)
+✔ get_opportunity_government_landscape: exact operation and trusted instant binding (0.469686ms)
+✔ get_opportunity_government_landscape: hostile request/result observations do not run (0.192019ms)
+✔ search defaults, trimming and effective shared page clamp (12.529363ms)
+✔ search raw query ceiling uses UTF-16 before trimming (0.579711ms)
+✔ requirements and detail retain distinct paging defaults and bounds (4.05855ms)
+✔ envelope ceiling is exact serialized UTF-16 characters (5.739858ms)
+✔ all direct selectors reject prototype aliases and nonread operations (0.254883ms)
+✔ requirements nullable provenance, declared read vocabulary and review status remain separate (2.609292ms)
+✔ requirements content span counts UTF-16 and forbids malformed or substituted spans (1.621117ms)
+✔ requirements bind exact source, record, generation instant, offset and limit (3.534843ms)
+✔ requirements stale or unavailable total does not erase retained rows or extra-row continuation (0.78461ms)
+✔ empty exhausted requirements can remain available with an independent positive total (0.530898ms)
+✔ requirements retain nonavailable coverage states without claiming absence beyond observed documents (0.987184ms)
+✔ requirements page max25 and paging row count are actual request constraints (26.023086ms)
+✔ landscape keeps all11 declared sources and distinguishes three wired empty sources (9.90565ms)
+✔ landscape pre-truncation counts and retained fingerprint need not equal returned40-row slice (10.686674ms)
+✔ landscape never upgrades unknown provenance or inferred basis to stronger source evidence (8.901751ms)
+✔ landscape fingerprint grammar and unknown packet authority fields refuse (2.448581ms)
+✔ client context retains nullable counts and current client identity without made-up zeroes (3.811719ms)
+✔ client context separately caps each source at five without claiming complete source coverage (8.649812ms)
+✔ client context keeps grant and contract collections separate and preserves legacy decision null audits (1.204771ms)
+ℹ tests 39
+ℹ suites 0
+ℹ pass 34
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 878.149134
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs:40:3
+✖ search_funding_opportunities: all refusal states remain null-data reports (118.941323ms)
+  AssertionError [ERR_ASSERTION]: Got unwanted exception.
+  Actual message: "Funding denial must not disclose client existence"
+      at TestContext.<anonymous> (file:///workspace/meri-funding-reads-review-20261012/packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs:42:14)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: Error: Funding denial must not disclose client existence
+        at fail (file:///workspace/meri-funding-reads-review-20261012/packages/contracts/retrieval-0.2/funding-envelope-validation.mjs:2:33)
+        at assertFundingEnvelope (file:///workspace/meri-funding-reads-review-20261012/packages/contracts/retrieval-0.2/funding-envelope-validation.mjs:16:5)
+        at validateFundingOpportunitiesShape (file:///workspace/meri-funding-reads-review-20261012/packages/contracts/retrieval-0.2/funding-opportunities-validation.mjs:27:49)
+        at Object.assertFundingOpportunitiesOutput (file:///workspace/meri-funding-reads-review-20261012/packages/contracts/retrieval-0.2/funding-opportunities-validation.mjs:55:5)
+        at output (file:///workspace/meri-funding-reads-review-20261012/packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs:27:80)
+        at file:///workspace/meri-funding-reads-review-20261012/packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs:42:33
+        at getActual (node:assert:611:5)
+        at strict.doesNotThrow (node:assert:779:32)
+        at TestContext.<anonymous> (file:///workspace/meri-funding-reads-review-20261012/packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs:42:14)
+        at Test.runInAsyncScope (node:async_hooks:227:14),
+    expected: undefined,
+    operator: 'doesNotThrow',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs:40:3
+✖ get_funding_opportunity_requirements: all refusal states remain null-data reports (19.847212ms)
+  AssertionError [ERR_ASSERTION]: Got unwanted exception.
+  Actual message: "Funding denial must not disclose client existence"
+      at TestContext.<anonymous> (file:///workspace/meri-funding-reads-review-20261012/packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs:42:14)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: Error: Funding denial must not disclose client existence
+        at fail (file:///workspace/meri-funding-reads-review-20261012/packages/contracts/retrieval-0.2/funding-envelope-validation.mjs:2:33)
+        at assertFundingEnvelope (file:///workspace/meri-funding-reads-review-20261012/packages/contracts/retrieval-0.2/funding-envelope-validation.mjs:16:5)
+        at validateFundingOpportunitiesShape (file:///workspace/meri-funding-reads-review-20261012/packages/contracts/retrieval-0.2/funding-opportunities-validation.mjs:27:49)
+        at Object.assertFundingOpportunitiesOutput (file:///workspace/meri-funding-reads-review-20261012/packages/contracts/retrieval-0.2/funding-opportunities-validation.mjs:55:5)
+        at output (file:///workspace/meri-funding-reads-review-20261012/packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs:27:80)
+        at file:///workspace/meri-funding-reads-review-20261012/packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs:42:33
+        at getActual (node:assert:611:5)
+        at strict.doesNotThrow (node:assert:779:32)
+        at TestContext.<anonymous> (file:///workspace/meri-funding-reads-review-20261012/packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs:42:14)
+        at Test.runInAsyncScope (node:async_hooks:227:14),
+    expected: undefined,
+    operator: 'doesNotThrow',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs:40:3
+✖ get_funding_opportunity: all refusal states remain null-data reports (66.168976ms)
+  AssertionError [ERR_ASSERTION]: Got unwanted exception.
+  Actual message: "Funding denial must not disclose client existence"
+      at TestContext.<anonymous> (file:///workspace/meri-funding-reads-review-20261012/packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs:42:14)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: Error: Funding denial must not disclose client existence
+        at fail (file:///workspace/meri-funding-reads-review-20261012/packages/contracts/retrieval-0.2/funding-envelope-validation.mjs:2:33)
+        at assertFundingEnvelope (file:///workspace/meri-funding-reads-review-20261012/packages/contracts/retrieval-0.2/funding-envelope-validation.mjs:16:5)
+        at validateFundingOpportunitiesShape (file:///workspace/meri-funding-reads-review-20261012/packages/contracts/retrieval-0.2/funding-opportunities-validation.mjs:27:49)
+        at Object.assertFundingOpportunitiesOutput (file:///workspace/meri-funding-reads-review-20261012/packages/contracts/retrieval-0.2/funding-opportunities-validation.mjs:55:5)
+        at output (file:///workspace/meri-funding-reads-review-20261012/packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs:27:80)
+        at file:///workspace/meri-funding-reads-review-20261012/packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs:42:33
+        at getActual (node:assert:611:5)
+        at strict.doesNotThrow (node:assert:779:32)
+        at TestContext.<anonymous> (file:///workspace/meri-funding-reads-review-20261012/packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs:42:14)
+        at Test.runInAsyncScope (node:async_hooks:227:14),
+    expected: undefined,
+    operator: 'doesNotThrow',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs:40:3
+✖ get_opportunity_client_context: all refusal states remain null-data reports (77.824479ms)
+  AssertionError [ERR_ASSERTION]: Got unwanted exception.
+  Actual message: "Funding denial must not disclose client existence"
+      at TestContext.<anonymous> (file:///workspace/meri-funding-reads-review-20261012/packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs:42:14)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: Error: Funding denial must not disclose client existence
+        at fail (file:///workspace/meri-funding-reads-review-20261012/packages/contracts/retrieval-0.2/funding-envelope-validation.mjs:2:33)
+        at assertFundingEnvelope (file:///workspace/meri-funding-reads-review-20261012/packages/contracts/retrieval-0.2/funding-envelope-validation.mjs:16:5)
+        at validateFundingOpportunitiesShape (file:///workspace/meri-funding-reads-review-20261012/packages/contracts/retrieval-0.2/funding-opportunities-validation.mjs:27:49)
+        at Object.assertFundingOpportunitiesOutput (file:///workspace/meri-funding-reads-review-20261012/packages/contracts/retrieval-0.2/funding-opportunities-validation.mjs:55:5)
+        at output (file:///workspace/meri-funding-reads-review-20261012/packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs:27:80)
+        at file:///workspace/meri-funding-reads-review-20261012/packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs:42:33
+        at getActual (node:assert:611:5)
+        at strict.doesNotThrow (node:assert:779:32)
+        at TestContext.<anonymous> (file:///workspace/meri-funding-reads-review-20261012/packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs:42:14)
+        at Test.runInAsyncScope (node:async_hooks:227:14),
+    expected: undefined,
+    operator: 'doesNotThrow',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs:40:3
+✖ get_opportunity_government_landscape: all refusal states remain null-data reports (25.916896ms)
+  AssertionError [ERR_ASSERTION]: Got unwanted exception.
+  Actual message: "Funding denial must not disclose client existence"
+      at TestContext.<anonymous> (file:///workspace/meri-funding-reads-review-20261012/packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs:42:14)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: Error: Funding denial must not disclose client existence
+        at fail (file:///workspace/meri-funding-reads-review-20261012/packages/contracts/retrieval-0.2/funding-envelope-validation.mjs:2:33)
+        at assertFundingEnvelope (file:///workspace/meri-funding-reads-review-20261012/packages/contracts/retrieval-0.2/funding-envelope-validation.mjs:16:5)
+        at validateFundingOpportunitiesShape (file:///workspace/meri-funding-reads-review-20261012/packages/contracts/retrieval-0.2/funding-opportunities-validation.mjs:27:49)
+        at Object.assertFundingOpportunitiesOutput (file:///workspace/meri-funding-reads-review-20261012/packages/contracts/retrieval-0.2/funding-opportunities-validation.mjs:55:5)
+        at output (file:///workspace/meri-funding-reads-review-20261012/packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs:27:80)
+        at file:///workspace/meri-funding-reads-review-20261012/packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs:42:33
+        at getActual (node:assert:611:5)
+        at strict.doesNotThrow (node:assert:779:32)
+        at TestContext.<anonymous> (file:///workspace/meri-funding-reads-review-20261012/packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs:42:14)
+        at Test.runInAsyncScope (node:async_hooks:227:14),
+    expected: undefined,
+    operator: 'doesNotThrow',
+    diff: 'simple'
+  }

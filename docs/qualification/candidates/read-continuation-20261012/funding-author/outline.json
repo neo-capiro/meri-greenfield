@@ -1,0 +1,42 @@
+{
+  "base": "e94865529c5a1e97c79893527895f0b4b73be35f",
+  "scope": "Five private funding read projections; no handlers/current authority/connector",
+  "modules": {
+    "funding-opportunities.schema.json": "Closed distinct requests/envelopes and shared funding DTOs",
+    "funding-opportunities-validation.mjs": "Factory, canonical snapshot admission, defaults, operation/request result binding",
+    "funding-envelope-validation.mjs": "Shared envelope ceiling, notice/search/client/landscape consistency",
+    "funding-requirements-validation.mjs": "Requirement read pagination and quoted UTF-16 span consistency"
+  },
+  "factory": "createFundingOpportunitiesValidators({validateShape,schema})",
+  "definitionPairs": [
+    "FundingSearch",
+    "FundingRequirements",
+    "FundingOpportunity",
+    "FundingClientContext",
+    "FundingGovernmentLandscape"
+  ],
+  "options": {
+    "asOf": "Required trusted canonical ISO timestamp; never model authority"
+  },
+  "reuse": [
+    "snapshotOperationData",
+    "injected canonical shape validator",
+    "existing Ajv only in tests",
+    "existing owned capture/subreaper"
+  ],
+  "verification": [
+    "five operations and refusal states",
+    "exact UTF-16 ceiling and spans",
+    "identity/clock/page binding",
+    "finite timestamps",
+    "closed inert data",
+    "full original tests preserved"
+  ],
+  "limits": [
+    "No provider/source authority",
+    "No requirement source text verification or review mutation",
+    "Landscape fingerprint retained from full pre-truncation packet; not recomputed from shortened rows",
+    "Next deadline applies to sampled top five only",
+    "Independent review required"
+  ]
+}

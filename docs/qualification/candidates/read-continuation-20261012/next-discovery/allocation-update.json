@@ -1,0 +1,7 @@
+{
+  "authority":"Root explicit follow-up during discovery",
+  "acquisitionProjection":"Current4be13b0 projection/privacy allocated for new author/reviewer work, separate from frozen fd8765ec inventory pin; both operations use trusted actorRole.",
+  "historicalPackets":"Preserved without rewriting their pending-scope choice. Current source choice does not activate handlers or accept audit/runtime gates.",
+  "newAssignedPair":"get_bill_status/search_floor_votes allocated to separate author/reviewer; discovery remains read-only.",
+  "remainingPair":"search_congress_bills/read_bill_text is a separately allocated later author/reviewer lane."
+}
