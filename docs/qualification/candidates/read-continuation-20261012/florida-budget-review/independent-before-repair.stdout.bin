@@ -1,0 +1,95 @@
+✔ closed exact operation and raw input definition (1.463379ms)
+✔ defaults and explicit metadata remain non-authoritative (24.714626ms)
+✔ q uses UTF16 slice with whitespace retained (0.488224ms)
+✔ offset scalar compatibility and integer limit (0.879141ms)
+✔ fiscal syntax allows nonconsecutive suffix and fixed default (0.417587ms)
+✔ folder and session strings retain whitespace, UTF16 folder cap (0.692691ms)
+✔ nullable empty client and folder do not invent a resolution (0.558008ms)
+✔ named client selection requires exact explicit resolution (0.42589ms)
+✔ UUID selector identity and second trim after cutoff (0.405529ms)
+✔ folder-derived client and explicit conflict retain separate scope rules (0.38596ms)
+✔ all context fields mandatory, closed request/context (0.567403ms)
+✔ scope and clock cannot be substituted (1.659194ms)
+✔ canonical wire dates, observation time not bounded by wrapper time (2.489161ms)
+✔ all project window boundaries and nextOffset correlation (9.110471ms)
+✔ document event and full amount sentinel rows retained at exact caps (8.159592ms)
+✔ recent amount limit four and parent identity (0.639681ms)
+✔ recent amount PK remains unique across one multi-project query (0.296616ms)
+✔ selected unique project is before positive offset but other windows remain (0.283466ms)
+✔ selected project and fiscal correlations, amount selection required (0.385139ms)
+✔ document session filter is conditional and fiscal fixed (0.418829ms)
+✔ primary row identities unique within each returned window (0.782596ms)
+✔ saved tracking only with selected folder, removed version retained (0.457617ms)
+✔ opaque stored JSON never coerced to a made-up money DTO (0.427482ms)
+✔ separate recent and history reads may differ; missing document page not absence (0.216876ms)
+✔ observed order descending allows ties without fabricated collation (0.371048ms)
+✔ DDL event vocabulary and raw text identifiers retained (0.615374ms)
+✔ closed outer envelope, notices and required fields (0.420181ms)
+✔ getter proxy and toJSON are refused without caller effects (0.27914ms)
+✔ cycles symbols hidden properties and sparse arrays fail inert admission (0.209455ms)
+✖ admitted output is detached from caller and survives nested mutation (1.392072ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 29
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 217.697565
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-florida-budget-independent.test.mjs:51:1
+✖ admitted output is detached from caller and survives nested mutation (1.392072ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" not to be reference-equal to "expected":
+  
+  {
+    authority: 'Source quotations retain their document identity. Meri relevance is an inference for review; keyword grammar and current folder decisions control assignments.',
+    generatedAt: '2026-10-12T12:00:00.000Z',
+    result: {
+      amounts: [],
+      documents: [],
+      events: [],
+      fiscalYear: '2026-27',
+      nextOffset: null,
+      notice: 'Selected publisher evidence. Requests and chamber alternatives are not awards. No statewide aggregate is inferred.',
+      projects: [
+        {
+          agency: null,
+          evidence: {
+            opaque: true
+          },
+          fiscal_year: '2026-27',
+          id: 'p',
+          identities: null,
+          recentAmounts: [],
+          relations: [],
+          saved: false,
+          title: 'Project',
+          tracking_version: null
+        }
+      ],
+      scope: {
+        clientId: null,
+        folderId: null,
+        jurisdiction: 'FL',
+        sessionKey: ''
+      }
+    },
+    tool: 'get_florida_budget_project'
+  }
+  
+      at TestContext.<anonymous> (file:///workspace/meri-florida-budget-review-20261012/packages/contracts/test/retrieval-florida-budget-independent.test.mjs:51:175)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { tool: 'get_florida_budget_project', generatedAt: '2026-10-12T12:00:00.000Z', result: { scope: [Object], fiscalYear: '2026-27', projects: [Array], nextOffset: null, documents: [], amounts: [], events: [], notice: 'Selected publisher evidence. Requests and chamber alternatives are not awards. No statewide aggregate is inferred.' }, authority: 'Source quotations retain their document identity. Meri relevance is an inference for review; keyword grammar and current folder decisions control assignments.' },
+    expected: { tool: 'get_florida_budget_project', generatedAt: '2026-10-12T12:00:00.000Z', result: { scope: [Object], fiscalYear: '2026-27', projects: [Array], nextOffset: null, documents: [], amounts: [], events: [], notice: 'Selected publisher evidence. Requests and chamber alternatives are not awards. No statewide aggregate is inferred.' }, authority: 'Source quotations retain their document identity. Meri relevance is an inference for review; keyword grammar and current folder decisions control assignments.' },
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
