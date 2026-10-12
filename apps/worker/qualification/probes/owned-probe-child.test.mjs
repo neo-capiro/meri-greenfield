@@ -120,3 +120,12 @@ test('already-cancelled actual Office main allocates no directory or child', asy
     writeStream: { write(line, callback) { lines.push(line); callback(); } } });
   assert.equal(code, 1); assert.equal(mkdirs, 0); assert.equal(spawns, 0); assert.equal(lines.length, 1); assert.match(lines[0], /aborted/);
 });
+
+test('actual runtime CLI child phase owns cancellation only for its bounded action', async () => {
+  const { runQualificationChildrenForCli } = await import('./runtime.mjs'); const events = new EventEmitter(); const c = child(); let spawns = 0;
+  assert.equal(events.eventNames().length, 0);
+  const operation = runQualificationChildrenForCli({ ...ports, processLike: events, spawnFn: () => { spawns++; return c; } });
+  assert.equal(events.listenerCount('SIGTERM'), 1); events.emit('SIGTERM'); c.emit('close', 0, null);
+  const result = await operation; assert.equal(spawns, 1); assert.equal(result[0].status, 'fail'); assert.equal(result[1].notRun, true);
+  assert.equal(events.eventNames().length, 0);
+});
