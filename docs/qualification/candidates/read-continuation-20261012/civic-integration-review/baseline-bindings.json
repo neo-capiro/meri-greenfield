@@ -1,0 +1,880 @@
+[
+  {
+    "id": "get_committee_roster",
+    "nativeId": "get_committee_roster",
+    "group": "legislative-directory",
+    "input": "CommitteeRosterInput",
+    "output": "CommitteeRosterOutput",
+    "version": "0.2.0",
+    "contextKeys": [],
+    "normalize": {
+      "source": "(v, request, context, binding) => (v.normalizeLegislativeDirectoryInput(binding.id, request, clock(context, binding.contextKeys)))"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertLegislativeDirectoryOutput(binding.id, page, request, clock(context, binding.contextKeys))"
+    }
+  },
+  {
+    "id": "list_members",
+    "nativeId": "list_members",
+    "group": "legislative-directory",
+    "input": "MemberListInput",
+    "output": "MemberListOutput",
+    "version": "0.2.0",
+    "contextKeys": [],
+    "normalize": {
+      "source": "(v, request, context, binding) => (v.normalizeLegislativeDirectoryInput(binding.id, request, clock(context, binding.contextKeys)))"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertLegislativeDirectoryOutput(binding.id, page, request, clock(context, binding.contextKeys))"
+    }
+  },
+  {
+    "id": "get_pe_contractors",
+    "nativeId": "get_pe_contractors",
+    "group": "pe-references",
+    "input": "PeContractorsInput",
+    "output": "PeContractorsOutput",
+    "version": "0.2.0",
+    "contextKeys": [],
+    "normalize": {
+      "source": "(v, request, context, binding) => ({input: v.normalizePeReferenceInput(binding.id, request, clock(context, binding.contextKeys))})"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertPeReferenceOutput(binding.id, page, request, clock(context, binding.contextKeys))"
+    }
+  },
+  {
+    "id": "get_pe_bills",
+    "nativeId": "get_pe_bills",
+    "group": "pe-references",
+    "input": "PeBillsInput",
+    "output": "PeBillsOutput",
+    "version": "0.2.0",
+    "contextKeys": [],
+    "normalize": {
+      "source": "(v, request, context, binding) => ({input: v.normalizePeReferenceInput(binding.id, request, clock(context, binding.contextKeys))})"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertPeReferenceOutput(binding.id, page, request, clock(context, binding.contextKeys))"
+    }
+  },
+  {
+    "id": "get_pe_report_language",
+    "nativeId": "get_pe_report_language",
+    "group": "pe-references",
+    "input": "PeReportLanguageInput",
+    "output": "PeReportLanguageOutput",
+    "version": "0.2.0",
+    "contextKeys": [],
+    "normalize": {
+      "source": "(v, request, context, binding) => ({input: v.normalizePeReferenceInput(binding.id, request, clock(context, binding.contextKeys))})"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertPeReferenceOutput(binding.id, page, request, clock(context, binding.contextKeys))"
+    }
+  },
+  {
+    "id": "get_state_rule_status",
+    "nativeId": "get_state_rule_status",
+    "group": "rule-status",
+    "input": "RuleStatusInput",
+    "output": "RuleStatusOutput",
+    "version": "0.2.0",
+    "contextKeys": [
+      "stageAsOf",
+      "commentAsOf"
+    ],
+    "normalize": {
+      "source": "(v, request, context, binding) => (v.normalizeRuleStatusInput(binding.id, request, clock(context, binding.contextKeys)))"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertRuleStatusOutput(binding.id, page, request, clock(context, binding.contextKeys))"
+    }
+  },
+  {
+    "id": "get_certification_status",
+    "nativeId": "get_certification_status",
+    "group": "certification-status",
+    "input": "CertificationStatusInput",
+    "output": "CertificationStatusOutput",
+    "version": "0.2.0",
+    "contextKeys": [
+      "comparisonLocale"
+    ],
+    "normalize": {
+      "source": "(v, request, context, binding) => ({input: v.normalizeCertificationStatusInput(request, clock(context, binding.contextKeys))})"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertCertificationStatusOutput(page, request, clock(context, binding.contextKeys))"
+    }
+  },
+  {
+    "id": "search_intel_articles",
+    "nativeId": "search_intel_articles",
+    "group": "stored-intelligence",
+    "input": "StoredIntelligenceSearchInput",
+    "output": "StoredIntelligenceSearchOutput",
+    "version": "0.2.0",
+    "contextKeys": [],
+    "normalize": {
+      "source": "(v, request, context, binding) => (v.normalizeStoredIntelligenceInput(binding.id, request, clock(context, binding.contextKeys)))"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertStoredIntelligenceOutput(binding.id, page, request, clock(context, binding.contextKeys))"
+    }
+  },
+  {
+    "id": "list_global_datasets",
+    "nativeId": "list_global_datasets",
+    "group": "dataset-metadata",
+    "input": "DatasetMetadataListInput",
+    "output": "DatasetMetadataListOutput",
+    "version": "0.2.0",
+    "contextKeys": [],
+    "normalize": {
+      "source": "(v, request, context, binding) => (v.normalizeDatasetMetadataInput(binding.id, request, clock(context, binding.contextKeys)))"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertDatasetMetadataOutput(binding.id, page, request, clock(context, binding.contextKeys))"
+    }
+  },
+  {
+    "id": "get_representation",
+    "nativeId": "get_representation",
+    "group": "facility-representation",
+    "input": "FacilityRepresentationInput",
+    "output": "FacilityRepresentationResult",
+    "version": "0.2.0",
+    "contextKeys": [
+      "binding",
+      "subject"
+    ],
+    "normalize": {
+      "source": "(v, request, context, binding) => ({input: v.normalizeFacilityRepresentationInput(request, clock(context, binding.contextKeys))})"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertFacilityRepresentationResult(page, request, clock(context, binding.contextKeys))"
+    }
+  },
+  {
+    "id": "search_congress_bills",
+    "nativeId": "search_congress_bills",
+    "group": "bill-text",
+    "input": "CongressBillSearchInput",
+    "output": "CongressBillSearchOutput",
+    "version": "0.2.0",
+    "contextKeys": [
+      "defaultCongress"
+    ],
+    "normalize": {
+      "source": "(v, request, context, binding) => v.normalizeBillTextInput(binding.id, request, clock(context, binding.contextKeys))"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertBillTextOutput(binding.id, page, request, clock(context, binding.contextKeys))"
+    }
+  },
+  {
+    "id": "read_bill_text",
+    "nativeId": "read_bill_text",
+    "group": "bill-text",
+    "input": "BillTextReadInput",
+    "output": "BillTextReadOutput",
+    "version": "0.2.0",
+    "contextKeys": [
+      "defaultCongress"
+    ],
+    "normalize": {
+      "source": "(v, request, context, binding) => v.normalizeBillTextInput(binding.id, request, clock(context, binding.contextKeys))"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertBillTextOutput(binding.id, page, request, clock(context, binding.contextKeys))"
+    }
+  },
+  {
+    "id": "search_sec_filings",
+    "nativeId": "search_sec_filings",
+    "group": "disclosures",
+    "input": "DisclosuresSecInput",
+    "output": "DisclosuresSecOutput",
+    "version": "0.2.0",
+    "contextKeys": [],
+    "normalize": {
+      "source": "(v, request, context, binding) => ({input: v.normalizeDisclosuresInput(binding.id, request, clock(context, binding.contextKeys))})"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertDisclosuresOutput(binding.id, page, request, clock(context, binding.contextKeys))"
+    }
+  },
+  {
+    "id": "search_fara_registrations",
+    "nativeId": "search_fara_registrations",
+    "group": "disclosures",
+    "input": "DisclosuresFaraInput",
+    "output": "DisclosuresFaraOutput",
+    "version": "0.2.0",
+    "contextKeys": [],
+    "normalize": {
+      "source": "(v, request, context, binding) => ({input: v.normalizeDisclosuresInput(binding.id, request, clock(context, binding.contextKeys))})"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertDisclosuresOutput(binding.id, page, request, clock(context, binding.contextKeys))"
+    }
+  },
+  {
+    "id": "search_lda_filings",
+    "nativeId": "search_lda_filings",
+    "group": "disclosures",
+    "input": "DisclosuresLdaInput",
+    "output": "DisclosuresLdaOutput",
+    "version": "0.2.0",
+    "contextKeys": [],
+    "normalize": {
+      "source": "(v, request, context, binding) => ({input: v.normalizeDisclosuresInput(binding.id, request, clock(context, binding.contextKeys))})"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertDisclosuresOutput(binding.id, page, request, clock(context, binding.contextKeys))"
+    }
+  },
+  {
+    "id": "search_acquisition_personnel",
+    "nativeId": "search_acquisition_personnel",
+    "group": "acquisition-personnel",
+    "input": "AcquisitionPersonnelSearchInput",
+    "output": "AcquisitionPersonnelSearchOutput",
+    "version": "0.2.0",
+    "contextKeys": [
+      "actorRole"
+    ],
+    "normalize": {
+      "source": "(v, request, context, binding) => v.normalizeAcquisitionPersonnelInput(binding.id, request, clock(context, binding.contextKeys))"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertAcquisitionPersonnelOutput(binding.id, page, request, clock(context, binding.contextKeys))"
+    }
+  },
+  {
+    "id": "get_acquisition_person",
+    "nativeId": "get_acquisition_person",
+    "group": "acquisition-personnel",
+    "input": "AcquisitionPersonDetailInput",
+    "output": "AcquisitionPersonDetailOutput",
+    "version": "0.2.0",
+    "contextKeys": [
+      "actorRole"
+    ],
+    "normalize": {
+      "source": "(v, request, context, binding) => v.normalizeAcquisitionPersonnelInput(binding.id, request, clock(context, binding.contextKeys))"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertAcquisitionPersonnelOutput(binding.id, page, request, clock(context, binding.contextKeys))"
+    }
+  },
+  {
+    "id": "get_bill_status",
+    "nativeId": "get_bill_status",
+    "group": "federal-legislation",
+    "input": "FederalBillStatusInput",
+    "output": "FederalBillStatusOutput",
+    "version": "0.2.0",
+    "contextKeys": [
+      "defaultCongress"
+    ],
+    "normalize": {
+      "source": "(v, request, context, binding) => ({input: v.normalizeFederalLegislationInput(binding.id, request, clock(context, binding.contextKeys))})"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertFederalLegislationOutput(binding.id, page, request, clock(context, binding.contextKeys))"
+    }
+  },
+  {
+    "id": "search_floor_votes",
+    "nativeId": "search_floor_votes",
+    "group": "federal-legislation",
+    "input": "FederalFloorVotesInput",
+    "output": "FederalFloorVotesOutput",
+    "version": "0.2.0",
+    "contextKeys": [
+      "defaultCongress"
+    ],
+    "normalize": {
+      "source": "(v, request, context, binding) => ({input: v.normalizeFederalLegislationInput(binding.id, request, clock(context, binding.contextKeys))})"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertFederalLegislationOutput(binding.id, page, request, clock(context, binding.contextKeys))"
+    }
+  },
+  {
+    "id": "search_cbo_cost_estimates",
+    "nativeId": "search_cbo_cost_estimates",
+    "group": "public-reports",
+    "input": "CboCostEstimateSearchInput",
+    "output": "CboCostEstimateSearchOutput",
+    "version": "0.2.0",
+    "contextKeys": [],
+    "normalize": {
+      "source": "(v, request, context, binding) => v.normalizePublicReportsInput(binding.id, request)"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertPublicReportsOutput(binding.id, page, request)"
+    }
+  },
+  {
+    "id": "search_gao_reports",
+    "nativeId": "search_gao_reports",
+    "group": "public-reports",
+    "input": "GaoReportSearchInput",
+    "output": "GaoReportSearchOutput",
+    "version": "0.2.0",
+    "contextKeys": [],
+    "normalize": {
+      "source": "(v, request, context, binding) => v.normalizePublicReportsInput(binding.id, request)"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertPublicReportsOutput(binding.id, page, request)"
+    }
+  },
+  {
+    "id": "search_crs_reports",
+    "nativeId": "search_crs_reports",
+    "group": "public-reports",
+    "input": "CrsReportSearchInput",
+    "output": "CrsReportSearchOutput",
+    "version": "0.2.0",
+    "contextKeys": [],
+    "normalize": {
+      "source": "(v, request, context, binding) => v.normalizePublicReportsInput(binding.id, request)"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertPublicReportsOutput(binding.id, page, request)"
+    }
+  },
+  {
+    "id": "search_state_bills",
+    "nativeId": "search_state_bills",
+    "group": "state-legislation",
+    "input": "StateBillSearchInput",
+    "output": "StateBillSearchOutput",
+    "version": "0.2.0",
+    "contextKeys": [],
+    "normalize": {
+      "source": "(v, request) => v.normalizeStateLegislationInput('search_state_bills', request)"
+    },
+    "outputAssert": {
+      "source": "(v, page, request) => v.assertStateLegislationOutput('search_state_bills', page, request)"
+    }
+  },
+  {
+    "id": "get_state_legislator",
+    "nativeId": "get_state_legislator",
+    "group": "state-legislation",
+    "input": "StateLegislatorInput",
+    "output": "StateLegislatorOutput",
+    "version": "0.2.0",
+    "contextKeys": [],
+    "normalize": {
+      "source": "(v, request) => v.normalizeStateLegislationInput('get_state_legislator', request)"
+    },
+    "outputAssert": {
+      "source": "(v, page, request) => v.assertStateLegislationOutput('get_state_legislator', page, request)"
+    }
+  },
+  {
+    "id": "search_funding_opportunities",
+    "nativeId": "search_funding_opportunities",
+    "group": "funding-opportunities",
+    "input": "FundingSearchInput",
+    "output": "FundingSearchOutput",
+    "version": "0.2.0",
+    "contextKeys": [
+      "asOf"
+    ],
+    "normalize": {
+      "source": "(v, request, context, binding) => v.normalizeFundingOpportunitiesInput(binding.id, request, clock(context, binding.contextKeys))"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertFundingOpportunitiesOutput(binding.id, page, request, clock(context, binding.contextKeys))"
+    }
+  },
+  {
+    "id": "get_funding_opportunity_requirements",
+    "nativeId": "get_funding_opportunity_requirements",
+    "group": "funding-opportunities",
+    "input": "FundingRequirementsInput",
+    "output": "FundingRequirementsOutput",
+    "version": "0.2.0",
+    "contextKeys": [
+      "asOf"
+    ],
+    "normalize": {
+      "source": "(v, request, context, binding) => v.normalizeFundingOpportunitiesInput(binding.id, request, clock(context, binding.contextKeys))"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertFundingOpportunitiesOutput(binding.id, page, request, clock(context, binding.contextKeys))"
+    }
+  },
+  {
+    "id": "get_funding_opportunity",
+    "nativeId": "get_funding_opportunity",
+    "group": "funding-opportunities",
+    "input": "FundingOpportunityInput",
+    "output": "FundingOpportunityOutput",
+    "version": "0.2.0",
+    "contextKeys": [
+      "asOf"
+    ],
+    "normalize": {
+      "source": "(v, request, context, binding) => v.normalizeFundingOpportunitiesInput(binding.id, request, clock(context, binding.contextKeys))"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertFundingOpportunitiesOutput(binding.id, page, request, clock(context, binding.contextKeys))"
+    }
+  },
+  {
+    "id": "get_opportunity_client_context",
+    "nativeId": "get_opportunity_client_context",
+    "group": "funding-opportunities",
+    "input": "FundingClientContextInput",
+    "output": "FundingClientContextOutput",
+    "version": "0.2.0",
+    "contextKeys": [
+      "asOf"
+    ],
+    "normalize": {
+      "source": "(v, request, context, binding) => v.normalizeFundingOpportunitiesInput(binding.id, request, clock(context, binding.contextKeys))"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertFundingOpportunitiesOutput(binding.id, page, request, clock(context, binding.contextKeys))"
+    }
+  },
+  {
+    "id": "get_opportunity_government_landscape",
+    "nativeId": "get_opportunity_government_landscape",
+    "group": "funding-opportunities",
+    "input": "FundingGovernmentLandscapeInput",
+    "output": "FundingGovernmentLandscapeOutput",
+    "version": "0.2.0",
+    "contextKeys": [
+      "asOf"
+    ],
+    "normalize": {
+      "source": "(v, request, context, binding) => v.normalizeFundingOpportunitiesInput(binding.id, request, clock(context, binding.contextKeys))"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertFundingOpportunitiesOutput(binding.id, page, request, clock(context, binding.contextKeys))"
+    }
+  },
+  {
+    "id": "read_client_documents",
+    "nativeId": "read_client_documents",
+    "group": "client-documents",
+    "input": "ClientDocumentsInput",
+    "output": "ClientDocumentsResult",
+    "version": "0.2.0",
+    "contextKeys": [
+      "binding",
+      "subject"
+    ],
+    "normalize": {
+      "source": "(v, request, context, binding) => ({input: v.normalizeClientDocumentsInput(request, clock(context, binding.contextKeys))})"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertClientDocumentsResult(page, request, clock(context, binding.contextKeys))"
+    }
+  },
+  {
+    "id": "query_economic_data",
+    "nativeId": "query_economic_data",
+    "group": "public-data",
+    "input": "PublicEconomicInput",
+    "output": "PublicEconomicOutput",
+    "version": "0.2.0",
+    "contextKeys": [],
+    "normalize": {
+      "source": "(v, request, context, binding) => v.normalizePublicDataInput(binding.id, request, clock(context, binding.contextKeys))"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertPublicDataOutput(binding.id, page, request, clock(context, binding.contextKeys))"
+    }
+  },
+  {
+    "id": "search_federal_grants",
+    "nativeId": "search_federal_grants",
+    "group": "public-data",
+    "input": "PublicGrantInput",
+    "output": "PublicGrantOutput",
+    "version": "0.2.0",
+    "contextKeys": [
+      "evidenceAccuracyMode"
+    ],
+    "normalize": {
+      "source": "(v, request, context, binding) => v.normalizePublicDataInput(binding.id, request, clock(context, binding.contextKeys))"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertPublicDataOutput(binding.id, page, request, clock(context, binding.contextKeys))"
+    }
+  },
+  {
+    "id": "search_federal_awards",
+    "nativeId": "search_federal_awards",
+    "group": "public-data",
+    "input": "PublicAwardInput",
+    "output": "PublicAwardOutput",
+    "version": "0.2.0",
+    "contextKeys": [
+      "evidenceAccuracyMode"
+    ],
+    "normalize": {
+      "source": "(v, request, context, binding) => v.normalizePublicDataInput(binding.id, request, clock(context, binding.contextKeys))"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertPublicDataOutput(binding.id, page, request, clock(context, binding.contextKeys))"
+    }
+  },
+  {
+    "id": "get_district_nexus_context",
+    "nativeId": "get_district_nexus_context",
+    "group": "district-nexus",
+    "input": "DistrictNexusContextInput",
+    "output": "DistrictNexusContextResult",
+    "version": "0.2.0",
+    "contextKeys": [
+      "binding",
+      "subject"
+    ],
+    "normalize": {
+      "source": "(v, request, context, binding) => ({input: v.normalizeDistrictNexusInput(binding.id, request, clock(context, binding.contextKeys))})"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertDistrictNexusReadResult(binding.id, page, request, clock(context, binding.contextKeys))"
+    }
+  },
+  {
+    "id": "get_district_nexus_changes",
+    "nativeId": "get_district_nexus_changes",
+    "group": "district-nexus",
+    "input": "DistrictNexusChangesInput",
+    "output": "DistrictNexusChangesResult",
+    "version": "0.2.0",
+    "contextKeys": [
+      "binding",
+      "subject"
+    ],
+    "normalize": {
+      "source": "(v, request, context, binding) => ({input: v.normalizeDistrictNexusInput(binding.id, request, clock(context, binding.contextKeys))})"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertDistrictNexusReadResult(binding.id, page, request, clock(context, binding.contextKeys))"
+    }
+  },
+  {
+    "id": "get_business_development_context",
+    "nativeId": "get_business_development_context",
+    "group": "business-development",
+    "input": "BusinessDevelopmentContextInput",
+    "output": "BusinessDevelopmentContextOutput",
+    "version": "0.2.0",
+    "normalize": {
+      "source": "(v, request, context, binding) => v.normalizeBusinessDevelopmentInput(binding.id, request)"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertBusinessDevelopmentOutput(binding.id, page, request)"
+    }
+  },
+  {
+    "id": "get_business_development_evidence",
+    "nativeId": "get_business_development_evidence",
+    "group": "business-development",
+    "input": "BusinessDevelopmentEvidenceInput",
+    "output": "BusinessDevelopmentEvidenceOutput",
+    "version": "0.2.0",
+    "normalize": {
+      "source": "(v, request, context, binding) => v.normalizeBusinessDevelopmentInput(binding.id, request)"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertBusinessDevelopmentOutput(binding.id, page, request)"
+    }
+  },
+  {
+    "id": "get_business_development_recent_changes",
+    "nativeId": "get_business_development_recent_changes",
+    "group": "business-development",
+    "input": "BusinessDevelopmentRecentChangesInput",
+    "output": "BusinessDevelopmentRecentChangesOutput",
+    "version": "0.2.0",
+    "normalize": {
+      "source": "(v, request, context, binding) => v.normalizeBusinessDevelopmentInput(binding.id, request)"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertBusinessDevelopmentOutput(binding.id, page, request)"
+    }
+  },
+  {
+    "id": "lookup_client_registry",
+    "nativeId": "lookup_client_registry",
+    "group": "client-registry",
+    "input": "ClientRegistryInput",
+    "output": "ClientRegistryResult",
+    "version": "0.2.0",
+    "normalize": {
+      "source": "(v, request) => ({input: v.normalizeClientRegistryInput(request)})"
+    },
+    "outputAssert": {
+      "source": "(v, page, request) => {v.normalizeClientRegistryInput(request); return v.assertClientRegistryResult(page);}"
+    }
+  },
+  {
+    "id": "get_research_portfolio",
+    "nativeId": "get_research_portfolio",
+    "group": "research-portfolio",
+    "input": "ResearchPortfolioDetailInput",
+    "output": "ResearchPortfolioDetailResult",
+    "version": "0.2.0",
+    "contextKeys": [
+      "binding",
+      "subject"
+    ],
+    "normalize": {
+      "source": "(v, request, context, binding) => ({input: v.normalizeResearchPortfolioInput(binding.id, request, clock(context, binding.contextKeys))})"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertResearchPortfolioReadResult(binding.id, page, request, clock(context, binding.contextKeys))"
+    }
+  },
+  {
+    "id": "get_research_portfolio_changes",
+    "nativeId": "get_research_portfolio_changes",
+    "group": "research-portfolio",
+    "input": "ResearchPortfolioChangesInput",
+    "output": "ResearchPortfolioChangesResult",
+    "version": "0.2.0",
+    "contextKeys": [
+      "binding",
+      "subject"
+    ],
+    "normalize": {
+      "source": "(v, request, context, binding) => ({input: v.normalizeResearchPortfolioInput(binding.id, request, clock(context, binding.contextKeys))})"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertResearchPortfolioReadResult(binding.id, page, request, clock(context, binding.contextKeys))"
+    }
+  },
+  {
+    "id": "mail.read_thread",
+    "nativeId": "get_email_thread",
+    "group": "mail",
+    "input": "MailThreadInput",
+    "output": "MailThreadSourcePage",
+    "version": "0.2.0",
+    "normalize": {
+      "source": "(v, request, context, binding) => ({input: v.assertMailThreadInput(request)})"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertMailThreadSourcePage(page, request)"
+    }
+  },
+  {
+    "id": "mail.list_messages",
+    "nativeId": "list_emails",
+    "group": "mail",
+    "input": "MailListInput",
+    "output": "MailCandidateSourcePage",
+    "version": "0.2.0",
+    "dispatchProfile": "mail-candidates/1",
+    "normalize": {
+      "source": "(v, request, context, binding) => ({input: v.assertMailListInput(request, clock(context, ['nowMs']))})"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertMailCandidateSourcePage(page, request, binding.id, clock(context, ['nowMs', 'previousPage']))"
+    }
+  },
+  {
+    "id": "mail.search_messages",
+    "nativeId": "search_emails",
+    "group": "mail",
+    "input": "MailSearchInput",
+    "output": "MailCandidateSourcePage",
+    "version": "0.2.0",
+    "dispatchProfile": "mail-candidates/1",
+    "normalize": {
+      "source": "(v, request, context, binding) => ({input: v.assertMailSearchInput(request, clock(context, ['nowMs']))})"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertMailCandidateSourcePage(page, request, binding.id, clock(context, ['nowMs', 'previousPage']))"
+    }
+  },
+  {
+    "id": "meeting.list_upcoming_meetings",
+    "nativeId": "list_upcoming_meetings",
+    "group": "meeting-source",
+    "input": "MeetingUpcomingInput",
+    "output": "MeetingUpcomingPage",
+    "version": "0.2.0",
+    "normalize": {
+      "source": "(v, request, context, binding) => ({input: v.assertUpcomingMeetingsInput(request, clock(context, ['nowMs']))})"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertUpcomingMeetingsPage(page, request, clock(context, ['nowMs']))"
+    }
+  },
+  {
+    "id": "meeting.read_client_meetings",
+    "nativeId": "read_client_meetings",
+    "group": "meeting-source",
+    "input": "ClientMeetingReadInput",
+    "output": "ClientMeetingReadPage",
+    "version": "0.2.0",
+    "normalize": {
+      "source": "(v, request, context, binding) => selected(v.assertClientMeetingReadInput(request))"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertClientMeetingReadInput(request).selection.sourceId === undefined ? v.assertClientMeetingInventoryPage(page, request) : v.assertClientMeetingSourceBodyPage(page, request)"
+    }
+  },
+  {
+    "id": "meeting.query_debriefs",
+    "nativeId": "query_debriefs",
+    "group": "meeting-source",
+    "input": "DebriefReadInput",
+    "output": "DebriefSourcePage",
+    "version": "0.2.0",
+    "normalize": {
+      "source": "(v, request, context, binding) => selected(v.assertDebriefReadInput(request))"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertDebriefSourcePage(page, request)"
+    }
+  },
+  {
+    "id": "query_tasks",
+    "nativeId": "query_tasks",
+    "group": "operational-reads",
+    "input": "TaskReadInput",
+    "output": "TaskReadPage",
+    "version": "0.2.0",
+    "normalize": {
+      "source": "(v, request, context, binding) => selected(v.assertTaskReadInput(request, clock(context, ['nowMs', 'actorId'])))"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertTaskReadPage(page, request, clock(context, ['nowMs', 'actorId']))"
+    }
+  },
+  {
+    "id": "search_capiro_data",
+    "nativeId": "search_capiro_data",
+    "group": "data-search",
+    "input": "DataSearchInput",
+    "output": "SearchCapiroDataResult",
+    "version": "0.2.0",
+    "normalize": {
+      "source": "(v, request, context, binding) => searched(v.normalizeDataSearchInput(request))"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertDataSearchResult(page)"
+    }
+  },
+  {
+    "id": "search_federal_contract_awards",
+    "nativeId": "search_federal_contract_awards",
+    "group": "federal-market",
+    "input": "SearchFederalContractAwardsInput",
+    "output": "SearchFederalContractAwardsOutput",
+    "version": "0.2.0",
+    "normalize": {
+      "source": "(v, request, context, binding) => federal(v.normalizeFederalMarketInput(binding.id, request))"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.validateFederalMarketShape(binding.output, page)"
+    }
+  },
+  {
+    "id": "search_federal_subawards",
+    "nativeId": "search_federal_subawards",
+    "group": "federal-market",
+    "input": "SearchFederalSubawardsInput",
+    "output": "SearchFederalSubawardsOutput",
+    "version": "0.2.0",
+    "normalize": {
+      "source": "(v, request, context, binding) => federal(v.normalizeFederalMarketInput(binding.id, request))"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.validateFederalMarketShape(binding.output, page)"
+    }
+  },
+  {
+    "id": "search_contract_vehicles",
+    "nativeId": "search_contract_vehicles",
+    "group": "federal-market",
+    "input": "SearchContractVehiclesInput",
+    "output": "SearchContractVehiclesOutput",
+    "version": "0.2.0",
+    "normalize": {
+      "source": "(v, request, context, binding) => federal(v.normalizeFederalMarketInput(binding.id, request))"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.validateFederalMarketShape(binding.output, page)"
+    }
+  },
+  {
+    "id": "search_procurement_forecasts",
+    "nativeId": "search_procurement_forecasts",
+    "group": "federal-market",
+    "input": "SearchProcurementForecastsInput",
+    "output": "SearchProcurementForecastsOutput",
+    "version": "0.2.0",
+    "normalize": {
+      "source": "(v, request, context, binding) => federal(v.normalizeFederalMarketInput(binding.id, request))"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.validateFederalMarketShape(binding.output, page)"
+    }
+  },
+  {
+    "id": "get_district_federal_market",
+    "nativeId": "get_district_federal_market",
+    "group": "federal-market",
+    "input": "GetDistrictFederalMarketInput",
+    "output": "GetDistrictFederalMarketOutput",
+    "version": "0.2.0",
+    "normalize": {
+      "source": "(v, request, context, binding) => federal(v.normalizeFederalMarketInput(binding.id, request))"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.validateFederalMarketShape(binding.output, page)"
+    }
+  },
+  {
+    "id": "memory.list_own_proposals",
+    "nativeId": "list_memory_proposals",
+    "group": "memory-proposals",
+    "input": "MemoryProposalInput",
+    "output": "MemoryProposalReadResult",
+    "version": "0.2.0",
+    "dispatchProfile": "memory-proposals/1",
+    "contextKeys": [
+      "subject",
+      "previous"
+    ],
+    "normalize": {
+      "source": "(v, request, context, binding) => ({input: v.normalizeMemoryProposalInput(request, context)})"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertMemoryProposalReadResult(page, request, clock(context, binding.contextKeys))"
+    }
+  },
+  {
+    "id": "query_action_items",
+    "nativeId": "query_action_items",
+    "nativeCoverage": "partial",
+    "group": "operational-reads",
+    "input": "ActionItemReadInput",
+    "output": "ActionItemClientScopedPage",
+    "version": "0.2.0",
+    "normalize": {
+      "source": "(v, request, context, binding) => {\n      if (typeof context.actorId !== 'string' || !context.actorId) fail('Explicit trusted actorId required');\n      const result = v.assertActionItemReadInput(request, clock(context, ['actorId']));\n      if (result.mode !== 'client_scoped') fail('Unscoped action-item mode remains unqualified');\n      return selected(result);\n    }"
+    },
+    "outputAssert": {
+      "source": "(v, page, request, context, binding) => v.assertActionItemClientScopedPage(page, request, clock(context, ['actorId']))"
+    }
+  }
+]
