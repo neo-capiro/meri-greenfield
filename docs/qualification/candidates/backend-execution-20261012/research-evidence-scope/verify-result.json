@@ -1,0 +1,9 @@
+{
+  "checks": 192,
+  "passed": 192,
+  "failed": 0,
+  "failures": [],
+  "manifestSha256": "92c9c84b074c082fcc9de59da72c372ffe1cf76af1884bcad787f54f7362001d",
+  "productionCodeExecuted": false,
+  "runtimeQualified": false
+}

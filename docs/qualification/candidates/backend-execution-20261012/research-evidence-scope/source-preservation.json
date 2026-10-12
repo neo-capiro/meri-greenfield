@@ -1,0 +1,8 @@
+{
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "outlineHead": "fb8bb505fe32dd83be83fecc914ebb354632a857",
+  "originalMembers": 7677,
+  "originalUnchanged": 7677,
+  "productionChanges": [],
+  "scope": "Only new task/report and this metadata packet; exact current catalog file also checked by verifier. No dependencies installed or long-running child processes."
+}
