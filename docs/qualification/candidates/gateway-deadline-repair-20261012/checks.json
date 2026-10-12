@@ -254,6 +254,7 @@
     "All final checks ran after timestamp guard; source-binding.json binds final source bytes.",
     "Final public command includes generated-file and TypeScript checks in addition to7 tests.",
     "Original control preserved function-display console output bytes.",
-    "No live/runtime/G1 acceptance claimed."
+    "No live/runtime/G1 acceptance claimed.",
+    "Pre-stage final-whitespace checked tracked source only; whole committed range flags28 preserved baseline assertion-output whitespace lines. Exact diagnostic bytes and source-only PASS are recorded in committed-whitespace.json."
   ]
 }

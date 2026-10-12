@@ -66,7 +66,17 @@ Author checks and retained failures:
   `node_modules` layout (missing canonicalize import and a root lstat). After
   exact root `npm ci --ignore-scripts`, **216/216 PASS**. No lock changed.
 - Public generated-file check, TypeScript check and public package **7/7 PASS**.
-- `git diff --check`: **PASS**. No new architecture/lint command exists for this
+- Source/report `git diff --check c57b7d2 b33c1c3 -- apps/gateway
+  docs/coordination/reports/MERI-GATEWAY-DEADLINE-REPAIR-20261012.md`: **PASS**.
+  Initial whole committed-range whitespace check: **FAIL**, solely 28 trailing-space
+  lines in preserved raw baseline Node assertion output. These failure bytes are
+  intentionally retained. The earlier pre-stage tracked-only check passed; it did
+  not include new raw evidence. Exact diagnostic bytes are preserved as base64 in
+  `committed-whitespace.json`. At the integration owner's request, scoped
+  `.gitattributes` in this new evidence directory now apply `-text -diff` only to
+  these raw stdout/stderr files, preserving their exact bytes; the resulting
+  whole staged-range check passes. Source/report whitespace checks remain active.
+  No new architecture/lint command exists for this
   gateway surface. Canonical contract checks are the existing repository checks.
 
 Raw stdout/stderr and a checks/preservation manifest are in
@@ -82,3 +92,7 @@ adversarial controls. Author success is not ACCEPT_SOURCE. Source connectivity
 and discovery stay disabled; real signature verification, current durable
 authority, durable reservations, source adapters/lineage, physical worker stop,
 native/runtime G1 evidence and subsequent gates remain unqualified.
+
+Source freeze: `b33c1c3e168bf889cbeff1ec8568bc01ef1b9e21`. Subsequent evidence-only
+metadata does not change gateway source. Reviewer and integration owner were
+notified with the exact source commit and the raw-output whitespace limitation.

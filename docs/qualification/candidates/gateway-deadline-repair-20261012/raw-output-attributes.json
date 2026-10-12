@@ -1,0 +1,19 @@
+{
+  "request": "Parent integration owner explicitly requested scoped -text -diff for owned raw stdout/stderr only",
+  "attributesPath": "docs/qualification/candidates/gateway-deadline-repair-20261012/.gitattributes",
+  "rawOutputsHashVerified": 30,
+  "initialFailurePreserved": "committed-whitespace.json",
+  "afterAttributesCheck": {
+    "command": [
+      "git",
+      "diff",
+      "--cached",
+      "--check",
+      "c57b7d26df7de2acbd8c7d8edc7098f7d495053a"
+    ],
+    "exitCode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "gatewaySourceUnchangedSince": "b33c1c3e168bf889cbeff1ec8568bc01ef1b9e21"
+}
