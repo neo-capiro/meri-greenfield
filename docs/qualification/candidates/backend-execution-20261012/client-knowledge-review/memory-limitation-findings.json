@@ -1,0 +1,7 @@
+{
+  "sourceCommit": "adf34cc4596c6e235417d8d18347d0b1063bdde1",
+  "firstReplay": "36/36",
+  "expandedReplay": "36/38",
+  "sourceFinding": "Status and emitted limitation correlation missing; available must be null, empty/metadata_only exact source limitations.",
+  "reviewerFixtures": "Prior synthetic empty null and generic metadata-only limitation need exact-source correction; assertions and raw source failures retained."
+}

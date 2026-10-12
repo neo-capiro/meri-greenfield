@@ -1,0 +1,46 @@
+✔ attachment manifest and content defaults differ (12.78671ms)
+✔ attachment exact typed bounds and no model authority (1.219153ms)
+✔ attachment explicit locators require attachment and exclude cursor (0.680072ms)
+✔ attachment current context is required and detached (0.468244ms)
+✔ attachment synthetic cursor decoding is correlation not HMAC authentication (5.285505ms)
+✔ attachment cursor every scope dimension binds (1.711102ms)
+✔ attachment cursor mode query attachment and closed shape bind (1.388186ms)
+✔ attachment cursor permits safe continuation positions beyond explicit selector ceiling (0.500492ms)
+✔ attachment cursor bounded canonical encoding rejects padding malformed and short signature (0.788064ms)
+✔ attachment manifest empty is metadata-only and total unknown (30.188666ms)
+✔ attachment manifest unavailable items count toward requested window (0.575946ms)
+✔ attachment manifest next cursor binds query scope and completion (0.696256ms)
+✔ attachment manifest stored scalars and absent original bytes remain distinct (0.544098ms)
+✔ attachment pdf section projection (3.243596ms)
+✔ attachment pptx section projection (0.696437ms)
+✔ attachment xlsx section projection (0.737548ms)
+✔ attachment docx section projection (0.497207ms)
+✔ attachment text section projection (0.466201ms)
+✔ attachment whitespace section can have no records without claiming unavailable (0.360001ms)
+✔ attachment UTF16 coordinates bind astral text (1.138351ms)
+✔ attachment source, result and evidence identities bind exactly (2.110702ms)
+✔ attachment continued source hash and message cannot rotate (1.088636ms)
+✔ attachment completion flags are correlated rather than authority (1.535739ms)
+✔ attachment query miss contains no source row (0.739302ms)
+✔ attachment unavailable extraction and unsupported kinds cannot claim successful content (0.633773ms)
+✔ attachment source data are inert and detached (0.501664ms)
+✔ attachment coordinate branch must match exact reader format (0.357767ms)
+✔ attachment returned section cannot exceed extractor section count (0.593402ms)
+✔ attachment coordinate page must match selected section (0.411148ms)
+✔ attachment manifest defaults and empty query difference (13.158549ms)
+✔ attachment complete manifest does not establish content completeness (27.677051ms)
+✔ attachment source sections bind text, bytes receipt, locator and external trust (3.937768ms)
+✔ attachment cursor is correlated but fake HMAC is expressly not authenticated (7.003246ms)
+✔ attachment cursor stale version, noncanonical encoding and explicit locator conflict fail (0.626592ms)
+✔ attachment metadata permits signed stored page counts and absent original bytes (0.613352ms)
+✔ attachment partial/empty section is not complete even without next cursor (0.41254ms)
+✔ attachment detached return and hostile nested JSON (0.504528ms)
+✔ attachment coordinate kind and selected section stay bound (1.398222ms)
+ℹ tests 38
+ℹ suites 0
+ℹ pass 38
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 413.972781

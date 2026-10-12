@@ -1,0 +1,84 @@
+✔ memory request trims caps floors and preserves parseInt behavior (7.175971ms)
+✔ memory early missing query wins over invalid selectors (33.701703ms)
+✔ memory invalid client refusal precedes content-cursor validation (0.404879ms)
+✔ memory refusal cannot replace valid query result (0.377308ms)
+✔ memory normal full content is detached source observation (3.636102ms)
+✔ memory missing query result cannot claim an empty search (0.35831ms)
+✔ memory exact lookup is single item, query may remain opaque (0.983591ms)
+✔ memory metadata-budget fallback is one not arbitrary intermediate size (0.793444ms)
+✔ memory requested k and effective cap bind returned rows (0.643789ms)
+✔ memory empty, unavailable and exact ineligible stay separate (0.742848ms)
+✔ memory metadata-only and empty records are not removed or silently facts (0.833234ms)
+✔ memory stale and controlling conflict observations remain admitted (0.539903ms)
+✔ memory pending proposals are not a recall output status (2.502847ms)
+✔ memory instructionsAllowed scalar never authorizes a call (0.353602ms)
+✔ memory selected client allows firm rows but rejects other client rows (1.042399ms)
+✔ memory convenience rows bind identity title type client score (1.282931ms)
+✔ memory full body hash includes source version (0.556848ms)
+✔ memory UTF16 offsets and non-surrogate ending bind (0.980345ms)
+✔ memory search excerpt cap differs from exact item budget (0.47815ms)
+✔ memory truncated search next-read cursor is unkeyed scope correlation (1.897836ms)
+✔ memory content cursor binds actor client item hash and offset (1.300748ms)
+✔ memory cursor requires exact item and excludes search cursor (0.180071ms)
+✔ memory current content cursor strict canonical data refuses extra and malformed encoding (0.281914ms)
+✔ memory next-read cannot change client or body hash (1.14316ms)
+✔ memory terminal body has no next-read and zero-progress pages refuse (0.669838ms)
+✔ memory duplicate records and opaque extra authority reject (0.914056ms)
+✔ memory request and output accessors are inertly refused (0.299601ms)
+✖ memory available content cannot carry metadata-only limitation (0.802919ms)
+✖ memory metadata-only and empty status require emitted limitation (0.416036ms)
+✔ memory normalization preserves floor/clamp and early refusal branches (42.149638ms)
+✔ memory full governed content and detached ownership (3.902754ms)
+✔ memory exact mode and fallback preserve requested/effective page sizes (1.181168ms)
+✔ memory content hash, offset and result projection substitutions refuse (1.701281ms)
+✔ memory governed statuses are observations not pending proposal bodies (0.479161ms)
+✔ memory empty/unavailable exact result stays distinct (0.399091ms)
+✔ memory metadata-only classification counts content without approving it as fact (0.554565ms)
+✔ memory cursor scope refuses actor substitution and cursor selector conflict (1.992448ms)
+✔ memory inert request boundary rejects getters without evaluation (0.2126ms)
+ℹ tests 38
+ℹ suites 0
+ℹ pass 36
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 208.810112
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-client-knowledge-memory-independent.test.mjs:45:1
+✖ memory available content cannot carry metadata-only limitation (0.802919ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-client-knowledge-review-20261012/packages/contracts/test/retrieval-client-knowledge-memory-independent.test.mjs:45:156)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-client-knowledge-memory-independent.test.mjs:46:1
+✖ memory metadata-only and empty status require emitted limitation (0.416036ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-client-knowledge-review-20261012/packages/contracts/test/retrieval-client-knowledge-memory-independent.test.mjs:46:213)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }

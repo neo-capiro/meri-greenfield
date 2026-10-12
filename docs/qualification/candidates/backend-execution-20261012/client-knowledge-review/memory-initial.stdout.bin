@@ -1,0 +1,44 @@
+✔ memory request trims caps floors and preserves parseInt behavior (7.807293ms)
+✔ memory early missing query wins over invalid selectors (48.762185ms)
+✔ memory invalid client refusal precedes content-cursor validation (0.390217ms)
+✔ memory refusal cannot replace valid query result (0.368485ms)
+✔ memory normal full content is detached source observation (3.886986ms)
+✔ memory missing query result cannot claim an empty search (0.340121ms)
+✔ memory exact lookup is single item, query may remain opaque (1.001596ms)
+✔ memory metadata-budget fallback is one not arbitrary intermediate size (0.784009ms)
+✔ memory requested k and effective cap bind returned rows (0.642747ms)
+✔ memory empty, unavailable and exact ineligible stay separate (0.838191ms)
+✔ memory metadata-only and empty records are not removed or silently facts (0.894946ms)
+✔ memory stale and controlling conflict observations remain admitted (0.589106ms)
+✔ memory pending proposals are not a recall output status (2.491778ms)
+✔ memory instructionsAllowed scalar never authorizes a call (0.37215ms)
+✔ memory selected client allows firm rows but rejects other client rows (1.062498ms)
+✔ memory convenience rows bind identity title type client score (1.273065ms)
+✔ memory full body hash includes source version (0.498499ms)
+✔ memory UTF16 offsets and non-surrogate ending bind (1.4033ms)
+✔ memory search excerpt cap differs from exact item budget (0.644359ms)
+✔ memory truncated search next-read cursor is unkeyed scope correlation (2.738209ms)
+✔ memory content cursor binds actor client item hash and offset (1.843453ms)
+✔ memory cursor requires exact item and excludes search cursor (0.244528ms)
+✔ memory current content cursor strict canonical data refuses extra and malformed encoding (0.38539ms)
+✔ memory next-read cannot change client or body hash (1.204933ms)
+✔ memory terminal body has no next-read and zero-progress pages refuse (0.806393ms)
+✔ memory duplicate records and opaque extra authority reject (0.815917ms)
+✔ memory request and output accessors are inertly refused (0.336386ms)
+✔ memory normalization preserves floor/clamp and early refusal branches (55.349823ms)
+✔ memory full governed content and detached ownership (4.106902ms)
+✔ memory exact mode and fallback preserve requested/effective page sizes (1.445254ms)
+✔ memory content hash, offset and result projection substitutions refuse (2.455974ms)
+✔ memory governed statuses are observations not pending proposal bodies (0.700885ms)
+✔ memory empty/unavailable exact result stays distinct (0.565681ms)
+✔ memory metadata-only classification counts content without approving it as fact (0.848316ms)
+✔ memory cursor scope refuses actor substitution and cursor selector conflict (2.526921ms)
+✔ memory inert request boundary rejects getters without evaluation (0.315224ms)
+ℹ tests 36
+ℹ suites 0
+ℹ pass 36
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 240.848147
