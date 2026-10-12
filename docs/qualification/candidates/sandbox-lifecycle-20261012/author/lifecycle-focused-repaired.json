@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/worker/qualification/probes/owned-probe-child.test.mjs",
+    "apps/worker/qualification/probes/browser-lifetime.test.mjs"
+  ],
+  "cwd": "/workspace/meri-sandbox-lifecycle-20261012",
+  "sourceHead": "41ded012694bbe0d90e18506ae57c50168f1a3fc",
+  "sourceDiffSha256": "2663f6fb82e91ad4f6ef036df48b852289264ac51255e7fc8c29eb74c499b6e9",
+  "sourceDiffBytes": 20730,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T05:05:10.091566+00:00",
+  "durationSeconds": 0.367,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 60864,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/author/lifecycle-focused-repaired.stdout.bin",
+      "bytes": 1918,
+      "sha256": "93653697df8bff874738f07598b506e9626ff3a592d4854089c62307e0145d23"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/author/lifecycle-focused-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Correct new test to preserved runBoundedSequence rejection contract; add no-pending-port expiry and prelaunch checks",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

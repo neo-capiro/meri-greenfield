@@ -1,0 +1,192 @@
+✔ export lines are single marker-prefixed JSON records within 12KiB (8.944871ms)
+✔ chunkBuffer bounds payloads at CHUNK_BYTES and never emits empty arrays (0.804419ms)
+✔ planExport covers exactly the eleven files with the exact expected limits (1.25059ms)
+✔ planExport fails closed on cap breaches and out-of-set paths (2.83522ms)
+✔ baseline: the faithful positive fixture is accepted by verdict and decoder (0.527272ms)
+✔ owner audit: every contradictory nested fact is rejected (10 cases) (2.165774ms)
+✔ owner audit: missing cleanupConfirmed fails closed (exact true required) (0.364478ms)
+✔ owner audit: native XLSX cached value must be blank (null), distinct from recalc 6 (0.346751ms)
+✔ owner audit: decoder rejects native parse false/absent, bad evidence paths, unknown cgroup and over-deadline elapsed (6.921811ms)
+✔ verifyArtifactsVerdict fails on nonzero exit/signal/timeout/error even with the good payload (1.633985ms)
+✔ normalizeDeadlineMs rejects NaN/Infinity/non-positive/over-cap (0.205869ms)
+✔ streamRecords rejects an invalid deadline instead of bypassing the bound (1.008566ms)
+✔ streamRecords bounds a never-callback pending write (no hang) (10.112125ms)
+✔ streamRecords aborts a pending write on a stream error (no hang) (3.22127ms)
+✔ streamRecords fails closed when the final write lands after the deadline (4.800954ms)
+✔ streamRecords completes bounded writes and cleans up (1.940716ms)
+✔ runArtifactsChild requires the close event: a kill signal alone is not exit (50.65049ms)
+✔ owner audit: normal close with a live owned group kills the group (killCalls>=1) and fails closed (21.699756ms)
+✔ owner audit: an undefined group-probe result cannot confirm cleanup (21.667716ms)
+✔ runArtifactsChild plumbs a detached group and only kills the owned pid (35.244098ms)
+✔ runArtifactsChild confirms cleanup only when the group is proven absent (1.137528ms)
+✔ runArtifactsChild bounds child stdout and fails closed on overflow (0.961003ms)
+✔ owner audit: a junction ABOVE the run root is rejected by inspectExpectedFiles (1.082817ms)
+✔ owner audit: readRegularFileVerified rejects a stale pre-read timestamp (0.700492ms)
+✔ inspectExpectedFiles ignores decoys and never walks recursively (1.798121ms)
+✔ inspectExpectedFiles rejects a missing file, a directory-as-file and a hard link (2.947477ms)
+✔ inspectExpectedFiles rejects an internal junction inside the run root (0.935295ms)
+✔ isContained, canonical base64 and checkDestination reject traversal and symlink ancestors (0.429666ms)
+✔ rejector: missing end / missing chunk (2.367807ms)
+✔ rejector: changed duplicate / non-canonical base64 / mixed capture (3.396402ms)
+✔ rejector: wrong decoded hash / wrong length / wrong count (4.137875ms)
+✔ rejector: non-UUID capture identity, missing/false limits, unknown fields (5.123776ms)
+✔ rejector: oversized capture line is rejected BEFORE parsing (>12KiB) (1.098389ms)
+✔ rejector: an error record voids the capture; malformed marker line fails closed (1.868687ms)
+✔ owner audit: line count is bounded while scanning (no 20k-line allocation) (2.19064ms)
+✔ readBoundedText enforces the size cap and rejects non-regular input (0.467362ms)
+✔ reconstruction failure writes no files and leaves a new destination absent (1.024569ms)
+✔ an existing destination is refused, left untouched, and never reused (1.671561ms)
+✔ exclusive output acquisition: a second write to the same directory loses (0.306811ms)
+✔ full eleven-file round-trip reconstructs byte-identical files (3.04257ms)
+✔ out-of-order and byte-identical duplicate delivery both reconstruct (2.33ms)
+✔ CloudWatch-style JSON event envelope with embedded newlines is accepted (1.429337ms)
+✖ main() streams a complete capture (with honest end.elapsedMs) and it reconstructs (5009.524863ms)
+✔ main() emits only an error record after a failed/signalled/unclosed generation or invalid deadline (10060.178921ms)
+✔ runCli requires --input/--out and writes nothing on a malformed capture (0.765309ms)
+✔ runCli reconstructs a valid capture to a new directory (1.899003ms)
+✔ collectRecords ignores non-marker log lines but keeps every marker record (0.869887ms)
+✔ Codex owner correction: structure, cache and real recalc.file observations cannot be normalized into success (1.65787ms)
+✔ Codex owner correction: every retained PNG count is an exact integer and recalc file must agree (8.880793ms)
+✔ Codex owner correction: unsafe base ancestors are rejected before directory creation or spawn (1.986545ms)
+✖ Codex owner correction: main rejects a valid-looking payload from another generated run (5002.92377ms)
+✔ Codex owner correction: malformed Linux PID is uncertain and EPERM never means absent (0.598009ms)
+✔ Codex owner correction: invalid cleanup grace fails before spawning (0.267903ms)
+✔ Codex owner correction: bounded CLI input rejects junction ancestors and hard-linked captures (0.504678ms)
+✔ Codex owner correction: envelope line bounds stop before joining or splitting all messages (5.247825ms)
+✔ package.json pins the exact qualification dependency versions (1.982929ms)
+✔ package-lock.json locks the same exact versions with integrity (0.315825ms)
+✔ component-pins.json agrees with package.json, lock and tests (0.223666ms)
+✔ the sole local public contracts archive is exact reviewed regular-file DATA (0.767303ms)
+✔ public package lock adds only its exact local record and canonicalize closure (0.496966ms)
+✔ public contracts provenance stays versioned source DATA without image admission (0.129475ms)
+✔ Docker copies and size/hash-verifies the exact public archive before npm ci (0.255835ms)
+✔ Docker context admits exactly the one selected vendor archive (0.270246ms)
+✔ SDK bundle manifest declares CLI 2.1.295 and the pinned linux-x64 checksum (0.182384ms)
+✔ playwright-core maps Chromium revision 1247 to version 155.0.8059.12 (0.291709ms)
+✔ requirements.lock.txt pins the four direct Python libraries and transitives with hashes (0.31267ms)
+✔ published sdk.d.ts declares the supported configuration fields (not hypothetical APIs) (0.40622ms)
+✔ buildQualificationOptions produces the explicit inert options (0.205799ms)
+✔ options builder rejects overrides that re-enable discovery or move cwd (0.394682ms)
+✔ assertInertOptions fails closed on non-inert option sets (0.155613ms)
+✔ options builder refuses unsupported SessionStore combinations (0.246771ms)
+✔ reference store load of a missing session returns null (0.097216ms)
+✔ reference store retains opaque entries and their unknown fields unchanged (0.373331ms)
+✔ reference store accepts and retains UUID-less entries (0.190376ms)
+✔ reference store separates the main transcript from subagent subkeys (0.363366ms)
+✔ reference store separates project and session scopes (0.167091ms)
+✔ OBSERVED: InMemorySessionStore does not deduplicate repeated UUIDs (upstream guarantee NOT assumed) (0.131037ms)
+✔ verifyRestore succeeds on exact ordered opaque-entry equality (0.253ms)
+✔ verifyRestore fails closed when expected state is absent (0.257046ms)
+✔ verifyRestore fails when an opaque unknown field changed (0.216866ms)
+✔ verifyRestore fails when a duplicate or UUID-less entry is missing (0.271988ms)
+✔ process identification rejects the MCP Node launcher and unrelated profiles (0.302154ms)
+✔ process identification requires an associated renderer and the exact run profile (0.11314ms)
+✔ sandbox verdict accepts Layer 1 Namespace + Seccomp-BPF Yes with an actual browser and renderer (0.248433ms)
+✔ sandbox verdict accepts Layer 1 SUID and rejects None/missing/ambiguous/No (0.275223ms)
+✔ sandbox verdict rejects missing evidence, generic prose or a missing renderer (0.124638ms)
+✔ sandbox rows: unknown labels ignored, duplicates and unexpected values ambiguous (0.146861ms)
+✔ disabling flags are detected anywhere in any process argv (0.24589ms)
+✔ extractResultSection decodes the exact Result section (two-cell object with escaped newlines) (0.29296ms)
+✔ extractResultSection decodes multi-line pretty JSON Result (0.089915ms)
+✔ extractResultSection fails closed on missing, duplicate, empty, error or malformed Result (0.204427ms)
+✔ decodeToolResult prefers structuredContent over the Result section (0.151617ms)
+✔ parseStructuredOutput parses complete pretty multi-line JSON (0.140411ms)
+✔ parseStructuredOutput fails closed on malformed, missing, noisy or non-object output (0.133801ms)
+✔ classifyChildResult refuses a nested ok:true inside an outer failed verdict (0.146369ms)
+✔ classifyChildResult fails on nonzero status, missing verdict and timeout (0.088303ms)
+✔ summarize/computeExitCode treat a required skipped or failed check as not-ok (0.149274ms)
+✔ Dockerfile pins an immutable base digest and non-root UID/GID 10001 (0.197426ms)
+✔ Dockerfile declares the writable mount points and read-only-root expectation (0.116485ms)
+✔ Dockerfile pins Debian repositories to the snapshot with signature verification and Check-Valid-Until disabled (0.164517ms)
+✔ Dockerfile bootstraps ca-certificates over HTTP then switches to HTTPS with a pinned CA version (0.103235ms)
+✔ Dockerfile keeps the browser tree root-owned and asserts the setuid helper after ownership ops (0.102835ms)
+✔ Dockerfile performs one locked npm install with optional binaries and no fallback (0.103546ms)
+✔ Dockerfile installs the matched CfT browser via the adopted Playwright CLI and keeps the sandbox helper (0.108122ms)
+✔ component-pins.json records the inspected CfT archive, sha256 and helper path (0.083255ms)
+✔ component-pins.json records CFT per-file pins and provenance (0.056986ms)
+✔ Dockerfile byte-verifies CFT files at the established paths and emits build evidence fail-closed (0.063245ms)
+✔ component-pins.json records base license source and the prior runtime-probe evidence (0.062113ms)
+✔ component-pins.json records the trixie snapshot, python 3.13 and coherent direct pins (0.157827ms)
+✔ Dockerfile OS package pins match the component-pins resolved versions (no drift) (0.107531ms)
+✔ Dockerfile refreshes inherited packages and records build-time evidence (0.070767ms)
+✔ component-pins.json distinguishes the prior built candidate from the unbuilt refresh (0.129695ms)
+✔ classifyNetworkResults requires expected denial classes and a 10.80 positive control (0.187191ms)
+✔ classifyNetworkResults fails on resolver success, unknown error class, wrong range or failed connect (0.176044ms)
+✔ addressIn10_80 matches only the qualification VPC range (0.107221ms)
+✔ classifySubprocess fails on nonzero status, signal or spawn error (0.14651ms)
+✔ decideNative fails when generation or PPTX inspection fails (0.145449ms)
+✔ decideRecalc requires successful conversion, a NEW file and observed numeric 6 (0.171648ms)
+✔ decideRender treats disabled rendering as a visible not-passed result (0.13931ms)
+✔ decideRender fails on any failed conversion, missing PNG or failed PDF inspection (0.1459ms)
+✔ the SDK reference store is the actual pinned upstream export (0.055693ms)
+✔ helper discovery accepts a root-owned 4755 alias matching the pinned helper (0.160391ms)
+✔ helper discovery rejects a missing, wrong-bytes, non-root or non-4755 alias (0.089104ms)
+✔ classifyUnshareDiagnostic reads the simple newuserns check and never calls killed/timeout/spawn-error children ok (0.236856ms)
+✔ parseSelfStatus and mountFlagsFor extract bounded security fields (0.41284ms)
+✔ planBrowserSteps lists the granular browser-dependent substeps (0.163055ms)
+✔ real-flow: nav/snapshot success without a Result section is NOT fatal (1.111459ms)
+✔ real-flow: a fatal get_config stops the sequence and runs no later MCP call (0.154702ms)
+✔ real-flow: a fatal nav-fixture stops the sequence and runs no later MCP call (0.20003ms)
+✔ real-flow: a fatal snapshot stops the sequence and runs no later MCP call (0.085298ms)
+✔ real-flow: a fatal download-nav stops the sequence and runs no later MCP call (0.112018ms)
+✔ real-flow: a fatal version-nav stops the sequence and runs no later MCP call (0.188984ms)
+✔ real-flow: a fatal sandbox-nav stops the sequence and runs no later MCP call (0.187151ms)
+✔ real-flow: download-bytes failure (no file) stops before version/sandbox MCP calls (0.278368ms)
+✔ real-flow: version-eval failure stops before sandbox navigation (0.263636ms)
+✔ decideRecalc passes only on original inputs, retained formula and numeric 6 (0.178488ms)
+✔ decideRecalc fails on wrong 0, actual null, missing inspection, python failure, malformed parse and constant 6 without formula (0.159179ms)
+✔ decideRecalc rejects good-looking observed facts from a failed inspection child (false-pass guard) (0.111267ms)
+✔ classifyNetworkResults requires the direct-IP negative and fails on CONNECTED or ambiguous results (0.102184ms)
+✔ an absent optional MCP config tool is recorded as not-run, without a call (0.217347ms)
+✔ native generation never accepts successful-looking JSON from a signalled or errored child (0.107091ms)
+✔ component-pins.json records the trixie base manifest digests and retained public-source hashes (0.075103ms)
+✔ component-pins.json records the cp313 lxml wheel and real downloaded-byte verification (0.201122ms)
+✔ Dockerfile ends with the owner-closed inventory over the exact declared roots and helpers (0.204527ms)
+✔ interruption packaging keeps accepted entry paths and canonical scanner bytes (0.403275ms)
+✔ private SDK fixture closure has exact context bytes and image paths (1.555056ms)
+✔ Dockerfile reduces SUID/SGID via chmod only, before the inventory, before USER (0.185469ms)
+✔ Dockerfile preserves SDK/CFT hashes, non-root identity, strict env and no bypass (0.171558ms)
+ℹ tests 148
+ℹ suites 0
+ℹ pass 146
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 20488.303199
+
+✖ failing tests:
+
+test at apps/worker/qualification/probes/office-export.test.mjs:540:1
+✖ main() streams a complete capture (with honest end.elapsedMs) and it reconstructs (5009.524863ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/meri-image-patch-author-20261012/apps/worker/qualification/probes/office-export.test.mjs:543:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/worker/qualification/probes/office-export.test.mjs:634:1
+✖ Codex owner correction: main rejects a valid-looking payload from another generated run (5002.92377ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /newly generated run copy/. Input:
+  
+  'MERI_OFFICE_EXPORT_V1 {"kind":"error","v":"meri-office-export/1","capture":"b1160dcc-cedb-457e-8d4c-9c5d14c1b23f","reasons":["child spawn/cleanup error: process group/descendants not confirmed clean","child cleanup not confirmed (process group/descendants not proven exited)"]}'
+  
+      at TestContext.<anonymous> (file:///workspace/meri-image-patch-author-20261012/apps/worker/qualification/probes/office-export.test.mjs:637:33)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'MERI_OFFICE_EXPORT_V1 {"kind":"error","v":"meri-office-export/1","capture":"b1160dcc-cedb-457e-8d4c-9c5d14c1b23f","reasons":["child spawn/cleanup error: process group/descendants not confirmed clean","child cleanup not confirmed (process group/descendants not proven exited)"]}',
+    expected: /newly generated run copy/,
+    operator: 'match',
+    diff: 'simple'
+  }

@@ -1,0 +1,43 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "check"
+  ],
+  "cwd": "/workspace/meri-sandbox-lifecycle-20261012",
+  "sourceHead": "41ded012694bbe0d90e18506ae57c50168f1a3fc",
+  "sourceDiffSha256": "b4a6b06de1c5d355a6580bd49326ccfd8ead89364c6ac677b70e9cdb8d0200b4",
+  "sourceDiffBytes": 49489,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T05:09:11.475893+00:00",
+  "durationSeconds": 6.048,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 62386,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 62504,
+      "status": 0
+    },
+    {
+      "pid": 62529,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/author/root-check-physical.stdout.bin",
+      "bytes": 22958,
+      "sha256": "95fca5676eab6889128841a9da2df8d91754628cf88bcfe46c68899d7ebc9845"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/author/root-check-physical.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    }
+  ],
+  "rerunReason": "Replace borrowed root/contracts symlinks with physical exact-lock copies; no source or assertion changes",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

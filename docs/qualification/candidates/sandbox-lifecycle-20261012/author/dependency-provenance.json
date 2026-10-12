@@ -1,0 +1,23 @@
+{
+  "rootAndContracts": [
+    {
+      "lock": "package-lock.json",
+      "sha256": "b2293773bf4ddc6d23425b7d718b79575384679999b86fd3caad78e6eda4a42d",
+      "donor": "/workspace/meri-g1-durable-budget-20261012/node_modules",
+      "copiedPhysical": true,
+      "hooksExecuted": false
+    },
+    {
+      "lock": "packages/contracts/package-lock.json",
+      "sha256": "dae8c670bb76b9c570f174d8749a8c59179cf865d5d6ec83b64a67bb5b2b06a6",
+      "donor": "/workspace/meri-g1-durable-budget-20261012/packages/contracts/node_modules",
+      "copiedPhysical": true,
+      "hooksExecuted": false
+    }
+  ],
+  "worker": "read-only symlink to exact-lock /workspace/meri-image-patch-author-20261012/apps/worker/qualification/node_modules; no SDK native binary/browser/lifecycle executed",
+  "reason": "Permission model and generated dependency paths require physical root/contracts dependencies; prior symlink failures preserved",
+  "workerBorrowedLinkRemoved": true,
+  "workerBorrowedLinkTarget": "/workspace/meri-image-patch-author-20261012/apps/worker/qualification/node_modules",
+  "donorUntouched": true
+}

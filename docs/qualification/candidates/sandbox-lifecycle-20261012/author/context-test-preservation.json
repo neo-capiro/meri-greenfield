@@ -1,0 +1,6 @@
+{
+  "path": "scripts/qualification/worker_context_test.py",
+  "changes": "Exactly three membership expectations53\u219257; every other byte restored identically",
+  "baseSha256": "42ebe4455171806243a8459ea0194038264026af1605a0744bca3f303c3e5d87",
+  "candidateSha256": "acc6e8fea2ac62e040a164a40cc386372c9f6c177b4e85f319020a45357efea6"
+}

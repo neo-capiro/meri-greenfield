@@ -1,0 +1,37 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/worker/qualification/probes/owned-probe-child.test.mjs",
+    "apps/worker/qualification/probes/browser-lifetime.test.mjs",
+    "apps/worker/qualification/probes/office-export.test.mjs",
+    "apps/worker/qualification/probes/static.test.mjs"
+  ],
+  "cwd": "/workspace/meri-sandbox-lifecycle-20261012",
+  "sourceHead": "2f182431a78f4ccb200a5e4adfd62b0ad3afa508",
+  "sourceDiffSha256": "d980775482babab4207227cf0485e8b13dcc675ab8059c99384f81fe7802fe7a",
+  "sourceDiffBytes": 4426,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T05:15:01.588660+00:00",
+  "durationSeconds": 0.768,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 64012,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/author/runtime-cli-placement.stdout.bin",
+      "bytes": 17251,
+      "sha256": "0fa034532a2183b81cb747eb963a65f50976b63c1581764316aae49d8206b33b"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/author/runtime-cli-placement.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Root found CLI listener before unbounded DNS precheck; scope bridge only to owned-child phase",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

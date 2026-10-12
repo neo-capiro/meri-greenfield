@@ -1,0 +1,134 @@
+{
+  "base": "14be9fc614568a74133b89f2b229e50c9b030322",
+  "sourceCommit": "bb44e802de14b5483c51ea1a58448ca23a5f11a0",
+  "sourceTree": "82c7559422819d3c83718da01bbb6fe0434153f6",
+  "sourceFiles": [
+    {
+      "path": "apps/worker/qualification/README.md",
+      "bytes": 16027,
+      "sha256": "7a55b8f45fd24e7630f77fbaf394f603d27754a4d505d97a607216ed49bc23fa",
+      "gitBlob": "2b970f1db48494a12afe020d07ebac834953645c"
+    },
+    {
+      "path": "apps/worker/qualification/package.json",
+      "bytes": 1240,
+      "sha256": "c14736fe666c6f1674d96794f8b55011501aa0b430f29b8ed23772d79cabea5b",
+      "gitBlob": "4444358a33c48c9edc88eba68066833b6e1490a5"
+    },
+    {
+      "path": "apps/worker/qualification/probes/browser-lifetime.mjs",
+      "bytes": 5458,
+      "sha256": "1acd04d3fc6080d5c2fa411775e18afe0df6ba04cffaa03ac36882efd9e5450b",
+      "gitBlob": "3c663a9cdd1fdc633d41648cc3889f7ceb817833"
+    },
+    {
+      "path": "apps/worker/qualification/probes/browser-lifetime.test.mjs",
+      "bytes": 6045,
+      "sha256": "99ba5d20d115a2bbcfea0ffcc8d15b84de108efa9c2dbdfb1276062203ddfb70",
+      "gitBlob": "4bf87b5d1274360077a3e63af3c73750841e4ecb"
+    },
+    {
+      "path": "apps/worker/qualification/probes/browser.mjs",
+      "bytes": 34537,
+      "sha256": "157fa783cdedcb16e00bf56c3022a1151831987f6492dc20b8b879d613304629",
+      "gitBlob": "8b1d630298b2182061e9ae73f7fa2f7593693bfe"
+    },
+    {
+      "path": "apps/worker/qualification/probes/office-export.mjs",
+      "bytes": 46889,
+      "sha256": "5f96ba57834b7482d40fe085a83d6373a96f3badf74d9e9f3b868db501ac64b1",
+      "gitBlob": "774857ed9ceaa077f8b2084310b5359ff7493035"
+    },
+    {
+      "path": "apps/worker/qualification/probes/office-export.test.mjs",
+      "bytes": 42963,
+      "sha256": "c79b2f67a21ea2692f3c504a8cacf0f4ab910fe7ab93dfebcc5b4ae253e57877",
+      "gitBlob": "17b1efec6906cc2fffc90ef498a321d2fef54205"
+    },
+    {
+      "path": "apps/worker/qualification/probes/owned-probe-child.mjs",
+      "bytes": 7410,
+      "sha256": "c24e00e9bfcce6d864e84419bc556480c5c8d490ba14d958a35f493905336472",
+      "gitBlob": "2ca32b0e0d498aa1cdb04f6ebb8845b569361e77"
+    },
+    {
+      "path": "apps/worker/qualification/probes/owned-probe-child.test.mjs",
+      "bytes": 10224,
+      "sha256": "45fe2f3c1d51a28ae2a19096a956953c9819905c7ff27cb726c6d621f518abd9",
+      "gitBlob": "4e6d860b4128d24c4f1f4a78beb8ba1a5c0b7599"
+    },
+    {
+      "path": "apps/worker/qualification/probes/runtime.mjs",
+      "bytes": 16986,
+      "sha256": "d72e4aa4188ffdf7fc26e39d261c642030e2b1c6226dd83d6ecf20df1d3927ce",
+      "gitBlob": "07423281f4721efc680d681fa6d53713a4fe6540"
+    },
+    {
+      "path": "scripts/qualification/worker_context.py",
+      "bytes": 11867,
+      "sha256": "e5ea8c06607f15c6c0c2dfde527f20d9dfa509e6c59268ffaa03cbfa6b97d765",
+      "gitBlob": "8c74e9930cdfec460efd10f880f908e1bd3e2dca"
+    },
+    {
+      "path": "scripts/qualification/worker_context_test.py",
+      "bytes": 11156,
+      "sha256": "acc6e8fea2ac62e040a164a40cc386372c9f6c177b4e85f319020a45357efea6",
+      "gitBlob": "af724b3bc60e57d1d58c4fe951170604100eeae6"
+    }
+  ],
+  "protectedUnchanged": [
+    {
+      "path": "apps/worker/qualification/probes/artifacts.mjs",
+      "sha256": "3155bd31447f37b27c512cc2522a46947241c0f3fd74d738bed54920486757d6",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/artifacts.py",
+      "sha256": "b75d7eacc12c88fc87b23c7aab6bfa22adbb22eee99b4236f01ac90bde858d15",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/office-reconstruct.mjs",
+      "sha256": "133d8c5adbfae930aa5e59d7d633e73482994106382cebef35b065d059303205",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/probes/static.test.mjs",
+      "sha256": "910044c4c16b9d8e523bef960d80aac5f66632817afd9a103cf3e277b762e6e1",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/package-lock.json",
+      "sha256": "d3d4c5362e0c7dc1392ef9cad2048d00c564f1ff70d98c3e10108e50aa56147a",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/requirements.lock.txt",
+      "sha256": "47bb048b9750b074c7d33faba9f9c3873b7b461eaa4360bf57cb08d4f55c9765",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/component-pins.json",
+      "sha256": "2f2c5d52fbee23bbdb206456235664b9dbbdf5c3526ccc065d499ed0a61f5aed",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "apps/worker/qualification/Dockerfile",
+      "sha256": "3f86ae7ca55e8bbfb2814f1b335b7df8159daf9b5008df60f1165ba879c40f36",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/meri.schema.json",
+      "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog.json",
+      "sha256": "733438a232fafbc7aaf8635ba30fd33d1fab94bc73949d2c9264b14c92e8cbce",
+      "unchangedFromBase": true
+    }
+  ],
+  "workerFinalCheckMatchesExactFreeze": true,
+  "workerFinalReceipt": "worker-final.json",
+  "earlyCheckCaveat": "Before new files were staged, preliminary diff receipts omitted untracked modules. Final worker receipt plus exact frozen source manifest establishes final tested bytes."
+}
