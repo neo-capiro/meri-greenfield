@@ -27,6 +27,7 @@ test('independent entity: missing optional selectors omitted and query has secon
  assert.deepEqual(normalize({}).input,{limit:5});assert.deepEqual(normalize({query:null,type:' '}).input,{limit:5});
  assert.equal(normalize({query:'x'.repeat(198)+'  trailing'}).input.query,'x'.repeat(198));
  assert.equal(normalize({query:'  Synthetic ',type:' MEMBER '}).input.type,'member');
+ const clippedType='member'+' '.repeat(14)+'x';assert.equal(normalize({query:'Synthetic',type:clippedType}).input.type,'member'+' '.repeat(14));check(absent('Synthetic'),{query:'Synthetic',type:clippedType});
 });
 test('independent entity: legacy scalar clamp is retained without complex coercion',()=>{
  for(const [value,expected] of [[null,5],['bad',5],['',1],['  ',1],[-1,1],[0,1],[2.9,2],['2.9',2],[999,10],['1e2',10]])assert.equal(normalize({limit:value}).input.limit,expected);
