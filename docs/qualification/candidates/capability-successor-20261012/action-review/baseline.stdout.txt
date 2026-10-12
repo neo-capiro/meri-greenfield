@@ -1,0 +1,387 @@
+✖ all15 production operations remain unavailable and zero-effect (6.938224ms)
+✖ actual resolver to current authority to dispatcher validates a nonempty recommendation (0.63256ms)
+✖ clientless and malformed raw arguments refuse before reserve or handler (0.272289ms)
+✖ model authority injection refuses before every trusted port (0.225108ms)
+✖ stale task, expired credential, absent grant and disabled source stop prior to reservation (0.264167ms)
+✖ revocation while reserving prevents effect and preserves uncertain hold (0.323275ms)
+✖ opaque cursor and exact action requests reach effect only as canonical selections (0.193771ms)
+✖ full foreign run and authorization lineage never escapes even for valid family data (0.28631ms)
+✖ source proof, fabricated evidence and recommendation completion fail through dispatch (0.358528ms)
+✖ reported recommendation outcome is accepted only as noncompletion (0.31961ms)
+✖ revocation during effect or settlement never releases a result (0.240091ms)
+✖ uncertain acknowledgements stop before effects or output and never refund (0.210376ms)
+✖ cancelled parked effect/settlement cannot start a later authorization or release (0.453652ms)
+✖ freshly shortened release authority bounds parked settlement with no late release (0.179981ms)
+✔ independent literal recommendation and outcome source proofs satisfy unchanged family (12.346259ms)
+✖ partial binding preserves every original row and fourteen descriptors (5.83759ms)
+✖ canonical binding defaults, raw ownership and digest use existing selection (0.535755ms)
+✖ client-less, missing actor and shape/coercion attempts refuse (0.2927ms)
+✖ hostile objects never invoke accessor/proxy/toJSON and unknown context refuses (0.242474ms)
+✖ opaque cursor boundary and page disclosure remain bounded but unqualified (0.182774ms)
+✖ catalog mutants cannot promote partial parity, aliases, availability or source pins (10.537081ms)
+✖ bound pages preserve recommendation semantics for a reported outcome (0.301783ms)
+✖ exact proof and content substitutions fail through canonical resolver (0.233441ms)
+✖ unlinked evidence and forged linked source owner fail despite valid row digest (0.430467ms)
+✖ bounded page completeness never becomes source evidence, history or absence proof (0.271468ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 1
+ℹ fail 24
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1212.442918
+
+✖ failing tests:
+
+test at apps/gateway/test/action-item-context-independent.test.mjs:10:1
+✖ all15 production operations remain unavailable and zero-effect (6.938224ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  14 !== 15
+  
+      at TestContext.<anonymous> (file:///workspace/meri-capability-action-review-20261012/apps/gateway/test/action-item-context-independent.test.mjs:12:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 14,
+    expected: 15,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/action-item-context-independent.test.mjs:16:1
+✖ actual resolver to current authority to dispatcher validates a nonempty recommendation (0.63256ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:83:69)
+      at contract (file:///workspace/meri-capability-action-review-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs:14:31)
+      at connected (file:///workspace/meri-capability-action-review-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs:46:42)
+      at TestContext.<anonymous> (file:///workspace/meri-capability-action-review-20261012/apps/gateway/test/action-item-context-independent.test.mjs:17:11)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at apps/gateway/test/action-item-context-independent.test.mjs:24:1
+✖ clientless and malformed raw arguments refuse before reserve or handler (0.272289ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:83:69)
+      at contract (file:///workspace/meri-capability-action-review-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs:14:31)
+      at connected (file:///workspace/meri-capability-action-review-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs:46:42)
+      at TestContext.<anonymous> (file:///workspace/meri-capability-action-review-20261012/apps/gateway/test/action-item-context-independent.test.mjs:26:13)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at apps/gateway/test/action-item-context-independent.test.mjs:29:1
+✖ model authority injection refuses before every trusted port (0.225108ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:83:69)
+      at contract (file:///workspace/meri-capability-action-review-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs:14:31)
+      at connected (file:///workspace/meri-capability-action-review-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs:46:42)
+      at TestContext.<anonymous> (file:///workspace/meri-capability-action-review-20261012/apps/gateway/test/action-item-context-independent.test.mjs:31:13)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at apps/gateway/test/action-item-context-independent.test.mjs:33:1
+✖ stale task, expired credential, absent grant and disabled source stop prior to reservation (0.264167ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:83:69)
+      at contract (file:///workspace/meri-capability-action-review-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs:14:31)
+      at connected (file:///workspace/meri-capability-action-review-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs:46:42)
+      at TestContext.<anonymous> (file:///workspace/meri-capability-action-review-20261012/apps/gateway/test/action-item-context-independent.test.mjs:35:13)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at apps/gateway/test/action-item-context-independent.test.mjs:38:1
+✖ revocation while reserving prevents effect and preserves uncertain hold (0.323275ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:83:69)
+      at contract (file:///workspace/meri-capability-action-review-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs:14:31)
+      at connected (file:///workspace/meri-capability-action-review-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs:46:42)
+      at TestContext.<anonymous> (file:///workspace/meri-capability-action-review-20261012/apps/gateway/test/action-item-context-independent.test.mjs:39:11)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at apps/gateway/test/action-item-context-independent.test.mjs:42:1
+✖ opaque cursor and exact action requests reach effect only as canonical selections (0.193771ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:83:69)
+      at contract (file:///workspace/meri-capability-action-review-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs:14:31)
+      at connected (file:///workspace/meri-capability-action-review-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs:46:42)
+      at TestContext.<anonymous> (file:///workspace/meri-capability-action-review-20261012/apps/gateway/test/action-item-context-independent.test.mjs:43:11)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at apps/gateway/test/action-item-context-independent.test.mjs:47:1
+✖ full foreign run and authorization lineage never escapes even for valid family data (0.28631ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:83:69)
+      at contract (file:///workspace/meri-capability-action-review-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs:14:31)
+      at connected (file:///workspace/meri-capability-action-review-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs:46:42)
+      at TestContext.<anonymous> (file:///workspace/meri-capability-action-review-20261012/apps/gateway/test/action-item-context-independent.test.mjs:49:13)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at apps/gateway/test/action-item-context-independent.test.mjs:52:1
+✖ source proof, fabricated evidence and recommendation completion fail through dispatch (0.358528ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:83:69)
+      at contract (file:///workspace/meri-capability-action-review-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs:14:31)
+      at connected (file:///workspace/meri-capability-action-review-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs:46:42)
+      at TestContext.<anonymous> (file:///workspace/meri-capability-action-review-20261012/apps/gateway/test/action-item-context-independent.test.mjs:54:13)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at apps/gateway/test/action-item-context-independent.test.mjs:57:1
+✖ reported recommendation outcome is accepted only as noncompletion (0.31961ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:83:69)
+      at contract (file:///workspace/meri-capability-action-review-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs:14:31)
+      at connected (file:///workspace/meri-capability-action-review-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs:46:42)
+      at TestContext.<anonymous> (file:///workspace/meri-capability-action-review-20261012/apps/gateway/test/action-item-context-independent.test.mjs:58:11)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at apps/gateway/test/action-item-context-independent.test.mjs:61:1
+✖ revocation during effect or settlement never releases a result (0.240091ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:83:69)
+      at contract (file:///workspace/meri-capability-action-review-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs:14:31)
+      at connected (file:///workspace/meri-capability-action-review-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs:46:42)
+      at TestContext.<anonymous> (file:///workspace/meri-capability-action-review-20261012/apps/gateway/test/action-item-context-independent.test.mjs:63:13)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at apps/gateway/test/action-item-context-independent.test.mjs:67:1
+✖ uncertain acknowledgements stop before effects or output and never refund (0.210376ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:83:69)
+      at contract (file:///workspace/meri-capability-action-review-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs:14:31)
+      at connected (file:///workspace/meri-capability-action-review-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs:46:42)
+      at TestContext.<anonymous> (file:///workspace/meri-capability-action-review-20261012/apps/gateway/test/action-item-context-independent.test.mjs:69:13)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at apps/gateway/test/action-item-context-independent.test.mjs:72:1
+✖ cancelled parked effect/settlement cannot start a later authorization or release (0.453652ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:83:69)
+      at contract (file:///workspace/meri-capability-action-review-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs:14:31)
+      at connected (file:///workspace/meri-capability-action-review-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs:46:42)
+      at TestContext.<anonymous> (file:///workspace/meri-capability-action-review-20261012/apps/gateway/test/action-item-context-independent.test.mjs:74:13)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at apps/gateway/test/action-item-context-independent.test.mjs:80:1
+✖ freshly shortened release authority bounds parked settlement with no late release (0.179981ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:83:69)
+      at contract (file:///workspace/meri-capability-action-review-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs:14:31)
+      at connected (file:///workspace/meri-capability-action-review-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs:46:42)
+      at TestContext.<anonymous> (file:///workspace/meri-capability-action-review-20261012/apps/gateway/test/action-item-context-independent.test.mjs:81:11)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at packages/contracts/test/retrieval-action-item-independent.test.mjs:15:1
+✖ partial binding preserves every original row and fourteen descriptors (5.83759ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  14 !== 15
+  
+      at TestContext.<anonymous> (file:///workspace/meri-capability-action-review-20261012/packages/contracts/test/retrieval-action-item-independent.test.mjs:16:33)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 14,
+    expected: 15,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-action-item-independent.test.mjs:24:1
+✖ canonical binding defaults, raw ownership and digest use existing selection (0.535755ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:83:69)
+      at contract (file:///workspace/meri-capability-action-review-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs:14:31)
+      at TestContext.<anonymous> (file:///workspace/meri-capability-action-review-20261012/packages/contracts/test/retrieval-action-item-independent.test.mjs:25:52)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-action-item-independent.test.mjs:31:1
+✖ client-less, missing actor and shape/coercion attempts refuse (0.2927ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:83:69)
+      at contract (file:///workspace/meri-capability-action-review-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs:14:31)
+      at TestContext.<anonymous> (file:///workspace/meri-capability-action-review-20261012/packages/contracts/test/retrieval-action-item-independent.test.mjs:32:11)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-action-item-independent.test.mjs:36:1
+✖ hostile objects never invoke accessor/proxy/toJSON and unknown context refuses (0.242474ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:83:69)
+      at contract (file:///workspace/meri-capability-action-review-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs:14:31)
+      at TestContext.<anonymous> (file:///workspace/meri-capability-action-review-20261012/packages/contracts/test/retrieval-action-item-independent.test.mjs:37:11)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-action-item-independent.test.mjs:43:1
+✖ opaque cursor boundary and page disclosure remain bounded but unqualified (0.182774ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:83:69)
+      at contract (file:///workspace/meri-capability-action-review-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs:14:31)
+      at TestContext.<anonymous> (file:///workspace/meri-capability-action-review-20261012/packages/contracts/test/retrieval-action-item-independent.test.mjs:44:11)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-action-item-independent.test.mjs:51:1
+✖ catalog mutants cannot promote partial parity, aliases, availability or source pins (10.537081ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-capability-action-review-20261012/packages/contracts/test/retrieval-action-item-independent.test.mjs:57:62)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-action-item-independent.test.mjs:59:1
+✖ bound pages preserve recommendation semantics for a reported outcome (0.301783ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:83:69)
+      at contract (file:///workspace/meri-capability-action-review-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs:14:31)
+      at TestContext.<anonymous> (file:///workspace/meri-capability-action-review-20261012/packages/contracts/test/retrieval-action-item-independent.test.mjs:60:11)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-action-item-independent.test.mjs:65:1
+✖ exact proof and content substitutions fail through canonical resolver (0.233441ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:83:69)
+      at contract (file:///workspace/meri-capability-action-review-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs:14:31)
+      at TestContext.<anonymous> (file:///workspace/meri-capability-action-review-20261012/packages/contracts/test/retrieval-action-item-independent.test.mjs:66:11)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-action-item-independent.test.mjs:70:1
+✖ unlinked evidence and forged linked source owner fail despite valid row digest (0.430467ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:83:69)
+      at contract (file:///workspace/meri-capability-action-review-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs:14:31)
+      at TestContext.<anonymous> (file:///workspace/meri-capability-action-review-20261012/packages/contracts/test/retrieval-action-item-independent.test.mjs:71:11)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-action-item-independent.test.mjs:77:1
+✖ bounded page completeness never becomes source evidence, history or absence proof (0.271468ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-capability-action-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:83:69)
+      at contract (file:///workspace/meri-capability-action-review-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs:14:31)
+      at TestContext.<anonymous> (file:///workspace/meri-capability-action-review-20261012/packages/contracts/test/retrieval-action-item-independent.test.mjs:78:11)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

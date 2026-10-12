@@ -1,0 +1,28 @@
+{
+  "base": "5b1b5985bc73cbfe901c17e65acf9fd50b3d7e33",
+  "criteria": "d2ab1d5",
+  "baseline": {
+    "passed": 1,
+    "failed": 24,
+    "exitCode": 1,
+    "reason": "Existing nonempty family fixture passes; action resolver binding and fifteen-operation registration do not exist yet."
+  },
+  "files": [
+    {
+      "path": "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+      "bytes": 8008,
+      "sha256": "82f8f8a796b5f6131609b091c32ce8720b982e5e78f9a0d0036b03e429f5b3e6"
+    },
+    {
+      "path": "apps/gateway/test/action-item-context-independent.test.mjs",
+      "bytes": 9572,
+      "sha256": "9c21d92f8c4318be40d7015156e9bacf3a41cb803f835723f17ad1a7cd27add2"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs",
+      "bytes": 6525,
+      "sha256": "047d23dd48ad94e04780c0445cc92f841b6f641b2fb86c75e4271f12b31f0740"
+    }
+  ],
+  "networkOrNativeActions": false
+}
