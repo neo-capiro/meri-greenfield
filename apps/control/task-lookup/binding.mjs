@@ -40,7 +40,7 @@ export function observation(raw,b){
  keys(out,['binding','subject','operation','argumentsSha256','result']);const c=b.context;
  if(!same(out.binding,c.binding)||!same(out.operation,operation)||out.argumentsSha256!==b.argumentsSha256)deny('LOOKUP_RESULT');
  const args=b.request.arguments;contract.assertOutput(out.result,{request:args,binding:c.binding,clientResolution:{reference:args.clientId,clientId:args.clientId}});
- if(!same(out.subject,out.result.subject)||out.subject.tenantId!==c.binding.tenantId||out.subject.actorId!==c.binding.actorId)deny('LOOKUP_RESULT');
+ if(!same(out.subject.scopes,c.scopes)||!same(out.subject,out.result.subject)||out.subject.tenantId!==c.binding.tenantId||out.subject.actorId!==c.binding.actorId)deny('LOOKUP_RESULT');
  return out;
 }
 export function authBinding(original,current,scopeValues,resultReference,resultSha256){const b={original,current,scopes:scopeValues,resultReference,resultSha256};return data({...b,bindingSha256:canonicalSha256(b)});}
