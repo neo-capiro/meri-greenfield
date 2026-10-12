@@ -46,3 +46,55 @@ test('abort after spawn requests scoped containment before later normal close',a
   finally { clearTimeout(timer);c.emit('close',0,null);await operation; }
   const result=await operation;assert.ok(result.error || result.aborted || result.timedOut);
 });
+
+test('owned close plus definite absence permits a successful child result',async()=>{
+  const c=child();const untouched=child();let probes=0;
+  const result=await runArtifactsChild({...defaults,spawnFn:()=>{
+    setImmediate(()=>{c.stdout.emit('data',Buffer.from('{"ok":true}'));c.emit('close',0,null);});return c;
+  },probeGroup:actual=>{assert.equal(actual,c);assert.notEqual(actual,untouched);probes++;return false;}});
+  assert.equal(result.status,0);assert.equal(result.cleanupConfirmed,true);assert.ok(probes);assert.equal(result.stdout,'{"ok":true}');
+});
+
+test('normal close cannot turn unknown group observation into confirmed teardown',async()=>{
+  const c=child();let kills=0;
+  const result=await runArtifactsChild({...defaults,spawnFn:()=>{setImmediate(()=>c.emit('close',0,null));return c;},
+    probeGroup:()=>undefined,groupKill:actual=>{assert.equal(actual,c);kills++;return true;}});
+  assert.equal(result.cleanupConfirmed,false);assert.ok(result.error);assert.equal(kills,1);
+});
+
+test('owned group alive after close gets one scoped containment and positive absence readback',async()=>{
+  const c=child();let killed=false;let probes=0;
+  const result=await runArtifactsChild({...defaults,spawnFn:()=>{setImmediate(()=>c.emit('close',0,null));return c;},
+    probeGroup:actual=>{assert.equal(actual,c);probes++;return !killed;},
+    groupKill:actual=>{assert.equal(actual,c);assert.equal(killed,false);killed=true;return true;}});
+  assert.equal(killed,true);assert.ok(probes>=2);assert.equal(result.cleanupConfirmed,true);
+});
+
+test('child exit and kill acknowledgement without close retain cleanup uncertainty',async()=>{
+  const c=child();let killed=false;
+  const result=await runArtifactsChild({...defaults,deadlineMs:10,graceMs:10,spawnFn:()=>{
+    setImmediate(()=>c.emit('exit',0,null));return c;
+  },groupKill:actual=>{assert.equal(actual,c);killed=true;return true;},probeGroup:()=>false});
+  assert.equal(killed,true);assert.equal(result.cleanupConfirmed,false);assert.equal(result.timedOut,true);assert.ok(result.error);
+});
+
+test('late close and output cannot rewrite an already returned timeout result',async()=>{
+  const c=child();let kills=0;
+  const result=await runArtifactsChild({...defaults,deadlineMs:10,graceMs:10,spawnFn:()=>c,
+    groupKill:()=>{kills++;return true;},probeGroup:()=>false});
+  const before=JSON.stringify(result);c.stdout.emit('data',Buffer.from('{"ok":true}'));c.emit('close',0,null);
+  await new Promise(resolve=>setImmediate(resolve));assert.equal(JSON.stringify(result),before);assert.equal(kills,1);assert.equal(result.cleanupConfirmed,false);
+});
+
+test('malformed deadlines and cleanup bounds deny before any spawn',async()=>{
+  for(const options of [{deadlineMs:NaN},{deadlineMs:Infinity},{deadlineMs:0},{graceMs:NaN},{graceMs:0},{graceMs:5001}]){
+    let spawned=0;const result=await runArtifactsChild({...defaults,...options,spawnFn:()=>{spawned++;return child();}});
+    assert.equal(spawned,0);assert.equal(result.cleanupConfirmed,false);assert.ok(result.error);
+  }
+});
+
+test('a throwing physical-observation port remains UNKNOWN rather than absent',async()=>{
+  const c=child();const result=await runArtifactsChild({...defaults,spawnFn:()=>{setImmediate(()=>c.emit('close',0,null));return c;},
+    probeGroup:()=>{throw Error('observation unavailable');},groupKill:()=>false});
+  assert.equal(result.cleanupConfirmed,false);assert.ok(result.error);
+});
