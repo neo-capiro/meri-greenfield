@@ -1,0 +1,36 @@
+{
+  "command": [
+    "python",
+    "-I",
+    "-B",
+    "-S",
+    "docs/qualification/candidates/backend-execution-20261012/integration/test-author-operational-audit.py"
+  ],
+  "cwd": "/workspace/meri-backend-execution-tests-20261012",
+  "sourceHead": "f8e80bc3e2d35887caead8cd953afe58c2224e58",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "845f3924ad4b66ef71ab09872bedc2cd012334b0ae16c2a7e7f1d798b614855a",
+  "startedAt": "2026-10-12T21:43:38.094751+00:00",
+  "durationSeconds": 0.165,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 345223,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-operational-inverse.stdout.bin",
+      "bytes": 46,
+      "sha256": "120119c33b464ffccf9db7fd5fc211e04316139210f91bca36d7eb10160bfff1"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-operational-inverse.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Unique label identifies initial or repaired backend integration test verification; prior receipts are preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

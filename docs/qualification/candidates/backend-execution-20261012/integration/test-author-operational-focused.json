@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-operational-reads.test.mjs"
+  ],
+  "cwd": "/workspace/meri-backend-execution-tests-20261012",
+  "sourceHead": "f8e80bc3e2d35887caead8cd953afe58c2224e58",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "845f3924ad4b66ef71ab09872bedc2cd012334b0ae16c2a7e7f1d798b614855a",
+  "startedAt": "2026-10-12T21:43:02.806623+00:00",
+  "durationSeconds": 2.573,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 345041,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-operational-focused.stdout.bin",
+      "bytes": 1620,
+      "sha256": "81cbfaac976a064ccc486cfb3cc6845b3cb965395c9160406cd157c44dcfb007"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-operational-focused.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Unique label identifies initial or repaired backend integration test verification; prior receipts are preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
