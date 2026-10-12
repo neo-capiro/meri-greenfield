@@ -227,7 +227,10 @@ Timeout, cancellation, stream error or stdout/stderr overflow fail the probe;
 one scoped containment request starts a bounded cleanup grace. The runtime,
 browser and Office export CLI guards translate SIGINT/SIGTERM into their
 existing cancellation signal and wait for bounded cleanup before exiting.
-Repeated signals retain that wait; importing modules installs no listeners.
+The runtime installs its bridge only after its native prechecks, immediately
+before child acquisition; earlier prechecks retain default OS signal handling.
+Their separate DNS/native bounds remain unqualified. Repeated signals retain
+the child cleanup wait; importing modules installs no listeners.
 Office cancellation also prevents initial directory acquisition, interrupts
 pending export writes and denies later records or a successful return. Bytes
 already written cannot be recalled; error/abort evidence does not claim delivery. A kill request

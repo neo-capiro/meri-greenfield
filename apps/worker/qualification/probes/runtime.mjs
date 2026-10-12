@@ -332,13 +332,20 @@ export async function runQualificationChildren(options = {}) {
   return [browser, await runProbeScript('artifacts.mjs', { ...options, name: 'office-artifacts', required: true })];
 }
 
-async function main({ signal } = {}) {
+/** CLI bridge begins only when child ownership begins, after native prechecks. */
+export async function runQualificationChildrenForCli({ processLike = process, ...options } = {}) {
+  const cancellation = installProbeCancellation(processLike);
+  try { return await runQualificationChildren({ ...options, signal: cancellation.signal }); }
+  finally { cancellation.dispose(); }
+}
+
+async function main() {
   const results = [];
   results.push(checkIdentityAndMounts());
   results.push(checkReadOnlyRoot());
   results.push(await checkSdkStatic());
   results.push(await checkNetworkDenial());
-  results.push(...await runQualificationChildren({ signal }));
+  results.push(...await runQualificationChildrenForCli());
 
   const summary = summarize(results);
   const payload = { probe: 'runtime', generatedAt: new Date().toISOString(), ...summary };
@@ -348,9 +355,8 @@ async function main({ signal } = {}) {
 
 const invokedDirectly = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
 if (invokedDirectly) {
-  const cancellation = installProbeCancellation();
-  main({ signal: cancellation.signal }).catch((error) => {
+  main().catch((error) => {
     process.stdout.write(JSON.stringify({ probe: 'runtime', ok: false, error: String(error).slice(0, 300) }, null, 2) + '\n');
     return 1;
-  }).finally(cancellation.dispose).then(code => process.exit(code));
+  }).then(code => process.exit(code));
 }
