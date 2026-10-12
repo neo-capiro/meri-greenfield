@@ -137,5 +137,5 @@ test('direct raw/options/result admission never invokes getters, proxies or coer
 test('symbol, hidden and array root data refuse; inputs are not mutated',()=>{
   for(const input of [[],null,{[Symbol('s')]:1},Object.defineProperty({},'query',{value:'x',enumerable:false})])assert.throws(()=>normalize(input));
   const input={query:' synthetic ',limit:'2'},before=structuredClone(input);assert.deepEqual(normalize(input),{clientId:null,domain:null,query:'synthetic',limit:2});assert.deepEqual(input,before);
-  const p=page(),prior=structuredClone(p);assert.equal(check(p,QUERY),p);assert.deepEqual(p,prior);
+  const p=page(),prior=structuredClone(p),accepted=check(p,QUERY);assert.deepEqual(accepted,p);assert.notEqual(accepted,p);assert.deepEqual(p,prior);
 });
