@@ -1,0 +1,37 @@
+{
+  "candidate_commit": "839f3d43b4b24a6ca37b0b873ab90abd81b51725",
+  "candidate_tree": "7ddeab03a786b74f737eb5cb0ca825874451fd07",
+  "checks": [
+    {
+      "label": "final-artifacts",
+      "argv": [
+        "python3",
+        "docs/qualification/candidates/image-patch-20261012/license-review/verify-packet.py",
+        "/workspace/meri-image-license-evidence-20261012",
+        "docs/qualification/candidates/image-patch-20261012/license-review/final-artifacts.json"
+      ],
+      "exit_code": 0,
+      "duration_seconds": 2.613,
+      "script_sha256": "01487bdad156d06f28864cf6b4a82a9b42e855cc9447265fd32943abadc51325",
+      "result": "docs/qualification/candidates/image-patch-20261012/license-review/final-artifacts.json"
+    },
+    {
+      "label": "final-supplements",
+      "argv": [
+        "python3",
+        "docs/qualification/candidates/image-patch-20261012/license-review/verify-supplements.py",
+        "/workspace/meri-image-license-evidence-20261012",
+        "docs/qualification/candidates/image-patch-20261012/license-review/final-supplements.json"
+      ],
+      "exit_code": 0,
+      "duration_seconds": 2.099,
+      "script_sha256": "79562a95c5d6ab54188d402c6edbc7d96a77cfae09e7643c616013ce795e94cd",
+      "result": "docs/qualification/candidates/image-patch-20261012/license-review/final-supplements.json"
+    }
+  ],
+  "source_worktree_clean_after": true,
+  "downloads": 0,
+  "installs": 0,
+  "downloaded_code_executions": 0,
+  "owned_background_processes": 0
+}
