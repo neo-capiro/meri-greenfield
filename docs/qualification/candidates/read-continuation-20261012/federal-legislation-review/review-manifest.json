@@ -1,0 +1,159 @@
+{
+  "source": "b6d446a488e81f838f41095028f714b215d070de",
+  "authorMetadata": "d9fbf8bd2c76d6b1804b83b7adbaff6efbac994d",
+  "decision": "ACCEPT_SOURCE",
+  "native": "HOLD_UNRUN",
+  "selfExcluded": true,
+  "files": [
+    {
+      "path": "docs/coordination/reports/CODEX-READ-CONTINUATION-FEDERAL-LEGISLATION-REVIEW-20261012.md",
+      "bytes": 8794,
+      "sha256": "bce2c7c1c2c2460fd35754107c8e0ad269d063b68364e1d175052431ed70c600"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/.gitattributes",
+      "bytes": 50,
+      "sha256": "1bee6826ab8565b1a50079d470700a548e73e2363ea12450cf37ea13454b9eba"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/audit.json",
+      "bytes": 9531,
+      "sha256": "2f4a9cc396bdbdfe705697efbbbad2fdb1e5bf14413c3febb10910c780a66282"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/audit.py",
+      "bytes": 8757,
+      "sha256": "31ebb19df7eb0858d7e58da716b4e0c6ea6fe42527eca7e489e3b144f580434d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/corrected-prefreeze-independent.json",
+      "bytes": 1473,
+      "sha256": "4592d7f839d3c863608b9073aa5b5f73acd30a7c458530e3a90811f2b8428610"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/corrected-prefreeze-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/corrected-prefreeze-independent.stdout.bin",
+      "bytes": 2559,
+      "sha256": "6cc03405f137e678fb3d99a5f74aee3f5d69326ae882dcabe44850a7f21fd5e7"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/criteria.md",
+      "bytes": 2429,
+      "sha256": "550eff88730889ffda259c79bc0daaf7869f5b0e8361172aab61f383fc05ae80"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/exact-source-tests.json",
+      "bytes": 1416,
+      "sha256": "40ee039f74e02ddb4102ed2df059860e396f696b2949d5cb4c94d22b681cbd90"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/exact-source-tests.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/exact-source-tests.stdout.bin",
+      "bytes": 6036,
+      "sha256": "6a54596a08eba1765261a5740bb9661040c2e2ff1a5a9c2c82c8940b536bac04"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/final-audit.json",
+      "bytes": 1434,
+      "sha256": "6d28cb63974cead5bb138e787bc13396da72f9b5320583244c5944eb6bd52f2e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/final-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/final-audit.stdout.bin",
+      "bytes": 111,
+      "sha256": "e94af15cde971ebee71cc8c5df1441084eca81293c6075c23b0afb8f0f12f9aa"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/prefreeze-independent.json",
+      "bytes": 1352,
+      "sha256": "37ae9548395579ac06f80cf81cdf7d78aa97517ca98b6f1ab4aac9045f82a0ca"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/prefreeze-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/prefreeze-independent.stdout.bin",
+      "bytes": 6148,
+      "sha256": "2a552f6b90602a7d0e4593412f03c9d19041248be3c5ebf5b4889774eb5ff85c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/prefreeze-source-after.json",
+      "bytes": 650,
+      "sha256": "f4bae0aae73ca8314a74c9886609c6d39cf527fc35ed8be14bf62ac60b4ebb5f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/prefreeze-source-before.json",
+      "bytes": 422,
+      "sha256": "956d8d078f9258548ea0fcd30dc2335959dc236396e2a01607001f666cf83ad5"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/prototype-label-source/packages/contracts/retrieval-0.2/congressional-identity.mjs",
+      "bytes": 1484,
+      "sha256": "7253543c521a8ac2476e01bdbb34e100c99b2badba121ae5ba645a9b67534109"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/prototype-label-source/packages/contracts/retrieval-0.2/federal-legislation-validation.mjs",
+      "bytes": 6595,
+      "sha256": "ae3f34b0e00b166c255ff458142e4a20645ebc93c1e0adec55d108f5b7415b50"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/prototype-label-source/packages/contracts/retrieval-0.2/federal-legislation.schema.json",
+      "bytes": 24406,
+      "sha256": "40fa4a0c4416bcd254e631a4c8259e6cac414abe4f8e2a341eb3e8e23e155eeb"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/prototype-label-source.json",
+      "bytes": 687,
+      "sha256": "d76c2391d00721361390b7935440cbdba66b8db8b6170ccad93aed1bc73c66b9"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/prototype-label.json",
+      "bytes": 1428,
+      "sha256": "af417dc63e85453df5580b900dbb7ba44fe53bc92caa53b755dc528506854f48"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/prototype-label.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/prototype-label.stdout.bin",
+      "bytes": 3830,
+      "sha256": "b93c8cb7cdf03fa9b93f9c65228dfb1dea3aaa59b8bb1e32463461a4064a2665"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/reference-identities.json",
+      "bytes": 1838,
+      "sha256": "bc81049ec8b89b98164f26f2196b7d158c445fdc2d328799f524ea37e2a45a57"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/reviewer-assumption-correction.md",
+      "bytes": 2753,
+      "sha256": "722650168e9bc5365933b68fe7cc6c4ec4f3a7ccc207f2442312af6f5a310919"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-federal-legislation-independent.test.mjs",
+      "bytes": 14222,
+      "sha256": "43e0e9315c13228f4a6d94b6274a77702c2648f6d3a542d66d6cd8bd5624c7f6"
+    }
+  ]
+}

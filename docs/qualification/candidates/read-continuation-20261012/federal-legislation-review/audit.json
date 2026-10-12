@@ -1,0 +1,352 @@
+{
+  "base": "bcf36777b6f3fab94bec144c129e9143c18c8857",
+  "source": "b6d446a488e81f838f41095028f714b215d070de",
+  "sourceTree": "6ff3e81a9a843343e70f2475745342659a5e565a",
+  "author": "d9fbf8bd2c76d6b1804b83b7adbaff6efbac994d",
+  "authorTree": "767afcc88d5b2c08308c9b8cb23d74a5dd675434",
+  "reviewHeadAtAudit": "59b50f3946a99770169d3344325f535f44873c05",
+  "originalsPreserved": 5620,
+  "checks": [
+    {
+      "name": "originals exact source",
+      "pass": true
+    },
+    {
+      "name": "originals exact author",
+      "pass": true
+    },
+    {
+      "name": "originals exact review",
+      "pass": true
+    },
+    {
+      "name": "exact source bytes packages/contracts/retrieval-0.2/federal-legislation-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact source bytes packages/contracts/retrieval-0.2/federal-legislation.schema.json",
+      "pass": true
+    },
+    {
+      "name": "exact source bytes packages/contracts/retrieval-0.2/congressional-identity.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact source bytes packages/contracts/test/retrieval-federal-legislation.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "source adds only allocated files",
+      "pass": true
+    },
+    {
+      "name": "metadata only after freeze",
+      "pass": true
+    },
+    {
+      "name": "pinned reference apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "observed reference unchanged apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned reference apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "name": "observed reference unchanged apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "name": "pinned reference packages/shared/src/index.ts",
+      "pass": true
+    },
+    {
+      "name": "observed reference unchanged packages/shared/src/index.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned reference apps/api/src/meri/meri-bill-status-tool.spec.ts",
+      "pass": true
+    },
+    {
+      "name": "observed reference unchanged apps/api/src/meri/meri-bill-status-tool.spec.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned reference apps/api/src/meri/meri.controller.ts",
+      "pass": true
+    },
+    {
+      "name": "observed reference unchanged apps/api/src/meri/meri.controller.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned reference apps/api/src/auth/roles.guard.ts",
+      "pass": true
+    },
+    {
+      "name": "observed reference unchanged apps/api/src/auth/roles.guard.ts",
+      "pass": true
+    },
+    {
+      "name": "family only approved helper imports",
+      "pass": true
+    },
+    {
+      "name": "helper no imports",
+      "pass": true
+    },
+    {
+      "name": "family only factory export",
+      "pass": true
+    },
+    {
+      "name": "identity helper only declared export",
+      "pass": true
+    },
+    {
+      "name": "no ambient clock or source effects",
+      "pass": true
+    },
+    {
+      "name": "trusted explicit default congress context",
+      "pass": true
+    },
+    {
+      "name": "grammar no longer duplicated in schema",
+      "pass": true
+    },
+    {
+      "name": "three bill branches",
+      "pass": true
+    },
+    {
+      "name": "bill branch found marker FederalBillInvalidOutput",
+      "pass": true
+    },
+    {
+      "name": "bill branch owner FederalBillInvalidOutput",
+      "pass": true
+    },
+    {
+      "name": "bill branch found marker FederalBillUnavailableOutput",
+      "pass": true
+    },
+    {
+      "name": "bill branch owner FederalBillUnavailableOutput",
+      "pass": true
+    },
+    {
+      "name": "bill branch found marker FederalBillAvailableOutput",
+      "pass": true
+    },
+    {
+      "name": "bill branch owner FederalBillAvailableOutput",
+      "pass": true
+    },
+    {
+      "name": "fifteen action/vote windows",
+      "pass": true
+    },
+    {
+      "name": "rule links use declared transport cap",
+      "pass": true
+    },
+    {
+      "name": "no invented bill totals/coverage",
+      "pass": true
+    },
+    {
+      "name": "floor returned count at most25",
+      "pass": true
+    },
+    {
+      "name": "bounded ambiguity2..8",
+      "pass": true
+    },
+    {
+      "name": "bill stored congress independent Int",
+      "pass": true
+    },
+    {
+      "name": "latest action native date-only",
+      "pass": true
+    },
+    {
+      "name": "bill actions general timestamp",
+      "pass": true
+    },
+    {
+      "name": "rule unique given target",
+      "pass": true
+    },
+    {
+      "name": "member relation unique by memberKey not projected identity",
+      "pass": true
+    },
+    {
+      "name": "party totals opaque JSON",
+      "pass": true
+    },
+    {
+      "name": "status stored nullable unconstrained string",
+      "pass": true
+    },
+    {
+      "name": "pinned label in-operator semantics",
+      "pass": true
+    },
+    {
+      "name": "pinned label metadata ordinary object",
+      "pass": true
+    },
+    {
+      "name": "pinned local-year congress source helper",
+      "pass": true
+    },
+    {
+      "name": "global input-only owner getBillStatus",
+      "pass": true
+    },
+    {
+      "name": "no producer mutation/provider call getBillStatus",
+      "pass": true
+    },
+    {
+      "name": "exact15/15/3 producer query caps",
+      "pass": true
+    },
+    {
+      "name": "global input-only owner searchFloorVotes",
+      "pass": true
+    },
+    {
+      "name": "no producer mutation/provider call searchFloorVotes",
+      "pass": true
+    },
+    {
+      "name": "votesFound is returned length",
+      "pass": true
+    },
+    {
+      "name": "controller role declaration",
+      "pass": true
+    },
+    {
+      "name": "owned group absent prefreeze-independent",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/prefreeze-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/prefreeze-independent.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "stderr empty prefreeze-independent",
+      "pass": true
+    },
+    {
+      "name": "owned group absent corrected-prefreeze-independent",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/corrected-prefreeze-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/corrected-prefreeze-independent.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "stderr empty corrected-prefreeze-independent",
+      "pass": true
+    },
+    {
+      "name": "owned group absent prototype-label",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/prototype-label.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/prototype-label.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "stderr empty prototype-label",
+      "pass": true
+    },
+    {
+      "name": "owned group absent exact-source-tests",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/exact-source-tests.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/exact-source-tests.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "stderr empty exact-source-tests",
+      "pass": true
+    },
+    {
+      "name": "negative source retained packages/contracts/retrieval-0.2/federal-legislation-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "negative source retained packages/contracts/retrieval-0.2/federal-legislation.schema.json",
+      "pass": true
+    },
+    {
+      "name": "negative source retained packages/contracts/retrieval-0.2/congressional-identity.mjs",
+      "pass": true
+    },
+    {
+      "name": "no entire private bodies copied",
+      "pass": true
+    },
+    {
+      "name": "source whitespace",
+      "pass": true
+    }
+  ],
+  "sourceIdentities": [
+    {
+      "path": "packages/contracts/retrieval-0.2/federal-legislation-validation.mjs",
+      "bytes": 6882,
+      "sha256": "935b6a8054df8cb5f53a0eb6adce3b1564d22a552ef1f29e537d6f8855da76b9",
+      "blob": "3b65974bfb2efe37b7fe2e8efb433f9d8ebc87b2"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/federal-legislation.schema.json",
+      "bytes": 24406,
+      "sha256": "40fa4a0c4416bcd254e631a4c8259e6cac414abe4f8e2a341eb3e8e23e155eeb",
+      "blob": "788b9549c99604d944ff68c04055a7520471e0b1"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/congressional-identity.mjs",
+      "bytes": 1484,
+      "sha256": "7253543c521a8ac2476e01bdbb34e100c99b2badba121ae5ba645a9b67534109",
+      "blob": "94d8a9c8c413a3de59b4f43c5088dcccbe27c197"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-federal-legislation.test.mjs",
+      "bytes": 19900,
+      "sha256": "e2a6cc049723a23bada3a8fcc92842c9e0953b5decfb5ec1e324dc1c461f2e99",
+      "blob": "dbc514119064dd603044f384090e0c3a95b29a03"
+    }
+  ],
+  "privateBodiesPublished": false,
+  "sourceExecuted": false,
+  "runtime": "UNRUN_UNAVAILABLE"
+}
