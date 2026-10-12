@@ -1,0 +1,43 @@
+✔ claim concretely locks schedule and persists identity before commit (4.247696ms)
+✔ reused intent stops before projection mutation and rolls back (0.700974ms)
+✔ stale generation preserves unknown active intent and refuses update (0.315844ms)
+✔ lost commit evicts client and preserves unknown marker (0.590127ms)
+✔ failed rollback evicts client instead of healthy reuse (0.251978ms)
+✔ ambiguous BEGIN evicts and does not attempt another operation (0.321723ms)
+✔ release failure cannot overwrite commit uncertainty (0.456937ms)
+✔ terminal acknowledged journal cannot be changed to UNKNOWN (0.591759ms)
+✔ acknowledgement atomically advances exact generation and releases active intent (0.704959ms)
+✔ callback expiry after borrowed pool acquisition evicts without BEGIN (0.336596ms)
+✔ create binds full explicit policy/task/budget and journal before actual SDK effect (44.399559ms)
+✔ update uses actual update callback and omits create-only immediate option (3.256685ms)
+✔ pause and delete are explicit, running cancellation uses exact run ID only (2.047608ms)
+✔ same stable intent cannot redispatch (2.041738ms)
+✔ foreign tenant, wrong approval, generation skip and missing explicit policy fail before all ports (1.873356ms)
+✔ hostile request getter does not execute (0.230617ms)
+✔ immutable intent before first await (0.994956ms)
+✔ lost mutation ACK leaves durable uncertainty and refuses success (1.268427ms)
+✔ revocation after acknowledged durable mutation prevents release without rewriting acknowledged record (1.124911ms)
+✔ published expiry bounds parked authority before_claim (11.479505ms)
+✔ published expiry bounds parked authority before_dispatch (11.362669ms)
+✔ published expiry bounds parked authority before_create (11.170191ms)
+✔ published expiry bounds parked authority before_release (10.600424ms)
+✔ late nested connection callback cannot effect after deadline (11.683481ms)
+✔ late handle acquisition cannot call update (0.898721ms)
+✔ hostile SDK rejection is scrubbed without invoking code getter (0.819142ms)
+✔ pre-abort no work and borrowed connection never closed (0.520773ms)
+✔ list uses owned projections and safe exact original execution summaries (8.027807ms)
+✔ list wrong owner and changed history run fail closed (1.246944ms)
+✔ create composition is inert without pool connections (0.182905ms)
+✔ input policies cover pause/unlimited/zero remaining/immediate choices without defaults (0.463677ms)
+✔ list cursor uses UUID ordering independent of request hex case (1.582299ms)
+✔ list foreign owner is rejected before inspection (0.494003ms)
+✔ list cannot advertise more rows from an impossible short owner page (0.548375ms)
+✔ list refuses row preceding case-normalized UUID cursor (0.496887ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 466.574265
