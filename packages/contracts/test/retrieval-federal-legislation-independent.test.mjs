@@ -49,7 +49,7 @@ test('bill owner markers and resolved identity stay exact while stored congress 
   const p=bill();p.congress=118;check(B,p,raw,ctx);
 });
 test('stored unknown null and empty statuses retain exact label semantics',()=>{
-  for(const [status,label] of [[null,'Unknown'],['',''],['future_status','future_status'],['constructor','constructor'],['__proto__','__proto__']]){const p=bill();p.status=status;p.statusLabel=label;check(B,p,raw,ctx);p.statusLabel='invented';reject(B,p);}
+  for(const [status,label] of [[null,'Unknown'],['',''],['future_status','future_status']]){const p=bill();p.status=status;p.statusLabel=label;check(B,p,raw,ctx);p.statusLabel='invented';reject(B,p);}
 });
 test('actions and direct floor votes have separate fifteen-row windows without count proof',()=>{
   const p=bill();p.recentActions=Array.from({length:15},action);p.floorVotes=Array.from({length:15},billVote);check(B,p,raw,ctx);p.recentActions.push(action());reject(B,p);p.recentActions.pop();p.floorVotes.push(billVote());reject(B,p);
@@ -129,4 +129,16 @@ test('floor scalar defaults and ineffective zero numeric filters are explicit',(
   assert.equal(normalize(V,{limit:'2.9'},ctx).limit,2);assert.equal(normalize(V,{limit:999},ctx).limit,25);assert.equal(normalize(V,{limit:' '},ctx).limit,1);
   for(const raw of [{congress:1.5},{congress:2147483648},{congress:'Infinity'},{limit:true},{member:9}])assert.throws(()=>normalize(V,raw,ctx));
   assert.equal(normalize(B,{billId:'119-HR-00001'},ctx).billId,'119-hr-00001');assert.equal(normalize(B,{billId:'H.R. 00001'},ctx).billId,id);
+});
+
+test('prototype-key stored statuses cannot fabricate a fallback label absent from producer JSON',()=>{
+  for(const status of ['constructor','toString','__proto__','hasOwnProperty']){const p=bill();p.status=status;p.statusLabel=status;reject(B,p);delete p.statusLabel;reject(B,p);}
+});
+test('shared congressional identity helper uses explicit clock output and inert primitive admission',async()=>{
+  const {resolveCongressionalBillId:resolve}=await import(new URL('retrieval-0.2/congressional-identity.mjs',source));
+  assert.equal(resolve('H. Con. Res. 0003',119),'119-hconres-3');assert.equal(resolve('H.R. 2 (118th)',119),'118-hr-2');assert.equal(resolve('H.R. 2 (118TH)',119),null);
+  assert.equal(resolve('119-HR-00002',118),'119-hr-00002');assert.equal(resolve('H.R. 0',119),null);assert.equal(resolve(null,119),null);
+  let effects=0;const hostile={toString(){effects++;return 'H.R. 1';},valueOf(){effects++;return 119;}};
+  assert.throws(()=>resolve(hostile,119));assert.throws(()=>resolve('H.R. 1',hostile));assert.equal(effects,0);
+  for(const clock of [0,NaN,1.5,'119',2147483648])assert.throws(()=>resolve('H.R. 1',clock));
 });
