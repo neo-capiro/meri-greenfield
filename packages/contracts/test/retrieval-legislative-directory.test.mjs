@@ -203,3 +203,10 @@ test('output snapshots are detached and mutable without changing source rows', (
   const page=listPage([person()]);const detached=output(list,page,listRequest);detached.members[0].name='edited';
   assert.equal(page.members[0].name,'Synthetic member');assert.notEqual(detached.members,page.members);
 });
+test('source primary and membership unique keys forbid repeated member identities', () => {
+  for (const [id, page, request] of [
+    [roster,federalPage([federalMember(),federalMember()]),federalRequest],
+    [roster,statePage([stateMember(),stateMember()]),stateRequest],
+    [list,listPage([person(),person()]),listRequest],
+  ]) assert.throws(()=>output(id,page,request));
+});
