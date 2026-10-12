@@ -226,7 +226,7 @@
     {
       "path": "packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
       "beforeSha256": "1ec73e847adb94108c7ec7131282213c7fe93f86acfd5202f1c63ab4c9a678e5",
-      "afterSha256": "f465114ebd12f58bdda4c261a072d96769a0e7ec769b7dfd53eed544f8886c79",
+      "afterSha256": "9f1c3a23d6d2aeb5e62949e2cdfcaade08bd05691aad43e58b483009bed8f501",
       "replacements": [
         {
           "old": "\"get_representation\"",
@@ -262,10 +262,15 @@
           "old": "all56",
           "new": "all63",
           "count": 1
+        },
+        {
+          "old": "  for(const id of ['get_research_evidence','get_state_bill_status','search_state_floor_votes','search_sam_opportunities'])assert.throws(()=>resolve(id));",
+          "new": "  for(const id of ['get_research_evidence','search_sam_opportunities'])assert.throws(()=>resolve(id));\n  for(const id of ['get_state_bill_status','search_state_floor_votes']){const d=resolve(id).descriptor;assert.deepEqual(d.operation,{id,version:'0.2.0'});assert.equal(d.handler,null);assert.equal(d.availability,'unimplemented');}",
+          "count": 1
         }
       ],
       "inverseExact": true,
-      "change": "Explicit seven-ID mapping allowlist and canonical count/version expectations; original behavioral controls retained."
+      "change": "Explicit seven-ID mapping allowlist and canonical count/version expectations; original behavioral controls retained. Preserved combined2553/2554 failure: the two accepted state operations now positively resolve exact unavailable descriptors; other unmapped-operation refusals remain."
     },
     {
       "path": "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
