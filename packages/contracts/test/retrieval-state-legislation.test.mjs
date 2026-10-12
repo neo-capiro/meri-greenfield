@@ -72,7 +72,8 @@ test('exact bill filters cannot substitute state/session/status but query is not
 });
 test('bill count/page race admits total0 with rows only with zero-count note', () => {
   check(bills, {...billPage(), total: 0, note: schema.$defs.StateBillEmptyNote.const});
-  check(bills, {...billPage([]), total: 17, note: undefined});
+  const {note, ...positiveCountEmptyPage} = billPage([]);
+  check(bills, {...positiveCountEmptyPage, total: 17});
 });
 test('bill note presence follows count and requested window remains bounded', () => {
   assert.throws(() => check(bills, {...billPage(), total: 0}));

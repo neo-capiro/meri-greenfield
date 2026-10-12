@@ -32,10 +32,16 @@
           ]
         },
         "limit": {
-          "type": [
-            "number",
-            "string",
-            "null"
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
           ]
         }
       },
@@ -92,10 +98,16 @@
           ]
         },
         "limit": {
-          "type": [
-            "number",
-            "string",
-            "null"
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
           ]
         }
       },
