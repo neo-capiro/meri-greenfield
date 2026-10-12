@@ -1,0 +1,100 @@
+✔ name selector resolves only through exact trusted reference and subject (4.622305ms)
+✔ UUID selector must match subject while preserving case-insensitive UUID meaning (0.632ms)
+✔ required scalar selector trims and slices80 UTF16 without effectful coercion (1.818964ms)
+✔ request closes pagination and caller authority fields (0.986613ms)
+✔ trusted context is exact and cannot contain invented receipts or altered actor tenant (1.195176ms)
+✔ subject identity must be a canonical client UUID, not raw name (0.388574ms)
+✔ result client exact and complete returned binding and subject cannot change (6.524275ms)
+✔ empty set is an ordinary zero returned count without invented coverage (1.138832ms)
+✔ nullable bill enrichment keeps tracking record and nullable note (2.141518ms)
+✔ no invented50 cap and no silent truncation of full tracking array (4.319451ms)
+✔ tracking total is exact safe nonnegative integer (1.391872ms)
+✔ actual primary and per-client bill uniqueness are retained (0.786923ms)
+✔ outer order is creation timestamp descending with ties allowed (1.261466ms)
+✔ createdAt may include time of day but wire instants must be canonical (1.186944ms)
+✔ global bill identifier is exact tracking billId with no guessed federal grammar (1.041355ms)
+✔ stored empty strings and unknown statuses are preserved without label derivation (0.929948ms)
+✔ nested date is SQLDate midnight while null is preserved (1.114826ms)
+✔ nested bill nullables remain present but title and arrays are nonnullable (2.403222ms)
+✔ actions and subjects retain full strings, duplicate entries, order and no guessed cap (0.620733ms)
+✔ global action chronology cannot be inferred from text or nested action date (0.627713ms)
+✔ closed source projection excludes private tracking metadata and invented bill evidence (1.321506ms)
+✔ wrong operation or malformed outer result refuses before caller interpretation (0.941385ms)
+✔ caller getters and proxies cannot resolve themselves into client authority (0.407582ms)
+✖ nested output effects never execute and all operations leave caller snapshots unchanged (4.009416ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 23
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1910.507289
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-tracked-bills-independent.test.mjs:54:1
+✖ nested output effects never execute and all operations leave caller snapshots unchanged (4.009416ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" not to be reference-equal to "expected":
+  
+  {
+    binding: {
+      actorId: 'review-actor',
+      attemptId: '00000003-abca-4abc-8def-123456789012',
+      conversationId: '00000001-abca-4abc-8def-123456789012',
+      runId: '00000002-abca-4abc-8def-123456789012',
+      tenantId: 'review-tenant',
+      workerId: '00000004-abca-4abc-8def-123456789012',
+      writerFence: 8
+    },
+    data: {
+      bills: [
+        {
+          bill: null,
+          billId: 'opaque-bill-20',
+          createdAt: '2026-10-12T10:11:12.000Z',
+          id: '00000020-abca-4abc-8def-123456789012',
+          note: null
+        }
+      ],
+      clientId: '00000099-abca-4abc-8def-123456789012',
+      generatedAt: '2026-10-12T10:11:12.000Z',
+      tool: 'search_tracked_bills',
+      total: 1
+    },
+    subject: {
+      actorId: 'review-actor',
+      authorizationDecisionId: '00000005-abca-4abc-8def-123456789012',
+      entityIds: [
+        '00000099-abca-4abc-8def-123456789012'
+      ],
+      entityType: 'client',
+      kind: 'client',
+      policyRevision: 'review-policy',
+      rosterVersionId: null,
+      scopes: [
+        {
+          kind: 'client',
+          policyRevision: 'review-policy',
+          resourceId: '00000099-abca-4abc-8def-123456789012',
+          tenantId: 'review-tenant'
+        }
+      ],
+      tenantId: 'review-tenant'
+    }
+  }
+  
+      at TestContext.<anonymous> (file:///workspace/meri-tracked-bills-review-20261012/packages/contracts/test/retrieval-tracked-bills-independent.test.mjs:54:411)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { binding: { tenantId: 'review-tenant', actorId: 'review-actor', conversationId: '00000001-abca-4abc-8def-123456789012', runId: '00000002-abca-4abc-8def-123456789012', attemptId: '00000003-abca-4abc-8def-123456789012', workerId: '00000004-abca-4abc-8def-123456789012', writerFence: 8 }, subject: { kind: 'client', entityType: 'client', entityIds: [Array], tenantId: 'review-tenant', actorId: 'review-actor', authorizationDecisionId: '00000005-abca-4abc-8def-123456789012', policyRevision: 'review-policy', rosterVersionId: null, scopes: [Array] }, data: { tool: 'search_tracked_bills', generatedAt: '2026-10-12T10:11:12.000Z', clientId: '00000099-abca-4abc-8def-123456789012', total: 1, bills: [Array] } },
+    expected: { binding: { tenantId: 'review-tenant', actorId: 'review-actor', conversationId: '00000001-abca-4abc-8def-123456789012', runId: '00000002-abca-4abc-8def-123456789012', attemptId: '00000003-abca-4abc-8def-123456789012', workerId: '00000004-abca-4abc-8def-123456789012', writerFence: 8 }, subject: { kind: 'client', entityType: 'client', entityIds: [Array], tenantId: 'review-tenant', actorId: 'review-actor', authorizationDecisionId: '00000005-abca-4abc-8def-123456789012', policyRevision: 'review-policy', rosterVersionId: null, scopes: [Array] }, data: { tool: 'search_tracked_bills', generatedAt: '2026-10-12T10:11:12.000Z', clientId: '00000099-abca-4abc-8def-123456789012', total: 1, bills: [Array] } },
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
