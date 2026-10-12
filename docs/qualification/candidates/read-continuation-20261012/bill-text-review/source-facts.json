@@ -2,8 +2,12 @@
   "privateBodiesPublished": false,
   "privateCodeExecuted": false,
   "authority": "Global stored-source read under authenticated TenantContext, active Meri request, RolesGuard standard_user. Current adapter/gateway authorization not established by DTO.",
-  "searchBranches": ["direct designation", "metadata list", "text passages"],
-  "searchCount": "total is returned groups; totalBills is nullable; hasMore uses (page-1)*perPage+returned groups. Later empty page can have unknown total and false hasMore.",
+  "searchBranches": [
+    "direct designation",
+    "metadata list",
+    "text passages"
+  ],
+  "searchCount": "total is returned groups; listed is captured before response trimming; hasMore uses (page-1)*perPage+listed, equivalent returned+omitted. totalBills nullable; later empty page may report unknown total and false hasMore.",
   "searchTrimming": "Response builder first reduces extra passages then drops whole trailing groups while over budget; giant remaining single group can still exceed producer budget. Any hard admitted10500 limit is stricter and must be disclosed.",
   "searchGrouping": "Grouped by bill; passage cursors can have different source versions within one group. Offset0 passage has null cursor.",
   "cursor": "Base64url JSON five-tuple; encoded byte roundtrip does not imply compact JSON; <=1024 encoded units; offset safe integer1..30000000; UUIDv4 revision and 64 lowercase hex text hash. Explicit requested version binds tuple; current revision/hash pointer is adapter-owned.",
