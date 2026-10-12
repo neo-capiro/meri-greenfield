@@ -22,6 +22,13 @@ test('standalone state operation selection refuses coercive objects without exec
   assert.equal(effects, 0);
   for (const id of [null, 1, true, [], Symbol('operation')]) assert.throws(() => v.stateLegislationInputDefinition(id));
 });
+
+test('standalone state shape selection refuses coercive names without executing them', () => {
+  let effects = 0;
+  const selector = {[Symbol.toPrimitive]() { effects++; return 'StateBillSearchInput'; }};
+  assert.throws(() => v.validateStateLegislationShape(selector, {limit:20}));
+  assert.equal(effects, 0);
+});
 const bill = () => ({id: 'synthetic-bill', state: 'CA', session: '2026', identifier: 'HB 1', title: 'Synthetic',
   chamber: null, subjects: [], status: null, statusLabel: 'Unknown', sponsorName: null, sponsorParty: null,
   sponsorCount: -1, latestActionDate: null, latestActionText: null, stateUrl: null, url: null});

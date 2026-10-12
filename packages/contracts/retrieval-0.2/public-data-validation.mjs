@@ -101,7 +101,7 @@ export function createPublicDataValidators({validateShape, schema}) {
     return page;
   }
   function validatePublicDataShape(name, value) {
-    if (!Object.hasOwn(schema.$defs, name)) fail('Unknown public-data shape');
+    if (typeof name !== 'string' || !Object.hasOwn(schema.$defs, name)) fail('Unknown public-data shape');
     const data = snapshotOperationData(value); validateShape(name, data); return data;
   }
   return Object.freeze({normalizePublicDataInput, assertPublicDataOutput, validatePublicDataShape,

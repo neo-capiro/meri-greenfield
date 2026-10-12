@@ -44,6 +44,13 @@ test('standalone operation selection rejects coercive objects before invoking ca
   for (const id of [null, 1, true, [], Symbol('operation')]) assert.throws(() => v.publicDataInputDefinition(id));
 });
 
+test('standalone shape selection rejects coercive names before invoking caller code', () => {
+  let effects = 0;
+  const selector = {[Symbol.toPrimitive]() { effects++; return 'PublicEconomicInput'; }};
+  assert.throws(() => v.validatePublicDataShape(selector, {source:'census',limit:20}));
+  assert.equal(effects, 0);
+});
+
 test('economic selectors normalize defaults, exact aliases and supported producer extensions', () => {
   assert.deepEqual(normalize(economic, {}), {source: 'census', limit: 20});
   assert.deepEqual(normalize(economic, {source: ' BEA ', datasetName: ' ', dataset: ' NIPA ', year: '2026', state: 'ca'}),
