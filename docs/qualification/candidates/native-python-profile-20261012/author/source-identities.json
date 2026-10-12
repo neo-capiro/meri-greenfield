@@ -1,0 +1,36 @@
+{
+  "baseCommit": "1e6d430cf9c239caca4198aea42a762f13021cd5",
+  "method": "Local byte reads only; no target module import or execution",
+  "files": [
+    {
+      "path": "docs/qualification/candidates/native-ancestor-diagnosis-20261012/inspect-ancestor-metadata.py",
+      "bytes": 6297,
+      "sha256": "9514b8e8ad0aff24e1eea7e782dd32178d856011fafcb750ce2c0f9a715c6efd"
+    },
+    {
+      "path": "docs/qualification/candidates/native-capture-diagnosis-20261012/inspect-local-metadata.py",
+      "bytes": 9447,
+      "sha256": "3780982e6906e6798232d9a7d7f1c5efa07f6dd7b9a25356976a2a73ed026bd3"
+    },
+    {
+      "path": "scripts/qualification/worker_runner_capture.py",
+      "bytes": 10069,
+      "sha256": "3219d21ec7d7bfa63deb07f87125e3ffcf5b6ff5df4f2b5f87f487cb6594153c"
+    },
+    {
+      "path": "scripts/qualification/worker_runner_inventory.py",
+      "bytes": 13224,
+      "sha256": "7615e26a5d038ff2fa054cde3cdb04077def5636874f848c97e050dae9df03e9"
+    },
+    {
+      "path": "scripts/qualification/worker_build_binding.py",
+      "bytes": 6869,
+      "sha256": "6daff67b434e78824ee211803139a417bd23c6a3bb02dc0429695d86f5e1af53"
+    },
+    {
+      "path": "scripts/qualification/worker_image_build.py",
+      "bytes": 33031,
+      "sha256": "4295ac8f34cc107ff8fda4ceb31e07661b0501c29cc89e637d557fc2e0eee927"
+    }
+  ]
+}

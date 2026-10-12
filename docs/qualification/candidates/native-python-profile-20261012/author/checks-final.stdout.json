@@ -1,0 +1,37 @@
+{
+  "status": "SOURCE_DATA_CHECKS_PASS",
+  "checks": [
+    {
+      "name": "six original source identities",
+      "passed": true
+    },
+    {
+      "name": "ancestor identity, unchanged runtime and explicit bounds",
+      "passed": true
+    },
+    {
+      "name": "broader metadata cap is separate",
+      "passed": true
+    },
+    {
+      "name": "inventory bounds and build version stay distinct",
+      "passed": true
+    },
+    {
+      "name": "missing executable and supervisor identity remain missing",
+      "passed": true
+    },
+    {
+      "name": "parent-only receipt and all execution authority remain false",
+      "passed": true
+    },
+    {
+      "name": "published packet/report contain no personal Windows path",
+      "passed": true
+    }
+  ],
+  "targetModulesExecuted": false,
+  "targetInterpreterExecuted": false,
+  "privateZipMaterialized": false,
+  "executionAuthorized": false
+}
