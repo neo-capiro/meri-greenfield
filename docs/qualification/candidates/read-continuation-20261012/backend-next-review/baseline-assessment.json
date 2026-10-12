@@ -1,0 +1,25 @@
+{
+  "baseline": "ede7b56845816d38d0bbffab5a657aaa4f978739",
+  "criteria": "9637c1ad",
+  "controls": "4878e954e690c0b06c40cbad653c0e13cd24c40b",
+  "tests": 29,
+  "passed": 6,
+  "failed": 23,
+  "reason": "Expected pending combined feature: four bindings and command loader absent at PR32; catalog0.2.9; direct PE API returns caller alias. Negative controls passing unresolved-binding refusal are not family acceptance; final positive callbacks must pass.",
+  "sourceChanged": false,
+  "rawFailure": "original-baseline.stdout.bin",
+  "lookupDiagnostics": [
+    {
+      "action": "git show anticipated commands-loader-independent.test.mjs",
+      "outcome": "Path missing; selected actual command-contracts-integration-independent.test.mjs via Git tree. Read-only discovery only."
+    },
+    {
+      "action": "Read anticipated ProgramElementStoredYear definition",
+      "outcome": "KeyError; actual named definition ProgramElementYear read from schema. No candidate/source edit."
+    },
+    {
+      "action": "Read anticipated CODEX-BACKEND-NEXT task filename",
+      "outcome": "Path missing; existing task and guarded composition scripts inspected. Parent task allocation supplies exact scope."
+    }
+  ]
+}
