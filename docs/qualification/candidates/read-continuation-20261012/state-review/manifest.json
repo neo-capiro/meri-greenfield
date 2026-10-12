@@ -1,0 +1,122 @@
+{
+  "scope": "INDEPENDENT_STATE_SOURCE_REVIEW",
+  "verdict": "ACCEPT_SOURCE",
+  "candidate": "3444e7fd48fe07a9df23fe5ee460cea22f886012",
+  "base": "f45f155d0128ae4ac269989f60121e4f04b207de",
+  "exclusions": [
+    "This manifest excludes itself to avoid a recursive hash.",
+    "Author source and evidence are preserved by Git and bound by candidate-verification; they are not reviewer-owned members."
+  ],
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-READ-CONTINUATION-STATE-REVIEW-20261012.md",
+      "bytes": 6752,
+      "sha256": "56720d2c92ffc89f8ac3e80d095a4c8aea73451953e56c9439de51ed724a11b5"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-review/candidate-verification.json",
+      "bytes": 1338,
+      "sha256": "6d3a284778efb2eec174703cfa16575bc576d6af8bb349fdb21f1030d879cce8"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-review/candidate-verification.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-review/candidate-verification.stdout.bin",
+      "bytes": 7343,
+      "sha256": "fdd090b64fc3c756a6377c2b49d93d41049f5273ecdd3e1fa24892fe1bc45aa1"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-review/criteria.md",
+      "bytes": 6512,
+      "sha256": "7ebe06650354971786976d358c5b8a408ae42056e8351b6b7e57a9382aac5e0a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-review/independent-first.json",
+      "bytes": 1312,
+      "sha256": "54cd118c135b09c6826af81457dce9442cadb8a068d30394cc60b1fc1fc51278"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-review/independent-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-review/independent-first.stdout.bin",
+      "bytes": 2188,
+      "sha256": "eabc97ce4be00d5576af36f3a3db3098dd8e85cc6a720b41d3ff91465bd6f072"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-review/reference-identities.json",
+      "bytes": 2047,
+      "sha256": "0f53d74a98661e1091388be49e0d9a5b7f50ed07508837dfb2c7ccb666a0ed34"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-review/reference-verification.json",
+      "bytes": 1339,
+      "sha256": "bfd1023fe6811d84115c0dd707a33f561c3c6d71c7151027134954519ed41ff8"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-review/reference-verification.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-review/reference-verification.stdout.bin",
+      "bytes": 2650,
+      "sha256": "fad9304238c3697c261e048120636b4684c13d5ceec2ad905f34deb98ed3c6e8"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-review/state-combined.json",
+      "bytes": 1374,
+      "sha256": "7361cafae417a8e4f7ebe4a5d0d7e88834531d0665564d0488890aab07d8478e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-review/state-combined.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-review/state-combined.stdout.bin",
+      "bytes": 4447,
+      "sha256": "7a32cae05feaac4ca8b75b64c87d45a669dc7fa7060b17e0aaf9f3c991100d0a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-review/verify-candidate.py",
+      "bytes": 3221,
+      "sha256": "0ac80d34fde3e19f62ffad16c3e68dcd5ec28e9ddc69ff8366eebdc69823a557"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-review/verify-references.py",
+      "bytes": 1455,
+      "sha256": "9e112e1eaf7eb967b65754e4adeed9461f0432757a2ee1762eb61eeb07e8a546"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-review/whitespace.json",
+      "bytes": 1287,
+      "sha256": "e4b5f2048089a5ab4c88442cf35a6445a3e2eae2157b488d28c81d0c592be1d0"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-review/whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-review/whitespace.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-state-legislation-independent.test.mjs",
+      "bytes": 18225,
+      "sha256": "07328c058976c38832024031a5ef10e16b8a23d5a87e3eb8879163370d6b2dee"
+    }
+  ]
+}

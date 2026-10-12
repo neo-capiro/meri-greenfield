@@ -1,0 +1,47 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "check:contracts:distribution"
+  ],
+  "cwd": "/workspace/meri-public-reports-20261012",
+  "sourceHead": "d86c0710b534fad7626856075bb873715e54b596",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T16:40:42.469863+00:00",
+  "durationSeconds": 7.218,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 156337,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 156503,
+      "status": 0
+    },
+    {
+      "pid": 156678,
+      "status": 0
+    },
+    {
+      "pid": 156711,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/public-distribution.stdout.bin",
+      "bytes": 2043,
+      "sha256": "a33b1081e97e80c8d93c7844b998abeee3dd96f105c9d17807eda080af1133fd"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/public-distribution.stderr.bin",
+      "bytes": 1040,
+      "sha256": "cbbd466f3bf458f7f516c133ea486c1aada38d325ec9a80b698c26da8c18237f"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

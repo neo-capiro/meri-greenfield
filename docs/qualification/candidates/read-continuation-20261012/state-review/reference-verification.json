@@ -1,0 +1,34 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "docs/qualification/candidates/read-continuation-20261012/state-review/verify-references.py"
+  ],
+  "cwd": "/workspace/meri-state-legislation-review-20261012",
+  "sourceHead": "2cbb8880532c0647d0c6d4c706b2180044ac6649",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T16:32:54.301441+00:00",
+  "durationSeconds": 0.115,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 152877,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-review/reference-verification.stdout.bin",
+      "bytes": 2650,
+      "sha256": "fad9304238c3697c261e048120636b4684c13d5ceec2ad905f34deb98ed3c6e8"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-review/reference-verification.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

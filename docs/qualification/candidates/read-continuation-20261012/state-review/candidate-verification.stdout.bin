@@ -1,0 +1,221 @@
+{
+  "scope": "SOURCE_ONLY_EXACT_BYTES_AND_PRESERVATION",
+  "candidate": "3444e7fd48fe07a9df23fe5ee460cea22f886012",
+  "base": "f45f155d0128ae4ac269989f60121e4f04b207de",
+  "passed": 48,
+  "total": 48,
+  "files": [
+    {
+      "path": "packages/contracts/retrieval-0.2/state-legislation.schema.json",
+      "sha256": "3fda16e5e04acb44007ee71de22e887b84fd72a6c9059feceb7c5043fd028dcb",
+      "bytes": 9172,
+      "candidateBlob": "67c0d57e1f05de4fe7f2fdddddacfb4337580bc3"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/state-legislation-validation.mjs",
+      "sha256": "69362d21add57558dfeecc40b19c79a9a034d54314f36f1086ea90d4b4724682",
+      "bytes": 5606,
+      "candidateBlob": "5667eb8f943e1f0230064b038cf0aaa4c83a3034"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-state-legislation.test.mjs",
+      "sha256": "6d72584ee2bfaf41a6edbba61c431800c6d5a6d466893d82603d327f1d5524d1",
+      "bytes": 10123,
+      "candidateBlob": "64faf7fe173c3f14b510c395b070a2b06ae5dcb2"
+    }
+  ],
+  "checks": [
+    {
+      "name": "packages/contracts/retrieval-0.2/state-legislation.schema.json:exact-candidate",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/retrieval-0.2/state-legislation-validation.mjs:exact-candidate",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/test/retrieval-state-legislation.test.mjs:exact-candidate",
+      "passed": true
+    },
+    {
+      "name": "allocated:docs/qualification/candidates/read-continuation-20261012/state-author/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "name": "allocated:docs/qualification/candidates/read-continuation-20261012/state-author/focused-first.json",
+      "passed": true
+    },
+    {
+      "name": "allocated:docs/qualification/candidates/read-continuation-20261012/state-author/focused-first.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "allocated:docs/qualification/candidates/read-continuation-20261012/state-author/focused-first.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "allocated:docs/qualification/candidates/read-continuation-20261012/state-author/outline.md",
+      "passed": true
+    },
+    {
+      "name": "allocated:docs/qualification/candidates/read-continuation-20261012/state-review/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "name": "allocated:docs/qualification/candidates/read-continuation-20261012/state-review/criteria.md",
+      "passed": true
+    },
+    {
+      "name": "allocated:docs/qualification/candidates/read-continuation-20261012/state-review/independent-first.json",
+      "passed": true
+    },
+    {
+      "name": "allocated:docs/qualification/candidates/read-continuation-20261012/state-review/independent-first.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "allocated:docs/qualification/candidates/read-continuation-20261012/state-review/independent-first.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "allocated:docs/qualification/candidates/read-continuation-20261012/state-review/reference-identities.json",
+      "passed": true
+    },
+    {
+      "name": "allocated:docs/qualification/candidates/read-continuation-20261012/state-review/reference-verification.json",
+      "passed": true
+    },
+    {
+      "name": "allocated:docs/qualification/candidates/read-continuation-20261012/state-review/reference-verification.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "allocated:docs/qualification/candidates/read-continuation-20261012/state-review/reference-verification.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "allocated:docs/qualification/candidates/read-continuation-20261012/state-review/verify-references.py",
+      "passed": true
+    },
+    {
+      "name": "allocated:packages/contracts/retrieval-0.2/state-legislation-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "allocated:packages/contracts/retrieval-0.2/state-legislation.schema.json",
+      "passed": true
+    },
+    {
+      "name": "allocated:packages/contracts/test/retrieval-state-legislation-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "allocated:packages/contracts/test/retrieval-state-legislation.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/retrieval-0.2/catalog.json:baseline-preserved",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/retrieval-0.2/operation-contracts.mjs:baseline-preserved",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/retrieval-0.2/validate.mjs:baseline-preserved",
+      "passed": true
+    },
+    {
+      "name": "reference-verification:exit",
+      "passed": true
+    },
+    {
+      "name": "reference-verification:cleanup",
+      "passed": true
+    },
+    {
+      "name": "reference-verification:clean-source",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/state-review/reference-verification.stdout.bin:hash",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/state-review/reference-verification.stdout.bin:bytes",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/state-review/reference-verification.stderr.bin:hash",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/state-review/reference-verification.stderr.bin:bytes",
+      "passed": true
+    },
+    {
+      "name": "independent-first:exit",
+      "passed": true
+    },
+    {
+      "name": "independent-first:cleanup",
+      "passed": true
+    },
+    {
+      "name": "independent-first:clean-source",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/state-review/independent-first.stdout.bin:hash",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/state-review/independent-first.stdout.bin:bytes",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/state-review/independent-first.stderr.bin:hash",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/state-review/independent-first.stderr.bin:bytes",
+      "passed": true
+    },
+    {
+      "name": "state-combined:exit",
+      "passed": true
+    },
+    {
+      "name": "state-combined:cleanup",
+      "passed": true
+    },
+    {
+      "name": "state-combined:clean-source",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/state-review/state-combined.stdout.bin:hash",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/state-review/state-combined.stdout.bin:bytes",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/state-review/state-combined.stderr.bin:hash",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/state-review/state-combined.stderr.bin:bytes",
+      "passed": true
+    },
+    {
+      "name": "author-initial-failure-preserved",
+      "passed": true
+    },
+    {
+      "name": "state-independent-count",
+      "passed": true
+    }
+  ]
+}

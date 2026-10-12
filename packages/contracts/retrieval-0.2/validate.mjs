@@ -1,3 +1,9 @@
+import { createPublicReportsValidators } from './public-reports-validation.mjs';
+import { createStateLegislationValidators } from './state-legislation-validation.mjs';
+import { createFundingOpportunitiesValidators } from './funding-opportunities-validation.mjs';
+import { createClientDocumentsValidators } from './client-documents-validation.mjs';
+import { createPublicDataValidators } from './public-data-validation.mjs';
+import { createDistrictNexusValidators } from './district-nexus-validation.mjs';
 import { createOperationContracts } from './operation-contracts.mjs';
 import { createCatalogValidators, CATALOG_OPERATION_BINDINGS } from './catalog-validation.mjs';
 import { createMailValidators } from './mail-validation.mjs';
@@ -16,7 +22,7 @@ import addFormats from 'ajv-formats';
 import { canonicalSha256 } from '../validate.mjs';
 
 export const contractVersion = '0.2.0';
-const groups = ['common', 'catalog', 'retrieval', 'skill', 'mail', 'meeting-source', 'operational-reads', 'federal-market', 'data-search', 'memory-proposals', 'client-registry', 'research-portfolio', 'business-development'];
+const groups = ['common', 'catalog', 'retrieval', 'skill', 'mail', 'meeting-source', 'operational-reads', 'federal-market', 'data-search', 'memory-proposals', 'client-registry', 'research-portfolio', 'business-development', 'funding-opportunities', 'client-documents', 'public-data', 'district-nexus', 'state-legislation', 'public-reports'];
 const schemaBytes = groups.map(group => readFileSync(new URL(`./${group}.schema.json`, import.meta.url)));
 const schemas = schemaBytes.map(raw => JSON.parse(raw));
 const ajv = new Ajv({ strict: true, allErrors: true });
@@ -193,6 +199,15 @@ export const {businessDevelopmentSchemaId, BUSINESS_DEVELOPMENT_OPERATION_IDS,
   businessDevelopmentInputDefinition, businessDevelopmentOutputDefinition,
   normalizeBusinessDevelopmentInput, validateBusinessDevelopmentShape, assertBusinessDevelopmentOutput} = businessDevelopmentValidators;
 
+const fundingOpportunitiesValidators = createFundingOpportunitiesValidators({validateShape, schema: schemas[groups.indexOf('funding-opportunities')]});
+const clientDocumentsValidators = createClientDocumentsValidators({validateShape, assertSubject, canonicalSha256});
+const publicDataValidators = createPublicDataValidators({validateShape, schema: schemas[groups.indexOf('public-data')]});
+const districtNexusValidators = createDistrictNexusValidators({validateShape, assertSubject, canonicalSha256});
+
+const stateLegislationValidators = createStateLegislationValidators({validateShape, schema: schemas[groups.indexOf('state-legislation')]});
+
+const publicReportsValidators = createPublicReportsValidators({validateShape, schema: schemas[groups.indexOf('public-reports')]});
+
 export function assertSkillManifest(manifest, catalog) {
   validateShape('SkillManifest', manifest); assertCatalog(catalog);
   unique(manifest.requiredSources.map(source => `${source.sourceId}:${source.purpose}`), 'required skill source');
@@ -232,4 +247,5 @@ export const {resolveOperationContract} = createOperationContracts({catalog: sou
   bindings: CATALOG_OPERATION_BINDINGS, assertCatalog, canonicalSha256,
   validators: Object.freeze({...mailValidators, ...meetingValidators, ...operationalReadValidators,
     ...federalMarketValidators, ...dataSearchValidators, ...memoryProposalValidators, ...clientRegistryValidators,
-    ...researchPortfolioValidators, ...businessDevelopmentValidators})});
+    ...researchPortfolioValidators, ...businessDevelopmentValidators,
+    ...fundingOpportunitiesValidators, ...clientDocumentsValidators, ...publicDataValidators, ...districtNexusValidators, ...stateLegislationValidators, ...publicReportsValidators})});

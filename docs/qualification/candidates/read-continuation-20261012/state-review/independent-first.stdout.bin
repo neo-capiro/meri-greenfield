@@ -1,0 +1,30 @@
+✔ state independent: only two operation definitions, no live resolver aliases (2.384023ms)
+✔ search_state_bills independent: numeric/string/null clamp and default (1.797331ms)
+✔ search_state_bills independent: unknown authority and nonempty context refused (0.442655ms)
+✔ search_state_bills independent: selectors are copied and immutable (0.562876ms)
+✔ get_state_legislator independent: numeric/string/null clamp and default (0.820723ms)
+✔ get_state_legislator independent: unknown authority and nonempty context refused (0.382584ms)
+✔ get_state_legislator independent: selectors are copied and immutable (0.165649ms)
+✔ state independent: UTF-16 truncation, then uppercase with explicit overflow refusal (0.560683ms)
+✔ state independent: hostile requests never execute accessors or proxies (0.405048ms)
+✔ state bills independent: nullable projection and opaque stored strings survive (1.991683ms)
+✔ state bills independent: all thirteen stored status labels and unknown/null labels (3.458487ms)
+✔ state bills independent: count races and count-conditioned note, no absence/completeness claim (0.596907ms)
+✔ state bills independent: request bounds and literal filter consistency (0.623577ms)
+✔ state bills independent: text UTF-16 and integer bounds are enforced (0.601494ms)
+✔ state bills independent: SQL dates are serialized canonical UTC midnight (0.540863ms)
+✔ state legislator independent: three exact projection variants and bounded observation (1.552223ms)
+✔ state legislator independent: crosswalk precedence ignores state hints; name mode does not (0.582325ms)
+✔ state legislator independent: committees remain opaque inert JSON (0.780733ms)
+✔ state legislator independent: union variants cannot be combined or fabricated (0.67158ms)
+✔ state independent: required projection fields and unsupported private facts refused (3.833321ms)
+✔ state independent: operation identity, serialized instants and output context are closed (0.747854ms)
+✔ state independent: hostile nested output does not invoke user code (0.2528ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 195.256382

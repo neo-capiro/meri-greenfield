@@ -1,0 +1,195 @@
+{
+  "scope": "OFFLINE_SOURCE_PACKET_ONLY",
+  "passed": 47,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "docs/coordination/reports/CODEX-READ-CONTINUATION-PUBLIC-REPORTS-AUTHOR-20261012.md",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/build-schema.py",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/capture-reaped.py",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/focused-initial-source.patch",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/focused-initial.json",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/focused-initial.stderr.bin",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/focused-initial.stdout.bin",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/outline.json",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/public-distribution.json",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/public-distribution.stderr.bin",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/public-distribution.stdout.bin",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/reference-identities.json",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/root-source-check.json",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/root-source-check.stderr.bin",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/root-source-check.stdout.bin",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/source-preservation.json",
+      "ok": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/verify-packet.py",
+      "ok": true
+    },
+    {
+      "name": "original count",
+      "ok": true
+    },
+    {
+      "name": "all original Git objects unchanged",
+      "ok": true
+    },
+    {
+      "name": "no original mutation recorded",
+      "ok": true
+    },
+    {
+      "name": "only allocated three source additions",
+      "ok": true
+    },
+    {
+      "name": "source addition count",
+      "ok": true
+    },
+    {
+      "name": "source freeze packages/contracts/retrieval-0.2/public-reports-validation.mjs",
+      "ok": true
+    },
+    {
+      "name": "working source packages/contracts/retrieval-0.2/public-reports-validation.mjs",
+      "ok": true
+    },
+    {
+      "name": "source freeze packages/contracts/retrieval-0.2/public-reports.schema.json",
+      "ok": true
+    },
+    {
+      "name": "working source packages/contracts/retrieval-0.2/public-reports.schema.json",
+      "ok": true
+    },
+    {
+      "name": "source freeze packages/contracts/test/retrieval-public-reports.test.mjs",
+      "ok": true
+    },
+    {
+      "name": "working source packages/contracts/test/retrieval-public-reports.test.mjs",
+      "ok": true
+    },
+    {
+      "name": "three directly relevant references",
+      "ok": true
+    },
+    {
+      "name": "reference identity apps/api/src/meri/meri-tools.service.ts",
+      "ok": true
+    },
+    {
+      "name": "reference identity apps/api/prisma/schema.prisma",
+      "ok": true
+    },
+    {
+      "name": "reference identity apps/api/src/meri/meri-cbo-tool.spec.ts",
+      "ok": true
+    },
+    {
+      "name": "owned command focused-initial",
+      "ok": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/read-continuation-20261012/public-reports-author/focused-initial.stdout.bin",
+      "ok": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/read-continuation-20261012/public-reports-author/focused-initial.stderr.bin",
+      "ok": true
+    },
+    {
+      "name": "capture identity focused-initial",
+      "ok": true
+    },
+    {
+      "name": "initial staged source bytes",
+      "ok": true
+    },
+    {
+      "name": "owned command root-source-check",
+      "ok": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/read-continuation-20261012/public-reports-author/root-source-check.stdout.bin",
+      "ok": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/read-continuation-20261012/public-reports-author/root-source-check.stderr.bin",
+      "ok": true
+    },
+    {
+      "name": "capture identity root-source-check",
+      "ok": true
+    },
+    {
+      "name": "clean exact source root-source-check",
+      "ok": true
+    },
+    {
+      "name": "owned command public-distribution",
+      "ok": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/read-continuation-20261012/public-reports-author/public-distribution.stdout.bin",
+      "ok": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/read-continuation-20261012/public-reports-author/public-distribution.stderr.bin",
+      "ok": true
+    },
+    {
+      "name": "capture identity public-distribution",
+      "ok": true
+    },
+    {
+      "name": "clean exact source public-distribution",
+      "ok": true
+    }
+  ]
+}
