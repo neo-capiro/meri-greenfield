@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-business-development-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-business-next-review-20261012",
+  "sourceHead": "43f84069f8f6c081100b4cc91eef45feb094f6b8",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T15:37:03.662474+00:00",
+  "durationSeconds": 0.317,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 138398,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-review/independent-first.stdout.bin",
+      "bytes": 4172,
+      "sha256": "e97bf3c3e105504effaea373423f358fe86750ebfa2981569a303c471915a1ef"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-review/independent-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

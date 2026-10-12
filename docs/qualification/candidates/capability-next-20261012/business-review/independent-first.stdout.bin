@@ -1,0 +1,47 @@
+✔ business independent: get_business_development_context normalizes immutable selector without authority (2.320069ms)
+✔ business independent: get_business_development_context rejects unknown authority and coercion (0.779973ms)
+✔ business independent: get_business_development_context accepts raw projected data without inventing lineage (2.539099ms)
+✔ business independent: get_business_development_context discriminates exact operation and generated instant (0.846984ms)
+✔ business independent: get_business_development_context input and output getters/proxies stay inert (0.454554ms)
+✔ business independent: get_business_development_evidence normalizes immutable selector without authority (0.334884ms)
+✔ business independent: get_business_development_evidence rejects unknown authority and coercion (0.407633ms)
+✔ business independent: get_business_development_evidence accepts raw projected data without inventing lineage (3.29123ms)
+✔ business independent: get_business_development_evidence discriminates exact operation and generated instant (0.710328ms)
+✔ business independent: get_business_development_evidence input and output getters/proxies stay inert (0.354513ms)
+✔ business independent: get_business_development_recent_changes normalizes immutable selector without authority (0.29263ms)
+✔ business independent: get_business_development_recent_changes rejects unknown authority and coercion (0.321363ms)
+✔ business independent: get_business_development_recent_changes accepts raw projected data without inventing lineage (0.936128ms)
+✔ business independent: get_business_development_recent_changes discriminates exact operation and generated instant (0.390317ms)
+✔ business independent: get_business_development_recent_changes input and output getters/proxies stay inert (0.116235ms)
+✔ business independent: prototype aliases and non-read operations never resolve (0.268103ms)
+✔ business independent: recent limit stays integer1..25 with absent-only default (0.505931ms)
+✔ business independent: context window0 and newest-first order (0.249405ms)
+✔ business independent: context window1 and newest-first order (1.766698ms)
+✔ business independent: context window20 and newest-first order (0.787335ms)
+✔ business independent: context window21 and newest-first order (0.684049ms)
+✔ business independent: exact context projected keys preserve null versus missing (1.079233ms)
+✔ business independent: evidence window0 is distinct from source completeness (0.401604ms)
+✔ business independent: evidence window1 is distinct from source completeness (0.317948ms)
+✔ business independent: evidence window24 is distinct from source completeness (1.311462ms)
+✔ business independent: evidence window25 is distinct from source completeness (1.122318ms)
+✔ business independent: complete and partial coexist for limited sections or facts (1.18334ms)
+✔ business independent: aliases preserve null and empty-string precedence (0.443297ms)
+✔ business independent: exact fact serialization is bounded by UTF16 code units (1.289299ms)
+✔ business independent: descriptive UTF16 boundary and exact marker are enforced (0.774495ms)
+✔ business independent: descriptive arrays cap12 and distinguish marker evidence (0.725301ms)
+✔ business independent: omission and truncation claims cannot overlap or invent facts (0.995417ms)
+✔ business independent: fact key allowlist and physical-address projection are closed (0.564059ms)
+✔ business independent: generic descriptive JSON receives no invented scalar limit (0.298028ms)
+✔ business independent: identity and section relationships refuse contradictions (0.391249ms)
+✔ business independent: recent alerts accept nullable and non-enum source DTO strings (0.822157ms)
+✔ business independent: recent inference/disclaimer/limit/count are exact (0.844149ms)
+✔ business independent: changed values stay JSON without source mutations (0.642637ms)
+✔ business independent: hidden fields sparse arrays and deep data cannot bypass admission (0.527112ms)
+ℹ tests 39
+ℹ suites 0
+ℹ pass 39
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 241.478252

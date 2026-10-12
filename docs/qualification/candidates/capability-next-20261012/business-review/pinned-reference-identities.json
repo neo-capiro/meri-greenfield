@@ -1,0 +1,114 @@
+{
+  "pinnedCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "observedCommit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+  "references": [
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "expectedMatched": true,
+      "observedBlob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "drift": false,
+      "bytes": 415704,
+      "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194"
+    },
+    {
+      "path": "apps/api/src/meri/meri-bizdev-tools.service.ts",
+      "blob": "25db80eb7a7e39db58662c5a144f410971f7bf38",
+      "expectedMatched": true,
+      "observedBlob": "25db80eb7a7e39db58662c5a144f410971f7bf38",
+      "drift": false,
+      "bytes": 35214,
+      "sha256": "c9a2a9f77c132c2b63af1d2c6e71ce5ef43be72fc8e647212efd903ec97a5c1e"
+    },
+    {
+      "path": "apps/api/src/meri/meri-bizdev-tools.service.spec.ts",
+      "blob": "022678284dd159f29620268bec89e0bc47eaf7b4",
+      "expectedMatched": true,
+      "observedBlob": "022678284dd159f29620268bec89e0bc47eaf7b4",
+      "drift": false,
+      "bytes": 51438,
+      "sha256": "7462b109878319c2cf6dee0921ba3fc54ae0d1417d7641859fe301d6cf314435"
+    },
+    {
+      "path": "apps/api/src/business-development/bizdev-evidence.types.ts",
+      "blob": "1d90361d75000add6514c178389b69a7b363a760",
+      "expectedMatched": true,
+      "observedBlob": "1d90361d75000add6514c178389b69a7b363a760",
+      "drift": false,
+      "bytes": 5909,
+      "sha256": "ad668fb1d7efa1943f3ebb0c94829a947d2fd30a8e2f843424301663c11e4a47"
+    },
+    {
+      "path": "apps/api/src/business-development/bizdev-watch.types.ts",
+      "blob": "d8595d972fda8b52ac55c6229cfd604c9d28cbc4",
+      "expectedMatched": true,
+      "observedBlob": "d8595d972fda8b52ac55c6229cfd604c9d28cbc4",
+      "drift": false,
+      "bytes": 17262,
+      "sha256": "6d4c690f43b293ad4b0a2b933d46a95c04f9b5d5c77580229a591f4a644f13a6"
+    },
+    {
+      "path": "apps/api/src/business-development/bizdev-watch.service.ts",
+      "blob": "29fbe4b770f2a3418f5d6f5ab7bc194f9710813f",
+      "expectedMatched": true,
+      "observedBlob": "29fbe4b770f2a3418f5d6f5ab7bc194f9710813f",
+      "drift": false,
+      "bytes": 37682,
+      "sha256": "27e4dee0729ef9b62041ae62a160a991625946303576f432e1f8226f99d59f87"
+    },
+    {
+      "path": "apps/api/src/business-development/bizdev-meri-scope.service.ts",
+      "blob": "2cb7e71ff5929a6a78a97d60d27668409633572d",
+      "expectedMatched": true,
+      "observedBlob": "2cb7e71ff5929a6a78a97d60d27668409633572d",
+      "drift": false,
+      "bytes": 8411,
+      "sha256": "570e95f5279cf7e3d8521d9b03920fa4dbafc8f301de5a1def76d2ece78e9525"
+    },
+    {
+      "path": "apps/api/src/business-development/bizdev-meri-scope.service.spec.ts",
+      "blob": "2d99109db0f60f03f8e1514cf68cea24606bba5e",
+      "expectedMatched": true,
+      "observedBlob": "2d99109db0f60f03f8e1514cf68cea24606bba5e",
+      "drift": false,
+      "bytes": 11539,
+      "sha256": "6bce61461a3cc221d1c00cbbfc48c96a14c96b9995d89559748afe8077460893"
+    },
+    {
+      "path": "apps/api/src/business-development/bizdev-dossier.service.ts",
+      "blob": "6b405a7ab8f4118133eba1877c95511e1a93d4a1",
+      "expectedMatched": true,
+      "observedBlob": "6b405a7ab8f4118133eba1877c95511e1a93d4a1",
+      "drift": false,
+      "bytes": 84464,
+      "sha256": "e283aeab1af3926b799223d721e2592d212049d2485223497d57f66993a9f7c1"
+    },
+    {
+      "path": "apps/api/src/business-development/bizdev-dossier.service.spec.ts",
+      "blob": "e980be77c30d19265a398859958f15cf14170159",
+      "expectedMatched": true,
+      "observedBlob": "e980be77c30d19265a398859958f15cf14170159",
+      "drift": false,
+      "bytes": 72977,
+      "sha256": "e2c959e20d205adc16966614061537b362f8a1d070d1dec98d06a2b2d781106a"
+    },
+    {
+      "path": "apps/api/src/meri/meri-prospect-scope.helpers.spec.ts",
+      "blob": "dccdfdba2a3514bc750b12e86ebf37a5db98d307",
+      "expectedMatched": true,
+      "observedBlob": "dccdfdba2a3514bc750b12e86ebf37a5db98d307",
+      "drift": false,
+      "bytes": 7078,
+      "sha256": "f34b142633ccf2461440940d49fcdba5bbb4e8d75ba48dca530614ef51ceddd9"
+    },
+    {
+      "path": "apps/api/prisma/schema.prisma",
+      "blob": "cdf1923217edae6e7624993796a5671922b61ac0",
+      "expectedMatched": true,
+      "observedBlob": "cdf1923217edae6e7624993796a5671922b61ac0",
+      "drift": false,
+      "bytes": 968034,
+      "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0"
+    }
+  ]
+}
