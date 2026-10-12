@@ -1,0 +1,52 @@
+✔ list/read defaults and nullish numeric defaults preserve explicit selected client (5.668568ms)
+✔ raw selectors refuse authority injection, explicit null text and foreign client (2.973828ms)
+✔ UTF-16 selector bounds differ from Unicode code point schema counts (1.320063ms)
+✔ mode-specific bounds and explicit range/list/cursor exclusions (1.406143ms)
+✔ closed canonical context requires current selected-client subject (0.660492ms)
+✔ read cursor retains content/query/section hash and exact decoded selection (2.40219ms)
+✔ listing cursor remains a bounded identity hint, not a signed query or grant (0.678229ms)
+✔ exact listing metadata retains extraction and scan disclosure without content proof (10.339065ms)
+✔ listing next cursor requires a full sorted page and partial coverage (1.269628ms)
+✔ continued listing cannot upgrade to full listing completeness or repeat previous identity (1.636078ms)
+✔ list total, returned count, filename query and mode variants are correlated (4.110487ms)
+✔ complete text extraction checks full section hash, UTF-16 reference and external trust (3.057174ms)
+✔ partial read preserves hash and exact next UTF-16 offset (2.022569ms)
+✔ incoming continuation refuses changed document bytes and extraction hash (1.431591ms)
+✔ a physical next section resets offset and omits previous section hash (1.056918ms)
+✔ unreadable PDF reports gap without evidence or automatic traversal (2.463211ms)
+✔ section-local no-match may advance but does not become complete evidence (0.93204ms)
+✔ search match remains incomplete and uses query-bound cursor context (0.854844ms)
+✔ OCR partial/readability metadata cannot silently claim ordinary complete extraction (1.889639ms)
+✔ empty extraction is not an empty evidence record or a claim about other sections (0.708264ms)
+✖ UTF-16 text and serialized JSON ceiling are independent of character schema bounds (1.849719ms)
+✔ closed output shapes, timestamps and exact binding/subject correlation fail closed (2.540988ms)
+✔ metadata is bounded inert reported JSON and cannot mutate the caller input (1.029908ms)
+✔ canonical admission refuses getters/proxies/hidden fields/cycles without invoking them (0.601393ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 23
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1429.944855
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-client-documents.test.mjs:175:1
+✖ UTF-16 text and serialized JSON ceiling are independent of character schema bounds (1.849719ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-client-documents-20261012/packages/contracts/test/retrieval-client-documents.test.mjs:178:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
