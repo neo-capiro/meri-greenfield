@@ -1,0 +1,44 @@
+{
+  "base": "dd1433d164b4144f6f9d9ed14187459e7c9761f4",
+  "discoveryFreeze": "d34da1a39aa68dd6f8af41ca5caee730ad1cdbfe",
+  "operations": [
+    "search_cbo_cost_estimates",
+    "search_gao_reports",
+    "search_crs_reports"
+  ],
+  "modules": {
+    "public-reports.schema.json": "Three distinct closed request/result DTOs, source scalar/null types and advertised bounds",
+    "public-reports-validation.mjs": "Factory with unchanged snapshotOperationData; string/default normalization; count/note/range and result/request relationships",
+    "retrieval-public-reports.test.mjs": "Strict test-only Ajv plus actual canonical resolver fixtures, no producer execution"
+  },
+  "factory": "createPublicReportsValidators({validateShape,schema})",
+  "definitions": [
+    "CboCostEstimateSearchInput/Output",
+    "GaoReportSearchInput/Output",
+    "CrsReportSearchInput/Output"
+  ],
+  "contextKeys": [],
+  "normalization": {
+    "strings": "Exact source trim then UTF-16 clipping, blank omitted; CBO effective bill lowercased with original label in metadata",
+    "limits": "Strict integer1..25/default10 CBO;1..50/default20 GAO/CRS; legacy coercion/clamping intentionally excluded",
+    "congress": "Optional signed32-bit integer; zero omitted as no filter",
+    "dates": "Explicit JSON wire ISO instants for Date fields; nullable storage remains null"
+  },
+  "responsibilityLimits": [
+    "Current gateway/source authority remains unimplemented",
+    "No full text/live search/ingestion/fallback",
+    "CBO count is returned window only; GAO/CRS count is separate concurrent observation",
+    "Active-only CRS established by pinned producer, cannot be proved from result projection",
+    "No corpus completeness, freshness or absence proof"
+  ],
+  "verification": [
+    "three positive result projections",
+    "nullable/date fields",
+    "CBO exact empty note and no guessed amounts",
+    "UTF-16 clipping and ellipsis shape",
+    "strict numeric admission negatives and registered-range positives",
+    "independent totals and capped rows",
+    "inert JSON and canonical resolver lineage/hash",
+    "original/public preservation and owned group exit"
+  ]
+}

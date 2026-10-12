@@ -1,0 +1,91 @@
+{
+  "sourceFreeze": "d86c0710b534fad7626856075bb873715e54b596",
+  "scope": "Private public-report source contract and local source evidence only",
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-READ-CONTINUATION-PUBLIC-REPORTS-AUTHOR-20261012.md",
+      "bytes": 7240,
+      "sha256": "2c1a8b128d80f404dfe83d074719e67e00134019a724c38adbc6d0631c2205f3"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/build-schema.py",
+      "bytes": 2562,
+      "sha256": "1ca90813dd11181f62bcae50d1395ff1dd265f5669c74072553c7b6c3b6a1d6e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/focused-initial-source.patch",
+      "bytes": 29059,
+      "sha256": "9ce38f3d68eeb08a606ee2cc3ad1df428d9eb6285eac5e7f1100105fbe0c13f0"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/focused-initial.json",
+      "bytes": 1305,
+      "sha256": "e3723677dc19d4cc501f09259951f74e6e081b26c4690542bb03b205fbe76cb1"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/focused-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/focused-initial.stdout.bin",
+      "bytes": 3218,
+      "sha256": "ede19a80a5552ea39fc2a7ca60ff4dcecebb0698c1119c945b1ba4e1c0f2e4a9"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/outline.json",
+      "bytes": 2150,
+      "sha256": "10c69215d7749c68dc85a6f3ce03f8f01703d4c3bf7ce01c50c92e0ae2f83a3a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/public-distribution.json",
+      "bytes": 1437,
+      "sha256": "54a7ea136232489c8b91f15f2f3ca386150497778847384f37dc0099f98258e6"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/public-distribution.stderr.bin",
+      "bytes": 1040,
+      "sha256": "cbbd466f3bf458f7f516c133ea486c1aada38d325ec9a80b698c26da8c18237f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/public-distribution.stdout.bin",
+      "bytes": 2043,
+      "sha256": "a33b1081e97e80c8d93c7844b998abeee3dd96f105c9d17807eda080af1133fd"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/reference-identities.json",
+      "bytes": 2224,
+      "sha256": "06218560908687812fc01618b2945f21bb37b2640ff5eb4906b1b5624cd8b191"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/root-source-check.json",
+      "bytes": 1359,
+      "sha256": "dc49571c8973d7283f46f566c146562b68785b977de63eb9b7a1b9139299044b"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/root-source-check.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/root-source-check.stdout.bin",
+      "bytes": 49699,
+      "sha256": "67bd9fd35701a1efb8272917ee825085de2e0bad07583592ff148a8562685503"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/source-preservation.json",
+      "bytes": 1308,
+      "sha256": "e8fd1e5ff19f73c358a4813b355175cb415b4e68bb9f5788ad1fd47834fd3b49"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/verify-packet.py",
+      "bytes": 2960,
+      "sha256": "19119de1c4098e6a14ebc9f2e018aa0e5ab6a228dd6f3108cc5165280f4e9dd5"
+    }
+  ]
+}
