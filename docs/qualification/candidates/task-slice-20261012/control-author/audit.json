@@ -1,0 +1,365 @@
+{
+  "base": "77cedb126d57a0223d2df42ad2f3fe988eb51759",
+  "source": "6f14d780a40e878fa62bc928c4d520286313f56c",
+  "originalEntriesPreserved": 9667,
+  "passed": 75,
+  "checks": [
+    {
+      "name": "every original Git entry unchanged",
+      "pass": true
+    },
+    {
+      "name": "all new paths allocated",
+      "pass": true
+    },
+    {
+      "name": "exact candidate apps/control/task-lookup/binding.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact candidate apps/control/task-lookup/delivery.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact candidate apps/control/task-lookup/delivery.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact candidate apps/control/task-lookup/fixtures.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact candidate apps/control/task-lookup/index.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact candidate apps/control/task-lookup/migrations/0001_task_lookup.sql",
+      "pass": true
+    },
+    {
+      "name": "exact candidate apps/control/task-lookup/postgres-fixture.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact candidate apps/control/task-lookup/postgres-results.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact candidate apps/control/task-lookup/postgres-results.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "original test prefix apps/control/task-lookup/delivery.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "original test prefix apps/control/task-lookup/postgres-results.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "fixture correction only exact covered empty-page flag",
+      "pass": true
+    },
+    {
+      "name": "97 unavailable null-handler operations preserved",
+      "pass": true
+    },
+    {
+      "name": "initial-control expected exit",
+      "pass": true
+    },
+    {
+      "name": "initial-control exact source",
+      "pass": true
+    },
+    {
+      "name": "initial-control reaped",
+      "pass": true
+    },
+    {
+      "name": "initial-control stream stdout",
+      "pass": true
+    },
+    {
+      "name": "initial-control stream stderr",
+      "pass": true
+    },
+    {
+      "name": "initial-control group still absent",
+      "pass": true
+    },
+    {
+      "name": "corrected-control expected exit",
+      "pass": true
+    },
+    {
+      "name": "corrected-control exact source",
+      "pass": true
+    },
+    {
+      "name": "corrected-control reaped",
+      "pass": true
+    },
+    {
+      "name": "corrected-control stream stdout",
+      "pass": true
+    },
+    {
+      "name": "corrected-control stream stderr",
+      "pass": true
+    },
+    {
+      "name": "corrected-control group still absent",
+      "pass": true
+    },
+    {
+      "name": "store-initial expected exit",
+      "pass": true
+    },
+    {
+      "name": "store-initial exact source",
+      "pass": true
+    },
+    {
+      "name": "store-initial reaped",
+      "pass": true
+    },
+    {
+      "name": "store-initial stream stdout",
+      "pass": true
+    },
+    {
+      "name": "store-initial stream stderr",
+      "pass": true
+    },
+    {
+      "name": "store-initial group still absent",
+      "pass": true
+    },
+    {
+      "name": "store-repaired expected exit",
+      "pass": true
+    },
+    {
+      "name": "store-repaired exact source",
+      "pass": true
+    },
+    {
+      "name": "store-repaired reaped",
+      "pass": true
+    },
+    {
+      "name": "store-repaired stream stdout",
+      "pass": true
+    },
+    {
+      "name": "store-repaired stream stderr",
+      "pass": true
+    },
+    {
+      "name": "store-repaired group still absent",
+      "pass": true
+    },
+    {
+      "name": "reference-case-negative expected exit",
+      "pass": true
+    },
+    {
+      "name": "reference-case-negative exact source",
+      "pass": true
+    },
+    {
+      "name": "reference-case-negative reaped",
+      "pass": true
+    },
+    {
+      "name": "reference-case-negative stream stdout",
+      "pass": true
+    },
+    {
+      "name": "reference-case-negative stream stderr",
+      "pass": true
+    },
+    {
+      "name": "reference-case-negative group still absent",
+      "pass": true
+    },
+    {
+      "name": "reference-case-repaired expected exit",
+      "pass": true
+    },
+    {
+      "name": "reference-case-repaired exact source",
+      "pass": true
+    },
+    {
+      "name": "reference-case-repaired reaped",
+      "pass": true
+    },
+    {
+      "name": "reference-case-repaired stream stdout",
+      "pass": true
+    },
+    {
+      "name": "reference-case-repaired stream stderr",
+      "pass": true
+    },
+    {
+      "name": "reference-case-repaired group still absent",
+      "pass": true
+    },
+    {
+      "name": "connected-store expected exit",
+      "pass": true
+    },
+    {
+      "name": "connected-store exact source",
+      "pass": true
+    },
+    {
+      "name": "connected-store reaped",
+      "pass": true
+    },
+    {
+      "name": "connected-store stream stdout",
+      "pass": true
+    },
+    {
+      "name": "connected-store stream stderr",
+      "pass": true
+    },
+    {
+      "name": "connected-store group still absent",
+      "pass": true
+    },
+    {
+      "name": "scope-negative expected exit",
+      "pass": true
+    },
+    {
+      "name": "scope-negative exact source",
+      "pass": true
+    },
+    {
+      "name": "scope-negative reaped",
+      "pass": true
+    },
+    {
+      "name": "scope-negative stream stdout",
+      "pass": true
+    },
+    {
+      "name": "scope-negative stream stderr",
+      "pass": true
+    },
+    {
+      "name": "scope-negative group still absent",
+      "pass": true
+    },
+    {
+      "name": "coherent-scope-negative expected exit",
+      "pass": true
+    },
+    {
+      "name": "coherent-scope-negative exact source",
+      "pass": true
+    },
+    {
+      "name": "coherent-scope-negative reaped",
+      "pass": true
+    },
+    {
+      "name": "coherent-scope-negative stream stdout",
+      "pass": true
+    },
+    {
+      "name": "coherent-scope-negative stream stderr",
+      "pass": true
+    },
+    {
+      "name": "coherent-scope-negative group still absent",
+      "pass": true
+    },
+    {
+      "name": "scope-repaired expected exit",
+      "pass": true
+    },
+    {
+      "name": "scope-repaired exact source",
+      "pass": true
+    },
+    {
+      "name": "scope-repaired reaped",
+      "pass": true
+    },
+    {
+      "name": "scope-repaired stream stdout",
+      "pass": true
+    },
+    {
+      "name": "scope-repaired stream stderr",
+      "pass": true
+    },
+    {
+      "name": "scope-repaired group still absent",
+      "pass": true
+    }
+  ],
+  "sourceIdentities": [
+    {
+      "path": "apps/control/task-lookup/binding.mjs",
+      "blob": "5337c05f73a7535b0564da15f6f819b56409fa37",
+      "bytes": 8086,
+      "sha256": "eeb2cb69e3f20eacf123206d0faa2da7170ef53e8bdea624e7947bc9e81a1aeb"
+    },
+    {
+      "path": "apps/control/task-lookup/delivery.mjs",
+      "blob": "ed95692d75a0c4d028e6afaa5106d31d5d1cb6f6",
+      "bytes": 4418,
+      "sha256": "014e0a5520861ddbf87f315d8a57fdf124c2a5536df582189fa3d543a5bf8df2"
+    },
+    {
+      "path": "apps/control/task-lookup/delivery.test.mjs",
+      "blob": "a69cb59f3a3880f0f4cd4273b73c81683b8dbb8e",
+      "bytes": 7120,
+      "sha256": "42da417333b2891bbf19e31285ab5377549801a09526ec4e11d50711440f2dde"
+    },
+    {
+      "path": "apps/control/task-lookup/fixtures.mjs",
+      "blob": "e5de6ed00dd1125fc8bb91e287d216f1d5336838",
+      "bytes": 3811,
+      "sha256": "8ef8aa4e9ce23350ee0a026c7ed38958d165dda80c2d41bb3e1df6a9ef8d4d87"
+    },
+    {
+      "path": "apps/control/task-lookup/index.mjs",
+      "blob": "c3443288b9624c445ace541d1b1a447438323add",
+      "bytes": 334,
+      "sha256": "114e25b9a2973823dc4b1d17009cb32b377bc08e93f1b32963404cfef5e28440"
+    },
+    {
+      "path": "apps/control/task-lookup/migrations/0001_task_lookup.sql",
+      "blob": "cc05f27bd78c3a5304b7bf7503f561e9e9d0ad51",
+      "bytes": 1024,
+      "sha256": "ae3197c4f898c5a8a493b2bee4cd6c5da16c62730ad3447e4f07ebfeaf1c100f"
+    },
+    {
+      "path": "apps/control/task-lookup/postgres-fixture.mjs",
+      "blob": "b6019b7256cfdd1eccf26c85f730414f0c2b6e06",
+      "bytes": 2700,
+      "sha256": "403f2837f27155f3176efffcca21dbe3b1c5ddd9f6a5d39081df163c6ff34008"
+    },
+    {
+      "path": "apps/control/task-lookup/postgres-results.mjs",
+      "blob": "ae4281a2aa0d667da77c19ee5e1a49d6e2335a6d",
+      "bytes": 5080,
+      "sha256": "741ff9ffb81b2245c836ea4b010272394a0e194028519d2685f17b016be4e98b"
+    },
+    {
+      "path": "apps/control/task-lookup/postgres-results.test.mjs",
+      "blob": "66d7f3cfa5d0b31d80e3f107b7cd9b58fde8b290",
+      "bytes": 4061,
+      "sha256": "ce7f741f29a424eaabc57b62c6ba4ea48fd457ed5dd572a9bbef392b102ff7bc"
+    }
+  ],
+  "scope": "OFFLINE_SOURCE_ONLY"
+}

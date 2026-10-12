@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/task-lookup/delivery.test.mjs",
+    "apps/control/task-lookup/postgres-results.test.mjs"
+  ],
+  "cwd": "/workspace/meri-task-lookup-control-20261012",
+  "sourceHead": "6eec40b28bd7f10fd163108ea13e75a0ced477b2",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "845f3924ad4b66ef71ab09872bedc2cd012334b0ae16c2a7e7f1d798b614855a",
+  "startedAt": "2026-10-12T23:47:26.760021+00:00",
+  "durationSeconds": 2.777,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 413976,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-author/scope-repaired.stdout.bin",
+      "bytes": 2660,
+      "sha256": "123f5b01e2f952c17cd06bfa6b1312917f5ad4122328961611f3d0b935b93126"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-author/scope-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Unique label identifies initial or repaired backend integration test verification; prior receipts are preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
