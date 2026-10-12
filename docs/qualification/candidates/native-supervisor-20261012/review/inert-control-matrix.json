@@ -1,0 +1,86 @@
+{
+  "status": "FROZEN_BEFORE_AUTHOR_CANDIDATE",
+  "executionBoundary": "Only isolated lifecycle definitions with fakeports; notcandidateentry/diagnostic/native",
+  "controls": [
+    {
+      "id": "exact-output-success",
+      "expected": "Both real b-empty EOF events, exit0, clean settled readers, smallboundedstreams produce source capture only, runtime flagsfalse."
+    },
+    {
+      "id": "exact-cap-boundary",
+      "expected": "32768stdout/65536stderr may be retained only with complete EOF; onebyteextra denies and preserves cap."
+    },
+    {
+      "id": "stdout-overflow",
+      "expected": "Observedstdout above32768 cannot pass; no retained allocation beyondcap."
+    },
+    {
+      "id": "stderr-overflow",
+      "expected": "Observedstderr above65536 cannot pass; no retained allocation beyondcap."
+    },
+    {
+      "id": "read-error",
+      "expected": "Readerexception remains explicit failure even if threadends and childexit0."
+    },
+    {
+      "id": "nonbytes-read",
+      "expected": "None or text return is notEOF/success; only binaryempty EOF qualifies."
+    },
+    {
+      "id": "thread-completion-no-eof",
+      "expected": "Threadreturn without explicit reader EOF cannot pass."
+    },
+    {
+      "id": "reader-still-alive",
+      "expected": "Missing reader settlement with childexit0 remainsUNKNOWN; no concurrent buffer snapshot or readerlockedclose."
+    },
+    {
+      "id": "child-exit-no-eof",
+      "expected": "Directchildexit alone doesnotprove EOF or descendantcleanup."
+    },
+    {
+      "id": "missing-child-exit",
+      "expected": "KillACK/waiterror/noobservedexit remainsUNKNOWN."
+    },
+    {
+      "id": "late-spawn",
+      "expected": "Spawn returning after actioncutoff or15stotal cannot resume successfulcapture; exact lateownedchild has cleanup responsibility."
+    },
+    {
+      "id": "expired-before-spawn",
+      "expected": "Expired budget cannot acquirechild."
+    },
+    {
+      "id": "cleanup-budget",
+      "expected": "Kill/wait/join reservations clipabsolute13s/15s ceilings; timeout0 never becomesunbounded."
+    },
+    {
+      "id": "late-wait",
+      "expected": "Wait returning after shareddeadline cannot turn resultintosuccess."
+    },
+    {
+      "id": "late-join",
+      "expected": "Join returning after deadline cannot qualify finalsuccess."
+    },
+    {
+      "id": "kill-error",
+      "expected": "Terminationerror remainsfailure/UNKNOWN, doesnotprevent honestremainingcleanup."
+    },
+    {
+      "id": "thread-start-error",
+      "expected": "Partialreaderstartup preserveschild/streamownership andfailure."
+    },
+    {
+      "id": "terminal-late-data",
+      "expected": "Late readercompletion/data cannot rewrite finalizedresult or publishpartialsuccess."
+    },
+    {
+      "id": "owned-vs-borrowed",
+      "expected": "Cleanup receivesonlychildcreatedbythiscapture; noexternalunrelatedhandle."
+    },
+    {
+      "id": "single-attempt",
+      "expected": "One spawn only; no automaticretry onerror/unknown/timeout."
+    }
+  ]
+}
