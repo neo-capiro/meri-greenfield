@@ -1,0 +1,49 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "check",
+    "--prefix",
+    "packages/contracts"
+  ],
+  "cwd": "/workspace/meri-backend-execution-20261012",
+  "sourceHead": "e0e9130a9560c133d70d401132644d6b556357f5",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-12T21:42:24.646812+00:00",
+  "durationSeconds": 3.131,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 344570,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 344607,
+      "status": 0
+    },
+    {
+      "pid": 344701,
+      "status": 0
+    },
+    {
+      "pid": 344720,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/public-distribution-corrected.stdout.bin",
+      "bytes": 1946,
+      "sha256": "de0a4143bf3b556fd617fcfa9e57c18b2e52d1388f3c69b679bb6cfda39db9aa"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/public-distribution-corrected.stderr.bin",
+      "bytes": 832,
+      "sha256": "a5bed74e8271b4bed502d2d779b1766e28a92b798d5f5560230b37ebdcc9e5a2"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
