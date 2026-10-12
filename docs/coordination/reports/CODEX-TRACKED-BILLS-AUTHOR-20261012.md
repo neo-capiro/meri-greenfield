@@ -105,3 +105,9 @@ original assertions remain. Added caller-mutation regression passes. Final focus
 suite27/27 PASS. Raw initial/failed/repaired outputs remain in the evidence packet;
 owned groups237686,237854,237989 absent, no timeout or kill. No broader/public/native
 suite was run. Independent exact-source acceptance is still required.
+
+Exact source freeze `e020f4ff2af3c23412adf2fd634f8362140eeb51`. Repaired tested file hashes
+match committed source byte-for-byte. Metadata audit43/43 PASS; four pinned/current
+source references unchanged and6,110 base files byte-identical. Owned group238520
+absent, no timeout/kill. All checks are focused source or metadata; no current
+source authority, native runtime or deployment acceptance is claimed.

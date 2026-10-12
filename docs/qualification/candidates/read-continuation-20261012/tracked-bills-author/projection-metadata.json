@@ -1,0 +1,82 @@
+{
+  "operation": "search_tracked_bills",
+  "sourceFields": {
+    "TrackedBill": {
+      "id": "String",
+      "clientId": "String",
+      "billId": "String",
+      "note": "String?",
+      "createdAt": "DateTime"
+    },
+    "CongressBill": {
+      "id": "String",
+      "title": "String",
+      "latestActionDate": "DateTime?",
+      "latestActionText": "String?",
+      "status": "String?",
+      "sponsorName": "String?",
+      "sponsorParty": "String?",
+      "subjects": "String[]"
+    },
+    "CongressBillAction": {
+      "text": "String",
+      "billId": "String"
+    },
+    "Client": {
+      "id": "String",
+      "name": "String",
+      "status": "String"
+    }
+  },
+  "storageConstraints": [
+    "TrackedBill.id primary UUID",
+    "TrackedBill.clientId UUID",
+    "TrackedBill unique(clientId,billId)",
+    "TrackedBill.createdAt timestamptz(6)",
+    "CongressBill.latestActionDate nullable SQL Date"
+  ],
+  "projection": {
+    "wrapper": [
+      "tool",
+      "generatedAt",
+      "clientId",
+      "total",
+      "bills"
+    ],
+    "tracking": [
+      "id",
+      "billId",
+      "note",
+      "createdAt",
+      "bill"
+    ],
+    "bill": [
+      "identifier",
+      "title",
+      "latestActionDate",
+      "latestActionText",
+      "status",
+      "actionTexts",
+      "sponsorName",
+      "sponsorParty",
+      "subjectNames"
+    ]
+  },
+  "fieldRules": [
+    "bill enrichment nullable when global identifier absent",
+    "actionTexts SQL ARRAY subquery of required action text; no LIMIT or order asserted",
+    "subjectNames storedsubjects with empty-array fallback",
+    "status nullable but projected even though helper TS return annotation optional",
+    "note nullable but projected",
+    "outer tracking rows createdAt descending, tie-order unspecified",
+    "wrapper total equals complete returned tracking array length; no page or50 cap",
+    "bill identifier equals corresponding tracked billId; arbitrary stored IDs not silently normalized"
+  ],
+  "resolution": [
+    "input required clientId trim/slice80",
+    "ensureClientVisible does tenant/nonarchived exact UUID or case-insensitive name lookup; no actor/wall predicate in this method",
+    "trusted new Meri resolver and current authority remain unimplemented; lineage shape is no current grant proof"
+  ],
+  "sourceEffects": "stored tenant tracking and global bill/action reads only; none executed",
+  "scope": "SOURCE_METADATA_ONLY"
+}
