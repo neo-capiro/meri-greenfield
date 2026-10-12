@@ -1,0 +1,754 @@
+{
+  "base": "14be9fc614568a74133b89f2b229e50c9b030322",
+  "candidate": "60516dd4a4027c2e740cd374a37e0fb4d51d4214",
+  "tree": "4ec9f15b3a89ebb8afcb12342a9d0046dfa27fa8",
+  "sourcePatchSha256": "304151ce12eb46822745d1d79471895cd16481d41053639f40dbe686f4ca351a",
+  "typescriptParserVersion": "5.9.3",
+  "typescriptParserSha256": "3ae902c92cc44dace175c0e69e13a4b0899f6983c6121d76b9ab8dd5795e7675",
+  "typescriptParserPath": "/workspace/meri-sandbox-lifecycle-20261012/packages/contracts/node_modules/typescript/lib/typescript.js",
+  "checks": [
+    {
+      "name": "exact candidate HEAD",
+      "passed": true
+    },
+    {
+      "name": "clean source worktree",
+      "passed": true
+    },
+    {
+      "name": "only allocated source and author evidence paths change",
+      "passed": true
+    },
+    {
+      "name": "all original Office assertion expressions byte-exact and ordered",
+      "passed": true
+    },
+    {
+      "name": "all original Office test names exact and ordered",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/office-export.mjs:sha256Hex",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/office-export.mjs:isContained",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/office-export.mjs:normalizeDeadlineMs",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/office-export.mjs:chunkBuffer",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/office-export.mjs:planExport",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/office-export.mjs:encodeRecord",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/office-export.mjs:buildRecords",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/office-export.mjs:num",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/office-export.mjs:sig",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/office-export.mjs:sub",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/office-export.mjs:strArray",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/office-export.mjs:numArray",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/office-export.mjs:tableArray",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/office-export.mjs:buildGenerationFacts",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/office-export.mjs:hasOnlyFields",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/office-export.mjs:hasAllFields",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/office-export.mjs:subReasons",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/office-export.mjs:cgroupReasons",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/office-export.mjs:sameJson",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/office-export.mjs:normalizedPath",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/office-export.mjs:validStructure",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/office-export.mjs:validateGenerationFacts",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/office-export.mjs:validateGenerate",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/office-export.mjs:validatePptx",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/office-export.mjs:validateRecalc",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/office-export.mjs:verifyArtifactsVerdict",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/office-export.mjs:readCgroupObservations",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/office-export.mjs:assertPathChainIsRealDirectories",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/office-export.mjs:assertRealDirectoryAncestors",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/office-export.mjs:inspectExpectedFiles",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/office-export.mjs:safeRealpath",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/office-export.mjs:readRegularFileVerified",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/office-export.mjs:discoverRunDir",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/office-export.mjs:errMsg",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/office-export.mjs:defaultBaseRoot",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/browser.mjs:extractResultSection",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/browser.mjs:decodeToolResult",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/browser.mjs:parseSandboxRows",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/browser.mjs:assessSandboxEvidence",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/browser.mjs:scanDisablingFlags",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/browser.mjs:identifyAssociatedChromium",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/browser.mjs:readProcesses",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/browser.mjs:readProcStatus",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/browser.mjs:readProcEvidence",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/browser.mjs:sha256",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/browser.mjs:findFileBounded",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/browser.mjs:statHelper",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/browser.mjs:discoverSandboxHelper",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/browser.mjs:classifyHelperDiscovery",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/browser.mjs:parseSelfStatus",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/browser.mjs:mountFlagsFor",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/browser.mjs:runUsernsDiagnostic",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/browser.mjs:classifyUnshareDiagnostic",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/browser.mjs:planBrowserSteps",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/browser.mjs:hasActualError",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/browser.mjs:shouldStopAfter",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/browser.mjs:runBoundedSequence",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/browser.mjs:discoverChrome",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/browser.mjs:collectPrelaunchDiagnostics",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/browser.mjs:decodeRawText",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/browser.mjs:buildBrowserSteps",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/runtime.mjs:summarize",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/runtime.mjs:computeExitCode",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/runtime.mjs:parseStructuredOutput",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/runtime.mjs:checkIdentityAndMounts",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/runtime.mjs:checkReadOnlyRoot",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/runtime.mjs:addressIn10_80",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/runtime.mjs:classifyNetworkResults",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/runtime.mjs:checkNetworkDenial",
+      "passed": true
+    },
+    {
+      "name": "original function exact: apps/worker/qualification/probes/runtime.mjs:checkSdkStatic",
+      "passed": true
+    },
+    {
+      "name": "ordinary worker test discovery adds exactly three allocated suites",
+      "passed": true
+    },
+    {
+      "name": "worker package preserves every other field",
+      "passed": true
+    },
+    {
+      "name": "worker package preserves all bytes except additive test script",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: apps/control/qualification-sdk-fixture/service/package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: apps/control/qualification-sdk-fixture/service/package.json",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: apps/control/qualification-sdk-fixture/state/package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: apps/control/qualification-sdk-fixture/state/package.json",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: apps/control/qualification-temporal/package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: apps/control/qualification-temporal/package.json",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: apps/proxy/qualification/package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: apps/proxy/qualification/package.json",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: apps/worker/qualification/Dockerfile",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: apps/worker/qualification/component-pins.json",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: apps/worker/qualification/package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: apps/worker/qualification/probes/artifacts.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: apps/worker/qualification/probes/artifacts.py",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: apps/worker/qualification/probes/office-reconstruct.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: apps/worker/qualification/probes/static.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: apps/worker/qualification/requirements.lock.txt",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: docs/qualification/candidates/image-remediation-20261011/retrieval-package.json",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: package.json",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/README.md",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/THIRD-PARTY-NOTICES.md",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/dist/browser.d.ts",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/dist/browser.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/dist/contracts.d.ts",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/dist/index.d.ts",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/dist/metadata.d.ts",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/dist/metadata.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/generate.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/meri.schema.json",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/package.json",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/qualification-sdk/fixture.schema.json",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/qualification-sdk/native-evidence.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/qualification-sdk/native-evidence.schema.json",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/qualification-sdk/validate.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/qualification-sdk/wire.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/retrieval-0.2/catalog.json",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/retrieval-0.2/catalog.schema.json",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/retrieval-0.2/common.schema.json",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/retrieval-0.2/data-search-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/retrieval-0.2/data-search.schema.json",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/retrieval-0.2/federal-market-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/retrieval-0.2/federal-market.schema.json",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/retrieval-0.2/mail-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/retrieval-0.2/mail.schema.json",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/retrieval-0.2/meeting-source-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/retrieval-0.2/meeting-source.schema.json",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/retrieval-0.2/memory-proposals-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/retrieval-0.2/memory-proposals.schema.json",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/retrieval-0.2/memory-review-policy.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/retrieval-0.2/operation-contracts.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/retrieval-0.2/operational-reads-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/retrieval-0.2/operational-reads.schema.json",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/retrieval-0.2/retrieval.schema.json",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/retrieval-0.2/skill.schema.json",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/retrieval-0.2/validate.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/test/boundaries.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/test/native-evidence-fixture.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/test/public-package.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/test/public-types.ts",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/test/retrieval-data-search.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/test/retrieval-federal-market.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/test/retrieval-mail.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/test/retrieval-meeting-source.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/test/retrieval-memory-binding.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/test/retrieval-memory-proposals.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/test/retrieval-memory-review-policy.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/test/retrieval-operational-reads.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/test/retrieval-r2.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/test/sdk-fixture-contract.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/test/sdk-fixture-wire.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/test/sdk-native-evidence.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/contracts/validate.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/ui-stream/package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "protected original exact: packages/ui-stream/package.json",
+      "passed": true
+    },
+    {
+      "name": "context test has exactly three intended cardinality changes",
+      "passed": true
+    },
+    {
+      "name": "finite context list adds exactly four allocated files and no other bytes",
+      "passed": true
+    },
+    {
+      "name": "worktree matches Git: apps/worker/qualification/README.md",
+      "passed": true
+    },
+    {
+      "name": "worktree matches Git: apps/worker/qualification/package.json",
+      "passed": true
+    },
+    {
+      "name": "worktree matches Git: apps/worker/qualification/probes/browser-lifetime.mjs",
+      "passed": true
+    },
+    {
+      "name": "worktree matches Git: apps/worker/qualification/probes/browser-lifetime.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "worktree matches Git: apps/worker/qualification/probes/browser.mjs",
+      "passed": true
+    },
+    {
+      "name": "worktree matches Git: apps/worker/qualification/probes/office-export.mjs",
+      "passed": true
+    },
+    {
+      "name": "worktree matches Git: apps/worker/qualification/probes/office-export.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "worktree matches Git: apps/worker/qualification/probes/owned-probe-child.mjs",
+      "passed": true
+    },
+    {
+      "name": "worktree matches Git: apps/worker/qualification/probes/owned-probe-child.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "worktree matches Git: apps/worker/qualification/probes/runtime.mjs",
+      "passed": true
+    },
+    {
+      "name": "worktree matches Git: scripts/qualification/worker_context.py",
+      "passed": true
+    },
+    {
+      "name": "worktree matches Git: scripts/qualification/worker_context_test.py",
+      "passed": true
+    }
+  ],
+  "protectedFiles": 78,
+  "unchangedFunctions": 70,
+  "originalOfficeAssertions": 153,
+  "originalOfficeTests": 55,
+  "files": [
+    {
+      "path": "apps/worker/qualification/README.md",
+      "bytes": 16027,
+      "sha256": "7a55b8f45fd24e7630f77fbaf394f603d27754a4d505d97a607216ed49bc23fa"
+    },
+    {
+      "path": "apps/worker/qualification/package.json",
+      "bytes": 1240,
+      "sha256": "c14736fe666c6f1674d96794f8b55011501aa0b430f29b8ed23772d79cabea5b"
+    },
+    {
+      "path": "apps/worker/qualification/probes/browser-lifetime.mjs",
+      "bytes": 5458,
+      "sha256": "1acd04d3fc6080d5c2fa411775e18afe0df6ba04cffaa03ac36882efd9e5450b"
+    },
+    {
+      "path": "apps/worker/qualification/probes/browser-lifetime.test.mjs",
+      "bytes": 6045,
+      "sha256": "99ba5d20d115a2bbcfea0ffcc8d15b84de108efa9c2dbdfb1276062203ddfb70"
+    },
+    {
+      "path": "apps/worker/qualification/probes/browser.mjs",
+      "bytes": 34537,
+      "sha256": "157fa783cdedcb16e00bf56c3022a1151831987f6492dc20b8b879d613304629"
+    },
+    {
+      "path": "apps/worker/qualification/probes/office-export.mjs",
+      "bytes": 46889,
+      "sha256": "5f96ba57834b7482d40fe085a83d6373a96f3badf74d9e9f3b868db501ac64b1"
+    },
+    {
+      "path": "apps/worker/qualification/probes/office-export.test.mjs",
+      "bytes": 42963,
+      "sha256": "c79b2f67a21ea2692f3c504a8cacf0f4ab910fe7ab93dfebcc5b4ae253e57877"
+    },
+    {
+      "path": "apps/worker/qualification/probes/owned-probe-child.mjs",
+      "bytes": 7410,
+      "sha256": "c24e00e9bfcce6d864e84419bc556480c5c8d490ba14d958a35f493905336472"
+    },
+    {
+      "path": "apps/worker/qualification/probes/owned-probe-child.test.mjs",
+      "bytes": 10224,
+      "sha256": "45fe2f3c1d51a28ae2a19096a956953c9819905c7ff27cb726c6d621f518abd9"
+    },
+    {
+      "path": "apps/worker/qualification/probes/runtime.mjs",
+      "bytes": 16986,
+      "sha256": "d72e4aa4188ffdf7fc26e39d261c642030e2b1c6226dd83d6ecf20df1d3927ce"
+    },
+    {
+      "path": "scripts/qualification/worker_context.py",
+      "bytes": 11867,
+      "sha256": "e5ea8c06607f15c6c0c2dfde527f20d9dfa509e6c59268ffaa03cbfa6b97d765"
+    },
+    {
+      "path": "scripts/qualification/worker_context_test.py",
+      "bytes": 11156,
+      "sha256": "acc6e8fea2ac62e040a164a40cc386372c9f6c177b4e85f319020a45357efea6"
+    }
+  ],
+  "allPassed": true
+}

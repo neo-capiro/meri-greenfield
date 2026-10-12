@@ -1,0 +1,22 @@
+{
+  "base": "14be9fc614568a74133b89f2b229e50c9b030322",
+  "reviewOnlyCommitsBeforeFinal": [
+    "f590648d4e435f9297825b4790b51885abf01326",
+    "91f18cc1246417aa0c2f3908e84f138c3458895a",
+    "d8852e9200eca5e86500931429f0a7dc2dbe03a3",
+    "bc2553538685c99b0a96bc0c4d6331d714af1a42",
+    "ebf98b19d799a3813b057c3c95b7d7e7efe72bf2",
+    "b4f9e3116e096e5fe9bac76a1265dad96b61c6b0",
+    "c4208f07b9b6e4345fa2acf1aba64fa451aab5ae",
+    "c49b296e4aa744ea6521d680b8ae19002a32d69d",
+    "6130a4f65538e3f42978d9d874b471324e3c94f7",
+    "02f10d448ec1d5836e9df8cdac0d651d152d5fc1",
+    "36bf26eb3f6ac6b6ae03cea87a77a848f7f384a1",
+    "53147da6ee98be57a551f18fe390008b9810575e",
+    "973cce7ea796d7b840498fa4621cb518d0f35689",
+    "819d07d7b32e2cf5db86ad95e8b9ea895e92d660",
+    "b7871fe0d41129a3a25e841d0d191e3ebc430e76",
+    "ead0105cce5fa0a2790506f2feca6b539a124c9e"
+  ],
+  "finalCommit": "Provided in reviewer completion message; not self-referentially embedded"
+}

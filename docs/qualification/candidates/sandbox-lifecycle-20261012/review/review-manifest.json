@@ -1,0 +1,329 @@
+{
+  "reviewer": "Codex /root/memory_reviewer",
+  "verdict": "ACCEPT_SOURCE",
+  "sourceFreeze": "bb44e802de14b5483c51ea1a58448ca23a5f11a0",
+  "authorEvidenceHead": "60516dd4a4027c2e740cd374a37e0fb4d51d4214",
+  "runtimeGate": "HOLD",
+  "files": [
+    {
+      "path": "docs/coordination/reports/MERI-SANDBOX-LIFECYCLE-REVIEW-20261012.md",
+      "bytes": 7905,
+      "sha256": "b1b79c81131967ec3edefab9d995bd01e6cc496e4bea31d6bd5e2e4c3ab35871"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/baseline-offline-command.json",
+      "bytes": 2719,
+      "sha256": "0b2f6fec4788267903ec2e1fdd1878d0967e7be86da3c54c7f7f80ba968e98c6"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/baseline-offline.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/baseline-offline.stdout.txt",
+      "bytes": 15948,
+      "sha256": "b1c36d5e4ec983679ae74c89346123681f030bcbc33f8c9d730916498dd538b4"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/browser-before-command.json",
+      "bytes": 555,
+      "sha256": "fb89f2718a9a06f462371ca7572c873d21f8aad33f275d974c8f14efec8fd288"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/browser-before.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/browser-before.stdout.txt",
+      "bytes": 997,
+      "sha256": "9eca8568b30918be4052ef28a19f42e5c5cc07154f288bff55fcff61ac5e3a0a"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/browser-lifetime-independent.test.mjs",
+      "bytes": 5218,
+      "sha256": "7fd6ede0bae5663cb14ca60e6bc5d1cb081bf59d57303483a96beeee57ee7535"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/cli-before-command.json",
+      "bytes": 768,
+      "sha256": "bd95f409e0694c9235068f26d74bdcd449ab041cf2699e0913b3f1496efb5b99"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/cli-before.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/cli-before.stdout.txt",
+      "bytes": 1460,
+      "sha256": "aa6efe394404056561d8754574e4df888f4e68e49e1ccbb007700fe9562bfb1f"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/cli-cancellation-independent.test.mjs",
+      "bytes": 6013,
+      "sha256": "44f4c4a2086464192544a861c555cbba776d3b48d7802927c0e58464ad37249e"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/cli-signal-allocation.json",
+      "bytes": 745,
+      "sha256": "3f9b6860a96842ae175573056e347d7038f16201495f913775039847b3ec5090"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/context-test-allocation.json",
+      "bytes": 507,
+      "sha256": "cbf20fa22efc126d965f4fdcebaa40be5ffb2e3a9b183ac26b826e9f4e693b65"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/deadline-mutant-command.json",
+      "bytes": 695,
+      "sha256": "aec36617ed89ce6a3ceb2925cbbde600d38f64ea8aa74a12abfb692a44dbd7c1"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/deadline-mutant.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/deadline-mutant.stdout.txt",
+      "bytes": 1050,
+      "sha256": "bb23865e7771cb8c0ba4563595e162dc5e2b7bbc0ec9a6bb74f311428ce09584"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/exact-source.patch",
+      "bytes": 70489,
+      "sha256": "304151ce12eb46822745d1d79471895cd16481d41053639f40dbe686f4ca351a"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/expanded-supervisor-before-command.json",
+      "bytes": 547,
+      "sha256": "132c4b16e76e37dd52a5b1ebd61d5a6aa0570454e1e828a19199b4c59f1d4918"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/expanded-supervisor-before.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/expanded-supervisor-before.stdout.txt",
+      "bytes": 4229,
+      "sha256": "d4f3092719c3cbfc12beb3b32bb6b700ae8c40b7d9e3eedd7b9eb19c3b264fec"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/final-author-integrity.json",
+      "bytes": 930,
+      "sha256": "ecd6d1dd5903c56bb8be7a279aa9bcc1c5d983067b6153ab7f1781b1af1de9ae"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/final-context-command.json",
+      "bytes": 323,
+      "sha256": "fe2a09d3d1f048dff4ce4c2a9f056c1cdfa2b851e7db5ae8cb887aacbcf63dd0"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/final-context.stderr.txt",
+      "bytes": 116,
+      "sha256": "da99afca2ab69c619f6156cda91e0f463b2f2d150cc0ed722d6bc9da93b9996c"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/final-context.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/final-independent-command.json",
+      "bytes": 863,
+      "sha256": "4d52c6e1e7071ab8f4f28f5e33368236e064a53f9515a44f6742e6b53ad4959e"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/final-independent.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/final-independent.stdout.txt",
+      "bytes": 4207,
+      "sha256": "45866d922f28439469f920e5c482ad6548d251a465037bc5c0b6555d2561cd92"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/final-preservation.json",
+      "bytes": 24969,
+      "sha256": "0e9bde163fba7f71b2792b8694193e127610fac95b2f49e764ba513cb9991a0b"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/final-public-command.json",
+      "bytes": 304,
+      "sha256": "4ab77c54863c51ef1a82baa3ea3fd01bb748f5971530db98e5e27a106a1568e1"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/final-public.stderr.txt",
+      "bytes": 1040,
+      "sha256": "cbbd466f3bf458f7f516c133ea486c1aada38d325ec9a80b698c26da8c18237f"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/final-public.stdout.txt",
+      "bytes": 2046,
+      "sha256": "ef809351ab41bb75877393764755ef54c43aa8c4d59aeb75ce9961f54effa467"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/final-root-command.json",
+      "bytes": 281,
+      "sha256": "c79b0d0a211c63a3245e650020c943d96c7e736fbf5e6c62b856238745cf9075"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/final-root.stderr.txt",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/final-root.stdout.txt",
+      "bytes": 22952,
+      "sha256": "586ed915bea273663b549da68428a7e1e16f3519073f08c54c2c1113b11e4f14"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/final-worker-command.json",
+      "bytes": 318,
+      "sha256": "9aa3c0e18b48db3c483bf27ff7316393de29eb13b5e664096dccc0e9cda5ba6f"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/final-worker.stderr.txt",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/final-worker.stdout.txt",
+      "bytes": 26929,
+      "sha256": "c3abd9515ec60fc10574ff59f80d8db5327eee1c5bbe4bfee788948ca092f654"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/first-integrated-command.json",
+      "bytes": 1355,
+      "sha256": "026dc94f55290542472474b6f05adb9f71666ce6ae3cd74319cc2680937138ee"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/first-integrated.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/first-integrated.stdout.txt",
+      "bytes": 2280,
+      "sha256": "31e3a6cf891fbaa4e16979b4b78f916de5259c37e934904dae7ab414e5bb5d99"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/fixture-assertion-verification.json",
+      "bytes": 420,
+      "sha256": "9c3371c236601eb4890bfb8c49f4cbc53f33f079385c176b345a9d1001b8c92f"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/fixture-repair-allocation.json",
+      "bytes": 573,
+      "sha256": "73194c0707a6529db05a00ac182c08b3679ae5c8f934c8549162a479cf130689"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/frozen-criteria.json",
+      "bytes": 4242,
+      "sha256": "12b674bad7e88be52b93ad01ed469f8caa57c086d463de84dcc6fb2be5045218"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/initial-preservation-donor-parser.json",
+      "bytes": 24740,
+      "sha256": "f3b055a8cd030515cac50406b46e665cc2dfe1549addd6d867a569ec0120ed60"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/office-supervisor-independent.test.mjs",
+      "bytes": 6039,
+      "sha256": "aee2c998513c676b78cd43fad65579b0e557286adc27f33f9c3f6c554c5d7ade"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/package-test-allocation.json",
+      "bytes": 582,
+      "sha256": "e48c7e59c7d84566c9e56728664c0fc2000632f40b5b173d20a28aa2691d451b"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/portable-parser-precheck-command.json",
+      "bytes": 376,
+      "sha256": "03aeb4172fc19f46973b7287e7bfb6d5ca3159c2ea78c1074ee6dc18467a546a"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/portable-parser-precheck.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/portable-parser-precheck.stdout.txt",
+      "bytes": 217,
+      "sha256": "fbaf3086f367008781ebb905cd87fbe05b767992942f7b49a0102af014ecc15e"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/precheck-signal-before-command.json",
+      "bytes": 297,
+      "sha256": "6ae4733d7616146d683b4f434fdce9b21a8fe668e12986bd3d67de2b5e290048"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/precheck-signal-before.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/precheck-signal-before.stdout.txt",
+      "bytes": 1032,
+      "sha256": "1a3b98bac167b013d8c5eff5131eefcd9f058976e842a3555c7a3bcac557a253"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/precheck-signal-independent.test.mjs",
+      "bytes": 2371,
+      "sha256": "df18b684cad4256822418346c629aee38d8ca0d0d078f35f4d7a6d8bc4da3c9a"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/production-allocation.json",
+      "bytes": 1245,
+      "sha256": "0f75ecc211f284c2d59d1f61249d3f2dede279036a16571abbeab7ab88374523"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/review-history-before-final.json",
+      "bytes": 958,
+      "sha256": "2964caf7a1a93f832de11b55ec3130df6d31aaaef64a18781f4290fec572829b"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/root-scope-interpretation.json",
+      "bytes": 2285,
+      "sha256": "03fd01839c2176b904da895c59d076cf095dfd23e1438c0d806ca4e78c1c5e1e"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/runtime-entry-independent.test.mjs",
+      "bytes": 4030,
+      "sha256": "3476b5cb5579dbf59c49e59a6951ce80089fd0a0d9b3a076f8187ffeac6300d6"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/source-intake.json",
+      "bytes": 3290,
+      "sha256": "3be1ce165a1632b212333c1f5fd79c7b4235148bd18e46b07bcfd31e0360592e"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/supervisor-before-command.json",
+      "bytes": 547,
+      "sha256": "32fdb98d65c9d0c9c2f20158f98d5d0717c7ade23fd9834dc4e90d3cbcf26602"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/supervisor-before.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/supervisor-before.stdout.txt",
+      "bytes": 3593,
+      "sha256": "4e237c08f0ee49832308b3fe9b4a0f83b87922cf0d98b1bd7d4db2309904407d"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/supervisor-entry-independent.test.mjs",
+      "bytes": 4428,
+      "sha256": "beb084e1c19ac1dfaef39c6a52ac6fef0b8181857acb05ce7391d1b01a35eef8"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/review/verify-source.mjs",
+      "bytes": 7520,
+      "sha256": "a7f0f5a230053ba34643e3e372e5fcbad4f309d5456c8dc2b3a521c338948185"
+    }
+  ]
+}
