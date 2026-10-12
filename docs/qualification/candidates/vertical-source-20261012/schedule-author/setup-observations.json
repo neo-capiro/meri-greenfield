@@ -1,0 +1,16 @@
+{
+  "base": "e5fb3963de787bbd7b7663316c368f15814897da",
+  "rootOutline": "7754f1d4c335125b2cf55e1e6b441f10d28600d1",
+  "worktree": "/workspace/meri-schedule-lifecycle-20261012",
+  "localReadFailures": [
+    {
+      "command": "rg node_modules/@temporalio/client/src/workflow-client.ts in new sparse tree",
+      "reason": "Borrowed SDK exists only under explicitly allocated donor; corrected absolute/workdir locator. No installation attempted."
+    },
+    {
+      "command": "rg docs/coordination/tasks/CODEX-TEMPORAL-RECOVERY-20261012.md",
+      "reason": "Unmaterialized/non-required filename; no guessed contents used."
+    }
+  ],
+  "servicesOrSdkExecuted": false
+}
