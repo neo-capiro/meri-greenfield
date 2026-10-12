@@ -1,6 +1,6 @@
 """Offline exact-source/preservation audit. No project execution or private body output."""
 import hashlib,json,pathlib,subprocess,sys
-ROOT=pathlib.Path(__file__).resolve().parents[6]
+ROOT=pathlib.Path(__file__).resolve().parents[5]
 HERE=pathlib.Path(__file__).resolve().parent
 BASE='e5fb3963de787bbd7b7663316c368f15814897da'
 SOURCE='ca506ba1591b35eae5d389e551787017328eea73'

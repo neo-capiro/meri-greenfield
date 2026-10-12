@@ -1,0 +1,37 @@
+✔ actual task.create executor to fixed HTTP adapter to durable receipt (41.532729ms)
+✔ actual task.update executor to fixed HTTP adapter to durable receipt (11.108765ms)
+✔ actual memory.propose executor to fixed HTTP adapter to durable receipt (8.123959ms)
+✔ actual artifact.file executor to fixed HTTP adapter to durable receipt (10.309033ms)
+✔ default disabled executor refuses before trusted ports (1.27729ms)
+✔ personal pending proposal refuses before credential, claim or source effects (1.833866ms)
+✔ immutable command changed after approval cannot become a source effect (0.552761ms)
+✔ current approval rejected refuses before claim/effect (1.297621ms)
+✔ current approval foreign hash refuses before claim/effect (1.496509ms)
+✔ current approval foreign proposal refuses before claim/effect (1.595378ms)
+✔ current approval foreign approver refuses before claim/effect (1.292953ms)
+✔ current approval foreign policy refuses before claim/effect (1.434155ms)
+✔ current approval expired refuses before claim/effect (1.23092ms)
+✔ current approval future decision refuses before claim/effect (1.20487ms)
+✔ current approval nonrepresentable date refuses before claim/effect (1.109097ms)
+✔ revoked approval cannot start a source effect (1.202978ms)
+✔ durable replay across actual executor replacement never redispatches (10.044115ms)
+✔ same trusted delivery cannot adopt a changed immutable command (8.505743ms)
+✔ read absent is an observation and never dispatch permission (2.039986ms)
+✔ lost claim acknowledgement never issues source effect and later read retains unknown liability (7.549616ms)
+✔ lost final receipt acknowledgement may recover exact outcome but cannot redispatch (8.387786ms)
+✔ unknown source acknowledgement is immediately indeterminate and remains non-retryable (6.56793ms)
+✔ revoked authority after external effect cannot release success or erase liability (4.395896ms)
+✔ caller mutation during parked credentials cannot substitute immutable intent (4.588766ms)
+✔ abort while credentials is parked starts no later source/receipt effect (9.297933ms)
+✔ abort while approval is parked starts no later source/receipt effect (2.137313ms)
+✔ abort while connect is parked starts no later source/receipt effect (2.587609ms)
+✔ abort while insert is parked starts no later source/receipt effect (2.757935ms)
+✔ abort while http is parked starts no later source/receipt effect (4.869728ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2829.041029

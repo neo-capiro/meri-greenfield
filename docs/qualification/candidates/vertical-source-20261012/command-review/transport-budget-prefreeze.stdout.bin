@@ -1,0 +1,30 @@
+✔ actual HTTP wrong status response retains unknown command effect and no success (37.332852ms)
+✔ actual HTTP HTML response retains unknown command effect and no success (6.580213ms)
+✔ actual HTTP compressed response retains unknown command effect and no success (5.531287ms)
+✔ actual HTTP oversized length response retains unknown command effect and no success (5.411256ms)
+✔ actual HTTP wrong length response retains unknown command effect and no success (7.012333ms)
+✔ actual HTTP broken UTF8 response retains unknown command effect and no success (4.672246ms)
+✔ actual HTTP broken JSON response retains unknown command effect and no success (4.78204ms)
+✔ actual HTTP oversized streamed data response retains unknown command effect and no success (4.17673ms)
+✔ credential broker foreign binding refuses before journal/source (1.738665ms)
+✔ credential broker expired refuses before journal/source (1.666836ms)
+✔ credential broker fractional expiry refuses before journal/source (1.917654ms)
+✔ credential broker header injection refuses before journal/source (1.617442ms)
+✔ credential broker extra identity header refuses before journal/source (1.531934ms)
+✔ attachment broker must bind exact immutable version and unique native ID (7.019554ms)
+✔ native per-file IDs bind source observations to exact selected immutable objects (5.948313ms)
+✔ source tokens are private one-use references and refuse executor substitution (2.268831ms)
+✔ budget reserve and settle are on actual execution path around source effect (7.501569ms)
+✔ wrong reserve acknowledgement never releases success and retains liability (3.346822ms)
+✔ wrong settle acknowledgement never releases success and retains liability (4.758845ms)
+✔ freshly reduced capability output ceiling refuses before accounting success (4.587828ms)
+✔ expiry while settlement is parked cannot start receipt transaction or release output (30.150073ms)
+✔ revocation after accounting succeeds preserves accounting and forbids success receipt (6.475307ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2662.567632

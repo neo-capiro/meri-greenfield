@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-name-pattern=late cleanup connection",
+    "apps/control/test/commands-independent-pipeline.test.mjs"
+  ],
+  "cwd": "/workspace/meri-command-execution-review-20261012",
+  "sourceHead": "57a03f192f9f04afc98637d17aca30dd8f5b8c02",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T22:17:54.524485+00:00",
+  "durationSeconds": 2.525,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 363087,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/cleanup-prefreeze-reached.stdout.bin",
+      "bytes": 1193,
+      "sha256": "c98bc48f0dab371975ae737e20ad68a90a47f68197408bca7a6b1c4e9bd2882c"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/cleanup-prefreeze-reached.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

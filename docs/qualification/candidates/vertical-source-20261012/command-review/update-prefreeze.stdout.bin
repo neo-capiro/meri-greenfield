@@ -1,0 +1,21 @@
+✔ task.update remains private0.2 and cannot silently extend public Command (4.681586ms)
+✔ normalization retains only supported unconditional patch fields (1.222958ms)
+✔ null and blank fields are omitted and cannot promise a due date clear (1.343459ms)
+✔ update cannot acquire owner assignment, client reassignment or CAS through extras (0.507823ms)
+✔ patch must contain a meaningful selected field (0.513732ms)
+✔ all exact native task status members survive, unknown state refuses (0.63175ms)
+✔ Date-only storage refuses nonmidnight or nonrepresentable due dates (0.383556ms)
+✔ UTF16 title bound refuses truncation including astral characters (0.367733ms)
+✔ entire original producer binding and same tenant scope remain bound (1.008536ms)
+✔ whole command hash and finite ordered proposal clocks are mandatory (2.9212ms)
+✔ recovered executor may change attempt while stable original tenant actor run remains exact (1.357199ms)
+✔ returned target and requested values must match while unselected fields are observed (1.248988ms)
+✔ contract returns detached data and refuses effectful raw input (0.246911ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 352.950786
