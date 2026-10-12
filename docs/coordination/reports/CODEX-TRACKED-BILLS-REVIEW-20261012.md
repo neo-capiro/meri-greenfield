@@ -1,8 +1,8 @@
 # Independent tracked-bills source review
 
-**ACCEPT_SOURCE** for `e020f4ff2af3c23412adf2fd634f8362140eeb51` on exact base `a3e946c1fa264ae7b33205f5b87804ee1ef75773`. This decision covers the new private `search_tracked_bills` family only. Source connectivity and runtime remain **HOLD**; no registry, loader, adapter or context producer was implemented or enabled by this lane.
+**ACCEPT_SOURCE** for `e020f4ff2af3c23412adf2fd634f8362140eeb51` (tree `4339a033ca9d43096f838c89caa02b1e5c93e59d`) on exact base `a3e946c1fa264ae7b33205f5b87804ee1ef75773`. This decision covers the new private `search_tracked_bills` family only. Source connectivity and runtime remain **HOLD**; no registry, loader, adapter or context producer was implemented or enabled by this lane.
 
-Exact replay passes **53/53** local checks: **26 independent + 27 author**. The immutable source/provenance audit passes **81/81**; all **6,110** original files are byte-identical and **6/6** pinned Capiro reference pairs are unchanged. Criteria were frozen at `8abfc0531e38bc8fa15d95aa6fff4eaf95d14afa`, initial24 controls at `bcd0d6b6115b49b873047744b38c4abce604bc62`, and final26 at `946faec` before exact source replay. Every initial assertion remains as an unchanged prefix; two additional controls cover observable postvalidation mutation and authority limits.
+Exact replay passes **53/53** local checks: **26 independent + 27 author**. The immutable source/provenance audit passes **81/81**; all **6,110** original files are byte-identical and **6/6** pinned Capiro reference pairs are unchanged. Criteria were frozen at `8abfc0531e38bc8fa15d95aa6fff4eaf95d14afa`, initial24 controls at `bcd0d6b6115b49b873047744b38c4abce604bc62`, and final26 at `946faecb259867569d049d9fc7145ce5426b1fe7` before exact source replay. Every initial assertion remains as an unchanged prefix; two additional controls cover observable postvalidation mutation and authority limits.
 
 ## Scope and behavior
 
@@ -33,7 +33,7 @@ All original public0.1 contracts, private shared schemas, registry/catalog, test
 - The author separately reproduced the defect with **26 PASS / 1 FAIL** after its initial26 positives, then changed only the returned value to the validated snapshot. The former author return-identity assertion was explicitly corrected to detached/deep equality; validation and source correlations were not relaxed. All independent controls remain unchanged.
 - Exact source replay: **53 PASS / 0 FAIL**, followed by the **81-check** source/preservation audit. No broad/public suite was run in this lane.
 
-The Linux subreaper captured and physically reaped only owned process groups: **237153** initial tests, **237486** observable mutation tests, **244873** exact final tests and **245057** initial audit. Each was absent after completion, with no timeout or kill needed. This demonstrates local test cleanup, not physical native-task teardown or database cancellation.
+The Linux subreaper captured and physically reaped only owned process groups: **237153** initial tests, **237486** observable mutation tests, **244873** exact final tests **245057** initial audit, and **246015** final metadata audit. Each was absent after completion, with no timeout or kill needed. This demonstrates local test cleanup, not physical native-task teardown or database cancellation.
 
 Seven existing small dependency packages were copied and verified against the donor package data and unchanged exact root lock. No package install, lifecycle hook, network fetch or donor mutation occurred. No SQL, database connection, native fixture, service, provider, paid model, cloud, customer-data, frontend or private implementation execution occurred.
 
@@ -44,3 +44,9 @@ node --test packages/contracts/test/retrieval-tracked-bills-independent.test.mjs
 ```
 
 For evidence capture, use the allocated `capture-reaped.py` with a fresh write-once label. The optional `MERI_TRACKED_REVIEW_SOURCE_ROOT` override was used only for prefreeze characterization; exact replay used the immutable candidate merged locally with no override. Author metadata and final packet hashes are bound in the closeout below.
+
+## Metadata closeout
+
+Final author evidence `076c4a437eb717cbc1dd8541f76f141c0a6d1b2d` (tree `f0c0803393c81f6db143a88a84940f8e751aa102`) leaves the accepted source/test files exact. The final independent audit again passes81/81. All33 author manifest members were independently hash-verified, including raw failed source controls. Initial packet `30141883ca1bb77598f34fd8329c7f4bd4cd7338` remains preserved. Its whitespace-check exit2 was resolved using two narrowly scoped raw-evidence attributes; the alias failure retains its exact previous Git blob bytes and the new whitespace-failure stream is preserved unchanged, and exit0 is separately recorded. No failed stdout was normalized.
+
+The reviewer [packet manifest](../../qualification/candidates/read-continuation-20261012/tracked-bills-review/manifest.json) binds this report, independent test and review evidence, excluding only the manifest itself. Exact author source and metadata remain in merge ancestry. Root should integrate author commits separately and cherry-pick only the ordered reviewer-only commits reported with the final verdict.
