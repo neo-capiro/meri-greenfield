@@ -1,0 +1,847 @@
+{
+  "source": {
+    "repository": "neo-capiro/capirov2",
+    "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+    "path": "apps/api/src/meri/analytics/global-dataset-registry.ts",
+    "blob": "806b994acd7b368bc5f686d786a39f1f7e0cd556",
+    "sha256": "7cec9500bda0a620493262ab5e73a826572e69b5d1dcb7e1e685f73dae009174"
+  },
+  "datasets": [
+    {
+      "metadata": {
+        "key": "lda_registrations",
+        "description": "Senate LDA lobbying registrations: one row per (registrant, client) relationship, derived from the latest filing on record for that pair as of `asOfDate` (default: now). `status` is derived from the official LDA filing-type code of that latest filing, not a raw code. `is_in_house` flags a registrant that appears to be registering itself as its own client (name match) rather than an outside firm. Does not cover relationships whose LAST filing predates the ingestion window (2021-present) — a true-inactive-since-before-2021 relationship simply will not appear.",
+        "supportsAsOf": true,
+        "fields": [
+          {
+            "name": "registrant_id",
+            "type": "number",
+            "description": "LDA registrant id (a lobbying firm or in-house registrant).",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": true
+          },
+          {
+            "name": "registrant_name",
+            "type": "string",
+            "description": "Registrant (firm) name as filed.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "client_id",
+            "type": "number",
+            "description": "LDA client id. NOTE: this id is scoped to the registration, not a stable per-company identifier — the same real company represented by two firms gets two different client_ids. Prefer client_name for entity-level questions, and expect it to be an overcount of distinct real organizations.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": true
+          },
+          {
+            "name": "client_name",
+            "type": "string",
+            "description": "Client name as filed on this registration.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "client_state",
+            "type": "string",
+            "description": "Client's registered state.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "filing_year",
+            "type": "number",
+            "description": "Year of the latest filing considered (bounded by asOfDate).",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": true
+          },
+          {
+            "name": "dt_posted",
+            "type": "timestamp",
+            "description": "When the latest considered filing was posted.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "status",
+            "type": "string",
+            "description": "Derived from the latest filing's official LDA filing-type code (see LDA_TERMINATION_TYPES in source) — 'active' or 'terminated'. This is the field to filter on for \"how many active registrations.\"",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "is_in_house",
+            "type": "boolean",
+            "description": "True when the registrant appears to be registering itself as its own client (in-house lobbying) rather than representing an outside client. Name-match heuristic — undercounts when the two name strings differ even slightly.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          }
+        ]
+      },
+      "defaultLimit": 200,
+      "maxLimit": 2000
+    },
+    {
+      "metadata": {
+        "key": "federal_grants",
+        "description": "Grants.gov federal grant opportunities (NOFOs).",
+        "supportsAsOf": false,
+        "fields": [
+          {
+            "name": "id",
+            "type": "string",
+            "description": "Grants.gov opportunity id.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "agency",
+            "type": "string",
+            "description": "Awarding agency.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "sub_agency",
+            "type": "string",
+            "description": "Awarding sub-agency.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "category",
+            "type": "string",
+            "description": "Discretionary, Mandatory, etc.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "funding_instrument",
+            "type": "string",
+            "description": "Grant, Cooperative Agreement, etc.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "status",
+            "type": "string",
+            "description": "posted | closed | archived | forecasted.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "doc_type",
+            "type": "string",
+            "description": "'synopsis' or 'forecast'.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "award_ceiling",
+            "type": "number",
+            "description": "Maximum award amount.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": true
+          },
+          {
+            "name": "award_floor",
+            "type": "number",
+            "description": "Minimum award amount.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": true
+          },
+          {
+            "name": "estimated_funding",
+            "type": "number",
+            "description": "Total estimated program funding.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": true
+          },
+          {
+            "name": "expected_awards",
+            "type": "number",
+            "description": "Expected number of awards.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": true
+          },
+          {
+            "name": "open_date",
+            "type": "date",
+            "description": "Posting open date.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "close_date",
+            "type": "date",
+            "description": "Application close date.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          }
+        ]
+      },
+      "defaultLimit": 200,
+      "maxLimit": 1000
+    },
+    {
+      "metadata": {
+        "key": "sam_opportunities",
+        "description": "SAM.gov federal contract opportunity notices.",
+        "supportsAsOf": false,
+        "fields": [
+          {
+            "name": "notice_id",
+            "type": "string",
+            "description": "SAM.gov notice id.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "notice_type",
+            "type": "string",
+            "description": "e.g. Solicitation, Presolicitation, Sources Sought, Award Notice.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "agency",
+            "type": "string",
+            "description": "Agency.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "sub_agency",
+            "type": "string",
+            "description": "Sub-agency/component.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "set_aside",
+            "type": "string",
+            "description": "Human-readable set-aside description; null = full and open.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "naics_code",
+            "type": "string",
+            "description": "NAICS code.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "psc_code",
+            "type": "string",
+            "description": "Product/Service code.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "posted_date",
+            "type": "timestamp",
+            "description": "When posted.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "response_deadline",
+            "type": "timestamp",
+            "description": "Response due date.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "active",
+            "type": "boolean",
+            "description": "False once the archive date has passed.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          }
+        ]
+      },
+      "defaultLimit": 200,
+      "maxLimit": 1000
+    },
+    {
+      "metadata": {
+        "key": "federal_awards",
+        "description": "USAspending federal contract awards/obligations synced by Capiro.",
+        "supportsAsOf": false,
+        "fields": [
+          {
+            "name": "awarding_agency",
+            "type": "string",
+            "description": "Awarding agency.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "contractor_name",
+            "type": "string",
+            "description": "Contractor/recipient name.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "amount",
+            "type": "number",
+            "description": "Award amount.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": true
+          },
+          {
+            "name": "pe_code",
+            "type": "string",
+            "description": "Linked DoD Program Element code, if resolved.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "dod_acq_program_code",
+            "type": "string",
+            "description": "DoD Major Defense Acquisition Program code.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "dod_acq_program_name",
+            "type": "string",
+            "description": "DoD MDAP name, e.g. F-35.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "pop_state",
+            "type": "string",
+            "description": "Place-of-performance state.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "action_date",
+            "type": "date",
+            "description": "Contract action date.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "awarded_at",
+            "type": "timestamp",
+            "description": "Award timestamp.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          }
+        ]
+      },
+      "defaultLimit": 200,
+      "maxLimit": 1000
+    },
+    {
+      "metadata": {
+        "key": "sec_filings",
+        "description": "SEC EDGAR filings. NOTE: only ~150 curated CIKs are ingested (defense/pharma/energy/tech/finance/telecom/ag) — this is not a comprehensive mirror of EDGAR.",
+        "supportsAsOf": false,
+        "fields": [
+          {
+            "name": "cik",
+            "type": "string",
+            "description": "Central Index Key.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "company_name",
+            "type": "string",
+            "description": "Company name.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "form_type",
+            "type": "string",
+            "description": "10-K, 10-Q, 8-K, DEF14A, S-1, etc.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "filing_date",
+            "type": "date",
+            "description": "Filing date.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "sic",
+            "type": "string",
+            "description": "Standard Industrial Classification code.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "state_of_incorp",
+            "type": "string",
+            "description": "State of incorporation.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          }
+        ]
+      },
+      "defaultLimit": 200,
+      "maxLimit": 1000
+    },
+    {
+      "metadata": {
+        "key": "fara_registrations",
+        "description": "DOJ FARA (Foreign Agents Registration Act) registrations. NOTE: the base feed is directory-only — foreign-principal/country/termination fields are only populated when a separate enrichment source is configured; treat nulls there as \"unknown\", not \"none\".",
+        "supportsAsOf": false,
+        "fields": [
+          {
+            "name": "registrant_name",
+            "type": "string",
+            "description": "Registrant name.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "foreign_principal",
+            "type": "string",
+            "description": "Foreign principal represented.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "country",
+            "type": "string",
+            "description": "Foreign principal's country.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "status",
+            "type": "string",
+            "description": "Active or Terminated, when known.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "registration_date",
+            "type": "date",
+            "description": "Registration date.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "termination_date",
+            "type": "date",
+            "description": "Termination date, when known.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "state",
+            "type": "string",
+            "description": "Registrant's state.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          }
+        ]
+      },
+      "defaultLimit": 200,
+      "maxLimit": 1000
+    },
+    {
+      "metadata": {
+        "key": "congress_bills",
+        "description": "Congress.gov federal bills (118th/119th Congress) with Capiro-derived canonical status.",
+        "supportsAsOf": false,
+        "fields": [
+          {
+            "name": "congress",
+            "type": "number",
+            "description": "Congress number, e.g. 119.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": true
+          },
+          {
+            "name": "bill_type",
+            "type": "string",
+            "description": "hr, s, hjres, etc.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "policy_area",
+            "type": "string",
+            "description": "Congress.gov policy area.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "status",
+            "type": "string",
+            "description": "Canonical derived stage, e.g. introduced, committee, passed_chamber, enacted, rule_failed.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "sponsor_state",
+            "type": "string",
+            "description": "Sponsor's state.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "sponsor_party",
+            "type": "string",
+            "description": "Sponsor's party.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "cosponsors_count",
+            "type": "number",
+            "description": "Number of cosponsors.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": true
+          },
+          {
+            "name": "origin_chamber",
+            "type": "string",
+            "description": "House or Senate.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "introduced_date",
+            "type": "date",
+            "description": "Introduction date.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "latest_action_date",
+            "type": "date",
+            "description": "Most recent action date.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          }
+        ]
+      },
+      "defaultLimit": 200,
+      "maxLimit": 1000
+    },
+    {
+      "metadata": {
+        "key": "state_bills",
+        "description": "State legislature bills (LegiScan primary, OpenStates cross-check) with Capiro-derived canonical status.",
+        "supportsAsOf": false,
+        "fields": [
+          {
+            "name": "state",
+            "type": "string",
+            "description": "Two-letter state code.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "session",
+            "type": "string",
+            "description": "Legislative session display name.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "chamber",
+            "type": "string",
+            "description": "upper or lower.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "status",
+            "type": "string",
+            "description": "Canonical derived status.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "sponsor_party",
+            "type": "string",
+            "description": "Sponsor's party.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "sponsor_count",
+            "type": "number",
+            "description": "Number of sponsors.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": true
+          },
+          {
+            "name": "latest_action_date",
+            "type": "date",
+            "description": "Most recent action date.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          }
+        ]
+      },
+      "defaultLimit": 200,
+      "maxLimit": 1000
+    },
+    {
+      "metadata": {
+        "key": "gao_reports",
+        "description": "GAO reports and testimonies.",
+        "supportsAsOf": false,
+        "fields": [
+          {
+            "name": "report_type",
+            "type": "string",
+            "description": "Report, Testimony, Correspondence.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "publish_date",
+            "type": "date",
+            "description": "Publish date.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "recommendations",
+            "type": "number",
+            "description": "Number of recommendations.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": true
+          }
+        ]
+      },
+      "defaultLimit": 200,
+      "maxLimit": 1000
+    },
+    {
+      "metadata": {
+        "key": "crs_reports",
+        "description": "Congressional Research Service reports.",
+        "supportsAsOf": false,
+        "fields": [
+          {
+            "name": "date",
+            "type": "date",
+            "description": "Publication date.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "active",
+            "type": "boolean",
+            "description": "False if archived/withdrawn.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          }
+        ]
+      },
+      "defaultLimit": 200,
+      "maxLimit": 1000
+    },
+    {
+      "metadata": {
+        "key": "fec_committees",
+        "description": "FEC-registered PACs and campaign committees.",
+        "supportsAsOf": false,
+        "fields": [
+          {
+            "name": "committee_type",
+            "type": "string",
+            "description": "FEC committee type code.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "party",
+            "type": "string",
+            "description": "Affiliated party, if any.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "state",
+            "type": "string",
+            "description": "State.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "total_receipts",
+            "type": "number",
+            "description": "Total receipts.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": true
+          },
+          {
+            "name": "total_disbursements",
+            "type": "number",
+            "description": "Total disbursements.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": true
+          },
+          {
+            "name": "cash_on_hand",
+            "type": "number",
+            "description": "Cash on hand.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": true
+          }
+        ]
+      },
+      "defaultLimit": 200,
+      "maxLimit": 1000
+    },
+    {
+      "metadata": {
+        "key": "news_articles",
+        "description": "Aggregated policy/news RSS (Roll Call, The Hill, Politico, Axios, Reuters, agency press, think tanks).",
+        "supportsAsOf": false,
+        "fields": [
+          {
+            "name": "source",
+            "type": "string",
+            "description": "Feed source, e.g. roll_call, the_hill, brookings.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "published_at",
+            "type": "timestamp",
+            "description": "Publish timestamp.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "author",
+            "type": "string",
+            "description": "Byline, when present.",
+            "filterable": true,
+            "groupable": true,
+            "aggregatable": false
+          },
+          {
+            "name": "categories",
+            "type": "string[]",
+            "description": "Assigned categories.",
+            "filterable": false,
+            "groupable": false,
+            "aggregatable": false
+          },
+          {
+            "name": "agencies",
+            "type": "string[]",
+            "description": "Extracted agency names.",
+            "filterable": false,
+            "groupable": false,
+            "aggregatable": false
+          },
+          {
+            "name": "topics",
+            "type": "string[]",
+            "description": "Extracted topic keywords.",
+            "filterable": false,
+            "groupable": false,
+            "aggregatable": false
+          }
+        ]
+      },
+      "defaultLimit": 200,
+      "maxLimit": 1000
+    }
+  ]
+}

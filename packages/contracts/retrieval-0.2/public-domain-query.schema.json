@@ -1,0 +1,333 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:public-domain-query:0.2.0",
+  "$defs": {
+    "PublicDomainQueryScalar": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "PublicDomainQuerySelect": {
+      "type": "object",
+      "properties": {
+        "field": {
+          "type": "string"
+        },
+        "agg": {
+          "enum": [
+            "count",
+            "count_distinct",
+            "sum",
+            "avg",
+            "min",
+            "max"
+          ]
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "PublicDomainQueryFilter": {
+      "type": "object",
+      "properties": {
+        "field": {
+          "type": "string"
+        },
+        "op": {
+          "enum": [
+            "eq",
+            "ne",
+            "in",
+            "not_in",
+            "gte",
+            "lte",
+            "gt",
+            "lt",
+            "between",
+            "contains",
+            "is_null",
+            "is_not_null"
+          ]
+        },
+        "value": {}
+      },
+      "required": [
+        "field",
+        "op"
+      ],
+      "additionalProperties": false
+    },
+    "PublicDomainQueryOrder": {
+      "type": "object",
+      "properties": {
+        "field": {
+          "type": "string"
+        },
+        "direction": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "field"
+      ],
+      "additionalProperties": false
+    },
+    "PublicDomainQueryContext": {
+      "type": "object",
+      "properties": {
+        "defaultAsOf": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^\\d{4}-"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "defaultAsOf"
+      ],
+      "additionalProperties": false
+    },
+    "PublicDomainQueryRequest": {
+      "type": "object",
+      "properties": {
+        "dataset": {
+          "type": "string",
+          "minLength": 1
+        },
+        "select": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 12,
+          "items": {
+            "$ref": "#/$defs/PublicDomainQuerySelect"
+          }
+        },
+        "filters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PublicDomainQueryFilter"
+          }
+        },
+        "groupBy": {
+          "type": "array",
+          "maxItems": 6,
+          "items": {
+            "type": "string"
+          }
+        },
+        "orderBy": {
+          "type": "array",
+          "maxItems": 3,
+          "items": {
+            "$ref": "#/$defs/PublicDomainQueryOrder"
+          }
+        },
+        "limit": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "asOfDate": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "dataset",
+        "select"
+      ],
+      "additionalProperties": false
+    },
+    "PublicDomainQueryInput": {
+      "type": "object",
+      "properties": {
+        "dataset": {
+          "type": "string",
+          "minLength": 1
+        },
+        "select": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 12,
+          "items": {
+            "$ref": "#/$defs/PublicDomainQuerySelect"
+          }
+        },
+        "filters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PublicDomainQueryFilter"
+          }
+        },
+        "groupBy": {
+          "type": "array",
+          "maxItems": 6,
+          "items": {
+            "type": "string"
+          }
+        },
+        "orderBy": {
+          "type": "array",
+          "maxItems": 3,
+          "items": {
+            "$ref": "#/$defs/PublicDomainQueryOrder"
+          }
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2000
+        },
+        "asOfDate": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "snapshotSha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "dataset",
+        "select",
+        "filters",
+        "groupBy",
+        "orderBy",
+        "limit",
+        "asOfDate",
+        "snapshotSha256"
+      ],
+      "additionalProperties": false
+    },
+    "PublicDomainQuerySuccess": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "query_global_data"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-"
+        },
+        "dataset": {
+          "type": "string"
+        },
+        "rowCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2000
+        },
+        "rows": {
+          "type": "array",
+          "maxItems": 2000,
+          "items": {
+            "type": "object",
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/PublicDomainQueryScalar"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "truncated": {
+          "const": true
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "dataset",
+        "rowCount",
+        "rows"
+      ],
+      "additionalProperties": false
+    },
+    "PublicDomainQueryError": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "query_global_data"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-"
+        },
+        "ok": {
+          "const": false
+        },
+        "error": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "ok",
+        "error"
+      ],
+      "additionalProperties": false
+    },
+    "PublicDomainQueryOutput": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/PublicDomainQuerySuccess"
+        },
+        {
+          "$ref": "#/$defs/PublicDomainQueryError"
+        }
+      ]
+    }
+  }
+}
