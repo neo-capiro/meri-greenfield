@@ -1,0 +1,42 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/gateway/test/gateway.test.mjs",
+    "apps/gateway/test/authority-deadline.test.mjs",
+    "apps/gateway/test/memory-context.test.mjs",
+    "apps/gateway/test/memory-context-independent.test.mjs",
+    "apps/gateway/test/mail-context.test.mjs",
+    "apps/gateway/test/mail-context-independent.test.mjs",
+    "packages/contracts/test/retrieval-dataset-metadata.test.mjs",
+    "packages/contracts/test/retrieval-dataset-metadata-independent.test.mjs",
+    "packages/contracts/test/retrieval-public-domain-query.test.mjs"
+  ],
+  "cwd": "/workspace/meri-dataset-metadata-handler-20261012",
+  "sourceHead": "465d1963ba0d9d0d1e0584f5ae20045dd02a4425",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T21:16:34.419087+00:00",
+  "durationSeconds": 5.173,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 326572,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/preserved-compatibility.stdout.bin",
+      "bytes": 24854,
+      "sha256": "0fdbecfed261cd6a529ef7083d1582e19ecbab43a5b0ca93a7a05bd753e6feee"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/preserved-compatibility.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Compatibility check of unchanged gateway, authority, memory/mail profiles and dataset contracts; expected profile enumeration delta remains root owned.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

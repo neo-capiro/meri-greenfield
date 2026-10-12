@@ -1,0 +1,251 @@
+{
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "sourceCommit": "ed307ab4d5653e3972fd82d8ebe3b54345a3ca4e",
+  "acceptedDependency": "0463c80a521c0d0db83f3769b1511e54a4d8b3f5",
+  "acceptedDependencyFiles": [
+    "docs/qualification/candidates/backend-execution-20261012/public-legal/candidate-focused-corrected/receipt.json",
+    "docs/qualification/candidates/backend-execution-20261012/public-legal/candidate-focused-corrected/stderr.txt",
+    "docs/qualification/candidates/backend-execution-20261012/public-legal/candidate-focused-corrected/stdout.txt",
+    "docs/qualification/candidates/backend-execution-20261012/public-legal/extract-dataset-metadata.mjs",
+    "packages/contracts/retrieval-0.2/public-domain-datasets.json",
+    "packages/contracts/retrieval-0.2/public-domain-query-validation.mjs",
+    "packages/contracts/retrieval-0.2/public-domain-query.schema.json",
+    "packages/contracts/retrieval-0.2/public-domain-registry.mjs",
+    "packages/contracts/test/retrieval-public-domain-query.test.mjs"
+  ],
+  "originalFiles": 7677,
+  "originalFilesByteIdentical": 7674,
+  "changedOriginals": [
+    "apps/gateway/dispatch/operation-context.mjs",
+    "apps/gateway/dispatch/read-result-envelope.mjs",
+    "packages/contracts/retrieval-0.2/catalog-validation.mjs"
+  ],
+  "sourceFiles": [
+    {
+      "path": "apps/gateway/dispatch/operation-context.mjs",
+      "bytes": 2524,
+      "sha256": "234d9424d13949f61c0f9b4538a38f97346c540e55161858fc86a38cddebc542"
+    },
+    {
+      "path": "apps/gateway/dispatch/read-result-envelope.mjs",
+      "bytes": 988,
+      "sha256": "8f8a038802dd91170b3f775ca7fc7fd228772eb0052274ed14d01a3355549e70"
+    },
+    {
+      "path": "apps/gateway/sources/dataset-metadata/handler.mjs",
+      "bytes": 4119,
+      "sha256": "5aa22cf08876bc43bc8e12120234bb6ef98c1b15129a0968f1f0b7b51a54f4af"
+    },
+    {
+      "path": "apps/gateway/test/dataset-metadata-handler.test.mjs",
+      "bytes": 13141,
+      "sha256": "d98f34b15b9e4bb0dcce1956b5746e7f9ee5da5c4f25e55a810cddd0cc92fb5b"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "bytes": 42549,
+      "sha256": "6e89613a536f1a1c90584bc5837d859c8ab6dbf7053a7a432020d1f6e6b9fddc"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/public-domain-registry.mjs",
+      "bytes": 2286,
+      "sha256": "62672e810dbf7a86206bf42133bb827102e3d41af79e528bb3e2b4537fe0ba6f"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/public-domain-datasets.json",
+      "bytes": 26495,
+      "sha256": "ebfd0d113ef66c4151301a3b4432f4e78646921f0a74462d076611a3d25c0865"
+    }
+  ],
+  "checks": [
+    {
+      "name": "original source changes only three explicitly allocated files",
+      "passed": true
+    },
+    {
+      "name": "all original tests retained",
+      "passed": true
+    },
+    {
+      "name": "all public contracts retained",
+      "passed": true
+    },
+    {
+      "name": "all lockfiles and production catalog retained",
+      "passed": true
+    },
+    {
+      "name": "binding change only literal dataset profile",
+      "passed": true
+    },
+    {
+      "name": "no duplicate profile declarations",
+      "passed": true
+    },
+    {
+      "name": "exact accepted dependency docs/qualification/candidates/backend-execution-20261012/public-legal/candidate-focused-corrected/receipt.json",
+      "passed": true
+    },
+    {
+      "name": "exact accepted dependency docs/qualification/candidates/backend-execution-20261012/public-legal/candidate-focused-corrected/stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "exact accepted dependency docs/qualification/candidates/backend-execution-20261012/public-legal/candidate-focused-corrected/stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "exact accepted dependency docs/qualification/candidates/backend-execution-20261012/public-legal/extract-dataset-metadata.mjs",
+      "passed": true
+    },
+    {
+      "name": "exact accepted dependency packages/contracts/retrieval-0.2/public-domain-datasets.json",
+      "passed": true
+    },
+    {
+      "name": "exact accepted dependency packages/contracts/retrieval-0.2/public-domain-query-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "exact accepted dependency packages/contracts/retrieval-0.2/public-domain-query.schema.json",
+      "passed": true
+    },
+    {
+      "name": "exact accepted dependency packages/contracts/retrieval-0.2/public-domain-registry.mjs",
+      "passed": true
+    },
+    {
+      "name": "exact accepted dependency packages/contracts/test/retrieval-public-domain-query.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "working source equals frozen apps/gateway/dispatch/operation-context.mjs",
+      "passed": true
+    },
+    {
+      "name": "working source equals frozen apps/gateway/dispatch/read-result-envelope.mjs",
+      "passed": true
+    },
+    {
+      "name": "working source equals frozen apps/gateway/sources/dataset-metadata/handler.mjs",
+      "passed": true
+    },
+    {
+      "name": "working source equals frozen apps/gateway/test/dataset-metadata-handler.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "working source equals frozen packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "handler has no outbound/ambient initializer fetch(",
+      "passed": true
+    },
+    {
+      "name": "handler has no outbound/ambient initializer process.env",
+      "passed": true
+    },
+    {
+      "name": "handler has no outbound/ambient initializer setInterval(",
+      "passed": true
+    },
+    {
+      "name": "handler has no outbound/ambient initializer createServer(",
+      "passed": true
+    },
+    {
+      "name": "handler has no outbound/ambient initializer http:",
+      "passed": true
+    },
+    {
+      "name": "handler has no outbound/ambient initializer https:",
+      "passed": true
+    },
+    {
+      "name": "actual canonical resolver reused",
+      "passed": true
+    },
+    {
+      "name": "branded accepted provider reused",
+      "passed": true
+    },
+    {
+      "name": "five field lineage wrapper",
+      "passed": true
+    },
+    {
+      "name": "owned group absent initial-author.json",
+      "passed": true
+    },
+    {
+      "name": "raw stream retained docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/initial-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "raw stream retained docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/initial-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "owned group absent final-author.json",
+      "passed": true
+    },
+    {
+      "name": "raw stream retained docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/final-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "raw stream retained docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/final-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "owned group absent clock-cancel-repaired.json",
+      "passed": true
+    },
+    {
+      "name": "raw stream retained docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/clock-cancel-repaired.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "raw stream retained docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/clock-cancel-repaired.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "owned group absent preserved-compatibility.json",
+      "passed": true
+    },
+    {
+      "name": "raw stream retained docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/preserved-compatibility.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "raw stream retained docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/preserved-compatibility.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "owned group absent imports-repaired-author.json",
+      "passed": true
+    },
+    {
+      "name": "raw stream retained docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/imports-repaired-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "raw stream retained docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/imports-repaired-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "owned group absent clock-cancel-negative.json",
+      "passed": true
+    },
+    {
+      "name": "raw stream retained docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/clock-cancel-negative.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "raw stream retained docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/clock-cancel-negative.stderr.bin",
+      "passed": true
+    }
+  ],
+  "scope": "SOURCE_ONLY_NO_RUNTIME_ADMISSION"
+}
