@@ -1,0 +1,60 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: data must be object
+    at validateMetadata (file:///workspace/meri-public-legal-review-20261012/packages/contracts/test/retrieval-public-domain-independent.test.mjs:14:35)
+    at createPublicDomainDatasetRegistry (file:///workspace/meri-public-legal-review-20261012/packages/contracts/retrieval-0.2/public-domain-registry.mjs:20:5)
+    at file:///workspace/meri-public-legal-review-20261012/packages/contracts/test/retrieval-public-domain-independent.test.mjs:15:16
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.19.0
+✖ packages/contracts/test/retrieval-public-domain-independent.test.mjs (355.991106ms)
+✔ one immutable provider supplies all12 datasets and88 fields without physical expressions (3.292338ms)
+✔ unknown or decorative provider refuses instead of adopting arbitrary field maps (0.31923ms)
+✔ exact family exports and normalization bind selected immutable snapshot (8.952694ms)
+✔ model SQL/table/alias/registry authority is refused at closed boundaries (1.218171ms)
+✔ selectors reject coercion hooks, hidden fields, proxies and callbacks (0.240431ms)
+✔ typed requests exclude legacy nonarray ignoring and broad Number coercion (0.626632ms)
+✔ positive finite row limit preserves floor/default and per-dataset maximum (1.93613ms)
+✔ all six aggregates preserve source type/group capabilities (1.393444ms)
+✔ bare count and alias collision rules remain exact (1.013503ms)
+✔ grouped mixed projections retain ordinary fields and groupable flags (0.833382ms)
+✔ ordering is limited to selected aliases and preserves legacy desc-exact default (0.46577ms)
+✔ every closed filter operator is admitted with its actual value contract (1.324751ms)
+✔ numeric boolean and date filters remain type-correct without invented ordering (1.095887ms)
+✔ filter windows and nonfilterable arrays fail closed (0.886983ms)
+✔ trusted default as-of is distinct from explicit date and generatedAt (1.010638ms)
+✔ all twelve dataset projections accept their complete field selection windows (6.516623ms)
+✔ success omits SQL and retains exact aliases, dataset and pretrim count (4.37811ms)
+✔ counts retain exact unsafe integer strings and refuse fractional or null values (1.74327ms)
+✔ numbers preserve decimal strings and nullable stored/aggregate results (1.624111ms)
+✔ array scalars preserve null elements; dates and booleans retain source types (0.728574ms)
+✔ truncation reports whole-row prefix and original fetched count, including zero retained (0.615224ms)
+✔ legacy256Ki ceiling counts UTF16 not UTF8 and never silently drops half a row (4.81721ms)
+✔ error envelope remains explicit and never doubles as empty success (0.661995ms)
+✔ result observation is independent; validator never claims audit or role admission (0.626502ms)
+✔ snapshots cannot mutate provider, requests, normalized tuples or returned siblings (0.706031ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 25
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 409.753732
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-public-domain-independent.test.mjs:1:1
+✖ packages/contracts/test/retrieval-public-domain-independent.test.mjs (355.991106ms)
+  'test failed'

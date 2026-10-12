@@ -11,7 +11,7 @@ const schema=load('public-domain-query'),metadata=load('dataset-metadata'),ajv=n
 addFormats(ajv);ajv.addSchema(metadata);ajv.addSchema(schema);
 const shapes=new Map(Object.keys(schema.$defs).map(n=>[n,ajv.compile({$ref:`${schema.$id}#/$defs/${n}`})]));
 const mcheck=ajv.compile({$ref:`${metadata.$id}#/$defs/DatasetMetadataSummary`});
-const validateMetadata=x=>{assert.ok(mcheck(x),ajv.errorsText(mcheck.errors));};
+const validateMetadata=(name,x)=>{assert.equal(name,'DatasetMetadataSummary');assert.ok(mcheck(x),ajv.errorsText(mcheck.errors));};
 const registry=createPublicDomainDatasetRegistry({canonicalSha256,validateMetadata});
 const validateShape=(n,x)=>{const fn=shapes.get(n);if(!fn?.(x))throw Error(`${n}: ${ajv.errorsText(fn?.errors)}`);};
 const v=createPublicDomainQueryValidators({schema,validateShape,canonicalSha256,datasetRegistry:registry});
@@ -28,7 +28,7 @@ test('global independent: canonical namespace, selectors and closed operation id
 test('global independent: exact twelve metadata datasets and eighty-eight fields',()=>{
  const rows=registry.listDatasetMetadata();assert.equal(rows.length,12);assert.equal(rows.reduce((n,d)=>n+d.fields.length,0),88);
  assert.deepEqual(rows.map(d=>d.key),['lda_registrations','federal_grants','sam_opportunities','federal_awards','sec_filings','fara_registrations','congress_bills','state_bills','gao_reports','crs_reports','fec_committees','news_articles']);
- for(const d of rows){validateMetadata(d);const s=registry.resolveDatasetSnapshot(d.key);assert.deepEqual(s.metadata,d);assert.equal(s.defaultLimit,200);assert.equal(s.maxLimit,d.key==='lda_registrations'?2000:1000);assert.match(s.snapshotSha256,/^[a-f0-9]{64}$/);assert.ok(Object.isFrozen(d));assert.ok(Object.isFrozen(d.fields));assert.ok(d.fields.every(Object.isFrozen));}
+ for(const d of rows){validateMetadata('DatasetMetadataSummary',d);const s=registry.resolveDatasetSnapshot(d.key);assert.deepEqual(s.metadata,d);assert.equal(s.defaultLimit,200);assert.equal(s.maxLimit,d.key==='lda_registrations'?2000:1000);assert.match(s.snapshotSha256,/^[a-f0-9]{64}$/);assert.ok(Object.isFrozen(d));assert.ok(Object.isFrozen(d.fields));assert.ok(d.fields.every(Object.isFrozen));}
  assert.ok(Object.isFrozen(rows));assert.equal(registry.listDatasetMetadata(),rows);
 });
 test('global independent: registry rejects unknown prototype and case variants',()=>{
