@@ -1,0 +1,35 @@
+{
+  "command": [
+    "git",
+    "diff",
+    "--check",
+    "2f06feccca731d6cd388612cd568185ecc29668f"
+  ],
+  "cwd": "/workspace/meri-capability-successor-20261012",
+  "sourceHead": "b4dba8fd612c5fbd499edffa0a1b1485995a76a7",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T14:42:50.710450+00:00",
+  "durationSeconds": 0.035,
+  "exitCode": 2,
+  "timedOut": false,
+  "ownedPidAndPgid": 125023,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration/raw-whitespace-before-attributes.stdout.bin",
+      "bytes": 5606,
+      "sha256": "692c37d6b50babf63b31daa56bcebd3a21533918d3aba6c1dbb047caa8cd76b5"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/integration/raw-whitespace-before-attributes.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
