@@ -1,0 +1,13 @@
+{
+  "authority": "Root explicit entry-only SIGINT/SIGTERM bridge allocation",
+  "received_at_utc": "2026-10-12T05:10:25.489330+00:00",
+  "paths": "Already allocated runtime.mjs/browser.mjs/office-export.mjs; shared helper in already allocated lifecycle module",
+  "requirements": [
+    "No import-time process listeners",
+    "First signal aborts and awaits bounded owned cleanup without extending original deadline",
+    "Repeated signal does not invent process-group authority or successful containment",
+    "Remove only owned listeners; preserve borrowed process listeners",
+    "Independent tests use only fake EventEmitter signals; no native signal execution"
+  ],
+  "qualification": "Native signal and descendant evidence remains HOLD"
+}
