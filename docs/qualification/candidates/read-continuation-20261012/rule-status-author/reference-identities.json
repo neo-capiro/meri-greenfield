@@ -126,6 +126,42 @@
         }
       ],
       "unchanged": true
+    },
+    {
+      "path": "apps/api/src/ingestion/rule-lifecycle-stage.spec.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "eefa1fc1488d476baa0358cba74c0e76957332b1",
+          "bytes": 4925,
+          "sha256": "cea28da264471eeb673083b2be4ea6a488f3483a692224abf919b01aabfe1393"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "eefa1fc1488d476baa0358cba74c0e76957332b1",
+          "bytes": 4925,
+          "sha256": "cea28da264471eeb673083b2be4ea6a488f3483a692224abf919b01aabfe1393"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "packages/meriv2-core/test/evals/legislation/state-rule-status.eval.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "fc99c89e5ee3e7539cb10482926a58ff23ea7914",
+          "bytes": 6725,
+          "sha256": "16e6497ca4b61c1788939f0409a01ea3f6e2d441f6f890ee4212acea2ff01b36"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "fc99c89e5ee3e7539cb10482926a58ff23ea7914",
+          "bytes": 6725,
+          "sha256": "16e6497ca4b61c1788939f0409a01ea3f6e2d441f6f890ee4212acea2ff01b36"
+        }
+      ],
+      "unchanged": true
     }
   ]
 }
