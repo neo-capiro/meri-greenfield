@@ -1,6 +1,6 @@
 # Gateway budget native-test source review — 2026-10-12
 
-Reviewer: gateway_reviewer. Exact base: PR16 `e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5`. Isolated branch `review/meri-g1-budget-native-tests-20261012`. Verdict: **ACCEPT_SOURCE_TESTS** for author commit `e350ff3bae99ad5d2e53648c1f83f9814d6c5044`, tree `b725fbed1757e836508b85defeb02e081c3751fd`. Native execution, admission and G1 remain **HOLD**.
+Reviewer: gateway_reviewer. Exact base: PR16 `e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5`. Isolated branch `review/meri-g1-budget-native-tests-20261012`. Current verdict: **HOLD** pending original child-group deadline repair. The earlier ACCEPT_SOURCE_TESTS for `e350ff3bae99ad5d2e53648c1f83f9814d6c5044` at review `a16b9c4540c9c4cc78610e0c9cf93a52ac964192` is superseded and retained. Native execution, admission and G1 remain HOLD.
 
 ## Scope and implementation outline
 
@@ -70,3 +70,7 @@ Each new module was separately parsed with `node --check` and never evaluated th
 Eight bounded local check process groups (one failed baseline plus seven final checks) were waited under an inherited Linux subreaper. Every receipt reports its owned group absent, no timeout, no kill and no orphan descendant to reap. These are local offline check receipts only, not native database/task teardown evidence. No other owner's processes were touched. Raw output contains only public source paths and synthetic values; no private producer body, credentials or customer data is present.
 
 The accepted change is useful future native test preparation with explicit partial admission and evidence boundaries. Actual host/action qualification, native execution and returned independent real-engine evidence remain blocking prerequisites. No expansion of the first L1 action is implied.
+
+## Post-review original-group-deadline finding
+
+Immediately after the initial final report commit, root identified a remaining static admission gap in e350ff3: the group cutoff is fixed before preparing/binding the three payloads, but fork and send check only the broader global work cutoff. If preparation or an earlier fork consumes the original 30-second group window, later child effects can still begin. A short timer after starting the effect is not equivalent to refusing admission before it. Root requested a narrow guard before each fork and each send using the original, unextended group deadline. Earlier passing offline/syntax receipts and manifest remain preserved and do not close this missing assertion. No native failure reproduction is claimed. Final acceptance is blocked until exact repair and independent offline/source guard replay.
