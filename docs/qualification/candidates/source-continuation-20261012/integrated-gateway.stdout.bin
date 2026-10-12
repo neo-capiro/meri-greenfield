@@ -1,0 +1,127 @@
+✔ initial identity: capability expiry immediately bounds the next parked authority port (37.423508ms)
+✔ before reservation: capability expiry immediately bounds the next parked authority port (27.654111ms)
+✔ before reservation: run before business immediately bounds the next parked authority port (30.051531ms)
+✔ before reservation: run before source immediately bounds the next parked authority port (27.033319ms)
+✔ before effect: capability expiry immediately bounds the next parked authority port (22.104399ms)
+✔ before effect: run before business immediately bounds the next parked authority port (44.743226ms)
+✔ before effect: run before source immediately bounds the next parked authority port (27.607512ms)
+✔ before release: capability expiry immediately bounds the next parked authority port (24.670246ms)
+✔ before release: run before business immediately bounds the next parked authority port (24.98526ms)
+✔ before release: run before source immediately bounds the next parked authority port (27.131797ms)
+✔ after settlement: capability expiry immediately bounds the next parked authority port (22.329632ms)
+✔ after settlement: run before business immediately bounds the next parked authority port (21.935204ms)
+✔ after settlement: run before source immediately bounds the next parked authority port (22.692363ms)
+✔ an initial capability completing after cancellation cannot start current-run lookup (31.412923ms)
+✔ stale or invalid deadline facts fail closed before the subsequent port (6.364968ms)
+✔ a capability issuance timestamp that cannot become an epoch time cannot dispatch (0.383166ms)
+✔ production catalog exposes no tools, has no activation override, performs zero effects (37.196337ms)
+✔ external object/proxy/getter/toJSON and thrown proxy are never inspected (0.389996ms)
+✔ invalid canonical domain arguments refuse before reservation or handler (4.074314ms)
+✔ raw authority injection is rejected before any trusted port or effect (0.390967ms)
+✔ a mismatched trusted catalog cannot dispatch a substituted or raw SQL operation (0.729146ms)
+✔ actual federal defaults precede canonical digest and resource reservation (11.071493ms)
+✔ canonical raw federal output without qualified lineage cannot be released (6.786432ms)
+✔ the original run deadline stops parked business/source lookup before any reservation (47.385554ms)
+✔ expiry, wrong audience, stale fence, missing grants and disabled source refuse (20.61434ms)
+✔ revocation during reservation prevents handler and preserves uncertain reservation (5.619117ms)
+✔ replacement during source-policy lookup is rejected by the final current-run read (0.814575ms)
+✔ revocation during handler or settlement never releases the result (9.771189ms)
+✔ malformed or oversized raw output and foreign lineage cannot escape (8.049351ms)
+✔ uncertain/malformed budget acknowledgements never dispatch or refund (0.640112ms)
+✔ deadline validates before allocation, shrinks absolutely and closes owned timer/listener (5.733018ms)
+✔ timeout suppresses late work without claiming physical stop or refund (20.936163ms)
+✔ configuration and import allocate no live resource (1.332233ms)
+✔ a deadline shortened during the handler bounds parked settlement and preserves uncertainty (23.003771ms)
+✔ accepted139 ledger and13 operation bindings compose without enabling source (36.605138ms)
+✔ reserve pending fails closed with one uncertainty write (19.664673ms)
+✔ reserve unknown fails closed with one uncertainty write (1.061145ms)
+✔ reserve throw fails closed with one uncertainty write (33.04376ms)
+✔ settle pending fails closed with one uncertainty write (11.602793ms)
+✔ settle unknown fails closed with one uncertainty write (1.586144ms)
+✔ settle throw fails closed with one uncertainty write (1.843181ms)
+{"phase":"reserve","elapsedMs":26.19741299999987,"failure":"DEADLINE","released":false,"calls":["capability","fence","capability","fence","policy","source-policy","fence","reserve","uncertain"]}
+✔ parked reserve is bounded and late completion cannot release a result (27.490438ms)
+{"phase":"settle","elapsedMs":22.63258399999995,"failure":"DEADLINE","released":false,"calls":["capability","fence","capability","fence","policy","source-policy","fence","reserve","capability","fence","policy","source-policy","fence","handler","capability","fence","policy","source-policy","fence","settle","uncertain"]}
+✔ parked settle is bounded and late completion cannot release a result (23.000037ms)
+{"phase":"markUncertain","elapsedMs":21.82983299999978,"failure":"BUDGET_UNCERTAIN","released":false,"calls":["capability","fence","capability","fence","policy","source-policy","fence","uncertain"]}
+✔ parked markUncertain is bounded and late completion cannot release a result (22.217095ms)
+{"stage":"initial-identity","parkedPort":"currentRun","shortened":true,"parked":true,"completedWithin100ms":true,"failure":"DEADLINE","parkedSignalAborted":true,"releasedResult":false,"uncertaintyCalls":0,"elapsedMs":101.75841300000002}
+✔ fresh deadline at initial-identity bounds parked currentRun (109.581724ms)
+{"stage":"before-reservation","parkedPort":"currentRun","shortened":true,"parked":true,"completedWithin100ms":true,"failure":"DEADLINE","parkedSignalAborted":true,"releasedResult":false,"uncertaintyCalls":0,"elapsedMs":101.29338800000005}
+✔ fresh deadline at before-reservation bounds parked currentRun (101.960902ms)
+{"stage":"before-reservation","parkedPort":"authorizeBusiness","shortened":true,"parked":true,"completedWithin100ms":true,"failure":"DEADLINE","parkedSignalAborted":true,"releasedResult":false,"uncertaintyCalls":0,"elapsedMs":104.9585989999996}
+✔ fresh deadline at before-reservation bounds parked authorizeBusiness (108.820244ms)
+{"stage":"before-reservation","parkedPort":"authorizeSources","shortened":true,"parked":true,"completedWithin100ms":true,"failure":"DEADLINE","parkedSignalAborted":true,"releasedResult":false,"uncertaintyCalls":0,"elapsedMs":102.00450799999999}
+✔ fresh deadline at before-reservation bounds parked authorizeSources (102.617319ms)
+{"stage":"before-effect","parkedPort":"currentRun","shortened":true,"parked":true,"completedWithin100ms":true,"failure":"DEADLINE","parkedSignalAborted":true,"releasedResult":false,"uncertaintyCalls":1,"elapsedMs":101.51932899999974}
+✔ fresh deadline at before-effect bounds parked currentRun (102.090637ms)
+{"stage":"before-effect","parkedPort":"authorizeBusiness","shortened":true,"parked":true,"completedWithin100ms":true,"failure":"DEADLINE","parkedSignalAborted":true,"releasedResult":false,"uncertaintyCalls":1,"elapsedMs":99.38697300000013}
+✔ fresh deadline at before-effect bounds parked authorizeBusiness (100.158712ms)
+{"stage":"before-effect","parkedPort":"authorizeSources","shortened":true,"parked":true,"completedWithin100ms":true,"failure":"DEADLINE","parkedSignalAborted":true,"releasedResult":false,"uncertaintyCalls":1,"elapsedMs":107.11163600000009}
+✔ fresh deadline at before-effect bounds parked authorizeSources (107.619509ms)
+{"stage":"before-release","parkedPort":"currentRun","shortened":true,"parked":true,"completedWithin100ms":true,"failure":"DEADLINE","parkedSignalAborted":true,"releasedResult":false,"uncertaintyCalls":1,"elapsedMs":100.13494200000014}
+✔ fresh deadline at before-release bounds parked currentRun (100.714193ms)
+{"stage":"before-release","parkedPort":"authorizeBusiness","shortened":true,"parked":true,"completedWithin100ms":true,"failure":"DEADLINE","parkedSignalAborted":true,"releasedResult":false,"uncertaintyCalls":1,"elapsedMs":100.28441100000009}
+✔ fresh deadline at before-release bounds parked authorizeBusiness (107.625628ms)
+{"stage":"before-release","parkedPort":"authorizeSources","shortened":true,"parked":true,"completedWithin100ms":true,"failure":"DEADLINE","parkedSignalAborted":true,"releasedResult":false,"uncertaintyCalls":1,"elapsedMs":99.79053000000022}
+✔ fresh deadline at before-release bounds parked authorizeSources (100.566295ms)
+{"stage":"final","parkedPort":"currentRun","shortened":true,"parked":true,"completedWithin100ms":true,"failure":"DEADLINE","parkedSignalAborted":true,"releasedResult":false,"uncertaintyCalls":0,"elapsedMs":100.91428399999995}
+✔ fresh deadline at final bounds parked currentRun (101.388857ms)
+{"stage":"final","parkedPort":"authorizeBusiness","shortened":true,"parked":true,"completedWithin100ms":true,"failure":"DEADLINE","parkedSignalAborted":true,"releasedResult":false,"uncertaintyCalls":0,"elapsedMs":99.67886099999942}
+✔ fresh deadline at final bounds parked authorizeBusiness (100.402059ms)
+{"stage":"final","parkedPort":"authorizeSources","shortened":true,"parked":true,"completedWithin100ms":true,"failure":"DEADLINE","parkedSignalAborted":true,"releasedResult":false,"uncertaintyCalls":0,"elapsedMs":100.72481400000015}
+✔ fresh deadline at final bounds parked authorizeSources (101.143654ms)
+{"scenario":"leap-second-issuedAt","released":false,"failure":"ACCESS_DENIED","calls":["capability"]}
+{"scenario":"future-issuedAt","released":false,"failure":"ACCESS_DENIED","calls":["capability"]}
+{"scenario":"issued-after-expiry","released":false,"failure":"ACCESS_DENIED","calls":["capability"]}
+{"scenario":"equal-issued-expiry","released":false,"failure":"ACCESS_DENIED","calls":["capability"]}
+{"scenario":"leap-second-expiry","released":false,"failure":"ACCESS_DENIED","calls":["capability"]}
+✔ gateway refuses unusable capability lifetime: leap-second-issuedAt (25.122167ms)
+✔ gateway refuses unusable capability lifetime: future-issuedAt (3.312921ms)
+✔ gateway refuses unusable capability lifetime: issued-after-expiry (0.514394ms)
+✔ gateway refuses unusable capability lifetime: equal-issued-expiry (0.311729ms)
+✔ gateway refuses unusable capability lifetime: leap-second-expiry (0.835546ms)
+{"ordinal":1,"parkedPort":"verifyCapability","failure":"CANCELLED","next":[],"released":false,"signalAborted":true,"uncertaintyCalls":0}
+✔ cancelled identity 1 parked verifyCapability cannot continue after late completion (18.056815ms)
+{"ordinal":1,"parkedPort":"currentRun","failure":"CANCELLED","next":[],"released":false,"signalAborted":true,"uncertaintyCalls":0}
+✔ cancelled identity 1 parked currentRun cannot continue after late completion (8.423123ms)
+{"ordinal":2,"parkedPort":"verifyCapability","failure":"CANCELLED","next":[],"released":false,"signalAborted":true,"uncertaintyCalls":0}
+✔ cancelled identity 2 parked verifyCapability cannot continue after late completion (9.457217ms)
+{"ordinal":2,"parkedPort":"currentRun","failure":"CANCELLED","next":[],"released":false,"signalAborted":true,"uncertaintyCalls":0}
+✔ cancelled identity 2 parked currentRun cannot continue after late completion (2.410704ms)
+{"ordinal":2,"parkedPort":"authorizeBusiness","failure":"CANCELLED","next":[],"released":false,"signalAborted":true,"uncertaintyCalls":0}
+✔ cancelled identity 2 parked authorizeBusiness cannot continue after late completion (21.646662ms)
+{"ordinal":2,"parkedPort":"authorizeSources","failure":"CANCELLED","next":[],"released":false,"signalAborted":true,"uncertaintyCalls":0}
+✔ cancelled identity 2 parked authorizeSources cannot continue after late completion (5.242522ms)
+{"ordinal":3,"parkedPort":"verifyCapability","failure":"CANCELLED","next":[],"released":false,"signalAborted":true,"uncertaintyCalls":1}
+✔ cancelled identity 3 parked verifyCapability cannot continue after late completion (1.768078ms)
+{"ordinal":3,"parkedPort":"currentRun","failure":"CANCELLED","next":[],"released":false,"signalAborted":true,"uncertaintyCalls":1}
+✔ cancelled identity 3 parked currentRun cannot continue after late completion (4.746645ms)
+{"ordinal":3,"parkedPort":"authorizeBusiness","failure":"CANCELLED","next":[],"released":false,"signalAborted":true,"uncertaintyCalls":1}
+✔ cancelled identity 3 parked authorizeBusiness cannot continue after late completion (3.129024ms)
+{"ordinal":3,"parkedPort":"authorizeSources","failure":"CANCELLED","next":[],"released":false,"signalAborted":true,"uncertaintyCalls":1}
+✔ cancelled identity 3 parked authorizeSources cannot continue after late completion (2.249212ms)
+{"ordinal":4,"parkedPort":"verifyCapability","failure":"CANCELLED","next":[],"released":false,"signalAborted":true,"uncertaintyCalls":1}
+✔ cancelled identity 4 parked verifyCapability cannot continue after late completion (4.036178ms)
+{"ordinal":4,"parkedPort":"currentRun","failure":"CANCELLED","next":[],"released":false,"signalAborted":true,"uncertaintyCalls":1}
+✔ cancelled identity 4 parked currentRun cannot continue after late completion (3.376176ms)
+{"ordinal":4,"parkedPort":"authorizeBusiness","failure":"CANCELLED","next":[],"released":false,"signalAborted":true,"uncertaintyCalls":1}
+✔ cancelled identity 4 parked authorizeBusiness cannot continue after late completion (1.75644ms)
+{"ordinal":4,"parkedPort":"authorizeSources","failure":"CANCELLED","next":[],"released":false,"signalAborted":true,"uncertaintyCalls":1}
+✔ cancelled identity 4 parked authorizeSources cannot continue after late completion (3.091428ms)
+{"ordinal":5,"parkedPort":"verifyCapability","failure":"CANCELLED","next":[],"released":false,"signalAborted":true,"uncertaintyCalls":0}
+✔ cancelled identity 5 parked verifyCapability cannot continue after late completion (2.169762ms)
+{"ordinal":5,"parkedPort":"currentRun","failure":"CANCELLED","next":[],"released":false,"signalAborted":true,"uncertaintyCalls":0}
+✔ cancelled identity 5 parked currentRun cannot continue after late completion (3.563317ms)
+{"ordinal":5,"parkedPort":"authorizeBusiness","failure":"CANCELLED","next":[],"released":false,"signalAborted":true,"uncertaintyCalls":0}
+✔ cancelled identity 5 parked authorizeBusiness cannot continue after late completion (5.934401ms)
+{"ordinal":5,"parkedPort":"authorizeSources","failure":"CANCELLED","next":[],"released":false,"signalAborted":true,"uncertaintyCalls":0}
+✔ cancelled identity 5 parked authorizeSources cannot continue after late completion (3.349125ms)
+ℹ tests 80
+ℹ suites 0
+ℹ pass 80
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8070.817466

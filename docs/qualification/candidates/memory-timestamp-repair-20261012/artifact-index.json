@@ -1,0 +1,139 @@
+{
+  "scope": "Author source-only repair evidence; reviewer-origin files retain original bytes; index excludes itself",
+  "artifacts": [
+    {
+      "path": ".gitattributes",
+      "bytes": 13,
+      "sha256": "c7c6541111ee53947140bac154f1275c6b1b244c40c045b190662f23226509c9"
+    },
+    {
+      "path": "adversarial-original.json",
+      "bytes": 385,
+      "sha256": "9f4d407b01580662b88f38fc5a29b51d9bee9d6c7e89cae6fdfbb22528a6a5e0",
+      "origin": "Unmodified independent reviewer artifact from /workspace/meri-memory-review-20261012/docs/qualification/candidates/memory-independent-resume-20261012/adversarial-original.json"
+    },
+    {
+      "path": "adversarial-original.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "origin": "Unmodified independent reviewer artifact from /workspace/meri-memory-review-20261012/docs/qualification/candidates/memory-independent-resume-20261012/adversarial-original.stderr.bin"
+    },
+    {
+      "path": "adversarial-original.stdout.bin",
+      "bytes": 3790,
+      "sha256": "522863fe6a2a005db1543798c1a0905f220880ed3a7ad947c7bd5f145769c36b",
+      "origin": "Unmodified independent reviewer artifact from /workspace/meri-memory-review-20261012/docs/qualification/candidates/memory-independent-resume-20261012/adversarial-original.stdout.bin"
+    },
+    {
+      "path": "adversarial.test.mjs",
+      "bytes": 5027,
+      "sha256": "f8c2ac90f9eca6000f7bd6bca6232e9d9ad3d856f6c4592a5dceae753f98f6d6",
+      "origin": "Unmodified independent reviewer artifact from /workspace/meri-memory-review-20261012/docs/qualification/candidates/memory-independent-resume-20261012/adversarial.test.mjs"
+    },
+    {
+      "path": "after-checks.json",
+      "bytes": 799,
+      "sha256": "4ed7f84d28783b43a8da298941423729d0c8b571b4783a753243a186094fa780"
+    },
+    {
+      "path": "author-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "author-before.stdout.bin",
+      "bytes": 4654,
+      "sha256": "c579e45cec69ab48fbe5c20b2495d5dab7f5aa50b14e65e87a372cae616b58a7"
+    },
+    {
+      "path": "author-focused.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "author-focused.stdout.bin",
+      "bytes": 1838,
+      "sha256": "3c045a88f7fbdcedfc7ed908c85403dc3b59616de88d4b5b99b26d613c84b2ea"
+    },
+    {
+      "path": "before-checks.json",
+      "bytes": 576,
+      "sha256": "d949c755a8e6022b5aaa27a0fa5ac239d70549e669616b0a158ce241df3ffd8c"
+    },
+    {
+      "path": "contracts-install.json",
+      "bytes": 221,
+      "sha256": "294a6bf28f122f466ecf332c7414cb3d263c3169e20c76479af604fd605cc1f5"
+    },
+    {
+      "path": "contracts-install.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "contracts-install.stdout.bin",
+      "bytes": 25,
+      "sha256": "1d41eb5f721bb9d5710254973769ef57dc59f277b97c8647bf6ffaff5426b4ba"
+    },
+    {
+      "path": "full-contracts.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    {
+      "path": "full-contracts.stdout.bin",
+      "bytes": 20121,
+      "sha256": "f60725c996de31deadf568ac62814c95b98a77e6414b95d932e5f60d9f0d6cb0"
+    },
+    {
+      "path": "preservation.json",
+      "bytes": 4076,
+      "sha256": "843ae17c0f4eb6afc528a325be8cd263dc84b529fc8191bcaa36c909ebdbe43e"
+    },
+    {
+      "path": "public-distribution.stderr.bin",
+      "bytes": 1040,
+      "sha256": "cbbd466f3bf458f7f516c133ea486c1aada38d325ec9a80b698c26da8c18237f"
+    },
+    {
+      "path": "public-distribution.stdout.bin",
+      "bytes": 2043,
+      "sha256": "e19ba14023ab2ca10d4665d6d697050514304bcd39697227619d6d45a1a0e0c1"
+    },
+    {
+      "path": "reviewer-probes-author-replay.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reviewer-probes-author-replay.stdout.bin",
+      "bytes": 861,
+      "sha256": "e92a071e34fd22ee74ba423ddb992fbd58886ed3a1f7a18c5a411bed7881d222"
+    },
+    {
+      "path": "reviewer-probes-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reviewer-probes-before.stdout.bin",
+      "bytes": 3778,
+      "sha256": "c80952c5cd99f462043f5f5b09553ccf54fcfe5d7264e85537d658ee7a4b213d"
+    },
+    {
+      "path": "root-install.json",
+      "bytes": 178,
+      "sha256": "096d381fd61e06f85863c6b0452bd4866cb7f9607c5443a55af3145a8143c923"
+    },
+    {
+      "path": "root-install.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    {
+      "path": "root-install.stdout.bin",
+      "bytes": 25,
+      "sha256": "585fbd61d68d1d0905ae208146150b818bf2db80852493a7dbe5a8458fbdbb2b"
+    }
+  ]
+}

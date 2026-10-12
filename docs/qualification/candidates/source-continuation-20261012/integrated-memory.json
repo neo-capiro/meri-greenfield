@@ -1,0 +1,29 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/memory-independent-resume-20261012/adversarial.test.mjs"
+  ],
+  "cwd": "/workspace/meri-source-continuation-20261012",
+  "sourceHead": "88e9ffcfe76ced52dc59425e6add0fa24801dfd6",
+  "sourceDiffSha256": "55a6672e8982134b0271187cf3d01bc797329e210355bafe9a6dde4ed3861102",
+  "sourceDiffBytes": 78931,
+  "startedAt": "2026-10-12T01:58:01.234331+00:00",
+  "durationSeconds": 2.356,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedProcessGroupAbsentAfterExit": true,
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/source-continuation-20261012/integrated-memory.stdout.bin",
+      "bytes": 863,
+      "sha256": "11131775dc6d3e5e19029322e6be8b64c4b51e10838f09521b2efafda305f472"
+    },
+    {
+      "path": "docs/qualification/candidates/source-continuation-20261012/integrated-memory.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

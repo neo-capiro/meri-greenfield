@@ -1,0 +1,57 @@
+{
+  "classification": "EXACT_ORIGINAL_GATEWAY_FILE_HASHES_WITH_ACCEPTED13_CURRENT_CONTRACTS",
+  "historicalCommitObjectAvailable": false,
+  "noHistoricalCommitOrTreeIdentityClaim": true,
+  "target": "/tmp/meri-gateway-original-review-20261012",
+  "borrowedReadOnlyPackages": "/workspace/meri-gateway-review-20261012/packages",
+  "files": [
+    {
+      "path": "apps/gateway/authorization/current-tool-authority.mjs",
+      "bytes": 5718,
+      "sha256": "cd090d987e5603d93c111b8ea36e6933fe108bfdeeb8d77ce03f66a4e85f0217",
+      "retainedOriginalHashMatches": true
+    },
+    {
+      "path": "apps/gateway/catalog/runtime-catalog.mjs",
+      "bytes": 2396,
+      "sha256": "092ed325693df95c3c5a41d20d3fdb56e19cce3fc9b47dafd8d42d76b9325dff",
+      "retainedOriginalHashMatches": true
+    },
+    {
+      "path": "apps/gateway/dispatch/dispatch-lifetime.mjs",
+      "bytes": 2994,
+      "sha256": "37219130a9a895125fa594bb8266b724c08a58f1af54f1353ff3b9f2fc5d6248",
+      "retainedOriginalHashMatches": true
+    },
+    {
+      "path": "apps/gateway/dispatch/operation-result.mjs",
+      "bytes": 2818,
+      "sha256": "26e44f72ec13011a8c0960842d6a8abd53b8f67e9082f888f4bc2458b5c42468",
+      "retainedOriginalHashMatches": true
+    },
+    {
+      "path": "apps/gateway/dispatch/tool-dispatch.mjs",
+      "bytes": 6409,
+      "sha256": "ac0f957a4b8c3716af8fbedaac1e547e033077f3d0642bc49ba6d7c7d33fa916",
+      "retainedOriginalHashMatches": true
+    },
+    {
+      "path": "apps/gateway/index.mjs",
+      "bytes": 1319,
+      "sha256": "594f8f1dc780b5dc41e1738e6e484c8e20d365ed6b46137091c3644c4e2266c9",
+      "retainedOriginalHashMatches": true
+    },
+    {
+      "path": "apps/gateway/test/fixtures.mjs",
+      "bytes": 5042,
+      "sha256": "53915bd72e3e7eb9a7a70219c06aa4359948a9c9abab91469fcfaaf1322f8a2c",
+      "retainedOriginalHashMatches": true
+    },
+    {
+      "path": "apps/gateway/test/gateway.test.mjs",
+      "bytes": 10635,
+      "sha256": "ae9e94ae696ebf0982b0e1592438ec510f502bee29a315a567f6f27faeb62268",
+      "retainedOriginalHashMatches": true
+    }
+  ]
+}

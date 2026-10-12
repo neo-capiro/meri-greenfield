@@ -1,0 +1,56 @@
+{
+  "base": "c57b7d26df7de2acbd8c7d8edc7098f7d495053a",
+  "checked": [
+    {
+      "path": "apps/gateway/test/gateway.test.mjs",
+      "sha256": "6f71caf19539fca672c1217df079e58a6ed772f91648536bfe3f45e8a2d5d0e4",
+      "bytes": 11834,
+      "identicalToBase": true
+    },
+    {
+      "path": "apps/gateway/test/fixtures.mjs",
+      "sha256": "53915bd72e3e7eb9a7a70219c06aa4359948a9c9abab91469fcfaaf1322f8a2c",
+      "bytes": 5042,
+      "identicalToBase": true
+    },
+    {
+      "path": "apps/gateway/dispatch/dispatch-lifetime.mjs",
+      "sha256": "37219130a9a895125fa594bb8266b724c08a58f1af54f1353ff3b9f2fc5d6248",
+      "bytes": 2994,
+      "identicalToBase": true
+    },
+    {
+      "path": "apps/gateway/index.mjs",
+      "sha256": "594f8f1dc780b5dc41e1738e6e484c8e20d365ed6b46137091c3644c4e2266c9",
+      "bytes": 1319,
+      "identicalToBase": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog.json",
+      "sha256": "731ed180fb4070eee4da92a9b7e7dfe3014f1524c83bf2c3c28732bd961707f5",
+      "bytes": 76401,
+      "identicalToBase": true
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "b2293773bf4ddc6d23425b7d718b79575384679999b86fd3caad78e6eda4a42d",
+      "bytes": 12067,
+      "identicalToBase": true
+    },
+    {
+      "path": "packages/contracts/package-lock.json",
+      "sha256": "dae8c670bb76b9c570f174d8749a8c59179cf865d5d6ec83b64a67bb5b2b06a6",
+      "bytes": 24995,
+      "identicalToBase": true
+    },
+    {
+      "path": "docs/qualification/candidates/gateway-source-disabled-20261012/independent-review-20261012/release-deadline-control.mjs",
+      "sha256": "008e08e6d3ccf2bbe2eb44793b96e0a9a87a74d16b5a1dde5a7e167a459060cf",
+      "bytes": 1910,
+      "identicalToBase": true
+    }
+  ],
+  "unchangedHistoricalGatewayEvidenceFiles": 47,
+  "originalCandidateObjectsAvailableLocally": false,
+  "preservationBasis": "Exact published preservation-base bytes; reviewer owns earlier source reconstruction and accepted13 comparison."
+}

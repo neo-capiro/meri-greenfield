@@ -1,0 +1,20 @@
+✔ reserve pending fails closed with one uncertainty write (7.07942ms)
+✔ reserve unknown fails closed with one uncertainty write (1.174545ms)
+✔ reserve throw fails closed with one uncertainty write (0.991971ms)
+✔ settle pending fails closed with one uncertainty write (2.549291ms)
+✔ settle unknown fails closed with one uncertainty write (1.642348ms)
+✔ settle throw fails closed with one uncertainty write (1.540856ms)
+{"phase":"reserve","elapsedMs":20.681512999999995,"failure":"DEADLINE","released":false,"calls":["capability","fence","capability","fence","policy","source-policy","fence","reserve","uncertain"]}
+✔ parked reserve is bounded and late completion cannot release a result (21.970801ms)
+{"phase":"settle","elapsedMs":20.704747999999995,"failure":"DEADLINE","released":false,"calls":["capability","fence","capability","fence","policy","source-policy","fence","reserve","capability","fence","policy","source-policy","fence","handler","capability","fence","policy","source-policy","fence","settle","uncertain"]}
+✔ parked settle is bounded and late completion cannot release a result (20.995174ms)
+{"phase":"markUncertain","elapsedMs":21.301825000000008,"failure":"BUDGET_UNCERTAIN","released":false,"calls":["capability","fence","capability","fence","policy","source-policy","fence","uncertain"]}
+✔ parked markUncertain is bounded and late completion cannot release a result (21.640644ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 865.633951

@@ -1,0 +1,31 @@
+{
+  "at": "2026-10-12T01:59:50.759566+00:00",
+  "scope": "current visible processes whose cwd is owned integration worktree; not a historical PID-group proof",
+  "observations": [
+    {
+      "pid": 8340,
+      "ppid": 8339,
+      "pgrp": 8340,
+      "state": "S",
+      "command": "codex",
+      "cwd": "/workspace/meri-source-continuation-20261012"
+    },
+    {
+      "pid": 8341,
+      "ppid": 8340,
+      "pgrp": 8340,
+      "state": "S",
+      "command": "bash",
+      "cwd": "/workspace/meri-source-continuation-20261012"
+    },
+    {
+      "pid": 8344,
+      "ppid": 8341,
+      "pgrp": 8340,
+      "state": "R",
+      "command": "python3",
+      "cwd": "/workspace/meri-source-continuation-20261012"
+    }
+  ],
+  "initialNpmCaptureLimitation": "one-shot group check false; wrapper SIGKILL sent to owned group but PID/final absence not recorded. Preserve original receipts. Re-run only these two checks with bounded descendant reaping/PID evidence."
+}

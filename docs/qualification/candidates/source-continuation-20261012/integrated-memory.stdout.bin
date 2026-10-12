@@ -1,0 +1,16 @@
+✔ retained equal-time descending UUID boundary succeeds and replayed identity refuses (4.57059ms)
+✔ a proposal timestamp must denote a finite instant before coverage is admitted (0.340502ms)
+✔ nonfinite timestamp must not defeat within-page descending order (0.258929ms)
+✔ nonfinite timestamp must not admit a newer continuation result (0.344408ms)
+✔ disabled continuation remains unavailable and does not fabricate completion (1.048236ms)
+✔ cross-client metadata can appear in personal proposer queue only as unapproved data (0.513301ms)
+✔ inert guards refuse hostile retained context without getters or proxy traps (0.242024ms)
+✔ boundaries remain literal: maximum previews accepted and supplementary cursor refused (1.914838ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2258.425352

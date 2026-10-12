@@ -1,0 +1,42 @@
+✔ initial identity: capability expiry immediately bounds the next parked authority port (25.713543ms)
+✔ before reservation: capability expiry immediately bounds the next parked authority port (22.470688ms)
+✔ before reservation: run before business immediately bounds the next parked authority port (23.286275ms)
+✔ before reservation: run before source immediately bounds the next parked authority port (20.973488ms)
+✔ before effect: capability expiry immediately bounds the next parked authority port (22.610689ms)
+✔ before effect: run before business immediately bounds the next parked authority port (22.218559ms)
+✔ before effect: run before source immediately bounds the next parked authority port (20.595931ms)
+✔ before release: capability expiry immediately bounds the next parked authority port (21.967352ms)
+✔ before release: run before business immediately bounds the next parked authority port (22.469317ms)
+✔ before release: run before source immediately bounds the next parked authority port (21.243955ms)
+✔ after settlement: capability expiry immediately bounds the next parked authority port (22.413342ms)
+✔ after settlement: run before business immediately bounds the next parked authority port (21.989014ms)
+✔ after settlement: run before source immediately bounds the next parked authority port (21.293359ms)
+✔ an initial capability completing after cancellation cannot start current-run lookup (21.421872ms)
+✔ stale or invalid deadline facts fail closed before the subsequent port (1.618803ms)
+✔ a capability issuance timestamp that cannot become an epoch time cannot dispatch (0.310787ms)
+✔ production catalog exposes no tools, has no activation override, performs zero effects (11.228058ms)
+✔ external object/proxy/getter/toJSON and thrown proxy are never inspected (0.427002ms)
+✔ invalid canonical domain arguments refuse before reservation or handler (3.495184ms)
+✔ raw authority injection is rejected before any trusted port or effect (0.409666ms)
+✔ a mismatched trusted catalog cannot dispatch a substituted or raw SQL operation (0.367683ms)
+✔ actual federal defaults precede canonical digest and resource reservation (6.400812ms)
+✔ canonical raw federal output without qualified lineage cannot be released (1.974669ms)
+✔ the original run deadline stops parked business/source lookup before any reservation (42.223902ms)
+✔ expiry, wrong audience, stale fence, missing grants and disabled source refuse (5.792868ms)
+✔ revocation during reservation prevents handler and preserves uncertain reservation (0.911871ms)
+✔ replacement during source-policy lookup is rejected by the final current-run read (0.541914ms)
+✔ revocation during handler or settlement never releases the result (2.812908ms)
+✔ malformed or oversized raw output and foreign lineage cannot escape (3.409265ms)
+✔ uncertain/malformed budget acknowledgements never dispatch or refund (0.468805ms)
+✔ deadline validates before allocation, shrinks absolutely and closes owned timer/listener (0.291569ms)
+✔ timeout suppresses late work without claiming physical stop or refund (20.068498ms)
+✔ configuration and import allocate no live resource (0.921766ms)
+✔ a deadline shortened during the handler bounds parked settlement and preserves uncertainty (23.487872ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1141.235435

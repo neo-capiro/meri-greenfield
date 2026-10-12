@@ -1,0 +1,33 @@
+{
+  "command": [
+    "git",
+    "diff",
+    "--check",
+    "c57b7d26df7de2acbd8c7d8edc7098f7d495053a",
+    "--",
+    "apps/gateway",
+    "packages/contracts",
+    "package.json",
+    "package-lock.json",
+    "docs/coordination/reports"
+  ],
+  "cwd": "/workspace/meri-gateway-review-20261012",
+  "startUnixSeconds": 1791770199.7494833,
+  "elapsedSeconds": 0.007648468017578125,
+  "exitCode": 0,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "fixtureRoot": null,
+  "streams": {
+    "stdout": {
+      "path": "scoped-source-whitespace.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stderr": {
+      "path": "scoped-source-whitespace.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

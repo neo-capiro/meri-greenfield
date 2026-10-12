@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/gateway/test/gateway.test.mjs",
+    "apps/gateway/test/authority-deadline.test.mjs",
+    "docs/qualification/candidates/gateway-independent-resume-20261012/accepted-catalog.test.mjs",
+    "docs/qualification/candidates/gateway-independent-resume-20261012/budget-containment.test.mjs",
+    "docs/qualification/candidates/gateway-independent-resume-20261012/inner-authority-deadlines.test.mjs",
+    "docs/qualification/candidates/gateway-independent-resume-20261012/issued-at.test.mjs",
+    "docs/qualification/candidates/gateway-independent-resume-20261012/late-cancellation.test.mjs"
+  ],
+  "cwd": "/workspace/meri-source-continuation-20261012",
+  "sourceHead": "88e9ffcfe76ced52dc59425e6add0fa24801dfd6",
+  "sourceDiffSha256": "55a6672e8982134b0271187cf3d01bc797329e210355bafe9a6dde4ed3861102",
+  "sourceDiffBytes": 78931,
+  "startedAt": "2026-10-12T01:58:01.221069+00:00",
+  "durationSeconds": 8.149,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedProcessGroupAbsentAfterExit": true,
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/source-continuation-20261012/integrated-gateway.stdout.bin",
+      "bytes": 14193,
+      "sha256": "142a08f68ec28f3dc01d0081015b7382883ff5579d6573095d773f4cc04cfafb"
+    },
+    {
+      "path": "docs/qualification/candidates/source-continuation-20261012/integrated-gateway.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

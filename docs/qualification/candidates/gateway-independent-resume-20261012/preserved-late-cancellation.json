@@ -1,0 +1,26 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/gateway-independent-resume-20261012/late-cancellation.test.mjs"
+  ],
+  "cwd": "/workspace/meri-gateway-review-20261012",
+  "startUnixSeconds": 1791769753.3695989,
+  "elapsedSeconds": 1.704193353652954,
+  "exitCode": 1,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "fixtureRoot": null,
+  "streams": {
+    "stdout": {
+      "path": "preserved-late-cancellation.stdout.txt",
+      "bytes": 8721,
+      "sha256": "2272049a5eb9e3c7f7c1a30247f7b1b8dd0e191454386ab37dfb828357296a0c"
+    },
+    "stderr": {
+      "path": "preserved-late-cancellation.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}
