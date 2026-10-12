@@ -678,6 +678,15 @@
           ]
         }
       ]
+    },
+    "MemoryContentAvailableLimitation": {
+      "type": "null"
+    },
+    "MemoryMetadataOnlyLimitation": {
+      "const": "This approved record contains a learning-event description, not the underlying fact. The original source must be reviewed before proposing corrected content; approval of this event is not verification of an unstored capability, person or facility."
+    },
+    "MemoryEmptyLimitation": {
+      "const": "This approved record has no stored section body. No source fact can be inferred from its title or approval."
     }
   }
 }

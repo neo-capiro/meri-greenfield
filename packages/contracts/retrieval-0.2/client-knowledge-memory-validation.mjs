@@ -47,6 +47,7 @@ export function createClientKnowledgeMemoryValidators({validateShape,schema}) {
     const scope=hash(JSON.stringify([ctx.tenantId,ctx.userId,input.clientId])),seen=new Set();
     for(let index=0;index<page.records.length;index++){
       const row=page.records[index],p=row.payload,c=p.content,proof=row.provenance,result=page.results[index];
+      validateShape({available:'MemoryContentAvailableLimitation',metadata_only:'MemoryMetadataOnlyLimitation',empty:'MemoryEmptyLimitation'}[p.contentStatus],p.contentLimitation);
       if(seen.has(row.recordId)||p.memoryItemId!==row.recordId||proof.recordId!==row.recordId||input.memoryItemId&&row.recordId!==input.memoryItemId)fail('Memory record identity substitution');seen.add(row.recordId);
       if(input.clientId&&p.clientId!==null&&p.clientId!==input.clientId)fail('Memory client substitution');
       if(p.clientId?(row.entityRef?.type!=='client'||row.entityRef.id!==p.clientId):row.entityRef!==undefined)fail('Memory entity reference mismatch');
