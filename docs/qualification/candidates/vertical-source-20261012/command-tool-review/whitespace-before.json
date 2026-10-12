@@ -1,0 +1,17 @@
+{
+  "command": [
+    "git",
+    "diff",
+    "--check",
+    "5a8d11399d8a4b65a5b04d73f9f22e5de54a157f",
+    "HEAD",
+    "--",
+    "docs/qualification/candidates/vertical-source-20261012/command-tool-review",
+    "apps/control/test/commands-tool-interface-independent.test.mjs",
+    "packages/contracts/test/command-tool-interface-independent.test.mjs"
+  ],
+  "exitCode": 2,
+  "stdoutBase64": "ZG9jcy9xdWFsaWZpY2F0aW9uL2NhbmRpZGF0ZXMvdmVydGljYWwtc291cmNlLTIwMjYxMDEyL2NvbW1hbmQtdG9vbC1yZXZpZXcvY2Fub25pY2FsLWluaXRpYWwuc3Rkb3V0LmJpbjo0MDogdHJhaWxpbmcgd2hpdGVzcGFjZS4KKyAgCmRvY3MvcXVhbGlmaWNhdGlvbi9jYW5kaWRhdGVzL3ZlcnRpY2FsLXNvdXJjZS0yMDI2MTAxMi9jb21tYW5kLXRvb2wtcmV2aWV3L2Nhbm9uaWNhbC1pbml0aWFsLnN0ZG91dC5iaW46NDI6IHRyYWlsaW5nIHdoaXRlc3BhY2UuCisgIAo=",
+  "stderrBase64": "",
+  "reason": "Two whitespace-only Node assertion diagnostic lines preserved exactly; evidence attributes applied only to raw stream files."
+}
