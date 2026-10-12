@@ -1,0 +1,62 @@
+{
+  "repository": "neo-capiro/capirov2",
+  "pin": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "observedHead": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+  "references": [
+    {
+      "path": "apps/api/src/funding-opportunities/meri-opportunity-tools.adapter.ts",
+      "pinnedBlob": "ce2ec030bbadc55e102d9fb54384b1c592c4ff5f",
+      "observedBlob": "ce2ec030bbadc55e102d9fb54384b1c592c4ff5f",
+      "drift": false
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/requirements/opportunity-requirement.service.ts",
+      "pinnedBlob": "5d049d2d89a974fa805752ac54e6bd4a1250c44d",
+      "observedBlob": "5d049d2d89a974fa805752ac54e6bd4a1250c44d",
+      "drift": false
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/requirements/opportunity-requirement.schema.ts",
+      "pinnedBlob": "ee5f981a955964af2d20074a89e8432075fc5640",
+      "observedBlob": "ee5f981a955964af2d20074a89e8432075fc5640",
+      "drift": false
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/government-landscape.types.ts",
+      "pinnedBlob": "25da288d8578f500fbec047171becff90c2e49d7",
+      "observedBlob": "25da288d8578f500fbec047171becff90c2e49d7",
+      "drift": false
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/government-landscape.service.ts",
+      "pinnedBlob": "952079395b3a9f8e0ec02be90636fffc0b5cd752",
+      "observedBlob": "952079395b3a9f8e0ec02be90636fffc0b5cd752",
+      "drift": false
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/funding-opportunities.types.ts",
+      "pinnedBlob": "dbeea62a160266463f216786de164ea0052ca0dd",
+      "observedBlob": "dbeea62a160266463f216786de164ea0052ca0dd",
+      "drift": false
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/funding-opportunity-access.ts",
+      "pinnedBlob": "7c0c09cd467d6a4eb7d24ae8f3b3c06f6da78e5f",
+      "observedBlob": "7c0c09cd467d6a4eb7d24ae8f3b3c06f6da78e5f",
+      "drift": false
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/funding-opportunities-flag.guard.ts",
+      "pinnedBlob": "9312a847be2058adcd4745062025cbf559b77ed8",
+      "observedBlob": "9312a847be2058adcd4745062025cbf559b77ed8",
+      "drift": false
+    },
+    {
+      "path": "apps/api/src/funding-opportunities/funding-opportunity-v2-legacy-adapter.ts",
+      "pinnedBlob": "660fe807d9cadea2274278449a55b2fa833252ba",
+      "observedBlob": "660fe807d9cadea2274278449a55b2fa833252ba",
+      "drift": false
+    }
+  ],
+  "privateBodiesPublished": false
+}
