@@ -72,7 +72,7 @@ exclusive output creation, rejects links/hardlinks, preserves raw bytes, and
 emits `context/` plus a sibling `manifest.json`. Existing or partial outputs
 are never repaired, overwritten or deleted. `verify_context(output)` rechecks
 exact files/directories and current source hashes; its manifest is packaging
-DATA, not commit authority or admission. Bounds are 44 files, 2 MiB per file,
+DATA, not commit authority or admission. Bounds are 57 explicitly listed files, 2 MiB per file,
 8 MiB aggregate and a cooperative 30-second deadline. Use an external bound
 and a trusted stable source/output filesystem for an actual build.
 
@@ -216,3 +216,46 @@ until a separately reviewed source/runtime/build admission is prepared.
 
 No new image digest, native recovery or SessionStore qualification follows from
 these sources. Both partial-checkpoint completeness flags remain false.
+
+## Qualification child watchdog and cleanup
+
+The runtime browser and Office child launches now use the same owned-child
+supervisor as the Office export wrapper. Its fixed allowlist contains only
+`browser.mjs` and `artifacts.mjs`. On Linux it requires a detached owned process
+group; child `close` and an exact group-absence observation are both required.
+Timeout, cancellation, stream error or stdout/stderr overflow fail the probe;
+one scoped containment request starts a bounded cleanup grace. The runtime,
+browser and Office export CLI guards translate SIGINT/SIGTERM into their
+existing cancellation signal and wait for bounded cleanup before exiting.
+Repeated signals retain that wait; importing modules installs no listeners.
+Office cancellation also prevents initial directory acquisition, interrupts
+pending export writes and denies later records or a successful return. Bytes
+already written cannot be recalled; error/abort evidence does not claim delivery. A kill request
+or direct child exit alone is not confirmed cleanup. Unknown cleanup prevents
+the next qualification child from starting. A semantic failure whose cleanup
+is confirmed still permits the next independent required check.
+
+The browser lifetime bounds fixture-server startup, official MCP connect,
+listTools and every tool call by one monotonic deadline, including gaps between
+operations. It bounds both client close and the server close callback, attempts
+all owned cleanup concurrently, and contains late acquisitions/completions.
+Its cleanup result describes API observations only. Physical descendants, the
+Chromium sandbox, renderer isolation, target egress, forced host death and the
+external watchdog still need native evidence. Standalone browser/artifact
+commands are diagnostic entrypoints; only the supervising runtime/Office owner
+can observe the corresponding owned child group after the probe exits.
+
+Source controls (scripted ports; no browser or renderer launch):
+
+```
+node --test apps/worker/qualification/probes/owned-probe-child.test.mjs \
+  apps/worker/qualification/probes/browser-lifetime.test.mjs \
+  apps/worker/qualification/probes/office-export.test.mjs
+```
+
+The Office eleven-file allowlist, byte validation and export/reconstruction
+protocol remain unchanged. Four explicitly named supervisor/lifetime files
+are added to the finite context list. Derived context/collector identities must
+be refreshed and independently reviewed before packaging admission; no image
+was built, pushed or executed for these source changes. Product task identity,
+Temporal activity admission and artifact publication remain separate owners.

@@ -22,6 +22,8 @@ import { createRequire } from 'node:module';
 
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
+import { createBrowserLifetime, closeFixtureServer } from './browser-lifetime.mjs';
+import { installProbeCancellation } from './owned-probe-child.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const require = createRequire(import.meta.url);
@@ -417,7 +419,7 @@ function startFixtureServer() {
     res.writeHead(200, { 'Content-Type': 'text/html' });
     res.end('<!doctype html><title>Meri fixture</title><h1 id="marker">meri-loopback-ok</h1><a id="dl" href="/download">download</a>');
   });
-  return new Promise((res) => server.listen(0, '127.0.0.1', () => res(server)));
+  return new Promise((res, reject) => { server.once('error', reject); server.listen(0, '127.0.0.1', () => res(server)); });
 }
 
 const SANDBOX_EXPR = '() => ({ text: document.body.innerText, rows: Array.from(document.querySelectorAll("#sandbox-status tr"), (r) => Array.from(r.cells, (c) => c.innerText.trim())), evaluation: document.querySelector("#evaluation")?.innerText })';
@@ -517,24 +519,26 @@ export function buildBrowserSteps({ callTool, toolNames = [], evidence, reasons,
   ];
 }
 
-async function main() {
+export async function main({ deadlineMs = DEADLINE_MS, graceMs = 5000, signal } = {}) {
   const reasons = [];
   const evidencePaths = [];
   const evidence = { probe: 'browser', uid: null, serverVersion: null, browserVersion: null, versionData: null, sandbox: null, browserProcess: null, rendererProcess: null, processes: [], procEvidence: {}, download: null, rawResults: {}, prelaunch: null, stepSequence: null, reasons, evidencePaths };
   let server = null;
   let client = null;
   let transport = null;
-  let stderrText = '';
+  const lifetime = createBrowserLifetime({ deadlineMs, graceMs, signal });
   let runDir = null;
   let profileDir = null;
 
   try {
+    lifetime.assertActive();
     const uid = typeof process.getuid === 'function' ? process.getuid() : null;
     evidence.uid = uid;
     if (uid === null) throw new Error('process.getuid() unsupported: cannot prove non-root');
     if (uid === 0) throw new Error('refusing to run browser probe as root (uid 0)');
 
     evidence.prelaunch = collectPrelaunchDiagnostics();
+    lifetime.assertActive();
 
     runDir = join(OUTPUT_ROOT, `probe-${randomUUID()}`);
     profileDir = join(runDir, 'profile');
@@ -543,7 +547,7 @@ async function main() {
     mkdirSync(outputDir, { recursive: true });
     evidencePaths.push(runDir);
 
-    server = await startFixtureServer();
+    server = await lifetime.acquire('fixture server startup', startFixtureServer, closeFixtureServer);
     const port = server.address().port;
     const mcpPkg = require('@playwright/mcp/package.json');
     const mcpDir = dirname(require.resolve('@playwright/mcp/package.json'));
@@ -557,22 +561,23 @@ async function main() {
       cwd: runDir,
     });
     if (transport.stderr && typeof transport.stderr.on === 'function') {
-      transport.stderr.on('data', (c) => { stderrText += c.toString(); });
+      transport.stderr.on('data', (c) => lifetime.captureStderr(c));
     }
 
-    client = new Client({ name: 'meri-qualification', version: '0.0.0' });
-    await client.connect(transport);
+    client = lifetime.own('MCP client', new Client({ name: 'meri-qualification', version: '0.0.0' }), value => value.close());
+    await lifetime.run('MCP connect', () => client.connect(transport), { lateCleanup: () => client.close() });
     evidence.serverVersion = client.getServerVersion();
-    const toolList = await client.listTools();
+    const toolList = await lifetime.run('MCP listTools', () => client.listTools());
     const toolNames = (toolList.tools || []).map((t) => t.name);
     evidence.tools = toolNames;
 
     // Browser-dependent sequence: the SAME bounded driver used by the offline
     // fake-client fixtures. After the FIRST fatal substep, no later MCP call runs.
-    const callTool = (name, args) => client.callTool({ name, arguments: args });
+    const callTool = (name, args) => lifetime.run(`MCP ${name}`, () => client.callTool({ name, arguments: args }));
     const steps = buildBrowserSteps({ callTool, toolNames, evidence, reasons, io: { port, outputDir } });
     evidence.stepSequence = await runBoundedSequence(steps);
 
+    lifetime.assertActive();
     const processes = readProcesses();
     evidence.processes = processes.map((p) => ({ pid: p.pid, ppid: p.ppid, exe: p.exe, type: p.type, argv: p.argv }));
     const identified = identifyAssociatedChromium(processes, { profileDir });
@@ -587,27 +592,30 @@ async function main() {
     const verdict = assessSandboxEvidence({ sandbox: evidence.sandbox, browser: identified.browser, renderer: identified.renderer });
     reasons.push(...verdict.reasons);
     if (evidence.disablingFlags.length) reasons.push(`disabling Chromium flags present: ${evidence.disablingFlags.map((d) => d.flag).join(', ')}`);
+    lifetime.assertActive();
   } catch (error) {
     reasons.push(String(error && error.message ? error.message : error).slice(0, 300));
   } finally {
-    try { if (client) await client.close(); } catch (error) { reasons.push(`client close uncertainty: ${String(error).slice(0, 160)}`); }
-    try { if (server) server.close(); } catch {}
-    if (stderrText) evidencePaths.push('mcp stderr preserved in stdout summary');
+    evidence.apiCleanup = await lifetime.close();
+    if (!evidence.apiCleanup.confirmed) reasons.push('browser API cleanup UNKNOWN; outer owned group cleanup required');
+    if (lifetime.failure && !reasons.includes(lifetime.failure)) reasons.push(lifetime.failure);
+    if (lifetime.stderr) evidencePaths.push('mcp stderr preserved in stdout summary');
   }
 
   const ok = reasons.length === 0;
   evidence.ok = ok;
   evidence.sandboxVerified = ok;
-  evidence.stderr = stderrText.slice(0, 2000);
+  evidence.stderr = lifetime.stderr.slice(0, 2000);
   if (runDir) { try { writeFileSync(join(runDir, 'evidence.json'), JSON.stringify(evidence, null, 2)); } catch {} }
   process.stdout.write(JSON.stringify(evidence, null, 2) + '\n');
-  process.exit(ok ? 0 : 1);
+  return ok ? 0 : 1;
 }
 
 const invokedDirectly = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
 if (invokedDirectly) {
-  main().catch((error) => {
+  const cancellation = installProbeCancellation();
+  main({ signal: cancellation.signal }).catch((error) => {
     process.stdout.write(JSON.stringify({ probe: 'browser', ok: false, reasons: [String(error).slice(0, 300)] }, null, 2) + '\n');
-    process.exit(1);
-  });
+    return 1;
+  }).finally(cancellation.dispose).then(code => process.exit(code));
 }
