@@ -1,0 +1,51 @@
+[
+  {
+    "label": "candidate-build-suite",
+    "args": [
+      "python3",
+      "-B",
+      "-m",
+      "unittest",
+      "test_worker_image_build",
+      "-v"
+    ],
+    "cwd": "/workspace/meri-g1-executable-source-20261012/scripts/qualification",
+    "exit_code": 1,
+    "expected_exit": 1,
+    "duration_seconds": 0.167
+  },
+  {
+    "label": "candidate-publication-suite",
+    "args": [
+      "python3",
+      "-B",
+      "-m",
+      "unittest",
+      "test_worker_image_publish",
+      "-v"
+    ],
+    "cwd": "/workspace/meri-g1-executable-source-20261012/scripts/qualification",
+    "exit_code": 0,
+    "expected_exit": 0,
+    "duration_seconds": 0.181
+  },
+  {
+    "label": "candidate-context-suite",
+    "args": [
+      "python3",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "scripts/qualification",
+      "-p",
+      "worker_context_test.py",
+      "-v"
+    ],
+    "cwd": "/workspace/meri-g1-executable-source-20261012",
+    "exit_code": 0,
+    "expected_exit": 0,
+    "duration_seconds": 0.488
+  }
+]
