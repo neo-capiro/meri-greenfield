@@ -1,0 +1,34 @@
+{
+  "base": "283c30f2b0d9e990caa5d680843a19281318df9c",
+  "sourceHead": "88c9257e10822396c30cc99fb277ab145aac7218",
+  "sourceTree": "8fe0985f01179c177f1cf273d1eaa24282160d85",
+  "originalFiles": 5473,
+  "originalFilesUnchanged": 5473,
+  "changedOriginalPaths": [],
+  "newTrackedPaths": [
+    "docs/coordination/reports/CODEX-READ-CONTINUATION-DISCLOSURES-AUTHOR-20261012.md",
+    "packages/contracts/retrieval-0.2/disclosures-validation.mjs",
+    "packages/contracts/retrieval-0.2/disclosures.schema.json",
+    "packages/contracts/test/retrieval-disclosures.test.mjs"
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/contracts/retrieval-0.2/disclosures.schema.json",
+      "bytes": 15855,
+      "sha256": "80e6c104e75821e9cfe2861b19073b1e83ea17f87a3efd5e90b77edd4eba8c3f"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/disclosures-validation.mjs",
+      "bytes": 5641,
+      "sha256": "bc3a2884e72ac84de87658e6b540398e7ba20e24ea512bdf9254acafe0b91da1"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-disclosures.test.mjs",
+      "bytes": 14784,
+      "sha256": "a65252212259bd11d701aebe57f4cb55a80c88c2b53ebb40bb44853052d16280"
+    }
+  ],
+  "nativeOrSourceExecution": false,
+  "sourceConnectivityEnabled": false,
+  "familyRegisteredByAuthor": false
+}

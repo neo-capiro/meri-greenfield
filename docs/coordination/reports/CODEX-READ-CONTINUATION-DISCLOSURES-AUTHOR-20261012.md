@@ -139,6 +139,15 @@ commit. The repair checks the selector's primitive string type before any proper
 key conversion. This narrows standalone admission without changing canonical
 string operation identities or widening authority.
 
+Final source freeze: `88c9257e10822396c30cc99fb277ab145aac7218`. Exact frozen
+author suite **29/29 PASS** in `frozen-focused.*` with empty source diff, process
+group **160851 absent**, exit0/no timeout/kill. All five owned capture groups
+(158943,159432,159567,160655,160851) exited and were observed absent. No raw
+failure was discarded or presented as a passing capture. `source-freeze.json`
+records the exact source tree/file hashes and confirms every original tracked
+file is unchanged against the allocation base. Evidence/report finalization is
+separate from tested source; independent exact acceptance remains reviewer-owned.
+
 Independent review and canonical root integration remain separate. Live source
 queries, role/entitlement adapters, providers, database, native execution and G1
 runtime qualification are **UNRUN**. Source acceptance is not runtime acceptance;
