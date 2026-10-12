@@ -1,0 +1,47 @@
+{
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "operations": [
+    {
+      "id": "search_research_sources",
+      "module": "research-legal-candidates",
+      "state": "in-author-discovery",
+      "next": "Exact six scalar projections closed; trusted clientResolution proposed, full source policy remains gateway-owned.",
+      "sourceConnected": false
+    },
+    {
+      "id": "search_legislative_research",
+      "module": "research-legal-legislation",
+      "state": "in-author-discovery",
+      "next": "Trace complete scope/query interpretation/cursor and retained-page fingerprint semantics before implementation.",
+      "sourceConnected": false
+    },
+    {
+      "id": "get_legal_reference",
+      "module": "research-legal-reference",
+      "state": "in-author-discovery",
+      "next": "Trace three views, raw nullable joins, citation identity and effective scope before implementation.",
+      "sourceConnected": false
+    },
+    {
+      "id": "query_global_data",
+      "module": "public-domain-query",
+      "state": "in-author-discovery",
+      "next": "Root decision needed for SQL-free result and immutable canonical dataset fields/limits provider; no parallel registry.",
+      "sourceConnected": false
+    },
+    {
+      "id": "search_committee_hearings",
+      "module": "public-domain-hearings",
+      "state": "in-author-discovery",
+      "next": "Trace full RetrievalResponse and published/brief/reconciliation payload/cursor lineage; not a simple report list.",
+      "sourceConnected": false
+    },
+    {
+      "id": "search_legiwatch_news",
+      "module": "research-legal-news",
+      "state": "in-author-discovery",
+      "next": "Trace news/source four kinds/personnel/monitors, effective scope, distinct clock/default-year and opaque stored JSON boundaries.",
+      "sourceConnected": false
+    }
+  ]
+}
