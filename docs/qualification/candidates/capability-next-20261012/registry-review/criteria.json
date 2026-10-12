@@ -1,0 +1,18 @@
+{
+  "role": "Independent client registry contract review; no production edits",
+  "sourceFreeze": "56a917f59e849630f50933e31703a2c7c262be1d",
+  "reviewBase": "538d1a4c4297374bd69623555c6d9fd723f6bc29",
+  "referenceCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "criteria": [
+    "Pinned projection/type/schema metadata and derived field boundaries agree; disclose drift without publishing source bodies",
+    "Canonical loader owns family compilation and exports; registry remains unavailable/unbound at this source freeze",
+    "Name normalization preserves trim and exact UTF-16 truncation semantics, rejects empty normalized names and unsupported authority, without caller mutation or accessor execution",
+    "Tenant-client and LDA projections preserve exact required fields, null versus omitted values, storage scalars and privacy boundaries",
+    "Candidate identity uniqueness, exact/candidate disjointness and maximum five preserve actual frozen projection",
+    "Guidance remains inert text; success shape grants no authority, absence, freshness, snapshot or completeness",
+    "Independent fixtures exercise actual canonical-loader exports, scalar boundaries, hostile flat requests and negative mutations",
+    "Public 0.1, prior schemas/catalog/descriptors/rows, lockfiles and runtime paths remain unchanged",
+    "Every failed check retained; owned local test processes reaped; no source/native/provider/runtime execution"
+  ],
+  "scopeLimit": "Canonical resolver/catalog/gateway binding is a later root integration reviewed separately; family source acceptance cannot close runtime or G1 gates"
+}
