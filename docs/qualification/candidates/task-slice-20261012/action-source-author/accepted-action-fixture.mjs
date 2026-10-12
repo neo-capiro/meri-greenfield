@@ -1,7 +1,7 @@
 import {createHash} from 'node:crypto';
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
-import {normalizeActionItemsCompleteInput} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
-const v={normalizeActionItemsCompleteInput};
+import {resolveOperationContract} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
+const v={normalizeActionItemsCompleteInput:(raw,context)=>resolveOperationContract({id:'actions.query',version:'0.2.0'}).normalizeInput(raw,context).input};
 const id=n=>`abcdef00-0000-4000-8000-${String(n).padStart(12,'0')}`,NOW='2026-10-12T00:00:00.000Z';
 const binding=()=>({tenantId:'tenant',actorId:'actor',conversationId:id(1),runId:id(2),attemptId:id(3),workerId:id(4),writerFence:1});
 const context=()=>({binding:binding(),clientResolution:null});
@@ -18,3 +18,9 @@ function scoped(input={clientId:id(9)},ctx=scopedContext()) {
 }
 
 export {id,card,scoped};
+// Exact eight-field source envelope derived only from the accepted synthetic fixture above.
+export function nativeScopedPage(raw={clientId:id(9)}) {
+  const p=scoped(raw);
+  return {tool:'query_action_items',generatedAt:p.generatedAt,clientId:p.clientId,total:p.total,
+    returned:p.returned,actions:p.actions,scope:p.scope,coverage:p.pageCoverage};
+}

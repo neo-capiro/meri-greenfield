@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/gateway/test/action-items-source.test.mjs"
+  ],
+  "cwd": "/workspace/meri-action-items-source-20261012",
+  "sourceHead": "e6d3db2957119b2893610c1aca4162de010feaa7",
+  "sourceDiffSha256": "612b6069dfcc6c37a51053fb8a74584eee6dcd0d0bbaec04cfa84d14ea63d0d2",
+  "sourceDiffBytes": 6110,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-12T23:41:38.620772+00:00",
+  "durationSeconds": 2.926,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 409396,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/action-source-author/resolver-repair.stdout.bin",
+      "bytes": 2131,
+      "sha256": "5d525f565e9f4b09889531dac02370d31599cdd3c58db0a904ccf172b4cd7025"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/action-source-author/resolver-repair.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Preserved initial module-load failure; reuse exported canonical resolver rather than nonexistent family exports.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

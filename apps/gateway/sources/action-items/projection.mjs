@@ -1,13 +1,12 @@
 /** Native fields are preserved; new Meri lineage describes receipt, not source qualification. */
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
-import {assertActionItemsCompleteResult,resolveOperationContract} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {deny} from '../../dispatch/operation-result.mjs';
-import {frozenData,ownFields,operation} from './request-context.mjs';
-const requirements=resolveOperationContract(operation).descriptor.sourceRequirements;
+import {frozenData,ownFields,contract} from './request-context.mjs';
+const requirements=contract.descriptor.sourceRequirements;
 
 export function projectActionItems(value,context,{requestId,traceId,retrievedAt}) {
   const native=frozenData(value);
-  if(context.input.mode==='unscoped_list')return frozenData(assertActionItemsCompleteResult(native,context.request,context.options));
+  if(context.input.mode==='unscoped_list'){contract.assertOutput(native,{request:context.request,...context.options});return native;}
   ownFields(native,['tool','generatedAt','clientId','total','returned','actions','scope','coverage']);
   if(native.tool!=='query_action_items')deny('INVALID_RESULT');
   const selection=context.input.selection;
@@ -27,5 +26,6 @@ export function projectActionItems(value,context,{requestId,traceId,retrievedAt}
     clientId:native.clientId,scope:native.scope,total:native.total,returned:native.returned,actions:native.actions,
     pageCoverage:native.coverage,continuation:{cursor:null,requiredReads:[],remainingSources:[]},
     evidenceReady:false,negativeAssertion:{kind:'none'}};
-  return frozenData(assertActionItemsCompleteResult(page,context.request,context.options));
+  contract.assertOutput(page,{request:context.request,...context.options});
+  return frozenData(page);
 }

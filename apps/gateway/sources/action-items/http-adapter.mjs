@@ -1,10 +1,9 @@
 /** Restricted governed source route; no ambient credentials, retries or initialization I/O. */
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
-import {assertActionItemsCompleteResult} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {createDispatchLifetime} from '../../dispatch/dispatch-lifetime.mjs';
 import {deny,safeFailure} from '../../dispatch/operation-result.mjs';
 import {cancelBody,responseBody,readJsonResponse} from '../json-response.mjs';
-import {frozenData,ownFields,readContext} from './request-context.mjs';
+import {frozenData,ownFields,readContext,contract} from './request-context.mjs';
 
 export function createActionItemsHttpAdapter(options) {
   const {origin,getCredentials,fetchImpl=globalThis.fetch,now,maxRequestMs=15000,maxResponseBytes=1048576}=
@@ -48,7 +47,7 @@ export function createActionItemsHttpAdapter(options) {
       // Shared byte decoder uses our active check before/after every read as well.
       const bounded={run:fn=>lifetime.run(signal=>{active();return fn(signal);}),check:active};
       const result=frozenData(await readJsonResponse(response,{lifetime:bounded,maxResponseBytes}));
-      if(context.input.mode==='unscoped_list')assertActionItemsCompleteResult(result,context.request,context.options);
+      if(context.input.mode==='unscoped_list')contract.assertOutput(result,{request:context.request,...context.options});
       else {
         ownFields(result,['tool','generatedAt','clientId','total','returned','actions','scope','coverage']);
         if(result.tool!=='query_action_items'||result.clientId!==selection.clientId)deny('INVALID_RESULT');

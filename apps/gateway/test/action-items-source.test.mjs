@@ -7,7 +7,7 @@ import {createToolDispatch} from '../dispatch/tool-dispatch.mjs';
 import {createActionItemsHttpAdapter} from '../sources/action-items/http-adapter.mjs';
 import {createActionItemsReadHandler} from '../sources/action-items/handler.mjs';
 import {fixture,NOW,uuid,limits} from './fixtures.mjs';
-import {id,card,scoped} from '../../../docs/qualification/candidates/task-slice-20261012/action-source-author/accepted-action-fixture.mjs';
+import {id,card,nativeScopedPage} from '../../../docs/qualification/candidates/task-slice-20261012/action-source-author/accepted-action-fixture.mjs';
 const operation={id:'actions.query',version:'0.2.0'},raw={clientId:id(9)};
 const request=x=>JSON.stringify({operation,arguments:x});
 function setup(args=raw) {
@@ -18,7 +18,7 @@ function setup(args=raw) {
  const original=f.ports.authorizeBusiness;
  f.ports.authorizeBusiness=async(...x)=>{const v=JSON.parse(await original(...x));v.decision.operation='actions.query@0.2.0';return JSON.stringify(v);};
  f.ports.authorizeSources=async()=>JSON.stringify({sourceIds:f.entry.descriptor.sourceRequirements.map(s=>s.sourceId),enabled:f.state.sourceEnabled,policyRevision:f.claims.policyRevision,checkedAtMs:f.state.now});
- const p=scoped(args),native={tool:'query_action_items',generatedAt:p.generatedAt,clientId:p.clientId,total:p.total,returned:p.returned,actions:p.actions,scope:p.scope,coverage:p.pageCoverage};
+ const native=nativeScopedPage(args);
  const credentials=()=>({binding:structuredClone(f.binding),bearerToken:'SYNTHETIC_USER',serviceSecret:'SYNTHETIC_SERVICE',expiresAtMs:NOW+10000});
  const config={origin:'https://source.example.invalid',now:()=>f.state.now,maxRequestMs:500,maxResponseBytes:65536,
   getCredentials:async()=>{f.calls.push('credentials');return credentials();},
