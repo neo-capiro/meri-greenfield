@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/workspace/meri-client-documents-review-20261012/docs/qualification/candidates/read-continuation-20261012/documents-review/audit-source.py", line 78, in <module>
+    check('document helper emits evidence only from nonblank slice', bool(re.search(r'records:\s*payload\.text\.trim\(\)\s*\?', helper)))
+  File "/workspace/meri-client-documents-review-20261012/docs/qualification/candidates/read-continuation-20261012/documents-review/audit-source.py", line 17, in check
+    assert condition, label
+           ^^^^^^^^^
+AssertionError: document helper emits evidence only from nonblank slice
