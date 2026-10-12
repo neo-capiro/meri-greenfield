@@ -1,0 +1,533 @@
+{
+  "base": "ede7b56845816d38d0bbffab5a657aaa4f978739",
+  "explicitNewOperationIds": [
+    "query_outreach",
+    "search_program_elements",
+    "get_program_element",
+    "get_pe_budget_timeline"
+  ],
+  "changes": [
+    {
+      "path": "packages/contracts/test/retrieval-selected-next-bindings.test.mjs",
+      "beforeSha256": "33a9423c8f820ba65f53f2d6576b6b2499a815cb7fcfefe190953438c4c5b4d8",
+      "afterSha256": "d1f1e781e3ccb156c7ed2166df9f7210a8aad0a33d5e445f3012b489c8cf83c0",
+      "replacements": [
+        {
+          "old": "\"get_florida_budget_project\"",
+          "new": "\"get_florida_budget_project\", \"query_outreach\", \"search_program_elements\", \"get_program_element\", \"get_pe_budget_timeline\"",
+          "count": 1
+        },
+        {
+          "old": ".length,30)",
+          "new": ".length,26)",
+          "count": 1
+        },
+        {
+          "old": ".length,66)",
+          "new": ".length,70)",
+          "count": 1
+        },
+        {
+          "old": ".length,67)",
+          "new": ".length,71)",
+          "count": 1
+        },
+        {
+          "old": "'0.2.9'",
+          "new": "'0.2.10'",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit outreach/program-element mapping allowlist and canonical count/version expectations; all prior behavioral and pending-refusal assertions retained."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+      "beforeSha256": "3fdfbc8d8f92802ad7c2cc6146bbbcd253f655b58f2eeb3fe5d3a13782b0a48b",
+      "afterSha256": "fb20dddf591e6d1e734510ed40a2c97690a42517f4515e726a48a74143788d7c",
+      "replacements": [
+        {
+          "old": "\"get_florida_budget_project\"",
+          "new": "\"get_florida_budget_project\", \"query_outreach\", \"search_program_elements\", \"get_program_element\", \"get_pe_budget_timeline\"",
+          "count": 1
+        },
+        {
+          "old": ".length,30)",
+          "new": ".length,26)",
+          "count": 1
+        },
+        {
+          "old": ".length,66)",
+          "new": ".length,70)",
+          "count": 1
+        },
+        {
+          "old": ".length,67)",
+          "new": ".length,71)",
+          "count": 1
+        },
+        {
+          "old": ".size,67)",
+          "new": ".size,71)",
+          "count": 1
+        },
+        {
+          "old": "all 67",
+          "new": "all 71",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit outreach/program-element mapping allowlist and canonical count/version expectations; all prior behavioral and pending-refusal assertions retained."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+      "beforeSha256": "3e086ed7efab5d7b439ed0c1c8dc373172f33ee52336b5dc106ab814bca27e88",
+      "afterSha256": "ea73fae4ed3872e693cb2cca2a24d7fda6a620187713ec3f3586b40118297adc",
+      "replacements": [
+        {
+          "old": "\"get_florida_budget_project\"",
+          "new": "\"get_florida_budget_project\", \"query_outreach\", \"search_program_elements\", \"get_program_element\", \"get_pe_budget_timeline\"",
+          "count": 1
+        },
+        {
+          "old": ".length,30)",
+          "new": ".length,26)",
+          "count": 1
+        },
+        {
+          "old": ".length,66)",
+          "new": ".length,70)",
+          "count": 1
+        },
+        {
+          "old": ".length,67)",
+          "new": ".length,71)",
+          "count": 1
+        },
+        {
+          "old": "'0.2.9'",
+          "new": "'0.2.10'",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit outreach/program-element mapping allowlist and canonical count/version expectations; all prior behavioral and pending-refusal assertions retained."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-mail.test.mjs",
+      "beforeSha256": "6d2321887da012a0186e369ead82e583f212447e3560d844611dab3cf4a8f2e7",
+      "afterSha256": "dc3ebc1b06847a7f9ae09720791c7319a3c55b08f6916ae7e662947a0da065df",
+      "replacements": [
+        {
+          "old": ".length,66)",
+          "new": ".length,70)",
+          "count": 1
+        },
+        {
+          "old": ".length,67)",
+          "new": ".length,71)",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit outreach/program-element mapping allowlist and canonical count/version expectations; all prior behavioral and pending-refusal assertions retained."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-next-bindings.test.mjs",
+      "beforeSha256": "d7d782996aa94ed195d24b4678dacc22d5761b2ada6aa6c79c5873ece42099c3",
+      "afterSha256": "0e34d8c6dd3b1bae17bcce661b917cf8742174c160d4850f878c0d3cf356fa0e",
+      "replacements": [
+        {
+          "old": "\"get_florida_budget_project\"",
+          "new": "\"get_florida_budget_project\", \"query_outreach\", \"search_program_elements\", \"get_program_element\", \"get_pe_budget_timeline\"",
+          "count": 1
+        },
+        {
+          "old": ".length, 30)",
+          "new": ".length, 26)",
+          "count": 1
+        },
+        {
+          "old": ".length, 66)",
+          "new": ".length, 70)",
+          "count": 1
+        },
+        {
+          "old": ".length, 67)",
+          "new": ".length, 71)",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit outreach/program-element mapping allowlist and canonical count/version expectations; all prior behavioral and pending-refusal assertions retained."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+      "beforeSha256": "ef76794af9d7ba09edb7f8d6f4d835c9e4d72b00f1b71ff845b55db1e48f2a1c",
+      "afterSha256": "f79c363baa5cc74bb215288a3298192355e03ccdfab609b1230e4754b12929d3",
+      "replacements": [
+        {
+          "old": "\"get_florida_budget_project\"",
+          "new": "\"get_florida_budget_project\", \"query_outreach\", \"search_program_elements\", \"get_program_element\", \"get_pe_budget_timeline\"",
+          "count": 1
+        },
+        {
+          "old": ".length,30)",
+          "new": ".length,26)",
+          "count": 1
+        },
+        {
+          "old": ".length,66)",
+          "new": ".length,70)",
+          "count": 1
+        },
+        {
+          "old": ".length,67)",
+          "new": ".length,71)",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit outreach/program-element mapping allowlist and canonical count/version expectations; all prior behavioral and pending-refusal assertions retained."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+      "beforeSha256": "9e72adaa95c005e0060de090f9922ffe55cc57d8d72551afe1f2faab076599d7",
+      "afterSha256": "349f8397a95e7148c08dd4f91d59df261e3ac8c9c039b9efa11df75b26d56b3b",
+      "replacements": [
+        {
+          "old": "\"get_florida_budget_project\"",
+          "new": "\"get_florida_budget_project\", \"query_outreach\", \"search_program_elements\", \"get_program_element\", \"get_pe_budget_timeline\"",
+          "count": 1
+        },
+        {
+          "old": ".length,30)",
+          "new": ".length,26)",
+          "count": 1
+        },
+        {
+          "old": ".length,66)",
+          "new": ".length,70)",
+          "count": 1
+        },
+        {
+          "old": ".length,67)",
+          "new": ".length,71)",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit outreach/program-element mapping allowlist and canonical count/version expectations; all prior behavioral and pending-refusal assertions retained."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+      "beforeSha256": "ab94f35cfaf86ff02f34348126726b8d2cce57ccd594a16a7dc050a6d2ceb077",
+      "afterSha256": "54ff7006180b6353eb50da72e11e7b4504929ca7269f05f300d2f4cb7811b403",
+      "replacements": [
+        {
+          "old": "\"get_florida_budget_project\"",
+          "new": "\"get_florida_budget_project\", \"query_outreach\", \"search_program_elements\", \"get_program_element\", \"get_pe_budget_timeline\"",
+          "count": 1
+        },
+        {
+          "old": ".length,30)",
+          "new": ".length,26)",
+          "count": 1
+        },
+        {
+          "old": ".length,66)",
+          "new": ".length,70)",
+          "count": 1
+        },
+        {
+          "old": ".length,67)",
+          "new": ".length,71)",
+          "count": 2
+        },
+        {
+          "old": ".size,67)",
+          "new": ".size,71)",
+          "count": 1
+        },
+        {
+          "old": "'0.2.9'",
+          "new": "'0.2.10'",
+          "count": 1
+        },
+        {
+          "old": "all67",
+          "new": "all71",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit outreach/program-element mapping allowlist and canonical count/version expectations; all prior behavioral and pending-refusal assertions retained."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+      "beforeSha256": "131d1e0c46f6ffc9cd2034478d6018fb2926c7f02089ed043ebc5c019845385e",
+      "afterSha256": "8f42c594be0549c0b116b608be722055afc526e084078bd9943f0a024a251644",
+      "replacements": [
+        {
+          "old": ".length,30)",
+          "new": ".length,26)",
+          "count": 1
+        },
+        {
+          "old": ".length,66)",
+          "new": ".length,70)",
+          "count": 1
+        },
+        {
+          "old": ".length,67)",
+          "new": ".length,71)",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit outreach/program-element mapping allowlist and canonical count/version expectations; all prior behavioral and pending-refusal assertions retained."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-selected-next-independent.test.mjs",
+      "beforeSha256": "4b98394068c8f7dbb1a0ff10edc711ccfa870014ec894be51ba2949e5a49d197",
+      "afterSha256": "4f07eeb78baa4d3e55eabcc02a87975786aad84c3430dae9d90cc4c442edcf42",
+      "replacements": [
+        {
+          "old": "\"get_florida_budget_project\"",
+          "new": "\"get_florida_budget_project\", \"query_outreach\", \"search_program_elements\", \"get_program_element\", \"get_pe_budget_timeline\"",
+          "count": 1
+        },
+        {
+          "old": ".length,30)",
+          "new": ".length,26)",
+          "count": 1
+        },
+        {
+          "old": ".length,66)",
+          "new": ".length,70)",
+          "count": 1
+        },
+        {
+          "old": ".length,67)",
+          "new": ".length,71)",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit outreach/program-element mapping allowlist and canonical count/version expectations; all prior behavioral and pending-refusal assertions retained."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-memory-binding.test.mjs",
+      "beforeSha256": "c91a08dda0e815c5b9705b152d72105becdcc69b62fc0b47ead90225369e4f46",
+      "afterSha256": "641075f26a43cbca0e0d8740e5128db4e18b495ad0f8eea87ac565b1d6b4d156",
+      "replacements": [
+        {
+          "old": "\"get_florida_budget_project\"",
+          "new": "\"get_florida_budget_project\", \"query_outreach\", \"search_program_elements\", \"get_program_element\", \"get_pe_budget_timeline\"",
+          "count": 1
+        },
+        {
+          "old": ".length,30)",
+          "new": ".length,26)",
+          "count": 1
+        },
+        {
+          "old": ".length,67)",
+          "new": ".length,71)",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit outreach/program-element mapping allowlist and canonical count/version expectations; all prior behavioral and pending-refusal assertions retained."
+    },
+    {
+      "path": "apps/gateway/test/mail-context-independent.test.mjs",
+      "beforeSha256": "ff966cf859854ea6a5b727a3295dd6d9a951db0c429de4eb5b665d6607e1cbae",
+      "afterSha256": "daf3268cdb8e33d91abb13ed1610aa3894c6b30b7287b2da65c8c9ece051c64e",
+      "replacements": [
+        {
+          "old": ".length,66)",
+          "new": ".length,70)",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit outreach/program-element mapping allowlist and canonical count/version expectations; all prior behavioral and pending-refusal assertions retained."
+    },
+    {
+      "path": "apps/gateway/test/capability-next-independent.test.mjs",
+      "beforeSha256": "c1b0ced669523bd7adf72219cf694e44a83b12f18f7635d3eac026858d15491b",
+      "afterSha256": "2cad02a488b58b06a03e8e4b8e817f2d4f00f10443f290f086cccb24bf0a2252",
+      "replacements": [
+        {
+          "old": ".length,67)",
+          "new": ".length,71)",
+          "count": 1
+        },
+        {
+          "old": "all67",
+          "new": "all71",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit outreach/program-element mapping allowlist and canonical count/version expectations; all prior behavioral and pending-refusal assertions retained."
+    },
+    {
+      "path": "apps/gateway/test/action-item-context-independent.test.mjs",
+      "beforeSha256": "0e7b98c43609682b2065318ca55f75ad8444dae0df0cff0e7f7694585afb9dee",
+      "afterSha256": "fe45863dd355362a77b5397a309f452b9aed390dc0ab7aa94497e625722f4d78",
+      "replacements": [
+        {
+          "old": ".length,67)",
+          "new": ".length,71)",
+          "count": 1
+        },
+        {
+          "old": "all67",
+          "new": "all71",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit outreach/program-element mapping allowlist and canonical count/version expectations; all prior behavioral and pending-refusal assertions retained."
+    },
+    {
+      "path": "apps/gateway/test/memory-context-independent.test.mjs",
+      "beforeSha256": "611fd8a20699942c1293d11429df50ccbc96bbbecd07c992576ecd718e21174f",
+      "afterSha256": "f72a8bc353cc23d7819ef3740714dade2aaa848de2b3265a942012d6a982e83b",
+      "replacements": [
+        {
+          "old": ".length,67)",
+          "new": ".length,71)",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit outreach/program-element mapping allowlist and canonical count/version expectations; all prior behavioral and pending-refusal assertions retained."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-reference-integration-independent.test.mjs",
+      "beforeSha256": "493593d57ea65dd710455fbf67f78eeeb86203579cd9e62039de4985d0476e7d",
+      "afterSha256": "86be02602a79ad287fc155923beaa4d2fd8352e5699f29bf001e6bd5f155280c",
+      "replacements": [
+        {
+          "old": "\"get_florida_budget_project\"",
+          "new": "\"get_florida_budget_project\", \"query_outreach\", \"search_program_elements\", \"get_program_element\", \"get_pe_budget_timeline\"",
+          "count": 1
+        },
+        {
+          "old": ".length,30)",
+          "new": ".length,26)",
+          "count": 1
+        },
+        {
+          "old": ".length,66)",
+          "new": ".length,70)",
+          "count": 1
+        },
+        {
+          "old": ".length,67)",
+          "new": ".length,71)",
+          "count": 2
+        },
+        {
+          "old": ".size,67)",
+          "new": ".size,71)",
+          "count": 1
+        },
+        {
+          "old": "all67",
+          "new": "all71",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit outreach/program-element mapping allowlist and canonical count/version expectations; all prior behavioral and pending-refusal assertions retained."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-civic-integration-independent.test.mjs",
+      "beforeSha256": "bb522a416c7fff228d94629d0de05022d0f8e6dbd0753adaa20698e4bb72d05c",
+      "afterSha256": "b1e413be3d370d0fc1a58d1f590b330c7a45f57a7efb4a378457a2b375c8a40d",
+      "replacements": [
+        {
+          "old": "\"get_florida_budget_project\"",
+          "new": "\"get_florida_budget_project\", \"query_outreach\", \"search_program_elements\", \"get_program_element\", \"get_pe_budget_timeline\"",
+          "count": 1
+        },
+        {
+          "old": ".length,30)",
+          "new": ".length,26)",
+          "count": 1
+        },
+        {
+          "old": ".length,66)",
+          "new": ".length,70)",
+          "count": 1
+        },
+        {
+          "old": ".length,67)",
+          "new": ".length,71)",
+          "count": 2
+        },
+        {
+          "old": "all67",
+          "new": "all71",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit outreach/program-element mapping allowlist and canonical count/version expectations; all prior behavioral and pending-refusal assertions retained."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-observed-integration-independent.test.mjs",
+      "beforeSha256": "957defe028c5a18b284dbd9bc98d40fbe5c4d6e392529f247f357adcb7ab5fb3",
+      "afterSha256": "d5a2389934c072af411cf3b7b35b36693ea5d8a6bea3edbf585608d3d6953ff4",
+      "replacements": [
+        {
+          "old": "const ids=['search_public_web'",
+          "new": "const backendIds=[\"query_outreach\", \"search_program_elements\", \"get_program_element\", \"get_pe_budget_timeline\"];\nconst ids=['search_public_web'",
+          "count": 1
+        },
+        {
+          "old": "!ids.includes(x.operation.id)",
+          "new": "!ids.includes(x.operation.id)&&!backendIds.includes(x.operation.id)",
+          "count": 1
+        },
+        {
+          "old": "!ids.includes(x.id)",
+          "new": "!ids.includes(x.id)&&!backendIds.includes(x.id)",
+          "count": 1
+        },
+        {
+          "old": "ids.includes(old.id)?",
+          "new": "(ids.includes(old.id)||backendIds.includes(old.id))?",
+          "count": 1
+        },
+        {
+          "old": ".length,30)",
+          "new": ".length,26)",
+          "count": 1
+        },
+        {
+          "old": ".length,66)",
+          "new": ".length,70)",
+          "count": 1
+        },
+        {
+          "old": ".length,67)",
+          "new": ".length,71)",
+          "count": 2
+        },
+        {
+          "old": "all67",
+          "new": "all71",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit outreach/program-element mapping allowlist and canonical count/version expectations; all prior behavioral and pending-refusal assertions retained."
+    }
+  ]
+}

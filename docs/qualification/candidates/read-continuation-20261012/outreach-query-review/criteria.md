@@ -1,0 +1,14 @@
+# Outreach query independent review outline
+
+Frozen before candidate inspection. Base4c40fb4c35d716dcd1e3b09ec29647ccca5a1326; discovery404f216 is a locator, not source acceptance. Dedicated reviewer paths are the new independent outreach test, this evidence directory and CODEX-OUTREACH-QUERY-REVIEW-20261012.md. No production changes, private source copies, runtime/native/provider/SQL/cloud/model actions or recursive delegation.
+
+1. Independently bind immutable fd8765ec policy/schema/DTO/service/wrapper references and observed4be13b0 source identities. Enumerate exact included relation closure, scalar nullability and current versus inventory drift without publishing private bodies.
+2. Trace exact-id branch reachability through both wrapper and called service. Preserve concrete signature/argument/authorization limitations rather than claim a DTO proves the branch executable. Exact owner/internal/deleted policy and list tenant/client policy are distinct.
+3. Review selector normalization, UTF16 caps, empty fallbacks and limit semantics. Client-name resolution requires an explicit trusted source fact; a supplied UUID must not rebind. Model arguments cannot establish client visibility. Reachable exact branch overrides list selectors only where source establishes it.
+4. Validate complete exact-record projection including all raw OutreachRecord scalar fields, selected client/meeting/campaign/creator relations and nested latest prep/debrief fields. Preserve opaque inert JSON without manufacturing structural or publication authority. Do not reduce exact record to campaign DTO.
+5. Validate campaign projection, total-before-slice, count/limit/order and nullable fields. Do not infer current creator ownership from tenant list inclusion or corpus absence from a DTO.
+6. Exercise approved factory API using real strict Ajv and canonical inert JSON owner. Closed request/context/output schemas, unknown operations/properties, getters/proxies/symbols/hidden values, cycles and detached immutable snapshots must be covered without effects.
+7. Scalar formats, storage limits, JSON dates and relation consistency must be supported or clearly disclosed typed admission restrictions. Preserve failure/preimage controls; author alone repairs production.
+8. Bind exact accepted source/tree, all original blobs, existing canonical/public files and author evidence hashes. No registry activation, send/write behavior, new authorization engine or public0.1 changes.
+9. Focused author+independent tests and offline metadata checks only; no duplicate broad suite. Copy only seven existing small dependencies, preserve raw streams and bounded capture receipts, prove owned group absence and remove only owned resources.
+10. Return explicit ACCEPT_SOURCE/HOLD scoped to source DTOs; runtime/current permission/source provenance/persistence/availability remain unqualified. Forty-five-minute first-review bound after candidate arrival.

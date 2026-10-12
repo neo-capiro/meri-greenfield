@@ -1,0 +1,131 @@
+[
+  {
+    "path": "apps/api/prisma/migrations/20260505203000_engagement_outreach_records/migration.sql",
+    "versions": [
+      {
+        "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "e225272b92e64cbb5b38bacdd43389de6672701c",
+        "bytes": 2691,
+        "sha256": "fd9127ad371caeb81dc06968852e5aca7ed2d28dd3b0316a34b4f4050b838ddd"
+      },
+      {
+        "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "e225272b92e64cbb5b38bacdd43389de6672701c",
+        "bytes": 2691,
+        "sha256": "fd9127ad371caeb81dc06968852e5aca7ed2d28dd3b0316a34b4f4050b838ddd"
+      }
+    ],
+    "unchanged": true,
+    "constraints": [
+      {
+        "constraint": "outreach_records_last_step_check",
+        "values": [],
+        "numbers": [],
+        "operators": [],
+        "hasCheck": false
+      },
+      {
+        "constraint": "outreach_records_recipient_count_check",
+        "values": [],
+        "numbers": [],
+        "operators": [],
+        "hasCheck": false
+      },
+      {
+        "constraint": "outreach_records_status_check",
+        "values": [],
+        "numbers": [],
+        "operators": [],
+        "hasCheck": false
+      },
+      {
+        "constraint": "outreach_records_type_check",
+        "values": [],
+        "numbers": [],
+        "operators": [],
+        "hasCheck": false
+      }
+    ]
+  },
+  {
+    "path": "apps/api/prisma/migrations/20260507030000_outbound_campaign_templates/migration.sql",
+    "versions": [
+      {
+        "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "2bd76e1d8f21ff9bf3d39ff8c94b77a57854d527",
+        "bytes": 2031,
+        "sha256": "76ab4b8b8516f7ca4c4e1d159702d49666d366c84dd393daf853038c30a47051"
+      },
+      {
+        "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "2bd76e1d8f21ff9bf3d39ff8c94b77a57854d527",
+        "bytes": 2031,
+        "sha256": "76ab4b8b8516f7ca4c4e1d159702d49666d366c84dd393daf853038c30a47051"
+      }
+    ],
+    "unchanged": true,
+    "constraints": [
+      {
+        "constraint": "outreach_records_type_check",
+        "values": [],
+        "numbers": [],
+        "operators": [],
+        "hasCheck": false
+      }
+    ]
+  },
+  {
+    "path": "apps/api/prisma/migrations/20260609002500_widen_outreach_last_step_check/migration.sql",
+    "versions": [
+      {
+        "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "5b5d51ce341110ec53be25ab99bc2a4a258bef7c",
+        "bytes": 1182,
+        "sha256": "7009533e60d49b5f4d3ec58a1fe0af7d906ac9b152f382082b7e3ffd9bc87d7d"
+      },
+      {
+        "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "5b5d51ce341110ec53be25ab99bc2a4a258bef7c",
+        "bytes": 1182,
+        "sha256": "7009533e60d49b5f4d3ec58a1fe0af7d906ac9b152f382082b7e3ffd9bc87d7d"
+      }
+    ],
+    "unchanged": true,
+    "constraints": [
+      {
+        "constraint": "outreach_records_last_step_check",
+        "values": [],
+        "numbers": [],
+        "operators": [],
+        "hasCheck": false
+      }
+    ]
+  },
+  {
+    "path": "apps/api/prisma/migrations/20261120210000_outreach_records_outreach_v3_type/migration.sql",
+    "versions": [
+      {
+        "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "a9af953034351c82e3cf98c89d471a12f3419beb",
+        "bytes": 1317,
+        "sha256": "63fd53c14a4d49cfcc324b2f3c5624285b5fafa0cb9162b186b1e99e9e31f60b"
+      },
+      {
+        "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "a9af953034351c82e3cf98c89d471a12f3419beb",
+        "bytes": 1317,
+        "sha256": "63fd53c14a4d49cfcc324b2f3c5624285b5fafa0cb9162b186b1e99e9e31f60b"
+      }
+    ],
+    "unchanged": true,
+    "constraints": [
+      {
+        "constraint": "outreach_records_type_check",
+        "values": [],
+        "numbers": [],
+        "operators": [],
+        "hasCheck": false
+      }
+    ]
+  }
+]

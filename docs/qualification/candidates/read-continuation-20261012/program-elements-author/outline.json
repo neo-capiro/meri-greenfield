@@ -1,0 +1,44 @@
+{
+  "base": "ede7b56845816d38d0bbffab5a657aaa4f978739",
+  "operations": [
+    "search_program_elements",
+    "get_program_element",
+    "get_pe_budget_timeline"
+  ],
+  "sourceOwned": [
+    "program-elements.schema.json",
+    "program-elements-validation.mjs",
+    "retrieval-program-elements.test.mjs"
+  ],
+  "factory": "createProgramElementValidators({validateShape,schema})",
+  "methods": [
+    "normalizeProgramElementInput(operation,raw,context)",
+    "assertProgramElementOutput(operation,result,raw,context)"
+  ],
+  "contextProposal": {
+    "evidenceAccuracyMode": [
+      "off",
+      "shadow",
+      "enforce"
+    ]
+  },
+  "boundaries": [
+    "canonical snapshotOperationData",
+    "private schema only; root owns registry/loader",
+    "no authorization or currentness inference",
+    "no private implementation imports/copies",
+    "no native/DB/provider/model/cloud actions"
+  ],
+  "checks": [
+    "full scalar and nested projection shape",
+    "mode/chamber/fiscal-family distinctions",
+    "negative/paging/null/zero cases",
+    "inert admission and detached result",
+    "independent exact source review",
+    "raw failures and owned cleanup"
+  ],
+  "pendingProof": [
+    "Decimal wire serialization",
+    "funding summary/classification helper grammar"
+  ]
+}

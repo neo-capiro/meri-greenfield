@@ -1,0 +1,380 @@
+✖ all139 originals and67 prior descriptors/callbacks survive exactly four new mappings (7.464786ms)
+✔ all71 exact schema byte pins preserve pending closed handlers (14.697232ms)
+✖ query_outreach: actual callbacks preserve detached original request and canonical digest (0.293262ms)
+✖ query_outreach: trusted context is mandatory, closed, and stripped before family output callback (0.181354ms)
+✔ query_outreach: inert hostile request/context/result never invokes caller accessors (1.043853ms)
+✖ query_outreach: canonical integrity refuses handler/schema/retry/mapping injection (2.488849ms)
+✖ search_program_elements: actual callbacks preserve detached original request and canonical digest (0.168844ms)
+✖ search_program_elements: trusted context is mandatory, closed, and stripped before family output callback (0.113551ms)
+✔ search_program_elements: inert hostile request/context/result never invokes caller accessors (0.435506ms)
+✖ search_program_elements: canonical integrity refuses handler/schema/retry/mapping injection (2.136889ms)
+✖ get_program_element: actual callbacks preserve detached original request and canonical digest (0.169265ms)
+✖ get_program_element: trusted context is mandatory, closed, and stripped before family output callback (0.123766ms)
+✔ get_program_element: inert hostile request/context/result never invokes caller accessors (0.559443ms)
+✖ get_program_element: canonical integrity refuses handler/schema/retry/mapping injection (3.370909ms)
+✖ get_pe_budget_timeline: actual callbacks preserve detached original request and canonical digest (0.148884ms)
+✖ get_pe_budget_timeline: trusted context is mandatory, closed, and stripped before family output callback (0.09975ms)
+✔ get_pe_budget_timeline: inert hostile request/context/result never invokes caller accessors (0.515346ms)
+✖ get_pe_budget_timeline: canonical integrity refuses handler/schema/retry/mapping injection (6.818292ms)
+✔ production gateway remains closed before any authority/budget port for all71 reads (9.532111ms)
+✖ outreach callback resolves names only via exact trusted assertion and keeps UUID identity (0.189636ms)
+✖ outreach selected limit/status/client reach output correlation and full fetched count (0.178018ms)
+✖ exact outreach precedence suppresses client resolution and cannot accept list result (0.125339ms)
+✖ program search callback preserves scalar fallback and bounded paging (0.176637ms)
+✖ program detail and timeline selectors retain distinct case semantics (0.167753ms)
+✖ program evidence mode controls actual lineage output without becoming authorization (0.41783ms)
+✖ program Decimal string prerequisite and stored-year identity/order survive composition (0.176256ms)
+✖ PE direct factory now returns detached nested result, canonical behavior preserved (1.549404ms)
+✖ private command loader composes normalized task payload without retrieval mapping (0.55109ms)
+✖ private artifact loader preserves immutable tuple and refuses destination substitution (0.435837ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 6
+ℹ fail 23
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1926.28967
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-backend-next-independent.test.mjs:31:1
+✖ all139 originals and67 prior descriptors/callbacks survive exactly four new mappings (7.464786ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  '0.2.9' !== '0.2.10'
+  
+      at TestContext.<anonymous> (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:32:32)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '0.2.9',
+    expected: '0.2.10',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-backend-next-independent.test.mjs:48:2
+✖ query_outreach: actual callbacks preserve detached original request and canonical digest (0.293262ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:87:69)
+      at resolve (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:16:40)
+      at TestContext.<anonymous> (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:49:43)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-backend-next-independent.test.mjs:52:2
+✖ query_outreach: trusted context is mandatory, closed, and stripped before family output callback (0.181354ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:87:69)
+      at resolve (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:16:40)
+      at TestContext.<anonymous> (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:53:95)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-backend-next-independent.test.mjs:63:2
+✖ query_outreach: canonical integrity refuses handler/schema/retry/mapping injection (2.488849ms)
+  TypeError: Cannot read properties of undefined (reading 'inputSchema')
+      at d.outputSchema.id (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:64:33)
+      at TestContext.<anonymous> (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:64:388)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-backend-next-independent.test.mjs:48:2
+✖ search_program_elements: actual callbacks preserve detached original request and canonical digest (0.168844ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:87:69)
+      at resolve (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:16:40)
+      at TestContext.<anonymous> (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:49:43)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-backend-next-independent.test.mjs:52:2
+✖ search_program_elements: trusted context is mandatory, closed, and stripped before family output callback (0.113551ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:87:69)
+      at resolve (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:16:40)
+      at TestContext.<anonymous> (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:53:95)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-backend-next-independent.test.mjs:63:2
+✖ search_program_elements: canonical integrity refuses handler/schema/retry/mapping injection (2.136889ms)
+  TypeError: Cannot read properties of undefined (reading 'inputSchema')
+      at d.outputSchema.id (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:64:33)
+      at TestContext.<anonymous> (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:64:388)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-backend-next-independent.test.mjs:48:2
+✖ get_program_element: actual callbacks preserve detached original request and canonical digest (0.169265ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:87:69)
+      at resolve (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:16:40)
+      at TestContext.<anonymous> (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:49:43)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-backend-next-independent.test.mjs:52:2
+✖ get_program_element: trusted context is mandatory, closed, and stripped before family output callback (0.123766ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:87:69)
+      at resolve (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:16:40)
+      at TestContext.<anonymous> (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:53:95)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-backend-next-independent.test.mjs:63:2
+✖ get_program_element: canonical integrity refuses handler/schema/retry/mapping injection (3.370909ms)
+  TypeError: Cannot read properties of undefined (reading 'inputSchema')
+      at d.outputSchema.id (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:64:33)
+      at TestContext.<anonymous> (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:64:388)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-backend-next-independent.test.mjs:48:2
+✖ get_pe_budget_timeline: actual callbacks preserve detached original request and canonical digest (0.148884ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:87:69)
+      at resolve (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:16:40)
+      at TestContext.<anonymous> (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:49:43)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-backend-next-independent.test.mjs:52:2
+✖ get_pe_budget_timeline: trusted context is mandatory, closed, and stripped before family output callback (0.09975ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:87:69)
+      at resolve (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:16:40)
+      at TestContext.<anonymous> (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:53:95)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-backend-next-independent.test.mjs:63:2
+✖ get_pe_budget_timeline: canonical integrity refuses handler/schema/retry/mapping injection (6.818292ms)
+  TypeError: Cannot read properties of undefined (reading 'inputSchema')
+      at d.outputSchema.id (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:64:33)
+      at TestContext.<anonymous> (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:64:388)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-backend-next-independent.test.mjs:72:1
+✖ outreach callback resolves names only via exact trusted assertion and keeps UUID identity (0.189636ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:87:69)
+      at resolve (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:16:40)
+      at TestContext.<anonymous> (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:73:80)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-backend-next-independent.test.mjs:77:1
+✖ outreach selected limit/status/client reach output correlation and full fetched count (0.178018ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:87:69)
+      at resolve (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:16:40)
+      at check (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:29:67)
+      at TestContext.<anonymous> (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:78:208)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at packages/contracts/test/retrieval-backend-next-independent.test.mjs:81:1
+✖ exact outreach precedence suppresses client resolution and cannot accept list result (0.125339ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:87:69)
+      at resolve (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:16:40)
+      at TestContext.<anonymous> (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:82:96)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-backend-next-independent.test.mjs:84:1
+✖ program search callback preserves scalar fallback and bounded paging (0.176637ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:87:69)
+      at resolve (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:16:40)
+      at TestContext.<anonymous> (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:85:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-backend-next-independent.test.mjs:88:1
+✖ program detail and timeline selectors retain distinct case semantics (0.167753ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:87:69)
+      at resolve (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:16:40)
+      at check (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:29:67)
+      at TestContext.<anonymous> (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:89:61)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at packages/contracts/test/retrieval-backend-next-independent.test.mjs:91:1
+✖ program evidence mode controls actual lineage output without becoming authorization (0.41783ms)
+  Error: ENOENT: no such file or directory, open '/workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/program-elements.schema.json'
+      at Object.openSync (node:fs:622:18)
+      at readFileSync (node:fs:488:35)
+      at schema (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:17:32)
+      at TestContext.<anonymous> (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:92:174)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/program-elements.schema.json'
+  }
+
+test at packages/contracts/test/retrieval-backend-next-independent.test.mjs:94:1
+✖ program Decimal string prerequisite and stored-year identity/order survive composition (0.176256ms)
+  Error: Unknown operation contract version
+      at fail (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at resolveOperationContract (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:87:69)
+      at resolve (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:16:40)
+      at check (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:29:67)
+      at TestContext.<anonymous> (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:95:115)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at packages/contracts/test/retrieval-backend-next-independent.test.mjs:98:1
+✖ PE direct factory now returns detached nested result, canonical behavior preserved (1.549404ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" not to be reference-equal to "expected":
+  
+  {
+    bills: [],
+    generatedAt: '2026-10-12T12:00:00.000Z',
+    tool: 'get_pe_bills'
+  }
+  
+      at TestContext.<anonymous> (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:100:31)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { tool: 'get_pe_bills', generatedAt: '2026-10-12T12:00:00.000Z', bills: [] },
+    expected: { tool: 'get_pe_bills', generatedAt: '2026-10-12T12:00:00.000Z', bills: [] },
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-backend-next-independent.test.mjs:102:1
+✖ private command loader composes normalized task payload without retrieval mapping (0.55109ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/meri-backend-next-review-20261012/packages/contracts/commands-0.2/validate.mjs' imported from /workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs
+      at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+      at moduleResolve (node:internal/modules/esm/resolve:865:10)
+      at defaultResolve (node:internal/modules/esm/resolve:992:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+      at #resolve (node:internal/modules/esm/loader:683:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+      at node:internal/modules/esm/loader:632:32
+      at TracingChannel.tracePromise (node:diagnostics_channel:362:14) {
+    code: 'ERR_MODULE_NOT_FOUND',
+    url: 'file:///workspace/meri-backend-next-review-20261012/packages/contracts/commands-0.2/validate.mjs'
+  }
+
+test at packages/contracts/test/retrieval-backend-next-independent.test.mjs:106:1
+✖ private artifact loader preserves immutable tuple and refuses destination substitution (0.435837ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/meri-backend-next-review-20261012/packages/contracts/commands-0.2/validate.mjs' imported from /workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs
+      at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+      at moduleResolve (node:internal/modules/esm/resolve:865:10)
+      at defaultResolve (node:internal/modules/esm/resolve:992:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+      at #resolve (node:internal/modules/esm/loader:683:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+      at node:internal/modules/esm/loader:632:32
+      at TracingChannel.tracePromise (node:diagnostics_channel:362:14) {
+    code: 'ERR_MODULE_NOT_FOUND',
+    url: 'file:///workspace/meri-backend-next-review-20261012/packages/contracts/commands-0.2/validate.mjs'
+  }

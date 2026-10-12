@@ -1,0 +1,93 @@
+{
+  "recordedAt": "2026-10-12T19:40:24.697950+00:00",
+  "scope": "OWNED_REVIEW_RESOURCES_ONLY",
+  "ownedDependencyRoot": "node_modules",
+  "exactSevenPackageMembershipVerified": true,
+  "dependencyPackageManifests": [
+    {
+      "location": "owned",
+      "package": "ajv",
+      "manifestMatched": true
+    },
+    {
+      "location": "source",
+      "package": "ajv",
+      "manifestMatched": true
+    },
+    {
+      "location": "owned",
+      "package": "ajv-formats",
+      "manifestMatched": true
+    },
+    {
+      "location": "source",
+      "package": "ajv-formats",
+      "manifestMatched": true
+    },
+    {
+      "location": "owned",
+      "package": "canonicalize",
+      "manifestMatched": true
+    },
+    {
+      "location": "source",
+      "package": "canonicalize",
+      "manifestMatched": true
+    },
+    {
+      "location": "owned",
+      "package": "fast-deep-equal",
+      "manifestMatched": true
+    },
+    {
+      "location": "source",
+      "package": "fast-deep-equal",
+      "manifestMatched": true
+    },
+    {
+      "location": "owned",
+      "package": "fast-uri",
+      "manifestMatched": true
+    },
+    {
+      "location": "source",
+      "package": "fast-uri",
+      "manifestMatched": true
+    },
+    {
+      "location": "owned",
+      "package": "json-schema-traverse",
+      "manifestMatched": true
+    },
+    {
+      "location": "source",
+      "package": "json-schema-traverse",
+      "manifestMatched": true
+    },
+    {
+      "location": "owned",
+      "package": "require-from-string",
+      "manifestMatched": true
+    },
+    {
+      "location": "source",
+      "package": "require-from-string",
+      "manifestMatched": true
+    }
+  ],
+  "ownedDependenciesRemoved": true,
+  "sourceDependencyWrites": false,
+  "ownedGroups": [
+    {
+      "capture": "focused-first",
+      "group": 285665,
+      "absent": true
+    },
+    {
+      "capture": "source-audit",
+      "group": 285719,
+      "absent": true
+    }
+  ],
+  "otherOwnerProcessesTouched": false
+}

@@ -1,0 +1,129 @@
+✔ three complete projections validate under private URN (13.859687ms)
+✔ search defaults aliases trimmed UTF16 bounds and scalar clamps (1.590821ms)
+✔ optional nonstring scalar selectors do not manufacture filters (0.211528ms)
+✔ required PE selector preserves32 not stored16 bound (1.089387ms)
+✔ closed context refuses model authority and mode in raw (0.40571ms)
+✔ operation admission never coerces hostile selectors (0.245559ms)
+✔ inert admission refuses getters proxies cycles and hidden fields (0.704509ms)
+✔ returned validated result is detached from every nested caller object (0.51909ms)
+✔ search removes exactly unlabelled fields while retaining residual claims (3.667251ms)
+✔ finder current model claim keeps unknown cycle unlike residual currentClaim (0.554183ms)
+✔ empty later finder page total0 does not claim corpus absence (0.31266ms)
+✔ finder page/limit bounds and identity uniqueness are enforced (1.336238ms)
+✔ hasData false does not invent a negative filter; true requires stored data (0.856537ms)
+✔ no cross-fiscal-year numeric comparison is inferred (0.481834ms)
+✔ stored decimal strings preserve14,2 precision; numeric helper mocks are not wire (2.281868ms)
+✔ detail cache selector permits case only while timeline direct selector remains exact (0.793192ms)
+✔ complete stored scalar projection has no unspecific escape fields (5.79651ms)
+✔ complete stored year fields remain independently required and nullable (3.308952ms)
+✔ years ordered ascending and uniquely bind IDs/fiscal years/PE (0.44582ms)
+✔ outer claim cycle and source fundingSummary are distinct from stored catalog cycle (0.238319ms)
+✔ off/shadow omit enforced provenance while enforce carries semantics and lineage (1.89678ms)
+✔ accepted and candidate lineage are separate opaque-evidence observations (0.69909ms)
+✔ funding stage/vehicle/unit/projection distinctions cannot be upgraded (0.700453ms)
+✔ NDAA conference claim remains distinct from appropriations conference (0.682725ms)
+✔ outyear projection label and null versus zero money survive (0.345539ms)
+✔ forecast amount and confidence remain separate and uncapped cached numbers (0.437868ms)
+✔ zero marks are present and conflicting request zero cannot support delta (0.930538ms)
+✔ milestones preserve nullable SQL dates and full stored keys without chronology claim (0.791489ms)
+✔ no artificial years/milestones list cap (3.903746ms)
+✔ watch/cache/source-count assertions never become current visibility proof (0.526782ms)
+✔ negative source lookup cannot masquerade as successful empty detail (0.293991ms)
+✖ enforced lineage preserves required source caution note (0.462686ms)
+✖ timeline unknown cycle is preserved when no current cycle is known (0.300662ms)
+✖ timeline absent conflicting observations remain null rather than fabricated array (0.320122ms)
+✖ finder absent money/FY can omit current model claim through explicit null (0.282084ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 31
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 335.447484
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-program-elements.test.mjs:58:1
+✖ enforced lineage preserves required source caution note (0.462686ms)
+  AssertionError [ERR_ASSERTION]: data/lineage must NOT have additional properties
+      at validateShape (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:10:73)
+      at Object.assertProgramElementOutput (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:70:5)
+      at check (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:23:91)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:58:259)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-program-elements.test.mjs:59:1
+✖ timeline unknown cycle is preserved when no current cycle is known (0.300662ms)
+  AssertionError [ERR_ASSERTION]: data/years/0/cycle must be equal to one of the allowed values
+      at validateShape (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:10:73)
+      at Object.assertProgramElementOutput (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:70:5)
+      at check (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:23:91)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:59:157)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-program-elements.test.mjs:60:1
+✖ timeline absent conflicting observations remain null rather than fabricated array (0.320122ms)
+  AssertionError [ERR_ASSERTION]: data/years/0/requestConflictValuesM must be array
+      at validateShape (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:10:73)
+      at Object.assertProgramElementOutput (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:70:5)
+      at check (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:23:91)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:60:159)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-program-elements.test.mjs:61:1
+✖ finder absent money/FY can omit current model claim through explicit null (0.282084ms)
+  AssertionError [ERR_ASSERTION]: data/data/0/currentFundingClaim must be object
+      at validateShape (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:10:73)
+      at Object.assertProgramElementOutput (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:70:5)
+      at check (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:23:91)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:61:222)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

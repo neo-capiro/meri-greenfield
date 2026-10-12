@@ -1,0 +1,37 @@
+✔ all139 originals and67 prior descriptors/callbacks survive exactly four new mappings (9.339095ms)
+✔ all71 exact schema byte pins preserve pending closed handlers (15.559012ms)
+✔ query_outreach: actual callbacks preserve detached original request and canonical digest (3.070074ms)
+✔ query_outreach: trusted context is mandatory, closed, and stripped before family output callback (1.046867ms)
+✔ query_outreach: inert hostile request/context/result never invokes caller accessors (1.605508ms)
+✔ query_outreach: canonical integrity refuses handler/schema/retry/mapping injection (42.245605ms)
+✔ search_program_elements: actual callbacks preserve detached original request and canonical digest (2.064028ms)
+✔ search_program_elements: trusted context is mandatory, closed, and stripped before family output callback (0.64369ms)
+✔ search_program_elements: inert hostile request/context/result never invokes caller accessors (1.26171ms)
+✔ search_program_elements: canonical integrity refuses handler/schema/retry/mapping injection (30.913245ms)
+✔ get_program_element: actual callbacks preserve detached original request and canonical digest (3.706331ms)
+✔ get_program_element: trusted context is mandatory, closed, and stripped before family output callback (0.762388ms)
+✔ get_program_element: inert hostile request/context/result never invokes caller accessors (0.915599ms)
+✔ get_program_element: canonical integrity refuses handler/schema/retry/mapping injection (27.868609ms)
+✔ get_pe_budget_timeline: actual callbacks preserve detached original request and canonical digest (1.773491ms)
+✔ get_pe_budget_timeline: trusted context is mandatory, closed, and stripped before family output callback (0.519121ms)
+✔ get_pe_budget_timeline: inert hostile request/context/result never invokes caller accessors (0.892124ms)
+✔ get_pe_budget_timeline: canonical integrity refuses handler/schema/retry/mapping injection (27.210588ms)
+✔ production gateway remains closed before any authority/budget port for all71 reads (12.532654ms)
+✔ outreach callback resolves names only via exact trusted assertion and keeps UUID identity (0.950722ms)
+✔ outreach selected limit/status/client reach output correlation and full fetched count (1.594081ms)
+✔ exact outreach precedence suppresses client resolution and cannot accept list result (0.395777ms)
+✔ program search callback preserves scalar fallback and bounded paging (0.583118ms)
+✔ program detail and timeline selectors retain distinct case semantics (0.808568ms)
+✔ program evidence mode controls actual lineage output without becoming authorization (2.38404ms)
+✔ program Decimal string prerequisite and stored-year identity/order survive composition (3.221962ms)
+✔ PE direct factory now returns detached nested result, canonical behavior preserved (1.284946ms)
+✔ private command loader composes normalized task payload without retrieval mapping (26.93938ms)
+✔ private artifact loader preserves immutable tuple and refuses destination substitution (2.235977ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2022.038208

@@ -1,0 +1,207 @@
+{
+  "inventoryPin": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "observedPin": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+  "references": [
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "versions": [
+        {
+          "pin": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+          "bytes": 415704,
+          "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194"
+        },
+        {
+          "pin": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+          "bytes": 415704,
+          "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/engagement/engagement.service.ts",
+      "versions": [
+        {
+          "pin": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "2f0fc56b2eff3526118df7a052d13e76daf020a4",
+          "bytes": 499454,
+          "sha256": "b0a12dbce2157701bafdba36bead922de2e274216de9c00a2b0c797dcbf93df0"
+        },
+        {
+          "pin": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "2f0fc56b2eff3526118df7a052d13e76daf020a4",
+          "bytes": 499454,
+          "sha256": "b0a12dbce2157701bafdba36bead922de2e274216de9c00a2b0c797dcbf93df0"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/engagement/engagement-access.helpers.ts",
+      "versions": [
+        {
+          "pin": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "c0a8cbd27b8a87ff02f8dd36577dcce2d6537992",
+          "bytes": 5101,
+          "sha256": "a7d28dcb3db441049d7f93a89b54cc21b097af3757a66f2934b0e5a2a560d0bf"
+        },
+        {
+          "pin": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "c0a8cbd27b8a87ff02f8dd36577dcce2d6537992",
+          "bytes": 5101,
+          "sha256": "a7d28dcb3db441049d7f93a89b54cc21b097af3757a66f2934b0e5a2a560d0bf"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/prisma/schema.prisma",
+      "versions": [
+        {
+          "pin": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "cdf1923217edae6e7624993796a5671922b61ac0",
+          "bytes": 968034,
+          "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0"
+        },
+        {
+          "pin": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "cdf1923217edae6e7624993796a5671922b61ac0",
+          "bytes": 968034,
+          "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "packages/shared/src/index.ts",
+      "versions": [
+        {
+          "pin": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "62eb32931826f77abd985bc142f6a65adad6a23a",
+          "bytes": 273389,
+          "sha256": "1a713331de044768f7bd8631db4762a08a3c3541a1bbc064c67bbff46fc9a75f"
+        },
+        {
+          "pin": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "62eb32931826f77abd985bc142f6a65adad6a23a",
+          "bytes": 273389,
+          "sha256": "1a713331de044768f7bd8631db4762a08a3c3541a1bbc064c67bbff46fc9a75f"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/prisma/prisma.service.ts",
+      "versions": [
+        {
+          "pin": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "677810b805210533034bf268a6c26014311cda1d",
+          "bytes": 12476,
+          "sha256": "fb3886df5f2732a0412342627a3a6156f159718913479cdc2325fa602bfdd86e"
+        },
+        {
+          "pin": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "677810b805210533034bf268a6c26014311cda1d",
+          "bytes": 12476,
+          "sha256": "fb3886df5f2732a0412342627a3a6156f159718913479cdc2325fa602bfdd86e"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/prisma/migrations/20260505203000_engagement_outreach_records/migration.sql",
+      "versions": [
+        {
+          "pin": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "e225272b92e64cbb5b38bacdd43389de6672701c",
+          "bytes": 2691,
+          "sha256": "fd9127ad371caeb81dc06968852e5aca7ed2d28dd3b0316a34b4f4050b838ddd"
+        },
+        {
+          "pin": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "e225272b92e64cbb5b38bacdd43389de6672701c",
+          "bytes": 2691,
+          "sha256": "fd9127ad371caeb81dc06968852e5aca7ed2d28dd3b0316a34b4f4050b838ddd"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/prisma/migrations/20260609002500_widen_outreach_last_step_check/migration.sql",
+      "versions": [
+        {
+          "pin": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "5b5d51ce341110ec53be25ab99bc2a4a258bef7c",
+          "bytes": 1182,
+          "sha256": "7009533e60d49b5f4d3ec58a1fe0af7d906ac9b152f382082b7e3ffd9bc87d7d"
+        },
+        {
+          "pin": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "5b5d51ce341110ec53be25ab99bc2a4a258bef7c",
+          "bytes": 1182,
+          "sha256": "7009533e60d49b5f4d3ec58a1fe0af7d906ac9b152f382082b7e3ffd9bc87d7d"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/prisma/migrations/20261120210000_outreach_records_outreach_v3_type/migration.sql",
+      "versions": [
+        {
+          "pin": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "a9af953034351c82e3cf98c89d471a12f3419beb",
+          "bytes": 1317,
+          "sha256": "63fd53c14a4d49cfcc324b2f3c5624285b5fafa0cb9162b186b1e99e9e31f60b"
+        },
+        {
+          "pin": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "a9af953034351c82e3cf98c89d471a12f3419beb",
+          "bytes": 1317,
+          "sha256": "63fd53c14a4d49cfcc324b2f3c5624285b5fafa0cb9162b186b1e99e9e31f60b"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/prisma/migrations/20260519015221_add_engagement_campaigns/migration.sql",
+      "versions": [
+        {
+          "pin": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "570fab4a8ad61d80fea4d9e3712608b3c26d785f",
+          "bytes": 2477,
+          "sha256": "71184f478379922c99f65c0b23131c2e2c6b59a0289b9b97592202a01ccdae81"
+        },
+        {
+          "pin": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "570fab4a8ad61d80fea4d9e3712608b3c26d785f",
+          "bytes": 2477,
+          "sha256": "71184f478379922c99f65c0b23131c2e2c6b59a0289b9b97592202a01ccdae81"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/prisma/migrations/20260507030000_outbound_campaign_templates/migration.sql",
+      "versions": [
+        {
+          "pin": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "2bd76e1d8f21ff9bf3d39ff8c94b77a57854d527",
+          "bytes": 2031,
+          "sha256": "76ab4b8b8516f7ca4c4e1d159702d49666d366c84dd393daf853038c30a47051"
+        },
+        {
+          "pin": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "2bd76e1d8f21ff9bf3d39ff8c94b77a57854d527",
+          "bytes": 2031,
+          "sha256": "76ab4b8b8516f7ca4c4e1d159702d49666d366c84dd393daf853038c30a47051"
+        }
+      ],
+      "unchanged": true
+    }
+  ],
+  "scope": "SOURCE_METADATA_ONLY",
+  "privateBodiesRetained": false,
+  "privateSourceExecuted": false
+}

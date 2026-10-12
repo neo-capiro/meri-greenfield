@@ -1,0 +1,721 @@
+✔ normalization preserves alias fallback, scalar defaults and clamps (9.547946ms)
+✔ UTF16 caps and detail32 selector preserve meaningful original admissions (2.457508ms)
+✔ context is required closed trusted mode and model arguments cannot supply it (1.426186ms)
+✔ detail full projection admitted in off (26.979664ms)
+✔ timeline null conflict projection admitted in off (19.375102ms)
+✔ detail full projection admitted in shadow (0.640083ms)
+✔ timeline null conflict projection admitted in shadow (0.500072ms)
+✔ detail full projection admitted in enforce (0.916839ms)
+✔ timeline null conflict projection admitted in enforce (0.760635ms)
+✖ search nullable residual claims preserve stored empty axes (13.509356ms)
+✖ search fully unavailable money retains null model claim (0.391769ms)
+✔ timeline unknown cycle and none claim are reachable with all null marks (0.568676ms)
+✔ detail selector case may differ through uppercase cache key (0.348424ms)
+✔ catalog detail cycle may differ from own row; no invented equality to rendered summary (0.400873ms)
+✔ all outputs are recursively detached from caller JSON (0.51837ms)
+✔ raw Decimal exact signed upper precision is distinct from numeric derived amounts (2.590207ms)
+✔ bad output data and hostile getters fail before execution (0.318629ms)
+✖ source-derived raw claims cannot substitute year amount (0.573323ms)
+✖ detail cycle anchor must echo programElement cycle (0.520594ms)
+✖ top current claim must match emitted current year claim (0.831812ms)
+✖ null year claim cannot conceal a valid integer year (0.756839ms)
+✖ enactment and vehicle fields cannot contradict stage (0.973224ms)
+✖ enforced semantics cannot invent enactment or amount (0.515926ms)
+✖ search funding label cannot contradict derived model claim (0.485201ms)
+✖ search funding warning cannot be rewritten as complete coverage (0.373572ms)
+✖ search request stage cannot emit a comparison direction (0.344478ms)
+✖ search total cannot be less than rows from same COUNT window (0.364359ms)
+✔ false hasData remains no filter and empty page total0 is allowed (0.346ms)
+✖ trusted source identity does not arise from arbitrary exhibit pair (1.184222ms)
+✔ explicit procurement appropriation overrides PE-like code (0.25283ms)
+✖ search explicit line type outranks appropriation (0.391418ms)
+✖ lineage cannot reference only foreign endpoints (0.772883ms)
+✔ candidate lineage is permitted without identity merge claim (0.295705ms)
+✖ timeline current field cannot contradict request ladder (0.55854ms)
+✖ timeline cycle must match emitted global cycle FY (0.641275ms)
+✖ timeline null request cannot be classified present (0.426762ms)
+✖ timeline actual track absence cannot claim not applicable (0.348524ms)
+✔ timeline zero request conflicts suppress delta and preserve signed values (0.487954ms)
+✖ timeline conflicts cannot include zero or duplicate observations (0.369005ms)
+✖ timeline provenance observation dates must be finite canonical serialized times (0.519221ms)
+✔ forecast cached confidence remains finite but not invented percentage range (0.249906ms)
+✔ milestones preserve SQL date nulls and reject nonmidnight serialization (1.010049ms)
+✔ source arrays cannot invent unknown keys or duplicate yearly identities (0.873865ms)
+✔ NDAA-only mark establishes cycle while later request stays outyear (0.422946ms)
+✔ enacted zero wins ladder and remains enacted on an earlier historical year (0.26551ms)
+✖ outyear missing mark cannot invent active process or authorization gap (0.423167ms)
+✖ timeline arbitrary declared cycle cannot replace actual mark-bearing FY (0.387673ms)
+✖ timeline current delta must equal same-row signed amount difference (0.382666ms)
+✖ forecast fields are one nullable prediction projection rather than partial fabricated data (0.546282ms)
+✖ milestone projected unique type cannot be duplicated with different ID (0.430718ms)
+✖ milestones preserve observed planned-date ordering without collation assumptions (0.670629ms)
+✖ raw year FY and source firstSeenFY respect signed stored Int range (0.503698ms)
+✖ search total includes skipped rows when populated page uses same COUNT window (0.376347ms)
+✔ nonempty service or budget selector cannot return null filter fields (0.573693ms)
+✔ no ambient clock or synthetic tool authority is needed by pure normalization (0.168804ms)
+✖ search residual claims cannot contradict their retained labeled money (0.273471ms)
+✖ search comparable pair uses enacted-FY request rather than newest request (0.69842ms)
+✖ search same-year current direction describes actual sign, without money authority (0.340643ms)
+ℹ tests 58
+ℹ suites 0
+ℹ pass 26
+ℹ fail 32
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 288.128066
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-program-elements-independent.test.mjs:43:1
+✖ search nullable residual claims preserve stored empty axes (13.509356ms)
+  AssertionError [ERR_ASSERTION]: [{"instancePath":"/data/0/enactedClaim","schemaPath":"#/type","keyword":"type","params":{"type":"object"},"message":"must be object"},{"instancePath":"/data/0/requestAtEnactedClaim","schemaPath":"#/type","keyword":"type","params":{"type":"object"},"message":"must be object"}]
+  
+  false !== true
+  
+      at validateShape (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:9:81)
+      at Object.assertProgramElementOutput (file:///workspace/meri-program-elements-review-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:70:5)
+      at admit (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:33:65)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:43:88)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-program-elements-independent.test.mjs:44:1
+✖ search fully unavailable money retains null model claim (0.391769ms)
+  AssertionError [ERR_ASSERTION]: [{"instancePath":"/data/0/currentClaim","schemaPath":"#/type","keyword":"type","params":{"type":"object"},"message":"must be object"},{"instancePath":"/data/0/requestClaim","schemaPath":"#/type","keyword":"type","params":{"type":"object"},"message":"must be object"},{"instancePath":"/data/0/enactedClaim","schemaPath":"#/type","keyword":"type","params":{"type":"object"},"message":"must be object"},{"instancePath":"/data/0/requestAtEnactedClaim","schemaPath":"#/type","keyword":"type","params":{"type":"object"},"message":"must be object"}]
+  
+  false !== true
+  
+      at validateShape (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:9:81)
+      at Object.assertProgramElementOutput (file:///workspace/meri-program-elements-review-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:70:5)
+      at admit (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:33:65)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:44:319)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-program-elements-independent.test.mjs:51:1
+✖ source-derived raw claims cannot substitute year amount (0.573323ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at rejectMutation (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:34:144)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:51:68)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-program-elements-independent.test.mjs:52:1
+✖ detail cycle anchor must echo programElement cycle (0.520594ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at rejectMutation (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:34:144)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:52:63)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-program-elements-independent.test.mjs:53:1
+✖ top current claim must match emitted current year claim (0.831812ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at rejectMutation (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:34:144)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:53:68)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-program-elements-independent.test.mjs:54:1
+✖ null year claim cannot conceal a valid integer year (0.756839ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at rejectMutation (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:34:144)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:54:64)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-program-elements-independent.test.mjs:55:1
+✖ enactment and vehicle fields cannot contradict stage (0.973224ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at rejectMutation (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:34:144)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:55:65)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-program-elements-independent.test.mjs:56:1
+✖ enforced semantics cannot invent enactment or amount (0.515926ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at rejectMutation (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:34:144)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:56:65)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-program-elements-independent.test.mjs:57:1
+✖ search funding label cannot contradict derived model claim (0.485201ms)
+  AssertionError [ERR_ASSERTION]: [{"instancePath":"/data/0/enactedClaim","schemaPath":"#/type","keyword":"type","params":{"type":"object"},"message":"must be object"},{"instancePath":"/data/0/requestAtEnactedClaim","schemaPath":"#/type","keyword":"type","params":{"type":"object"},"message":"must be object"}]
+  
+  false !== true
+  
+      at validateShape (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:9:81)
+      at Object.assertProgramElementOutput (file:///workspace/meri-program-elements-review-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:70:5)
+      at admit (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:33:65)
+      at rejectMutation (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:34:75)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:57:71)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-program-elements-independent.test.mjs:58:1
+✖ search funding warning cannot be rewritten as complete coverage (0.373572ms)
+  AssertionError [ERR_ASSERTION]: [{"instancePath":"/data/0/enactedClaim","schemaPath":"#/type","keyword":"type","params":{"type":"object"},"message":"must be object"},{"instancePath":"/data/0/requestAtEnactedClaim","schemaPath":"#/type","keyword":"type","params":{"type":"object"},"message":"must be object"}]
+  
+  false !== true
+  
+      at validateShape (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:9:81)
+      at Object.assertProgramElementOutput (file:///workspace/meri-program-elements-review-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:70:5)
+      at admit (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:33:65)
+      at rejectMutation (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:34:75)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:58:76)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-program-elements-independent.test.mjs:59:1
+✖ search request stage cannot emit a comparison direction (0.344478ms)
+  AssertionError [ERR_ASSERTION]: [{"instancePath":"/data/0/enactedClaim","schemaPath":"#/type","keyword":"type","params":{"type":"object"},"message":"must be object"},{"instancePath":"/data/0/requestAtEnactedClaim","schemaPath":"#/type","keyword":"type","params":{"type":"object"},"message":"must be object"}]
+  
+  false !== true
+  
+      at validateShape (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:9:81)
+      at Object.assertProgramElementOutput (file:///workspace/meri-program-elements-review-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:70:5)
+      at admit (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:33:65)
+      at rejectMutation (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:34:75)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:59:68)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-program-elements-independent.test.mjs:60:1
+✖ search total cannot be less than rows from same COUNT window (0.364359ms)
+  AssertionError [ERR_ASSERTION]: [{"instancePath":"/data/0/enactedClaim","schemaPath":"#/type","keyword":"type","params":{"type":"object"},"message":"must be object"},{"instancePath":"/data/0/requestAtEnactedClaim","schemaPath":"#/type","keyword":"type","params":{"type":"object"},"message":"must be object"}]
+  
+  false !== true
+  
+      at validateShape (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:9:81)
+      at Object.assertProgramElementOutput (file:///workspace/meri-program-elements-review-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:70:5)
+      at admit (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:33:65)
+      at rejectMutation (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:34:75)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:60:73)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-program-elements-independent.test.mjs:62:1
+✖ trusted source identity does not arise from arbitrary exhibit pair (1.184222ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at rejectMutation (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:34:144)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:62:79)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-program-elements-independent.test.mjs:64:1
+✖ search explicit line type outranks appropriation (0.391418ms)
+  AssertionError [ERR_ASSERTION]: [{"instancePath":"/data/0/enactedClaim","schemaPath":"#/type","keyword":"type","params":{"type":"object"},"message":"must be object"},{"instancePath":"/data/0/requestAtEnactedClaim","schemaPath":"#/type","keyword":"type","params":{"type":"object"},"message":"must be object"}]
+  
+  false !== true
+  
+      at validateShape (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:9:81)
+      at Object.assertProgramElementOutput (file:///workspace/meri-program-elements-review-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:70:5)
+      at admit (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:33:65)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:64:163)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-program-elements-independent.test.mjs:65:1
+✖ lineage cannot reference only foreign endpoints (0.772883ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at rejectMutation (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:34:144)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:65:60)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-program-elements-independent.test.mjs:67:1
+✖ timeline current field cannot contradict request ladder (0.55854ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at rejectMutation (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:34:144)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:67:68)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-program-elements-independent.test.mjs:68:1
+✖ timeline cycle must match emitted global cycle FY (0.641275ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at rejectMutation (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:34:144)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:68:62)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-program-elements-independent.test.mjs:69:1
+✖ timeline null request cannot be classified present (0.426762ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at rejectMutation (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:34:144)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:69:63)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-program-elements-independent.test.mjs:70:1
+✖ timeline actual track absence cannot claim not applicable (0.348524ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at rejectMutation (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:34:144)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:70:70)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-program-elements-independent.test.mjs:72:1
+✖ timeline conflicts cannot include zero or duplicate observations (0.369005ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at rejectMutation (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:34:144)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:72:110)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-program-elements-independent.test.mjs:73:1
+✖ timeline provenance observation dates must be finite canonical serialized times (0.519221ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at rejectMutation (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:34:144)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:73:92)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-program-elements-independent.test.mjs:79:1
+✖ outyear missing mark cannot invent active process or authorization gap (0.423167ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:79:297)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-program-elements-independent.test.mjs:80:1
+✖ timeline arbitrary declared cycle cannot replace actual mark-bearing FY (0.387673ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at rejectMutation (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:34:144)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:80:84)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-program-elements-independent.test.mjs:81:1
+✖ timeline current delta must equal same-row signed amount difference (0.382666ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:81:539)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-program-elements-independent.test.mjs:82:1
+✖ forecast fields are one nullable prediction projection rather than partial fabricated data (0.546282ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at rejectMutation (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:34:144)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:82:103)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-program-elements-independent.test.mjs:83:1
+✖ milestone projected unique type cannot be duplicated with different ID (0.430718ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:83:383)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-program-elements-independent.test.mjs:84:1
+✖ milestones preserve observed planned-date ordering without collation assumptions (0.670629ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:84:442)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-program-elements-independent.test.mjs:85:1
+✖ raw year FY and source firstSeenFY respect signed stored Int range (0.503698ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at rejectMutation (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:34:144)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:85:121)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-program-elements-independent.test.mjs:86:1
+✖ search total includes skipped rows when populated page uses same COUNT window (0.376347ms)
+  AssertionError [ERR_ASSERTION]: [{"instancePath":"/data/0/enactedClaim","schemaPath":"#/type","keyword":"type","params":{"type":"object"},"message":"must be object"},{"instancePath":"/data/0/requestAtEnactedClaim","schemaPath":"#/type","keyword":"type","params":{"type":"object"},"message":"must be object"}]
+  
+  false !== true
+  
+      at validateShape (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:9:81)
+      at Object.assertProgramElementOutput (file:///workspace/meri-program-elements-review-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:70:5)
+      at admit (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:33:65)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:86:128)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-program-elements-independent.test.mjs:89:1
+✖ search residual claims cannot contradict their retained labeled money (0.273471ms)
+  AssertionError [ERR_ASSERTION]: [{"instancePath":"/data/0/enactedClaim","schemaPath":"#/type","keyword":"type","params":{"type":"object"},"message":"must be object"},{"instancePath":"/data/0/requestAtEnactedClaim","schemaPath":"#/type","keyword":"type","params":{"type":"object"},"message":"must be object"}]
+  
+  false !== true
+  
+      at validateShape (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:9:81)
+      at Object.assertProgramElementOutput (file:///workspace/meri-program-elements-review-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:70:5)
+      at admit (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:33:65)
+      at rejectMutation (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:34:75)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:89:83)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-program-elements-independent.test.mjs:90:1
+✖ search comparable pair uses enacted-FY request rather than newest request (0.69842ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:90:930)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-program-elements-independent.test.mjs:91:1
+✖ search same-year current direction describes actual sign, without money authority (0.340643ms)
+  AssertionError [ERR_ASSERTION]: [{"instancePath":"/data/0/enactedClaim","schemaPath":"#/type","keyword":"type","params":{"type":"object"},"message":"must be object"},{"instancePath":"/data/0/requestAtEnactedClaim","schemaPath":"#/type","keyword":"type","params":{"type":"object"},"message":"must be object"}]
+  
+  false !== true
+  
+      at validateShape (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:9:81)
+      at Object.assertProgramElementOutput (file:///workspace/meri-program-elements-review-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:70:5)
+      at admit (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:33:65)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:91:524)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

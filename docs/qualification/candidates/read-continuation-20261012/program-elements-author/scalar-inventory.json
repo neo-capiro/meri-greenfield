@@ -1,0 +1,344 @@
+{
+  "ProgramElement": [
+    {
+      "name": "peCode",
+      "type": "String",
+      "nullable": false,
+      "sqlDate": false,
+      "decimal14_2": false
+    },
+    {
+      "name": "service",
+      "type": "String",
+      "nullable": true,
+      "sqlDate": false,
+      "decimal14_2": false
+    },
+    {
+      "name": "serviceCode",
+      "type": "String",
+      "nullable": true,
+      "sqlDate": false,
+      "decimal14_2": false
+    },
+    {
+      "name": "appropriationType",
+      "type": "String",
+      "nullable": true,
+      "sqlDate": false,
+      "decimal14_2": false
+    },
+    {
+      "name": "budgetActivity",
+      "type": "String",
+      "nullable": true,
+      "sqlDate": false,
+      "decimal14_2": false
+    },
+    {
+      "name": "budgetActivityName",
+      "type": "String",
+      "nullable": true,
+      "sqlDate": false,
+      "decimal14_2": false
+    },
+    {
+      "name": "lineNumber",
+      "type": "String",
+      "nullable": true,
+      "sqlDate": false,
+      "decimal14_2": false
+    },
+    {
+      "name": "title",
+      "type": "String",
+      "nullable": false,
+      "sqlDate": false,
+      "decimal14_2": false
+    },
+    {
+      "name": "description",
+      "type": "String",
+      "nullable": true,
+      "sqlDate": false,
+      "decimal14_2": false
+    },
+    {
+      "name": "acatLevel",
+      "type": "String",
+      "nullable": true,
+      "sqlDate": false,
+      "decimal14_2": false
+    },
+    {
+      "name": "programOfRecord",
+      "type": "String",
+      "nullable": true,
+      "sqlDate": false,
+      "decimal14_2": false
+    },
+    {
+      "name": "status",
+      "type": "String",
+      "nullable": true,
+      "sqlDate": false,
+      "decimal14_2": false
+    },
+    {
+      "name": "rDocUrl",
+      "type": "String",
+      "nullable": true,
+      "sqlDate": false,
+      "decimal14_2": false
+    },
+    {
+      "name": "pDocUrl",
+      "type": "String",
+      "nullable": true,
+      "sqlDate": false,
+      "decimal14_2": false
+    },
+    {
+      "name": "oDocUrl",
+      "type": "String",
+      "nullable": true,
+      "sqlDate": false,
+      "decimal14_2": false
+    },
+    {
+      "name": "raw",
+      "type": "Json",
+      "nullable": false,
+      "sqlDate": false,
+      "decimal14_2": false
+    },
+    {
+      "name": "source",
+      "type": "String",
+      "nullable": false,
+      "sqlDate": false,
+      "decimal14_2": false
+    },
+    {
+      "name": "sourceConfidence",
+      "type": "Float",
+      "nullable": true,
+      "sqlDate": false,
+      "decimal14_2": false
+    },
+    {
+      "name": "firstSeenFy",
+      "type": "Int",
+      "nullable": true,
+      "sqlDate": false,
+      "decimal14_2": false
+    },
+    {
+      "name": "lastSyncedAt",
+      "type": "DateTime",
+      "nullable": false,
+      "sqlDate": false,
+      "decimal14_2": false
+    },
+    {
+      "name": "retiredAt",
+      "type": "DateTime",
+      "nullable": true,
+      "sqlDate": false,
+      "decimal14_2": false
+    },
+    {
+      "name": "retiredReason",
+      "type": "String",
+      "nullable": true,
+      "sqlDate": false,
+      "decimal14_2": false
+    }
+  ],
+  "ProgramElementYear": [
+    {
+      "name": "id",
+      "type": "String",
+      "nullable": false,
+      "sqlDate": false,
+      "decimal14_2": false
+    },
+    {
+      "name": "peCode",
+      "type": "String",
+      "nullable": false,
+      "sqlDate": false,
+      "decimal14_2": false
+    },
+    {
+      "name": "fy",
+      "type": "Int",
+      "nullable": false,
+      "sqlDate": false,
+      "decimal14_2": false
+    },
+    {
+      "name": "request",
+      "type": "Decimal",
+      "nullable": true,
+      "sqlDate": false,
+      "decimal14_2": true
+    },
+    {
+      "name": "hascMark",
+      "type": "Decimal",
+      "nullable": true,
+      "sqlDate": false,
+      "decimal14_2": true
+    },
+    {
+      "name": "sascMark",
+      "type": "Decimal",
+      "nullable": true,
+      "sqlDate": false,
+      "decimal14_2": true
+    },
+    {
+      "name": "hacDMark",
+      "type": "Decimal",
+      "nullable": true,
+      "sqlDate": false,
+      "decimal14_2": true
+    },
+    {
+      "name": "sacDMark",
+      "type": "Decimal",
+      "nullable": true,
+      "sqlDate": false,
+      "decimal14_2": true
+    },
+    {
+      "name": "conference",
+      "type": "Decimal",
+      "nullable": true,
+      "sqlDate": false,
+      "decimal14_2": true
+    },
+    {
+      "name": "ndaaConference",
+      "type": "Decimal",
+      "nullable": true,
+      "sqlDate": false,
+      "decimal14_2": true
+    },
+    {
+      "name": "enacted",
+      "type": "Decimal",
+      "nullable": true,
+      "sqlDate": false,
+      "decimal14_2": true
+    },
+    {
+      "name": "reprogrammed",
+      "type": "Decimal",
+      "nullable": true,
+      "sqlDate": false,
+      "decimal14_2": true
+    },
+    {
+      "name": "executed",
+      "type": "Decimal",
+      "nullable": true,
+      "sqlDate": false,
+      "decimal14_2": true
+    },
+    {
+      "name": "notes",
+      "type": "String",
+      "nullable": true,
+      "sqlDate": false,
+      "decimal14_2": false
+    },
+    {
+      "name": "rDocSection",
+      "type": "String",
+      "nullable": true,
+      "sqlDate": false,
+      "decimal14_2": false
+    },
+    {
+      "name": "raw",
+      "type": "Json",
+      "nullable": false,
+      "sqlDate": false,
+      "decimal14_2": false
+    },
+    {
+      "name": "lastSyncedAt",
+      "type": "DateTime",
+      "nullable": false,
+      "sqlDate": false,
+      "decimal14_2": false
+    }
+  ],
+  "ProgramElementMilestone": [
+    {
+      "name": "id",
+      "type": "String",
+      "nullable": false,
+      "sqlDate": false,
+      "decimal14_2": false
+    },
+    {
+      "name": "peCode",
+      "type": "String",
+      "nullable": false,
+      "sqlDate": false,
+      "decimal14_2": false
+    },
+    {
+      "name": "milestoneType",
+      "type": "String",
+      "nullable": false,
+      "sqlDate": false,
+      "decimal14_2": false
+    },
+    {
+      "name": "plannedDate",
+      "type": "DateTime",
+      "nullable": true,
+      "sqlDate": true,
+      "decimal14_2": false
+    },
+    {
+      "name": "actualDate",
+      "type": "DateTime",
+      "nullable": true,
+      "sqlDate": true,
+      "decimal14_2": false
+    },
+    {
+      "name": "status",
+      "type": "String",
+      "nullable": true,
+      "sqlDate": false,
+      "decimal14_2": false
+    },
+    {
+      "name": "source",
+      "type": "String",
+      "nullable": false,
+      "sqlDate": false,
+      "decimal14_2": false
+    },
+    {
+      "name": "notes",
+      "type": "String",
+      "nullable": true,
+      "sqlDate": false,
+      "decimal14_2": false
+    },
+    {
+      "name": "lastSyncedAt",
+      "type": "DateTime",
+      "nullable": false,
+      "sqlDate": false,
+      "decimal14_2": false
+    }
+  ]
+}

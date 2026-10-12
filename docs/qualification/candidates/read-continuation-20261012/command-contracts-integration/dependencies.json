@@ -1,0 +1,49 @@
+{
+  "donor": "/workspace/meri-read-continuation-20261012",
+  "installed": false,
+  "lockChanged": false,
+  "copies": [
+    {
+      "package": "ajv",
+      "files": 466,
+      "bytes": 1033496,
+      "exact": true
+    },
+    {
+      "package": "ajv-formats",
+      "files": 15,
+      "bytes": 56763,
+      "exact": true
+    },
+    {
+      "package": "canonicalize",
+      "files": 6,
+      "bytes": 24474,
+      "exact": true
+    },
+    {
+      "package": "fast-uri",
+      "files": 44,
+      "bytes": 220886,
+      "exact": true
+    },
+    {
+      "package": "fast-deep-equal",
+      "files": 11,
+      "bytes": 12966,
+      "exact": true
+    },
+    {
+      "package": "json-schema-traverse",
+      "files": 12,
+      "bytes": 22220,
+      "exact": true
+    },
+    {
+      "package": "require-from-string",
+      "files": 4,
+      "bytes": 3422,
+      "exact": true
+    }
+  ]
+}

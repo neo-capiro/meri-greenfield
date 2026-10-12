@@ -1,0 +1,16 @@
+{
+  "corrections": [
+    {
+      "initial": "outline.json described campaign rows as12 fields",
+      "corrected": "Exact projection has11 fields:8 model scalars plus3 derived fields. Historical outline retained; source schema and tests always used11."
+    },
+    {
+      "initial": "First SQL metadata regex did not admit quoted constraint identifiers; hasCheck was false despite hash-verified bodies",
+      "corrected": "Quoted-identifier extraction confirms constraints; original incomplete extraction retained. No SQL executed or product repair."
+    },
+    {
+      "initial": "First metadata audit succeeded7229/7229 but capture label and full audit JSON used same filename; capture receipt replaced detailed check JSON",
+      "corrected": "Initial audit script, receipt and stdout preserved; detailed data now writes source-audit-data.json and replay uses a separate capture label. No product change."
+    }
+  ]
+}

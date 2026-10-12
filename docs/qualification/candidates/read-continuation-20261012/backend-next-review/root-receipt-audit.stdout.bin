@@ -1,0 +1,334 @@
+{
+  "receiptHead": "9e8a6c8a2fe66d7b62813fd74163904fddaaf186",
+  "canonicalSource": "fecf97a4a8b742c6c09b781d3b799816e8b548e4",
+  "testedSource": "46b0ec6ce52cd7acc8405a9b8d2d0e33e082f806",
+  "passed": 52,
+  "failed": 0,
+  "receipts": [
+    {
+      "label": "focused",
+      "sourceHead": "fecf97a4a8b742c6c09b781d3b799816e8b548e4",
+      "exitCode": 1,
+      "counts": {
+        "tests": 1029,
+        "pass": 1022,
+        "fail": 7,
+        "skipped": 0,
+        "cancelled": 0
+      },
+      "ownedPidAndPgid": 295511,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": []
+    },
+    {
+      "label": "public-contracts",
+      "sourceHead": "fecf97a4a8b742c6c09b781d3b799816e8b548e4",
+      "exitCode": 1,
+      "counts": {},
+      "ownedPidAndPgid": 295486,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": [
+        {
+          "pid": 295629,
+          "status": 0
+        }
+      ]
+    },
+    {
+      "label": "public-contracts-launchers-repaired",
+      "sourceHead": "fecf97a4a8b742c6c09b781d3b799816e8b548e4",
+      "exitCode": 0,
+      "counts": {
+        "tests": 7,
+        "pass": 7,
+        "fail": 0,
+        "skipped": 0,
+        "cancelled": 0
+      },
+      "ownedPidAndPgid": 296120,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": [
+        {
+          "pid": 296157,
+          "status": 0
+        },
+        {
+          "pid": 296251,
+          "status": 0
+        },
+        {
+          "pid": 296270,
+          "status": 0
+        }
+      ]
+    },
+    {
+      "label": "corrected-independent",
+      "sourceHead": "46b0ec6ce52cd7acc8405a9b8d2d0e33e082f806",
+      "exitCode": 0,
+      "counts": {
+        "tests": 29,
+        "pass": 29,
+        "fail": 0,
+        "skipped": 0,
+        "cancelled": 0
+      },
+      "ownedPidAndPgid": 297335,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": []
+    },
+    {
+      "label": "expanded",
+      "sourceHead": "46b0ec6ce52cd7acc8405a9b8d2d0e33e082f806",
+      "exitCode": 0,
+      "counts": {
+        "tests": 3196,
+        "pass": 3196,
+        "fail": 0,
+        "skipped": 0,
+        "cancelled": 0
+      },
+      "ownedPidAndPgid": 297506,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": [
+        {
+          "pid": 298365,
+          "status": 0
+        },
+        {
+          "pid": 298384,
+          "status": 0
+        }
+      ]
+    },
+    {
+      "label": "source-audit-corrected",
+      "sourceHead": "46b0ec6ce52cd7acc8405a9b8d2d0e33e082f806",
+      "exitCode": 0,
+      "counts": {},
+      "ownedPidAndPgid": 297934,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": []
+    },
+    {
+      "label": "accepted-packets-corrected",
+      "sourceHead": "46b0ec6ce52cd7acc8405a9b8d2d0e33e082f806",
+      "exitCode": 0,
+      "counts": {},
+      "ownedPidAndPgid": 297490,
+      "ownedProcessGroupAbsent": true,
+      "reapedDescendants": []
+    }
+  ],
+  "checks": [
+    {
+      "check": "focused expected retained exit",
+      "pass": true
+    },
+    {
+      "check": "focused physical owned cleanup",
+      "pass": true
+    },
+    {
+      "check": "focused clean measured source",
+      "pass": true
+    },
+    {
+      "check": "focused capture helper identity",
+      "pass": true
+    },
+    {
+      "check": "focused exact stream docs/qualification/candidates/read-continuation-20261012/backend-next-integration/focused.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "focused exact stream docs/qualification/candidates/read-continuation-20261012/backend-next-integration/focused.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "retained focused1022/7",
+      "pass": true
+    },
+    {
+      "check": "public-contracts expected retained exit",
+      "pass": true
+    },
+    {
+      "check": "public-contracts physical owned cleanup",
+      "pass": true
+    },
+    {
+      "check": "public-contracts clean measured source",
+      "pass": true
+    },
+    {
+      "check": "public-contracts capture helper identity",
+      "pass": true
+    },
+    {
+      "check": "public-contracts exact stream docs/qualification/candidates/read-continuation-20261012/backend-next-integration/public-contracts.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "public-contracts exact stream docs/qualification/candidates/read-continuation-20261012/backend-next-integration/public-contracts.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "retained missing launcher failure",
+      "pass": true
+    },
+    {
+      "check": "public-contracts-launchers-repaired expected retained exit",
+      "pass": true
+    },
+    {
+      "check": "public-contracts-launchers-repaired physical owned cleanup",
+      "pass": true
+    },
+    {
+      "check": "public-contracts-launchers-repaired clean measured source",
+      "pass": true
+    },
+    {
+      "check": "public-contracts-launchers-repaired capture helper identity",
+      "pass": true
+    },
+    {
+      "check": "public-contracts-launchers-repaired exact stream docs/qualification/candidates/read-continuation-20261012/backend-next-integration/public-contracts-launchers-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "public-contracts-launchers-repaired exact stream docs/qualification/candidates/read-continuation-20261012/backend-next-integration/public-contracts-launchers-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "public-contracts-launchers-repaired complete positive test summary",
+      "pass": true
+    },
+    {
+      "check": "public generation and types actually included",
+      "pass": true
+    },
+    {
+      "check": "corrected-independent expected retained exit",
+      "pass": true
+    },
+    {
+      "check": "corrected-independent physical owned cleanup",
+      "pass": true
+    },
+    {
+      "check": "corrected-independent clean measured source",
+      "pass": true
+    },
+    {
+      "check": "corrected-independent capture helper identity",
+      "pass": true
+    },
+    {
+      "check": "corrected-independent exact stream docs/qualification/candidates/read-continuation-20261012/backend-next-integration/corrected-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "corrected-independent exact stream docs/qualification/candidates/read-continuation-20261012/backend-next-integration/corrected-independent.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "corrected-independent complete positive test summary",
+      "pass": true
+    },
+    {
+      "check": "corrected unchanged29",
+      "pass": true
+    },
+    {
+      "check": "expanded expected retained exit",
+      "pass": true
+    },
+    {
+      "check": "expanded physical owned cleanup",
+      "pass": true
+    },
+    {
+      "check": "expanded clean measured source",
+      "pass": true
+    },
+    {
+      "check": "expanded capture helper identity",
+      "pass": true
+    },
+    {
+      "check": "expanded exact stream docs/qualification/candidates/read-continuation-20261012/backend-next-integration/expanded.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "expanded exact stream docs/qualification/candidates/read-continuation-20261012/backend-next-integration/expanded.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "expanded complete positive test summary",
+      "pass": true
+    },
+    {
+      "check": "expanded source/test identity",
+      "pass": true
+    },
+    {
+      "check": "source-audit-corrected expected retained exit",
+      "pass": true
+    },
+    {
+      "check": "source-audit-corrected physical owned cleanup",
+      "pass": true
+    },
+    {
+      "check": "source-audit-corrected clean measured source",
+      "pass": true
+    },
+    {
+      "check": "source-audit-corrected capture helper identity",
+      "pass": true
+    },
+    {
+      "check": "source-audit-corrected exact stream docs/qualification/candidates/read-continuation-20261012/backend-next-integration/source-audit-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source-audit-corrected exact stream docs/qualification/candidates/read-continuation-20261012/backend-next-integration/source-audit-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "accepted-packets-corrected expected retained exit",
+      "pass": true
+    },
+    {
+      "check": "accepted-packets-corrected physical owned cleanup",
+      "pass": true
+    },
+    {
+      "check": "accepted-packets-corrected clean measured source",
+      "pass": true
+    },
+    {
+      "check": "accepted-packets-corrected capture helper identity",
+      "pass": true
+    },
+    {
+      "check": "accepted-packets-corrected exact stream docs/qualification/candidates/read-continuation-20261012/backend-next-integration/accepted-packets-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "accepted-packets-corrected exact stream docs/qualification/candidates/read-continuation-20261012/backend-next-integration/accepted-packets-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "all product/runtime bytes unchanged after canonical freeze",
+      "pass": true
+    },
+    {
+      "check": "final reviewer controls exact",
+      "pass": true
+    }
+  ],
+  "limits": "Read-only verification of retained source test receipts; no rerun, native/SQL/provider/runtime acceptance or physical task teardown claim."
+}

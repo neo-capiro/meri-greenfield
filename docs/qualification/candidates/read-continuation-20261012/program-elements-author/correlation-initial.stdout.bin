@@ -1,0 +1,296 @@
+✖ three complete projections validate under private URN (6.214073ms)
+✔ search defaults aliases trimmed UTF16 bounds and scalar clamps (0.948978ms)
+✔ optional nonstring scalar selectors do not manufacture filters (0.230407ms)
+✔ required PE selector preserves32 not stored16 bound (1.080857ms)
+✔ closed context refuses model authority and mode in raw (0.333371ms)
+✔ operation admission never coerces hostile selectors (0.138378ms)
+✔ inert admission refuses getters proxies cycles and hidden fields (0.483889ms)
+✔ returned validated result is detached from every nested caller object (3.705358ms)
+✖ search removes exactly unlabelled fields while retaining residual claims (3.486257ms)
+✖ finder current model claim keeps unknown cycle unlike residual currentClaim (0.449647ms)
+✔ empty later finder page total0 does not claim corpus absence (0.569187ms)
+✖ finder page/limit bounds and identity uniqueness are enforced (0.802508ms)
+✖ hasData false does not invent a negative filter; true requires stored data (0.588085ms)
+✖ no cross-fiscal-year numeric comparison is inferred (0.387643ms)
+✔ stored decimal strings preserve14,2 precision; numeric helper mocks are not wire (6.86262ms)
+✔ detail cache selector permits case only while timeline direct selector remains exact (3.345366ms)
+✔ complete stored scalar projection has no unspecific escape fields (6.189036ms)
+✖ complete stored year fields remain independently required and nullable (3.282471ms)
+✖ years ordered ascending and uniquely bind IDs/fiscal years/PE (0.339652ms)
+✖ outer claim cycle and source fundingSummary are distinct from stored catalog cycle (0.348375ms)
+✖ off/shadow omit enforced provenance while enforce carries semantics and lineage (1.074788ms)
+✖ accepted and candidate lineage are separate opaque-evidence observations (0.630009ms)
+✔ funding stage/vehicle/unit/projection distinctions cannot be upgraded (0.716579ms)
+✖ NDAA conference claim remains distinct from appropriations conference (0.41875ms)
+✖ outyear projection label and null versus zero money survive (0.249896ms)
+✔ forecast amount and confidence remain separate and uncapped cached numbers (0.688516ms)
+✖ zero marks are present and conflicting request zero cannot support delta (0.441234ms)
+✔ milestones preserve nullable SQL dates and full stored keys without chronology claim (1.225225ms)
+✖ no artificial years/milestones list cap (3.342982ms)
+✔ watch/cache/source-count assertions never become current visibility proof (0.651861ms)
+✔ negative source lookup cannot masquerade as successful empty detail (0.301744ms)
+✖ enforced lineage preserves required source caution note (0.266221ms)
+✖ timeline unknown cycle is preserved when no current cycle is known (0.392851ms)
+✔ timeline absent conflicting observations remain null rather than fabricated array (0.318489ms)
+✖ finder absent money/FY can omit current model claim through explicit null (0.286942ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 17
+ℹ fail 18
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 457.140973
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-program-elements.test.mjs:26:1
+✖ three complete projections validate under private URN (6.214073ms)
+  Error: Finder funding caution changed
+      at fail (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:3:28)
+      at search (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:88:70)
+      at Object.assertProgramElementOutput (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:123:46)
+      at check (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:23:91)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:26:185)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+
+test at packages/contracts/test/retrieval-program-elements.test.mjs:34:1
+✖ search removes exactly unlabelled fields while retaining residual claims (3.486257ms)
+  Error: Finder funding caution changed
+      at fail (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:3:28)
+      at search (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:88:70)
+      at Object.assertProgramElementOutput (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:123:46)
+      at check (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:23:91)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:34:374)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at packages/contracts/test/retrieval-program-elements.test.mjs:35:1
+✖ finder current model claim keeps unknown cycle unlike residual currentClaim (0.449647ms)
+  Error: Finder funding caution changed
+      at fail (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:3:28)
+      at search (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:88:70)
+      at Object.assertProgramElementOutput (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:123:46)
+      at check (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:23:91)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:35:170)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at packages/contracts/test/retrieval-program-elements.test.mjs:37:1
+✖ finder page/limit bounds and identity uniqueness are enforced (0.802508ms)
+  Error: Finder funding caution changed
+      at fail (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:3:28)
+      at search (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:88:70)
+      at Object.assertProgramElementOutput (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:123:46)
+      at check (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:23:91)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:37:248)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at packages/contracts/test/retrieval-program-elements.test.mjs:38:1
+✖ hasData false does not invent a negative filter; true requires stored data (0.588085ms)
+  Error: Finder funding caution changed
+      at fail (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:3:28)
+      at search (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:88:70)
+      at Object.assertProgramElementOutput (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:123:46)
+      at check (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:23:91)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:38:108)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at packages/contracts/test/retrieval-program-elements.test.mjs:39:1
+✖ no cross-fiscal-year numeric comparison is inferred (0.387643ms)
+  Error: Finder funding caution changed
+      at fail (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:3:28)
+      at search (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:88:70)
+      at Object.assertProgramElementOutput (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:123:46)
+      at check (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:23:91)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:39:196)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at packages/contracts/test/retrieval-program-elements.test.mjs:43:1
+✖ complete stored year fields remain independently required and nullable (3.282471ms)
+  Error: Current claim is not emitted current-year claim
+      at fail (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:3:28)
+      at currentClaim (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:71:76)
+      at detail (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:101:5)
+      at Object.assertProgramElementOutput (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:124:260)
+      at check (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:23:91)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:43:268)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+
+test at packages/contracts/test/retrieval-program-elements.test.mjs:44:1
+✖ years ordered ascending and uniquely bind IDs/fiscal years/PE (0.339652ms)
+  Error: Year claim differs from source marks/cycle
+      at fail (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:3:28)
+      at years (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:61:209)
+      at detail (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:99:75)
+      at Object.assertProgramElementOutput (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:124:260)
+      at check (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:23:91)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:44:203)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+
+test at packages/contracts/test/retrieval-program-elements.test.mjs:45:1
+✖ outer claim cycle and source fundingSummary are distinct from stored catalog cycle (0.348375ms)
+  Error: Year claim differs from source marks/cycle
+      at fail (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:3:28)
+      at years (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:61:209)
+      at detail (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:99:75)
+      at Object.assertProgramElementOutput (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:124:260)
+      at check (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:23:91)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:45:181)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+
+test at packages/contracts/test/retrieval-program-elements.test.mjs:46:1
+✖ off/shadow omit enforced provenance while enforce carries semantics and lineage (1.074788ms)
+  Error: Enforced claim semantics mismatch
+      at fail (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:3:28)
+      at claim (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:52:101)
+      at Object.assertProgramElementOutput (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:124:162)
+      at check (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:23:91)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:46:167)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at packages/contracts/test/retrieval-program-elements.test.mjs:47:1
+✖ accepted and candidate lineage are separate opaque-evidence observations (0.630009ms)
+  Error: Enforced claim semantics mismatch
+      at fail (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:3:28)
+      at claim (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:52:101)
+      at Object.assertProgramElementOutput (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:124:162)
+      at check (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:23:91)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:47:286)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at packages/contracts/test/retrieval-program-elements.test.mjs:49:1
+✖ NDAA conference claim remains distinct from appropriations conference (0.41875ms)
+  Error: Enforced claim semantics mismatch
+      at fail (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:3:28)
+      at claim (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:52:101)
+      at Object.assertProgramElementOutput (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:124:162)
+      at check (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:23:91)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:49:264)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at packages/contracts/test/retrieval-program-elements.test.mjs:50:1
+✖ outyear projection label and null versus zero money survive (0.249896ms)
+  Error: Year claim differs from source marks/cycle
+      at fail (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:3:28)
+      at years (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:61:209)
+      at detail (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:99:75)
+      at Object.assertProgramElementOutput (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:124:260)
+      at check (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:23:91)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:50:243)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+
+test at packages/contracts/test/retrieval-program-elements.test.mjs:52:1
+✖ zero marks are present and conflicting request zero cannot support delta (0.441234ms)
+  Error: Year claim differs from source marks/cycle
+      at fail (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:3:28)
+      at years (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:61:209)
+      at timeline (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:104:74)
+      at Object.assertProgramElementOutput (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:124:313)
+      at check (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:23:91)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:52:252)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+
+test at packages/contracts/test/retrieval-program-elements.test.mjs:54:1
+✖ no artificial years/milestones list cap (3.342982ms)
+  Error: Year claim differs from source marks/cycle
+      at fail (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:3:28)
+      at years (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:61:209)
+      at detail (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:99:75)
+      at Object.assertProgramElementOutput (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:124:260)
+      at check (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:23:91)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:54:214)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+
+test at packages/contracts/test/retrieval-program-elements.test.mjs:58:1
+✖ enforced lineage preserves required source caution note (0.266221ms)
+  Error: Enforced claim semantics mismatch
+      at fail (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:3:28)
+      at claim (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:52:101)
+      at Object.assertProgramElementOutput (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:124:162)
+      at check (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:23:91)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:58:259)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at packages/contracts/test/retrieval-program-elements.test.mjs:59:1
+✖ timeline unknown cycle is preserved when no current cycle is known (0.392851ms)
+  Error: Year claim differs from source marks/cycle
+      at fail (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:3:28)
+      at years (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:61:209)
+      at timeline (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:104:74)
+      at Object.assertProgramElementOutput (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:124:313)
+      at check (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:23:91)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:59:157)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+
+test at packages/contracts/test/retrieval-program-elements.test.mjs:61:1
+✖ finder absent money/FY can omit current model claim through explicit null (0.286942ms)
+  Error: Finder funding caution changed
+      at fail (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:3:28)
+      at search (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:88:70)
+      at Object.assertProgramElementOutput (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:123:46)
+      at check (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:23:91)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:61:222)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)

@@ -1,0 +1,270 @@
+{
+  "base": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+  "initialSource": "0565003a32a7311658a86cfc7689036b6b450f57",
+  "candidate": "8c1f4a5f4287b282f478f3e18aeb376573e53ddd",
+  "originalFiles": 6947,
+  "originalChanged": [],
+  "sourceFiles": [
+    {
+      "path": "packages/contracts/commands-0.2/task-create-validation.mjs",
+      "bytes": 3951,
+      "sha256": "5d90523200ed2d8589bd893075ff7ddb42a112b29b9c717bc81e72dd0370ada4"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/task-create.schema.json",
+      "bytes": 3827,
+      "sha256": "94e9893173bcf450d8aaabeebe69dc0c3c2b60e8f1d2f2ad22fd60487ed87869"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/artifact-file-validation.mjs",
+      "bytes": 5640,
+      "sha256": "9d22a2e84fe43f38227cf8247a0d3800886d1b3111cdad7574efc26bc11bbd47"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/artifact-file.schema.json",
+      "bytes": 3494,
+      "sha256": "9c51a6777683990384467ab1c62acb07500411e6c08d5b89a0e8182513d91537"
+    },
+    {
+      "path": "packages/contracts/test/command-task-create.test.mjs",
+      "bytes": 9809,
+      "sha256": "bd633422dc010e15b63c3205d8d18e19885bcd34a10f6f5b488b46b4a53a3f17"
+    },
+    {
+      "path": "packages/contracts/test/command-artifact-file.test.mjs",
+      "bytes": 11068,
+      "sha256": "65bae1b4d9e01a0d889555200e3edc7d4b6f14b375215cd02697ca1779ad7b25"
+    }
+  ],
+  "checks": [
+    {
+      "name": "all_original_blobs_and_modes_preserved",
+      "pass": true
+    },
+    {
+      "name": "exactly_six_new_product_or_test_files",
+      "pass": true
+    },
+    {
+      "name": "checkout_exact:packages/contracts/commands-0.2/task-create-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "canonical_snapshot_owner:packages/contracts/commands-0.2/task-create-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "no_extra_imports:packages/contracts/commands-0.2/task-create-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "checkout_exact:packages/contracts/commands-0.2/task-create.schema.json",
+      "pass": true
+    },
+    {
+      "name": "checkout_exact:packages/contracts/commands-0.2/artifact-file-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "canonical_snapshot_owner:packages/contracts/commands-0.2/artifact-file-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "no_extra_imports:packages/contracts/commands-0.2/artifact-file-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "checkout_exact:packages/contracts/commands-0.2/artifact-file.schema.json",
+      "pass": true
+    },
+    {
+      "name": "checkout_exact:packages/contracts/test/command-task-create.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "original_frozen_author_test_prefix:packages/contracts/test/command-task-create.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "checkout_exact:packages/contracts/test/command-artifact-file.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "original_frozen_author_test_prefix:packages/contracts/test/command-artifact-file.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "canonical_owner_unchanged:packages/contracts/meri.schema.json",
+      "pass": true
+    },
+    {
+      "name": "canonical_owner_unchanged:packages/contracts/validate.mjs",
+      "pass": true
+    },
+    {
+      "name": "canonical_owner_unchanged:packages/contracts/retrieval-0.2/operation-contracts.mjs",
+      "pass": true
+    },
+    {
+      "name": "canonical_owner_unchanged:package.json",
+      "pass": true
+    },
+    {
+      "name": "canonical_owner_unchanged:package-lock.json",
+      "pass": true
+    },
+    {
+      "name": "private_reference_identity:fd8765ec:apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "private_reference_identity:4be13b0b:apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "private_reference_identity:fd8765ec:apps/api/src/meri/meri-client-filing.service.ts",
+      "pass": true
+    },
+    {
+      "name": "private_reference_identity:4be13b0b:apps/api/src/meri/meri-client-filing.service.ts",
+      "pass": true
+    },
+    {
+      "name": "private_reference_identity:fd8765ec:apps/api/src/meri/meri-client-filing.service.spec.ts",
+      "pass": true
+    },
+    {
+      "name": "private_reference_identity:4be13b0b:apps/api/src/meri/meri-client-filing.service.spec.ts",
+      "pass": true
+    },
+    {
+      "name": "private_reference_identity:fd8765ec:apps/api/src/engagement/engagement.service.ts",
+      "pass": true
+    },
+    {
+      "name": "private_reference_identity:4be13b0b:apps/api/src/engagement/engagement.service.ts",
+      "pass": true
+    },
+    {
+      "name": "private_reference_identity:fd8765ec:apps/api/src/engagement/engagement.controller.ts",
+      "pass": true
+    },
+    {
+      "name": "private_reference_identity:4be13b0b:apps/api/src/engagement/engagement.controller.ts",
+      "pass": true
+    },
+    {
+      "name": "private_reference_identity:fd8765ec:apps/api/src/engagement/governed-engagement.factory.ts",
+      "pass": true
+    },
+    {
+      "name": "private_reference_identity:4be13b0b:apps/api/src/engagement/governed-engagement.factory.ts",
+      "pass": true
+    },
+    {
+      "name": "private_reference_identity:fd8765ec:apps/api/src/engagement/runtime/engagement-runtime-policy.service.ts",
+      "pass": true
+    },
+    {
+      "name": "private_reference_identity:4be13b0b:apps/api/src/engagement/runtime/engagement-runtime-policy.service.ts",
+      "pass": true
+    },
+    {
+      "name": "private_reference_identity:fd8765ec:apps/api/src/engagement/research-portfolio-task-access.ts",
+      "pass": true
+    },
+    {
+      "name": "private_reference_identity:4be13b0b:apps/api/src/engagement/research-portfolio-task-access.ts",
+      "pass": true
+    },
+    {
+      "name": "private_reference_identity:fd8765ec:apps/api/src/auth/roles.guard.ts",
+      "pass": true
+    },
+    {
+      "name": "private_reference_identity:4be13b0b:apps/api/src/auth/roles.guard.ts",
+      "pass": true
+    },
+    {
+      "name": "private_reference_identity:fd8765ec:apps/api/src/tenant/tenant-context.middleware.ts",
+      "pass": true
+    },
+    {
+      "name": "private_reference_identity:4be13b0b:apps/api/src/tenant/tenant-context.middleware.ts",
+      "pass": true
+    },
+    {
+      "name": "private_reference_identity:fd8765ec:apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "name": "private_reference_identity:4be13b0b:apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "name": "owned_group_absent:independent-first",
+      "pass": true
+    },
+    {
+      "name": "raw_receipt_hash:independent-first:stdout",
+      "pass": true
+    },
+    {
+      "name": "raw_receipt_hash:independent-first:stderr",
+      "pass": true
+    },
+    {
+      "name": "owned_group_absent:independent-corrected",
+      "pass": true
+    },
+    {
+      "name": "raw_receipt_hash:independent-corrected:stdout",
+      "pass": true
+    },
+    {
+      "name": "raw_receipt_hash:independent-corrected:stderr",
+      "pass": true
+    },
+    {
+      "name": "owned_group_absent:compatibility-negative",
+      "pass": true
+    },
+    {
+      "name": "raw_receipt_hash:compatibility-negative:stdout",
+      "pass": true
+    },
+    {
+      "name": "raw_receipt_hash:compatibility-negative:stderr",
+      "pass": true
+    },
+    {
+      "name": "owned_group_absent:repaired-unchanged",
+      "pass": true
+    },
+    {
+      "name": "raw_receipt_hash:repaired-unchanged:stdout",
+      "pass": true
+    },
+    {
+      "name": "raw_receipt_hash:repaired-unchanged:stderr",
+      "pass": true
+    },
+    {
+      "name": "owned_group_absent:independent-repaired",
+      "pass": true
+    },
+    {
+      "name": "raw_receipt_hash:independent-repaired:stdout",
+      "pass": true
+    },
+    {
+      "name": "raw_receipt_hash:independent-repaired:stderr",
+      "pass": true
+    }
+  ],
+  "passed": 56,
+  "failed": 0,
+  "privateBodiesPublished": false,
+  "sourceConnected": false,
+  "runtimeAccepted": false
+}

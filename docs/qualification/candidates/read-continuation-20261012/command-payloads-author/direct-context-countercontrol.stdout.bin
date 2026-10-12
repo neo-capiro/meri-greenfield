@@ -1,0 +1,105 @@
+✔ namespace and aggregate-neutral per-object result are closed (8.952043ms)
+✔ normalization correlates trusted destination and exact immutable objects (0.862737ms)
+✔ one through ten selected immutable objects, never empty or eleven (0.785571ms)
+✔ duplicate object and alternate version of same object refuse explicitly (0.484088ms)
+✔ raw selectors cannot replace trusted client or conversation (0.404117ms)
+✔ unknown raw/context authority fields refuse (0.677658ms)
+✔ object reference required fields and tenant scopes remain canonical (0.774815ms)
+✔ command action, normalized args and original full binding must match (1.483549ms)
+✔ every selected object has exactly one observation with exact version/hash/bytes/scopes (2.72117ms)
+✔ distinct-object observation order does not manufacture aggregate semantics (0.655515ms)
+✔ saved source observation permits indexed or pending with reused preserved (0.803267ms)
+✔ pending quarantine remains not_indexed and requires persisted identity and reason (1.544551ms)
+✔ failed before storage and failed persisted observation are distinct valid branches (0.745461ms)
+✔ partial persisted tuples and contradictory saved/failed indexing refuse (2.459065ms)
+✔ no approval/readability/source-completeness flags on observations (1.649539ms)
+✔ result digest must bind the full immutable command (1.75645ms)
+✔ receipt outcomes remain supplied observations independent of per-file success (2.399656ms)
+✔ receipt may refer to recovered current executor while stable provenance is fixed (1.236599ms)
+✔ receipt hash/idempotency/command/scope substitutions fail (1.356058ms)
+✔ optional generated version correlates its object, not two distinct version IDs (1.419814ms)
+✔ valid artifact draft/pending preview never implies native or render validation (0.333231ms)
+✔ raw, output and receipt snapshots cannot alias caller data (0.620353ms)
+✔ inert admission rejects effectful getters/proxies without traps (0.489686ms)
+✖ pending before storage has reason/fileName without fabricated document identity (0.533762ms)
+✔ private task namespace and six-field projection are closed (7.290415ms)
+✔ title trims and missing client/date normalize to null without owner (0.380742ms)
+✔ title bounds count UTF16 and reject instead of truncate (0.767303ms)
+✔ raw fields are strict and cannot add unadvertised description or owner (1.812784ms)
+✔ trusted name resolution produces UUID without claiming lookup or visibility (0.575715ms)
+✔ UUID selector cannot be rebound and unresolved or unrequested clients refuse (0.642796ms)
+✔ client reference80UTF16 bound is explicit (0.491669ms)
+✔ date-only becomes explicit UTC midnight and canonical UTC stays exact (0.505821ms)
+✔ date grammar rejects ambient timezone, offsets, rollover and invalid leap seconds (1.021836ms)
+✔ context is exact inert producer provenance without grant booleans (0.538079ms)
+✔ command checks action, no attachments and exact original producer binding (1.343239ms)
+✔ task command cannot be used for update or schedule vocabulary (0.496897ms)
+✔ source result must match normalized title/client/date and todo default (1.671541ms)
+✔ all six result keys are required and no source approval/owner facts invented (2.753618ms)
+✔ source result for resolved client and due date is supported (0.42553ms)
+✔ successful validators return detached data, including nested command context (0.329144ms)
+✔ getters/proxies/cycles and hidden properties refuse without caller effects (0.364077ms)
+✔ public immutable proposal and stable recovery execution remain canonical (2.514929ms)
+✔ scope shape does not silently choose ordinary task authorization policy (0.286932ms)
+✖ task due date is a stored SQL date, never a silently truncated noon instant (0.634744ms)
+✖ direct command/result entry cannot bypass contradictory UUID resolution context (0.295094ms)
+ℹ tests 45
+ℹ suites 0
+ℹ pass 42
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 398.065988
+
+✖ failing tests:
+
+test at packages/contracts/test/command-artifact-file.test.mjs:52:1
+✖ pending before storage has reason/fileName without fabricated document identity (0.533762ms)
+  Error: Stored filing observation required
+      at fail (file:///workspace/meri-command-payloads-20261012/packages/contracts/commands-0.2/artifact-file-validation.mjs:3:28)
+      at Object.assertArtifactFileResult (file:///workspace/meri-command-payloads-20261012/packages/contracts/commands-0.2/artifact-file-validation.mjs:44:63)
+      at check (file:///workspace/meri-command-payloads-20261012/packages/contracts/test/command-artifact-file.test.mjs:24:37)
+      at TestContext.<anonymous> (file:///workspace/meri-command-payloads-20261012/packages/contracts/test/command-artifact-file.test.mjs:52:93)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/command-task-create.test.mjs:44:1
+✖ task due date is a stored SQL date, never a silently truncated noon instant (0.634744ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-command-payloads-20261012/packages/contracts/test/command-task-create.test.mjs:44:96)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/command-task-create.test.mjs:45:1
+✖ direct command/result entry cannot bypass contradictory UUID resolution context (0.295094ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-command-payloads-20261012/packages/contracts/test/command-task-create.test.mjs:45:223)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }

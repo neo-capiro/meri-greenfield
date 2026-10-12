@@ -1,0 +1,562 @@
+{
+  "models": {
+    "OutreachRecord": [
+      {
+        "field": "id",
+        "type": "String",
+        "native": [
+          "@db.Uuid"
+        ]
+      },
+      {
+        "field": "tenantId",
+        "type": "String",
+        "native": [
+          "@db.Uuid"
+        ]
+      },
+      {
+        "field": "clientId",
+        "type": "String?",
+        "native": [
+          "@db.Uuid"
+        ]
+      },
+      {
+        "field": "meetingId",
+        "type": "String?",
+        "native": [
+          "@db.Uuid"
+        ]
+      },
+      {
+        "field": "createdByUserId",
+        "type": "String?",
+        "native": [
+          "@db.Uuid"
+        ]
+      },
+      {
+        "field": "type",
+        "type": "String",
+        "native": []
+      },
+      {
+        "field": "status",
+        "type": "String",
+        "native": []
+      },
+      {
+        "field": "title",
+        "type": "String",
+        "native": []
+      },
+      {
+        "field": "subject",
+        "type": "String?",
+        "native": []
+      },
+      {
+        "field": "body",
+        "type": "String?",
+        "native": [
+          "@db.Text"
+        ]
+      },
+      {
+        "field": "recipients",
+        "type": "Json",
+        "native": []
+      },
+      {
+        "field": "recipientCount",
+        "type": "Int",
+        "native": []
+      },
+      {
+        "field": "stats",
+        "type": "Json",
+        "native": []
+      },
+      {
+        "field": "metadata",
+        "type": "Json",
+        "native": []
+      },
+      {
+        "field": "lastStep",
+        "type": "Int",
+        "native": []
+      },
+      {
+        "field": "sentAt",
+        "type": "DateTime?",
+        "native": [
+          "@db.Timestamptz(6)"
+        ]
+      },
+      {
+        "field": "openedInEmailAt",
+        "type": "DateTime?",
+        "native": [
+          "@db.Timestamptz(6)"
+        ]
+      },
+      {
+        "field": "deletedAt",
+        "type": "DateTime?",
+        "native": [
+          "@db.Timestamptz(6)"
+        ]
+      },
+      {
+        "field": "deletedByUserId",
+        "type": "String?",
+        "native": [
+          "@db.Uuid"
+        ]
+      },
+      {
+        "field": "createdAt",
+        "type": "DateTime",
+        "native": [
+          "@db.Timestamptz(6)"
+        ]
+      },
+      {
+        "field": "updatedAt",
+        "type": "DateTime",
+        "native": [
+          "@db.Timestamptz(6)"
+        ]
+      }
+    ],
+    "MeetingPrep": [
+      {
+        "field": "id",
+        "type": "String",
+        "native": [
+          "@db.Uuid"
+        ]
+      },
+      {
+        "field": "tenantId",
+        "type": "String",
+        "native": [
+          "@db.Uuid"
+        ]
+      },
+      {
+        "field": "meetingId",
+        "type": "String",
+        "native": [
+          "@db.Uuid"
+        ]
+      },
+      {
+        "field": "clientId",
+        "type": "String?",
+        "native": [
+          "@db.Uuid"
+        ]
+      },
+      {
+        "field": "status",
+        "type": "MeetingPrepStatus",
+        "native": []
+      },
+      {
+        "field": "agenda",
+        "type": "Json",
+        "native": []
+      },
+      {
+        "field": "talkingPoints",
+        "type": "Json",
+        "native": []
+      },
+      {
+        "field": "risks",
+        "type": "Json",
+        "native": []
+      },
+      {
+        "field": "followUps",
+        "type": "Json",
+        "native": []
+      },
+      {
+        "field": "emailEvidence",
+        "type": "Json",
+        "native": []
+      },
+      {
+        "field": "summary",
+        "type": "String?",
+        "native": []
+      },
+      {
+        "field": "provider",
+        "type": "String?",
+        "native": []
+      },
+      {
+        "field": "model",
+        "type": "String?",
+        "native": []
+      },
+      {
+        "field": "promptHash",
+        "type": "String?",
+        "native": []
+      },
+      {
+        "field": "generatedFrom",
+        "type": "Json",
+        "native": []
+      },
+      {
+        "field": "editedByUserId",
+        "type": "String?",
+        "native": [
+          "@db.Uuid"
+        ]
+      },
+      {
+        "field": "sharedAt",
+        "type": "DateTime?",
+        "native": [
+          "@db.Timestamptz(6)"
+        ]
+      },
+      {
+        "field": "sharedByUserId",
+        "type": "String?",
+        "native": [
+          "@db.Uuid"
+        ]
+      },
+      {
+        "field": "createdAt",
+        "type": "DateTime",
+        "native": [
+          "@db.Timestamptz(6)"
+        ]
+      },
+      {
+        "field": "updatedAt",
+        "type": "DateTime",
+        "native": [
+          "@db.Timestamptz(6)"
+        ]
+      }
+    ],
+    "Client": [
+      {
+        "field": "id",
+        "type": "String",
+        "native": [
+          "@db.Uuid"
+        ]
+      },
+      {
+        "field": "name",
+        "type": "String",
+        "native": []
+      },
+      {
+        "field": "website",
+        "type": "String?",
+        "native": []
+      },
+      {
+        "field": "primaryContactName",
+        "type": "String?",
+        "native": []
+      },
+      {
+        "field": "primaryContactEmail",
+        "type": "String?",
+        "native": [
+          "@db.Citext"
+        ]
+      },
+      {
+        "field": "intakeData",
+        "type": "Json",
+        "native": []
+      }
+    ],
+    "User": [
+      {
+        "field": "id",
+        "type": "String",
+        "native": [
+          "@db.Uuid"
+        ]
+      },
+      {
+        "field": "email",
+        "type": "String",
+        "native": [
+          "@db.Citext"
+        ]
+      },
+      {
+        "field": "firstName",
+        "type": "String?",
+        "native": []
+      },
+      {
+        "field": "lastName",
+        "type": "String?",
+        "native": []
+      }
+    ],
+    "Meeting": [
+      {
+        "field": "id",
+        "type": "String",
+        "native": [
+          "@db.Uuid"
+        ]
+      },
+      {
+        "field": "clientId",
+        "type": "String?",
+        "native": [
+          "@db.Uuid"
+        ]
+      },
+      {
+        "field": "subject",
+        "type": "String",
+        "native": []
+      },
+      {
+        "field": "location",
+        "type": "String?",
+        "native": []
+      },
+      {
+        "field": "startsAt",
+        "type": "DateTime",
+        "native": [
+          "@db.Timestamptz(6)"
+        ]
+      },
+      {
+        "field": "endsAt",
+        "type": "DateTime",
+        "native": [
+          "@db.Timestamptz(6)"
+        ]
+      },
+      {
+        "field": "organizerEmail",
+        "type": "String?",
+        "native": [
+          "@db.Citext"
+        ]
+      },
+      {
+        "field": "organizerName",
+        "type": "String?",
+        "native": []
+      },
+      {
+        "field": "metadata",
+        "type": "Json",
+        "native": []
+      }
+    ],
+    "MeetingAttendee": [
+      {
+        "field": "id",
+        "type": "String",
+        "native": [
+          "@db.Uuid"
+        ]
+      },
+      {
+        "field": "email",
+        "type": "String?",
+        "native": [
+          "@db.Citext"
+        ]
+      },
+      {
+        "field": "name",
+        "type": "String?",
+        "native": []
+      },
+      {
+        "field": "role",
+        "type": "String?",
+        "native": []
+      }
+    ],
+    "MeetingDebrief": [
+      {
+        "field": "id",
+        "type": "String",
+        "native": [
+          "@db.Uuid"
+        ]
+      },
+      {
+        "field": "meetingId",
+        "type": "String",
+        "native": [
+          "@db.Uuid"
+        ]
+      },
+      {
+        "field": "clientId",
+        "type": "String?",
+        "native": [
+          "@db.Uuid"
+        ]
+      },
+      {
+        "field": "authorUserId",
+        "type": "String?",
+        "native": [
+          "@db.Uuid"
+        ]
+      },
+      {
+        "field": "keyVersion",
+        "type": "String?",
+        "native": []
+      },
+      {
+        "field": "confidential",
+        "type": "Boolean",
+        "native": []
+      },
+      {
+        "field": "accessLevel",
+        "type": "String",
+        "native": []
+      },
+      {
+        "field": "status",
+        "type": "MeetingDebriefStatus",
+        "native": []
+      },
+      {
+        "field": "sharedAt",
+        "type": "DateTime?",
+        "native": [
+          "@db.Timestamptz(6)"
+        ]
+      },
+      {
+        "field": "sharedByUserId",
+        "type": "String?",
+        "native": [
+          "@db.Uuid"
+        ]
+      },
+      {
+        "field": "createdAt",
+        "type": "DateTime",
+        "native": [
+          "@db.Timestamptz(6)"
+        ]
+      },
+      {
+        "field": "updatedAt",
+        "type": "DateTime",
+        "native": [
+          "@db.Timestamptz(6)"
+        ]
+      }
+    ],
+    "EngagementCampaign": [
+      {
+        "field": "id",
+        "type": "String",
+        "native": [
+          "@db.Uuid"
+        ]
+      },
+      {
+        "field": "clientId",
+        "type": "String?",
+        "native": [
+          "@db.Uuid"
+        ]
+      },
+      {
+        "field": "name",
+        "type": "String",
+        "native": []
+      },
+      {
+        "field": "type",
+        "type": "String",
+        "native": []
+      },
+      {
+        "field": "status",
+        "type": "String",
+        "native": []
+      },
+      {
+        "field": "subject",
+        "type": "String?",
+        "native": []
+      },
+      {
+        "field": "sentAt",
+        "type": "DateTime?",
+        "native": [
+          "@db.Timestamptz(6)"
+        ]
+      },
+      {
+        "field": "createdAt",
+        "type": "DateTime",
+        "native": [
+          "@db.Timestamptz(6)"
+        ]
+      }
+    ]
+  },
+  "enums": {
+    "MeetingPrepStatus": [
+      "generated",
+      "edited",
+      "reviewed",
+      "approved",
+      "stale",
+      "failed"
+    ],
+    "MeetingDebriefStatus": [
+      "generated",
+      "edited",
+      "approved"
+    ]
+  },
+  "derived": {
+    "OutreachRecord.body": "summarizeText turns nullable body into normalized string capped2000 UTF16 with three-dot suffix only when truncated",
+    "campaigns": [
+      "clientName nullable string",
+      "recipientCount array length",
+      "createdBy nullable email string"
+    ],
+    "meetingRelations": {
+      "client": "Client summary or null",
+      "attendees": "selected four fields, uncapped, ordered by hidden createdAt asc",
+      "preps": "all MeetingPrep scalar fields,0..1 latest createdAt",
+      "debriefs": "selected metadata + author summary,0..1 latest createdAt; no ciphertext/iv/authTag"
+    },
+    "recordRelations": [
+      "client summary or null",
+      "meeting selected projection or null",
+      "createdBy user summary or null"
+    ]
+  }
+}

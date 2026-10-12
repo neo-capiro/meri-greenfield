@@ -1,0 +1,595 @@
+{
+  "base": "ede7b56845816d38d0bbffab5a657aaa4f978739",
+  "head": "8854d1c0bb47d8b8b002643ee00e8edebe49ef41",
+  "scope": "LOCAL_SOURCE_ONLY_NO_RUNTIME",
+  "originalEntries": 7186,
+  "identities": [
+    {
+      "path": "packages/contracts/retrieval-0.2/program-elements.schema.json",
+      "bytes": 46287,
+      "sha256": "e6d583358ca873aebffdd6659368db8f48ed44652e2df91d1770cc0c2f0a242d"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/program-elements-validation.mjs",
+      "bytes": 16307,
+      "sha256": "9fd0d189a6ddfe66b3dd8c23d98ede6298c91f525c20a1c9379d33ae372c88b7"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-program-elements.test.mjs",
+      "bytes": 17982,
+      "sha256": "bd08bff4e9ac6743fe5ac794d5e7b4b8b15163181ca9e3224575cc5faae68692"
+    }
+  ],
+  "checks": [
+    {
+      "name": "apps/api/src/meri/meri-tools.service.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/program-element/program-element-read.service.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "packages/shared/src/funding-claim.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "packages/shared/src/index.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "packages/shared/src/defense-budget-line.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-defense-budget-tool.helpers.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/program-element/funding-claim.helpers.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/program-element/budget-line-lineage.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/schema.prisma:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/common/meri-evidence-accuracy-flags.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/program-element/models/conference-probability.service.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/program-element/program-element.controller.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-defense-budget-tool.helpers.spec.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-tools.defense-budget.spec.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/program-element/funding-claim.spec.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/package.json:unchanged",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.peCode:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.peCode:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.service:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.service:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.serviceCode:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.serviceCode:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.appropriationType:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.appropriationType:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.budgetActivity:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.budgetActivity:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.budgetActivityName:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.budgetActivityName:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.lineNumber:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.lineNumber:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.title:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.title:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.description:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.description:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.acatLevel:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.acatLevel:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.programOfRecord:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.programOfRecord:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.status:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.status:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.rDocUrl:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.rDocUrl:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.pDocUrl:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.pDocUrl:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.oDocUrl:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.oDocUrl:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.raw:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.raw:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.source:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.source:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.sourceConfidence:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.sourceConfidence:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.firstSeenFy:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.firstSeenFy:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.lastSyncedAt:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.lastSyncedAt:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.retiredAt:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.retiredAt:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.retiredReason:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement.retiredReason:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElement:all-and-only-scalars-plus-projection",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.id:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.id:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.peCode:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.peCode:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.fy:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.fy:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.request:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.request:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.request:lossless private wire",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.hascMark:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.hascMark:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.hascMark:lossless private wire",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.sascMark:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.sascMark:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.sascMark:lossless private wire",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.hacDMark:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.hacDMark:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.hacDMark:lossless private wire",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.sacDMark:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.sacDMark:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.sacDMark:lossless private wire",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.conference:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.conference:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.conference:lossless private wire",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.ndaaConference:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.ndaaConference:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.ndaaConference:lossless private wire",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.enacted:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.enacted:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.enacted:lossless private wire",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.reprogrammed:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.reprogrammed:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.reprogrammed:lossless private wire",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.executed:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.executed:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.executed:lossless private wire",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.notes:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.notes:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.rDocSection:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.rDocSection:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.raw:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.raw:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.lastSyncedAt:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear.lastSyncedAt:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementYear:all-and-only-scalars-plus-projection",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementMilestone.id:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementMilestone.id:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementMilestone.peCode:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementMilestone.peCode:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementMilestone.milestoneType:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementMilestone.milestoneType:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementMilestone.plannedDate:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementMilestone.plannedDate:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementMilestone.actualDate:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementMilestone.actualDate:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementMilestone.status:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementMilestone.status:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementMilestone.source:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementMilestone.source:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementMilestone.notes:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementMilestone.notes:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementMilestone.lastSyncedAt:required",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementMilestone.lastSyncedAt:nullability",
+      "passed": true
+    },
+    {
+      "name": "ProgramElementMilestone:all-and-only-scalars-plus-projection",
+      "passed": true
+    },
+    {
+      "name": "private URN",
+      "passed": true
+    },
+    {
+      "name": "mode-only trusted context",
+      "passed": true
+    },
+    {
+      "name": "no detail years cap",
+      "passed": true
+    },
+    {
+      "name": "no timeline years/milestone cap",
+      "passed": true
+    },
+    {
+      "name": "raw Decimal positive/negative precision pattern",
+      "passed": true
+    },
+    {
+      "name": "forecast confidence has no fabricated probability cap",
+      "passed": true
+    },
+    {
+      "name": "lineage note literal pinned",
+      "passed": true
+    },
+    {
+      "name": "source timeline null conflicts",
+      "passed": true
+    },
+    {
+      "name": "source statistical predictor persist=false",
+      "passed": true
+    },
+    {
+      "name": "source cache case normalization",
+      "passed": true
+    },
+    {
+      "name": "source legacy output field stripping",
+      "passed": true
+    },
+    {
+      "name": "canonical inert reuse",
+      "passed": true
+    },
+    {
+      "name": "no effect port",
+      "passed": true
+    },
+    {
+      "name": "no private import",
+      "passed": true
+    },
+    {
+      "name": "original Git entries exact",
+      "passed": true
+    },
+    {
+      "name": "original working files unchanged",
+      "passed": true
+    },
+    {
+      "name": "only three source additions",
+      "passed": true
+    }
+  ],
+  "passed": 142,
+  "failed": 0
+}

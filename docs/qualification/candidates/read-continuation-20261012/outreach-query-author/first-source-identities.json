@@ -1,0 +1,17 @@
+[
+  {
+    "path": "packages/contracts/retrieval-0.2/outreach-query.schema.json",
+    "bytes": 20403,
+    "sha256": "b82eb8024c2e68461f68e29c15b0e518ae5b93c0e1bc13fffd6ea58319801708"
+  },
+  {
+    "path": "packages/contracts/retrieval-0.2/outreach-query-validation.mjs",
+    "bytes": 7887,
+    "sha256": "b0a1eb8f5be0cb05a6fab05d1336162c050ad717d7c07d733eaead1239c62994"
+  },
+  {
+    "path": "packages/contracts/test/retrieval-outreach-query.test.mjs",
+    "bytes": 15505,
+    "sha256": "ff203e54e006041fb8c5aac88778135c7a983507986d9f748d7f44211ab7d5ad"
+  }
+]

@@ -1,0 +1,92 @@
+{
+  "files": [
+    {
+      "path": "packages/contracts/commands-0.2/artifact-file-validation.mjs",
+      "reference": "d710e9c62a6455a5f512646ef3014117498aa99c"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/artifact-file.schema.json",
+      "reference": "d710e9c62a6455a5f512646ef3014117498aa99c"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/task-create-validation.mjs",
+      "reference": "d710e9c62a6455a5f512646ef3014117498aa99c"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/task-create.schema.json",
+      "reference": "d710e9c62a6455a5f512646ef3014117498aa99c"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/validate.mjs",
+      "reference": "d710e9c62a6455a5f512646ef3014117498aa99c"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/outreach-query-validation.mjs",
+      "reference": "b73c2994080cb9c03647f4ddf07f8057e37b71d3"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/outreach-query.schema.json",
+      "reference": "b73c2994080cb9c03647f4ddf07f8057e37b71d3"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/pe-references-validation.mjs",
+      "reference": "cb5310d34cddd13d04b2233c937f271b5b4713d1"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/program-elements-validation.mjs",
+      "reference": "790638e4908429f190dd6414814ee872145fa289"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/program-elements.schema.json",
+      "reference": "790638e4908429f190dd6414814ee872145fa289"
+    },
+    {
+      "path": "packages/contracts/test/command-artifact-file.test.mjs",
+      "reference": "d710e9c62a6455a5f512646ef3014117498aa99c"
+    },
+    {
+      "path": "packages/contracts/test/command-contracts-integration-independent.test.mjs",
+      "reference": "d710e9c62a6455a5f512646ef3014117498aa99c"
+    },
+    {
+      "path": "packages/contracts/test/command-payloads-independent.test.mjs",
+      "reference": "d710e9c62a6455a5f512646ef3014117498aa99c"
+    },
+    {
+      "path": "packages/contracts/test/command-task-create.test.mjs",
+      "reference": "d710e9c62a6455a5f512646ef3014117498aa99c"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-backend-next-independent.test.mjs",
+      "reference": "1df6ef0acdb834634283eaa2bf7ff2dfd3d4f717"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-outreach-query-independent.test.mjs",
+      "reference": "ec3e54045fcdf62941629e2ed7b4f40455ed04c4"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-outreach-query.test.mjs",
+      "reference": "b73c2994080cb9c03647f4ddf07f8057e37b71d3"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-pe-reference-detachment-independent.test.mjs",
+      "reference": "cb5310d34cddd13d04b2233c937f271b5b4713d1"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-pe-reference-detachment.test.mjs",
+      "reference": "cb5310d34cddd13d04b2233c937f271b5b4713d1"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-pe-references.test.mjs",
+      "reference": "cb5310d34cddd13d04b2233c937f271b5b4713d1"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-program-elements-independent.test.mjs",
+      "reference": "3b06986d2f2dd2b89d17acff97c1fc1091aab85b"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-program-elements.test.mjs",
+      "reference": "790638e4908429f190dd6414814ee872145fa289"
+    }
+  ]
+}

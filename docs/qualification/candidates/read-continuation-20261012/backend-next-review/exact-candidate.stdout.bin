@@ -1,0 +1,137 @@
+✔ all139 originals and67 prior descriptors/callbacks survive exactly four new mappings (10.724262ms)
+✔ all71 exact schema byte pins preserve pending closed handlers (12.205141ms)
+✔ query_outreach: actual callbacks preserve detached original request and canonical digest (3.005892ms)
+✔ query_outreach: trusted context is mandatory, closed, and stripped before family output callback (0.829067ms)
+✔ query_outreach: inert hostile request/context/result never invokes caller accessors (1.671204ms)
+✔ query_outreach: canonical integrity refuses handler/schema/retry/mapping injection (60.512441ms)
+✔ search_program_elements: actual callbacks preserve detached original request and canonical digest (1.809282ms)
+✔ search_program_elements: trusted context is mandatory, closed, and stripped before family output callback (0.598611ms)
+✔ search_program_elements: inert hostile request/context/result never invokes caller accessors (1.380187ms)
+✔ search_program_elements: canonical integrity refuses handler/schema/retry/mapping injection (31.225298ms)
+✖ get_program_element: actual callbacks preserve detached original request and canonical digest (3.190249ms)
+✖ get_program_element: trusted context is mandatory, closed, and stripped before family output callback (0.382215ms)
+✔ get_program_element: inert hostile request/context/result never invokes caller accessors (0.934656ms)
+✔ get_program_element: canonical integrity refuses handler/schema/retry/mapping injection (27.72003ms)
+✖ get_pe_budget_timeline: actual callbacks preserve detached original request and canonical digest (1.234698ms)
+✖ get_pe_budget_timeline: trusted context is mandatory, closed, and stripped before family output callback (0.228724ms)
+✔ get_pe_budget_timeline: inert hostile request/context/result never invokes caller accessors (0.885992ms)
+✔ get_pe_budget_timeline: canonical integrity refuses handler/schema/retry/mapping injection (30.721155ms)
+✔ production gateway remains closed before any authority/budget port for all71 reads (9.161973ms)
+✔ outreach callback resolves names only via exact trusted assertion and keeps UUID identity (0.944501ms)
+✔ outreach selected limit/status/client reach output correlation and full fetched count (1.534138ms)
+✔ exact outreach precedence suppresses client resolution and cannot accept list result (0.426251ms)
+✔ program search callback preserves scalar fallback and bounded paging (0.534084ms)
+✖ program detail and timeline selectors retain distinct case semantics (0.573813ms)
+✖ program evidence mode controls actual lineage output without becoming authorization (4.262582ms)
+✖ program Decimal string prerequisite and stored-year identity/order survive composition (1.31603ms)
+✔ PE direct factory now returns detached nested result, canonical behavior preserved (1.775701ms)
+✔ private command loader composes normalized task payload without retrieval mapping (29.601396ms)
+✔ private artifact loader preserves immutable tuple and refuses destination substitution (2.049633ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 22
+ℹ fail 7
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2033.999327
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-backend-next-independent.test.mjs:48:2
+✖ get_program_element: actual callbacks preserve detached original request and canonical digest (3.190249ms)
+  Error: Budget identity/exhibit mismatch
+      at fail (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:3:28)
+      at identity (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:24:84)
+      at Object.assertProgramElementOutput (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:169:83)
+      at Object.outputAssert (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/catalog-validation.mjs:26:61)
+      at Object.assertOutput (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:99:24)
+      at check (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:29:79)
+      at TestContext.<anonymous> (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:50:31)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+
+test at packages/contracts/test/retrieval-backend-next-independent.test.mjs:52:2
+✖ get_program_element: trusted context is mandatory, closed, and stripped before family output callback (0.382215ms)
+  Error: Budget identity/exhibit mismatch
+      at fail (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:3:28)
+      at identity (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:24:84)
+      at Object.assertProgramElementOutput (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:169:83)
+      at Object.outputAssert (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/catalog-validation.mjs:26:61)
+      at Object.assertOutput (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:99:24)
+      at check (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:29:79)
+      at TestContext.<anonymous> (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:53:134)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+
+test at packages/contracts/test/retrieval-backend-next-independent.test.mjs:48:2
+✖ get_pe_budget_timeline: actual callbacks preserve detached original request and canonical digest (1.234698ms)
+  Error: Budget identity/exhibit mismatch
+      at fail (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:3:28)
+      at identity (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:24:84)
+      at Object.assertProgramElementOutput (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:169:83)
+      at Object.outputAssert (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/catalog-validation.mjs:30:61)
+      at Object.assertOutput (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:99:24)
+      at check (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:29:79)
+      at TestContext.<anonymous> (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:50:31)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+
+test at packages/contracts/test/retrieval-backend-next-independent.test.mjs:52:2
+✖ get_pe_budget_timeline: trusted context is mandatory, closed, and stripped before family output callback (0.228724ms)
+  Error: Budget identity/exhibit mismatch
+      at fail (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:3:28)
+      at identity (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:24:84)
+      at Object.assertProgramElementOutput (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:169:83)
+      at Object.outputAssert (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/catalog-validation.mjs:30:61)
+      at Object.assertOutput (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:99:24)
+      at check (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:29:79)
+      at TestContext.<anonymous> (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:53:134)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+
+test at packages/contracts/test/retrieval-backend-next-independent.test.mjs:88:1
+✖ program detail and timeline selectors retain distinct case semantics (0.573813ms)
+  Error: Budget identity/exhibit mismatch
+      at fail (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:3:28)
+      at identity (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:24:84)
+      at Object.assertProgramElementOutput (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:169:83)
+      at Object.outputAssert (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/catalog-validation.mjs:26:61)
+      at Object.assertOutput (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:99:24)
+      at check (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:29:79)
+      at TestContext.<anonymous> (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:89:61)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+
+test at packages/contracts/test/retrieval-backend-next-independent.test.mjs:91:1
+✖ program evidence mode controls actual lineage output without becoming authorization (4.262582ms)
+  Error: Budget identity/exhibit mismatch
+      at fail (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:3:28)
+      at identity (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:24:84)
+      at Object.assertProgramElementOutput (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:169:83)
+      at Object.outputAssert (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/catalog-validation.mjs:26:61)
+      at Object.assertOutput (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:99:24)
+      at check (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:29:79)
+      at TestContext.<anonymous> (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:92:252)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+
+test at packages/contracts/test/retrieval-backend-next-independent.test.mjs:94:1
+✖ program Decimal string prerequisite and stored-year identity/order survive composition (1.31603ms)
+  Error: Budget identity/exhibit mismatch
+      at fail (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:3:28)
+      at identity (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:24:84)
+      at Object.assertProgramElementOutput (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:169:83)
+      at Object.outputAssert (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/catalog-validation.mjs:26:61)
+      at Object.assertOutput (file:///workspace/meri-backend-next-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:99:24)
+      at check (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:29:79)
+      at TestContext.<anonymous> (file:///workspace/meri-backend-next-review-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:95:108)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)

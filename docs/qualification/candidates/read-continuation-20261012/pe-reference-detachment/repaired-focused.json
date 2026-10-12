@@ -1,0 +1,39 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "packages/contracts/test/retrieval-pe-reference-detachment.test.mjs",
+    "packages/contracts/test/retrieval-pe-references.test.mjs",
+    "packages/contracts/test/retrieval-pe-references-independent.test.mjs",
+    "packages/contracts/test/retrieval-reference-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-catalog-bindings.test.mjs"
+  ],
+  "cwd": "/workspace/meri-pe-reference-detachment-20261012",
+  "sourceHead": "8dcc6e13f360c15d9ba0f7c9fbd3419f1318afe3",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-12T19:37:20.422305+00:00",
+  "durationSeconds": 6.234,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 284184,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/repaired-focused.stdout.bin",
+      "bytes": 10623,
+      "sha256": "5f6b849ce642c3011fc3d5b5e344ed11dfe904e9988070bb606297db57995097"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/repaired-focused.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

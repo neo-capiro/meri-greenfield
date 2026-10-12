@@ -1,0 +1,75 @@
+✔ command independent: task defaults and final whitespace trim preserve exact three arguments (3.237285ms)
+✔ command independent: task UTF16 title admission rejects rather than truncates (0.667813ms)
+✔ command independent: no unadvertised task owner description or authority (1.029076ms)
+✔ command independent: client name resolution is exact trusted reference not actor authority (0.855836ms)
+✔ command independent: client UUID selector cannot substitute another destination (0.593142ms)
+✔ command independent: client context is closed and does not default binding (0.359691ms)
+✔ command independent: due date exact leap day and date-column midnight only (1.243479ms)
+✔ command independent: task direct command enforces normalized date title and zero attachments (2.614049ms)
+✔ command independent: task command uses exact original full binding (1.147955ms)
+✔ command independent: task public action version and scope are checked (0.83145ms)
+✔ command independent: exact six-field todo task result has no invented owner (2.373406ms)
+✔ command independent: task result title client dueDate and todo cannot drift (0.876067ms)
+✔ command independent: task creation timestamp finite canonical with no invented freshness (0.859561ms)
+✔ command independent: filing normalization returns exact public objects and two destination arguments (1.642218ms)
+✔ command independent: filing cardinality exactly1–10 (0.910758ms)
+✔ command independent: filing duplicate object versions and case aliases refuse (0.958961ms)
+✔ command independent: filing legacy attachment IDs cannot stand in for exact references (0.675315ms)
+✔ command independent: filing immutable reference fields use public grammar (0.577638ms)
+✔ command independent: filing same-tenant scopes do not fabricate scope union policy (0.681093ms)
+✔ command independent: destination selectors context and conversation cannot drift (0.497768ms)
+✔ command independent: filing command full producer binding and exact normalized args (2.016741ms)
+✔ command independent: filing result correlates exact digest and complete selected set (2.380016ms)
+✔ command independent: each exact object field including scopes contributes to result binding (1.093974ms)
+✔ command independent: pre-storage pending and failed preserve reason-only observations (0.490817ms)
+✔ command independent: persisted quarantine and rejected observations stay non-indexed (1.221516ms)
+✔ command independent: saved permits pending indexing but never reason or not_indexed (0.755035ms)
+✔ command independent: persisted tuple is all-or-none and saved cannot be pre-storage (1.019843ms)
+✔ command independent: pending failed reason and boolean reuse cannot be forged (0.692621ms)
+✔ command independent: partial siblings do not produce an aggregate receipt (1.387064ms)
+✔ command independent: per-item status cannot claim read authority or extra source facts (0.802656ms)
+✔ command independent: receipt immutable command identity fields all correlate (1.735038ms)
+✔ command independent: receipt permits recovered executor and supplied aggregate outcomes (1.260003ms)
+✔ command independent: receipt stable tenant actor conversation run still refuse drift (0.955686ms)
+✔ command independent: receipt scope exact set permits ordering only (1.309844ms)
+✔ command independent: optional generated version correlation keeps logical and storage versions distinct (2.483302ms)
+✔ command independent: generated and preview flags remain observations not admission (3.670095ms)
+✔ command independent: canonical proposal and recovered execution are reused for both actions (3.527772ms)
+✔ command independent: proposal binds every attachment version hash bytes and scope (0.596827ms)
+✔ command independent: task command and results are detached snapshots (0.304788ms)
+✔ command independent: filing results receipt and versions are detached deeply (1.465172ms)
+✔ command independent: getters proxies coercion and toJSON remain inert across entry surfaces (1.031941ms)
+✔ command independent: cycles hidden properties symbols prototypes and sparse refs refuse (0.263917ms)
+✔ command independent: blank optional task selectors stay null and cannot establish a client (0.343817ms)
+✔ command independent: date selector trims before strict date-only admission (0.244167ms)
+✔ command independent: found attachment filenames are strings even when empty (2.820068ms)
+✔ command independent: caught empty Error message remains an explicit failed reason string (0.572179ms)
+✖ command independent: pending is persisted quarantine, unavailable upload bytes are failed (1.317971ms)
+ℹ tests 47
+ℹ suites 0
+ℹ pass 46
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 405.471144
+
+✖ failing tests:
+
+test at packages/contracts/test/command-payloads-independent.test.mjs:80:1
+✖ command independent: pending is persisted quarantine, unavailable upload bytes are failed (1.317971ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-command-payloads-review-20261012/packages/contracts/test/command-payloads-independent.test.mjs:80:127)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }

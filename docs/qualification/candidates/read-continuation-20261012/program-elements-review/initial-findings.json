@@ -1,0 +1,17 @@
+{
+  "candidate": "5f336882ba60cc47b441160fadb387cd63fd9089",
+  "independentTests": 43,
+  "passed": 26,
+  "failed": 17,
+  "caution": "Some initial negative controls pass only because earlier shape omission rejects baseline; next controls admit baseline before mutation. No acceptance from this result.",
+  "findings": [
+    "Search five funding claim slots are nullable, including four residual service claims.",
+    "Enforce lineage includes fixed note.",
+    "Timeline cycle unknown and null requestConflictValuesM are reachable.",
+    "Valid detail admits raw/year amount contradiction, missing year claim, top/year claim contradiction and mismatched duplicate cycle anchor.",
+    "Valid detail admits arbitrary paired identity labels contrary to available code/appropriation evidence.",
+    "Timeline source conflict observations are nonzero and unique."
+  ],
+  "processGroup": 289121,
+  "ownedGroupAbsent": true
+}

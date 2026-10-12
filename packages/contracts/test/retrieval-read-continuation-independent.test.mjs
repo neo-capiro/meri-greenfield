@@ -1,5 +1,5 @@
 // Explicit next reviewed additions; prior descriptor values and hashes remain unchanged.
-const nextIds = ["search_sec_filings", "search_fara_registrations", "search_lda_filings", "search_acquisition_personnel", "get_acquisition_person", "get_bill_status", "search_floor_votes", "search_congress_bills", "read_bill_text", "get_committee_roster", "list_members", "get_pe_contractors", "get_pe_bills", "get_pe_report_language", "get_state_rule_status", "get_certification_status", "search_intel_articles", "list_global_datasets", "get_representation", "get_state_bill_status", "search_state_floor_votes", "query_regulatory_dockets", "find_contacts", "resolve_entity", "search_tracked_bills", "query_intelligence", "search_public_web", "scrape_web_page", "search_sam_opportunities", "get_florida_budget_project"];
+const nextIds = ["search_sec_filings", "search_fara_registrations", "search_lda_filings", "search_acquisition_personnel", "get_acquisition_person", "get_bill_status", "search_floor_votes", "search_congress_bills", "read_bill_text", "get_committee_roster", "list_members", "get_pe_contractors", "get_pe_bills", "get_pe_report_language", "get_state_rule_status", "get_certification_status", "search_intel_articles", "list_global_datasets", "get_representation", "get_state_bill_status", "search_state_floor_votes", "query_regulatory_dockets", "find_contacts", "resolve_entity", "search_tracked_bills", "query_intelligence", "search_public_web", "scrape_web_page", "search_sam_opportunities", "get_florida_budget_project", "query_outreach", "search_program_elements", "get_program_element", "get_pe_budget_timeline"];
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -72,11 +72,11 @@ function output(id){
 const verify=(id,page=output(id),raw=request(id),ctx=context(id))=>resolve(id).assertOutput(page,{...ctx,request:raw});
 
 test('independent original139 boundaries and prior21 descriptors survive the16 prior and9 next explicit mappings',()=>{
-  assertCatalog(catalog);assert.equal(catalog.catalogVersion,'0.2.9');
+  assertCatalog(catalog);assert.equal(catalog.catalogVersion,'0.2.10');
   assert.equal(catalog.originals.length,139);assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);
   assert.equal(catalog.originals.filter(x=>x.disposition==='deferred').length,43);
-  assert.equal(catalog.operations.length,67);assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,66);
-  assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.state==='pending').length,30);
+  assert.equal(catalog.operations.length,71);assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,70);
+  assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.state==='pending').length,26);
   assert.deepEqual(catalog.operations.filter(x=>!additions.includes(x.operation.id)&&!nextIds.includes(x.operation.id)),baseline.descriptors);
   for(const before of baseline.originals)assert.deepEqual(catalog.originals.find(x=>x.id===before.id),
     (additions.includes(before.id)||nextIds.includes(before.id))?{...before,state:'mapped',replacement:{id:before.id,version:'0.2.0'}}:before);
@@ -91,8 +91,8 @@ test('independent original139 boundaries and prior21 descriptors survive the16 p
 });
 
 test('independent registry exact raw schema pins, explicit context sets and unavailable state',()=>{
-  assert.equal(CATALOG_OPERATION_BINDINGS.length,67);
-  assert.equal(new Set(CATALOG_OPERATION_BINDINGS.map(x=>x.id)).size,67);
+  assert.equal(CATALOG_OPERATION_BINDINGS.length,71);
+  assert.equal(new Set(CATALOG_OPERATION_BINDINGS.map(x=>x.id)).size,71);
   for(const binding of CATALOG_OPERATION_BINDINGS){
     const c=resolve(binding.id),raw=readFileSync(new URL(`../retrieval-0.2/${binding.group}.schema.json`,import.meta.url));
     const schema=JSON.parse(raw);
@@ -274,7 +274,7 @@ for(const [group,create,prefix,id] of [['public-data',createPublicDataValidators
   });
 }
 
-test('independent real source-disabled gateway refuses all67 before any authority, budget or source effect',async()=>{
+test('independent real source-disabled gateway refuses all71 before any authority, budget or source effect',async()=>{
   const fixture=gatewayFixture();
   const gateway=createSourceDisabledGateway({authorityPorts:fixture.ports,budget:fixture.budget,
     limits:gatewayLimits,now:()=>GATEWAY_NOW,newId:()=>uuid('7')});

@@ -1,0 +1,134 @@
+{
+  "scope": "OFFLINE_PACKET_VERIFICATION_ONLY",
+  "sourceCommit": "51a296e7d4a1f3ecc2f2f844e3baeeb11f70962f",
+  "manifestSha256": "79908a1693103e42fe676eb8d31bea8070ba51844eeb85f5d7ec30e452b6f311",
+  "memberCount": 20,
+  "passed": 31,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "safe unique exact packet membership",
+      "passed": true
+    },
+    {
+      "name": "accepted immutable source",
+      "passed": true
+    },
+    {
+      "name": "docs/coordination/reports/CODEX-OUTREACH-QUERY-REVIEW-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/audit-author-packet.py",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/audit-results.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/audit-source.py",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/author-packet-audit.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/cleanup.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/control-trace-correction.md",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/criteria.md",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/dependencies.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/focused-first.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/focused-first.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/focused-first.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/reference-identities.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/source-audit.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/source-audit.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/source-audit.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/source-findings.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/verify-packet.py",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/test/retrieval-outreach-query-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "focused-first captured successfully",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/focused-first.stdout.bin receipt binding",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/focused-first.stderr.bin receipt binding",
+      "passed": true
+    },
+    {
+      "name": "source-audit captured successfully",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/source-audit.stdout.bin receipt binding",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/source-audit.stderr.bin receipt binding",
+      "passed": true
+    },
+    {
+      "name": "source audit passed",
+      "passed": true
+    },
+    {
+      "name": "author packet passed",
+      "passed": true
+    },
+    {
+      "name": "owned resources closed",
+      "passed": true
+    }
+  ]
+}
