@@ -18,13 +18,16 @@ class Clock:
  def __call__(self):return self.now
  def sleep(self,value):self.now+=value
 class Stream:
- def __init__(self,values,clock):self.values=list(values);self.clock=clock;self.closed=0
+ def __init__(self,values,clock):self.values=list(values);self.clock=clock;self.closed=0;self.mode=None
  def read(self,n):
   value=self.values.pop(0) if self.values else b''
   if isinstance(value,Exception):raise value
   if isinstance(value,tuple):self.clock.now+=value[0];return value[1]
   return value
- def close(self):self.closed+=1
+ def close(self):
+  self.closed+=1
+  if self.mode=='close-error':raise OSError('inert-close-error')
+  if self.mode=='late-close':self.clock.now+=16
 class Thread:
  def __init__(self,target,mode,clock):self.target=target;self.mode=mode;self.clock=clock;self.alive=False
  def start(self):
@@ -40,11 +43,12 @@ class Thread:
   if self.mode=='alive-error':raise OSError('inert-reader-status-error')
   return self.alive
 class Child:
- def __init__(self,clock,stdout,stderr,mode):self.clock=clock;self.stdout=Stream(stdout,clock);self.stderr=Stream(stderr,clock);self.mode=mode;self.polls=0;self.kills=0;self.waits=[]
+ def __init__(self,clock,stdout,stderr,mode):self.clock=clock;self.stdout=Stream(stdout,clock);self.stderr=Stream(stderr,clock);self.mode=mode;self.stdout.mode=mode;self.stderr.mode=mode;self.polls=0;self.kills=0;self.waits=[]
  def poll(self):
   self.polls+=1
   if self.mode=='late-poll' and self.polls==1:self.clock.now=11
   if self.mode=='late-total-poll' and self.polls==1:self.clock.now=16
+  if self.mode=='boolean-exit':return False
   return None if self.mode in {'running','kill-error','wait-error','late-wait'} else 0
  def kill(self):
   self.kills+=1
@@ -88,5 +92,8 @@ try:
  r,_,_,_=run('reader-status-error',thread_mode='alive-error');check('reader-status-error-structured-hold',not r['observationEligible'] and r['streams'] is None)
 except Exception as error:
  check('reader-status-error-structured-hold',False,{'escapedClass':type(error).__name__})
+for label in ('close-error','late-close','boolean-exit'):
+ r,_,_,_=run(label,child_mode=label);check(label+'-no-success',not r['observationEligible'])
+r,_,_,_=run('late-read-observation',stderr=((16,b'abc'),b''));check('late-read-counted-without-success',not r['observationEligible'] and r['streams'] is not None and r['streams']['stderr']['observedBytes']==3,{'streams':None if r['streams'] is None else {name:{key:value for key,value in row.items() if key!='data'} for name,row in r['streams'].items()}})
 result={'sourceSha256':hashlib.sha256(source).hexdigest(),'isolatedDefinitions':['Refusal','Budget','capture'],'candidateEntryImported':False,'nativePortsExecuted':False,'facts':facts,'passed':sum(x['passed'] for x in facts),'failed':sum(not x['passed'] for x in facts)}
 output.write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result));raise SystemExit(0 if result['failed']==0 else 1)

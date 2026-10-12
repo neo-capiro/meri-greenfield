@@ -1,0 +1,17 @@
+{
+  "candidate": "0217137304aa80dab662a4e98b934b30a9742cbc",
+  "argv": [
+    "python",
+    "/workspace/meri-native-supervisor-review-20261012/docs/qualification/candidates/native-supervisor-20261012/review/lifecycle-controls.py",
+    "/workspace/meri-native-supervisor-20261012/docs/qualification/candidates/native-supervisor-20261012/author/supervision.py",
+    "/workspace/meri-native-supervisor-review-20261012/docs/qualification/candidates/native-supervisor-20261012/review/freeze-0217137-lifecycle.json"
+  ],
+  "exitCode": 0,
+  "elapsedSeconds": 0.03746336100084591,
+  "harnessCompleted": true,
+  "targetNativeProcesses": 0,
+  "realThreads": 0,
+  "candidateEntryImported": false,
+  "stdoutSha256": "159a906ab89e1173873295eea796e9ca992a4e04bac772b5ca09ae8928507ac3",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

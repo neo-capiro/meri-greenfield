@@ -26,6 +26,17 @@ Named/opened executable identity observations do not establish a fully bracketed
 path ancestry, admitted bounded hash, distributor trust or DLL/runtime closure.
 These are review inputs and limitations, not independently verified native facts.
 
+## Exact first-freeze checkpoint
+
+Candidate `0217137304aa80dab662a4e98b934b30a9742cbc` passed the prior
+72 independent inert assertions and 25 author AST/inert controls. A newly
+exercised NS6 control returned three stderr bytes at second16: observation was
+correctly denied, but `observedBytes` was zero. Expanded replay is74PASS/1FAIL;
+the exact source snapshot, raw failure and command receipt are preserved as
+`review/freeze-0217137-lifecycle-source.py.txt` and `review/late-read-before.*`.
+Source disposition remains HOLD pending the narrow accounting repair and exact
+independent replay. No target process or native port ran.
+
 No supervisor, selected executable, diagnostic, candidate module or native
 process may be imported or run. No network, cloud, database, provider, paid model,
 customer data or infrastructure action is authorized. Source acceptance, if
