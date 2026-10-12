@@ -96,7 +96,7 @@ export function createResearchPortfolioValidators({validateShape, assertSubject,
     } else {
       if (result.items.length > selected.limit) fail('Portfolio changes exceed requested limit');
       events(result.items);
-      if (result.nextCursor !== null && (!result.items.length ||
+      if (result.nextCursor !== null && (result.items.length !== selected.limit ||
           result.nextCursor !== result.items.at(-1).id || result.nextCursor === selected.cursor))
         fail('Portfolio changes cursor must advance from the last returned event');
       for (const event of result.items) {

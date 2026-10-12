@@ -1,0 +1,36 @@
+{
+  "sourceCommit": "deec763c57ba57cc4d7e7915d55b0f8719e13021",
+  "sourceTree": "7826ef35952d118289d3165966971eb30534341c",
+  "base": "e0163fb65a639a28d9423e929058b40b48cc556d",
+  "originalTrackedFiles": 5055,
+  "originalUnchangedFiles": 5054,
+  "centrallyAuthoredDependencyChanges": [
+    {
+      "path": "packages/contracts/retrieval-0.2/operation-contracts.mjs",
+      "baseBlob": "1447d84e2d0074bebb0296e16204e2d7f913315e",
+      "currentBlob": "f5ba11b19952a58023971ca434de2506e96035b8"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/contracts/retrieval-0.2/research-portfolio.schema.json",
+      "bytes": 17893,
+      "sha256": "cb6d881f19cd7f37561e5955a082080211f1fa69ef520f7208ace9c2e3eb41bc",
+      "blob": "bb85ef7a841ae274082f79fa12a83d249af642c5"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/research-portfolio-validation.mjs",
+      "bytes": 6073,
+      "sha256": "23d4ac1d8123d3e64644976af79fba998392ef17dec50ed54182c643be946a1e",
+      "blob": "c3b9bc25205fda82db1af03f465ebae5f8f3b7dd"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-research-portfolio.test.mjs",
+      "bytes": 14520,
+      "sha256": "b9129dadabc34bbe6654a6381a1bdcb4c5797809b5d3aeb799230cd9b1bcc45d",
+      "blob": "772f7af46424b451e8cca994415cbb2612b81a32"
+    }
+  ],
+  "sourceConnectivityEnabled": false,
+  "nativeOrLiveChecksRun": false
+}

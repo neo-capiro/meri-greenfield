@@ -1,0 +1,137 @@
+{
+  "repository": "neo-capiro/capirov2",
+  "sourceCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "observedCurrentCommit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+  "readOnly": true,
+  "privateBodiesPublished": false,
+  "references": [
+    {
+      "path": "packages/shared/src/research-portfolios.ts",
+      "blob": "ed70483bea476eaced8b1ae4e45ccc1f373a1341",
+      "bytes": 31751,
+      "sha256": "8cd82fdc0ac7d6fcb3d61be1b84f6537c50e1bf0d0872043c9e62b46fbb23c90",
+      "observedCurrentBlob": "ed70483bea476eaced8b1ae4e45ccc1f373a1341",
+      "unchanged": true
+    },
+    {
+      "path": "packages/shared/src/index.ts",
+      "blob": "62eb32931826f77abd985bc142f6a65adad6a23a",
+      "bytes": 273389,
+      "sha256": "1a713331de044768f7bd8631db4762a08a3c3541a1bbc064c67bbff46fc9a75f",
+      "observedCurrentBlob": "62eb32931826f77abd985bc142f6a65adad6a23a",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "bytes": 415704,
+      "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194",
+      "observedCurrentBlob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/research-portfolios/research-portfolio-meri-tools.service.ts",
+      "blob": "74023cee501890091d3efc9ec9d1ab4d2b613e93",
+      "bytes": 12620,
+      "sha256": "adaf540aca6c9f757558d7cf50faf0c487f47a5e76fa146af2e93371842598d5",
+      "observedCurrentBlob": "74023cee501890091d3efc9ec9d1ab4d2b613e93",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/research-portfolios/research-portfolio-meri-scope.service.ts",
+      "blob": "1a1132aacc19d8565778ecf83614b2cff658cd3e",
+      "bytes": 6332,
+      "sha256": "35417378d7cdd373ccab8ecfc72f6e0c52ce521d80f93b52a8790c1e998e0ea9",
+      "observedCurrentBlob": "1a1132aacc19d8565778ecf83614b2cff658cd3e",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/research-portfolios/research-portfolios.service.ts",
+      "blob": "a7c7d8eaf81664e71593f380a2935e7bd01b0082",
+      "bytes": 32301,
+      "sha256": "1642c8ae571c6e19305154b0bd2178e63d62bd3434ff3dbf816c209814d744f0",
+      "observedCurrentBlob": "a7c7d8eaf81664e71593f380a2935e7bd01b0082",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/research-portfolios/research-portfolio-changes.service.ts",
+      "blob": "60cc3c51644ae5b8c93fb93a684c544713a97349",
+      "bytes": 15275,
+      "sha256": "7617f9c242bf29a8e062e202f86e6a16f479d3173d94967a2873e8ae768404cb",
+      "observedCurrentBlob": "60cc3c51644ae5b8c93fb93a684c544713a97349",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/research-portfolios/research-portfolio-access.ts",
+      "blob": "6f110e358145ff50e424e2f6805669c0081998fa",
+      "bytes": 1833,
+      "sha256": "927d3292d437c944d80ccb9be6f9e7f77a15906eb9408eb9b3aa1ca259fb7e08",
+      "observedCurrentBlob": "6f110e358145ff50e424e2f6805669c0081998fa",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/research-portfolios/ResearchPortfolioMeriAdapters.contract.spec.ts",
+      "blob": "a63de2addc6944664aab6bb9dd5a94f572232bbc",
+      "bytes": 6299,
+      "sha256": "565f961783dcc294e1c3e387c8b879e9514b820883120be5d792cae093cf6961",
+      "observedCurrentBlob": "a63de2addc6944664aab6bb9dd5a94f572232bbc",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/research-portfolios/research-portfolios.service.spec.ts",
+      "blob": "776dba448f5f9a0d4cd96d8130772692661cd987",
+      "bytes": 18654,
+      "sha256": "c0dae8edf903dd0b4072f5115ee5c634ddf5cfdbf9bd86735ec5ee407435cadf",
+      "observedCurrentBlob": "776dba448f5f9a0d4cd96d8130772692661cd987",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/research-portfolios/research-portfolio-changes.service.spec.ts",
+      "blob": "e5bdf8713f40bd2a23942fac36a07f70033fe5e5",
+      "bytes": 5951,
+      "sha256": "2c9d0dbece415f66885095f3916e00fb0a2e22ecef856949d6efbd328cd71129",
+      "observedCurrentBlob": "e5bdf8713f40bd2a23942fac36a07f70033fe5e5",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/ResearchPortfolioMeriTurnBinding.spec.ts",
+      "blob": "7abf804a8d4b4b8fbd98abdefcadbc10eab627fe",
+      "bytes": 5707,
+      "sha256": "8c67b1cac13c7f93c1bd31102bdcec4fded9898cf92beb6d3c2cd3a8e8d1cdaa",
+      "observedCurrentBlob": "7abf804a8d4b4b8fbd98abdefcadbc10eab627fe",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-rp-proposal-binding.ts",
+      "blob": "77b715b1ca180d3eb73541c28bfa0ee5aa8f74cd",
+      "bytes": 8766,
+      "sha256": "b06a8383d90eb82d9702d2551dbaf052ec56de13f3aedfcb65c7050a6a4bba69",
+      "observedCurrentBlob": "77b715b1ca180d3eb73541c28bfa0ee5aa8f74cd",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/memory/memory-wall.helpers.ts",
+      "blob": "48b9bf4b9246baac7cd3188d012ea7638aeb8a68",
+      "bytes": 7833,
+      "sha256": "91961048fd944885b8a06d229009259cf4866a4d40338d09685b1608f29a9255",
+      "observedCurrentBlob": "48b9bf4b9246baac7cd3188d012ea7638aeb8a68",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-research-evidence.helpers.ts",
+      "blob": "1679ab8e36345772c41eaf7426c736e7a038ab58",
+      "bytes": 11582,
+      "sha256": "a575355a60bf34dc564558643a17245c918381ef85a5006e3db63516907d2fc4",
+      "observedCurrentBlob": "1679ab8e36345772c41eaf7426c736e7a038ab58",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-research-evidence.helpers.spec.ts",
+      "blob": "9949c14c14059ea844d7a508090dd7f96e03d635",
+      "bytes": 14257,
+      "sha256": "5c501ef551215fb5133df55f853fc217f43eeddd388ebdc504ae57d4c1b00c86",
+      "observedCurrentBlob": "9949c14c14059ea844d7a508090dd7f96e03d635",
+      "unchanged": true
+    }
+  ]
+}
