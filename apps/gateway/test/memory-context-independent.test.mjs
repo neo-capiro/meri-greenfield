@@ -1,3 +1,4 @@
+import {verticalDispatchProfiles} from '../../../packages/contracts/test/vertical-source-expectations.mjs';
 /** Independent synthetic composition through real canonical contracts and authority. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -96,7 +97,7 @@ async function denied(f,args={},changes={}) {
 
 test('independent: canonical mail and memory profiles are selected; actual15 stay unavailable',async()=>{
   const selected=CATALOG_OPERATION_BINDINGS.filter(row=>row.dispatchProfile!==undefined);
-  assert.deepEqual(selected.map(row=>[row.id,row.dispatchProfile]),[['list_global_datasets','dataset-metadata/1'],['mail.list_messages','mail-candidates/1'],['mail.search_messages','mail-candidates/1'],[operation.id,'memory-proposals/1']]);
+  assert.deepEqual(selected.map(row=>[row.id,row.dispatchProfile]).sort(),[...verticalDispatchProfiles,['list_global_datasets','dataset-metadata/1'],['mail.list_messages','mail-candidates/1'],['mail.search_messages','mail-candidates/1'],[operation.id,'memory-proposals/1']].sort());
   const catalog=JSON.parse(readFileSync(new URL('packages/contracts/retrieval-0.2/catalog.json',root)));
   assert.equal(catalog.operations.length,97);assert.equal(catalog.originals.length,139);
   const f=fixture();const gateway=createSourceDisabledGateway({authorityPorts:f.authorityPorts,budget:f.budget,limits,now:()=>NOW,newId:()=>id('b')});

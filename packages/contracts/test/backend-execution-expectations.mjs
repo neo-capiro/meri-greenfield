@@ -1,4 +1,4 @@
-import {verticalOperationIds} from './vertical-source-expectations.mjs';
+import {verticalOperationIds,expectedVerticalBoundary,expectedVerticalDescriptor,priorVerticalDescriptor} from './vertical-source-expectations.mjs';
 // Exact declared expected deltas to immutable historical snapshots.
 import assert from 'node:assert/strict';
 // No field is ignored; old callbacks, hashes, outputs and behavior still compare.
@@ -6,7 +6,7 @@ export const addedOperations = Object.freeze(["search_client_knowledge", "query_
 export const fullActionReference = Object.freeze({id:'actions.query',version:'0.2.0'});
 const rawRequests = Object.freeze({"query_outreach": {"before": "OutreachQueryInput", "after": "OutreachQueryRequest"}, "search_program_elements": {"before": "ProgramElementSearchInput", "after": "ProgramElementSearchRequest"}, "get_program_element": {"before": "ProgramElementDetailInput", "after": "ProgramElementDetailRequest"}, "get_pe_budget_timeline": {"before": "ProgramElementTimelineInput", "after": "ProgramElementTimelineRequest"}, "search_public_web": {"before": "PublicWebSearchInput", "after": "PublicWebSearchRequest"}, "scrape_web_page": {"before": "PublicWebPageInput", "after": "PublicWebPageRequest"}, "search_sam_opportunities": {"before": "SamOpportunitiesInput", "after": "SamOpportunitiesRequest"}, "get_florida_budget_project": {"before": "FloridaBudgetInput", "after": "FloridaBudgetRequest"}, "get_state_bill_status": {"before": "StateBillStatusInput", "after": "StateBillStatusRequest"}, "search_state_floor_votes": {"before": "StateFloorVotesInput", "after": "StateFloorVotesRequest"}, "find_contacts": {"before": "TenantContactsInput", "after": "TenantContactsRequest"}, "resolve_entity": {"before": "EntityCandidatesInput", "after": "EntityCandidatesRequest"}, "search_tracked_bills": {"before": "TrackedBillsInput", "after": "TrackedBillsRequest"}, "get_committee_roster": {"before": "CommitteeRosterInput", "after": "CommitteeRosterRequest"}, "list_members": {"before": "MemberListInput", "after": "MemberListRequest"}, "get_pe_contractors": {"before": "PeContractorsInput", "after": "PeContractorsRequest"}, "get_pe_bills": {"before": "PeBillsInput", "after": "PeBillsRequest"}, "get_pe_report_language": {"before": "PeReportLanguageInput", "after": "PeReportLanguageRequest"}, "get_state_rule_status": {"before": "RuleStatusInput", "after": "RuleStatusRequest"}, "get_certification_status": {"before": "CertificationStatusInput", "after": "CertificationStatusRequest"}, "search_sec_filings": {"before": "DisclosuresSecInput", "after": "DisclosuresSecRequest"}, "search_fara_registrations": {"before": "DisclosuresFaraInput", "after": "DisclosuresFaraRequest"}, "search_lda_filings": {"before": "DisclosuresLdaInput", "after": "DisclosuresLdaRequest"}, "get_bill_status": {"before": "FederalBillStatusInput", "after": "FederalBillStatusRequest"}, "search_floor_votes": {"before": "FederalFloorVotesInput", "after": "FederalFloorVotesRequest"}, "search_state_bills": {"before": "StateBillSearchInput", "after": "StateBillSearchRequest"}, "get_state_legislator": {"before": "StateLegislatorInput", "after": "StateLegislatorRequest"}, "query_economic_data": {"before": "PublicEconomicInput", "after": "PublicEconomicRequest"}, "search_federal_grants": {"before": "PublicGrantInput", "after": "PublicGrantRequest"}, "search_federal_awards": {"before": "PublicAwardInput", "after": "PublicAwardRequest"}, "lookup_client_registry": {"before": "ClientRegistryInput", "after": "ClientRegistryRequest"}});
 export function expectedExistingDescriptor(row) {
-  let result=row;
+  let result=expectedVerticalDescriptor(row);
   if(rawRequests[row.operation.id]) {
     const change=rawRequests[row.operation.id], suffix='#/$defs/'+change.before;
     if(!result.inputSchema.id.endsWith(suffix)) throw Error('Unexpected historical input schema: '+row.operation.id);
@@ -20,7 +20,7 @@ export function expectedExistingDescriptor(row) {
 }
 // Only the declared changed fields are reversed; all other bytes remain hashed.
 export function priorExistingDescriptor(row) {
-  let result=row;
+  let result=priorVerticalDescriptor(row);
   if(rawRequests[row.operation.id]) {
     const change=rawRequests[row.operation.id],suffix='#/$defs/'+change.after;
     assert.ok(result.inputSchema.id.endsWith(suffix));
@@ -47,6 +47,7 @@ export function expectedExistingBinding(row) {
   return result;
 }
 export function expectedExistingOriginal(row) {
+  row={...row,boundary:expectedVerticalBoundary(row.id,row.boundary)};
   if(verticalOperationIds.includes(row.id))return {...row,state:'mapped',replacement:{id:row.id,version:'0.2.0'}};
   if(row.id==='query_action_items')return {...row,state:'mapped',replacement:fullActionReference};
   if(addedOperations.includes(row.id))return {...row,state:'mapped',replacement:{id:row.id,version:'0.2.0'}};

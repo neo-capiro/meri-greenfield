@@ -1,4 +1,4 @@
-import {verticalOperationIds,schemaRelativePath} from './vertical-source-expectations.mjs';
+import {expectedVerticalBoundary,schemaRelativePath} from './vertical-source-expectations.mjs';
 import {fullActionReference} from './backend-execution-expectations.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -19,7 +19,7 @@ test('preserves the ten typed additions plus memory read within all139/96/43 bou
   const c = catalog(); assertCatalog(c);
   const ledger = JSON.parse(readFileSync(new URL('../../../docs/coordination/r2/capabilities.json', import.meta.url)));
   assert.deepEqual(c.originals.map(({id,disposition,boundary}) => ({id,disposition,boundary})),
-    ledger.records.map(row => ({id:row.fields.ID,disposition:row.acceptedScope.disposition,boundary:row.acceptedScope.boundary})));
+    ledger.records.map(row => ({id:row.fields.ID,disposition:row.acceptedScope.disposition,boundary:expectedVerticalBoundary(row.fields.ID,row.acceptedScope.boundary)})));
   assert.equal(c.operations.length,97); assert.equal(c.originals.filter(row => row.state==='mapped').length,96);
   assert.equal(c.originals.filter(row => row.disposition==='selected' && row.state==='pending').length,0);
   assert.equal(c.originals.filter(row => row.disposition==='deferred').length,43);

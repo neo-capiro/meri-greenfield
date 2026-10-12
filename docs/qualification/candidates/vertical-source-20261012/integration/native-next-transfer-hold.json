@@ -20,5 +20,11 @@
   "nativeVerdict": "NOT_JOINED",
   "G1Accepted": false,
   "browser": "HOLD",
-  "requiredNext": "Exact module paths/base hashes plus accessible Git branch or separately readable patch/receipt files."
+  "requiredNext": "Exact module paths/base hashes plus accessible Git branch or separately readable patch/receipt files.",
+  "supportedGithubCommitLookup": {
+    "repo": "neo-capiro/meri-greenfield",
+    "commit": "a833eb48437889a8744a9a81012442340cc5dd01",
+    "httpStatus": 422,
+    "result": "No commit found for SHA"
+  }
 }
