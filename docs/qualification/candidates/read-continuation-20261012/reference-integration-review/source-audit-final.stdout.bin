@@ -1,0 +1,452 @@
+{
+  "candidate": "c91f1716a476243abf9df2b9080041841d967f13",
+  "tree": "a9f34bb3f8490e03c609d881565abebd401fa221",
+  "base": "a3e946c1fa264ae7b33205f5b87804ee1ef75773",
+  "originalFiles": 6110,
+  "unchangedOriginalFiles": 6092,
+  "changedOriginalPaths": [
+    "apps/gateway/test/action-item-context-independent.test.mjs",
+    "apps/gateway/test/capability-next-independent.test.mjs",
+    "apps/gateway/test/mail-context-independent.test.mjs",
+    "apps/gateway/test/memory-context-independent.test.mjs",
+    "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+    "packages/contracts/retrieval-0.2/catalog.json",
+    "packages/contracts/retrieval-0.2/validate.mjs",
+    "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+    "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+    "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+    "packages/contracts/test/retrieval-mail.test.mjs",
+    "packages/contracts/test/retrieval-memory-binding.test.mjs",
+    "packages/contracts/test/retrieval-next-bindings.test.mjs",
+    "packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+    "packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+    "packages/contracts/test/retrieval-selected-next-bindings.test.mjs",
+    "packages/contracts/test/retrieval-selected-next-independent.test.mjs"
+  ],
+  "checks": [
+    {
+      "name": "recorded baseline contains exact original PR28 blobs",
+      "result": "PASS"
+    },
+    {
+      "name": "only preexisting reviewer criteria added to baseline snapshot",
+      "result": "PASS"
+    },
+    {
+      "name": "exact reviewed existing-path changes only",
+      "result": "PASS"
+    },
+    {
+      "name": "no original files deleted",
+      "result": "PASS"
+    },
+    {
+      "name": "original public0.1 package and dependencies untouched",
+      "result": "PASS"
+    },
+    {
+      "name": "only reviewed gateway test expectations exempted from runtime byte equality",
+      "result": "PASS"
+    },
+    {
+      "name": "runtime production, worker, proxy and Python source unchanged",
+      "result": "PASS"
+    },
+    {
+      "name": "canonical bounded JSON snapshot owner unchanged",
+      "result": "PASS"
+    },
+    {
+      "name": "at most exact two authorized family identity changes",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted directory bytes: packages/contracts/retrieval-0.2/legislative-directory-validation.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "exact authorized single schema identity replacement: packages/contracts/retrieval-0.2/legislative-directory.schema.json",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted directory bytes: packages/contracts/test/retrieval-legislative-directory.test.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "independent verdict object exists: directory",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted pe bytes: packages/contracts/retrieval-0.2/pe-contractors-validation.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted pe bytes: packages/contracts/retrieval-0.2/pe-references-validation.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted pe bytes: packages/contracts/retrieval-0.2/pe-references.schema.json",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted pe bytes: packages/contracts/test/retrieval-pe-references.test.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "independent verdict object exists: pe",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted rule bytes: packages/contracts/retrieval-0.2/rule-status-validation.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "exact authorized single schema identity replacement: packages/contracts/retrieval-0.2/rule-status.schema.json",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted rule bytes: packages/contracts/test/retrieval-rule-status.test.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "independent verdict object exists: rule",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted certification bytes: packages/contracts/retrieval-0.2/certification-status-validation.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted certification bytes: packages/contracts/retrieval-0.2/certification-status.schema.json",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted certification bytes: packages/contracts/test/retrieval-certification-status.test.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "independent verdict object exists: certification",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted stored bytes: packages/contracts/retrieval-0.2/dataset-metadata-validation.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted stored bytes: packages/contracts/retrieval-0.2/dataset-metadata.schema.json",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted stored bytes: packages/contracts/retrieval-0.2/stored-intelligence-validation.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted stored bytes: packages/contracts/retrieval-0.2/stored-intelligence.schema.json",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted stored bytes: packages/contracts/test/retrieval-dataset-metadata.test.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted stored bytes: packages/contracts/test/retrieval-stored-intelligence.test.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "independent verdict object exists: stored",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted facility bytes: packages/contracts/retrieval-0.2/facility-representation-validation.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted facility bytes: packages/contracts/retrieval-0.2/facility-representation.schema.json",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted facility bytes: packages/contracts/test/retrieval-facility-representation.test.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "independent verdict object exists: facility",
+      "result": "PASS"
+    },
+    {
+      "name": "reviewed exact existing patch: apps/gateway/test/action-item-context-independent.test.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "reviewed exact existing patch: apps/gateway/test/capability-next-independent.test.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "reviewed exact existing patch: apps/gateway/test/mail-context-independent.test.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "reviewed exact existing patch: apps/gateway/test/memory-context-independent.test.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "reviewed exact existing patch: packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "reviewed exact existing patch: packages/contracts/retrieval-0.2/catalog.json",
+      "result": "PASS"
+    },
+    {
+      "name": "reviewed exact existing patch: packages/contracts/retrieval-0.2/validate.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "reviewed exact existing patch: packages/contracts/test/retrieval-action-item-binding.test.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "reviewed exact existing patch: packages/contracts/test/retrieval-action-item-independent.test.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "reviewed exact existing patch: packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "reviewed exact existing patch: packages/contracts/test/retrieval-mail.test.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "reviewed exact existing patch: packages/contracts/test/retrieval-memory-binding.test.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "reviewed exact existing patch: packages/contracts/test/retrieval-next-bindings.test.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "reviewed exact existing patch: packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "reviewed exact existing patch: packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "reviewed exact existing patch: packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "reviewed exact existing patch: packages/contracts/test/retrieval-selected-next-bindings.test.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "reviewed exact existing patch: packages/contracts/test/retrieval-selected-next-independent.test.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "root receipt exact outcome and bounded cleanup: docs/qualification/candidates/read-continuation-20261012/reference-integration/focused-initial.json",
+      "result": "PASS"
+    },
+    {
+      "name": "root capture and zero source diff bound: docs/qualification/candidates/read-continuation-20261012/reference-integration/focused-initial.json",
+      "result": "PASS"
+    },
+    {
+      "name": "root stream exact: docs/qualification/candidates/read-continuation-20261012/reference-integration/focused-initial.stdout.bin",
+      "result": "PASS"
+    },
+    {
+      "name": "root stream exact: docs/qualification/candidates/read-continuation-20261012/reference-integration/focused-initial.stderr.bin",
+      "result": "PASS"
+    },
+    {
+      "name": "root exact result totals: docs/qualification/candidates/read-continuation-20261012/reference-integration/focused-initial.json",
+      "result": "PASS"
+    },
+    {
+      "name": "root receipt exact source head: docs/qualification/candidates/read-continuation-20261012/reference-integration/focused-initial.json",
+      "result": "PASS"
+    },
+    {
+      "name": "root receipt exact outcome and bounded cleanup: docs/qualification/candidates/read-continuation-20261012/reference-integration/focused-namespace-repaired.json",
+      "result": "PASS"
+    },
+    {
+      "name": "root capture and zero source diff bound: docs/qualification/candidates/read-continuation-20261012/reference-integration/focused-namespace-repaired.json",
+      "result": "PASS"
+    },
+    {
+      "name": "root stream exact: docs/qualification/candidates/read-continuation-20261012/reference-integration/focused-namespace-repaired.stdout.bin",
+      "result": "PASS"
+    },
+    {
+      "name": "root stream exact: docs/qualification/candidates/read-continuation-20261012/reference-integration/focused-namespace-repaired.stderr.bin",
+      "result": "PASS"
+    },
+    {
+      "name": "root exact result totals: docs/qualification/candidates/read-continuation-20261012/reference-integration/focused-namespace-repaired.json",
+      "result": "PASS"
+    },
+    {
+      "name": "root receipt exact source head: docs/qualification/candidates/read-continuation-20261012/reference-integration/focused-namespace-repaired.json",
+      "result": "PASS"
+    },
+    {
+      "name": "root receipt exact outcome and bounded cleanup: docs/qualification/candidates/read-continuation-20261012/reference-integration/focused-counts-repaired.json",
+      "result": "PASS"
+    },
+    {
+      "name": "root capture and zero source diff bound: docs/qualification/candidates/read-continuation-20261012/reference-integration/focused-counts-repaired.json",
+      "result": "PASS"
+    },
+    {
+      "name": "root stream exact: docs/qualification/candidates/read-continuation-20261012/reference-integration/focused-counts-repaired.stdout.bin",
+      "result": "PASS"
+    },
+    {
+      "name": "root stream exact: docs/qualification/candidates/read-continuation-20261012/reference-integration/focused-counts-repaired.stderr.bin",
+      "result": "PASS"
+    },
+    {
+      "name": "root exact result totals: docs/qualification/candidates/read-continuation-20261012/reference-integration/focused-counts-repaired.json",
+      "result": "PASS"
+    },
+    {
+      "name": "root passing receipt matches current source/test bytes: docs/qualification/candidates/read-continuation-20261012/reference-integration/focused-counts-repaired.json",
+      "result": "PASS"
+    },
+    {
+      "name": "root receipt exact source head: docs/qualification/candidates/read-continuation-20261012/reference-integration/focused-counts-repaired.json",
+      "result": "PASS"
+    },
+    {
+      "name": "root receipt exact outcome and bounded cleanup: docs/qualification/candidates/read-continuation-20261012/reference-integration/combined-first.json",
+      "result": "PASS"
+    },
+    {
+      "name": "root capture and zero source diff bound: docs/qualification/candidates/read-continuation-20261012/reference-integration/combined-first.json",
+      "result": "PASS"
+    },
+    {
+      "name": "root stream exact: docs/qualification/candidates/read-continuation-20261012/reference-integration/combined-first.stdout.bin",
+      "result": "PASS"
+    },
+    {
+      "name": "root stream exact: docs/qualification/candidates/read-continuation-20261012/reference-integration/combined-first.stderr.bin",
+      "result": "PASS"
+    },
+    {
+      "name": "root exact result totals: docs/qualification/candidates/read-continuation-20261012/reference-integration/combined-first.json",
+      "result": "PASS"
+    },
+    {
+      "name": "root receipt exact source head: docs/qualification/candidates/read-continuation-20261012/reference-integration/combined-first.json",
+      "result": "PASS"
+    },
+    {
+      "name": "root receipt exact outcome and bounded cleanup: docs/qualification/candidates/read-continuation-20261012/reference-integration/public-distribution.json",
+      "result": "PASS"
+    },
+    {
+      "name": "root capture and zero source diff bound: docs/qualification/candidates/read-continuation-20261012/reference-integration/public-distribution.json",
+      "result": "PASS"
+    },
+    {
+      "name": "root stream exact: docs/qualification/candidates/read-continuation-20261012/reference-integration/public-distribution.stdout.bin",
+      "result": "PASS"
+    },
+    {
+      "name": "root stream exact: docs/qualification/candidates/read-continuation-20261012/reference-integration/public-distribution.stderr.bin",
+      "result": "PASS"
+    },
+    {
+      "name": "root receipt exact source head: docs/qualification/candidates/read-continuation-20261012/reference-integration/public-distribution.json",
+      "result": "PASS"
+    },
+    {
+      "name": "root receipt exact outcome and bounded cleanup: docs/qualification/candidates/read-continuation-20261012/reference-integration/combined-final.json",
+      "result": "PASS"
+    },
+    {
+      "name": "root capture and zero source diff bound: docs/qualification/candidates/read-continuation-20261012/reference-integration/combined-final.json",
+      "result": "PASS"
+    },
+    {
+      "name": "root stream exact: docs/qualification/candidates/read-continuation-20261012/reference-integration/combined-final.stdout.bin",
+      "result": "PASS"
+    },
+    {
+      "name": "root stream exact: docs/qualification/candidates/read-continuation-20261012/reference-integration/combined-final.stderr.bin",
+      "result": "PASS"
+    },
+    {
+      "name": "root exact result totals: docs/qualification/candidates/read-continuation-20261012/reference-integration/combined-final.json",
+      "result": "PASS"
+    },
+    {
+      "name": "root passing receipt matches current source/test bytes: docs/qualification/candidates/read-continuation-20261012/reference-integration/combined-final.json",
+      "result": "PASS"
+    },
+    {
+      "name": "root receipt exact source head: docs/qualification/candidates/read-continuation-20261012/reference-integration/combined-final.json",
+      "result": "PASS"
+    },
+    {
+      "name": "root receipt exact outcome and bounded cleanup: docs/qualification/candidates/read-continuation-20261012/reference-integration/public-distribution-local.json",
+      "result": "PASS"
+    },
+    {
+      "name": "root capture and zero source diff bound: docs/qualification/candidates/read-continuation-20261012/reference-integration/public-distribution-local.json",
+      "result": "PASS"
+    },
+    {
+      "name": "root stream exact: docs/qualification/candidates/read-continuation-20261012/reference-integration/public-distribution-local.stdout.bin",
+      "result": "PASS"
+    },
+    {
+      "name": "root stream exact: docs/qualification/candidates/read-continuation-20261012/reference-integration/public-distribution-local.stderr.bin",
+      "result": "PASS"
+    },
+    {
+      "name": "root exact result totals: docs/qualification/candidates/read-continuation-20261012/reference-integration/public-distribution-local.json",
+      "result": "PASS"
+    },
+    {
+      "name": "root passing receipt matches current source/test bytes: docs/qualification/candidates/read-continuation-20261012/reference-integration/public-distribution-local.json",
+      "result": "PASS"
+    },
+    {
+      "name": "root receipt exact source head: docs/qualification/candidates/read-continuation-20261012/reference-integration/public-distribution-local.json",
+      "result": "PASS"
+    },
+    {
+      "name": "root receipt exact outcome and bounded cleanup: docs/qualification/candidates/read-continuation-20261012/reference-integration/source-audit.json",
+      "result": "PASS"
+    },
+    {
+      "name": "root capture and zero source diff bound: docs/qualification/candidates/read-continuation-20261012/reference-integration/source-audit.json",
+      "result": "PASS"
+    },
+    {
+      "name": "root stream exact: docs/qualification/candidates/read-continuation-20261012/reference-integration/source-audit.stdout.bin",
+      "result": "PASS"
+    },
+    {
+      "name": "root stream exact: docs/qualification/candidates/read-continuation-20261012/reference-integration/source-audit.stderr.bin",
+      "result": "PASS"
+    },
+    {
+      "name": "root passing receipt matches current source/test bytes: docs/qualification/candidates/read-continuation-20261012/reference-integration/source-audit.json",
+      "result": "PASS"
+    },
+    {
+      "name": "root receipt exact source head: docs/qualification/candidates/read-continuation-20261012/reference-integration/source-audit.json",
+      "result": "PASS"
+    }
+  ],
+  "passed": 105,
+  "failed": 0,
+  "scope": "READ_ONLY_GIT_SOURCE_EVIDENCE_NOT_RUNTIME"
+}

@@ -1,0 +1,57 @@
+{
+  "receipts": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/reference-integration-review/baseline-check.json",
+      "exitCode": 0,
+      "group": 206314,
+      "absent": true,
+      "reapedDescendants": 0
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/reference-integration-review/controls-syntax.json",
+      "exitCode": 0,
+      "group": 206175,
+      "absent": true,
+      "reapedDescendants": 0
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/reference-integration-review/independent-first.json",
+      "exitCode": 0,
+      "group": 230565,
+      "absent": true,
+      "reapedDescendants": 0
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/reference-integration-review/original-test-inverse.json",
+      "exitCode": 0,
+      "group": 232618,
+      "absent": true,
+      "reapedDescendants": 0
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/reference-integration-review/source-audit-corrected.json",
+      "exitCode": 0,
+      "group": 231495,
+      "absent": true,
+      "reapedDescendants": 0
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/reference-integration-review/source-audit-final.json",
+      "exitCode": 0,
+      "group": 234665,
+      "absent": true,
+      "reapedDescendants": 0
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/reference-integration-review/source-audit-initial.json",
+      "exitCode": 1,
+      "group": 230997,
+      "absent": true,
+      "reapedDescendants": 0
+    }
+  ],
+  "groups": 7,
+  "allAbsent": true,
+  "noTimeoutOrKill": true,
+  "allStreamsExact": true
+}
