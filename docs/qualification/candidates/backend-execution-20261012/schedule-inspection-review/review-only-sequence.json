@@ -1,0 +1,14 @@
+{
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "throughAcceptance": "2a21989e",
+  "commits": [
+    "71f93d1116ccf613f49f384dc5ba0ac3b0f9997e",
+    "b08062bce9fb6bdc8c6a006a82fc6515d8bd9e9a",
+    "020fc0563ebe6c5ba3f48b01bef71e25de0be9a1",
+    "395f524afc0c99da5cbf8d34aa48375e1729025b",
+    "e5bad2ab13f5b365961e23eb32d27263cdce1528",
+    "dcb39271e49c4207a8b11557958a330399821954",
+    "2a21989e59db8a21a98d0cf48727b8abdab55272"
+  ],
+  "note": "Integrate author source/packet separately, then these review-only commits in order; append final manifest commit announced separately. No merge commits needed."
+}
