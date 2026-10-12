@@ -1,0 +1,105 @@
+{
+  "binaryPackageRows": 325,
+  "buildAuthorized": false,
+  "g1Accepted": false,
+  "heldImageDigest": "sha256:8d1ec09aa78f47a11019089dacde93289fc66a39f55bd4357e59eeb25d9b52ac",
+  "heldScanCompletedAt": "2026-10-11T14:17:54-04:00",
+  "heldScanCount": 47,
+  "heldScanNames": [
+    "CVE-2024-52616",
+    "CVE-2025-68276",
+    "CVE-2025-68468",
+    "CVE-2025-68471",
+    "CVE-2026-105326",
+    "CVE-2026-107161",
+    "CVE-2026-107655",
+    "CVE-2026-107705",
+    "CVE-2026-107885",
+    "CVE-2026-107886",
+    "CVE-2026-107888",
+    "CVE-2026-107890",
+    "CVE-2026-18495",
+    "CVE-2026-24401",
+    "CVE-2026-24882",
+    "CVE-2026-34979",
+    "CVE-2026-34980",
+    "CVE-2026-39314",
+    "CVE-2026-39316",
+    "CVE-2026-41079",
+    "CVE-2026-52490",
+    "CVE-2026-57062",
+    "CVE-2026-58055",
+    "CVE-2026-67693",
+    "CVE-2026-74860",
+    "CVE-2026-76781",
+    "CVE-2026-77214",
+    "CVE-2026-8286",
+    "CVE-2026-85091",
+    "CVE-2026-86137",
+    "CVE-2026-86138",
+    "CVE-2026-86139",
+    "CVE-2026-86140",
+    "CVE-2026-86141",
+    "CVE-2026-86142",
+    "CVE-2026-86143",
+    "CVE-2026-86144",
+    "CVE-2026-87875",
+    "CVE-2026-87876",
+    "CVE-2026-88647",
+    "CVE-2026-88648",
+    "CVE-2026-8924",
+    "CVE-2026-8927",
+    "CVE-2026-93990",
+    "CVE-2026-95184",
+    "CVE-2026-95209",
+    "CVE-2026-95210"
+  ],
+  "heldScanSeverityCounts": {
+    "CRITICAL": 5,
+    "HIGH": 17,
+    "LOW": 7,
+    "MEDIUM": 17,
+    "UNDEFINED": 1
+  },
+  "imageLaunchAuthorized": false,
+  "inventoryDeclaredCoverage": {
+    "complete": true,
+    "scope": "declared roots/aliases; names do not prove renamed features absent"
+  },
+  "inventoryEntryTypes": {
+    "dir": 3210,
+    "file": 22667,
+    "symlink": 1024
+  },
+  "limitations": [
+    "Historical preserved evidence; no current scan or image operation performed.",
+    "Binary package names do not independently establish source-package mapping.",
+    "Inventory hashes are not license bodies or proof of whole-image absence.",
+    "The separate upstream matrix carries all 54 current and historical obligations."
+  ],
+  "objects": [
+    {
+      "bytes": 59680,
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+      "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+    },
+    {
+      "bytes": 5684552,
+      "path": "docs/qualification/aws-shipper-20261011-r1/historical-artifacts/00-image-inventory.json",
+      "sha256": "6b7675aa90422a9572a902012cebef87c78af7c6669f9b1fed20668e1b17c74c"
+    },
+    {
+      "bytes": 8570,
+      "path": "docs/qualification/aws-shipper-20261011-r1/historical-artifacts/01-os-installed-packages.txt",
+      "sha256": "1fa4f64de64341e41eb02988cb362a393102949122b331a44334049aee121c83"
+    },
+    {
+      "bytes": 40866,
+      "path": "docs/qualification/aws-shipper-20261011-r1/historical-reconciliation.json",
+      "sha256": "939be78af9316ae5679c5e4ea6f78cd97b15a203c7808319de36fd8fa67feb79"
+    }
+  ],
+  "runtimeAccepted": false,
+  "sourceCommit": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+  "status": "PRESERVED_INPUTS_VERIFIED"
+}

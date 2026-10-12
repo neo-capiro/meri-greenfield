@@ -1,0 +1,33 @@
+{
+  "source": "parent shipping-coordinator report, 2026-10-12; ZIP not materialized by this consumer",
+  "libraryFileId": "libfile_dd2b1a21ca3c819199cad2f7fb594613",
+  "backingFileId": "file_0000000057e881fd936a92f74a3d2ed4",
+  "zipBytes": 3899,
+  "zipMembers": 7,
+  "zipSha256": "830b76565aab4272ad184b058f4fa085eb280e2ccac4af828a6e0f6337a71660",
+  "scriptBytes": 9447,
+  "scriptSha256": "3780982e6906e6798232d9a7d7f1c5efa07f6dd7b9a25356976a2a73ed026bd3",
+  "scriptLocallyMatched": true,
+  "attemptsReported": 1,
+  "exitCode": 2,
+  "elapsedSeconds": 0.203,
+  "externalSupervisorSeconds": 15,
+  "physicalExitVerifiedByParent": true,
+  "streamsAtEofReported": true,
+  "timedOut": false,
+  "overflow": false,
+  "forcedTermination": false,
+  "stdoutBytesReported": 114,
+  "stdoutFieldsReported": {
+    "status": "DIAGNOSTIC_REFUSED",
+    "reason": "plain_local_directory_ancestors_required",
+    "runnerQualified": false
+  },
+  "stderrBytesReported": 0,
+  "originalCollectorRerun": false,
+  "awsCallsReported": 0,
+  "originalSlotAndSourceUnchangedReported": true,
+  "diagnosis": "No offending ancestor, rejected subpredicate, stdlib count or original collector failing stage established.",
+  "localNativeExecutionPerformed": false,
+  "g1Accepted": false
+}

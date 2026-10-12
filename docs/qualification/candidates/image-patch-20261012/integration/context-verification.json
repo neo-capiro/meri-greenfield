@@ -1,0 +1,334 @@
+{
+  "status": "SOURCE_ONLY",
+  "manifestSha256": "94216667decf5e4feed05914b3f295148d9437ee1c00b224ca4e92625b5b876f",
+  "manifestBytes": 11180,
+  "result": {
+    "schemaVersion": 1,
+    "status": "SOURCE_ONLY",
+    "commitAuthority": false,
+    "members": [
+      {
+        "sourcePath": "apps/worker/qualification/.dockerignore",
+        "contextPath": ".dockerignore",
+        "bytes": 1542,
+        "sha256": "7bab997b99912abb20f7b87a0dc93e4024acdb4b0ccb1bc9449b464834a7c54b"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/Dockerfile",
+        "contextPath": "Dockerfile",
+        "bytes": 18786,
+        "sha256": "3f86ae7ca55e8bbfb2814f1b335b7df8159daf9b5008df60f1165ba879c40f36"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/README.md",
+        "contextPath": "README.md",
+        "bytes": 13158,
+        "sha256": "c606fd180c1d57461dba0e94310cd4410ac3a051f61f76d92ae9b38a3e2a6a0e"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/package.json",
+        "contextPath": "package.json",
+        "bytes": 1143,
+        "sha256": "a32e658933bd058d2524cfb2112cf770e5be81827dbf5e789ddecbcab86e5d80"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/package-lock.json",
+        "contextPath": "package-lock.json",
+        "bytes": 68705,
+        "sha256": "d3d4c5362e0c7dc1392ef9cad2048d00c564f1ff70d98c3e10108e50aa56147a"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/requirements.lock.txt",
+        "contextPath": "requirements.lock.txt",
+        "bytes": 1383,
+        "sha256": "47bb048b9750b074c7d33faba9f9c3873b7b461eaa4360bf57cb08d4f55c9765"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/component-pins.json",
+        "contextPath": "component-pins.json",
+        "bytes": 36019,
+        "sha256": "2f2c5d52fbee23bbdb206456235664b9dbbdf5c3526ccc065d499ed0a61f5aed"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/sdk-options.mjs",
+        "contextPath": "sdk-options.mjs",
+        "bytes": 5402,
+        "sha256": "174efdfcf4731845d65c1f32de4c73e8a9032ccf1522022ab7675ccc7e6a5d9e"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/vendor/capiro-meri-contracts-0.1.0.tgz",
+        "contextPath": "vendor/capiro-meri-contracts-0.1.0.tgz",
+        "bytes": 48823,
+        "sha256": "2f15ade9458cbffe960b7cc36c6fb77cb54cc2a0eca4bc7c0f918b77cfacd4ee"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/checkpoint/native-session-files.mjs",
+        "contextPath": "checkpoint/native-session-files.mjs",
+        "bytes": 12049,
+        "sha256": "543e05c230bf614cd5cf73f2d69877f1311ec0faf9d7ca205429161a75b842e1"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/checkpoint/fixture-channel.mjs",
+        "contextPath": "checkpoint/fixture-channel.mjs",
+        "bytes": 11858,
+        "sha256": "160929a1ac8ce647574fac5740294d117ab70230d0a040b6d37ca4ef5712ad0b"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/checkpoint/fixture-channel.test.mjs",
+        "contextPath": "checkpoint/fixture-channel.test.mjs",
+        "bytes": 16419,
+        "sha256": "3d8eb0e88e6ae45c6f55b1303e1f2075344c044ed0eba4e39a0f7ca26994612c"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/checkpoint/fixture-transport.mjs",
+        "contextPath": "checkpoint/fixture-transport.mjs",
+        "bytes": 13008,
+        "sha256": "3b802df4571cd2e170890c9bfd77be995997736ff4e5e003c3248946e3b3d31c"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/checkpoint/fixture-transport.test.mjs",
+        "contextPath": "checkpoint/fixture-transport.test.mjs",
+        "bytes": 30179,
+        "sha256": "8c676e68f2bb670dee4ed7405d29c009ef757387a49902e96a99fa99e3d6a3c5"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/checkpoint/resume-admission.mjs",
+        "contextPath": "checkpoint/resume-admission.mjs",
+        "bytes": 5948,
+        "sha256": "81b15faafc9f27b4e4107d7034708fd0f83a18caf09cbb367f03b7ef77701c9d"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/checkpoint/resume-admission.test.mjs",
+        "contextPath": "checkpoint/resume-admission.test.mjs",
+        "bytes": 8022,
+        "sha256": "5e53aaaf445c70dd7a56a55a3ea1ab2936a6eff86ed78b2dd04b072a79dfdb4f"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/checkpoint/fixture-sentinel.mjs",
+        "contextPath": "checkpoint/fixture-sentinel.mjs",
+        "bytes": 8266,
+        "sha256": "4e5779fa84f149a4867e556e5fc7d20c644cd440a69f0ad4c6a7c4e8160324fd"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/checkpoint/fixture-sentinel.test.mjs",
+        "contextPath": "checkpoint/fixture-sentinel.test.mjs",
+        "bytes": 14919,
+        "sha256": "73a14fea4fc24fd0a05f68523c4f9dbbbaf500dfd62f80225f8e93996f4e8ed7"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/probes/artifacts.mjs",
+        "contextPath": "probes/artifacts.mjs",
+        "bytes": 15220,
+        "sha256": "3155bd31447f37b27c512cc2522a46947241c0f3fd74d738bed54920486757d6"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/probes/artifacts.py",
+        "contextPath": "probes/artifacts.py",
+        "bytes": 8349,
+        "sha256": "b75d7eacc12c88fc87b23c7aab6bfa22adbb22eee99b4236f01ac90bde858d15"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/probes/browser.mjs",
+        "contextPath": "probes/browser.mjs",
+        "bytes": 33634,
+        "sha256": "c09bd204a86c0cbfcdfa397b9b1f6938b078f7b4b3c6989a59d3588db2c481e0"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/probes/image-inventory.py",
+        "contextPath": "probes/image-inventory.py",
+        "bytes": 17978,
+        "sha256": "c7d682e67b5b3064947c92bebdce785aa04c3e00238fc8fb769d4a828479de58"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/probes/image-inventory.test.mjs",
+        "contextPath": "probes/image-inventory.test.mjs",
+        "bytes": 25547,
+        "sha256": "6f43c0d24e97f766aa588b6773dd6a3399074b35e6ad226e47e73adde27627e7"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/probes/office-export.mjs",
+        "contextPath": "probes/office-export.mjs",
+        "bytes": 51040,
+        "sha256": "78a3526f0e7ea738f675433a5289c49552011cef7267a2c9057827fb42ab5156"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/probes/office-export.test.mjs",
+        "contextPath": "probes/office-export.test.mjs",
+        "bytes": 42459,
+        "sha256": "da1087cd155c64a85a5d9dd818db275688f6e8610719d665007a8649e3423dde"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/probes/office-reconstruct.mjs",
+        "contextPath": "probes/office-reconstruct.mjs",
+        "bytes": 24134,
+        "sha256": "133d8c5adbfae930aa5e59d7d633e73482994106382cebef35b065d059303205"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/probes/runtime.mjs",
+        "contextPath": "probes/runtime.mjs",
+        "bytes": 16139,
+        "sha256": "56873762181926b276fc8283ceb9485d9fd55ef788bd4204b55feef241236716"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/probes/sdk-capture.mjs",
+        "contextPath": "probes/sdk-capture.mjs",
+        "bytes": 52572,
+        "sha256": "027117958a878cce722650c57bd0fe6132c5be69a440a3b3b9cd6f83213e6083"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/probes/sdk-capture.test.mjs",
+        "contextPath": "probes/sdk-capture.test.mjs",
+        "bytes": 62953,
+        "sha256": "4eca411e364d3da83b2e1afe5451f94b69a32e023b5733cf5ad4382008b73f84"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/probes/native-observations.mjs",
+        "contextPath": "probes/native-observations.mjs",
+        "bytes": 7072,
+        "sha256": "fea49e07f71dccbea3d6c21cab8d1e4502b79a2d1ff05085dbd2a0e2089b2b15"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/probes/native-stream-observer.mjs",
+        "contextPath": "probes/native-stream-observer.mjs",
+        "bytes": 3459,
+        "sha256": "66fa0dec53eb9cc3d98a79d45a0cc8290281efc46dce7baa05e1f0721771beba"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/probes/native-namespace-observer.mjs",
+        "contextPath": "probes/native-namespace-observer.mjs",
+        "bytes": 11069,
+        "sha256": "6c4ff8b525c414f93f0d0d29653b1e8a68db5fc520d4f414cf88d0b3e08b23c4"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/probes/sdk-capture-options.mjs",
+        "contextPath": "probes/sdk-capture-options.mjs",
+        "bytes": 17469,
+        "sha256": "964f4f1958dd0707198fcd21611018b9a9337e90e5f434ed24ce47beb3986b0e"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/probes/sdk-discovery-options.mjs",
+        "contextPath": "probes/sdk-discovery-options.mjs",
+        "bytes": 6113,
+        "sha256": "868d470804fbc6aa3cfad5a9a2f39ca5ac2b71881c020b20db122efa7b16479b"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/probes/sdk-discovery-options.test.mjs",
+        "contextPath": "probes/sdk-discovery-options.test.mjs",
+        "bytes": 8608,
+        "sha256": "dd1e03d0f0641bf7133cb29e3c2259f0c9a1779aae8e3a29618e92b045f096f2"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/probes/sdk-discovery-tools.mjs",
+        "contextPath": "probes/sdk-discovery-tools.mjs",
+        "bytes": 3924,
+        "sha256": "462dc2e956ee9ada8d64df32bc67a79aa58ceb16292d45219869effd2db776a7"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/probes/sdk-discovery-tools.test.mjs",
+        "contextPath": "probes/sdk-discovery-tools.test.mjs",
+        "bytes": 9593,
+        "sha256": "eab916e8abd61493f768e425a705f7f814317d354221a2e1eacff8c5823f893a"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/probes/sdk-interruption.mjs",
+        "contextPath": "probes/sdk-interruption.mjs",
+        "bytes": 12617,
+        "sha256": "2764babd954e95f07caf964ac14e57ee8a5a7d148d1527f97d1af4ea16b9040f"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/probes/sdk-interruption.test.mjs",
+        "contextPath": "probes/sdk-interruption.test.mjs",
+        "bytes": 21053,
+        "sha256": "93ab5df298ad95c5169f76247d5e0093bab585e9eec7bb46b3350cb61ffc1daa"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/probes/sdk-interruption-options.mjs",
+        "contextPath": "probes/sdk-interruption-options.mjs",
+        "bytes": 2425,
+        "sha256": "132da9c8b37f258309a041bc4d8426a613b20e2fc35f622cd577f1b565c7d182"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/probes/sdk-interruption-loopback.mjs",
+        "contextPath": "probes/sdk-interruption-loopback.mjs",
+        "bytes": 11540,
+        "sha256": "784658878a08952fe665bcf13868830dba06402ccbb99b9d7a44cafc41fdf40d"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/probes/sdk-interruption-loopback.test.mjs",
+        "contextPath": "probes/sdk-interruption-loopback.test.mjs",
+        "bytes": 12941,
+        "sha256": "93188dbcbafd58291270c522542c9ed91815161dd03641ef9b1f4fa790d2f222"
+      },
+      {
+        "sourcePath": "apps/worker/qualification/probes/static.test.mjs",
+        "contextPath": "probes/static.test.mjs",
+        "bytes": 66109,
+        "sha256": "910044c4c16b9d8e523bef960d80aac5f66632817afd9a103cf3e277b762e6e1"
+      },
+      {
+        "sourcePath": "scripts/sdk-capture/json-records.mjs",
+        "contextPath": "build-dependencies/sdk-capture/json-records.mjs",
+        "bytes": 6814,
+        "sha256": "8b889617a9565b7f1b5d29863b772b71f2c880a5fd1606b8a8b68ac2163be02d"
+      },
+      {
+        "sourcePath": "scripts/sdk-capture/protocol.mjs",
+        "contextPath": "build-dependencies/sdk-capture/protocol.mjs",
+        "bytes": 5151,
+        "sha256": "c20499a3a9e29069f6a59b58c7262fda6dfddd03068d7a49d6d73003f07e4a9e"
+      },
+      {
+        "sourcePath": "packages/contracts/validate.mjs",
+        "contextPath": "build-dependencies/contracts/validate.mjs",
+        "bytes": 3311,
+        "sha256": "c2449fd55300b31bdc1e829b5d918a531f1c4b2c675085a5b4707726ddd36d10"
+      },
+      {
+        "sourcePath": "packages/contracts/meri.schema.json",
+        "contextPath": "build-dependencies/contracts/meri.schema.json",
+        "bytes": 50043,
+        "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b"
+      },
+      {
+        "sourcePath": "packages/contracts/qualification-sdk/validate.mjs",
+        "contextPath": "build-dependencies/contracts/qualification-sdk/validate.mjs",
+        "bytes": 14049,
+        "sha256": "2d0bd74171e390c370ad8d9e599f7c46ce4751e5efd6ba2c18923090b749b86c"
+      },
+      {
+        "sourcePath": "packages/contracts/qualification-sdk/wire.mjs",
+        "contextPath": "build-dependencies/contracts/qualification-sdk/wire.mjs",
+        "bytes": 1925,
+        "sha256": "f8f506ceeca820f3957b67f8bcbfc36c80f009356baba83b32ac99afe401ad9a"
+      },
+      {
+        "sourcePath": "packages/contracts/qualification-sdk/fixture.schema.json",
+        "contextPath": "build-dependencies/contracts/qualification-sdk/fixture.schema.json",
+        "bytes": 26397,
+        "sha256": "fbf0655ab6960ac5c486c08ba70b2a31310086ca282f0e9a1f41c08430ebfa13"
+      },
+      {
+        "sourcePath": "packages/contracts/qualification-sdk/native-evidence.mjs",
+        "contextPath": "build-dependencies/contracts/qualification-sdk/native-evidence.mjs",
+        "bytes": 3849,
+        "sha256": "0f587aefd26e189fd9099b1639910da6ec37725b5729c4ba5d98a4695ec5fcde"
+      },
+      {
+        "sourcePath": "packages/contracts/qualification-sdk/native-evidence.schema.json",
+        "contextPath": "build-dependencies/contracts/qualification-sdk/native-evidence.schema.json",
+        "bytes": 11751,
+        "sha256": "5f9ac8980940bf4928b2d655fa5e299208f3d6dbf8f1adceceb9727cb69f62f5"
+      },
+      {
+        "sourcePath": "packages/contracts/test/sdk-fixture-wire.test.mjs",
+        "contextPath": "build-dependencies/contracts/test/sdk-fixture-wire.test.mjs",
+        "bytes": 11632,
+        "sha256": "0a292a418855ab4f3f07f096a618772928e06533fa05b41db4d4d6a56506abcc"
+      }
+    ],
+    "totalBytes": 994568
+  },
+  "matchesAuthorAndReviewer": true,
+  "buildAuthorized": false,
+  "runtimeAccepted": false
+}
