@@ -1,0 +1,6 @@
+{
+  "authority": "root explicit allocation 2026-10-12",
+  "path": "apps/worker/qualification/package.json",
+  "allowed": "scripts.test only: preserve five original suites, append office-export.test.mjs, owned-probe-child.test.mjs, browser-lifetime.test.mjs; no dependency, lock or metadata changes",
+  "runtimeSignalRepair": "Root identified initial freeze 2f182 global CLI bridge swallowed signal while unbounded DNS precheck parked. Preserve counterexample; scope bridge to actual child phase, preserving default OS signal handling before it. No DNS/network execution allowed."
+}
