@@ -1,0 +1,59 @@
+{
+  "base": "bf41cf69ebe892705cdd6f041dd2f1fb323048f5",
+  "baseTrackedFiles": 4791,
+  "baseFilesUnchanged": 4789,
+  "changedExistingFiles": [
+    "docs/plans/MERI-G1-SOURCE-TO-NATIVE.md",
+    "scripts/qualification/worker_runner_inventory.py"
+  ],
+  "newFilesAtCheck": 84,
+  "acceptedFilesPreserved": {
+    "author": {
+      "commit": "c67558c211ede5a41e903f09e73666b43867301b",
+      "exactFiles": 20
+    },
+    "reviewer": {
+      "commit": "1d8f0220ca46934f20c57244e673cf1aa6884f22",
+      "exactFiles": 34
+    }
+  },
+  "acceptedSourceAndMaintainedTestExact": true,
+  "copiedControls": {
+    "hash-deadline-controls.py": "5f571b348c54be7a397b278cc46f1aee16c0c5ec7a8c7d832033879a0c5160a8",
+    "hash-preservation-controls.py": "190f0f3adce2b6cb1fb9fb226e0c83cf7edf3abaf6cd71264f79a704756871a4"
+  },
+  "captureChecks": [
+    {
+      "label": "maintained",
+      "exitCode": 0,
+      "streamHashesVerified": true,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "captured-deadline",
+      "exitCode": 0,
+      "streamHashesVerified": true,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "captured-preservation",
+      "exitCode": 0,
+      "streamHashesVerified": true,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "helper-data",
+      "exitCode": 0,
+      "streamHashesVerified": true,
+      "ownedProcessGroupAbsent": true
+    }
+  ],
+  "privacy": {
+    "privateBodiesChecked": 3,
+    "personalPathValuesChecked": 9,
+    "publicFilesChecked": 86,
+    "hits": []
+  },
+  "diffCheckPassed": true,
+  "scope": "SOURCE_AND_DATA_ONLY_NO_NATIVE_ADMISSION"
+}

@@ -1,0 +1,15 @@
+{
+  "base": "bf41cf69ebe892705cdd6f041dd2f1fb323048f5",
+  "scope": "Exact helper review; proposed canonical hash deadline propagation after demonstrated defect and allocation",
+  "canonicalOwner": "scripts/qualification/worker_runner_inventory.py hash_file with ancestors if needed",
+  "interface": "Existing hash_file path/fs/clock/end/cap/allow_empty contract and result unchanged; any ancestors optional deadline parameter extension requires explicit allocation",
+  "invariants": [
+    "No access-time waiver",
+    "Preserve all current opened/named identity fields and plain-file/path predicates",
+    "Preserve byte/aggregate limits and hash result schema",
+    "Capture a late returned descriptor before refusal; close owned fd once",
+    "After expired returned ports, no further non-cleanup filesystem operation and no success",
+    "No hard wall-time or runtime proof from cooperative fake ports"
+  ],
+  "verification": "Extract public canonical function definitions only into an isolated namespace with inert filesystem/clock; no native adapters or private scripts execute; preserve initial failures and exact source bytes"
+}

@@ -1,0 +1,110 @@
+{
+  "sourceSha256": "06dfe5e559e7cd474b31facd67ebadefb5cd2ae07ac1f1e077b671e6ece44db0",
+  "checks": [
+    {
+      "name": "exact-start-deadline-refuses-with-no-port",
+      "passed": true
+    },
+    {
+      "name": "strictly-before-deadline-preserves-success",
+      "passed": true
+    },
+    {
+      "name": "optional-pair-clock-alone-refuses",
+      "passed": true
+    },
+    {
+      "name": "optional-pair-end-alone-refuses",
+      "passed": true
+    },
+    {
+      "name": "legacy-ancestors-no-pair-retains-original-walk",
+      "passed": true
+    },
+    {
+      "name": "bounded-ancestors-exact-deadline-refuses",
+      "passed": true
+    },
+    {
+      "name": "bounded-ancestor-late-return-no-next-port",
+      "passed": true
+    },
+    {
+      "name": "late-acquired-descriptor-closed-once-no-fstat",
+      "passed": true
+    },
+    {
+      "name": "clock-error-after-open-still-closes",
+      "passed": true
+    },
+    {
+      "name": "close-error-retained-no-final-named-port",
+      "passed": true
+    },
+    {
+      "name": "original-plain-defense:hardlink",
+      "passed": true
+    },
+    {
+      "name": "original-plain-defense:symlink",
+      "passed": true
+    },
+    {
+      "name": "original-plain-defense:reparse",
+      "passed": true
+    },
+    {
+      "name": "original-open-defense:file-id",
+      "passed": true
+    },
+    {
+      "name": "original-open-defense:size",
+      "passed": true
+    },
+    {
+      "name": "original-open-defense:kind",
+      "passed": true
+    },
+    {
+      "name": "original-post-read-identity:st_mtime_ns",
+      "passed": true
+    },
+    {
+      "name": "original-post-read-identity:st_ctime_ns",
+      "passed": true
+    },
+    {
+      "name": "original-post-read-identity:st_ino",
+      "passed": true
+    },
+    {
+      "name": "original-post-read-identity:st_size",
+      "passed": true
+    },
+    {
+      "name": "original-final-named-defense",
+      "passed": true
+    },
+    {
+      "name": "original-size-cap-no-open",
+      "passed": true
+    },
+    {
+      "name": "original-byte-count:growth",
+      "passed": true
+    },
+    {
+      "name": "original-byte-count:short",
+      "passed": true
+    },
+    {
+      "name": "existing-allow-empty-result-preserved",
+      "passed": true
+    }
+  ],
+  "passed": 25,
+  "failed": 0,
+  "privateSourceExecuted": false,
+  "nativeExecution": false,
+  "scope": "Public AST functions and synthetic FS/clock only"
+}

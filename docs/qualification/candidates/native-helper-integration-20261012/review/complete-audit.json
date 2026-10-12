@@ -1,0 +1,31 @@
+{
+  "command": [
+    "python3",
+    "docs/qualification/candidates/native-helper-integration-20261012/review/audit-integration.py",
+    "/workspace/meri-native-helper-integration-20261012",
+    "e9a4e913a168d08d2804055dc24b24c779b34856",
+    "c67558c211ede5a41e903f09e73666b43867301b",
+    "1d8f0220ca46934f20c57244e673cf1aa6884f22"
+  ],
+  "cwd": "/workspace/meri-native-helper-integration-review-20261012",
+  "sourceRoot": null,
+  "startUnixSeconds": 1791796046.4626942,
+  "elapsedSeconds": 0.31592369079589844,
+  "exitCode": 0,
+  "ownedPidAndGroup": 118265,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "reapedDescendants": [],
+  "streams": {
+    "stdout": {
+      "path": "complete-audit.stdout.txt",
+      "bytes": 7102,
+      "sha256": "34d707283a9156f5b194f2cca9dece623a8dfb8cc372e346fed6c52aae1d1866"
+    },
+    "stderr": {
+      "path": "complete-audit.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

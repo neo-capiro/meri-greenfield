@@ -1,0 +1,162 @@
+{
+  "sourcePath": "scripts/qualification/worker_runner_inventory.py",
+  "sourceSha256": "06dfe5e559e7cd474b31facd67ebadefb5cd2ae07ac1f1e077b671e6ece44db0",
+  "sourceBytes": 14108,
+  "checks": [
+    {
+      "case": "normal-success",
+      "passed": true,
+      "outcome": "RETURNED",
+      "error": null,
+      "events": [
+        "ancestor-lstat:/",
+        "ancestor-lstat:/synthetic",
+        "initial-file-lstat",
+        "open",
+        "opened-fstat",
+        "data-read",
+        "eof-read",
+        "final-fstat",
+        "close",
+        "final-file-lstat"
+      ],
+      "noncleanupPortsAfterExpiry": [],
+      "ownedCloseCount": 1
+    },
+    {
+      "case": "ancestor-lstat:/",
+      "passed": true,
+      "outcome": "REFUSED",
+      "error": "ValueError:runner inventory deadline",
+      "events": [
+        "ancestor-lstat:/"
+      ],
+      "noncleanupPortsAfterExpiry": [],
+      "ownedCloseCount": 0
+    },
+    {
+      "case": "initial-file-lstat",
+      "passed": true,
+      "outcome": "REFUSED",
+      "error": "ValueError:runner inventory deadline",
+      "events": [
+        "ancestor-lstat:/",
+        "ancestor-lstat:/synthetic",
+        "initial-file-lstat"
+      ],
+      "noncleanupPortsAfterExpiry": [],
+      "ownedCloseCount": 0
+    },
+    {
+      "case": "open",
+      "passed": true,
+      "outcome": "REFUSED",
+      "error": "ValueError:runner inventory deadline",
+      "events": [
+        "ancestor-lstat:/",
+        "ancestor-lstat:/synthetic",
+        "initial-file-lstat",
+        "open",
+        "close"
+      ],
+      "noncleanupPortsAfterExpiry": [],
+      "ownedCloseCount": 1
+    },
+    {
+      "case": "opened-fstat",
+      "passed": true,
+      "outcome": "REFUSED",
+      "error": "ValueError:runner inventory deadline",
+      "events": [
+        "ancestor-lstat:/",
+        "ancestor-lstat:/synthetic",
+        "initial-file-lstat",
+        "open",
+        "opened-fstat",
+        "close"
+      ],
+      "noncleanupPortsAfterExpiry": [],
+      "ownedCloseCount": 1
+    },
+    {
+      "case": "eof-read",
+      "passed": true,
+      "outcome": "REFUSED",
+      "error": "ValueError:runner inventory deadline",
+      "events": [
+        "ancestor-lstat:/",
+        "ancestor-lstat:/synthetic",
+        "initial-file-lstat",
+        "open",
+        "opened-fstat",
+        "data-read",
+        "eof-read",
+        "close"
+      ],
+      "noncleanupPortsAfterExpiry": [],
+      "ownedCloseCount": 1
+    },
+    {
+      "case": "final-fstat",
+      "passed": true,
+      "outcome": "REFUSED",
+      "error": "ValueError:runner inventory deadline",
+      "events": [
+        "ancestor-lstat:/",
+        "ancestor-lstat:/synthetic",
+        "initial-file-lstat",
+        "open",
+        "opened-fstat",
+        "data-read",
+        "eof-read",
+        "final-fstat",
+        "close"
+      ],
+      "noncleanupPortsAfterExpiry": [],
+      "ownedCloseCount": 1
+    },
+    {
+      "case": "close",
+      "passed": true,
+      "outcome": "REFUSED",
+      "error": "ValueError:runner inventory deadline",
+      "events": [
+        "ancestor-lstat:/",
+        "ancestor-lstat:/synthetic",
+        "initial-file-lstat",
+        "open",
+        "opened-fstat",
+        "data-read",
+        "eof-read",
+        "final-fstat",
+        "close"
+      ],
+      "noncleanupPortsAfterExpiry": [],
+      "ownedCloseCount": 1
+    },
+    {
+      "case": "final-file-lstat",
+      "passed": true,
+      "outcome": "REFUSED",
+      "error": "ValueError:runner inventory deadline",
+      "events": [
+        "ancestor-lstat:/",
+        "ancestor-lstat:/synthetic",
+        "initial-file-lstat",
+        "open",
+        "opened-fstat",
+        "data-read",
+        "eof-read",
+        "final-fstat",
+        "close",
+        "final-file-lstat"
+      ],
+      "noncleanupPortsAfterExpiry": [],
+      "ownedCloseCount": 1
+    }
+  ],
+  "passed": 9,
+  "failed": 0,
+  "scope": "AST-isolated public functions with inert fake FS and clock; no native calls or private-source execution",
+  "nativeExecution": false
+}

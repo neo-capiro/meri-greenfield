@@ -1,0 +1,166 @@
+{
+  "inputs": [
+    {
+      "name": "NativeMetadata.cs",
+      "bytes": 6163,
+      "sha256": "f551d7287611b982a93eebf02e93719bfdce355609bd7ca4f9cd546ae9bf0a4c"
+    },
+    {
+      "name": "candidate-hash-and-paths.json",
+      "bytes": 60160,
+      "sha256": "1817c1d72c2bbfafba943d0cbff4314ac210694a481565b5036a986087659d84"
+    },
+    {
+      "name": "collect.ps1",
+      "bytes": 23776,
+      "sha256": "729298afadd57a97fe8325ff862d0e208befd9392b4befa5f91053dddfcd25e1"
+    }
+  ],
+  "method": "Private source text field extraction and JSON arithmetic only; no source compilation/import/execution",
+  "sameComparedFields": [
+    "VolumeSerialHex",
+    "FileId128Hex",
+    "CreationTime",
+    "LastAccessTime",
+    "LastWriteTime",
+    "ChangeTime",
+    "Size",
+    "AllocationSize",
+    "LinkCount",
+    "Attributes",
+    "ReparseTag",
+    "Directory",
+    "DeletePending"
+  ],
+  "sameOmittedEntryFields": [
+    "IdentityKind",
+    "Path",
+    "ReparsePoint",
+    "SymbolicLink"
+  ],
+  "roleComparisons": [
+    {
+      "role": "executable",
+      "entryCount": 9,
+      "sameFailedFieldsByAncestor": [
+        [
+          "LastAccessTime"
+        ],
+        [
+          "LastAccessTime"
+        ],
+        [
+          "LastAccessTime"
+        ],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ],
+      "identityAndPlainMetadataStable": true,
+      "allRecordedFieldsIncludingTimesStable": false
+    },
+    {
+      "role": "root",
+      "entryCount": 8,
+      "sameFailedFieldsByAncestor": [
+        [
+          "LastAccessTime"
+        ],
+        [
+          "LastAccessTime"
+        ],
+        [
+          "LastAccessTime"
+        ],
+        [],
+        [],
+        [],
+        [],
+        []
+      ],
+      "identityAndPlainMetadataStable": true,
+      "allRecordedFieldsIncludingTimesStable": false
+    },
+    {
+      "role": "Lib",
+      "entryCount": 9,
+      "sameFailedFieldsByAncestor": [
+        [
+          "LastAccessTime"
+        ],
+        [
+          "LastAccessTime"
+        ],
+        [
+          "LastAccessTime"
+        ],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ],
+      "identityAndPlainMetadataStable": true,
+      "allRecordedFieldsIncludingTimesStable": false
+    },
+    {
+      "role": "DLLs",
+      "entryCount": 9,
+      "sameFailedFieldsByAncestor": [
+        [
+          "LastAccessTime"
+        ],
+        [
+          "LastAccessTime"
+        ],
+        [
+          "LastAccessTime"
+        ],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ],
+      "identityAndPlainMetadataStable": true,
+      "allRecordedFieldsIncludingTimesStable": false
+    }
+  ],
+  "executableRelationships": [
+    {
+      "pair": "opened-before/opened-after",
+      "sameFailedFields": []
+    },
+    {
+      "pair": "opened-before/named-during",
+      "sameFailedFields": []
+    },
+    {
+      "pair": "named-before/opened-before",
+      "sameFailedFields": []
+    },
+    {
+      "pair": "opened-after/named-after",
+      "sameFailedFields": []
+    }
+  ],
+  "recomputedOutcomes": {
+    "OpenedStable": true,
+    "NamedMatchesOpened": true,
+    "executableBeforeOpenedAfterStable": true,
+    "pathIdentityAndPlainMetadataStable": true,
+    "allRecordedPathFieldsStable": false,
+    "boundedHashObservationAccepted": false
+  },
+  "reportedOutcomesMatch": true,
+  "recordedBeforeAfterPassedAreInputs": true,
+  "nativeMetadataObservationsIndependentlyRecreated": false,
+  "nativeExecution": false,
+  "accessTimeWaiver": false,
+  "runtimeAdmission": false
+}

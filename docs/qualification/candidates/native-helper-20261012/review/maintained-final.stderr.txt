@@ -1,0 +1,14 @@
+test_clock_failure_after_open_still_closes (__main__.HashDeadlineTests.test_clock_failure_after_open_still_closes) ... ok
+test_cross_api_permission_representation_remains_supported (__main__.HashDeadlineTests.test_cross_api_permission_representation_remains_supported) ... ok
+test_each_late_port_refuses_without_another_observation (__main__.HashDeadlineTests.test_each_late_port_refuses_without_another_observation) ... ok
+test_empty_file_still_requires_existing_opt_in (__main__.HashDeadlineTests.test_empty_file_still_requires_existing_opt_in) ... ok
+test_expired_entry_has_no_ports (__main__.HashDeadlineTests.test_expired_entry_has_no_ports) ... ok
+test_identity_link_reparse_and_growth_guards_preserved (__main__.HashDeadlineTests.test_identity_link_reparse_and_growth_guards_preserved) ... ok
+test_on_time_result_and_exact_close (__main__.HashDeadlineTests.test_on_time_result_and_exact_close) ... ok
+test_optional_ancestor_deadline_is_paired_and_legacy_is_unchanged (__main__.HashDeadlineTests.test_optional_ancestor_deadline_is_paired_and_legacy_is_unchanged) ... ok
+test_port_errors_preserve_owned_cleanup_without_retry (__main__.HashDeadlineTests.test_port_errors_preserve_owned_cleanup_without_retry) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.013s
+
+OK

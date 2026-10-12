@@ -1,0 +1,44 @@
+[
+  {
+    "label": "deadline-final",
+    "exitCode": 0,
+    "stdoutBytes": 111,
+    "stderrBytes": 0,
+    "candidate": "c67558c211ede5a41e903f09e73666b43867301b"
+  },
+  {
+    "label": "preservation-final",
+    "exitCode": 0,
+    "stdoutBytes": 28,
+    "stderrBytes": 0,
+    "candidate": "c67558c211ede5a41e903f09e73666b43867301b"
+  },
+  {
+    "label": "static-final",
+    "exitCode": 0,
+    "stdoutBytes": 28,
+    "stderrBytes": 0,
+    "candidate": "c67558c211ede5a41e903f09e73666b43867301b"
+  },
+  {
+    "label": "maintained-final",
+    "exitCode": 0,
+    "stdoutBytes": 0,
+    "stderrBytes": 1318,
+    "candidate": "c67558c211ede5a41e903f09e73666b43867301b"
+  },
+  {
+    "label": "author-hash-final",
+    "exitCode": 0,
+    "stdoutBytes": 11221,
+    "stderrBytes": 0,
+    "candidate": "c67558c211ede5a41e903f09e73666b43867301b"
+  },
+  {
+    "label": "author-helper-final",
+    "exitCode": 0,
+    "stdoutBytes": 3556,
+    "stderrBytes": 0,
+    "candidate": "c67558c211ede5a41e903f09e73666b43867301b"
+  }
+]

@@ -1,0 +1,380 @@
+{
+  "base": "bf41cf69ebe892705cdd6f041dd2f1fb323048f5",
+  "helperIdentity": {
+    "member": "NativeMetadata.cs",
+    "bytes": 6163,
+    "sha256": "f551d7287611b982a93eebf02e93719bfdce355609bd7ca4f9cd546ae9bf0a4c"
+  },
+  "same": {
+    "sourceLines": [
+      68,
+      69,
+      70
+    ],
+    "comparedFields": [
+      "VolumeSerialHex",
+      "FileId128Hex",
+      "CreationTime",
+      "LastAccessTime",
+      "LastWriteTime",
+      "ChangeTime",
+      "Size",
+      "AllocationSize",
+      "LinkCount",
+      "Attributes",
+      "ReparseTag",
+      "Directory",
+      "DeletePending"
+    ],
+    "excludedRecordedFields": [
+      "IdentityKind",
+      "Path",
+      "ReparsePoint",
+      "SymbolicLink"
+    ],
+    "allComparisons": [
+      {
+        "role": "executable",
+        "entries": 9,
+        "sameAggregate": false,
+        "comparisons": [
+          {
+            "entryIndex": 0,
+            "same": false,
+            "unequalComparatorFields": [
+              "LastAccessTime"
+            ]
+          },
+          {
+            "entryIndex": 1,
+            "same": false,
+            "unequalComparatorFields": [
+              "LastAccessTime"
+            ]
+          },
+          {
+            "entryIndex": 2,
+            "same": false,
+            "unequalComparatorFields": [
+              "LastAccessTime"
+            ]
+          },
+          {
+            "entryIndex": 3,
+            "same": true,
+            "unequalComparatorFields": []
+          },
+          {
+            "entryIndex": 4,
+            "same": true,
+            "unequalComparatorFields": []
+          },
+          {
+            "entryIndex": 5,
+            "same": true,
+            "unequalComparatorFields": []
+          },
+          {
+            "entryIndex": 6,
+            "same": true,
+            "unequalComparatorFields": []
+          },
+          {
+            "entryIndex": 7,
+            "same": true,
+            "unequalComparatorFields": []
+          },
+          {
+            "entryIndex": 8,
+            "same": true,
+            "unequalComparatorFields": []
+          }
+        ]
+      },
+      {
+        "role": "root",
+        "entries": 8,
+        "sameAggregate": false,
+        "comparisons": [
+          {
+            "entryIndex": 0,
+            "same": false,
+            "unequalComparatorFields": [
+              "LastAccessTime"
+            ]
+          },
+          {
+            "entryIndex": 1,
+            "same": false,
+            "unequalComparatorFields": [
+              "LastAccessTime"
+            ]
+          },
+          {
+            "entryIndex": 2,
+            "same": false,
+            "unequalComparatorFields": [
+              "LastAccessTime"
+            ]
+          },
+          {
+            "entryIndex": 3,
+            "same": true,
+            "unequalComparatorFields": []
+          },
+          {
+            "entryIndex": 4,
+            "same": true,
+            "unequalComparatorFields": []
+          },
+          {
+            "entryIndex": 5,
+            "same": true,
+            "unequalComparatorFields": []
+          },
+          {
+            "entryIndex": 6,
+            "same": true,
+            "unequalComparatorFields": []
+          },
+          {
+            "entryIndex": 7,
+            "same": true,
+            "unequalComparatorFields": []
+          }
+        ]
+      },
+      {
+        "role": "Lib",
+        "entries": 9,
+        "sameAggregate": false,
+        "comparisons": [
+          {
+            "entryIndex": 0,
+            "same": false,
+            "unequalComparatorFields": [
+              "LastAccessTime"
+            ]
+          },
+          {
+            "entryIndex": 1,
+            "same": false,
+            "unequalComparatorFields": [
+              "LastAccessTime"
+            ]
+          },
+          {
+            "entryIndex": 2,
+            "same": false,
+            "unequalComparatorFields": [
+              "LastAccessTime"
+            ]
+          },
+          {
+            "entryIndex": 3,
+            "same": true,
+            "unequalComparatorFields": []
+          },
+          {
+            "entryIndex": 4,
+            "same": true,
+            "unequalComparatorFields": []
+          },
+          {
+            "entryIndex": 5,
+            "same": true,
+            "unequalComparatorFields": []
+          },
+          {
+            "entryIndex": 6,
+            "same": true,
+            "unequalComparatorFields": []
+          },
+          {
+            "entryIndex": 7,
+            "same": true,
+            "unequalComparatorFields": []
+          },
+          {
+            "entryIndex": 8,
+            "same": true,
+            "unequalComparatorFields": []
+          }
+        ]
+      },
+      {
+        "role": "DLLs",
+        "entries": 9,
+        "sameAggregate": false,
+        "comparisons": [
+          {
+            "entryIndex": 0,
+            "same": false,
+            "unequalComparatorFields": [
+              "LastAccessTime"
+            ]
+          },
+          {
+            "entryIndex": 1,
+            "same": false,
+            "unequalComparatorFields": [
+              "LastAccessTime"
+            ]
+          },
+          {
+            "entryIndex": 2,
+            "same": false,
+            "unequalComparatorFields": [
+              "LastAccessTime"
+            ]
+          },
+          {
+            "entryIndex": 3,
+            "same": true,
+            "unequalComparatorFields": []
+          },
+          {
+            "entryIndex": 4,
+            "same": true,
+            "unequalComparatorFields": []
+          },
+          {
+            "entryIndex": 5,
+            "same": true,
+            "unequalComparatorFields": []
+          },
+          {
+            "entryIndex": 6,
+            "same": true,
+            "unequalComparatorFields": []
+          },
+          {
+            "entryIndex": 7,
+            "same": true,
+            "unequalComparatorFields": []
+          },
+          {
+            "entryIndex": 8,
+            "same": true,
+            "unequalComparatorFields": []
+          }
+        ]
+      }
+    ],
+    "falsePairs": 12,
+    "falseFieldSet": [
+      "LastAccessTime"
+    ]
+  },
+  "sourceSemantics": {
+    "open": {
+      "sourceLines": [
+        52,
+        54,
+        55,
+        56,
+        57
+      ],
+      "existingDisposition": 3,
+      "alwaysFlags": [
+        "0x00200000",
+        "0x02000000"
+      ],
+      "contentAdditionalFlag": "0x40000000",
+      "contentAccess": "0x80000000",
+      "metadataAccess": "0x80",
+      "contentShareMask": 1,
+      "metadataShareMask": 7,
+      "invalidHandle": "capture last error, dispose invalid safe handle, throw"
+    },
+    "named": {
+      "sourceLines": [
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        67
+      ],
+      "scope": "metadata handle using-scope; four sequential information queries on same handle; native operations unrun",
+      "queries": [
+        {
+          "class": 0,
+          "bytes": 40
+        },
+        {
+          "class": 1,
+          "bytes": 24
+        },
+        {
+          "class": 9,
+          "bytes": 8
+        },
+        {
+          "class": 18,
+          "bytes": 24
+        }
+      ],
+      "consistency": "basic/tag Attributes must agree; record ReparsePoint/SymbolicLink derived from Attributes/ReparseTag",
+      "atomicSnapshotProven": false
+    },
+    "hashOrder": {
+      "sourceLines": [
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        88,
+        89,
+        90
+      ],
+      "events": [
+        "start stopwatch",
+        "acquire content handle",
+        "opened-before metadata",
+        "reject directory/reparse/delete-pending/nonpositive-or-overcap size",
+        "create async FileStream and digest",
+        "create independent cancellation timer from supplied milliseconds",
+        "before each read: check original stopwatch",
+        "ReadAsync with token then synchronous GetResult wait",
+        "EOF exits loop; positive bytes accumulated then compared to cap and original size",
+        "named-during metadata then opened-after metadata",
+        "check original stopwatch",
+        "construct digest result",
+        "dispose cancellation source, digest, stream and outer safe handle before return reaches caller"
+      ],
+      "openedStable": "Same(opened-before,opened-after) AND bytes-read equals opened-before Size",
+      "namedMatchesOpened": "Same(opened-before,named-during)",
+      "lateReadMayStartMetadataBeforeFinalCheck": true,
+      "cancellationStartsAfterOpenAndInitialMetadata": true,
+      "elapsedValueIncludesFinalDisposal": false,
+      "hardWholeInvocationBoundProven": false,
+      "singleLinkExplicitlyRequiredByPrivateHash": false
+    }
+  },
+  "originalObservation": {
+    "recordedHashPresent": true,
+    "recordedHashErrorIsNull": true,
+    "allFieldsRecomputed": false,
+    "recordedAccepted": false,
+    "unchangedRejection": true
+  },
+  "ownership": "Current supplied private helper semantics evaluated over retained record; canonical Python predicates and native admission are separate and unchanged. No private implementation copy or native execution.",
+  "limits": [
+    "Source review does not prove runtime API execution, whole invocation watchdog, physical cancellation/close, DLL closure or original historical supervisor source hash.",
+    "No cause of changed access times is established and no timestamp restoration/exception is selected."
+  ],
+  "privateSourceExecuted": false,
+  "nativeExecution": false
+}

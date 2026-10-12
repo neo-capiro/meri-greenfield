@@ -1,0 +1,12 @@
+{
+  "number": 20,
+  "url": "https://github.com/neo-capiro/meri-greenfield/pull/20",
+  "state": "open",
+  "draft": true,
+  "merged": false,
+  "head": "bf41cf69ebe892705cdd6f041dd2f1fb323048f5",
+  "headBranch": "task/meri-supervisor-predicate-20261012",
+  "base": "15f671a65365e3401f0ce07b46deb4cf63538346",
+  "baseBranch": "task/meri-g1-invocation-setup-20261012",
+  "scope": "Read-only base verification; no PR or main merge"
+}

@@ -1,0 +1,8 @@
+{
+  "filesChecked": 31,
+  "distinctPrivatePathValues": 26,
+  "longPrivateSourceLines": 80,
+  "hits": [],
+  "passed": true,
+  "scope": "Actual private path values and complete long helper/collector source lines; values and bodies excluded from this receipt"
+}
