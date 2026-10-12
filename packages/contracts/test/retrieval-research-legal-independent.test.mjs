@@ -421,3 +421,23 @@ test('news independent: returned outputs remain detached throughout JSON and row
 test('news independent: hostile selectors output and context invoke no hooks',()=>{
  let n=0;const r={};Object.defineProperty(r,'view',{enumerable:true,get(){n++;return'news';}});assert.throws(()=>nn(r));assert.throws(()=>np(new Proxy(nw(newsResult()),{get(){n++;}})));const c={...nc};Object.defineProperty(c,'windowAsOf',{enumerable:true,get(){n++;return at;}});assert.throws(()=>nn({},c));assert.equal(n,0);
 });
+
+test('news independent: unsupported provider wildcard retains parsed AST and no provider query',()=>{
+ const interpretation={raw:'budg*',parserVersion:'legiwatch-query-v1',status:'unsupported',ast:{kind:'term',value:'budg',wildcard:'prefix'},reasons:['NEWS_WILDCARD_REQUIRES_REVIEW'],interpretation:'budg*',adapterVersion:'legiwatch-news-query-v1',providerQuery:null};
+ np(nw({monitors:[{...monitor(),config:{query:'budg*'},interpretation}]}),{view:'monitors'},monitorCtx);
+ const supported={...interpretation,status:'supported',reasons:[],ast:null};assert.throws(()=>np(nw({monitors:[{...monitor(),config:{query:'budg*'},interpretation:supported}]}),{view:'monitors'},monitorCtx));
+});
+test('news independent: latest intake failure remains failure despite retained articles',()=>{
+ const feeds=[['politico','https://rss.politico.com/politics-news.xml'],['politico_congress','https://rss.politico.com/congress.xml']].map(([publisher,url])=>({url,publisher,status:'failed',observedAt:at,reason:'fetch failed',primaryFailure:null}));
+ const row={id:'cov:a',publisher:'Politico',source_group:'public',source_url:null,status:'partial',evidence:null,owner:'owner',version:0,intake:{status:'failed',feeds},retained:{articles:4,fullTextArticles:2,latestPublishedAt:at,latestObservedAt:at}};
+ np(nw({...newsResult(),coverage:[row]}));assert.throws(()=>np(nw({...newsResult(),coverage:[{...row,intake:{...row.intake,status:'succeeded'}}]})));
+ assert.throws(()=>np(nw({...newsResult(),coverage:[{...row,retained:{...row.retained,fullTextArticles:5}}]})));
+});
+test('news independent: mixed unobserved and failed intake stays partial without invented receipt',()=>{
+ const feeds=[{url:'https://rss.politico.com/politics-news.xml',publisher:'politico',status:'not_checked',observedAt:null,reason:null,primaryFailure:null},{url:'https://rss.politico.com/congress.xml',publisher:'politico_congress',status:'failed',observedAt:at,reason:'failed',primaryFailure:null}];
+ const row={id:'c',publisher:'Politico',source_group:'public',source_url:null,status:'unavailable',evidence:[],owner:'owner',version:0,intake:{status:'partial',feeds},retained:{articles:0,fullTextArticles:0,latestPublishedAt:null,latestObservedAt:null}};
+ np(nw({...newsResult(),coverage:[row]}));const bad=structuredClone(row);bad.intake.feeds[0].observedAt=at;assert.throws(()=>np(nw({...newsResult(),coverage:[bad]})));
+});
+test('news independent: removed tracking may retain a version while saved evidence needs one',()=>{
+ np(nw(newsResult([{...listNews(),saved:false,tracking_version:1}])));assert.throws(()=>np(nw(newsResult([{...listNews(),saved:true,tracking_version:null}]))));np(nw(newsResult([{...listNews(),saved:true,tracking_version:0}])));
+});
