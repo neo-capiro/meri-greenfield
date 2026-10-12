@@ -1,0 +1,4 @@
+# Exact scrubbed process streams; preserve assertion formatting.
+*.stdout.txt -text -diff
+*.stderr.txt -text -diff
+*.bin -text -diff

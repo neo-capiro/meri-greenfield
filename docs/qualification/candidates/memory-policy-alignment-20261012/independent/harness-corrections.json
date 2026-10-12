@@ -1,0 +1,22 @@
+{
+  "initialHelperImport": {
+    "exitCode": 1,
+    "errorType": "TypeError",
+    "rawBodyOrStackPublished": false,
+    "correction": "Added exact pinned pure confidence-helper dependency to candidate-rule import; tenant-selection dependency remains deliberately throwing if invoked."
+  },
+  "firstSuccessfulHelperOutput": {
+    "publication": "PRIVATE_LOCAL_ONLY",
+    "reason": "Excluded source-returned prose; retained in private task temp directory and reran with outcome/ruleId labels only."
+  },
+  "initialDispositionHarness": {
+    "exitCode": 0,
+    "classification": "DIAGNOSTIC_ONLY_NOT_ACCEPTANCE",
+    "correction": "Checked exact method signature, supplied approverUserId as second argument and actorContext as third; added explicit role/self/scope assertions before accepted replay."
+  },
+  "prefreezeContract": {
+    "passed": 8,
+    "failed": 1,
+    "reason": "Administrator assignment exemption not explicitly stated in descriptive wording. Hostile selector controls passed after author repair."
+  }
+}

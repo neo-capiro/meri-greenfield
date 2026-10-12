@@ -1,0 +1,12 @@
+{
+  "command": [
+    "git",
+    "diff",
+    "--cached",
+    "--check"
+  ],
+  "exitCode": 0,
+  "stdout": "",
+  "stderr": "",
+  "rawOutputAttributes": "Scoped .stdout.txt/.stderr.txt -text -diff under this author evidence directory only"
+}

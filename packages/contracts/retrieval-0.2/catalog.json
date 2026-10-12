@@ -1,7 +1,7 @@
 {
   "contractVersion": "0.2.0",
   "catalogId": "meri.retrieval",
-  "catalogVersion": "0.2.1",
+  "catalogVersion": "0.2.2",
   "sourceRegistryCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
   "originals": [
     {
@@ -228,8 +228,11 @@
       "id": "list_memory_proposals",
       "disposition": "selected",
       "boundary": "Current-authority read of canonical proposal status and provenance; candidate visibility cannot grant publish/review authority.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "memory.list_own_proposals",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "search_congress_bills",
@@ -1972,6 +1975,77 @@
       ],
       "fixtureIds": [
         "catalog.binding.get_district_federal_market"
+      ]
+    },
+    {
+      "operation": {
+        "id": "memory.list_own_proposals",
+        "version": "0.2.0"
+      },
+      "displayName": "List own pending memory proposals",
+      "whenToUse": "Prepare a typed read of the current actor's pending proposal queue under a trusted personal or selected-client subject.",
+      "limitations": [
+        "Pending contract only; null handler, no enabled source or executable skill.",
+        "Source authority describes pending queue status only; proposal text is unapproved and never approved facts, evidence readiness or an absence assertion.",
+        "Current actor, tenant, selected-client and source authorization must be established by a trusted gateway; model selectors and cursors grant no authority.",
+        "Continued, restricted, truncated and null-content pages remain partial; immutable snapshots, live ownership and complete producer coverage remain unqualified.",
+        "This read exposes no approval, review, write or publication action; approval-policy enforcement requires separate qualification."
+      ],
+      "positiveExamples": [
+        "Inspect my own pending memory proposals with disclosed queue and content coverage."
+      ],
+      "negativeExamples": [
+        "Treat proposal text as an approved memory fact or prove that no fact exists.",
+        "Approve, publish, alter or delete a proposal, or read another actor's queue."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "memory_proposals",
+          "authority": "authoritative",
+          "purpose": "enumeration"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:memory-proposals:0.2.0#/$defs/MemoryProposalInput",
+        "sha256": "e881b3786e40e3c579f230633b1a59a725b8da59499ac5f284c9b3b84f3ac7ce"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:memory-proposals:0.2.0#/$defs/MemoryProposalReadResult",
+        "sha256": "e881b3786e40e3c579f230633b1a59a725b8da59499ac5f284c9b3b84f3ac7ce"
+      },
+      "aliases": [
+        "list_memory_proposals"
+      ],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-02",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.memory.list_own_proposals"
       ]
     }
   ]

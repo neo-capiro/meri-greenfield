@@ -1,0 +1,36 @@
+{
+  "command": [
+    "npm",
+    "ci",
+    "--ignore-scripts",
+    "--cache",
+    "/tmp/meri-memory-binding-npm-cache-20261012"
+  ],
+  "cwd": "/workspace/meri-memory-binding-20261012",
+  "sourceHead": "7ba0e9d10ebf684e162dcc7c143915afdbf00f32",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "b40eb10f9f967deeb1a4dbee0c1d806076604c3975960145bcf9badeaed9be94",
+  "startedAt": "2026-10-12T02:12:31.717188+00:00",
+  "durationSeconds": 3.73,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 9321,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/memory-read-binding-20261012/author/install-root.stdout.bin",
+      "bytes": 25,
+      "sha256": "10a3b21efb70f84d46dae9fd0fc25ede9abef4b84b10aa0eed78fe9f0c6a96fa"
+    },
+    {
+      "path": "docs/qualification/candidates/memory-read-binding-20261012/author/install-root.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    }
+  ],
+  "rerunReason": "Bounded source binding check; immutable label records this attempt separately.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

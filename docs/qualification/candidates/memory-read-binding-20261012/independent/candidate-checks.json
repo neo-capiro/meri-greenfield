@@ -1,0 +1,82 @@
+[
+  {
+    "label": "candidate-independent",
+    "command": [
+      "node",
+      "--test",
+      "/workspace/meri-memory-binding-review-20261012/docs/qualification/candidates/memory-read-binding-20261012/independent/binding-adversarial.test.mjs"
+    ],
+    "cwd": "/workspace/meri-memory-binding-review-20261012",
+    "head": "5cbd2e0f4ca5b99824123ce3b8135997142eea8b",
+    "candidate": "a210db8445537ccfad301d1266e9c53ea71201ac",
+    "exit": 0,
+    "seconds": 0.889,
+    "stdoutSha256": "4229175f274b0c63454c93d0cc9222090c32993e1da9e2412e050620f4de1083",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "candidate-focused",
+    "command": [
+      "node",
+      "--test",
+      "packages/contracts/test/retrieval-memory-binding.test.mjs",
+      "packages/contracts/test/retrieval-memory-proposals.test.mjs",
+      "packages/contracts/test/retrieval-catalog-bindings.test.mjs"
+    ],
+    "cwd": "/workspace/meri-memory-binding-review-20261012",
+    "head": "5cbd2e0f4ca5b99824123ce3b8135997142eea8b",
+    "candidate": "a210db8445537ccfad301d1266e9c53ea71201ac",
+    "exit": 0,
+    "seconds": 1.192,
+    "stdoutSha256": "3d6dc51d594ce86147671e8f6ed7549ebe6ff8e70cd8f60833a55529c54c5fef",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "candidate-root",
+    "command": [
+      "npm",
+      "run",
+      "check"
+    ],
+    "cwd": "/workspace/meri-memory-binding-review-20261012",
+    "head": "5cbd2e0f4ca5b99824123ce3b8135997142eea8b",
+    "candidate": "a210db8445537ccfad301d1266e9c53ea71201ac",
+    "exit": 0,
+    "seconds": 5.418,
+    "stdoutSha256": "9977409f5779326767d05006775df606cf72ec06808126021cb4efeaecd29ca2",
+    "stderrSha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+  },
+  {
+    "label": "candidate-gateway",
+    "command": [
+      "node",
+      "--test",
+      "apps/gateway/test/gateway.test.mjs",
+      "apps/gateway/test/authority-deadline.test.mjs"
+    ],
+    "cwd": "/workspace/meri-memory-binding-review-20261012",
+    "head": "5cbd2e0f4ca5b99824123ce3b8135997142eea8b",
+    "candidate": "a210db8445537ccfad301d1266e9c53ea71201ac",
+    "exit": 0,
+    "seconds": 1.19,
+    "stdoutSha256": "fc51fd2910d3cecb3722b3cc0596528aceaf558217f6d7a6cae6c3686af5a559",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "candidate-public",
+    "command": [
+      "npm",
+      "run",
+      "check",
+      "--prefix",
+      "packages/contracts"
+    ],
+    "cwd": "/workspace/meri-memory-binding-review-20261012",
+    "head": "5cbd2e0f4ca5b99824123ce3b8135997142eea8b",
+    "candidate": "a210db8445537ccfad301d1266e9c53ea71201ac",
+    "exit": 0,
+    "seconds": 3.036,
+    "stdoutSha256": "a9e2fb87dac02d0580b39154218ded72e226c862b0a56d2540774d1a23059e16",
+    "stderrSha256": "a5bed74e8271b4bed502d2d779b1766e28a92b798d5f5560230b37ebdcc9e5a2"
+  }
+]

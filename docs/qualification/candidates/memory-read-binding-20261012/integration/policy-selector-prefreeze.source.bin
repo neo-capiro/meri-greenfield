@@ -1,0 +1,124 @@
+/** Private source-policy description; never an authorization decision or capability. */
+import { types } from 'node:util';
+const freeze = value => {
+  if (value && typeof value === 'object') { Object.values(value).forEach(freeze); Object.freeze(value); }
+  return value;
+};
+const adminRoles = ['user_admin', 'capiro_admin'];
+const commonRequirements = ['trusted_context', 'current_candidate', 'canonical_authorization'];
+const sharedRequirements = [...commonRequirements, 'client_boundary', 'decision_guard'];
+
+export const memoryReviewPolicy = freeze({
+  id: 'institutional-memory-review',
+  version: '0.2.0',
+  kind: 'policy_description',
+  decisionDate: '2026-10-12',
+  source: { repository: 'neo-capiro/capirov2', ref: 'fd8765ec01d292013758606204f2c9d886cd31c1' },
+  runtimeQualification: 'unqualified',
+  requirements: {
+    trusted_context: 'The canonical service must establish the current actor, effective role and tenant, including impersonation context and service-level role normalization. Caller-supplied role or identity is not authority.',
+    current_candidate: 'Use the current candidate and applicable lifecycle checks; a pending proposal is not approved memory.',
+    canonical_authorization: 'The existing producer authorization and workflow remain authoritative. This description grants no permission and proves no live check.',
+    client_boundary: 'Applicable client status and ethical-wall checks still apply to administrators. The administrator exception does not bypass tenant or client boundaries.',
+    decision_guard: 'Approval and reviewer rejection retain the existing transaction and database decision guards. Standard reviewers retain applicable current grants and assignment requirements; the administrator path requires its canonical transaction-local capability bound to the tenant, current actor and active membership.',
+    client_reviewer: 'A standard client reviewer needs the existing applicable grant and review assignment, must be a different person from the proposer, and must pass current authorization. Missing, expired or revoked grants cannot supply that authority.',
+    private_owner: 'Personal memory follows its existing private-owner path. An administrator role does not confer access to another user’s private memory.',
+    proposer_withdrawal: 'Withdrawal is the proposer’s separate action and retains its own current authorization and lifecycle checks; it is not reviewer rejection.',
+  },
+  scopes: {
+    firm: {
+      producerScope: 'firm',
+      proposalState: 'pending',
+      actions: {
+        propose: {
+          requirements: [...commonRequirements, 'client_boundary'],
+          text: 'A firm memory proposal remains pending until approved. An authorized administrator may subsequently approve their own proposal; a second person is not universally required.',
+        },
+        approve: {
+          selfApprovalExceptionRoles: adminRoles,
+          otherReviewerRequirement: 'administrator',
+          requirements: sharedRequirements,
+          text: 'Firm approval requires an authorized administrator (user_admin or capiro_admin). That administrator may approve their own pending proposal. A standard reviewer’s grant alone does not authorize firm approval.',
+        },
+        reject: {
+          proposerRoute: 'withdraw',
+          requirements: sharedRequirements,
+          text: 'A proposer cannot use reviewer rejection on their own shared firm proposal, including an administrator. Use the separate withdrawal action. Other reviewers still need current canonical authorization.',
+        },
+        withdraw: {
+          requiredRelationship: 'proposer',
+          requirements: [...commonRequirements, 'client_boundary', 'proposer_withdrawal'],
+          text: 'A firm proposal’s proposer may request withdrawal through the existing withdrawal path. The administrator approval exception does not authorize withdrawing another person’s proposal.',
+        },
+      },
+    },
+    client: {
+      producerScope: 'client',
+      proposalState: 'pending',
+      actions: {
+        propose: {
+          requirements: [...commonRequirements, 'client_boundary'],
+          text: 'A client memory proposal remains pending until approved. An authorized administrator may subsequently approve their own proposal; a standard reviewer must be a different person.',
+        },
+        approve: {
+          selfApprovalExceptionRoles: adminRoles,
+          otherReviewerRequirement: 'canonical_client_authorization',
+          requirements: [...sharedRequirements, 'client_reviewer'],
+          text: 'An authorized administrator (user_admin or capiro_admin) may approve their own pending client proposal. Standard reviewers require the existing client-review authority and cannot approve their own shared proposal.',
+        },
+        reject: {
+          proposerRoute: 'withdraw',
+          requirements: [...sharedRequirements, 'client_reviewer'],
+          text: 'A proposer cannot use reviewer rejection on their own shared client proposal, including an administrator. Use the separate withdrawal action. Other reviewers still need current canonical authorization.',
+        },
+        withdraw: {
+          requiredRelationship: 'proposer',
+          requirements: [...commonRequirements, 'client_boundary', 'proposer_withdrawal'],
+          text: 'A client proposal’s proposer may request withdrawal through the existing withdrawal path. The administrator approval exception does not authorize withdrawing another person’s proposal.',
+        },
+      },
+    },
+    personal: {
+      producerScope: 'user_private',
+      proposalState: 'source_flow_dependent',
+      automatedSourceKinds: ['model_extraction', 'learning_signal'],
+      actions: {
+        propose: {
+          requirements: [...commonRequirements, 'private_owner'],
+          text: 'Personal memory uses its existing explicit-save or automated-proposal flow and validation gates. Model-extraction and learning-signal proposals require review; the shared administrator exception does not turn them into approved memory.',
+        },
+        approve: {
+          selfApprovalExceptionRoles: [],
+          requirements: [...commonRequirements, 'private_owner'],
+          text: 'Personal approval follows private-owner authorization, independently of the shared administrator self-approval exception.',
+        },
+        reject: {
+          requirements: [...commonRequirements, 'private_owner'],
+          text: 'Personal rejection follows its existing private-owner review path. Do not apply the shared proposer rejection rule as a universal prohibition on private-owner review.',
+        },
+        withdraw: {
+          requiredRelationship: 'proposer',
+          requirements: [...commonRequirements, 'private_owner', 'proposer_withdrawal'],
+          text: 'Personal proposal withdrawal follows the existing proposer and private-owner path, separately from review.',
+        },
+      },
+    },
+  },
+});
+
+/** Select explanatory wording only; scope is the proposal DTO's vocabulary. */
+export function memoryReviewPolicyText(selection) {
+  if (!selection || typeof selection !== 'object' || types.isProxy(selection) || Array.isArray(selection) ||
+      ![null, Object.prototype].includes(Object.getPrototypeOf(selection))) {
+    throw new TypeError('Invalid memory policy text selection');
+  }
+  const fields = Object.getOwnPropertyDescriptors(selection);
+  if (Reflect.ownKeys(fields).length !== 2 || !Object.hasOwn(fields, 'scope') || !Object.hasOwn(fields, 'action') ||
+      !fields.scope.enumerable || !fields.action.enumerable || !Object.hasOwn(fields.scope, 'value') ||
+      !Object.hasOwn(fields.action, 'value')) throw new TypeError('Invalid memory policy text selection');
+  const scope = fields.scope.value; const action = fields.action.value;
+  if (typeof scope !== 'string' || typeof action !== 'string' || !Object.hasOwn(memoryReviewPolicy.scopes, scope) ||
+      !Object.hasOwn(memoryReviewPolicy.scopes[scope].actions, action)) throw new TypeError('Invalid memory policy text selection');
+  const description = memoryReviewPolicy.scopes[scope].actions[action];
+  return [description.text, ...description.requirements.map(id => memoryReviewPolicy.requirements[id])].join(' ');
+}

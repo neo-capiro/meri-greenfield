@@ -1,0 +1,80 @@
+{
+  "base": "7ba0e9d10ebf684e162dcc7c143915afdbf00f32",
+  "node": "v24.19.0",
+  "npm": "11.9.0",
+  "records": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 6582,
+      "sha256": "a0650949b74e5aee709bd8b3c9d480f95f5b898778ac8f7b3927eb54b141437a"
+    },
+    {
+      "path": "docs/IMPLEMENTATION-STANDARDS.md",
+      "bytes": 11082,
+      "sha256": "d4f10f964ee207187abacd967649a1cfc9bdd468072dc01f859268f08b719959"
+    },
+    {
+      "path": "docs/plans/MERI-DEPLOYMENT.md",
+      "bytes": 86848,
+      "sha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388"
+    },
+    {
+      "path": "docs/qualification/candidates/memory-independent-resume-20261012/private-source-verification.json",
+      "bytes": 13942,
+      "sha256": "80fd023808329381d564a648a4c70825fbb827491327ecd11f8431948c43e383"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/memory-proposals.schema.json",
+      "bytes": 6681,
+      "sha256": "e881b3786e40e3c579f230633b1a59a725b8da59499ac5f284c9b3b84f3ac7ce"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/memory-proposals-validation.mjs",
+      "bytes": 8170,
+      "sha256": "93a39db8d1302117ddcc97406f3132462259221d38a52670646e89ea0fd53e28"
+    },
+    {
+      "path": "packages/contracts/meri.schema.json",
+      "bytes": 50043,
+      "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b"
+    },
+    {
+      "path": "package.json",
+      "bytes": 1936,
+      "sha256": "42f84c0309a87d043a4023f657a6b1932ac5c1ca9e51eca8874e33085cb64d98"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 12067,
+      "sha256": "b2293773bf4ddc6d23425b7d718b79575384679999b86fd3caad78e6eda4a42d"
+    },
+    {
+      "path": "packages/contracts/package.json",
+      "bytes": 1291,
+      "sha256": "5ffd1042ab28e234a4803344f34a882bd0695580914d21136e7c13e43c7ddbe7"
+    },
+    {
+      "path": "packages/contracts/package-lock.json",
+      "bytes": 24995,
+      "sha256": "dae8c670bb76b9c570f174d8749a8c59179cf865d5d6ec83b64a67bb5b2b06a6"
+    }
+  ],
+  "installs": [
+    {
+      "label": "root-install",
+      "command": "npm ci --ignore-scripts --no-audit --no-fund --cache /tmp/meri-memory-binding-review-root-npm",
+      "exit": 0,
+      "stdoutSha256": "87ce98749cbda0c632c25e9c4963c21076562a49f92ed1e744dbc6bafbc85f82",
+      "stderrSha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    {
+      "label": "contracts-install",
+      "command": "npm ci --ignore-scripts --no-audit --no-fund --cache /tmp/meri-memory-binding-review-contracts-npm",
+      "exit": 0,
+      "stdoutSha256": "1d41eb5f721bb9d5710254973769ef57dc59f277b97c8647bf6ffaff5426b4ba",
+      "stderrSha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    }
+  ],
+  "authorityNote": "Neo explicitly confirmed retaining the existing administrator self-approval exception during this review through the parent; no broader roles or privilege. Read binding remains unavailable and adds no approval action. Historical pinned conflict evidence is not rewritten.",
+  "bodyPublication": false
+}

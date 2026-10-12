@@ -1,0 +1,61 @@
+{
+  "kind": "SOURCE_ONLY_DRAFT_PUBLICATION",
+  "repository": "neo-capiro/meri-greenfield",
+  "pullRequest": 11,
+  "url": "https://github.com/neo-capiro/meri-greenfield/pull/11",
+  "state": "open",
+  "draft": true,
+  "merged": false,
+  "verifiedPublicationHead": "cdf3872c19327c63619f19aed4c1e16bc79e8294",
+  "verifiedPublicationTree": "dd8b3b67cac8aa991639ece197dec894d2cc1e51",
+  "branch": "task/meri-memory-read-source-20261012",
+  "baseBranch": "task/meri-source-continuation-20261012",
+  "preservedBase": "7ba0e9d10ebf684e162dcc7c143915afdbf00f32",
+  "testedSource": "d0f4ca2ca0bbeda0b336130cfd4fb36f4ab60d59",
+  "testedTree": "d12b28a50e91709ee8cc888ea24f4d96c5361f0a",
+  "verification": "GitHub create/update response and git ls-remote matched; publication receipt is a later metadata-only descendant.",
+  "preservedRemoteHeads": [
+    {
+      "pr": 7,
+      "branch": "task/codex-g1-publish-20261011",
+      "head": "5ee46446b5f60034916f00b2a665b3e2bef9cf60"
+    },
+    {
+      "pr": 8,
+      "branch": "shipper/aws-preflight-20261011-r1",
+      "head": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9"
+    },
+    {
+      "pr": 9,
+      "branch": "task/handover-preserve-candidates-20261012",
+      "head": "c57b7d26df7de2acbd8c7d8edc7098f7d495053a"
+    },
+    {
+      "pr": 10,
+      "branch": "task/meri-source-continuation-20261012",
+      "head": "7ba0e9d10ebf684e162dcc7c143915afdbf00f32"
+    }
+  ],
+  "main": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc",
+  "capirov2AndFrontendWorktreesClean": true,
+  "sourceAccepted": true,
+  "runtimeAccepted": false,
+  "mainMergeAuthorized": false,
+  "checks": {
+    "root": 244,
+    "gateway": 79,
+    "independent": 35,
+    "public": 7,
+    "originalReleaseControl": "PASS",
+    "generation": "PASS",
+    "types": "PASS",
+    "ownedCheckGroupsAbsent": 5
+  },
+  "remaining": [
+    "Actual wrapper consumption and capirov2 source-owner wording correction",
+    "Memory trusted context and source wiring",
+    "Native/runtime/image/budget/isolation/artifact qualification",
+    "82 selected unmapped capabilities and14 unqualified skills"
+  ],
+  "observedAt": "2026-10-12 02:39:30 UTC"
+}

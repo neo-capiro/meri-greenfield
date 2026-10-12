@@ -1,0 +1,47 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "check:contracts:distribution"
+  ],
+  "cwd": "/workspace/meri-memory-read-source-20261012",
+  "sourceHead": "d0f4ca2ca0bbeda0b336130cfd4fb36f4ab60d59",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cafca26017b6345c3acda030865a7536ac9c422d537cbc40f852618c4b73139e",
+  "startedAt": "2026-10-12T02:34:48.931338+00:00",
+  "durationSeconds": 3.587,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 17095,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 17145,
+      "status": 0
+    },
+    {
+      "pid": 17251,
+      "status": 0
+    },
+    {
+      "pid": 17270,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/memory-read-binding-20261012/integration/combined-public.stdout.bin",
+      "bytes": 2044,
+      "sha256": "c7ff8243281718615d71a037b9bd6dfbe989bf8d96c6f887022e5398039dc6cd"
+    },
+    {
+      "path": "docs/qualification/candidates/memory-read-binding-20261012/integration/combined-public.stderr.bin",
+      "bytes": 1040,
+      "sha256": "cbbd466f3bf458f7f516c133ea486c1aada38d325ec9a80b698c26da8c18237f"
+    }
+  ],
+  "checkReason": "Independent integration verification of the reviewed canonical memory read binding; owned local process groups only.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

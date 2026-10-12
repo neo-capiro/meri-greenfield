@@ -1,0 +1,1205 @@
+{
+  "schema": "meri-pinned-policy-helper-characterization/1",
+  "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "identities": {
+    "memory-review-admin-policy.ts": "ce7d9b36b52b7b63d1a8bdcaf0bab2acf3c57187dedc5752a80f8e95f733adc3",
+    "memory-authorization.helpers.ts": "a0c2ece14a7d8164d3a7c7a2f028ffe75a486c91f6fdda8b11fa48cab66c60e7",
+    "memory-candidate-rules.ts": "17f48ff5ca477057ed622afca0412481e0ba9220c6891df12d21bf5f1c87ceaf",
+    "../meri/memory-confidence.helpers.ts": "18a1482d11df9f98a66d3d106de2400956f5c092e2a91723b3e37814c681ed6c"
+  },
+  "limits": "Pure helper only; tenant-selection dependency deliberately throws if used; no service/DB/auth/runtime qualification.",
+  "adminRoles": [
+    {
+      "role": "standard_user",
+      "admin": false
+    },
+    {
+      "role": "user_admin",
+      "admin": true
+    },
+    {
+      "role": "capiro_admin",
+      "admin": true
+    },
+    {
+      "role": "client_portal_user",
+      "admin": false
+    }
+  ],
+  "rows": [
+    {
+      "role": "standard_user",
+      "memoryClass": "institutional_authoritative",
+      "scope": "firm",
+      "self": true,
+      "decision": {
+        "allowed": false,
+        "reason": "self_review"
+      }
+    },
+    {
+      "role": "standard_user",
+      "memoryClass": "institutional_authoritative",
+      "scope": "firm",
+      "self": false,
+      "decision": {
+        "allowed": false,
+        "reason": "admin_required"
+      }
+    },
+    {
+      "role": "standard_user",
+      "memoryClass": "institutional_authoritative",
+      "scope": "client",
+      "self": true,
+      "decision": {
+        "allowed": false,
+        "reason": "self_review"
+      }
+    },
+    {
+      "role": "standard_user",
+      "memoryClass": "institutional_authoritative",
+      "scope": "client",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "explicit_grant"
+      }
+    },
+    {
+      "role": "standard_user",
+      "memoryClass": "institutional_authoritative",
+      "scope": "user_private",
+      "self": true,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "standard_user",
+      "memoryClass": "institutional_authoritative",
+      "scope": "user_private",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "standard_user",
+      "memoryClass": "client_steering",
+      "scope": "firm",
+      "self": true,
+      "decision": {
+        "allowed": false,
+        "reason": "wrong_client_scope"
+      }
+    },
+    {
+      "role": "standard_user",
+      "memoryClass": "client_steering",
+      "scope": "firm",
+      "self": false,
+      "decision": {
+        "allowed": false,
+        "reason": "wrong_client_scope"
+      }
+    },
+    {
+      "role": "standard_user",
+      "memoryClass": "client_steering",
+      "scope": "client",
+      "self": true,
+      "decision": {
+        "allowed": false,
+        "reason": "self_review"
+      }
+    },
+    {
+      "role": "standard_user",
+      "memoryClass": "client_steering",
+      "scope": "client",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "explicit_grant"
+      }
+    },
+    {
+      "role": "standard_user",
+      "memoryClass": "client_steering",
+      "scope": "user_private",
+      "self": true,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "standard_user",
+      "memoryClass": "client_steering",
+      "scope": "user_private",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "standard_user",
+      "memoryClass": "user_preference",
+      "scope": "firm",
+      "self": true,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "standard_user",
+      "memoryClass": "user_preference",
+      "scope": "firm",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "standard_user",
+      "memoryClass": "user_preference",
+      "scope": "client",
+      "self": true,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "standard_user",
+      "memoryClass": "user_preference",
+      "scope": "client",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "standard_user",
+      "memoryClass": "user_preference",
+      "scope": "user_private",
+      "self": true,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "standard_user",
+      "memoryClass": "user_preference",
+      "scope": "user_private",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "standard_user",
+      "memoryClass": "episodic_working",
+      "scope": "firm",
+      "self": true,
+      "decision": {
+        "allowed": false,
+        "reason": "self_review"
+      }
+    },
+    {
+      "role": "standard_user",
+      "memoryClass": "episodic_working",
+      "scope": "firm",
+      "self": false,
+      "decision": {
+        "allowed": false,
+        "reason": "admin_required"
+      }
+    },
+    {
+      "role": "standard_user",
+      "memoryClass": "episodic_working",
+      "scope": "client",
+      "self": true,
+      "decision": {
+        "allowed": false,
+        "reason": "self_review"
+      }
+    },
+    {
+      "role": "standard_user",
+      "memoryClass": "episodic_working",
+      "scope": "client",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "explicit_grant"
+      }
+    },
+    {
+      "role": "standard_user",
+      "memoryClass": "episodic_working",
+      "scope": "user_private",
+      "self": true,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "standard_user",
+      "memoryClass": "episodic_working",
+      "scope": "user_private",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "user_admin",
+      "memoryClass": "institutional_authoritative",
+      "scope": "firm",
+      "self": true,
+      "decision": {
+        "allowed": true,
+        "basis": "admin"
+      }
+    },
+    {
+      "role": "user_admin",
+      "memoryClass": "institutional_authoritative",
+      "scope": "firm",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "admin"
+      }
+    },
+    {
+      "role": "user_admin",
+      "memoryClass": "institutional_authoritative",
+      "scope": "client",
+      "self": true,
+      "decision": {
+        "allowed": true,
+        "basis": "explicit_grant"
+      }
+    },
+    {
+      "role": "user_admin",
+      "memoryClass": "institutional_authoritative",
+      "scope": "client",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "explicit_grant"
+      }
+    },
+    {
+      "role": "user_admin",
+      "memoryClass": "institutional_authoritative",
+      "scope": "user_private",
+      "self": true,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "user_admin",
+      "memoryClass": "institutional_authoritative",
+      "scope": "user_private",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "user_admin",
+      "memoryClass": "client_steering",
+      "scope": "firm",
+      "self": true,
+      "decision": {
+        "allowed": false,
+        "reason": "wrong_client_scope"
+      }
+    },
+    {
+      "role": "user_admin",
+      "memoryClass": "client_steering",
+      "scope": "firm",
+      "self": false,
+      "decision": {
+        "allowed": false,
+        "reason": "wrong_client_scope"
+      }
+    },
+    {
+      "role": "user_admin",
+      "memoryClass": "client_steering",
+      "scope": "client",
+      "self": true,
+      "decision": {
+        "allowed": true,
+        "basis": "explicit_grant"
+      }
+    },
+    {
+      "role": "user_admin",
+      "memoryClass": "client_steering",
+      "scope": "client",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "explicit_grant"
+      }
+    },
+    {
+      "role": "user_admin",
+      "memoryClass": "client_steering",
+      "scope": "user_private",
+      "self": true,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "user_admin",
+      "memoryClass": "client_steering",
+      "scope": "user_private",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "user_admin",
+      "memoryClass": "user_preference",
+      "scope": "firm",
+      "self": true,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "user_admin",
+      "memoryClass": "user_preference",
+      "scope": "firm",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "user_admin",
+      "memoryClass": "user_preference",
+      "scope": "client",
+      "self": true,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "user_admin",
+      "memoryClass": "user_preference",
+      "scope": "client",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "user_admin",
+      "memoryClass": "user_preference",
+      "scope": "user_private",
+      "self": true,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "user_admin",
+      "memoryClass": "user_preference",
+      "scope": "user_private",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "user_admin",
+      "memoryClass": "episodic_working",
+      "scope": "firm",
+      "self": true,
+      "decision": {
+        "allowed": true,
+        "basis": "admin"
+      }
+    },
+    {
+      "role": "user_admin",
+      "memoryClass": "episodic_working",
+      "scope": "firm",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "admin"
+      }
+    },
+    {
+      "role": "user_admin",
+      "memoryClass": "episodic_working",
+      "scope": "client",
+      "self": true,
+      "decision": {
+        "allowed": true,
+        "basis": "explicit_grant"
+      }
+    },
+    {
+      "role": "user_admin",
+      "memoryClass": "episodic_working",
+      "scope": "client",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "explicit_grant"
+      }
+    },
+    {
+      "role": "user_admin",
+      "memoryClass": "episodic_working",
+      "scope": "user_private",
+      "self": true,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "user_admin",
+      "memoryClass": "episodic_working",
+      "scope": "user_private",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "capiro_admin",
+      "memoryClass": "institutional_authoritative",
+      "scope": "firm",
+      "self": true,
+      "decision": {
+        "allowed": true,
+        "basis": "admin"
+      }
+    },
+    {
+      "role": "capiro_admin",
+      "memoryClass": "institutional_authoritative",
+      "scope": "firm",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "admin"
+      }
+    },
+    {
+      "role": "capiro_admin",
+      "memoryClass": "institutional_authoritative",
+      "scope": "client",
+      "self": true,
+      "decision": {
+        "allowed": true,
+        "basis": "explicit_grant"
+      }
+    },
+    {
+      "role": "capiro_admin",
+      "memoryClass": "institutional_authoritative",
+      "scope": "client",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "explicit_grant"
+      }
+    },
+    {
+      "role": "capiro_admin",
+      "memoryClass": "institutional_authoritative",
+      "scope": "user_private",
+      "self": true,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "capiro_admin",
+      "memoryClass": "institutional_authoritative",
+      "scope": "user_private",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "capiro_admin",
+      "memoryClass": "client_steering",
+      "scope": "firm",
+      "self": true,
+      "decision": {
+        "allowed": false,
+        "reason": "wrong_client_scope"
+      }
+    },
+    {
+      "role": "capiro_admin",
+      "memoryClass": "client_steering",
+      "scope": "firm",
+      "self": false,
+      "decision": {
+        "allowed": false,
+        "reason": "wrong_client_scope"
+      }
+    },
+    {
+      "role": "capiro_admin",
+      "memoryClass": "client_steering",
+      "scope": "client",
+      "self": true,
+      "decision": {
+        "allowed": true,
+        "basis": "explicit_grant"
+      }
+    },
+    {
+      "role": "capiro_admin",
+      "memoryClass": "client_steering",
+      "scope": "client",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "explicit_grant"
+      }
+    },
+    {
+      "role": "capiro_admin",
+      "memoryClass": "client_steering",
+      "scope": "user_private",
+      "self": true,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "capiro_admin",
+      "memoryClass": "client_steering",
+      "scope": "user_private",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "capiro_admin",
+      "memoryClass": "user_preference",
+      "scope": "firm",
+      "self": true,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "capiro_admin",
+      "memoryClass": "user_preference",
+      "scope": "firm",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "capiro_admin",
+      "memoryClass": "user_preference",
+      "scope": "client",
+      "self": true,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "capiro_admin",
+      "memoryClass": "user_preference",
+      "scope": "client",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "capiro_admin",
+      "memoryClass": "user_preference",
+      "scope": "user_private",
+      "self": true,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "capiro_admin",
+      "memoryClass": "user_preference",
+      "scope": "user_private",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "capiro_admin",
+      "memoryClass": "episodic_working",
+      "scope": "firm",
+      "self": true,
+      "decision": {
+        "allowed": true,
+        "basis": "admin"
+      }
+    },
+    {
+      "role": "capiro_admin",
+      "memoryClass": "episodic_working",
+      "scope": "firm",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "admin"
+      }
+    },
+    {
+      "role": "capiro_admin",
+      "memoryClass": "episodic_working",
+      "scope": "client",
+      "self": true,
+      "decision": {
+        "allowed": true,
+        "basis": "explicit_grant"
+      }
+    },
+    {
+      "role": "capiro_admin",
+      "memoryClass": "episodic_working",
+      "scope": "client",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "explicit_grant"
+      }
+    },
+    {
+      "role": "capiro_admin",
+      "memoryClass": "episodic_working",
+      "scope": "user_private",
+      "self": true,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "capiro_admin",
+      "memoryClass": "episodic_working",
+      "scope": "user_private",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "client_portal_user",
+      "memoryClass": "institutional_authoritative",
+      "scope": "firm",
+      "self": true,
+      "decision": {
+        "allowed": false,
+        "reason": "self_review"
+      }
+    },
+    {
+      "role": "client_portal_user",
+      "memoryClass": "institutional_authoritative",
+      "scope": "firm",
+      "self": false,
+      "decision": {
+        "allowed": false,
+        "reason": "admin_required"
+      }
+    },
+    {
+      "role": "client_portal_user",
+      "memoryClass": "institutional_authoritative",
+      "scope": "client",
+      "self": true,
+      "decision": {
+        "allowed": false,
+        "reason": "self_review"
+      }
+    },
+    {
+      "role": "client_portal_user",
+      "memoryClass": "institutional_authoritative",
+      "scope": "client",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "explicit_grant"
+      }
+    },
+    {
+      "role": "client_portal_user",
+      "memoryClass": "institutional_authoritative",
+      "scope": "user_private",
+      "self": true,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "client_portal_user",
+      "memoryClass": "institutional_authoritative",
+      "scope": "user_private",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "client_portal_user",
+      "memoryClass": "client_steering",
+      "scope": "firm",
+      "self": true,
+      "decision": {
+        "allowed": false,
+        "reason": "wrong_client_scope"
+      }
+    },
+    {
+      "role": "client_portal_user",
+      "memoryClass": "client_steering",
+      "scope": "firm",
+      "self": false,
+      "decision": {
+        "allowed": false,
+        "reason": "wrong_client_scope"
+      }
+    },
+    {
+      "role": "client_portal_user",
+      "memoryClass": "client_steering",
+      "scope": "client",
+      "self": true,
+      "decision": {
+        "allowed": false,
+        "reason": "self_review"
+      }
+    },
+    {
+      "role": "client_portal_user",
+      "memoryClass": "client_steering",
+      "scope": "client",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "explicit_grant"
+      }
+    },
+    {
+      "role": "client_portal_user",
+      "memoryClass": "client_steering",
+      "scope": "user_private",
+      "self": true,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "client_portal_user",
+      "memoryClass": "client_steering",
+      "scope": "user_private",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "client_portal_user",
+      "memoryClass": "user_preference",
+      "scope": "firm",
+      "self": true,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "client_portal_user",
+      "memoryClass": "user_preference",
+      "scope": "firm",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "client_portal_user",
+      "memoryClass": "user_preference",
+      "scope": "client",
+      "self": true,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "client_portal_user",
+      "memoryClass": "user_preference",
+      "scope": "client",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "client_portal_user",
+      "memoryClass": "user_preference",
+      "scope": "user_private",
+      "self": true,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "client_portal_user",
+      "memoryClass": "user_preference",
+      "scope": "user_private",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "client_portal_user",
+      "memoryClass": "episodic_working",
+      "scope": "firm",
+      "self": true,
+      "decision": {
+        "allowed": false,
+        "reason": "self_review"
+      }
+    },
+    {
+      "role": "client_portal_user",
+      "memoryClass": "episodic_working",
+      "scope": "firm",
+      "self": false,
+      "decision": {
+        "allowed": false,
+        "reason": "admin_required"
+      }
+    },
+    {
+      "role": "client_portal_user",
+      "memoryClass": "episodic_working",
+      "scope": "client",
+      "self": true,
+      "decision": {
+        "allowed": false,
+        "reason": "self_review"
+      }
+    },
+    {
+      "role": "client_portal_user",
+      "memoryClass": "episodic_working",
+      "scope": "client",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "explicit_grant"
+      }
+    },
+    {
+      "role": "client_portal_user",
+      "memoryClass": "episodic_working",
+      "scope": "user_private",
+      "self": true,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    },
+    {
+      "role": "client_portal_user",
+      "memoryClass": "episodic_working",
+      "scope": "user_private",
+      "self": false,
+      "decision": {
+        "allowed": true,
+        "basis": "owner"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "scenario": "admin-self-client",
+      "decision": {
+        "allowed": true,
+        "basis": "admin"
+      }
+    },
+    {
+      "scenario": "blocked-wall",
+      "decision": {
+        "allowed": false,
+        "reason": "ethical_wall"
+      }
+    },
+    {
+      "scenario": "archived-client",
+      "decision": {
+        "allowed": false,
+        "reason": "archived_client"
+      }
+    },
+    {
+      "scenario": "suspended-client",
+      "decision": {
+        "allowed": false,
+        "reason": "archived_client"
+      }
+    },
+    {
+      "scenario": "missing-client-status",
+      "decision": {
+        "allowed": true,
+        "basis": "admin"
+      }
+    },
+    {
+      "scenario": "admin-impersonating-standard",
+      "decision": {
+        "allowed": false,
+        "reason": "self_review"
+      }
+    },
+    {
+      "scenario": "standard-impersonating-admin",
+      "decision": {
+        "allowed": true,
+        "basis": "admin"
+      }
+    },
+    {
+      "scenario": "impersonation-missing-actor",
+      "decision": {
+        "allowed": true,
+        "basis": "admin"
+      }
+    },
+    {
+      "scenario": "ordinary-other-no-grants",
+      "decision": {
+        "allowed": false,
+        "reason": "missing_grant"
+      }
+    },
+    {
+      "scenario": "ordinary-other-approve-grant",
+      "decision": {
+        "allowed": true,
+        "basis": "explicit_grant"
+      }
+    },
+    {
+      "scenario": "ordinary-self-approve-grant",
+      "decision": {
+        "allowed": false,
+        "reason": "self_review"
+      }
+    },
+    {
+      "scenario": "revoked-candidate",
+      "decision": {
+        "allowed": false,
+        "reason": "revoked_or_terminal"
+      }
+    }
+  ],
+  "proposals": [
+    {
+      "scope": "personal",
+      "isAdmin": true,
+      "sourceKind": "manual",
+      "outcome": "PASS",
+      "ruleId": "memory.personal.auto_commit"
+    },
+    {
+      "scope": "personal",
+      "isAdmin": true,
+      "sourceKind": "model_extraction",
+      "outcome": "WARN",
+      "ruleId": "memory.model_extraction.requires_review"
+    },
+    {
+      "scope": "personal",
+      "isAdmin": true,
+      "sourceKind": "learning_signal",
+      "outcome": "WARN",
+      "ruleId": "memory.learning_signal.requires_review"
+    },
+    {
+      "scope": "personal",
+      "isAdmin": false,
+      "sourceKind": "manual",
+      "outcome": "PASS",
+      "ruleId": "memory.personal.auto_commit"
+    },
+    {
+      "scope": "personal",
+      "isAdmin": false,
+      "sourceKind": "model_extraction",
+      "outcome": "WARN",
+      "ruleId": "memory.model_extraction.requires_review"
+    },
+    {
+      "scope": "personal",
+      "isAdmin": false,
+      "sourceKind": "learning_signal",
+      "outcome": "WARN",
+      "ruleId": "memory.learning_signal.requires_review"
+    },
+    {
+      "scope": "firm",
+      "isAdmin": true,
+      "sourceKind": "manual",
+      "outcome": "WARN",
+      "ruleId": "memory.firm.requires_approval"
+    },
+    {
+      "scope": "firm",
+      "isAdmin": true,
+      "sourceKind": "model_extraction",
+      "outcome": "WARN",
+      "ruleId": "memory.model_extraction.requires_review"
+    },
+    {
+      "scope": "firm",
+      "isAdmin": true,
+      "sourceKind": "learning_signal",
+      "outcome": "WARN",
+      "ruleId": "memory.learning_signal.requires_review"
+    },
+    {
+      "scope": "firm",
+      "isAdmin": false,
+      "sourceKind": "manual",
+      "outcome": "WARN",
+      "ruleId": "memory.firm.requires_approval"
+    },
+    {
+      "scope": "firm",
+      "isAdmin": false,
+      "sourceKind": "model_extraction",
+      "outcome": "WARN",
+      "ruleId": "memory.model_extraction.requires_review"
+    },
+    {
+      "scope": "firm",
+      "isAdmin": false,
+      "sourceKind": "learning_signal",
+      "outcome": "WARN",
+      "ruleId": "memory.learning_signal.requires_review"
+    },
+    {
+      "scope": "client",
+      "isAdmin": true,
+      "sourceKind": "manual",
+      "outcome": "WARN",
+      "ruleId": "memory.client.requires_approval"
+    },
+    {
+      "scope": "client",
+      "isAdmin": true,
+      "sourceKind": "model_extraction",
+      "outcome": "WARN",
+      "ruleId": "memory.model_extraction.requires_review"
+    },
+    {
+      "scope": "client",
+      "isAdmin": true,
+      "sourceKind": "learning_signal",
+      "outcome": "WARN",
+      "ruleId": "memory.learning_signal.requires_review"
+    },
+    {
+      "scope": "client",
+      "isAdmin": false,
+      "sourceKind": "manual",
+      "outcome": "WARN",
+      "ruleId": "memory.client.requires_approval"
+    },
+    {
+      "scope": "client",
+      "isAdmin": false,
+      "sourceKind": "model_extraction",
+      "outcome": "WARN",
+      "ruleId": "memory.model_extraction.requires_review"
+    },
+    {
+      "scope": "client",
+      "isAdmin": false,
+      "sourceKind": "learning_signal",
+      "outcome": "WARN",
+      "ruleId": "memory.learning_signal.requires_review"
+    }
+  ]
+}

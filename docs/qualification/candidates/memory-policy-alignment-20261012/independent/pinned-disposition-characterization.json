@@ -1,0 +1,26 @@
+{
+  "command": [
+    "node",
+    "--disable-warning=ExperimentalWarning",
+    "docs/qualification/candidates/memory-policy-alignment-20261012/independent/pinned-disposition-characterization.mjs"
+  ],
+  "cwd": "/workspace/meri-memory-policy-review-20261012",
+  "startUnixSeconds": 1791772072.643,
+  "elapsedSeconds": 0.11600017547607422,
+  "exitCode": 0,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "fixtureRoot": null,
+  "streams": {
+    "stdout": {
+      "path": "pinned-disposition-characterization.stdout.txt",
+      "bytes": 6771,
+      "sha256": "0b6c25aef931d907752cd4fb8d2d0cdae05b551600e107892464fccc403b5e37"
+    },
+    "stderr": {
+      "path": "pinned-disposition-characterization.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

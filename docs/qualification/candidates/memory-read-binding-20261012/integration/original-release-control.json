@@ -1,0 +1,33 @@
+{
+  "command": [
+    "node",
+    "docs/qualification/candidates/gateway-source-disabled-20261012/independent-review-20261012/release-deadline-control.mjs"
+  ],
+  "cwd": "/workspace/meri-memory-read-source-20261012",
+  "sourceHead": "d0f4ca2ca0bbeda0b336130cfd4fb36f4ab60d59",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cafca26017b6345c3acda030865a7536ac9c422d537cbc40f852618c4b73139e",
+  "startedAt": "2026-10-12T02:34:24.399658+00:00",
+  "durationSeconds": 3.293,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 16762,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/memory-read-binding-20261012/integration/original-release-control.stdout.bin",
+      "bytes": 281,
+      "sha256": "e6dea4b9352e94a2e30f05b85da8babba3068b31e7a83fca6831b6323a06cdef"
+    },
+    {
+      "path": "docs/qualification/candidates/memory-read-binding-20261012/integration/original-release-control.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "checkReason": "Independent integration verification of the reviewed canonical memory read binding; owned local process groups only.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,36 @@
+{
+  "command": [
+    "env",
+    "POLICY_SOURCE_UNDER_REVIEW=/tmp/meri-policy-selector-prefreeze-09cb5e0831492114f0def96821505cc33615995871ae34d9cbaa9718678236a2.mjs",
+    "node",
+    "--test",
+    "docs/qualification/candidates/memory-read-binding-20261012/integration/policy-selector.test.mjs"
+  ],
+  "cwd": "/workspace/meri-memory-read-source-20261012",
+  "sourceHead": "cce4083a29b0b2e9fbd7d7d173d823731423104c",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cafca26017b6345c3acda030865a7536ac9c422d537cbc40f852618c4b73139e",
+  "startedAt": "2026-10-12T02:24:27.331647+00:00",
+  "durationSeconds": 0.115,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 13045,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/memory-read-binding-20261012/integration/policy-selector-prefreeze.stdout.bin",
+      "bytes": 268,
+      "sha256": "3a2dbb7ec14d6fa91bd453d6214e6f185c48d88d80d06f484cb39906c4850991"
+    },
+    {
+      "path": "docs/qualification/candidates/memory-read-binding-20261012/integration/policy-selector-prefreeze.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "checkReason": "Independent integration verification of the reviewed canonical memory read binding; owned local process groups only.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,74 @@
+{
+  "schema": "meri-memory-policy-independent-acceptance/1",
+  "verdict": "ACCEPT_SOURCE",
+  "scope": "Descriptive private policy contract and wording only; no authorization evaluator or live wrapper",
+  "base": "7ba0e9d10ebf684e162dcc7c143915afdbf00f32",
+  "authorCommit": "81be4ebf1a7483e80ae96fe787404c770958622e",
+  "authorTree": "bbba198715be658952f784df6c8ee7c24d10e1c7",
+  "preReportReviewHead": "451451758ed34b55d88bffa75ec38c4738f40dbb",
+  "source": {
+    "path": "packages/contracts/retrieval-0.2/memory-review-policy.mjs",
+    "sha256": "088d64a80ea10eaad4e9c6bd6028fb128a96d79f5ce7af3c60a314fa13894ff8",
+    "bytes": 8319
+  },
+  "baseTrackedFilesUnchanged": 1965,
+  "baseContractsUnchanged": 53,
+  "privateReferencesVerified": 19,
+  "privateBodiesPublished": false,
+  "checks": [
+    {
+      "receipt": "prefreeze-policy-contract.json",
+      "sha256": "a0b354fbbbcf1ffda613079f403bf4412bbb3bcc2426870735a0da02d883c996",
+      "exitCode": 1
+    },
+    {
+      "receipt": "pinned-helper-characterization.json",
+      "sha256": "fac95e21ded4c380a7f3651adefd7b7c7cad3f73f1410b7a40d7a62bfb32bdc1",
+      "exitCode": 0
+    },
+    {
+      "receipt": "frozen-policy25.json",
+      "sha256": "758ba1ca977c07d1bfd0f362749a555587af9cd6d867463f661935dd9151b2cd",
+      "exitCode": 0
+    },
+    {
+      "receipt": "initial-disposition-harness.json",
+      "sha256": "2dc7cde18958cc5aeba563e642d20c1f30f4d632f957f2c9ea8b0565aa7d7ed8",
+      "exitCode": 0
+    },
+    {
+      "receipt": "frozen-whitespace.json",
+      "sha256": "54b822861970d0836a916eb3e8e85f556b68edc140fc1ba5d01364f48a24f03a",
+      "exitCode": 0
+    },
+    {
+      "receipt": "pinned-disposition-characterization.json",
+      "sha256": "c40495bec1cb86428cb6e9e129750bda862a0fd5fd0dcb4285ebb3452d6dd092",
+      "exitCode": 0
+    }
+  ],
+  "frozenFocused": {
+    "passed": 25,
+    "failed": 0,
+    "skipped": 0
+  },
+  "prefreezeFailurePreserved": true,
+  "sourceEnabled": false,
+  "runtimeQualification": "unqualified",
+  "liveActions": 0,
+  "cleanup": {
+    "ownedProcessGroupsAbsent": true,
+    "externalTimeouts": 0,
+    "privateReferencesRemainLocal": true,
+    "noBackgroundServiceStarted": true
+  },
+  "remaining": [
+    "combined integration verification",
+    "future canonical wording consumption in real Meri wrapper",
+    "private capirov2 source-owner wrapper/rule wording alignment",
+    "current actor/tenant/impersonation/service context",
+    "authentic role/membership/grant liveness/walls",
+    "actual review assignments and DB decision guards",
+    "G1 runtime and G2-G7 release gates"
+  ]
+}

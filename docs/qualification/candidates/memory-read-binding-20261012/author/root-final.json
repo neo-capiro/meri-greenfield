@@ -1,0 +1,43 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "check"
+  ],
+  "cwd": "/workspace/meri-memory-binding-20261012",
+  "sourceHead": "dc641893fd7e2be3567bbc6c83dabe6290afae7c",
+  "sourceDiffSha256": "8df926a2869b0e5dc8a4e4168233e861f0e2543795562c442aa5e19ca6f9f8ea",
+  "sourceDiffBytes": 395,
+  "captureSha256": "b40eb10f9f967deeb1a4dbee0c1d806076604c3975960145bcf9badeaed9be94",
+  "startedAt": "2026-10-12T02:19:20.318413+00:00",
+  "durationSeconds": 6.264,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 11446,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 11559,
+      "status": 0
+    },
+    {
+      "pid": 11590,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/memory-read-binding-20261012/author/root-final.stdout.bin",
+      "bytes": 21720,
+      "sha256": "a56956c614fc8e48424938a09e2c2e40b988b07e6e582c9b7fdf6da497fe1c3e"
+    },
+    {
+      "path": "docs/qualification/candidates/memory-read-binding-20261012/author/root-final.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    }
+  ],
+  "rerunReason": "Bounded source binding check; immutable label records this attempt separately.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

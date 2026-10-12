@@ -1,0 +1,20 @@
+✔ one canonical fourteen-operation registry preserves old descriptors and139/96/43 scope (5.064269ms)
+✔ new descriptor pins the existing raw private schema, no executable or approval authority (1.081104ms)
+✔ old13 context grammar refuses memory subject/previous keys on input and output (4.515454ms)
+✔ memory uses only subject/previous context and refuses missing/model-supplied authority (2.971724ms)
+✔ normalization snapshots caller data, binds server selection, and hashes materialized defaults (0.74566ms)
+✔ classification can never imply approved facts, evidence readiness or global absence (3.777616ms)
+✔ result actor/tenant/selected-client substitution refuses through canonical registry (0.923157ms)
+✔ retained continuation binds original request, scope, cursor, limit and monotonic order (1.75701ms)
+✔ hostile request/context/output/retained data invokes no getters or proxies (0.461363ms)
+✔ forged catalog enablement, schema, registry mapping and duplicate operation refuse (11.240137ms)
+✔ source-disabled gateway composes actual new14 catalog with zero discovery and zero effects (4.764648ms)
+✔ private registry registration does not export memory through public0.1 (0.33262ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 855.119076

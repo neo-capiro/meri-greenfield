@@ -1,0 +1,43 @@
+✔ policy is a private description without live admission or authorization output (0.970127ms)
+✔ only the two established administrator roles appear in the shared approval exception (0.933121ms)
+✔ shared proposal wording preserves pending state and the subsequent approval exception (0.576095ms)
+✔ firm and client approval descriptions preserve different standard-reviewer requirements (0.395003ms)
+✔ administrator self-approval never promises self-rejection or withdrawal of another proposal (0.343556ms)
+✔ administrators retain current actor, tenant, wall, client and database obligations (0.152539ms)
+✔ personal ownership and automated proposal descriptions do not inherit shared privileges (0.442875ms)
+✔ wording is derived only from the canonical descriptor and every requirement resolves (0.322705ms)
+✔ unknown scopes/actions and supplied authorization facts cannot select a policy result (0.573261ms)
+✔ policy arrays and descriptions cannot be modified by callers (0.314903ms)
+✔ selector getters, proxies, inherited selectors and hidden authority are refused without effects (1.002145ms)
+✖ private description imports without configuration, services or persistent process handles (42.201028ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 11
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 113.460885
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-memory-review-policy.test.mjs:126:1
+✖ private description imports without configuration, services or persistent process handles (42.201028ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/meri-memory-policy-20261012/packages/contracts/test/retrieval-memory-review-policy.test.mjs:130:48)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
