@@ -1,0 +1,869 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:public-domain-hearing-records:0.2.0",
+  "title": "Stored published hearing versions and owner-only brief/reconciliation projections",
+  "$defs": {
+    "HearingPublishedRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "billId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "kind": {
+          "type": "string"
+        },
+        "hash": {
+          "type": "string"
+        },
+        "identity": {
+          "type": "string"
+        },
+        "date": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "evidence": {
+          "type": "object"
+        },
+        "association": {
+          "enum": [
+            "explicit_event",
+            "bill_context_only"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "billId",
+        "kind",
+        "hash",
+        "identity",
+        "date",
+        "observedAt",
+        "evidence",
+        "association"
+      ]
+    },
+    "HearingRecordReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "hash": {
+          "type": "string"
+        },
+        "locator": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "hash",
+        "locator"
+      ]
+    },
+    "HearingRecordClaim": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "fact",
+            "quote",
+            "analysis"
+          ]
+        },
+        "scope": {
+          "enum": [
+            "bill_record",
+            "hearing_event"
+          ]
+        },
+        "billId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/HearingRecordReference"
+          },
+          "maxItems": 20
+        },
+        "proposition": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "field": {
+              "type": "string"
+            },
+            "expected": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "boolean"
+                }
+              ]
+            },
+            "body": {
+              "type": "string"
+            },
+            "motion": {
+              "type": "string"
+            },
+            "date": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "field",
+            "expected",
+            "body",
+            "motion",
+            "date"
+          ]
+        },
+        "parentClaimId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "section": {
+          "type": "string"
+        },
+        "outcome": {
+          "type": "string"
+        },
+        "rationale": {
+          "type": "string"
+        },
+        "supported": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "unresolved": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "text",
+        "kind",
+        "scope",
+        "billId",
+        "references"
+      ]
+    },
+    "HearingSourceObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sessionId": {
+          "type": "string"
+        },
+        "publicationId": {
+          "type": "string"
+        },
+        "hash": {
+          "type": "string"
+        },
+        "clientId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "sessionId",
+        "publicationId",
+        "hash",
+        "clientId"
+      ]
+    },
+    "HearingRecordEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "jurisdiction": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "session": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "date": {
+          "type": "string",
+          "format": "date"
+        },
+        "body": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "jurisdiction",
+        "session",
+        "date",
+        "body",
+        "revision"
+      ]
+    },
+    "HearingSourceSelection": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "identity": {
+          "type": "string"
+        },
+        "locators": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "identity",
+        "locators"
+      ]
+    },
+    "HearingRecordReview": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "outcome": {
+          "type": "string"
+        },
+        "rationale": {
+          "type": "string"
+        },
+        "references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/HearingRecordReference"
+          }
+        },
+        "reviewer": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "createdAt",
+        "outcome",
+        "rationale",
+        "references",
+        "reviewer"
+      ]
+    },
+    "HearingRecordAssessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "claimId": {
+          "type": "string"
+        },
+        "claimHash": {
+          "type": "string"
+        },
+        "outcome": {
+          "enum": [
+            "supported",
+            "partially_supported",
+            "contradicted",
+            "not_addressed",
+            "pending_records",
+            "needs_review",
+            "capiro_analysis"
+          ]
+        },
+        "rationale": {
+          "type": "string"
+        },
+        "supported": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "unresolved": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/HearingRecordReference"
+          }
+        },
+        "requiresReview": {
+          "type": "boolean"
+        },
+        "ruleVersion": {
+          "type": "string"
+        },
+        "reviews": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/HearingRecordReview"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "claimId",
+        "claimHash",
+        "outcome",
+        "rationale",
+        "supported",
+        "unresolved",
+        "references",
+        "requiresReview",
+        "ruleVersion",
+        "reviews"
+      ]
+    },
+    "HearingReconciliationPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema": {
+          "const": "legiwatch.record-reconciliation.v1"
+        },
+        "event": {
+          "$ref": "#/$defs/HearingRecordEvent"
+        },
+        "records": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/HearingPublishedRecord"
+          }
+        },
+        "sourceHash": {
+          "type": "string"
+        },
+        "claims": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/HearingRecordClaim"
+          }
+        },
+        "originalClaims": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/HearingRecordClaim"
+          }
+        },
+        "observation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/HearingSourceObservation"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cutoff": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "coverage": {
+          "type": "array",
+          "items": {}
+        },
+        "sourceSelections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/HearingSourceSelection"
+          }
+        }
+      },
+      "required": [
+        "schema",
+        "event",
+        "records",
+        "sourceHash",
+        "claims",
+        "originalClaims",
+        "observation",
+        "cutoff",
+        "coverage",
+        "sourceSelections"
+      ]
+    },
+    "HearingReconciliation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "capiro_record_reconciliation"
+        },
+        "id": {
+          "type": "string"
+        },
+        "inputHash": {
+          "type": "string"
+        },
+        "payload": {
+          "$ref": "#/$defs/HearingReconciliationPayload"
+        },
+        "current": {
+          "type": "boolean"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "assessments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/HearingRecordAssessment"
+          }
+        },
+        "historical": {
+          "type": "boolean"
+        },
+        "authority": {
+          "const": "Capiro assessment of the preserved captured account"
+        }
+      },
+      "required": [
+        "kind",
+        "id",
+        "inputHash",
+        "payload",
+        "current",
+        "createdAt",
+        "assessments",
+        "historical",
+        "authority"
+      ]
+    },
+    "HearingBriefCorrection": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "priorKind": {
+          "enum": [
+            "brief",
+            "publication"
+          ]
+        },
+        "priorId": {
+          "type": "string"
+        },
+        "sessionId": {
+          "type": "string"
+        },
+        "priorHash": {
+          "type": "string"
+        },
+        "priorCreatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "priorClaimId": {
+                "type": "string"
+              },
+              "priorText": {
+                "type": "string"
+              },
+              "classification": {
+                "enum": [
+                  "wrong_then",
+                  "later_change",
+                  "still_supported",
+                  "uncertain"
+                ]
+              },
+              "claimIds": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "rationale": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "priorClaimId",
+              "priorText",
+              "classification",
+              "claimIds",
+              "rationale"
+            ]
+          },
+          "maxItems": 100
+        }
+      },
+      "required": [
+        "priorKind",
+        "priorId",
+        "priorHash",
+        "priorCreatedAt",
+        "items"
+      ]
+    },
+    "HearingBriefPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema": {
+          "const": "legiwatch.published-record-brief.v1"
+        },
+        "label": {
+          "const": "Brief based on published records"
+        },
+        "author": {
+          "const": "Capiro"
+        },
+        "title": {
+          "type": "string"
+        },
+        "eventId": {
+          "type": "string"
+        },
+        "runId": {
+          "type": "string"
+        },
+        "clientId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "folders": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "version": {
+                "type": "integer",
+                "minimum": -2147483648,
+                "maximum": 2147483647
+              },
+              "clientId": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "version",
+              "clientId"
+            ]
+          }
+        },
+        "sourceHash": {
+          "type": "string"
+        },
+        "cutoff": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "claims": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/HearingRecordClaim"
+          }
+        },
+        "records": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/HearingPublishedRecord"
+          }
+        },
+        "observation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/HearingSourceObservation"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "coverage": {
+          "type": "array",
+          "items": {}
+        },
+        "selectedObservationIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "provenance": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "promptVersion": {
+              "const": "published-record-brief-v1"
+            },
+            "clientContext": {
+              "enum": [
+                "applied",
+                "unavailable",
+                "none"
+              ]
+            }
+          },
+          "required": [
+            "promptVersion",
+            "clientContext"
+          ]
+        },
+        "correction": {
+          "$ref": "#/$defs/HearingBriefCorrection"
+        },
+        "edit": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "actor": {
+              "type": "string"
+            },
+            "rationale": {
+              "type": "string"
+            },
+            "previousId": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "actor",
+            "rationale",
+            "previousId"
+          ]
+        }
+      },
+      "required": [
+        "schema",
+        "label",
+        "author",
+        "title",
+        "eventId",
+        "runId",
+        "clientId",
+        "folders",
+        "sourceHash",
+        "cutoff",
+        "claims",
+        "records",
+        "observation",
+        "coverage",
+        "selectedObservationIds",
+        "provenance"
+      ]
+    },
+    "HearingPublishedBrief": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "capiro_published_record_brief"
+        },
+        "id": {
+          "type": "string"
+        },
+        "seriesId": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "contentHash": {
+          "type": "string"
+        },
+        "payload": {
+          "$ref": "#/$defs/HearingBriefPayload"
+        },
+        "current": {
+          "type": "boolean"
+        },
+        "approvedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "status": {
+          "enum": [
+            "superseded",
+            "reviewed",
+            "draft"
+          ]
+        },
+        "historical": {
+          "type": "boolean"
+        },
+        "authority": {
+          "const": "Capiro assessment; source citations retain separate publisher authority"
+        }
+      },
+      "required": [
+        "kind",
+        "id",
+        "seriesId",
+        "version",
+        "createdAt",
+        "contentHash",
+        "payload",
+        "current",
+        "approvedAt",
+        "status",
+        "historical",
+        "authority"
+      ]
+    },
+    "HearingPublishedVersion": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "hash": {
+          "type": "string"
+        },
+        "evidence": {},
+        "observed": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "date": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "billId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "kind": {
+          "type": "string"
+        },
+        "current": {
+          "type": "boolean"
+        },
+        "eventId": {
+          "type": "string"
+        },
+        "historical": {
+          "type": "boolean"
+        },
+        "authority": {
+          "const": "Published source version; bill agenda membership alone does not establish hearing occurrence"
+        }
+      },
+      "required": [
+        "id",
+        "hash",
+        "evidence",
+        "observed",
+        "date",
+        "billId",
+        "kind",
+        "current",
+        "eventId",
+        "historical",
+        "authority"
+      ]
+    }
+  }
+}
