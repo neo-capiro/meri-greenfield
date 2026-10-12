@@ -1,0 +1,164 @@
+{
+  "scope": "Exact collector source interface/field map; private helper internals pending",
+  "collectorIdentity": {
+    "bytes": 23776,
+    "sha256": "729298afadd57a97fe8325ff862d0e208befd9392b4befa5f91053dddfcd25e1"
+  },
+  "sourceLocations": [
+    {
+      "lines": [
+        21,
+        24
+      ],
+      "operation": "Select NativeMetadata.cs and load its native metadata helper; not executed here"
+    },
+    {
+      "lines": [
+        34,
+        35,
+        52,
+        53,
+        58
+      ],
+      "operation": "Each Inspect-Roles pass creates its own stopwatch; compares elapsed time before each Named call, then records the returned observation. No enclosing physical deadline follows from this source alone."
+    },
+    {
+      "lines": [
+        54,
+        55,
+        56
+      ],
+      "operation": "Reject returned reparse-point, symbolic-link, delete-pending or mismatched directory-kind observation"
+    },
+    {
+      "lines": [
+        64,
+        66,
+        67,
+        68,
+        70
+      ],
+      "operation": "Observe paths before; attempt helper Hash only after before-pass success, with 8388608-byte and 10000-millisecond arguments; retain hash error; observe paths again"
+    },
+    {
+      "lines": [
+        74,
+        75,
+        79
+      ],
+      "operation": "Per-role identity/plain result requires both passes and equal entry counts, then compares the six named fields for each ancestor",
+      "fields": [
+        "VolumeSerialHex",
+        "FileId128Hex",
+        "Attributes",
+        "ReparseTag",
+        "Directory",
+        "DeletePending"
+      ]
+    },
+    {
+      "lines": [
+        80,
+        83,
+        84
+      ],
+      "operation": "Separate per-role all-fields result also requires helper Same for every pair; aggregate refuses if any role fails"
+    },
+    {
+      "lines": [
+        86,
+        87,
+        88,
+        89,
+        90
+      ],
+      "operation": "Executable stability starts false; with hash result it requires OpenedStable, NamedMatchesOpened, Same(named-before-leaf,OpenedBefore), and Same(OpenedAfter,named-after-leaf)"
+    },
+    {
+      "lines": [
+        92,
+        93,
+        94,
+        95
+      ],
+      "operation": "Record identity/all-fields blockers; accepted observation requires hash present, executable stability, identity stability and all-fields stability. Recorded false all-fields input is retained."
+    }
+  ],
+  "exactCandidateJsonPaths": {
+    "beforeAfter": "$.{before,after}.{executable,root,Lib,DLLs}.entries[*]",
+    "sixFieldComparison": "$.comparisons[*].identityAndPlainMetadataStable",
+    "helperSameComparison": "$.comparisons[*].allRecordedFieldsIncludingTimesStable",
+    "hashRelationships": [
+      "$.hash.OpenedBefore",
+      "$.hash.NamedDuring",
+      "$.hash.OpenedAfter",
+      "$.before.executable.entries[8]",
+      "$.after.executable.entries[8]"
+    ],
+    "hashSummary": [
+      "$.hash.Sha256",
+      "$.hash.BytesRead",
+      "$.hash.ElapsedSeconds",
+      "$.hash.OpenedStable",
+      "$.hash.NamedMatchesOpened",
+      "$.hash.ReadShareOnly",
+      "$.hashError"
+    ],
+    "conjunction": [
+      "$.hash",
+      "$.executableBeforeOpenedAfterStable",
+      "$.pathIdentityAndPlainMetadataStable",
+      "$.allRecordedPathFieldsStable"
+    ],
+    "result": "$.boundedHashObservationAccepted"
+  },
+  "observedDifference": {
+    "pairs": 35,
+    "changedPairs": 12,
+    "uniqueNamedPaths": 3,
+    "roles": [
+      "executable",
+      "root",
+      "Lib",
+      "DLLs"
+    ],
+    "zeroBasedAncestorIndices": [
+      0,
+      1,
+      2
+    ],
+    "fields": [
+      "LastAccessTime"
+    ],
+    "allOtherRecordedFieldChanges": 0
+  },
+  "remainingExactMember": {
+    "name": "NativeMetadata.cs",
+    "bytes": 6163,
+    "sha256": "f551d7287611b982a93eebf02e93719bfdce355609bd7ca4f9cd546ae9bf0a4c",
+    "neededMethods": [
+      "Same",
+      "Hash",
+      "Named"
+    ],
+    "reason": "Actual delegated field equality, open/handle flags, read cancellation/time checks, disposal/close and exceptions are defined outside collect.ps1"
+  },
+  "canonicalOwnersUnchanged": {
+    "inventory": "scripts/qualification/worker_runner_inventory.py",
+    "wrapper": "docs/qualification/candidates/native-supervisor-20261012/author/run-supervised.py",
+    "writer": "docs/qualification/candidates/native-bindings-20261012/author/evidence-writer.py"
+  },
+  "canonicalInventoryTimestamps": {
+    "compares": [
+      "st_mtime_ns",
+      "st_ctime_ns"
+    ],
+    "doesNotCompare": [
+      "st_atime_ns"
+    ],
+    "privateHelperEquivalenceEstablished": false
+  },
+  "supportedSharedSourceChange": null,
+  "nativeAdmission": false,
+  "privateBodiesPublished": false
+}
