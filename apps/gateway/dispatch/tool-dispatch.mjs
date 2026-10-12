@@ -14,7 +14,7 @@ function sameAuthority(a, b) {
   return sameBinding(a, b) && canonicalSha256(subjectSelection(a.subject)) === canonicalSha256(subjectSelection(b.subject));
 }
 
-export function createToolDispatch({ catalog, authority, budget, limits, now, newId, sourceEnabled = false, memoryContextPorts }) {
+export function createToolDispatch({ catalog, authority, budget, limits, now, newId, sourceEnabled = false, memoryContextPorts, mailContextPorts }) {
   if (!catalog || typeof catalog.entry !== 'function' || typeof catalog.discoverable !== 'function' ||
       !authority || typeof authority.identify !== 'function' || typeof authority.check !== 'function' ||
       !budget || ['reserve', 'settle', 'markUncertain'].some(name => typeof budget[name] !== 'function') ||
@@ -33,7 +33,11 @@ export function createToolDispatch({ catalog, authority, budget, limits, now, ne
     if (!sourceEnabled || entry === null) deny('UNAVAILABLE');
     if (canonicalSha256(entry.descriptor.operation) !== canonicalSha256(request.operation)) deny('GATEWAY_CONFIGURATION');
     assertOperationArguments(entry, request.arguments);
-    const lifetime = createDispatchLifetime({ deadlineMs: now()+limits.maxRequestMs, now, signal });
+    let deadlineMs = now()+limits.maxRequestMs;
+    const ownedLifetime = createDispatchLifetime({ deadlineMs, now, signal });
+    const lifetime = { ...ownedLifetime, limitDeadline(next) {
+      ownedLifetime.limitDeadline(next); deadlineMs = Math.min(deadlineMs, next);
+    } };
     let reservationId; let reservationAttempted = false; let settled = false;
     try {
       const identity = await lifetime.run(signal => authority.identify({ credential, signal, limitDeadline: lifetime.limitDeadline }));
@@ -41,9 +45,10 @@ export function createToolDispatch({ catalog, authority, budget, limits, now, ne
       const authorize = input => lifetime.run(signal => authority.check({ credential, descriptor: entry.descriptor,
         input, signal, limitDeadline: lifetime.limitDeadline }));
       const context = await prepareOperationContext({ entry, request: request.arguments, identity, authorize,
-        ports: memoryContextPorts, lifetime, now, maxBytes: limits.maxResponseBytes });
+        ports: memoryContextPorts, mailPorts: mailContextPorts, lifetime, readDeadline: () => deadlineMs,
+        now, maxBytes: limits.maxResponseBytes });
       let normalized;
-      try { normalized = entry.contract.normalizeInput(request.arguments, context.options(context.authority)); }
+      try { normalized = context.normalized ?? entry.contract.normalizeInput(request.arguments, context.options(context.authority)); }
       catch { deny('INVALID_ARGUMENTS'); }
       if (!normalized || canonicalSha256(normalized.input) !== normalized.argumentsSha256) deny('INVALID_ARGUMENTS');
       const inspect = () => authorize(normalized.input);
