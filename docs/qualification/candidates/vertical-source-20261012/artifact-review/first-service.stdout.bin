@@ -1,0 +1,149 @@
+✔ independent service creates, inspects and downloads exact detached version (51.920713ms)
+✔ independent revision preserves original and uses explicit parent lineage (7.462905ms)
+✔ independent historical provenance survives current resumed binding (3.244395ms)
+✔ independent wrong authority requestSha256 blocks every execution effect (0.584768ms)
+✔ independent wrong authority scopesSha256 blocks every execution effect (0.435595ms)
+✔ independent wrong authority resourceSha256 blocks every execution effect (0.371799ms)
+✔ independent wrong authority binding blocks every execution effect (0.51213ms)
+✔ independent wrong authority decision blocks every execution effect (0.368594ms)
+✔ independent revoke after generation leaves no committed object or version (1.110549ms)
+✔ independent output inspection hash mismatch cannot publish (0.953332ms)
+✔ independent wrong storage tuple becomes explicit unknown effect (0.936487ms)
+✔ independent wrong commit receipt cannot report success (1.259623ms)
+✖ independent late returned authority stops next port (1.066834ms)
+✔ independent late returned object commit preserves uncertainty (1.047113ms)
+✖ independent abort before start allocates no ports (0.360531ms)
+✔ independent intent binds exact asset tuples and evidence (4.190397ms)
+✖ independent read refuses changed stored inspection format (3.477856ms)
+✖ independent download refuses mime inconsistent with original spec (1.598552ms)
+✖ independent invalid ID allocation releases lifetime timer (0.743888ms)
+✖ independent failed budget settlement is disclosed even before storage (0.69847ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 14
+ℹ fail 6
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 400.353698
+
+✖ failing tests:
+
+test at apps/artifacts/test/artifact-service-independent.test.mjs:31:1
+✖ independent late returned authority stops next port (1.066834ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /ARTIFACT_DEADLINE/. Input:
+  
+  'Error: DEADLINE'
+  
+      at async TestContext.<anonymous> (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-service-independent.test.mjs:31:156)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: DEADLINE
+        at errorFactory (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:15:144)
+        at cancel (file:///workspace/meri-artifact-execution-review-20261012/packages/runtime/operation-lifetime.mjs:10:40)
+        at check (file:///workspace/meri-artifact-execution-review-20261012/packages/runtime/operation-lifetime.mjs:20:32)
+        at Object.run (file:///workspace/meri-artifact-execution-review-20261012/packages/runtime/operation-lifetime.mjs:41:67)
+        at async authority (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:17:30)
+        at async generate (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:41:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-service-independent.test.mjs:31:156)
+        at async Test.run (node:internal/test_runner/test:1389:7),
+    expected: /ARTIFACT_DEADLINE/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/artifacts/test/artifact-service-independent.test.mjs:33:1
+✖ independent abort before start allocates no ports (0.360531ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /ARTIFACT_DEADLINE/. Input:
+  
+  'Error: DEADLINE'
+  
+      at async TestContext.<anonymous> (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-service-independent.test.mjs:33:138)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: DEADLINE
+        at errorFactory (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:15:144)
+        at deny (file:///workspace/meri-artifact-execution-review-20261012/packages/runtime/operation-lifetime.mjs:4:32)
+        at createOperationLifetime (file:///workspace/meri-artifact-execution-review-20261012/packages/runtime/operation-lifetime.mjs:6:79)
+        at operation (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:15:45)
+        at generate (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:27:80)
+        at Object.create (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:93:59)
+        at TestContext.<anonymous> (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-service-independent.test.mjs:33:171)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1382:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:960:18),
+    expected: /ARTIFACT_DEADLINE/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/artifacts/test/artifact-service-independent.test.mjs:35:1
+✖ independent read refuses changed stored inspection format (3.477856ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-service-independent.test.mjs:35:209)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /ARTIFACT_/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/artifacts/test/artifact-service-independent.test.mjs:36:1
+✖ independent download refuses mime inconsistent with original spec (1.598552ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-service-independent.test.mjs:36:228)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /ARTIFACT_/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/artifacts/test/artifact-service-independent.test.mjs:37:1
+✖ independent invalid ID allocation releases lifetime timer (0.743888ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-service-independent.test.mjs:37:462)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/artifacts/test/artifact-service-independent.test.mjs:38:1
+✖ independent failed budget settlement is disclosed even before storage (0.69847ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: generation failed
+      at async TestContext.<anonymous> (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-service-independent.test.mjs:38:288)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: generation failed
+        at f.ports.executor.execute (file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/test/artifact-service-independent.test.mjs:38:161)
+        at file:///workspace/meri-artifact-execution-review-20261012/apps/artifacts/service.mjs:55:52
+        at file:///workspace/meri-artifact-execution-review-20261012/packages/runtime/operation-lifetime.mjs:38:65,
+    operator: 'rejects',
+    diff: 'simple'
+  }

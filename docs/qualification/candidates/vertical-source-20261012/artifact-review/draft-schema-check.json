@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "exitCode": 0,
+  "scope": "Draft schema data compilation with strict Ajv2020 and unchanged public0.1 refs; no candidate module import",
+  "schemaSha256": "7f460dcce2914819e27afca6b400dffcda578a7ae542369763e97f92bc460ae5",
+  "definitionsCompiled": 17,
+  "script": "Read JSON using node:fs; addFormats(new Ajv({strict:true,allErrors:true})); add public schema then private schema; compile $ref for every private $defs member.",
+  "process": "Synchronous Node invocation completed; no child or background job created",
+  "sourceAccepted": false,
+  "runtimeAccepted": false
+}

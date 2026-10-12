@@ -1,0 +1,25 @@
+✔ independent word request is admitted and detached (4.341264ms)
+✔ independent workbook request is admitted and detached (1.205762ms)
+✔ independent slides request is admitted and detached (0.91161ms)
+✔ independent analysis request is admitted and detached (1.757401ms)
+✔ independent exact text preserves whitespace and final newline (0.423817ms)
+✔ independent request refuses arbitrary analysis code (0.617288ms)
+✔ independent request refuses executable and destination selectors (0.863848ms)
+✔ independent request refuses operation-format substitution (0.427112ms)
+✔ independent request refuses unknown formula executable and URL options (0.735015ms)
+✔ independent inert input rejects proxy and getter without invoking it (0.257487ms)
+✔ independent inert input rejects nonfinite and sparse data (0.261163ms)
+✔ independent request rejects hidden keys and unknown rich text fields (0.268033ms)
+✔ independent request enforces bounded content arrays and cells (1.489198ms)
+✔ independent context is detached and grants no request-selected authority (1.79691ms)
+✔ independent context rejects foreign scope and asset scope (0.86479ms)
+✔ independent context refuses unknown authority flags and oversized output budget (0.433842ms)
+✔ independent scope and evidence boundaries preserve source identity (1.156488ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 369.188216
