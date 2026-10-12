@@ -11,7 +11,7 @@ unsupported fields, missing nullable fields, duplicate candidates and an exact
 match repeated among candidates. At most five candidates are returned. Storage
 integers remain signed 32-bit values; the contract does not invent positive-ID,
 count, state-vocabulary, URL-validity or filing-year guarantees absent from the
-frozen declarations. Description is at most 200 characters.
+frozen declarations. Description is at most 200 UTF-16 code units.
 
 The canonical private loader owns schema compilation. The small registry
 factory owns only name normalization and candidate identity relations. No
