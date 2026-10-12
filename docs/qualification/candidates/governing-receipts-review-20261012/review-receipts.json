@@ -1,0 +1,119 @@
+{
+  "candidate": "e652b5d5abd52b2d10fafbbe0e0f74c163fe786a",
+  "tree": "6efd7f22a4e849917ab054932b77a65712fae985",
+  "reviewVerdictCommit": "577f8cbe780bc34d31b61071c0fab0e9d2b3c3cb",
+  "runs": [
+    {
+      "name": "initial-audit",
+      "argv": [
+        "python",
+        "-I",
+        "-B",
+        "docs/qualification/candidates/governing-receipts-review-20261012/initial-audit.py.txt",
+        "39b6da63289241b368a5003d47e98352c7cbc817"
+      ],
+      "recordedChildExitCode": 0,
+      "script": {
+        "path": "docs/qualification/candidates/governing-receipts-review-20261012/initial-audit.py.txt",
+        "bytes": 15075,
+        "sha256": "843a0f4f4d25ac22a12b0597511863c4ca2a3b48624c93346e4f4c918864043d"
+      },
+      "stdout": {
+        "path": "docs/qualification/candidates/governing-receipts-review-20261012/initial-audit.stdout.json",
+        "bytes": 29538,
+        "sha256": "06704b28e714479bef036ffbe4d3aaa5cafa00648fafb930a13b4cb5a415033d"
+      },
+      "stderr": {
+        "path": "docs/qualification/candidates/governing-receipts-review-20261012/initial-audit.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "meaning": "Initial mechanical oracle encoded incorrect only-G0 status assumption."
+    },
+    {
+      "name": "semantic-frozen-before",
+      "argv": [
+        "python",
+        "-I",
+        "-B",
+        "docs/qualification/candidates/governing-receipts-review-20261012/audit.py",
+        "39b6da63289241b368a5003d47e98352c7cbc817"
+      ],
+      "recordedChildExitCode": 1,
+      "script": {
+        "path": "docs/qualification/candidates/governing-receipts-review-20261012/audit.py",
+        "bytes": 16141,
+        "sha256": "33f56b3decd4fe9cf0b9b6a27e98dcabb356a4b3afb7ed8ac06262de93295c89"
+      },
+      "stdout": {
+        "path": "docs/qualification/candidates/governing-receipts-review-20261012/semantic-frozen-before.stdout.json",
+        "bytes": 30423,
+        "sha256": "40eedaca7324c2695b8275d6d06d1cde4c6dbdf2d01b3c0ab0c1d4bc1ec5f041"
+      },
+      "stderr": {
+        "path": "docs/qualification/candidates/governing-receipts-review-20261012/semantic-frozen-before.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "meaning": "Evidence-based oracle rejects W00 and optional-owner inference before repair."
+    },
+    {
+      "name": "final-audit",
+      "argv": [
+        "python",
+        "-I",
+        "-B",
+        "docs/qualification/candidates/governing-receipts-review-20261012/audit.py",
+        "e652b5d5abd52b2d10fafbbe0e0f74c163fe786a"
+      ],
+      "recordedChildExitCode": 0,
+      "script": {
+        "path": "docs/qualification/candidates/governing-receipts-review-20261012/audit.py",
+        "bytes": 16141,
+        "sha256": "33f56b3decd4fe9cf0b9b6a27e98dcabb356a4b3afb7ed8ac06262de93295c89"
+      },
+      "stdout": {
+        "path": "docs/qualification/candidates/governing-receipts-review-20261012/final-audit.stdout.json",
+        "bytes": 30875,
+        "sha256": "78a000c7a9d0105ce0ed640392518dc63b63aa6e094e9b2e9f633962022bc9f9"
+      },
+      "stderr": {
+        "path": "docs/qualification/candidates/governing-receipts-review-20261012/final-audit.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "meaning": "Same corrected oracle against final author freeze."
+    },
+    {
+      "name": "repair-audit",
+      "argv": [
+        "python",
+        "-I",
+        "-B",
+        "docs/qualification/candidates/governing-receipts-review-20261012/repair-audit.py"
+      ],
+      "recordedChildExitCode": 0,
+      "script": {
+        "path": "docs/qualification/candidates/governing-receipts-review-20261012/repair-audit.py",
+        "bytes": 3335,
+        "sha256": "e7e5e71aece3b4491881977b1189ae456bc01ba10262bf80e7f264ebd300036d"
+      },
+      "stdout": {
+        "path": "docs/qualification/candidates/governing-receipts-review-20261012/repair-audit.stdout.json",
+        "bytes": 11423,
+        "sha256": "2395b5180d6e08dc43fd1f0e535a9177ea2cbd356b8b94d27225cdb1b3df2882"
+      },
+      "stderr": {
+        "path": "docs/qualification/candidates/governing-receipts-review-20261012/repair-audit.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "meaning": "Read-only exact original/repaired delta and failure preservation."
+    }
+  ],
+  "intermediateSemanticBefore": "semantic-before.* records333/4 before a documentary author-count check label was generalized for added discovery receipts; frozen-before replay preserves the final exact oracle. Neither candidate metadata nor failure assertions changed.",
+  "processScope": "Synchronous local Python and Git only; no service/background/runtime processes created. All tool invocations returned.",
+  "productsExecuted": false,
+  "networkCalls": false,
+  "authorCodeExecuted": false
+}
