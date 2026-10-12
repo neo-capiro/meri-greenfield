@@ -1,0 +1,38 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/test/schedule-lifecycle-postgres.test.mjs",
+    "apps/control/test/schedule-lifecycle.test.mjs",
+    "apps/control/test/schedule-tool-interface.test.mjs",
+    "packages/contracts/test/schedule-lifecycle.test.mjs",
+    "packages/contracts/test/schedule-tool-interface.test.mjs"
+  ],
+  "cwd": "/workspace/meri-schedule-tool-interface-review-20261012",
+  "sourceHead": "7f17b323fb8c1732528bf7822d97263c4a489279",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T22:43:36.222328+00:00",
+  "durationSeconds": 1.746,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 379461,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/original-and-author-final.stdout.bin",
+      "bytes": 7403,
+      "sha256": "6c01eea45d81dfb54d672ba41e0f5839c382c9bffd0b41b96a5b9ab013ce9ac8"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/original-and-author-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
