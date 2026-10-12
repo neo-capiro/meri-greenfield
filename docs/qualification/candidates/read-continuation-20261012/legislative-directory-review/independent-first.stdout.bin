@@ -1,0 +1,67 @@
+✔ get_committee_roster: immutable request snapshot and empty metadata (4.790889ms)
+✔ get_committee_roster: authority and unknown model fields denied (0.697178ms)
+✔ get_committee_roster: getters and proxies remain inert in request output and context (0.323436ms)
+✔ get_committee_roster: non-JSON cycles prototypes and sparse values deny (0.235855ms)
+✔ get_committee_roster: unknown operation and definition selectors never coerce (0.255144ms)
+✔ get_committee_roster: exact envelope and canonical wire timestamps (29.430061ms)
+✔ get_committee_roster: member identity uniqueness and mandatory fields (1.368807ms)
+✔ list_members: immutable request snapshot and empty metadata (5.071891ms)
+✔ list_members: authority and unknown model fields denied (0.328643ms)
+✔ list_members: getters and proxies remain inert in request output and context (0.286541ms)
+✔ list_members: non-JSON cycles prototypes and sparse values deny (0.168003ms)
+✔ list_members: unknown operation and definition selectors never coerce (0.094632ms)
+✔ list_members: exact envelope and canonical wire timestamps (6.850703ms)
+✔ list_members: member identity uniqueness and mandatory fields (0.741163ms)
+✖ list: exact state names and territory abbreviations normalize (1.001975ms)
+✔ list: source numeric-string finite clamp and null/default semantics (0.561343ms)
+✔ list: recognized chamber lowercases and unknown chamber is omitted (0.314512ms)
+✔ list: exact missing and unknown-state refusal envelopes (1.239882ms)
+✔ list: source UTF-16 cut precedes invalid-state note without guessed aliases (0.188073ms)
+✔ list: count input bound filter and note are all bound (0.588915ms)
+✔ list: stored null freeform and signed districts remain source-compatible (0.970228ms)
+✔ list: chamber-only senate can return nullable state and a single senator (0.357828ms)
+✔ roster: source selector trim caps case and disclosed overflow refusal (0.283656ms)
+✔ roster: all missing or invalid selector refusals retain exact note (0.588154ms)
+✔ roster: no-match and ambiguity use the exact same unresolved envelope (0.30585ms)
+✔ roster: case-sensitive federal code and case-insensitive state id lineage (0.655104ms)
+✔ roster: normalized-name match is not guessed name-resolution proof (0.400312ms)
+✔ roster: leadership exact row equality and first matching role (0.875406ms)
+✔ roster: role vocabulary permits Unicode dashes and excludes invented offices (0.595916ms)
+✔ roster: federal signed rank order and null999 boundary (0.38573ms)
+✔ roster: state role selection preserves source order and null ranking (0.516106ms)
+✔ roster: unknown stored party side district role and nulls are retained (0.342815ms)
+✔ roster: uncapped source members and empty roster notes remain exact (2.62858ms)
+✔ canonical resolver: original request digest snapshot and forbidden context (1.799324ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 33
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 248.943451
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-legislative-directory-independent.test.mjs:38:1
+✖ list: exact state names and territory abbreviations normalize (1.001975ms)
+  AssertionError [ERR_ASSERTION]: VI
+  + actual - expected
+  
+  + 'Virgin Islands'
+  - 'U.S. Virgin Islands'
+  
+      at TestContext.<anonymous> (file:///workspace/meri-legislative-directory-review-20261012/packages/contracts/test/retrieval-legislative-directory-independent.test.mjs:38:310)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'Virgin Islands',
+    expected: 'U.S. Virgin Islands',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
