@@ -1,0 +1,10 @@
+{
+  "base": "77cedb126d57a0223d2df42ad2f3fe988eb51759",
+  "parentOutline": "1e95f5b8158e17458b223e2b2f03c4a0806c977b",
+  "frozenBeforeCandidateInspection": true,
+  "taskSha256": "842db6e8535bebfb21033e1989d0c5431af656c710b9d25faaa2fd73b5d26c8e",
+  "sourceInspected": "existing canonical public0.1, gateway entry and R2 owners only",
+  "candidateInspected": false,
+  "liveActions": false,
+  "runtimeAccepted": false
+}
