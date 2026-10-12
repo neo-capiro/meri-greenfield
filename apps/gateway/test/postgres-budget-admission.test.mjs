@@ -49,3 +49,15 @@ test('source admission precedes dynamic application imports; no migration/reset/
   assert.match(helper,/synthetic-post-commit-loss/);
   assert.match(integration,/maxToolCalls:1/);assert.match(integration,/for\(let n=0;n<3;n\+\+\)/);
 });
+
+test('source keeps one original group cutoff before each fork and each barrier send',async()=>{
+  const source=await readFile(new URL('./postgres-budget.integration.mjs',import.meta.url),'utf8');
+  const group=source.slice(source.indexOf('async function compete('),source.indexOf('for(const sameInvocation'));
+  assert.equal((group.match(/const deadline=Math\.min\(admission\.workDeadlineMs,Date\.now\(\)\+30000\)/g)??[]).length,1);
+  assert.match(group,/const groupActive=\(\)=>\{active\(admission\);if\(Date\.now\(\)>=deadline\)throw Error\('CHILD_GROUP_DEADLINE'\);\}/);
+  assert.match(group,/for\(let n=0;n<3;n\+\+\)\{\s*groupActive\(\);\s*const child=fork/);
+  assert.match(group,/children\.forEach\(\(\{child\},n\)=>\{groupActive\(\);child\.send\(payloads\[n\]\);\}\)/);
+  assert.match(group,/reserve:\{\.\.\.s\.reserve,reservationId:randomUUID\(\),deadlineMs:Math\.min\(s\.reserve\.deadlineMs,deadline\)\}/);
+  assert.match(group,/record\.ready\.catch\(\(\)=>\{\}\);record\.done\.catch\(\(\)=>\{\}\)/);
+  assert.match(group,/finally \{\s*for\(const \{child\} of children\)/);
+});

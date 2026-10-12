@@ -79,6 +79,7 @@ test('real pg clients are returned after commit/rollback; borrowed pool remains 
 
 async function compete(s,{sameInvocation}) {
   active(admission);const children=[],observations=[];const deadline=Math.min(admission.workDeadlineMs,Date.now()+30000);
+  const groupActive=()=>{active(admission);if(Date.now()>=deadline)throw Error('CHILD_GROUP_DEADLINE');};
   const env={};for(const k of ['PATH','SystemRoot','WINDIR','TEMP','TMP'])if(process.env[k])env[k]=process.env[k];
   for(const k of ['MERI_BUDGET_PG_TEST_RUN','MERI_BUDGET_PG_TEST_CONFIG','MERI_BUDGET_PG_TEST_CONFIG_SHA256'])env[k]=process.env[k];
   env.MERI_BUDGET_PG_CHILD_RUN='reserve';
@@ -91,11 +92,11 @@ async function compete(s,{sameInvocation}) {
       await owner.pool.query("INSERT INTO meri_qualification.grants(grant_id,run_id,attempt,worker_arn,fence,policy_revision,capability_sha256,expires_at,state) VALUES($1,$2,$3,$4,$5,$6,$7,$8,'ACTIVE')",[i.grantId,q.runId,q.attempt,q.workerArn,q.fence,q.policyRevision,i.capabilitySha256,s.reserve.claims.expiresAt]);
       invocationJson=JSON.stringify(i);await budget(s).bindTrustedGrant(invocationJson);
     }
-    payloads.push({allocationJson:s.allocationJson,invocationJson,reserve:{...s.reserve,reservationId:randomUUID()}});
+    payloads.push({allocationJson:s.allocationJson,invocationJson,reserve:{...s.reserve,reservationId:randomUUID(),deadlineMs:Math.min(s.reserve.deadlineMs,deadline)}});
   }
   try {
     for(let n=0;n<3;n++){
-      active(admission);
+      groupActive();
       const child=fork(new URL('./postgres-budget-child.mjs',import.meta.url),[],{execPath:process.execPath,execArgv:[],env,stdio:['ignore','pipe','pipe','ipc'],serialization:'json'});
       let bytes=0,timer;const record={child,ready:null,done:null,closed:false};children.push(record);
       const bounded=chunk=>{bytes+=chunk.length;if(bytes>8192)child.kill('SIGTERM');};child.stdout.on('data',bounded);child.stderr.on('data',bounded);
@@ -107,13 +108,13 @@ async function compete(s,{sameInvocation}) {
         timer=setTimeout(()=>{child.kill('SIGTERM');reject(Error('CHILD_DEADLINE'));},Math.max(1,deadline-Date.now()));
       });
       // Attach immediately while the parent waits for the all-ready barrier.
-      record.done.catch(()=>{});
+      record.ready.catch(()=>{});record.done.catch(()=>{});
     }
     let readyTimer;
     try { await Promise.race([Promise.all(children.map(c=>c.ready)),new Promise((_,reject)=>{
       readyTimer=setTimeout(()=>reject(Error('CHILD_READY_DEADLINE')),Math.max(1,deadline-Date.now()));
     })]); } finally {clearTimeout(readyTimer);}
-    active(admission);children.forEach(({child},n)=>child.send(payloads[n]));
+    children.forEach(({child},n)=>{groupActive();child.send(payloads[n]);});
     const outcomes=await Promise.all(children.map(c=>c.done));assert.equal(outcomes.filter(v=>v==='reserved').length,1);
     assert.equal(observations.length,3);assert.ok(observations.every(o=>o.code===0&&!o.signal));
   } finally {

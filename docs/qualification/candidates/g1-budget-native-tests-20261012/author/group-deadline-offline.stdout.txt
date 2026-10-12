@@ -1,0 +1,42 @@
+✔ pure admission returns frozen correlation only; importing child does not run it (1.809439ms)
+✔ missing/unrecognized mode undefined refuses before native dependencies (0.427212ms)
+✔ missing/unrecognized mode yes refuses before native dependencies (0.138348ms)
+✔ missing/unrecognized mode true refuses before native dependencies (0.106971ms)
+✔ missing/unrecognized mode  refuses before native dependencies (0.136015ms)
+✔ closed native binding rejects host=db.internal (0.172679ms)
+✔ closed native binding rejects host=localhost (0.349735ms)
+✔ closed native binding rejects port=0 (0.124307ms)
+✔ closed native binding rejects port=6543 (0.177958ms)
+✔ closed native binding rejects database=production (0.484888ms)
+✔ closed native binding rejects user=postgres (0.146189ms)
+✔ closed native binding rejects password= (0.152049ms)
+✔ closed native binding rejects systemIdentifier=-1 (0.125489ms)
+✔ closed native binding rejects systemIdentifier=123 (0.077816ms)
+✔ closed native binding rejects serverStartTime=0 (0.108884ms)
+✔ closed native binding rejects serverStartTime=bad (0.100291ms)
+✔ closed native binding rejects serverVersion=16.15 (0.105759ms)
+✔ closed native binding rejects workDeadlineMs=1800000720000 (0.074852ms)
+✔ closed native binding rejects cleanupDeadlineMs=1800000900000 (0.063756ms)
+✔ closed native binding rejects t0Ms=1800000000001 (0.068322ms)
+✔ closed native binding rejects stateLockSha256=x (0.099399ms)
+✔ closed native binding rejects migrationSha256=null (0.084557ms)
+✔ ambient PGHOST cannot override native admission (0.145879ms)
+✔ ambient PGPASSWORD cannot override native admission (0.070556ms)
+✔ ambient PGSERVICE cannot override native admission (0.058237ms)
+✔ ambient AWS_ACCESS_KEY_ID cannot override native admission (0.055493ms)
+✔ ambient ANTHROPIC_API_KEY cannot override native admission (0.054982ms)
+✔ ambient OPENAI_API_KEY cannot override native admission (0.054281ms)
+✔ ambient BEDROCK_ENDPOINT cannot override native admission (0.09976ms)
+✔ ambient NODE_OPTIONS cannot override native admission (0.069935ms)
+✔ ambient NODE_PATH cannot override native admission (0.06689ms)
+✔ hash mismatch, extra keys, overflow, expiry and effectful environment fail closed (0.706491ms)
+✔ source admission precedes dynamic application imports; no migration/reset/production activation (15.876814ms)
+✔ source keeps one original group cutoff before each fork and each barrier send (0.968015ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 87.931097

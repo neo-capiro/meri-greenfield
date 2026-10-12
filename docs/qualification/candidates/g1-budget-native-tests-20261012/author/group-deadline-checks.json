@@ -1,0 +1,27 @@
+{
+  "preservedFreeze": "e350ff3bae99ad5d2e53648c1f83f9814d6c5044",
+  "checks": [
+    {
+      "name": "group-deadline-offline",
+      "argv": [
+        "node",
+        "--test",
+        "apps/gateway/test/postgres-budget-admission.test.mjs"
+      ],
+      "exit": 0,
+      "seconds": 0.164
+    },
+    {
+      "name": "group-deadline-syntax",
+      "argv": [
+        "node",
+        "--check",
+        "apps/gateway/test/postgres-budget.integration.mjs"
+      ],
+      "exit": 0,
+      "seconds": 0.032
+    }
+  ],
+  "nativeExecution": false,
+  "runtimeProcessSimulation": false
+}

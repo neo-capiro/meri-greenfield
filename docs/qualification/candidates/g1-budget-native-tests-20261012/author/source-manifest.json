@@ -15,15 +15,16 @@
       "bytes": 1895
     },
     "apps/gateway/test/postgres-budget.integration.mjs": {
-      "sha256": "227780eb228fd92640d11fe9f0eeecde2b1b24dfbe4702d382728b5aff69f06f",
-      "bytes": 12900
+      "sha256": "85c5b91c6424397c8d85f49770717ca459df2a247905690b539194ef88285693",
+      "bytes": 13079
     },
     "apps/gateway/test/postgres-budget-admission.test.mjs": {
-      "sha256": "cd10701cf440379962ddb077a741ceac8f340a7d1c96dbc9ce984a89d8a3b0e4",
-      "bytes": 4632
+      "sha256": "92c1325c0951378b6de3256ae7e7b474fea19679fab6a1276841035fd5bc372e",
+      "bytes": 5720
     }
   },
   "runtimeAdmission": false,
   "sourceEnabled": false,
-  "ownedProcessesStillRunning": []
+  "ownedProcessesStillRunning": [],
+  "preservedPreviousFreeze": "e350ff3bae99ad5d2e53648c1f83f9814d6c5044"
 }
