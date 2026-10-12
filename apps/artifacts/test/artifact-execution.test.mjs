@@ -91,3 +91,37 @@ test('post-commit budget failure is explicit unknown effect',async()=>fixture(as
 test('read integrity detects corrupted object bytes',async()=>fixture(async({service,ports})=>{const c=context(),r=await service.create(text,c);const broken=createArtifactService({...ports,objects:{...ports.objects,get:async()=>Buffer.from('changed')}});await assert.rejects(broken.download(r.version.versionId,c),/ARTIFACT_OBJECT_MISMATCH/);}));
 test('fixed Office conversion source arguments have no user option/path channel',()=>{const args=officeTransformArguments({workspace:'/tmp/owned',format:'docx',target:'pdf'});assert.deepEqual(args.slice(-4),['pdf','--outdir','/tmp/owned/out','/tmp/owned/input.docx']);assert.throws(()=>officeTransformArguments({workspace:'/tmp/owned',format:'txt',target:'exe'}));assert.throws(()=>createLibreOfficeTransformer({tempRoot:'/tmp'}),/UNAVAILABLE/);});
 test('general analysis is unavailable without admitted native port',async()=>{const c=context(),program={objectId:randomUUID(),versionId:'stored',sha256:'a'.repeat(64),bytes:10,scopes:c.scopes};const boundary=createSandboxAnalysisBoundary({validatePublicShape:(n,v)=>shape(publicSchema.$id,n,v),canonicalSha256:hash});await assert.rejects(boundary.execute({program,inputs:[],outputs:['result.json'],binding:c.binding,deadlineMs:c.deadlineMs}),/UNAVAILABLE/);});
+test('actual openpyxl cell revision keeps original XLSX and explicit literals/formulas',async()=>fixture(async({service})=>{
+  const c=context(),request={...excel,content:{sheets:[{name:'Data',rows:[[{value:2}],[{formula:'=SUM(A1:A1)'}]]}]}},first=await service.create(request,c);
+  const changed={...request,content:{sheets:[{name:'Data',rows:[[{value:7}],[{formula:'=SUM(A1:A1)'}],[{value:'=literal'}]]}]}},second=await service.revise(first.version.versionId,changed,c);
+  assert.equal(second.inspection.details.revisionMethod,'openpyxl typed-cell replacement');assert.equal(second.inspection.recalculated,false);
+  const old=await JSZip.loadAsync((await service.download(first.version.versionId,c)).bytes),next=await JSZip.loadAsync((await service.download(second.version.versionId,c)).bytes);
+  assert.match(await old.file('xl/worksheets/sheet1.xml').async('string'),/<v>2<\/v>/);const xml=await next.file('xl/worksheets/sheet1.xml').async('string');assert.match(xml,/<v>7<\/v>/);assert.match(xml,/<f>SUM\(A1:A1\)<\/f>/);assert.match(xml,/=literal/);
+}));
+test('trusted immutable PNG asset produces Word and PPT image parts without URL fetch',async()=>fixture(async({service,store})=>{
+  const c=context(),object=await store.objects.put({objectId:randomUUID(),bytes:png,scopes:c.scopes,requestSha256:'fixture'});c.assets=[{id:'logo',object}];
+  const image={kind:'image',assetId:'logo',widthInches:1,heightInches:1};
+  for(const request of [{...word,content:{blocks:[image]}},{...slides,content:{slides:[{title:'Image',image}]}}]){
+    const r=await service.create(request,c),zip=await JSZip.loadAsync((await service.download(r.version.versionId,c)).bytes);assert.ok(Object.keys(zip.files).some(p=>p.includes('/media/')));
+  }
+}));
+test('actual fixed child deadline rejects and removes owned output workspace',async()=>fixture(async({root})=>{
+  const executor=createLocalArtifactExecutor({pythonExecutable:'/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3',nodeExecutable:process.execPath,pptxModulePath:pptxPath,tempRoot:root,timeoutMs:1});
+  await assert.rejects(executor.execute({request:text,assets:[],deadlineMs:Date.now()+10000,maxBytes:8388608}),e=>e.code==='ARTIFACT_DEADLINE'&&e.receipt.leaderClosed===true);
+  assert.deepEqual((await readdir(root)).sort(),['store']);
+}));
+test('fixed child output failure remains a failure with owned workspace cleanup',async()=>fixture(async({executor})=>assert.rejects(executor.execute({request:text,assets:[],deadlineMs:Date.now()+10000,maxBytes:1}),/ARTIFACT_PROCESS_FAILED/)));
+test('pure source PDF composition remains unavailable without explicit transformer',async()=>fixture(async({service})=>assert.rejects(service.create({...word,format:'pdf'},context()),/ARTIFACT_RENDERER_UNAVAILABLE/)));
+test('all asset/provenance tuples participate in immutable intent',async()=>fixture(async({ports})=>{
+  const calls=[],auth=async input=>{calls.push(input.requestSha256);return authorize(input);},service=createArtifactService({...ports,authorize:auth,executor:synthetic});
+  const c=context();await service.create(text,c);const first=calls[0];calls.length=0;c.scopes=[{...c.scopes[0],policyRevision:'2'}];await service.create(text,c);assert.notEqual(first,calls[0]);
+}));
+test('stable version allocation cannot overwrite an immutable committed version',async()=>fixture(async({ports})=>{
+  const allocation=ids(),service=createArtifactService({...ports,ids:()=>allocation,executor:synthetic}),c=context();await service.create(text,c);
+  await assert.rejects(service.create({...text,content:{text:'different intent'}},c),e=>e.code==='ARTIFACT_EFFECT_UNKNOWN'&&e.cause.code==='ARTIFACT_COMMIT_RECONCILIATION_REQUIRED');
+}));
+test('sandbox input/receipt verifier gates general code before any port call',async()=>{
+  const c=context(),program={objectId:randomUUID(),versionId:'stored',sha256:'a'.repeat(64),bytes:10,scopes:c.scopes},value={program,inputs:[],outputs:['result.json'],binding:c.binding,deadlineMs:c.deadlineMs,admission:{receiptSha256:'b'.repeat(64),imageDigest:'sha256:'+'c'.repeat(64)}};
+  const boundary=createSandboxAnalysisBoundary({validatePublicShape:(n,v)=>shape(publicSchema.$id,n,v),canonicalSha256:hash,verifyAdmission:async()=>({allowed:false}),port:{execute:()=>assert.fail('not admitted')}});
+  await assert.rejects(boundary.execute(value),/ADMISSION_REQUIRED/);
+});

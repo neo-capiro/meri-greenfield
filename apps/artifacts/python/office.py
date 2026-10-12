@@ -35,8 +35,28 @@ def chart_png(chart):
         ax.set_title(chart['title']);ax.legend();fig.tight_layout();out=io.BytesIO();fig.savefig(out,format='png',dpi=100);return out.getvalue()
     finally:plt.close(fig)
 
-def excel(spec,assets,path):
+def excel(spec,assets,path,base=None):
     import xlsxwriter,openpyxl
+    if base and all(not s.get('charts') and not s.get('images') for s in [*base['request']['content']['sheets'],*spec['sheets']]) and [s['name'] for s in base['request']['content']['sheets']]==[s['name'] for s in spec['sheets']]:
+        # Only our retained, typed plain workbook source can enter this edit path.
+        # Arbitrary imported workbooks/macros/links are not admitted.
+        book=openpyxl.load_workbook(io.BytesIO(base['bytes']),data_only=False,keep_links=False)
+        try:
+            for sheet in spec['sheets']:
+                page=book[sheet['name']]
+                for row in page:
+                    for cell in row:cell.value=None;cell.number_format='General'
+                for y,row in enumerate(sheet['rows'],1):
+                    for x,item in enumerate(row,1):
+                        cell=page.cell(y,x)
+                        if 'formula' in item:cell.value=item['formula']
+                        else:
+                            cell.value=item.get('value')
+                            if isinstance(cell.value,str):cell.data_type='s'
+                        if item.get('numberFormat'):cell.number_format=item['numberFormat']
+            book.calculation.fullCalcOnLoad=True;book.calculation.forceFullCalc=True;book.save(path)
+        finally:book.close()
+        return {'sheets':[s['name'] for s in spec['sheets']],'formulas':sum(1 for s in spec['sheets'] for row in s['rows'] for cell in row if 'formula' in cell),'formulaCache':'removed/unverified; recalculation required','revisionMethod':'openpyxl typed-cell replacement'}
     with xlsxwriter.Workbook(path,{'strings_to_urls':False,'strings_to_formulas':False,'strings_to_numbers':False}) as book:
         for sheet in spec['sheets']:
             page=book.add_worksheet(sheet['name'])
@@ -55,7 +75,9 @@ def excel(spec,assets,path):
                     output.add_series({'name':series['name'],'categories':[sheet['name'],chart_row,0,chart_row+len(chart['categories'])-1,0],'values':[sheet['name'],chart_row,j+1,chart_row+len(chart['categories'])-1,j+1]})
                 page.insert_chart(chart_row,12,output);chart_row+=max(len(chart['categories'])+2,16)
             for i,image in enumerate(sheet.get('images',[])):
-                page.insert_image(i*15,26,'image.png',{'image_data':io.BytesIO(assets[image['assetId']]),'x_scale':1,'y_scale':1})
+                from PIL import Image
+                with Image.open(io.BytesIO(assets[image['assetId']])) as source:width,height=source.size
+                page.insert_image(i*15,26,'image.png',{'image_data':io.BytesIO(assets[image['assetId']]),'x_scale':image['widthInches']*96/width,'y_scale':image['heightInches']*96/height})
     book=openpyxl.load_workbook(path,read_only=True,data_only=False)
     try:return {'sheets':book.sheetnames,'formulas':sum(1 for page in book for row in page for cell in row if cell.data_type=='f'),'formulaCache':'unverified-zero-placeholder; recalculation required'}
     finally:book.close()
