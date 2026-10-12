@@ -1,0 +1,26 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "scripts/qualification/worker_context_test.py"
+  ],
+  "cwd": "/workspace/meri-image-patch-review-20261012",
+  "startUnixSeconds": 1791774954.2357109,
+  "elapsedSeconds": 0.47492170333862305,
+  "exitCode": 0,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "fixtureRoot": null,
+  "streams": {
+    "stdout": {
+      "path": "preserved-context17.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stderr": {
+      "path": "preserved-context17.stderr.txt",
+      "bytes": 116,
+      "sha256": "915f7593326efe299635beda7601b0d6784ed5b1a729f0136a75bb0964f612cd"
+    }
+  }
+}

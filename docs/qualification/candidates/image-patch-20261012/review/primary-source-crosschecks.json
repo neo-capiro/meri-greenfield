@@ -1,0 +1,40 @@
+{
+  "reviewDate": "2026-10-12",
+  "scope": "Independent bounded public primary-source crosschecks; not the parent's full finding disposition matrix",
+  "observations": [
+    {
+      "url": "https://nodejs.org/dist/index.json",
+      "result": "retrieved",
+      "observation": "v24.21.0 is recorded as released 2026-09-07 with LTS Krypton and linux-x64 files. This establishes released metadata, not the pinned OCI bytes or a package vulnerability fix."
+    },
+    {
+      "url": "https://nodejs.org/en/blog/release/v24.21.0",
+      "result": "retrieved",
+      "observation": "Official release page exists; no replacement Node version or image digest was selected."
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/source-package/gnutls28",
+      "result": "retrieved",
+      "observation": "Trixie lists 3.8.9-3+deb13u4; forky/sid list 3.8.13-1. CVE-2026-95210, 95209, 95184, 88648, 88647 and 67693 are listed vulnerable in bookworm, trixie, forky and sid. No supported all-fixed GnuTLS set is established."
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/source-package/curl",
+      "result": "retrieved",
+      "observation": "Trixie lists 8.14.1-2+deb13u5 and vulnerable statuses for CVE-2026-8927, 8924 and 8286; newer forky/sid versions are marked fixed. That does not establish an ABI-compatible trixie replacement or authorize suite mixing."
+    },
+    {
+      "url": "https://snapshot.debian.org/archive/debian/20261012T000000Z/dists/trixie/Release",
+      "result": "web_retrieval_internal_error",
+      "observation": "No Release content or signature proof obtained through this call; no conclusion of absence."
+    },
+    {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-8927",
+      "result": "web_retrieval_internal_error",
+      "observation": "The individual CVE call did not return content; the successful source-package page is separately recorded. No absence or fix inferred."
+    }
+  ],
+  "upstreamBytesRetainedHere": false,
+  "signedPackageProofObtainedHere": false,
+  "sourceBodiesCopiedIntoProduct": false,
+  "patchedImageEstablished": false
+}
