@@ -15,6 +15,14 @@
     {
       "reference": "cb5310d34cddd13d04b2233c937f271b5b4713d1",
       "manifest": "docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/packet-manifest.json"
+    },
+    {
+      "reference": "790638e4908429f190dd6414814ee872145fa289",
+      "manifest": "docs/qualification/candidates/read-continuation-20261012/program-elements-author/manifest.json"
+    },
+    {
+      "reference": "3b06986d2f2dd2b89d17acff97c1fc1091aab85b",
+      "manifest": "docs/qualification/candidates/read-continuation-20261012/program-elements-review/manifest.json"
     }
   ],
   "additionalCode": [

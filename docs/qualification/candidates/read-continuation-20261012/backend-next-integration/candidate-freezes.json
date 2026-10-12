@@ -10,6 +10,16 @@
       "review": "ec3e54045fcdf62941629e2ed7b4f40455ed04c4",
       "verdict": "ACCEPT_SOURCE",
       "runtimeAccepted": false
+    },
+    {
+      "family": "program-elements",
+      "base": "ede7b56845816d38d0bbffab5a657aaa4f978739",
+      "source": "1f7ad5726541f0ab5a103b9e0b2152c260350dbd",
+      "sourceTree": "760f2f7af5cc7f225d6282d847239bddc82ff4f4",
+      "packet": "790638e4908429f190dd6414814ee872145fa289",
+      "review": "3b06986d2f2dd2b89d17acff97c1fc1091aab85b",
+      "verdict": "ACCEPT_SOURCE",
+      "runtimeAccepted": false
     }
   ],
   "components": [
@@ -31,8 +41,6 @@
       "runtimeAccepted": false
     }
   ],
-  "unintegratedPendingReview": [
-    "program-elements"
-  ],
+  "unintegratedPendingReview": [],
   "runtimeAccepted": false
 }
