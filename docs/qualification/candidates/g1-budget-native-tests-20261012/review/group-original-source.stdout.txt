@@ -1,0 +1,443 @@
+✔ group cutoff fixed once before preparation and never extended (1.499834ms)
+✖ closed group guard rechecks global and original group deadlines (1.615427ms)
+✖ each fork and each send has synchronous group admission (0.683477ms)
+✖ early launch refusal cannot leave unhandled readiness rejection (0.776476ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 1
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 71.937713
+
+✖ failing tests:
+
+test at docs/qualification/candidates/g1-budget-native-tests-20261012/review/group-deadline-source.test.mjs:17:1
+✖ closed group guard rechecks global and original group deadlines (1.615427ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /const groupActive=\(\)=>\{active\(admission\);if\(Date\.now\(\)>=deadline\)throw Error\('CHILD_GROUP_DEADLINE'\);\};/. Input:
+  
+  '// UNRUN real-engine source. NEVER include in an ordinary/offline source test command.\n' +
+    "import test from 'node:test';\n" +
+    "import assert from 'node:assert/strict';\n" +
+    "import { randomUUID } from 'node:crypto';\n" +
+    "import { fork } from 'node:child_process';\n" +
+    'import { parseNativeAdmission, openNativePool, verifyDatabase, syntheticCase,\n' +
+    "  forwardedPool, row, active, sha256 } from './postgres-budget-native-fixture.mjs';\n" +
+    '\n' +
+    '// Refuse before pg loading, connect, SQL, test fixture creation or child spawning.\n' +
+    'const admission=parseNativeAdmission({...process.env});\n' +
+    'const [{createPostgresToolBudget},{PostgresBudgetStore,BudgetCommitUncertain,BudgetStateDenied},\n' +
+    '  {createDurableSourceDisabledGateway},{limits,requestJson}]=await Promise.all([\n' +
+    "  import('../budget/postgres-tool-budget.mjs'),import('../budget/postgres-budget-store.mjs'),\n" +
+    "  import('../index.mjs'),import('./fixtures.mjs')]);\n" +
+    'let owner;\n' +
+    'test.before(async()=>{owner=await openNativePool(admission);try{await verifyDatabase(owner.pool,admission,{empty:true});}\n' +
+    '  catch(error){await owner.close();owner=null;throw error;}});\n' +
+    'test.after(async()=>{if(owner)await owner.close();});\n' +
+    "const consumed=async()=>BigInt((await owner.pool.query('SELECT consumed_micro_usd FROM meri_qualification.budget WHERE id=1')).rows[0].consumed_micro_usd);\n" +
+    'const budget=(s,pool=owner.pool)=>createPostgresToolBudget({pool,allocationJson:s.allocationJson});\n' +
+    'async function prepared(options){active(admission);const s=await syntheticCase(owner.pool,admission,options);await budget(s).bindTrustedGrant(s.invocationJson);return s;}\n' +
+    '\n' +
+    "test('real production entry binds admitted grant but unavailable execution opens no transaction',async()=>{\n" +
+    '  const s=await syntheticCase(owner.pool,admission);const tracked=forwardedPool(owner.pool);\n' +
+    '  const gateway=createDurableSourceDisabledGateway({pool:tracked,allocationJson:s.allocationJson,\n' +
+    '    authorityPorts:s.ports,limits,now:Date.now,newId:randomUUID});\n' +
+    '  assert.equal(gateway.sourceEnabled,false);assert.deepEqual(await gateway.discover(),[]);assert.equal(tracked.events.length,0);\n' +
+    '  await gateway.bindTrustedGrant(s.invocationJson);const before=tracked.events.length;\n' +
+    '  await assert.rejects(gateway.execute(requestJson,s.credential,s.invocationJson),/UNAVAILABLE/);\n' +
+    '  assert.equal(tracked.events.length,before);assert.equal(await row(owner.pool,s.invocationJson),undefined);\n' +
+    '});\n' +
+    '\n' +
+    "test('real slot survives fresh adapter; historical completion charges once without authorizing replay',async()=>{\n" +
+    '  const s=await prepared();await budget(s).forInvocation(s.invocationJson).reserve(s.reserve);\n' +
+    "  const before=await row(owner.pool,s.invocationJson);assert.equal(before.state,'UNKNOWN');\n" +
+    '  await assert.rejects(budget(s).forInvocation(s.invocationJson).reserve({...s.reserve,reservationId:randomUUID()}),BudgetStateDenied);\n' +
+    '  const i=JSON.parse(s.invocationJson);\n' +
+    `  await owner.pool.query("UPDATE meri_qualification.grants SET state='REVOKED',expires_at=clock_timestamp()-interval '1 second' WHERE grant_id=$1",[i.grantId]);\n` +
+    '  const newCall=JSON.stringify({...i,invocationId:randomUUID()});\n' +
+    '  await assert.rejects(budget(s).forInvocation(newCall).reserve({...s.reserve,reservationId:randomUUID()}),BudgetStateDenied);\n' +
+    '  assert.deepEqual(await row(owner.pool,s.invocationJson),before);\n' +
+    '  const beforeConsumed=await consumed();\n' +
+    "  await budget(s).forInvocation(s.invocationJson).settle({reservationId:s.reserve.reservationId,outcome:'completed',outputBytes:1});\n" +
+    '  assert.equal(await consumed(),beforeConsumed+10n);\n' +
+    "  const terminal=await row(owner.pool,s.invocationJson);assert.equal(terminal.state,'SETTLED');assert.equal(terminal.charged_micro_usd,'10');\n" +
+    "  await assert.rejects(budget(s).forInvocation(s.invocationJson).settle({reservationId:s.reserve.reservationId,outcome:'completed',outputBytes:1}),BudgetStateDenied);\n" +
+    '  await budget(s).forInvocation(s.invocationJson).markUncertain(s.reserve.reservationId);\n' +
+    '  assert.deepEqual(await row(owner.pool,s.invocationJson),terminal);assert.equal(await consumed(),beforeConsumed+10n);\n' +
+    '});\n' +
+    '\n' +
+    "for(const phase of ['reserve','settle'])test(`synthetic lost ${phase} acknowledgement after real COMMIT preserves exact native row`,async()=>{\n" +
+    "  const s=await prepared();if(phase==='settle')await budget(s).forInvocation(s.invocationJson).reserve(s.reserve);\n" +
+    '  const beforeConsumed=await consumed();\n' +
+    '  const tracked=forwardedPool(owner.pool,{loseCommit:true});const bound=budget(s,tracked).forInvocation(s.invocationJson);\n' +
+    "  await assert.rejects(phase==='reserve'?bound.reserve(s.reserve):bound.settle({reservationId:s.reserve.reservationId,outcome:'completed',outputBytes:1}),BudgetCommitUncertain);\n" +
+    "  assert.equal(tracked.events.filter(e=>e.kind==='synthetic-post-commit-loss').length,1);\n" +
+    "  assert.equal(tracked.events.find(e=>e.kind==='release').evicted,true);\n" +
+    "  const observed=await row(owner.pool,s.invocationJson);assert.equal(observed.state,phase==='reserve'?'UNKNOWN':'SETTLED');\n" +
+    '  assert.equal(observed.reservation_id,s.reserve.reservationId);\n' +
+    "  assert.equal(observed.charged_micro_usd,phase==='reserve'?null:'10');\n" +
+    "  assert.equal(await consumed(),beforeConsumed+(phase==='reserve'?0n:10n));\n" +
+    "  const lostPid=tracked.events.find(e=>e.kind==='connect').pid;\n" +
+    '  const fresh=await owner.pool.connect();try{assert.notEqual(fresh.processID,lostPid);}finally{fresh.release();}\n' +
+    '  await budget(s).forInvocation(s.invocationJson).markUncertain(s.reserve.reservationId);\n' +
+    '  assert.deepEqual(await row(owner.pool,s.invocationJson),observed);\n' +
+    "  assert.equal(await consumed(),beforeConsumed+(phase==='reserve'?0n:10n));\n" +
+    '  await assert.rejects(budget(s).forInvocation(s.invocationJson).reserve({...s.reserve,reservationId:randomUUID()}),BudgetStateDenied);\n' +
+    '});\n' +
+    '\n' +
+    "test('real pg clients are returned after commit/rollback; borrowed pool remains usable',async()=>{\n" +
+    '  const tracked=forwardedPool(owner.pool),store=new PostgresBudgetStore(tracked);\n' +
+    "  assert.equal(await store.transact(async client=>(await client.query('SELECT 41::int AS value')).rows[0].value),41);\n" +
+    "  await assert.rejects(store.transact(async()=>{throw new BudgetStateDenied('SYNTHETIC_DENIAL');}),BudgetStateDenied);\n" +
+    "  assert.equal(tracked.events.filter(e=>e.kind==='release').length,2);\n" +
+    "  assert.ok(tracked.events.filter(e=>e.kind==='release').every(e=>e.evicted===false));\n" +
+    "  assert.equal((await owner.pool.query('SELECT 42::int AS value')).rows[0].value,42);\n" +
+    '  assert.equal(owner.pool.waitingCount,0);assert.equal(owner.pool.idleCount,owner.pool.totalCount);\n' +
+    '});\n' +
+    '\n' +
+    'async function compete(s,{sameInvocation}) {\n' +
+    '  active(admission);const children=[],observations=[];const deadline=Math.min(admission.workDeadlineMs,Date.now()+30000);\n' +
+    "  const env={};for(const k of ['PATH','SystemRoot','WINDIR','TEMP','TMP'])if(process.env[k])env[k]=process.env[k];\n" +
+    "  for(const k of ['MERI_BUDGET_PG_TEST_RUN','MERI_BUDGET_PG_TEST_CONFIG','MERI_BUDGET_PG_TEST_CONFIG_SHA256'])env[k]=process.env[k];\n" +
+    "  env.MERI_BUDGET_PG_CHILD_RUN='reserve';\n" +
+    '  const payloads=[];\n' +
+    '  for(let n=0;n<3;n++) {\n' +
+    '    let invocationJson=s.invocationJson;\n' +
+    '    if(!sameInvocation) {\n' +
+    '      const i={...JSON.parse(s.invocationJson),invocationId:randomUUID(),grantId:randomUUID(),capabilitySha256:sha256(randomUUID())};\n' +
+    '      const q=i.qualificationBinding;\n' +
+    `      await owner.pool.query("INSERT INTO meri_qualification.grants(grant_id,run_id,attempt,worker_arn,fence,policy_revision,capability_sha256,expires_at,state) VALUES($1,$2,$3,$4,$5,$6,$7,$8,'ACTIVE')",[i.grantId,q.runId,q.attempt,q.workerArn,q.fence,q.policyRevision,i.capabilitySha256,s.reserve.claims.expiresAt]);\n` +
+    '      invocationJson=JSON.stringify(i);await budget(s).bindTrustedGrant(invocationJson);\n' +
+    '    }\n' +
+    '    payloads.push({allocationJson:s.allocationJson,invocationJson,reserve:{...s.reserve,reservationId:randomUUID()}});\n' +
+    '  }\n' +
+    '  try {\n' +
+    '    for(let n=0;n<3;n++){\n' +
+    '      active(admission);\n' +
+    "      const child=fork(new URL('./postgres-budget-child.mjs',import.meta.url),[],{execPath:process.execPath,execArgv:[],env,stdio:['ignore','pipe','pipe','ipc'],serialization:'json'});\n" +
+    '      let bytes=0,timer;const record={child,ready:null,done:null,closed:false};children.push(record);\n' +
+    "      const bounded=chunk=>{bytes+=chunk.length;if(bytes>8192)child.kill('SIGTERM');};child.stdout.on('data',bounded);child.stderr.on('data',bounded);\n" +
+    "      record.ready=new Promise((resolve,reject)=>{child.once('error',reject);child.once('close',()=>reject(Error('CHILD_CLOSED_BEFORE_READY')));child.once('message',m=>m?.kind==='ready'?resolve():reject(Error('CHILD_PROTOCOL')));});\n" +
+    '      record.done=new Promise((resolve,reject)=>{\n' +
+    "        let outcome;child.on('message',m=>{if(m?.kind==='result')outcome=m.outcome;});child.once('error',reject);\n" +
+    "        child.once('close',(code,signal)=>{record.closed=true;clearTimeout(timer);observations.push({pid:child.pid,code,signal,bytes});\n" +
+    "          if(code!==0||signal||bytes>8192||!['reserved','denied'].includes(outcome))reject(Error('CHILD_FAILED'));else resolve(outcome);});\n" +
+    "        timer=setTimeout(()=>{child.kill('SIGTERM');reject(Error('CHILD_DEADLINE'));},Math.max(1,deadline-Date.now()));\n" +
+    '      });\n' +
+    '      // Attach immediately while the parent waits for the all-ready barrier.\n' +
+    '      record.done.catch(()=>{});\n' +
+    '    }\n' +
+    '    let readyTimer;\n' +
+    '    try { await Promise.race([Promise.all(children.map(c=>c.ready)),new Promise((_,reject)=>{\n' +
+    "      readyTimer=setTimeout(()=>reject(Error('CHILD_READY_DEADLINE')),Math.max(1,deadline-Date.now()));\n" +
+    '    })]); } finally {clearTimeout(readyTimer);}\n' +
+    '    active(admission);children.forEach(({child},n)=>child.send(payloads[n]));\n' +
+    "    const outcomes=await Promise.all(children.map(c=>c.done));assert.equal(outcomes.filter(v=>v==='reserved').length,1);\n" +
+    '    assert.equal(observations.length,3);assert.ok(observations.every(o=>o.code===0&&!o.signal));\n' +
+    '  } finally {\n' +
+    "    for(const {child} of children)if(child.exitCode===null&&child.signalCode===null)child.kill('SIGTERM');\n" +
+    '    const pending=children.filter(record=>!record.closed);\n' +
+    '    if(pending.length)await Promise.all(pending.map(({child})=>new Promise((resolve,reject)=>{\n' +
+    '      const remaining=Math.max(1,Math.min(5000,admission.'... 2900 more characters
+  
+      at TestContext.<anonymous> (file:///workspace/meri-g1-budget-native-tests-review-20261012/docs/qualification/candidates/g1-budget-native-tests-20261012/review/group-deadline-source.test.mjs:18:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '// UNRUN real-engine source. NEVER include in an ordinary/offline source test command.\nimport test from \'node:test\';\nimport assert from \'node:assert/strict\';\nimport { randomUUID } from \'node:crypto\';\nimport { fork } from \'node:child_process\';\nimport { parseNativeAdmission, openNativePool, verifyDatabase, syntheticCase,\n  forwardedPool, row, active, sha256 } from \'./postgres-budget-native-fixture.mjs\';\n\n// Refuse before pg loading, connect, SQL, test fixture creation or child spawning.\nconst admission=parseNativeAdmission({...process.env});\nconst [{createPostgresToolBudget},{PostgresBudgetStore,BudgetCommitUncertain,BudgetStateDenied},\n  {createDurableSourceDisabledGateway},{limits,requestJson}]=await Promise.all([\n  import(\'../budget/postgres-tool-budget.mjs\'),import(\'../budget/postgres-budget-store.mjs\'),\n  import(\'../index.mjs\'),import(\'./fixtures.mjs\')]);\nlet owner;\ntest.before(async()=>{owner=await openNativePool(admission);try{await verifyDatabase(owner.pool,admission,{empty:true});}\n  catch(error){await owner.close();owner=null;throw error;}});\ntest.after(async()=>{if(owner)await owner.close();});\nconst consumed=async()=>BigInt((await owner.pool.query(\'SELECT consumed_micro_usd FROM meri_qualification.budget WHERE id=1\')).rows[0].consumed_micro_usd);\nconst budget=(s,pool=owner.pool)=>createPostgresToolBudget({pool,allocationJson:s.allocationJson});\nasync function prepared(options){active(admission);const s=await syntheticCase(owner.pool,admission,options);await budget(s).bindTrustedGrant(s.invocationJson);return s;}\n\ntest(\'real production entry binds admitted grant but unavailable execution opens no transaction\',async()=>{\n  const s=await syntheticCase(owner.pool,admission);const tracked=forwardedPool(owner.pool);\n  const gateway=createDurableSourceDisabledGateway({pool:tracked,allocationJson:s.allocationJson,\n    authorityPorts:s.ports,limits,now:Date.now,newId:randomUUID});\n  assert.equal(gateway.sourceEnabled,false);assert.deepEqual(await gateway.discover(),[]);assert.equal(tracked.events.length,0);\n  await gateway.bindTrustedGrant(s.invocationJson);const before=tracked.events.length;\n  await assert.rejects(gateway.execute(requestJson,s.credential,s.invocationJson),/UNAVAILABLE/);\n  assert.equal(tracked.events.length,before);assert.equal(await row(owner.pool,s.invocationJson),undefined);\n});\n\ntest(\'real slot survives fresh adapter; historical completion charges once without authorizing replay\',async()=>{\n  const s=await prepared();await budget(s).forInvocation(s.invocationJson).reserve(s.reserve);\n  const before=await row(owner.pool,s.invocationJson);assert.equal(before.state,\'UNKNOWN\');\n  await assert.rejects(budget(s).forInvocation(s.invocationJson).reserve({...s.reserve,reservationId:randomUUID()}),BudgetStateDenied);\n  const i=JSON.parse(s.invocationJson);\n  await owner.pool.query("UPDATE meri_qualification.grants SET state=\'REVOKED\',expires_at=clock_timestamp()-interval \'1 second\' WHERE grant_id=$1",[i.grantId]);\n  const newCall=JSON.stringify({...i,invocationId:randomUUID()});\n  await assert.rejects(budget(s).forInvocation(newCall).reserve({...s.reserve,reservationId:randomUUID()}),BudgetStateDenied);\n  assert.deepEqual(await row(owner.pool,s.invocationJson),before);\n  const beforeConsumed=await consumed();\n  await budget(s).forInvocation(s.invocationJson).settle({reservationId:s.reserve.reservationId,outcome:\'completed\',outputBytes:1});\n  assert.equal(await consumed(),beforeConsumed+10n);\n  const terminal=await row(owner.pool,s.invocationJson);assert.equal(terminal.state,\'SETTLED\');assert.equal(terminal.charged_micro_usd,\'10\');\n  await assert.rejects(budget(s).forInvocation(s.invocationJson).settle({reservationId:s.reserve.reservationId,outcome:\'completed\',outputBytes:1}),BudgetStateDenied);\n  await budget(s).forInvocation(s.invocationJson).markUncertain(s.reserve.reservationId);\n  assert.deepEqual(await row(owner.pool,s.invocationJson),terminal);assert.equal(await consumed(),beforeConsumed+10n);\n});\n\nfor(const phase of [\'reserve\',\'settle\'])test(`synthetic lost ${phase} acknowledgement after real COMMIT preserves exact native row`,async()=>{\n  const s=await prepared();if(phase===\'settle\')await budget(s).forInvocation(s.invocationJson).reserve(s.reserve);\n  const beforeConsumed=await consumed();\n  const tracked=forwardedPool(owner.pool,{loseCommit:true});const bound=budget(s,tracked).forInvocation(s.invocationJson);\n  await assert.rejects(phase===\'reserve\'?bound.reserve(s.reserve):bound.settle({reservationId:s.reserve.reservationId,outcome:\'completed\',outputBytes:1}),BudgetCommitUncertain);\n  assert.equal(tracked.events.filter(e=>e.kind===\'synthetic-post-commit-loss\').length,1);\n  assert.equal(tracked.events.find(e=>e.kind===\'release\').evicted,true);\n  const observed=await row(owner.pool,s.invocationJson);assert.equal(observed.state,phase===\'reserve\'?\'UNKNOWN\':\'SETTLED\');\n  assert.equal(observed.reservation_id,s.reserve.reservationId);\n  assert.equal(observed.charged_micro_usd,phase===\'reserve\'?null:\'10\');\n  assert.equal(await consumed(),beforeConsumed+(phase===\'reserve\'?0n:10n));\n  const lostPid=tracked.events.find(e=>e.kind===\'connect\').pid;\n  const fresh=await owner.pool.connect();try{assert.notEqual(fresh.processID,lostPid);}finally{fresh.release();}\n  await budget(s).forInvocation(s.invocationJson).markUncertain(s.reserve.reservationId);\n  assert.deepEqual(await row(owner.pool,s.invocationJson),observed);\n  assert.equal(await consumed(),beforeConsumed+(phase===\'reserve\'?0n:10n));\n  await assert.rejects(budget(s).forInvocation(s.invocationJson).reserve({...s.reserve,reservationId:randomUUID()}),BudgetStateDenied);\n});\n\ntest(\'real pg clients are returned after commit/rollback; borrowed pool remains usable\',async()=>{\n  const tracked=forwardedPool(owner.pool),store=new PostgresBudgetStore(tracked);\n  assert.equal(await store.transact(async client=>(await client.query(\'SELECT 41::int AS value\')).rows[0].value),41);\n  await assert.rejects(store.transact(async()=>{throw new BudgetStateDenied(\'SYNTHETIC_DENIAL\');}),BudgetStateDenied);\n  assert.equal(tracked.events.filter(e=>e.kind===\'release\').length,2);\n  assert.ok(tracked.events.filter(e=>e.kind===\'release\').every(e=>e.evicted===false));\n  assert.equal((await owner.pool.query(\'SELECT 42::int AS value\')).rows[0].value,42);\n  assert.equal(owner.pool.waitingCount,0);assert.equal(owner.pool.idleCount,owner.pool.totalCount);\n});\n\nasync function compete(s,{sameInvocation}) {\n  active(admission);const children=[],observations=[];const deadline=Math.min(admission.workDeadlineMs,Date.now()+30000);\n  const env={};for(const k of [\'PATH\',\'SystemRoot\',\'WINDIR\',\'TEMP\',\'TMP\'])if(process.env[k])env[k]=process.env[k];\n  for(const k of [\'MERI_BUDGET_PG_TEST_RUN\',\'MERI_BUDGET_PG_TEST_CONFIG\',\'MERI_BUDGET_PG_TEST_CONFIG_SHA256\'])env[k]=process.env[k];\n  env.MERI_BUDGET_PG_CHILD_RUN=\'reserve\';\n  const payloads=[];\n  for(let n=0;n<3;n++) {\n    let invocationJson=s.invocationJson;\n    if(!sameInvocation) {\n      const i={...JSON.parse(s.invocationJson),invocationId:randomUUID(),grantId:randomUUID(),capabilitySha256:sha256(randomUUID())};\n      const q=i.qualificationBinding;\n      await owner.pool.query("INSERT INTO meri_qualification.grants(grant_id,run_id,attempt,worker_arn,fence,policy_revision,capability_sha256,expires_at,state) VALUES($1,$2,$3,$4,$5,$6,$7,$8,\'ACTIVE\')",[i.grantId,q.runId,q.attempt,q.workerArn,q.fence,q.policyRevision,i.capabilitySha256,s.reserve.claims.expiresAt]);\n      invocationJson=JSON.stringify(i);await budget(s).bindTrustedGrant(invocationJson);\n    }\n    payloads.push({allocationJson:s.allocationJson,invocationJson,reserve:{...s.reserve,reservationId:randomUUID()}});\n  }\n  try {\n    for(let n=0;n<3;n++){\n      active(admission);\n      const child=fork(new URL(\'./postgres-budget-child.mjs\',import.meta.url),[],{execPath:process.execPath,execArgv:[],env,stdio:[\'ignore\',\'pipe\',\'pipe\',\'ipc\'],serialization:\'json\'});\n      let bytes=0,timer;const record={child,ready:null,done:null,closed:false};children.push(record);\n      const bounded=chunk=>{bytes+=chunk.length;if(bytes>8192)child.kill(\'SIGTERM\');};child.stdout.on(\'data\',bounded);child.stderr.on(\'data\',bounded);\n      record.ready=new Promise((resolve,reject)=>{child.once(\'error\',reject);child.once(\'close\',()=>reject(Error(\'CHILD_CLOSED_BEFORE_READY\')));child.once(\'message\',m=>m?.kind===\'ready\'?resolve():reject(Error(\'CHILD_PROTOCOL\')));});\n      record.done=new Promise((resolve,reject)=>{\n        let outcome;child.on(\'message\',m=>{if(m?.kind===\'result\')outcome=m.outcome;});child.once(\'error\',reject);\n        child.once(\'close\',(code,signal)=>{record.closed=true;clearTimeout(timer);observations.push({pid:child.pid,code,signal,bytes});\n          if(code!==0||signal||bytes>8192||![\'reserved\',\'denied\'].includes(outcome))reject(Error(\'CHILD_FAILED\'));else resolve(outcome);});\n        timer=setTimeout(()=>{child.kill(\'SIGTERM\');reject(Error(\'CHILD_DEADLINE\'));},Math.max(1,deadline-Date.now()));\n      });\n      // Attach immediately while the parent waits for the all-ready barrier.\n      record.done.catch(()=>{});\n    }\n    let readyTimer;\n    try { await Promise.race([Promise.all(children.map(c=>c.ready)),new Promise((_,reject)=>{\n      readyTimer=setTimeout(()=>reject(Error(\'CHILD_READY_DEADLINE\')),Math.max(1,deadline-Date.now()));\n    })]); } finally {clearTimeout(readyTimer);}\n    active(admission);children.forEach(({child},n)=>child.send(payloads[n]));\n    const outcomes=await Promise.all(children.map(c=>c.done));assert.equal(outcomes.filter(v=>v===\'reserved\').length,1);\n    assert.equal(observations.length,3);assert.ok(observations.every(o=>o.code===0&&!o.signal));\n  } finally {\n    for(const {child} of children)if(child.exitCode===null&&child.signalCode===null)child.kill(\'SIGTERM\');\n    const pending=children.filter(record=>!record.closed);\n    if(pending.length)await Promise.all(pending.map(({child})=>new Promise((resolve,reject)=>{\n      const remaining=Math.max(1,Math.min(5000,admission.'... 2900 more characters,
+    expected: /const groupActive=\(\)=>\{active\(admission\);if\(Date\.now\(\)>=deadline\)throw Error\('CHILD_GROUP_DEADLINE'\);\};/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-budget-native-tests-20261012/review/group-deadline-source.test.mjs:20:1
+✖ each fork and each send has synchronous group admission (0.683477ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /groupActive\(\);\s*const child=fork\(/. Input:
+  
+  '// UNRUN real-engine source. NEVER include in an ordinary/offline source test command.\n' +
+    "import test from 'node:test';\n" +
+    "import assert from 'node:assert/strict';\n" +
+    "import { randomUUID } from 'node:crypto';\n" +
+    "import { fork } from 'node:child_process';\n" +
+    'import { parseNativeAdmission, openNativePool, verifyDatabase, syntheticCase,\n' +
+    "  forwardedPool, row, active, sha256 } from './postgres-budget-native-fixture.mjs';\n" +
+    '\n' +
+    '// Refuse before pg loading, connect, SQL, test fixture creation or child spawning.\n' +
+    'const admission=parseNativeAdmission({...process.env});\n' +
+    'const [{createPostgresToolBudget},{PostgresBudgetStore,BudgetCommitUncertain,BudgetStateDenied},\n' +
+    '  {createDurableSourceDisabledGateway},{limits,requestJson}]=await Promise.all([\n' +
+    "  import('../budget/postgres-tool-budget.mjs'),import('../budget/postgres-budget-store.mjs'),\n" +
+    "  import('../index.mjs'),import('./fixtures.mjs')]);\n" +
+    'let owner;\n' +
+    'test.before(async()=>{owner=await openNativePool(admission);try{await verifyDatabase(owner.pool,admission,{empty:true});}\n' +
+    '  catch(error){await owner.close();owner=null;throw error;}});\n' +
+    'test.after(async()=>{if(owner)await owner.close();});\n' +
+    "const consumed=async()=>BigInt((await owner.pool.query('SELECT consumed_micro_usd FROM meri_qualification.budget WHERE id=1')).rows[0].consumed_micro_usd);\n" +
+    'const budget=(s,pool=owner.pool)=>createPostgresToolBudget({pool,allocationJson:s.allocationJson});\n' +
+    'async function prepared(options){active(admission);const s=await syntheticCase(owner.pool,admission,options);await budget(s).bindTrustedGrant(s.invocationJson);return s;}\n' +
+    '\n' +
+    "test('real production entry binds admitted grant but unavailable execution opens no transaction',async()=>{\n" +
+    '  const s=await syntheticCase(owner.pool,admission);const tracked=forwardedPool(owner.pool);\n' +
+    '  const gateway=createDurableSourceDisabledGateway({pool:tracked,allocationJson:s.allocationJson,\n' +
+    '    authorityPorts:s.ports,limits,now:Date.now,newId:randomUUID});\n' +
+    '  assert.equal(gateway.sourceEnabled,false);assert.deepEqual(await gateway.discover(),[]);assert.equal(tracked.events.length,0);\n' +
+    '  await gateway.bindTrustedGrant(s.invocationJson);const before=tracked.events.length;\n' +
+    '  await assert.rejects(gateway.execute(requestJson,s.credential,s.invocationJson),/UNAVAILABLE/);\n' +
+    '  assert.equal(tracked.events.length,before);assert.equal(await row(owner.pool,s.invocationJson),undefined);\n' +
+    '});\n' +
+    '\n' +
+    "test('real slot survives fresh adapter; historical completion charges once without authorizing replay',async()=>{\n" +
+    '  const s=await prepared();await budget(s).forInvocation(s.invocationJson).reserve(s.reserve);\n' +
+    "  const before=await row(owner.pool,s.invocationJson);assert.equal(before.state,'UNKNOWN');\n" +
+    '  await assert.rejects(budget(s).forInvocation(s.invocationJson).reserve({...s.reserve,reservationId:randomUUID()}),BudgetStateDenied);\n' +
+    '  const i=JSON.parse(s.invocationJson);\n' +
+    `  await owner.pool.query("UPDATE meri_qualification.grants SET state='REVOKED',expires_at=clock_timestamp()-interval '1 second' WHERE grant_id=$1",[i.grantId]);\n` +
+    '  const newCall=JSON.stringify({...i,invocationId:randomUUID()});\n' +
+    '  await assert.rejects(budget(s).forInvocation(newCall).reserve({...s.reserve,reservationId:randomUUID()}),BudgetStateDenied);\n' +
+    '  assert.deepEqual(await row(owner.pool,s.invocationJson),before);\n' +
+    '  const beforeConsumed=await consumed();\n' +
+    "  await budget(s).forInvocation(s.invocationJson).settle({reservationId:s.reserve.reservationId,outcome:'completed',outputBytes:1});\n" +
+    '  assert.equal(await consumed(),beforeConsumed+10n);\n' +
+    "  const terminal=await row(owner.pool,s.invocationJson);assert.equal(terminal.state,'SETTLED');assert.equal(terminal.charged_micro_usd,'10');\n" +
+    "  await assert.rejects(budget(s).forInvocation(s.invocationJson).settle({reservationId:s.reserve.reservationId,outcome:'completed',outputBytes:1}),BudgetStateDenied);\n" +
+    '  await budget(s).forInvocation(s.invocationJson).markUncertain(s.reserve.reservationId);\n' +
+    '  assert.deepEqual(await row(owner.pool,s.invocationJson),terminal);assert.equal(await consumed(),beforeConsumed+10n);\n' +
+    '});\n' +
+    '\n' +
+    "for(const phase of ['reserve','settle'])test(`synthetic lost ${phase} acknowledgement after real COMMIT preserves exact native row`,async()=>{\n" +
+    "  const s=await prepared();if(phase==='settle')await budget(s).forInvocation(s.invocationJson).reserve(s.reserve);\n" +
+    '  const beforeConsumed=await consumed();\n' +
+    '  const tracked=forwardedPool(owner.pool,{loseCommit:true});const bound=budget(s,tracked).forInvocation(s.invocationJson);\n' +
+    "  await assert.rejects(phase==='reserve'?bound.reserve(s.reserve):bound.settle({reservationId:s.reserve.reservationId,outcome:'completed',outputBytes:1}),BudgetCommitUncertain);\n" +
+    "  assert.equal(tracked.events.filter(e=>e.kind==='synthetic-post-commit-loss').length,1);\n" +
+    "  assert.equal(tracked.events.find(e=>e.kind==='release').evicted,true);\n" +
+    "  const observed=await row(owner.pool,s.invocationJson);assert.equal(observed.state,phase==='reserve'?'UNKNOWN':'SETTLED');\n" +
+    '  assert.equal(observed.reservation_id,s.reserve.reservationId);\n' +
+    "  assert.equal(observed.charged_micro_usd,phase==='reserve'?null:'10');\n" +
+    "  assert.equal(await consumed(),beforeConsumed+(phase==='reserve'?0n:10n));\n" +
+    "  const lostPid=tracked.events.find(e=>e.kind==='connect').pid;\n" +
+    '  const fresh=await owner.pool.connect();try{assert.notEqual(fresh.processID,lostPid);}finally{fresh.release();}\n' +
+    '  await budget(s).forInvocation(s.invocationJson).markUncertain(s.reserve.reservationId);\n' +
+    '  assert.deepEqual(await row(owner.pool,s.invocationJson),observed);\n' +
+    "  assert.equal(await consumed(),beforeConsumed+(phase==='reserve'?0n:10n));\n" +
+    '  await assert.rejects(budget(s).forInvocation(s.invocationJson).reserve({...s.reserve,reservationId:randomUUID()}),BudgetStateDenied);\n' +
+    '});\n' +
+    '\n' +
+    "test('real pg clients are returned after commit/rollback; borrowed pool remains usable',async()=>{\n" +
+    '  const tracked=forwardedPool(owner.pool),store=new PostgresBudgetStore(tracked);\n' +
+    "  assert.equal(await store.transact(async client=>(await client.query('SELECT 41::int AS value')).rows[0].value),41);\n" +
+    "  await assert.rejects(store.transact(async()=>{throw new BudgetStateDenied('SYNTHETIC_DENIAL');}),BudgetStateDenied);\n" +
+    "  assert.equal(tracked.events.filter(e=>e.kind==='release').length,2);\n" +
+    "  assert.ok(tracked.events.filter(e=>e.kind==='release').every(e=>e.evicted===false));\n" +
+    "  assert.equal((await owner.pool.query('SELECT 42::int AS value')).rows[0].value,42);\n" +
+    '  assert.equal(owner.pool.waitingCount,0);assert.equal(owner.pool.idleCount,owner.pool.totalCount);\n' +
+    '});\n' +
+    '\n' +
+    'async function compete(s,{sameInvocation}) {\n' +
+    '  active(admission);const children=[],observations=[];const deadline=Math.min(admission.workDeadlineMs,Date.now()+30000);\n' +
+    "  const env={};for(const k of ['PATH','SystemRoot','WINDIR','TEMP','TMP'])if(process.env[k])env[k]=process.env[k];\n" +
+    "  for(const k of ['MERI_BUDGET_PG_TEST_RUN','MERI_BUDGET_PG_TEST_CONFIG','MERI_BUDGET_PG_TEST_CONFIG_SHA256'])env[k]=process.env[k];\n" +
+    "  env.MERI_BUDGET_PG_CHILD_RUN='reserve';\n" +
+    '  const payloads=[];\n' +
+    '  for(let n=0;n<3;n++) {\n' +
+    '    let invocationJson=s.invocationJson;\n' +
+    '    if(!sameInvocation) {\n' +
+    '      const i={...JSON.parse(s.invocationJson),invocationId:randomUUID(),grantId:randomUUID(),capabilitySha256:sha256(randomUUID())};\n' +
+    '      const q=i.qualificationBinding;\n' +
+    `      await owner.pool.query("INSERT INTO meri_qualification.grants(grant_id,run_id,attempt,worker_arn,fence,policy_revision,capability_sha256,expires_at,state) VALUES($1,$2,$3,$4,$5,$6,$7,$8,'ACTIVE')",[i.grantId,q.runId,q.attempt,q.workerArn,q.fence,q.policyRevision,i.capabilitySha256,s.reserve.claims.expiresAt]);\n` +
+    '      invocationJson=JSON.stringify(i);await budget(s).bindTrustedGrant(invocationJson);\n' +
+    '    }\n' +
+    '    payloads.push({allocationJson:s.allocationJson,invocationJson,reserve:{...s.reserve,reservationId:randomUUID()}});\n' +
+    '  }\n' +
+    '  try {\n' +
+    '    for(let n=0;n<3;n++){\n' +
+    '      active(admission);\n' +
+    "      const child=fork(new URL('./postgres-budget-child.mjs',import.meta.url),[],{execPath:process.execPath,execArgv:[],env,stdio:['ignore','pipe','pipe','ipc'],serialization:'json'});\n" +
+    '      let bytes=0,timer;const record={child,ready:null,done:null,closed:false};children.push(record);\n' +
+    "      const bounded=chunk=>{bytes+=chunk.length;if(bytes>8192)child.kill('SIGTERM');};child.stdout.on('data',bounded);child.stderr.on('data',bounded);\n" +
+    "      record.ready=new Promise((resolve,reject)=>{child.once('error',reject);child.once('close',()=>reject(Error('CHILD_CLOSED_BEFORE_READY')));child.once('message',m=>m?.kind==='ready'?resolve():reject(Error('CHILD_PROTOCOL')));});\n" +
+    '      record.done=new Promise((resolve,reject)=>{\n' +
+    "        let outcome;child.on('message',m=>{if(m?.kind==='result')outcome=m.outcome;});child.once('error',reject);\n" +
+    "        child.once('close',(code,signal)=>{record.closed=true;clearTimeout(timer);observations.push({pid:child.pid,code,signal,bytes});\n" +
+    "          if(code!==0||signal||bytes>8192||!['reserved','denied'].includes(outcome))reject(Error('CHILD_FAILED'));else resolve(outcome);});\n" +
+    "        timer=setTimeout(()=>{child.kill('SIGTERM');reject(Error('CHILD_DEADLINE'));},Math.max(1,deadline-Date.now()));\n" +
+    '      });\n' +
+    '      // Attach immediately while the parent waits for the all-ready barrier.\n' +
+    '      record.done.catch(()=>{});\n' +
+    '    }\n' +
+    '    let readyTimer;\n' +
+    '    try { await Promise.race([Promise.all(children.map(c=>c.ready)),new Promise((_,reject)=>{\n' +
+    "      readyTimer=setTimeout(()=>reject(Error('CHILD_READY_DEADLINE')),Math.max(1,deadline-Date.now()));\n" +
+    '    })]); } finally {clearTimeout(readyTimer);}\n' +
+    '    active(admission);children.forEach(({child},n)=>child.send(payloads[n]));\n' +
+    "    const outcomes=await Promise.all(children.map(c=>c.done));assert.equal(outcomes.filter(v=>v==='reserved').length,1);\n" +
+    '    assert.equal(observations.length,3);assert.ok(observations.every(o=>o.code===0&&!o.signal));\n' +
+    '  } finally {\n' +
+    "    for(const {child} of children)if(child.exitCode===null&&child.signalCode===null)child.kill('SIGTERM');\n" +
+    '    const pending=children.filter(record=>!record.closed);\n' +
+    '    if(pending.length)await Promise.all(pending.map(({child})=>new Promise((resolve,reject)=>{\n' +
+    '      const remaining=Math.max(1,Math.min(5000,admission.'... 2900 more characters
+  
+      at TestContext.<anonymous> (file:///workspace/meri-g1-budget-native-tests-review-20261012/docs/qualification/candidates/g1-budget-native-tests-20261012/review/group-deadline-source.test.mjs:21:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '// UNRUN real-engine source. NEVER include in an ordinary/offline source test command.\nimport test from \'node:test\';\nimport assert from \'node:assert/strict\';\nimport { randomUUID } from \'node:crypto\';\nimport { fork } from \'node:child_process\';\nimport { parseNativeAdmission, openNativePool, verifyDatabase, syntheticCase,\n  forwardedPool, row, active, sha256 } from \'./postgres-budget-native-fixture.mjs\';\n\n// Refuse before pg loading, connect, SQL, test fixture creation or child spawning.\nconst admission=parseNativeAdmission({...process.env});\nconst [{createPostgresToolBudget},{PostgresBudgetStore,BudgetCommitUncertain,BudgetStateDenied},\n  {createDurableSourceDisabledGateway},{limits,requestJson}]=await Promise.all([\n  import(\'../budget/postgres-tool-budget.mjs\'),import(\'../budget/postgres-budget-store.mjs\'),\n  import(\'../index.mjs\'),import(\'./fixtures.mjs\')]);\nlet owner;\ntest.before(async()=>{owner=await openNativePool(admission);try{await verifyDatabase(owner.pool,admission,{empty:true});}\n  catch(error){await owner.close();owner=null;throw error;}});\ntest.after(async()=>{if(owner)await owner.close();});\nconst consumed=async()=>BigInt((await owner.pool.query(\'SELECT consumed_micro_usd FROM meri_qualification.budget WHERE id=1\')).rows[0].consumed_micro_usd);\nconst budget=(s,pool=owner.pool)=>createPostgresToolBudget({pool,allocationJson:s.allocationJson});\nasync function prepared(options){active(admission);const s=await syntheticCase(owner.pool,admission,options);await budget(s).bindTrustedGrant(s.invocationJson);return s;}\n\ntest(\'real production entry binds admitted grant but unavailable execution opens no transaction\',async()=>{\n  const s=await syntheticCase(owner.pool,admission);const tracked=forwardedPool(owner.pool);\n  const gateway=createDurableSourceDisabledGateway({pool:tracked,allocationJson:s.allocationJson,\n    authorityPorts:s.ports,limits,now:Date.now,newId:randomUUID});\n  assert.equal(gateway.sourceEnabled,false);assert.deepEqual(await gateway.discover(),[]);assert.equal(tracked.events.length,0);\n  await gateway.bindTrustedGrant(s.invocationJson);const before=tracked.events.length;\n  await assert.rejects(gateway.execute(requestJson,s.credential,s.invocationJson),/UNAVAILABLE/);\n  assert.equal(tracked.events.length,before);assert.equal(await row(owner.pool,s.invocationJson),undefined);\n});\n\ntest(\'real slot survives fresh adapter; historical completion charges once without authorizing replay\',async()=>{\n  const s=await prepared();await budget(s).forInvocation(s.invocationJson).reserve(s.reserve);\n  const before=await row(owner.pool,s.invocationJson);assert.equal(before.state,\'UNKNOWN\');\n  await assert.rejects(budget(s).forInvocation(s.invocationJson).reserve({...s.reserve,reservationId:randomUUID()}),BudgetStateDenied);\n  const i=JSON.parse(s.invocationJson);\n  await owner.pool.query("UPDATE meri_qualification.grants SET state=\'REVOKED\',expires_at=clock_timestamp()-interval \'1 second\' WHERE grant_id=$1",[i.grantId]);\n  const newCall=JSON.stringify({...i,invocationId:randomUUID()});\n  await assert.rejects(budget(s).forInvocation(newCall).reserve({...s.reserve,reservationId:randomUUID()}),BudgetStateDenied);\n  assert.deepEqual(await row(owner.pool,s.invocationJson),before);\n  const beforeConsumed=await consumed();\n  await budget(s).forInvocation(s.invocationJson).settle({reservationId:s.reserve.reservationId,outcome:\'completed\',outputBytes:1});\n  assert.equal(await consumed(),beforeConsumed+10n);\n  const terminal=await row(owner.pool,s.invocationJson);assert.equal(terminal.state,\'SETTLED\');assert.equal(terminal.charged_micro_usd,\'10\');\n  await assert.rejects(budget(s).forInvocation(s.invocationJson).settle({reservationId:s.reserve.reservationId,outcome:\'completed\',outputBytes:1}),BudgetStateDenied);\n  await budget(s).forInvocation(s.invocationJson).markUncertain(s.reserve.reservationId);\n  assert.deepEqual(await row(owner.pool,s.invocationJson),terminal);assert.equal(await consumed(),beforeConsumed+10n);\n});\n\nfor(const phase of [\'reserve\',\'settle\'])test(`synthetic lost ${phase} acknowledgement after real COMMIT preserves exact native row`,async()=>{\n  const s=await prepared();if(phase===\'settle\')await budget(s).forInvocation(s.invocationJson).reserve(s.reserve);\n  const beforeConsumed=await consumed();\n  const tracked=forwardedPool(owner.pool,{loseCommit:true});const bound=budget(s,tracked).forInvocation(s.invocationJson);\n  await assert.rejects(phase===\'reserve\'?bound.reserve(s.reserve):bound.settle({reservationId:s.reserve.reservationId,outcome:\'completed\',outputBytes:1}),BudgetCommitUncertain);\n  assert.equal(tracked.events.filter(e=>e.kind===\'synthetic-post-commit-loss\').length,1);\n  assert.equal(tracked.events.find(e=>e.kind===\'release\').evicted,true);\n  const observed=await row(owner.pool,s.invocationJson);assert.equal(observed.state,phase===\'reserve\'?\'UNKNOWN\':\'SETTLED\');\n  assert.equal(observed.reservation_id,s.reserve.reservationId);\n  assert.equal(observed.charged_micro_usd,phase===\'reserve\'?null:\'10\');\n  assert.equal(await consumed(),beforeConsumed+(phase===\'reserve\'?0n:10n));\n  const lostPid=tracked.events.find(e=>e.kind===\'connect\').pid;\n  const fresh=await owner.pool.connect();try{assert.notEqual(fresh.processID,lostPid);}finally{fresh.release();}\n  await budget(s).forInvocation(s.invocationJson).markUncertain(s.reserve.reservationId);\n  assert.deepEqual(await row(owner.pool,s.invocationJson),observed);\n  assert.equal(await consumed(),beforeConsumed+(phase===\'reserve\'?0n:10n));\n  await assert.rejects(budget(s).forInvocation(s.invocationJson).reserve({...s.reserve,reservationId:randomUUID()}),BudgetStateDenied);\n});\n\ntest(\'real pg clients are returned after commit/rollback; borrowed pool remains usable\',async()=>{\n  const tracked=forwardedPool(owner.pool),store=new PostgresBudgetStore(tracked);\n  assert.equal(await store.transact(async client=>(await client.query(\'SELECT 41::int AS value\')).rows[0].value),41);\n  await assert.rejects(store.transact(async()=>{throw new BudgetStateDenied(\'SYNTHETIC_DENIAL\');}),BudgetStateDenied);\n  assert.equal(tracked.events.filter(e=>e.kind===\'release\').length,2);\n  assert.ok(tracked.events.filter(e=>e.kind===\'release\').every(e=>e.evicted===false));\n  assert.equal((await owner.pool.query(\'SELECT 42::int AS value\')).rows[0].value,42);\n  assert.equal(owner.pool.waitingCount,0);assert.equal(owner.pool.idleCount,owner.pool.totalCount);\n});\n\nasync function compete(s,{sameInvocation}) {\n  active(admission);const children=[],observations=[];const deadline=Math.min(admission.workDeadlineMs,Date.now()+30000);\n  const env={};for(const k of [\'PATH\',\'SystemRoot\',\'WINDIR\',\'TEMP\',\'TMP\'])if(process.env[k])env[k]=process.env[k];\n  for(const k of [\'MERI_BUDGET_PG_TEST_RUN\',\'MERI_BUDGET_PG_TEST_CONFIG\',\'MERI_BUDGET_PG_TEST_CONFIG_SHA256\'])env[k]=process.env[k];\n  env.MERI_BUDGET_PG_CHILD_RUN=\'reserve\';\n  const payloads=[];\n  for(let n=0;n<3;n++) {\n    let invocationJson=s.invocationJson;\n    if(!sameInvocation) {\n      const i={...JSON.parse(s.invocationJson),invocationId:randomUUID(),grantId:randomUUID(),capabilitySha256:sha256(randomUUID())};\n      const q=i.qualificationBinding;\n      await owner.pool.query("INSERT INTO meri_qualification.grants(grant_id,run_id,attempt,worker_arn,fence,policy_revision,capability_sha256,expires_at,state) VALUES($1,$2,$3,$4,$5,$6,$7,$8,\'ACTIVE\')",[i.grantId,q.runId,q.attempt,q.workerArn,q.fence,q.policyRevision,i.capabilitySha256,s.reserve.claims.expiresAt]);\n      invocationJson=JSON.stringify(i);await budget(s).bindTrustedGrant(invocationJson);\n    }\n    payloads.push({allocationJson:s.allocationJson,invocationJson,reserve:{...s.reserve,reservationId:randomUUID()}});\n  }\n  try {\n    for(let n=0;n<3;n++){\n      active(admission);\n      const child=fork(new URL(\'./postgres-budget-child.mjs\',import.meta.url),[],{execPath:process.execPath,execArgv:[],env,stdio:[\'ignore\',\'pipe\',\'pipe\',\'ipc\'],serialization:\'json\'});\n      let bytes=0,timer;const record={child,ready:null,done:null,closed:false};children.push(record);\n      const bounded=chunk=>{bytes+=chunk.length;if(bytes>8192)child.kill(\'SIGTERM\');};child.stdout.on(\'data\',bounded);child.stderr.on(\'data\',bounded);\n      record.ready=new Promise((resolve,reject)=>{child.once(\'error\',reject);child.once(\'close\',()=>reject(Error(\'CHILD_CLOSED_BEFORE_READY\')));child.once(\'message\',m=>m?.kind===\'ready\'?resolve():reject(Error(\'CHILD_PROTOCOL\')));});\n      record.done=new Promise((resolve,reject)=>{\n        let outcome;child.on(\'message\',m=>{if(m?.kind===\'result\')outcome=m.outcome;});child.once(\'error\',reject);\n        child.once(\'close\',(code,signal)=>{record.closed=true;clearTimeout(timer);observations.push({pid:child.pid,code,signal,bytes});\n          if(code!==0||signal||bytes>8192||![\'reserved\',\'denied\'].includes(outcome))reject(Error(\'CHILD_FAILED\'));else resolve(outcome);});\n        timer=setTimeout(()=>{child.kill(\'SIGTERM\');reject(Error(\'CHILD_DEADLINE\'));},Math.max(1,deadline-Date.now()));\n      });\n      // Attach immediately while the parent waits for the all-ready barrier.\n      record.done.catch(()=>{});\n    }\n    let readyTimer;\n    try { await Promise.race([Promise.all(children.map(c=>c.ready)),new Promise((_,reject)=>{\n      readyTimer=setTimeout(()=>reject(Error(\'CHILD_READY_DEADLINE\')),Math.max(1,deadline-Date.now()));\n    })]); } finally {clearTimeout(readyTimer);}\n    active(admission);children.forEach(({child},n)=>child.send(payloads[n]));\n    const outcomes=await Promise.all(children.map(c=>c.done));assert.equal(outcomes.filter(v=>v===\'reserved\').length,1);\n    assert.equal(observations.length,3);assert.ok(observations.every(o=>o.code===0&&!o.signal));\n  } finally {\n    for(const {child} of children)if(child.exitCode===null&&child.signalCode===null)child.kill(\'SIGTERM\');\n    const pending=children.filter(record=>!record.closed);\n    if(pending.length)await Promise.all(pending.map(({child})=>new Promise((resolve,reject)=>{\n      const remaining=Math.max(1,Math.min(5000,admission.'... 2900 more characters,
+    expected: /groupActive\(\);\s*const child=fork\(/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-budget-native-tests-20261012/review/group-deadline-source.test.mjs:24:1
+✖ early launch refusal cannot leave unhandled readiness rejection (0.776476ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /record\.ready\.catch\(\(\)=>\{\}\);/. Input:
+  
+  '// UNRUN real-engine source. NEVER include in an ordinary/offline source test command.\n' +
+    "import test from 'node:test';\n" +
+    "import assert from 'node:assert/strict';\n" +
+    "import { randomUUID } from 'node:crypto';\n" +
+    "import { fork } from 'node:child_process';\n" +
+    'import { parseNativeAdmission, openNativePool, verifyDatabase, syntheticCase,\n' +
+    "  forwardedPool, row, active, sha256 } from './postgres-budget-native-fixture.mjs';\n" +
+    '\n' +
+    '// Refuse before pg loading, connect, SQL, test fixture creation or child spawning.\n' +
+    'const admission=parseNativeAdmission({...process.env});\n' +
+    'const [{createPostgresToolBudget},{PostgresBudgetStore,BudgetCommitUncertain,BudgetStateDenied},\n' +
+    '  {createDurableSourceDisabledGateway},{limits,requestJson}]=await Promise.all([\n' +
+    "  import('../budget/postgres-tool-budget.mjs'),import('../budget/postgres-budget-store.mjs'),\n" +
+    "  import('../index.mjs'),import('./fixtures.mjs')]);\n" +
+    'let owner;\n' +
+    'test.before(async()=>{owner=await openNativePool(admission);try{await verifyDatabase(owner.pool,admission,{empty:true});}\n' +
+    '  catch(error){await owner.close();owner=null;throw error;}});\n' +
+    'test.after(async()=>{if(owner)await owner.close();});\n' +
+    "const consumed=async()=>BigInt((await owner.pool.query('SELECT consumed_micro_usd FROM meri_qualification.budget WHERE id=1')).rows[0].consumed_micro_usd);\n" +
+    'const budget=(s,pool=owner.pool)=>createPostgresToolBudget({pool,allocationJson:s.allocationJson});\n' +
+    'async function prepared(options){active(admission);const s=await syntheticCase(owner.pool,admission,options);await budget(s).bindTrustedGrant(s.invocationJson);return s;}\n' +
+    '\n' +
+    "test('real production entry binds admitted grant but unavailable execution opens no transaction',async()=>{\n" +
+    '  const s=await syntheticCase(owner.pool,admission);const tracked=forwardedPool(owner.pool);\n' +
+    '  const gateway=createDurableSourceDisabledGateway({pool:tracked,allocationJson:s.allocationJson,\n' +
+    '    authorityPorts:s.ports,limits,now:Date.now,newId:randomUUID});\n' +
+    '  assert.equal(gateway.sourceEnabled,false);assert.deepEqual(await gateway.discover(),[]);assert.equal(tracked.events.length,0);\n' +
+    '  await gateway.bindTrustedGrant(s.invocationJson);const before=tracked.events.length;\n' +
+    '  await assert.rejects(gateway.execute(requestJson,s.credential,s.invocationJson),/UNAVAILABLE/);\n' +
+    '  assert.equal(tracked.events.length,before);assert.equal(await row(owner.pool,s.invocationJson),undefined);\n' +
+    '});\n' +
+    '\n' +
+    "test('real slot survives fresh adapter; historical completion charges once without authorizing replay',async()=>{\n" +
+    '  const s=await prepared();await budget(s).forInvocation(s.invocationJson).reserve(s.reserve);\n' +
+    "  const before=await row(owner.pool,s.invocationJson);assert.equal(before.state,'UNKNOWN');\n" +
+    '  await assert.rejects(budget(s).forInvocation(s.invocationJson).reserve({...s.reserve,reservationId:randomUUID()}),BudgetStateDenied);\n' +
+    '  const i=JSON.parse(s.invocationJson);\n' +
+    `  await owner.pool.query("UPDATE meri_qualification.grants SET state='REVOKED',expires_at=clock_timestamp()-interval '1 second' WHERE grant_id=$1",[i.grantId]);\n` +
+    '  const newCall=JSON.stringify({...i,invocationId:randomUUID()});\n' +
+    '  await assert.rejects(budget(s).forInvocation(newCall).reserve({...s.reserve,reservationId:randomUUID()}),BudgetStateDenied);\n' +
+    '  assert.deepEqual(await row(owner.pool,s.invocationJson),before);\n' +
+    '  const beforeConsumed=await consumed();\n' +
+    "  await budget(s).forInvocation(s.invocationJson).settle({reservationId:s.reserve.reservationId,outcome:'completed',outputBytes:1});\n" +
+    '  assert.equal(await consumed(),beforeConsumed+10n);\n' +
+    "  const terminal=await row(owner.pool,s.invocationJson);assert.equal(terminal.state,'SETTLED');assert.equal(terminal.charged_micro_usd,'10');\n" +
+    "  await assert.rejects(budget(s).forInvocation(s.invocationJson).settle({reservationId:s.reserve.reservationId,outcome:'completed',outputBytes:1}),BudgetStateDenied);\n" +
+    '  await budget(s).forInvocation(s.invocationJson).markUncertain(s.reserve.reservationId);\n' +
+    '  assert.deepEqual(await row(owner.pool,s.invocationJson),terminal);assert.equal(await consumed(),beforeConsumed+10n);\n' +
+    '});\n' +
+    '\n' +
+    "for(const phase of ['reserve','settle'])test(`synthetic lost ${phase} acknowledgement after real COMMIT preserves exact native row`,async()=>{\n" +
+    "  const s=await prepared();if(phase==='settle')await budget(s).forInvocation(s.invocationJson).reserve(s.reserve);\n" +
+    '  const beforeConsumed=await consumed();\n' +
+    '  const tracked=forwardedPool(owner.pool,{loseCommit:true});const bound=budget(s,tracked).forInvocation(s.invocationJson);\n' +
+    "  await assert.rejects(phase==='reserve'?bound.reserve(s.reserve):bound.settle({reservationId:s.reserve.reservationId,outcome:'completed',outputBytes:1}),BudgetCommitUncertain);\n" +
+    "  assert.equal(tracked.events.filter(e=>e.kind==='synthetic-post-commit-loss').length,1);\n" +
+    "  assert.equal(tracked.events.find(e=>e.kind==='release').evicted,true);\n" +
+    "  const observed=await row(owner.pool,s.invocationJson);assert.equal(observed.state,phase==='reserve'?'UNKNOWN':'SETTLED');\n" +
+    '  assert.equal(observed.reservation_id,s.reserve.reservationId);\n' +
+    "  assert.equal(observed.charged_micro_usd,phase==='reserve'?null:'10');\n" +
+    "  assert.equal(await consumed(),beforeConsumed+(phase==='reserve'?0n:10n));\n" +
+    "  const lostPid=tracked.events.find(e=>e.kind==='connect').pid;\n" +
+    '  const fresh=await owner.pool.connect();try{assert.notEqual(fresh.processID,lostPid);}finally{fresh.release();}\n' +
+    '  await budget(s).forInvocation(s.invocationJson).markUncertain(s.reserve.reservationId);\n' +
+    '  assert.deepEqual(await row(owner.pool,s.invocationJson),observed);\n' +
+    "  assert.equal(await consumed(),beforeConsumed+(phase==='reserve'?0n:10n));\n" +
+    '  await assert.rejects(budget(s).forInvocation(s.invocationJson).reserve({...s.reserve,reservationId:randomUUID()}),BudgetStateDenied);\n' +
+    '});\n' +
+    '\n' +
+    "test('real pg clients are returned after commit/rollback; borrowed pool remains usable',async()=>{\n" +
+    '  const tracked=forwardedPool(owner.pool),store=new PostgresBudgetStore(tracked);\n' +
+    "  assert.equal(await store.transact(async client=>(await client.query('SELECT 41::int AS value')).rows[0].value),41);\n" +
+    "  await assert.rejects(store.transact(async()=>{throw new BudgetStateDenied('SYNTHETIC_DENIAL');}),BudgetStateDenied);\n" +
+    "  assert.equal(tracked.events.filter(e=>e.kind==='release').length,2);\n" +
+    "  assert.ok(tracked.events.filter(e=>e.kind==='release').every(e=>e.evicted===false));\n" +
+    "  assert.equal((await owner.pool.query('SELECT 42::int AS value')).rows[0].value,42);\n" +
+    '  assert.equal(owner.pool.waitingCount,0);assert.equal(owner.pool.idleCount,owner.pool.totalCount);\n' +
+    '});\n' +
+    '\n' +
+    'async function compete(s,{sameInvocation}) {\n' +
+    '  active(admission);const children=[],observations=[];const deadline=Math.min(admission.workDeadlineMs,Date.now()+30000);\n' +
+    "  const env={};for(const k of ['PATH','SystemRoot','WINDIR','TEMP','TMP'])if(process.env[k])env[k]=process.env[k];\n" +
+    "  for(const k of ['MERI_BUDGET_PG_TEST_RUN','MERI_BUDGET_PG_TEST_CONFIG','MERI_BUDGET_PG_TEST_CONFIG_SHA256'])env[k]=process.env[k];\n" +
+    "  env.MERI_BUDGET_PG_CHILD_RUN='reserve';\n" +
+    '  const payloads=[];\n' +
+    '  for(let n=0;n<3;n++) {\n' +
+    '    let invocationJson=s.invocationJson;\n' +
+    '    if(!sameInvocation) {\n' +
+    '      const i={...JSON.parse(s.invocationJson),invocationId:randomUUID(),grantId:randomUUID(),capabilitySha256:sha256(randomUUID())};\n' +
+    '      const q=i.qualificationBinding;\n' +
+    `      await owner.pool.query("INSERT INTO meri_qualification.grants(grant_id,run_id,attempt,worker_arn,fence,policy_revision,capability_sha256,expires_at,state) VALUES($1,$2,$3,$4,$5,$6,$7,$8,'ACTIVE')",[i.grantId,q.runId,q.attempt,q.workerArn,q.fence,q.policyRevision,i.capabilitySha256,s.reserve.claims.expiresAt]);\n` +
+    '      invocationJson=JSON.stringify(i);await budget(s).bindTrustedGrant(invocationJson);\n' +
+    '    }\n' +
+    '    payloads.push({allocationJson:s.allocationJson,invocationJson,reserve:{...s.reserve,reservationId:randomUUID()}});\n' +
+    '  }\n' +
+    '  try {\n' +
+    '    for(let n=0;n<3;n++){\n' +
+    '      active(admission);\n' +
+    "      const child=fork(new URL('./postgres-budget-child.mjs',import.meta.url),[],{execPath:process.execPath,execArgv:[],env,stdio:['ignore','pipe','pipe','ipc'],serialization:'json'});\n" +
+    '      let bytes=0,timer;const record={child,ready:null,done:null,closed:false};children.push(record);\n' +
+    "      const bounded=chunk=>{bytes+=chunk.length;if(bytes>8192)child.kill('SIGTERM');};child.stdout.on('data',bounded);child.stderr.on('data',bounded);\n" +
+    "      record.ready=new Promise((resolve,reject)=>{child.once('error',reject);child.once('close',()=>reject(Error('CHILD_CLOSED_BEFORE_READY')));child.once('message',m=>m?.kind==='ready'?resolve():reject(Error('CHILD_PROTOCOL')));});\n" +
+    '      record.done=new Promise((resolve,reject)=>{\n' +
+    "        let outcome;child.on('message',m=>{if(m?.kind==='result')outcome=m.outcome;});child.once('error',reject);\n" +
+    "        child.once('close',(code,signal)=>{record.closed=true;clearTimeout(timer);observations.push({pid:child.pid,code,signal,bytes});\n" +
+    "          if(code!==0||signal||bytes>8192||!['reserved','denied'].includes(outcome))reject(Error('CHILD_FAILED'));else resolve(outcome);});\n" +
+    "        timer=setTimeout(()=>{child.kill('SIGTERM');reject(Error('CHILD_DEADLINE'));},Math.max(1,deadline-Date.now()));\n" +
+    '      });\n' +
+    '      // Attach immediately while the parent waits for the all-ready barrier.\n' +
+    '      record.done.catch(()=>{});\n' +
+    '    }\n' +
+    '    let readyTimer;\n' +
+    '    try { await Promise.race([Promise.all(children.map(c=>c.ready)),new Promise((_,reject)=>{\n' +
+    "      readyTimer=setTimeout(()=>reject(Error('CHILD_READY_DEADLINE')),Math.max(1,deadline-Date.now()));\n" +
+    '    })]); } finally {clearTimeout(readyTimer);}\n' +
+    '    active(admission);children.forEach(({child},n)=>child.send(payloads[n]));\n' +
+    "    const outcomes=await Promise.all(children.map(c=>c.done));assert.equal(outcomes.filter(v=>v==='reserved').length,1);\n" +
+    '    assert.equal(observations.length,3);assert.ok(observations.every(o=>o.code===0&&!o.signal));\n' +
+    '  } finally {\n' +
+    "    for(const {child} of children)if(child.exitCode===null&&child.signalCode===null)child.kill('SIGTERM');\n" +
+    '    const pending=children.filter(record=>!record.closed);\n' +
+    '    if(pending.length)await Promise.all(pending.map(({child})=>new Promise((resolve,reject)=>{\n' +
+    '      const remaining=Math.max(1,Math.min(5000,admission.'... 2900 more characters
+  
+      at TestContext.<anonymous> (file:///workspace/meri-g1-budget-native-tests-review-20261012/docs/qualification/candidates/g1-budget-native-tests-20261012/review/group-deadline-source.test.mjs:25:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '// UNRUN real-engine source. NEVER include in an ordinary/offline source test command.\nimport test from \'node:test\';\nimport assert from \'node:assert/strict\';\nimport { randomUUID } from \'node:crypto\';\nimport { fork } from \'node:child_process\';\nimport { parseNativeAdmission, openNativePool, verifyDatabase, syntheticCase,\n  forwardedPool, row, active, sha256 } from \'./postgres-budget-native-fixture.mjs\';\n\n// Refuse before pg loading, connect, SQL, test fixture creation or child spawning.\nconst admission=parseNativeAdmission({...process.env});\nconst [{createPostgresToolBudget},{PostgresBudgetStore,BudgetCommitUncertain,BudgetStateDenied},\n  {createDurableSourceDisabledGateway},{limits,requestJson}]=await Promise.all([\n  import(\'../budget/postgres-tool-budget.mjs\'),import(\'../budget/postgres-budget-store.mjs\'),\n  import(\'../index.mjs\'),import(\'./fixtures.mjs\')]);\nlet owner;\ntest.before(async()=>{owner=await openNativePool(admission);try{await verifyDatabase(owner.pool,admission,{empty:true});}\n  catch(error){await owner.close();owner=null;throw error;}});\ntest.after(async()=>{if(owner)await owner.close();});\nconst consumed=async()=>BigInt((await owner.pool.query(\'SELECT consumed_micro_usd FROM meri_qualification.budget WHERE id=1\')).rows[0].consumed_micro_usd);\nconst budget=(s,pool=owner.pool)=>createPostgresToolBudget({pool,allocationJson:s.allocationJson});\nasync function prepared(options){active(admission);const s=await syntheticCase(owner.pool,admission,options);await budget(s).bindTrustedGrant(s.invocationJson);return s;}\n\ntest(\'real production entry binds admitted grant but unavailable execution opens no transaction\',async()=>{\n  const s=await syntheticCase(owner.pool,admission);const tracked=forwardedPool(owner.pool);\n  const gateway=createDurableSourceDisabledGateway({pool:tracked,allocationJson:s.allocationJson,\n    authorityPorts:s.ports,limits,now:Date.now,newId:randomUUID});\n  assert.equal(gateway.sourceEnabled,false);assert.deepEqual(await gateway.discover(),[]);assert.equal(tracked.events.length,0);\n  await gateway.bindTrustedGrant(s.invocationJson);const before=tracked.events.length;\n  await assert.rejects(gateway.execute(requestJson,s.credential,s.invocationJson),/UNAVAILABLE/);\n  assert.equal(tracked.events.length,before);assert.equal(await row(owner.pool,s.invocationJson),undefined);\n});\n\ntest(\'real slot survives fresh adapter; historical completion charges once without authorizing replay\',async()=>{\n  const s=await prepared();await budget(s).forInvocation(s.invocationJson).reserve(s.reserve);\n  const before=await row(owner.pool,s.invocationJson);assert.equal(before.state,\'UNKNOWN\');\n  await assert.rejects(budget(s).forInvocation(s.invocationJson).reserve({...s.reserve,reservationId:randomUUID()}),BudgetStateDenied);\n  const i=JSON.parse(s.invocationJson);\n  await owner.pool.query("UPDATE meri_qualification.grants SET state=\'REVOKED\',expires_at=clock_timestamp()-interval \'1 second\' WHERE grant_id=$1",[i.grantId]);\n  const newCall=JSON.stringify({...i,invocationId:randomUUID()});\n  await assert.rejects(budget(s).forInvocation(newCall).reserve({...s.reserve,reservationId:randomUUID()}),BudgetStateDenied);\n  assert.deepEqual(await row(owner.pool,s.invocationJson),before);\n  const beforeConsumed=await consumed();\n  await budget(s).forInvocation(s.invocationJson).settle({reservationId:s.reserve.reservationId,outcome:\'completed\',outputBytes:1});\n  assert.equal(await consumed(),beforeConsumed+10n);\n  const terminal=await row(owner.pool,s.invocationJson);assert.equal(terminal.state,\'SETTLED\');assert.equal(terminal.charged_micro_usd,\'10\');\n  await assert.rejects(budget(s).forInvocation(s.invocationJson).settle({reservationId:s.reserve.reservationId,outcome:\'completed\',outputBytes:1}),BudgetStateDenied);\n  await budget(s).forInvocation(s.invocationJson).markUncertain(s.reserve.reservationId);\n  assert.deepEqual(await row(owner.pool,s.invocationJson),terminal);assert.equal(await consumed(),beforeConsumed+10n);\n});\n\nfor(const phase of [\'reserve\',\'settle\'])test(`synthetic lost ${phase} acknowledgement after real COMMIT preserves exact native row`,async()=>{\n  const s=await prepared();if(phase===\'settle\')await budget(s).forInvocation(s.invocationJson).reserve(s.reserve);\n  const beforeConsumed=await consumed();\n  const tracked=forwardedPool(owner.pool,{loseCommit:true});const bound=budget(s,tracked).forInvocation(s.invocationJson);\n  await assert.rejects(phase===\'reserve\'?bound.reserve(s.reserve):bound.settle({reservationId:s.reserve.reservationId,outcome:\'completed\',outputBytes:1}),BudgetCommitUncertain);\n  assert.equal(tracked.events.filter(e=>e.kind===\'synthetic-post-commit-loss\').length,1);\n  assert.equal(tracked.events.find(e=>e.kind===\'release\').evicted,true);\n  const observed=await row(owner.pool,s.invocationJson);assert.equal(observed.state,phase===\'reserve\'?\'UNKNOWN\':\'SETTLED\');\n  assert.equal(observed.reservation_id,s.reserve.reservationId);\n  assert.equal(observed.charged_micro_usd,phase===\'reserve\'?null:\'10\');\n  assert.equal(await consumed(),beforeConsumed+(phase===\'reserve\'?0n:10n));\n  const lostPid=tracked.events.find(e=>e.kind===\'connect\').pid;\n  const fresh=await owner.pool.connect();try{assert.notEqual(fresh.processID,lostPid);}finally{fresh.release();}\n  await budget(s).forInvocation(s.invocationJson).markUncertain(s.reserve.reservationId);\n  assert.deepEqual(await row(owner.pool,s.invocationJson),observed);\n  assert.equal(await consumed(),beforeConsumed+(phase===\'reserve\'?0n:10n));\n  await assert.rejects(budget(s).forInvocation(s.invocationJson).reserve({...s.reserve,reservationId:randomUUID()}),BudgetStateDenied);\n});\n\ntest(\'real pg clients are returned after commit/rollback; borrowed pool remains usable\',async()=>{\n  const tracked=forwardedPool(owner.pool),store=new PostgresBudgetStore(tracked);\n  assert.equal(await store.transact(async client=>(await client.query(\'SELECT 41::int AS value\')).rows[0].value),41);\n  await assert.rejects(store.transact(async()=>{throw new BudgetStateDenied(\'SYNTHETIC_DENIAL\');}),BudgetStateDenied);\n  assert.equal(tracked.events.filter(e=>e.kind===\'release\').length,2);\n  assert.ok(tracked.events.filter(e=>e.kind===\'release\').every(e=>e.evicted===false));\n  assert.equal((await owner.pool.query(\'SELECT 42::int AS value\')).rows[0].value,42);\n  assert.equal(owner.pool.waitingCount,0);assert.equal(owner.pool.idleCount,owner.pool.totalCount);\n});\n\nasync function compete(s,{sameInvocation}) {\n  active(admission);const children=[],observations=[];const deadline=Math.min(admission.workDeadlineMs,Date.now()+30000);\n  const env={};for(const k of [\'PATH\',\'SystemRoot\',\'WINDIR\',\'TEMP\',\'TMP\'])if(process.env[k])env[k]=process.env[k];\n  for(const k of [\'MERI_BUDGET_PG_TEST_RUN\',\'MERI_BUDGET_PG_TEST_CONFIG\',\'MERI_BUDGET_PG_TEST_CONFIG_SHA256\'])env[k]=process.env[k];\n  env.MERI_BUDGET_PG_CHILD_RUN=\'reserve\';\n  const payloads=[];\n  for(let n=0;n<3;n++) {\n    let invocationJson=s.invocationJson;\n    if(!sameInvocation) {\n      const i={...JSON.parse(s.invocationJson),invocationId:randomUUID(),grantId:randomUUID(),capabilitySha256:sha256(randomUUID())};\n      const q=i.qualificationBinding;\n      await owner.pool.query("INSERT INTO meri_qualification.grants(grant_id,run_id,attempt,worker_arn,fence,policy_revision,capability_sha256,expires_at,state) VALUES($1,$2,$3,$4,$5,$6,$7,$8,\'ACTIVE\')",[i.grantId,q.runId,q.attempt,q.workerArn,q.fence,q.policyRevision,i.capabilitySha256,s.reserve.claims.expiresAt]);\n      invocationJson=JSON.stringify(i);await budget(s).bindTrustedGrant(invocationJson);\n    }\n    payloads.push({allocationJson:s.allocationJson,invocationJson,reserve:{...s.reserve,reservationId:randomUUID()}});\n  }\n  try {\n    for(let n=0;n<3;n++){\n      active(admission);\n      const child=fork(new URL(\'./postgres-budget-child.mjs\',import.meta.url),[],{execPath:process.execPath,execArgv:[],env,stdio:[\'ignore\',\'pipe\',\'pipe\',\'ipc\'],serialization:\'json\'});\n      let bytes=0,timer;const record={child,ready:null,done:null,closed:false};children.push(record);\n      const bounded=chunk=>{bytes+=chunk.length;if(bytes>8192)child.kill(\'SIGTERM\');};child.stdout.on(\'data\',bounded);child.stderr.on(\'data\',bounded);\n      record.ready=new Promise((resolve,reject)=>{child.once(\'error\',reject);child.once(\'close\',()=>reject(Error(\'CHILD_CLOSED_BEFORE_READY\')));child.once(\'message\',m=>m?.kind===\'ready\'?resolve():reject(Error(\'CHILD_PROTOCOL\')));});\n      record.done=new Promise((resolve,reject)=>{\n        let outcome;child.on(\'message\',m=>{if(m?.kind===\'result\')outcome=m.outcome;});child.once(\'error\',reject);\n        child.once(\'close\',(code,signal)=>{record.closed=true;clearTimeout(timer);observations.push({pid:child.pid,code,signal,bytes});\n          if(code!==0||signal||bytes>8192||![\'reserved\',\'denied\'].includes(outcome))reject(Error(\'CHILD_FAILED\'));else resolve(outcome);});\n        timer=setTimeout(()=>{child.kill(\'SIGTERM\');reject(Error(\'CHILD_DEADLINE\'));},Math.max(1,deadline-Date.now()));\n      });\n      // Attach immediately while the parent waits for the all-ready barrier.\n      record.done.catch(()=>{});\n    }\n    let readyTimer;\n    try { await Promise.race([Promise.all(children.map(c=>c.ready)),new Promise((_,reject)=>{\n      readyTimer=setTimeout(()=>reject(Error(\'CHILD_READY_DEADLINE\')),Math.max(1,deadline-Date.now()));\n    })]); } finally {clearTimeout(readyTimer);}\n    active(admission);children.forEach(({child},n)=>child.send(payloads[n]));\n    const outcomes=await Promise.all(children.map(c=>c.done));assert.equal(outcomes.filter(v=>v===\'reserved\').length,1);\n    assert.equal(observations.length,3);assert.ok(observations.every(o=>o.code===0&&!o.signal));\n  } finally {\n    for(const {child} of children)if(child.exitCode===null&&child.signalCode===null)child.kill(\'SIGTERM\');\n    const pending=children.filter(record=>!record.closed);\n    if(pending.length)await Promise.all(pending.map(({child})=>new Promise((resolve,reject)=>{\n      const remaining=Math.max(1,Math.min(5000,admission.'... 2900 more characters,
+    expected: /record\.ready\.catch\(\(\)=>\{\}\);/,
+    operator: 'match',
+    diff: 'simple'
+  }
