@@ -103,14 +103,17 @@ def inspect_role(role, path, end):
 def metadata(repository, output, end):
     if sys.platform != 'win32' or sys.version_info[:3] != (3, 11, 15):
         raise Refusal('actual_windows_python_3_11_15_required')
-    # Validate the actual supplied output too, even though only its parent is read.
-    local_syntax(repository)
-    local_syntax(output)
     base = Path(sys.base_prefix)
     paths = (repository, output.parent, base, base / 'Lib', base / 'DLLs')
     # Reject every unsafe role syntactically before any native/metadata operation.
-    for path in paths:
-        local_syntax(path)
+    # The supplied output is also checked, although only its parent is statted.
+    for role, path in (('repository', repository), ('original-output', output), *zip(ROLES[1:], paths[1:])):
+        try:
+            local_syntax(path)
+        except Refusal as error:
+            raise Refusal(error.reason, {'completedRoles': [], 'rejected': {
+                'role': role, 'stage': 'syntax', 'ancestorOrdinal': None,
+                'ancestorCount': None}}) from None
     completed = []
     try:
         for role, path in zip(ROLES, paths):

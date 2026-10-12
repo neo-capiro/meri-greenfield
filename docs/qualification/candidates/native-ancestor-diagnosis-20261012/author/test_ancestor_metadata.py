@@ -126,6 +126,20 @@ class Controls(unittest.TestCase):
         self.assertIsNone(result.observation['fileAttributes'])
         self.assertIsNone(result.observation['reparseTag'])
 
+    def test_syntax_preflight_reports_role_without_any_io(self):
+        cases = [('repository', PureWindowsPath('C:relative'), self.path/'out', 'C:/runtime'),
+                 ('original-output', self.path, PureWindowsPath('//host/share/out'), 'C:/runtime'),
+                 ('basePrefix', self.path, self.path/'out', '//host/share/runtime')]
+        with patch.object(m.sys, 'platform', 'win32'), patch.object(m.sys, 'version_info', (3,11,15)), \
+             patch.object(m, 'Path', PureWindowsPath), patch.object(m, 'fixed_drive') as drive, \
+             patch.object(m.os, 'lstat') as observe:
+            for role, repo, output, prefix in cases:
+                with patch.object(m.sys, 'base_prefix', prefix), self.assertRaises(m.Refusal) as caught:
+                    m.metadata(repo, output, self.end)
+                self.assertEqual(caught.exception.observation, {'completedRoles': [], 'rejected': {
+                    'role': role, 'stage': 'syntax', 'ancestorOrdinal': None, 'ancestorCount': None}})
+            drive.assert_not_called(); observe.assert_not_called()
+
     def test_parser_suppresses_supplied_private_argument_text(self):
         sink = io.TextIOWrapper(io.BytesIO(), encoding='utf-8')
         with patch.object(m.sys, 'stdout', sink):
