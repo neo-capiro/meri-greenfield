@@ -66,6 +66,9 @@ export function createFundingOpportunitiesValidators({ validateShape, schema }) 
     else if (id === 'get_opportunity_client_context') assertFundingClientContext(data.data, data, input);
     else {
       if (source !== 'sam_gov') fail('Government landscape is SAM-only');
+      // The composer validates the UUID after trimming before any source port.
+      // Invalid/unsupported request refusal envelopes above remain admissible.
+      validateFundingOpportunitiesShape('FundingSamRecordId', input.sourceRecordId.trim());
       assertFundingLandscape(data.data, data, schema.$defs.FundingLandscapeSource.enum);
     }
     return value;
