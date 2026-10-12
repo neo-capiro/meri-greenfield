@@ -1,0 +1,35 @@
+✔ independent context and changes nonempty projections plus disabled variants admit (11.218663ms)
+✔ explicit client selectors trim and geography uppercases without implicit conversation fallback (2.48999ms)
+✔ geography syntax does not fabricate a recognized state resolver or normalize numeric districts (0.956467ms)
+✔ input/output variants remain closed and operation selection is explicit (3.123231ms)
+✔ since normalizes offset instants, admits inclusive same time and rejects malformed values (1.527645ms)
+✔ subject is exactly one client and current actor/tenant correlation cannot be bypassed (0.953732ms)
+✔ each binding field and returned subject decision lineage must remain exact even disabled (6.041476ms)
+✔ scope resource remains trusted-owner metadata while returned client/geography must match (2.472063ms)
+✔ disabled schema cannot smuggle availability, source data or authorization evidence (2.338924ms)
+✔ null, zero, negative and string facts are distinct values and required nullable fields remain present (2.803822ms)
+✔ all declared sections, amount stages, fact bases and coverage variants stay source claims (5.890979ms)
+✔ reported opaque as-of and freshness strings are not converted into verified timestamps (1.7237ms)
+✔ fact geography is scoped but statewide/national nullable district is preserved (1.874936ms)
+✔ source reference strings and non-URL labels remain opaque without invented permissions (1.769919ms)
+✔ forty facts are bounded and context forty alone does not assert truncation (5.157648ms)
+✔ twenty-nine gaps with false truncation preserve exact-thirty original-gap underreport caveat (5.664399ms)
+✔ context gaps can remain without facts; no-record/complete conclusions are invented (1.175996ms)
+✔ observed descending order and inclusive lower bound allow ties but reject stale/out-of-order (1.008515ms)
+✔ exactly twenty changes reports truncation even without proof of a twenty-first (1.561506ms)
+✔ database change strings stay extensible with character rather than UTF16 storage limits (0.758119ms)
+✔ effective date may be null or after observation without manufacturing an observation cutoff (1.700244ms)
+✔ ledger failure remains available empty with gap and cannot also supply successful changes (0.633281ms)
+✔ empty available changes plus other gaps preserve uncertainty and thirty-gap cap (2.246625ms)
+✔ timestamps in generated result require finite instants and JSON shape (1.769057ms)
+✔ hostile inputs and context accessors or proxies cause no caller-controlled effects (0.347272ms)
+✔ returned result accessors and proxies never run while nested extra keys refuse (1.375015ms)
+✔ normalization returns a detached selection without rewriting original payload (0.314623ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1218.477279

@@ -1,0 +1,22 @@
+{
+  "sourceCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "checks": {
+    "noActorArgumentInTools": true,
+    "tenantArgumentPresent": true,
+    "disabledReason": true,
+    "maximumFacts40": true,
+    "maximumGaps30": true,
+    "reservesGapSlot": true,
+    "gapReportedOverflowStrictlyGreater": true,
+    "ledgerTake20": true,
+    "ledgerBaselineExcluded": true,
+    "ledgerObservedDesc": true,
+    "ledgerSinceInclusive": true,
+    "twentyMeansReportedTruncation": true,
+    "ledgerUnavailableGap": true,
+    "contextRejectsArchived": true,
+    "featureNameTenant": true,
+    "parentFeatureNameTenant": true
+  },
+  "scope": "STATIC_CHARACTERIZATION_NOT_SOURCE_EXECUTION"
+}

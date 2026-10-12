@@ -61,9 +61,12 @@ test('each binding field and returned subject decision lineage must remain exact
   for(const make of [page,disabled])for(const k of Object.keys(context().binding)){const p=make();p.binding[k]=k==='writerFence'?8:k==='tenantId'||k==='actorId'?'other':uuid(9);reject(C,p);}
   mutants(C,page,[p=>p.subject.authorizationDecisionId=uuid(9),p=>p.subject.policyRevision='other',p=>p.subject.entityIds=['other']]);
 });
-test('current scope relation and foreign returned client/geography refuse',()=>{
+test('scope resource remains trusted-owner metadata while returned client/geography must match',()=>{
   for(const op of [C,D])mutants(op,op===C?page:changes,[p=>p.data.clientId='other',p=>p.data.state='NY',p=>p.data.district='04']);
-  const c=context();c.subject.scopes[0].resourceId='other';assert.throws(()=>normalize(C,input(),c));
+  const c=context();c.subject.scopes[0].resourceId='other';assert.deepEqual(normalize(C,input(),c),input());
+  // Shared subject shape is not an authorization engine. Exact returned lineage still binds.
+  reject(C,page(),input(),c);
+  for(const field of ['tenantId','policyRevision']){const bad=context();bad.subject.scopes[0][field]='other';assert.throws(()=>normalize(C,input(),bad));}
 });
 test('disabled schema cannot smuggle availability, source data or authorization evidence',()=>{
   for(const op of [C,D])mutants(op,disabled,[p=>p.data.available=true,p=>p.data.reason='source_error',p=>p.data.clientId='client-review',p=>p.data.facts=[],p=>p.data.authorized=true]);

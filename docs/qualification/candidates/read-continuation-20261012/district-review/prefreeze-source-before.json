@@ -1,0 +1,15 @@
+{
+  "scope": "UNCOMMITTED_PREFREEZE_SOURCE",
+  "files": [
+    {
+      "path": "packages/contracts/retrieval-0.2/district-nexus-validation.mjs",
+      "sha256": "089c236f35d513ce7b0b2eedd3f44c68e350469f267b36b827cbd6ac3b2fe891",
+      "bytes": 4491
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/district-nexus.schema.json",
+      "sha256": "5ed5df5dfe380e68ddd2c6b367bac4f314620d3381e6e8649b2c92dae8c3df36",
+      "bytes": 16317
+    }
+  ]
+}
