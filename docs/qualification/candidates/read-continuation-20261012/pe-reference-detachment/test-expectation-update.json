@@ -1,0 +1,10 @@
+{
+  "path": "packages/contracts/test/retrieval-pe-references.test.mjs",
+  "base": "ede7b56845816d38d0bbffab5a657aaa4f978739",
+  "reason": "Intentional private result ownership change: preserve equal values and caller nonmutation; require detached validated result instead of original identity. Six baseline direct alias failures and sole obsolete identity failure preserved.",
+  "before": "assert.equal(check(op,page,input(),{}),page);assert.deepEqual(page,before);",
+  "after": "const result=check(op,page,input(),{});assert.deepEqual(result,before);assert.notEqual(result,page);assert.deepEqual(page,before);",
+  "beforeSha256": "833592ed014e6d4b7e5824f659e4f350cdf26df6637b0328c3dd146fe5c777a5",
+  "afterSha256": "f89b5b5d5c88bfa6dbf1c091da653fb007078b8960d1e6c7e8fa8e6ad181ec49",
+  "inverseRestoresOriginal": true
+}

@@ -1,0 +1,123 @@
+✔ get_pe_bills: direct result excludes later caller mutation (3.45398ms)
+✔ get_pe_bills: result mutation cannot change caller data (0.418739ms)
+✔ get_pe_bills: canonical resolver already detaches caller data (1.508106ms)
+✔ get_pe_report_language: direct result excludes later caller mutation (1.222797ms)
+✔ get_pe_report_language: result mutation cannot change caller data (0.2394ms)
+✔ get_pe_report_language: canonical resolver already detaches caller data (1.099463ms)
+✔ get_pe_contractors: direct result excludes later caller mutation (1.446995ms)
+✔ get_pe_contractors: result mutation cannot change caller data (0.175354ms)
+✔ get_pe_contractors: canonical resolver already detaches caller data (1.461857ms)
+✔ independent complete stored bill report contractor and missing-table variants admit (8.807185ms)
+✔ closed required selector uses exact trim and UTF16 cap without case or authority inference (3.275241ms)
+✔ empty trusted context refuses model authority and omitted non-JSON context (0.456196ms)
+✔ operation and own-data admission reject coercion getters and proxies without effects (0.202975ms)
+✔ report echo is exact while original bill contractor envelopes cannot prove requested PE (3.180079ms)
+✔ bill nullable fields are required and unselected fields cannot leak (1.509789ms)
+✔ bill stored columns and signed values are not manufactured from canonical identity (0.380271ms)
+✔ bill nullable links and packages retain nonrejected stored semantics (0.47936ms)
+✔ bill specificity then date order is checked without global freshness claim (0.551428ms)
+✔ bill identity duplication and source100 window refuse without count proof (3.757466ms)
+✔ bill SQL date-only projection and canonical generatedAt reject invalid time shapes (0.661935ms)
+✔ report empty coverage requires exact loaded-source caveat not a global absence proof (0.517257ms)
+✔ program-only and mixed report language keep per-item and aggregate attribution caveats (0.82485ms)
+✔ report basis establishes scope without turning candidate into accepted (1.361807ms)
+✔ report status precedes basis FY and confidence but source winner is not reconstructed (0.430507ms)
+✔ report confidence ties and out-of-range stored Float remain projection facts (0.326841ms)
+✔ report unique identity and50cap do not certify completeness (1.266293ms)
+✔ report nullable fields are complete fields not optional proof markers (0.797188ms)
+✔ missing award table fallback cannot carry normal evidence or fabricate rows (0.795255ms)
+✔ normal contractor projection keeps fixed24month award provenance apart from exhibit FY (1.54378ms)
+✔ contractor direct and candidate buckets correlate only returned grouped awards (0.932441ms)
+✔ named exhibit money never inflates federal accepted-direct obligations (0.319511ms)
+✔ unmatched zero bucket and caveat do not become invented inventory (1.106492ms)
+✔ negative award adjustments and negative exhibit values remain distinct finite numbers (0.295073ms)
+✔ contractor source and attribution text cannot promote a candidate or named prime (0.682305ms)
+✔ grouped contractor names unique while repeated exhibit names remain valid separate rows (0.314602ms)
+✔ source descending contractor ordering and null exhibit sentinel are preserved (0.445199ms)
+✔ contractor missing nullable fields extra money authority and malformed dates refuse (1.269958ms)
+✔ nested output getters symbols and cycles refuse without observable effects (0.24615ms)
+✔ bill link itself may be null but both retained evidence sources require String evidence (0.224728ms)
+✔ aggregate award count may exceed one stored Int32 row without becoming an unsafe number (1.195026ms)
+✔ contractor source windows stop at ten groups and twentyfive exhibit rows (2.544393ms)
+✔ three required selectors trim/cap UTF-16 and preserve case (2.623893ms)
+✔ missing and non-string selectors are typed refusals, never fabricated empty source pages (1.358151ms)
+✔ closed model and context objects accept no authority or request aliases (0.632561ms)
+✔ operation admission rejects unknowns and hostile coercion without effects (0.230015ms)
+✖ all success and fallback envelopes round-trip without caller mutation (2.935211ms)
+✔ bill envelope has no invented PE echo, source coverage or total (0.81858ms)
+✔ bill optional storage values remain nullable and links/package preserve their exact tuples (0.820413ms)
+✔ independent stored bill identity columns and unknown values are not normalized into fabricated facts (0.252019ms)
+✔ bill specificity then stored date ordering permits ties and null epoch semantics (0.773332ms)
+✔ bill source cap and unique stored IDs are enforced (2.952747ms)
+✔ bill SQL Date and all generated timestamps retain exact canonical serialization (1.493655ms)
+✔ contractor absent-table fallback cannot carry fabricated rows or success evidence (2.938876ms)
+✔ R-3 exhibit money cannot be included in award buckets or award count (1.303259ms)
+✔ candidate and uninventory buckets remain distinct; zeros do not grant coverage (1.307625ms)
+✔ award window/provenance/unit/category attribution cannot be silently upgraded (0.933613ms)
+✔ negative award adjustments and nullable exhibit costs preserve finite arithmetic (0.342305ms)
+✔ exhibit attribution follows null defaults and page truthiness without invented positive numeric constraints (0.566051ms)
+✔ contractor count/money correlations and own sorted group identity are enforced (1.432924ms)
+✔ contractor data and named performer source caps cannot imply population totals (0.6389ms)
+✔ report echoed PE binds only the selected syntax (0.521604ms)
+✔ empty report requires loaded-source caveat and cannot certify global absence (0.313411ms)
+✔ any program-level row requires aggregate caution and exact per-row caveat (0.490998ms)
+✔ source link scope is basis-derived including future unknown bases (0.249215ms)
+✔ accepted and candidate links preserve source evidence without approving candidate (0.515174ms)
+✔ report dedup cannot impose accepted-over-stronger-basis selection (0.237487ms)
+✔ report sorting is review status, basis, FY, confidence with ties allowed (0.281032ms)
+✔ report cap, nullable Int pages and unknown committee/action values remain distinct (0.75863ms)
+✔ inert admission rejects getters/proxies/cycles/nonfinite fields before effects (0.280261ms)
+✔ present bill links require stored string evidence, while the whole link may be null (0.310637ms)
+✔ derived award counts can exceed one stored Int32 without overflow or truncation (0.290526ms)
+ℹ tests 71
+ℹ suites 0
+ℹ pass 70
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2324.182762
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-pe-references.test.mjs:46:1
+✖ all success and fallback envelopes round-trip without caller mutation (2.935211ms)
+  AssertionError [ERR_ASSERTION]: Values have same structure but are not reference-equal:
+  
+  {
+    bills: [
+      {
+        billNumber: '1',
+        billType: 'hr',
+        budgetPackage: null,
+        committee: null,
+        congress: 119,
+        id: '119-hr-1',
+        latestActionDate: '2026-10-12T00:00:00.000Z',
+        latestActionText: null,
+        link: null,
+        peCodeCount: 1,
+        policyArea: null,
+        sponsor: null,
+        title: 'Synthetic bill',
+        url: null
+      }
+    ],
+    generatedAt: '2026-10-12T00:00:00.000Z',
+    tool: 'get_pe_bills'
+  }
+  
+      at TestContext.<anonymous> (file:///workspace/meri-pe-reference-detachment-20261012/packages/contracts/test/retrieval-pe-references.test.mjs:47:115)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { tool: 'get_pe_bills', generatedAt: '2026-10-12T00:00:00.000Z', bills: [ [Object] ] },
+    expected: { tool: 'get_pe_bills', generatedAt: '2026-10-12T00:00:00.000Z', bills: [ [Object] ] },
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

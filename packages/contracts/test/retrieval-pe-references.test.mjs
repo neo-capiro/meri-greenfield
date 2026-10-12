@@ -44,7 +44,7 @@ test('operation admission rejects unknowns and hostile coercion without effects'
  for(const op of [value,new Proxy({}, {get(){calls++;throw Error();}}),'constructor','get_pe_unknown',null])assert.throws(()=>normalize(op,input(),{}));assert.equal(calls,0);
 });
 test('all success and fallback envelopes round-trip without caller mutation',()=>{
- for(const [op,page]of [[B,bills()],[C,contractors()],[C,missing()],[R,report()]]){const before=copy(page);assert.equal(check(op,page,input(),{}),page);assert.deepEqual(page,before);}
+ for(const [op,page]of [[B,bills()],[C,contractors()],[C,missing()],[R,report()]]){const before=copy(page);const result=check(op,page,input(),{});assert.deepEqual(result,before);assert.notEqual(result,page);assert.deepEqual(page,before);}
 });
 test('bill envelope has no invented PE echo, source coverage or total',()=>{
  for(const k of ['peCode','total','coverageComplete','authorized']){const page=bills();page[k]='x';assert.throws(()=>check(B,page,input(),{}));}

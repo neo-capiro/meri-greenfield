@@ -1,0 +1,24 @@
+✔ bills: validated value preserved and every container detached (23.333912ms)
+✔ report: validated value preserved and every container detached (11.30062ms)
+✔ contractors full: validated value preserved and every container detached (24.283209ms)
+✔ contractors fallback: validated value preserved and every container detached (0.384689ms)
+✔ bill nested mutation is isolated in both directions (0.298819ms)
+✔ report row mutation is isolated in both directions (0.316395ms)
+✔ contractor amount, named prime and provenance mutations are isolated (0.427082ms)
+✔ frozen caller tree is admitted without mutation and returned detached (1.460265ms)
+✔ empty report preserves exact no-coverage note (0.653091ms)
+✔ fallback cannot smuggle available evidence or rows (1.54408ms)
+✔ contractor grouped totals, attribution and provenance remain checked (1.396979ms)
+✔ bill rejected link, duplicate identity and SQL-date semantics remain checked (0.937619ms)
+✔ report selector, scope and coverage claims remain checked (0.602926ms)
+✔ generated observation time cannot be malformed or noncanonical (0.207822ms)
+✔ getter and proxy output are rejected without reading supplied code (0.383306ms)
+✔ normalization, closed context and operation ownership remain unchanged (0.595004ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 242.984262

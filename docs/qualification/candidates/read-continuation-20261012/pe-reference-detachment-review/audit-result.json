@@ -1,0 +1,143 @@
+{
+  "base": "ede7b56845816d38d0bbffab5a657aaa4f978739",
+  "candidate": "8dcc6e13f360c15d9ba0f7c9fbd3419f1318afe3",
+  "candidateTree": "4261a2e6f309c551b80fe28a061752c702abd0c8",
+  "originalFiles": 7186,
+  "unchangedOriginalFiles": 7184,
+  "checks": [
+    {
+      "name": "all original paths retained",
+      "pass": true
+    },
+    {
+      "name": "only two allocated originals changed",
+      "pass": true
+    },
+    {
+      "name": "sole production delta returns validated snapshot",
+      "pass": true
+    },
+    {
+      "name": "original test exact inverse recovers every original byte",
+      "pass": true
+    },
+    {
+      "name": "all original test names retained",
+      "pass": true
+    },
+    {
+      "name": "working exact candidate packages/contracts/retrieval-0.2/pe-references-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "working exact candidate packages/contracts/test/retrieval-pe-references.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "working exact candidate packages/contracts/retrieval-0.2/pe-references.schema.json",
+      "pass": true
+    },
+    {
+      "name": "working exact candidate packages/contracts/retrieval-0.2/pe-contractors-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "working exact candidate packages/contracts/retrieval-0.2/operation-contracts.mjs",
+      "pass": true
+    },
+    {
+      "name": "working exact candidate packages/contracts/retrieval-0.2/catalog.json",
+      "pass": true
+    },
+    {
+      "name": "author original preimage exact",
+      "pass": true
+    },
+    {
+      "name": "original-negative expected failure retained",
+      "pass": true
+    },
+    {
+      "name": "original-negative owned cleanup",
+      "pass": true
+    },
+    {
+      "name": "original-negative stream docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/original-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "original-negative stream docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/original-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "repaired-original-tests expected failure retained",
+      "pass": true
+    },
+    {
+      "name": "repaired-original-tests owned cleanup",
+      "pass": true
+    },
+    {
+      "name": "repaired-original-tests stream docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/repaired-original-tests.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "repaired-original-tests stream docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/repaired-original-tests.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "baseline-independent cleanup",
+      "pass": true
+    },
+    {
+      "name": "baseline-independent test counts",
+      "pass": true
+    },
+    {
+      "name": "baseline-independent stream docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/baseline-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "baseline-independent stream docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/baseline-independent.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "baseline-corrected cleanup",
+      "pass": true
+    },
+    {
+      "name": "baseline-corrected test counts",
+      "pass": true
+    },
+    {
+      "name": "baseline-corrected stream docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/baseline-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "baseline-corrected stream docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/baseline-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "repaired-independent cleanup",
+      "pass": true
+    },
+    {
+      "name": "repaired-independent test counts",
+      "pass": true
+    },
+    {
+      "name": "repaired-independent stream docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/repaired-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "repaired-independent stream docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/repaired-independent.stderr.bin",
+      "pass": true
+    }
+  ],
+  "passed": 32,
+  "sourceHashes": {
+    "packages/contracts/retrieval-0.2/pe-references-validation.mjs": "211b26a73ad790d8c794779a1ca543df4992a380512c40277cbf0ede3689f4f1",
+    "packages/contracts/test/retrieval-pe-references.test.mjs": "f89b5b5d5c88bfa6dbf1c091da653fb007078b8960d1e6c7e8fa8e6ad181ec49"
+  },
+  "limits": "No private source reread, native/provider queries, broad suite or runtime admission."
+}
