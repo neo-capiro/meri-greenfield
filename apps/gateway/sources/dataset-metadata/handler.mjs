@@ -39,6 +39,7 @@ export function createDatasetMetadataHandler(options) {
       const active=()=>{
         if(supplied.signal!==undefined&&aborted.call(supplied.signal))deny('CANCELLED');
         const stamp=now();
+        if(supplied.signal!==undefined&&aborted.call(supplied.signal))deny('CANCELLED');
         if(!Number.isSafeInteger(stamp)||stamp<0||issued>stamp)deny('ACCESS_DENIED');
         if(stamp>=Math.min(expiry,authority.deadlineMs))deny('DEADLINE');
         return stamp;

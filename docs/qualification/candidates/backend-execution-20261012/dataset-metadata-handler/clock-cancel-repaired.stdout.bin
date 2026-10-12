@@ -1,0 +1,33 @@
+✔ actual registry/handler/canonical contract/authority/dispatch returns exact12datasets88fields (15.022188ms)
+✔ generatedAt means injected local construction time and adds no sourcehealth facts (5.587782ms)
+✔ reservation and settlement carry actual normalized/result hashes and exact bytes (4.919137ms)
+✔ registry remains immutable and returned result detaches from its sole provider (4.31602ms)
+✔ canonical profile supplies empty context and does not require retention/source ports (4.713298ms)
+✔ raw shape/model authority refuses before trusted identity/reservation (1.585344ms)
+✔ factory requires branded sole registry and inert closed options without invoking getters (0.370528ms)
+✔ handler direct input/digest mismatch refuses without altered registry (4.508659ms)
+✔ handler direct malformed/foreign authority cannot produce lineage (5.259669ms)
+✔ handler ignores no effectful call fields or fake signals (5.383294ms)
+✔ handler checks real abort and deadline again at response construction (4.231593ms)
+✔ preaborted dispatch never reserves or invokes metadata handler (0.247662ms)
+✔ revoked, stale fence and missing grants refuse before metadata access (1.862311ms)
+✔ budget refusal prevents handler and retains uncertainty without success (0.671459ms)
+✔ exact wrapper correlation rejects operation/digest/lineage/additional fields (13.118305ms)
+✔ raw result still passes canonical family; invalid flags/duplicates/dates refuse (13.39472ms)
+✔ release revocation cannot leak otherwise valid static metadata (3.165691ms)
+✔ settlement-ACK loss stays uncertain and does not release metadata (3.525571ms)
+✔ postsettlement revocation/stale fence denies release without refund/retry (6.698282ms)
+✔ output budget limit refuses before settlement/release (1.877854ms)
+✔ parked current authority times out without source invocation (24.847491ms)
+✔ production remains null/unimplemented/pending/source disabled with zero ports (6.249127ms)
+✔ handler code uses one provider and canonical boundary, no outbound configuration (0.413151ms)
+✔ direct handler validates a fresh canonical call while the finished dispatch signal stays closed (5.053388ms)
+✔ direct final clock callback cancellation cannot release the metadata response (4.573978ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2021.46597
