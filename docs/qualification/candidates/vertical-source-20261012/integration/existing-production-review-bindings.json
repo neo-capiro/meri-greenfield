@@ -65,19 +65,22 @@
   {
     "path": "packages/contracts/retrieval-0.2/catalog-validation.mjs",
     "source": "c80260046e33d742811fca6f553af4033eb393bc",
-    "review": "PENDING_FINAL_INTEGRATION",
-    "sha256": "59ee000292db17b02e3e00e89c94bbed1d61a66525f419c59c84821af4800e02"
+    "review": "3c8c172bb705f8a4a1891c009ffd28810cecce0e",
+    "sha256": "59ee000292db17b02e3e00e89c94bbed1d61a66525f419c59c84821af4800e02",
+    "exactAcceptedBytes": true
   },
   {
     "path": "packages/contracts/retrieval-0.2/catalog.json",
     "source": "c80260046e33d742811fca6f553af4033eb393bc",
-    "review": "PENDING_FINAL_INTEGRATION",
-    "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8"
+    "review": "3c8c172bb705f8a4a1891c009ffd28810cecce0e",
+    "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+    "exactAcceptedBytes": true
   },
   {
     "path": "packages/contracts/retrieval-0.2/validate.mjs",
     "source": "c80260046e33d742811fca6f553af4033eb393bc",
-    "review": "PENDING_FINAL_INTEGRATION",
-    "sha256": "3798d5e55e10777b24397d0867b6b722218bceba9663de4f007e78e818b40c34"
+    "review": "3c8c172bb705f8a4a1891c009ffd28810cecce0e",
+    "sha256": "3798d5e55e10777b24397d0867b6b722218bceba9663de4f007e78e818b40c34",
+    "exactAcceptedBytes": true
   }
 ]
