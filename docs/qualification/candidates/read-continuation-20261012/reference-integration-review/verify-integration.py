@@ -2,6 +2,7 @@
 from pathlib import Path
 import hashlib
 import json
+import re
 import subprocess
 import sys
 
@@ -61,10 +62,17 @@ for row in expectations['reviewedExistingPatches']:
     check('reviewed exact existing patch: '+row['path'],digest(patch)==row['patchSha256'])
 for entry in expectations.get('rootReceipts',[]):
     receipt=json.loads(blob(candidate,entry['path']))
-    check('root receipt successful bounded cleanup: '+entry['path'],receipt['exitCode']==0 and receipt['ownedProcessGroupAbsent'] and not receipt['timedOut'] and not receipt['ownedGroupKillRequired'])
+    check('root receipt exact outcome and bounded cleanup: '+entry['path'],receipt['exitCode']==entry.get('expectedExit',0) and receipt['ownedProcessGroupAbsent'] and not receipt['timedOut'] and not receipt['ownedGroupKillRequired'])
+    check('root capture and zero source diff bound: '+entry['path'],receipt['sourceDiffBytes']==0 and receipt['sourceDiffSha256']==digest(b'') and receipt['captureSha256']==digest(blob(candidate,entry['capturePath'])))
     for stream in receipt['streams']:
         data=blob(candidate,stream['path'])
         check('root stream exact: '+stream['path'],len(data)==stream['bytes'] and digest(data)==stream['sha256'])
+    if entry.get('counts'):
+        output=blob(candidate,next(x['path'] for x in receipt['streams'] if x['path'].endswith('.stdout.bin'))).decode()
+        actual={key:int(re.findall(r'(?:# |ℹ )'+key+r' (\d+)',output)[-1]) for key in ['tests','pass','fail']}
+        check('root exact result totals: '+entry['path'],actual==entry['counts'])
+    if entry.get('requireCurrentSource'):
+        check('root passing receipt matches current source/test bytes: '+entry['path'],git('diff',receipt['sourceHead'],candidate,'--','apps','packages','scripts','package.json','package-lock.json')==b'')
     if entry.get('sourceHead') is not None:
         check('root receipt exact source head: '+entry['path'],receipt['sourceHead']==entry['sourceHead'])
 result={'candidate':candidate,'tree':git('rev-parse',candidate+'^{tree}').decode().strip(),'base':baseline['base'],'originalFiles':len(old),'unchangedOriginalFiles':len(old)-len(changed),'changedOriginalPaths':changed,'checks':checks,'passed':sum(x['result']=='PASS' for x in checks),'failed':sum(x['result']=='FAIL' for x in checks),'scope':'READ_ONLY_GIT_SOURCE_EVIDENCE_NOT_RUNTIME'}
