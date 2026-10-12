@@ -54,6 +54,7 @@ export function createBillTextValidators({validateShape,schema}){
    const notes=[false,true].filter(flag=>!flag||data.results.some(result=>result.passages.length===1)).map(flag=>[base,count,flag?shortened:null,omitted].filter(part=>part!==null).join(' '));
    if(!notes.includes(data.note)||data.omittedBills&&data.results.some(result=>result.passages.length!==1))fail('Bill text-search omission disclosure');
    unique(data.results,'billId');
+   if(input.congress!==undefined&&data.results.some(result=>!result.billId.startsWith(`${input.congress}-`)))fail('Bill text-search congress substitution');
    for(const result of data.results)for(const passage of result.passages){
     if(passage.snippet!==passage.snippet.replace(/\s+/g,' ').trim())fail('Bill text-search snippet whitespace');
     if(passage.startOffset===0){if(passage.readCursor!==null)fail('Zero-offset passage cursor');}
@@ -66,9 +67,12 @@ export function createBillTextValidators({validateShape,schema}){
    unique(data.data,'id');
    if(data.resolvedBy){if(!metadata.directBillId||data.data.length!==1||data.total!==1||data.page!==1||data.data[0].id!==metadata.directBillId)fail('Congress direct designation substitution');}
    else if(data.page!==input.page)fail('Congress metadata page substitution');
+   const activeAfter=!data.resolvedBy&&input.activeSince!==undefined?Date.parse(input.activeSince):null;
+   if(activeAfter!==null&&!Number.isFinite(activeAfter))fail('Congress metadata action-date selector invalid');
    let prior=Infinity;
    for(const row of data.data){
     for(const key of ['introducedDate','latestActionDate'])instant(row[key],true);
+    if(activeAfter!==null&&(row.latestActionDate===null||Date.parse(row.latestActionDate)<activeAfter))fail('Congress metadata action-date substitution');
     for(const key of ['updateDateIncludingText','statusAt','lastSyncedAt'])instant(row[key]);
     const at=instant(row.updateDate);if(!data.resolvedBy&&at!==undefined){if(at>prior)fail('Congress metadata ordering');prior=at;}
     if(!data.resolvedBy&&input.congress!==undefined&&row.congress!==input.congress)fail('Congress metadata congress substitution');
