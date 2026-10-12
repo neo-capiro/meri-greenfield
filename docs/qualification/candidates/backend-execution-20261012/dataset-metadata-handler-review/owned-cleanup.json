@@ -1,0 +1,50 @@
+{
+  "captures": [
+    {
+      "capture": "canonical-import-replay.json",
+      "pgid": 326900,
+      "exitCode": 1,
+      "observedAbsent": true
+    },
+    {
+      "capture": "exact-first-freeze-abort-repro.json",
+      "pgid": 327413,
+      "exitCode": 1,
+      "observedAbsent": true
+    },
+    {
+      "capture": "final-independent.json",
+      "pgid": 328376,
+      "exitCode": 0,
+      "observedAbsent": true
+    },
+    {
+      "capture": "final-source-audit.json",
+      "pgid": 328462,
+      "exitCode": 0,
+      "observedAbsent": true
+    },
+    {
+      "capture": "frozen-controls-first-replay.json",
+      "pgid": 326681,
+      "exitCode": 1,
+      "observedAbsent": true
+    },
+    {
+      "capture": "missing-source-baseline.json",
+      "pgid": 324760,
+      "exitCode": 1,
+      "observedAbsent": true
+    },
+    {
+      "capture": "original-dispatch-contexts.json",
+      "pgid": 328541,
+      "exitCode": 0,
+      "observedAbsent": true
+    }
+  ],
+  "freshOwnedProcessGroupMembers": [],
+  "ownedGroupsAbsent": 7,
+  "otherProcessesSignalled": false,
+  "limits": "Local check groups only; not native task or physical transport teardown."
+}
