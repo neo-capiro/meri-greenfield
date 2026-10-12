@@ -1,0 +1,17 @@
+{
+  "candidateInspected": false,
+  "corrections": [
+    {
+      "kind": "sparse-file-not-materialized",
+      "result": "Reference inventory read initially failed from filesystem; recovered exact committed data using git show."
+    },
+    {
+      "kind": "metadata-regex-overmatch",
+      "result": "A temporary import-locator regex overmatched a later comment and emitted excessive derived identifier tokens; no source file/body was saved in repository artifacts. Discarded regex approach; subsequent source inspection uses TypeScript ImportDeclaration nodes only. Overlong output is not copied into evidence."
+    },
+    {
+      "kind": "operation-label",
+      "result": "Corrected preliminary scrape_public_page label to canonical scrape_web_page before candidate inspection."
+    }
+  ]
+}

@@ -3,7 +3,7 @@
   "reviewer": "memory_reviewer",
   "operations": [
     "search_public_web",
-    "scrape_public_page"
+    "scrape_web_page"
   ],
   "candidateInspected": false,
   "chronology": "Criteria frozen after author preliminary source306734 already existed, but before reviewer candidate inspection or behavioral replay. Independently trace pinned references first.",
@@ -16,5 +16,6 @@
     "Reuse canonical inert JSON admission with no new registry/walker/provider/parser implementation. Hostile getters/proxies/cycles/symbols and model-owned authority refuse without effects.",
     "Freeze meaningful independent controls before candidate replay, preserve failures exactly, request author repairs rather than editing production.",
     "Only focused and metadata checks; canonical integration/full suite belongs root. Preserve139/96/43, old contracts/tests/deps, private0.2/public0.1 and unavailable handlers. No actual fetch/provider/model/parser/browser/SQL/native/cloud/frontend execution or recursive delegation."
-  ]
+  ],
+  "correction": "Initial criteria used scrape_public_page as an unverified label; canonical inventory confirms scrape_web_page. Corrected before candidate inspection; original criteria commit remains preserved."
 }
