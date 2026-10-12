@@ -1,0 +1,17 @@
+{
+  "operation": "query_intelligence",
+  "projection": ["tool", "generatedAt", "data"],
+  "input": {"clientName": "optional trimmed string clipped at200 UTF16 units, no second trim; blank/null omitted", "typedRestrictions": "wrong nonstring scalars refused rather than legacy silent absence"},
+  "wrapper": {"symbol": "queryIntelligence", "lines": [3573, 3704], "sourceReads": ["lobbying summary", "recent congressional bills", "optional selected-name federal spending", "eight stored source counts"], "failure": "individual sections can be omitted after caught failure; each count catch substitutes zero; only positive counts become prose; fallback nonempty string if no parts", "generatedAt": "separately sampled envelope timestamp; no live clock/corpus claim"},
+  "downstream": [
+    {"path": "apps/api/src/lobby-intel/lobby-intel.service.ts", "symbol": "getAiContext", "lines": [144, 158], "calls": ["surgingIssuesRows", "trendingTopicsRows"], "effects": "stored SELECT query with legacy findMany fallback; trending findMany; local mapping only; no model call observed"},
+    {"path": "apps/api/src/federal-spending/federal-spending.service.ts", "symbol": "getAiContext", "lines": [355, 389], "calls": ["lookupByClientName", "federalAgency.findMany"], "effects": "exact case-insensitive contractor read plus fallback SELECT lookup, then stored top-five agency read and local mapping. Agency totals are not projected by wrapper but its failure can omit the complete client section."},
+    {"path": "apps/api/src/lda-intel/lda-intel.service.ts", "symbol": "getCongressBills", "lines": [482, 511], "effects": "separate stored findMany/count; wrapper requests page1 limit15 without search/policy/congress selectors, uses first12 prose rows; count neither projected nor atomic"}
+  ],
+  "countScope": {"owners": ["secFiling", "faraRegistration", "gaoReport", "federalGrant", "stateBill", "intelArticle", "committeeHearing", "crsReport"], "systemRead": "withSystem enters transaction and uses transaction-local set_config; not a zero-effect runtime claim", "hearing": "federalHearingWhere applies stored jurisdiction classification", "crs": "no active-only predicate", "absenceEvidence": false},
+  "authority": "clientName is a display-name lookup selector, not tenant/client visibility or identity authority. Existing trusted gateway/actor/policy checks remain separate; no current source permission or model/provider capability is established.",
+  "notImplemented": ["legacy prose synthesis", "query logic", "database or provider adapter", "agent orchestration", "canonical catalog binding", "current runtime authorization"],
+  "runtimeAccepted": false,
+  "sourceExecuted": false,
+  "privateBodiesPublished": false
+}

@@ -1,0 +1,10 @@
+{
+  "ownedGroupsAbsent": [
+    249019,
+    250084,
+    250405
+  ],
+  "removedOnlyAllocatedDependencySymlinks": true,
+  "installedDependencyTargetsUnchanged": true,
+  "nativeRuntimeExecuted": false
+}
