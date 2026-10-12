@@ -1,0 +1,34 @@
+{
+  "command": [
+    "python",
+    "-B",
+    "/workspace/meri-native-supervisor-20261012/docs/qualification/candidates/native-supervisor-20261012/author/source-checks.py"
+  ],
+  "cwd": "/workspace/meri-g1-owner-continuation-20261012",
+  "sourceHead": "991025b99e9c8144cc37c4166e828e126f4cef0f",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T06:39:19.692646+00:00",
+  "durationSeconds": 0.064,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 94420,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/historical-supervisor-author.stdout.bin",
+      "bytes": 1400,
+      "sha256": "82b0977be106133c6db289bea1aa804b6bbd40a22fc6e71668fcff79c93dfd79"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/historical-supervisor-author.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

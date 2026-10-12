@@ -1,0 +1,30 @@
+✔ actual disabled gateway exposes exact ABSENT observation with zero ledger mutation (13.493135ms)
+✔ UNKNOWN returns immutable bounded accounting through actual owner composition (10.078166ms)
+✔ SETTLED returns immutable bounded accounting through actual owner composition (7.18388ms)
+✔ canonical lost reserve acknowledgement retained across fresh readback without replay (6.150097ms)
+✔ canonical lost settle acknowledgement retained across fresh readback without replay (6.834365ms)
+✔ historical original A remains inspectable after expiry/revocation/quarantine and replacement B (5.825319ms)
+✔ ABSENT is a snapshot; same existing trusted invocation may become UNKNOWN after later reservation (9.146427ms)
+✔ read acknowledgement uncertainty and ordinary query failure release no success receipt or writes (13.218583ms)
+✔ read serialized behind actual canonical reservation boundary sees committed UNKNOWN (10.314161ms)
+✔ parallel observations do not alter or settle liability (11.108374ms)
+✔ all canonical descriptor execute paths remain unavailable before further transaction/authority work (49.79664ms)
+✔ ABSENT requires retained allocation and original grant binding (11.639241ms)
+✔ UNKNOWN requires retained allocation and original grant binding (12.301245ms)
+✔ raw expected/invocation objects cannot execute getters or proxy reflection (12.683179ms)
+✔ closed invalid expectations deny before scripted connection work (14.999588ms)
+✔ operation/argument mismatch cannot expose an existing outcome (8.442289ms)
+✔ tenant actor conversation run and allocation substitution cannot read other scope (23.901407ms)
+✔ historical grant correlation rejects task attempt fence policy capability and grant substitutions (37.682336ms)
+✔ retained allocation and grant-binding duplicate columns cannot disagree with facts (20.981563ms)
+✔ reservation duplicate identities and full original facts cannot disagree (21.134261ms)
+✔ UNKNOWN rejects charge/output/time fields inconsistent with retained liability (32.035094ms)
+✔ SETTLED refuses malformed amounts, output overflow, missing or unordered timestamps (35.097303ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1247.525665

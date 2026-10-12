@@ -1,0 +1,34 @@
+{
+  "command": [
+    "python",
+    "-B",
+    "docs/qualification/candidates/g1-l1-host-20261012/author/verify-packet.py"
+  ],
+  "cwd": "/workspace/meri-g1-owner-continuation-20261012",
+  "sourceHead": "991025b99e9c8144cc37c4166e828e126f4cef0f",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T06:37:37.211393+00:00",
+  "durationSeconds": 0.032,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 94280,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/host-packet-offline.stdout.bin",
+      "bytes": 7827,
+      "sha256": "a172c4bb91de0ae8bbe42e86bcc75d1052becea62e3ebd4f2976ff7c7543a397"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/host-packet-offline.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

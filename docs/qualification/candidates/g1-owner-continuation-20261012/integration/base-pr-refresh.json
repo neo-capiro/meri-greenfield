@@ -1,0 +1,13 @@
+{
+  "number": 17,
+  "url": "https://github.com/neo-capiro/meri-greenfield/pull/17",
+  "head": "task/meri-g1-native-path-20261012",
+  "head_sha": "263d0d174f9924a6030bb1c20100ff1115ffcda0",
+  "base": "task/meri-g1-recovery-sandbox-20261012",
+  "base_sha": "e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5",
+  "state": "open",
+  "draft": true,
+  "merged": false,
+  "updated_at": "2026-10-12T06:15:28Z",
+  "scope": "Read-only refresh before new stacked draft publication."
+}

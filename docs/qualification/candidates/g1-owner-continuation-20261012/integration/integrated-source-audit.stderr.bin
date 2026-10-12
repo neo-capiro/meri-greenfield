@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/workspace/meri-g1-owner-continuation-20261012/docs/qualification/candidates/g1-owner-continuation-20261012/integration/audit-integrated.py", line 109, in <module>
+    assert not any(needle in data for needle in needles), "Known private material in " + path
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Known private material in docs/qualification/candidates/native-supervisor-20261012/author/run-supervised.py

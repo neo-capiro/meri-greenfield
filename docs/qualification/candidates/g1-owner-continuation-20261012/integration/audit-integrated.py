@@ -1,0 +1,135 @@
+"""Read-only source/evidence integrity audit; no candidate/native imports."""
+import hashlib
+import json
+from pathlib import Path
+import re
+import subprocess
+import sys
+
+ROOT = Path(__file__).resolve().parents[5]
+OUT = Path(__file__).resolve().parent
+BASE = "263d0d174f9924a6030bb1c20100ff1115ffcda0"
+CANDIDATES = "docs/qualification/candidates/"
+
+
+def git(*args):
+    return subprocess.check_output(["git", *args], cwd=ROOT)
+
+
+def identity(path):
+    data = path.read_bytes()
+    return {"bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()}
+
+
+def tree(commit):
+    rows = git("ls-tree", "-rz", commit).split(b"\0")
+    return {row.split(b"\t", 1)[1].decode(): row.split(b"\t", 1)[0]
+            for row in rows if row}
+
+
+baseline, current = tree(BASE), tree("HEAD")
+expected = {
+    "apps/gateway/budget/README.md",
+    "apps/gateway/budget/durable-tool-dispatch.mjs",
+    "apps/gateway/budget/postgres-tool-budget.mjs",
+    "docs/plans/MERI-G1-SOURCE-TO-NATIVE.md",
+    CANDIDATES + "native-supervisor-20261012/author/run-supervised.py",
+}
+changed = {p for p, oid in baseline.items() if current.get(p) != oid}
+assert changed == expected, sorted(changed)
+sources = {
+    "028b1134e373734caea036ee5c38d35b20428d8b": [
+        "apps/gateway/budget/README.md", "apps/gateway/budget/durable-tool-dispatch.mjs",
+        "apps/gateway/budget/postgres-tool-budget.mjs", "apps/gateway/budget/tool-budget-outcome.mjs",
+        "apps/gateway/test/tool-budget-outcome.test.mjs"],
+    "74f9692047be50beb8c59a0b0d7833f0cb682c76": [
+        CANDIDATES + "native-supervisor-20261012/author/run-supervised.py",
+        CANDIDATES + "native-bindings-20261012/author/evidence-writer.py",
+        CANDIDATES + "native-bindings-20261012/author/source-checks.py"],
+}
+source_results = []
+for commit, paths in sources.items():
+    for path in paths:
+        assert (ROOT / path).read_bytes() == git("show", commit + ":" + path), path
+        source_results.append({"path": path, "authorCommit": commit, **identity(ROOT / path)})
+
+manifest_paths = [
+    "g1-budget-outcome-20261012/author/source-manifest.json",
+    "g1-budget-outcome-20261012/review/manifest.json",
+    "native-bindings-20261012/author/current-manifest.json",
+    "native-bindings-20261012/review/review-manifest.json",
+    "g1-l1-host-20261012/author/manifest.json",
+    "g1-l1-host-20261012/review/manifest.json",
+]
+manifest_results = []
+for name in manifest_paths:
+    path = ROOT / CANDIDATES / name
+    document = json.loads(path.read_text())
+    entries = document.get("files", document.get("source"))
+    if isinstance(entries, dict):
+        entries = [{"path": key, **value} for key, value in entries.items()]
+    for entry in entries:
+        target = ROOT / entry["path"] if entry["path"].startswith(("apps/", "docs/")) else path.parent / entry["path"]
+        assert identity(target) == {key: entry[key] for key in ("bytes", "sha256")}, str(target.relative_to(ROOT))
+    manifest_results.append({"path": str(path.relative_to(ROOT)), "membersMatched": len(entries), **identity(path)})
+
+receipt_results = []
+for receipt_path in sorted(OUT.glob("*.json")):
+    receipt = json.loads(receipt_path.read_text())
+    if "captureSha256" not in receipt or "streams" not in receipt:
+        continue
+    label = receipt_path.stem
+    expected_exit = 1 if label == "integrated-source-audit" else 0
+    assert receipt["exitCode"] == expected_exit and not receipt["timedOut"]
+    assert receipt["ownedProcessGroupAbsent"] and receipt["sourceDiffBytes"] == 0
+    assert receipt["captureSha256"] == identity(OUT / "capture-reaped.py")["sha256"]
+    for stream in receipt["streams"]:
+        assert identity(ROOT / stream["path"]) == {key: stream[key] for key in ("bytes", "sha256")}
+    receipt_results.append({"label": label, "sourceHead": receipt["sourceHead"], "exitCode": receipt["exitCode"],
+                            "ownedProcessGroupAbsent": True, "streamsMatched": len(receipt["streams"])})
+
+# Known private values and complete bodies only; never print or store the values.
+private = Path("/workspace/private-native-supervisor-relay-20261012")
+needles = set()
+def collect(value):
+    if isinstance(value, str) and re.match(r"^[A-Za-z]:[\\/]", value) and not re.fullmatch(r"[A-Za-z]:[\\/]", value):
+        needles.add(value.encode())
+        needles.add(json.dumps(value)[1:-1].encode())
+    elif isinstance(value, dict):
+        for child in value.values():
+            collect(child)
+    elif isinstance(value, list):
+        for child in value:
+            collect(child)
+
+for name in ("supervisor-source-review.verified.json", "provenance-and-bindings.verified.json"):
+    data = (private / name).read_bytes()
+    needles.add(data)
+    collect(json.loads(data))
+paths = set(git("diff", "--name-only", BASE, "HEAD").decode().splitlines())
+paths.update(git("ls-files", "--others", "--exclude-standard").decode().splitlines())
+for path in paths:
+    data = (ROOT / path).read_bytes()
+    assert not any(needle in data for needle in needles), "Known private material in " + path
+    assert not re.search(rb"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----|sk-proj-[A-Za-z0-9_-]{20,}", data), "Credential marker in " + path
+
+result = {
+    "sourceHead": git("rev-parse", "HEAD").decode().strip(), "base": BASE,
+    "originalFiles": len(baseline), "unchangedOriginalFiles": len(baseline) - len(changed),
+    "changedOriginalPaths": sorted(changed), "allOriginalTestsContractsLocksMigrationsPreserved": True,
+    "frozenL1AndImagePacketsPreserved": True, "exactAcceptedSource": source_results,
+    "currentManifests": manifest_results, "rootSourceCheckReceipts": receipt_results,
+    "boundedPrivacyScreen": {"files": len(paths), "knownPrivateNeedles": len(needles), "matches": 0,
+                             "excluded": "Drive-root-only strings identify no personal location; original overly broad failure retained.",
+                             "limitation": "Known supplied private values/bodies and named credential markers only; not a universal secret guarantee."},
+    "nativeImportsOrExecution": False, "decision": "PASS_SOURCE_AND_EVIDENCE_INTEGRITY_ONLY",
+    "historicalManifests": "Bind historical freezes, not the superseding wrapper/plan; retained unchanged."
+}
+output_name = sys.argv[1] if len(sys.argv) == 2 else "integrated-audit.json"
+assert re.fullmatch(r"[a-z-]+\.json", output_name), "Local result filename required"
+with (OUT / output_name).open("x") as output:
+    output.write(json.dumps(result, indent=2) + "\n")
+print(json.dumps({"decision": result["decision"], "unchangedOriginalFiles": result["unchangedOriginalFiles"],
+                  "exactSourceFiles": len(source_results), "manifests": len(manifest_results),
+                  "manifestMembers": sum(row["membersMatched"] for row in manifest_results),
+                  "rootReceipts": len(receipt_results), "privacyFiles": len(paths)}))

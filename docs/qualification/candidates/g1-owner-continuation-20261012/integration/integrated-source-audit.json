@@ -1,0 +1,34 @@
+{
+  "command": [
+    "python",
+    "-B",
+    "docs/qualification/candidates/g1-owner-continuation-20261012/integration/audit-integrated.py"
+  ],
+  "cwd": "/workspace/meri-g1-owner-continuation-20261012",
+  "sourceHead": "159a7dd3b5fbd9ed2cc05dc96c450ed5c7b4585e",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T06:49:58.326895+00:00",
+  "durationSeconds": 0.115,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 94976,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/integrated-source-audit.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/integrated-source-audit.stderr.bin",
+      "bytes": 482,
+      "sha256": "11d9084e6edfcad05c280830c4d9bb547a1d09ef589ee177dd96845207f8e535"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
