@@ -1,0 +1,29 @@
+[
+  {
+    "label": "baseline-contracts",
+    "command": [
+      "npm",
+      "run",
+      "check:contracts"
+    ],
+    "head": "7ba0e9d10ebf684e162dcc7c143915afdbf00f32",
+    "exit": 0,
+    "seconds": 5.076,
+    "stdoutSha256": "f89749412c4d4fa02fab3f706add28eb191e60138476c92db43942c0917af95b",
+    "stderrSha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+  },
+  {
+    "label": "baseline-gateway",
+    "command": [
+      "node",
+      "--test",
+      "apps/gateway/test/gateway.test.mjs",
+      "apps/gateway/test/authority-deadline.test.mjs"
+    ],
+    "head": "7ba0e9d10ebf684e162dcc7c143915afdbf00f32",
+    "exit": 0,
+    "seconds": 1.197,
+    "stdoutSha256": "d51a393b28f66c967cbcba568140375b8501e6c4e30b1ccabe0536396c36881c",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]

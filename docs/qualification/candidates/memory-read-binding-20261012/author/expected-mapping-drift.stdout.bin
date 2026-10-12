@@ -1,0 +1,146 @@
+✖ registers exactly the ten typed additions while preserving all139/96/43 boundaries (5.638887ms)
+✔ every binding resolves the correct existing definition and exact raw schema hash (4.097293ms)
+✔ allknown input/output hash, foreign definition and version substitutions refuse (134.862994ms)
+✔ missing, foreign and incorrectly remapped registered operations refuse (5.778267ms)
+✔ aliases, cycles and forbidden unrestricted query identifiers retain refusal guards (16.497552ms)
+✔ everycurrent descriptor stays pending/null; fabricated executable metadata cannot expose it (27.171029ms)
+✔ resolver refuses unknown versions and unsafe references without invoking getters (0.371929ms)
+✔ family default materialization and argument digest happen before dispatch (2.966614ms)
+✔ data-search normalized domains, cursors and conditional memory retain canonical behavior (1.699792ms)
+✔ mail defaults/context and meeting inventory/body modes reuse their original domain rules (10.277432ms)
+✔ federal output uses actual family paging invariants and retains unproven total relation (0.999141ms)
+✔ real calendar DTO validates only with its original request and explicit trusted clock (6.810517ms)
+✔ normalizer data ownership prevents accessor/proxy/toJSON effects and caller mutation (0.480071ms)
+✔ private JSON admission bounds deep, wide and oversized values before family execution (11.011004ms)
+✔ materializes verified legacy defaults without mutating strict input (2.935368ms)
+✔ rejects coercion, null numeric values, injected authority and unsupported subjects (0.650307ms)
+✔ preserves exact numeric bounds and requires message identity for body continuation (0.279059ms)
+✔ mail external DTO accessors and cycles refuse before executing getters (2.659428ms)
+✔ stored disconnected reads remain transport-only with unknown immutable identities (12.133499ms)
+✔ UTF-16 offsets count a surrogate pair as two units and permit its legacy split (1.933484ms)
+✔ late decisive body section remains an unresolved read despite ending the stored body (1.19905ms)
+✔ offset beyond stored body is disclosed empty transport, not absent material (1.056606ms)
+✔ all upstream completeness states stay incomplete and missing differs from empty (1.888246ms)
+✔ unknown body size and snapshot cannot imply completion (1.141484ms)
+✔ selection and exact normalized argument digest must agree with original request (1.24548ms)
+✔ personal/client request and resolved subject agree without broadening authority (1.24516ms)
+✔ denied source cannot contribute; mixed source accounting keeps eligible stored read (1.042295ms)
+✔ message count and continuation use the filtered message collection (0.939551ms)
+✔ unknown message totals cannot invent next positions or aggregate totals (1.893543ms)
+✔ body continuation inventory, page bounds and truncation agree (2.402178ms)
+✔ duplicate messages cannot inflate count using another citation or version (0.505379ms)
+✔ transport refuses absence, evidence-ready, complete enumeration and cursor guarantees (7.355965ms)
+✔ empty stored thread page never certifies absence (0.326139ms)
+✖ concrete catalog preserves every ledger ID/boundary and thirteen unavailable mappings (8.680204ms)
+✔ mail descriptor raw-byte schema pins and exact definition IDs cannot drift (19.090996ms)
+✔ no skill can expose the pending mail operation (4.27245ms)
+✔ mail schema objects stay closed and package public exports stay 0.1 only (1.109996ms)
+✔ mailbox identity and authoritative body lineage cannot be substituted (1.099411ms)
+✔ list/search defaults are strict inert normalized DATA with no clock invention (1.541695ms)
+✔ search literal terms remain distinct AND filters and keyword-free scoped search is valid (0.356445ms)
+✔ list/search getters hidden fields null and nonfinite values are refused without effects (0.238879ms)
+✔ candidate query inclusive anchor is separate from exclusive requester window (19.719931ms)
+✔ message totals and page-only groups differ; exhausted preview never proves absence (3.330601ms)
+✔ continuation binds retained anchor filters actor window and message offset (3.739495ms)
+✔ dedup is mailbox-specific; order nulls-last and immutable versions are conservative (1.206862ms)
+✔ authorization source and mailbox scopes are independent of connection state (2.292453ms)
+✔ preview has no body offsets size guarantee or recipient completeness upgrade (1.636597ms)
+✔ search page operation groups counts filters and all pending descriptor pins are closed (32.550466ms)
+✔ cross-mailbox identical internet IDs stay distinct stored candidates (1.330017ms)
+✔ offset ceiling keeps hasMore true with null nextOffset and no completeness (2.455386ms)
+✔ empty search and unknown stored totals cannot become complete or absent (0.948755ms)
+✔ normalizes defaults/nulls and binds the server-selected client (4.133316ms)
+✔ strict raw input bounds, numeric coercion and model authority keys refuse (1.626313ms)
+✔ requires canonical trusted actor/subject and rejects client substitution (0.420862ms)
+✔ complete/empty producer queue metadata never becomes approved evidence or absence (2.115797ms)
+✔ selected client permits own firm/private rows and the selected client, rejects another client (1.215054ms)
+✔ result actor/tenant/client and pending-fact constants cannot be substituted (0.939651ms)
+✔ restricted proposals redact text/title and remain partial (0.823677ms)
+✔ truncated/null-text pages cannot claim complete producer coverage (0.540061ms)
+✔ disabled review is unavailable, including continued-request firstPage semantics (0.635535ms)
+✔ continuation requires retained scope, exact cursor and unchanged page limit (1.082605ms)
+✔ final continued page remains partial and must advance beyond prior key (0.826942ms)
+✔ UTF-16 preview caps, date order, duplicates and requested count are enforced (1.384158ms)
+✔ inert admission refuses getters/proxies/cycles/sparse data without invocation (0.324176ms)
+✖ operation remains unmapped/unavailable and public exports stay separate (5.012306ms)
+✔ family factory import has no process/network/timer effect (34.717791ms)
+✔ nonfinite proposal timestamps cannot claim complete or restricted coverage (0.701974ms)
+✔ nonfinite timestamps refuse in either position before within-page ordering (0.401453ms)
+✔ nonfinite retained or current timestamps cannot advance a continuation (0.552831ms)
+✔ finite timestamps preserve offset-aware ordering and equal-instant identity ties (0.657958ms)
+ℹ tests 70
+ℹ suites 0
+ℹ pass 67
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1259.115601
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-catalog-bindings.test.mjs:16:1
+✖ registers exactly the ten typed additions while preserving all139/96/43 boundaries (5.638887ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  14 !== 13
+  
+      at TestContext.<anonymous> (file:///workspace/meri-memory-binding-20261012/packages/contracts/test/retrieval-catalog-bindings.test.mjs:21:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 14,
+    expected: 13,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-mail.test.mjs:131:1
+✖ concrete catalog preserves every ledger ID/boundary and thirteen unavailable mappings (8.680204ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  14 !== 13
+  
+      at TestContext.<anonymous> (file:///workspace/meri-memory-binding-20261012/packages/contracts/test/retrieval-mail.test.mjs:136:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 14,
+    expected: 13,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-memory-proposals.test.mjs:120:1
+✖ operation remains unmapped/unavailable and public exports stay separate (5.012306ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + {
+  +   id: 'memory.list_own_proposals',
+  +   version: '0.2.0'
+  + }
+  - null
+  
+      at TestContext.<anonymous> (file:///workspace/meri-memory-binding-20261012/packages/contracts/test/retrieval-memory-proposals.test.mjs:123:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { id: 'memory.list_own_proposals', version: '0.2.0' },
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

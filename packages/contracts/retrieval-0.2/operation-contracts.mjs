@@ -67,10 +67,11 @@ export function createOperationContracts({catalog, bindings, validators, assertC
   const snapshot = copyData(catalog); assertCatalog(snapshot); freezeData(snapshot);
   const descriptors = new Map(snapshot.operations.map(row => [`${row.operation.id}@${row.operation.version}`, row]));
   const registry = new Map(bindings.map(binding => [binding.id, binding]));
-  function contextData(value, output = false) {
+  function contextData(value, binding, output = false) {
     const context = copyData(value);
+    const names = binding.contextKeys ?? ['nowMs', 'actorId', 'previousPage'];
     if (!context || Array.isArray(context) || typeof context !== 'object' ||
-        Object.keys(context).some(name => !['nowMs', 'actorId', 'previousPage', ...(output ? ['request'] : [])].includes(name)))
+        Object.keys(context).some(name => ![...names, ...(output ? ['request'] : [])].includes(name)))
       fail('Unknown operation contract context');
     return context;
   }
@@ -82,13 +83,13 @@ export function createOperationContracts({catalog, bindings, validators, assertC
     if (!binding || ref.version !== binding.version || !descriptor) fail('Unknown operation contract version');
     return Object.freeze({descriptor, binding,
       normalizeInput(argumentsData, context = {}) {
-        const request = freezeData(copyData(argumentsData)), options = contextData(context);
+        const request = freezeData(copyData(argumentsData)), options = contextData(context, binding);
         const normalized = binding.normalize(validators, request, options, binding);
         const input = copyData(normalized.input), metadata = copyData(normalized.metadata ?? null);
         return freezeData({request, input, metadata, argumentsSha256: canonicalSha256(input)});
       },
       assertOutput(output, context) {
-        const options = contextData(context, true);
+        const options = contextData(context, binding, true);
         if (!Object.hasOwn(options, 'request')) fail('Output validation requires the original request');
         const page = copyData(output);
         return binding.outputAssert(validators, page, options.request, options, binding);
