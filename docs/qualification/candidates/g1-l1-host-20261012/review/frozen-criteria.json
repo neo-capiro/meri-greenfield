@@ -1,0 +1,64 @@
+{
+  "reviewer": "memory_author",
+  "author": "readiness_author",
+  "base": "263d0d174f9924a6030bb1c20100ff1115ffcda0",
+  "baseTree": "bae9e77b928b4053d788aa4d5542bf6c1575644e",
+  "frozenAt": "2026-10-12T06:21:23.647435+00:00",
+  "scope": "Independent read-only host discovery and source/setup packet review, never native admission",
+  "outline": [
+    "Read repository standards, adopted R2, actual L1 plan and canonical SQL/client owners.",
+    "Freeze criteria before author raw findings. Independently inspect bounded host executable/driver/daemon/cache/isolation metadata without connecting to a database or executing target binaries.",
+    "Compare immutable author evidence with independent observations; distinguish absence, unavailable, unsupported and unobserved facts.",
+    "Accept a concrete source launcher only if admitted supported host/runtime/identity/authentication/isolation inputs exist; otherwise assess a small exact setup/approval packet and preserve L1 NOT_EXECUTABLE.",
+    "Record exact source/review hashes, raw commands/results, factual prerequisites versus action permissions, resources/cost/bounds and owned cleanup."
+  ],
+  "criteria": [
+    {
+      "id": "H1",
+      "expectation": "Correct selected saved environment and exact repository base, no relocation or assumed host equivalence."
+    },
+    {
+      "id": "H2",
+      "expectation": "Exact existing PostgreSQL server/initdb/pg_ctl, client drivers, Node/Python dependencies and supported provenance are independently evidenced, not inferred from a client package or command name."
+    },
+    {
+      "id": "H3",
+      "expectation": "Daemon/cache observations use harmless bounded read-only metadata only; no image pull/build/launch, daemon mutation, environment/credentials read or namespace/capability change."
+    },
+    {
+      "id": "H4",
+      "expectation": "Isolation and authentication must protect against untrusted local peers; loopback, root, namespace-looking paths or cached tools alone do not prove containment. No localhost trust assumption."
+    },
+    {
+      "id": "H5",
+      "expectation": "Canonical proposed L1 counts/resources remain one fresh cluster/two exact databases/roles, bounded listeners, exact command set and original720s work/900s cleanup ceilings; no unreviewed gateway/native phases added."
+    },
+    {
+      "id": "H6",
+      "expectation": "Exact positive process/cluster/listener/file identity and exclusive cleanup requirements remain. UNKNOWN means HOLD; no name/port-based kill or deletion."
+    },
+    {
+      "id": "H7",
+      "expectation": "No current Aurora/production/customer access, DB execution/install/create, security/HBA/network/credential changes, spend or target native probes. Existing host cost remains unestimated, provider/cloud additions zero only within stated action scope."
+    },
+    {
+      "id": "H8",
+      "expectation": "Any approved setup request names minimum prerequisites and actions separately; no generic disconnected launcher or claim an unavailable binary/image is executable."
+    },
+    {
+      "id": "H9",
+      "expectation": "Raw failures and read-only limits retained, author packet exact hashes verified, source-only ACCEPT_SOURCE/HOLD separate from native gate."
+    }
+  ],
+  "forbidden": [
+    "database execution or connection",
+    "package acquisition/install",
+    "daemon launch/mutation",
+    "image pull/build/launch",
+    "security/network/HBA/credential mutation",
+    "native namespace probe",
+    "customer/provider/cloud operation",
+    "spend",
+    "recursive delegation"
+  ]
+}
