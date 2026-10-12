@@ -1,0 +1,40 @@
+{
+  "base": "a3e946c1fa264ae7b33205f5b87804ee1ef75773",
+  "scope": "One source-only regulatory docket DTO family; no native/runtime/source connectivity",
+  "ownedFiles": [
+    "packages/contracts/retrieval-0.2/regulatory-dockets.schema.json",
+    "packages/contracts/retrieval-0.2/regulatory-dockets-validation.mjs",
+    "packages/contracts/test/retrieval-regulatory-dockets.test.mjs",
+    "docs/coordination/reports/CODEX-REGULATORY-DOCKETS-AUTHOR-20261012.md",
+    "docs/qualification/candidates/read-continuation-20261012/regulatory-dockets-author/**"
+  ],
+  "factory": "createRegulatoryDocketsValidators({validateShape,schema})",
+  "schemaId": "urn:meri:retrieval:regulatory-dockets:0.2.0",
+  "definitions": [
+    "RegulatoryDocketsQueryInput",
+    "RegulatoryDocketsQueryOutput"
+  ],
+  "operation": "query_regulatory_dockets",
+  "contextKeys": [],
+  "clock": "Service query clock is unavailable in projected result; generatedAt cannot replace it. Current-window qualification remains false.",
+  "owners": {
+    "jsonAdmission": "unchanged snapshotOperationData",
+    "composition": "root canonical registry/loader",
+    "queriesAndAuthority": "unqualified future source adapter and existing trusted gateway; no implementation here",
+    "review": "separate readiness_author"
+  },
+  "normalization": "Typed selectors and integers with declared legacy narrowing; retain branch-irrelevant selectors in normalized request without implying filter scope.",
+  "behavior": "Preserve raw14scalar fields/nulls. Ordinary total independent from rows. Upcoming total is capped50 returned service window before wrapperlimit; rowcount=min(total,limit); nonnull ascending enddates, withdrawnfalse, inclusive relational span.",
+  "boundaries": [
+    "No query-clock invention or metadata admission of source truth",
+    "No private implementation copy/import/execution",
+    "No source/current customer/provider/database/cloud/native operations",
+    "No shared registry/loader/test changes"
+  ],
+  "verification": [
+    "Independent pinned source metadata and drift hashes",
+    "Focused actual validators strict Ajv, hostile inert JSON, Unicode/count/date/both-branch controls",
+    "Local full/public checks if required dependencies available; exact raw capture and owned process exit",
+    "Independent reviewer exact source freeze then packet"
+  ]
+}
