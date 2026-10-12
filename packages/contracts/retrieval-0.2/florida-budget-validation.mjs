@@ -52,7 +52,7 @@ export function createFloridaBudgetValidators({ validateShape, schema }) {
       if (resolution !== null) fail('Florida budget absent client selector cannot carry a resolution');
     } else {
       if (resolution === null || resolution.selector !== reference ||
-          (UUID.test(reference) && reference.toLowerCase() !== resolution.clientId.toLowerCase()))
+          (UUID.test(reference.trim()) && reference.trim().toLowerCase() !== resolution.clientId.toLowerCase()))
         fail('Florida budget client reference differs from trusted resolution');
       input.clientId = resolution.clientId;
     }
