@@ -32,7 +32,7 @@ const context=()=>({binding:{tenantId:'tenant',actorId:'actor',conversationId:'1
 const ids=()=>({artifactId:randomUUID(),versionId:randomUUID(),objectId:randomUUID()});
 const authorize=async input=>({receiptId:'authority',decision:'allow',action:input.action,binding:input.binding,scopesSha256:hash(input.scopes),resourceSha256:hash(input.resource),requestSha256:input.requestSha256,expiresAtMs:input.deadlineMs});
 const budget={reserve:async input=>({ticketId:'ticket',binding:input.binding,requestSha256:input.requestSha256,maxBytes:input.maxBytes,deadlineMs:input.deadlineMs}),settle:async({ticketId,requestSha256,bytes,outcome})=>({ticketId,requestSha256,bytes,outcome,status:'settled'})};
-const synthetic={execute:async({request})=>{const bytes=Buffer.from('synthetic');return {bytes,inspection:{sha256:bytesHash(bytes),bytes:bytes.length,format:request.format,nativeOpened:false,rendered:false,recalculated:false,members:[],details:{sourceControl:true}}};}};
+const synthetic={execute:async({request})=>{const bytes=Buffer.from('synthetic');return {bytes,inspection:{sha256:bytesHash(bytes),bytes:bytes.length,format:request.format,nativeOpened:false,rendered:false,recalculated:false,members:[],details:{encoding:'UTF-8',whitespace:'unchanged'}}};}};
 const pptxPath='/opt/codex/runtimes/codex-primary-runtime/dependencies/node/node_modules/pptxgenjs';
 const require=createRequire(pptxPath+'/package.json'),JSZip=require('jszip');
 async function fixture(fn,overrides={}){
@@ -90,7 +90,7 @@ test('executor deadlines remain cancellation, not successful artifact publicatio
 test('post-commit budget failure is explicit unknown effect',async()=>fixture(async({service})=>{await assert.rejects(service.create(text,context()),e=>e.code==='ARTIFACT_EFFECT_UNKNOWN'&&e.versionCommitted===true);},{budget:{...budget,settle:async()=>{throw new Error('settlement unavailable');}},executor:synthetic}));
 test('read integrity detects corrupted object bytes',async()=>fixture(async({service,ports})=>{const c=context(),r=await service.create(text,c);const broken=createArtifactService({...ports,objects:{...ports.objects,get:async()=>Buffer.from('changed')}});await assert.rejects(broken.download(r.version.versionId,c),/ARTIFACT_OBJECT_MISMATCH/);}));
 test('fixed Office conversion source arguments have no user option/path channel',()=>{const args=officeTransformArguments({workspace:'/tmp/owned',format:'docx',target:'pdf'});assert.deepEqual(args.slice(-4),['pdf','--outdir','/tmp/owned/out','/tmp/owned/input.docx']);assert.throws(()=>officeTransformArguments({workspace:'/tmp/owned',format:'txt',target:'exe'}));assert.throws(()=>createLibreOfficeTransformer({tempRoot:'/tmp'}),/UNAVAILABLE/);});
-test('general analysis is unavailable without admitted native port',async()=>{const c=context(),program={objectId:randomUUID(),versionId:'stored',sha256:'a'.repeat(64),bytes:10,scopes:c.scopes};const boundary=createSandboxAnalysisBoundary({validatePublicShape:(n,v)=>shape(publicSchema.$id,n,v),canonicalSha256:hash});await assert.rejects(boundary.execute({program,inputs:[],outputs:['result.json'],binding:c.binding,deadlineMs:c.deadlineMs}),/UNAVAILABLE/);});
+test('general analysis is unavailable without admitted native port',async()=>{const c=context(),program={objectId:randomUUID(),versionId:'stored',sha256:'a'.repeat(64),bytes:10,scopes:c.scopes};const boundary=createSandboxAnalysisBoundary({validatePublicShape:(n,v)=>shape(publicSchema.$id,n,v),canonicalSha256:hash});await assert.rejects(boundary.execute({program,inputs:[],outputs:['result.json'],binding:c.binding,scopes:c.scopes,maxBytes:c.maxBytes,deadlineMs:c.deadlineMs}),/UNAVAILABLE/);});
 test('actual openpyxl cell revision keeps original XLSX and explicit literals/formulas',async()=>fixture(async({service})=>{
   const c=context(),request={...excel,content:{sheets:[{name:'Data',rows:[[{value:2}],[{formula:'=SUM(A1:A1)'}]]}]}},first=await service.create(request,c);
   const changed={...request,content:{sheets:[{name:'Data',rows:[[{value:7}],[{formula:'=SUM(A1:A1)'}],[{value:'=literal'}]]}]}},second=await service.revise(first.version.versionId,changed,c);
@@ -121,7 +121,7 @@ test('stable version allocation cannot overwrite an immutable committed version'
   await assert.rejects(service.create({...text,content:{text:'different intent'}},c),e=>e.code==='ARTIFACT_EFFECT_UNKNOWN'&&e.cause.code==='ARTIFACT_COMMIT_RECONCILIATION_REQUIRED');
 }));
 test('sandbox input/receipt verifier gates general code before any port call',async()=>{
-  const c=context(),program={objectId:randomUUID(),versionId:'stored',sha256:'a'.repeat(64),bytes:10,scopes:c.scopes},value={program,inputs:[],outputs:['result.json'],binding:c.binding,deadlineMs:c.deadlineMs,admission:{receiptSha256:'b'.repeat(64),imageDigest:'sha256:'+'c'.repeat(64)}};
+  const c=context(),program={objectId:randomUUID(),versionId:'stored',sha256:'a'.repeat(64),bytes:10,scopes:c.scopes},value={program,inputs:[],outputs:['result.json'],binding:c.binding,scopes:c.scopes,maxBytes:c.maxBytes,deadlineMs:c.deadlineMs,admission:{receiptSha256:'b'.repeat(64),manifestSha256:'d'.repeat(64),imageDigest:'sha256:'+'c'.repeat(64)}};
   const boundary=createSandboxAnalysisBoundary({validatePublicShape:(n,v)=>shape(publicSchema.$id,n,v),canonicalSha256:hash,verifyAdmission:async()=>({allowed:false}),port:{execute:()=>assert.fail('not admitted')}});
   await assert.rejects(boundary.execute(value),/ADMISSION_REQUIRED/);
 });
@@ -148,3 +148,25 @@ test('pandas aggregates refuse numeric overflow instead of wrapping',async()=>fi
   const request={operation:'run_analysis',format:'zip',title:'Range',content:{tables:[{name:'data',columns:['v'],rows:[[9007199254740991],[9007199254740991]]}],source:'data',steps:[{kind:'aggregate',groupBy:[],column:'v',function:'sum',name:'sum'}]}};
   await assert.rejects(service.create(request,context()),/ARTIFACT_PROCESS_FAILED/);
 }));
+test('canonical operation schema and source output assertion bind exact generated result',async()=>fixture(async({service})=>{
+  const c=context(),normalized=validators.normalizeArtifactInput('create_word',text,c),result=await service.create(text,c);
+  assert.equal(result.execution.requestSha256,normalized.metadata.requestSha256);assert.deepEqual(validators.assertArtifactOutput('create_word',result,text,c),result);
+  for(const mutate of [r=>{r.version.object.sha256='0'.repeat(64);},r=>{r.version.mimeType='application/pdf';},r=>{r.execution.requestSha256='0'.repeat(64);},r=>{r.version.evidence.push({});}]){
+    const copy=structuredClone(result);mutate(copy);assert.throws(()=>validators.assertArtifactOutput('create_word',copy,text,c));
+  }
+  assert.throws(()=>validators.normalizeArtifactInput('create_excel',text,c));
+  let touched=false;assert.throws(()=>validators.normalizeArtifactInput({toString(){touched=true;return 'create_word';}},text,c));assert.equal(touched,false);
+}));
+test('general analysis schema binds immutable inputs, manifest and declared pending publication',async()=>{
+  const c=context(),program={objectId:randomUUID(),versionId:'program-storage-v1',sha256:'1'.repeat(64),bytes:10,scopes:c.scopes};
+  c.analysisAdmission={receiptSha256:'2'.repeat(64),manifestSha256:'3'.repeat(64),imageDigest:'sha256:'+'4'.repeat(64)};
+  const request={operation:'run_analysis',format:'sandbox',title:'General',content:{program,inputs:[],outputs:['result.json']}};
+  validators.normalizeArtifactInput('run_analysis',request,c);
+  const boundary=createSandboxAnalysisBoundary({validatePublicShape:(n,v)=>shape(publicSchema.$id,n,v),canonicalSha256:hash,verifyAdmission:async({intentSha256,admission})=>({allowed:true,expiresAtMs:c.deadlineMs,intentSha256,...admission}),port:{execute:async({intentSha256,admission})=>({intentSha256,admissionReceiptSha256:admission.receiptSha256,manifestSha256:admission.manifestSha256,imageDigest:admission.imageDigest,outputs:[{name:'result.json',object:{...program,objectId:randomUUID()}}]})}});
+  const result=await boundary.execute({...request.content,binding:c.binding,scopes:c.scopes,deadlineMs:c.deadlineMs,maxBytes:c.maxBytes,admission:c.analysisAdmission});
+  assert.equal(Object.hasOwn(result,'version'),false);assert.equal(result.publicationStatus,'pending');assert.deepEqual(validators.assertArtifactOutput('run_analysis',result,request,c),result);
+  const substituted=structuredClone(result);substituted.outputs[0].object.scopes=[{...c.scopes[0],resourceId:'other'}];assert.throws(()=>validators.assertArtifactOutput('run_analysis',substituted,request,c));
+  const wrongImage={...result,imageDigest:'sha256:'+'5'.repeat(64)};assert.throws(()=>validators.assertArtifactOutput('run_analysis',wrongImage,request,c));
+  assert.throws(()=>validators.normalizeArtifactInput('run_analysis',request,{...c,analysisAdmission:null}));
+  assert.throws(()=>validators.normalizeArtifactInput('create_word',text,c));
+});

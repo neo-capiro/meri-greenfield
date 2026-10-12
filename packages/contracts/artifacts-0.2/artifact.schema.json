@@ -849,6 +849,32 @@
             "content"
           ],
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "const": "run_analysis"
+            },
+            "format": {
+              "const": "sandbox"
+            },
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "content": {
+              "$ref": "#/$defs/GeneralAnalysisContent"
+            }
+          },
+          "required": [
+            "operation",
+            "format",
+            "title",
+            "content"
+          ],
+          "additionalProperties": false
         }
       ]
     },
@@ -905,6 +931,16 @@
           "type": "integer",
           "minimum": 1,
           "maximum": 8388608
+        },
+        "analysisAdmission": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AnalysisAdmission"
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       },
       "required": [
@@ -916,6 +952,777 @@
         "maxBytes"
       ],
       "additionalProperties": false
+    },
+    "AnalysisAdmission": {
+      "type": "object",
+      "properties": {
+        "receiptSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "manifestSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "imageDigest": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "receiptSha256",
+        "manifestSha256",
+        "imageDigest"
+      ],
+      "additionalProperties": false
+    },
+    "GeneralAnalysisContent": {
+      "type": "object",
+      "properties": {
+        "program": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/ObjectReference"
+        },
+        "inputs": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:contracts:0.1.0#/$defs/ObjectReference"
+          },
+          "maxItems": 30
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[-A-Za-z0-9_]{1,60}\\.(json|csv|png|xlsx)$"
+          },
+          "minItems": 1,
+          "maxItems": 10,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "program",
+        "inputs",
+        "outputs"
+      ],
+      "additionalProperties": false
+    },
+    "ArtifactInspection": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "format": {
+              "const": "txt"
+            },
+            "nativeOpened": {
+              "const": false
+            },
+            "rendered": {
+              "const": false
+            },
+            "recalculated": {
+              "const": false
+            },
+            "members": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "maxItems": 5000
+            },
+            "details": {
+              "type": "object",
+              "properties": {
+                "encoding": {
+                  "const": "UTF-8"
+                },
+                "whitespace": {
+                  "const": "unchanged"
+                }
+              },
+              "required": [
+                "encoding",
+                "whitespace"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "sha256",
+            "bytes",
+            "format",
+            "nativeOpened",
+            "rendered",
+            "recalculated",
+            "members",
+            "details"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "format": {
+              "const": "docx"
+            },
+            "nativeOpened": {
+              "const": false
+            },
+            "rendered": {
+              "const": false
+            },
+            "recalculated": {
+              "const": false
+            },
+            "members": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "maxItems": 5000
+            },
+            "details": {
+              "type": "object",
+              "properties": {
+                "paragraphs": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "tables": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "pictures": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "paragraphs",
+                "tables",
+                "pictures"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "sha256",
+            "bytes",
+            "format",
+            "nativeOpened",
+            "rendered",
+            "recalculated",
+            "members",
+            "details"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "format": {
+              "const": "xlsx"
+            },
+            "nativeOpened": {
+              "const": false
+            },
+            "rendered": {
+              "const": false
+            },
+            "recalculated": {
+              "const": false
+            },
+            "members": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "maxItems": 5000
+            },
+            "details": {
+              "type": "object",
+              "properties": {
+                "sheets": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "maxItems": 30
+                },
+                "formulas": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "formulaCache": {
+                  "enum": [
+                    "unverified-zero-placeholder; recalculation required",
+                    "removed/unverified; recalculation required"
+                  ]
+                },
+                "revisionMethod": {
+                  "const": "openpyxl typed-cell replacement"
+                }
+              },
+              "required": [
+                "sheets",
+                "formulas",
+                "formulaCache"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "sha256",
+            "bytes",
+            "format",
+            "nativeOpened",
+            "rendered",
+            "recalculated",
+            "members",
+            "details"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "format": {
+              "const": "pptx"
+            },
+            "nativeOpened": {
+              "const": false
+            },
+            "rendered": {
+              "const": false
+            },
+            "recalculated": {
+              "const": false
+            },
+            "members": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "maxItems": 5000
+            },
+            "details": {
+              "type": "object",
+              "properties": {
+                "slides": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "editable": {
+                  "const": true
+                },
+                "visualInspection": {
+                  "const": "pending"
+                }
+              },
+              "required": [
+                "slides",
+                "editable",
+                "visualInspection"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "sha256",
+            "bytes",
+            "format",
+            "nativeOpened",
+            "rendered",
+            "recalculated",
+            "members",
+            "details"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "format": {
+              "const": "zip"
+            },
+            "nativeOpened": {
+              "const": false
+            },
+            "rendered": {
+              "const": false
+            },
+            "recalculated": {
+              "const": false
+            },
+            "members": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "maxItems": 5000
+            },
+            "details": {
+              "type": "object",
+              "properties": {
+                "rows": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "columns": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "maxItems": 200
+                },
+                "chart": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "rows",
+                "columns",
+                "chart"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "sha256",
+            "bytes",
+            "format",
+            "nativeOpened",
+            "rendered",
+            "recalculated",
+            "members",
+            "details"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "format": {
+              "const": "pdf"
+            },
+            "nativeOpened": {
+              "const": false
+            },
+            "rendered": {
+              "const": false
+            },
+            "recalculated": {
+              "const": false
+            },
+            "members": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "maxItems": 5000
+            },
+            "details": {
+              "type": "object",
+              "properties": {
+                "conversionCompleted": {
+                  "const": true
+                },
+                "renderInspection": {
+                  "const": "pending"
+                },
+                "sourceDocxSha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "conversionCompleted",
+                "renderInspection",
+                "sourceDocxSha256"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "sha256",
+            "bytes",
+            "format",
+            "nativeOpened",
+            "rendered",
+            "recalculated",
+            "members",
+            "details"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ArtifactExecution": {
+      "type": "object",
+      "properties": {
+        "requestSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "authorizationReceiptId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "budgetTicketId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "objectCommitted": {
+          "const": true
+        },
+        "versionCommitted": {
+          "const": true
+        },
+        "nativeQualified": {
+          "const": false
+        }
+      },
+      "required": [
+        "requestSha256",
+        "authorizationReceiptId",
+        "budgetTicketId",
+        "objectCommitted",
+        "versionCommitted",
+        "nativeQualified"
+      ],
+      "additionalProperties": false
+    },
+    "ArtifactCreatedResult": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/ArtifactVersion"
+        },
+        "inspection": {
+          "$ref": "#/$defs/ArtifactInspection"
+        },
+        "execution": {
+          "$ref": "#/$defs/ArtifactExecution"
+        }
+      },
+      "required": [
+        "version",
+        "inspection",
+        "execution"
+      ],
+      "additionalProperties": false
+    },
+    "GeneralAnalysisResult": {
+      "type": "object",
+      "properties": {
+        "intentSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "admissionReceiptSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "manifestSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "imageDigest": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "object": {
+                "$ref": "urn:meri:contracts:0.1.0#/$defs/ObjectReference"
+              }
+            },
+            "required": [
+              "name",
+              "object"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "maxItems": 10
+        },
+        "inspectionStatus": {
+          "const": "pending"
+        },
+        "publicationStatus": {
+          "const": "pending"
+        }
+      },
+      "required": [
+        "intentSha256",
+        "admissionReceiptSha256",
+        "manifestSha256",
+        "imageDigest",
+        "outputs",
+        "inspectionStatus",
+        "publicationStatus"
+      ],
+      "additionalProperties": false
+    },
+    "ArtifactOperationResult": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/ArtifactCreatedResult"
+        },
+        {
+          "$ref": "#/$defs/GeneralAnalysisResult"
+        }
+      ]
+    },
+    "WordRequest": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "const": "create_word"
+            },
+            "format": {
+              "enum": [
+                "docx",
+                "pdf"
+              ]
+            },
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "content": {
+              "$ref": "#/$defs/WordContent"
+            }
+          },
+          "required": [
+            "operation",
+            "format",
+            "title",
+            "content"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "const": "create_word"
+            },
+            "format": {
+              "const": "txt"
+            },
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "content": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "type": "string",
+                  "maxLength": 100000
+                }
+              },
+              "required": [
+                "text"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "operation",
+            "format",
+            "title",
+            "content"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ExcelRequest": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "create_excel"
+        },
+        "format": {
+          "const": "xlsx"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "content": {
+          "$ref": "#/$defs/Workbook"
+        }
+      },
+      "required": [
+        "operation",
+        "format",
+        "title",
+        "content"
+      ],
+      "additionalProperties": false
+    },
+    "PowerpointRequest": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "create_powerpoint"
+        },
+        "format": {
+          "const": "pptx"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "content": {
+          "$ref": "#/$defs/Presentation"
+        }
+      },
+      "required": [
+        "operation",
+        "format",
+        "title",
+        "content"
+      ],
+      "additionalProperties": false
+    },
+    "AnalysisRequest": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "const": "run_analysis"
+            },
+            "format": {
+              "const": "zip"
+            },
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "content": {
+              "$ref": "#/$defs/Analysis"
+            }
+          },
+          "required": [
+            "operation",
+            "format",
+            "title",
+            "content"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "const": "run_analysis"
+            },
+            "format": {
+              "const": "sandbox"
+            },
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "content": {
+              "$ref": "#/$defs/GeneralAnalysisContent"
+            }
+          },
+          "required": [
+            "operation",
+            "format",
+            "title",
+            "content"
+          ],
+          "additionalProperties": false
+        }
+      ]
     }
   }
 }
