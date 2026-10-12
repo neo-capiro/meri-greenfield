@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { canonicalSha256 } from '../../../../packages/contracts/validate.mjs';
-import { createScheduleLifecycle } from '../schedule-lifecycle.mjs';
+import { createScheduleLifecycle, createPostgresScheduleLifecycle } from '../schedule-lifecycle.mjs';
 
 const ids = {
   intent: '11111111-1111-4111-8111-111111111111',
@@ -324,4 +324,44 @@ for (const port of ['authorize', 'ownerList', 'workflowDescribe']) test(`indepen
   const h = harness({ [port]() { throw Error('CREDENTIAL-CANARY'); } });
   await assert.rejects(h.list(), error => !String(error).includes('CREDENTIAL-CANARY'));
   assert.equal(h.closed(), 0);
+});
+
+test('independent lifecycle: actual PostgreSQL composition prevents second dispatch of same intent', async () => {
+  const h = harness(); let row = null, connects = 0, ended = 0;
+  const sql = [];
+  const pool = { end() { ended++; }, async connect() { connects++; return {
+    async query(statement, args) {
+      sql.push(statement);
+      if (statement.startsWith('SELECT intent_id')) return { rows: row ? [row] : [] };
+      if (statement.startsWith('SELECT * FROM meri_schedules.projections')) return { rows: [] };
+      if (statement.startsWith('INSERT INTO meri_schedules.intents')) row = { intent_id: args[1], intent_sha256: args[3], binding_sha256: args[4], state: 'CLAIMED' };
+      if (statement.startsWith('SELECT * FROM meri_schedules.intents')) return { rows: row ? [row] : [] };
+      if (statement.startsWith('UPDATE meri_schedules.intents')) row.state = args[2];
+      return { rows: [], rowCount: 1 };
+    }, release() {},
+  }; } };
+  const service = createPostgresScheduleLifecycle({ pool, scheduleClient: h.scheduleClient, workflowClient: h.workflowClient,
+    clock: h.clock, authorize: async r => ({ authorized: true, bindingSha256: r.binding.bindingSha256, callerIdentity: r.binding.callerIdentity, expiresAtMs: h.clock() + 30000 }) });
+  const out = await service.execute(h.request); assert.equal(out.outcome, 'ACKNOWLEDGED'); assert.equal(row.state, 'ACKNOWLEDGED');
+  await assert.rejects(service.execute(h.request)); assert.equal(h.calls.filter(v => v.name === 'create').length, 1);
+  assert.equal(connects, 4); assert.equal(sql.filter(s => s === 'COMMIT').length, 3);
+  assert.equal(sql.at(-1), 'ROLLBACK'); assert.equal(ended, 0);
+});
+
+test('independent lifecycle: partial cancellation retains uncertainty and never continues to next run', async () => {
+  let n = 0;
+  const h = harness({ operation: 'cancel_scheduled_task', workflowCancel() { if (++n === 2) throw Error('lost second cancel ACK'); } });
+  h.request.intent.cancel.running = 'request_cancel';
+  h.request.intent.cancel.runs = [ids.run, ids.task, ids.schedule].map(runId => ({ workflowId: 'workflow-a', runId }));
+  reseal(h.request); await assert.rejects(h.run(), e => e.outcome === 'UNKNOWN');
+  assert.deepEqual(effects(h).map(v => v.name), ['delete', 'workflowCancel', 'workflowCancel']);
+  assert.equal(h.calls.filter(v => v.name === 'markUnknown').length, 1);
+});
+
+test('independent lifecycle: revocation between schedule and run cancellation stops later effect', async () => {
+  const h = harness({ operation: 'cancel_scheduled_task', authorize: async r => ({ authorized: r.phase !== 'before_cancel_run',
+    bindingSha256: r.binding.bindingSha256, callerIdentity: r.binding.callerIdentity, expiresAtMs: h.clock() + 30000 }) });
+  h.request.intent.cancel.running = 'request_cancel'; h.request.intent.cancel.runs = [{ workflowId: 'workflow-a', runId: ids.run }];
+  reseal(h.request); await assert.rejects(h.run(), e => e.outcome === 'UNKNOWN');
+  assert.deepEqual(effects(h).map(v => v.name), ['delete']);
 });
