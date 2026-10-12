@@ -13,7 +13,7 @@ const resolve=id=>resolveOperationContract({id,version:'0.2.0'}),stamp='2026-10-
 const personnel=additions.slice(3,5),congress=additions.slice(5),uuid='11111111-1111-1111-1111-111111111111';
 const request=id=>id==='get_acquisition_person'?{id:uuid}:id==='read_bill_text'?{billId:'H.R. 1'}:{};
 const context=id=>personnel.includes(id)?{actorRole:'standard_user'}:congress.includes(id)?{defaultCongress:119}:{};
-function person(){return{id:uuid,fullName:'Synthetic person',service:null,organization:null,title:null,role:null,
+function person(){return{id:uuid,fullName:'Synthetic person',nameKey:'synthetic-person',programOfRecord:null,service:null,organization:null,title:null,role:null,
   pePrimary:null,peSecondary:[],emailDomain:null,publicProfileUrl:null,confidence:0.5,status:'unknown',
   firstSeenAt:stamp,lastSeenAt:stamp,email:null,phone:null,parentOffice:null,department:null,metadata:{},sources:[]};}
 function output(id){
