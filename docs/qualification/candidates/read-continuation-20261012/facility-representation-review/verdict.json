@@ -1,0 +1,64 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "sourceCandidate": "530416e490763155c5531140f4b70e95a9493b7b",
+  "sourceTree": "b0b9210fabbb06422a912562dde257b8e54fa01b",
+  "runtimeAcceptance": false,
+  "productionEditsByReviewer": false,
+  "sourceIdentities": [
+    {
+      "path": "packages/contracts/retrieval-0.2/facility-representation.schema.json",
+      "bytes": 8329,
+      "sha256": "11f656df739ce1465f03f981df2226eb4d9c969013411991347bbe742aeab2a7",
+      "blob": "20cdbf5a2c93821bee4eda9b5fb7ffb7aa0660a9"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/facility-representation-validation.mjs",
+      "bytes": 4060,
+      "sha256": "cb0112fb85d1d4942360184087cbd9a95fc0f3f7898c873df0df99dd9adccb9e",
+      "blob": "463bec1ef57257ccf49f0a32992a2edc24ac63b9"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-facility-representation.test.mjs",
+      "bytes": 9800,
+      "sha256": "32442594d4f32a00f5784a498573a16d1ff45c4e01841207a6a5655aafe48b44",
+      "blob": "39d585cd0ddbeffaa98adc34afeb21466caa3df9"
+    }
+  ],
+  "checks": {
+    "initialIndependent": 24,
+    "completeIndependent": 27,
+    "fullRoot": 1339,
+    "public": 7,
+    "sourceAudit": 93,
+    "failures": 0,
+    "skips": 0
+  },
+  "ownedGroupsFinalAbsence": [
+    {
+      "pidAndPgid": 195343,
+      "absent": true
+    },
+    {
+      "pidAndPgid": 196309,
+      "absent": true
+    },
+    {
+      "pidAndPgid": 197442,
+      "absent": true
+    },
+    {
+      "pidAndPgid": 198565,
+      "absent": true
+    },
+    {
+      "pidAndPgid": 199043,
+      "absent": true
+    }
+  ],
+  "limitations": [
+    "Declared client lineage is not current grant or client visibility proof",
+    "Federal geography and actual district/geocode joins remain adapter obligations",
+    "Source, active/current member truth, ordering and completeness remain unqualified",
+    "Canonical binding and all native/runtime gates require separate review"
+  ]
+}
