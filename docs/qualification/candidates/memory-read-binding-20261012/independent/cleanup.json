@@ -1,0 +1,9 @@
+{
+  "reviewCheckout": "/workspace/meri-memory-binding-review-20261012",
+  "ownForegroundChecksExited": true,
+  "timedOutChecks": 0,
+  "servicesOrSchedulersLaunched": false,
+  "postCheckProcessesWithCheckoutCwdExcludingInspectionAncestors": [],
+  "noCloudProviderCustomerOrPaidCalls": true,
+  "scope": "Foreground processes returned; this scan covers this checkout cwd subtree, not other owners or whole-host runtime qualification."
+}
