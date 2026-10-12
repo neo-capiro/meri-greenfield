@@ -1,0 +1,137 @@
+{
+  "frozenBeforeCandidateInspection": true,
+  "criteriaCommit": "fbd373571ca1841239ba1e503fb2e7d3f68f330d",
+  "localEvidenceOnly": true,
+  "cases": [
+    {
+      "id": "ART-01",
+      "name": "generation-content",
+      "expectation": "Generate two distinct Word specs with paragraphs/bullets/tables; inspect actual ZIP text/order, not only extension or hash."
+    },
+    {
+      "id": "ART-02",
+      "name": "exact-text",
+      "expectation": "TXT preserves tabs, blank lines, Unicode and final newline exactly; empty and whitespace content obey explicit typed admission."
+    },
+    {
+      "id": "ART-03",
+      "name": "workbook-types",
+      "expectation": "Multiple sheets preserve literal text, numbers, booleans and defined empty cells; formula-looking text must not become executable formula unintentionally."
+    },
+    {
+      "id": "ART-04",
+      "name": "workbook-formulas",
+      "expectation": "Explicit supported formulas/cache metadata and cross-sheet references are preserved; absent recalculation cannot be labelled recalculated/validated."
+    },
+    {
+      "id": "ART-05",
+      "name": "slides-content",
+      "expectation": "Multiple editable slides with bullets/table retain ordered text and slide count through actual adopted generator if available; absence remains UNRUN."
+    },
+    {
+      "id": "ART-06",
+      "name": "analysis-data",
+      "expectation": "At least two input datasets exercise actual supported transformations, independent expected totals, missing-data and numeric-boundary outcomes; provenance maps input IDs."
+    },
+    {
+      "id": "ART-07",
+      "name": "analysis-code",
+      "expectation": "Code/executable/module/path/network selectors are refused before any local child; supported transformations never imply general Python support."
+    },
+    {
+      "id": "ART-08",
+      "name": "new-version",
+      "expectation": "Create yields exact byte/hash/media/object tuple and new immutable artifact version; output detached from port/request mutations."
+    },
+    {
+      "id": "ART-09",
+      "name": "revision-lineage",
+      "expectation": "Revise requires exact base artifact/version and expected head; new parent points to prior version; original spec and bytes remain unchanged."
+    },
+    {
+      "id": "ART-10",
+      "name": "revision-conflict",
+      "expectation": "Changed base hash/object/storage version or stale CAS fails without mutating originals; uncertain commit remains explicit and no blind retry."
+    },
+    {
+      "id": "ART-11",
+      "name": "scope-binding",
+      "expectation": "Wrong tenant/actor/conversation/run/fence or ungranted evidence scope refuses before execution/storage/download as applicable."
+    },
+    {
+      "id": "ART-12",
+      "name": "current-authority",
+      "expectation": "Revocation between generation and commit or between metadata read and download prevents new publication/disclosure."
+    },
+    {
+      "id": "ART-13",
+      "name": "provenance",
+      "expectation": "Unknown/duplicate evidence references and content hash mismatches do not become cited verified facts; unverified input labels remain explicit."
+    },
+    {
+      "id": "ART-14",
+      "name": "filename",
+      "expectation": "Absolute paths, traversal, separators, NUL/control chars, ambiguous extensions and unsupported output formats refuse before executor."
+    },
+    {
+      "id": "ART-15",
+      "name": "archive-boundary",
+      "expectation": "External links/macros/unsupported package parts, ZIP expansion and symlinks are rejected or explicitly unsupported on admitted existing-artifact paths."
+    },
+    {
+      "id": "ART-16",
+      "name": "renderer-claims",
+      "expectation": "Archive/text inspection cannot alone yield per-page/per-slide preview validation; missing qualified renderer stays pending/unsupported."
+    },
+    {
+      "id": "ART-17",
+      "name": "render-receipt",
+      "expectation": "Mismatched artifact bytes/version/page range or incomplete inspection receipt cannot validate an artifact or download target."
+    },
+    {
+      "id": "ART-18",
+      "name": "abort-before",
+      "expectation": "Aborted/expired invocation allocates no child/object/version; construction/import starts no effects."
+    },
+    {
+      "id": "ART-19",
+      "name": "late-generation",
+      "expectation": "Executor returns after original deadline: no publication; owned cleanup attempted; returned bytes retained only as bounded failure evidence."
+    },
+    {
+      "id": "ART-20",
+      "name": "late-authority",
+      "expectation": "Authorization returns late or missing/false/stale: no next noncleanup port."
+    },
+    {
+      "id": "ART-21",
+      "name": "late-storage",
+      "expectation": "Storage/CAS returns after deadline: cannot report clean no-effect or accepted publication; ownership and uncertainty preserved."
+    },
+    {
+      "id": "ART-22",
+      "name": "process-capture",
+      "expectation": "Both stream caps, true EOF versus reader errors, nonzero exit and abort are recorded; local synthetic child groups settle."
+    },
+    {
+      "id": "ART-23",
+      "name": "temporary-ownership",
+      "expectation": "Cleanup removes only owned temporary resources; parent/original/borrowed files remain; cleanup failure not hidden."
+    },
+    {
+      "id": "ART-24",
+      "name": "download-integrity",
+      "expectation": "Current exact-version download validates actual bytes/hash/length and media/name; wrong object version or partially read bytes refuse."
+    },
+    {
+      "id": "ART-25",
+      "name": "filing-separation",
+      "expectation": "Generation success does not imply source filing/indexing; canonical artifact.file command and per-object persisted/failed semantics unchanged."
+    },
+    {
+      "id": "ART-26",
+      "name": "coverage",
+      "expectation": "All four selected operation IDs remain in coverage ledger, with explicit unsupported PDF/import edits/general code/recalc/render/PPT dependencies as applicable."
+    }
+  ]
+}
