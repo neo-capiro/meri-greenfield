@@ -1,0 +1,16 @@
+{
+  "base": "d7bd22361f232211a6c1ec6b8d67115cfe36ebbd",
+  "status": "FROZEN_BEFORE_PRODUCTION_INSPECTION_AFTER_AUTHOR_FREEZES_EXIST",
+  "candidateNotYetInspected": "0e8735c8a65c31b911b20794e1655587f23ae534",
+  "criteria": [
+    "Only unchanged assertScheduleIntent extraction touches accepted lifecycle; preserve all original semantic predicates,50tests, public0.1, inspector/core and ownership.",
+    "Closed inert model requests for all four operations; explicit instruction/spec/timezone/overlap/catchup/run-now/cancel/destination/limits are reviewable, no raw workflow/task authority or model-owned identity/approval.",
+    "Trusted context correlates exact normalized request digest, immutable intent/generation/scopes/task/instruction/destination/effective budget; requested limits bound effective limits, no invented current authorization.",
+    "Pending proposal is reviewable and never calls mutation; approved execution only accepts public immutable approval matching exact actual intent and preserves current authority/release checks.",
+    "Real application entry invokes accepted lifecycle and concrete SDK adapters for all four; no disconnected duplicate approval/persistence engine.",
+    "List preserves bounded complete returned inspection/history DTO and absent/unavailable distinction, exact schedule and run identities, currentRetryVerified/historyComplete false.",
+    "Cancellation/deadline/late-completion suppression and safe failure disposition retain UNKNOWN/ACKNOWLEDGED_NOT_RELEASED/NOT_DISPATCHED; no retry/refund/exactly-once or native-stop claims.",
+    "Hostile getter/proxy and mutable caller objects are inert/detached; no source/service startup at import; borrowed clients untouched.",
+    "No live Temporal/SQL/native/cloud/provider actions; preserve raw negatives, exact source hashes, clean owned processes and explicit runtime HOLD."
+  ]
+}
