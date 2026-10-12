@@ -1,0 +1,22 @@
+{
+  "base": "4c40fb4c35d716dcd1e3b09ec29647ccca5a1326",
+  "approvedBy": "root before product code",
+  "operation": "query_outreach",
+  "schemaId": "urn:meri:retrieval:outreach-query:0.2.0",
+  "contextKeys": [
+    "clientResolution"
+  ],
+  "context": "required {clientResolution:null|{reference,clientId}}; null for no client or exact outreach ID branch; exact trimmed reference + UUID no-rebinding for list resolution",
+  "input": "exact outreachId branch suppresses list selectors; list clientId/status optional, limit1..50/default20 number/string source clamp",
+  "output": "complete record+relations or all-campaign-count plus sliced12-field rows",
+  "canonicalOwners": [
+    "snapshotOperationData",
+    "schema owns DTO field shapes",
+    "gateway/source owns current authority and tenant/client/creator checks"
+  ],
+  "limitations": [
+    "No source/handler/current authority acceptance",
+    "No copied source retrieval/service implementation",
+    "No DB/provider/model/native execution"
+  ]
+}

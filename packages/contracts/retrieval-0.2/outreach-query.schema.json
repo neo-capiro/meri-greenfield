@@ -1,0 +1,998 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:outreach-query:0.2.0",
+  "title": "Private complete outreach record and campaign projections",
+  "$defs": {
+    "OutreachQueryInstant": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "format": "date-time"
+    },
+    "OutreachQueryClient": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string"
+        },
+        "website": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "primaryContactName": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "primaryContactEmail": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "intakeData": {}
+      },
+      "required": [
+        "id",
+        "name",
+        "website",
+        "primaryContactName",
+        "primaryContactEmail",
+        "intakeData"
+      ],
+      "additionalProperties": false
+    },
+    "OutreachQueryUser": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "email": {
+          "type": "string"
+        },
+        "firstName": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lastName": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "email",
+        "firstName",
+        "lastName"
+      ],
+      "additionalProperties": false
+    },
+    "OutreachQueryAttendee": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "email": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "role": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "email",
+        "name",
+        "role"
+      ],
+      "additionalProperties": false
+    },
+    "OutreachQueryPrep": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "tenantId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "meetingId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "enum": [
+            "generated",
+            "edited",
+            "reviewed",
+            "approved",
+            "stale",
+            "failed"
+          ]
+        },
+        "agenda": {},
+        "talkingPoints": {},
+        "risks": {},
+        "followUps": {},
+        "emailEvidence": {},
+        "summary": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "provider": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "model": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "promptHash": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "generatedFrom": {},
+        "editedByUserId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sharedAt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OutreachQueryInstant"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sharedByUserId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "createdAt": {
+          "$ref": "#/$defs/OutreachQueryInstant"
+        },
+        "updatedAt": {
+          "$ref": "#/$defs/OutreachQueryInstant"
+        }
+      },
+      "required": [
+        "id",
+        "tenantId",
+        "meetingId",
+        "clientId",
+        "status",
+        "agenda",
+        "talkingPoints",
+        "risks",
+        "followUps",
+        "emailEvidence",
+        "summary",
+        "provider",
+        "model",
+        "promptHash",
+        "generatedFrom",
+        "editedByUserId",
+        "sharedAt",
+        "sharedByUserId",
+        "createdAt",
+        "updatedAt"
+      ],
+      "additionalProperties": false
+    },
+    "OutreachQueryDebrief": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "meetingId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "authorUserId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "keyVersion": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "confidential": {
+          "type": "boolean"
+        },
+        "accessLevel": {
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "generated",
+            "edited",
+            "approved"
+          ]
+        },
+        "sharedAt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OutreachQueryInstant"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sharedByUserId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "createdAt": {
+          "$ref": "#/$defs/OutreachQueryInstant"
+        },
+        "updatedAt": {
+          "$ref": "#/$defs/OutreachQueryInstant"
+        },
+        "author": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OutreachQueryUser"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "meetingId",
+        "clientId",
+        "authorUserId",
+        "keyVersion",
+        "confidential",
+        "accessLevel",
+        "status",
+        "sharedAt",
+        "sharedByUserId",
+        "createdAt",
+        "updatedAt",
+        "author"
+      ],
+      "additionalProperties": false
+    },
+    "OutreachQueryMeeting": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "subject": {
+          "type": "string"
+        },
+        "location": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "startsAt": {
+          "$ref": "#/$defs/OutreachQueryInstant"
+        },
+        "endsAt": {
+          "$ref": "#/$defs/OutreachQueryInstant"
+        },
+        "organizerEmail": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "organizerName": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "metadata": {},
+        "client": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OutreachQueryClient"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "attendees": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/OutreachQueryAttendee"
+          }
+        },
+        "preps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/OutreachQueryPrep"
+          },
+          "maxItems": 1
+        },
+        "debriefs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/OutreachQueryDebrief"
+          },
+          "maxItems": 1
+        }
+      },
+      "required": [
+        "id",
+        "clientId",
+        "subject",
+        "location",
+        "startsAt",
+        "endsAt",
+        "organizerEmail",
+        "organizerName",
+        "metadata",
+        "client",
+        "attendees",
+        "preps",
+        "debriefs"
+      ],
+      "additionalProperties": false
+    },
+    "OutreachQueryRecord": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "tenantId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "meetingId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "createdByUserId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "enum": [
+            "campaign",
+            "follow_up",
+            "prep",
+            "outbound_campaign"
+          ]
+        },
+        "status": {
+          "enum": [
+            "draft",
+            "sent",
+            "opened_in_email",
+            "failed"
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "body": {
+          "type": "string",
+          "maxLength": 2000
+        },
+        "recipients": {},
+        "recipientCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "stats": {},
+        "metadata": {},
+        "lastStep": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "sentAt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OutreachQueryInstant"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "openedInEmailAt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OutreachQueryInstant"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "deletedAt": {
+          "type": "null"
+        },
+        "deletedByUserId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "createdAt": {
+          "$ref": "#/$defs/OutreachQueryInstant"
+        },
+        "updatedAt": {
+          "$ref": "#/$defs/OutreachQueryInstant"
+        },
+        "client": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OutreachQueryClient"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "meeting": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OutreachQueryMeeting"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "createdBy": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OutreachQueryUser"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "tenantId",
+        "clientId",
+        "meetingId",
+        "createdByUserId",
+        "type",
+        "status",
+        "title",
+        "subject",
+        "body",
+        "recipients",
+        "recipientCount",
+        "stats",
+        "metadata",
+        "lastStep",
+        "sentAt",
+        "openedInEmailAt",
+        "deletedAt",
+        "deletedByUserId",
+        "createdAt",
+        "updatedAt",
+        "client",
+        "meeting",
+        "createdBy"
+      ],
+      "additionalProperties": false
+    },
+    "OutreachQueryCampaign": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sentAt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OutreachQueryInstant"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "createdAt": {
+          "$ref": "#/$defs/OutreachQueryInstant"
+        },
+        "clientName": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "recipientCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "createdBy": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "clientId",
+        "name",
+        "type",
+        "status",
+        "subject",
+        "sentAt",
+        "createdAt",
+        "clientName",
+        "recipientCount",
+        "createdBy"
+      ],
+      "additionalProperties": false
+    },
+    "OutreachQueryRequest": {
+      "type": "object",
+      "properties": {
+        "outreachId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "limit": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "OutreachQueryContext": {
+      "type": "object",
+      "properties": {
+        "clientResolution": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "reference": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                },
+                "clientId": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "required": [
+                "reference",
+                "clientId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "clientResolution"
+      ],
+      "additionalProperties": false
+    },
+    "OutreachQueryExactInput": {
+      "type": "object",
+      "properties": {
+        "outreachId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        }
+      },
+      "required": [
+        "outreachId"
+      ],
+      "additionalProperties": false
+    },
+    "OutreachQueryListInput": {
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 40
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        }
+      },
+      "required": [
+        "clientId",
+        "status",
+        "limit"
+      ],
+      "additionalProperties": false
+    },
+    "OutreachQueryInput": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/OutreachQueryExactInput"
+        },
+        {
+          "$ref": "#/$defs/OutreachQueryListInput"
+        }
+      ]
+    },
+    "OutreachQueryExactOutput": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "query_outreach"
+        },
+        "generatedAt": {
+          "$ref": "#/$defs/OutreachQueryInstant"
+        },
+        "record": {
+          "$ref": "#/$defs/OutreachQueryRecord"
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "record"
+      ],
+      "additionalProperties": false
+    },
+    "OutreachQueryListOutput": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "query_outreach"
+        },
+        "generatedAt": {
+          "$ref": "#/$defs/OutreachQueryInstant"
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "campaigns": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/OutreachQueryCampaign"
+          },
+          "maxItems": 50
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "total",
+        "campaigns"
+      ],
+      "additionalProperties": false
+    },
+    "OutreachQueryOutput": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/OutreachQueryExactOutput"
+        },
+        {
+          "$ref": "#/$defs/OutreachQueryListOutput"
+        }
+      ]
+    }
+  }
+}
