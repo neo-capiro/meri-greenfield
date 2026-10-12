@@ -1,0 +1,3226 @@
+{
+  "candidate": "fecf97a4a8b742c6c09b781d3b799816e8b548e4",
+  "packets": [
+    {
+      "reference": "b73c2994080cb9c03647f4ddf07f8057e37b71d3",
+      "manifest": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/manifest.json",
+      "members": 43,
+      "sha256": "a4d4e4d6239c0e608f5fd8fe157752f5622d09b694dfca920405ff282c1f8862"
+    },
+    {
+      "reference": "ec3e54045fcdf62941629e2ed7b4f40455ed04c4",
+      "manifest": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/manifest.json",
+      "members": 20,
+      "sha256": "79908a1693103e42fe676eb8d31bea8070ba51844eeb85f5d7ec30e452b6f311"
+    },
+    {
+      "reference": "d710e9c62a6455a5f512646ef3014117498aa99c",
+      "manifest": "docs/qualification/candidates/read-continuation-20261012/command-contracts-integration/packet-manifest.json",
+      "members": 172,
+      "sha256": "6326d7bb012692cd8e04dbfc0a190efe0b40ad04e2c30f9d7fa4531d758a8600"
+    },
+    {
+      "reference": "cb5310d34cddd13d04b2233c937f271b5b4713d1",
+      "manifest": "docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/packet-manifest.json",
+      "members": 53,
+      "sha256": "fe8fc1f3760eca91ba1af0658b979bbf56fa5edd19a079930eea6f4750b0fc6c"
+    },
+    {
+      "reference": "790638e4908429f190dd6414814ee872145fa289",
+      "manifest": "docs/qualification/candidates/read-continuation-20261012/program-elements-author/manifest.json",
+      "members": 70,
+      "sha256": "d92df8a1549c715d2d02a5b78aa97404a7ac02e749f9af7a6beec7ce3e3729cf"
+    },
+    {
+      "reference": "3b06986d2f2dd2b89d17acff97c1fc1091aab85b",
+      "manifest": "docs/qualification/candidates/read-continuation-20261012/program-elements-review/manifest.json",
+      "members": 33,
+      "sha256": "28cbefa92df1504997a784863104735a9402f31faa2787ff9b5648ba6a4f68fd"
+    }
+  ],
+  "passed": 795,
+  "failed": 0,
+  "checks": [
+    {
+      "check": "exact manifest docs/qualification/candidates/read-continuation-20261012/outreach-query-author/manifest.json",
+      "pass": true
+    },
+    {
+      "check": "nonempty unique membership docs/qualification/candidates/read-continuation-20261012/outreach-query-author/manifest.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/coordination/reports/CODEX-OUTREACH-QUERY-AUTHOR-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/coordination/reports/CODEX-OUTREACH-QUERY-AUTHOR-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/first-source-identities.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/first-source-identities.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/fixture-corrections.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/fixture-corrections.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-corrected.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-corrected.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-first.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-first.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-freeze.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-freeze.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-freeze.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-freeze.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-freeze.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-freeze.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/initial-source/outreach-query-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/initial-source/outreach-query-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/initial-source/outreach-query.schema.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/initial-source/outreach-query.schema.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/initial-source/retrieval-outreach-query.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/initial-source/retrieval-outreach-query.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/inspection-corrections.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/inspection-corrections.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/metadata-corrections.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/metadata-corrections.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/outline.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/outline.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/private-content-scan.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/private-content-scan.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/projection-fields.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/projection-fields.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/reference-identities.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/reference-identities.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit-data.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit-data.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit-final.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit-final.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit-initial.py.txt",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit-initial.py.txt",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit.py",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit.py",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-facts.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-facts.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/storage-constraints-initial-extraction.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/storage-constraints-initial-extraction.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/storage-constraints.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/storage-constraints.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/verify-packet.py",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/verify-packet.py",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/whitespace-authored.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/whitespace-authored.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/whitespace-authored.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/whitespace-authored.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/whitespace-full.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/whitespace-full.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/whitespace-full.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/whitespace-full.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/whitespace.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-author/whitespace.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes packages/contracts/retrieval-0.2/outreach-query-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes packages/contracts/retrieval-0.2/outreach-query-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes packages/contracts/retrieval-0.2/outreach-query.schema.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes packages/contracts/retrieval-0.2/outreach-query.schema.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes packages/contracts/test/retrieval-outreach-query.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes packages/contracts/test/retrieval-outreach-query.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact manifest docs/qualification/candidates/read-continuation-20261012/outreach-query-review/manifest.json",
+      "pass": true
+    },
+    {
+      "check": "nonempty unique membership docs/qualification/candidates/read-continuation-20261012/outreach-query-review/manifest.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/coordination/reports/CODEX-OUTREACH-QUERY-REVIEW-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/coordination/reports/CODEX-OUTREACH-QUERY-REVIEW-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-review/audit-author-packet.py",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-review/audit-author-packet.py",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-review/audit-results.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-review/audit-results.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-review/audit-source.py",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-review/audit-source.py",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-review/author-packet-audit.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-review/author-packet-audit.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-review/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-review/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-review/cleanup.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-review/cleanup.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-review/control-trace-correction.md",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-review/control-trace-correction.md",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-review/criteria.md",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-review/criteria.md",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-review/dependencies.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-review/dependencies.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-review/focused-first.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-review/focused-first.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-review/focused-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-review/focused-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-review/focused-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-review/focused-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-review/reference-identities.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-review/reference-identities.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-review/source-audit.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-review/source-audit.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-review/source-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-review/source-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-review/source-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-review/source-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-review/source-findings.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-review/source-findings.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-review/verify-packet.py",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/outreach-query-review/verify-packet.py",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes packages/contracts/test/retrieval-outreach-query-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes packages/contracts/test/retrieval-outreach-query-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact manifest docs/qualification/candidates/read-continuation-20261012/command-contracts-integration/packet-manifest.json",
+      "pass": true
+    },
+    {
+      "check": "nonempty unique membership docs/qualification/candidates/read-continuation-20261012/command-contracts-integration/packet-manifest.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/coordination/reports/CODEX-COMMAND-CONTRACTS-INTEGRATION-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/coordination/reports/CODEX-COMMAND-CONTRACTS-INTEGRATION-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/coordination/reports/CODEX-COMMAND-CONTRACTS-INTEGRATION-REVIEW-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/coordination/reports/CODEX-COMMAND-CONTRACTS-INTEGRATION-REVIEW-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/coordination/reports/CODEX-COMMAND-PAYLOADS-AUTHOR-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/coordination/reports/CODEX-COMMAND-PAYLOADS-AUTHOR-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/coordination/reports/CODEX-COMMAND-PAYLOADS-REVIEW-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/coordination/reports/CODEX-COMMAND-PAYLOADS-REVIEW-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/command-contracts-integration-review/audit-integration.py",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/command-contracts-integration-review/audit-integration.py",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/command-contracts-integration-review/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/command-contracts-integration-review/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/command-contracts-integration-review/cleanup.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/command-contracts-integration-review/cleanup.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/command-contracts-integration-review/connected-first.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/command-contracts-integration-review/connected-first.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/command-contracts-integration-review/connected-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/command-contracts-integration-review/connected-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/command-contracts-integration-review/connected-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/command-contracts-integration-review/connected-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/command-contracts-integration-review/criteria-amendment.md",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/command-contracts-integration-review/criteria-amendment.md",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/command-contracts-integration-review/criteria.md",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/command-contracts-integration-review/criteria.md",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/command-contracts-integration-review/dependencies.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/command-contracts-integration-review/dependencies.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/command-contracts-integration-review/manifest.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/command-contracts-integration-review/manifest.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/command-contracts-integration-review/packet-verification.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/command-contracts-integration-review/packet-verification.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/command-contracts-integration-review/root-receipt-binding.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/command-contracts-integration-review/root-receipt-binding.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/command-contracts-integration-review/source-audit.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/command-contracts-integration-review/source-audit.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/command-contracts-integration-review/source-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/command-contracts-integration-review/source-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/command-contracts-integration-review/source-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/command-contracts-integration-review/source-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/command-contracts-integration-review/verify-packet.py",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/command-contracts-integration-review/verify-packet.py",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-contracts-integration/audit-results.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-contracts-integration/audit-results.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-contracts-integration/audit.py",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-contracts-integration/audit.py",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-contracts-integration/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-contracts-integration/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-contracts-integration/dependencies.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-contracts-integration/dependencies.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-contracts-integration/final-verification-summary.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-contracts-integration/final-verification-summary.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-contracts-integration/focused.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-contracts-integration/focused.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-contracts-integration/focused.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-contracts-integration/focused.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-contracts-integration/focused.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-contracts-integration/focused.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-contracts-integration/source-audit.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-contracts-integration/source-audit.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-contracts-integration/source-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-contracts-integration/source-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-contracts-integration/source-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-contracts-integration/source-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/api.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/api.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/cleanup-final.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/cleanup-final.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-negative.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-negative.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-preimage.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-preimage.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-preimage/packages/contracts/commands-0.2/artifact-file-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-preimage/packages/contracts/commands-0.2/artifact-file-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-preimage/packages/contracts/commands-0.2/artifact-file.schema.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-preimage/packages/contracts/commands-0.2/artifact-file.schema.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-preimage/packages/contracts/commands-0.2/task-create-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-preimage/packages/contracts/commands-0.2/task-create-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-preimage/packages/contracts/commands-0.2/task-create.schema.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-preimage/packages/contracts/commands-0.2/task-create.schema.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-preimage/packages/contracts/test/command-artifact-file.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-preimage/packages/contracts/test/command-artifact-file.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-preimage/packages/contracts/test/command-task-create.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-preimage/packages/contracts/test/command-task-create.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-repaired.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-repaired.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/direct-context-countercontrol.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/direct-context-countercontrol.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/direct-context-countercontrol.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/direct-context-countercontrol.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/direct-context-countercontrol.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/direct-context-countercontrol.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/final-source.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/final-source.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/final-source.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/final-source.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/final-source.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/final-source.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-freeze.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-freeze.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-freeze.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-freeze.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-freeze.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-freeze.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-initial.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-initial.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-repaired.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-repaired.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-diff-check.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-diff-check.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-diff-check.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-diff-check.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-diff-check.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-diff-check.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source/artifact-file-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source/artifact-file-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source/artifact-file.schema.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source/artifact-file.schema.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source/command-artifact-file.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source/command-artifact-file.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source/command-task-create.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source/command-task-create.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source/task-create-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source/task-create-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source/task-create.schema.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source/task-create.schema.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/manifest.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/manifest.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction-preimage.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction-preimage.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction-preimage/packages/contracts/commands-0.2/artifact-file-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction-preimage/packages/contracts/commands-0.2/artifact-file-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction-preimage/packages/contracts/commands-0.2/artifact-file.schema.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction-preimage/packages/contracts/commands-0.2/artifact-file.schema.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction-preimage/packages/contracts/commands-0.2/task-create-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction-preimage/packages/contracts/commands-0.2/task-create-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction-preimage/packages/contracts/commands-0.2/task-create.schema.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction-preimage/packages/contracts/commands-0.2/task-create.schema.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction-preimage/packages/contracts/test/command-artifact-file.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction-preimage/packages/contracts/test/command-artifact-file.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction-preimage/packages/contracts/test/command-task-create.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction-preimage/packages/contracts/test/command-task-create.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/pending-metadata-negative.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/pending-metadata-negative.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/pending-metadata-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/pending-metadata-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/pending-metadata-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/pending-metadata-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/pending-metadata-repaired.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/pending-metadata-repaired.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/pending-metadata-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/pending-metadata-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/pending-metadata-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/pending-metadata-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/reference-identities.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/reference-identities.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/report-before-metadata-correction.md",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/report-before-metadata-correction.md",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/setup-diagnostic.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/setup-diagnostic.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-audit-repaired.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-audit-repaired.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-audit-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-audit-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-audit-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-audit-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-audit.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-audit.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-checks.initial.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-checks.initial.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-checks.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-checks.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-countercontrols.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-countercontrols.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-countercontrols.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-countercontrols.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-countercontrols.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-countercontrols.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/verify-source.initial.py",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/verify-source.initial.py",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/verify-source.py",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-author/verify-source.py",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/audit-packet.py",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/audit-packet.py",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/audit-source.py",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/audit-source.py",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/author-packet-audit-corrected.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/author-packet-audit-corrected.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/author-packet-audit-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/author-packet-audit-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/author-packet-audit-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/author-packet-audit-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/author-packet-audit.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/author-packet-audit.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/author-packet-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/author-packet-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/author-packet-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/author-packet-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/blank-fixture-correction.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/blank-fixture-correction.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/blank-fixture-correction.patch",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/blank-fixture-correction.patch",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/branch-correction.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/branch-correction.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/cleanup-final.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/cleanup-final.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/compatibility-negative.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/compatibility-negative.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/compatibility-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/compatibility-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/compatibility-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/compatibility-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/criteria.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/criteria.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/final-review.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/final-review.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/independent-corrected.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/independent-corrected.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/independent-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/independent-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/independent-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/independent-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/independent-final.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/independent-final.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/independent-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/independent-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/independent-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/independent-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/independent-first.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/independent-first.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/independent-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/independent-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/independent-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/independent-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/independent-repaired.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/independent-repaired.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/independent-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/independent-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/independent-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/independent-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/inspection-corrections.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/inspection-corrections.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/manifest.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/manifest.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/pending-fixture-correction.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/pending-fixture-correction.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/pending-fixture-correction.patch",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/pending-fixture-correction.patch",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/pending-negative.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/pending-negative.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/pending-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/pending-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/pending-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/pending-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/privacy-scan.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/privacy-scan.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/reference-identities.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/reference-identities.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/repaired-unchanged.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/repaired-unchanged.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/repaired-unchanged.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/repaired-unchanged.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/repaired-unchanged.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/repaired-unchanged.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/review-commits.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/review-commits.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/review-findings.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/review-findings.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/setup-receipt.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/setup-receipt.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/source-audit-final.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/source-audit-final.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/source-audit-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/source-audit-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/source-audit-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/source-audit-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/source-audit-restored-pending.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/source-audit-restored-pending.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/source-audit-restored-pending.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/source-audit-restored-pending.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/source-audit-restored-pending.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/source-audit-restored-pending.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/source-audit.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/source-audit.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/source-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/source-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/source-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/source-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/source-findings.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/source-findings.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/whitespace-authored.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/whitespace-authored.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/whitespace-authored.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/whitespace-authored.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/whitespace-full.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/whitespace-full.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/whitespace-full.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/whitespace-full.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/whitespace.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/command-payloads-review/whitespace.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes packages/contracts/commands-0.2/artifact-file-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes packages/contracts/commands-0.2/artifact-file-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes packages/contracts/commands-0.2/artifact-file.schema.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes packages/contracts/commands-0.2/artifact-file.schema.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes packages/contracts/commands-0.2/task-create-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes packages/contracts/commands-0.2/task-create-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes packages/contracts/commands-0.2/task-create.schema.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes packages/contracts/commands-0.2/task-create.schema.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes packages/contracts/commands-0.2/validate.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes packages/contracts/commands-0.2/validate.mjs",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes packages/contracts/test/command-artifact-file.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes packages/contracts/test/command-artifact-file.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes packages/contracts/test/command-contracts-integration-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes packages/contracts/test/command-contracts-integration-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes packages/contracts/test/command-payloads-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes packages/contracts/test/command-payloads-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes packages/contracts/test/command-task-create.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes packages/contracts/test/command-task-create.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact manifest docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/packet-manifest.json",
+      "pass": true
+    },
+    {
+      "check": "nonempty unique membership docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/packet-manifest.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/coordination/reports/CODEX-PE-REFERENCE-DETACHMENT-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/coordination/reports/CODEX-PE-REFERENCE-DETACHMENT-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/coordination/reports/CODEX-PE-REFERENCE-DETACHMENT-REVIEW-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/coordination/reports/CODEX-PE-REFERENCE-DETACHMENT-REVIEW-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/audit-result.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/audit-result.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/audit.py",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/audit.py",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/baseline-corrected.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/baseline-corrected.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/baseline-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/baseline-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/baseline-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/baseline-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/baseline-independent.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/baseline-independent.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/baseline-independent.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/baseline-independent.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/baseline-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/baseline-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/criteria.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/criteria.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/dependency-copy.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/dependency-copy.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/discovery-errors.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/discovery-errors.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/fixture-correction.md",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/fixture-correction.md",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/manifest.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/manifest.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/repaired-independent.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/repaired-independent.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/repaired-independent.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/repaired-independent.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/repaired-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/repaired-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/audit-results.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/audit-results.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/audit.py",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/audit.py",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/dependencies.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/dependencies.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/dependency-cleanup.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/dependency-cleanup.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/original-author-test.mjs.txt",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/original-author-test.mjs.txt",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/original-negative.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/original-negative.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/original-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/original-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/original-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/original-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/repaired-focused-all-inputs.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/repaired-focused-all-inputs.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/repaired-focused-all-inputs.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/repaired-focused-all-inputs.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/repaired-focused-all-inputs.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/repaired-focused-all-inputs.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/repaired-focused-complete.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/repaired-focused-complete.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/repaired-focused-complete.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/repaired-focused-complete.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/repaired-focused-complete.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/repaired-focused-complete.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/repaired-focused-final.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/repaired-focused-final.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/repaired-focused-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/repaired-focused-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/repaired-focused-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/repaired-focused-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/repaired-focused.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/repaired-focused.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/repaired-focused.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/repaired-focused.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/repaired-focused.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/repaired-focused.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/repaired-original-tests.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/repaired-original-tests.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/repaired-original-tests.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/repaired-original-tests.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/repaired-original-tests.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/repaired-original-tests.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/source-audit.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/source-audit.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/source-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/source-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/source-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/source-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/sparse-checkout-correction.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/sparse-checkout-correction.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/test-expectation-update.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/test-expectation-update.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/test-expectation-update.patch",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/test-expectation-update.patch",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes packages/contracts/retrieval-0.2/pe-references-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes packages/contracts/retrieval-0.2/pe-references-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes packages/contracts/test/retrieval-pe-reference-detachment-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes packages/contracts/test/retrieval-pe-reference-detachment-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes packages/contracts/test/retrieval-pe-reference-detachment.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes packages/contracts/test/retrieval-pe-reference-detachment.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes packages/contracts/test/retrieval-pe-references.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes packages/contracts/test/retrieval-pe-references.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact manifest docs/qualification/candidates/read-continuation-20261012/program-elements-author/manifest.json",
+      "pass": true
+    },
+    {
+      "check": "nonempty unique membership docs/qualification/candidates/read-continuation-20261012/program-elements-author/manifest.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/coordination/reports/CODEX-PROGRAM-ELEMENTS-AUTHOR-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/coordination/reports/CODEX-PROGRAM-ELEMENTS-AUTHOR-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/ast-helper-failure.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/ast-helper-failure.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/audit-final.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/audit-final.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/audit-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/audit-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/audit-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/audit-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/audit-initial.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/audit-initial.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/audit-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/audit-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/audit-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/audit-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/audit-repaired.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/audit-repaired.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/audit-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/audit-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/audit-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/audit-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/candidate-exact.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/candidate-exact.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/candidate-exact.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/candidate-exact.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/candidate-exact.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/candidate-exact.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/candidate-final-exact.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/candidate-final-exact.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/candidate-final-exact.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/candidate-final-exact.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/candidate-final-exact.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/candidate-final-exact.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-complete.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-complete.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-complete.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-complete.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-complete.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-complete.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-current.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-current.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-current.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-current.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-current.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-current.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-fixtures-corrected.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-fixtures-corrected.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-fixtures-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-fixtures-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-fixtures-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-fixtures-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-initial.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-initial.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/enforced-envelope-controls.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/enforced-envelope-controls.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/enforced-envelope-controls.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/enforced-envelope-controls.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/enforced-envelope-controls.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/enforced-envelope-controls.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/final-visible-correlations.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/final-visible-correlations.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/final-visible-correlations.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/final-visible-correlations.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/final-visible-correlations.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/final-visible-correlations.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/focused-initial.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/focused-initial.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/focused-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/focused-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/focused-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/focused-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/focused-schema-repair.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/focused-schema-repair.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/focused-schema-repair.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/focused-schema-repair.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/focused-schema-repair.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/focused-schema-repair.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/full-correlation-controls.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/full-correlation-controls.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/full-correlation-controls.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/full-correlation-controls.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/full-correlation-controls.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/full-correlation-controls.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/generate-schema.py",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/generate-schema.py",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/initial-source/program-elements-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/initial-source/program-elements-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/initial-source/program-elements.schema.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/initial-source/program-elements.schema.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/initial-source/retrieval-program-elements.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/initial-source/retrieval-program-elements.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/initial-source.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/initial-source.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/integration-api.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/integration-api.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/outline.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/outline.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/owned-cleanup.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/owned-cleanup.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/reachable-branches-negative.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/reachable-branches-negative.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/reachable-branches-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/reachable-branches-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/reachable-branches-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/reachable-branches-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/reachable-branches-repaired.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/reachable-branches-repaired.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/reachable-branches-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/reachable-branches-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/reachable-branches-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/reachable-branches-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/reference-identities.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/reference-identities.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/scalar-inventory.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/scalar-inventory.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/setup-diagnostic.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/setup-diagnostic.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/source-checks.8854.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/source-checks.8854.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/source-checks.initial.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/source-checks.initial.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/source-checks.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/source-checks.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/verify-source.initial.py",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/verify-source.initial.py",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/verify-source.py",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-author/verify-source.py",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes packages/contracts/retrieval-0.2/program-elements-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes packages/contracts/retrieval-0.2/program-elements-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes packages/contracts/retrieval-0.2/program-elements.schema.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes packages/contracts/retrieval-0.2/program-elements.schema.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes packages/contracts/test/retrieval-program-elements.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes packages/contracts/test/retrieval-program-elements.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact manifest docs/qualification/candidates/read-continuation-20261012/program-elements-review/manifest.json",
+      "pass": true
+    },
+    {
+      "check": "nonempty unique membership docs/qualification/candidates/read-continuation-20261012/program-elements-review/manifest.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/coordination/reports/CODEX-PROGRAM-ELEMENTS-REVIEW-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/coordination/reports/CODEX-PROGRAM-ELEMENTS-REVIEW-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/audit-result.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/audit-result.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/audit.py",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/audit.py",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/author-packet-audit-initial.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/author-packet-audit-initial.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/author-packet-audit.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/author-packet-audit.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/branch-repaired-findings.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/branch-repaired-findings.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/branch-repaired-independent.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/branch-repaired-independent.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/branch-repaired-independent.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/branch-repaired-independent.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/branch-repaired-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/branch-repaired-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/claim-shape-edges.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/claim-shape-edges.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/claim-shape-edges.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/claim-shape-edges.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/claim-shape-edges.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/claim-shape-edges.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/correlation-edge-cases.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/correlation-edge-cases.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/correlation-edge-cases.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/correlation-edge-cases.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/correlation-edge-cases.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/correlation-edge-cases.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/correlation-repaired-independent.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/correlation-repaired-independent.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/correlation-repaired-independent.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/correlation-repaired-independent.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/correlation-repaired-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/correlation-repaired-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/criteria.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/criteria.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/dependency-copy.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/dependency-copy.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/diagnostics.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/diagnostics.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/final-independent.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/final-independent.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/final-independent.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/final-independent.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/final-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/final-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/initial-findings.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/initial-findings.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/initial-independent.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/initial-independent.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/initial-independent.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/initial-independent.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/initial-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/initial-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/reference-identities.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/reference-identities.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/source-facts.json",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/source-facts.json",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/verify-author-packet.py",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes docs/qualification/candidates/read-continuation-20261012/program-elements-review/verify-author-packet.py",
+      "pass": true
+    },
+    {
+      "check": "source hash and bytes packages/contracts/test/retrieval-program-elements-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact integrated bytes packages/contracts/test/retrieval-program-elements-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact frozen additional code packages/contracts/test/retrieval-backend-next-independent.test.mjs",
+      "pass": true
+    }
+  ],
+  "limits": "Hash correspondence and declared packet membership only; no source/native/runtime acceptance follows from manifest integrity alone."
+}
