@@ -1,0 +1,27 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "check"
+  ],
+  "cwd": "/workspace/meri-temporal-recovery-20261012/apps/control/qualification-temporal",
+  "startUnixSeconds": 1791781647.3737035,
+  "elapsedSeconds": 6.958641290664673,
+  "exitCode": 0,
+  "ownedPidAndGroup": 61698,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "reapedDescendants": [],
+  "streams": {
+    "stdout": {
+      "path": "final-author.stdout.txt",
+      "bytes": 3314,
+      "sha256": "247b9761ef1f2738afba28ecdbddc54b64f9fe967d0d631bc330cde4ef251a14"
+    },
+    "stderr": {
+      "path": "final-author.stderr.txt",
+      "bytes": 624,
+      "sha256": "3f6b43df05fe3fe07a2f5b70a843b7b1aa8847a2cde8dd433344a768aa77b1c4"
+    }
+  }
+}

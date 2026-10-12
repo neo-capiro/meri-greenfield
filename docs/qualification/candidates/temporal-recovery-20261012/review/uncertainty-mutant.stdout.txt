@@ -1,0 +1,59 @@
+✔ uncertain replacement acknowledgement holds without retry, transport or guessed cancellation (51.127636ms)
+✖ cancelled pending replacement remains unknown without load or guessed revoke after late acknowledgement (19.271125ms)
+✖ compiled workflow preserves actual unknown replacement without dispatching cleanup (222.134274ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 1
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1091.24367
+
+✖ failing tests:
+
+test at docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs:233:1
+✖ cancelled pending replacement remains unknown without load or guessed revoke after late acknowledgement (19.271125ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /UNCERTAIN|UNKNOWN/i. Input:
+  
+  'FixtureRecoveryHold'
+  
+      at TestContext.<anonymous> (file:///workspace/meri-temporal-recovery-review-20261012/docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs:242:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'FixtureRecoveryHold',
+    expected: /UNCERTAIN|UNKNOWN/i,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs:281:1
+✖ compiled workflow preserves actual unknown replacement without dispatching cleanup (222.134274ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  ApplicationFailure: FIXTURE_RECOVERY_HOLD
+      at async TestContext.<anonymous> (file:///workspace/meri-temporal-recovery-review-20261012/docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs:287:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: ApplicationFailure: FIXTURE_RECOVERY_HOLD
+        at ApplicationFailure.create (/workspace/meri-temporal-recovery-20261012/apps/control/qualification-temporal/node_modules/@temporalio/common/lib/failure.js:185:16)
+        at hold (file:///workspace/meri-temporal-recovery-review-20261012/docs/qualification/candidates/temporal-recovery-20261012/review/uncertainty-mutant.runtime.mjs:26:29)
+        at Object.cancelFixtureRecovery (file:///workspace/meri-temporal-recovery-review-20261012/docs/qualification/candidates/temporal-recovery-20261012/review/uncertainty-mutant.runtime.mjs:179:29)
+        at file:///workspace/meri-temporal-recovery-review-20261012/docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs:43:34
+        at evalmachine.<anonymous>:24:65
+        at Object.nonCancellable (file:///workspace/meri-temporal-recovery-review-20261012/docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs:37:54)
+        at Object.sdkFixtureRecoveryWorkflow (evalmachine.<anonymous>:24:44)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///workspace/meri-temporal-recovery-review-20261012/docs/qualification/candidates/temporal-recovery-20261012/review/recovery-independent.test.mjs:287:3) {
+      [cause]: undefined
+    },
+    operator: 'rejects',
+    diff: 'simple'
+  }
