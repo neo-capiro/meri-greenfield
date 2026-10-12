@@ -1,0 +1,25 @@
+{
+  "scope": "SOURCE_DRAFT_PUBLICATION_ONLY_NO_NATIVE_ACCEPTANCE",
+  "source": "GitHub connector create_pull_request structuredContent",
+  "observation": {
+    "url": "https://github.com/neo-capiro/meri-greenfield/pull/17",
+    "number": 17,
+    "state": "open",
+    "merged": false,
+    "draft": true,
+    "base": "task/meri-g1-recovery-sandbox-20261012",
+    "base_sha": "e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5",
+    "head": "task/meri-g1-native-path-20261012",
+    "head_sha": "980a3db2be3a858a8a30063476ae957f3f94d439",
+    "created_at": "2026-10-12T06:14:38Z",
+    "updated_at": "2026-10-12T06:14:38Z"
+  },
+  "publicationMode": "new branches; no force push, main merge, retarget or rebase",
+  "reportHead": "980a3db2be3a858a8a30063476ae957f3f94d439",
+  "reportTree": "c6f5c832be5e02aef2855e00020bf5c751a0ad72",
+  "rootIntegrationManifestSha256": "8d10073db7fcd242e8b96df2640832b9ead0c068a0dac022c692891603cce9cb",
+  "finalPlanSha256": "9e786e216e6c43de8202d7bd407975fc70987e53bd87ff2a9fc01840de094f04",
+  "g1Accepted": false,
+  "sourceConnectivityEnabled": false,
+  "finalReadback": "This receipt is historical. Its containing metadata commit is pushed and read back separately; final turn reports that exact head without claiming the receipt contains its own future commit hash."
+}

@@ -1,0 +1,49 @@
+{
+  "observedAtUtc": "2026-10-12T06:15:14.742182+00:00",
+  "scope": "read-only remote branch publication and PR16 base verification",
+  "branches": [
+    {
+      "branch": "task/meri-g1-native-path-20261012",
+      "localCommit": "980a3db2be3a858a8a30063476ae957f3f94d439",
+      "remoteCommit": "980a3db2be3a858a8a30063476ae957f3f94d439",
+      "equal": true
+    },
+    {
+      "branch": "task/meri-native-supervisor-20261012",
+      "localCommit": "724850cb6cc84c8381fb52aec23b582e0e3b5872",
+      "remoteCommit": "724850cb6cc84c8381fb52aec23b582e0e3b5872",
+      "equal": true
+    },
+    {
+      "branch": "review/meri-native-supervisor-20261012",
+      "localCommit": "c7a6b079feb0b4e57310d8068ab106347fa3c24f",
+      "remoteCommit": "c7a6b079feb0b4e57310d8068ab106347fa3c24f",
+      "equal": true
+    },
+    {
+      "branch": "task/meri-g1-budget-native-tests-20261012",
+      "localCommit": "ea7b0bae9b630f750f7f329a144f3cc34f959b00",
+      "remoteCommit": "ea7b0bae9b630f750f7f329a144f3cc34f959b00",
+      "equal": true
+    },
+    {
+      "branch": "review/meri-g1-budget-native-tests-20261012",
+      "localCommit": "ea5fe073513ab49ae61d9c291ccd11ff3803b32b",
+      "remoteCommit": "ea5fe073513ab49ae61d9c291ccd11ff3803b32b",
+      "equal": true
+    },
+    {
+      "branch": "review/meri-g1-native-path-20261012",
+      "localCommit": "4da0af87d7e34e0fcdaeec2ab1c520437eaf5af4",
+      "remoteCommit": "4da0af87d7e34e0fcdaeec2ab1c520437eaf5af4",
+      "equal": true
+    },
+    {
+      "branch": "task/meri-g1-recovery-sandbox-20261012",
+      "localCommit": "e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5",
+      "remoteCommit": "e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5",
+      "equal": true
+    }
+  ],
+  "allEqual": true
+}
