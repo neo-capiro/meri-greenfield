@@ -161,3 +161,121 @@ test('independent research: empty note title cannot bypass the original nonempty
   const r=row('clio_note');r.title='';assert.throws(()=>check(page([r])));
   r.title=' ';check(page([r]));
 });
+
+// Legal-owner controls frozen before its candidate is inspected.
+import {createResearchLegalLegislationValidators} from '../retrieval-0.2/research-legal-legislation-validation.mjs';
+const legalSchema=load('research-legal-legislation');ajv.addSchema(legalSchema);
+const legalShapes=new Map(Object.keys(legalSchema.$defs).map(n=>[n,ajv.compile({$ref:`${legalSchema.$id}#/$defs/${n}`})]));
+const legal=createResearchLegalLegislationValidators({schema:legalSchema,validateShape(n,x){const f=legalShapes.get(n);if(!f?.(x))throw Error(`${n}: ${ajv.errorsText(f?.errors)}`);}});
+const SEARCH='search_legislative_research',REFERENCE='get_legal_reference';
+const lc={clientResolution:null,citationResolution:null};
+const ls={jurisdiction:'FL',sessionKey:'2026',folderId:null,clientId:null};
+const sr={sessionKey:'2026'}, rr={sessionKey:'2026'};
+const ln=(id=SEARCH,r=sr,c=lc)=>legal.normalizeResearchLegalLegislationInput(id,r,c);
+const authority='Source quotations retain their document identity. Meri relevance is an inference for review; keyword grammar and current folder decisions control assignments.';
+const wrap=(result,id=SEARCH)=>({tool:id,generatedAt:at,result,authority});
+const uncheckedMessage='Positive matches use retained source versions. Search completeness requires a qualified provider inventory.';
+const searchResult=(items=[])=>({scope:ls,items,interpretedQuery:null,versionPolicy:'any_retained',searchedKinds:'all',scanned:items.length,cursor:null,coverage:{complete:false,reason:'SOURCE_DOCUMENT_INVENTORY_NOT_QUALIFIED',manifestId:null,billIds:[],retainedVersionsOnly:true},message:uncheckedMessage});
+const lp=(p=wrap(searchResult()),r=sr,c=lc,id=SEARCH)=>legal.assertResearchLegalLegislationOutput(id,p,r,c);
+const version=(id='doc:a')=>({id,billId:'bill:a',jurisdiction:'FL',sessionKey:'2026',revision:'revision opaque',contentHash:'',extractorVersion:'unknown',sourceUrl:null,kind:null,publishedDate:null,observedAt:at,complete:false,title:null,isCurrent:false});
+const item=(id='doc:a')=>({...version(id),billTitle:null,billIdentifier:null,sponsor:null,chamber:null,lastAction:null,versionType:null,excerpt:{quote:'',start:0,end:0},evaluation:null});
+const refs=(rows=[])=>({scope:ls,referenceId:'',edition:null,rows,related:[],coverage:{complete:false,reason:'SELECTED_INGESTED_REFERENCES_ONLY'}});
+const rules=(rows=[])=>({scope:ls,rows,adopted:[],coverage:{complete:false,reason:'SELECTED_NOTICES_AND_HISTORY_ONLY'}});
+
+test('legal independent: exact family schema and two operation selectors',()=>{
+ assert.equal(legalSchema.$id,'urn:meri:retrieval:research-legal-legislation:0.2.0');
+ assert.equal(legal.researchLegalLegislationInputDefinition(SEARCH),'ResearchLegalLegislationSearchInput');assert.equal(legal.researchLegalLegislationOutputDefinition(REFERENCE),'ResearchLegalLegislationReferenceOutput');
+ for(const id of['__proto__','constructor','search_research_sources'])assert.throws(()=>ln(id));
+});
+test('legal independent: raw caller selectors separate from required trusted context',()=>{
+ for(const c of[{},null,{clientResolution:null},{clientResolution:null,citationResolution:null,authorized:true}])assert.throws(()=>ln(SEARCH,sr,c));
+ for(const key of['clientResolution','citationResolution','scope','authorized'])assert.throws(()=>ln(SEARCH,{...sr,[key]:null}));
+});
+test('legal independent: normalized default search preserves scope and explicit fields',()=>{
+ const n=ln();assert.deepEqual(n.input,{scope:ls,query:'',versionPolicy:'any_retained',versionStage:'all',kind:'all',billIds:[],title:'',sponsor:'',chamber:'',action:'',referenceId:null,cursor:null});assert.ok(Object.isFrozen(n));assert.ok(Object.isFrozen(n.input));assert.ok(Object.isFrozen(n.input.scope));
+});
+test('legal independent: search requires explicit session and bounded jurisdiction',()=>{
+ for(const r of[{}, {sessionKey:''},{sessionKey:'x'.repeat(61)},{sessionKey:'2026',jurisdiction:'fl'},{sessionKey:'2026',jurisdiction:'USA'}])assert.throws(()=>ln(SEARCH,r));
+ assert.equal(ln(SEARCH,{sessionKey:' '}).input.scope.sessionKey,' ');
+});
+test('legal independent: client resolver is exact capped no-rebind and not folder-derived',()=>{
+ const r={...sr,clientId:'  named  ',folderId:'folder'},c={...lc,clientResolution:{reference:'named',clientId}};assert.equal(ln(SEARCH,r,c).input.scope.clientId,clientId);
+ assert.throws(()=>ln(SEARCH,r));assert.throws(()=>ln(SEARCH,{...sr,clientId}, {...lc,clientResolution:{reference:clientId,clientId:other}}));
+ assert.equal(ln(SEARCH,{...sr,folderId:'folder'}).input.scope.clientId,null);
+});
+test('legal independent: bill identities deduplicate sort but retain empty stored selector',()=>{
+ assert.deepEqual(ln(SEARCH,{...sr,billIds:['z','','a','z']}).input.billIds,['','a','z']);
+ for(const billIds of[[],Array(31).fill('a'),[1],['x'.repeat(181)]])assert.throws(()=>ln(SEARCH,{...sr,billIds}));
+});
+test('legal independent: filters use UTF16 and query remains untrimmed source text',()=>{
+ assert.equal(ln(SEARCH,{...sr,query:'  x  ',title:'x'.repeat(158)+'😀'}).input.query,'  x  ');
+ assert.throws(()=>ln(SEARCH,{...sr,title:'x'.repeat(159)+'😀'}));
+ for(const key of['title','sponsor','chamber','action'])assert.throws(()=>ln(SEARCH,{...sr,[key]:'x'.repeat(161)}));
+});
+test('legal independent: policy stage kind enums fail unsupported without conflating defaults',()=>{
+ for(const [key,values]of[['versionPolicy',['any_retained','current_extractions','newest_dated_text']],['versionStage',['all','enrolled','chaptered']],['kind',['all','text','amendment','supplement']]]){for(const value of values)ln(SEARCH,{...sr,[key]:value});assert.throws(()=>ln(SEARCH,{...sr,[key]:'other'}));}
+});
+test('legal independent: unknown reference view still reaches references branch',()=>{
+ for(const view of[undefined,null,'other','']){const r={...rr};if(view!==undefined)r.view=view;assert.equal(ln(REFERENCE,r).input.view,'references');}
+ assert.equal(ln(REFERENCE,{...rr,view:'rules'}).input.view,'rules');assert.throws(()=>ln(REFERENCE,{...rr,view:'versions'}));
+ assert.equal(ln(REFERENCE,{...rr,view:'versions',billId:''}).input.billId,'');
+});
+test('legal independent: citation fact exact raw binding and explicit override precedence',()=>{
+ const citation='s. 100.1',fact={citation,referenceId:'derived-reference',code:'statute'};
+ const r={...rr,citation,referenceId:'explicit-reference',edition:'2026'};const n=ln(REFERENCE,r,{...lc,citationResolution:fact}).input;assert.equal(n.referenceId,'explicit-reference');assert.equal(n.edition,'2026');
+ assert.throws(()=>ln(REFERENCE,r,{...lc,citationResolution:{...fact,citation:'other'}}));
+ assert.equal(ln(REFERENCE,{...r,citation:'Article I'}, {...lc,citationResolution:{citation:'Article I',referenceId:'constitution-reference',code:'constitution'}}).input.edition,null);
+});
+test('legal independent: references citation and edition bounds differ from rule bounds',()=>{
+ assert.throws(()=>ln(REFERENCE,{...rr,citation:'x'.repeat(181)}));assert.throws(()=>ln(REFERENCE,{...rr,edition:'1999'}));
+ assert.equal(ln(REFERENCE,{...rr,code:'constitution',edition:'garbage'}).input.edition,null);
+ for(const [key,n]of[['ruleNumber',60],['noticeId',100]]){ln(REFERENCE,{...rr,view:'rules',[key]:'x'.repeat(n)});assert.throws(()=>ln(REFERENCE,{...rr,view:'rules',[key]:'x'.repeat(n+1)}));}
+});
+test('legal independent: empty search exact closed authority envelope',()=>{
+ lp();assert.throws(()=>lp({...wrap(searchResult()),authority:'authorized'}));assert.throws(()=>lp({...wrap(searchResult()),tool:REFERENCE}));assert.throws(()=>lp({...wrap(searchResult()),generatedAt:'2026-10-12'}));
+});
+test('legal independent: detached outputs preserve nested scope and metadata',()=>{
+ const p=wrap(searchResult()),saved=structuredClone(p),out=lp(p);assert.deepEqual(out,saved);assert.notEqual(out,p);assert.notEqual(out.result,p.result);assert.notEqual(out.result.scope,p.result.scope);p.result.scope.sessionKey='other';assert.deepEqual(out,saved);
+});
+test('legal independent: nullable source-view kind and title are not interface guarantees',()=>{lp(wrap(searchResult([item()])));});
+test('legal independent: search exposes exact item keys but never hidden sections',()=>{
+ const x=item();for(const key of Object.keys(x)){const bad=structuredClone(x);delete bad[key];assert.throws(()=>lp(wrap(searchResult([bad]))),key);}assert.throws(()=>lp(wrap(searchResult([{...x,sections:[]}]))));
+});
+test('legal independent: search scan can exceed returned matches but never less',()=>{
+ lp(wrap({...searchResult(),scanned:25}));assert.throws(()=>lp(wrap({...searchResult([item()]),scanned:0})));assert.throws(()=>lp(wrap({...searchResult(),scanned:26})));
+});
+test('legal independent: cursor after refers to scanned row rather than returned last match',()=>{
+ const cursor=Buffer.from(JSON.stringify({binding:'opaque binding',fingerprint:'opaque fingerprint',after:'scanned:25'})).toString('base64url');
+ lp(wrap({...searchResult(),scanned:25,cursor}));
+});
+test('legal independent: selected current and kind constraints are branch specific',()=>{
+ assert.throws(()=>lp(wrap({...searchResult([item()]),versionPolicy:'current_extractions'}),{...sr,versionPolicy:'current_extractions'}));
+ assert.throws(()=>lp(wrap({...searchResult([item()]),searchedKinds:'text'}),{...sr,kind:'text'}));
+ const x={...item(),kind:'text',isCurrent:true,publishedDate:'2026-01-01'};lp(wrap({...searchResult([x]),versionPolicy:'newest_dated_text'}),{...sr,versionPolicy:'newest_dated_text'});
+});
+test('legal independent: reference filtering may be qualified without complete coverage',()=>{
+ const result=searchResult();result.coverage={complete:false,reason:'LEGAL_REFERENCE_CLASSIFICATION_NOT_QUALIFIED',manifestId:'receipt',billIds:['bill:a'],retainedVersionsOnly:false};result.message='Coverage is limited to the explicit bill selection and its retained provider inventory.';
+ lp(wrap(result),{...sr,referenceId:'ref:a',billIds:['bill:a']});
+});
+test('legal independent: versions preserve identity order and 200-before-more limit',()=>{
+ const r={...rr,view:'versions',billId:'bill:a'},result={scope:ls,versions:[version()],complete:true,order:'source_identity_not_legislative_sequence'};lp(wrap(result,REFERENCE),r,lc,REFERENCE);
+ assert.throws(()=>lp(wrap({...result,complete:false},REFERENCE),r,lc,REFERENCE));assert.throws(()=>lp(wrap({...result,order:'chronological'},REFERENCE),r,lc,REFERENCE));
+ assert.throws(()=>lp(wrap({...result,versions:[version('z'),version('a')]},REFERENCE),r,lc,REFERENCE));
+ const many=Array.from({length:200},(_,i)=>version(`doc:${String(i).padStart(3,'0')}`));lp(wrap({...result,versions:many,complete:false},REFERENCE),r,lc,REFERENCE);
+});
+test('legal independent: missing joined revision is explicit full null tuple',()=>{
+ const row={id:'ref:a',jurisdiction:'FL',code_kind:'statute',reference_kind:'section',chapter:null,section:null,subdivisions:null,identity:[],created_at:at};for(const key of['revision_id','edition','title','source_url','content_hash','extraction_hash','parser_version','sections','history_text','complete','coverage','observed_at'])row[key]=null;
+ lp(wrap(refs([row]),REFERENCE),rr,lc,REFERENCE);assert.throws(()=>lp(wrap(refs([{...row,title:'impossible'}]),REFERENCE),rr,lc,REFERENCE));
+});
+test('legal independent: rules retain exact scalar and opaque JSON payloads',()=>{
+ const row={id:'rule:a',notice_id:'notice:a',payload:['opaque',null],source_url:'',content_hash:'',observed_at:at};lp(wrap(rules([row]),REFERENCE),{...rr,view:'rules'},lc,REFERENCE);
+ for(const key of Object.keys(row)){const r=structuredClone(row);delete r[key];assert.throws(()=>lp(wrap(rules([r]),REFERENCE),{...rr,view:'rules'},lc,REFERENCE));}
+});
+test('legal independent: returned scope does not silently rebind client folder or jurisdiction',()=>{
+ for(const [key,value]of[['clientId',clientId],['folderId','folder'],['jurisdiction','NY'],['sessionKey','other']])assert.throws(()=>lp(wrap({...searchResult(),scope:{...ls,[key]:value}})));
+});
+test('legal independent: hostile request result context execute no hooks',()=>{
+ let effects=0;const r={};Object.defineProperty(r,'sessionKey',{enumerable:true,get(){effects++;return'2026';}});assert.throws(()=>ln(SEARCH,r));
+ const c={clientResolution:null};Object.defineProperty(c,'citationResolution',{enumerable:true,get(){effects++;return null;}});assert.throws(()=>ln(SEARCH,sr,c));
+ assert.throws(()=>lp(new Proxy(wrap(searchResult()),{get(){effects++;}})));const cyclic=wrap(searchResult());cyclic.result.cycle=cyclic;assert.throws(()=>lp(cyclic));assert.equal(effects,0);
+});
