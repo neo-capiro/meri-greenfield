@@ -1,0 +1,11 @@
+{
+  "state": "uncommitted preliminary source, not finalfreeze",
+  "argv": [
+    "node",
+    "--test",
+    "/workspace/meri-g1-durable-budget-review-20261012/docs/qualification/candidates/g1-durable-budget-20261012/review/dispatch-independent.test.mjs",
+    "/workspace/meri-g1-durable-budget-review-20261012/docs/qualification/candidates/g1-durable-budget-20261012/review/store-independent.test.mjs"
+  ],
+  "exit_code": 0,
+  "reason": "Author added real SkillManifest requirement and persisted started_at/max_output_bytes; scripted fixture adapted, original behavior assertions unchanged. Store probe unchanged."
+}
