@@ -1,0 +1,26 @@
+{
+  "command": [
+    "node",
+    "--disable-warning=ExperimentalWarning",
+    "docs/qualification/candidates/memory-policy-alignment-20261012/independent/pinned-helper-characterization.mjs"
+  ],
+  "cwd": "/workspace/meri-memory-policy-review-20261012",
+  "startUnixSeconds": 1791771705.342295,
+  "elapsedSeconds": 0.11475324630737305,
+  "exitCode": 0,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "fixtureRoot": null,
+  "streams": {
+    "stdout": {
+      "path": "pinned-helper-characterization.stdout.txt",
+      "bytes": 26712,
+      "sha256": "66d04ecbb519a770cc0faea7eb9daa870f06f2563f3b20ecb22b300c0dc04355"
+    },
+    "stderr": {
+      "path": "pinned-helper-characterization.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

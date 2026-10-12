@@ -1,0 +1,232 @@
+{
+  "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "files": {
+    "memory-review-admin-policy.ts": "ce7d9b36b52b7b63d1a8bdcaf0bab2acf3c57187dedc5752a80f8e95f733adc3",
+    "memory-candidate.service.ts": "0dd0ed91a682ebb5f1104ebacbb0ae682b1735e1f7e77518b8d7de04dc24bbc9",
+    "governed-memory-candidate.service.ts": "00616d8adeaf7631fc5ad467feff8598a23e1dc8e76a60711157d3998324ccb1"
+  },
+  "fragments": [
+    {
+      "name": "requireSharedApprovalPolicy",
+      "bytes": 525,
+      "sha256": "6f4f3f9ba4c370a3d3bf8be2e1580d8ddb1a1621f4b578f35c9f953444185cc5",
+      "startLine": 619,
+      "endLine": 631
+    },
+    {
+      "name": "requireGovernedIndependentReviewer",
+      "bytes": 437,
+      "sha256": "4c8829f8ebf80f3b7b8e915ca9f7faf7037404e8e0073a2296979257692fa8e8",
+      "startLine": 386,
+      "endLine": 396
+    },
+    {
+      "name": "withdrawPending",
+      "bytes": 1010,
+      "sha256": "885c221b358a0a9d29afa207783748368cc46ec42aae618f14caa2e2020b17d1",
+      "startLine": 176,
+      "endLine": 211
+    }
+  ],
+  "scope": "Exact method guards only, with isolated constructor-free harness and injected flag/transaction/lock/terminal stubs. Not complete authorization, policy flags, SQL or runtime acceptance.",
+  "rows": [
+    {
+      "scope": "firm",
+      "role": "standard_user",
+      "self": true,
+      "sharedApprovalGuard": "refused",
+      "independentRejectionGuard": "refused",
+      "withdrawalGuard": "passed",
+      "withdrawalFlagChecks": 1,
+      "terminalCalls": 1,
+      "withdrawnStatusSelected": true
+    },
+    {
+      "scope": "firm",
+      "role": "standard_user",
+      "self": false,
+      "sharedApprovalGuard": "passed",
+      "independentRejectionGuard": "passed",
+      "withdrawalGuard": "refused",
+      "withdrawalFlagChecks": 1,
+      "terminalCalls": 0,
+      "withdrawnStatusSelected": false
+    },
+    {
+      "scope": "firm",
+      "role": "user_admin",
+      "self": true,
+      "sharedApprovalGuard": "passed",
+      "independentRejectionGuard": "refused",
+      "withdrawalGuard": "passed",
+      "withdrawalFlagChecks": 1,
+      "terminalCalls": 1,
+      "withdrawnStatusSelected": true
+    },
+    {
+      "scope": "firm",
+      "role": "user_admin",
+      "self": false,
+      "sharedApprovalGuard": "passed",
+      "independentRejectionGuard": "passed",
+      "withdrawalGuard": "refused",
+      "withdrawalFlagChecks": 1,
+      "terminalCalls": 0,
+      "withdrawnStatusSelected": false
+    },
+    {
+      "scope": "firm",
+      "role": "capiro_admin",
+      "self": true,
+      "sharedApprovalGuard": "passed",
+      "independentRejectionGuard": "refused",
+      "withdrawalGuard": "passed",
+      "withdrawalFlagChecks": 1,
+      "terminalCalls": 1,
+      "withdrawnStatusSelected": true
+    },
+    {
+      "scope": "firm",
+      "role": "capiro_admin",
+      "self": false,
+      "sharedApprovalGuard": "passed",
+      "independentRejectionGuard": "passed",
+      "withdrawalGuard": "refused",
+      "withdrawalFlagChecks": 1,
+      "terminalCalls": 0,
+      "withdrawnStatusSelected": false
+    },
+    {
+      "scope": "client",
+      "role": "standard_user",
+      "self": true,
+      "sharedApprovalGuard": "refused",
+      "independentRejectionGuard": "refused",
+      "withdrawalGuard": "passed",
+      "withdrawalFlagChecks": 1,
+      "terminalCalls": 1,
+      "withdrawnStatusSelected": true
+    },
+    {
+      "scope": "client",
+      "role": "standard_user",
+      "self": false,
+      "sharedApprovalGuard": "passed",
+      "independentRejectionGuard": "passed",
+      "withdrawalGuard": "refused",
+      "withdrawalFlagChecks": 1,
+      "terminalCalls": 0,
+      "withdrawnStatusSelected": false
+    },
+    {
+      "scope": "client",
+      "role": "user_admin",
+      "self": true,
+      "sharedApprovalGuard": "passed",
+      "independentRejectionGuard": "refused",
+      "withdrawalGuard": "passed",
+      "withdrawalFlagChecks": 1,
+      "terminalCalls": 1,
+      "withdrawnStatusSelected": true
+    },
+    {
+      "scope": "client",
+      "role": "user_admin",
+      "self": false,
+      "sharedApprovalGuard": "passed",
+      "independentRejectionGuard": "passed",
+      "withdrawalGuard": "refused",
+      "withdrawalFlagChecks": 1,
+      "terminalCalls": 0,
+      "withdrawnStatusSelected": false
+    },
+    {
+      "scope": "client",
+      "role": "capiro_admin",
+      "self": true,
+      "sharedApprovalGuard": "passed",
+      "independentRejectionGuard": "refused",
+      "withdrawalGuard": "passed",
+      "withdrawalFlagChecks": 1,
+      "terminalCalls": 1,
+      "withdrawnStatusSelected": true
+    },
+    {
+      "scope": "client",
+      "role": "capiro_admin",
+      "self": false,
+      "sharedApprovalGuard": "passed",
+      "independentRejectionGuard": "passed",
+      "withdrawalGuard": "refused",
+      "withdrawalFlagChecks": 1,
+      "terminalCalls": 0,
+      "withdrawnStatusSelected": false
+    },
+    {
+      "scope": "user_private",
+      "role": "standard_user",
+      "self": true,
+      "sharedApprovalGuard": "passed",
+      "independentRejectionGuard": "passed",
+      "withdrawalGuard": "passed",
+      "withdrawalFlagChecks": 1,
+      "terminalCalls": 1,
+      "withdrawnStatusSelected": true
+    },
+    {
+      "scope": "user_private",
+      "role": "standard_user",
+      "self": false,
+      "sharedApprovalGuard": "passed",
+      "independentRejectionGuard": "passed",
+      "withdrawalGuard": "refused",
+      "withdrawalFlagChecks": 1,
+      "terminalCalls": 0,
+      "withdrawnStatusSelected": false
+    },
+    {
+      "scope": "user_private",
+      "role": "user_admin",
+      "self": true,
+      "sharedApprovalGuard": "passed",
+      "independentRejectionGuard": "passed",
+      "withdrawalGuard": "passed",
+      "withdrawalFlagChecks": 1,
+      "terminalCalls": 1,
+      "withdrawnStatusSelected": true
+    },
+    {
+      "scope": "user_private",
+      "role": "user_admin",
+      "self": false,
+      "sharedApprovalGuard": "passed",
+      "independentRejectionGuard": "passed",
+      "withdrawalGuard": "refused",
+      "withdrawalFlagChecks": 1,
+      "terminalCalls": 0,
+      "withdrawnStatusSelected": false
+    },
+    {
+      "scope": "user_private",
+      "role": "capiro_admin",
+      "self": true,
+      "sharedApprovalGuard": "passed",
+      "independentRejectionGuard": "passed",
+      "withdrawalGuard": "passed",
+      "withdrawalFlagChecks": 1,
+      "terminalCalls": 1,
+      "withdrawnStatusSelected": true
+    },
+    {
+      "scope": "user_private",
+      "role": "capiro_admin",
+      "self": false,
+      "sharedApprovalGuard": "passed",
+      "independentRejectionGuard": "passed",
+      "withdrawalGuard": "refused",
+      "withdrawalFlagChecks": 1,
+      "terminalCalls": 0,
+      "withdrawnStatusSelected": false
+    }
+  ]
+}
