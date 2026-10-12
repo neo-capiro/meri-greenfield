@@ -300,3 +300,12 @@ test('context asOf is an inert exact input, not a getter, inherited value or mod
   assert.throws(() => normalize(OPS[0], input(OPS[0]), Object.create({ asOf: ASOF })));
   assert.throws(() => normalize(OPS[0], input(OPS[0]), { asOf: ASOF, authorized: true }));
 });
+
+test('requirements short page cannot invent an extra-row continuation without a supporting total', () => {
+  for (const total of [null, 0, 1]) {
+    const data = requirements([requirement()], { pagination: { offset: 0, limit: 10, total, hasMore: true, nextOffset: 1 } });
+    assert.throws(() => requirementsOutput(data));
+  }
+  const plausible = requirements([requirement()], { pagination: { offset: 0, limit: 10, total: 2, hasMore: true, nextOffset: 1 } });
+  assert.doesNotThrow(() => requirementsOutput(plausible));
+});
