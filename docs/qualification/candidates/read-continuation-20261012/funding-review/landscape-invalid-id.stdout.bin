@@ -1,0 +1,95 @@
+✔ search_funding_opportunities: closed immutable input and trusted asOf metadata (9.047579ms)
+✔ search_funding_opportunities: all refusal states remain null-data reports (79.349071ms)
+✔ search_funding_opportunities: exact operation and trusted instant binding (0.597949ms)
+✔ search_funding_opportunities: hostile request/result observations do not run (0.310967ms)
+✔ get_funding_opportunity_requirements: closed immutable input and trusted asOf metadata (2.326996ms)
+✔ get_funding_opportunity_requirements: all refusal states remain null-data reports (15.754453ms)
+✔ get_funding_opportunity_requirements: exact operation and trusted instant binding (0.976938ms)
+✔ get_funding_opportunity_requirements: hostile request/result observations do not run (0.340011ms)
+✔ get_funding_opportunity: closed immutable input and trusted asOf metadata (2.10296ms)
+✔ get_funding_opportunity: all refusal states remain null-data reports (99.98715ms)
+✔ get_funding_opportunity: exact operation and trusted instant binding (0.422545ms)
+✔ get_funding_opportunity: hostile request/result observations do not run (0.161953ms)
+✔ get_opportunity_client_context: closed immutable input and trusted asOf metadata (1.428176ms)
+✔ get_opportunity_client_context: all refusal states remain null-data reports (18.059697ms)
+✔ get_opportunity_client_context: exact operation and trusted instant binding (0.264418ms)
+✔ get_opportunity_client_context: hostile request/result observations do not run (0.184127ms)
+✔ get_opportunity_government_landscape: closed immutable input and trusted asOf metadata (1.358742ms)
+✔ get_opportunity_government_landscape: all refusal states remain null-data reports (7.677276ms)
+✔ get_opportunity_government_landscape: exact operation and trusted instant binding (0.267352ms)
+✔ get_opportunity_government_landscape: hostile request/result observations do not run (0.194572ms)
+✔ search defaults, trimming and effective shared page clamp (0.650097ms)
+✔ search raw query ceiling uses UTF-16 before trimming (0.448764ms)
+✔ requirements and detail retain distinct paging defaults and bounds (0.716106ms)
+✔ envelope ceiling is exact serialized UTF-16 characters (3.628742ms)
+✔ all direct selectors reject prototype aliases and nonread operations (0.186119ms)
+✔ requirements nullable provenance, declared read vocabulary and review status remain separate (1.561977ms)
+✔ requirements content span counts UTF-16 and forbids malformed or substituted spans (1.053864ms)
+✔ requirements bind exact source, record, generation instant, offset and limit (1.294716ms)
+✔ requirements stale or unavailable total does not erase retained rows or extra-row continuation (1.089427ms)
+✔ empty exhausted requirements can remain available with an independent positive total (0.441263ms)
+✔ requirements retain nonavailable coverage states without claiming absence beyond observed documents (0.681675ms)
+✔ requirements page max25 and paging row count are actual request constraints (2.606146ms)
+✔ landscape keeps all11 declared sources and distinguishes three wired empty sources (1.758763ms)
+✔ landscape pre-truncation counts and retained fingerprint need not equal returned40-row slice (4.058258ms)
+✔ landscape never upgrades unknown provenance or inferred basis to stronger source evidence (0.834254ms)
+✔ landscape fingerprint grammar and unknown packet authority fields refuse (0.977488ms)
+✔ client context retains nullable counts and current client identity without made-up zeroes (0.87854ms)
+✔ client context separately caps each source at five without claiming complete source coverage (3.697977ms)
+✔ client context keeps grant and contract collections separate and preserves legacy decision null audits (0.560172ms)
+✔ detail binds exact client/source/record and disclosed source update identity (2.920988ms)
+✔ detail UTF-16 paging and beyond-end clamp preserve the original full text length (1.441295ms)
+✔ detail grant program totals and individual ceilings stay distinct from contract estimates (2.818435ms)
+✔ detail missing facts and eligibility evidence cannot be promoted to verified eligibility or win likelihood (1.710741ms)
+✔ search successful raw projection uses its own generation clock and exact request criteria (7.715083ms)
+✔ search effective page10000 binds after shared clamp and can report nextPage10001 (0.727824ms)
+✔ search five-row cap, null totals and truncation do not imply complete source coverage (6.450528ms)
+✔ context asOf is an inert exact input, not a getter, inherited value or model-selected timestamp (0.322184ms)
+✖ requirements short page cannot invent an extra-row continuation without a supporting total (0.870468ms)
+✖ landscape SAM UUID admission cannot become available after the actual producer would refuse it (0.607112ms)
+ℹ tests 49
+ℹ suites 0
+ℹ pass 47
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 476.644265
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs:304:1
+✖ requirements short page cannot invent an extra-row continuation without a supporting total (0.870468ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-funding-reads-review-20261012/packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs:307:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs:313:1
+✖ landscape SAM UUID admission cannot become available after the actual producer would refuse it (0.607112ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-funding-reads-review-20261012/packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs:318:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }

@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-funding-reads-review-20261012",
+  "sourceHead": "c8f10da412be6fdd714aa6b000d7eb09cb6edadf",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T16:23:04.263308+00:00",
+  "durationSeconds": 0.365,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 148603,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-review/candidate-expanded.stdout.bin",
+      "bytes": 4734,
+      "sha256": "08efd56c09c0ed684a24aae1dbd565a90ef9d61033ffc30f2563df0d8fb97353"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-review/candidate-expanded.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
