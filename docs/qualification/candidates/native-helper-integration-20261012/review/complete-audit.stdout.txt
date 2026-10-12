@@ -1,0 +1,264 @@
+{
+  "rootFreeze": "e9a4e913a168d08d2804055dc24b24c779b34856",
+  "rootTree": "724ca19aebffb31a4fbbb91cde8f7abfcb4e866f",
+  "base": "bf41cf69ebe892705cdd6f041dd2f1fb323048f5",
+  "author": "c67558c211ede5a41e903f09e73666b43867301b",
+  "reviewer": "1d8f0220ca46934f20c57244e673cf1aa6884f22",
+  "checks": [
+    {
+      "name": "PR20 base ancestry",
+      "passed": true
+    },
+    {
+      "name": "only allocated existing source and canonical roadmap changed",
+      "passed": true
+    },
+    {
+      "name": "all other pre-existing files preserved",
+      "passed": true
+    },
+    {
+      "name": "new files within explicit allocation",
+      "passed": true
+    },
+    {
+      "name": "exact accepted lane additions preserved c67558c211ede5a41e903f09e73666b43867301b",
+      "passed": true
+    },
+    {
+      "name": "exact accepted lane additions preserved 1d8f0220ca46934f20c57244e673cf1aa6884f22",
+      "passed": true
+    },
+    {
+      "name": "production repair exactly matches accepted author",
+      "passed": true
+    },
+    {
+      "name": "new regression test exactly matches accepted author",
+      "passed": true
+    },
+    {
+      "name": "all other public source AST nodes unchanged",
+      "passed": true
+    },
+    {
+      "name": "hash_file public signature unchanged",
+      "passed": true
+    },
+    {
+      "name": "author retained baseline21/11 and repaired32/0",
+      "passed": true
+    },
+    {
+      "name": "author source hash binds actual repaired file",
+      "passed": true
+    },
+    {
+      "name": "maintained test inert qualification reported honestly",
+      "passed": true
+    },
+    {
+      "name": "all author manifest file hashes preserved exactly",
+      "passed": true
+    },
+    {
+      "name": "independent decision binds exact accepted author and native HOLD",
+      "passed": true
+    },
+    {
+      "name": "preserved exact independent result deadline-baseline.json",
+      "passed": true
+    },
+    {
+      "name": "preserved exact independent result deadline-exact-freeze.json",
+      "passed": true
+    },
+    {
+      "name": "preserved exact independent result preservation-exact-freeze.json",
+      "passed": true
+    },
+    {
+      "name": "preserved exact independent result static-exact-freeze.json",
+      "passed": true
+    },
+    {
+      "name": "preserved exact independent result private-facts-final.json",
+      "passed": true
+    },
+    {
+      "name": "preserved exact independent result author-manifest-integrity.json",
+      "passed": true
+    },
+    {
+      "name": "actual13-field comparison includes access time",
+      "passed": true
+    },
+    {
+      "name": "twelve failures remain access-time-only",
+      "passed": true
+    },
+    {
+      "name": "private facts retain nonexecution and no waiver",
+      "passed": true
+    },
+    {
+      "name": "exact helper identity received as data",
+      "passed": true
+    },
+    {
+      "name": "helper intake retains non-execution/privacy boundary",
+      "passed": true
+    },
+    {
+      "name": "failed local transcription remains distinct from corruption",
+      "passed": true
+    },
+    {
+      "name": "access restriction supersedes alternative handoff",
+      "passed": true
+    },
+    {
+      "name": "all prohibited bypass routes retained",
+      "passed": true
+    },
+    {
+      "name": "no repeated retrieval/setup/install/security action",
+      "passed": true
+    },
+    {
+      "name": "captured PR20 head/base draft unmerged",
+      "passed": true
+    },
+    {
+      "name": "root acceptance exact refs and source hash",
+      "passed": true
+    },
+    {
+      "name": "root native and connectivity flags remain false",
+      "passed": true
+    },
+    {
+      "name": "root raw stream integrity captured-deadline",
+      "passed": true
+    },
+    {
+      "name": "root owned check completed and group absent captured-deadline",
+      "passed": true
+    },
+    {
+      "name": "root raw stream integrity captured-preservation",
+      "passed": true
+    },
+    {
+      "name": "root owned check completed and group absent captured-preservation",
+      "passed": true
+    },
+    {
+      "name": "root raw stream integrity helper-data",
+      "passed": true
+    },
+    {
+      "name": "root owned check completed and group absent helper-data",
+      "passed": true
+    },
+    {
+      "name": "root raw stream integrity maintained",
+      "passed": true
+    },
+    {
+      "name": "root owned check completed and group absent maintained",
+      "passed": true
+    },
+    {
+      "name": "root raw stream integrity preservation-privacy",
+      "passed": true
+    },
+    {
+      "name": "root owned check completed and group absent preservation-privacy",
+      "passed": true
+    },
+    {
+      "name": "both docs name the received exact helper",
+      "passed": true
+    },
+    {
+      "name": "both docs retain cooperative-only limits",
+      "passed": true
+    },
+    {
+      "name": "both docs supersede prior handoff and forbid all bypasses",
+      "passed": true
+    },
+    {
+      "name": "both docs distinguish original-deadline cleanup from hard bounds",
+      "passed": true
+    },
+    {
+      "name": "both docs bind source-only nonexecution to continuation",
+      "passed": true
+    },
+    {
+      "name": "received helper no longer presented as missing",
+      "passed": true
+    },
+    {
+      "name": "canonical scope and disabled status retained",
+      "passed": true
+    },
+    {
+      "name": "architecture ownership retained",
+      "passed": true
+    },
+    {
+      "name": "frozen L1 remains unauthorized",
+      "passed": true
+    },
+    {
+      "name": "separate wrapper preservation and identity gaps visible",
+      "passed": true
+    },
+    {
+      "name": "new docs do not contain personal Windows home paths",
+      "passed": true
+    },
+    {
+      "name": "no private helper body added",
+      "passed": true
+    }
+  ],
+  "passed": 55,
+  "failed": [],
+  "originalFiles": 4791,
+  "unchangedOriginalFiles": 4789,
+  "changedOriginalFiles": [
+    "docs/plans/MERI-G1-SOURCE-TO-NATIVE.md",
+    "scripts/qualification/worker_runner_inventory.py"
+  ],
+  "newFiles": 86,
+  "hashes": [
+    {
+      "path": "docs/plans/MERI-G1-SOURCE-TO-NATIVE.md",
+      "bytes": 38565,
+      "sha256": "c457027091b54a9373494feda828e0f1827ebc68c92bb4d686b7123a771fe516"
+    },
+    {
+      "path": "docs/coordination/reports/MERI-NATIVE-HELPER-INTEGRATION-20261012.md",
+      "bytes": 7914,
+      "sha256": "cca342420bedbdd3dc055f94ffc250c261dba2d8bb1e943f9b538ac5be6953d3"
+    },
+    {
+      "path": "scripts/qualification/worker_runner_inventory.py",
+      "bytes": 14190,
+      "sha256": "093786b7a527ee56d598a5c6d7b273c69e7578b5656241cf4784e8f8327abb34"
+    },
+    {
+      "path": "scripts/qualification/test_worker_runner_hash_deadline.py",
+      "bytes": 8078,
+      "sha256": "0ed0433a0fe001ae04789142dbef18b3c8ae23b385ad2c1b52a08b0456a8291b"
+    }
+  ],
+  "privateInputAccessed": false,
+  "nativeTargetExecuted": false,
+  "retrievalPerformed": false,
+  "limits": "Public-object integration audit; no private source remeasurement or native behavioral qualification."
+}
