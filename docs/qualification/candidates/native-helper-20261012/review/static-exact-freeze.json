@@ -1,0 +1,116 @@
+{
+  "base": "bf41cf69ebe892705cdd6f041dd2f1fb323048f5",
+  "candidate": "c67558c211ede5a41e903f09e73666b43867301b",
+  "candidateTree": "c6f4a99cae98151d51a725f57635302222c0a3d7",
+  "inventory": {
+    "path": "scripts/qualification/worker_runner_inventory.py",
+    "bytes": 14190,
+    "sha256": "093786b7a527ee56d598a5c6d7b273c69e7578b5656241cf4784e8f8327abb34"
+  },
+  "baselineTrackedFiles": 4791,
+  "existingChanged": [
+    "scripts/qualification/worker_runner_inventory.py"
+  ],
+  "addedFiles": [
+    "docs/coordination/reports/MERI-NATIVE-HELPER-SOURCE-20261012.md",
+    "docs/coordination/tasks/MERI-NATIVE-HELPER-SOURCE-20261012.md",
+    "docs/qualification/candidates/native-helper-20261012/author/freeze-manifest.json",
+    "docs/qualification/candidates/native-helper-20261012/author/hash-before.stderr.txt",
+    "docs/qualification/candidates/native-helper-20261012/author/hash-before.stdout.json",
+    "docs/qualification/candidates/native-helper-20261012/author/hash-deadline-controls.py",
+    "docs/qualification/candidates/native-helper-20261012/author/hash-final.stderr.txt",
+    "docs/qualification/candidates/native-helper-20261012/author/hash-final.stdout.json",
+    "docs/qualification/candidates/native-helper-20261012/author/hash-repaired.stderr.txt",
+    "docs/qualification/candidates/native-helper-20261012/author/hash-repaired.stdout.json",
+    "docs/qualification/candidates/native-helper-20261012/author/helper-observation.py",
+    "docs/qualification/candidates/native-helper-20261012/author/helper-observation.stderr.txt",
+    "docs/qualification/candidates/native-helper-20261012/author/helper-observation.stdout.json",
+    "docs/qualification/candidates/native-helper-20261012/author/helper-source-map.json",
+    "docs/qualification/candidates/native-helper-20261012/author/inventory-before.py.txt",
+    "docs/qualification/candidates/native-helper-20261012/author/maintained-checks.stderr.txt",
+    "docs/qualification/candidates/native-helper-20261012/author/maintained-checks.stdout.txt",
+    "docs/qualification/candidates/native-helper-20261012/author/maintained-final.stderr.txt",
+    "docs/qualification/candidates/native-helper-20261012/author/maintained-final.stdout.txt",
+    "docs/qualification/candidates/native-helper-20261012/author/outline.json",
+    "docs/qualification/candidates/native-helper-20261012/author/verification-receipt.json",
+    "scripts/qualification/test_worker_runner_hash_deadline.py"
+  ],
+  "checks": [
+    {
+      "name": "worktree-source-equals-exact-freeze",
+      "passed": true
+    },
+    {
+      "name": "original-baseline-byte-pin",
+      "passed": true
+    },
+    {
+      "name": "same-top-level-functions",
+      "passed": true
+    },
+    {
+      "name": "only-two-authorized-top-level-nodes-change",
+      "passed": true
+    },
+    {
+      "name": "hash-file-signature-unchanged",
+      "passed": true
+    },
+    {
+      "name": "ancestor-pair-is-keyword-only",
+      "passed": true
+    },
+    {
+      "name": "explicit-incomplete-pair-refusal",
+      "passed": true
+    },
+    {
+      "name": "original-hash_file-predicates-order-and-result-preserved",
+      "passed": true
+    },
+    {
+      "name": "original-ancestors-predicates-order-and-result-preserved",
+      "passed": true
+    },
+    {
+      "name": "named-opened-identity-predicate-unchanged",
+      "passed": true
+    },
+    {
+      "name": "plain-file-hardlink-symlink-reparse-predicates-unchanged",
+      "passed": true
+    },
+    {
+      "name": "deadline-exact-boundary-comparator-unchanged",
+      "passed": true
+    },
+    {
+      "name": "only-one-existing-file-changed",
+      "passed": true
+    },
+    {
+      "name": "all-added-files-within-author-allocation",
+      "passed": true
+    },
+    {
+      "name": "maintained-inert-regression-added",
+      "passed": true
+    },
+    {
+      "name": "all-original-tests-byte-preserved",
+      "passed": true
+    },
+    {
+      "name": "supervisor-lifecycle-writer-anchors-unchanged",
+      "passed": true
+    },
+    {
+      "name": "all-other-baseline-tracked-files-preserved",
+      "passed": true
+    }
+  ],
+  "passed": 18,
+  "failed": 0,
+  "targetImports": false,
+  "nativeExecution": false
+}
