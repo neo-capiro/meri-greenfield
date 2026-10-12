@@ -1,0 +1,38 @@
+{
+  "command": [
+    "python3",
+    "-I",
+    "-B",
+    "-S",
+    "docs/qualification/candidates/native-python-profile-20261012/review/verify-packet.py",
+    "--source-root",
+    "/workspace/meri-g1-owner-budget-20261012"
+  ],
+  "cwd": "/workspace/meri-g1-owner-budget-20261012",
+  "sourceHead": "d7e63cd3ca3a39e988a94b6f457af9f7c04c56c4",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T04:37:28.623579+00:00",
+  "durationSeconds": 0.064,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 54316,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/native-profile-independent.stdout.bin",
+      "bytes": 3082,
+      "sha256": "f6fe4d78a48930a12ec407da247a581f151e7647a77e0d0b50d9ded5a5ee5048"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/native-profile-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,37 @@
+{
+  "command": [
+    "python3",
+    "-I",
+    "-B",
+    "-S",
+    "docs/qualification/candidates/g1-owner-budget-20261012/integration/review-ubuntu.py",
+    "/workspace/meri-ubuntu-source-assessment-20261012"
+  ],
+  "cwd": "/workspace/meri-g1-owner-budget-20261012",
+  "sourceHead": "44b3bd39dc505a462ab3c4378f82545edc5b13c6",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T04:36:24.563848+00:00",
+  "durationSeconds": 0.064,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 54135,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/ubuntu-independent.stdout.bin",
+      "bytes": 5036,
+      "sha256": "0f797218240c979287a6992164c1ca8ed4a715dd631dbc864f6c6a3cc8044b3b"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/ubuntu-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

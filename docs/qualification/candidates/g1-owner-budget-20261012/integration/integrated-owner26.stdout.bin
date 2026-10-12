@@ -1,0 +1,34 @@
+✔ independent actual control pipeline commits A, replaces B, loads and verifies exact bytes (59.497979ms)
+✔ independent owner exposes frozen content-free bound status without database work (2.133433ms)
+✔ independent owner stop before checkpoint consumes real revoke and denies subsequent ingress (3.173515ms)
+✔ independent repeated and concurrent stop reuses one attempt without timestamp rewrite (1.898831ms)
+✔ independent owner invalidates expired exact current grant without resetting original clock (1.888436ms)
+✔ independent owner cannot begin new durable stop after original cleanup deadline (4.086235ms)
+✔ independent current B stop leaves original immutable A commit intact (15.23191ms)
+✔ independent stale A stop refuses without closing B gate or changing B grant (20.683245ms)
+✔ independent wrong peer stop cannot close actual A gate (4.094668ms)
+✔ independent wrong actor stop cannot close actual A gate (3.440575ms)
+✔ independent wrong pin stop cannot close actual A gate (2.696198ms)
+✔ independent caller mutation across first database await cannot retarget stop (1.291409ms)
+✔ independent accessor and proxy stop targets cause no getter trap or durable dispatch (0.750296ms)
+✔ independent stop aborts parked evidence inspection before any object or commit effect (3.608748ms)
+✔ independent stop after parked object put prevents next object effect and publication (3.29667ms)
+✔ independent local stop gate catches request already parked in credential resolution before revocation completes (1.818ms)
+✔ independent unknown revoke acknowledgement remains visible and repeated stop never retries (1.636166ms)
+✔ independent definite pre-update failure stays FAILED rather than unknown and does not retry (1.355796ms)
+✔ independent unknown publication survives bodyless ingress failure and settled handler tracking (14.8122ms)
+✔ independent ordinary checkpoint failure is not mislabelled as unknown publication (4.425815ms)
+✔ independent cleanup deadline bounds stop but never asserts parked work is physically stopped (35.289636ms)
+✔ supplemental stopRun admits only closed inert own-data target (1.180342ms)
+✔ supplemental runStatus admits only closed inert own-data target (0.769446ms)
+✔ supplemental close bars request already resolving without implicit grant revocation (1.439752ms)
+✔ supplemental reentrant real handler abort receives the same reserved stop promise (3.46362ms)
+✔ supplemental stop during issued publication preserves its late unknown acknowledgement (6.982915ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 692.964853

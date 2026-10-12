@@ -1,0 +1,37 @@
+✔ actual dispatcher consumes concrete SQL reservation and settlement once (32.916711ms)
+✔ fresh adapter and reservation identity cannot replay settled invocation (7.456717ms)
+✔ parallel same invocation has one handler and one debit (5.386655ms)
+✔ lost reserve COMMIT acknowledgement retains UNKNOWN and suppresses effect (6.009272ms)
+✔ mixed model/tool holds enforce global exact bound without counting settled twice (5.105684ms)
+✔ installed run cap includes settled and unknown model liability (5.070671ms)
+✔ database revocation/expiry/stale fence blocks actual effect despite fresh synthetic gateway claims (7.828796ms)
+✔ trusted binding substitution cannot mutate admitted allocation (2.180557ms)
+✔ late reserve after deadline keeps hold and never starts handler (56.101055ms)
+✔ default composition stays disabled before any SQL or handler (0.886403ms)
+✔ installed manifest runtime bounds parked handler before longer authority deadline (12.511809ms)
+✔ installed manifest runtime bounds parked settlement before longer authority deadline (33.020673ms)
+✔ manifest body/hash, exact budgets and allowed operation are required before SQL (1.047464ms)
+✔ known grant expiry bounds a parked tool before longer authority deadline (12.505485ms)
+✔ known schedule expiry bounds a parked tool before longer authority deadline (11.840766ms)
+✔ validated grant deadline is published before a later allocation read can park (43.460938ms)
+✔ canonical durable entry is inert, unavailable for every catalog operation, and refuses activation override (11.009337ms)
+✔ known schedule expiry bounds parked first authority and suppresses late effects (21.147804ms)
+✔ known schedule expiry bounds parked pool acquisition and suppresses late effects (42.275076ms)
+✔ success uses one transaction and releases one healthy connection (1.945484ms)
+✔ connect failure starts no transaction and creates no retry (1.318672ms)
+✔ ambiguous BEGIN acknowledgement evicts the potentially open transaction (0.31263ms)
+✔ acknowledged rollback preserves domain refusal and can release healthy (0.225529ms)
+✔ failed rollback evicts rather than returning dirty transaction to pool (0.415474ms)
+✔ lost COMMIT acknowledgement remains uncertain and never retries (0.348414ms)
+✔ release failure cannot overwrite lost COMMIT classification (0.251508ms)
+✔ release failure after acknowledged COMMIT never yields safe retry or success (0.738109ms)
+✔ lock samples authoritative database time after row-lock acknowledgement (10.015132ms)
+✔ missing budget and invalid database clock fail closed (0.663557ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1705.544316

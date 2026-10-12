@@ -1,0 +1,37 @@
+{
+  "command": [
+    "env",
+    "MERI_BUDGET_REPO=/workspace/meri-g1-owner-budget-20261012",
+    "node",
+    "--test",
+    "docs/qualification/candidates/g1-durable-budget-20261012/review/dispatch-independent.test.mjs",
+    "docs/qualification/candidates/g1-durable-budget-20261012/review/store-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-g1-owner-budget-20261012",
+  "sourceHead": "1355c0ab9b0cb6162efef3b9d8ba4e3230a16ed9",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T04:46:10.820382+00:00",
+  "durationSeconds": 1.797,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 55983,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/final-budget-independent.stdout.bin",
+      "bytes": 2732,
+      "sha256": "1bca378e85e2ef0fcfff647b512a8ce1c773232c013c675d98006ac4958801c3"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/final-budget-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

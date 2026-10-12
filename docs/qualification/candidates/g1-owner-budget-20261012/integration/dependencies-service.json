@@ -1,0 +1,40 @@
+{
+  "command": [
+    "npm",
+    "ci",
+    "--prefix",
+    "apps/control/qualification-sdk-fixture/service",
+    "--ignore-scripts",
+    "--no-audit",
+    "--no-fund",
+    "--cache",
+    "/tmp/meri-owner-budget-npm-cache"
+  ],
+  "cwd": "/workspace/meri-g1-owner-budget-20261012",
+  "sourceHead": "668d80f18d31d25d8d3c8fa19e5996a0938ddf26",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T04:22:01.265141+00:00",
+  "durationSeconds": 2.176,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 46136,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/dependencies-service.stdout.bin",
+      "bytes": 25,
+      "sha256": "eea091c3d2b5de342cf739d313b01ea8cacb89dbe65492f961d412dd00c39f1f"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-budget-20261012/integration/dependencies-service.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
