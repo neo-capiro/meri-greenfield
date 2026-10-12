@@ -1,0 +1,44 @@
+{
+  "sourceCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "scope": "DERIVED_STATIC_METADATA_ONLY_NOT_CAPIRO_EXECUTION",
+  "owners": {
+    "searchSecFilings": {
+      "hasActorParameter": false,
+      "hasTenantParameter": false,
+      "separateCountAndRows": true,
+      "explicitSystemRead": true,
+      "effectVerbCallPresent": false
+    },
+    "searchFaraRegistrations": {
+      "hasActorParameter": false,
+      "hasTenantParameter": false,
+      "separateCountAndRows": true,
+      "explicitSystemRead": true,
+      "effectVerbCallPresent": false
+    },
+    "searchLdaFilings": {
+      "hasActorParameter": false,
+      "hasTenantParameter": false,
+      "separateCountAndRows": false,
+      "explicitSystemRead": false,
+      "effectVerbCallPresent": false
+    },
+    "getFilings": {
+      "hasActorParameter": false,
+      "hasTenantParameter": false,
+      "separateCountAndRows": true,
+      "explicitSystemRead": false,
+      "effectVerbCallPresent": false
+    },
+    "globalController": {
+      "standardUserRolePresent": true,
+      "filingsEndpointPresent": true
+    }
+  },
+  "limits": [
+    "Controller authentication and live gateway policy remain external",
+    "No current source grant or effect safety established by the absence of mutation verbs in inspected methods",
+    "SQL collation cannot be simulated from projected text"
+  ],
+  "rawBodiesPublished": false
+}
