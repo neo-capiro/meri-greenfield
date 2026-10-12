@@ -1,0 +1,32 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/qualification-sdk-fixture/service/test/run-stop.test.mjs",
+    "apps/control/qualification-sdk-fixture/state/test/revocation.test.mjs",
+    "apps/control/qualification-sdk-fixture/service/test/cancellation.test.mjs",
+    "apps/control/qualification-sdk-fixture/service/test/handlers.test.mjs",
+    "packages/contracts/test/sdk-fixture-contract.test.mjs",
+    "packages/contracts/test/sdk-fixture-wire.test.mjs"
+  ],
+  "cwd": "/workspace/meri-g1-runtime-owner-20261012",
+  "startUnixSeconds": 1791779135.3050401,
+  "elapsedSeconds": 3.5601413249969482,
+  "exitCode": 0,
+  "ownedPidAndGroup": 50448,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "reapedDescendants": [],
+  "streams": {
+    "stdout": {
+      "path": "final-author-original64.stdout.txt",
+      "bytes": 6016,
+      "sha256": "67fe2270cce1dd5361ea1c4e421befb8385e1ca8385e83382febe710176fc2f9"
+    },
+    "stderr": {
+      "path": "final-author-original64.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}
