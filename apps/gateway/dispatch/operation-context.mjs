@@ -3,12 +3,13 @@ import { canonicalSha256 } from '../../../packages/contracts/validate.mjs';
 import { validateShape } from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import { prepareMemoryReadContext } from './memory-read-context.mjs';
 import { prepareMailReadContext } from './mail-read-context.mjs';
+import { prepareActionReadContext } from './action-read-context.mjs';
 import { deny } from './operation-result.mjs';
 
 export function assertOperationArguments(entry, request) {
   const profile = entry.contract.binding?.dispatchProfile;
   if (profile === undefined) return;
-  if (!['memory-proposals/1', 'mail-candidates/1', 'dataset-metadata/1', 'portfolio-evidence/1'].includes(profile)) deny('GATEWAY_CONFIGURATION');
+  if (!['memory-proposals/1', 'mail-candidates/1', 'dataset-metadata/1', 'portfolio-evidence/1', 'actions-complete/1'].includes(profile)) deny('GATEWAY_CONFIGURATION');
   try { validateShape(entry.contract.binding.input, request); } catch { deny('INVALID_ARGUMENTS'); }
 }
 
@@ -18,7 +19,7 @@ export async function prepareOperationContext({ entry, request, identity, author
     options: () => ({ nowMs: now(), actorId: identity.claims.binding.actorId }),
     observeAuthority() {}, async retain() {},
   });
-  if (!['memory-proposals/1', 'mail-candidates/1', 'dataset-metadata/1', 'portfolio-evidence/1'].includes(profile)) deny('GATEWAY_CONFIGURATION');
+  if (!['memory-proposals/1', 'mail-candidates/1', 'dataset-metadata/1', 'portfolio-evidence/1', 'actions-complete/1'].includes(profile)) deny('GATEWAY_CONFIGURATION');
   if (profile === 'dataset-metadata/1') return Object.freeze({ authority: null,
     options: () => ({}), observeAuthority() {}, async retain() {},
   });
@@ -31,6 +32,7 @@ export async function prepareOperationContext({ entry, request, identity, author
   const authority = await authorize(normalized?.input ?? request);
   if (canonicalSha256(authority.binding) !== canonicalSha256(identity.claims.binding) ||
       authority.policyRevision !== identity.claims.policyRevision) deny('ACCESS_DENIED');
+  if (profile === 'actions-complete/1') return prepareActionReadContext({ request, authority });
   if (profile === 'portfolio-evidence/1') return Object.freeze({ authority,
     options: (current = authority) => ({binding:current.binding, subject:current.subject}),
     observeAuthority() {}, async retain() {},
