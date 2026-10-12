@@ -1,0 +1,77 @@
+✔ independent concrete store composition persists exact result/events and reconnect never redispatches (43.854511ms)
+✔ independent lost complete COMMIT acknowledgment retains RESULT and never rewrites ERROR (15.132911ms)
+✖ independent direct claim rejects forged public event before pool acquisition (1.889212ms)
+✖ independent direct recordError rejects forged public event before pool acquisition (1.755931ms)
+✖ independent direct store refuses changed binding digest before pool acquisition (1.228898ms)
+✔ independent late borrowed pool acquisition is evicted and begins no SQL (1.046424ms)
+✔ independent BEGIN uncertainty evicts borrowed connection (1.480147ms)
+✔ independent ROLLBACK uncertainty evicts borrowed connection (1.032042ms)
+✔ independent COMMIT uncertainty evicts borrowed connection (1.1637ms)
+✔ independent release failure cannot replace uncertain commit classification (1.689982ms)
+✖ independent read reference case equivalence preserves immutable original reference/event spelling (13.156629ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 7
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2561.010954
+
+✖ failing tests:
+
+test at apps/control/task-lookup/test/store-independent.test.mjs:11:44
+✖ independent direct claim rejects forged public event before pool acquisition (1.889212ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/store-independent.test.mjs:11:256)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/task-lookup/test/store-independent.test.mjs:11:44
+✖ independent direct recordError rejects forged public event before pool acquisition (1.755931ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/store-independent.test.mjs:11:313)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/task-lookup/test/store-independent.test.mjs:12:1
+✖ independent direct store refuses changed binding digest before pool acquisition (1.228898ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/store-independent.test.mjs:12:169)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/task-lookup/test/store-independent.test.mjs:16:1
+✖ independent read reference case equivalence preserves immutable original reference/event spelling (13.156629ms)
+  Error: ACCESS_DENIED
+      at Object.read (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/delivery.mjs:42:144)
+      at async TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/store-independent.test.mjs:16:217)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'ACCESS_DENIED',
+    outcome: 'NOT_DISPATCHED'
+  }

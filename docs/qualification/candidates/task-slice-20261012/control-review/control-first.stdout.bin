@@ -1,0 +1,366 @@
+✖ independent actual delivery uses exact owned gateway seam once and returns only immutable references (2.961605ms)
+✖ independent read rechecks current access and preserves exact stored observation without redispatch (0.503155ms)
+✖ independent exact duplicate delivery never invokes gateway twice (0.411798ms)
+✖ independent concurrent same lookup has only one successful claim and one gateway call (1.322565ms)
+✔ independent revocation at before_claim refuses release and downstream work (1.118248ms)
+✔ independent revocation at before_dispatch refuses release and downstream work (0.43955ms)
+✔ independent revocation at before_store refuses release and downstream work (0.745188ms)
+✔ independent revocation at before_release refuses release and downstream work (0.314712ms)
+✖ independent reconnect revocation at before_read does not expose stored content (0.61282ms)
+✖ independent reconnect revocation at before_release does not expose stored content (0.547692ms)
+✖ independent recovered current binding stays distinct from immutable producer provenance (0.447372ms)
+✖ independent wrong stored original tenantId cannot pass immutable result digest checks (0.300431ms)
+✖ independent wrong stored original actorId cannot pass immutable result digest checks (0.358639ms)
+✖ independent wrong stored original conversationId cannot pass immutable result digest checks (0.269404ms)
+✖ independent wrong stored original runId cannot pass immutable result digest checks (0.385869ms)
+✖ independent wrong stored original attemptId cannot pass immutable result digest checks (0.327732ms)
+✖ independent wrong stored original workerId cannot pass immutable result digest checks (0.360591ms)
+✖ independent wrong stored original writerFence cannot pass immutable result digest checks (0.302694ms)
+✖ independent cross-tenant read refuses even if policy callback returns allowed (0.26612ms)
+✖ independent stored digest and completed event reference substitutions refuse (0.322484ms)
+✔ independent all model authority and selection fields stay outside the raw request (1.368804ms)
+✔ independent hostile request/context and thrown accessor never execute getters (0.717627ms)
+✖ independent caller mutations during claim cannot alter selected request or original provenance (12.590898ms)
+✔ independent uncertain claim acknowledgment does not redispatch (0.875194ms)
+✔ independent uncertain markDispatching acknowledgment does not redispatch (0.527692ms)
+✖ independent uncertain complete acknowledgment does not redispatch (0.708774ms)
+✔ independent post-claim deadline prevents later effects and release (0.53269ms)
+✔ independent post-markDispatching deadline prevents later effects and release (0.428033ms)
+✔ independent post-complete deadline prevents later effects and release (0.335814ms)
+✔ independent post-gateway deadline suppresses durable result publication (0.476014ms)
+✖ independent early expiry from authority bounds a parked store and late acknowledgment (2.29194ms)
+✖ independent cancellation while gateway parks has no late publication or result event (0.880892ms)
+✔ independent missing result is unavailable and never causes a lookup (1.469986ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 13
+ℹ fail 20
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2815.616398
+
+✖ failing tests:
+
+test at apps/control/task-lookup/test/delivery-independent.test.mjs:26:1
+✖ independent actual delivery uses exact owned gateway seam once and returns only immutable references (2.961605ms)
+  Error: LOOKUP_UNAVAILABLE
+      at Object.lookup (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/delivery.mjs:31:24)
+      at Object.lookup (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/delivery-independent.test.mjs:20:65)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/delivery-independent.test.mjs:27:32)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    code: 'LOOKUP_UNAVAILABLE',
+    outcome: 'NOT_DISPATCHED'
+  }
+
+test at apps/control/task-lookup/test/delivery-independent.test.mjs:38:1
+✖ independent read rechecks current access and preserves exact stored observation without redispatch (0.503155ms)
+  Error: LOOKUP_UNAVAILABLE
+      at Object.lookup (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/delivery.mjs:31:24)
+      at Object.lookup (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/delivery-independent.test.mjs:20:65)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/delivery-independent.test.mjs:39:38)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    code: 'LOOKUP_UNAVAILABLE',
+    outcome: 'NOT_DISPATCHED'
+  }
+
+test at apps/control/task-lookup/test/delivery-independent.test.mjs:43:1
+✖ independent exact duplicate delivery never invokes gateway twice (0.411798ms)
+  Error: LOOKUP_UNAVAILABLE
+      at Object.lookup (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/delivery.mjs:31:24)
+      at Object.lookup (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/delivery-independent.test.mjs:20:65)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/delivery-independent.test.mjs:43:109)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'LOOKUP_UNAVAILABLE',
+    outcome: 'NOT_DISPATCHED'
+  }
+
+test at apps/control/task-lookup/test/delivery-independent.test.mjs:44:1
+✖ independent concurrent same lookup has only one successful claim and one gateway call (1.322565ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/delivery-independent.test.mjs:44:189)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/task-lookup/test/delivery-independent.test.mjs:51:53
+✖ independent reconnect revocation at before_read does not expose stored content (0.61282ms)
+  Error: LOOKUP_UNAVAILABLE
+      at Object.lookup (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/delivery.mjs:31:24)
+      at Object.lookup (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/delivery-independent.test.mjs:20:65)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/delivery-independent.test.mjs:52:172)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'LOOKUP_UNAVAILABLE',
+    outcome: 'NOT_DISPATCHED'
+  }
+
+test at apps/control/task-lookup/test/delivery-independent.test.mjs:51:53
+✖ independent reconnect revocation at before_release does not expose stored content (0.547692ms)
+  Error: LOOKUP_UNAVAILABLE
+      at Object.lookup (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/delivery.mjs:31:24)
+      at Object.lookup (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/delivery-independent.test.mjs:20:65)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/delivery-independent.test.mjs:52:172)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'LOOKUP_UNAVAILABLE',
+    outcome: 'NOT_DISPATCHED'
+  }
+
+test at apps/control/task-lookup/test/delivery-independent.test.mjs:56:1
+✖ independent recovered current binding stays distinct from immutable producer provenance (0.447372ms)
+  Error: LOOKUP_UNAVAILABLE
+      at Object.lookup (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/delivery.mjs:31:24)
+      at Object.lookup (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/delivery-independent.test.mjs:20:65)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/delivery-independent.test.mjs:57:28)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'LOOKUP_UNAVAILABLE',
+    outcome: 'NOT_DISPATCHED'
+  }
+
+test at apps/control/task-lookup/test/delivery-independent.test.mjs:61:105
+✖ independent wrong stored original tenantId cannot pass immutable result digest checks (0.300431ms)
+  Error: LOOKUP_UNAVAILABLE
+      at Object.lookup (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/delivery.mjs:31:24)
+      at Object.lookup (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/delivery-independent.test.mjs:20:65)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/delivery-independent.test.mjs:62:28)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'LOOKUP_UNAVAILABLE',
+    outcome: 'NOT_DISPATCHED'
+  }
+
+test at apps/control/task-lookup/test/delivery-independent.test.mjs:61:105
+✖ independent wrong stored original actorId cannot pass immutable result digest checks (0.358639ms)
+  Error: LOOKUP_UNAVAILABLE
+      at Object.lookup (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/delivery.mjs:31:24)
+      at Object.lookup (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/delivery-independent.test.mjs:20:65)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/delivery-independent.test.mjs:62:28)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'LOOKUP_UNAVAILABLE',
+    outcome: 'NOT_DISPATCHED'
+  }
+
+test at apps/control/task-lookup/test/delivery-independent.test.mjs:61:105
+✖ independent wrong stored original conversationId cannot pass immutable result digest checks (0.269404ms)
+  Error: LOOKUP_UNAVAILABLE
+      at Object.lookup (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/delivery.mjs:31:24)
+      at Object.lookup (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/delivery-independent.test.mjs:20:65)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/delivery-independent.test.mjs:62:28)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'LOOKUP_UNAVAILABLE',
+    outcome: 'NOT_DISPATCHED'
+  }
+
+test at apps/control/task-lookup/test/delivery-independent.test.mjs:61:105
+✖ independent wrong stored original runId cannot pass immutable result digest checks (0.385869ms)
+  Error: LOOKUP_UNAVAILABLE
+      at Object.lookup (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/delivery.mjs:31:24)
+      at Object.lookup (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/delivery-independent.test.mjs:20:65)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/delivery-independent.test.mjs:62:28)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'LOOKUP_UNAVAILABLE',
+    outcome: 'NOT_DISPATCHED'
+  }
+
+test at apps/control/task-lookup/test/delivery-independent.test.mjs:61:105
+✖ independent wrong stored original attemptId cannot pass immutable result digest checks (0.327732ms)
+  Error: LOOKUP_UNAVAILABLE
+      at Object.lookup (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/delivery.mjs:31:24)
+      at Object.lookup (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/delivery-independent.test.mjs:20:65)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/delivery-independent.test.mjs:62:28)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'LOOKUP_UNAVAILABLE',
+    outcome: 'NOT_DISPATCHED'
+  }
+
+test at apps/control/task-lookup/test/delivery-independent.test.mjs:61:105
+✖ independent wrong stored original workerId cannot pass immutable result digest checks (0.360591ms)
+  Error: LOOKUP_UNAVAILABLE
+      at Object.lookup (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/delivery.mjs:31:24)
+      at Object.lookup (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/delivery-independent.test.mjs:20:65)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/delivery-independent.test.mjs:62:28)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'LOOKUP_UNAVAILABLE',
+    outcome: 'NOT_DISPATCHED'
+  }
+
+test at apps/control/task-lookup/test/delivery-independent.test.mjs:61:105
+✖ independent wrong stored original writerFence cannot pass immutable result digest checks (0.302694ms)
+  Error: LOOKUP_UNAVAILABLE
+      at Object.lookup (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/delivery.mjs:31:24)
+      at Object.lookup (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/delivery-independent.test.mjs:20:65)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/delivery-independent.test.mjs:62:28)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'LOOKUP_UNAVAILABLE',
+    outcome: 'NOT_DISPATCHED'
+  }
+
+test at apps/control/task-lookup/test/delivery-independent.test.mjs:64:1
+✖ independent cross-tenant read refuses even if policy callback returns allowed (0.26612ms)
+  Error: LOOKUP_UNAVAILABLE
+      at Object.lookup (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/delivery.mjs:31:24)
+      at Object.lookup (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/delivery-independent.test.mjs:20:65)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/delivery-independent.test.mjs:64:122)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'LOOKUP_UNAVAILABLE',
+    outcome: 'NOT_DISPATCHED'
+  }
+
+test at apps/control/task-lookup/test/delivery-independent.test.mjs:65:1
+✖ independent stored digest and completed event reference substitutions refuse (0.322484ms)
+  Error: LOOKUP_UNAVAILABLE
+      at Object.lookup (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/delivery.mjs:31:24)
+      at Object.lookup (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/delivery-independent.test.mjs:20:65)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/delivery-independent.test.mjs:66:190)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'LOOKUP_UNAVAILABLE',
+    outcome: 'NOT_DISPATCHED'
+  }
+
+test at apps/control/task-lookup/test/delivery-independent.test.mjs:78:1
+✖ independent caller mutations during claim cannot alter selected request or original provenance (12.590898ms)
+  Error: LOOKUP_UNAVAILABLE
+      at Object.lookup (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/delivery.mjs:31:24)
+      at Object.lookup (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/delivery-independent.test.mjs:20:65)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/delivery-independent.test.mjs:80:38)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'LOOKUP_UNAVAILABLE',
+    outcome: 'NOT_DISPATCHED'
+  }
+
+test at apps/control/task-lookup/test/delivery-independent.test.mjs:83:60
+✖ independent uncertain complete acknowledgment does not redispatch (0.708774ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/delivery-independent.test.mjs:85:59)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/task-lookup/test/delivery-independent.test.mjs:94:1
+✖ independent early expiry from authority bounds a parked store and late acknowledgment (2.29194ms)
+  Error: LOOKUP_UNAVAILABLE
+      at Object.lookup (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/delivery.mjs:31:24)
+      at Object.lookup (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/delivery-independent.test.mjs:20:65)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/delivery-independent.test.mjs:97:14)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'LOOKUP_UNAVAILABLE',
+    outcome: 'NOT_DISPATCHED'
+  }
+
+test at apps/control/task-lookup/test/delivery-independent.test.mjs:99:1
+✖ independent cancellation while gateway parks has no late publication or result event (0.880892ms)
+  Error: LOOKUP_UNAVAILABLE
+      at Object.lookup (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/delivery.mjs:31:24)
+      at Object.lookup (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/delivery-independent.test.mjs:20:65)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/delivery-independent.test.mjs:101:14)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'LOOKUP_UNAVAILABLE',
+    outcome: 'NOT_DISPATCHED'
+  }

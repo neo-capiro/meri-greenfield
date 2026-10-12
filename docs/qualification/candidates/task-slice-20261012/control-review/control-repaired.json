@@ -1,0 +1,37 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/task-lookup/test/delivery-independent.test.mjs",
+    "apps/control/task-lookup/test/store-independent.test.mjs",
+    "apps/control/task-lookup/delivery.test.mjs",
+    "apps/control/task-lookup/postgres-results.test.mjs"
+  ],
+  "cwd": "/workspace/meri-task-lookup-control-review-20261012",
+  "sourceHead": "a89083f4934ee6369d9a227b7c1567ecb8431d24",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-12T23:48:37.531020+00:00",
+  "durationSeconds": 6.423,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 415326,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/control-repaired.stdout.bin",
+      "bytes": 7356,
+      "sha256": "50dc26815f431b1bf35a915d33670a37af15f88e6e7f7bd0ae3fb06b1dc93607"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/control-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

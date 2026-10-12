@@ -1,0 +1,12 @@
+{
+  "kind": "reviewer-only fixture setup",
+  "beforeSha256": "14b80224bfc448fbb63c82c9184d81da90c0435acbb561853ca611b041f05d31",
+  "afterSha256": "ac268250edcbb53a13ed094a1b37858950afaa0f0bd4f38bf4605e533bbc5488",
+  "failures": [
+    "git sparse-checkout add rejects --no-cone; inherited worktree non-cone configuration needs no such add option",
+    "relative import climbed one directory too high; exact preexisting fixture initially absent from sparse checkout"
+  ],
+  "originalRuntimeFailure": "fixture-initial.json",
+  "repair": "Add exact preserved fixture path to sparse selection and change only import parent depth. No production code inspected or changed.",
+  "sourceDefect": false
+}

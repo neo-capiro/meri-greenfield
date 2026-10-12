@@ -1,0 +1,33 @@
+{
+  "command": [
+    "python3",
+    "docs/qualification/candidates/task-slice-20261012/control-review/packet-audit.py"
+  ],
+  "cwd": "/workspace/meri-task-lookup-control-review-20261012",
+  "sourceHead": "27eb7da3c85a791fdbbc283749376ce0e9e80715",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-12T23:52:43.926763+00:00",
+  "durationSeconds": 0.215,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 417553,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/author-packet-audit.stdout.bin",
+      "bytes": 136,
+      "sha256": "6f175af17e0d1f9aab60097ae2edf5236333445e1cb52767dc72c6088a095e8a"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/author-packet-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

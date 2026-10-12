@@ -1,0 +1,5 @@
+{
+  "reason": "Production event helper returns frozen data. Forged-event fixture must clone before mutating; two initial TypeErrors were reviewer fixture failures, not evidence of source refusal. Original other two failures are source checks. All assertions unchanged.",
+  "beforeSha256": "eb76bcd5c58972824e06974f089f42a0e027e8144f24ada4d80ed9c18ffd72a1",
+  "afterSha256": "33c8bceda5fb1d1aba5230846c2b95a4af448c6b3b1498b9ffc1dddf4e816066"
+}

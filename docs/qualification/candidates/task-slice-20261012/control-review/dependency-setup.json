@@ -1,0 +1,52 @@
+{
+  "ownedPhysicalCopies": [
+    {
+      "name": "ajv",
+      "version": "8.20.0",
+      "packageMetadataSha256": "1f9033ee5a6515e7d76938b7072941862d1ed228a6879cc7fe10cdeb75107989",
+      "bytes": 1033496
+    },
+    {
+      "name": "ajv-formats",
+      "version": "3.0.1",
+      "packageMetadataSha256": "402fb4bcfa457f0226813f3976ac42839dd619907c075c108efba8600d7edb69",
+      "bytes": 56763
+    },
+    {
+      "name": "canonicalize",
+      "version": "5.1.0",
+      "packageMetadataSha256": "ca7454aac0f76429b5d56bbc3bd61fa706fb1088a19f45d64cf38e055fbf4670",
+      "bytes": 24474
+    },
+    {
+      "name": "fast-deep-equal",
+      "version": "3.1.3",
+      "packageMetadataSha256": "a5c63940db0260739be9e2ac67f3aac268df4db5770420ee4e34e493152f97d2",
+      "bytes": 12966
+    },
+    {
+      "name": "fast-uri",
+      "version": "3.1.8",
+      "packageMetadataSha256": "30cad05aad3d3596513706451dbfc7e0422f9c1d00f2903ecc34580327d54bc7",
+      "bytes": 220886
+    },
+    {
+      "name": "json-schema-traverse",
+      "version": "1.0.0",
+      "packageMetadataSha256": "156fb24af02845c190701360d06dfda35ef04282e34a734289ea9535ad9819ae",
+      "bytes": 22220
+    },
+    {
+      "name": "require-from-string",
+      "version": "2.0.2",
+      "packageMetadataSha256": "c0002f7d4c7d7e2a885cf0f97226344902417c3a0980f2beca41962d2bc1f6d8",
+      "bytes": 3422
+    }
+  ],
+  "source": "/workspace/meri-read-continuation-20261012/node_modules",
+  "donorTouched": false,
+  "installationExecuted": false,
+  "captureSourceSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "captureChange": "Only requested local check bound120\u2192240 seconds; same owned group reaping behavior."
+}

@@ -1,0 +1,59 @@
+✔ independent actual delivery uses exact owned gateway seam once and returns only immutable references (26.840014ms)
+✔ independent read rechecks current access and preserves exact stored observation without redispatch (11.759027ms)
+✔ independent exact duplicate delivery never invokes gateway twice (8.446632ms)
+✔ independent concurrent same lookup has only one successful claim and one gateway call (5.001437ms)
+✔ independent revocation at before_claim refuses release and downstream work (0.915578ms)
+✔ independent revocation at before_dispatch refuses release and downstream work (1.763484ms)
+✔ independent revocation at before_store refuses release and downstream work (3.544144ms)
+✔ independent revocation at before_release refuses release and downstream work (3.716733ms)
+✔ independent reconnect revocation at before_read does not expose stored content (4.552762ms)
+✔ independent reconnect revocation at before_release does not expose stored content (6.273421ms)
+✔ independent recovered current binding stays distinct from immutable producer provenance (6.142124ms)
+✔ independent wrong stored original tenantId cannot pass immutable result digest checks (4.608846ms)
+✔ independent wrong stored original actorId cannot pass immutable result digest checks (5.724054ms)
+✔ independent wrong stored original conversationId cannot pass immutable result digest checks (4.883159ms)
+✔ independent wrong stored original runId cannot pass immutable result digest checks (4.978833ms)
+✔ independent wrong stored original attemptId cannot pass immutable result digest checks (5.277282ms)
+✔ independent wrong stored original workerId cannot pass immutable result digest checks (4.872664ms)
+✔ independent wrong stored original writerFence cannot pass immutable result digest checks (5.306296ms)
+✔ independent cross-tenant read refuses even if policy callback returns allowed (4.048282ms)
+✔ independent stored digest and completed event reference substitutions refuse (24.613193ms)
+✔ independent all model authority and selection fields stay outside the raw request (1.285755ms)
+✔ independent hostile request/context and thrown accessor never execute getters (1.047006ms)
+✔ independent caller mutations during claim cannot alter selected request or original provenance (5.321118ms)
+✔ independent uncertain claim acknowledgment does not redispatch (1.983445ms)
+✔ independent uncertain markDispatching acknowledgment does not redispatch (2.444859ms)
+✔ independent uncertain complete acknowledgment does not redispatch (4.83031ms)
+✔ independent post-claim deadline prevents later effects and release (1.044031ms)
+✔ independent post-markDispatching deadline prevents later effects and release (1.218915ms)
+✔ independent post-complete deadline prevents later effects and release (3.642742ms)
+✔ independent post-gateway deadline suppresses durable result publication (1.782773ms)
+✔ independent early expiry from authority bounds a parked store and late acknowledgment (32.12632ms)
+✔ independent cancellation while gateway parks has no late publication or result event (2.902799ms)
+✔ independent missing result is unavailable and never causes a lookup (0.774185ms)
+✖ independent returned source scopes cannot substitute different policy or widen UI-event provenance (10.399361ms)
+✔ independent recovered reader policy receives original source scopes and current scope selection separately (8.781697ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 34
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2826.971628
+
+✖ failing tests:
+
+test at apps/control/task-lookup/test/delivery-independent.test.mjs:105:1
+✖ independent returned source scopes cannot substitute different policy or widen UI-event provenance (10.399361ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/delivery-independent.test.mjs:108:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }

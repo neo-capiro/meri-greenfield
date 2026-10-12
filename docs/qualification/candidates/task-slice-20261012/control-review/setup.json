@@ -1,0 +1,14 @@
+{
+  "worktree": "/workspace/meri-task-lookup-control-review-20261012",
+  "base": "77cedb126d57a0223d2df42ad2f3fe988eb51759",
+  "sparse": true,
+  "originalBranchesPreserved": true,
+  "instructionsRead": [
+    "AGENTS.md",
+    "docs/IMPLEMENTATION-STANDARDS.md",
+    "docs/plans/MERI-DEPLOYMENT.md"
+  ],
+  "skillsDiscovery": "No tracked .agents directory at base; shared /workspace/.agents exists empty. Initial rg .agents exited2 with absent-directory diagnostic, no source/test execution occurred.",
+  "dependencyInstallation": false,
+  "productionInspected": false
+}
