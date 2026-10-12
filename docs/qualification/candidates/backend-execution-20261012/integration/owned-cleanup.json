@@ -1,0 +1,124 @@
+{
+  "recordedAt": "2026-10-12T21:47:13.417146+00:00",
+  "sourceHead": "951e9a4e9506b31a6c768e6da9e01c63b235d47f",
+  "captures": [
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/canonical-import.json",
+      "exitCode": 0,
+      "ownedPidAndPgid": 332026,
+      "physicallyAbsentNow": true,
+      "timedOut": false,
+      "ownedGroupKillRequired": false
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/combined-source-check.json",
+      "exitCode": 1,
+      "ownedPidAndPgid": 339565,
+      "physicallyAbsentNow": true,
+      "timedOut": false,
+      "ownedGroupKillRequired": false
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/combined-source-corrected.json",
+      "exitCode": 0,
+      "ownedPidAndPgid": 345926,
+      "physicallyAbsentNow": true,
+      "timedOut": false,
+      "ownedGroupKillRequired": false
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/integrated-preservation-corrected.json",
+      "exitCode": 0,
+      "ownedPidAndPgid": 346710,
+      "physicallyAbsentNow": true,
+      "timedOut": false,
+      "ownedGroupKillRequired": false
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/integrated-preservation.json",
+      "exitCode": 1,
+      "ownedPidAndPgid": 346437,
+      "physicallyAbsentNow": true,
+      "timedOut": false,
+      "ownedGroupKillRequired": false
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/lifetime-shared.json",
+      "exitCode": 0,
+      "ownedPidAndPgid": 322863,
+      "physicallyAbsentNow": true,
+      "timedOut": false,
+      "ownedGroupKillRequired": false
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/memory-adapter-integration.json",
+      "exitCode": 0,
+      "ownedPidAndPgid": 310022,
+      "physicallyAbsentNow": true,
+      "timedOut": false,
+      "ownedGroupKillRequired": false
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/memory-command-integration.json",
+      "exitCode": 0,
+      "ownedPidAndPgid": 316824,
+      "physicallyAbsentNow": true,
+      "timedOut": false,
+      "ownedGroupKillRequired": false
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/product-whitespace.json",
+      "exitCode": 0,
+      "ownedPidAndPgid": 345560,
+      "physicallyAbsentNow": true,
+      "timedOut": false,
+      "ownedGroupKillRequired": false
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/public-distribution-check.json",
+      "exitCode": 1,
+      "ownedPidAndPgid": 339639,
+      "physicallyAbsentNow": true,
+      "timedOut": false,
+      "ownedGroupKillRequired": false
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/public-distribution-corrected.json",
+      "exitCode": 0,
+      "ownedPidAndPgid": 344570,
+      "physicallyAbsentNow": true,
+      "timedOut": false,
+      "ownedGroupKillRequired": false
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/raw-request-baseline.json",
+      "exitCode": 0,
+      "ownedPidAndPgid": 326945,
+      "physicallyAbsentNow": true,
+      "timedOut": false,
+      "ownedGroupKillRequired": false
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-root-combined-source-check.json",
+      "exitCode": 1,
+      "ownedPidAndPgid": 339565,
+      "physicallyAbsentNow": true,
+      "timedOut": false,
+      "ownedGroupKillRequired": false
+    }
+  ],
+  "removedTemporaryDependencyPaths": [
+    {
+      "path": "/workspace/meri-backend-execution-20261012/node_modules",
+      "files": 558,
+      "borrowedTargetsDeleted": false
+    },
+    {
+      "path": "/workspace/meri-backend-execution-20261012/packages/contracts/node_modules",
+      "files": 558,
+      "borrowedTargetsDeleted": false
+    }
+  ],
+  "otherWorktreesOrProcessesTouched": false,
+  "sourceAndEvidenceRetained": true
+}
