@@ -1,0 +1,21 @@
+✔ independent claim loses only post-successful COMMIT acknowledgment once (2.672187ms)
+✔ independent dispatch loses only post-successful COMMIT acknowledgment once (1.201186ms)
+✔ independent result loses only post-successful COMMIT acknowledgment once (0.315875ms)
+✔ independent claim ignores other lookup and budget transaction commits (0.300492ms)
+✔ independent dispatch ignores other lookup and budget transaction commits (0.270236ms)
+✔ independent result ignores other lookup and budget transaction commits (0.479181ms)
+✔ independent native COMMIT rejection remains original and does not consume synthetic loss (0.499381ms)
+✔ independent rollback clears phase and cannot fault a later unrelated transaction (0.162274ms)
+✔ independent forwarding preserves SQL argument and returned object identity (0.241202ms)
+✔ independent concurrent clients share one fault but preserve each native COMMIT (0.374012ms)
+✔ independent borrowed release error is not swallowed by fault forwarding (0.202865ms)
+✔ independent unknown fault phase refuses before borrowing a connection (0.129215ms)
+✔ independent receipt snapshot cannot change subsequent one-shot state (1.112012ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2502.901276

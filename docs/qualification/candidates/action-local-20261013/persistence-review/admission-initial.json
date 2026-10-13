@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/task-lookup/local-integration/admission-independent.test.mjs"
+  ],
+  "cwd": "/tmp/meri-action-local-persistence-review-20261013",
+  "sourceHead": "61e24d00eca89827dd658a365c1be28a5100ec41",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T00:25:54.959550+00:00",
+  "durationSeconds": 2.524,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 426923,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/admission-initial.stdout.bin",
+      "bytes": 991,
+      "sha256": "823160e5b881a9591341b9eb808aef715b41de9b7da9c1d15c5f3b1659e5d673"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/admission-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

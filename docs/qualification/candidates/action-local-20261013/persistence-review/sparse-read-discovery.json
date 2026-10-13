@@ -1,0 +1,7 @@
+{
+  "action": "read author audit after merging immutable packet",
+  "error": "cat: docs/qualification/candidates/action-local-20261013/persistence-author/final-source-audit.json: No such file or directory",
+  "cause": "author evidence remains excluded by reviewer sparse working tree; tracked Git object exists",
+  "resolution": "git show exact packet:path, successful; no source modification",
+  "classification": "read-only discovery error; not source or runtime failure"
+}

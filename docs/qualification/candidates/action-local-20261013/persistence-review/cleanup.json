@@ -1,0 +1,69 @@
+{
+  "removedOwnedDependencies": [
+    {
+      "path": "/tmp/meri-action-local-persistence-review-20261013/node_modules/ajv",
+      "bytes": 1033496
+    },
+    {
+      "path": "/tmp/meri-action-local-persistence-review-20261013/node_modules/ajv-formats",
+      "bytes": 56763
+    },
+    {
+      "path": "/tmp/meri-action-local-persistence-review-20261013/node_modules/canonicalize",
+      "bytes": 24474
+    },
+    {
+      "path": "/tmp/meri-action-local-persistence-review-20261013/node_modules/fast-deep-equal",
+      "bytes": 12966
+    },
+    {
+      "path": "/tmp/meri-action-local-persistence-review-20261013/node_modules/fast-uri",
+      "bytes": 220886
+    },
+    {
+      "path": "/tmp/meri-action-local-persistence-review-20261013/node_modules/json-schema-traverse",
+      "bytes": 22220
+    },
+    {
+      "path": "/tmp/meri-action-local-persistence-review-20261013/node_modules/require-from-string",
+      "bytes": 3422
+    }
+  ],
+  "bytesRemoved": 1374227,
+  "donorModified": false,
+  "sourceRemoved": false,
+  "groups": [
+    {
+      "group": 428638,
+      "absent": true,
+      "receipt": "final-behavior-corrected.json"
+    },
+    {
+      "group": 427919,
+      "absent": true,
+      "receipt": "final-behavior.json"
+    },
+    {
+      "group": 427542,
+      "absent": true,
+      "receipt": "first-repair.json"
+    },
+    {
+      "group": 426923,
+      "absent": true,
+      "receipt": "admission-initial.json"
+    },
+    {
+      "group": 425898,
+      "absent": true,
+      "receipt": "ownership-evidence-initial.json"
+    },
+    {
+      "group": 425140,
+      "absent": true,
+      "receipt": "fault-initial.json"
+    }
+  ],
+  "databaseOrContainerActions": false,
+  "sourceWorktreeAndBranchPreserved": true
+}
