@@ -1,6 +1,5 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createHash} from 'node:crypto';
 import {createLocalActionDemo} from '../../../apps/control/action-application/local/demo.mjs';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {runLocalPilotBaseline} from './run.mjs';
@@ -18,12 +17,12 @@ function wrapped(mutator=()=>{}) {
  };
 }
 function allSix(result){assert.equal(result.caseCount,6);assert.equal(result.cases.length,6);assert.deepEqual(result.cases.map(c=>c.id),['P01','P02','P03','P04','P05','P06']);}
-function expectedFailure(result,id){allSix(result);assert.equal(result.status,'FAIL');assert.ok(result.passed<6);assert.ok(JSON.stringify(result.cases.find(c=>c.id===id)).includes('false')||result.cases.find(c=>c.id===id).status==='FAIL');}
+function expectedFailure(result,id){allSix(result);assert.equal(result.status,'FAIL');assert.ok(result.passed<6);assert.equal(result.cases.find(c=>c.id===id).status,'FAIL');}
 async function changeResponse(response,mutate){if(response.status!==200)return response;const value=JSON.parse(await response.text());mutate(value);return new Response(JSON.stringify(value),{status:response.status,headers:response.headers});}
 
 test('independent actual six fresh compositions retain current public DTOs, no approval/effect, exact preludes and cleanup',async()=>{
  calls.length=0;const result=await runLocalPilotBaseline({...input,createDemo:wrapped()});allSix(result);assert.equal(result.status,'PASS');assert.equal(result.passed,6);assert.equal(calls.length,6);
- assert.deepEqual(calls.map(c=>c.routes),[['query'],['query'],['query','draft'],['query','draft','prepare'],['query','draft','prepare','execute'],['query']]);
+ assert.deepEqual(calls.map(c=>c.routes),[['query','query'],['query','query'],['query','draft','query'],['query','draft','prepare','query'],['query','draft','prepare','execute','query'],['query','query']]);
  for(const c of calls){assert.equal(c.before.lookupRows,0);assert.equal(c.before.metadataRows,0);assert.equal(c.before.commandRows,0);assert.equal(c.approveCalls,0);assert.equal(c.closeCalls,1);assert.equal(c.after.closed,true);assert.equal(c.after.taskEffects,0);assert.equal(c.after.approvals,0);}
  assert.equal(calls[5].after.sourceReads,0);assert.ok(!JSON.stringify(result).includes('Bearer '));
 });
@@ -39,3 +38,6 @@ test('independent malformed public response cannot become a passing row',async()
 test('independent refusal wrong outcome cannot pass P05',async()=>{const r=await runLocalPilotBaseline({...input,createDemo:wrapped((f,real,record,n)=>n===5?{app:{async handle(req){const response=await f.app.handle(req);if(!req.url.endsWith('/execute'))return response;return new Response(JSON.stringify({error:{code:'COMMAND_APPROVAL_REFUSED',outcome:'UNKNOWN'}}),{status:409,headers:{'content-type':'application/json'}});}}}:undefined)});expectedFailure(r,'P05');});
 test('independent revoked-session source read contradicts P06 even if HTTP refusal is correct',async()=>{const r=await runLocalPilotBaseline({...input,createDemo:wrapped((f,real,record,n)=>n===6?{stats:()=>({...real.stats(),sourceReads:1})}:undefined)});expectedFailure(r,'P06');});
 test('independent wrong mode refuses before acquiring any demo',async()=>{let calls=0;await assert.rejects(()=>runLocalPilotBaseline({mode:'production',createDemo:async()=>{calls++;throw new Error('NOT_RUN');}}));assert.equal(calls,0);});
+
+test('independent stats failure must still close the acquired session and continue denominator',async()=>{let closed=0;const owned=[];try{const r=await runLocalPilotBaseline({...input,createDemo:wrapped((f,real,record,n)=>{owned.push(real);return n===2?{stats(){throw new Error('SECRET_STATS');},close(){closed++;f.close();}}:undefined;})});expectedFailure(r,'P02');assert.equal(closed,1);assert.ok(!JSON.stringify(r).includes('SECRET_STATS'));}finally{for(const demo of owned)demo.close();}});
+test('independent parked cleanup handler is bounded and cannot erase later cases',async()=>{let timer;const pending=runLocalPilotBaseline({...input,createDemo:wrapped((f,real,record,n)=>n===1?{app:{handle(req){if(real.stats().closed)return new Promise(()=>{});return f.app.handle(req);}}}:undefined)});const result=await Promise.race([pending,new Promise(resolve=>{timer=setTimeout(()=>resolve(null),2200);})]);clearTimeout(timer);assert.notEqual(result,null,'cleanup hung beyond its1s advertised signal deadline');expectedFailure(result,'P01');});
