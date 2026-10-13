@@ -1,0 +1,18 @@
+{
+  "schema": "workbook-local-flow-independent-review/1",
+  "baseline": "5bff1c5e58c1f766661f3710641202b36c4d7d9b",
+  "scope": "Root-authored local workbook flow, inspection and CLI; application/Office/column owners independently reviewed elsewhere.",
+  "controls": [
+    "Compose canonical document routes/session/artifact owners without copying generators or issuing production authority.",
+    "Actual immutable original/revision/download/reconstruction correlation; formula-like text remains literal.",
+    "Explicit synthetic identity/accounting/SQL; no native qualification claim from local PDF/recalculation.",
+    "Independent stores/sessions, wrong-family and forged-context refusals, replay and revocation before repeated effects.",
+    "Original artifact/session25-second authority distinct from bounded90-second offline inspection of already downloaded bytes.",
+    "Fixed local inspection helpers, bounded stdin/ZIP/PDF/page/cell limits, owned profile/workspace and exclusive evidence writes.",
+    "CLI import/help/invalid configuration allocate no application resources; owned cleanup and environment restoration on failure.",
+    "Preserve failed cache/visual runs, exact final source/receipt/process identities, and original/recalculated/preview file hashes.",
+    "No repeated Office run; audit final root artifacts and visually inspect retained PNGs."
+  ],
+  "sourceReadTiming": "Criteria recorded after initial root source reading, before executing independent tests or inspecting final success artifacts.",
+  "verdict": "PENDING_FINAL_ARTIFACT_RECEIPT"
+}
