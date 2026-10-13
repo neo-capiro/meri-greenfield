@@ -1,0 +1,269 @@
+TAP version 13
+# Subtest: Actual journal creates and decodes a healthy immutable source control
+ok 1 - Actual journal creates and decodes a healthy immutable source control
+  ---
+  duration_ms: 30.492479
+  type: 'test'
+  ...
+# Subtest: Actual journal refuses coherently corrupted SQL conversation ID
+ok 2 - Actual journal refuses coherently corrupted SQL conversation ID
+  ---
+  duration_ms: 1.437572
+  type: 'test'
+  ...
+# Subtest: Actual journal refuses coherently corrupted SQL run ID
+ok 3 - Actual journal refuses coherently corrupted SQL run ID
+  ---
+  duration_ms: 0.579818
+  type: 'test'
+  ...
+# Subtest: Actual journal refuses coherently corrupted zero SQL sequence
+ok 4 - Actual journal refuses coherently corrupted zero SQL sequence
+  ---
+  duration_ms: 0.52754
+  type: 'test'
+  ...
+# Subtest: Actual journal refuses coherently corrupted non-numeric SQL sequence
+ok 5 - Actual journal refuses coherently corrupted non-numeric SQL sequence
+  ---
+  duration_ms: 0.520319
+  type: 'test'
+  ...
+# Subtest: Actual journal refuses coherently corrupted unsafe SQL sequence
+ok 6 - Actual journal refuses coherently corrupted unsafe SQL sequence
+  ---
+  duration_ms: 0.509412
+  type: 'test'
+  ...
+# Subtest: Actual journal refuses coherently corrupted source-request hash
+ok 7 - Actual journal refuses coherently corrupted source-request hash
+  ---
+  duration_ms: 0.549623
+  type: 'test'
+  ...
+# Subtest: Actual journal refuses coherently corrupted command hash
+ok 8 - Actual journal refuses coherently corrupted command hash
+  ---
+  duration_ms: 0.518286
+  type: 'test'
+  ...
+# Subtest: Actual journal refuses coherently corrupted source scope
+ok 9 - Actual journal refuses coherently corrupted source scope
+  ---
+  duration_ms: 0.525096
+  type: 'test'
+  ...
+# Subtest: Actual journal refuses coherently corrupted worker context digest
+ok 10 - Actual journal refuses coherently corrupted worker context digest
+  ---
+  duration_ms: 0.99543
+  type: 'test'
+  ...
+# Subtest: Actual journal refuses coherently corrupted source writer binding
+ok 11 - Actual journal refuses coherently corrupted source writer binding
+  ---
+  duration_ms: 0.597855
+  type: 'test'
+  ...
+# {"case":"resume cancelled while native admit parked","error":"LIFECYCLE_EFFECT_UNKNOWN","runs":1,"starts":1,"continued":0,"cancels":1}
+# Subtest: Current resume releases a fresh target, keeps exact original request and prevents old credential use
+ok 12 - Current resume releases a fresh target, keeps exact original request and prevents old credential use
+  ---
+  duration_ms: 141.938826
+  type: 'test'
+  ...
+# Subtest: Authenticated source cancellation during native admission cannot create or start a resume target
+ok 13 - Authenticated source cancellation during native admission cannot create or start a resume target
+  ---
+  duration_ms: 85.902701
+  type: 'test'
+  ...
+# Subtest: Durable concurrent worker claims permit one attempt and never return UNKNOWN for redispatch
+ok 14 - Durable concurrent worker claims permit one attempt and never return UNKNOWN for redispatch
+  ---
+  duration_ms: 98.858888
+  type: 'test'
+  ...
+# Subtest: Held worker cannot fabricate cancellation, authenticated cancellation still reaches Temporal owner
+ok 15 - Held worker cannot fabricate cancellation, authenticated cancellation still reaches Temporal owner
+  ---
+  duration_ms: 57.931027
+  type: 'test'
+  ...
+# Subtest: Closed command admits bounded intents and grants no caller binding/skill/window fields
+ok 16 - Closed command admits bounded intents and grants no caller binding/skill/window fields
+  ---
+  duration_ms: 10.26724
+  type: 'test'
+  ...
+# Subtest: Caller object getters, Proxy and nested hostile command data are inert
+ok 17 - Caller object getters, Proxy and nested hostile command data are inert
+  ---
+  duration_ms: 0.205678
+  type: 'test'
+  ...
+# Subtest: Invalid Unicode, controls and oversized steering text refuse
+ok 18 - Invalid Unicode, controls and oversized steering text refuse
+  ---
+  duration_ms: 8.834115
+  type: 'test'
+  ...
+# Subtest: Applied resume receipt requires fresh complete binding and admission plus retirement correlation
+ok 19 - Applied resume receipt requires fresh complete binding and admission plus retirement correlation
+  ---
+  duration_ms: 1.510761
+  type: 'test'
+  ...
+# Subtest: Fork receipt preserves source and has distinct target conversation without claiming retirement
+ok 20 - Fork receipt preserves source and has distinct target conversation without claiming retirement
+  ---
+  duration_ms: 0.252628
+  type: 'test'
+  ...
+# Subtest: UNKNOWN receipt does not fabricate a target or physical-stop proof
+ok 21 - UNKNOWN receipt does not fabricate a target or physical-stop proof
+  ---
+  duration_ms: 0.373469
+  type: 'test'
+  ...
+# Subtest: Worker command snapshots full server context and admits no caller-selected source or runtime
+ok 22 - Worker command snapshots full server context and admits no caller-selected source or runtime
+  ---
+  duration_ms: 8.368789
+  type: 'test'
+  ...
+# Subtest: Approval wait requires exact proposal identity/hash while pause and steer prohibit approval fields
+ok 23 - Approval wait requires exact proposal identity/hash while pause and steer prohibit approval fields
+  ---
+  duration_ms: 0.255021
+  type: 'test'
+  ...
+# Subtest: resume: complete supported options retain original intent and exact source preimage
+ok 24 - resume: complete supported options retain original intent and exact source preimage
+  ---
+  duration_ms: 43.092607
+  type: 'test'
+  ...
+# Subtest: fork: complete supported options retain original intent and exact source preimage
+ok 25 - fork: complete supported options retain original intent and exact source preimage
+  ---
+  duration_ms: 1.17054
+  type: 'test'
+  ...
+# Subtest: Exact continuation refuses changed original prompt even when checkpoint digest is recomputed
+ok 26 - Exact continuation refuses changed original prompt even when checkpoint digest is recomputed
+  ---
+  duration_ms: 0.965813
+  type: 'test'
+  ...
+# Subtest: Exact continuation refuses new hidden target source request field even when checkpoint digest is recomputed
+ok 27 - Exact continuation refuses new hidden target source request field even when checkpoint digest is recomputed
+  ---
+  duration_ms: 0.78327
+  type: 'test'
+  ...
+# Subtest: Exact continuation refuses correlated foreign source actor even when checkpoint digest is recomputed
+ok 28 - Exact continuation refuses correlated foreign source actor even when checkpoint digest is recomputed
+  ---
+  duration_ms: 0.903851
+  type: 'test'
+  ...
+# Subtest: Exact continuation refuses foreign opaque-session scope even when checkpoint digest is recomputed
+ok 29 - Exact continuation refuses foreign opaque-session scope even when checkpoint digest is recomputed
+  ---
+  duration_ms: 0.673607
+  type: 'test'
+  ...
+# Subtest: SDK input is literal, detached and single-consumer; close discards unread steering
+ok 30 - SDK input is literal, detached and single-consumer; close discards unread steering
+  ---
+  duration_ms: 4.023084
+  type: 'test'
+  ...
+# Subtest: Concurrent exact controls enqueue one steering UUID, altered replay refuses
+ok 31 - Concurrent exact controls enqueue one steering UUID, altered replay refuses
+  ---
+  duration_ms: 1.829054
+  type: 'test'
+  ...
+# Subtest: Hostile command data refuses without property effects or Query calls
+ok 32 - Hostile command data refuses without property effects or Query calls
+  ---
+  duration_ms: 0.644023
+  type: 'test'
+  ...
+# Subtest: Attempted steering with synchronous input failure remains locally UNKNOWN and never retries
+ok 33 - Attempted steering with synchronous input failure remains locally UNKNOWN and never retries
+  ---
+  duration_ms: 0.607448
+  type: 'test'
+  ...
+# Subtest: Current manual conversation refuses before staging effect
+ok 34 - Current manual conversation refuses before staging effect
+  ---
+  duration_ms: 30.869263
+  type: 'test'
+  ...
+# Subtest: Current foreign actor refuses before staging effect
+ok 35 - Current foreign actor refuses before staging effect
+  ---
+  duration_ms: 5.798971
+  type: 'test'
+  ...
+# Subtest: Current additional manual scope refuses before staging effect
+ok 36 - Current additional manual scope refuses before staging effect
+  ---
+  duration_ms: 0.671546
+  type: 'test'
+  ...
+# Subtest: Current manual selection refuses before staging effect
+ok 37 - Current manual selection refuses before staging effect
+  ---
+  duration_ms: 0.440099
+  type: 'test'
+  ...
+# Subtest: Current expired current receipt refuses before staging effect
+ok 38 - Current expired current receipt refuses before staging effect
+  ---
+  duration_ms: 0.323494
+  type: 'test'
+  ...
+# Subtest: Inspect, revise and download never select versions not admitted by this client
+ok 39 - Inspect, revise and download never select versions not admitted by this client
+  ---
+  duration_ms: 4.727397
+  type: 'test'
+  ...
+# Subtest: Oversize actual Response cancels once and unlocks despite parked transport cancellation
+ok 40 - Oversize actual Response cancels once and unlocks despite parked transport cancellation
+  ---
+  duration_ms: 16.260233
+  type: 'test'
+  ...
+# Subtest: Client close aborts parked fresh-context read; late completion performs no Fetch and does not dispose borrowed port
+ok 41 - Client close aborts parked fresh-context read; late completion performs no Fetch and does not dispose borrowed port
+  ---
+  duration_ms: 7.402782
+  type: 'test'
+  ...
+# Subtest: Post-response writer-fence drift refuses release without retaining artifact versions
+ok 42 - Post-response writer-fence drift refuses release without retaining artifact versions
+  ---
+  duration_ms: 1.981396
+  type: 'test'
+  ...
+# Subtest: Target getters and Proxy refuse inertly; data selectors cannot add credentials or ownership
+ok 43 - Target getters and Proxy refuse inertly; data selectors cannot add credentials or ownership
+  ---
+  duration_ms: 0.217496
+  type: 'test'
+  ...
+1..43
+# tests 43
+# suites 0
+# pass 43
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3695.255654
