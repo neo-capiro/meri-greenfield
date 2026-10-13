@@ -1,0 +1,29 @@
+{
+  "ownedDependencySymlinksRemoved": [
+    "node_modules",
+    "apps/control/conversations/node_modules",
+    "apps/worker/conversation/node_modules",
+    "packages/ui-stream/node_modules",
+    "packages/window-resolution/node_modules"
+  ],
+  "borrowedDonorsPreserved": true,
+  "captureGroupsAbsent": [
+    "initial-independent",
+    "initial-owner42",
+    "initial-typecheck",
+    "initial-source-whitespace",
+    "initial-raw-whitespace",
+    "repaired-seven",
+    "repaired-owner46",
+    "repaired-edge",
+    "repaired-edge-four",
+    "final-eleven",
+    "final-owner46",
+    "final-upstream-types",
+    "final-source-whitespace",
+    "final-preservation"
+  ],
+  "temporaryCompilerOutputRemoved": true,
+  "sourceWorktreesPreserved": true,
+  "nativeOrNetworkResourcesCreated": false
+}
