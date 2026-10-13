@@ -1,0 +1,5 @@
+{
+  "operation": "view generated PDF PNGs",
+  "initial": "Second image view returned exec-server transport closed; source/test process unaffected; subsequent same-image view succeeded.",
+  "sourceOrBehaviorRepair": false
+}

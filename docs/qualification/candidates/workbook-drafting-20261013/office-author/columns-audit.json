@@ -1,0 +1,166 @@
+{
+  "base": "7c051be4b2f4fb1594b66972dee258fc842be966",
+  "source": "07d9db0b988a8ff3f04ee3acc21951e5967dea81",
+  "originalEntries": 11613,
+  "unchangedOriginalEntries": 11612,
+  "changedOriginalPaths": [
+    "apps/artifacts/python/office.py"
+  ],
+  "allOriginalTestsUnchanged": true,
+  "officeTransformUnchanged": true,
+  "previousOfficeEvidenceUnchanged": true,
+  "newSourceSha256": "0d96d65ec3f7a6dede443f1bfc0e8a175f5e838b4c3101e38c4293e8491a21ab",
+  "ownedDependenciesRemoved": true,
+  "cleanupCheckedAt": "2026-10-13T07:55:28.633554+00:00",
+  "ownedGroups": [
+    {
+      "pgid": 567884,
+      "absent": true
+    },
+    {
+      "pgid": 567901,
+      "absent": true
+    },
+    {
+      "pgid": 567902,
+      "absent": true
+    },
+    {
+      "pgid": 567903,
+      "absent": true
+    },
+    {
+      "pgid": 567939,
+      "absent": true
+    },
+    {
+      "pgid": 567940,
+      "absent": true
+    },
+    {
+      "pgid": 567989,
+      "absent": true
+    },
+    {
+      "pgid": 567990,
+      "absent": true
+    },
+    {
+      "pgid": 567991,
+      "absent": true
+    },
+    {
+      "pgid": 567992,
+      "absent": true
+    },
+    {
+      "pgid": 567993,
+      "absent": true
+    },
+    {
+      "pgid": 568028,
+      "absent": true
+    },
+    {
+      "pgid": 568029,
+      "absent": true
+    },
+    {
+      "pgid": 568069,
+      "absent": true
+    },
+    {
+      "pgid": 568070,
+      "absent": true
+    },
+    {
+      "pgid": 568071,
+      "absent": true
+    },
+    {
+      "pgid": 568072,
+      "absent": true
+    },
+    {
+      "pgid": 568073,
+      "absent": true
+    },
+    {
+      "pgid": 568856,
+      "absent": true
+    },
+    {
+      "pgid": 568873,
+      "absent": true
+    },
+    {
+      "pgid": 568874,
+      "absent": true
+    },
+    {
+      "pgid": 568875,
+      "absent": true
+    },
+    {
+      "pgid": 568903,
+      "absent": true
+    },
+    {
+      "pgid": 568904,
+      "absent": true
+    },
+    {
+      "pgid": 568943,
+      "absent": true
+    },
+    {
+      "pgid": 568944,
+      "absent": true
+    },
+    {
+      "pgid": 568945,
+      "absent": true
+    },
+    {
+      "pgid": 568946,
+      "absent": true
+    },
+    {
+      "pgid": 568947,
+      "absent": true
+    },
+    {
+      "pgid": 569081,
+      "absent": true
+    },
+    {
+      "pgid": 569082,
+      "absent": true
+    },
+    {
+      "pgid": 569407,
+      "absent": true
+    },
+    {
+      "pgid": 569408,
+      "absent": true
+    },
+    {
+      "pgid": 569414,
+      "absent": true
+    },
+    {
+      "pgid": 569429,
+      "absent": true
+    },
+    {
+      "pgid": 569434,
+      "absent": true
+    },
+    {
+      "pgid": 569812,
+      "absent": true
+    }
+  ],
+  "runtimeQualified": false
+}
