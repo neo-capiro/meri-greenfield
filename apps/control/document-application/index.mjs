@@ -22,8 +22,9 @@ function input(value,intent,admission){
 function version(value,context,admission,id){
  const record=v.version(value);
  if(id!==undefined&&record.versionId!==id||!same(record.scopes,context.scopes)||!same(record.object.scopes,context.scopes)||record.binding.tenantId!==context.binding.tenantId||record.binding.conversationId!==context.binding.conversationId||record.generationStatus!=='draft'||record.previewStatus!=='pending'||record.object.bytes>context.maxBytes||!admitsDocumentMime(admission,record.mimeType))fail('DOCUMENT_RESULT_REFUSED',502);
- // Canonical format helpers produce an ASCII basename; never interpolate arbitrary headers.
- if(!/^[A-Za-z0-9._ -]{1,124}$/u.test(record.filename))fail('DOCUMENT_RESULT_REFUSED',502);
+ // artifactFilename caps the ASCII basename at120, then appends .docx/.xlsx (125 total).
+ // Canonical owners also bind the exact filename to its retained request before release.
+ if(!/^[A-Za-z0-9._ -]{1,125}$/u.test(record.filename))fail('DOCUMENT_RESULT_REFUSED',502);
  return record;
 }
 function created(value,call,context,admission){
