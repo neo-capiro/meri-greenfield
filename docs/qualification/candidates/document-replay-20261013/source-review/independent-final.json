@@ -1,0 +1,27 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "--test-concurrency=1",
+    "apps/artifacts/independent/document-replay-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-document-replay-review",
+  "reviewedCommit": "c872db174eb34ab1396260242b54fd16e2bb42a3",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 0,
+  "durationSeconds": 4.905,
+  "processReaped": true,
+  "environment": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "MERI_REVIEW_SOURCE_ROOT": "/workspace/meri-document-replay-review"
+  },
+  "stdoutBytes": 6447,
+  "stderrBytes": 0,
+  "stdoutSha256": "b7bd5a0c06e09a00ac1c9d9ae9720d58c198b1450b693184aa171eab64bcdd2e",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}

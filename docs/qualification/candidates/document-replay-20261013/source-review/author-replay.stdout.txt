@@ -1,0 +1,178 @@
+TAP version 13
+# Subtest: create_word completed create replay reconstructs owner and returns identical immutable result
+ok 1 - create_word completed create replay reconstructs owner and returns identical immutable result
+  ---
+  duration_ms: 324.463239
+  type: 'test'
+  ...
+# Subtest: create_excel completed create replay reconstructs owner and returns identical immutable result
+ok 2 - create_excel completed create replay reconstructs owner and returns identical immutable result
+  ---
+  duration_ms: 220.048802
+  type: 'test'
+  ...
+# Subtest: completed exact revision replays after a newer head and preserves original bytes
+ok 3 - completed exact revision replays after a newer head and preserves original bytes
+  ---
+  duration_ms: 497.756161
+  type: 'test'
+  ...
+# Subtest: lost prepare acknowledgement uses retained evidence without duplicate effects
+ok 4 - lost prepare acknowledgement uses retained evidence without duplicate effects
+  ---
+  duration_ms: 142.260925
+  type: 'test'
+  ...
+# Subtest: lost reserve acknowledgement uses retained evidence without duplicate effects
+ok 5 - lost reserve acknowledgement uses retained evidence without duplicate effects
+  ---
+  duration_ms: 11.869006
+  type: 'test'
+  ...
+# Subtest: lost marker acknowledgement uses retained evidence without duplicate effects
+ok 6 - lost marker acknowledgement uses retained evidence without duplicate effects
+  ---
+  duration_ms: 122.443341
+  type: 'test'
+  ...
+# Subtest: lost settle acknowledgement uses retained evidence without duplicate effects
+ok 7 - lost settle acknowledgement uses retained evidence without duplicate effects
+  ---
+  duration_ms: 137.705853
+  type: 'test'
+  ...
+# Subtest: generator interruption remains UNKNOWN with no repeat effects
+ok 8 - generator interruption remains UNKNOWN with no repeat effects
+  ---
+  duration_ms: 13.333119
+  type: 'test'
+  ...
+# Subtest: object interruption remains UNKNOWN with no repeat effects
+ok 9 - object interruption remains UNKNOWN with no repeat effects
+  ---
+  duration_ms: 114.813301
+  type: 'test'
+  ...
+# Subtest: version-before-write interruption remains UNKNOWN with no repeat effects
+ok 10 - version-before-write interruption remains UNKNOWN with no repeat effects
+  ---
+  duration_ms: 120.809502
+  type: 'test'
+  ...
+# Subtest: unpublished-version interruption remains UNKNOWN with no repeat effects
+ok 11 - unpublished-version interruption remains UNKNOWN with no repeat effects
+  ---
+  duration_ms: 128.773835
+  type: 'test'
+  ...
+# Subtest: lost-commit-ack after publication recovers exact server-correlated version before completion marker
+ok 12 - lost-commit-ack after publication recovers exact server-correlated version before completion marker
+  ---
+  duration_ms: 120.063229
+  type: 'test'
+  ...
+# Subtest: malformed-commit-ack after publication recovers exact server-correlated version before completion marker
+ok 13 - malformed-commit-ack after publication recovers exact server-correlated version before completion marker
+  ---
+  duration_ms: 103.432353
+  type: 'test'
+  ...
+# Subtest: cancel after published version before ACK can be recovered with same original lease
+ok 14 - cancel after published version before ACK can be recovered with same original lease
+  ---
+  duration_ms: 106.722158
+  type: 'test'
+  ...
+# Subtest: concurrent completed repeats return one immutable version and one charge
+ok 15 - concurrent completed repeats return one immutable version and one charge
+  ---
+  duration_ms: 160.752855
+  type: 'test'
+  ...
+# Subtest: concurrent first repeats yield one physical generation; unresolved waiter later recovers
+ok 16 - concurrent first repeats yield one physical generation; unresolved waiter later recovers
+  ---
+  duration_ms: 112.591664
+  type: 'test'
+  ...
+# Subtest: concurrent repeat after publication settles the same original marker while original ACK is parked
+ok 17 - concurrent repeat after publication settles the same original marker while original ACK is parked
+  ---
+  duration_ms: 107.221957
+  type: 'test'
+  ...
+# Subtest: distinct deliveries with identical input are distinct artifacts and never borrow completion
+ok 18 - distinct deliveries with identical input are distinct artifacts and never borrow completion
+  ---
+  duration_ms: 229.790948
+  type: 'test'
+  ...
+# Subtest: request/base/context/credential substitution cannot recover a completed result
+ok 19 - request/base/context/credential substitution cannot recover a completed result
+  ---
+  duration_ms: 104.777008
+  type: 'test'
+  ...
+# Subtest: new revision against stale immutable base remains UNKNOWN; completed original replay succeeds
+ok 20 - new revision against stale immutable base remains UNKNOWN; completed original replay succeeds
+  ---
+  duration_ms: 342.925756
+  type: 'test'
+  ...
+# Subtest: current revocation denies replay and retained reads while historical accounting remains available
+ok 21 - current revocation denies replay and retained reads while historical accounting remains available
+  ---
+  duration_ms: 101.876403
+  type: 'test'
+  ...
+# Subtest: missing or conflicting object evidence cannot release or re-execute
+ok 22 - missing or conflicting object evidence cannot release or re-execute
+  ---
+  duration_ms: 110.015418
+  type: 'test'
+  ...
+# Subtest: missing or conflicting record evidence cannot release or re-execute
+ok 23 - missing or conflicting record evidence cannot release or re-execute
+  ---
+  duration_ms: 115.852431
+  type: 'test'
+  ...
+# Subtest: missing or conflicting publication evidence cannot release or re-execute
+ok 24 - missing or conflicting publication evidence cannot release or re-execute
+  ---
+  duration_ms: 101.523467
+  type: 'test'
+  ...
+# Subtest: missing or conflicting marker evidence cannot release or re-execute
+ok 25 - missing or conflicting marker evidence cannot release or re-execute
+  ---
+  duration_ms: 102.419508
+  type: 'test'
+  ...
+# Subtest: legacy random version uses full retained completion digest; markerless legacy stays UNKNOWN
+ok 26 - legacy random version uses full retained completion digest; markerless legacy stays UNKNOWN
+  ---
+  duration_ms: 111.745168
+  type: 'test'
+  ...
+# Subtest: replay retains exact byte hash and fresh release receipt
+ok 27 - replay retains exact byte hash and fresh release receipt
+  ---
+  duration_ms: 133.048509
+  type: 'test'
+  ...
+# Subtest: original persisted deadline cannot be extended by a later replay
+ok 28 - original persisted deadline cannot be extended by a later replay
+  ---
+  duration_ms: 97.153652
+  type: 'test'
+  ...
+1..28
+# tests 28
+# suites 0
+# pass 28
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6070.956122

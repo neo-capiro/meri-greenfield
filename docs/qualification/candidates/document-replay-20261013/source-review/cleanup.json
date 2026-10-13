@@ -1,0 +1,15 @@
+{
+  "reviewedCommit": "c872db174eb34ab1396260242b54fd16e2bb42a3",
+  "borrowedSymlink": {
+    "path": "/workspace/meri-document-replay-review/node_modules",
+    "target": "/workspace/meri-greenfield/node_modules",
+    "removed": true
+  },
+  "ownedCopiedContractDependencies": {
+    "path": "/workspace/meri-document-replay-review/packages/contracts/node_modules",
+    "removed": true
+  },
+  "donorPreserved": true,
+  "worktreeAndSourceEvidencePreserved": true,
+  "privateNativeAndOtherResourcesTouched": false
+}

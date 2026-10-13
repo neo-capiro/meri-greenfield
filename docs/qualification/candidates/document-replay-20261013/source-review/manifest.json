@@ -1,0 +1,177 @@
+{
+  "reviewedCommit": "c872db174eb34ab1396260242b54fd16e2bb42a3",
+  "reviewedTree": "4eccbb74c352be05f7e19f714d21fc353c92ed45",
+  "decision": "ACCEPT_SOURCE",
+  "nativeRuntimeAccepted": false,
+  "checks": {
+    "independent": 28,
+    "authorReplay": 28,
+    "existingOwners": 105,
+    "public": 71,
+    "generated": true,
+    "typecheck": true,
+    "sourceWhitespace": true
+  },
+  "files": [
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/author-replay.json",
+      "bytes": 840,
+      "sha256": "8566a0c62dda7a7ef39101acc7fee40cc67ab7ee229b116bfe9dc53d6accb63a"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/author-replay.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/author-replay.stdout.txt",
+      "bytes": 6625,
+      "sha256": "7201c6309b6cefd2bc2de545d66a6956c3f694e0400b72fb8d7e5ab80576d2cc"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/capture.py",
+      "bytes": 1554,
+      "sha256": "20f26bcd21b56a0afecfbde7d311a0baa4ca867c08433edfb1138e3f0dc0ed88"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/cleanup.json",
+      "bytes": 511,
+      "sha256": "d4818da5ca1b3273cb87108d837104bbc37ec35114737f45c4e72688b3b5dae9"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/design-review.md",
+      "bytes": 5639,
+      "sha256": "91ed983410717180686b0145318ba496e9ad8b3c2da643fb814630d6267a4ac1"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/executable-outline.md",
+      "bytes": 1259,
+      "sha256": "23f7ece8714d9fd41d505c502fea70dcac5829011eba4fd45b28e9f25d28993b"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/existing-owners.json",
+      "bytes": 1048,
+      "sha256": "85e2d3aacd59eef9a631b13aad1ff0b8195fa4ceca2a2ebc792c2274c7b46a89"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/existing-owners.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/existing-owners.stdout.txt",
+      "bytes": 22951,
+      "sha256": "9bea25ad5c357d973e6d7f7d60b5e63bda24a728afcb542bdab13a4e12e33694"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/independent-complete.json",
+      "bytes": 861,
+      "sha256": "3f0261caedaf2424e4463e9ac5d55e63a7f453d514208b1cff9b98a0cc6c8276"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/independent-complete.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/independent-complete.stdout.txt",
+      "bytes": 6707,
+      "sha256": "853eefd84e43744c829b0be3be8b31252be17af2daefee63bcf6cb09544833c8"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/independent-final.json",
+      "bytes": 861,
+      "sha256": "c8122d2273562758db2617e4cfa7d02e373fdee6a9831892eb7ca1efd2f9fa7e"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/independent-final.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/independent-final.stdout.txt",
+      "bytes": 6447,
+      "sha256": "b7bd5a0c06e09a00ac1c9d9ae9720d58c198b1450b693184aa171eab64bcdd2e"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/independent-first-test.mjs",
+      "bytes": 17205,
+      "sha256": "455e55d71cd9217ef8c87b41620a5160542a6e4756eeb76f5f50940e931ca1d6"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/independent-first.json",
+      "bytes": 861,
+      "sha256": "cb44e0b80f019dcc9392719ee8e58209d3494d4c38b57d5df0aeebccc1520179"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/independent-first.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/independent-first.stdout.txt",
+      "bytes": 6163,
+      "sha256": "db02ad2f98cf34715bba10ab9c87ec6182e8d606fd7b8d774fdbdb2411a134d7"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/independent-resource-final.json",
+      "bytes": 861,
+      "sha256": "77ca1c94cb20f9fd067aeca25d5dce1aa30cf98b974cdf8946757293fbaa705a"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/independent-resource-final.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/independent-resource-final.stdout.txt",
+      "bytes": 6703,
+      "sha256": "69dd40c6a66a071c322a47a452cc18457393cca3437453700bef66cc7697b1c9"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/public-distribution.json",
+      "bytes": 788,
+      "sha256": "cf5c3a7c4890d45eb230e0bdf1435a435e1c9e85e9b58d40c8af8e94d96ae427"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/public-distribution.stderr.txt",
+      "bytes": 832,
+      "sha256": "a5bed74e8271b4bed502d2d779b1766e28a92b798d5f5560230b37ebdcc9e5a2"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/public-distribution.stdout.txt",
+      "bytes": 6753,
+      "sha256": "7413ab694e4e69df6e01d8609cbaedaa2c0ec57b7193f78c87dced2e32c68fe7"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/report.md",
+      "bytes": 5184,
+      "sha256": "7142b1312311c1143f3db410355dce2a81c5f91231facc1069c2113b6b0a16b9"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/source-audit.json",
+      "bytes": 3032,
+      "sha256": "22f62d47b9cb5291e960097db9aba7440d37e411b44c7acc81db5676d12d7238"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/source-whitespace.json",
+      "bytes": 878,
+      "sha256": "84c51b23512775c33764b92df72a033f61645d51ae524cd9c3152d7f4b9fc534"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/source-whitespace.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/source-whitespace.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "apps/artifacts/independent/document-replay-independent.test.mjs",
+      "bytes": 19983,
+      "sha256": "4fd76a67b68a4ade8e643f92db277f3f6b627991f46b72bf0d8d9eeccfe5b93f"
+    }
+  ]
+}
