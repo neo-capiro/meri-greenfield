@@ -28,7 +28,7 @@ export function createActionApplication(configuration){
    shrink(ctx.deadlineMs);const options=clippedCommand(current.commandOptions,()=>cutoff,check);let result;
    if(info.intent==='query'){
     const context={...current.lookupContext,deadlineMs:Math.min(current.lookupContext.deadlineMs,cutoff)};prepareLookup(body.request,context,now());check();
-    state.queryStarted=true;const stored=await lifetime.run(signal=>current.lookup.lookup({request:body.request,context,credential:current.lookupCredential,signal}));state.queryStored=true;check();
+    state.queryStarted=true;const stored=await lifetime.run(async signal=>{const out=await current.lookup.lookup({request:body.request,context,credential:current.lookupCredential,signal});state.queryStored=true;return out;});check();
     result=await lifetime.run(signal=>current.lookup.read({resultReference:stored.resultReference,context:ctx,signal}));
     if(result.resultReference!==stored.resultReference||result.resultSha256!==stored.resultSha256)fail('RESULT_CORRELATION_REFUSED',502);
    }else if(info.intent==='draft'||info.intent==='prepare'){

@@ -1,7 +1,7 @@
 /** Fetch-only transport; no listener, ambient configuration or credentials. */
 import {types} from 'node:util';
-import {CommandError} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
-export class ApplicationError extends Error {constructor(code,status=400){super(code);this.code=code;this.status=status;}}
+const applicationErrors=new WeakMap();
+export class ApplicationError extends Error {constructor(code,status=400){super(code);applicationErrors.set(this,{code,status});}}
 export const fail=(code,status)=>{throw new ApplicationError(code,status);};
 const get=name=>Object.getOwnPropertyDescriptor(Request.prototype,name).get;
 const getters=Object.fromEntries(['url','method','headers','signal','body'].map(name=>[name,get(name)]));
@@ -30,19 +30,23 @@ export async function jsonBody(info,limit,lifetime,check){
 }
 export function response(value,status=200){return new Response(JSON.stringify(value),{status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff'}});}
 const codes=new Set(['ACCESS_DENIED','DEADLINE','CANCELLED','LOOKUP_REPLAY','LOOKUP_UNAVAILABLE','COMMAND_APPROVAL_REFUSED','COMMAND_AUTHORITY_REFUSED','COMMAND_PREPARATION_REFUSED','COMMAND_REFUSED','COMMAND_OUTCOME_UNKNOWN','COMMAND_COMMIT_UNCERTAIN','UNAVAILABLE']);
-const outcomes=new Set(['NOT_DISPATCHED','UNKNOWN','RESULT_NOT_RELEASED','STORED_NOT_RELEASED']);
+const outcomes=new Set(['NOT_DISPATCHED','UNKNOWN','RESULT_NOT_RELEASED','STORED_NOT_RELEASED','NOT_STORED','READ_UNAVAILABLE']);
+// Read only inert own data after excluding proxies; rejection objects are not trusted.
+function errorData(error){
+ if(!error||typeof error!=='object'||types.isProxy(error))return {};
+ const value=key=>{const d=Object.getOwnPropertyDescriptor(error,key);return d&&Object.hasOwn(d,'value')?d.value:undefined;};
+ const application=applicationErrors.get(error),rawCode=value('code'),message=value('message'),rawOutcome=value('outcome');
+ return {...application,code:application?.code??(codes.has(rawCode)?rawCode:codes.has(message)?message:undefined),outcome:outcomes.has(rawOutcome)?rawOutcome:undefined};
+}
 export function errorResponse(error,state){
- let code='REQUEST_FAILED',status=502,outcome;
- if(error instanceof ApplicationError){code=error.code;status=error.status;}
- else if(error instanceof CommandError&&codes.has(error.message))code=error.message;
- else if(error&&typeof error==='object'&&!types.isProxy(error)){
-  const c=Object.getOwnPropertyDescriptor(error,'code'),o=Object.getOwnPropertyDescriptor(error,'outcome');
-  if(c&&Object.hasOwn(c,'value')&&codes.has(c.value))code=c.value;
-  if(o&&Object.hasOwn(o,'value')&&outcomes.has(o.value))outcome=o.value;
+ const admitted=errorData(error);let code=admitted.code??'REQUEST_FAILED',status=admitted.status??502,outcome=admitted.outcome;
+ // A later read-local refusal cannot erase a query/result already acknowledged.
+ if(state.knownResult||state.queryStored)outcome=outcome==='STORED_NOT_RELEASED'?outcome:'RESULT_NOT_RELEASED';
+ else if(!outcome){
+  if(['COMMAND_APPROVAL_REFUSED','COMMAND_AUTHORITY_REFUSED','COMMAND_PREPARATION_REFUSED'].includes(code))outcome='NOT_DISPATCHED';
+  else outcome=state.executionStarted||state.prepareStarted||state.queryStarted?'UNKNOWN':'NOT_DISPATCHED';
+  if(['COMMAND_OUTCOME_UNKNOWN','COMMAND_COMMIT_UNCERTAIN'].includes(code))outcome='UNKNOWN';
  }
- if(!outcome)outcome=state.knownResult||state.queryStored?'RESULT_NOT_RELEASED':state.executionStarted||state.prepareStarted||state.queryStarted?'UNKNOWN':'NOT_DISPATCHED';
- if(['COMMAND_APPROVAL_REFUSED','COMMAND_AUTHORITY_REFUSED','COMMAND_PREPARATION_REFUSED'].includes(code)&&!state.knownResult)outcome='NOT_DISPATCHED';
- if(['COMMAND_OUTCOME_UNKNOWN','COMMAND_COMMIT_UNCERTAIN'].includes(code))outcome='UNKNOWN';
  if(code==='ACCESS_DENIED')status=403;else if(code==='COMMAND_APPROVAL_REFUSED')status=409;else if(code==='DEADLINE')status=408;else if(code==='CANCELLED')status=499;else if(code==='LOOKUP_REPLAY')status=409;
  return response({error:{code,outcome}},status);
 }
