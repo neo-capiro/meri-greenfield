@@ -6,13 +6,15 @@ import {createSelectedTaskApplication} from './selected/http.mjs';
 import {createNativeSdkSessionApplication} from './native-authority/session-http.mjs';
 import {fault} from './config.mjs';
 export function captureRuntimePorts(value={}){
- const c=own(value,[],['identityContext','artifactOptionsOwner','selectedController','sdkSessionOwner']);
+ const c=own(value,[],['identityContext','artifactOptionsOwner','selectedController','sdkSessionOwner','selectedSkillAdmission','selectedOutputPublication']);
  const methods=(port,names)=>Object.freeze(Object.fromEntries(names.map(name=>[name,storageMethod(port,name)])));
  return Object.freeze({
   identityContext:c.identityContext===undefined?Object.freeze({verifyIdentity:async()=>{throw fault('NATIVE_AUTHORITY_UNAVAILABLE');},resolveContext:async()=>{throw fault('NATIVE_AUTHORITY_UNAVAILABLE');}}):methods(c.identityContext,['verifyIdentity','resolveContext']),
   ...(c.artifactOptionsOwner===undefined?{}:{artifactOptionsOwner:methods(c.artifactOptionsOwner,['resolve'])}),
   ...(c.selectedController===undefined?{}:{selectedController:methods(c.selectedController,['handle'])}),
   ...(c.sdkSessionOwner===undefined?{}:{sdkSessionOwner:methods(c.sdkSessionOwner,['register','load','append','listSubkeys'])}),
+  ...(c.selectedSkillAdmission===undefined?{}:{selectedSkillAdmission:methods(c.selectedSkillAdmission,['admitSelection'])}),
+  ...(c.selectedOutputPublication===undefined?{}:{selectedOutputPublication:methods(c.selectedOutputPublication,['prepareEvent'])}),
  });
 }
 export function createRuntimeProductApplications({configuration,sessions,ports,now}){
