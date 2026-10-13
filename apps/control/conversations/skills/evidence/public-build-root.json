@@ -1,0 +1,57 @@
+{
+  "command": [
+    "npm",
+    "--prefix",
+    "packages/contracts",
+    "run",
+    "build"
+  ],
+  "cwd": "/workspace/meri-original-runtime-batch",
+  "sourceHead": "6656d98de7452fe22d43dc3bf07721772ccb7201",
+  "sourceDiffSha256": "7a3941fbdf6fde387f4e3db1f3107f202cd48c40742664561e50da1db6a3cf63",
+  "sourceDiffBytes": 3647,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T18:11:45.363887+00:00",
+  "durationSeconds": 1.933,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 298475,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 298499,
+      "status": 0
+    },
+    {
+      "pid": 298519,
+      "status": 0
+    },
+    {
+      "pid": 298539,
+      "status": 0
+    },
+    {
+      "pid": 298559,
+      "status": 0
+    },
+    {
+      "pid": 298599,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "apps/control/conversations/skills/evidence/public-build-root.stdout.bin",
+      "bytes": 3044,
+      "sha256": "bf8a26cd698b70750ab494c25d2aa91948ebcaf71b6fd31136c5921561ff486a"
+    },
+    {
+      "path": "apps/control/conversations/skills/evidence/public-build-root.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    }
+  ],
+  "rerunReason": "Regenerate public metadata after necessary canonical service admission/publication hook; existing routes/receiver DTOs retained.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -22,11 +22,12 @@ export function assertSkillRun(raw,{input,selected,scopes,started,now,life,previ
 export function assertSelectedOutput(raw,{binding,request,selection,inputSha256,prepared}) {
  const p=prepared,context=p.context,spec=p.request,base=p.baseVersionId??null;
  const expected={sourceBinding:binding,skill:request.skill,requestSha256:canonicalSha256(request),selectionSha256:canonicalSha256(selection),inputSha256,preparationSha256:canonicalSha256(p),baseVersionId:base};
- if(raw?.state==='awaiting-output-approval'){
-  const r=own(raw,[...Object.keys(expected),'state','artifactRequestSha256','prepared']);
+ const candidate=selectedOutputRecord(raw);
+ if(candidate.state==='awaiting-output-approval'){
+  const r=own(candidate,[...Object.keys(expected),'state','artifactRequestSha256','prepared']);
   if(Object.keys(expected).some(k=>!same(r[k],expected[k]))||r.artifactRequestSha256!==canonicalSha256(spec)||r.prepared!==p)fault();return r;
  }
- const r=data(own(raw,[...Object.keys(expected),'state','outputBinding','sourceContextSha256','outputContextSha256','sourceArtifactRequestSha256','artifactRequestSha256','lineageSha256','lineage','projection','artifact']));
+ const r=data(own(candidate,[...Object.keys(expected),'state','outputBinding','sourceContextSha256','outputContextSha256','sourceArtifactRequestSha256','artifactRequestSha256','lineageSha256','lineage','projection','artifact']));
  if(r.state!=='delivered'||Object.keys(expected).some(k=>!same(r[k],expected[k]))||r.sourceContextSha256!==canonicalSha256(context)||r.sourceArtifactRequestSha256!==canonicalSha256(spec)||![r.outputContextSha256,r.artifactRequestSha256,r.lineageSha256].every(digest)||
  ['tenantId','actorId','conversationId'].some(k=>r.outputBinding?.[k]!==binding[k])||['runId','attemptId','workerId'].some(k=>r.outputBinding?.[k]===binding[k]))fault();
  const l=own(r.lineage,['recipe','sourceBinding','skill','selection','window','requestSha256','selectionSha256','inputSha256','readsSha256','compilerReadsSha256','preparationSha256','sourceArtifactRequestSha256','sourceContextSha256','baseVersionId','outputBinding','outputAllocationSha256','outputGrantId','approvalReceiptId','sourceEvidenceSha256','sourceDeadlineMs','outputDeadlineMs','sourceProvenance','sourceEvidence']);
@@ -45,3 +46,7 @@ export function assertSelectionAdmission(raw,{binding,request,scopes,selectedCli
  if(!same(r.binding,binding)||!same(r.skill,selected.pin)||r.requestSha256!==canonicalSha256(request)||!digest(r.selectionSha256)||!same(r.scopes,scopes)||r.selectedClientId!==selectedClientId||r.manifestSha256!==selected.pin.manifestSha256||r.catalogSha256!==selected.pin.catalogSha256||!same(r.budgets,selected.manifest.budgets)||!digest(r.allocationSha256)||scopes.some(s=>s.policyRevision!==r.policyRevision)||!uuid(r.installationId)||!digest(r.executionCatalogSha256)||!Number.isSafeInteger(r.checkedAtMs)||r.checkedAtMs<started||r.checkedAtMs>now()||!Number.isSafeInteger(r.expiresAtMs)||r.expiresAtMs<=now())fault();
  return r;
 }
+
+export function selectedOutputPreparationSha256(raw){const r=selectedOutputRecord(raw);if(!digest(r.preparationSha256))fault();return r.preparationSha256;}
+
+function selectedOutputRecord(raw){return own(raw,['state','preparationSha256'],['sourceBinding','skill','requestSha256','selectionSha256','inputSha256','baseVersionId','artifactRequestSha256','prepared','outputBinding','sourceContextSha256','outputContextSha256','sourceArtifactRequestSha256','lineageSha256','lineage','projection','artifact']);}
