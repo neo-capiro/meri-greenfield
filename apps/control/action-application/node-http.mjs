@@ -16,6 +16,7 @@ export function createActionHttpHandler(configuration){
   try{
    if(signal.aborted)abort();if(controller.signal.aborted)throw Error('CANCELLED');
    if(typeof request.url!=='string'||!request.url.startsWith('/')||request.url.startsWith('//'))throw Error('INVALID_REQUEST');
+   if(request.rawHeaders.length>200)throw Error('HEADERS_REFUSED');
    const headers=new Headers();for(let i=0;i<request.rawHeaders.length;i+=2)headers.append(request.rawHeaders[i],request.rawHeaders[i+1]);
    const method=request.method,body=['GET','HEAD'].includes(method)?undefined:Readable.toWeb(request);
    const incoming=new Request(`http://127.0.0.1${request.url}`,{method,headers,body,duplex:'half',signal:controller.signal});
@@ -37,11 +38,12 @@ export async function listenActionApplication(configuration){
  if(host!=='127.0.0.1'||port!==0||!Number.isSafeInteger(lifetimeMs)||lifetimeMs<1||lifetimeMs>30000)refused();
  const controller=new AbortController(),handler=createActionHttpHandler({app,signal:controller.signal}),sockets=new Set();
  const server=createServer({maxHeaderSize:16384,headersTimeout:Math.min(5000,lifetimeMs),requestTimeout:lifetimeMs,keepAliveTimeout:Math.min(1000,lifetimeMs)},handler);
- server.maxHeadersCount=100;server.setTimeout(Math.min(5000,lifetimeMs),socket=>socket.destroy());
- let stopping=false,finished=false,timer,resolveClosed;
+ // Retain every raw header before our explicit count refusal; never silently truncate credentials.
+ server.maxHeadersCount=0;server.setTimeout(Math.min(5000,lifetimeMs),socket=>socket.destroy());
+ let stopping=false,finished=false,serverClosed=false,timer,resolveClosed;
  const closed=new Promise(resolve=>{resolveClosed=resolve;});
- const finish=()=>{if(stopping&&!server.listening&&sockets.size===0&&!finished){finished=true;resolveClosed();}};
- const close=()=>{if(!stopping){stopping=true;clearTimeout(timer);controller.abort();server.close(()=>finish());for(const socket of sockets)socket.destroy();}finish();return closed;};
+ const finish=()=>{if(stopping&&serverClosed&&!server.listening&&sockets.size===0&&!finished){finished=true;resolveClosed();}};
+ const close=()=>{if(!stopping){stopping=true;clearTimeout(timer);controller.abort();server.close(()=>{serverClosed=true;finish();});for(const socket of sockets)socket.destroy();}finish();return closed;};
  server.on('connection',socket=>{sockets.add(socket);socket.once('close',()=>{sockets.delete(socket);finish();});if(stopping)socket.destroy();});
  server.on('clientError',(_error,socket)=>socket.destroy());server.on('upgrade',(_req,socket)=>socket.destroy());server.on('connect',(_req,socket)=>socket.destroy());
  try{
