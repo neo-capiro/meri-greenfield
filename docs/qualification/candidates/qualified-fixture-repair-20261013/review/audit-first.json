@@ -1,0 +1,684 @@
+{
+  "base": "b5243ae164f68c7591b039e8365d9897390543d2",
+  "source": "4f4da0b67d0b062a84b9196a4b70b012df30f213",
+  "sourceTree": "a9f5b4485fca43b01766ce0ce10301a74d098199",
+  "packet": "fe51a6c75bd3a0878e786a2f9b2af64d4271871c",
+  "testedHead": "e4d36a379e9e41a43cf32dddb34a0d6069407acd",
+  "originalEntries": 11411,
+  "exactOriginalEntries": 11400,
+  "changedOriginals": [
+    "apps/control/qualified-application/README-schema.md",
+    "apps/control/qualified-application/application.fixture.mjs",
+    "apps/control/qualified-application/independent/schema-independent.test.mjs",
+    "apps/control/qualified-application/lifecycle-bridge.mjs",
+    "apps/control/qualified-application/lifecycle-bridge.test.mjs",
+    "apps/control/qualified-application/schema-contract.mjs",
+    "apps/control/qualified-application/schema-independent/fixture.mjs",
+    "apps/control/qualified-application/schema.fixture.mjs",
+    "apps/control/qualified-application/schema.mjs",
+    "apps/proxy/qualification/assembly/lifecycle.py",
+    "apps/proxy/qualification/assembly/test_lifecycle.py"
+  ],
+  "protectedCount": 11,
+  "authorManifestSha256": "33da05663d0497aaadbaa362be49cbd5a3f14809c930a2ae999889249cf0074e",
+  "authorManifestMembers": 70,
+  "checks": [
+    {
+      "name": "exact eleven allocated existing paths only",
+      "passed": true
+    },
+    {
+      "name": "no original deletion",
+      "passed": true
+    },
+    {
+      "name": "all other originals exact",
+      "passed": true
+    },
+    {
+      "name": "packet apps packages source exact",
+      "passed": true
+    },
+    {
+      "name": "review tested production exact",
+      "passed": true
+    },
+    {
+      "name": "original complete tests exact apps/control/qualified-application/schema.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original complete tests exact apps/control/qualified-application/schema-independent/schema-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original complete tests exact apps/control/qualified-application/application.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "old fixed-child test prefix exact",
+      "passed": true
+    },
+    {
+      "name": "old boundary exact inverse of pool options only",
+      "passed": true
+    },
+    {
+      "name": "old Python exact inverse fixture server fallback only",
+      "passed": true
+    },
+    {
+      "name": "all migration files and lifetime/transaction/bridge owners unchanged",
+      "passed": true
+    },
+    {
+      "name": "60s original operation cutoff",
+      "passed": true
+    },
+    {
+      "name": "connection5s and query6s ceiling",
+      "passed": true
+    },
+    {
+      "name": "query ceiling",
+      "passed": true
+    },
+    {
+      "name": "shorter timeout",
+      "passed": true
+    },
+    {
+      "name": "actual exact six migration sources still pinned",
+      "passed": true
+    },
+    {
+      "name": "shared fixture admission owner",
+      "passed": true
+    },
+    {
+      "name": "full descriptor remains canonical admission member",
+      "passed": true
+    },
+    {
+      "name": "namespace OID bounded positive32bit",
+      "passed": true
+    },
+    {
+      "name": "fixed metadata only no data rows or reset",
+      "passed": true
+    },
+    {
+      "name": "author manifest source",
+      "passed": true
+    },
+    {
+      "name": "author member docs/coordination/reports/CODEX-QUALIFIED-FIXTURE-REPAIR-20261013.md",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/allocated-boundary.json",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/allocated-boundary.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/allocated-boundary.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/audit-scope-before.json",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/audit-scope-before.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/audit-scope-before.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/audit.json",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/audit.py",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-before.json",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-before.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-before.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-final.json",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-final.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-final.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-repaired.json",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-repaired.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-repaired.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/cleanup.json",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/expanded-node.json",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/expanded-node.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/expanded-node.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/expanded-python.json",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/expanded-python.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/expanded-python.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/first-node.json",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/first-node.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/first-node.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/first-python.json",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/first-python.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/first-python.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/focused-repaired.json",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/focused-repaired.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/focused-repaired.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/initial-regressions.json",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/initial-regressions.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/initial-regressions.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/lifecycle-composed.json",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/lifecycle-composed.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/lifecycle-composed.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/manifest-e14-preimage.json",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/manifest-f41-preimage.json",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/namespace-identity-before.json",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/namespace-identity-before.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/namespace-identity-before.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/namespace-identity-repaired.json",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/namespace-identity-repaired.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/namespace-identity-repaired.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/original-lifecycle.json",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/original-lifecycle.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/original-lifecycle.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/regclass-before.json",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/regclass-before.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/regclass-before.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/regclass-repaired.json",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/regclass-repaired.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/regclass-repaired.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/sequence-before.json",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/sequence-before.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/sequence-before.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/sequence-repaired.json",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/sequence-repaired.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/sequence-repaired.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/source-focused.json",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/source-focused.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/source-focused.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/source-whitespace-followup.json",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/whitespace-final.json",
+      "passed": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/qualified-fixture-repair-20261013/author/whitespace.json",
+      "passed": true
+    },
+    {
+      "name": "first retained tracked source diff zero",
+      "passed": true
+    },
+    {
+      "name": "first owned group absence",
+      "passed": true
+    },
+    {
+      "name": "first first.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "first first.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "first group remains absent",
+      "passed": true
+    },
+    {
+      "name": "baseline-corrected retained tracked source diff zero",
+      "passed": true
+    },
+    {
+      "name": "baseline-corrected owned group absence",
+      "passed": true
+    },
+    {
+      "name": "baseline-corrected baseline-corrected.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "baseline-corrected baseline-corrected.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "baseline-corrected group remains absent",
+      "passed": true
+    },
+    {
+      "name": "repaired-node retained tracked source diff zero",
+      "passed": true
+    },
+    {
+      "name": "repaired-node owned group absence",
+      "passed": true
+    },
+    {
+      "name": "repaired-node repaired-node.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "repaired-node repaired-node.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "repaired-node group remains absent",
+      "passed": true
+    },
+    {
+      "name": "independent-python retained tracked source diff zero",
+      "passed": true
+    },
+    {
+      "name": "independent-python owned group absence",
+      "passed": true
+    },
+    {
+      "name": "independent-python independent-python.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "independent-python independent-python.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "independent-python group remains absent",
+      "passed": true
+    },
+    {
+      "name": "repaired-python retained tracked source diff zero",
+      "passed": true
+    },
+    {
+      "name": "repaired-python owned group absence",
+      "passed": true
+    },
+    {
+      "name": "repaired-python repaired-python.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "repaired-python repaired-python.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "repaired-python group remains absent",
+      "passed": true
+    },
+    {
+      "name": "regclass-before retained tracked source diff zero",
+      "passed": true
+    },
+    {
+      "name": "regclass-before owned group absence",
+      "passed": true
+    },
+    {
+      "name": "regclass-before regclass-before.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "regclass-before regclass-before.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "regclass-before group remains absent",
+      "passed": true
+    },
+    {
+      "name": "final-node retained tracked source diff zero",
+      "passed": true
+    },
+    {
+      "name": "final-node owned group absence",
+      "passed": true
+    },
+    {
+      "name": "final-node final-node.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "final-node final-node.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "final-node group remains absent",
+      "passed": true
+    },
+    {
+      "name": "cast-type-before retained tracked source diff zero",
+      "passed": true
+    },
+    {
+      "name": "cast-type-before owned group absence",
+      "passed": true
+    },
+    {
+      "name": "cast-type-before cast-type-before.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "cast-type-before cast-type-before.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "cast-type-before group remains absent",
+      "passed": true
+    },
+    {
+      "name": "final-qualified-node retained tracked source diff zero",
+      "passed": true
+    },
+    {
+      "name": "final-qualified-node owned group absence",
+      "passed": true
+    },
+    {
+      "name": "final-qualified-node final-qualified-node.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "final-qualified-node final-qualified-node.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "final-qualified-node group remains absent",
+      "passed": true
+    },
+    {
+      "name": "final-corrected-node retained tracked source diff zero",
+      "passed": true
+    },
+    {
+      "name": "final-corrected-node owned group absence",
+      "passed": true
+    },
+    {
+      "name": "final-corrected-node final-corrected-node.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "final-corrected-node final-corrected-node.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "final-corrected-node group remains absent",
+      "passed": true
+    },
+    {
+      "name": "Node72 final pass",
+      "passed": true
+    },
+    {
+      "name": "Python33 pass",
+      "passed": true
+    },
+    {
+      "name": "all Python runtime source unchanged since33 pass",
+      "passed": false
+    }
+  ],
+  "passed": 144,
+  "failed": 1,
+  "sourceIdentities": [
+    {
+      "path": "apps/control/qualified-application/README-schema.md",
+      "blob": "c4e217eb2c500dc9290084742f06dcb3f219fc19",
+      "bytes": 9756,
+      "sha256": "332d2f23ea49a6181dde67c6d6d098f539cbe0c9a247f08e98a95d733e1507e3"
+    },
+    {
+      "path": "apps/control/qualified-application/application.fixture.mjs",
+      "blob": "4e72bd52741d7db7b7d4ce3b5803b6ae103670ff",
+      "bytes": 8070,
+      "sha256": "17b6235fd297e0e4c0753cbee8acbbdc522a1820ffe272f3d757ed59c76cd8f4"
+    },
+    {
+      "path": "apps/control/qualified-application/independent/schema-independent.test.mjs",
+      "blob": "915b427ecdce9988d36bf964ba2475f0b2c08ae3",
+      "bytes": 5985,
+      "sha256": "15a95561504e0bcc76d2b989213573ef6e629ccc42885d1951ea1e54ace12680"
+    },
+    {
+      "path": "apps/control/qualified-application/lifecycle-bridge.mjs",
+      "blob": "861e0ef62d994a0102e92b65b83e4e4881f64755",
+      "bytes": 8890,
+      "sha256": "e9edf0d1ecac209bfb1da3a5affd365186c5461e5a46abd8a6df302d1d5ebb15"
+    },
+    {
+      "path": "apps/control/qualified-application/lifecycle-bridge.test.mjs",
+      "blob": "66ac2e00662f16a613bc3dbfeca0e827e1307cfb",
+      "bytes": 9233,
+      "sha256": "1988c7c76485662a3ccb7396c587ce7bd2a34576e07efd9711e85505ec2ffe00"
+    },
+    {
+      "path": "apps/control/qualified-application/schema-contract.mjs",
+      "blob": "f28576d09086f1979f1c09abe3a950d8f2e70b7e",
+      "bytes": 12124,
+      "sha256": "a488bd72f703ac4a421248dd1c6f8275203a45a6a60bfa50b1047eeca262f240"
+    },
+    {
+      "path": "apps/control/qualified-application/schema-independent/fixture.mjs",
+      "blob": "ad2918556e3929b2b00e56569f13dbf2df09dd69",
+      "bytes": 7181,
+      "sha256": "8ecdb9a8f7fa887afed79e8289c2e33b8278cad883e0c83243c7d3c0f1dc46b9"
+    },
+    {
+      "path": "apps/control/qualified-application/schema-preservation.mjs",
+      "blob": "6d3cbdae4f14e7438ad7f250a1f76a4ce0acac9b",
+      "bytes": 7947,
+      "sha256": "f487219178395847dee406b8db60fcc4e945fca8707265a5e475beca9e07f4e0"
+    },
+    {
+      "path": "apps/control/qualified-application/schema.fixture.mjs",
+      "blob": "5522e6c611d6702693144c06980f2312dcbe5df7",
+      "bytes": 7671,
+      "sha256": "eada282f332f11578233bb1668b97f3455c96b638b6b2edf3d994c389e1f0f34"
+    },
+    {
+      "path": "apps/control/qualified-application/schema.mjs",
+      "blob": "19096932b303142cbca984067c5b573e003fd367",
+      "bytes": 8955,
+      "sha256": "40d8c4fb31d24b4e1f50d130a164d61f76b5d20ba7378da51f2407b231108f3f"
+    },
+    {
+      "path": "apps/proxy/qualification/assembly/lifecycle.py",
+      "blob": "5742c6590e42d034782e62ea746837d2d3f72b7f",
+      "bytes": 10007,
+      "sha256": "ee0ea8ff55ad858186cc7144bb972ed501160a2d34007bf1a0f45eb5089447bb"
+    },
+    {
+      "path": "apps/proxy/qualification/assembly/test_lifecycle.py",
+      "blob": "5ddcf533a44d6c906a4994d3ba9a8e54a317640a",
+      "bytes": 10725,
+      "sha256": "8435c203af26c68a6f0d57dff01b74417bbc2be837d620e0608e4ae3be1db073"
+    }
+  ],
+  "nativeSqlExecuted": false
+}
