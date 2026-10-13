@@ -77,11 +77,18 @@ for(const kind of ['expired','aborted'])test(`offline ${kind} fresh acquisition 
 });
 function rowFixture(){
  const f=fixture(),b=prepare(f.request,f.context,NOW),observation=envelope(b),events=[event(b,'tool.started',NOW),event(b,'tool.completed',NOW,f.context.resultReference)];
- const hash=canonicalSha256(observation),completion={invocationId:'owned_'+id(90),reservationId:id(91),argumentsSha256:b.argumentsSha256,resultSha256:hash,outputBytes:123};
- const rows={lookups:[{state:'RESULT',payload:b,record:{observation,resultSha256:hash,events}}],events:events.map((event,i)=>({event,kind:i?'terminal':'started',sequence:String(i+1),event_id:event.eventId})),invocations:[{invocation_id:completion.invocationId,reservation_id:completion.reservationId,arguments_sha256:b.argumentsSha256,completion}],reservations:[{invocation_id:completion.invocationId,reservation_id:completion.reservationId,state:'SETTLED',hold_micro_usd:'10',charged_micro_usd:'10',output_bytes:'123'}]};
+ const hash=canonicalSha256(observation),delivery=JSON.parse(f.context.deliveryJson),facts={...delivery.context,invocationId:'owned_'+id(90)},completion={factsSha256:canonicalSha256(facts),rawRequestSha256:canonicalSha256(b.request),operation:b.request.operation,invocationId:'owned_'+id(90),reservationId:id(91),argumentsSha256:b.argumentsSha256,resultSha256:hash,outputBytes:123};
+ const rows={lookups:[{state:'RESULT',payload:b,record:{observation,resultSha256:hash,events}}],events:events.map((event,i)=>({event,kind:i?'terminal':'started',sequence:String(i+1),event_id:event.eventId})),invocations:[{invocation_id:completion.invocationId,reservation_id:completion.reservationId,arguments_sha256:b.argumentsSha256,completion,delivery,facts,raw_request_sha256:completion.rawRequestSha256,operation:completion.operation}],reservations:[{invocation_id:completion.invocationId,reservation_id:completion.reservationId,state:'SETTLED',hold_micro_usd:'10',charged_micro_usd:'10',output_bytes:'123'}]};
  const read={observation,resultSha256:hash,events,classification:'recommendations',acceptedTasks:false};return {rows,c:{lookup:{request:f.request,context:f.context},expectedChargeMicroUsd:10},read};
 }
 test('offline actual retained-row assertion accepts coherent canonical result/events/accounting',()=>{const f=rowFixture();assertLocalResultRows(f.rows,f.c,f.read);});
 for(const [key,value]of [['invocationId','owned_'+id(92)],['reservationId',id(92)],['outputBytes',124]])test(`offline actual retained-row assertion rejects contradictory completion ${key}`,()=>{
  const f=rowFixture();f.rows.invocations[0].completion[key]=value;assert.throws(()=>assertLocalResultRows(f.rows,f.c,f.read));
 });
+
+for(const mutate of [
+ f=>{f.rows.invocations[0].completion.factsSha256='a'.repeat(64);},
+ f=>{f.rows.invocations[0].completion.rawRequestSha256='b'.repeat(64);},
+ f=>{f.rows.invocations[0].completion.operation={id:'other',version:'0.2.0'};},
+ f=>{f.rows.invocations[0].delivery.deliveryId='other';},
+])test('offline retained invocation provenance contradiction is rejected',()=>{const f=rowFixture();mutate(f);assert.throws(()=>assertLocalResultRows(f.rows,f.c,f.read));});

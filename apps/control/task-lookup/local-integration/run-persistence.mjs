@@ -29,6 +29,10 @@ function assertResultRows(rows,c,read){
  assert.equal(inv.invocation_id,res.invocation_id);assert.equal(inv.reservation_id,res.reservation_id);assert(inv.completion);
  assert.equal(inv.completion.invocationId,inv.invocation_id);assert.equal(inv.completion.reservationId,inv.reservation_id);
  assert.equal(String(inv.completion.outputBytes),res.output_bytes);
+ assert.deepEqual(inv.delivery,JSON.parse(c.lookup.context.deliveryJson));
+ assert.deepEqual(inv.facts,{...inv.delivery.context,invocationId:inv.invocation_id});
+ assert.equal(inv.raw_request_sha256,canonicalSha256(b.request));assert.deepEqual(inv.operation,b.request.operation);
+ assert.deepEqual(inv.completion,{invocationId:inv.invocation_id,reservationId:inv.reservation_id,factsSha256:canonicalSha256(inv.facts),rawRequestSha256:inv.raw_request_sha256,operation:inv.operation,argumentsSha256:b.argumentsSha256,resultSha256:read.resultSha256,outputBytes:Number(res.output_bytes)});
  assert.equal(inv.arguments_sha256,b.argumentsSha256);assert.equal(inv.completion.argumentsSha256,b.argumentsSha256);
  // Both accepted owners hash the complete governed result through canonicalSha256.
  assert.equal(inv.completion.resultSha256,read.resultSha256);
@@ -94,6 +98,12 @@ export async function runLocalActionPersistence(configuration){
     }else{activeStage='authorized-readback';readback=await read(control(c),c);}
     if(delivered)assert.deepEqual({...readback,observation:undefined},{...delivered,observation:undefined});
     activeStage='retained-row-assertions';const rows=await readCaseRows(pool,c,run);assertResultRows(rows,c,readback);
+    activeStage='historical-accounting-owner';
+    const inv=rows.invocations[0],res=rows.reservations[0];
+    const accounting=await run(()=>method(c.gateway,'readInvocationOutcome')(JSON.stringify(inv.facts),JSON.stringify({operation:inv.operation,argumentsSha256:inv.arguments_sha256})));
+    assert.equal(accounting.state,'SETTLED');assert.equal(accounting.invocationId,inv.invocation_id);assert.equal(accounting.reservationId,inv.reservation_id);
+    assert.deepEqual(accounting.operation,inv.operation);assert.equal(accounting.argumentsSha256,inv.arguments_sha256);
+    assert.equal(accounting.holdMicrousd,res.hold_micro_usd);assert.equal(accounting.chargedMicrousd,res.charged_micro_usd);assert.equal(accounting.outputBytes,Number(res.output_bytes));
     activeStage='replay-refusal';await rejected(()=>lookup(control(c),c),'LOOKUP_REPLAY');assert.equal(c.sourceCalls(),1);
     if(name==='revoked-read'){activeStage='revoked-read-refusal';await run(()=>c.revokeRead());await rejected(()=>read(control(c),c),'ACCESS_DENIED');assert.equal(c.sourceCalls(),1);}
    }

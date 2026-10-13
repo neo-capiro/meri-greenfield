@@ -49,7 +49,7 @@ export async function readCaseRows(pool,c,run){
  const query=method(pool,'query'),b=c.lookup.context.binding,lookupId=c.lookup.context.lookupId;
  const rows=await run(()=>query('SELECT state,payload,record FROM meri_task_lookup.lookups WHERE tenant_id=$1 AND lookup_id=$2',[b.tenantId,lookupId]));
  const events=await run(()=>query('SELECT sequence::text,event_id,kind,event FROM meri_task_lookup.events WHERE tenant_id=$1 AND lookup_id=$2 ORDER BY sequence',[b.tenantId,lookupId]));
- const invocations=await run(()=>query('SELECT invocation_id,reservation_id,arguments_sha256,completion FROM meri_qualification.tool_invocations WHERE run_id=$1',[b.runId]));
+ const invocations=await run(()=>query('SELECT invocation_id,reservation_id,arguments_sha256,completion,delivery,facts,raw_request_sha256,operation FROM meri_qualification.tool_invocations WHERE run_id=$1',[b.runId]));
  const reservations=await run(()=>query('SELECT invocation_id,reservation_id,state,hold_micro_usd::text,charged_micro_usd::text,output_bytes::text FROM meri_qualification.tool_reservations WHERE run_id=$1',[b.runId]));
  return {lookups:rows.rows,events:events.rows,invocations:invocations.rows,reservations:reservations.rows};
 }
