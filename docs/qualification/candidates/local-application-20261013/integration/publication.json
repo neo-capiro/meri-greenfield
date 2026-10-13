@@ -1,0 +1,25 @@
+{
+  "sourceEvidenceFreeze": "bba32ea8a0ec96f483b5ccfebe0afe33aaf5fc04",
+  "testedHead": "4dcaa8a969307f1a90dc419e5b262d301020f473",
+  "pullRequest": {
+    "url": "https://github.com/neo-capiro/meri-greenfield/pull/45",
+    "number": 45,
+    "head": "bba32ea8a0ec96f483b5ccfebe0afe33aaf5fc04",
+    "base": "c47d5c2815026b399624df5eb76db0bc460cbb7a",
+    "draft": true,
+    "state": "open",
+    "merged": false
+  },
+  "checks": {
+    "passed": 228,
+    "failed": 0,
+    "skipped": 0,
+    "standaloneHttp": "PASS",
+    "nativeDatabase": "UNRUN",
+    "paidProviderCalls": 0
+  },
+  "mainObserved": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc",
+  "frontendSessionContractComment": "https://github.com/neo-capiro/capiro-frontend/pull/16#issuecomment-6137429682",
+  "nextSourceSlice": "task/meri-action-session-20261013",
+  "publicationDoesNotChangeRuntimeAcceptance": true
+}
