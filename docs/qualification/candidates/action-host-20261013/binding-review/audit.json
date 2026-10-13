@@ -1,0 +1,150 @@
+{
+  "base": "f8e3507307640ee6b4904782cfb20f2b05e5e7b0",
+  "source": "7c67345398aa5422f6c760f009b729d082cfeaea",
+  "authorPacket": "dfdc642f3a105be27d9a96c4ad5057fe1363ddb0",
+  "originalEntries": 10564,
+  "originalEntriesUnchanged": 10564,
+  "sourceIdentities": [
+    {
+      "path": "apps/control/action-host/index.mjs",
+      "bytes": 1891,
+      "sha256": "9c56953ada6eabbe19adae43d8fd051a68a333e67f2574924eb03d6f54a33363"
+    },
+    {
+      "path": "apps/control/action-host/current.mjs",
+      "bytes": 4639,
+      "sha256": "6e8c213156685769b0e6850db466e524112fd6210c9b13334108601f678b2bb7"
+    },
+    {
+      "path": "apps/control/action-host/resolver.mjs",
+      "bytes": 4196,
+      "sha256": "d54bf42a46afdb3eda0354683ec794e133e856eaffd49f685714f5f9423ec95e"
+    }
+  ],
+  "authorManifestMembers": 16,
+  "authorManifestSha256": "043212e4bfff0051f12b063d958008f634b11401b50cfe1c76cd6a9f2fa5ee50",
+  "independentTests": 32,
+  "ownedProcessGroup": 455100,
+  "ownedProcessGroupFreshlyAbsent": true,
+  "checks": [
+    {
+      "name": "all original Git entries retain exact mode/type/blob",
+      "pass": true
+    },
+    {
+      "name": "tested source exact apps/control/action-host/index.mjs",
+      "pass": true
+    },
+    {
+      "name": "no test import apps/control/action-host/index.mjs",
+      "pass": true
+    },
+    {
+      "name": "tested source exact apps/control/action-host/current.mjs",
+      "pass": true
+    },
+    {
+      "name": "no test import apps/control/action-host/current.mjs",
+      "pass": true
+    },
+    {
+      "name": "tested source exact apps/control/action-host/resolver.mjs",
+      "pass": true
+    },
+    {
+      "name": "no test import apps/control/action-host/resolver.mjs",
+      "pass": true
+    },
+    {
+      "name": "32 controls completed without skip",
+      "pass": true
+    },
+    {
+      "name": "successful bounded capture",
+      "pass": true
+    },
+    {
+      "name": "exact tested production and independent source",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/action-host-20261013/binding-review/independent-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/action-host-20261013/binding-review/independent-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned group freshly absent",
+      "pass": true
+    },
+    {
+      "name": "author member docs/coordination/reports/CODEX-ACTION-HOST-BINDING-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "author member docs/coordination/tasks/CODEX-ACTION-HOST-BINDING-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "author member apps/control/action-host/README.md",
+      "pass": true
+    },
+    {
+      "name": "author member apps/control/action-host/binding.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "author member apps/control/action-host/current.mjs",
+      "pass": true
+    },
+    {
+      "name": "author member apps/control/action-host/index.mjs",
+      "pass": true
+    },
+    {
+      "name": "author member apps/control/action-host/resolver.mjs",
+      "pass": true
+    },
+    {
+      "name": "author member apps/control/action-host/test/fixture.mjs",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-host-20261013/binding-author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-host-20261013/binding-author/executor-shape.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-host-20261013/binding-author/executor-shape.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-host-20261013/binding-author/executor-shape.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-host-20261013/binding-author/initial.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-host-20261013/binding-author/initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-host-20261013/binding-author/initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-host-20261013/binding-author/source-audit.json",
+      "pass": true
+    }
+  ],
+  "passed": 29,
+  "failed": 0,
+  "scope": "source only; no native authentication, database, deployment, public catalog activation or durability claim"
+}
