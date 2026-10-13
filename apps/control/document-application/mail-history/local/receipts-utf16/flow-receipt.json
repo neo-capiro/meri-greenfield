@@ -1,0 +1,805 @@
+{
+  "status": "PASS",
+  "result": {
+    "versions": [
+      {
+        "contractVersion": "0.1.0",
+        "artifactId": "17316962-caef-45fe-bde9-4b8db6449453",
+        "versionId": "153f069b-edfc-4a4b-92d7-e95a34f2b1ac",
+        "parentVersionId": null,
+        "binding": {
+          "tenantId": "synthetic-tenant",
+          "actorId": "synthetic-actor",
+          "conversationId": "11111111-1111-4111-8111-111111111111",
+          "runId": "22222222-2222-4222-8222-222222222222",
+          "attemptId": "33333333-3333-4333-8333-333333333333",
+          "workerId": "44444444-4444-4444-8444-444444444444",
+          "writerFence": 1
+        },
+        "object": {
+          "objectId": "5883ade0-185a-4e44-b043-fa517611f9a0",
+          "versionId": "b1b5894ccbc089ef0d5e0da4b08c60b441f1de112596b2408f86ce0f006c6ff7",
+          "sha256": "b1b5894ccbc089ef0d5e0da4b08c60b441f1de112596b2408f86ce0f006c6ff7",
+          "bytes": 39074,
+          "scopes": [
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        },
+        "filename": "Synthetic Mail History brief.docx",
+        "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "scopes": [
+          {
+            "tenantId": "synthetic-tenant",
+            "kind": "client",
+            "resourceId": "99999999-9999-4999-8999-999999999999",
+            "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "tenantId": "synthetic-tenant",
+            "kind": "mailbox",
+            "resourceId": "71000000-0000-4000-8000-000000000071",
+            "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ],
+        "evidence": [
+          {
+            "sourceId": "mail",
+            "recordId": "71000000-0000-4000-8000-000000000074",
+            "sourceVersionId": "synthetic-message-v1",
+            "citationId": "71000000-0000-4000-8000-000000000075",
+            "authorizationDecisionId": "71000000-0000-4000-8000-000000000072",
+            "contentSha256": "6d11d9c8182f5791f71a9a4bea6e99c79b5667dcea447e2c181cf8f13695415a",
+            "scopes": [
+              {
+                "tenantId": "synthetic-tenant",
+                "kind": "client",
+                "resourceId": "99999999-9999-4999-8999-999999999999",
+                "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              {
+                "tenantId": "synthetic-tenant",
+                "kind": "mailbox",
+                "resourceId": "71000000-0000-4000-8000-000000000071",
+                "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              }
+            ],
+            "observedAt": "2026-10-13T14:47:37.455Z",
+            "sourceUpdatedAt": null
+          }
+        ],
+        "generationStatus": "draft",
+        "previewStatus": "pending",
+        "createdAt": "2026-10-13T14:47:37.625Z"
+      },
+      {
+        "contractVersion": "0.1.0",
+        "artifactId": "17316962-caef-45fe-bde9-4b8db6449453",
+        "versionId": "54f12b4b-0949-45a5-a5b2-0a0fb3ccd3c6",
+        "parentVersionId": "153f069b-edfc-4a4b-92d7-e95a34f2b1ac",
+        "binding": {
+          "tenantId": "synthetic-tenant",
+          "actorId": "synthetic-actor",
+          "conversationId": "11111111-1111-4111-8111-111111111111",
+          "runId": "22222222-2222-4222-8222-222222222222",
+          "attemptId": "33333333-3333-4333-8333-333333333333",
+          "workerId": "44444444-4444-4444-8444-444444444444",
+          "writerFence": 1
+        },
+        "object": {
+          "objectId": "5678afb2-8ecf-434c-97cd-9457053a9001",
+          "versionId": "60ba27df722d1b57dbf6651b7f7b47f3ad0b6c2a3e3183ffb18d7fb75917d5e8",
+          "sha256": "60ba27df722d1b57dbf6651b7f7b47f3ad0b6c2a3e3183ffb18d7fb75917d5e8",
+          "bytes": 39274,
+          "scopes": [
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        },
+        "filename": "Synthetic Mail History brief.docx",
+        "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "scopes": [
+          {
+            "tenantId": "synthetic-tenant",
+            "kind": "client",
+            "resourceId": "99999999-9999-4999-8999-999999999999",
+            "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "tenantId": "synthetic-tenant",
+            "kind": "mailbox",
+            "resourceId": "71000000-0000-4000-8000-000000000071",
+            "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ],
+        "evidence": [
+          {
+            "sourceId": "mail",
+            "recordId": "71000000-0000-4000-8000-000000000074",
+            "sourceVersionId": "synthetic-message-v1",
+            "citationId": "71000000-0000-4000-8000-000000000075",
+            "authorizationDecisionId": "71000000-0000-4000-8000-000000000072",
+            "contentSha256": "6d11d9c8182f5791f71a9a4bea6e99c79b5667dcea447e2c181cf8f13695415a",
+            "scopes": [
+              {
+                "tenantId": "synthetic-tenant",
+                "kind": "client",
+                "resourceId": "99999999-9999-4999-8999-999999999999",
+                "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              {
+                "tenantId": "synthetic-tenant",
+                "kind": "mailbox",
+                "resourceId": "71000000-0000-4000-8000-000000000071",
+                "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              }
+            ],
+            "observedAt": "2026-10-13T14:47:37.708Z",
+            "sourceUpdatedAt": null
+          }
+        ],
+        "generationStatus": "draft",
+        "previewStatus": "pending",
+        "createdAt": "2026-10-13T14:47:37.838Z"
+      }
+    ],
+    "provenance": [
+      {
+        "recipe": "mail-history-brief",
+        "skill": {
+          "skillId": "quick_skill.mail_history",
+          "skillVersion": "1.0.0",
+          "manifestSha256": "b8ac89b3cf04716a62f8a41f70382987b8a76426c4825a2dd7aeb6fb690903d1",
+          "proseSha256": "a6f2508d93e0c1b5f3c723b10038db37adc31f9a08b49a36944c8dcf55308ea4",
+          "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+        },
+        "selection": {
+          "subject": {
+            "kind": "client",
+            "entityType": "client",
+            "entityIds": [
+              "99999999-9999-4999-8999-999999999999"
+            ],
+            "tenantId": "synthetic-tenant",
+            "actorId": "synthetic-actor",
+            "authorizationDecisionId": "71000000-0000-4000-8000-000000000072",
+            "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scopes": [
+              {
+                "tenantId": "synthetic-tenant",
+                "kind": "client",
+                "resourceId": "99999999-9999-4999-8999-999999999999",
+                "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              {
+                "tenantId": "synthetic-tenant",
+                "kind": "mailbox",
+                "resourceId": "71000000-0000-4000-8000-000000000071",
+                "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              }
+            ],
+            "rosterVersionId": null
+          },
+          "window": {
+            "basis": "unbounded"
+          }
+        },
+        "target": {
+          "query": "Morgan",
+          "participant": "morgan@example.invalid"
+        },
+        "asOf": "2026-10-13T14:47:37.431Z",
+        "inputSha256": "a52a90664e8ee4a236e019d95fe2db0e44931ae723304bfef9e7a64874b03cc1",
+        "readsSha256": "654e90e72d7600c009d0ede37575427ea8f9ce43ca0d102e27d60e65b74a6261",
+        "parent": null,
+        "collection": {
+          "calls": 6,
+          "bytes": 20030,
+          "limits": {
+            "maxCalls": 24,
+            "maxCandidatePages": 3,
+            "candidatePageSize": 5,
+            "maxMessages": 10,
+            "bodySectionCodeUnits": 2000,
+            "maxBodyCodeUnits": 120000,
+            "maxSourceBytes": 2097152
+          },
+          "capHits": [],
+          "distinctEligibleCount": 1,
+          "bodyAttempts": 1,
+          "boundBodyCount": 1,
+          "unreadCount": 0,
+          "unread": []
+        }
+      },
+      {
+        "recipe": "mail-history-brief",
+        "skill": {
+          "skillId": "quick_skill.mail_history",
+          "skillVersion": "1.0.0",
+          "manifestSha256": "b8ac89b3cf04716a62f8a41f70382987b8a76426c4825a2dd7aeb6fb690903d1",
+          "proseSha256": "a6f2508d93e0c1b5f3c723b10038db37adc31f9a08b49a36944c8dcf55308ea4",
+          "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+        },
+        "selection": {
+          "subject": {
+            "kind": "client",
+            "entityType": "client",
+            "entityIds": [
+              "99999999-9999-4999-8999-999999999999"
+            ],
+            "tenantId": "synthetic-tenant",
+            "actorId": "synthetic-actor",
+            "authorizationDecisionId": "71000000-0000-4000-8000-000000000072",
+            "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scopes": [
+              {
+                "tenantId": "synthetic-tenant",
+                "kind": "client",
+                "resourceId": "99999999-9999-4999-8999-999999999999",
+                "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              {
+                "tenantId": "synthetic-tenant",
+                "kind": "mailbox",
+                "resourceId": "71000000-0000-4000-8000-000000000071",
+                "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              }
+            ],
+            "rosterVersionId": null
+          },
+          "window": {
+            "basis": "unbounded"
+          }
+        },
+        "target": {
+          "query": "Morgan",
+          "participant": "morgan@example.invalid"
+        },
+        "asOf": "2026-10-13T14:47:37.677Z",
+        "inputSha256": "b4c5043ce356a2f57cb243a7dd9e8c49e7230cf6ddbaf5fa479019b8f4b71e1e",
+        "readsSha256": "4d0751db598d24fbadff88baf1ac0b84c4b0ad2ab5d5ca091f8688508daa583c",
+        "parent": {
+          "versionId": "153f069b-edfc-4a4b-92d7-e95a34f2b1ac",
+          "objectSha256": "b1b5894ccbc089ef0d5e0da4b08c60b441f1de112596b2408f86ce0f006c6ff7",
+          "specSha256": "9a2302325192d3f0e87a97e253951986dbe51a5da17fa6a249e570c0811b2bfb",
+          "provenanceSha256": "5ac429ad12e9e3d5a04bc704c941b170745179665d9962941444e9ef73133bdc"
+        },
+        "collection": {
+          "calls": 6,
+          "bytes": 20030,
+          "limits": {
+            "maxCalls": 24,
+            "maxCandidatePages": 3,
+            "candidatePageSize": 5,
+            "maxMessages": 10,
+            "bodySectionCodeUnits": 2000,
+            "maxBodyCodeUnits": 120000,
+            "maxSourceBytes": 2097152
+          },
+          "capHits": [],
+          "distinctEligibleCount": 1,
+          "bodyAttempts": 1,
+          "boundBodyCount": 1,
+          "unreadCount": 0,
+          "unread": []
+        }
+      }
+    ],
+    "sourceReads": [
+      {
+        "operation": {
+          "id": "resolve_entity",
+          "version": "0.2.0"
+        },
+        "requestSha256": "de8e596502355c419e540da07b93291ce0fdd891b95ba5f45c7113edb9e1ecec",
+        "resultSha256": "57a8fa7c14bde12b28b90f4e9c7883398ac99b1e90d16ae94d4b6785731eeec2"
+      },
+      {
+        "operation": {
+          "id": "find_contacts",
+          "version": "0.2.0"
+        },
+        "requestSha256": "5b2bbbb96264adfd46f33a303e6e0c053f93658092809c8b7aecbfb5ded87f88",
+        "resultSha256": "809e547324db0c2548dcee3bffbc02922d70fb5a0f6c27cf3decd9183288b7df"
+      },
+      {
+        "operation": {
+          "id": "mail.list_messages",
+          "version": "0.2.0"
+        },
+        "requestSha256": "a2d6d0e50c738288d87275f1a33c3f0095854b0b2d3fb0aa8e7ce441e799717f",
+        "resultSha256": "925a8dc0c145a1e24c44f4d2f7407b2b920ba938f4a5f626d2f633058d695b22"
+      },
+      {
+        "operation": {
+          "id": "mail.search_messages",
+          "version": "0.2.0"
+        },
+        "requestSha256": "43cf9f1dbfa4b18dc6390a761c160a2c68b39ef4cdc6b3cfe2c2eaa66b2ef8bf",
+        "resultSha256": "248e2f0fa21d4c0235c7a9701c036a57de1e9a10c290a041d130fd0d9e68f935"
+      },
+      {
+        "operation": {
+          "id": "mail.read_thread",
+          "version": "0.2.0"
+        },
+        "requestSha256": "3547a114ea5f4ec0cf41c367c9a839c65e682f6d3d252d5fb4a998c9431ff733",
+        "resultSha256": "388104a0cf7e29e852a2c2d66d23297e48f35f802ba31533c6b7b766200b8a3a"
+      },
+      {
+        "operation": {
+          "id": "mail.read_thread",
+          "version": "0.2.0"
+        },
+        "requestSha256": "b27b1e16a074c049fbd252ebed361d3713a70932841fd5179a99344265df0bcb",
+        "resultSha256": "b39f21e6403342f4134cb11ee45295841b68332c917e9dd385a3680c15b7bc66"
+      },
+      {
+        "operation": {
+          "id": "resolve_entity",
+          "version": "0.2.0"
+        },
+        "requestSha256": "de8e596502355c419e540da07b93291ce0fdd891b95ba5f45c7113edb9e1ecec",
+        "resultSha256": "57a8fa7c14bde12b28b90f4e9c7883398ac99b1e90d16ae94d4b6785731eeec2"
+      },
+      {
+        "operation": {
+          "id": "find_contacts",
+          "version": "0.2.0"
+        },
+        "requestSha256": "5b2bbbb96264adfd46f33a303e6e0c053f93658092809c8b7aecbfb5ded87f88",
+        "resultSha256": "809e547324db0c2548dcee3bffbc02922d70fb5a0f6c27cf3decd9183288b7df"
+      },
+      {
+        "operation": {
+          "id": "mail.list_messages",
+          "version": "0.2.0"
+        },
+        "requestSha256": "55dd377ab51aa71bebcdb2182d3da01f7957dd46e37dd4d399d7bb6c69c7e4af",
+        "resultSha256": "ce98cebcfecf016e437e52fe552b11b39e40c7ddcf91a9c36306f1b600c6f009"
+      },
+      {
+        "operation": {
+          "id": "mail.search_messages",
+          "version": "0.2.0"
+        },
+        "requestSha256": "687cba2d23deca2121091d9e4233553ebc637d1650bc24faff99a18545029caf",
+        "resultSha256": "4c5e43d755eea9543f3154acc6428152c360fdbdd1abaee75ce5c26242606120"
+      },
+      {
+        "operation": {
+          "id": "mail.read_thread",
+          "version": "0.2.0"
+        },
+        "requestSha256": "3547a114ea5f4ec0cf41c367c9a839c65e682f6d3d252d5fb4a998c9431ff733",
+        "resultSha256": "8ced3b10740645ca6bd24d87f4dc9cb196f51a8679c6d7bc6fafad0f7b25f40b"
+      },
+      {
+        "operation": {
+          "id": "mail.read_thread",
+          "version": "0.2.0"
+        },
+        "requestSha256": "b27b1e16a074c049fbd252ebed361d3713a70932841fd5179a99344265df0bcb",
+        "resultSha256": "9e68b93cf71c00ac4412c6e4824d574788b2efa24a81539d99b2f14013cb1900"
+      }
+    ],
+    "rendered": [
+      {
+        "sourceSha256": "b1b5894ccbc089ef0d5e0da4b08c60b441f1de112596b2408f86ce0f006c6ff7",
+        "content": {
+          "sha256": "b1b5894ccbc089ef0d5e0da4b08c60b441f1de112596b2408f86ce0f006c6ff7",
+          "bytes": 39074,
+          "paragraphs": [
+            "Synthetic Mail History brief",
+            "Mail History brief | Editable draft for review",
+            "Requested correspondent/topic: Morgan. Identity matches remain candidate metadata.",
+            "As of 2026-10-13T14:47:37.431Z",
+            "Exact selected window: {\"basis\":\"unbounded\"}",
+            "Source-supplied correspondence timeline",
+            "Dates, subjects and participants below are supplied discovery metadata; they do not verify identity or the meaning of a promise. Candidate previews are never decisive evidence.",
+            "2026-10-13T14:47:36.431Z | Revised briefing discussion",
+            "Message 71000000-0000-4000-8000-000000000074; thread 71000000-0000-4000-8000-000000000073; mailbox 71000000-0000-4000-8000-000000000071. Received 2026-10-13T14:47:36.431Z; sent unknown; created 2026-10-13T14:47:36.431Z.",
+            "From: Morgan morgan@example.invalid; To: owner@example.invalid. Metadata is unversioned and unverified; connection disconnected; body bound-full-body.",
+            "Exact quoted passages",
+            "[bound-source-excerpt] I will send the revised briefing on Friday. This is a quoted source statement, not verified delivery.",
+            "Mail 71000000-0000-4000-8000-000000000071 / thread 71000000-0000-4000-8000-000000000073 / message 71000000-0000-4000-8000-000000000074 / version synthetic-message-v1; UTF-16 characters 2002-2103; locator URL, not verification: https://example.invalid/mail/locator-only.",
+            "Interpretations and outstanding items",
+            "All semantic chronology, ask, promise, owner, completion and follow-up interpretations are unverified drafts for human review. A citation or completed task cannot establish delivery or acceptance.",
+            "[unverified interpretation] Morgan appears to have promised a revised briefing. This interpretation requires human verification.",
+            "Coverage and verification appendix",
+            "A bound excerpt means exact authorized supplied body bytes were reconstructed and hash-bound; source authenticity/freshness still depend on qualified gateway adapters. Unknown snapshots, source limits, missing dates, disconnection, candidate matching and paging never establish complete history or absence.",
+            "entity_candidates | resolve_entity | candidate-metadata; enumeration unknown; reason none; verified false.",
+            "Unverified entity_candidates candidate projection: 0 returned; source result SHA256 b6cc736a10f2f035623810ca6e343b09a91f5e9e1ddd91ed075ab3adb86dd95d. This does not establish identity, relationship or absence.",
+            "tenant_contacts | find_contacts | candidate-metadata; enumeration unknown; reason none; verified false.",
+            "Unverified tenant_contacts candidate projection: 0 returned; source result SHA256 e7ddab10edbb025b5edaafce15ebd224218531b56c26647a0aec7b30a6fdf60e. This does not establish identity, relationship or absence.",
+            "mail | mail.list_messages | bounded-candidates; enumeration unknown; reason none; verified false.",
+            "Returned 1; more false; next offset none; source query scope {\"asOfInclusive\":\"2026-10-13T14:47:37.431Z\",\"storedCreatedAtEndInclusive\":\"2026-10-13T14:47:37.431Z\",\"effectiveStartInclusive\":null,\"missingEffectiveDates\":\"included\"}.",
+            "Candidate body handles remain discovery locators: synthetic-candidate-preview",
+            "Source mail; authority authoritative; snapshot unknown; freshness unknown; retrieved 2026-10-13T14:47:37.431Z.",
+            "Limitation: Synthetic incomplete previews; unknown immutable snapshot.",
+            "mail | mail.search_messages | bounded-candidates; enumeration unknown; reason none; verified false.",
+            "Returned 1; more false; next offset none; source query scope {\"asOfInclusive\":\"2026-10-13T14:47:37.431Z\",\"storedCreatedAtEndInclusive\":\"2026-10-13T14:47:37.431Z\",\"effectiveStartInclusive\":null,\"missingEffectiveDates\":\"included\"}.",
+            "Candidate body handles remain discovery locators: synthetic-candidate-preview",
+            "Source mail; authority authoritative; snapshot unknown; freshness unknown; retrieved 2026-10-13T14:47:37.431Z.",
+            "Limitation: Synthetic incomplete previews; unknown immutable snapshot.",
+            "mail | mail.read_thread | bound-bodies-source-incomplete; enumeration unknown; reason none; verified false.",
+            "Decisive body reads: 1 bound / 1 eligible; unread 0; body attempts 1; excluded by selected window 0.",
+            "Body 71000000-0000-4000-8000-000000000074: bound-full-body; sections 2; connection disconnected; full-body evidence retained.",
+            "Citation 71000000-0000-4000-8000-000000000075; source mail; record 71000000-0000-4000-8000-000000000074; immutable version synthetic-message-v1; authority authoritative; authorization decision 71000000-0000-4000-8000-000000000072.",
+            "Full body SHA256 6d11d9c8182f5791f71a9a4bea6e99c79b5667dcea447e2c181cf8f13695415a\nQuoted passage SHA256 c3c9f68e66f2f43f26aba37883356d69a7dd7d0c8cf50f96c3cbf8a10a7f330a\nScope [{\"tenantId\":\"synthetic-tenant\",\"kind\":\"client\",\"resourceId\":\"99999999-9999-4999-8999-999999999999\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},{\"tenantId\":\"synthetic-tenant\",\"kind\":\"mailbox\",\"resourceId\":\"71000000-0000-4000-8000-000000000071\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}]\nObserved 2026-10-13T14:47:37.455Z; source updated unknown.",
+            "Original skill and immutable revision provenance",
+            "Meri Mail History provenance: {\"recipe\":\"mail-history-brief\",\"skill\":{\"skillId\":\"quick_skill.mail_history\",\"skillVersion\":\"1.0.0\",\"manifestSha256\":\"b8ac89b3cf04716a62f8a41f70382987b8a76426c4825a2dd7aeb6fb690903d1\",\"proseSha256\":\"a6f2508d93e0c1b5f3c723b10038db37adc31f9a08b49a36944c8dcf55308ea4\",\"catalogSha256\":\"27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968\"},\"selection\":{\"subject\":{\"kind\":\"client\",\"entityType\":\"client\",\"entityIds\":[\"99999999-9999-4999-8999-999999999999\"],\"tenantId\":\"synthetic-tenant\",\"actorId\":\"synthetic-actor\",\"authorizationDecisionId\":\"71000000-0000-4000-8000-000000000072\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"scopes\":[{\"tenantId\":\"synthetic-tenant\",\"kind\":\"client\",\"resourceId\":\"99999999-9999-4999-8999-999999999999\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},{\"tenantId\":\"synthetic-tenant\",\"kind\":\"mailbox\",\"resourceId\":\"71000000-0000-4000-8000-000000000071\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}],\"rosterVersionId\":null},\"window\":{\"basis\":\"unbounded\"}},\"target\":{\"query\":\"Morgan\",\"participant\":\"morgan@example.invalid\"},\"asOf\":\"2026-10-13T14:47:37.431Z\",\"inputSha256\":\"a52a90664e8ee4a236e019d95fe2db0e44931ae723304bfef9e7a64874b03cc1\",\"readsSha256\":\"654e90e72d7600c009d0ede37575427ea8f9ce43ca0d102e27d60e65b74a6261\",\"parent\":null,\"collection\":{\"calls\":6,\"bytes\":20030,\"limits\":{\"maxCalls\":24,\"maxCandidatePages\":3,\"candidatePageSize\":5,\"maxMessages\":10,\"bodySectionCodeUnits\":2000,\"maxBodyCodeUnits\":120000,\"maxSourceBytes\":2097152},\"capHits\":[],\"distinctEligibleCount\":1,\"bodyAttempts\":1,\"boundBodyCount\":1,\"unreadCount\":0,\"unread\":[]}}"
+          ],
+          "tables": [],
+          "rendered": false,
+          "nativeQualified": false
+        },
+        "visual": {
+          "sha256": "b1fe48d30c38c6d4ca4d4f85540e96045e5890747e45242e7196db833def922c",
+          "bytes": 49307,
+          "pages": [
+            {
+              "page": 1,
+              "text": "Synthetic Mail History brief\nMail History brief | Editable draft for review\nRequested correspondent/topic: Morgan. Identity matches remain candidate metadata.\nAs of 2026-10-13T14:47:37.431Z\nExact selected window: {\"basis\":\"unbounded\"}\nSource-supplied correspondence timeline\nDates, subjects and participants below are supplied discovery metadata; they do not verify \nidentity or the meaning of a promise. Candidate previews are never decisive evidence.\n2026-10-13T14:47:36.431Z | Revised briefing discussion\nMessage 71000000-0000-4000-8000-000000000074; thread 71000000-0000-4000-8000-\n000000000073; mailbox 71000000-0000-4000-8000-000000000071. Received 2026-10-\n13T14:47:36.431Z; sent unknown; created 2026-10-13T14:47:36.431Z.\nFrom: Morgan morgan@example.invalid; To: owner@example.invalid. Metadata is \nunversioned and unverified; connection disconnected; body bound-full-body.\nExact quoted passages\n[bound-source-excerpt] I will send the revised briefing on Friday. This is a quoted source \nstatement, not verified delivery.\nMail 71000000-0000-4000-8000-000000000071 / thread 71000000-0000-4000-8000-\n000000000073 / message 71000000-0000-4000-8000-000000000074 / version synthetic-\nmessage-v1; UTF-16 characters 2002-2103; locator URL, not verification: \nhttps://example.invalid/mail/locator-only.\nInterpretations and outstanding items\nAll semantic chronology, ask, promise, owner, completion and follow-up interpretations are \nunverified drafts for human review. A citation or completed task cannot establish delivery \nor acceptance.\n[unverified interpretation] Morgan appears to have promised a revised briefing. This \ninterpretation requires human verification.\n",
+              "png": "page-1.png",
+              "width": 765,
+              "height": 990,
+              "bytes": 105535,
+              "sha256": "307a51d9de176baaf4e9600fb9228b07c01f8393d79f742dede98c7f8d6636d8"
+            },
+            {
+              "page": 2,
+              "text": "Coverage and verification appendix\nA bound excerpt means exact authorized supplied body bytes were reconstructed and hash-\nbound; source authenticity/freshness still depend on qualified gateway adapters. Unknown \nsnapshots, source limits, missing dates, disconnection, candidate matching and paging \nnever establish complete history or absence.\nentity_candidates | resolve_entity | candidate-metadata; enumeration unknown; reason \nnone; verified false.\nUnverified entity_candidates candidate projection: 0 returned; source result SHA256 \nb6cc736a10f2f035623810ca6e343b09a91f5e9e1ddd91ed075ab3adb86dd95d. This does \nnot establish identity, relationship or absence.\ntenant_contacts | find_contacts | candidate-metadata; enumeration unknown; reason none; \nverified false.\nUnverified tenant_contacts candidate projection: 0 returned; source result SHA256 \ne7ddab10edbb025b5edaafce15ebd224218531b56c26647a0aec7b30a6fdf60e. This does \nnot establish identity, relationship or absence.\nmail | mail.list_messages | bounded-candidates; enumeration unknown; reason none; \nverified false.\nReturned 1; more false; next offset none; source query scope {\"asOfInclusive\":\"2026-10-\n13T14:47:37.431Z\",\"storedCreatedAtEndInclusive\":\"2026-10-\n13T14:47:37.431Z\",\"effectiveStartInclusive\":null,\"missingEffectiveDates\":\"included\"}.\nCandidate body handles remain discovery locators: synthetic-candidate-preview\nSource mail; authority authoritative; snapshot unknown; freshness unknown; retrieved \n2026-10-13T14:47:37.431Z.\nLimitation: Synthetic incomplete previews; unknown immutable snapshot.\nmail | mail.search_messages | bounded-candidates; enumeration unknown; reason none; \nverified false.\nReturned 1; more false; next offset none; source query scope {\"asOfInclusive\":\"2026-10-\n13T14:47:37.431Z\",\"storedCreatedAtEndInclusive\":\"2026-10-\n13T14:47:37.431Z\",\"effectiveStartInclusive\":null,\"missingEffectiveDates\":\"included\"}.\nCandidate body handles remain discovery locators: synthetic-candidate-preview\nSource mail; authority authoritative; snapshot unknown; freshness unknown; retrieved \n2026-10-13T14:47:37.431Z.\nLimitation: Synthetic incomplete previews; unknown immutable snapshot.\n",
+              "png": "page-2.png",
+              "width": 765,
+              "height": 990,
+              "bytes": 131523,
+              "sha256": "729842b726df73af1f24f17dfe1ecc8ba6c0c04e325e9c4f7e89198b09c875c2"
+            },
+            {
+              "page": 3,
+              "text": "mail | mail.read_thread | bound-bodies-source-incomplete; enumeration unknown; reason \nnone; verified false.\nDecisive body reads: 1 bound / 1 eligible; unread 0; body attempts 1; excluded by selected \nwindow 0.\nBody 71000000-0000-4000-8000-000000000074: bound-full-body; sections 2; connection \ndisconnected; full-body evidence retained.\nCitation 71000000-0000-4000-8000-000000000075; source mail; record 71000000-0000-\n4000-8000-000000000074; immutable version synthetic-message-v1; authority \nauthoritative; authorization decision 71000000-0000-4000-8000-000000000072.\nFull body SHA256 \n6d11d9c8182f5791f71a9a4bea6e99c79b5667dcea447e2c181cf8f13695415a\nQuoted passage SHA256 \nc3c9f68e66f2f43f26aba37883356d69a7dd7d0c8cf50f96c3cbf8a10a7f330a\nScope [{\"tenantId\":\"synthetic-tenant\",\"kind\":\"client\",\"resourceId\":\"99999999-9999-4999-\n8999-\n999999999999\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\naaaaaaaaaaaaaaa\"},{\"tenantId\":\"synthetic-\ntenant\",\"kind\":\"mailbox\",\"resourceId\":\"71000000-0000-4000-8000-\n000000000071\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\naaaaaaaaaaaaaaa\"}]\nObserved 2026-10-13T14:47:37.455Z; source updated unknown.\nOriginal skill and immutable revision provenance\nMeri Mail History provenance: {\"recipe\":\"mail-history-brief\",\"skill\":\n{\"skillId\":\"quick_skill.mail_history\",\"skillVersion\":\"1.0.0\",\"manifestSha256\":\"b8ac89b3cf047\n16a62f8a41f70382987b8a76426c4825a2dd7aeb6fb690903d1\",\"proseSha256\":\"a6f2508d\n93e0c1b5f3c723b10038db37adc31f9a08b49a36944c8dcf55308ea4\",\"catalogSha256\":\"27d\nb172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968\"},\"selection\":\n{\"subject\":{\"kind\":\"client\",\"entityType\":\"client\",\"entityIds\":[\"99999999-9999-4999-8999-\n999999999999\"],\"tenantId\":\"synthetic-tenant\",\"actorId\":\"synthetic-\nactor\",\"authorizationDecisionId\":\"71000000-0000-4000-8000-\n000000000072\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\naaaaaaaaaaaaaaa\",\"scopes\":[{\"tenantId\":\"synthetic-\ntenant\",\"kind\":\"client\",\"resourceId\":\"99999999-9999-4999-8999-\n999999999999\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\naaaaaaaaaaaaaaa\"},{\"tenantId\":\"synthetic-\ntenant\",\"kind\":\"mailbox\",\"resourceId\":\"71000000-0000-4000-8000-\n000000000071\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\naaaaaaaaaaaaaaa\"}],\"rosterVersionId\":null},\"window\":{\"basis\":\"unbounded\"}},\"target\":\n{\"query\":\"Morgan\",\"participant\":\"morgan@example.invalid\"},\"asOf\":\"2026-10-\n13T14:47:37.431Z\",\"inputSha256\":\"a52a90664e8ee4a236e019d95fe2db0e44931ae72330\n",
+              "png": "page-3.png",
+              "width": 765,
+              "height": 990,
+              "bytes": 146495,
+              "sha256": "4091d88239ae574a87e9135cb8f586482917d5dae4cf30fc0446400241ae1843"
+            },
+            {
+              "page": 4,
+              "text": "4bfef9e7a64874b03cc1\",\"readsSha256\":\"654e90e72d7600c009d0ede37575427ea8f9ce43\nca0d102e27d60e65b74a6261\",\"parent\":null,\"collection\":{\"calls\":6,\"bytes\":20030,\"limits\":\n{\"maxCalls\":24,\"maxCandidatePages\":3,\"candidatePageSize\":5,\"maxMessages\":10,\"bodySect\nionCodeUnits\":2000,\"maxBodyCodeUnits\":120000,\"maxSourceBytes\":2097152},\"capHits\":\n[],\"distinctEligibleCount\":1,\"bodyAttempts\":1,\"boundBodyCount\":1,\"unreadCount\":0,\"unrea\nd\":[]}}\n",
+              "png": "page-4.png",
+              "width": 765,
+              "height": 990,
+              "bytes": 30764,
+              "sha256": "f78091b3da11b88a4d2821df8fee8cb945bc796d9eb07c8ff9c7d0004b6ab416"
+            }
+          ],
+          "renderedLocally": true,
+          "nativeQualified": false
+        },
+        "processes": [
+          {
+            "pid": 183887,
+            "exitCode": 0,
+            "signal": null,
+            "spawnError": null,
+            "stdoutBytes": 7260,
+            "stderrBytes": 0,
+            "stdoutRetainedBytes": 7260,
+            "stderrRetainedBytes": 0,
+            "hashScope": "retained bytes",
+            "stdoutSha256": "83ea83c18f46e6a1f482efa0503d99d865f3b94f3d912f4f0403fd9c2c25b6f1",
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdoutEnded": true,
+            "stderrEnded": true,
+            "streamErrors": [],
+            "leaderClosed": true,
+            "groupKillAttempted": true,
+            "groupAbsent": true,
+            "sandboxQualified": false
+          },
+          {
+            "pid": 183888,
+            "exitCode": 0,
+            "signal": null,
+            "spawnError": null,
+            "stdoutBytes": 196,
+            "stderrBytes": 0,
+            "stdoutRetainedBytes": 196,
+            "stderrRetainedBytes": 0,
+            "hashScope": "retained bytes",
+            "stdoutSha256": "6b6a239d62a9c05818578a2cc91b8485728f34c0e9309b76ff617c96a0732c0b",
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdoutEnded": true,
+            "stderrEnded": true,
+            "streamErrors": [],
+            "leaderClosed": true,
+            "groupKillAttempted": true,
+            "groupAbsent": true,
+            "sandboxQualified": false
+          },
+          {
+            "pid": 183912,
+            "exitCode": 0,
+            "signal": null,
+            "spawnError": null,
+            "stdoutBytes": 7976,
+            "stderrBytes": 0,
+            "stdoutRetainedBytes": 7976,
+            "stderrRetainedBytes": 0,
+            "hashScope": "retained bytes",
+            "stdoutSha256": "61a2ff06839382dc768385a3f7f0a3e27848974c0331e2ff048532202d80de7f",
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdoutEnded": true,
+            "stderrEnded": true,
+            "streamErrors": [],
+            "leaderClosed": true,
+            "groupKillAttempted": true,
+            "groupAbsent": true,
+            "sandboxQualified": false
+          }
+        ],
+        "localSyntheticOnly": true,
+        "nativeQualified": false
+      },
+      {
+        "sourceSha256": "60ba27df722d1b57dbf6651b7f7b47f3ad0b6c2a3e3183ffb18d7fb75917d5e8",
+        "content": {
+          "sha256": "60ba27df722d1b57dbf6651b7f7b47f3ad0b6c2a3e3183ffb18d7fb75917d5e8",
+          "bytes": 39274,
+          "paragraphs": [
+            "Synthetic Mail History brief",
+            "Mail History brief | Editable draft for review",
+            "Requested correspondent/topic: Morgan. Identity matches remain candidate metadata.",
+            "As of 2026-10-13T14:47:37.677Z",
+            "Exact selected window: {\"basis\":\"unbounded\"}",
+            "Source-supplied correspondence timeline",
+            "Dates, subjects and participants below are supplied discovery metadata; they do not verify identity or the meaning of a promise. Candidate previews are never decisive evidence.",
+            "2026-10-13T14:47:36.677Z | Revised briefing discussion",
+            "Message 71000000-0000-4000-8000-000000000074; thread 71000000-0000-4000-8000-000000000073; mailbox 71000000-0000-4000-8000-000000000071. Received 2026-10-13T14:47:36.677Z; sent unknown; created 2026-10-13T14:47:36.677Z.",
+            "From: Morgan morgan@example.invalid; To: owner@example.invalid. Metadata is unversioned and unverified; connection disconnected; body bound-full-body.",
+            "Exact quoted passages",
+            "[bound-source-excerpt] I will send the revised briefing on Friday. This is a quoted source statement, not verified delivery.",
+            "Mail 71000000-0000-4000-8000-000000000071 / thread 71000000-0000-4000-8000-000000000073 / message 71000000-0000-4000-8000-000000000074 / version synthetic-message-v1; UTF-16 characters 2002-2103; locator URL, not verification: https://example.invalid/mail/locator-only.",
+            "Interpretations and outstanding items",
+            "All semantic chronology, ask, promise, owner, completion and follow-up interpretations are unverified drafts for human review. A citation or completed task cannot establish delivery or acceptance.",
+            "[unverified interpretation] Revised review note: Confirm who owns the briefing and whether it was delivered. The quoted promise is not delivery evidence.",
+            "Coverage and verification appendix",
+            "A bound excerpt means exact authorized supplied body bytes were reconstructed and hash-bound; source authenticity/freshness still depend on qualified gateway adapters. Unknown snapshots, source limits, missing dates, disconnection, candidate matching and paging never establish complete history or absence.",
+            "entity_candidates | resolve_entity | candidate-metadata; enumeration unknown; reason none; verified false.",
+            "Unverified entity_candidates candidate projection: 0 returned; source result SHA256 b6cc736a10f2f035623810ca6e343b09a91f5e9e1ddd91ed075ab3adb86dd95d. This does not establish identity, relationship or absence.",
+            "tenant_contacts | find_contacts | candidate-metadata; enumeration unknown; reason none; verified false.",
+            "Unverified tenant_contacts candidate projection: 0 returned; source result SHA256 e7ddab10edbb025b5edaafce15ebd224218531b56c26647a0aec7b30a6fdf60e. This does not establish identity, relationship or absence.",
+            "mail | mail.list_messages | bounded-candidates; enumeration unknown; reason none; verified false.",
+            "Returned 1; more false; next offset none; source query scope {\"asOfInclusive\":\"2026-10-13T14:47:37.677Z\",\"storedCreatedAtEndInclusive\":\"2026-10-13T14:47:37.677Z\",\"effectiveStartInclusive\":null,\"missingEffectiveDates\":\"included\"}.",
+            "Candidate body handles remain discovery locators: synthetic-candidate-preview",
+            "Source mail; authority authoritative; snapshot unknown; freshness unknown; retrieved 2026-10-13T14:47:37.677Z.",
+            "Limitation: Synthetic incomplete previews; unknown immutable snapshot.",
+            "mail | mail.search_messages | bounded-candidates; enumeration unknown; reason none; verified false.",
+            "Returned 1; more false; next offset none; source query scope {\"asOfInclusive\":\"2026-10-13T14:47:37.677Z\",\"storedCreatedAtEndInclusive\":\"2026-10-13T14:47:37.677Z\",\"effectiveStartInclusive\":null,\"missingEffectiveDates\":\"included\"}.",
+            "Candidate body handles remain discovery locators: synthetic-candidate-preview",
+            "Source mail; authority authoritative; snapshot unknown; freshness unknown; retrieved 2026-10-13T14:47:37.677Z.",
+            "Limitation: Synthetic incomplete previews; unknown immutable snapshot.",
+            "mail | mail.read_thread | bound-bodies-source-incomplete; enumeration unknown; reason none; verified false.",
+            "Decisive body reads: 1 bound / 1 eligible; unread 0; body attempts 1; excluded by selected window 0.",
+            "Body 71000000-0000-4000-8000-000000000074: bound-full-body; sections 2; connection disconnected; full-body evidence retained.",
+            "Citation 71000000-0000-4000-8000-000000000075; source mail; record 71000000-0000-4000-8000-000000000074; immutable version synthetic-message-v1; authority authoritative; authorization decision 71000000-0000-4000-8000-000000000072.",
+            "Full body SHA256 6d11d9c8182f5791f71a9a4bea6e99c79b5667dcea447e2c181cf8f13695415a\nQuoted passage SHA256 c3c9f68e66f2f43f26aba37883356d69a7dd7d0c8cf50f96c3cbf8a10a7f330a\nScope [{\"tenantId\":\"synthetic-tenant\",\"kind\":\"client\",\"resourceId\":\"99999999-9999-4999-8999-999999999999\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},{\"tenantId\":\"synthetic-tenant\",\"kind\":\"mailbox\",\"resourceId\":\"71000000-0000-4000-8000-000000000071\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}]\nObserved 2026-10-13T14:47:37.708Z; source updated unknown.",
+            "Original skill and immutable revision provenance",
+            "Meri Mail History provenance: {\"recipe\":\"mail-history-brief\",\"skill\":{\"skillId\":\"quick_skill.mail_history\",\"skillVersion\":\"1.0.0\",\"manifestSha256\":\"b8ac89b3cf04716a62f8a41f70382987b8a76426c4825a2dd7aeb6fb690903d1\",\"proseSha256\":\"a6f2508d93e0c1b5f3c723b10038db37adc31f9a08b49a36944c8dcf55308ea4\",\"catalogSha256\":\"27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968\"},\"selection\":{\"subject\":{\"kind\":\"client\",\"entityType\":\"client\",\"entityIds\":[\"99999999-9999-4999-8999-999999999999\"],\"tenantId\":\"synthetic-tenant\",\"actorId\":\"synthetic-actor\",\"authorizationDecisionId\":\"71000000-0000-4000-8000-000000000072\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"scopes\":[{\"tenantId\":\"synthetic-tenant\",\"kind\":\"client\",\"resourceId\":\"99999999-9999-4999-8999-999999999999\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},{\"tenantId\":\"synthetic-tenant\",\"kind\":\"mailbox\",\"resourceId\":\"71000000-0000-4000-8000-000000000071\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}],\"rosterVersionId\":null},\"window\":{\"basis\":\"unbounded\"}},\"target\":{\"query\":\"Morgan\",\"participant\":\"morgan@example.invalid\"},\"asOf\":\"2026-10-13T14:47:37.677Z\",\"inputSha256\":\"b4c5043ce356a2f57cb243a7dd9e8c49e7230cf6ddbaf5fa479019b8f4b71e1e\",\"readsSha256\":\"4d0751db598d24fbadff88baf1ac0b84c4b0ad2ab5d5ca091f8688508daa583c\",\"parent\":{\"versionId\":\"153f069b-edfc-4a4b-92d7-e95a34f2b1ac\",\"objectSha256\":\"b1b5894ccbc089ef0d5e0da4b08c60b441f1de112596b2408f86ce0f006c6ff7\",\"specSha256\":\"9a2302325192d3f0e87a97e253951986dbe51a5da17fa6a249e570c0811b2bfb\",\"provenanceSha256\":\"5ac429ad12e9e3d5a04bc704c941b170745179665d9962941444e9ef73133bdc\"},\"collection\":{\"calls\":6,\"bytes\":20030,\"limits\":{\"maxCalls\":24,\"maxCandidatePages\":3,\"candidatePageSize\":5,\"maxMessages\":10,\"bodySectionCodeUnits\":2000,\"maxBodyCodeUnits\":120000,\"maxSourceBytes\":2097152},\"capHits\":[],\"distinctEligibleCount\":1,\"bodyAttempts\":1,\"boundBodyCount\":1,\"unreadCount\":0,\"unread\":[]}}"
+          ],
+          "tables": [],
+          "rendered": false,
+          "nativeQualified": false
+        },
+        "visual": {
+          "sha256": "065be5c4495a5d378993db84f7b1fc8be170b90ad3f4280661dd7aad993d599a",
+          "bytes": 49876,
+          "pages": [
+            {
+              "page": 1,
+              "text": "Synthetic Mail History brief\nMail History brief | Editable draft for review\nRequested correspondent/topic: Morgan. Identity matches remain candidate metadata.\nAs of 2026-10-13T14:47:37.677Z\nExact selected window: {\"basis\":\"unbounded\"}\nSource-supplied correspondence timeline\nDates, subjects and participants below are supplied discovery metadata; they do not verify \nidentity or the meaning of a promise. Candidate previews are never decisive evidence.\n2026-10-13T14:47:36.677Z | Revised briefing discussion\nMessage 71000000-0000-4000-8000-000000000074; thread 71000000-0000-4000-8000-\n000000000073; mailbox 71000000-0000-4000-8000-000000000071. Received 2026-10-\n13T14:47:36.677Z; sent unknown; created 2026-10-13T14:47:36.677Z.\nFrom: Morgan morgan@example.invalid; To: owner@example.invalid. Metadata is \nunversioned and unverified; connection disconnected; body bound-full-body.\nExact quoted passages\n[bound-source-excerpt] I will send the revised briefing on Friday. This is a quoted source \nstatement, not verified delivery.\nMail 71000000-0000-4000-8000-000000000071 / thread 71000000-0000-4000-8000-\n000000000073 / message 71000000-0000-4000-8000-000000000074 / version synthetic-\nmessage-v1; UTF-16 characters 2002-2103; locator URL, not verification: \nhttps://example.invalid/mail/locator-only.\nInterpretations and outstanding items\nAll semantic chronology, ask, promise, owner, completion and follow-up interpretations are \nunverified drafts for human review. A citation or completed task cannot establish delivery \nor acceptance.\n[unverified interpretation] Revised review note: Confirm who owns the briefing and \nwhether it was delivered. The quoted promise is not delivery evidence.\n",
+              "png": "page-1.png",
+              "width": 765,
+              "height": 990,
+              "bytes": 106650,
+              "sha256": "de6c9edf5e6443f5e66a610f9c2ccb2afbde0c695c8938afe80179b4af9474e7"
+            },
+            {
+              "page": 2,
+              "text": "Coverage and verification appendix\nA bound excerpt means exact authorized supplied body bytes were reconstructed and hash-\nbound; source authenticity/freshness still depend on qualified gateway adapters. Unknown \nsnapshots, source limits, missing dates, disconnection, candidate matching and paging \nnever establish complete history or absence.\nentity_candidates | resolve_entity | candidate-metadata; enumeration unknown; reason \nnone; verified false.\nUnverified entity_candidates candidate projection: 0 returned; source result SHA256 \nb6cc736a10f2f035623810ca6e343b09a91f5e9e1ddd91ed075ab3adb86dd95d. This does \nnot establish identity, relationship or absence.\ntenant_contacts | find_contacts | candidate-metadata; enumeration unknown; reason none; \nverified false.\nUnverified tenant_contacts candidate projection: 0 returned; source result SHA256 \ne7ddab10edbb025b5edaafce15ebd224218531b56c26647a0aec7b30a6fdf60e. This does \nnot establish identity, relationship or absence.\nmail | mail.list_messages | bounded-candidates; enumeration unknown; reason none; \nverified false.\nReturned 1; more false; next offset none; source query scope {\"asOfInclusive\":\"2026-10-\n13T14:47:37.677Z\",\"storedCreatedAtEndInclusive\":\"2026-10-\n13T14:47:37.677Z\",\"effectiveStartInclusive\":null,\"missingEffectiveDates\":\"included\"}.\nCandidate body handles remain discovery locators: synthetic-candidate-preview\nSource mail; authority authoritative; snapshot unknown; freshness unknown; retrieved \n2026-10-13T14:47:37.677Z.\nLimitation: Synthetic incomplete previews; unknown immutable snapshot.\nmail | mail.search_messages | bounded-candidates; enumeration unknown; reason none; \nverified false.\nReturned 1; more false; next offset none; source query scope {\"asOfInclusive\":\"2026-10-\n13T14:47:37.677Z\",\"storedCreatedAtEndInclusive\":\"2026-10-\n13T14:47:37.677Z\",\"effectiveStartInclusive\":null,\"missingEffectiveDates\":\"included\"}.\nCandidate body handles remain discovery locators: synthetic-candidate-preview\nSource mail; authority authoritative; snapshot unknown; freshness unknown; retrieved \n2026-10-13T14:47:37.677Z.\nLimitation: Synthetic incomplete previews; unknown immutable snapshot.\n",
+              "png": "page-2.png",
+              "width": 765,
+              "height": 990,
+              "bytes": 131808,
+              "sha256": "ba189b20b2a5bd11a991640c8d2728f8955c9f8dca962aeb26374f4a3c3b1aa5"
+            },
+            {
+              "page": 3,
+              "text": "mail | mail.read_thread | bound-bodies-source-incomplete; enumeration unknown; reason \nnone; verified false.\nDecisive body reads: 1 bound / 1 eligible; unread 0; body attempts 1; excluded by selected \nwindow 0.\nBody 71000000-0000-4000-8000-000000000074: bound-full-body; sections 2; connection \ndisconnected; full-body evidence retained.\nCitation 71000000-0000-4000-8000-000000000075; source mail; record 71000000-0000-\n4000-8000-000000000074; immutable version synthetic-message-v1; authority \nauthoritative; authorization decision 71000000-0000-4000-8000-000000000072.\nFull body SHA256 \n6d11d9c8182f5791f71a9a4bea6e99c79b5667dcea447e2c181cf8f13695415a\nQuoted passage SHA256 \nc3c9f68e66f2f43f26aba37883356d69a7dd7d0c8cf50f96c3cbf8a10a7f330a\nScope [{\"tenantId\":\"synthetic-tenant\",\"kind\":\"client\",\"resourceId\":\"99999999-9999-4999-\n8999-\n999999999999\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\naaaaaaaaaaaaaaa\"},{\"tenantId\":\"synthetic-\ntenant\",\"kind\":\"mailbox\",\"resourceId\":\"71000000-0000-4000-8000-\n000000000071\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\naaaaaaaaaaaaaaa\"}]\nObserved 2026-10-13T14:47:37.708Z; source updated unknown.\nOriginal skill and immutable revision provenance\nMeri Mail History provenance: {\"recipe\":\"mail-history-brief\",\"skill\":\n{\"skillId\":\"quick_skill.mail_history\",\"skillVersion\":\"1.0.0\",\"manifestSha256\":\"b8ac89b3cf047\n16a62f8a41f70382987b8a76426c4825a2dd7aeb6fb690903d1\",\"proseSha256\":\"a6f2508d\n93e0c1b5f3c723b10038db37adc31f9a08b49a36944c8dcf55308ea4\",\"catalogSha256\":\"27d\nb172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968\"},\"selection\":\n{\"subject\":{\"kind\":\"client\",\"entityType\":\"client\",\"entityIds\":[\"99999999-9999-4999-8999-\n999999999999\"],\"tenantId\":\"synthetic-tenant\",\"actorId\":\"synthetic-\nactor\",\"authorizationDecisionId\":\"71000000-0000-4000-8000-\n000000000072\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\naaaaaaaaaaaaaaa\",\"scopes\":[{\"tenantId\":\"synthetic-\ntenant\",\"kind\":\"client\",\"resourceId\":\"99999999-9999-4999-8999-\n999999999999\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\naaaaaaaaaaaaaaa\"},{\"tenantId\":\"synthetic-\ntenant\",\"kind\":\"mailbox\",\"resourceId\":\"71000000-0000-4000-8000-\n000000000071\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\naaaaaaaaaaaaaaa\"}],\"rosterVersionId\":null},\"window\":{\"basis\":\"unbounded\"}},\"target\":\n{\"query\":\"Morgan\",\"participant\":\"morgan@example.invalid\"},\"asOf\":\"2026-10-\n13T14:47:37.677Z\",\"inputSha256\":\"b4c5043ce356a2f57cb243a7dd9e8c49e7230cf6ddbaf5\n",
+              "png": "page-3.png",
+              "width": 765,
+              "height": 990,
+              "bytes": 146517,
+              "sha256": "9ebc883a2657717881616ed144d84cdbc6f67aadd5c8c4394c736abe14d5a2c9"
+            },
+            {
+              "page": 4,
+              "text": "fa479019b8f4b71e1e\",\"readsSha256\":\"4d0751db598d24fbadff88baf1ac0b84c4b0ad2ab5d\n5ca091f8688508daa583c\",\"parent\":{\"versionId\":\"153f069b-edfc-4a4b-92d7-\ne95a34f2b1ac\",\"objectSha256\":\"b1b5894ccbc089ef0d5e0da4b08c60b441f1de112596b240\n8f86ce0f006c6ff7\",\"specSha256\":\"9a2302325192d3f0e87a97e253951986dbe51a5da17fa6\na249e570c0811b2bfb\",\"provenanceSha256\":\"5ac429ad12e9e3d5a04bc704c941b1707451\n79665d9962941444e9ef73133bdc\"},\"collection\":{\"calls\":6,\"bytes\":20030,\"limits\":\n{\"maxCalls\":24,\"maxCandidatePages\":3,\"candidatePageSize\":5,\"maxMessages\":10,\"bodySect\nionCodeUnits\":2000,\"maxBodyCodeUnits\":120000,\"maxSourceBytes\":2097152},\"capHits\":\n[],\"distinctEligibleCount\":1,\"bodyAttempts\":1,\"boundBodyCount\":1,\"unreadCount\":0,\"unrea\nd\":[]}}\n",
+              "png": "page-4.png",
+              "width": 765,
+              "height": 990,
+              "bytes": 52993,
+              "sha256": "42a0c9f35b28d0f9ce541bcf177907443f6cd41ac5663ec08b78cced39b162f7"
+            }
+          ],
+          "renderedLocally": true,
+          "nativeQualified": false
+        },
+        "processes": [
+          {
+            "pid": 183913,
+            "exitCode": 0,
+            "signal": null,
+            "spawnError": null,
+            "stdoutBytes": 7597,
+            "stderrBytes": 0,
+            "stdoutRetainedBytes": 7597,
+            "stderrRetainedBytes": 0,
+            "hashScope": "retained bytes",
+            "stdoutSha256": "83be06c8fc6baa07e74345ace7473809b9de2bf0fd25bacfd2b6b43b70390c25",
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdoutEnded": true,
+            "stderrEnded": true,
+            "streamErrors": [],
+            "leaderClosed": true,
+            "groupKillAttempted": true,
+            "groupAbsent": true,
+            "sandboxQualified": false
+          },
+          {
+            "pid": 183914,
+            "exitCode": 0,
+            "signal": null,
+            "spawnError": null,
+            "stdoutBytes": 196,
+            "stderrBytes": 0,
+            "stdoutRetainedBytes": 196,
+            "stderrRetainedBytes": 0,
+            "hashScope": "retained bytes",
+            "stdoutSha256": "648914635a0413f69bb8d744b1ce60f92f5f0aa2d5c10c93c85fdf9803b59076",
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdoutEnded": true,
+            "stderrEnded": true,
+            "streamErrors": [],
+            "leaderClosed": true,
+            "groupKillAttempted": true,
+            "groupAbsent": true,
+            "sandboxQualified": false
+          },
+          {
+            "pid": 183957,
+            "exitCode": 0,
+            "signal": null,
+            "spawnError": null,
+            "stdoutBytes": 8321,
+            "stderrBytes": 0,
+            "stdoutRetainedBytes": 8321,
+            "stderrRetainedBytes": 0,
+            "hashScope": "retained bytes",
+            "stdoutSha256": "188e9a6a1e0b64f11a9f2e22b25c1c88831831a18b69629f3f43a33f922e726a",
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdoutEnded": true,
+            "stderrEnded": true,
+            "streamErrors": [],
+            "leaderClosed": true,
+            "groupKillAttempted": true,
+            "groupAbsent": true,
+            "sandboxQualified": false
+          }
+        ],
+        "localSyntheticOnly": true,
+        "nativeQualified": false
+      }
+    ],
+    "stats": {
+      "mode": "synthetic-local",
+      "sourceConnected": false,
+      "nativeDatabase": false,
+      "nativeQualified": false,
+      "generations": 2,
+      "artifactChecks": 40,
+      "versionCharges": 2,
+      "settled": 2,
+      "unknown": 0,
+      "consumedMicroUsd": "20",
+      "allocations": 1,
+      "grants": 1,
+      "skillId": "quick_skill.relationship_brief",
+      "skillVersion": "1.0.0",
+      "manifestSha256": "c465302acce3a7fc4f3f12513ebd9d55306adb9d068bc33feefebf469514e31c",
+      "processReceipts": [
+        {
+          "pid": 183885,
+          "exitCode": 0,
+          "signal": null,
+          "spawnError": null,
+          "stdoutBytes": 657,
+          "stderrBytes": 0,
+          "stdoutRetainedBytes": 657,
+          "stderrRetainedBytes": 0,
+          "hashScope": "retained bytes",
+          "stdoutSha256": "ac377a46a2625c4e6f7e0b13072495a6a99e075cac51c23a9d68dd6e63a0cdf1",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdoutEnded": true,
+          "stderrEnded": true,
+          "streamErrors": [],
+          "leaderClosed": true,
+          "groupKillAttempted": true,
+          "groupAbsent": true,
+          "sandboxQualified": false
+        },
+        {
+          "pid": 183886,
+          "exitCode": 0,
+          "signal": null,
+          "spawnError": null,
+          "stdoutBytes": 657,
+          "stderrBytes": 0,
+          "stdoutRetainedBytes": 657,
+          "stderrRetainedBytes": 0,
+          "hashScope": "retained bytes",
+          "stdoutSha256": "0b5a2f41fa88b38c6c427fe24515ff2f8e6a233a580a44e731ed9ee6cbe7ec7f",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdoutEnded": true,
+          "stderrEnded": true,
+          "streamErrors": [],
+          "leaderClosed": true,
+          "groupKillAttempted": true,
+          "groupAbsent": true,
+          "sandboxQualified": false
+        }
+      ],
+      "closed": false,
+      "revoked": true,
+      "cleanup": null
+    },
+    "invariants": {
+      "originalPreserved": true,
+      "exactImmutableParent": true,
+      "createReviseReplayNoDuplicateEffects": true,
+      "fullBodyHashAndScopesBound": true,
+      "semanticClaimsUnverified": true,
+      "coverageVisible": true,
+      "inspectDownloadVerified": true,
+      "foreignSessionRefused": true,
+      "revocationRefused": true
+    }
+  },
+  "cleanup": {
+    "executorDirectoriesAbsent": true,
+    "storeRemoved": true
+  }
+}
