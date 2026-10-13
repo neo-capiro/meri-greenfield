@@ -1,0 +1,41 @@
+✔ installs exactly the six unchanged files, then verifies13 relations and empty accounting (22.428652ms)
+✔ reconstruction permits retained accounting but binds original complete catalog hash (24.234517ms)
+✔ identity database mismatch refuses before DDL (3.300511ms)
+✔ identity username mismatch refuses before DDL (1.960577ms)
+✔ identity address mismatch refuses before DDL (2.548761ms)
+✔ identity port mismatch refuses before DDL (2.242591ms)
+✔ identity version mismatch refuses before DDL (1.975069ms)
+✔ identity start_ms mismatch refuses before DDL (1.659685ms)
+✔ identity system_identifier mismatch refuses before DDL (2.065926ms)
+✔ identity fsync mismatch refuses before DDL (2.663624ms)
+✔ identity synchronous_commit mismatch refuses before DDL (1.611011ms)
+✔ identity search_path mismatch refuses before DDL (1.879095ms)
+✔ closed descriptor, accessors, proxy and expired/cancelled inputs allocate no client (0.803929ms)
+✔ install refuses partial namespaces, preexisting relation and same fixture reapply (14.868488ms)
+✔ concurrent installers cannot both acquire fixed transaction lock (13.297217ms)
+✔ post-install missing corruption is UNKNOWN, never retry/success (5.030952ms)
+✔ post-install nullable corruption is UNKNOWN, never retry/success (5.205995ms)
+✔ post-install type corruption is UNKNOWN, never retry/success (5.951195ms)
+✔ post-install constraint corruption is UNKNOWN, never retry/success (5.137552ms)
+✔ post-install unvalidated corruption is UNKNOWN, never retry/success (4.915739ms)
+✔ post-install index corruption is UNKNOWN, never retry/success (5.510944ms)
+✔ post-install trigger corruption is UNKNOWN, never retry/success (4.644231ms)
+✔ post-install owner corruption is UNKNOWN, never retry/success (5.579847ms)
+✔ post-install view corruption is UNKNOWN, never retry/success (5.710773ms)
+✔ post-install rowSecurity corruption is UNKNOWN, never retry/success (5.147076ms)
+✔ reconstruction catches changed check definition even when type/counts remain (19.087159ms)
+✔ fresh install requires exact empty application rows and zero unquarantined accounting (22.303805ms)
+✔ migration, commit and release errors preserve UNKNOWN and no retry (14.54985ms)
+✔ unknown errors are not reflected or evaluated (3.08689ms)
+✔ owner query timeout6000 is admitted and shorter bound is preserved for every query (8.355509ms)
+✔ late acquisition is released with no BEGIN or DDL after original deadline (61.122657ms)
+✔ cancelled parked migration remains UNKNOWN, then rolls back and releases without another DDL (13.042434ms)
+✔ absolute clock advancement after identity prevents migration despite responsive ports (10.249917ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 33
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 377.765377

@@ -1,0 +1,62 @@
+✔ installs exactly the six unchanged files, then verifies13 relations and empty accounting (24.672458ms)
+✔ reconstruction permits retained accounting but binds original complete catalog hash (28.151803ms)
+✔ identity database mismatch refuses before DDL (3.32666ms)
+✔ identity username mismatch refuses before DDL (2.019735ms)
+✔ identity address mismatch refuses before DDL (2.53512ms)
+✔ identity port mismatch refuses before DDL (2.012585ms)
+✔ identity version mismatch refuses before DDL (1.92894ms)
+✔ identity start_ms mismatch refuses before DDL (2.0358ms)
+✔ identity system_identifier mismatch refuses before DDL (2.310072ms)
+✔ identity fsync mismatch refuses before DDL (3.064276ms)
+✔ identity synchronous_commit mismatch refuses before DDL (1.972445ms)
+✔ identity search_path mismatch refuses before DDL (1.805574ms)
+✔ closed descriptor, accessors, proxy and expired/cancelled inputs allocate no client (0.970358ms)
+✔ install refuses partial namespaces, preexisting relation and same fixture reapply (15.615019ms)
+✔ concurrent installers cannot both acquire fixed transaction lock (16.926787ms)
+✔ post-install missing corruption is UNKNOWN, never retry/success (6.858459ms)
+✔ post-install nullable corruption is UNKNOWN, never retry/success (7.854325ms)
+✔ post-install type corruption is UNKNOWN, never retry/success (8.282909ms)
+✔ post-install constraint corruption is UNKNOWN, never retry/success (7.449176ms)
+✔ post-install unvalidated corruption is UNKNOWN, never retry/success (6.526099ms)
+✔ post-install index corruption is UNKNOWN, never retry/success (7.073252ms)
+✔ post-install trigger corruption is UNKNOWN, never retry/success (7.493263ms)
+✔ post-install owner corruption is UNKNOWN, never retry/success (7.108404ms)
+✔ post-install view corruption is UNKNOWN, never retry/success (13.818659ms)
+✔ post-install rowSecurity corruption is UNKNOWN, never retry/success (6.936495ms)
+✔ reconstruction catches changed check definition even when type/counts remain (27.726704ms)
+✔ fresh install requires exact empty application rows and zero unquarantined accounting (28.806792ms)
+✔ migration, commit and release errors preserve UNKNOWN and no retry (15.835982ms)
+✔ unknown errors are not reflected or evaluated (3.508794ms)
+✔ owner query timeout6000 is admitted and shorter bound is preserved for every query (9.153934ms)
+✔ late acquisition is released with no BEGIN or DDL after original deadline (60.614821ms)
+✔ cancelled parked migration remains UNKNOWN, then rolls back and releases without another DDL (13.080991ms)
+✔ absolute clock advancement after identity prevents migration despite responsive ports (7.725832ms)
+✔ receipt binds original cutoff and reports port observation without native qualification (8.07081ms)
+✖ namespace query excludes only literal pg_ prefix and refuses user pgx_private (3.019579ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 34
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 433.305598
+
+✖ failing tests:
+
+test at apps/control/qualified-application/schema.test.mjs:94:1
+✖ namespace query excludes only literal pg_ prefix and refuses user pgx_private (3.019579ms)
+  AssertionError [ERR_ASSERTION]: The input was expected to not match the regular expression /NOT\s+LIKE\s+'pg_%'/i. Input:
+  
+  "SELECT nspname AS name FROM pg_catalog.pg_namespace WHERE nspname NOT IN ('public','information_schema') AND nspname NOT LIKE 'pg_%' ORDER BY nspname"
+  
+      at TestContext.<anonymous> (file:///tmp/meri-qualified-schema-20261013/apps/control/qualified-application/schema.test.mjs:97:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: "SELECT nspname AS name FROM pg_catalog.pg_namespace WHERE nspname NOT IN ('public','information_schema') AND nspname NOT LIKE 'pg_%' ORDER BY nspname",
+    expected: /NOT\s+LIKE\s+'pg_%'/i,
+    operator: 'doesNotMatch',
+    diff: 'simple'
+  }
