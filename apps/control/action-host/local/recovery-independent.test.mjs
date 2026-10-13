@@ -2,6 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {setTimeout as sleep} from 'node:timers/promises';
+import http from 'node:http';
 import {runLocalHostRecovery} from './recovery.mjs';
 
 // This narrow lifecycle fixture is NOT a domain or durability oracle. It reaches
@@ -30,4 +31,17 @@ for(const port of ['approve','revoke'])test(`independent: runner total deadline 
   const result=await Promise.race([invocation.then(()=>({state:'returned'}),()=>({state:'refused'})),sleep(350).then(()=>({state:'pending'}))]);
   assert.equal(result.state,'refused','aborted whole-run deadline must stop awaiting the borrowed callback');
  }finally{parked.resolve();try{await invocation;}catch{}globalThis.setTimeout=nativeSetTimeout;}
+});
+
+test('independent: unaccelerated thirty-second cutoff closes listeners and settles parked approve',async()=>{
+ const fixture=lifecycleFixture(),parked=gate(),entered=gate(),original=fixture.approve,servers=[],nativeListen=http.Server.prototype.listen;let invocation;
+ http.Server.prototype.listen=function(...args){servers.push(this);return nativeListen.apply(this,args);};
+ fixture.approve=async value=>{entered.resolve();await parked.promise;return original(value);};
+ try{
+  invocation=runLocalHostRecovery(fixture);invocation.catch(()=>{});await entered.promise;
+  const state=await Promise.race([invocation.then(()=>'returned',()=>'refused'),sleep(31000).then(()=>'pending')]);
+  const connections=await Promise.all(servers.map(server=>new Promise((resolve,reject)=>server.getConnections((error,count)=>error?reject(error):resolve(count)))));
+  const observed={state,hostsOpened:servers.length,allListenersClosed:servers.every(server=>!server.listening),activeConnections:connections.reduce((a,b)=>a+b,0)};
+  assert.deepEqual(observed,{state:'refused',hostsOpened:2,allListenersClosed:true,activeConnections:0});
+ }finally{parked.resolve();try{await invocation;}catch{}http.Server.prototype.listen=nativeListen;}
 });
