@@ -5,27 +5,14 @@
   "webToolResponse": {
     "retrievalDate": "2026-10-13",
     "reportedCrawlAge": "yesterday",
-    "utf8Bytes": 29400,
-    "sha256": "8a229bd967e2cf1b18db0c18b6f749a352e745d5eda8833607cc04347d11b8c4",
-    "identityScope": "Combined rendered tool response in task transcript, not original HTML. Full response not retained; short captures below have separate packet hashes.",
-    "rawHtmlSha256": null
-  },
-  "sources": [
-    {
-      "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/count-tokens.html",
-      "title": "Monitor your token usage by counting tokens before running inference",
-      "locator": "Opening Note; supported-models section; rendered lines 10,13,33-35",
-      "shortQuote": "Using the CountTokens API doesn't incur charges.",
-      "paraphrase": "Some CRIS-only Anthropic models are exceptions to runtime token-counting support; model-specific support must be checked."
-    },
-    {
-      "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-anthropic-claude-sonnet-4-6.html",
-      "title": "Claude Sonnet 4.6",
-      "locator": "Endpoints and APIs supported; Features supported using bedrock-runtime; Programmatic Access; rendered lines 48-51,70-78,117-121,173-178",
-      "paraphrase": "The card marks bedrock-runtime and Count tokens supported, mantle unsupported, and lists the US geographic profile. Its in-region endpoint entry is N/A.",
-      "profile": "us.anthropic.claude-sonnet-4-6",
-      "documentedRuntimeEndpointExample": "https://bedrock-runtime.us-east-1.amazonaws.com"
+    "fullResponseRetained": false,
+    "rawHtmlSha256": null,
+    "identityScope": "Only the retained short observation artifact is hash-bound. No raw HTML or complete rendered-response content identity is asserted.",
+    "retainedObservationArtifact": {
+      "path": "docs/qualification/candidates/action-host-20261013/pilot-addendum/rendered-observations.json",
+      "bytes": 1354,
+      "sha256": "2d5ed8f6b067dcf47e131d5d67eefced4af6386e434a4c5b2bdd1466eae8747b"
     }
-  ],
+  },
   "interpretation": "Documented API fee is zero and model-specific support is documented. Generic CRIS warning does not establish this exact request/profile/account will work. Runtime compatibility remains unrun; no mantle fallback or code change follows."
 }

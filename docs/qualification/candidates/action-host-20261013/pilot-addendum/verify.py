@@ -26,7 +26,8 @@ check('runtime remains unrun',d['countTokens']['runtimeCompatibility']=='UNRUN' 
 check('no provider/account/model calls',all(d['activity'][k]==0 for k in ['providerApiCalls','accountApiCalls','modelCalls']))
 r=json.loads((ev/'public-retrievals.json').read_text());check('retrieval script pinned',r['scriptSha256']==hashlib.sha256((ev/'capture-public-docs.py').read_bytes()).hexdigest())
 check('two direct failures preserved',len(r['records'])==2 and all('403' in x['error'] and x['bodyRetained'] is False for x in r['records']))
-f=json.loads((ev/'documentation-findings.json').read_text());check('rendered versus raw provenance',f['webToolResponse']['rawHtmlSha256'] is None and f['webToolResponse']['utf8Bytes']==29400)
+f=json.loads((ev/'documentation-findings.json').read_text());check('rendered versus raw provenance',f['webToolResponse']['rawHtmlSha256'] is None and f['webToolResponse']['fullResponseRetained'] is False)
+ob=f['webToolResponse']['retainedObservationArtifact'];ob_bytes=(root/ob['path']).read_bytes();check('retained observation artifact exact',len(ob_bytes)==ob['bytes'] and hashlib.sha256(ob_bytes).hexdigest()==ob['sha256'])
 allowed=[str(ev.relative_to(root))+'/', 'docs/coordination/tasks/CODEX-ACTION-HOST-PILOT-ADDENDUM-20261013.md','docs/coordination/reports/CODEX-ACTION-HOST-PILOT-ADDENDUM-20261013.md']
 changes=[x.split('\t') for x in git('diff','--name-status',base,'HEAD').decode().splitlines()]
 check('all additions exclusively owned',all(s=='A' and any(p.startswith(a) for a in allowed) for s,p in changes))
