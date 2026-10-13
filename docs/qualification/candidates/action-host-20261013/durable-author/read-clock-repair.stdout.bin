@@ -1,0 +1,19 @@
+✔ pending approval creates no debit/effect, later approval and reconstructed owners replay one durable command (140.820675ms)
+✔ reconstructed lookup read uses retained concrete store and current authority (32.635434ms)
+✔ default disabled refuses new lookup before SQL and command before budget while preserving authorized lookup read (35.217304ms)
+✔ fresh approval revocation refuses reconstructed replay without a new effect or debit (51.086973ms)
+✔ lost prepare acknowledgement preserves canonical stage and never repeats effects (30.496581ms)
+✔ lost reserve acknowledgement preserves canonical stage and never repeats effects (45.171894ms)
+✔ lost marker acknowledgement preserves canonical stage and never repeats effects (43.277126ms)
+✔ lost settle acknowledgement preserves canonical stage and never repeats effects (45.313107ms)
+✔ lost command completion ACK retains completed journal and exact charged result across reconstruction (49.76051ms)
+✔ construction is inert, keeps borrowed pools open and rejects altered task descriptor/context (22.563018ms)
+✔ new lookup uses actual governed gateway HTTP adapter and durable read accounting before retained current read (53.170414ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3157.743863
