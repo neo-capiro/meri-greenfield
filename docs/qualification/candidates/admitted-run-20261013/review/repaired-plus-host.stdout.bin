@@ -1,0 +1,108 @@
+✔ admitted mount independent split budget pool refused before IO (18.216817ms)
+✔ admitted mount independent unwatched read credential refused before IO (7.994594ms)
+✔ admitted mount independent unwatched producer grant refused before IO (7.877358ms)
+✔ admitted mount independent substituted producer capability refused before IO (6.506659ms)
+✔ admitted mount independent producer is read grant refused before IO (7.053972ms)
+✔ admitted mount independent only read watched refused before IO (6.079616ms)
+✔ admitted mount independent read token matches only producer refused before IO (6.040408ms)
+✔ admitted mount independent actual session uses persisted owner and reconstruction rejects replaced facts (86.326944ms)
+✔ admitted mount independent caller has no authority override and default mount remains off (17.488842ms)
+✔ admitted generic independent current owner and full binding cannot be bypassed by callback input (12.376871ms)
+✔ admitted local wrapper independent preserves closed error after local identity closes (6.023863ms)
+✖ admitted mount independent actual host reservation stays bound to watched read facts (39.102785ms)
+✖ admitted mount independent actual host credential stays bound to watched read facts (42.542443ms)
+✔ admitted independent construction is inert, read joins both grants and returns only canonical receipt (18.510548ms)
+✔ admitted independent shortened configured grant bounds whole owner (6.679418ms)
+✔ admitted independent reconstruction preserves original allocation runtime (5.801789ms)
+✔ admitted independent authority deadline is not reset to per-request waiting limit (4.733934ms)
+✔ admitted independent missing run refuses (4.74433ms)
+✔ admitted independent run attempt refuses (5.398232ms)
+✔ admitted independent run worker refuses (3.796846ms)
+✔ admitted independent run fence refuses (4.122666ms)
+✔ admitted independent run policy refuses (4.056826ms)
+✔ admitted independent quarantine refuses (3.747192ms)
+✔ admitted independent missing allocation refuses (3.389183ms)
+✔ admitted independent allocation run refuses (3.665549ms)
+✔ admitted independent allocation digest refuses (5.384677ms)
+✔ admitted independent allocation full facts refuses (5.354857ms)
+✔ admitted independent allocation call cap refuses (4.373633ms)
+✔ admitted independent allocation cost cap refuses (8.310869ms)
+✔ admitted independent invalid start Date refuses (3.630797ms)
+✔ admitted independent start wrong type refuses (3.817917ms)
+✔ admitted independent future start refuses (3.73922ms)
+✔ admitted independent pending grant refuses (3.788063ms)
+✔ admitted independent revoked grant refuses (4.133331ms)
+✔ admitted independent expired grant refuses (4.104349ms)
+✔ admitted independent grant identity refuses (3.745519ms)
+✔ admitted independent grant hash refuses (3.672098ms)
+✔ admitted independent grant expiry type refuses (4.430999ms)
+✔ admitted independent grant invalid Date refuses (3.320931ms)
+✔ admitted independent missing retained grant binding refuses (3.600961ms)
+✔ admitted independent foreign run retained grant binding refuses (3.613681ms)
+✔ admitted independent foreign grant retained grant binding refuses (5.589305ms)
+✔ admitted independent changed full binding retained grant binding refuses (4.046861ms)
+✔ admitted independent second configured grant revocation cannot hide behind first active grant (3.241141ms)
+✔ admitted independent existing UNKNOWN liabilities survive read and reconstruction unchanged (7.096915ms)
+✔ admitted independent empty configured grant set refuses before connection (3.229824ms)
+✔ admitted independent duplicate configured grant set refuses before connection (3.567421ms)
+✔ admitted independent different actor configured grant set refuses before connection (3.361962ms)
+✔ admitted independent different attempt configured grant set refuses before connection (3.581032ms)
+✔ admitted independent different allocation configured grant set refuses before connection (3.303945ms)
+✔ admitted independent extra invocation configured grant set refuses before connection (6.739719ms)
+✔ admitted independent caller full binding mismatch and hostile getter are inert (3.643615ms)
+✔ admitted independent abort parked connect starts no later port and releases late connection (17.345258ms)
+✔ admitted independent abort parked BEGIN starts no later port and releases late connection (4.738311ms)
+✔ admitted independent abort parked SET LOCAL statement_timeout = '5s' starts no later port and releases late connection (3.350395ms)
+✔ admitted independent abort parked SET LOCAL lock_timeout = '2s' starts no later port and releases late connection (4.462547ms)
+✔ admitted independent abort during locked grant query never launches subsequent select (4.897049ms)
+✔ admitted independent COMMIT ACK loss cannot return authority or retry (4.409066ms)
+✔ admitted independent COMMIT parked past grant expiry refuses late receipt (4.584599ms)
+✔ admitted independent known grant deadline interrupts later parked query, with no next SQL (29.937861ms)
+ℹ tests 60
+ℹ suites 0
+ℹ pass 58
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2916.224231
+
+✖ failing tests:
+
+test at apps/control/admitted-runs/independent/mount-independent.test.mjs:24:48
+✖ admitted mount independent actual host reservation stays bound to watched read facts (39.102785ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'UNKNOWN'
+  - 'NOT_DISPATCHED'
+  
+      at TestContext.<anonymous> (file:///tmp/meri-admitted-run-review-20261013/apps/control/admitted-runs/independent/mount-independent.test.mjs:24:1187)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'UNKNOWN',
+    expected: 'NOT_DISPATCHED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/admitted-runs/independent/mount-independent.test.mjs:24:48
+✖ admitted mount independent actual host credential stays bound to watched read facts (42.542443ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'UNKNOWN'
+  - 'NOT_DISPATCHED'
+  
+      at TestContext.<anonymous> (file:///tmp/meri-admitted-run-review-20261013/apps/control/admitted-runs/independent/mount-independent.test.mjs:24:1187)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'UNKNOWN',
+    expected: 'NOT_DISPATCHED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
