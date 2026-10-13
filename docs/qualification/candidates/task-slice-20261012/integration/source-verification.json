@@ -1,14 +1,19 @@
 {
-  "sourceHead": "565c01b10d3a26ec499ac810bb56fb3f6fdf8f84",
+  "sourceHead": "a82543fcff94e4ed31c27185408e3e6f0ae3ece6",
   "base": "77cedb126d57a0223d2df42ad2f3fe988eb51759",
   "originalEntries": 9667,
-  "originalEntriesUnchanged": 9664,
+  "originalEntriesUnchanged": 9663,
   "changedOriginals": [
     "apps/gateway/dispatch/operation-context.mjs",
     "apps/gateway/dispatch/read-result-envelope.mjs",
-    "packages/contracts/retrieval-0.2/catalog-validation.mjs"
+    "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+    "packages/contracts/test/vertical-source-expectations.mjs"
   ],
-  "originalTestsChanged": 0,
+  "originalTestModulesChanged": 0,
+  "originalTestHelperChange": {
+    "path": "packages/contracts/test/vertical-source-expectations.mjs",
+    "change": "One explicit expected actions.query/actions-complete/1 entry; all prior expectations retained."
+  },
   "reviewedProductionFiles": [
     {
       "path": "apps/gateway/dispatch/action-read-context.mjs",
