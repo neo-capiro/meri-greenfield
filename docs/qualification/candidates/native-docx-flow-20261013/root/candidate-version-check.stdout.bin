@@ -1,0 +1,14 @@
+✔ concrete catalog preserves every ledger ID/boundary and fourteen unavailable mappings and a partial typed operation (9.876275ms)
+✔ mail schema objects stay closed and package public exports stay 0.1 only (0.69115ms)
+✔ meeting schema objects stay closed and package public exports stay 0.1 only (1.292055ms)
+✔ private meeting catalog registration exposes no live handler, public export or skill (11.746111ms)
+✔ operation is mapped but unavailable and public exports stay separate (15.871984ms)
+✔ operational-read schema objects stay closed and package public exports stay 0.1 only (1.046663ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4888.779516

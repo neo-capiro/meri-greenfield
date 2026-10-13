@@ -1,0 +1,42 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "apps/gateway/budget/product-runtime.test.mjs",
+    "apps/gateway/test/postgres-tool-budget.test.mjs",
+    "apps/gateway/test/durable-tool-budget.test.mjs",
+    "apps/gateway/test/tool-invocation-owner.test.mjs",
+    "apps/gateway/test/tool-invocation-transaction.test.mjs",
+    "apps/gateway/test/tool-budget-outcome.test.mjs",
+    "apps/control/admitted-runs/test/owner.test.mjs",
+    "apps/control/admitted-runs/independent/owner-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-flow-integration",
+  "sourceHead": "08aef7eff5aa9a5a65c6a3afbc2f665de861735e",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T21:08:59.550895+00:00",
+  "durationSeconds": 11.966,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 380094,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/root/integrated-budget-configured.stdout.bin",
+      "bytes": 15887,
+      "sha256": "7facdcb6614137ebbb89ae74b1d002d496f49765ca2bac8f1364031a88da948b"
+    },
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/root/integrated-budget-configured.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Initial root invocation omitted required explicit source root and named nonexistent budget test paths; preserve raw and run actual frozen controls.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

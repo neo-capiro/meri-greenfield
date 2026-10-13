@@ -1,0 +1,31 @@
+✔ runner lifecycle reuses canonical claim/UUID echo ACK over fixed task-capability facade (18.604661ms)
+✔ native checkpoint readback permits ordinary pause and source capture refusal never reports paused (8.997205ms)
+✔ runner resume forwards exact retained context and supported SDK restoration options (4.940772ms)
+✔ runner fork forwards exact retained context and supported SDK restoration options (2.617339ms)
+✔ runner native restore substitution refuses the single SDK query (1.714655ms)
+✔ actual control listener mounts canonical opaque issuance, submit/history and task-authorized RPC (3087.01495ms)
+✔ actual listener rejects cross-origin and incorrect methods; dependency loss changes readiness (2246.15365ms)
+✔ actual CLI help and invalid configuration exit before dependency allocation (373.118144ms)
+✔ actual process exits on SIGTERM after listener shutdown (2266.437574ms)
+✔ actual runner command composition consumes native-forwarded steering and acknowledges its immutable UUID (2838.767279ms)
+✔ actual runner native capture refusal leaves pause unverified and retains UNKNOWN control (2767.998677ms)
+✔ runtime missing current owners refuses fixed product routes without remote effects (7.548952ms)
+✔ compiled ports are captured inertly with original receiver and sources remain disabled (1.04024ms)
+✔ runner refuses missing observed registration before the single SDK query (19.254809ms)
+✔ runner preserves exact observed key, strips private selector and closes owned mirror (18.070965ms)
+✔ uncertain observed SDK mirror prevents durable completed status and releases no success (10.512339ms)
+✔ configuration refuses sources, production profile, unknown fields and shared task workspace (1.799736ms)
+✔ isolated runner refuses ambient provider, database, cloud and Temporal credentials (0.379266ms)
+✔ trusted Temporal registration uses both canonical workflow definitions and broker activity (0.661337ms)
+✔ broker accepts exact native task identity and propagates completion without an SDK loop (0.420918ms)
+✔ broker refuses a response from another writer fence (0.230484ms)
+✔ isolated runner invokes canonical activity and one scripted SDK query, preserving durable events (23.899035ms)
+✔ runner and container boundaries exclude legacy proxies and arbitrary injected config modules (13.562385ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 21067.344321

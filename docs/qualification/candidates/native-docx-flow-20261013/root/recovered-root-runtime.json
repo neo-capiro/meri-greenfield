@@ -1,0 +1,38 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "apps/runtime/test/product-mount.test.mjs",
+    "apps/runtime/test/runtime.test.mjs",
+    "apps/runtime/test/lifecycle.test.mjs",
+    "apps/runtime/test/process.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-flow-integration",
+  "sourceHead": "447292d6c434ec3295230accb749b326228af990",
+  "sourceDiffSha256": "d82930a6659466487e398915fa74c3b0be9467577e73351ddaf6086e4daa0c87",
+  "sourceDiffBytes": 5894,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T22:09:01.926963+00:00",
+  "durationSeconds": 21.14,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 402631,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/root/recovered-root-runtime.stdout.bin",
+      "bytes": 2475,
+      "sha256": "881942c25f8ed35bef4c2f9c83d564c55c72caf920cca47c71f70ab3a4e2aa70"
+    },
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/root/recovered-root-runtime.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Recovered ac035 cleanup owner and447 inert/overlap repair affect runner lifetimes; focused mount, ordinary runner and lifecycle tests only.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

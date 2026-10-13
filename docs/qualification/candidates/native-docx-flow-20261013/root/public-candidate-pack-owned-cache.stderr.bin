@@ -1,0 +1,40 @@
+npm notice
+npm notice 📦  @capiro/meri-contracts@0.1.5
+npm notice Tarball Contents
+npm notice 18.5kB README.md
+npm notice 3.8kB THIRD-PARTY-NOTICES.md
+npm notice 17.7kB dist/action-application.d.ts
+npm notice 2.0kB dist/action-application.metadata.json
+npm notice 1.5MB dist/action-application.mjs
+npm notice 67.7kB dist/action-application.schema.json
+npm notice 166B dist/browser.d.ts
+npm notice 466.0kB dist/browser.mjs
+npm notice 4.1kB dist/contracts.d.ts
+npm notice 14.2kB dist/conversation-application.d.ts
+npm notice 2.4kB dist/conversation-application.metadata.json
+npm notice 1.6MB dist/conversation-application.mjs
+npm notice 39.2kB dist/conversation-application.schema.json
+npm notice 6.3kB dist/conversation-lifecycle.d.ts
+npm notice 2.2kB dist/conversation-lifecycle.metadata.json
+npm notice 134.2kB dist/conversation-lifecycle.mjs
+npm notice 9.3kB dist/conversation-lifecycle.schema.json
+npm notice 24.0kB dist/document-application.d.ts
+npm notice 2.0kB dist/document-application.metadata.json
+npm notice 498.9kB dist/document-application.mjs
+npm notice 34.6kB dist/document-application.schema.json
+npm notice 85B dist/index.d.ts
+npm notice 485B dist/metadata.d.ts
+npm notice 533B dist/metadata.mjs
+npm notice 50.0kB meri.schema.json
+npm notice 2.9kB package.json
+npm notice 3.3kB validate.mjs
+npm notice Tarball Details
+npm notice name: @capiro/meri-contracts
+npm notice version: 0.1.5
+npm notice filename: capiro-meri-contracts-0.1.5.tgz
+npm notice package size: 375.8 kB
+npm notice unpacked size: 4.5 MB
+npm notice shasum: 72e07b0284e58d228998839d154adce219fc4880
+npm notice integrity: sha512-V1IKAH0SZBlgO[...]U5tQOKrafYcgA==
+npm notice total files: 27
+npm notice

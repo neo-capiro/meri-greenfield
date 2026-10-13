@@ -1,0 +1,57 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "build",
+    "--prefix",
+    "packages/contracts"
+  ],
+  "cwd": "/workspace/meri-native-flow-integration",
+  "sourceHead": "6459a037482cad242b03c56b4c7fbcee26b7baa1",
+  "sourceDiffSha256": "7ca1499d388b94d4903738387bdcdc7900db059c2b5549b4c26543a064b77adc",
+  "sourceDiffBytes": 5192,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T21:19:39.809609+00:00",
+  "durationSeconds": 1.719,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 387557,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 387580,
+      "status": 0
+    },
+    {
+      "pid": 387599,
+      "status": 0
+    },
+    {
+      "pid": 387618,
+      "status": 0
+    },
+    {
+      "pid": 387637,
+      "status": 0
+    },
+    {
+      "pid": 387657,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/root/public-generated.stdout.bin",
+      "bytes": 3044,
+      "sha256": "a932547af43bcda9abc11ca131afc925414ea02d566f4e1fd76a6565c3b2cc38"
+    },
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/root/public-generated.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,74 @@
+✔ runtime missing current owners refuses fixed product routes without remote effects (8.730928ms)
+✔ compiled ports are captured inertly with original receiver and sources remain disabled (1.26953ms)
+✖ runner refuses missing observed registration before the single SDK query (23.703937ms)
+✔ runner preserves exact observed key, strips private selector and closes owned mirror (11.368054ms)
+✔ uncertain observed SDK mirror prevents durable completed status and releases no success (11.141745ms)
+✔ all borrowed direct/inherited accessors and proxy prototypes are inertly refused (1.083101ms)
+✔ missing owners never use raw native context; route families remain unavailable with sourcesfalse (14.442906ms)
+✔ default actual CLI installs exact registered-session factory, missing key stops before any SDK query (20.903445ms)
+✔ genuine session factory preserves key and refuses another SDK project/session before transport (2.599861ms)
+✔ observed uncertain mirror settles BEFORE durable completed append and suppresses success (13.634897ms)
+✖ late factory result after cancellation is closed exactly once and never queries (26.603637ms)
+✖ parked owned close cannot extend caller cancellation indefinitely (81.539227ms)
+✔ Docker preserves ONLY two pure session helpers and includes native S3 dependency/public alias (2.727252ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 10
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2324.766535
+
+✖ failing tests:
+
+test at apps/runtime/test/product-mount.test.mjs:28:1
+✖ runner refuses missing observed registration before the single SDK query (23.703937ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  'queued' !== 'failed'
+  
+      at TestContext.<anonymous> (file:///workspace/meri-native-docx-mount-independent/apps/runtime/test/product-mount.test.mjs:28:253)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'queued',
+    expected: 'failed',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/native-docx-flow-20261013/mount-independent/mount.test.mjs:18:1
+✖ late factory result after cancellation is closed exactly once and never queries (26.603637ms)
+  AssertionError [ERR_ASSERTION]: late acquired owned mirror must be retired
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///workspace/meri-native-docx-mount-independent/docs/qualification/candidates/native-docx-flow-20261013/mount-independent/mount.test.mjs:18:532)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/native-docx-flow-20261013/mount-independent/mount.test.mjs:19:1
+✖ parked owned close cannot extend caller cancellation indefinitely (81.539227ms)
+  AssertionError [ERR_ASSERTION]: owned close must have a bounded cleanup lifetime
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-native-docx-mount-independent/docs/qualification/candidates/native-docx-flow-20261013/mount-independent/mount.test.mjs:19:538)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

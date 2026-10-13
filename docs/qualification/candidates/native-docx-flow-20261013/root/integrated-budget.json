@@ -1,0 +1,39 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "apps/gateway/budget/product-runtime.test.mjs",
+    "apps/control/admitted-runs/independent/owner-independent.test.mjs",
+    "apps/gateway/budget/postgres-budget.test.mjs",
+    "apps/gateway/budget/postgres-tool-budget.test.mjs",
+    "apps/gateway/budget/tool-invocation-owner.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-flow-integration",
+  "sourceHead": "08aef7eff5aa9a5a65c6a3afbc2f665de861735e",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T21:08:21.906337+00:00",
+  "durationSeconds": 3.424,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 379805,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/root/integrated-budget.stdout.bin",
+      "bytes": 1871,
+      "sha256": "4fe799e4d311333751790d3acdeba78044991233e5afb37b52dca734cdf5556f"
+    },
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/root/integrated-budget.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

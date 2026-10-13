@@ -1,0 +1,52 @@
+✔ runner lifecycle reuses canonical claim/UUID echo ACK over fixed task-capability facade (18.233381ms)
+✔ native checkpoint readback permits ordinary pause and source capture refusal never reports paused (7.262065ms)
+✔ runner resume forwards exact retained context and supported SDK restoration options (3.58209ms)
+✔ runner fork forwards exact retained context and supported SDK restoration options (1.752062ms)
+✔ runner native restore substitution refuses the single SDK query (1.268765ms)
+✔ runtime missing current owners refuses fixed product routes without remote effects (7.51406ms)
+✔ compiled ports are captured inertly with original receiver and sources remain disabled (1.016019ms)
+✖ runner refuses missing observed registration before the single SDK query (17.241257ms)
+✔ runner preserves exact observed key, strips private selector and closes owned mirror (10.21377ms)
+✔ uncertain SDK mirror teardown releases no successful runner result (15.53264ms)
+✔ configuration refuses sources, production profile, unknown fields and shared task workspace (1.881277ms)
+✔ isolated runner refuses ambient provider, database, cloud and Temporal credentials (0.361359ms)
+✔ trusted Temporal registration uses both canonical workflow definitions and broker activity (0.67694ms)
+✔ broker accepts exact native task identity and propagates completion without an SDK loop (0.444193ms)
+✔ broker refuses a response from another writer fence (0.234069ms)
+✔ isolated runner invokes canonical activity and one scripted SDK query, preserving durable events (23.591065ms)
+✔ runner and container boundaries exclude legacy proxies and arbitrary injected config modules (3.963354ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 16
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6368.737652
+
+✖ failing tests:
+
+test at apps/runtime/test/product-mount.test.mjs:28:1
+✖ runner refuses missing observed registration before the single SDK query (17.241257ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /RUNNER_SDK_REGISTRATION_UNAVAILABLE/u. Input:
+  
+  'Error: EXECUTION_FAILED'
+  
+      at async TestContext.<anonymous> (file:///workspace/meri-native-flow-integration/apps/runtime/test/product-mount.test.mjs:28:125)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: EXECUTION_FAILED
+        at fault (file:///workspace/meri-native-flow-integration/apps/worker/conversation/activity.mjs:14:33)
+        at executeConversation (file:///workspace/meri-native-flow-integration/apps/worker/conversation/activity.mjs:53:10)
+        at async Object.execute (file:///workspace/meri-native-flow-integration/apps/runtime/conversation-runner.mjs:32:34)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///workspace/meri-native-flow-integration/apps/runtime/test/product-mount.test.mjs:28:125)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    expected: /RUNNER_SDK_REGISTRATION_UNAVAILABLE/u,
+    operator: 'rejects',
+    diff: 'simple'
+  }
