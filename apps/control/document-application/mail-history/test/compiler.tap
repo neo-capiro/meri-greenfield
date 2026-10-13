@@ -1,0 +1,48 @@
+✔ actual canonical pages produce editable Word specification, late bound body quote and all original source coverage (32.400115ms)
+✔ preview, unversioned or incomplete body cannot verify an excerpt (16.800687ms)
+✔ version/hash/citation change across sections remains conflicting and provides no complete-body evidence (6.055267ms)
+✔ source missing/disconnected and bounded call budget are visible, with no negative claim (4.102082ms)
+✔ refuses foreign actor (3.22578ms)
+✔ refuses foreign tenant (2.946673ms)
+✔ refuses different conversation (3.134634ms)
+✔ refuses different run (3.022566ms)
+✔ refuses different attempt (3.122476ms)
+✔ refuses stale fence (3.132551ms)
+✔ refuses mailbox substitution (3.337007ms)
+✔ refuses scope substitution (3.195785ms)
+✔ refuses body hash (6.509737ms)
+✔ refuses operation source substitution (2.97225ms)
+✔ refuses body range (2.757479ms)
+✔ refuses window substitution (12.823823ms)
+✔ refuses authority promotion (3.107042ms)
+✔ an exact source citation does not verify free-form interpretations or mismatched quoted text (5.710852ms)
+✔ immutable selected skill and private prepared result cannot be replaced or cloned (6.334675ms)
+✔ authority loss and cancellation abort instead of producing an unavailable-source draft (0.852306ms)
+✔ body cap cannot hide five unread decisive messages from fifteen paged candidates (24.75016ms)
+✔ candidate page/call/body-size caps retain their exact stop reason and unverified coverage (38.756843ms)
+✔ canonical disabled-source GatewayDenied UNAVAILABLE is disclosed partial coverage (5.948046ms)
+✖ contiguous UTF16 sections may split a surrogate pair but only the recombined exact hash is evidence (3.221054ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 23
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1905.401444
+
+✖ failing tests:
+
+test at apps/control/document-application/mail-history/test/compiler.test.mjs:64:1
+✖ contiguous UTF16 sections may split a surrogate pair but only the recombined exact hash is evidence (3.221054ms)
+  Error: Lone surrogate is not allowed
+      at serializeString (file:///workspace/meri-greenfield/node_modules/canonicalize/lib/canonicalize.js:3:11)
+      at serializePrimitive (file:///workspace/meri-greenfield/node_modules/canonicalize/lib/canonicalize.js:21:14)
+      at canonicalize (file:///workspace/meri-greenfield/node_modules/canonicalize/lib/canonicalize.js:162:50)
+      at Object.canonicalSha256 [as hash] (file:///workspace/meri-mail-history-brief/packages/contracts/validate.mjs:22:17)
+      at Object.read (file:///workspace/meri-mail-history-brief/apps/control/document-application/mail-history/source.mjs:40:91)
+      at async readBody (file:///workspace/meri-mail-history-brief/apps/control/document-application/mail-history/bodies.mjs:10:13)
+      at async Object.prepare (file:///workspace/meri-mail-history-brief/apps/control/document-application/mail-history/compose.mjs:55:86)
+      at async TestContext.<anonymous> (file:///workspace/meri-mail-history-brief/apps/control/document-application/mail-history/test/compiler.test.mjs:66:12)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

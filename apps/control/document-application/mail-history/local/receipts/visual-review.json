@@ -1,0 +1,96 @@
+{
+  "reviewer": "skills_implementation",
+  "scope": "All local synthetic original and revision pages opened with view_image",
+  "status": "PASS",
+  "nativeQualified": false,
+  "documents": [
+    {
+      "name": "original",
+      "docxSha256": "6b6e24c667537eccc9b6ab06141c0c5c0e9ab494079ba8a2fd618c0ee5b3a3f7",
+      "pdfSha256": "3465fbe26d009283e0d363b940f191e569c1254c81d3618527a163a1be4b9d30",
+      "pageCount": 4,
+      "pages": [
+        {
+          "page": 1,
+          "path": "original-preview-1.png",
+          "sha256": "79bec2b1f627c2fbd83d533abe98cb6bd962afd462f149cc9aa8483e3b2f8d4f",
+          "width": 765,
+          "height": 990,
+          "opened": true,
+          "finding": "Readable headings, quotes, coverage and evidence; no clipping."
+        },
+        {
+          "page": 2,
+          "path": "original-preview-2.png",
+          "sha256": "4fca11bcff3644966ed139f7b68bb70ffa554d09c4f380ee2e9845004e43e38e",
+          "width": 765,
+          "height": 990,
+          "opened": true,
+          "finding": "Readable headings, quotes, coverage and evidence; no clipping."
+        },
+        {
+          "page": 3,
+          "path": "original-preview-3.png",
+          "sha256": "7701034c2ed78028ce5ef4532e49c4193c8d160eddf3a6853d229eefa2adc8e1",
+          "width": 765,
+          "height": 990,
+          "opened": true,
+          "finding": "Readable headings, quotes, coverage and evidence; no clipping."
+        },
+        {
+          "page": 4,
+          "path": "original-preview-4.png",
+          "sha256": "c8944143f1fd2a577e72c84fa04d4d367d6ccd9b7d9ca1bda26b71e778d2d57a",
+          "width": 765,
+          "height": 990,
+          "opened": true,
+          "finding": "Readable provenance continuation with ample whitespace; no clipping."
+        }
+      ]
+    },
+    {
+      "name": "revision",
+      "docxSha256": "0de3f76fbf4e76954a2405e2cdedfe7089d20954859a868a2f7a9300c37d889b",
+      "pdfSha256": "c22c1ae7e21bfac42706c58ea42f6ce714eca6bd8f3f003ae081e32a5962bd3b",
+      "pageCount": 4,
+      "pages": [
+        {
+          "page": 1,
+          "path": "revision-preview-1.png",
+          "sha256": "c8f270a410940fd6dd792dcb4f95ebc0d84c758e4bf8ab94694f6a9ee391f036",
+          "width": 765,
+          "height": 990,
+          "opened": true,
+          "finding": "Readable headings, quotes, coverage and evidence; no clipping."
+        },
+        {
+          "page": 2,
+          "path": "revision-preview-2.png",
+          "sha256": "add4a30b2c029e7ea96df8857031d70029e25a33dd7d59e24a31df2f4962feeb",
+          "width": 765,
+          "height": 990,
+          "opened": true,
+          "finding": "Readable headings, quotes, coverage and evidence; no clipping."
+        },
+        {
+          "page": 3,
+          "path": "revision-preview-3.png",
+          "sha256": "3c0782d7669c4ec63cf6569771fa2d807c274631386943f39f641c8e236ba9f5",
+          "width": 765,
+          "height": 990,
+          "opened": true,
+          "finding": "Readable headings, quotes, coverage and evidence; no clipping."
+        },
+        {
+          "page": 4,
+          "path": "revision-preview-4.png",
+          "sha256": "17d657950ea32f85df02d2851e22264b67f8055aabc8ea922314cf8d6070dcad",
+          "width": 765,
+          "height": 990,
+          "opened": true,
+          "finding": "Readable provenance continuation with ample whitespace; no clipping."
+        }
+      ]
+    }
+  ]
+}
