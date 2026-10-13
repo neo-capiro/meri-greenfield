@@ -1,0 +1,59 @@
+{
+  "schema": "meri.local-check-capture/1",
+  "commit": "9d1bf92a08ea07ad49d63e80ade8249598060635",
+  "tree": "c9a6ed124ba143e8ab0c772939609a6313cc9a07",
+  "command": [
+    "npm",
+    "--prefix",
+    "packages/contracts",
+    "run",
+    "check"
+  ],
+  "startedAt": "2026-10-13T15:16:17.570268+00:00",
+  "seconds": 3.987937506997696,
+  "exitCode": 0,
+  "timedOut": false,
+  "counts": {},
+  "blobs": {
+    "stdout": {
+      "path": "public-final.stdout.gz",
+      "rawBytes": 11731,
+      "rawSha256": "1e6dd586f9fcff9c424b6bd3cf0129c6bfc09591672d929a91c5dac489026b7e"
+    },
+    "stderr": {
+      "path": "public-final.stderr.gz",
+      "rawBytes": 832,
+      "rawSha256": "a5bed74e8271b4bed502d2d779b1766e28a92b798d5f5560230b37ebdcc9e5a2"
+    }
+  },
+  "ownedProcessId": 195727,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "finiteParentSubreaper": true,
+  "reapedDescendants": [
+    {
+      "pid": 195765,
+      "waitStatus": 0
+    },
+    {
+      "pid": 195791,
+      "waitStatus": 0
+    },
+    {
+      "pid": 195830,
+      "waitStatus": 0
+    },
+    {
+      "pid": 195849,
+      "waitStatus": 0
+    },
+    {
+      "pid": 196042,
+      "waitStatus": 0
+    },
+    {
+      "pid": 196061,
+      "waitStatus": 0
+    }
+  ]
+}

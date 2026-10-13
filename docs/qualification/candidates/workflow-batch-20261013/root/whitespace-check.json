@@ -1,0 +1,17 @@
+{
+  "base": "1c79a912b6589ccd1004c12a9981bc146d79e8bc",
+  "checkedSource": "cbd34967ec92dbb9430108afe011c8a3b2423875",
+  "rawHistoryExitCode": 2,
+  "rawOutputSha256": "4fcd5199d205c201722cc94d3022739a18180a47d5758f6f9e4b8d6e56d20957",
+  "rawOutputBytes": 5522,
+  "rawWhitespacePaths": [
+    "apps/control/document-application/mail-history/test/lifetime-before.tap",
+    "docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-adversarial14.stdout.txt",
+    "docs/qualification/candidates/workflow-batch-20261013/source-independent/initial-independent.stdout.txt",
+    "docs/qualification/candidates/workflow-batch-20261013/source-independent/mail-unicode-compatibility4.stdout.txt"
+  ],
+  "sourceAndReportExitCode": 0,
+  "selectedNonrawPaths": 326,
+  "excludedOnlyImmutableRawOutput": true,
+  "reason": "Preserve bit-exact failed TAP/console evidence including indentation. No source assertion or formatter was changed to conceal a code issue."
+}

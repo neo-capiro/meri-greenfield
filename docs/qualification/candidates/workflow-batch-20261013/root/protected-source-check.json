@@ -1,0 +1,120 @@
+{
+  "base": "1c79a912b6589ccd1004c12a9981bc146d79e8bc",
+  "reviewedProduction": "d34a47b07c27ac5c55e9c4281991ae1657c1a723",
+  "reviewedTestSuccessor": "9d1bf92a08ea07ad49d63e80ade8249598060635",
+  "checkedSource": "cbd34967ec92dbb9430108afe011c8a3b2423875",
+  "paths": [
+    {
+      "path": "packages/contracts/package.json",
+      "unchanged": true,
+      "trackedEntries": 1
+    },
+    {
+      "path": "packages/contracts/package-lock.json",
+      "unchanged": true,
+      "trackedEntries": 1
+    },
+    {
+      "path": "packages/contracts/meri.schema.json",
+      "unchanged": true,
+      "trackedEntries": 1
+    },
+    {
+      "path": "packages/contracts/validate.mjs",
+      "unchanged": true,
+      "trackedEntries": 1
+    },
+    {
+      "path": "packages/contracts/dist",
+      "unchanged": true,
+      "trackedEntries": 18
+    },
+    {
+      "path": "packages/contracts/README.md",
+      "unchanged": true,
+      "trackedEntries": 1
+    },
+    {
+      "path": "packages/contracts/THIRD-PARTY-NOTICES.md",
+      "unchanged": true,
+      "trackedEntries": 1
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog.json",
+      "unchanged": true,
+      "trackedEntries": 1
+    },
+    {
+      "path": "packages/skills/originals",
+      "unchanged": true,
+      "trackedEntries": 26
+    },
+    {
+      "path": "apps/control/qualification-sdk-fixture",
+      "unchanged": true,
+      "trackedEntries": 49
+    },
+    {
+      "path": "apps/worker/qualification",
+      "unchanged": true,
+      "trackedEntries": 59
+    },
+    {
+      "path": "docs/qualification/candidates/next-adapters-20261013",
+      "unchanged": true,
+      "trackedEntries": 183
+    },
+    {
+      "path": "apps/artifacts",
+      "unchanged": true,
+      "trackedEntries": 30
+    },
+    {
+      "path": "apps/control/document-application/research-brief",
+      "unchanged": true,
+      "trackedEntries": 11
+    }
+  ],
+  "postProductionChanges": [
+    "apps/gateway/test/mail-continuation-regression.test.mjs",
+    "apps/gateway/test/memory-context-independent.test.mjs"
+  ],
+  "postReviewedTestAppsPackagesChanged": false,
+  "captureVerification": [
+    {
+      "capture": "contracts-final",
+      "commit": "d34a47b07c27ac5c55e9c4281991ae1657c1a723",
+      "counts": {
+        "tests": 4216,
+        "pass": 4216,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "compressedRawHashesVerified": true
+    },
+    {
+      "capture": "integration-sealed",
+      "commit": "9d1bf92a08ea07ad49d63e80ade8249598060635",
+      "counts": {
+        "tests": 1256,
+        "pass": 1256,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "compressedRawHashesVerified": true
+    },
+    {
+      "capture": "public-final",
+      "commit": "9d1bf92a08ea07ad49d63e80ade8249598060635",
+      "counts": {},
+      "compressedRawHashesVerified": true
+    }
+  ],
+  "publicTarSha256": "dc1a4c09b0e5f1f6b09f9df1ce2846b24b24abe401c84a8f448c3e58d585ad1b",
+  "rootFinalDistinctNodeTests": 5472,
+  "public125IsSeparateRepeatedSubset": true
+}
