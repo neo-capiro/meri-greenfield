@@ -52,7 +52,8 @@ export async function runLocalWorkbookFlow({fixture,send,pythonExecutable,soffic
     assert.equal(workbookCell(opened.inspection,'Notes','A2').value,'=1+1');assert.equal(workbookCell(opened.inspection,'Notes','A2').kind,'s');
   }
   await checkIsolation({versionId: first.version.versionId,credential: session.credential});
-  const replay = await call('create',{deliveryId: 'workbook-original',request: workbookDraft()});assert.notEqual(replay.status,200);
+  const replay = await call('create',{deliveryId: 'workbook-original',request: workbookDraft()});
+  const recovered=await json(replay);assert.deepEqual(recovered.version,first.version);assert.equal(recovered.execution.budgetTicketId,first.execution.budgetTicketId);
   assert.equal(fixture.stats().generations,2);assert.equal(fixture.stats().settled,2);assert.equal(fixture.stats().consumedMicroUsd,'20');
   fixture.revoke();
   for (const version of [first.version,second.version]) assert.notEqual((await call('download',{versionId: version.versionId})).status,200);

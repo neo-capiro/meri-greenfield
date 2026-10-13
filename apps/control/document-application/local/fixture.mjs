@@ -70,7 +70,8 @@ export async function createLocalDocumentFixture({mode,pythonExecutable,operatio
       allocations: ledger.state().allocation ? 1 : 0,grants: ledger.state().bindings.size,
       skillId:ledger.allocation.manifest.skillId,skillVersion:ledger.allocation.manifest.skillVersion,manifestSha256:ledger.allocation.manifestSha256,
       processReceipts: structuredClone(state.processReceipts),closed: state.closed,revoked: state.revoked,cleanup: state.cleanup});
-    return {mode,artifactOptions,sessions: ports.sessions,selectedClientId: clientId,
+    // Inert accounting fault controls for source-local interruption regressions only.
+    return {mode,artifactOptions,ledger,sessions: ports.sessions,selectedClientId: clientId,
       nativeCredential: ports.nativeCredential,credential: ledger.credential,now,
       limits: {maxRequestMs: 15000,maxRequestBytes: 131072,maxResponseBytes: 1048576},
       directory,stats,revoke() {state.revoked = true;},

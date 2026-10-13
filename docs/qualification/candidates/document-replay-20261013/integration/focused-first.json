@@ -1,0 +1,36 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/artifacts/test/document-replay.test.mjs",
+    "apps/control/document-application/test/application.test.mjs",
+    "apps/control/document-application/test/workbook-application.test.mjs"
+  ],
+  "cwd": "/workspace/meri-document-replay",
+  "sourceHead": "398d599311a5f6c48e18d31b4928cf665de8dcb9",
+  "sourceDiffSha256": "bf3a4343cfc00d46787ae038a90b69e3c85747f81a3e3a81f534767ae7240845",
+  "sourceDiffBytes": 26421,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T10:08:15.395842+00:00",
+  "durationSeconds": 5.807,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 52943,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/focused-first.stdout.bin",
+      "bytes": 5688,
+      "sha256": "66f7d96935600b2074490062157788b16ea6913e88bec5028f401dc31f871460"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/focused-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

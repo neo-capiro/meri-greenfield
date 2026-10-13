@@ -1,6 +1,7 @@
-import {mkdir,writeFile,readFile,link,unlink,rename,lstat,rm,rmdir} from 'node:fs/promises';
+import {mkdir,writeFile,readFile,link,unlink,rename,lstat,rm,rmdir,readdir} from 'node:fs/promises';
 import {join,isAbsolute} from 'node:path';
 import {randomUUID,createHash} from 'node:crypto';
+import {readLocalReplay} from './local-replay.mjs';
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const fail=code=>{throw Object.assign(new Error(code),{code});};
 const check=signal=>{if(signal?.aborted)fail('ARTIFACT_CANCELLED');};
@@ -9,7 +10,7 @@ async function readRegular(path,max){const s=await lstat(path);if(!s.isFile()||s
 
 // Explicit source-local store, owned root only. Not the deployed S3/PG adapter.
 // A crash after immutable record but before head publication needs reconciliation;
-// callers receive ambiguity, never automatic re-execution or exactly-once claims.
+// callers receive ambiguity. Replay requires head/ancestry proof and retained bytes.
 export async function createLocalArtifactStore({root,canonicalSha256}){
   if(typeof root!=='string'||!isAbsolute(root)||typeof canonicalSha256!=='function')fail('ARTIFACT_STORE_CONFIGURATION');
   await mkdir(root,{mode:0o700,recursive:false});
@@ -26,8 +27,16 @@ export async function createLocalArtifactStore({root,canonicalSha256}){
     async get(object,signal){active();check(signal);id(object.objectId);if(!/^[a-f0-9]{64}$/.test(object.versionId)||object.versionId!==object.sha256)fail('ARTIFACT_OBJECT_VERSION');
       const bytes=await readRegular(join(root,'objects',object.objectId+'.'+object.versionId),8388608);check(signal);if(bytes.length!==object.bytes||sha(bytes)!==object.sha256)fail('ARTIFACT_OBJECT_MISMATCH');return bytes;}
   });
+  async function readVersionFile(versionId,signal){active();check(signal);const bytes=await readRegular(join(root,'versions',id(versionId)+'.json'),4194304);check(signal);return bytes;}
+  const readVersion=async(versionId,signal)=>JSON.parse(await readVersionFile(versionId,signal));
   const versions=Object.freeze({
-    async read(versionId,signal){active();check(signal);const bytes=await readRegular(join(root,'versions',id(versionId)+'.json'),4194304);check(signal);return JSON.parse(bytes);},
+    async read(versionId,signal){
+      active();check(signal);
+      if(typeof versionId==='string')return readVersion(versionId,signal);
+      return readLocalReplay(versionId,{readVersion:async value=>{const bytes=await readVersionFile(value,signal);return {record:JSON.parse(bytes),bytes:bytes.length};},
+        readHead:async artifactId=>(await readRegular(join(root,'heads',id(artifactId)),100)).toString('utf8'),
+        listVersions:()=>readdir(join(root,'versions')),hash:canonicalSha256,check:()=>{active();check(signal);}});
+    },
     async commit({version,spec,specSha256,requestSha256,inspection,expectedParentVersionId},signal){
       active();check(signal);id(version.versionId);id(version.artifactId);if(expectedParentVersionId!==null)id(expectedParentVersionId);
       if(specSha256!==canonicalSha256(spec)||version.parentVersionId!==expectedParentVersionId)fail('ARTIFACT_COMMIT_INPUT');

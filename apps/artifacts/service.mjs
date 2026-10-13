@@ -1,5 +1,6 @@
 import {createHash} from 'node:crypto';
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
+import {recoverArtifact} from './recovery.mjs';
 import {ARTIFACT_MIME_TYPES as mime,artifactFilename as filenameFor} from '../../packages/contracts/artifacts-0.2/artifact-formats.mjs';
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const fail=code=>{throw Object.assign(new Error(code),{code});};
@@ -28,13 +29,14 @@ export function createArtifactService({validators:v,authorize,budget,versions,ob
     const bytes=await life.run(signal=>objects.get(v.snapshot(object),signal));
     if(!Buffer.isBuffer(bytes)||bytes.length!==object.bytes||bytes.length>maxBytes||sha(bytes)!==object.sha256)fail('ARTIFACT_OBJECT_MISMATCH');return Buffer.from(bytes);
   }
-  async function generate(baseVersionId,requestValue,contextValue,{signal}={}){
+  async function generate(baseVersionId,requestValue,contextValue,{signal,versionId}={}){
     const request=v.request(requestValue),context=v.context(contextValue);
     if(request.format==='sandbox')fail('ANALYSIS_SANDBOX_DISPATCH_REQUIRED');
     if(context.analysisAdmission)fail('IRRELEVANT_ANALYSIS_ADMISSION');
     const intent={request,context,baseVersionId},requestSha256=v.hash(intent),allocation=v.snapshot(ids());
     closed(allocation,['artifactId','versionId','objectId']);
     for(const id of Object.values(allocation))if(typeof id!=='string'||!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id))fail('ARTIFACT_ID');
+    if(versionId!==undefined){if(typeof versionId!=='string'||!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(versionId))fail('ARTIFACT_ID');allocation.versionId=versionId;}
     const life=operation(context,signal);
     let ticket,reservationStarted=false,writeStarted=false,versionCommitted=false,settlementStarted=false,settlementCompleted=false,settlementUnknown=false,readBase=null,baseBytes=null,receipt;
     const action=baseVersionId===null?'artifact.generate':'artifact.revise';
@@ -100,5 +102,7 @@ export function createArtifactService({validators:v,authorize,budget,versions,ob
       return download?{version:record.version,bytes}:{version:record.version,inspection:{...inspection,currentBytesVerified:true}};
     }catch(error){error.lifetime=life.close();throw error;}finally{life.close();}
   }
-  return Object.freeze({create:(request,context,options)=>generate(null,request,context,options),revise:(baseVersionId,request,context,options)=>{if(typeof baseVersionId!=='string')fail('ARTIFACT_VERSION_ID');return generate(baseVersionId,request,context,options);},inspect:(id,context,options)=>read(id,context,options),download:(id,context,options)=>read(id,context,options,true)});
+  return Object.freeze({create:(request,context,options)=>generate(null,request,context,options),revise:(baseVersionId,request,context,options)=>{if(typeof baseVersionId!=='string')fail('ARTIFACT_VERSION_ID');return generate(baseVersionId,request,context,options);},
+    recover:(baseVersionId,request,context,options)=>recoverArtifact({v,operation,authority,scopeVersion,bytesFor,inspectBytes,versions,budget},baseVersionId,request,context,options),
+    inspect:(id,context,options)=>read(id,context,options),download:(id,context,options)=>read(id,context,options,true)});
 }

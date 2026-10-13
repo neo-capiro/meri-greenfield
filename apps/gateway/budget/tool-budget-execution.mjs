@@ -33,6 +33,8 @@ export function composeBudgetExecution({owner,producer,allocationJson,authority:
    markUncertain:protect((id,cleanup)=>bound.markUncertain(id,cleanup?()=>{
     const at=now();if(cleanup.signal?.aborted||!Number.isSafeInteger(at)||!Number.isSafeInteger(cleanup.deadlineMs)||at>=cleanup.deadlineMs)deny('DEADLINE');
    }:undefined)),
+   // Available only on a trusted producer-owned invocation, never model arguments.
+   ...(produced?{observe:protect(call=>bound.observe(call))}:{}),
   };
   const executor=createExecutor({authority,budget});
   return executor.execute(requestJson,credential,signal);
