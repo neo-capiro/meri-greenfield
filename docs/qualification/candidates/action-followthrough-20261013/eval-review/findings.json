@@ -17,5 +17,15 @@
     "failed": 1,
     "finding": "The generic code accessor refuses error proxies, but execute reads outcome via unguarded getOwnPropertyDescriptor. A rejected proxy invokes its trap, escapes execution and loses every observation instead of retaining a failed case and completing eligible siblings.",
     "required": "Exclude proxy/revoked errors before reading own outcome; preserve plain accepted control outcomes and no trap execution."
+  },
+  "resolution": {
+    "source": "33a0d21b005d32d9c27de5f3a7939b77588921db",
+    "verdict": "ACCEPT_SOURCE",
+    "passed": 68,
+    "failed": 0,
+    "independent": 43,
+    "author": 25,
+    "receipt": "final.json",
+    "scope": "Typed gold-free source execution only; runtime and real-data HOLD"
   }
 }

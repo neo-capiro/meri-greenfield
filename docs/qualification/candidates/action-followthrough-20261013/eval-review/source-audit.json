@@ -1,0 +1,189 @@
+{
+  "source": "33a0d21b005d32d9c27de5f3a7939b77588921db",
+  "tree": "bdb7c1d7b61ed65bf3433a10a3793b5c1762b40b",
+  "base": "b23a2cd027d43740bd99f937366e9be2df1be3ad",
+  "sourceRows": [
+    {
+      "path": "evals/task-lookup/execution/admission.mjs",
+      "bytes": 6425,
+      "sha256": "f0b2923427a427210d239065e94c2c5db0a4f624340b94162bf6ac4a3817e2c1",
+      "gitBlob": "1e4f4cbe109a606aac09abce4bf5c55920b20ff1"
+    },
+    {
+      "path": "evals/task-lookup/execution/execute.mjs",
+      "bytes": 9699,
+      "sha256": "d7bd0b15454809996bd055014eb0ba792576e50eb29b531a3311363fe2a48cac",
+      "gitBlob": "84bcac625d1d6dd048ae3783a192742e61800d0e"
+    },
+    {
+      "path": "evals/task-lookup/execution/test/execution.test.mjs",
+      "bytes": 10986,
+      "sha256": "dc70d71d0744fffc133bc20040a4b50f4fd5962937c04367fb84a2b862a82174",
+      "gitBlob": "002ecceb91740510443a8965a801e1a5f713889a"
+    },
+    {
+      "path": "evals/task-lookup/execution/test/fixtures.mjs",
+      "bytes": 1513,
+      "sha256": "f457c6b7bcaea676cf4586d9d7bd6145f00b08a3528a260c6052c11ea0e7d15c",
+      "gitBlob": "d06a0ff36f241b7a8d965c7ccfb615506d9ebcce"
+    }
+  ],
+  "canonicalReferences": [
+    "apps/control/task-lookup/index.mjs",
+    "apps/control/task-lookup/delivery.mjs",
+    "apps/control/task-lookup/binding.mjs",
+    "evals/task-lookup/corpus.mjs",
+    "evals/task-lookup/contracts.mjs",
+    "evals/task-lookup/score.mjs",
+    "packages/runtime/operation-lifetime.mjs",
+    "packages/contracts/retrieval-0.2/catalog.json",
+    "packages/contracts/meri.schema.json",
+    "packages/contracts/validate.mjs"
+  ],
+  "baselineEntryCount": 10184,
+  "checks": [
+    {
+      "check": "exact candidate bytes evals/task-lookup/execution/admission.mjs",
+      "passed": true
+    },
+    {
+      "check": "exact candidate bytes evals/task-lookup/execution/execute.mjs",
+      "passed": true
+    },
+    {
+      "check": "exact candidate bytes evals/task-lookup/execution/test/execution.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "exact candidate bytes evals/task-lookup/execution/test/fixtures.mjs",
+      "passed": true
+    },
+    {
+      "check": "every candidate delta is an addition",
+      "passed": true
+    },
+    {
+      "check": "only four new implementation/test paths",
+      "passed": true
+    },
+    {
+      "check": "candidate additions confined to allocated lane",
+      "passed": true
+    },
+    {
+      "check": "canonical baseline unchanged apps/control/task-lookup/index.mjs",
+      "passed": true
+    },
+    {
+      "check": "canonical baseline unchanged apps/control/task-lookup/delivery.mjs",
+      "passed": true
+    },
+    {
+      "check": "canonical baseline unchanged apps/control/task-lookup/binding.mjs",
+      "passed": true
+    },
+    {
+      "check": "canonical baseline unchanged evals/task-lookup/corpus.mjs",
+      "passed": true
+    },
+    {
+      "check": "canonical baseline unchanged evals/task-lookup/contracts.mjs",
+      "passed": true
+    },
+    {
+      "check": "canonical baseline unchanged evals/task-lookup/score.mjs",
+      "passed": true
+    },
+    {
+      "check": "canonical baseline unchanged packages/runtime/operation-lifetime.mjs",
+      "passed": true
+    },
+    {
+      "check": "canonical baseline unchanged packages/contracts/retrieval-0.2/catalog.json",
+      "passed": true
+    },
+    {
+      "check": "canonical baseline unchanged packages/contracts/meri.schema.json",
+      "passed": true
+    },
+    {
+      "check": "canonical baseline unchanged packages/contracts/validate.mjs",
+      "passed": true
+    },
+    {
+      "check": "all original tracked entries preserved",
+      "passed": true
+    },
+    {
+      "check": "retained exact failing source",
+      "passed": true
+    },
+    {
+      "check": "repair preserves original author test prefix",
+      "passed": true
+    },
+    {
+      "check": "first exact raw summary",
+      "passed": true
+    },
+    {
+      "check": "first source diff empty",
+      "passed": true
+    },
+    {
+      "check": "first owned group absent",
+      "passed": true
+    },
+    {
+      "check": "first stream first.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "first stream first.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "hostile-before exact raw summary",
+      "passed": true
+    },
+    {
+      "check": "hostile-before source diff empty",
+      "passed": true
+    },
+    {
+      "check": "hostile-before owned group absent",
+      "passed": true
+    },
+    {
+      "check": "hostile-before stream hostile-before.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "hostile-before stream hostile-before.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "final exact raw summary",
+      "passed": true
+    },
+    {
+      "check": "final source diff empty",
+      "passed": true
+    },
+    {
+      "check": "final owned group absent",
+      "passed": true
+    },
+    {
+      "check": "final stream final.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "final stream final.stderr.bin",
+      "passed": true
+    }
+  ],
+  "passed": 35,
+  "failed": 0,
+  "scope": "LOCAL_SOURCE_ONLY_NO_RUNTIME_REAL_CORPUS_QUALIFICATION"
+}
