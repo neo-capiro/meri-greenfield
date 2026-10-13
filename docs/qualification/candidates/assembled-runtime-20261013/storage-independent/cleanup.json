@@ -55,6 +55,13 @@
       "exitCode": 0
     },
     {
+      "capture": "format-authored.json",
+      "sourceHead": "d25a53ca1b2dc67d039fd3f622be84d5505f2cbf",
+      "pidAndPgid": 345576,
+      "absent": true,
+      "exitCode": 0
+    },
+    {
       "capture": "lock-provenance.json",
       "sourceHead": "d4561d6dff0596998179a98ff439142040b463dc",
       "pidAndPgid": 337280,
@@ -67,6 +74,13 @@
       "pidAndPgid": 342910,
       "absent": true,
       "exitCode": 0
+    },
+    {
+      "capture": "format-raw-first.json",
+      "sourceHead": "d25a53ca1b2dc67d039fd3f622be84d5505f2cbf",
+      "pidAndPgid": 345546,
+      "absent": true,
+      "exitCode": 2
     },
     {
       "capture": "independent-adversarial.json",
