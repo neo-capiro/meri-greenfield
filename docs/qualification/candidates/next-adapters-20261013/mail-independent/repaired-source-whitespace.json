@@ -1,0 +1,28 @@
+{
+  "argv": [
+    "git",
+    "diff",
+    "--check",
+    "a2aef4a5fcd3c19cec974dc62b69222836d71b3e",
+    "6499f960f92f4a42f3bfa388fba68e026e1628ca",
+    "--",
+    "*.mjs",
+    "*.md"
+  ],
+  "cwd": "/workspace/meri-mail-independent",
+  "reviewedCommit": "6499f960f92f4a42f3bfa388fba68e026e1628ca",
+  "worktreeHead": "8032b3d56b4f2462775cea0528cf7494e639a5c6",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 0,
+  "durationSeconds": 0.004,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 0,
+  "stderrBytes": 0,
+  "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}

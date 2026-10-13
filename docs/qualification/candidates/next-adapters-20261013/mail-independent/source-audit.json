@@ -1,0 +1,239 @@
+{
+  "decision": "PASS_SOURCE_PRESERVATION",
+  "reviewedCommit": "6499f960f92f4a42f3bfa388fba68e026e1628ca",
+  "reviewedTree": "e8b5103b7704f937b378a712831d1491e57f65ce",
+  "baseline": "a2aef4a5fcd3c19cec974dc62b69222836d71b3e",
+  "initialHold": "39333d5c3ff6800515ee814a6eb39105c1793a6a",
+  "checks": [
+    {
+      "check": "exact initial tree",
+      "pass": true
+    },
+    {
+      "check": "exact repaired tree",
+      "pass": true
+    },
+    {
+      "check": "repair exact parent",
+      "pass": true
+    },
+    {
+      "check": "all original PR60 entries retained exactly",
+      "pass": true,
+      "originalEntryCount": 13141
+    },
+    {
+      "check": "initial adds mail only",
+      "pass": true,
+      "newEntries": [
+        "apps/gateway/sources/mail/HANDOFF.md",
+        "apps/gateway/sources/mail/IMPLEMENTATION.md",
+        "apps/gateway/sources/mail/README.md",
+        "apps/gateway/sources/mail/handler.mjs",
+        "apps/gateway/sources/mail/http-adapter.mjs",
+        "apps/gateway/sources/mail/request-context.mjs",
+        "apps/gateway/sources/mail/test/author-initial.tap.gz",
+        "apps/gateway/sources/mail/test/author-protocol-rerun.tap",
+        "apps/gateway/sources/mail/test/existing-continuation-regression.tap",
+        "apps/gateway/sources/mail/test/fixtures.mjs",
+        "apps/gateway/sources/mail/test/read-adapter.test.mjs"
+      ]
+    },
+    {
+      "check": "repaired adds mail only",
+      "pass": true,
+      "newEntries": [
+        "apps/gateway/sources/mail/HANDOFF.md",
+        "apps/gateway/sources/mail/IMPLEMENTATION.md",
+        "apps/gateway/sources/mail/README.md",
+        "apps/gateway/sources/mail/handler.mjs",
+        "apps/gateway/sources/mail/http-adapter.mjs",
+        "apps/gateway/sources/mail/request-context.mjs",
+        "apps/gateway/sources/mail/test/author-initial.tap.gz",
+        "apps/gateway/sources/mail/test/author-protocol-rerun.tap",
+        "apps/gateway/sources/mail/test/author-review-repair-rerun.tap",
+        "apps/gateway/sources/mail/test/author-review-repair.tap",
+        "apps/gateway/sources/mail/test/existing-continuation-regression.tap",
+        "apps/gateway/sources/mail/test/fixtures.mjs",
+        "apps/gateway/sources/mail/test/read-adapter.test.mjs",
+        "apps/gateway/sources/mail/test/review-repair.test.mjs"
+      ]
+    },
+    {
+      "check": "repair modifies mail namespace only",
+      "pass": true,
+      "changedEntries": [
+        "apps/gateway/sources/mail/HANDOFF.md",
+        "apps/gateway/sources/mail/IMPLEMENTATION.md",
+        "apps/gateway/sources/mail/README.md",
+        "apps/gateway/sources/mail/handler.mjs",
+        "apps/gateway/sources/mail/request-context.mjs",
+        "apps/gateway/sources/mail/test/author-review-repair-rerun.tap",
+        "apps/gateway/sources/mail/test/author-review-repair.tap",
+        "apps/gateway/sources/mail/test/fixtures.mjs",
+        "apps/gateway/sources/mail/test/review-repair.test.mjs"
+      ]
+    },
+    {
+      "check": "reviewed blob apps/gateway/sources/mail/handler.mjs",
+      "pass": true,
+      "bytes": 1436,
+      "sha256": "d0ee875b991d4865ade0de978c813ba99385b1d3656cf885df8ba083a41e5dae",
+      "gitEntry": "100644 blob c0600c543fa390ca570bdfc43c0e9545478bcf59"
+    },
+    {
+      "check": "reviewed blob apps/gateway/sources/mail/request-context.mjs",
+      "pass": true,
+      "bytes": 5750,
+      "sha256": "bdfa9414c83b3df9bf18f31df9d71963eff40d8a3bd8919e1e2886f8198af869",
+      "gitEntry": "100644 blob e8c58997186904a40a3da16575266b4e0ff3394d"
+    },
+    {
+      "check": "reviewed blob apps/gateway/sources/mail/http-adapter.mjs",
+      "pass": true,
+      "bytes": 4778,
+      "sha256": "2b65da8539c61885d6476eaecdde1e62c2bb7e227fb3c31380db3e5c6fad31c7",
+      "gitEntry": "100644 blob ffb424fde6bca76cf9a690ffb57ba7e25dd468bc"
+    },
+    {
+      "check": "reviewed blob apps/gateway/dispatch/tool-dispatch.mjs",
+      "pass": true,
+      "bytes": 7502,
+      "sha256": "fc6b4df92d492da1b170e77df974cf3d9a405dec0baaf06f2285bd3c37e9146a",
+      "gitEntry": "100644 blob 8cc226b53c4ef88d4513945c9d32901d17f7ebc1"
+    },
+    {
+      "check": "reviewed blob apps/gateway/dispatch/mail-read-context.mjs",
+      "pass": true,
+      "bytes": 5498,
+      "sha256": "1e119feb08b84a267bbd486f9c0608228828a5ddeba15e7698c17808938ce41f",
+      "gitEntry": "100644 blob 8e38415f06b2671985cdff3b1caa0b6812880a07"
+    },
+    {
+      "check": "reviewed blob apps/gateway/authorization/current-tool-authority.mjs",
+      "pass": true,
+      "bytes": 6613,
+      "sha256": "794e1f54f6966d2d852d0483606c76410ed684d889ca24c7ea78dac6f2c01043",
+      "gitEntry": "100644 blob d5a03019779ef40af8437f0344137685fbde2e0b"
+    },
+    {
+      "check": "reviewed blob apps/gateway/sources/source-admission.mjs",
+      "pass": true,
+      "bytes": 1213,
+      "sha256": "7ca90f00425a58a0ced924db2a4d75116d4532814f1d462be80f74ce368d171e",
+      "gitEntry": "100644 blob b7354217f838c93b106e1277db58cbcfa9277f12"
+    },
+    {
+      "check": "reviewed blob apps/gateway/sources/json-response.mjs",
+      "pass": true,
+      "bytes": 2131,
+      "sha256": "7dcf9c8136c444a0b48b25022c4fad058e63f1ace66d0d5cad008385492d2ed1",
+      "gitEntry": "100644 blob 0de7d1a17ff81d98130b08ef46d34fdf2ceb7382"
+    },
+    {
+      "check": "HTTP adapter byte-identical to initial",
+      "pass": true
+    },
+    {
+      "check": "initial author assertions retained",
+      "pass": true
+    },
+    {
+      "check": "public PR54 publication retained packages/contracts/package.json",
+      "pass": true,
+      "sha256": "2343a75956f9c3f9c51ebbfd62f8c6abf6be537fae088b4208081cf4ddfb9189"
+    },
+    {
+      "check": "public PR54 publication retained packages/contracts/README.md",
+      "pass": true,
+      "sha256": "0f47258a29bf03d64666f2f6a464ef97827470b83ebb2fc8fd1c7aaf499f10e2"
+    },
+    {
+      "check": "package publication version 0.1.2",
+      "pass": true
+    },
+    {
+      "check": "public wire schema remains 0.1.0",
+      "pass": true
+    },
+    {
+      "check": "independent 21 source unchanged since initial HOLD",
+      "pass": true,
+      "sha256": "17c37bd83df352affd4d47a49f1e8b8d460a89eca3428ac24b0bc337aa2aacf8"
+    }
+  ],
+  "checkCount": 22,
+  "mailBlobs": {
+    "apps/gateway/sources/mail/HANDOFF.md": {
+      "gitEntry": "100644 blob f95d152b4c2ee96729d095e1d3fc02813bb67dff",
+      "bytes": 5505,
+      "sha256": "65f85e7f9890ad53076236bca034c89e61b8c5bf17285de8c0f483b47980864f"
+    },
+    "apps/gateway/sources/mail/IMPLEMENTATION.md": {
+      "gitEntry": "100644 blob 7256da520becfea938790b36287a61752985404e",
+      "bytes": 3823,
+      "sha256": "500220a72412b0416229875a56979d332a3388b64f3a6211aa3eec6717722762"
+    },
+    "apps/gateway/sources/mail/README.md": {
+      "gitEntry": "100644 blob 3ab0615318438d4361d29e1fd5c441231d453982",
+      "bytes": 4336,
+      "sha256": "bfd059712081c4312190d16a83fb709dcd0a82752fe033f0bf9166a929542695"
+    },
+    "apps/gateway/sources/mail/handler.mjs": {
+      "gitEntry": "100644 blob c0600c543fa390ca570bdfc43c0e9545478bcf59",
+      "bytes": 1436,
+      "sha256": "d0ee875b991d4865ade0de978c813ba99385b1d3656cf885df8ba083a41e5dae"
+    },
+    "apps/gateway/sources/mail/http-adapter.mjs": {
+      "gitEntry": "100644 blob ffb424fde6bca76cf9a690ffb57ba7e25dd468bc",
+      "bytes": 4778,
+      "sha256": "2b65da8539c61885d6476eaecdde1e62c2bb7e227fb3c31380db3e5c6fad31c7"
+    },
+    "apps/gateway/sources/mail/request-context.mjs": {
+      "gitEntry": "100644 blob e8c58997186904a40a3da16575266b4e0ff3394d",
+      "bytes": 5750,
+      "sha256": "bdfa9414c83b3df9bf18f31df9d71963eff40d8a3bd8919e1e2886f8198af869"
+    },
+    "apps/gateway/sources/mail/test/author-initial.tap.gz": {
+      "gitEntry": "100644 blob 258ae6d1edd323d47861d0d791500be85ec3ca58",
+      "bytes": 2437,
+      "sha256": "852f70f4c531be08e0e2f5206b65bdcf43b0319234a3d3d46b0f93aa68ab6fb5"
+    },
+    "apps/gateway/sources/mail/test/author-protocol-rerun.tap": {
+      "gitEntry": "100644 blob 6a1febfc7b5322a25a95aded21a74fb04a51eefb",
+      "bytes": 14673,
+      "sha256": "a3461a36537e14cd9d471e7f47b52a4077985c05d22c72f240ae50dfea22252e"
+    },
+    "apps/gateway/sources/mail/test/author-review-repair-rerun.tap": {
+      "gitEntry": "100644 blob 53835166ca92a5e1cb42351b7ab8a56580c7e556",
+      "bytes": 23316,
+      "sha256": "3ffd20ac63d8680c08735ed10a8a4757a3e8c8a89bed335c91543fb81a59bfa0"
+    },
+    "apps/gateway/sources/mail/test/author-review-repair.tap": {
+      "gitEntry": "100644 blob 98e2587cbe0154abcb36f5482533b50d4ce4050d",
+      "bytes": 24035,
+      "sha256": "18fcb619fc9b4a6db15216d1399e89f4eb655acec1baf892b92801a921f05054"
+    },
+    "apps/gateway/sources/mail/test/existing-continuation-regression.tap": {
+      "gitEntry": "100644 blob 3c81de4a031a8068a3c8903745b89d07ec053837",
+      "bytes": 19890,
+      "sha256": "b6c7996fe7a9582f17da64557c42866123a7db11c6dc3361335912a23e2edc5d"
+    },
+    "apps/gateway/sources/mail/test/fixtures.mjs": {
+      "gitEntry": "100644 blob 84fa709124dd08842a0330220bfbc52d27ec4a1b",
+      "bytes": 9403,
+      "sha256": "5025b3a24bd1db753a710c37a87f51d096e98f2d33e1c47ff48f5644377d64c4"
+    },
+    "apps/gateway/sources/mail/test/read-adapter.test.mjs": {
+      "gitEntry": "100644 blob cd440b782dec6ef99735749ae8979b5f5fd3ec4b",
+      "bytes": 17090,
+      "sha256": "0c8b505e6e826fc5ca8ac49b97b8d42fdd86cca99813b848039880ccaed590a4"
+    },
+    "apps/gateway/sources/mail/test/review-repair.test.mjs": {
+      "gitEntry": "100644 blob 32e2d5627165b34682796f61c1c63f917869a3c4",
+      "bytes": 3830,
+      "sha256": "ec38f30a80c16d3019c6b246425e5e8b9360c889637b9ac4ce905735f677f728"
+    }
+  },
+  "runtimeAcceptance": false
+}

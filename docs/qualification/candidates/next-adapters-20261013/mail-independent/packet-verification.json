@@ -1,0 +1,89 @@
+{
+  "reviewedCommit": "6499f960f92f4a42f3bfa388fba68e026e1628ca",
+  "sourceTree": "e8b5103b7704f937b378a712831d1491e57f65ce",
+  "decision": "ACCEPT_SOURCE",
+  "testGroups": [
+    {
+      "capture": "independent-initial",
+      "tests": 21,
+      "pass": 13,
+      "fail": 8,
+      "hashesMatch": true,
+      "physicalProcessCleanup": true
+    },
+    {
+      "capture": "independent-aligned",
+      "tests": 21,
+      "pass": 15,
+      "fail": 6,
+      "hashesMatch": true,
+      "physicalProcessCleanup": true
+    },
+    {
+      "capture": "author71",
+      "tests": 71,
+      "pass": 71,
+      "fail": 0,
+      "hashesMatch": true,
+      "physicalProcessCleanup": true
+    },
+    {
+      "capture": "continuation92",
+      "tests": 92,
+      "pass": 92,
+      "fail": 0,
+      "hashesMatch": true,
+      "physicalProcessCleanup": true
+    },
+    {
+      "capture": "repaired-independent21",
+      "tests": 21,
+      "pass": 21,
+      "fail": 0,
+      "hashesMatch": true,
+      "physicalProcessCleanup": true
+    },
+    {
+      "capture": "repaired-author107",
+      "tests": 107,
+      "pass": 107,
+      "fail": 0,
+      "hashesMatch": true,
+      "physicalProcessCleanup": true
+    },
+    {
+      "capture": "repaired-continuation92",
+      "tests": 92,
+      "pass": 92,
+      "fail": 0,
+      "hashesMatch": true,
+      "physicalProcessCleanup": true
+    },
+    {
+      "capture": "repaired-source-audit",
+      "exit": 0,
+      "hashesMatch": true,
+      "physicalProcessCleanup": true
+    },
+    {
+      "capture": "repaired-inert-import",
+      "exit": 0,
+      "hashesMatch": true,
+      "physicalProcessCleanup": true
+    },
+    {
+      "capture": "repaired-source-whitespace",
+      "exit": 0,
+      "hashesMatch": true,
+      "physicalProcessCleanup": true
+    }
+  ],
+  "currentPassCount": 220,
+  "initialFailuresPreserved": true,
+  "borrowedLinkRemoved": true,
+  "borrowedDonor": "/workspace/meri-greenfield/node_modules",
+  "donorNotModified": true,
+  "executableDiffFromPin": false,
+  "nativeAcceptance": false,
+  "reviewerProductCodeChanges": false
+}

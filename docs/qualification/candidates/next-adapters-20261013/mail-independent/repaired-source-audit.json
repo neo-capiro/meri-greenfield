@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "python3",
+    "docs/qualification/candidates/next-adapters-20261013/mail-independent/audit.py"
+  ],
+  "cwd": "/workspace/meri-mail-independent",
+  "reviewedCommit": "6499f960f92f4a42f3bfa388fba68e026e1628ca",
+  "worktreeHead": "8032b3d56b4f2462775cea0528cf7494e639a5c6",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 0,
+  "durationSeconds": 0.178,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 140,
+  "stderrBytes": 0,
+  "stdoutSha256": "ea9351c1ba08b979249bd9ed534529579946b70282fdde8c743ef105d2e00e8c",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}
