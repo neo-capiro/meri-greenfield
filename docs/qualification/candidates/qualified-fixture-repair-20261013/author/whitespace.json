@@ -1,0 +1,13 @@
+{
+  "command": [
+    "git",
+    "diff",
+    "--check",
+    "b5243ae164f68c7591b039e8365d9897390543d2",
+    "HEAD"
+  ],
+  "exitCode": 2,
+  "stdout": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/namespace-identity-before.stdout.bin:16: trailing whitespace.\n+  \ndocs/qualification/candidates/qualified-fixture-repair-20261013/author/namespace-identity-before.stdout.bin:18: trailing whitespace.\n+  \ndocs/qualification/candidates/qualified-fixture-repair-20261013/author/sequence-before.stdout.bin:16: trailing whitespace.\n+  \ndocs/qualification/candidates/qualified-fixture-repair-20261013/author/sequence-before.stdout.bin:54: trailing whitespace.\n+  \n",
+  "stderr": "",
+  "classification": "Only preserved raw negative assertion output; source whitespace check passed. Raw evidence intentionally not normalized."
+}

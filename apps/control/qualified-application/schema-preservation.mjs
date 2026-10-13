@@ -1,12 +1,12 @@
 /** Metadata-only preservation of explicitly declared unrelated evidence namespaces. */
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {requireSchema,sha256} from './schema-contract.mjs';
-export const namespaceSQL="SELECT nspname AS name,pg_catalog.pg_get_userbyid(nspowner) AS owner,nspacl::text AS acl FROM pg_catalog.pg_namespace WHERE nspname NOT IN ('public','information_schema') AND left(nspname,3)<>'pg_' ORDER BY nspname";
+export const namespaceSQL="SELECT nspname AS name,oid::text AS oid,pg_catalog.pg_get_userbyid(nspowner) AS owner,nspacl::text AS acl FROM pg_catalog.pg_namespace WHERE nspname NOT IN ('public','information_schema') AND left(nspname,3)<>'pg_' ORDER BY nspname";
 const targets=['meri_qualification','meri_task_lookup'];
 export function assertNamespaces(rows,fixture,prepared){
  const allowed=fixture.schemaScope?.namespaces??[],expected=[...allowed,...(prepared?targets.map(name=>({name,owner:fixture.user})):[])];
  requireSchema(rows.length===expected.length&&new Set(rows.map(r=>r.name)).size===rows.length);
- for(const e of expected){const r=rows.find(r=>r.name===e.name);requireSchema(r&&r.owner===e.owner&&(r.acl===null||typeof r.acl==='string'));}
+ for(const e of expected){const r=rows.find(r=>r.name===e.name);requireSchema(r&&r.owner===e.owner&&(r.acl===null||typeof r.acl==='string'));if(fixture.schemaScope&&!targets.includes(e.name))requireSchema(typeof r.oid==='string'&&/^[1-9][0-9]{0,9}$/.test(r.oid)&&BigInt(r.oid)<=4294967295n);}
  return data(rows.filter(r=>!targets.includes(r.name)).sort((a,b)=>a.name<b.name?-1:a.name>b.name?1:0));
 }
 // Only catalog metadata is read. No table rows, sequence last_value or function body.
@@ -42,7 +42,7 @@ export const preservationSQL=`WITH ns AS (SELECT oid FROM pg_catalog.pg_namespac
  'indexes',COALESCE((SELECT jsonb_agg(to_jsonb(i) ORDER BY i.indexrelid) FROM pg_catalog.pg_index i WHERE i.indrelid IN (SELECT oid FROM rel)),'[]'::jsonb),
  'views',COALESCE((SELECT jsonb_agg(to_jsonb(w) ORDER BY w.oid) FROM pg_catalog.pg_rewrite w WHERE w.ev_class IN (SELECT oid FROM rel)),'[]'::jsonb),
  'types',COALESCE((SELECT jsonb_agg(to_jsonb(t) ORDER BY t.oid) FROM typ t),'[]'::jsonb),
- 'sequences',COALESCE((SELECT jsonb_agg(to_jsonb(s) ORDER BY s.seqrelid) FROM pg_catalog.pg_sequence s WHERE s.seqrelid IN (SELECT oid FROM rel)),'[]'::jsonb),
+ 'sequences',COALESCE((SELECT jsonb_agg(to_jsonb(s)||jsonb_build_object('seqstart',s.seqstart::text,'seqincrement',s.seqincrement::text,'seqmax',s.seqmax::text,'seqmin',s.seqmin::text,'seqcache',s.seqcache::text) ORDER BY s.seqrelid) FROM pg_catalog.pg_sequence s WHERE s.seqrelid IN (SELECT oid FROM rel)),'[]'::jsonb),
  'triggers',COALESCE((SELECT jsonb_agg(to_jsonb(t) ORDER BY t.oid) FROM pg_catalog.pg_trigger t WHERE t.tgrelid IN (SELECT oid FROM rel)),'[]'::jsonb),
  'dependencies',COALESCE((SELECT jsonb_agg(to_jsonb(d) ORDER BY d.classid,d.objid,d.objsubid,d.refclassid,d.refobjid,d.refobjsubid,d.deptype) FROM pg_catalog.pg_depend d JOIN objects o ON o.classid=d.classid AND o.objid=d.objid),'[]'::jsonb),
  'comments',COALESCE((SELECT jsonb_agg(to_jsonb(d) ORDER BY d.classoid,d.objoid,d.objsubid) FROM pg_catalog.pg_description d WHERE EXISTS(SELECT 1 FROM objects o WHERE o.classid=d.classoid AND o.objid=d.objoid) OR (d.classoid='pg_namespace'::regclass AND d.objoid IN (SELECT oid FROM ns))),'[]'::jsonb),

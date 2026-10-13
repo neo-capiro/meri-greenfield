@@ -55,3 +55,16 @@ test('target namespace ownership is checked after install',async()=>{
  await assert.rejects(prepareOwnedApplicationSchema(s.args()),e=>e.outcome==='UNKNOWN');assert.equal(s.state.commits,0);
 });
 for(const key of ['database','user'])test(`dial ${key} must match trusted fixture`,async()=>{const s=scripted();s.pool.options[key]='other';await refuse(s,'admission');assert.equal(s.log.length,0);});
+test('sequence bigint settings are transported losslessly as text, never JS numbers',async()=>{
+ const preservedMetadata=metadata();preservedMetadata.sequences=[{seqstart:'9007199254740992',seqincrement:'1',seqmax:'9223372036854775807',seqmin:'1',seqcache:'1'}];
+ const s=scripted({fixture:{schemaScope:scope},namespaces,preservedMetadata}),r=await prepareOwnedApplicationSchema(s.args());
+ const sql=s.log.find(q=>q.text.startsWith('WITH ns AS')).text;
+ for(const field of ['seqstart','seqincrement','seqmax','seqmin','seqcache'])assert.match(sql,new RegExp(`s\\.${field}::text`));
+ preservedMetadata.sequences[0].seqstart='9007199254740993';await assert.rejects(verifyOwnedApplicationSchema({...s.args(),fixture:{...s.f,schemaSha256:r.schemaSha256}}),e=>e.outcome==='READ_UNAVAILABLE');
+});
+test('empty evidence schema identity includes namespace OID to detect replacement',async()=>{
+ const allowed=[{name:'empty_evidence',owner:'qualification_owner'}],observed=[{...allowed[0],oid:'30100',acl:null}],s=scripted({fixture:{schemaScope:{mode:'preserve-declared-evidence',namespaces:allowed}},namespaces:observed});
+ const r=await prepareOwnedApplicationSchema(s.args()),sql=s.log.find(q=>q.text.startsWith('SELECT nspname')).text;
+ assert.match(sql,/\boid::text AS oid\b/);observed[0].oid='30101';
+ await assert.rejects(verifyOwnedApplicationSchema({...s.args(),fixture:{...s.f,schemaSha256:r.schemaSha256}}),e=>e.outcome==='READ_UNAVAILABLE');
+});

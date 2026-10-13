@@ -1,0 +1,407 @@
+{
+  "base": "b5243ae164f68c7591b039e8365d9897390543d2",
+  "source": "f41ec1a78191bff882f1dbc7310e3d69a99bc111",
+  "originalEntries": 11411,
+  "unchangedOriginalEntries": 11400,
+  "checks": [
+    {
+      "name": "exclusive allocated source paths",
+      "passed": true
+    },
+    {
+      "name": "every unallocated original Git entry exact",
+      "passed": true
+    },
+    {
+      "name": "original assertions exact apps/control/qualified-application/schema.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original assertions exact apps/control/qualified-application/application.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original assertions exact apps/control/qualified-application/schema-independent/schema-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original lifecycle test prefix exact",
+      "passed": true
+    },
+    {
+      "name": "Python original assertions exact inverse fixture change",
+      "passed": true
+    },
+    {
+      "name": "independent boundary assertions exact inverse fixture change",
+      "passed": true
+    },
+    {
+      "name": "migration preserved apps/control/commands/approval-metadata/migrations/0001_approval_metadata.sql",
+      "passed": true
+    },
+    {
+      "name": "migration preserved apps/control/commands/migrations/0001_commands.sql",
+      "passed": true
+    },
+    {
+      "name": "migration preserved apps/control/qualification-sdk-fixture/state/migrations/0001_qualification_sdk_fixture_state.sql",
+      "passed": true
+    },
+    {
+      "name": "migration preserved apps/control/schedules/migrations/0001_schedule_owner.sql",
+      "passed": true
+    },
+    {
+      "name": "migration preserved apps/control/task-lookup/migrations/0001_task_lookup.sql",
+      "passed": true
+    },
+    {
+      "name": "migration preserved apps/proxy/qualification/state/migrations/0001_qualification_state.sql",
+      "passed": true
+    },
+    {
+      "name": "migration preserved apps/proxy/qualification/state/migrations/0002_tool_budget.sql",
+      "passed": true
+    },
+    {
+      "name": "migration preserved apps/proxy/qualification/state/migrations/0003_tool_invocations.sql",
+      "passed": true
+    },
+    {
+      "name": "allocated-boundary bounded group cleanup",
+      "passed": true
+    },
+    {
+      "name": "allocated-boundary stream stdout",
+      "passed": true
+    },
+    {
+      "name": "allocated-boundary stream stderr",
+      "passed": true
+    },
+    {
+      "name": "expanded-node bounded group cleanup",
+      "passed": true
+    },
+    {
+      "name": "expanded-node stream stdout",
+      "passed": true
+    },
+    {
+      "name": "expanded-node stream stderr",
+      "passed": true
+    },
+    {
+      "name": "expanded-python bounded group cleanup",
+      "passed": true
+    },
+    {
+      "name": "expanded-python stream stdout",
+      "passed": true
+    },
+    {
+      "name": "expanded-python stream stderr",
+      "passed": true
+    },
+    {
+      "name": "first-node bounded group cleanup",
+      "passed": true
+    },
+    {
+      "name": "first-node stream stdout",
+      "passed": true
+    },
+    {
+      "name": "first-node stream stderr",
+      "passed": true
+    },
+    {
+      "name": "first-python bounded group cleanup",
+      "passed": true
+    },
+    {
+      "name": "first-python stream stdout",
+      "passed": true
+    },
+    {
+      "name": "first-python stream stderr",
+      "passed": true
+    },
+    {
+      "name": "focused-repaired bounded group cleanup",
+      "passed": true
+    },
+    {
+      "name": "focused-repaired stream stdout",
+      "passed": true
+    },
+    {
+      "name": "focused-repaired stream stderr",
+      "passed": true
+    },
+    {
+      "name": "initial-regressions bounded group cleanup",
+      "passed": true
+    },
+    {
+      "name": "initial-regressions stream stdout",
+      "passed": true
+    },
+    {
+      "name": "initial-regressions stream stderr",
+      "passed": true
+    },
+    {
+      "name": "lifecycle-composed bounded group cleanup",
+      "passed": true
+    },
+    {
+      "name": "lifecycle-composed stream stdout",
+      "passed": true
+    },
+    {
+      "name": "lifecycle-composed stream stderr",
+      "passed": true
+    },
+    {
+      "name": "namespace-identity-before bounded group cleanup",
+      "passed": true
+    },
+    {
+      "name": "namespace-identity-before stream stdout",
+      "passed": true
+    },
+    {
+      "name": "namespace-identity-before stream stderr",
+      "passed": true
+    },
+    {
+      "name": "namespace-identity-repaired bounded group cleanup",
+      "passed": true
+    },
+    {
+      "name": "namespace-identity-repaired stream stdout",
+      "passed": true
+    },
+    {
+      "name": "namespace-identity-repaired stream stderr",
+      "passed": true
+    },
+    {
+      "name": "original-lifecycle bounded group cleanup",
+      "passed": true
+    },
+    {
+      "name": "original-lifecycle stream stdout",
+      "passed": true
+    },
+    {
+      "name": "original-lifecycle stream stderr",
+      "passed": true
+    },
+    {
+      "name": "sequence-before bounded group cleanup",
+      "passed": true
+    },
+    {
+      "name": "sequence-before stream stdout",
+      "passed": true
+    },
+    {
+      "name": "sequence-before stream stderr",
+      "passed": true
+    },
+    {
+      "name": "sequence-repaired bounded group cleanup",
+      "passed": true
+    },
+    {
+      "name": "sequence-repaired stream stdout",
+      "passed": true
+    },
+    {
+      "name": "sequence-repaired stream stderr",
+      "passed": true
+    },
+    {
+      "name": "source-focused bounded group cleanup",
+      "passed": true
+    },
+    {
+      "name": "source-focused stream stdout",
+      "passed": true
+    },
+    {
+      "name": "source-focused stream stderr",
+      "passed": true
+    },
+    {
+      "name": "initial compatibility failures retained",
+      "passed": true
+    },
+    {
+      "name": "namespace identity failure retained",
+      "passed": true
+    },
+    {
+      "name": "sequence precision failure retained",
+      "passed": true
+    },
+    {
+      "name": "fixture failure retained",
+      "passed": true
+    },
+    {
+      "name": "environment setup failure retained",
+      "passed": true
+    }
+  ],
+  "passed": 63,
+  "failed": 0,
+  "sourceFiles": [
+    {
+      "path": "apps/control/qualified-application/README-schema.md",
+      "blob": "c4e217eb2c500dc9290084742f06dcb3f219fc19",
+      "sha256": "332d2f23ea49a6181dde67c6d6d098f539cbe0c9a247f08e98a95d733e1507e3"
+    },
+    {
+      "path": "apps/control/qualified-application/application.fixture.mjs",
+      "blob": "4e72bd52741d7db7b7d4ce3b5803b6ae103670ff",
+      "sha256": "17b6235fd297e0e4c0753cbee8acbbdc522a1820ffe272f3d757ed59c76cd8f4"
+    },
+    {
+      "path": "apps/control/qualified-application/independent/schema-independent.test.mjs",
+      "blob": "915b427ecdce9988d36bf964ba2475f0b2c08ae3",
+      "sha256": "15a95561504e0bcc76d2b989213573ef6e629ccc42885d1951ea1e54ace12680"
+    },
+    {
+      "path": "apps/control/qualified-application/lifecycle-bridge.mjs",
+      "blob": "861e0ef62d994a0102e92b65b83e4e4881f64755",
+      "sha256": "e9edf0d1ecac209bfb1da3a5affd365186c5461e5a46abd8a6df302d1d5ebb15"
+    },
+    {
+      "path": "apps/control/qualified-application/lifecycle-bridge.test.mjs",
+      "blob": "66ac2e00662f16a613bc3dbfeca0e827e1307cfb",
+      "sha256": "1988c7c76485662a3ccb7396c587ce7bd2a34576e07efd9711e85505ec2ffe00"
+    },
+    {
+      "path": "apps/control/qualified-application/schema-compatibility.test.mjs",
+      "blob": "081ddb62ceee7a1711be45c17cf7ba4d108205a0",
+      "sha256": "1134d9f362bfac1b177031c66639c5303ccb251ea0ff15adc1eb5e8f445dd6ec"
+    },
+    {
+      "path": "apps/control/qualified-application/schema-contract.mjs",
+      "blob": "f28576d09086f1979f1c09abe3a950d8f2e70b7e",
+      "sha256": "a488bd72f703ac4a421248dd1c6f8275203a45a6a60bfa50b1047eeca262f240"
+    },
+    {
+      "path": "apps/control/qualified-application/schema-independent/fixture.mjs",
+      "blob": "ad2918556e3929b2b00e56569f13dbf2df09dd69",
+      "sha256": "8ecdb9a8f7fa887afed79e8289c2e33b8278cad883e0c83243c7d3c0f1dc46b9"
+    },
+    {
+      "path": "apps/control/qualified-application/schema-preservation.mjs",
+      "blob": "4570c2d4a4d85d6306ce5004a2982b6b677c2f9b",
+      "sha256": "75c7e0c819e67cc19c0a06b6fe62efa64933e187a6c12a078a8f5a15c61fea20"
+    },
+    {
+      "path": "apps/control/qualified-application/schema.fixture.mjs",
+      "blob": "5522e6c611d6702693144c06980f2312dcbe5df7",
+      "sha256": "eada282f332f11578233bb1668b97f3455c96b638b6b2edf3d994c389e1f0f34"
+    },
+    {
+      "path": "apps/control/qualified-application/schema.mjs",
+      "blob": "19096932b303142cbca984067c5b573e003fd367",
+      "sha256": "40d8c4fb31d24b4e1f50d130a164d61f76b5d20ba7378da51f2407b231108f3f"
+    },
+    {
+      "path": "apps/proxy/qualification/assembly/lifecycle.py",
+      "blob": "5742c6590e42d034782e62ea746837d2d3f72b7f",
+      "sha256": "ee0ea8ff55ad858186cc7144bb972ed501160a2d34007bf1a0f45eb5089447bb"
+    },
+    {
+      "path": "apps/proxy/qualification/assembly/test_fixture_compatibility.py",
+      "blob": "bd706fd5a695da2f455658ee80a1bb4ec5d684b3",
+      "sha256": "7d3f26067ede752d193d36a49eba3c1d6fbfc87ed6f3d89c2a24d798a868ed05"
+    },
+    {
+      "path": "apps/proxy/qualification/assembly/test_lifecycle.py",
+      "blob": "5ddcf533a44d6c906a4994d3ba9a8e54a317640a",
+      "sha256": "8435c203af26c68a6f0d57dff01b74417bbc2be837d620e0608e4ae3be1db073"
+    }
+  ],
+  "receipts": [
+    {
+      "label": "allocated-boundary",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "expanded-node",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "expanded-python",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "first-node",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "first-python",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "focused-repaired",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "initial-regressions",
+      "exitCode": 1,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "lifecycle-composed",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "namespace-identity-before",
+      "exitCode": 1,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "namespace-identity-repaired",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "original-lifecycle",
+      "exitCode": 1,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "sequence-before",
+      "exitCode": 1,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "sequence-repaired",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "source-focused",
+      "exitCode": 1,
+      "ownedProcessGroupAbsent": true
+    }
+  ],
+  "nativeExecution": false
+}
