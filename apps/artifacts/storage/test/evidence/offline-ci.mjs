@@ -1,0 +1,3 @@
+import {mkdir,copyFile} from 'node:fs/promises';import {spawn} from 'node:child_process';
+const target=process.argv[2]??'/tmp/meri-storage-offline-ci';await mkdir(target,{recursive:false});for(const file of ['package.json','package-lock.json'])await copyFile('apps/artifacts/storage/'+file,target+'/'+file);
+const child=spawn('npm',['ci','--offline','--ignore-scripts','--no-audit','--no-fund','--userconfig=/tmp/meri-storage-empty-npmrc','--globalconfig=/tmp/meri-storage-empty-global-npmrc','--cache=/tmp/meri-storage-npm-cache'],{cwd:target,env:{PATH:process.env.PATH},stdio:'inherit'});child.on('exit',code=>process.exitCode=code);

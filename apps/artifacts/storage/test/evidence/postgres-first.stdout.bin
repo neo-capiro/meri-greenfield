@@ -1,0 +1,16 @@
+✔ canonical record/head atomically commit, fresh adapter reads and exact replay remains idempotent after newer head (22.846075ms)
+✔ stale parent rejects with rollback and no immutable row or changed head (3.072672ms)
+✔ same immutable version cannot change request/spec/source object/binding; parent preserves owner/scopes (8.230242ms)
+✔ retained result hash supports only exact published lineage; request hash alone cannot find random old IDs (2.40812ms)
+✔ record/projection relational columns and hashes reject corruption (5.112082ms)
+✔ lost commit acknowledgement is UNKNOWN, retained exact record then recovers without writing twice (3.103067ms)
+✔ late borrowed acquisition is quarantined, and parked rollback is bounded (61.595631ms)
+✔ cancel before connection has no SQL and cancellation after insert rolls back (1.49551ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1770.015163
