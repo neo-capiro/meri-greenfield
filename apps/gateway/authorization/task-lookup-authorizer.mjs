@@ -38,9 +38,13 @@ export function createTaskLookupAuthorizer(configuration){
   } catch(error) {
    // Canonical gateway denials intentionally have no public .code; the existing
    // control callback protocol requires a closed own code. Never forward text.
-   const owned=safeFailure(error).message;
-   const code=['ACCESS_DENIED','DEADLINE','CANCELLED'].includes(owned)?owned:'LOOKUP_UNAVAILABLE';
-   throw Object.assign(new Error(code),{code});
+   throw lookupAuthorizationFailure(error);
   }
  };
+}
+
+export function lookupAuthorizationFailure(error){
+ const owned=safeFailure(error).message;
+ const code=['ACCESS_DENIED','DEADLINE','CANCELLED'].includes(owned)?owned:'LOOKUP_UNAVAILABLE';
+ return Object.assign(new Error(code),{code});
 }

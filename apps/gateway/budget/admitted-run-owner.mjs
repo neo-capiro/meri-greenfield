@@ -23,13 +23,17 @@ export function createPostgresAdmittedRunOwner(configuration){
     const began=dbTime(installed.started_at),databaseNow=dbTime(budget.now);
     if(began>databaseNow)refuse('ADMITTED_RUN_REFUSED');
     let deadline=Math.min(began+c.a.budgets.maxRuntimeSeconds*1000,Date.parse(c.a.schedule.expiresAt));
+    if(!Number.isSafeInteger(deadline)||deadline<=databaseNow)refuse('ADMITTED_RUN_REFUSED');
+    life.limitDeadline(deadline);check();
     for(const f of c.facts){
      const grants=(await client.query('SELECT * FROM meri_qualification.grants WHERE grant_id=$1',[f.grantId])).rows;
      const grant=grants[0];if(grants.length!==1)refuse('ADMITTED_RUN_REFUSED');assertRun(grant,f);
      if(grant.grant_id!==f.grantId||grant.state!=='ACTIVE'||grant.capability_sha256!==f.capabilitySha256)refuse('ADMITTED_RUN_REFUSED');
+     deadline=Math.min(deadline,dbTime(grant.expires_at));
+     if(deadline<=databaseNow)refuse('ADMITTED_RUN_REFUSED');
+     life.limitDeadline(deadline);check();
      const bindings=(await client.query('SELECT * FROM meri_qualification.tool_grant_bindings WHERE grant_id=$1',[f.grantId])).rows,bound=bindings[0];
      if(bindings.length!==1||bound.grant_id!==f.grantId||bound.run_id!==c.binding.runId||!same(bound.facts,f))refuse('ADMITTED_RUN_REFUSED');
-     deadline=Math.min(deadline,dbTime(grant.expires_at));
     }
     const finalNow=dbTime((await client.query('SELECT clock_timestamp() AS now')).rows[0]?.now);
     if(!Number.isSafeInteger(deadline)||finalNow<databaseNow||deadline<=finalNow||deadline<=c.now())refuse('ADMITTED_RUN_REFUSED');
