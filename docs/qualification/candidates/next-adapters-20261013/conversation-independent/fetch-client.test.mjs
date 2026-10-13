@@ -78,7 +78,7 @@ test('actual body-reader cancellation closes only subscription and leaves durabl
 test('actual current-session revocation prevents reconnect release without leaking identity or source details',()=>fixture(async(f,http)=>{
  await post(f,http,'submit',f.input);f.state.revoked=true;
  const response=await fetch(http.origin+`/api/conversations/events/${binding.conversationId}/stream`,{headers:auth(f)});
- assert.equal(response.status,502);const text=await response.text();assert.equal(text.includes(f.credential),false);assert.equal(text.includes('synthetic-native'),false);assert.deepEqual(JSON.parse(text),{error:{code:'CONVERSATION_UNAVAILABLE'}});assert.equal(f.state.cancels,0);
+ assert.equal(response.status,403);const text=await response.text();assert.equal(text.includes(f.credential),false);assert.equal(text.includes('synthetic-native'),false);assert.deepEqual(JSON.parse(text),{error:{code:'SESSION_REFUSED'}});assert.equal(f.state.cancels,0);
 }));
 
 

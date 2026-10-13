@@ -1,0 +1,89 @@
+✔ every existing wire/action/document distribution byte and public wire schema remains exact PR60 (76.070623ms)
+✔ standalone browser receiver evaluates without Node or imports and has deliberate exports (34.17283ms)
+✔ self-contained public schema and metadata bind exact canonical source bytes (4.78632ms)
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+✔ offline packed package resolves exact installed browser exports/types and blocks private implementations (761.509514ms)
+node:internal/modules/package_json_reader:301
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@js-temporal/polyfill' imported from /workspace/meri-conversation-contract-independent/packages/window-resolution/index.mjs
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:301:9)
+    at packageResolve (node:internal/modules/esm/resolve:768:81)
+    at moduleResolve (node:internal/modules/esm/resolve:859:18)
+    at defaultResolve (node:internal/modules/esm/resolve:992:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+    at #resolve (node:internal/modules/esm/loader:683:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v24.19.0
+✖ docs/qualification/candidates/next-adapters-20261013/conversation-independent/fetch-client.test.mjs (91.808675ms)
+✔ all four exact closed browser commands and package/wire metadata are admitted without authority (3.751527ms)
+✔ request refuses submit authority (0.240055ms)
+✔ request refuses submit unknown (0.110864ms)
+✔ request refuses blank prompt (0.129202ms)
+✔ request refuses bad request ID (0.986271ms)
+✔ request refuses skill extra (0.171224ms)
+✔ request refuses unknown skill (0.103894ms)
+✔ request refuses invalid window (0.110714ms)
+✔ request refuses negative history cursor (0.1008ms)
+✔ request refuses unsafe history cursor (0.159667ms)
+✔ request refuses history string cursor (0.110353ms)
+✔ request refuses history excess limit (0.054411ms)
+✔ request refuses cancel body (0.039849ms)
+✔ request refuses events authority (0.038848ms)
+✔ request refuses events wrong intent (0.081111ms)
+✔ request refuses events missing command (0.036774ms)
+✔ request refuses events extra cursor (0.036945ms)
+✔ request refuses prototype key (0.095692ms)
+✔ byte boundary refuses malformed UTF8/JSON/Unicode, unsafe input type, resource excess and accessors (1.403779ms)
+✔ admitted response provenance cannot be cloned or edited into request/view/cursor authority (2.176655ms)
+✔ submit response refuses wrong request ID (0.389737ms)
+✔ submit response refuses extra output (0.299684ms)
+✔ submit response refuses scope tenant (0.129412ms)
+✔ submit response refuses scope policy (0.095582ms)
+✔ submit response refuses empty scopes (0.075892ms)
+✔ content-free error statuses reject disclosure, wrong status/code and non-JSON event responses (1.241819ms)
+✔ history refuses event gap (12.048437ms)
+✔ history refuses duplicate event ID (0.542223ms)
+✔ history refuses reordered events (0.474333ms)
+✔ history refuses wrong next sequence (0.389036ms)
+✔ history refuses wrong hasMore (1.234169ms)
+✔ history refuses wrong last sequence (0.45239ms)
+✔ history refuses foreign event tenant (0.384059ms)
+✔ history refuses foreign event run (1.650765ms)
+✔ history refuses obsolete event attempt (0.433102ms)
+✔ history refuses obsolete event fence (0.405331ms)
+✔ history refuses foreign event scopes (0.373574ms)
+✔ history refuses oversized page (0.291282ms)
+✔ history binds exact admitted view, request ID and forward cursor while preserving valid pagination (2.201421ms)
+✔ history cannot substitute immutable saved prompt after admitted submit (0.407854ms)
+✔ normalized explicit window cannot diverge from the original immutable request (0.49976ms)
+✔ received events advance exactly once, retain stable IDs and reject old cursors or duplicate IDs (9.427445ms)
+✔ cancel response recognizes only actual terminal run states and never treats stream end as completion (0.497748ms)
+✔ partial history cannot acknowledge unseen lastSequence or rewind before its admitted range (0.608371ms)
+✔ cursor replay memory has a finite checkpoint boundary (377.806154ms)
+✔ source.available retains exact supplied source provenance and rejects nested scopes outside the admitted view (2.22118ms)
+ℹ tests 51
+ℹ suites 0
+ℹ pass 50
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 931.80481
+
+✖ failing tests:
+
+test at docs/qualification/candidates/next-adapters-20261013/conversation-independent/fetch-client.test.mjs:1:1
+✖ docs/qualification/candidates/next-adapters-20261013/conversation-independent/fetch-client.test.mjs (91.808675ms)
+  'test failed'

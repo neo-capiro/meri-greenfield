@@ -1,0 +1,101 @@
+{
+  "schema": "meri-independent-public-conversation-review/1",
+  "candidateCommit": "93845774d352fc9a0ad12cc7bc8bd3d4612a322c",
+  "candidateTree": "3bd7fcd0b87f81ee331b9c3cd1fa53916730b872",
+  "baselineCommit": "a2aef4a5fcd3c19cec974dc62b69222836d71b3e",
+  "baselineTree": "c9fe3ebb35213af65a70c01563855dfe08ed2606",
+  "disposition": "ACCEPT_SOURCE_AND_LOCAL_PUBLIC_FETCH_ONLY",
+  "packageVersion": "0.1.3",
+  "wireVersion": "0.1.0",
+  "counts": {
+    "independent": {
+      "tests": 55,
+      "pass": 55,
+      "fail": 0
+    },
+    "maintainedPublicPackage": {
+      "tests": 125,
+      "pass": 125,
+      "fail": 0
+    },
+    "wholePlanPending": 51,
+    "wholeRuntimeClosedByReview": 0
+  },
+  "checks": {
+    "generated": true,
+    "typecheck": true,
+    "installedTypes": true,
+    "packedExports": true,
+    "browserNoNodeOrExternalImports": true,
+    "previousDistBytesExact": true,
+    "actualFetch": true,
+    "upstreamDefaultChatTransport": true,
+    "candidateRuntimeDiffEmpty": true
+  },
+  "upstream": {
+    "name": "ai",
+    "version": "7.0.137",
+    "license": "Apache-2.0",
+    "transportSourceSha256": "9ac55f49e9bb227ef45157e6ccf68557f00d072ccdbeb8ce40cfaf6fbf7deeba"
+  },
+  "retainedNonProductFailures": [
+    {
+      "kind": "missing owned dependency link",
+      "initialResults": "50 controls pass; Fetch file failed import of adopted @js-temporal/polyfill before executing",
+      "repair": "Added removable review-worktree link to exact existing window-resolution dependencies; no source edits."
+    },
+    {
+      "kind": "incorrect independent prepared status expectation",
+      "initialResults": "4/5 Fetch tests passed; revoked session correctly returned403 rather than the prepared502 expectation.",
+      "basis": "Canonical session owner sanitizes verification failures as SESSION_REFUSED; public protocol allows403.",
+      "repair": "Expected403 and exact SESSION_REFUSED body; denial, no disclosure and no run cancellation assertions retained."
+    }
+  ],
+  "files": [
+    {
+      "path": "first-missing-local-dependency.txt",
+      "sha256": "05ba96a060f9e66f58b56b6b7b7aa8c3739498dc8bde1f6fd208e249239a94af",
+      "bytes": 5252
+    },
+    {
+      "path": "first-revocation-status-expectation.txt",
+      "sha256": "9a1988f355c0834ad29a304c397f87b382c8fce90cfff3ba3d8d04f2d49be3d0",
+      "bytes": 1789
+    },
+    {
+      "path": "final-independent-tests.txt",
+      "sha256": "07b4f204f66df5fec96843e43b0a686dca079ed406e17135056eeee33525e220",
+      "bytes": 4387
+    },
+    {
+      "path": "final-package-check.txt",
+      "sha256": "59f2613b2a008ccbaeb18bb88ddd08a8c3bbf007ab23e2867d849e624046773c",
+      "bytes": 12567
+    },
+    {
+      "path": "public-receiving.test.mjs",
+      "sha256": "99bd511fad1485d2af604db62f41b261e7b9ac7d602cb0309f5d1728fecffe50",
+      "bytes": 13239
+    },
+    {
+      "path": "fetch-client.test.mjs",
+      "sha256": "c9cda0b720bbda51ddedbae5423c8c70689e6fe327f129e2119d7d9bd3c6e65a",
+      "bytes": 9283
+    },
+    {
+      "path": "distribution.test.mjs",
+      "sha256": "9d840b2701ec22b4705857906ebed18161b4329e0ffa4b1042cbf8b67918c047",
+      "bytes": 6442
+    },
+    {
+      "path": "installed-receiving.mts",
+      "sha256": "a363250ee9e46c16dcaef58d6421c8db160519d8390c1b36ae21b9028906a5bf",
+      "bytes": 1759
+    }
+  ],
+  "remaining": [
+    "Native current identity/source activation and live worker/runtime acceptance remain external.",
+    "Frontend owner matching POST/GET protocol is coordination input, not an executed frontend deployment or browser E2E acceptance.",
+    "All51 whole-plan requirements remain open."
+  ]
+}

@@ -1,0 +1,68 @@
+✔ every existing wire/action/document distribution byte and public wire schema remains exact PR60 (61.361327ms)
+✔ standalone browser receiver evaluates without Node or imports and has deliberate exports (32.192765ms)
+✔ self-contained public schema and metadata bind exact canonical source bytes (9.179062ms)
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+✔ offline packed package resolves exact installed browser exports/types and blocks private implementations (743.323992ms)
+✔ actual POST subscription and upstream DefaultChatTransport GET reconnect preserve durable events/cursor (94.342223ms)
+✔ actual mount rejects foreign selector, malformed/conflicting cursors, invalid commands and unauthenticated subscription (34.722479ms)
+✔ actual body-reader cancellation closes only subscription and leaves durable run queued (11.399957ms)
+✔ actual current-session revocation prevents reconnect release without leaking identity or source details (7.954969ms)
+✔ actual malformed client JSON/UTF8 remains a bounded client error without source dispatch (6.696646ms)
+✔ all four exact closed browser commands and package/wire metadata are admitted without authority (2.857299ms)
+✔ request refuses submit authority (0.267609ms)
+✔ request refuses submit unknown (0.105718ms)
+✔ request refuses blank prompt (0.126939ms)
+✔ request refuses bad request ID (0.085197ms)
+✔ request refuses skill extra (0.765061ms)
+✔ request refuses unknown skill (0.121581ms)
+✔ request refuses invalid window (0.104326ms)
+✔ request refuses negative history cursor (0.086819ms)
+✔ request refuses unsafe history cursor (0.121962ms)
+✔ request refuses history string cursor (0.118657ms)
+✔ request refuses history excess limit (0.058908ms)
+✔ request refuses cancel body (0.036905ms)
+✔ request refuses events authority (0.036665ms)
+✔ request refuses events wrong intent (0.090044ms)
+✔ request refuses events missing command (0.036895ms)
+✔ request refuses events extra cursor (0.033389ms)
+✔ request refuses prototype key (0.084876ms)
+✔ byte boundary refuses malformed UTF8/JSON/Unicode, unsafe input type, resource excess and accessors (0.600495ms)
+✔ admitted response provenance cannot be cloned or edited into request/view/cursor authority (1.456891ms)
+✔ submit response refuses wrong request ID (0.299717ms)
+✔ submit response refuses extra output (0.180208ms)
+✔ submit response refuses scope tenant (0.133269ms)
+✔ submit response refuses scope policy (0.098236ms)
+✔ submit response refuses empty scopes (0.077015ms)
+✔ content-free error statuses reject disclosure, wrong status/code and non-JSON event responses (0.813743ms)
+✔ history refuses event gap (7.27927ms)
+✔ history refuses duplicate event ID (0.532523ms)
+✔ history refuses reordered events (0.508718ms)
+✔ history refuses wrong next sequence (0.394999ms)
+✔ history refuses wrong hasMore (1.369581ms)
+✔ history refuses wrong last sequence (0.410522ms)
+✔ history refuses foreign event tenant (0.360808ms)
+✔ history refuses foreign event run (1.389932ms)
+✔ history refuses obsolete event attempt (0.507366ms)
+✔ history refuses obsolete event fence (0.382931ms)
+✔ history refuses foreign event scopes (0.432925ms)
+✔ history refuses oversized page (0.294769ms)
+✔ history binds exact admitted view, request ID and forward cursor while preserving valid pagination (1.552674ms)
+✔ history cannot substitute immutable saved prompt after admitted submit (0.381449ms)
+✔ normalized explicit window cannot diverge from the original immutable request (0.45677ms)
+✔ received events advance exactly once, retain stable IDs and reject old cursors or duplicate IDs (7.146202ms)
+✔ cancel response recognizes only actual terminal run states and never treats stream end as completion (0.478754ms)
+✔ partial history cannot acknowledge unseen lastSequence or rewind before its admitted range (0.704219ms)
+✔ cursor replay memory has a finite checkpoint boundary (384.099298ms)
+✔ source.available retains exact supplied source provenance and rejects nested scopes outside the admitted view (2.352796ms)
+ℹ tests 55
+ℹ suites 0
+ℹ pass 55
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1974.745944
