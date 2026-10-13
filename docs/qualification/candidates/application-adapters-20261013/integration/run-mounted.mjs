@@ -6,7 +6,10 @@ import {createApplicationActionHost} from '../../../../../apps/control/action-ho
 import {applicationAuthorityRoutes} from '../../../../../packages/contracts/action-authority-0.2/validate.mjs';
 import {receiveActionResponse} from '../../../../../packages/contracts/dist/action-application.mjs';
 import {listenActionApplication} from '../../../../../apps/control/action-application/node-http.mjs';
+import {fileURLToPath} from 'node:url';
+import {resolve} from 'node:path';
 
+export async function runMountedReplay(){
 const f=await fixture();
 const principal={tenantId:f.t.f.binding.tenantId,actorId:f.t.f.binding.actorId};
 let authorityServer,applicationServer,host,revoked=false,approvals=0;
@@ -58,12 +61,23 @@ try {
  await applicationServer.close();await authorityServer.close();host.close();f.t.identity.close();
  for(const server of [applicationServer,authorityServer])assert.deepEqual(server.status(),{closed:true,listening:false,activeSockets:0});
  const afterClose=await host.app.handle(new Request('http://local.invalid/api/action-followthrough/session',{method:'POST'}));assert.equal(afterClose.status,503);
- console.log(JSON.stringify({kind:'fixture-isolated-two-listener-application-replay',passed:true,
+ return {kind:'fixture-isolated-two-listener-application-replay',passed:true,
   sourceClock:'fixed-synthetic',nativeIdentity:false,nativeDatabase:false,liveCapiro:false,tlsQualified:false,providerCalls:0,
   sessionIssued:true,nativeBearerActionStatus:wrongBearer.status,queryStatus:query.status,draftStatus:draft.status,prepareStatus:prepared.status,
   unapprovedOutcome:refused.value.error.outcome,explicitSyntheticApprovals:approvals,taskEffects:f.t.f.state.fetches,
   replayMatched:true,revokedStatus:afterRevocation.status,postCloseStatus:afterClose.status,authorityCalls:counters,
-  applicationListener:applicationServer.status(),authorityListener:authorityServer.status(),host:host.status()}));
+  applicationListener:applicationServer.status(),authorityListener:authorityServer.status(),host:host.status()};
 } finally {
  await applicationServer?.close();await authorityServer?.close();host?.close();f.t.identity.close();
+}
+}
+
+if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url)){
+ const args=process.argv.slice(2);
+ if(args.length===1&&args[0]==='--run'){
+  try{console.log(JSON.stringify(await runMountedReplay()));}catch(error){console.error(error);process.exitCode=1;}
+ }else{
+  console.log('Usage: node run-mounted.mjs --run | --help\nRuns only synthetic loopback authority/application fixtures. Exit 0 success/help, 1 check failure, 2 invalid arguments.');
+  if(args.length!==1||args[0]!=='--help')process.exitCode=2;
+ }
 }
