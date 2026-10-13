@@ -1,0 +1,29 @@
+{
+  "sourceHead": "188cef772fd9f7f276a8dfbd7e17c54136f02d68",
+  "testFiles": [
+    "apps/control/action-followthrough/test/workflow.test.mjs",
+    "apps/control/action-followthrough/workflow-independent.test.mjs",
+    "apps/control/commands/approval-metadata/owner-independent.test.mjs",
+    "apps/control/commands/approval-metadata/postgres-independent.test.mjs",
+    "apps/control/commands/approval-metadata/test/metadata.test.mjs",
+    "apps/control/task-lookup/delivery.test.mjs",
+    "apps/control/task-lookup/postgres-results.test.mjs",
+    "apps/control/task-lookup/test/delivery-independent.test.mjs",
+    "apps/control/task-lookup/test/store-independent.test.mjs",
+    "apps/control/test/commands-execution.test.mjs",
+    "apps/control/test/commands-tool-interface-independent.test.mjs",
+    "apps/control/test/commands-tool-interface.test.mjs",
+    "docs/qualification/candidates/action-followthrough-20261013/integration/composed.test.mjs",
+    "evals/task-lookup/execution/execution-independent.test.mjs",
+    "evals/task-lookup/execution/test/execution.test.mjs",
+    "evals/task-lookup/test/actual-control.test.mjs",
+    "evals/task-lookup/test/cli.test.mjs",
+    "evals/task-lookup/test/corpus.test.mjs",
+    "evals/task-lookup/test/eval-independent.test.mjs",
+    "evals/task-lookup/test/score.test.mjs",
+    "packages/contracts/test/command-task-create.test.mjs",
+    "packages/contracts/test/command-tool-interface-independent.test.mjs"
+  ],
+  "scope": "New reviewed workflow, metadata and evaluation implementation with the unchanged canonical interfaces they consume. No database/model/native execution.",
+  "earlier694Receipt": "docs/qualification/candidates/task-slice-20261012/integration/consolidated-final-pr39.json"
+}

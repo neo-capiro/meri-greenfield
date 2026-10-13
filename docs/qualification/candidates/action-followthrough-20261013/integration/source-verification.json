@@ -1,0 +1,94 @@
+{
+  "base": "cacbe543941db52cc8dcf085bf96c1919e8c155f",
+  "sourceHead": "d8e86c2b49f91e22a6a6868fce4ba0ca6e707328",
+  "originalEntries": 10183,
+  "originalEntriesUnchanged": 10183,
+  "reviewedProductionFiles": [
+    {
+      "path": "apps/control/action-followthrough/index.mjs",
+      "reviewedSource": "0715c71025a72312917c7cc0714951be814f7ae3",
+      "sha256": "7ce5567c4c505904eaa0a39d1fbb96dfe4941bda7f5709c653afdd840672d042"
+    },
+    {
+      "path": "apps/control/action-followthrough/selection.mjs",
+      "reviewedSource": "0715c71025a72312917c7cc0714951be814f7ae3",
+      "sha256": "6cb431744db5fc69749be6ee49cc0505835bd771e80c384b78981e4a9c7e33a3"
+    },
+    {
+      "path": "evals/task-lookup/execution/admission.mjs",
+      "reviewedSource": "33a0d21b005d32d9c27de5f3a7939b77588921db",
+      "sha256": "f0b2923427a427210d239065e94c2c5db0a4f624340b94162bf6ac4a3817e2c1"
+    },
+    {
+      "path": "evals/task-lookup/execution/execute.mjs",
+      "reviewedSource": "33a0d21b005d32d9c27de5f3a7939b77588921db",
+      "sha256": "d7bd0b15454809996bd055014eb0ba792576e50eb29b531a3311363fe2a48cac"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/index.mjs",
+      "reviewedSource": "924979b527b1b8c7f3f7883ceddd2cf78eebd63f",
+      "sha256": "0731f3aceedd6c1d33aae783c8fe081ca2ab6c718f6dd0248fb6ceb95338a835"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/binding.mjs",
+      "reviewedSource": "924979b527b1b8c7f3f7883ceddd2cf78eebd63f",
+      "sha256": "6eedd92962688ab4d2fe4ff2303966f0626bf4453f298daaf59d3a0830eef9ce"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/owner.mjs",
+      "reviewedSource": "924979b527b1b8c7f3f7883ceddd2cf78eebd63f",
+      "sha256": "e78ff4055432263c25679da68af7291d936f0ce6e139720ee51467b5a184d39e"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/postgres-store.mjs",
+      "reviewedSource": "924979b527b1b8c7f3f7883ceddd2cf78eebd63f",
+      "sha256": "5a61bd703bb883ae39aacf82f0351ee5d3fafe1aa0812c2e683136a3c5896f71"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/migrations/0001_approval_metadata.sql",
+      "reviewedSource": "924979b527b1b8c7f3f7883ceddd2cf78eebd63f",
+      "sha256": "3270e42c779bbe5a367506142a45b31ed3d9ccbe90b88658d52ba3bcf5543e3b"
+    }
+  ],
+  "componentManifests": [
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/workflow-author/manifest.json",
+      "members": 25,
+      "sha256": "bfbf207c3d03aff250f17352109d651aab32ecc233e90375dfefbdf8900fdc7a"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/workflow-review/manifest.json",
+      "members": 21,
+      "sha256": "74d6b388711acdbe349f89758f90f5ae1510a7bdbaab8a33dc7426a2490e3f33"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/eval-author/manifest.json",
+      "members": 23,
+      "sha256": "9ed422ad6c7cd546d88e11d5966c4b67fafe029afcdf233fb6503946ee3559a1"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/eval-review/manifest.json",
+      "members": 25,
+      "sha256": "b3c8d873d6318f3cc0000c31d4d06590fc72d66e153846d4651fb5b5bfe72b1d"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-author/manifest.json",
+      "members": 29,
+      "sha256": "5d731df875e693d1666c9410f560afe5e0c2f5633fe22583e6419124b2da6505"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/manifest.json",
+      "members": 31,
+      "sha256": "80d886d3315eabfa7b227f1f2c2f9d3ed37ad94dd13f28dc748040a9006629f0"
+    }
+  ],
+  "componentManifestMembers": 154,
+  "catalog": {
+    "original": 139,
+    "selected": 96,
+    "deferred": 43,
+    "unavailable": 97
+  },
+  "authoredSourceWhitespaceExitCode": 0,
+  "runtimeQualified": false
+}

@@ -1,0 +1,151 @@
+{
+  "schemaVersion": 1,
+  "sourceHead": "d8e86c2b49f91e22a6a6868fce4ba0ca6e707328",
+  "scope": "ACCEPT_SOURCE_RUNTIME_HOLD",
+  "exclusions": [
+    "this manifest",
+    "publication.json"
+  ],
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-ACTION-FOLLOWTHROUGH-20261013.md",
+      "bytes": 10060,
+      "sha256": "77b53abe331afa380dd0c55b34e85a9978ad33c9ab52b7c33cb58a6aa22d1b6b"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/integration/PG-DRIVER-HANDOFF.md",
+      "bytes": 2761,
+      "sha256": "467d1c6f5072ae71068409c7e827daf8031c083cb37ca33239fc83fdc7d0e02b"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/integration/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/integration/cleanup.json",
+      "bytes": 1180,
+      "sha256": "d0728feb645bbbd9ac38ce6fb08db13012bc4cf85750c1cee3aa0595def07561"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/integration/combined-input.json",
+      "bytes": 1744,
+      "sha256": "d8488a60c1c43c91e9abf76c1a287f5ddb5dd5b7b5243e30998d1688ba68de54"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/integration/combined-restored-input.json",
+      "bytes": 1884,
+      "sha256": "ae765a13476ce388ba4e4eff06459fc9c426feb252de9acf5e01f88ef4ac9458"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/integration/combined-restored.json",
+      "bytes": 2728,
+      "sha256": "44b20cd14f072bbc2b0751d76eecc15ef591bea27496ba689e78a90e7ddea3b1"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/integration/combined-restored.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/integration/combined-restored.stdout.bin",
+      "bytes": 46499,
+      "sha256": "07731cb2a0df8a95b3b2ae9b165c273f26792216d37e7b32c8cb1fcf0f93a942"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/integration/combined.json",
+      "bytes": 2701,
+      "sha256": "e56f745e0c45392cc0ef834e6138778ea4ee39c9b99803953ecfaaace9e15425"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/integration/combined.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/integration/combined.stdout.bin",
+      "bytes": 43272,
+      "sha256": "864154a135f87f1dbc12668170c0a65141f19f8e6b7b3cb47e57533c1c0a7084"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/integration/composed.test.mjs",
+      "bytes": 4486,
+      "sha256": "fab8e4d72ed4ed629a57d05fc3b1aa8f6c964dac15209e25195413714d677197"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/integration/composition.json",
+      "bytes": 1306,
+      "sha256": "41da4d21f1feeab55ae646fe7da15068088040206de2e2c79d402fe6e959d86a"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/integration/composition.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/integration/composition.stdout.bin",
+      "bytes": 484,
+      "sha256": "cd42ce94f3ce0e08496e516c1762e31c97693a54a64888177585093a14ba4318"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/integration/driver-construction.mjs",
+      "bytes": 1121,
+      "sha256": "fb9bcca83c5c3295383746d98350ad0c712d9360b3a6b889cba62336a1c547a1"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/integration/official-driver.json",
+      "bytes": 1306,
+      "sha256": "e92b1886aec848c9b1a5d4fe9549fb3f12af03e5ce5c5743400eab21ebcf9a83"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/integration/official-driver.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/integration/official-driver.stdout.bin",
+      "bytes": 149,
+      "sha256": "220ee375f2bb28b78db907d57c108293c7f9c07bd93479d3bfdb67164546f129"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/integration/pg-materialization-input.json",
+      "bytes": 633,
+      "sha256": "523cdcd26b3713e8da8f5bc1967239709c078e01a50269b255d35176a9251a6e"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/integration/pg-materialization-verified.json",
+      "bytes": 4245,
+      "sha256": "9acd050e7aa32dcbdd5e7e4f1fcb011d66acb2a7f8a7d4ee60477cfe86316b2c"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/integration/pg-materialization.json",
+      "bytes": 1607,
+      "sha256": "41878baa60572054c1f79f1c8406613bff34d176383686a736a666729f132d1d"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/integration/pg-materialization.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/integration/pg-materialization.stdout.bin",
+      "bytes": 28,
+      "sha256": "f3b58e05f17beb7321cc62febecdf638d046ec21328ff2291b8ce5f128801214"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/integration/source-verification.json",
+      "bytes": 3883,
+      "sha256": "284dc8a6170e7c74b11237b958bcdc4bb50d4d1191817e935633815fb62c53d5"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/integration/sparse-fixture-restoration.json",
+      "bytes": 574,
+      "sha256": "020f52ca75d9abcf6d982134cd7ec78770f596dfc1bb8ec663967dbc1e4211fc"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/integration/verify-source.py",
+      "bytes": 4047,
+      "sha256": "2ce7bf00ffeb5645e5abd60b1513644b30c36221e5ad9c9be80e65c7379efb66"
+    }
+  ]
+}

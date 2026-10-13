@@ -1,0 +1,11 @@
+✔ selected retained recommendation prepares concrete immutable metadata, then separate approval executes once (137.920881ms)
+✔ fresh preparation policy denial returns no proposal and performs no metadata insert or task effect (36.147868ms)
+✔ policy loss after metadata commit preserves immutable record without granting approval or creating a task (33.373738ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2705.269864

@@ -1,0 +1,56 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "apps/control/action-followthrough/test/workflow.test.mjs",
+    "apps/control/action-followthrough/workflow-independent.test.mjs",
+    "apps/control/commands/approval-metadata/owner-independent.test.mjs",
+    "apps/control/commands/approval-metadata/postgres-independent.test.mjs",
+    "apps/control/commands/approval-metadata/test/metadata.test.mjs",
+    "apps/control/task-lookup/delivery.test.mjs",
+    "apps/control/task-lookup/postgres-results.test.mjs",
+    "apps/control/task-lookup/test/delivery-independent.test.mjs",
+    "apps/control/task-lookup/test/store-independent.test.mjs",
+    "apps/control/test/commands-execution.test.mjs",
+    "apps/control/test/commands-tool-interface-independent.test.mjs",
+    "apps/control/test/commands-tool-interface.test.mjs",
+    "docs/qualification/candidates/action-followthrough-20261013/integration/composed.test.mjs",
+    "evals/task-lookup/execution/execution-independent.test.mjs",
+    "evals/task-lookup/execution/test/execution.test.mjs",
+    "evals/task-lookup/test/actual-control.test.mjs",
+    "evals/task-lookup/test/cli.test.mjs",
+    "evals/task-lookup/test/corpus.test.mjs",
+    "evals/task-lookup/test/eval-independent.test.mjs",
+    "evals/task-lookup/test/score.test.mjs",
+    "packages/contracts/test/command-task-create.test.mjs",
+    "packages/contracts/test/command-tool-interface-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-task-slice-20261012",
+  "sourceHead": "d8e86c2b49f91e22a6a6868fce4ba0ca6e707328",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T01:10:27.064729+00:00",
+  "durationSeconds": 61.507,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 441160,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/integration/combined-restored.stdout.bin",
+      "bytes": 46499,
+      "sha256": "07731cb2a0df8a95b3b2ae9b165c273f26792216d37e7b32c8cb1fcf0f93a942"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/integration/combined-restored.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Rerun identical combined command after materializing its original tracked fixture; initial437pass/3module-load failures retained. No source or assertion change.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

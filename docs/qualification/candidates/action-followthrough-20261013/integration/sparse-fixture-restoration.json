@@ -1,0 +1,12 @@
+{
+  "initialReceipt": "combined.json",
+  "initialPassed": 437,
+  "initialModuleLoadFailures": 3,
+  "cause": "A pre-existing unchanged tracked fixture was not materialized by this root sparse checkout. No behavioral assertions failed.",
+  "restoredTrackedPath": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/fixture.mjs",
+  "sha256": "c5e39c5cc66ac49573202a56781826ad956205a541e3865b52f7b95d469feee6",
+  "sourceChanged": false,
+  "assertionsChanged": false,
+  "sameTestFiles": true,
+  "finalSource": "d8e86c2b49f91e22a6a6868fce4ba0ca6e707328"
+}
