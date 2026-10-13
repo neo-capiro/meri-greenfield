@@ -1,0 +1,12 @@
+# Independent task-lookup slice integration review
+
+Base PR38 `77cedb126d57a0223d2df42ad2f3fe988eb51759`. Root test composition `84aec23eeacdf0433c03fa2e6f9708eceae90f7d` is a discovery checkpoint, not the final source freeze. Final acceptance requires accepted action/control/evaluation dependencies and exact root candidate. This review owns only a new action-lookup-slice-independent gateway test, this task/report and integration-review packet; no production or other-author test edits.
+
+Criteria frozen before candidate replay:
+
+- Exercise actual control → canonical durable gateway/producer/accounting → current authority/dispatch → fixed HTTP adapter → canonical DTO and actual PostgreSQL lookup-store source. SQL/HTTP ports remain inert and cannot qualify live durability, policy/JWT, native or transport.
+- Stable delivery/request/binding identity cannot silently change scope, mint replay attempts, redispatch or double-charge. Named/unscoped lookup remains refused where the accepted connected source is selected-UUID only. Fresh current authority remains separate from historical producer identity and task-A/task-B recovery.
+- Recovered result reads require current binding/scope authorization and verify retained digest/full original identity, with no fresh source call. Unknown claim, source completion, accounting and retention acknowledgements do not become success, refund or automatic retry. Preserve exact underlying uncertainty and bounded cancellation/late acknowledgements.
+- Retained results and UI events cannot imply model completion, accepted tasks, source freshness or complete absence. Validate actual public UIEvent contracts and immutable result lineage. Evaluation must invoke the actual callback path, preserve failed/ineligible/unknown accounting and never count synthetic controls as the required real corpus.
+- Final byte audit preserves all PR38 entries outside three approved existing production files; all four shared profile/context paths match accepted review. No public0.1, catalog/native-worker/frontend mutation. Preserve full139/96/43,97unavailable descriptors and51whole-plan pending obligations.
+- Run focused independent checks only, under the existing240-second local subreaper capture. Preserve meaningful failures and repair reasons; no broad duplicate checks, per-entry publication churn or added frameworks. Close only owned processes and dependencies. No native/SQL service/provider/model/cloud/customer calls, installs or recursive agents.
