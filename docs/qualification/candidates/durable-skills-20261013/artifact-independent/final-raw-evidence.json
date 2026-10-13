@@ -1,0 +1,44 @@
+[
+  {
+    "file": "final-fresh-artifact-opening.stdout",
+    "stored": "final-fresh-artifact-opening.stdout.gz",
+    "rawSha256": "01f232fbc0094377c69991f4731c408e75a571748dfd51e6c8ab4554893ad5c1",
+    "rawBytes": 170
+  },
+  {
+    "file": "relationship-root-14f2-document.tap",
+    "stored": "relationship-root-14f2-document.tap.gz",
+    "rawSha256": "b051e5c8fd219399b7d065d497cb8bfcdabb5c7ffd81393c5e6a6bdb88244530",
+    "rawBytes": 292
+  },
+  {
+    "file": "skills-final-14f2.tap",
+    "stored": "skills-final-14f2.tap.gz",
+    "rawSha256": "020cb724dd04e847ba734357103ee62ba1863a14b65ffb7bcc3c4cb265238c77",
+    "rawBytes": 6820
+  },
+  {
+    "file": "source-binding-final-corrected.stdout",
+    "stored": "source-binding-final-corrected.stdout.gz",
+    "rawSha256": "1da29790eaa5a549d667cf2db135b05d42c11f7fb660164eae3855cf6efac9f8",
+    "rawBytes": 190
+  },
+  {
+    "file": "source-binding-final.stdout",
+    "stored": "source-binding-final.stdout.gz",
+    "rawSha256": "3b6efd1e99ff46fc4a93a8048dc776a9c662390a290cf379c04c770a10a087ec",
+    "rawBytes": 326
+  },
+  {
+    "file": "workflow-final-14f2.tap",
+    "stored": "workflow-final-14f2.tap.gz",
+    "rawSha256": "49c04111cf26e258c3622ca1c49ec8710573a2a1deb16933269c090539f41237",
+    "rawBytes": 992
+  },
+  {
+    "file": "workflow-final-initial-14f2.tap",
+    "stored": "workflow-final-initial-14f2.tap.gz",
+    "rawSha256": "cb4927c3c2c743770144d275bde223a1bf7f55bbebca897beed7c71c460e0b46",
+    "rawBytes": 2233
+  }
+]

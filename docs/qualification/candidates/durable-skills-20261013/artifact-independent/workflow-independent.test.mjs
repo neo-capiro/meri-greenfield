@@ -10,7 +10,9 @@ const {GatewayDenied}=await load(rRoot,'apps/gateway/dispatch/operation-result.m
 const plain=r=>r.request.content.blocks.map(b=>b.runs.map(x=>x.text).join('')).join('\n');
 test('bounded Commitments accepts broader typed native inventory as partial without changing selected window',async()=>{
  const context=rf.unitContext(),selection=cf.selection(context);selection.window={basis:'explicit',startInclusive:'2026-10-13T10:00:00.000Z',endExclusive:'2026-10-13T15:00:00.000Z',timezone:'UTC',weekStartsOn:null};
- const compiler=createCommitmentsAuditCompiler({readSource:rf.sourcePage,now:()=>rf.NOW}),r=await compiler.prepare(cf.makeInput(),context,{selection});
+ // The synthetic mail fixture needs a clock; original read_thread normalization does not.
+ const readSource=call=>rf.sourcePage(call.operation.id==='mail.read_thread'?{...call,normalizationContext:{...call.normalizationContext,nowMs:rf.NOW}}:call);
+ const compiler=createCommitmentsAuditCompiler({readSource,now:()=>rf.NOW}),r=await compiler.prepare(cf.makeInput(),context,{selection});
  assert.deepEqual(r.provenance.selection.window,selection.window);assert(r.ledger.coverage.some(c=>c.windowMatch==='broad-native-read'));assert(r.ledger.coverage.every(c=>!c.complete));assert(r.ledger.commitments.every(c=>!c.completed));
 });
 test('Relationship canonical unavailable gateway code remains a visible source gap',async()=>{

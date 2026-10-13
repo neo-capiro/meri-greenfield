@@ -1,6 +1,6 @@
 {
   "reviewer": "Independent artifact reviewer",
-  "totalPagesActuallyOpened": 71,
+  "totalPagesActuallyOpened": 89,
   "allListedPagesOpenedUsing": "view_image local file paths",
   "noClippedFactsCitationsCoverageOrProvenanceObserved": true,
   "appendixDenseButReadable": true,
@@ -576,6 +576,150 @@
         }
       ],
       "revisionLostBeforeRender": true
+    },
+    {
+      "phase": "independent_final_replay",
+      "domain": "relationship_brief",
+      "label": "original",
+      "docxSha256": "630f77fddb3ef6489c2628475431339d8e719c1d445a19881abb209e0a94d824",
+      "pages": 9,
+      "images": [
+        {
+          "page": 1,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/relationship-final-artifacts/original-preview-1.png",
+          "sha256": "ff804e37fd9c975441b2b72c930c2e915826962f62f4a922af222bc6b653a81c",
+          "bytes": 116761,
+          "visuallyOpened": true
+        },
+        {
+          "page": 2,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/relationship-final-artifacts/original-preview-2.png",
+          "sha256": "14b5099db39f149db23117c2c5c62cc7e78274b4d65edcaa1dd8dcc5b72bc2c5",
+          "bytes": 149216,
+          "visuallyOpened": true
+        },
+        {
+          "page": 3,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/relationship-final-artifacts/original-preview-3.png",
+          "sha256": "53d341f4994aa0f9593a0d65ab6f7243840f7e278b06ba81213a6a519835af30",
+          "bytes": 141731,
+          "visuallyOpened": true
+        },
+        {
+          "page": 4,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/relationship-final-artifacts/original-preview-4.png",
+          "sha256": "be895d7ac7fc9f0fa69e80b35513d680bcac411150d0a2e74de937307394947b",
+          "bytes": 120497,
+          "visuallyOpened": true
+        },
+        {
+          "page": 5,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/relationship-final-artifacts/original-preview-5.png",
+          "sha256": "81e5763fc86986b19eaf1da5e2513dad0ea3bd0bbb64c843d5fcfe2b89d32c4c",
+          "bytes": 135141,
+          "visuallyOpened": true
+        },
+        {
+          "page": 6,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/relationship-final-artifacts/original-preview-6.png",
+          "sha256": "d040fb975dadf990e49db3880d7e8d1264d5d24ab357269f082420de5c99ac44",
+          "bytes": 126487,
+          "visuallyOpened": true
+        },
+        {
+          "page": 7,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/relationship-final-artifacts/original-preview-7.png",
+          "sha256": "00a2b1a5c3345673a966a1414594e3e1ad02d69c17eb016430fa04ddbf9332a1",
+          "bytes": 124882,
+          "visuallyOpened": true
+        },
+        {
+          "page": 8,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/relationship-final-artifacts/original-preview-8.png",
+          "sha256": "0ecc67b1a0a052d042e35b605d957a8ea45e68189254175ad5f350d32806a455",
+          "bytes": 138230,
+          "visuallyOpened": true
+        },
+        {
+          "page": 9,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/relationship-final-artifacts/original-preview-9.png",
+          "sha256": "553898fb257a2322c9e5f9c773dfe5700f0b646d5c3c4e2396950adb527439e9",
+          "bytes": 51380,
+          "visuallyOpened": true
+        }
+      ]
+    },
+    {
+      "phase": "independent_final_replay",
+      "domain": "relationship_brief",
+      "label": "revision",
+      "docxSha256": "b4f890cdbb0bcdd325cccfb632a19f122e6c38cd81d6e6c95c04929b740f4546",
+      "pages": 9,
+      "images": [
+        {
+          "page": 1,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/relationship-final-artifacts/revision-preview-1.png",
+          "sha256": "44022d570a4da63e7644f6154c2c2b82a1c21c763155044a42c310b66d9c54ed",
+          "bytes": 116699,
+          "visuallyOpened": true
+        },
+        {
+          "page": 2,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/relationship-final-artifacts/revision-preview-2.png",
+          "sha256": "14b5099db39f149db23117c2c5c62cc7e78274b4d65edcaa1dd8dcc5b72bc2c5",
+          "bytes": 149216,
+          "visuallyOpened": true
+        },
+        {
+          "page": 3,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/relationship-final-artifacts/revision-preview-3.png",
+          "sha256": "18f09462e6443eba2cfa52bb0be2919336c5ad1e1629a04908047fabead29cf2",
+          "bytes": 141887,
+          "visuallyOpened": true
+        },
+        {
+          "page": 4,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/relationship-final-artifacts/revision-preview-4.png",
+          "sha256": "8994e816d3fb1a3776218453015b100e21b959eeb0be066a1cf3447aef975eca",
+          "bytes": 120553,
+          "visuallyOpened": true
+        },
+        {
+          "page": 5,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/relationship-final-artifacts/revision-preview-5.png",
+          "sha256": "9b63c42d46325b48b166c1c76ddd957a1178a76eae831c767ba0311544107906",
+          "bytes": 135144,
+          "visuallyOpened": true
+        },
+        {
+          "page": 6,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/relationship-final-artifacts/revision-preview-6.png",
+          "sha256": "d601cd4af21b31eb501dddfed2094b7148e2fb681abf7bbb855ed418e91b00b7",
+          "bytes": 126413,
+          "visuallyOpened": true
+        },
+        {
+          "page": 7,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/relationship-final-artifacts/revision-preview-7.png",
+          "sha256": "04f1efcd8665f70bca6c03fc0d27e00138df0f818da6a42fd08a9522238e1e9e",
+          "bytes": 125008,
+          "visuallyOpened": true
+        },
+        {
+          "page": 8,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/relationship-final-artifacts/revision-preview-8.png",
+          "sha256": "14c250f622f9e2419a8343c21f9ff35359fa7c08d73a26943816dd0369e9d70c",
+          "bytes": 138278,
+          "visuallyOpened": true
+        },
+        {
+          "page": 9,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/relationship-final-artifacts/revision-preview-9.png",
+          "sha256": "e3ffd2b1de67fc592be4059c423f96bbe3733bb46ee1a459a1c94804cf53b65f",
+          "bytes": 73182,
+          "visuallyOpened": true
+        }
+      ]
     }
   ]
 }
