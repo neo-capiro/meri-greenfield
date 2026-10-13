@@ -1,0 +1,41 @@
+{
+  "removedOnlyOwnedPackages": [
+    "ajv",
+    "ajv-formats",
+    "canonicalize",
+    "fast-deep-equal",
+    "fast-uri",
+    "json-schema-traverse",
+    "require-from-string"
+  ],
+  "bytesRemoved": 1374227,
+  "donorModified": false,
+  "ownedGroups": [
+    {
+      "receipt": "first.json",
+      "pgid": 444622,
+      "absent": true
+    },
+    {
+      "receipt": "sparse-fixed.json",
+      "pgid": 444665,
+      "absent": true
+    },
+    {
+      "receipt": "expanded.json",
+      "pgid": 445068,
+      "absent": true
+    },
+    {
+      "receipt": "final.json",
+      "pgid": 446806,
+      "absent": true
+    },
+    {
+      "receipt": "repeated-query.json",
+      "pgid": 447054,
+      "absent": true
+    }
+  ],
+  "nativeDatabaseConnected": false
+}
