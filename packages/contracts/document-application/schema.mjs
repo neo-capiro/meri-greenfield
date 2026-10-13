@@ -10,7 +10,7 @@ export function documentSchema(artifact,errorStatuses){
  for(const request of requests)if(request.properties.format.enum)request.properties.format.enum=request.properties.format.enum.filter(x=>admitted.has(x));
  const inspections=artifact.$defs.ArtifactInspection.oneOf.filter(x=>admitted.has(x.properties.format.const)).map(absolute);
  const inspected=structuredClone(inspections);for(const x of inspected){x.properties.currentBytesVerified={const:true};x.required.push('currentBytesVerified');}
- const version={allOf:[pub('ArtifactVersion'),{type:'object',properties:{generationStatus:{const:'draft'},previewStatus:{const:'pending'},filename:{type:'string',pattern:'^[A-Za-z0-9._ -]{1,124}$'},mimeType:{enum:['text/plain; charset=utf-8','application/vnd.openxmlformats-officedocument.wordprocessingml.document','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']}}}]};
+ const version={allOf:[pub('ArtifactVersion'),{type:'object',properties:{generationStatus:{const:'draft'},previewStatus:{const:'pending'},filename:{type:'string',pattern:'^[A-Za-z0-9._ -]{1,125}$'},mimeType:{enum:['text/plain; charset=utf-8','application/vnd.openxmlformats-officedocument.wordprocessingml.document','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']}}}]};
  return {$schema:'https://json-schema.org/draft/2020-12/schema',$id:'urn:meri:document-application:0.1.0',$defs:{
  DocumentContentRequest:{oneOf:requests},DocumentVersion:version,
  DocumentCreateRequest:object({deliveryId:{type:'string',pattern:'^[A-Za-z0-9_.:@/-]{1,255}$'},request:ref('DocumentContentRequest')}),

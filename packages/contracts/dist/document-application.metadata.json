@@ -38,7 +38,7 @@
       "bytes": 50043
     }
   ],
-  "schemaSha256": "7e793c84c5f4cabc787e8009208ada02c45c49b6ff4973c26d3247adb37828ab",
+  "schemaSha256": "712348c7758e7c99c77f2e50d35397038a651a5a312bb9439bdda5bbd44f5c51",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "document-application/boundary.mjs",

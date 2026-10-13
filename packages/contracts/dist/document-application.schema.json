@@ -112,7 +112,7 @@
             },
             "filename": {
               "type": "string",
-              "pattern": "^[A-Za-z0-9._ -]{1,124}$"
+              "pattern": "^[A-Za-z0-9._ -]{1,125}$"
             },
             "mimeType": {
               "enum": [
