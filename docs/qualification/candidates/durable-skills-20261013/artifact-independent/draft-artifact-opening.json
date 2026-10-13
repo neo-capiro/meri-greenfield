@@ -1,0 +1,634 @@
+{
+  "status": "PASS",
+  "scope": "Independent literal artifact/source correlation and visual opening only; source freeze pending",
+  "artifacts": [
+    {
+      "domain": "commitments_audit",
+      "label": "original",
+      "directory": "/workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/local/receipts",
+      "docxSha256": "b3ffff8eb547117986982c127783492ab02b0a6d39ae4a2bacc3a2e9c2af373f",
+      "docxBytes": 40212,
+      "editableParagraphs": 51,
+      "pdfSha256": "61454125c43b61d9a54d499de4d7a8cb58302b781dd9a52127ab3e9821332a49",
+      "pages": 8,
+      "images": [
+        {
+          "page": 1,
+          "path": "/workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/local/receipts/original-preview-1.png",
+          "sha256": "8a1f4cb5c9294581a527d5eac3663d19391e0098c09c6678f502cb13d8c25881",
+          "bytes": 115449,
+          "visuallyOpened": true
+        },
+        {
+          "page": 2,
+          "path": "/workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/local/receipts/original-preview-2.png",
+          "sha256": "8ed004ee47b57b52fb68d277987ff854b129a5efbec46e19c6809697bea505ea",
+          "bytes": 129570,
+          "visuallyOpened": true
+        },
+        {
+          "page": 3,
+          "path": "/workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/local/receipts/original-preview-3.png",
+          "sha256": "f98ed29439cf3b9149bc51e94e13389b81576c23a955558fbd7c687565d5b333",
+          "bytes": 150415,
+          "visuallyOpened": true
+        },
+        {
+          "page": 4,
+          "path": "/workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/local/receipts/original-preview-4.png",
+          "sha256": "ca77619021a64ce238823f121359add34a0bff3b58ce4a6e7dc5a4addf12fd43",
+          "bytes": 148291,
+          "visuallyOpened": true
+        },
+        {
+          "page": 5,
+          "path": "/workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/local/receipts/original-preview-5.png",
+          "sha256": "a6fa52e2f1c1c039c052fc932655611bb68c800002c72e44975a5bed3add4d89",
+          "bytes": 138780,
+          "visuallyOpened": true
+        },
+        {
+          "page": 6,
+          "path": "/workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/local/receipts/original-preview-6.png",
+          "sha256": "95d84a5d5ba82d4f61165a9f211db28441541d471a160fcc9f5a8f5f018daa34",
+          "bytes": 168911,
+          "visuallyOpened": true
+        },
+        {
+          "page": 7,
+          "path": "/workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/local/receipts/original-preview-7.png",
+          "sha256": "f0f740f2519e7664bff77e740ec3d82fc3724ac84c929169703b9315d721f847",
+          "bytes": 161063,
+          "visuallyOpened": true
+        },
+        {
+          "page": 8,
+          "path": "/workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/local/receipts/original-preview-8.png",
+          "sha256": "a5312b87cc9706ed284017a214ec0f39331f62afd101f44559ea002aec9b5221",
+          "bytes": 90474,
+          "visuallyOpened": true
+        }
+      ],
+      "materialEvidence": [
+        {
+          "sourceId": "meetings",
+          "recordId": "71000000-0000-4000-8000-000000000088",
+          "sourceVersionId": "2026-10-13T10:59:55.000Z",
+          "fullSha256": "18df03ef429051bfedb7c324e38c6b20a9b3f7f11dbb2fae1720033efc133f03",
+          "utf16CodeUnits": 69,
+          "scopes": [
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        },
+        {
+          "sourceId": "mail",
+          "recordId": "71000000-0000-4000-8000-000000000074",
+          "sourceVersionId": "synthetic-message-utf16-v2",
+          "fullSha256": "6d11d9c8182f5791f71a9a4bea6e99c79b5667dcea447e2c181cf8f13695415a",
+          "utf16CodeUnits": 2135,
+          "scopes": [
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        },
+        {
+          "sourceId": "meetings",
+          "recordId": "77777777-7777-4777-8777-777777777777",
+          "sourceVersionId": "2026-10-13T10:59:55.000Z",
+          "fullSha256": "18df03ef429051bfedb7c324e38c6b20a9b3f7f11dbb2fae1720033efc133f03",
+          "utf16CodeUnits": 69,
+          "scopes": [
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        },
+        {
+          "sourceId": "client_documents",
+          "recordId": "synthetic-doc:section:1",
+          "sourceVersionId": "extraction:17947a22925e507dca2aa08bd0752d9a2d0075fdab8de1d42a93fd422c58e726:6e4af5809d2ebf106787872a085c635c7f529be1aa18cf1b7587be36bc449d54:1",
+          "fullSha256": "6e4af5809d2ebf106787872a085c635c7f529be1aa18cf1b7587be36bc449d54",
+          "utf16CodeUnits": 86,
+          "scopes": [
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        }
+      ],
+      "pin": {
+        "skillId": "quick_skill.commitments_audit",
+        "skillVersion": "1.0.0",
+        "manifestSha256": "30a5b805056de2961a00da0de65152e4d7e918993f05adfbc7bbe456731bef2d",
+        "proseSha256": "892dc0dbd9105e88e0cb78097514437f9cb29c0323b9bad168c1999d02a4e3db",
+        "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+      },
+      "literalTextPreserved": true,
+      "exactParentAndOriginalPreserved": true,
+      "nativeQualified": false
+    },
+    {
+      "domain": "commitments_audit",
+      "label": "revision",
+      "directory": "/workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/local/receipts",
+      "docxSha256": "922f844102aa0db6da5c3874a53f51c66aba9cf4ca93ddc52a505059ba9048d8",
+      "docxBytes": 40389,
+      "editableParagraphs": 51,
+      "pdfSha256": "178fd88162b91be3bf78752c39c396c1c9f7093bcc13b621e02a121717dea3fe",
+      "pages": 8,
+      "images": [
+        {
+          "page": 1,
+          "path": "/workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/local/receipts/revision-preview-1.png",
+          "sha256": "65b74a5e2d4dd825b673534c2de30750cf8c56241110d06ce3905c51f3bc857a",
+          "bytes": 116321,
+          "visuallyOpened": true
+        },
+        {
+          "page": 2,
+          "path": "/workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/local/receipts/revision-preview-2.png",
+          "sha256": "8ed004ee47b57b52fb68d277987ff854b129a5efbec46e19c6809697bea505ea",
+          "bytes": 129570,
+          "visuallyOpened": true
+        },
+        {
+          "page": 3,
+          "path": "/workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/local/receipts/revision-preview-3.png",
+          "sha256": "f98ed29439cf3b9149bc51e94e13389b81576c23a955558fbd7c687565d5b333",
+          "bytes": 150415,
+          "visuallyOpened": true
+        },
+        {
+          "page": 4,
+          "path": "/workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/local/receipts/revision-preview-4.png",
+          "sha256": "ca77619021a64ce238823f121359add34a0bff3b58ce4a6e7dc5a4addf12fd43",
+          "bytes": 148291,
+          "visuallyOpened": true
+        },
+        {
+          "page": 5,
+          "path": "/workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/local/receipts/revision-preview-5.png",
+          "sha256": "a6fa52e2f1c1c039c052fc932655611bb68c800002c72e44975a5bed3add4d89",
+          "bytes": 138780,
+          "visuallyOpened": true
+        },
+        {
+          "page": 6,
+          "path": "/workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/local/receipts/revision-preview-6.png",
+          "sha256": "00f0c42590415ffdbf43faf713af6754681c6ce2e7d54c5da2d49c4a9a255fb6",
+          "bytes": 169144,
+          "visuallyOpened": true
+        },
+        {
+          "page": 7,
+          "path": "/workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/local/receipts/revision-preview-7.png",
+          "sha256": "f0f740f2519e7664bff77e740ec3d82fc3724ac84c929169703b9315d721f847",
+          "bytes": 161063,
+          "visuallyOpened": true
+        },
+        {
+          "page": 8,
+          "path": "/workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/local/receipts/revision-preview-8.png",
+          "sha256": "c17f072ae851343f9d0f4a66ab19fdfa31c4fc32b3da6fe2758ea1b2ad7be20d",
+          "bytes": 110531,
+          "visuallyOpened": true
+        }
+      ],
+      "materialEvidence": [
+        {
+          "sourceId": "meetings",
+          "recordId": "71000000-0000-4000-8000-000000000088",
+          "sourceVersionId": "2026-10-13T10:59:55.000Z",
+          "fullSha256": "18df03ef429051bfedb7c324e38c6b20a9b3f7f11dbb2fae1720033efc133f03",
+          "utf16CodeUnits": 69,
+          "scopes": [
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        },
+        {
+          "sourceId": "mail",
+          "recordId": "71000000-0000-4000-8000-000000000074",
+          "sourceVersionId": "synthetic-message-utf16-v2",
+          "fullSha256": "6d11d9c8182f5791f71a9a4bea6e99c79b5667dcea447e2c181cf8f13695415a",
+          "utf16CodeUnits": 2135,
+          "scopes": [
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        },
+        {
+          "sourceId": "meetings",
+          "recordId": "77777777-7777-4777-8777-777777777777",
+          "sourceVersionId": "2026-10-13T10:59:55.000Z",
+          "fullSha256": "18df03ef429051bfedb7c324e38c6b20a9b3f7f11dbb2fae1720033efc133f03",
+          "utf16CodeUnits": 69,
+          "scopes": [
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        },
+        {
+          "sourceId": "client_documents",
+          "recordId": "synthetic-doc:section:1",
+          "sourceVersionId": "extraction:17947a22925e507dca2aa08bd0752d9a2d0075fdab8de1d42a93fd422c58e726:6e4af5809d2ebf106787872a085c635c7f529be1aa18cf1b7587be36bc449d54:1",
+          "fullSha256": "6e4af5809d2ebf106787872a085c635c7f529be1aa18cf1b7587be36bc449d54",
+          "utf16CodeUnits": 86,
+          "scopes": [
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        }
+      ],
+      "pin": {
+        "skillId": "quick_skill.commitments_audit",
+        "skillVersion": "1.0.0",
+        "manifestSha256": "30a5b805056de2961a00da0de65152e4d7e918993f05adfbc7bbe456731bef2d",
+        "proseSha256": "892dc0dbd9105e88e0cb78097514437f9cb29c0323b9bad168c1999d02a4e3db",
+        "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+      },
+      "literalTextPreserved": true,
+      "exactParentAndOriginalPreserved": true,
+      "nativeQualified": false
+    },
+    {
+      "domain": "relationship_brief",
+      "label": "original",
+      "directory": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-final",
+      "docxSha256": "0e49bee09871713e74faf59bc20ac0ba4db581298341e9780774384e2efa7b34",
+      "docxBytes": 39873,
+      "editableParagraphs": 75,
+      "pdfSha256": "0cf7de14fb1896158dff718969a0d88b458e8c420732e395fee44fd4077e5458",
+      "pages": 6,
+      "images": [
+        {
+          "page": 1,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-final/original-preview-1.png",
+          "sha256": "eb497acc9cde1ff74b40c676ff65fa8e04b4456241c72c5a30a84588e0a4de06",
+          "bytes": 116459,
+          "visuallyOpened": true
+        },
+        {
+          "page": 2,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-final/original-preview-2.png",
+          "sha256": "4ac12976093aec2546768cc8566ba37f42029a51664ef2835458e81f18f2b631",
+          "bytes": 142008,
+          "visuallyOpened": true
+        },
+        {
+          "page": 3,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-final/original-preview-3.png",
+          "sha256": "d08b8b1a0ed49ba06ed652a8f879ea9f961dad5c640c8354b2abd02a1dec242f",
+          "bytes": 128256,
+          "visuallyOpened": true
+        },
+        {
+          "page": 4,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-final/original-preview-4.png",
+          "sha256": "0f8639cea25fbf3fa51082194f57438ce875fa72bb093e821da3a3d42f2f629a",
+          "bytes": 123563,
+          "visuallyOpened": true
+        },
+        {
+          "page": 5,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-final/original-preview-5.png",
+          "sha256": "3f35035c100c10756b2581fb1d756d9414071413710419d1d68d5b471fabf2dd",
+          "bytes": 121295,
+          "visuallyOpened": true
+        },
+        {
+          "page": 6,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-final/original-preview-6.png",
+          "sha256": "f622ebc32522a054def10c0a24c8cf8b001dce2be7503c62b07d93681df8a75d",
+          "bytes": 100022,
+          "visuallyOpened": true
+        }
+      ],
+      "materialEvidence": [
+        {
+          "sourceId": "meetings",
+          "recordId": "71000000-0000-4000-8000-000000000081",
+          "sourceVersionId": "2026-10-13T10:59:55.000Z",
+          "fullSha256": "18df03ef429051bfedb7c324e38c6b20a9b3f7f11dbb2fae1720033efc133f03",
+          "utf16CodeUnits": 69,
+          "scopes": [
+            {
+              "tenantId": "71000000-0000-4000-8000-000000000020",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "71000000-0000-4000-8000-000000000020",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        },
+        {
+          "sourceId": "mail",
+          "recordId": "71000000-0000-4000-8000-000000000074",
+          "sourceVersionId": "synthetic-message-utf16-v2",
+          "fullSha256": "6d11d9c8182f5791f71a9a4bea6e99c79b5667dcea447e2c181cf8f13695415a",
+          "utf16CodeUnits": 2135,
+          "scopes": [
+            {
+              "tenantId": "71000000-0000-4000-8000-000000000020",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "71000000-0000-4000-8000-000000000020",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        },
+        {
+          "sourceId": "meetings",
+          "recordId": "77777777-7777-4777-8777-777777777777",
+          "sourceVersionId": "2026-10-13T10:59:55.000Z",
+          "fullSha256": "18df03ef429051bfedb7c324e38c6b20a9b3f7f11dbb2fae1720033efc133f03",
+          "utf16CodeUnits": 69,
+          "scopes": [
+            {
+              "tenantId": "71000000-0000-4000-8000-000000000020",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "71000000-0000-4000-8000-000000000020",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        },
+        {
+          "sourceId": "client_documents",
+          "recordId": "synthetic-doc:section:1",
+          "sourceVersionId": "extraction:17947a22925e507dca2aa08bd0752d9a2d0075fdab8de1d42a93fd422c58e726:6e4af5809d2ebf106787872a085c635c7f529be1aa18cf1b7587be36bc449d54:1",
+          "fullSha256": "6e4af5809d2ebf106787872a085c635c7f529be1aa18cf1b7587be36bc449d54",
+          "utf16CodeUnits": 86,
+          "scopes": [
+            {
+              "tenantId": "71000000-0000-4000-8000-000000000020",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "71000000-0000-4000-8000-000000000020",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        }
+      ],
+      "pin": {
+        "skillId": "quick_skill.relationship_brief",
+        "skillVersion": "1.0.0",
+        "manifestSha256": "dc7f9358bd9d646d6d6ca88c9528ad16edbc7552d6765b0d97d945c31d1bc7ed",
+        "proseSha256": "3b6a422d87c0a61562fbe2f2ba96b164b282f62d38058e7db0e15a97672d99ee",
+        "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+      },
+      "literalTextPreserved": true,
+      "exactParentAndOriginalPreserved": true,
+      "nativeQualified": false
+    },
+    {
+      "domain": "relationship_brief",
+      "label": "revision",
+      "directory": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-final",
+      "docxSha256": "60aad8f93d76ac93c415be52a5934c341cd3ef2990d2813f0f085a70b0119465",
+      "docxBytes": 40071,
+      "editableParagraphs": 75,
+      "pdfSha256": "f7bd377bd5ac262694a93b2c554d8e9560e124e37fbaa7c36f41601562ca9d0f",
+      "pages": 6,
+      "images": [
+        {
+          "page": 1,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-final/revision-preview-1.png",
+          "sha256": "208f20780a73cf9b951a50d8a59d80ade6ea992a9b8766220b0cbda3c9d10c4c",
+          "bytes": 116245,
+          "visuallyOpened": true
+        },
+        {
+          "page": 2,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-final/revision-preview-2.png",
+          "sha256": "4ac12976093aec2546768cc8566ba37f42029a51664ef2835458e81f18f2b631",
+          "bytes": 142008,
+          "visuallyOpened": true
+        },
+        {
+          "page": 3,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-final/revision-preview-3.png",
+          "sha256": "6904e9f7c85da261bcf7f8ba6b99c463248fed492a1bf917d1ffc4d5fd7cada3",
+          "bytes": 128059,
+          "visuallyOpened": true
+        },
+        {
+          "page": 4,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-final/revision-preview-4.png",
+          "sha256": "2c0f880aeb20e760c2a98b4448b3c3ce6b224d70acb183cba21eb70993ff1e35",
+          "bytes": 123531,
+          "visuallyOpened": true
+        },
+        {
+          "page": 5,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-final/revision-preview-5.png",
+          "sha256": "3f35035c100c10756b2581fb1d756d9414071413710419d1d68d5b471fabf2dd",
+          "bytes": 121295,
+          "visuallyOpened": true
+        },
+        {
+          "page": 6,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-final/revision-preview-6.png",
+          "sha256": "a60fbec435b533bf5fb29fb2f5faefea7aaeea2e9546951b48e14c7b7dbc07e2",
+          "bytes": 120826,
+          "visuallyOpened": true
+        }
+      ],
+      "materialEvidence": [
+        {
+          "sourceId": "meetings",
+          "recordId": "71000000-0000-4000-8000-000000000081",
+          "sourceVersionId": "2026-10-13T10:59:55.000Z",
+          "fullSha256": "18df03ef429051bfedb7c324e38c6b20a9b3f7f11dbb2fae1720033efc133f03",
+          "utf16CodeUnits": 69,
+          "scopes": [
+            {
+              "tenantId": "71000000-0000-4000-8000-000000000020",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "71000000-0000-4000-8000-000000000020",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        },
+        {
+          "sourceId": "mail",
+          "recordId": "71000000-0000-4000-8000-000000000074",
+          "sourceVersionId": "synthetic-message-utf16-v2",
+          "fullSha256": "6d11d9c8182f5791f71a9a4bea6e99c79b5667dcea447e2c181cf8f13695415a",
+          "utf16CodeUnits": 2135,
+          "scopes": [
+            {
+              "tenantId": "71000000-0000-4000-8000-000000000020",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "71000000-0000-4000-8000-000000000020",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        },
+        {
+          "sourceId": "meetings",
+          "recordId": "77777777-7777-4777-8777-777777777777",
+          "sourceVersionId": "2026-10-13T10:59:55.000Z",
+          "fullSha256": "18df03ef429051bfedb7c324e38c6b20a9b3f7f11dbb2fae1720033efc133f03",
+          "utf16CodeUnits": 69,
+          "scopes": [
+            {
+              "tenantId": "71000000-0000-4000-8000-000000000020",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "71000000-0000-4000-8000-000000000020",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        },
+        {
+          "sourceId": "client_documents",
+          "recordId": "synthetic-doc:section:1",
+          "sourceVersionId": "extraction:17947a22925e507dca2aa08bd0752d9a2d0075fdab8de1d42a93fd422c58e726:6e4af5809d2ebf106787872a085c635c7f529be1aa18cf1b7587be36bc449d54:1",
+          "fullSha256": "6e4af5809d2ebf106787872a085c635c7f529be1aa18cf1b7587be36bc449d54",
+          "utf16CodeUnits": 86,
+          "scopes": [
+            {
+              "tenantId": "71000000-0000-4000-8000-000000000020",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "71000000-0000-4000-8000-000000000020",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        }
+      ],
+      "pin": {
+        "skillId": "quick_skill.relationship_brief",
+        "skillVersion": "1.0.0",
+        "manifestSha256": "dc7f9358bd9d646d6d6ca88c9528ad16edbc7552d6765b0d97d945c31d1bc7ed",
+        "proseSha256": "3b6a422d87c0a61562fbe2f2ba96b164b282f62d38058e7db0e15a97672d99ee",
+        "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+      },
+      "literalTextPreserved": true,
+      "exactParentAndOriginalPreserved": true,
+      "nativeQualified": false
+    }
+  ]
+}

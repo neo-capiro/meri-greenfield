@@ -1,0 +1,69 @@
+{
+  "phaseStart": "2026-10-13T15:53:00Z",
+  "checkpoint": "2026-10-13T16:16:00Z",
+  "verdict": "HOLD_PENDING_FINAL_FREEZE",
+  "independentTypedMaterial": {
+    "reviewedSharedCommit": "94d9ffc82137fad65c392b265bd975c5abe22aed",
+    "reviewedCommitmentsCommit": "0343133a8e4603a0a7796ecad6a454a2cdc2dbfc",
+    "tests": 9,
+    "pass": 8,
+    "fail": 1,
+    "hold": "Approved memory full material neither bound nor specifically disclosed as unsupported by shared admission",
+    "raw": "typed-material-initial-hold.tap.gz"
+  },
+  "artifacts": [
+    {
+      "domain": "commitments_audit",
+      "label": "original",
+      "docxSha256": "b3ffff8eb547117986982c127783492ab02b0a6d39ae4a2bacc3a2e9c2af373f",
+      "docxBytes": 40212,
+      "pages": 8
+    },
+    {
+      "domain": "commitments_audit",
+      "label": "revision",
+      "docxSha256": "922f844102aa0db6da5c3874a53f51c66aba9cf4ca93ddc52a505059ba9048d8",
+      "docxBytes": 40389,
+      "pages": 8
+    },
+    {
+      "domain": "relationship_brief",
+      "label": "original",
+      "docxSha256": "0e49bee09871713e74faf59bc20ac0ba4db581298341e9780774384e2efa7b34",
+      "docxBytes": 39873,
+      "pages": 6
+    },
+    {
+      "domain": "relationship_brief",
+      "label": "revision",
+      "docxSha256": "60aad8f93d76ac93c415be52a5934c341cd3ef2990d2813f0f085a70b0119465",
+      "docxBytes": 40071,
+      "pages": 6
+    }
+  ],
+  "visualPagesOpened": 28,
+  "artifactLiteralInspection": "PASS",
+  "artifactQualification": "interim only, no frozen executable workflow acceptance",
+  "preservedVerifierSetupFailures": [
+    {
+      "file": "typed-material-draft.tap.gz",
+      "reason": "Verifier omitted mandatory operation lifetime error factory; corrected setup, assertions retained"
+    },
+    {
+      "file": "typed-material-draft-corrected.tap.gz",
+      "reason": "Memory source normalization needs canonical UUID fixture context; corrected that setup, assertions retained"
+    },
+    {
+      "file": "artifact-opening-draft.stdout.gz",
+      "reason": "Verifier initially expected debrief sourceRecordId on note DTO; corrected exact sourceId field for note and transcript only"
+    }
+  ],
+  "remaining": [
+    "Final exact integrated source pin and fresh source-correlated DOCX lifecycle replay/render/opening",
+    "Original task/action/Monday material tracking support is incomplete; no fake body/version hashes",
+    "Current generic artifact fixture grant identifies historical synthetic Relationship Brief asset; no original Commitments runtime manifest-admission proof",
+    "Native real source/authority/SDK/Temporal/DB/staging and full whole-requirement qualification remain pending"
+  ],
+  "ownedProductEdits": false,
+  "externalOps": false
+}
