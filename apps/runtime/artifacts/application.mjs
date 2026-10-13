@@ -21,11 +21,12 @@ export function createRuntimeArtifactApplication(configuration){const c=own(conf
   const options=own(resolved.documentOptions,['sessions','selectedClientId','artifactOptions','credential','now','limits'],['enabled']);if(options.sessions!==c.sessions||options.now!==c.now)fail('ACCESS_DENIED');
   const innerLimits=documentLimits(options.limits);
   const effectiveLimits=Object.fromEntries(Object.keys(limits).map(key=>[key,Math.min(limits[key],innerLimits[key])]));
+  const effectiveDeadlineMs=deadlineMs-limits.maxRequestMs+effectiveLimits.maxRequestMs;life.limitDeadline(effectiveDeadlineMs);
   const o=own(options.artifactOptions,['pool','allocationJson','producerContext','descriptor','context','validators','authority','authorize','versions','objects','executor','now','ids','newReservationId','limits'],['sourceEnabled','namespace']);
   o.context=v.context(o.context);
   const pinned=hash({intent:info.intent,body});life.limitDeadline(o.context.deadlineMs);
   async function fresh(phase,resource=null){life.check();if(hash({intent:info.intent,body})!==pinned)fail('ACCESS_DENIED');
-   const result=await life.run(signal=>recheck({phase,intent:info.intent,requestSha256,resource:resource===null?null:data(resource),signal,deadlineMs:Math.min(o.context.deadlineMs,deadlineMs)}));
+   const result=await life.run(signal=>recheck({phase,intent:info.intent,requestSha256,resource:resource===null?null:data(resource),signal,deadlineMs:Math.min(o.context.deadlineMs,effectiveDeadlineMs)}));
    // A boolean callback result cannot serve as a source/renderer qualification.
    if(result!==undefined&&(result===null||typeof result!=='object'))fail('ACCESS_DENIED');life.check();}
   const wrap=(port,name,resource=()=>null)=>{const invoke=method(port,name);return async(...args)=>{await fresh('effect',resource(args));const value=await life.run(()=>invoke(...args));await fresh('effect',resource(args));return value;};};
