@@ -1,0 +1,24 @@
+{
+  "ownedProcessGroups": [
+    {
+      "receipt": "baseline.json",
+      "pgid": 568308,
+      "absent": true
+    },
+    {
+      "receipt": "downstream-before.json",
+      "pgid": 568572,
+      "absent": true
+    },
+    {
+      "receipt": "candidate.json",
+      "pgid": 569765,
+      "absent": true
+    }
+  ],
+  "dependenciesCreated": 0,
+  "dependenciesRemoved": 0,
+  "filesRemoved": [],
+  "nativeActions": 0,
+  "otherOwnerResourcesTouched": false
+}
