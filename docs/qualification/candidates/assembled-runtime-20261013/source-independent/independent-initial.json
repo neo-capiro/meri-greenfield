@@ -1,0 +1,21 @@
+{
+  "sourceCommit": "46ab3d9836a557d2adda1f6de8f3f7ef351236ce",
+  "sourceTree": "5ea8883a46648d934e827b23495ab71f497d887d",
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/assembled-runtime-20261013/source-independent/runtime-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-assembled-runtime-source-review",
+  "timeoutSeconds": 180,
+  "exitCode": 1,
+  "timedOut": false,
+  "durationSeconds": 0.059,
+  "subreaper": true,
+  "adoptedChildrenReaped": [],
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 1567,
+  "stdoutSha256": "92277b4ffc9d896b79dd33273aae15f3e2fb49197f8ed4b69c16c069b703c297",
+  "stderrBytes": 0,
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

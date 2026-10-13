@@ -1,0 +1,102 @@
+{
+  "checkedAt": "2026-10-13T19:37:01.637126+00:00",
+  "ownedResourcesRemoved": [
+    {
+      "path": "node_modules",
+      "target": "/workspace/meri-greenfield/node_modules",
+      "removed": true,
+      "targetPreserved": true
+    },
+    {
+      "path": "apps/worker/conversation/node_modules",
+      "target": "/workspace/meri-next-batch/apps/worker/conversation/node_modules",
+      "removed": true,
+      "targetPreserved": true
+    },
+    {
+      "path": "packages/ui-stream/node_modules",
+      "target": "/workspace/meri-greenfield/packages/ui-stream/node_modules",
+      "removed": true,
+      "targetPreserved": true
+    },
+    {
+      "path": "packages/window-resolution/node_modules",
+      "target": "/workspace/meri-next-batch/packages/window-resolution/node_modules",
+      "removed": true,
+      "targetPreserved": true
+    },
+    {
+      "path": "apps/control/conversations/node_modules",
+      "target": "/workspace/meri-runtime-integration/apps/runtime/node_modules",
+      "removed": true,
+      "targetPreserved": true
+    },
+    {
+      "path": "apps/runtime/node_modules",
+      "type": "owned fresh install/cache",
+      "entriesRemoved": 13470
+    },
+    {
+      "path": "apps/artifacts/storage/node_modules",
+      "type": "owned fresh install/cache",
+      "entriesRemoved": 4271
+    },
+    {
+      "path": "docs/qualification/candidates/assembled-runtime-20261013/root/.npm-cache",
+      "type": "owned fresh install/cache",
+      "entriesRemoved": 1063
+    }
+  ],
+  "ownedCaptureGroups": [
+    {
+      "receipt": "public-dependency-ci.json",
+      "pgid": 339548,
+      "currentlyAbsent": true,
+      "streamHashesVerified": true
+    },
+    {
+      "receipt": "integrated-runtime.json",
+      "pgid": 344558,
+      "currentlyAbsent": true,
+      "streamHashesVerified": true
+    },
+    {
+      "receipt": "integrated-runtime-final.json",
+      "pgid": 346508,
+      "currentlyAbsent": true,
+      "streamHashesVerified": true
+    },
+    {
+      "receipt": "integrated-workflow-bundle.json",
+      "pgid": 345415,
+      "currentlyAbsent": true,
+      "streamHashesVerified": true
+    },
+    {
+      "receipt": "integrated-storage.json",
+      "pgid": 343463,
+      "currentlyAbsent": true,
+      "streamHashesVerified": true
+    },
+    {
+      "receipt": "integrated-workflow-bundle-local.json",
+      "pgid": 345839,
+      "currentlyAbsent": true,
+      "streamHashesVerified": true
+    },
+    {
+      "receipt": "integrated-lifecycle-rpc.json",
+      "pgid": 347232,
+      "currentlyAbsent": true,
+      "streamHashesVerified": true
+    },
+    {
+      "receipt": "integrated-types.json",
+      "pgid": 344643,
+      "currentlyAbsent": true,
+      "streamHashesVerified": true
+    }
+  ],
+  "otherOwnersAndPID1Untouched": true,
+  "donorDirectoriesPreserved": true
+}

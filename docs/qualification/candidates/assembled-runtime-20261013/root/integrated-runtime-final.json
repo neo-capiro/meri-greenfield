@@ -1,0 +1,39 @@
+{
+  "command": [
+    "node",
+    "--experimental-vm-modules",
+    "--test",
+    "apps/runtime/test/runtime.test.mjs",
+    "apps/runtime/test/process.test.mjs",
+    "apps/runtime/test/lifecycle.test.mjs",
+    "docs/qualification/candidates/assembled-runtime-20261013/source-independent/runtime-independent.test.mjs",
+    "docs/qualification/candidates/assembled-runtime-20261013/source-independent/database-tls-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-runtime-integration",
+  "sourceHead": "8c2ef0b5cca591307a523e57a6b4bb62efc02e40",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T19:31:56.784575+00:00",
+  "durationSeconds": 13.784,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 346508,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/assembled-runtime-20261013/root/integrated-runtime-final.stdout.bin",
+      "bytes": 3529,
+      "sha256": "c80ffb3a0b7ed9a85eb22c952510b18916d66348bd0ec198a9c10270150976a2"
+    },
+    {
+      "path": "docs/qualification/candidates/assembled-runtime-20261013/root/integrated-runtime-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Correct root setup with frozen 15 independent controls plus 18 process/lifecycle cases after source review seal; initial missing-source-root suite-load errors preserved, all original assertions unchanged.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

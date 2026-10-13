@@ -1,0 +1,35 @@
+{
+  "command": [
+    "npm",
+    "test",
+    "--prefix",
+    "apps/runtime"
+  ],
+  "cwd": "/workspace/meri-assembled-runtime",
+  "sourceHead": "b5734174407b399c75ab9bceafbf29c47a059ea4",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "1238de211f6f51ec020007457c9f6ae9e26f1ad1e6d822772955d411111d82a7",
+  "startedAt": "2026-10-13T19:24:50.510529+00:00",
+  "durationSeconds": 14.543,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 341547,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/runtime/evidence/repaired-frozen-author.stdout.bin",
+      "bytes": 4892,
+      "sha256": "c73dd2855900002529834ea1a43356bf0d019aca250e223123184ab96d790ecd"
+    },
+    {
+      "path": "apps/runtime/evidence/repaired-frozen-author.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

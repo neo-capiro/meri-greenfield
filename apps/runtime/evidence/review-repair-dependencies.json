@@ -1,0 +1,40 @@
+{
+  "command": [
+    "npm",
+    "ci",
+    "--prefix",
+    "apps/runtime",
+    "--ignore-scripts",
+    "--no-audit",
+    "--no-fund",
+    "--cache",
+    "/tmp/meri-runtime-repair-npm-cache"
+  ],
+  "cwd": "/workspace/meri-assembled-runtime",
+  "sourceHead": "0a810ac3297175390b6f88626aab93ac07844c26",
+  "sourceDiffSha256": "7ca3b29bfb2e925a63f2877e086572fcd397226faa05f1d897a65c27bf3d9a0a",
+  "sourceDiffBytes": 17056,
+  "captureSha256": "1238de211f6f51ec020007457c9f6ae9e26f1ad1e6d822772955d411111d82a7",
+  "startedAt": "2026-10-13T19:13:39.131361+00:00",
+  "durationSeconds": 2.926,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 334553,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/runtime/evidence/review-repair-dependencies.stdout.bin",
+      "bytes": 26,
+      "sha256": "d4f336b5717b47c69896c0ed39c96d45789a1814edbf795562b2b1ea262f80ac"
+    },
+    {
+      "path": "apps/runtime/evidence/review-repair-dependencies.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

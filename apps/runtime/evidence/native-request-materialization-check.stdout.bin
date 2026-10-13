@@ -1,0 +1,42 @@
+
+> @meri/assembled-runtime@0.1.0 test
+> node --test test/*.test.mjs
+
+✖ actual control listener mounts canonical opaque issuance, submit/history and task-authorized RPC (2561.687052ms)
+✔ actual listener rejects cross-origin and incorrect methods; dependency loss changes readiness (1966.829656ms)
+✔ actual CLI help and invalid configuration exit before dependency allocation (321.130625ms)
+✔ actual process exits on SIGTERM after listener shutdown (1868.883829ms)
+✔ configuration refuses sources, production profile, unknown fields and shared task workspace (1.964249ms)
+✔ trusted Temporal registration uses both canonical workflow definitions and broker activity (0.687308ms)
+✔ broker accepts exact native task identity and propagates completion without an SDK loop (0.390865ms)
+✔ broker refuses a response from another writer fence (0.338146ms)
+✔ isolated runner invokes canonical activity and one scripted SDK query, preserving durable events (23.264ms)
+✔ runner and container boundaries exclude legacy proxies and arbitrary injected config modules (10.634061ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 9
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6757.746088
+
+✖ failing tests:
+
+test at test/process.test.mjs:3:1
+✖ actual control listener mounts canonical opaque issuance, submit/history and task-authorized RPC (2561.687052ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  403 !== 401
+  
+      at TestContext.<anonymous> (file:///workspace/meri-assembled-runtime/apps/runtime/test/process.test.mjs:12:83)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 403,
+    expected: 401,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

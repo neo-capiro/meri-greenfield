@@ -1,0 +1,24 @@
+{
+  "sourceCommit": "b5734174407b399c75ab9bceafbf29c47a059ea4",
+  "sourceTree": "7dd1f8fe0e5bae56f9ad2a8b689726743e14eb79",
+  "command": [
+    "node",
+    "--experimental-vm-modules",
+    "--test",
+    "/workspace/meri-assembled-runtime-source-review/docs/qualification/candidates/assembled-runtime-20261013/source-independent/runtime-independent.test.mjs",
+    "/workspace/meri-assembled-runtime-source-review/docs/qualification/candidates/assembled-runtime-20261013/source-independent/database-tls-independent.test.mjs",
+    "/workspace/meri-assembled-runtime-source-review/docs/qualification/candidates/assembled-runtime-20261013/source-independent/lifecycle-rpc-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-assembled-runtime-source-check",
+  "timeoutSeconds": 180,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationSeconds": 2.974,
+  "subreaper": true,
+  "adoptedChildrenReaped": [],
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 1928,
+  "stdoutSha256": "8a895d3729d875900abb76260de415bd309db08dcb6d5c9b2eb51c2a981c5326",
+  "stderrBytes": 0,
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

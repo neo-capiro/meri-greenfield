@@ -1,0 +1,38 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/artifacts/storage/test/constructor-ports.test.mjs",
+    "apps/artifacts/storage/test/pg-wire.test.mjs",
+    "apps/artifacts/storage/test/postgres.test.mjs",
+    "apps/artifacts/storage/test/s3.test.mjs",
+    "apps/artifacts/storage/test/service.test.mjs"
+  ],
+  "cwd": "/workspace/meri-runtime-integration",
+  "sourceHead": "2c0c2a5c12ed467e27c3b2b45ae7431add8e2294",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T19:26:49.498351+00:00",
+  "durationSeconds": 4.401,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 343463,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/assembled-runtime-20261013/root/integrated-storage.stdout.bin",
+      "bytes": 3086,
+      "sha256": "1d9dcfe3d010e539e2d09f87815f211224cc636d78dd5643f37b7f5239431b31"
+    },
+    {
+      "path": "docs/qualification/candidates/assembled-runtime-20261013/root/integrated-storage.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Root integrated storage replay after independent getter/proxy counterexample repair; freshly installed official SDK and driver bytes, no AWS/native DB.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

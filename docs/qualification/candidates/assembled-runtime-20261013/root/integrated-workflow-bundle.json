@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/runtime/test/bundle.test.mjs"
+  ],
+  "cwd": "/workspace/meri-runtime-integration",
+  "sourceHead": "059ee82da69064d7ce7075f63b2c6f37b2720788",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T19:29:58.951132+00:00",
+  "durationSeconds": 2.624,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 345415,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/assembled-runtime-20261013/root/integrated-workflow-bundle.stdout.bin",
+      "bytes": 4042,
+      "sha256": "cd3c1462246c63624366b5e159e2b6195944ac1ae5928d6da260658220a93ce5"
+    },
+    {
+      "path": "docs/qualification/candidates/assembled-runtime-20261013/root/integrated-workflow-bundle.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Root actual upstream Temporal workflow bundle on composed reviewed source; no native DB, model, provider or cloud call.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

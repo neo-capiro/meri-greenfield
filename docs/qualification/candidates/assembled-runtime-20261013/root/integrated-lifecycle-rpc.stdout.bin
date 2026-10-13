@@ -1,0 +1,10 @@
+✔ assembled runner uses canonical task-authorized lifecycle RPC; steering echo APPLIED remains single delivery (77.087727ms)
+✔ assembled runner uses canonical task-authorized lifecycle RPC; steering echo UNKNOWN remains single delivery (45.64928ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2171.064234

@@ -1,0 +1,18 @@
+npm error code ECONNREFUSED
+npm error errno ECONNREFUSED
+npm error FetchError: request to https://registry.npmjs.org/@aws-sdk%2fclient-s3 failed, reason: 
+npm error     at ClientRequest.<anonymous> (/opt/codex/runtimes/codex-primary-runtime/dependencies/node/lib/node_modules/npm/node_modules/minipass-fetch/lib/index.js:130:14)
+npm error     at ClientRequest.emit (node:events:509:28)
+npm error     at emitErrorEvent (node:_http_client:112:11)
+npm error     at _destroy (node:_http_client:1144:9)
+npm error     at onSocketNT (node:_http_client:1165:5)
+npm error     at process.processTicksAndRejections (node:internal/process/task_queues:91:21) {
+npm error   code: 'ECONNREFUSED',
+npm error   errno: 'ECONNREFUSED',
+npm error   type: 'system',
+npm error   requiredBy: '.'
+npm error }
+npm error
+npm error If you are behind a proxy, please make sure that the
+npm error 'proxy' config is set properly.  See: 'npm help config'
+npm error A complete log of this run can be found in: /tmp/meri-storage-npm-cache/_logs/2026-10-13T18_59_50_411Z-debug-0.log

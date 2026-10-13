@@ -1,0 +1,23 @@
+/** Local SQL protocol fixtures verify product adapter logic, never native DB admission. */
+import {createHash} from 'node:crypto';
+import {createPostgresArtifactVersions} from '../postgres-versions.mjs';
+import {artifactValidators as v} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
+export const id=n=>`33333333-3333-4333-8333-${String(n).padStart(12,'0')}`,NOW=Date.parse('2026-10-13T18:00:00Z');
+const binding={tenantId:'synthetic-tenant',actorId:'synthetic-actor',conversationId:id(1),runId:id(2),attemptId:id(3),workerId:id(4),writerFence:1};
+const scopes=[{tenantId:binding.tenantId,kind:'client',resourceId:'synthetic-client',policyRevision:'synthetic-policy'}];
+export function record(n=10,parentVersionId=null){const bytes=Buffer.from(`Synthetic artifact ${n}`),sha256=createHash('sha256').update(bytes).digest('hex'),spec={operation:'create_word',format:'txt',title:'Synthetic',content:{text:bytes.toString()}};
+ return {version:{contractVersion:'0.1.0',artifactId:id(9),versionId:id(n),parentVersionId,binding:structuredClone(binding),object:{objectId:id(n+100),versionId:`SYNTHETIC_NATIVE_${n}`,sha256,bytes:bytes.length,scopes:structuredClone(scopes)},filename:'Synthetic.txt',mimeType:'text/plain; charset=utf-8',scopes:structuredClone(scopes),evidence:[],generationStatus:'draft',previewStatus:'pending',createdAt:new Date(NOW).toISOString()},spec,specSha256:v.hash(spec),requestSha256:String(n%10).repeat(64),inspection:{sha256,bytes:bytes.length,format:'txt',nativeOpened:false,rendered:false,recalculated:false,members:[],details:{encoding:'UTF-8',whitespace:'unchanged'}}};}
+export const commit=r=>({...r,expectedParentVersionId:r.version.parentVersionId});
+export function sqlFixture(){const state={versions:new Map(),heads:new Map()},events=[],releases=[],flags={commitFailure:false,rollbackPark:false,queryPark:false,hook:null};
+ const client={async query(sql,args=[]){events.push({sql,args:structuredClone(args)});if(flags.hook)await flags.hook(sql,args);if(flags.queryPark&&sql.startsWith('SELECT *'))return new Promise(()=>{});
+  if(sql==='BEGIN'){this.snapshot=structuredClone(state);return {rows:[],rowCount:0};}if(sql.startsWith('SET LOCAL')||sql.startsWith('SELECT pg_advisory'))return {rows:[],rowCount:0};
+  if(sql==='ROLLBACK'){if(flags.rollbackPark)return new Promise(()=>{});state.versions=this.snapshot.versions;state.heads=this.snapshot.heads;return {rows:[],rowCount:0};}
+  if(sql==='COMMIT'){if(flags.commitFailure)throw Error('SYNTHETIC_LOST_COMMIT_ACK');return {rows:[],rowCount:0};}
+  if(sql.startsWith('SELECT * FROM meri_artifacts.versions'))return {rows:state.versions.has(args[0])?[structuredClone(state.versions.get(args[0]))]:[],rowCount:state.versions.has(args[0])?1:0};
+  if(sql.startsWith('SELECT * FROM meri_artifacts.heads'))return {rows:state.heads.has(args[0])?[structuredClone(state.heads.get(args[0]))]:[],rowCount:state.heads.has(args[0])?1:0};
+  if(sql.startsWith('SELECT version_id'))return {rows:[...state.versions.values()].filter(r=>r.request_sha256===args[0]).sort((a,b)=>a.version_id.localeCompare(b.version_id)).slice(0,1025).map(r=>({version_id:r.version_id})),rowCount:0};
+  if(sql.startsWith('INSERT INTO meri_artifacts.versions')){const [version_id,artifact_id,tenant_id,actor_id,conversation_id,request_sha256,record,record_sha256]=args;if(state.versions.has(version_id))throw Error('SYNTHETIC_UNIQUE');state.versions.set(version_id,structuredClone({version_id,artifact_id,tenant_id,actor_id,conversation_id,request_sha256,record,record_sha256}));return {rows:[],rowCount:1};}
+  if(sql.startsWith('INSERT INTO meri_artifacts.heads')){const [artifact_id,version_id,tenant_id,actor_id,conversation_id,projection,projection_sha256]=args;if(state.heads.has(artifact_id))throw Error('SYNTHETIC_UNIQUE');state.heads.set(artifact_id,structuredClone({artifact_id,version_id,tenant_id,actor_id,conversation_id,projection,projection_sha256}));return {rows:[],rowCount:1};}
+  if(sql.startsWith('UPDATE meri_artifacts.heads')){const [artifact_id,version_id,projection,projection_sha256,parent]=args,r=state.heads.get(artifact_id);if(r?.version_id!==parent)return {rows:[],rowCount:0};Object.assign(r,{version_id,projection:structuredClone(projection),projection_sha256});return {rows:[],rowCount:1};}
+  throw Error(`Unexpected SQL: ${sql}`);},release(error){releases.push(error??null);}};
+ const pool={async connect(){return client;},end(){throw Error('BORROWED_POOL_MUST_NOT_CLOSE');}};return {state,events,releases,flags,client,pool,create:options=>createPostgresArtifactVersions({pool,now:()=>NOW,maxRequestMs:100,...options})};}

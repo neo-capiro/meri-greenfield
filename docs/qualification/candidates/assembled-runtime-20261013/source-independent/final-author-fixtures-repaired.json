@@ -1,0 +1,23 @@
+{
+  "sourceCommit": "def57a612e4c20992fdc78240840f717f051e434",
+  "sourceTree": "5ae301be0a869a965e54f5e678c99042aec141a1",
+  "command": [
+    "node",
+    "--test",
+    "apps/runtime/test/runtime.test.mjs",
+    "apps/runtime/test/process.test.mjs",
+    "apps/runtime/test/lifecycle.test.mjs"
+  ],
+  "cwd": "/workspace/meri-assembled-runtime-source-check",
+  "timeoutSeconds": 180,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationSeconds": 13.405,
+  "subreaper": true,
+  "adoptedChildrenReaped": [],
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 1973,
+  "stdoutSha256": "721b6ef884db1060d73ba0ba16b3cab44cc80b5b9613521691de5affedc12923",
+  "stderrBytes": 0,
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

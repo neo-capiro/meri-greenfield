@@ -1,0 +1,23 @@
+{
+  "reviewedCommit": "def57a612e4c20992fdc78240840f717f051e434",
+  "removedOwnedLinks": [
+    "/workspace/meri-assembled-runtime-source-check/node_modules",
+    "/workspace/meri-assembled-runtime-source-check/apps/control/conversations/node_modules",
+    "/workspace/meri-assembled-runtime-source-check/apps/worker/conversation/node_modules",
+    "/workspace/meri-assembled-runtime-source-check/packages/ui-stream/node_modules",
+    "/workspace/meri-assembled-runtime-source-check/packages/window-resolution/node_modules",
+    "/workspace/meri-assembled-runtime-source-check/apps/runtime/node_modules",
+    "/workspace/meri-assembled-runtime-source-review/node_modules",
+    "/workspace/meri-assembled-runtime-source-review/apps/control/conversations/node_modules",
+    "/workspace/meri-assembled-runtime-source-review/apps/worker/conversation/node_modules",
+    "/workspace/meri-assembled-runtime-source-review/packages/ui-stream/node_modules",
+    "/workspace/meri-assembled-runtime-source-review/packages/window-resolution/node_modules"
+  ],
+  "removedOwnedDependencyTree": "/workspace/meri-assembled-runtime-source-review/apps/runtime/node_modules",
+  "removedOwnedNpmCache": "/tmp/meri-assembled-source-review-npm-cache",
+  "directDonorsPreserved": true,
+  "allOwnCapturedProcessGroupsAbsent": true,
+  "sourceCheckWorktreeClean": true,
+  "wholeHostCleanupClaim": false,
+  "newArtifactsGenerated": false
+}

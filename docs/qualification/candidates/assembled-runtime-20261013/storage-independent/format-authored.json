@@ -1,0 +1,39 @@
+{
+  "command": [
+    "git",
+    "show",
+    "--format=",
+    "--check",
+    "HEAD",
+    "--",
+    "docs/qualification/candidates/assembled-runtime-20261013/storage-independent",
+    ":!docs/qualification/candidates/assembled-runtime-20261013/storage-independent/*.bin"
+  ],
+  "cwd": "/workspace/meri-runtime-artifact-storage-review",
+  "sourceHead": "d25a53ca1b2dc67d039fd3f622be84d5505f2cbf",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T19:30:17.545630+00:00",
+  "durationSeconds": 0.004,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 345576,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/assembled-runtime-20261013/storage-independent/format-authored.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/assembled-runtime-20261013/storage-independent/format-authored.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

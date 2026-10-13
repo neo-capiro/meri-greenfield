@@ -1,0 +1,37 @@
+✔ postgres constructor refuses getter method without executing it (0.86543ms)
+✔ postgres constructor refuses proxy method without executing it (0.125892ms)
+✔ s3 constructor refuses getter method without executing it (0.440001ms)
+✔ s3 constructor refuses proxy method without executing it (0.081644ms)
+✔ postgres constructor refuses inherited getter without executing it (0.23604ms)
+✔ postgres constructor refuses inherited proxy without executing it (0.066451ms)
+✔ s3 constructor refuses inherited getter without executing it (0.072401ms)
+✔ s3 constructor refuses inherited proxy without executing it (0.056436ms)
+✔ native Pool/S3Client prototype methods remain valid and constructors perform no IO (26.530826ms)
+✔ postgres retains the admitted bound method if configured connect is later replaced by an accessor (1.829501ms)
+✔ s3 retains the admitted prototype method if configured send is later replaced by an accessor (1.125006ms)
+✔ upstream pg Pool performs parameterized JSON/UUID queries and releases borrowed transaction leases without network (32.185821ms)
+✔ canonical record/head atomically commit, fresh adapter reads and exact replay remains idempotent after newer head (22.429782ms)
+✔ stale parent rejects with rollback and no immutable row or changed head (3.176535ms)
+✔ same immutable version cannot change request/spec/source object/binding; parent preserves owner/scopes (8.258517ms)
+✔ retained result hash supports only exact published lineage; request hash alone cannot find random old IDs (2.603061ms)
+✔ record/projection relational columns and hashes reject corruption (5.125788ms)
+✔ lost commit acknowledgement is UNKNOWN, retained exact record then recovers without writing twice (3.019375ms)
+✔ late borrowed acquisition is quarantined, and parked rollback is bounded (64.034999ms)
+✔ cancel before connection has no SQL and cancellation after insert rolls back (1.719202ms)
+✔ native SDK command objects use immutable key/full checksum/KMS/account and exact native version head/get (7.87367ms)
+✔ conditional replay verifies current native head/request metadata then the exact native version (1.448917ms)
+✔ bucket suspended/unversioned and missing/native-null/checksum/composite/KMS/identity metadata fail closed (2.291343ms)
+✔ get byte corruption/overflow and cancellation retire actual stream bodies (7.590474ms)
+✔ parked send deadlines have no late reads and acquired late bodies are destroyed (21.020775ms)
+✔ constructor/import are inert; credentials required explicitly and borrowed client never disposed (3.662613ms)
+✔ actual installed S3Client serialization/deserialization runs through an injected handler without network (20.217317ms)
+✔ unchanged artifact service creates/revises/downloads with durable ports and retained original lineage/bytes (39.337685ms)
+✔ current canonical authorization controls release and generation while storage retains only integrity facts (3.475722ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4346.895917

@@ -1,0 +1,3 @@
+Initial package-lock command failed before configuration resolution:
+Exit prior to config file resolving cause double-loading config '/tmp/meri-storage-empty-npmrc' as global previously loaded as user.
+Corrected by using distinct empty user/global config files. This receipt preserves the observed failure; it is not a reconstructed successful command capture.

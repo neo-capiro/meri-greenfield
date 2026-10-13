@@ -1,0 +1,35 @@
+{
+  "command": [
+    "npm",
+    "test",
+    "--prefix",
+    "apps/runtime"
+  ],
+  "cwd": "/workspace/meri-assembled-runtime",
+  "sourceHead": "71d8c90c5a1fe5abc88b25fb74abba177949d3b1",
+  "sourceDiffSha256": "61e6e2aade4b40b6797b2d6a83c4af3de67320c5ad06af1653fea3e8cd9493ec",
+  "sourceDiffBytes": 176583,
+  "captureSha256": "1238de211f6f51ec020007457c9f6ae9e26f1ad1e6d822772955d411111d82a7",
+  "startedAt": "2026-10-13T18:58:26.576612+00:00",
+  "durationSeconds": 7.616,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 324441,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/runtime/evidence/lifecycle-process-bundle-check.stdout.bin",
+      "bytes": 4966,
+      "sha256": "c54de1ee1ea74e245df0ce10f9f2c4d0e6919b98c45ff378d8679742f4b1ab1f"
+    },
+    {
+      "path": "apps/runtime/evidence/lifecycle-process-bundle-check.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,19 @@
+✔ actual control listener mounts canonical opaque issuance, submit/history and task-authorized RPC (2996.109044ms)
+✔ actual listener rejects cross-origin and incorrect methods; dependency loss changes readiness (1963.538679ms)
+✔ actual CLI help and invalid configuration exit before dependency allocation (331.664845ms)
+✔ actual process exits on SIGTERM after listener shutdown (2039.788921ms)
+✔ configuration refuses sources, production profile, unknown fields and shared task workspace (3.002392ms)
+✔ isolated runner refuses ambient provider, database, cloud and Temporal credentials (0.480869ms)
+✔ trusted Temporal registration uses both canonical workflow definitions and broker activity (1.020126ms)
+✔ broker accepts exact native task identity and propagates completion without an SDK loop (0.743673ms)
+✔ broker refuses a response from another writer fence (0.369132ms)
+✔ isolated runner invokes canonical activity and one scripted SDK query, preserving durable events (80.975955ms)
+✔ runner and container boundaries exclude legacy proxies and arbitrary injected config modules (4.378881ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7369.715831

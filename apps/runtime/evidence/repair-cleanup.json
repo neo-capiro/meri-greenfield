@@ -1,0 +1,90 @@
+{
+  "productionSource": "b5734174407b399c75ab9bceafbf29c47a059ea4",
+  "finalTestSource": "def57a612e4c20992fdc78240840f717f051e434",
+  "ownedGroups": [
+    {
+      "receipt": "complete-local-check.json",
+      "group": 327306,
+      "absent": true
+    },
+    {
+      "receipt": "dependency-install.json",
+      "group": 317509,
+      "absent": true
+    },
+    {
+      "receipt": "final-source-tests.json",
+      "group": 328456,
+      "absent": true
+    },
+    {
+      "receipt": "final-source-types.json",
+      "group": 328552,
+      "absent": true
+    },
+    {
+      "receipt": "immutable-config-check.json",
+      "group": 321928,
+      "absent": true
+    },
+    {
+      "receipt": "initial-check.json",
+      "group": 320827,
+      "absent": true
+    },
+    {
+      "receipt": "lifecycle-process-bundle-check.json",
+      "group": 324441,
+      "absent": true
+    },
+    {
+      "receipt": "native-fetch-brand-check.json",
+      "group": 322478,
+      "absent": true
+    },
+    {
+      "receipt": "native-request-materialization-check.json",
+      "group": 322991,
+      "absent": true
+    },
+    {
+      "receipt": "repaired-check.json",
+      "group": 321522,
+      "absent": true
+    },
+    {
+      "receipt": "repaired-frozen-author.json",
+      "group": 341547,
+      "absent": true
+    },
+    {
+      "receipt": "repaired-frozen-independent.json",
+      "group": 341644,
+      "absent": true
+    },
+    {
+      "receipt": "repaired-frozen-types.json",
+      "group": 342424,
+      "absent": true
+    },
+    {
+      "receipt": "repaired-process-fixture-final.json",
+      "group": 343238,
+      "absent": true
+    },
+    {
+      "receipt": "review-repair-dependencies.json",
+      "group": 334553,
+      "absent": true
+    },
+    {
+      "receipt": "workflow-bundle-unsandboxed.json",
+      "group": 326004,
+      "absent": true
+    }
+  ],
+  "ownLinksAndDependencyTreeAndRepairCacheRemoved": true,
+  "borrowedDonorAndReviewerTreesAndGlobalCachesPreserved": true,
+  "otherOwnersUntouched": true,
+  "scope": "OWNED_RUNTIME_SOURCE_CHECKS_ONLY"
+}

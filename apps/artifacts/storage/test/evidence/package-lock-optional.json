@@ -1,0 +1,33 @@
+{
+  "command": [
+    "python3",
+    "apps/artifacts/storage/test/evidence/lock-installed.py"
+  ],
+  "cwd": "/workspace/meri-runtime-artifact-storage",
+  "sourceHead": "71d8c90c5a1fe5abc88b25fb74abba177949d3b1",
+  "sourceDiffSha256": "a758d27993635e72afe87f33c7a1c15dd62ca9b7090434325bbf24098896b980",
+  "sourceDiffBytes": 120395,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T19:08:50.428060+00:00",
+  "durationSeconds": 0.666,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 330687,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/artifacts/storage/test/evidence/package-lock-optional.stdout.bin",
+      "bytes": 123,
+      "sha256": "4d8c01550bc9fda15a4f3db85b90709913edf947f8039aac6dd684b0866766b1"
+    },
+    {
+      "path": "apps/artifacts/storage/test/evidence/package-lock-optional.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

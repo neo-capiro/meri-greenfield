@@ -1,0 +1,13 @@
+{
+  "observedAt": "2026-10-13T19:18:00Z",
+  "previousVerifiedPublishedOriginalCheckpoint": "0c2b07d1a512324a3f5412ad5483243bc4649dcb",
+  "previousVerifiedDraftPR": "https://github.com/neo-capiro/meri-greenfield/pull/64",
+  "githubReadError": "HTTP 401: Bad credentials (https://api.github.com/graphql)",
+  "gitPushError": "fatal: could not read Username for 'https://github.com': No such device or address",
+  "followupPublicationReceiptWritten": false,
+  "followupCommitCreated": false,
+  "credentialsOrPermissionsChanged": false,
+  "alternateEgressAttempted": false,
+  "localImplementationAndReviewContinue": true,
+  "newRemotePublicationState": "BLOCKED_AUTHENTICATION"
+}

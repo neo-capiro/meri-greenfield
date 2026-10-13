@@ -1,0 +1,26 @@
+(node:342011) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ duplicate sslmode cannot disable TLS verification before any Pool or Temporal allocation (3.015205ms)
+✔ one exact verify-full mode reaches the controlled allocation and closes owned Pool on startup failure (1.332811ms)
+✔ pre-aborted control initialization refuses before Pool or Temporal allocation (1.724258ms)
+✔ assembled runner uses canonical task-authorized lifecycle RPC; steering echo APPLIED remains single delivery (102.69808ms)
+✔ assembled runner uses canonical task-authorized lifecycle RPC; steering echo UNKNOWN remains single delivery (91.624382ms)
+✔ private run-owner DTO refuses hostile getters, extra capability fields and artifact publication before authority (1.093141ms)
+✔ worker receipt requires exact input hash, scope tenant, selected client, full fence and current decision (1.248574ms)
+✔ worker authority rejects changed post-effect scope receipt and revokes temporary opaque session (5.185613ms)
+✔ invalid private request performs no task-authority or opaque-session effects (0.640151ms)
+✔ native client body read deadline stays bounded when transport cancellation never settles (29.889576ms)
+✔ broker cannot report completion after the immutable execution lease expires while polling (51.622275ms)
+✔ isolated runner enforces its configured immutable versions before any scripted SDK query (16.822977ms)
+✔ pre-aborted HTTP initialization does not expose a live listening application (0.309244ms)
+Error: aborted
+✔ actual HTTP disconnection aborts the native canonical application request (19.07833ms)
+✔ configuration is immutable and closed before dependency startup (0.857387ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2943.339441

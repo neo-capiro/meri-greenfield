@@ -1,0 +1,7 @@
+Observed initial direct type check on source before 8d8893d4:
+Command: node apps/runtime/node_modules/typescript/bin/tsc --noEmit -p apps/runtime/tsconfig.json
+Exit: 2
+apps/runtime/test/types.ts(3,14): error TS2305: Module '"@temporalio/common"' has no exported member 'TLSConfig'.
+Correction: use the actual exported TLSConfig type from @temporalio/client.
+Final captured source46ab3d9836a557d2adda1f6de8f3f7ef351236ce type check passes.
+This observation preserves the error reported by the tool; it is not represented as a raw capture.

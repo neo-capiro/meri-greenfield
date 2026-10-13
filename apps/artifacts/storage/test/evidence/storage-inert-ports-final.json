@@ -1,0 +1,38 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/artifacts/storage/test/s3.test.mjs",
+    "apps/artifacts/storage/test/postgres.test.mjs",
+    "apps/artifacts/storage/test/pg-wire.test.mjs",
+    "apps/artifacts/storage/test/service.test.mjs",
+    "apps/artifacts/storage/test/constructor-ports.test.mjs"
+  ],
+  "cwd": "/workspace/meri-runtime-artifact-storage",
+  "sourceHead": "6f7fb83b39e3a7ac448d64c40cf698e3fe3d903c",
+  "sourceDiffSha256": "c7b2ef13864498001c3dff42d809585afd59815db7166c99e52f9e712577cc50",
+  "sourceDiffBytes": 15345,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T19:23:11.708565+00:00",
+  "durationSeconds": 4.602,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 340413,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/artifacts/storage/test/evidence/storage-inert-ports-final.stdout.bin",
+      "bytes": 2762,
+      "sha256": "b1614a0afb12f987244365e88fd78ebfd67a401f42f620b6169f200b44e65df4"
+    },
+    {
+      "path": "apps/artifacts/storage/test/evidence/storage-inert-ports-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

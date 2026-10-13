@@ -1,0 +1,23 @@
+{
+  "sourceCommit": "46ab3d9836a557d2adda1f6de8f3f7ef351236ce",
+  "sourceTree": "5ea8883a46648d934e827b23495ab71f497d887d",
+  "command": [
+    "npm",
+    "run",
+    "typecheck",
+    "--prefix",
+    "apps/runtime"
+  ],
+  "cwd": "/workspace/meri-assembled-runtime-source-review",
+  "timeoutSeconds": 180,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationSeconds": 1.434,
+  "subreaper": true,
+  "adoptedChildrenReaped": [],
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 76,
+  "stdoutSha256": "b9205ad279b7793153bca230ab7c3f290da1268763a1aa38303f79010a2455bc",
+  "stderrBytes": 0,
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

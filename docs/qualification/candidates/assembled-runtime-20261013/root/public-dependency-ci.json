@@ -1,0 +1,33 @@
+{
+  "command": [
+    "python",
+    "docs/qualification/candidates/assembled-runtime-20261013/root/install-public.py"
+  ],
+  "cwd": "/workspace/meri-runtime-integration",
+  "sourceHead": "8c0ad67fa48111a78f0800e5b7ad60fe4b9008c8",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T19:21:51.863348+00:00",
+  "durationSeconds": 4.079,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 339548,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/assembled-runtime-20261013/root/public-dependency-ci.stdout.bin",
+      "bytes": 54,
+      "sha256": "857c814b5ee88f8fb61bf1fb17962a06d25240f6e9d09506b9060fe1dfd9eaa3"
+    },
+    {
+      "path": "docs/qualification/candidates/assembled-runtime-20261013/root/public-dependency-ci.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

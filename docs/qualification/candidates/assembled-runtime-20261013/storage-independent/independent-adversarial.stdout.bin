@@ -1,0 +1,20 @@
+✔ same object ID and bytes with different canonical scopes occupy different trusted keys (7.593009ms)
+✔ conditional replay never promotes a matching URL/key to matching request provenance (1.945002ms)
+✔ exact-version HEAD rejects substituted native version before any GET (0.741973ms)
+✔ exact-version HEAD rejects substituted scope metadata before any GET (0.67909ms)
+✔ exact-version HEAD rejects substituted KMS key before any GET (0.417541ms)
+✔ exact-version HEAD rejects substituted checksum type before any GET (0.5517ms)
+✔ matching S3 headers do not verify corrupt current bytes; acquired body is destroyed (1.119865ms)
+✔ redundant immutable-row owner fields are checked even when canonical record hash is valid (21.170004ms)
+✔ an unreferenced immutable record cannot be promoted to published lineage by its selector (2.103337ms)
+✔ stale CAS retains original and current head, and releases a rolled-back lease (4.597355ms)
+✔ lost COMMIT acknowledgement remains UNKNOWN then exact replay succeeds without second insertion (2.247422ms)
+✔ existing artifact service rechecks current authorization after reading bytes and refuses release (12.673131ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1785.77277

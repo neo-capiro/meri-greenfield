@@ -1,0 +1,41 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/artifacts/storage/test/s3.test.mjs",
+    "apps/artifacts/storage/test/postgres.test.mjs",
+    "apps/artifacts/storage/test/service.test.mjs",
+    "apps/artifacts/storage/test/pg-wire.test.mjs",
+    "apps/artifacts/storage/test/constructor-ports.test.mjs",
+    "docs/qualification/candidates/assembled-runtime-20261013/storage-independent/adversarial.test.mjs",
+    "docs/qualification/candidates/assembled-runtime-20261013/storage-independent/constructor-ports.test.mjs",
+    "docs/qualification/candidates/assembled-runtime-20261013/storage-independent/constructor-prototypes.test.mjs"
+  ],
+  "cwd": "/workspace/meri-runtime-artifact-storage-review",
+  "sourceHead": "99106de14bd2ac600f0198ce02b83c95d3f74837",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T19:26:21.006005+00:00",
+  "durationSeconds": 6.036,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 342910,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/assembled-runtime-20261013/storage-independent/repaired-focused.stdout.bin",
+      "bytes": 4938,
+      "sha256": "d86edb5ccbfe0e611417a996936c69929f3a5759f8a4489bf770afb8a9d580fb"
+    },
+    {
+      "path": "docs/qualification/candidates/assembled-runtime-20261013/storage-independent/repaired-focused.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,15 @@
+✔ native SDK command objects use immutable key/full checksum/KMS/account and exact native version head/get (8.118734ms)
+✔ conditional replay verifies current native head/request metadata then the exact native version (2.097484ms)
+✔ bucket suspended/unversioned and missing/native-null/checksum/composite/KMS/identity metadata fail closed (3.635966ms)
+✔ get byte corruption/overflow and cancellation retire actual stream bodies (4.694554ms)
+✔ parked send deadlines have no late reads and acquired late bodies are destroyed (20.67691ms)
+✔ constructor/import are inert; credentials required explicitly and borrowed client never disposed (11.283728ms)
+✔ actual installed S3Client serialization/deserialization runs through an injected handler without network (23.006921ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3082.635235

@@ -1,0 +1,89 @@
+✔ private run-owner DTO refuses hostile getters, extra capability fields and artifact publication before authority (1.266344ms)
+✔ worker receipt requires exact input hash, scope tenant, selected client, full fence and current decision (1.422218ms)
+✔ worker authority rejects changed post-effect scope receipt and revokes temporary opaque session (6.042769ms)
+✔ invalid private request performs no task-authority or opaque-session effects (0.726797ms)
+✖ native client body read deadline stays bounded when transport cancellation never settles (181.184365ms)
+✖ broker cannot report completion after the immutable execution lease expires while polling (52.030206ms)
+✖ isolated runner enforces its configured immutable versions before any scripted SDK query (24.294003ms)
+✖ pre-aborted HTTP initialization does not expose a live listening application (33.420246ms)
+Error: aborted
+✔ actual HTTP disconnection aborts the native canonical application request (10.687198ms)
+✔ configuration is immutable and closed before dependency startup (0.598906ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 6
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2580.897738
+
+✖ failing tests:
+
+test at docs/qualification/candidates/assembled-runtime-20261013/source-independent/runtime-independent.test.mjs:47:1
+✖ native client body read deadline stays bounded when transport cancellation never settles (181.184365ms)
+  AssertionError [ERR_ASSERTION]: {"state":"unsettled"}
+  + actual - expected
+  
+  + 'unsettled'
+  - 'rejected'
+  
+      at TestContext.<anonymous> (file:///workspace/meri-assembled-runtime-source-review/docs/qualification/candidates/assembled-runtime-20261013/source-independent/runtime-independent.test.mjs:51:33)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'unsettled',
+    expected: 'rejected',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/assembled-runtime-20261013/source-independent/runtime-independent.test.mjs:53:1
+✖ broker cannot report completion after the immutable execution lease expires while polling (52.030206ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-assembled-runtime-source-review/docs/qualification/candidates/assembled-runtime-20261013/source-independent/runtime-independent.test.mjs:56:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /BROKER_LEASE_EXPIRED/u,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/assembled-runtime-20261013/source-independent/runtime-independent.test.mjs:58:1
+✖ isolated runner enforces its configured immutable versions before any scripted SDK query (24.294003ms)
+  AssertionError [ERR_ASSERTION]: {"state":"resolved","value":{"state":"completed"}}
+  + actual - expected
+  
+  + 'resolved'
+  - 'rejected'
+       ^
+  
+      at TestContext.<anonymous> (file:///workspace/meri-assembled-runtime-source-review/docs/qualification/candidates/assembled-runtime-20261013/source-independent/runtime-independent.test.mjs:62:61)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'resolved',
+    expected: 'rejected',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/assembled-runtime-20261013/source-independent/runtime-independent.test.mjs:64:1
+✖ pre-aborted HTTP initialization does not expose a live listening application (33.420246ms)
+  AssertionError [ERR_ASSERTION]: pre-aborted initialization opened a live listener
+      at TestContext.<anonymous> (file:///workspace/meri-assembled-runtime-source-review/docs/qualification/candidates/assembled-runtime-20261013/source-independent/runtime-independent.test.mjs:67:146)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 200,
+    expected: 200,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }

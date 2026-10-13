@@ -1,0 +1,59 @@
+✔ actual control listener mounts canonical opaque issuance, submit/history and task-authorized RPC (3483.610956ms)
+✔ actual listener rejects cross-origin and incorrect methods; dependency loss changes readiness (2241.510436ms)
+✔ actual CLI help and invalid configuration exit before dependency allocation (360.86856ms)
+✔ actual process exits on SIGTERM after listener shutdown (2018.18376ms)
+✖ actual runner command composition consumes native-forwarded steering and acknowledges its immutable UUID (2392.119155ms)
+✖ actual runner native capture refusal leaves pause unverified and retains UNKNOWN control (2504.896752ms)
+✔ configuration refuses sources, production profile, unknown fields and shared task workspace (2.062655ms)
+✔ isolated runner refuses ambient provider, database, cloud and Temporal credentials (0.332409ms)
+✔ trusted Temporal registration uses both canonical workflow definitions and broker activity (0.681002ms)
+✔ broker accepts exact native task identity and propagates completion without an SDK loop (0.387922ms)
+✔ broker refuses a response from another writer fence (0.230997ms)
+✔ isolated runner invokes canonical activity and one scripted SDK query, preserving durable events (32.185847ms)
+✔ runner and container boundaries exclude legacy proxies and arbitrary injected config modules (4.728204ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 11
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13054.945697
+
+✖ failing tests:
+
+test at apps/runtime/test/process.test.mjs:18:1
+✖ actual runner command composition consumes native-forwarded steering and acknowledges its immutable UUID (2392.119155ms)
+  AssertionError [ERR_ASSERTION]: {"error":{"code":"LIFECYCLE_INPUT_REFUSED","outcome":"NOT_DISPATCHED"}}
+  
+  400 !== 200
+  
+      at TestContext.<anonymous> (file:///workspace/meri-assembled-runtime-source-check/apps/runtime/test/process.test.mjs:18:723)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 400,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/runtime/test/process.test.mjs:19:1
+✖ actual runner native capture refusal leaves pause unverified and retains UNKNOWN control (2504.896752ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  502 !== 200
+  
+      at TestContext.<anonymous> (file:///workspace/meri-assembled-runtime-source-check/apps/runtime/test/process.test.mjs:19:597)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 502,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

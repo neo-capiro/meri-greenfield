@@ -1,0 +1,11 @@
+{
+  "createdOwnedLinks": {
+    "node_modules": "/workspace/meri-greenfield/node_modules",
+    "apps/worker/conversation/node_modules": "/workspace/meri-next-batch/apps/worker/conversation/node_modules",
+    "packages/ui-stream/node_modules": "/workspace/meri-greenfield/packages/ui-stream/node_modules",
+    "packages/window-resolution/node_modules": "/workspace/meri-next-batch/packages/window-resolution/node_modules",
+    "apps/control/conversations/node_modules": "/workspace/meri-runtime-integration/apps/runtime/node_modules"
+  },
+  "freshInstalledRuntimeAndStorage": true,
+  "donorWrites": false
+}

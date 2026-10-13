@@ -1,0 +1,35 @@
+{
+  "command": [
+    "npm",
+    "test",
+    "--prefix",
+    "apps/runtime"
+  ],
+  "cwd": "/workspace/meri-assembled-runtime",
+  "sourceHead": "71d8c90c5a1fe5abc88b25fb74abba177949d3b1",
+  "sourceDiffSha256": "97f2e609f10a4f0150527e8293bd43c9f8f3b3fe945b250f5a5821e317e2f796",
+  "sourceDiffBytes": 168688,
+  "captureSha256": "1238de211f6f51ec020007457c9f6ae9e26f1ad1e6d822772955d411111d82a7",
+  "startedAt": "2026-10-13T18:55:21.803611+00:00",
+  "durationSeconds": 6.948,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 322991,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/runtime/evidence/native-request-materialization-check.stdout.bin",
+      "bytes": 1961,
+      "sha256": "1bb81bb1956255455662f7b9a2ab872f195e1478baed7715c90a1b20bcd17f0f"
+    },
+    {
+      "path": "apps/runtime/evidence/native-request-materialization-check.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

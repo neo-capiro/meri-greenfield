@@ -1,0 +1,4 @@
+npm error Exit handler never called!
+npm error This is an error with npm itself. Please report this error at:
+npm error   <https://github.com/npm/cli/issues>
+npm error A complete log of this run can be found in: /tmp/meri-storage-public-ci-20261013/cache/_logs/2026-10-13T19_16_28_919Z-debug-0.log

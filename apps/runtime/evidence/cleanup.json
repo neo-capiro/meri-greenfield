@@ -1,0 +1,75 @@
+{
+  "sourceHead": "46ab3d9836a557d2adda1f6de8f3f7ef351236ce",
+  "sourceTree": "5ea8883a46648d934e827b23495ab71f497d887d",
+  "ownedGroups": [
+    {
+      "receipt": "apps/runtime/evidence/complete-local-check.json",
+      "ownedPidAndPgid": 327306,
+      "absent": true
+    },
+    {
+      "receipt": "apps/runtime/evidence/dependency-install.json",
+      "ownedPidAndPgid": 317509,
+      "absent": true
+    },
+    {
+      "receipt": "apps/runtime/evidence/final-source-tests.json",
+      "ownedPidAndPgid": 328456,
+      "absent": true
+    },
+    {
+      "receipt": "apps/runtime/evidence/final-source-types.json",
+      "ownedPidAndPgid": 328552,
+      "absent": true
+    },
+    {
+      "receipt": "apps/runtime/evidence/immutable-config-check.json",
+      "ownedPidAndPgid": 321928,
+      "absent": true
+    },
+    {
+      "receipt": "apps/runtime/evidence/initial-check.json",
+      "ownedPidAndPgid": 320827,
+      "absent": true
+    },
+    {
+      "receipt": "apps/runtime/evidence/lifecycle-process-bundle-check.json",
+      "ownedPidAndPgid": 324441,
+      "absent": true
+    },
+    {
+      "receipt": "apps/runtime/evidence/native-fetch-brand-check.json",
+      "ownedPidAndPgid": 322478,
+      "absent": true
+    },
+    {
+      "receipt": "apps/runtime/evidence/native-request-materialization-check.json",
+      "ownedPidAndPgid": 322991,
+      "absent": true
+    },
+    {
+      "receipt": "apps/runtime/evidence/repaired-check.json",
+      "ownedPidAndPgid": 321522,
+      "absent": true
+    },
+    {
+      "receipt": "apps/runtime/evidence/workflow-bundle-unsandboxed.json",
+      "ownedPidAndPgid": 326004,
+      "absent": true
+    }
+  ],
+  "removedOwnLinksAndDependenciesAndCaches": [
+    "node_modules",
+    "apps/control/conversations/node_modules",
+    "apps/worker/conversation/node_modules",
+    "packages/ui-stream/node_modules",
+    "packages/window-resolution/node_modules",
+    "/workspace/meri-assembled-runtime/apps/runtime/node_modules",
+    "/workspace/meri-assembled-runtime/apps/runtime/.swc-native-cache",
+    "/tmp/meri-runtime-npm-cache"
+  ],
+  "borrowedDonorTreesPreserved": true,
+  "globalCachesAndOtherOwnersUntouched": true,
+  "scope": "OWNED_RUNTIME_LOCAL_PROCESSES_AND_FILES_ONLY",
+  "all51WholePlanRequirementsRemainOpen": true
+}

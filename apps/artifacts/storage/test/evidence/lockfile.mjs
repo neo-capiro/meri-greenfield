@@ -1,0 +1,2 @@
+import {spawn} from 'node:child_process';
+const child=spawn('npm',['install','--package-lock-only','--ignore-scripts','--no-audit','--no-fund','--userconfig=/tmp/meri-storage-empty-npmrc','--globalconfig=/tmp/meri-storage-empty-global-npmrc','--cache=/tmp/meri-storage-npm-cache','--registry=https://registry.npmjs.org'],{cwd:'apps/artifacts/storage',env:{PATH:process.env.PATH},stdio:'inherit'});child.on('exit',code=>process.exitCode=code);
