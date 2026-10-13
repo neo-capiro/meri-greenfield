@@ -1,0 +1,411 @@
+{
+  "sourceHead": "ae567ae6ffcac2619502879ca211ab30733617fb",
+  "packageSha256": "78114901ddaa78594513645a06f168cb76f2a146a516120317d4d5e20ea6f599",
+  "lockSha256": "eff11f1590db3b5a44d2e992d9e5ed97e6a6336723f59224089ff514916688cc",
+  "packageAndLockUnchanged": true,
+  "all40OfficialRegistryTarballsVerified": true,
+  "installed": [
+    {
+      "name": "@aws-sdk/client-s3",
+      "version": "3.1141.0",
+      "license": "Apache-2.0",
+      "resolved": "https://registry.npmjs.org/@aws-sdk/client-s3/-/client-s3-3.1141.0.tgz",
+      "nativeIntegrity": "sha512-uOVH37xGLenAdJkCPCin/JJG2PgWrFcSsDnQ9+C9Zq8N9Oalo5ol4xmn5fG28iWAlA/b/9boQZgHbMh+UsIhcg==",
+      "cachedRegistryTarballBytes": 411612,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "9e92578cc2fea52ce9ffe69805cb55969ba78e3386f4646aed2f517453106881"
+    },
+    {
+      "name": "@aws-sdk/checksums",
+      "version": "3.1001.1",
+      "license": "Apache-2.0",
+      "resolved": "https://registry.npmjs.org/@aws-sdk/checksums/-/checksums-3.1001.1.tgz",
+      "nativeIntegrity": "sha512-x12Q17KYlJAd3nKf8LV5LV0vt8sh8/6YfQLGPtrGnQf/tW4jqxPGq5GPpuVitpQYM3eUR4XB7CbxZf751NMbLw==",
+      "cachedRegistryTarballBytes": 27885,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "9c1751c72a009ef46aad64865ed2de2c992fd8c5e3359aff9d02dc891b87652a"
+    },
+    {
+      "name": "@aws-sdk/core",
+      "version": "3.978.1",
+      "license": "Apache-2.0",
+      "resolved": "https://registry.npmjs.org/@aws-sdk/core/-/core-3.978.1.tgz",
+      "nativeIntegrity": "sha512-LbY9aGsEiznDWmUc30Nwv3aIX/+dbwTx8KfS0yOC3NPYMO+O91e6jkT1azf34FwjOndq8/Q+RcVVZz5xnerwdg==",
+      "cachedRegistryTarballBytes": 105269,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "f41e316f4145afaa611248576fac940f67e7d1e1c6a1cafa11c444189c98493d"
+    },
+    {
+      "name": "@aws-sdk/types",
+      "version": "3.974.6",
+      "license": "Apache-2.0",
+      "resolved": "https://registry.npmjs.org/@aws-sdk/types/-/types-3.974.6.tgz",
+      "nativeIntegrity": "sha512-v/clNZzZnDxGyvpHMOGpJKVXFAExJzUNAAjaWGdcx8QAcXLGwTaOkw33p5SHAi0YAioK32xB3hWwOekRVfmfKg==",
+      "cachedRegistryTarballBytes": 15109,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "bdd916bfcfac454fb2ba9ff2dd2e581d10f946654515ca860bf4b8f4e4b82561"
+    },
+    {
+      "name": "@smithy/types",
+      "version": "4.19.0",
+      "license": "Apache-2.0",
+      "resolved": "https://registry.npmjs.org/@smithy/types/-/types-4.19.0.tgz",
+      "nativeIntegrity": "sha512-r7jh49VJxGerfAcTQA6gXcKc+98zOp/tqRwzYjgOE+iSQsP6cEU1hq2QzbuipmP68QtYdY9wKEhiCQZIzHgZ4Q==",
+      "cachedRegistryTarballBytes": 82447,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "3de7840fd63a03c33bb687fbdc4794884598402600b2ee02c68856e78e41bd52"
+    },
+    {
+      "name": "tslib",
+      "version": "2.8.1",
+      "license": "0BSD",
+      "resolved": "https://registry.npmjs.org/tslib/-/tslib-2.8.1.tgz",
+      "nativeIntegrity": "sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==",
+      "cachedRegistryTarballBytes": 18477,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "f02b4851df316f29bdfcd404aa1eb41e4e216b5859015f81fcd3e91caf8be931"
+    },
+    {
+      "name": "@aws-sdk/xml-builder",
+      "version": "3.972.41",
+      "license": "Apache-2.0",
+      "resolved": "https://registry.npmjs.org/@aws-sdk/xml-builder/-/xml-builder-3.972.41.tgz",
+      "nativeIntegrity": "sha512-ctjVSyCMegrWfXlx6VqzSBFI6UqmQ5ZlnfMhdLIiWmhoH8UAQxSCP5N3OpG7X3k4LnS7ou74C4mt20+bfTW2aQ==",
+      "cachedRegistryTarballBytes": 9760,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "103e94854d3f01cdb7eda3d170d3a8775e4fb107da472a1347418abb76116e08"
+    },
+    {
+      "name": "@aws/lambda-invoke-store",
+      "version": "0.3.0",
+      "license": "Apache-2.0",
+      "resolved": "https://registry.npmjs.org/@aws/lambda-invoke-store/-/lambda-invoke-store-0.3.0.tgz",
+      "nativeIntegrity": "sha512-sl4Bm6yiMNYrZKkqqDFWN0UfnWhlS8ivKxrYl+6t0gCLrqr8y3B2IqZZbFRkfaVVp7C/baApyh71P+LeE1A2sQ==",
+      "cachedRegistryTarballBytes": 8318,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "67dd0cc15cb17df9e12654a78486e710e13a2e96623cb28c683056378fa973dc"
+    },
+    {
+      "name": "@smithy/core",
+      "version": "3.35.0",
+      "license": "Apache-2.0",
+      "resolved": "https://registry.npmjs.org/@smithy/core/-/core-3.35.0.tgz",
+      "nativeIntegrity": "sha512-zRMhfkByhT2snNdr1si24vJitU6Cr9ix2MikUfWmkAgp4jrNP0GcKSP5YvwQ+TlI8AZXER5QOGJn3JsVtSD9/A==",
+      "cachedRegistryTarballBytes": 381747,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "b3a06d1c549d4b1ead3b19f7259d3506f3eaaac4b8fc0d3e9027c67aaf71a30d"
+    },
+    {
+      "name": "@smithy/signature-v4",
+      "version": "5.7.4",
+      "license": "Apache-2.0",
+      "resolved": "https://registry.npmjs.org/@smithy/signature-v4/-/signature-v4-5.7.4.tgz",
+      "nativeIntegrity": "sha512-tHy0K0VtqNd5Y7Y41h0a0Lhh0L1GzC08dTWg0F7vRJWFtTENg7IZikf3wQkanYIRdb7ngoIPMTmqgUi401fEeQ==",
+      "cachedRegistryTarballBytes": 21171,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "d4794533b211f0100c0be02a8d35b677db84d84a7061ad7c0c6bb0bc5394cf11"
+    },
+    {
+      "name": "bowser",
+      "version": "2.14.1",
+      "license": "MIT",
+      "resolved": "https://registry.npmjs.org/bowser/-/bowser-2.14.1.tgz",
+      "nativeIntegrity": "sha512-tzPjzCxygAKWFOJP011oxFHs57HzIhOEracIgAePE4pqB3LikALKnSzUyU4MGs9/iCEUuHlAJTjTc5M+u7YEGg==",
+      "cachedRegistryTarballBytes": 64403,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "b12b643998a1a7febff9933b5a05e53045c722ff4de13fab751391b2d346a974"
+    },
+    {
+      "name": "@aws-sdk/credential-provider-node",
+      "version": "3.972.84",
+      "license": "Apache-2.0",
+      "resolved": "https://registry.npmjs.org/@aws-sdk/credential-provider-node/-/credential-provider-node-3.972.84.tgz",
+      "nativeIntegrity": "sha512-oHt854odINVwzwsh+c5x69j0ajm4DbqqqVJ+O1ECsCIZeMDAbzFpXItaqP7UZstJj/ATdTk/KFSH0LaNAgV+kA==",
+      "cachedRegistryTarballBytes": 9823,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "d107f130cf4631f0b687351fd8d2baf74d8a8496f28a0bd463545306ba9e6f22"
+    },
+    {
+      "name": "@aws-sdk/credential-provider-env",
+      "version": "3.972.72",
+      "license": "Apache-2.0",
+      "resolved": "https://registry.npmjs.org/@aws-sdk/credential-provider-env/-/credential-provider-env-3.972.72.tgz",
+      "nativeIntegrity": "sha512-xTKO/FWJPozTIXbozVnVGoNBhaGba8TBcx+KyUjRVeOlXE+dUc7GTR1cLvu0uTdIdmemzaFbqqCshXeZA1fZew==",
+      "cachedRegistryTarballBytes": 6298,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "83cb069a705d40c4d8cac65c4df9f3094d64db8c3105cd15670d2676f730192c"
+    },
+    {
+      "name": "@aws-sdk/credential-provider-http",
+      "version": "3.972.74",
+      "license": "Apache-2.0",
+      "resolved": "https://registry.npmjs.org/@aws-sdk/credential-provider-http/-/credential-provider-http-3.972.74.tgz",
+      "nativeIntegrity": "sha512-u91E/hT8f4d1xy0Jl7VG4nVKJ3lxbrZkoBTeSVoJdWBiSEUMwMS/9+e0H/aJVQV//Lt5wuzP+E69v4aRSsNTmw==",
+      "cachedRegistryTarballBytes": 5167,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "6db5ed1c0c41ca8672b0eb663e539f87ed0deb7fc96d241ef766d2b441fe59a1"
+    },
+    {
+      "name": "@smithy/fetch-http-handler",
+      "version": "5.8.0",
+      "license": "Apache-2.0",
+      "resolved": "https://registry.npmjs.org/@smithy/fetch-http-handler/-/fetch-http-handler-5.8.0.tgz",
+      "nativeIntegrity": "sha512-ycSJu3tFAQ4v04CBB0agqFMVsSQ1iG3yw+SpgxRqKfaURpQD4CZ8Wn0zPMmSnOuTpTh65Vz+EA0rMrw089wvkA==",
+      "cachedRegistryTarballBytes": 12024,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "3319f9f00b71ae85d49473c1f5d5a0151c89547d7724753abe8d189471decffe"
+    },
+    {
+      "name": "@smithy/node-http-handler",
+      "version": "4.12.1",
+      "license": "Apache-2.0",
+      "resolved": "https://registry.npmjs.org/@smithy/node-http-handler/-/node-http-handler-4.12.1.tgz",
+      "nativeIntegrity": "sha512-ThMkboGeONWXAelq9FvGsuJC4rOi+qyC4/zhUF58xYpxUg5sQKx2VXZYJmtNjr4dSuBJ1HeJXETQILCz3wOHvw==",
+      "cachedRegistryTarballBytes": 26840,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "e685e00a1e28371390ffab5711e5300b81743b7a7d5f5bf1a994e40197467221"
+    },
+    {
+      "name": "@aws-sdk/credential-provider-ini",
+      "version": "3.973.17",
+      "license": "Apache-2.0",
+      "resolved": "https://registry.npmjs.org/@aws-sdk/credential-provider-ini/-/credential-provider-ini-3.973.17.tgz",
+      "nativeIntegrity": "sha512-ged4KXdBkvIC81bLvNHHuQKdKak/VXhQTR1NWYTTqW0474nlmsxy9O/vlgTIohDDWH3xpBdtVMZRyjb+DnocDA==",
+      "cachedRegistryTarballBytes": 11282,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "825c4827279fad1a15aa72a365f4f91557305259771ab2216682c4f24690c075"
+    },
+    {
+      "name": "@aws-sdk/credential-provider-login",
+      "version": "3.972.79",
+      "license": "Apache-2.0",
+      "resolved": "https://registry.npmjs.org/@aws-sdk/credential-provider-login/-/credential-provider-login-3.972.79.tgz",
+      "nativeIntegrity": "sha512-L+Z85anONJd8MaiuraO4wRxATCdEejBZ3K3eymzWI5JPXa9sOS9CkIm72PBKqXKX+Z9p9NGMX5AIMXm0LEflgw==",
+      "cachedRegistryTarballBytes": 6362,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "5993af12213692c03386b8af68d3894c007c87fcbee64356743668aa9ea39696"
+    },
+    {
+      "name": "@aws-sdk/nested-clients",
+      "version": "3.997.46",
+      "license": "Apache-2.0",
+      "resolved": "https://registry.npmjs.org/@aws-sdk/nested-clients/-/nested-clients-3.997.46.tgz",
+      "nativeIntegrity": "sha512-oRxtBcka/JGHGs9l9p9IVajGoTP8vTPmoAzdHGy4Qcy9P5vPnDf6nhIeM/COQNY9k/OahImTRaLkHftoXvfcmQ==",
+      "cachedRegistryTarballBytes": 92577,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "dd334b9f6453d2e9094bf36a10e3a1a5637fa6c43fe38ca42e649e3fae4fdbd3"
+    },
+    {
+      "name": "@aws-sdk/signature-v4-multi-region",
+      "version": "3.996.47",
+      "license": "Apache-2.0",
+      "resolved": "https://registry.npmjs.org/@aws-sdk/signature-v4-multi-region/-/signature-v4-multi-region-3.996.47.tgz",
+      "nativeIntegrity": "sha512-Zk08macMvQTHzQJCLJVkOlviVoqwYMrpXv4lmLN7b7sAbiMoOK7Go0NYdR5UeF+MW8LIbRmwrNy9u/5VvX1U5g==",
+      "cachedRegistryTarballBytes": 8368,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "a500d3298997fbe442acc76fd217dabd4c8310a0085a65578ba868a37d4e3f79"
+    },
+    {
+      "name": "@aws-sdk/credential-provider-process",
+      "version": "3.972.72",
+      "license": "Apache-2.0",
+      "resolved": "https://registry.npmjs.org/@aws-sdk/credential-provider-process/-/credential-provider-process-3.972.72.tgz",
+      "nativeIntegrity": "sha512-rLIp2xbMjX/k9/od7APpqq1ZgXXnV0pOL1Th3ZsL8Wu0TRtBsDTVS8iPqcfRFcHakFxPvR04OSTv2ka2qOb/2A==",
+      "cachedRegistryTarballBytes": 7120,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "37354078bd4f4ffcaeccfafe9e818b4dd298f4685fcbd6695c13437ff2e2360b"
+    },
+    {
+      "name": "@aws-sdk/credential-provider-sso",
+      "version": "3.973.16",
+      "license": "Apache-2.0",
+      "resolved": "https://registry.npmjs.org/@aws-sdk/credential-provider-sso/-/credential-provider-sso-3.973.16.tgz",
+      "nativeIntegrity": "sha512-IGihaJfFZYacJJr/odqILCoK7W/mvrZ7cuK7ECn3sAu4vLC6u0V8bS7mCGbdugJ8Aum2tnvqmx0F2MRFp2rn9g==",
+      "cachedRegistryTarballBytes": 9083,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "417af24392691fbaa2023130328fe065688b74e4f69a2dbd96319242f86621c9"
+    },
+    {
+      "name": "@aws-sdk/token-providers",
+      "version": "3.1138.0",
+      "license": "Apache-2.0",
+      "resolved": "https://registry.npmjs.org/@aws-sdk/token-providers/-/token-providers-3.1138.0.tgz",
+      "nativeIntegrity": "sha512-GpyAr0DD63YOEmYFM6Df+gJuIgC92MMTiBK4FTKfxii5MJ9ge20epR7LyroulscYlG89J+ZB2ivFDPjvfQhzdw==",
+      "cachedRegistryTarballBytes": 10039,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "8680751f73f36f637b0b96dc5ff4b39578af9b3186195726eef4147758153dee"
+    },
+    {
+      "name": "@aws-sdk/credential-provider-web-identity",
+      "version": "3.972.78",
+      "license": "Apache-2.0",
+      "resolved": "https://registry.npmjs.org/@aws-sdk/credential-provider-web-identity/-/credential-provider-web-identity-3.972.78.tgz",
+      "nativeIntegrity": "sha512-/y9WvNtlcPBGLR0qc1a+9J/xtYZfVczvLUOuXaVWylzttH7ewsxwHtjmiJSolNrVSDorIxHGHMU61CbonRkmwA==",
+      "cachedRegistryTarballBytes": 9077,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "f7b5562bbccef5b2387e5b282a7edaf1645da0cab95f2855dc33e8f38c4189af"
+    },
+    {
+      "name": "@smithy/credential-provider-imds",
+      "version": "4.5.2",
+      "license": "Apache-2.0",
+      "resolved": "https://registry.npmjs.org/@smithy/credential-provider-imds/-/credential-provider-imds-4.5.2.tgz",
+      "nativeIntegrity": "sha512-A9uSdn72ozbRUSit0eib0TW7nXuNPlaeM0zcGkJ+nE6tFcSDbnmtwoxbTCFBukVQcszDAyvsd7+rTduPTXpygg==",
+      "cachedRegistryTarballBytes": 17698,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "1e3b437bfaf7800cbcd770cc744084ab9e3b6c445196b707fde90e2f66e0403c"
+    },
+    {
+      "name": "@aws-sdk/middleware-sdk-s3",
+      "version": "3.972.77",
+      "license": "Apache-2.0",
+      "resolved": "https://registry.npmjs.org/@aws-sdk/middleware-sdk-s3/-/middleware-sdk-s3-3.972.77.tgz",
+      "nativeIntegrity": "sha512-E7W2UOeUoc+lg3uIfR/dM7ZwusHwhBQrKMnlkRv4EXRR+C0YtV1pg25xC7GdZIhXH+NAMgZPCbE7o5to2cjFiw==",
+      "cachedRegistryTarballBytes": 40929,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "c0c7f1ba04f7627ea45a757daa04cbe768772fee67a0b56fdf9c41c95a68b06c"
+    },
+    {
+      "name": "pg",
+      "version": "8.23.0",
+      "license": "MIT",
+      "resolved": "https://registry.npmjs.org/pg/-/pg-8.23.0.tgz",
+      "nativeIntegrity": "sha512-Ip2EQCngowJLGOfCwkFhPXU7/ljlhn6Rxlmy4XYfL2Y+vyRM59+8uR2xqRWKdYmbXmxCFOAmKxBuSUCdF34qLg==",
+      "cachedRegistryTarballBytes": 27821,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "e42dd36cba6e9dd8dbb6f773a2f7be8a8c3c273e18b155e42e75961a4cb8bc28"
+    },
+    {
+      "name": "pg-connection-string",
+      "version": "2.14.0",
+      "license": "MIT",
+      "resolved": "https://registry.npmjs.org/pg-connection-string/-/pg-connection-string-2.14.0.tgz",
+      "nativeIntegrity": "sha512-XwWDGcLRGCXAR8F/AM5bG7Q+A3Wm2s6QeEjlOKZLlH3UYcguiqCWKyWXVag5TLTIjR7oOJUY8kcADaZgWPyLeg==",
+      "cachedRegistryTarballBytes": 5825,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "5e07e70c64af1e8695a91f9371b713106eeed3b52a1d6b7f7238a33f01dd3f20"
+    },
+    {
+      "name": "pg-pool",
+      "version": "3.14.0",
+      "license": "MIT",
+      "resolved": "https://registry.npmjs.org/pg-pool/-/pg-pool-3.14.0.tgz",
+      "nativeIntegrity": "sha512-gKtPkFdQPU3DksooVLi9LsjZxrsBUZIpa+7aVx+LV5pNh0KzP4Zleud2po+ConrxbuXGBJ6Hfer6hdgpIBpBaw==",
+      "cachedRegistryTarballBytes": 9579,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "0a9924def9e06f791b09a44eaefb227f323a39199887f6ce17b44cb5a9193134"
+    },
+    {
+      "name": "pg-protocol",
+      "version": "1.16.0",
+      "license": "MIT",
+      "resolved": "https://registry.npmjs.org/pg-protocol/-/pg-protocol-1.16.0.tgz",
+      "nativeIntegrity": "sha512-sILXutLVjCLjcDuOmvhX5e2Z4cS5qG/6Bu3VkpFwdf/633ElGLpEh9bgmuI5I4sqKqkifQiGyiCcx1HdtrK7tg==",
+      "cachedRegistryTarballBytes": 39412,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "4ee6a91e60a002e828e64dfab04c232bba566db233a905a1a15e475a0336c73d"
+    },
+    {
+      "name": "pg-types",
+      "version": "2.2.0",
+      "license": "MIT",
+      "resolved": "https://registry.npmjs.org/pg-types/-/pg-types-2.2.0.tgz",
+      "nativeIntegrity": "sha512-qTAAlrEsl8s4OiEQY69wDvcMIdQN6wdz5ojQiOy6YRMuynxenON0O5oCpJI6lshc6scgAY8qvJ2On/p+CXY0GA==",
+      "cachedRegistryTarballBytes": 10344,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "3ec0293cb38cc8d9475e3eb32ac5f19d195bf9fccc8b19a0714e6ecd6e7c2cf0"
+    },
+    {
+      "name": "pg-int8",
+      "version": "1.0.1",
+      "license": "ISC",
+      "resolved": "https://registry.npmjs.org/pg-int8/-/pg-int8-1.0.1.tgz",
+      "nativeIntegrity": "sha512-WCtabS6t3c8SkpDBUlb1kjOs7l66xsGdKpIPZsg4wR+B3+u9UAum2odSsF9tnvxg80h4ZxLWMy4pRjOsFIqQpw==",
+      "cachedRegistryTarballBytes": 1508,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "147155887a41bb6f69ff98b3dde827b7e6a8214c3a71938da4babf8e12adff2e"
+    },
+    {
+      "name": "postgres-array",
+      "version": "2.0.0",
+      "license": "MIT",
+      "resolved": "https://registry.npmjs.org/postgres-array/-/postgres-array-2.0.0.tgz",
+      "nativeIntegrity": "sha512-VpZrUqU5A69eQyW2c5CA1jtLecCsN2U/bD6VilrFDWq5+5UIEVO7nazS3TEcHf1zuPYO/sqGvUvW62g86RXZuA==",
+      "cachedRegistryTarballBytes": 2213,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "dcd6a505fcbc032b409ee2838ab2c776dea3a9cfe02b736364b6cb82a946665f"
+    },
+    {
+      "name": "postgres-bytea",
+      "version": "1.0.1",
+      "license": "MIT",
+      "resolved": "https://registry.npmjs.org/postgres-bytea/-/postgres-bytea-1.0.1.tgz",
+      "nativeIntegrity": "sha512-5+5HqXnsZPE65IJZSMkZtURARZelel2oXUEO8rH83VS/hxH5vv1uHquPg5wZs8yMAfdv971IU+kcPUczi7NVBQ==",
+      "cachedRegistryTarballBytes": 1724,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "9125568c5fb51a65b8f11adb0080c2775b99ee82822d73bff8b56b2a9d47d7aa"
+    },
+    {
+      "name": "postgres-date",
+      "version": "1.0.7",
+      "license": "MIT",
+      "resolved": "https://registry.npmjs.org/postgres-date/-/postgres-date-1.0.7.tgz",
+      "nativeIntegrity": "sha512-suDmjLVQg78nMK2UZ454hAG+OAW+HQPZ6n++TNDUX+L0+uUlLywnoxJKDou51Zm+zTCjrCl0Nq6J9C5hP9vK/Q==",
+      "cachedRegistryTarballBytes": 2836,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "03f9edefa96697072075e02df045cc61ed4ca2f8dfffb1ff87f4070bc3404151"
+    },
+    {
+      "name": "postgres-interval",
+      "version": "1.2.0",
+      "license": "MIT",
+      "resolved": "https://registry.npmjs.org/postgres-interval/-/postgres-interval-1.2.0.tgz",
+      "nativeIntegrity": "sha512-9ZhXKM/rw350N1ovuWHbGxnGh/SNJ4cnxHiM0rxE4VN41wsg8P8zWn9hv/buK00RP4WvlOyr/RBDiptyxVbkZQ==",
+      "cachedRegistryTarballBytes": 2926,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "cc3056db105e66c9128cb8a387cda782d5f1ae9281be90de0b8d26a90af89c57"
+    },
+    {
+      "name": "xtend",
+      "version": "4.0.2",
+      "license": "MIT",
+      "resolved": "https://registry.npmjs.org/xtend/-/xtend-4.0.2.tgz",
+      "nativeIntegrity": "sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==",
+      "cachedRegistryTarballBytes": 2529,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "b02ffef8cda96c5c3ee00a00390e63f608362c2ddfb3ed754e181d013a45d48a"
+    },
+    {
+      "name": "pgpass",
+      "version": "1.0.5",
+      "license": "MIT",
+      "resolved": "https://registry.npmjs.org/pgpass/-/pgpass-1.0.5.tgz",
+      "nativeIntegrity": "sha512-FdW9r/jQZhSeohs1Z3sI1yxFQNFvMcnmfuj4WBMUTxOrAyLMaTcE1aAMBiTlbMNaXvBCQuVi0R7hd8udDSP7ug==",
+      "cachedRegistryTarballBytes": 4280,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "d75240eb4fe759c10db9f903838275348676a8bdc1f329e20a833713cd7c99bd"
+    },
+    {
+      "name": "split2",
+      "version": "4.2.0",
+      "license": "ISC",
+      "resolved": "https://registry.npmjs.org/split2/-/split2-4.2.0.tgz",
+      "nativeIntegrity": "sha512-UcjcJOWknrNkF6PLX83qcHM6KHgVKNkV62Y8a5uYDVv9ydGQVwAHMKqHdJje1VTWpljG0WYpCDhrCdAOYH4TWg==",
+      "cachedRegistryTarballBytes": 4668,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "87b734c3087c8d9ed5d76d1bff00db30f960831ba8705dd18d73b180d08d2140"
+    },
+    {
+      "name": "pg-cloudflare",
+      "version": "1.4.0",
+      "license": "MIT",
+      "resolved": "https://registry.npmjs.org/pg-cloudflare/-/pg-cloudflare-1.4.0.tgz",
+      "nativeIntegrity": "sha512-Vo7z/6rrQYxpNRylp4Tlob2elzbh+N/MOQbxFVWCxS7oEx6jF53GTJFxK2WWpKuBRkmiin4Mt+xofFDjx09R0A==",
+      "cachedRegistryTarballBytes": 6938,
+      "cachedTarballIntegrityVerified": true,
+      "installedPackageMetadataSha256": "26a5017fe5fa14bb2eaa90fb87a2c54becc2666516ef79ee591694bcb9533531"
+    }
+  ],
+  "networkRoute": "Permission-provided credential-free proxy and CA trust only; official registry URLs; TLS verification enabled",
+  "npmCredentialConfiguration": "Distinct empty user/global config files; credential variables excluded"
+}

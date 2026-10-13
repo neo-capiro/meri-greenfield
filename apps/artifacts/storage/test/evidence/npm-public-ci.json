@@ -1,0 +1,33 @@
+{
+  "command": [
+    "node",
+    "apps/artifacts/storage/test/evidence/public-ci.mjs"
+  ],
+  "cwd": "/workspace/meri-runtime-artifact-storage",
+  "sourceHead": "ae567ae6ffcac2619502879ca211ab30733617fb",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T19:16:28.854493+00:00",
+  "durationSeconds": 7.337,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 336204,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/artifacts/storage/test/evidence/npm-public-ci.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "apps/artifacts/storage/test/evidence/npm-public-ci.stderr.bin",
+      "bytes": 298,
+      "sha256": "80f533555d15401b0d6f5a2dc9dfaf27a38b6ccc8f979caf7a445b4ea45bdaea"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
