@@ -24,7 +24,7 @@ export function createOwnedRuntimeSdkSession(configuration){
  const {factory,now=Date.now,cleanupMs=1000}=own(configuration,['factory'],['now','cleanupMs']);
  if(typeof factory!=='function'||typeof now!=='function'||!Number.isSafeInteger(cleanupMs)||cleanupMs<1||cleanupMs>30000)throw fault('RUNNER_SESSION_CONFIGURATION');
  const records=new WeakMap(),failures=[];let closed=false,current,pending=0;
- function capture(value){let r=records.get(value);if(r)return r;const v=own(value,['store','settle','close']);r={store:v.store,settle:storageMethod(v,'settle'),close:storageMethod(v,'close'),retirement:null};records.set(value,r);return r;}
+ function capture(value){let r=records.get(value);if(r)return r;const v=own(value,['store','settle','close']);r={store:v.store,settle:storageMethod(value,'settle'),close:storageMethod(value,'close'),retirement:null};records.set(value,r);return r;}
  async function bounded(method,signal){const deadlineMs=now()+cleanupMs,life=createOperationLifetime({now,deadlineMs,signal,errorFactory:()=>fault('RUNNER_CLEANUP_UNKNOWN')});try{return await life.run(signal=>method({signal,deadlineMs}));}finally{life.close();}}
  function retire(record){return record.retirement??=(async()=>{try{await bounded(record.close);}catch(error){failures.push('RUNNER_CLEANUP_UNKNOWN');throw error;}})();}
  return Object.freeze({async prepare(value){const input=own(value,['binding','sessionKey'],['signal','continuation']);nativeSignal(input.signal);if(closed||current||pending>0)throw fault('RUNNER_SESSION_CONFIGURATION');let abandoned=false;
