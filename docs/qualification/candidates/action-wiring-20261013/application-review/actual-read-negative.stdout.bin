@@ -1,0 +1,30 @@
+✖ application independent query known stored release failure remains RESULT_NOT_RELEASED (82.796563ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2705.868397
+
+✖ failing tests:
+
+test at apps/control/action-application/application-independent.test.mjs:62:1
+✖ application independent query known stored release failure remains RESULT_NOT_RELEASED (82.796563ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_DISPATCHED'
+  - 'RESULT_NOT_RELEASED'
+  
+      at TestContext.<anonymous> (file:///tmp/meri-action-wiring-application-review-20261013/apps/control/action-application/application-independent.test.mjs:62:298)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_DISPATCHED',
+    expected: 'RESULT_NOT_RELEASED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
