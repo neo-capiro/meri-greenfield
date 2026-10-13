@@ -1,0 +1,7 @@
+# Bounded local HTTP completion
+
+Base f1a075e2eb6c63ee8b1785ad9a94f552a98f45f8. Only new node-http.mjs/http.test.mjs, scripts/local-followthrough/http-run.mjs and own HTTP task/report/evidence. AGENTS and standards applied; no existing source/contracts/catalog changes. Root approves actual loopback-only socket exercise, no external network/SQL/provider/runtime activation. Fifteen-minute initial implementation bound, captures <=240s; reviewer owns independent controls.
+
+createActionHttpHandler({app,signal}) returns a Node request listener bridging incoming raw headers/body to Fetch Request and app Response. Existing canonical app owns body/authority/domain bounds. Preserve duplicate headers, cancellation on disconnect and host stop; no new auth policy. listenActionApplication({app,host:'127.0.0.1',port:0,lifetimeMs:1..30000}) returns {origin,close,closed,status}; closed is Promise<void>, close idempotently aborts pending requests/destroys only owned sockets/listener, status exact {closed,listening,activeSockets}. App remains borrowed. Native HTTP header/request/idle bounds are finite.
+
+CLI --run imports accepted demo and flow only after explicit admission; wraps app.handle with real loopback fetch then runs unchanged query/read/draft/prepare/unapproved denial/explicit synthetic approval/one effect/replay flow. CLI owns demo and listener teardown, emits only nonsecret summary. --help/invalid are inert. Tests exercise actual sockets, finite cutoff and disconnect plus actual accepted flow; no fabricated producer or second orchestration loop.
