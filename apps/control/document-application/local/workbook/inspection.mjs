@@ -22,13 +22,16 @@ export async function inspectWorkbookCopies({bytes,label,expectedTotal,pythonExe
   const transformer = createLibreOfficeTransformer({executable: sofficeExecutable,tempRoot});
   const transformed = await transformer.transform({bytes,format: 'xlsx',target: 'xlsx',deadlineMs,maxBytes: 1048576});
   processes.push(transformed.receipt.process);
+  await writeFile(join(outputDirectory,label+'-recalculated.xlsx'),transformed.bytes,{flag: 'wx',mode: 0o600});
   const reopened = await inspectWorkbook({bytes: transformed.bytes,pythonExecutable,directory: tempRoot,deadlineMs});
   processes.push(reopened.process);
+  // Preserve actual transformed bytes and inspection even if a later assertion fails.
+  await writeFile(join(outputDirectory,label+'-recalculation.json'),JSON.stringify({sourceSha256: originalSha256,
+    receipt: transformed.receipt,inspection: reopened.inspection,process: reopened.process},null,2)+'\n',{flag: 'wx',mode: 0o600});
   assert.equal(workbookCell(reopened.inspection,'Plan','D4').value,'=SUM(D2:D3)');
   assert.equal(workbookCell(reopened.inspection,'Plan','D4').cached,expectedTotal);
   assert.equal(workbookCell(reopened.inspection,'Notes','A2').value,'=1+1');
   assert.equal(workbookCell(reopened.inspection,'Notes','A2').kind,'s');
-  await writeFile(join(outputDirectory,label+'-recalculated.xlsx'),transformed.bytes,{flag: 'wx',mode: 0o600});
   const workspace = await mkdtemp(join(tempRoot,'workbook-render-'));
   try {
     await mkdir(join(workspace,'out'),{mode: 0o700});
