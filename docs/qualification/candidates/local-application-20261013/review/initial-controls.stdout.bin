@@ -1,0 +1,57 @@
+✖ independent shared allocation: read executes through actual owned budget while command stays inaccessible actions.query (99.507584ms)
+✖ independent shared allocation: read executes through actual owned budget while command stays inaccessible create_task (29.94855ms)
+✔ independent shared allocation refuses command only (6.583144ms)
+✔ independent shared allocation refuses extra operation (6.186468ms)
+✔ independent shared allocation refuses wrong command version (5.849671ms)
+✔ independent shared allocation refuses different second operation (6.467521ms)
+✔ independent shared allocation refuses duplicate read (7.663207ms)
+✔ independent async graph: query refusal closes listener then owned graph once (45.420504ms)
+✔ independent async graph: invalid graph credential still closes acquired ownership (0.804959ms)
+✔ independent async graph: total cutoff refuses parked acquisition and closes late graph exactly once (62.512202ms)
+✔ independent async graph: rejected acquisition starts no listener or approval (1.452523ms)
+✔ independent async graph: cleanup failure is surfaced and borrowed application is not disposed (12.906869ms)
+✔ independent async graph: uncooperative cleanup cannot park caller forever (1008.887791ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 11
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2959.485068
+
+✖ failing tests:
+
+test at apps/control/action-host/local-integration/allocation-independent.test.mjs:20:57
+✖ independent shared allocation: read executes through actual owned budget while command stays inaccessible actions.query (99.507584ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(catalog.operations.every(x=>x.handler===null&&x.availability.implemented===false))
+  
+      at TestContext.<anonymous> (file:///tmp/meri-local-application-review-20261013/apps/control/action-host/local-integration/allocation-independent.test.mjs:22:388)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at apps/control/action-host/local-integration/allocation-independent.test.mjs:20:57
+✖ independent shared allocation: read executes through actual owned budget while command stays inaccessible create_task (29.94855ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(catalog.operations.every(x=>x.handler===null&&x.availability.implemented===false))
+  
+      at TestContext.<anonymous> (file:///tmp/meri-local-application-review-20261013/apps/control/action-host/local-integration/allocation-independent.test.mjs:22:388)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
