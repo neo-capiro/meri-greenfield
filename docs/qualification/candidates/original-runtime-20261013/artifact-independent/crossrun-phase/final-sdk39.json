@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/worker/conversation/skills/test/mcp.test.mjs",
+    "apps/worker/conversation/skills/test/selected-runtime.test.mjs"
+  ],
+  "cwd": "/workspace/meri-original-runtime-artifact-review",
+  "sourceHead": "8e1c28914524cf4d3a93c1cf63a01b024deec451",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "a4ab811255c72619c14b10bf2c98a83e20794831d7cf17d272e0c62cd25ccbbc",
+  "startedAt": "2026-10-13T19:09:45.122068+00:00",
+  "durationSeconds": 2.431,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 331520,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/original-runtime-20261013/artifact-independent/crossrun-phase/final-sdk39.stdout.bin",
+      "bytes": 3874,
+      "sha256": "2033bec63b0681cf50c0d302b41a8a826cf94fca135365ddad249610538f981d"
+    },
+    {
+      "path": "docs/qualification/candidates/original-runtime-20261013/artifact-independent/crossrun-phase/final-sdk39.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,29 @@
+✔ quick_skill.commitments_audit: separate approved output current allocation produces actual DOCX without source mutation (360.83242ms)
+✔ quick_skill.relationship_brief: separate approved output current allocation produces actual DOCX without source mutation (332.28807ms)
+✔ missing approval is pending with no IDs/effect; cloned source object cannot acquire preparation identity (38.699479ms)
+✔ approved output sourcePinsSha256 substitution refuses before artifact effects (38.950685ms)
+✔ approved output outputBinding substitution refuses before artifact effects (35.510566ms)
+✔ approved output scopes substitution refuses before artifact effects (38.265549ms)
+✔ approved output policyRevision substitution refuses before artifact effects (52.678129ms)
+✔ approved output allocationSha256 substitution refuses before artifact effects (49.29758ms)
+✔ approved output grantId substitution refuses before artifact effects (38.115034ms)
+✔ approved output approvalReceiptId substitution refuses before artifact effects (39.897822ms)
+✔ approved output deadlineMs substitution refuses before artifact effects (32.138039ms)
+✔ approved output maxBytes substitution refuses before artifact effects (35.318429ms)
+✔ native retained source revocation refuses output even though old source decisions and grant remain (32.714852ms)
+✔ current retained evidence evidenceSha256 substitution refuses before generation (39.077865ms)
+✔ current retained evidence sourcePinsSha256 substitution refuses before generation (31.104732ms)
+✔ current retained evidence scopes substitution refuses before generation (35.06563ms)
+✔ current retained evidence policyRevision substitution refuses before generation (31.27748ms)
+✔ current retained evidence checkedAtMs substitution refuses before generation (37.699974ms)
+✔ current retained evidence expiresAtMs substitution refuses before generation (33.210824ms)
+✔ valid-looking different grant ID cannot alias current output producer grant (37.465812ms)
+✔ read refuses unretained/cloned preparation and caller credential before native output reads (28.314627ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3296.448466

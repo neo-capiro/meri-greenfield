@@ -1,0 +1,78 @@
+{
+  "outcomes": {
+    "inspect": {
+      "released": false,
+      "code": "SELECTED_OUTPUT_READ_ASSOCIATION"
+    },
+    "download": {
+      "released": false,
+      "code": "SELECTED_OUTPUT_READ_ASSOCIATION"
+    }
+  },
+  "stats": {
+    "mode": "synthetic-local",
+    "sourceConnected": false,
+    "nativeDatabase": false,
+    "nativeQualified": false,
+    "generations": 2,
+    "artifactChecks": 28,
+    "versionCharges": 2,
+    "settled": 2,
+    "unknown": 0,
+    "consumedMicroUsd": "20",
+    "allocations": 1,
+    "grants": 1,
+    "skillId": "quick_skill.mail_history",
+    "skillVersion": "1.0.0",
+    "manifestSha256": "15d72ec14a57ce4f7aebb120a90409bca469fd237a520811311740474b54aecb",
+    "processReceipts": [
+      {
+        "pid": 322814,
+        "exitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "stdoutBytes": 657,
+        "stderrBytes": 0,
+        "stdoutRetainedBytes": 657,
+        "stderrRetainedBytes": 0,
+        "hashScope": "retained bytes",
+        "stdoutSha256": "8140b331205126c5219ca5e1ea515f3b17d99885970746b451ad934a5e0a32a7",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdoutEnded": true,
+        "stderrEnded": true,
+        "streamErrors": [],
+        "leaderClosed": true,
+        "groupKillAttempted": true,
+        "groupAbsent": true,
+        "sandboxQualified": false
+      },
+      {
+        "pid": 322836,
+        "exitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "stdoutBytes": 657,
+        "stderrBytes": 0,
+        "stdoutRetainedBytes": 657,
+        "stderrRetainedBytes": 0,
+        "hashScope": "retained bytes",
+        "stdoutSha256": "4b4e6118f2b56780a43a35ce66cd8adc8ad16661b3da34d31d7161167b111178",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdoutEnded": true,
+        "stderrEnded": true,
+        "streamErrors": [],
+        "leaderClosed": true,
+        "groupKillAttempted": true,
+        "groupAbsent": true,
+        "sandboxQualified": false
+      }
+    ],
+    "closed": true,
+    "revoked": false,
+    "cleanup": {
+      "executorDirectoriesAbsent": true,
+      "storeRemoved": true
+    }
+  },
+  "nativeQualified": false
+}

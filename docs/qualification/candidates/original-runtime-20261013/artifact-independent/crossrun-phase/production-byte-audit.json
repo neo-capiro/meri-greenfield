@@ -1,0 +1,100 @@
+{
+  "status": "PASS",
+  "productionCommit": "c22e72be56fbe17f218a20b14522b79416edecfe",
+  "tree": "da0e6f867d0528d64898641a1611d0b5e83a01e8",
+  "reviewHead": "8e1c28914524cf4d3a93c1cf63a01b024deec451",
+  "protectedEmitterCompilerSkillObjects": [
+    {
+      "path": "apps/control/document-application/commitments-audit",
+      "gitObjects": {
+        "5c533c1bea625fc43928ec620672800c715b2071": "4f6ed7fa2b236636e15756b8e525af401f38229d",
+        "71d8c90c5a1fe5abc88b25fb74abba177949d3b1": "4f6ed7fa2b236636e15756b8e525af401f38229d",
+        "c22e72be56fbe17f218a20b14522b79416edecfe": "4f6ed7fa2b236636e15756b8e525af401f38229d"
+      },
+      "unchanged": true
+    },
+    {
+      "path": "apps/control/document-application/relationship-brief",
+      "gitObjects": {
+        "5c533c1bea625fc43928ec620672800c715b2071": "0759ba7c8808ee10f65e04c5e1f244412362ac3b",
+        "71d8c90c5a1fe5abc88b25fb74abba177949d3b1": "0759ba7c8808ee10f65e04c5e1f244412362ac3b",
+        "c22e72be56fbe17f218a20b14522b79416edecfe": "0759ba7c8808ee10f65e04c5e1f244412362ac3b"
+      },
+      "unchanged": true
+    },
+    {
+      "path": "apps/control/document-application/selected-output/projection.mjs",
+      "gitObjects": {
+        "5c533c1bea625fc43928ec620672800c715b2071": "d55f16ba58ae32283944f4a4f25153d6124b6f4a",
+        "71d8c90c5a1fe5abc88b25fb74abba177949d3b1": "d55f16ba58ae32283944f4a4f25153d6124b6f4a",
+        "c22e72be56fbe17f218a20b14522b79416edecfe": "d55f16ba58ae32283944f4a4f25153d6124b6f4a"
+      },
+      "unchanged": true
+    },
+    {
+      "path": "apps/artifacts",
+      "gitObjects": {
+        "5c533c1bea625fc43928ec620672800c715b2071": "c4688cb9bf064ccffb78e379cd3dadc6d15028f7",
+        "71d8c90c5a1fe5abc88b25fb74abba177949d3b1": "c4688cb9bf064ccffb78e379cd3dadc6d15028f7",
+        "c22e72be56fbe17f218a20b14522b79416edecfe": "c4688cb9bf064ccffb78e379cd3dadc6d15028f7"
+      },
+      "unchanged": true
+    },
+    {
+      "path": "packages/skills",
+      "gitObjects": {
+        "5c533c1bea625fc43928ec620672800c715b2071": "5011e635f265379fc9d1f16e532e2ba6cbd44426",
+        "71d8c90c5a1fe5abc88b25fb74abba177949d3b1": "5011e635f265379fc9d1f16e532e2ba6cbd44426",
+        "c22e72be56fbe17f218a20b14522b79416edecfe": "5011e635f265379fc9d1f16e532e2ba6cbd44426"
+      },
+      "unchanged": true
+    }
+  ],
+  "finalDelta": [
+    "apps/control/conversations/skills/evidence/association-setup-cleanup.json",
+    "apps/control/conversations/skills/evidence/read-association-after/first-inspection.json",
+    "apps/control/conversations/skills/evidence/read-association-after/first-page-1.png",
+    "apps/control/conversations/skills/evidence/read-association-after/first-page-10.png",
+    "apps/control/conversations/skills/evidence/read-association-after/first-page-11.png",
+    "apps/control/conversations/skills/evidence/read-association-after/first-page-12.png",
+    "apps/control/conversations/skills/evidence/read-association-after/first-page-2.png",
+    "apps/control/conversations/skills/evidence/read-association-after/first-page-3.png",
+    "apps/control/conversations/skills/evidence/read-association-after/first-page-4.png",
+    "apps/control/conversations/skills/evidence/read-association-after/first-page-5.png",
+    "apps/control/conversations/skills/evidence/read-association-after/first-page-6.png",
+    "apps/control/conversations/skills/evidence/read-association-after/first-page-7.png",
+    "apps/control/conversations/skills/evidence/read-association-after/first-page-8.png",
+    "apps/control/conversations/skills/evidence/read-association-after/first-page-9.png",
+    "apps/control/conversations/skills/evidence/read-association-after/first.docx",
+    "apps/control/conversations/skills/evidence/read-association-after/first.pdf",
+    "apps/control/conversations/skills/evidence/read-association-after/provenance.json",
+    "apps/control/conversations/skills/evidence/read-association-after/receipt.json",
+    "apps/control/conversations/skills/evidence/read-association-after/second-inspection.json",
+    "apps/control/conversations/skills/evidence/read-association-after/second-page-1.png",
+    "apps/control/conversations/skills/evidence/read-association-after/second-page-10.png",
+    "apps/control/conversations/skills/evidence/read-association-after/second-page-11.png",
+    "apps/control/conversations/skills/evidence/read-association-after/second-page-12.png",
+    "apps/control/conversations/skills/evidence/read-association-after/second-page-2.png",
+    "apps/control/conversations/skills/evidence/read-association-after/second-page-3.png",
+    "apps/control/conversations/skills/evidence/read-association-after/second-page-4.png",
+    "apps/control/conversations/skills/evidence/read-association-after/second-page-5.png",
+    "apps/control/conversations/skills/evidence/read-association-after/second-page-6.png",
+    "apps/control/conversations/skills/evidence/read-association-after/second-page-7.png",
+    "apps/control/conversations/skills/evidence/read-association-after/second-page-8.png",
+    "apps/control/conversations/skills/evidence/read-association-after/second-page-9.png",
+    "apps/control/conversations/skills/evidence/read-association-after/second.docx",
+    "apps/control/conversations/skills/evidence/read-association-after/second.pdf",
+    "apps/control/conversations/skills/evidence/source-version-association-repaired.json",
+    "apps/control/conversations/skills/evidence/source-version-association-repaired.stderr.bin",
+    "apps/control/conversations/skills/evidence/source-version-association-repaired.stdout.bin",
+    "apps/control/conversations/skills/evidence/source-version-association-root.json",
+    "apps/control/conversations/skills/evidence/source-version-association-root.stderr.bin",
+    "apps/control/conversations/skills/evidence/source-version-association-root.stdout.bin",
+    "apps/control/conversations/skills/test/read-association.test.mjs",
+    "apps/control/document-application/selected-output/bridge.mjs",
+    "apps/control/document-application/selected-output/session.mjs"
+  ],
+  "bookkeepingCorrection": "First inline audit referenced nonexistent apps/artifacts/word; git exited128. Correct actual canonical owner is apps/artifacts, whose entire tree is equal. Initial error is verifier setup, not product failure.",
+  "sourceReviewerSeal": "22e61817d295f2c46ea022642d644edc3cca0bb3",
+  "nativeQualified": false
+}

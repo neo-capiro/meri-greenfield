@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/workspace/meri-original-runtime-artifact-review/docs/qualification/candidates/original-runtime-20261013/artifact-independent/crossrun-phase/audit_artifacts.py", line 57, in <module>
+    assert hashj(prep)==result['preparationSha256'];assert prep['request']==source_request;assert prep['context']['binding']==result['sourceBinding'];assert hashj(prep['context'])==result['sourceContextSha256'];assert prep['provenance']==lineage['sourceProvenance'];assert hashj(prep['reads'])==lineage['compilerReadsSha256'];material=verify_material(prep)
+                                                                                                                                                                                                                                                                                       ~~~~^^^^^^^^^
+KeyError: 'reads'
