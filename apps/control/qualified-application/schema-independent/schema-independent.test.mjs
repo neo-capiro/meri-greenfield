@@ -42,3 +42,13 @@ test('late DDL ACK after cancellation cannot resume migrations or claim physical
 test('malformed acquired client with release is disposed without SQL',async()=>{const h=scripted({onConnect:client=>({release:client.release,query:42})});await rejected(h);assert.equal(h.state.releases.length,1);assert(h.state.releases[0] instanceof Error);assert.equal(h.state.queries.length,0);});
 test('hostile options getter and pool Proxy execute no traps',async()=>{let hits=0;for(const hostile of [Object.defineProperty({},'options',{get(){hits++;throw Error('SECRET');}}),new Proxy({},{get(){hits++;},getOwnPropertyDescriptor(){hits++;},getPrototypeOf(){hits++;}})]){const h=scripted();h.args.pool=hostile;await rejected(h);}assert.equal(hits,0);});
 test('hostile result rows getter never executes and is sanitized',async()=>{let hits=0;const h=scripted({onQuery:({text})=>text.startsWith('SELECT current_database()')?Object.defineProperty({},'rows',{get(){hits++;throw Error('SECRET');}}):undefined});await rejected(h);assert.equal(hits,0);noDDL(h);});
+test('emitted namespace SQL preserves underscore literally in the reserved pg_ prefix',async()=>{
+ const h=scripted();await install(h.args);const sql=texts(h).find(t=>t.startsWith('SELECT nspname'));
+ // SQL LIKE '_' is one arbitrary character. This is a lexical contract check,
+ // not a database execution or a general SQL evaluator.
+ assert(!/NOT\s+LIKE\s+'pg_%'/i.test(sql),'unescaped LIKE hides a user namespace such as pgx_private');
+ assert(/left\(nspname,\s*3\)\s*(?:<>|!=)\s*'pg_'/i.test(sql)||/NOT\s+LIKE\s+'pg\\_%'/i.test(sql),'reserved-prefix comparison must represent literal pg_');
+});
+test('reported user namespace pgx_private prevents every DDL statement',async()=>{
+ const h=scripted({onQuery:({text})=>text.startsWith('SELECT nspname')?{rows:[{name:'pgx_private'}]}:undefined});await rejected(h);noDDL(h);assert.equal(h.state.connects,1);
+});
