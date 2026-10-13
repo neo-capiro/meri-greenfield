@@ -1,0 +1,6 @@
+{
+  "failure": "Initial audit glob included its empty redirected output, causing JSONDecodeError before a report.",
+  "initialExitCode": 1,
+  "fix": "Restrict receipt input to explicit retained capture labels; no behavioral or preservation checks changed.",
+  "sourceUnchanged": true
+}

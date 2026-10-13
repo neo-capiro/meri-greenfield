@@ -28,7 +28,7 @@ check('97-production-operations',len(catalog['operations'])==97)
 check('all-handlers-null',all(x['handler'] is None for x in catalog['operations']))
 check('all-unavailable',all(x['availability']=='unimplemented' for x in catalog['operations']))
 receipts=[]
-for p in sorted(ep.glob('*.json')):
+for p in [ep/(label+'.json') for label in ['first','sparse-fixed','expanded','final'] if (ep/(label+'.json')).exists()]:
  obj=json.loads(p.read_bytes())
  if 'ownedPidAndPgid' not in obj:continue
  receipts.append({'path':p.name,'exitCode':obj['exitCode'],'pid':obj['ownedPidAndPgid'],'absent':obj['ownedProcessGroupAbsent']})
