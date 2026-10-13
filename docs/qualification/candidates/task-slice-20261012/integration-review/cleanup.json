@@ -1,0 +1,33 @@
+{
+  "ownedGroups": {
+    "419004": [],
+    "420549": []
+  },
+  "removedOwnedCopiedDependencies": [
+    "ajv",
+    "ajv-formats",
+    "fast-deep-equal",
+    "fast-uri",
+    "json-schema-traverse",
+    "require-from-string",
+    "canonicalize"
+  ],
+  "donorMutated": false,
+  "captures": [
+    {
+      "label": "owners-independent",
+      "sourceHead": "5b596b72d04219bdafed2ceabe5a256050a2997a",
+      "exitCode": 0,
+      "group": 419004,
+      "streamsVerified": true
+    },
+    {
+      "label": "owners-eval-independent",
+      "sourceHead": "3ea5d8736c4c7f39f4f076494f003cc69232e5e1",
+      "exitCode": 0,
+      "group": 420549,
+      "streamsVerified": true
+    }
+  ],
+  "physicalRuntimeTeardownClaim": false
+}
