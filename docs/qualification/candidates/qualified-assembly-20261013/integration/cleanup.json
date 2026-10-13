@@ -1,0 +1,28 @@
+{
+  "dependencySymlinksRemoved": [
+    {
+      "path": "node_modules",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules",
+      "targetPreserved": true
+    },
+    {
+      "path": "packages/contracts/node_modules",
+      "target": "/workspace/meri-read-continuation-20261012/packages/contracts/node_modules",
+      "targetPreserved": true
+    }
+  ],
+  "ownedGroups": [
+    {
+      "label": "integrated-node",
+      "pgid": 502917,
+      "absent": true
+    },
+    {
+      "label": "integrated-python",
+      "pgid": 502894,
+      "absent": true
+    }
+  ],
+  "otherOwnersTouched": false,
+  "nativeResourcesCreated": false
+}
