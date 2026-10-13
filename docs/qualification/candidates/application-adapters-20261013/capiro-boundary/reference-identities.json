@@ -1,0 +1,512 @@
+{
+  "kind": "immutable-source-metadata-only",
+  "capturedAtUtc": "2026-10-13",
+  "repositories": {
+    "capiro": {
+      "path": "/workspace/capirov2",
+      "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace"
+    },
+    "frontend": {
+      "path": "/workspace/capiro-frontend",
+      "commit": "02c02d95bdf3949662b9123f425271c6491ffdab"
+    },
+    "meri": {
+      "path": "/tmp/meri-action-session-20261013",
+      "commit": "ad0bdfeb830fee11f1f39c4a8a7037215595c4cf"
+    }
+  },
+  "references": [
+    {
+      "id": "clerk",
+      "repository": "capiro",
+      "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "path": "apps/api/src/auth/clerk.service.ts",
+      "blob": "ce5c4d9bf49e6df098e796b366c3a9f3f59e8d96",
+      "sha256": "89b76502f62155fcf05544a78e19f554a1c89635b62c2b8757ce862ab9ed0daf",
+      "bytes": 5848,
+      "locators": [
+        {
+          "symbol": "verifySessionToken",
+          "firstLine": 77,
+          "lastLine": 101
+        },
+        {
+          "symbol": "change_control",
+          "firstLine": 1,
+          "lastLine": 12
+        }
+      ]
+    },
+    {
+      "id": "tenant",
+      "repository": "capiro",
+      "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "path": "apps/api/src/tenant/tenant-context.middleware.ts",
+      "blob": "fece0915d869778984cd9987840e1bd41c203e01",
+      "sha256": "dabb24d3ab31777aeee64cd2b943ca8d256a89cd2f3e7196b90b06bc3945b346",
+      "bytes": 22931,
+      "locators": [
+        {
+          "symbol": "verified_principal",
+          "firstLine": 111,
+          "lastLine": 134
+        },
+        {
+          "symbol": "membership_and_selfheal",
+          "firstLine": 146,
+          "lastLine": 305
+        },
+        {
+          "symbol": "impersonation_and_context",
+          "firstLine": 307,
+          "lastLine": 366
+        }
+      ]
+    },
+    {
+      "id": "shared",
+      "repository": "capiro",
+      "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "path": "packages/shared/src/index.ts",
+      "blob": "62eb32931826f77abd985bc142f6a65adad6a23a",
+      "sha256": "1a713331de044768f7bd8631db4762a08a3c3541a1bbc064c67bbff46fc9a75f",
+      "bytes": 273389,
+      "locators": [
+        {
+          "symbol": "TenantContext",
+          "firstLine": 195,
+          "lastLine": 201
+        }
+      ]
+    },
+    {
+      "id": "me",
+      "repository": "capiro",
+      "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "path": "apps/api/src/users/users.controller.ts",
+      "blob": "1bd5eb81436f3857761f4aec4af05ee7742f5ed6",
+      "sha256": "d7cc8867f6a11f6ca9fc8e4c3dc6c640ecab2c73ce661e51affed17dc7057a20",
+      "bytes": 16950,
+      "locators": [
+        {
+          "symbol": "me",
+          "firstLine": 99,
+          "lastLine": 154
+        }
+      ]
+    },
+    {
+      "id": "app",
+      "repository": "capiro",
+      "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "path": "apps/api/src/app.module.ts",
+      "blob": "d57f876f14f1d25a3e4cc7d9194922e7e8f8a415",
+      "sha256": "00c6da9894f4c0b2bb2f9b29201aea0d5bd01d5a5c605fe1cfc53439a8fe5afc",
+      "bytes": 8964,
+      "locators": [
+        {
+          "symbol": "middleware_registration",
+          "firstLine": 148,
+          "lastLine": 179
+        }
+      ]
+    },
+    {
+      "id": "http",
+      "repository": "capiro",
+      "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "path": "apps/api/src/bootstrap/configure-api-http-app.ts",
+      "blob": "3407e1cc723d0dc117e998e0b8f29436ea0d5551",
+      "sha256": "ec2e02dff274b150d1594783249628927ca0e854916e8577c01b5503b2ba041c",
+      "bytes": 7342,
+      "locators": [
+        {
+          "symbol": "api_prefix",
+          "firstLine": 76,
+          "lastLine": 87
+        }
+      ]
+    },
+    {
+      "id": "context_decorator",
+      "repository": "capiro",
+      "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "path": "apps/api/src/tenant/current-tenant.decorator.ts",
+      "blob": "40fbcf7d5ad5c4bf1b75963c97ac41207ebf64b6",
+      "sha256": "4709acfb1164a4e71fa508e03534a9015a0c8e7fc4ccc452264099e913281647",
+      "bytes": 776,
+      "locators": [
+        {
+          "symbol": "CurrentTenant",
+          "firstLine": 10,
+          "lastLine": 20
+        }
+      ]
+    },
+    {
+      "id": "conversation",
+      "repository": "capiro",
+      "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "path": "apps/api/src/meri/meri.service.ts",
+      "blob": "397c46f49a540a32d231a114945119d51be04c4a",
+      "sha256": "0def3e294659424a8a831c0c2fa652b5fa594b22ea0836d9cf209958d53e60f5",
+      "bytes": 293639,
+      "locators": [
+        {
+          "symbol": "getConversation",
+          "firstLine": 544,
+          "lastLine": 549
+        },
+        {
+          "symbol": "active_and_archived_owners",
+          "firstLine": 873,
+          "lastLine": 906
+        },
+        {
+          "symbol": "ensureClientVisible",
+          "firstLine": 955,
+          "lastLine": 963
+        }
+      ]
+    },
+    {
+      "id": "routes",
+      "repository": "capiro",
+      "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "path": "apps/api/src/meri/meri.controller.ts",
+      "blob": "598e9146e5568349f213cbd548de0213113dc924",
+      "sha256": "c9562a30e6a67ed75eaf74850d1e4d67c133f040035fb4df8ac80605a3123586",
+      "bytes": 44992,
+      "locators": [
+        {
+          "symbol": "controller",
+          "firstLine": 310,
+          "lastLine": 312
+        },
+        {
+          "symbol": "conversation_get",
+          "firstLine": 357,
+          "lastLine": 361
+        },
+        {
+          "symbol": "research_run_active",
+          "firstLine": 969,
+          "lastLine": 984
+        }
+      ]
+    },
+    {
+      "id": "scope",
+      "repository": "capiro",
+      "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "path": "apps/api/src/context/context-security-scope.service.ts",
+      "blob": "48a86578828d8e991e057ce364b1924e261e0cef",
+      "sha256": "7b49f49c10fe05c781c096d2202c6be3b6a08a10f9027d9ad5ba6bf301109904",
+      "bytes": 5398,
+      "locators": [
+        {
+          "symbol": "resolve",
+          "firstLine": 27,
+          "lastLine": 61
+        },
+        {
+          "symbol": "client_wall",
+          "firstLine": 64,
+          "lastLine": 92
+        },
+        {
+          "symbol": "mailbox_owner",
+          "firstLine": 95,
+          "lastLine": 125
+        }
+      ]
+    },
+    {
+      "id": "scope_types",
+      "repository": "capiro",
+      "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "path": "apps/api/src/context/context.types.ts",
+      "blob": "7c92a4a80fbc73ffba87644b37854ebe83a18d8e",
+      "sha256": "b61dfd755bd161a77cba40dd2c23a8e9723cf93527220a060d80de67f2892746",
+      "bytes": 5392,
+      "locators": [
+        {
+          "symbol": "scope_upper_bounds",
+          "firstLine": 33,
+          "lastLine": 45
+        },
+        {
+          "symbol": "ui_hints",
+          "firstLine": 64,
+          "lastLine": 70
+        }
+      ]
+    },
+    {
+      "id": "portfolio",
+      "repository": "capiro",
+      "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "path": "apps/api/src/research-portfolios/research-portfolio-artifact-authority.ts",
+      "blob": "b09e0ed7d15c3d6c3834f4c878ee409bcff86460",
+      "sha256": "d6700f4e06e24b894e7b3d8b7c940faf22b1d595d974ad015d375f0c166f4924",
+      "bytes": 4785,
+      "locators": [
+        {
+          "symbol": "conversation_authority",
+          "firstLine": 37,
+          "lastLine": 72
+        }
+      ]
+    },
+    {
+      "id": "webhook",
+      "repository": "capiro",
+      "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "path": "apps/api/src/webhooks/clerk-webhook.service.ts",
+      "blob": "ee3800830451be97242fc4dc67aa55dc8283a6fe",
+      "sha256": "8e8ee059e264b4391ace558fa3658a96e2f812527b64448c4b26d9f47cb3333d",
+      "bytes": 15782,
+      "locators": [
+        {
+          "symbol": "user_deleted",
+          "firstLine": 154,
+          "lastLine": 174
+        },
+        {
+          "symbol": "membership_deleted",
+          "firstLine": 237,
+          "lastLine": 254
+        },
+        {
+          "symbol": "unsupported_event_noop",
+          "firstLine": 256,
+          "lastLine": 267
+        }
+      ]
+    },
+    {
+      "id": "research",
+      "repository": "capiro",
+      "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "path": "apps/api/src/meri/meri-research.service.ts",
+      "blob": "aaa52e7b1dc0a158844e738056d805e5f3667f7b",
+      "sha256": "ff01f6b1e223e90517fa021d1eefc621dc85488a57a64846148758b37876fb9b",
+      "bytes": 241376,
+      "locators": [
+        {
+          "symbol": "assertRunActive",
+          "firstLine": 1039,
+          "lastLine": 1045
+        }
+      ]
+    },
+    {
+      "id": "research_state",
+      "repository": "capiro",
+      "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "path": "apps/api/src/meri/meri-research-run-state.ts",
+      "blob": "e699e8ad127fa08d1c60a65f6afff3808ffe108a",
+      "sha256": "ffa878891817176f336d8556c7b83126df7b78b51c0df7884c303926f5ea1886",
+      "bytes": 4418,
+      "locators": [
+        {
+          "symbol": "ResearchRunState",
+          "firstLine": 55,
+          "lastLine": 75
+        }
+      ]
+    },
+    {
+      "id": "prisma",
+      "repository": "capiro",
+      "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "path": "apps/api/prisma/schema.prisma",
+      "blob": "cdf1923217edae6e7624993796a5671922b61ac0",
+      "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0",
+      "bytes": 968034,
+      "locators": [
+        {
+          "symbol": "TenantMembership",
+          "firstLine": 652,
+          "lastLine": 672
+        },
+        {
+          "symbol": "ClientMemoryAccess",
+          "firstLine": 1003,
+          "lastLine": 1028
+        },
+        {
+          "symbol": "ClioConversation",
+          "firstLine": 2036,
+          "lastLine": 2071
+        },
+        {
+          "symbol": "AiRun",
+          "firstLine": 2680,
+          "lastLine": 2725
+        },
+        {
+          "symbol": "unrelated_filing_fence",
+          "firstLine": 16397,
+          "lastLine": 16423
+        }
+      ]
+    },
+    {
+      "id": "frontend_rules",
+      "repository": "frontend",
+      "commit": "02c02d95bdf3949662b9123f425271c6491ffdab",
+      "path": "AGENTS.md",
+      "blob": "e13c8fc2cf81ed5d7a7cc309e3eee25c858ac199",
+      "sha256": "3889dd45c593695fbdbb3c3935eb06b0ee48c38c17d9ba3fcce0c606e5cf4389",
+      "bytes": 2319,
+      "locators": []
+    },
+    {
+      "id": "frontend_architecture",
+      "repository": "frontend",
+      "commit": "02c02d95bdf3949662b9123f425271c6491ffdab",
+      "path": "docs/ARCHITECTURE.md",
+      "blob": "5af3b83fda6df7c42e1eaa0e5f93559a8d6db1d2",
+      "sha256": "cecd2f2acbd922a43236018997a7a2f2ed31aba0209121bd7bdfe4799124696d",
+      "bytes": 5076,
+      "locators": []
+    },
+    {
+      "id": "frontend_auth_route",
+      "repository": "frontend",
+      "commit": "02c02d95bdf3949662b9123f425271c6491ffdab",
+      "path": "apps/portfolio-web/src/app/api/backend/[service]/[...path]/route.ts",
+      "blob": "39d2d1db8a85e975bc97eda9c4aade82989c9993",
+      "sha256": "2e3f1f9d576ca6b9b0b0148835322f1f78b3268dc51ed7fe26494f6d3b8e1938",
+      "bytes": 670,
+      "locators": [
+        {
+          "symbol": "Clerk_template_proxy",
+          "firstLine": 1,
+          "lastLine": 24
+        }
+      ]
+    },
+    {
+      "id": "frontend_proxy",
+      "repository": "frontend",
+      "commit": "02c02d95bdf3949662b9123f425271c6491ffdab",
+      "path": "apps/portfolio-web/src/shared/api/proxy.ts",
+      "blob": "8441dda134bc5f5b70f40157cca952c9365d7e6b",
+      "sha256": "c061ab974c61f645f84f2829a461a2568769145a4976a4931be60748a8d47df8",
+      "bytes": 5788,
+      "locators": [
+        {
+          "symbol": "allowed_roots",
+          "firstLine": 2,
+          "lastLine": 24
+        },
+        {
+          "symbol": "token_forwarding",
+          "firstLine": 96,
+          "lastLine": 131
+        }
+      ]
+    },
+    {
+      "id": "frontend_session",
+      "repository": "frontend",
+      "commit": "02c02d95bdf3949662b9123f425271c6491ffdab",
+      "path": "apps/portfolio-web/src/shared/auth/SessionBoundary.tsx",
+      "blob": "da49442ce4add5181724657b4c1becee56ad7a2a",
+      "sha256": "b48a6d8e227696b960554a67a955e5910197d34a470389924d8f5c5d0985f771",
+      "bytes": 858,
+      "locators": []
+    },
+    {
+      "id": "meri_instructions",
+      "repository": "meri",
+      "commit": "ad0bdfeb830fee11f1f39c4a8a7037215595c4cf",
+      "path": "AGENTS.md",
+      "blob": "fe8cefa588409d8562f0e6d939a6da7d120c0d87",
+      "sha256": "a0650949b74e5aee709bd8b3c9d480f95f5b898778ac8f7b3927eb54b141437a",
+      "bytes": 6582,
+      "locators": []
+    },
+    {
+      "id": "meri_standards",
+      "repository": "meri",
+      "commit": "ad0bdfeb830fee11f1f39c4a8a7037215595c4cf",
+      "path": "docs/IMPLEMENTATION-STANDARDS.md",
+      "blob": "7f680395e07d1114667a800f3f8ed77010a3eac2",
+      "sha256": "d4f10f964ee207187abacd967649a1cfc9bdd468072dc01f859268f08b719959",
+      "bytes": 11082,
+      "locators": []
+    },
+    {
+      "id": "session_readme",
+      "repository": "meri",
+      "commit": "ad0bdfeb830fee11f1f39c4a8a7037215595c4cf",
+      "path": "apps/control/action-host/session/README.md",
+      "blob": "eccac2e8121e893a16164b4aff9f3bd33f698f0e",
+      "sha256": "c9e3911ec8ce4d5ae400ef6dec4a2530a9b0a5724db1284d12134df65d021f73",
+      "bytes": 7139,
+      "locators": []
+    },
+    {
+      "id": "session_owner",
+      "repository": "meri",
+      "commit": "ad0bdfeb830fee11f1f39c4a8a7037215595c4cf",
+      "path": "apps/control/action-host/session/owner.mjs",
+      "blob": "fc76fd8d6043ce0143f54a19615b23acbd357796",
+      "sha256": "2e755e24865951e72a871ea7377c7b221022e67dad964d51f7276b5a83812499",
+      "bytes": 9596,
+      "locators": []
+    },
+    {
+      "id": "current_authority",
+      "repository": "meri",
+      "commit": "ad0bdfeb830fee11f1f39c4a8a7037215595c4cf",
+      "path": "apps/gateway/authorization/current-tool-authority.mjs",
+      "blob": "d5a03019779ef40af8437f0344137685fbde2e0b",
+      "sha256": "794e1f54f6966d2d852d0483606c76410ed684d889ca24c7ea78dac6f2c01043",
+      "bytes": 6613,
+      "locators": [
+        {
+          "symbol": "injected_currentRun",
+          "firstLine": 1,
+          "lastLine": 42
+        },
+        {
+          "symbol": "final_currentRun",
+          "firstLine": 81,
+          "lastLine": 88
+        }
+      ]
+    },
+    {
+      "id": "qualification_registry",
+      "repository": "meri",
+      "commit": "ad0bdfeb830fee11f1f39c4a8a7037215595c4cf",
+      "path": "apps/control/qualification-sdk-fixture/state/registry.mjs",
+      "blob": "24a7c305b874db63645900fd755cf42426ff625b",
+      "sha256": "59f302b9e0f3760b28ffe9a2ff59a68438ec7e731d71ce88a61b48d3fffc2720",
+      "bytes": 18644,
+      "locators": [
+        {
+          "symbol": "qualification_scope_only",
+          "firstLine": 1,
+          "lastLine": 15
+        }
+      ]
+    },
+    {
+      "id": "synthetic_current_run",
+      "repository": "meri",
+      "commit": "ad0bdfeb830fee11f1f39c4a8a7037215595c4cf",
+      "path": "apps/control/action-host/local-integration/ports.mjs",
+      "blob": "c41e1d6cf07cf2262c2f27444848c04b5f8a14f1",
+      "sha256": "3290d6924dc33c017086f3d6ceda39ac4d7ed46119034f63e7073b8fd05f29bd",
+      "bytes": 8521,
+      "locators": []
+    }
+  ],
+  "privateBodiesRetained": false,
+  "runtimeExecuted": false
+}

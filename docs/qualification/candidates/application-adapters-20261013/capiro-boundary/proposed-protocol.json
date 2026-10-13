@@ -1,0 +1,95 @@
+{
+  "status": "PROPOSED_CAPIRO_OWNER_IMPLEMENTATION_REQUIRED",
+  "version": "capiro-application-authority/1",
+  "authentication": "Existing Capiro bearer verifier and TenantContextMiddleware; browser input never supplies principal or grants.",
+  "identity": {
+    "method": "POST",
+    "path": "/api/clio/application-authority/identity",
+    "request": {},
+    "responseFields": [
+      "principal",
+      "identityRevision",
+      "checkedAtMs",
+      "expiresAtMs"
+    ],
+    "principalFields": [
+      "tenantId",
+      "actorId"
+    ]
+  },
+  "context": {
+    "method": "POST",
+    "path": "/api/clio/application-authority/context",
+    "requestFields": [
+      "identitySha256",
+      "conversationId",
+      "clientId"
+    ],
+    "responseFields": [
+      "identitySha256",
+      "principal",
+      "identityRevision",
+      "conversationId",
+      "selectedClientId",
+      "contextRevision",
+      "checkedAtMs",
+      "expiresAtMs"
+    ],
+    "principalFields": [
+      "tenantId",
+      "actorId"
+    ],
+    "requires": [
+      "Fresh current authenticated principal and identity revision, compared by Meri with the verified identity snapshot",
+      "Online/current native-session revocation checked through established Clerk backend session owner; verifyToken alone is insufficient; exact API establishment remains Capiro-owned",
+      "Existing active conversation owner predicate including tenant, user, archivedAt null and Research Portfolio authorization",
+      "Conversation already bound to nonnull selected client; reject null or different selected client for this client-action slice",
+      "Existing nonarchived client visibility and current ContextSecurityScopeService selected-client ethical-wall authorization",
+      "No actor, tenant, scopes, grants, run, attempt, worker, fence, approval or policy decisions accepted from request body"
+    ]
+  },
+  "wireRules": {
+    "closedObjects": true,
+    "ids": "UUID identities normalized consistently with existing database identities; no alias or latest-row fallback",
+    "identitySha256": "Lowercase SHA-256 correlation value supplied by Meri; an echoed hash is not authentication",
+    "revisions": "Nonempty bounded opaque server-authored stable security-state revisions: native session identity, principal, membership role/status/version and applicable context policy facts. Exclude checkedAt/lastSeen/lastActive/unrelated activity timestamps. Exact derivation requires Capiro owner implementation/tests.",
+    "times": "Safe integer epoch milliseconds; checkedAtMs sampled after checks; expiry is bounded by original verified JWT/session and applicable authority expiry, never locally refreshed.",
+    "secrets": "No raw token, user email, profile, conversation content, mailbox credential, JWT claims body or private metadata in response",
+    "cache": "No-store; no successful fallback on verification/policy/timeout failure"
+  },
+  "meriJoin": {
+    "requiredOwner": "Existing injected currentRun(binding,{signal}) canonical port, supplied by an authoritative admitted-run implementation",
+    "currentRunResponse": [
+      "binding",
+      "policyRevision",
+      "deadlineMs",
+      "checkedAtMs"
+    ],
+    "bindingFields": [
+      "tenantId",
+      "actorId",
+      "conversationId",
+      "runId",
+      "attemptId",
+      "workerId",
+      "writerFence"
+    ],
+    "scopeOwner": "Meri trusted host commandContext and policy scopes, freshly corroborated by currentRun and existing business/source authority; not Capiro echo",
+    "forbiddenSubstitutes": [
+      "AiRun telemetry",
+      "ClioResearch leaseEpoch",
+      "qualification FixtureRegistry promotion",
+      "synthetic currentRun",
+      "most-recent conversation/run",
+      "browser-selected actor/tenant/fence"
+    ]
+  },
+  "qualification": {
+    "existingEndpoint": false,
+    "capiroImplementation": "MISSING",
+    "productionMeriCurrentRunComposition": "REQUIRED_NOT_ESTABLISHED_BY_THIS_TRACE",
+    "liveVerification": "UNRUN",
+    "instantClerkSessionRevocation": "REQUIRED_FOR_BRIDGE_NOT_IMPLEMENTED_BY_TRACED_VERIFIER",
+    "policyOrApprovalExpansionAuthorized": false
+  }
+}

@@ -1,0 +1,276 @@
+{
+  "kind": "offline-source-metadata-and-boundary-audit",
+  "checks": [
+    {
+      "name": "clerk:identity",
+      "passed": true
+    },
+    {
+      "name": "clerk:locators",
+      "passed": true
+    },
+    {
+      "name": "tenant:identity",
+      "passed": true
+    },
+    {
+      "name": "tenant:locators",
+      "passed": true
+    },
+    {
+      "name": "shared:identity",
+      "passed": true
+    },
+    {
+      "name": "shared:locators",
+      "passed": true
+    },
+    {
+      "name": "me:identity",
+      "passed": true
+    },
+    {
+      "name": "me:locators",
+      "passed": true
+    },
+    {
+      "name": "app:identity",
+      "passed": true
+    },
+    {
+      "name": "app:locators",
+      "passed": true
+    },
+    {
+      "name": "http:identity",
+      "passed": true
+    },
+    {
+      "name": "http:locators",
+      "passed": true
+    },
+    {
+      "name": "context_decorator:identity",
+      "passed": true
+    },
+    {
+      "name": "context_decorator:locators",
+      "passed": true
+    },
+    {
+      "name": "conversation:identity",
+      "passed": true
+    },
+    {
+      "name": "conversation:locators",
+      "passed": true
+    },
+    {
+      "name": "routes:identity",
+      "passed": true
+    },
+    {
+      "name": "routes:locators",
+      "passed": true
+    },
+    {
+      "name": "scope:identity",
+      "passed": true
+    },
+    {
+      "name": "scope:locators",
+      "passed": true
+    },
+    {
+      "name": "scope_types:identity",
+      "passed": true
+    },
+    {
+      "name": "scope_types:locators",
+      "passed": true
+    },
+    {
+      "name": "portfolio:identity",
+      "passed": true
+    },
+    {
+      "name": "portfolio:locators",
+      "passed": true
+    },
+    {
+      "name": "webhook:identity",
+      "passed": true
+    },
+    {
+      "name": "webhook:locators",
+      "passed": true
+    },
+    {
+      "name": "research:identity",
+      "passed": true
+    },
+    {
+      "name": "research:locators",
+      "passed": true
+    },
+    {
+      "name": "research_state:identity",
+      "passed": true
+    },
+    {
+      "name": "research_state:locators",
+      "passed": true
+    },
+    {
+      "name": "prisma:identity",
+      "passed": true
+    },
+    {
+      "name": "prisma:locators",
+      "passed": true
+    },
+    {
+      "name": "frontend_rules:identity",
+      "passed": true
+    },
+    {
+      "name": "frontend_rules:locators",
+      "passed": true
+    },
+    {
+      "name": "frontend_architecture:identity",
+      "passed": true
+    },
+    {
+      "name": "frontend_architecture:locators",
+      "passed": true
+    },
+    {
+      "name": "frontend_auth_route:identity",
+      "passed": true
+    },
+    {
+      "name": "frontend_auth_route:locators",
+      "passed": true
+    },
+    {
+      "name": "frontend_proxy:identity",
+      "passed": true
+    },
+    {
+      "name": "frontend_proxy:locators",
+      "passed": true
+    },
+    {
+      "name": "frontend_session:identity",
+      "passed": true
+    },
+    {
+      "name": "frontend_session:locators",
+      "passed": true
+    },
+    {
+      "name": "meri_instructions:identity",
+      "passed": true
+    },
+    {
+      "name": "meri_instructions:locators",
+      "passed": true
+    },
+    {
+      "name": "meri_standards:identity",
+      "passed": true
+    },
+    {
+      "name": "meri_standards:locators",
+      "passed": true
+    },
+    {
+      "name": "session_readme:identity",
+      "passed": true
+    },
+    {
+      "name": "session_readme:locators",
+      "passed": true
+    },
+    {
+      "name": "session_owner:identity",
+      "passed": true
+    },
+    {
+      "name": "session_owner:locators",
+      "passed": true
+    },
+    {
+      "name": "current_authority:identity",
+      "passed": true
+    },
+    {
+      "name": "current_authority:locators",
+      "passed": true
+    },
+    {
+      "name": "qualification_registry:identity",
+      "passed": true
+    },
+    {
+      "name": "qualification_registry:locators",
+      "passed": true
+    },
+    {
+      "name": "synthetic_current_run:identity",
+      "passed": true
+    },
+    {
+      "name": "synthetic_current_run:locators",
+      "passed": true
+    },
+    {
+      "name": "proposal-not-current-route",
+      "passed": true
+    },
+    {
+      "name": "identity-no-caller-authority",
+      "passed": true
+    },
+    {
+      "name": "context-closed-selectors",
+      "passed": true
+    },
+    {
+      "name": "fresh-principal-and-revision",
+      "passed": true
+    },
+    {
+      "name": "context-no-mero-run-fields",
+      "passed": true
+    },
+    {
+      "name": "all-full-binding-fields-owned-by-meri",
+      "passed": true
+    },
+    {
+      "name": "current-session-required-not-claimed",
+      "passed": true
+    },
+    {
+      "name": "tracked-source-preserved",
+      "passed": true
+    },
+    {
+      "name": "all-original-tracked-files-preserved",
+      "passed": true
+    },
+    {
+      "name": "all-changes-in-allocated-docs",
+      "passed": true
+    },
+    {
+      "name": "no-runtime-or-private-bodies",
+      "passed": true
+    }
+  ],
+  "passed": 67,
+  "total": 67,
+  "runtimeExecuted": false
+}

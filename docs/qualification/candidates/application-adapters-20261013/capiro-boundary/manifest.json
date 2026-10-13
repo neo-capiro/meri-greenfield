@@ -1,0 +1,51 @@
+{
+  "base": "ad0bdfeb830fee11f1f39c4a8a7037215595c4cf",
+  "kind": "documentation-only-boundary-request",
+  "files": [
+    {
+      "path": "docs/coordination/reports/CODEX-CAPIRO-APPLICATION-AUTHORITY-REQUEST-20261013.md",
+      "bytes": 10725,
+      "sha256": "0f5f4a51b2d0a0572e24f0e91b39dbc13ce4c1f23bca2cdd015baa1b94bd1baf"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/capiro-boundary/collect-metadata.py",
+      "bytes": 4284,
+      "sha256": "ac23ce2e38a733086a2fcc0f3e23dd8ffb6eb0b4038955aa808af6f31f6b8a82"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/capiro-boundary/discovery-notes.json",
+      "bytes": 1718,
+      "sha256": "2fa1390929f072c51dec8095689ed495465b195a1bec08de8e6b415f663952a8"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/capiro-boundary/proposed-protocol.json",
+      "bytes": 4130,
+      "sha256": "67e0c15a2142b123a48c0dce696df233bab852d78b0f15ca88a09a649459a060"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/capiro-boundary/reference-identities-initial.json",
+      "bytes": 15494,
+      "sha256": "acc3660ab4b0a99fc5754ac79219715335a08a469ff3b6cc241c2e9afd19e010"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/capiro-boundary/reference-identities.json",
+      "bytes": 15494,
+      "sha256": "f9f21f0f911084cadefe09f0b9e4ff4513b5fc548ac30b8fe1be906f2626cff1"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/capiro-boundary/verification-initial-failure.json",
+      "bytes": 5094,
+      "sha256": "b5a55d1467937cf35a12eeba30bb45ff686533cb09b0eee3893096d674d549a6"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/capiro-boundary/verification.json",
+      "bytes": 5092,
+      "sha256": "d37378667e073931ff2e04db49bd00e81af0bd3df5141a9a620388f7d6e36790"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/capiro-boundary/verify.py",
+      "bytes": 3108,
+      "sha256": "34ba2f4acf6bb449735f7c8e29bdd539a3212d6e86ee197a64658df64ef1e3ad"
+    }
+  ]
+}
