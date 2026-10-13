@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "verifiedAt": "2026-10-13 01:16:54 UTC",
+  "publication": {
+    "name": "pr41",
+    "number": 41,
+    "url": "https://github.com/neo-capiro/meri-greenfield/pull/41",
+    "state": "open",
+    "draft": true,
+    "merged": false,
+    "head": "457f0c27186814b92b2ebe0991ca8c8d071c2d2d",
+    "headRef": "task/meri-action-followthrough-20261013",
+    "base": "cacbe543941db52cc8dcf085bf96c1919e8c155f",
+    "baseRef": "task/meri-action-local-20261013",
+    "mergeable": true
+  },
+  "parent": {
+    "name": "pr40",
+    "number": 40,
+    "url": "https://github.com/neo-capiro/meri-greenfield/pull/40",
+    "state": "open",
+    "draft": true,
+    "merged": false,
+    "head": "cacbe543941db52cc8dcf085bf96c1919e8c155f",
+    "headRef": "task/meri-action-local-20261013",
+    "base": "d68615c9861315ac1c6ee616697f7ad0093d9192",
+    "baseRef": "task/meri-task-slice-20261012",
+    "mergeable": true
+  },
+  "main": {
+    "name": "main",
+    "sha": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc",
+    "branch": "main"
+  },
+  "testedSource": "d8e86c2b49f91e22a6a6868fce4ba0ca6e707328",
+  "evidenceHead": "457f0c27186814b92b2ebe0991ca8c8d071c2d2d",
+  "verdict": "ACCEPT_SOURCE",
+  "runtime": "HOLD_G1_OPEN",
+  "integratedTests": {
+    "pass": 514,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "originalEntriesPreserved": 10183,
+  "qualifiedRealRequests": 0,
+  "receiptScope": "Readback before the receipt-only commit; final head is its descendant. This file is intentionally excluded from the root manifest to avoid recursive hashes."
+}
