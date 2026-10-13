@@ -1,0 +1,26 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "apps/gateway/sources/client-evidence/test/adapter-handler.test.mjs",
+    "apps/gateway/sources/identity-contacts/test/adapter-handler.test.mjs",
+    "apps/gateway/test/projection-context.test.mjs"
+  ],
+  "cwd": "/workspace/meri-workflow-source-independent",
+  "reviewedCommit": "35594d8a4034c4c05a8b0a954cd759bd5f5ded49",
+  "worktreeHead": "35594d8a4034c4c05a8b0a954cd759bd5f5ded49",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 0,
+  "durationSeconds": 4.319,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 22847,
+  "stderrBytes": 0,
+  "stdoutSha256": "7cfec6ff4b5e8c741591bf7dd525463df4ba6a11cd99458f354822c5bd99aef8",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}

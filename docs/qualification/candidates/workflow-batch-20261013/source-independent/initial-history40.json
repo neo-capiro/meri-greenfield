@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "packages/contracts/test/vertical-final-integration-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-workflow-source-independent",
+  "reviewedCommit": "35594d8a4034c4c05a8b0a954cd759bd5f5ded49",
+  "worktreeHead": "35594d8a4034c4c05a8b0a954cd759bd5f5ded49",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 0,
+  "durationSeconds": 1.943,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 9811,
+  "stderrBytes": 0,
+  "stdoutSha256": "33c7d96564614d3ff4f06dbe9ad48751e1dea1e53a4520f2b37fe7e22d13db52",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}

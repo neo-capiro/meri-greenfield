@@ -1,0 +1,232 @@
+TAP version 13
+# {"operation":"get_client_context","case":"foreign tenant","credentialCalls":1,"fetchCalls":1}
+# {"operation":"get_client_context","case":"foreign policy","credentialCalls":1,"fetchCalls":1}
+# {"operation":"read_client_documents","case":"foreign tenant","credentialCalls":1,"fetchCalls":1}
+# {"operation":"read_client_documents","case":"foreign policy","credentialCalls":1,"fetchCalls":1}
+# Subtest: get_client_context: direct source refuses additional foreign tenant capability scope before broker
+not ok 1 - get_client_context: direct source refuses additional foreign tenant capability scope before broker
+  ---
+  duration_ms: 36.573025
+  type: 'test'
+  location: '/workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/projections-independent.test.mjs:51:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + undefined
+    - 'ACCESS_DENIED'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'ACCESS_DENIED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/projections-independent.test.mjs:55:9)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: get_client_context: direct source refuses additional foreign policy capability scope before broker
+not ok 2 - get_client_context: direct source refuses additional foreign policy capability scope before broker
+  ---
+  duration_ms: 3.58476
+  type: 'test'
+  location: '/workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/projections-independent.test.mjs:51:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + undefined
+    - 'ACCESS_DENIED'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'ACCESS_DENIED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/projections-independent.test.mjs:55:9)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: read_client_documents: direct source refuses additional foreign tenant capability scope before broker
+not ok 3 - read_client_documents: direct source refuses additional foreign tenant capability scope before broker
+  ---
+  duration_ms: 7.315489
+  type: 'test'
+  location: '/workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/projections-independent.test.mjs:51:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + undefined
+    - 'ACCESS_DENIED'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'ACCESS_DENIED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/projections-independent.test.mjs:55:9)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: read_client_documents: direct source refuses additional foreign policy capability scope before broker
+not ok 4 - read_client_documents: direct source refuses additional foreign policy capability scope before broker
+  ---
+  duration_ms: 3.003805
+  type: 'test'
+  location: '/workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/projections-independent.test.mjs:51:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + undefined
+    - 'ACCESS_DENIED'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'ACCESS_DENIED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/projections-independent.test.mjs:55:9)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: get_client_context: canonical dispatcher refuses foreign capability scope before reservation/broker
+ok 5 - get_client_context: canonical dispatcher refuses foreign capability scope before reservation/broker
+  ---
+  duration_ms: 1.58445
+  type: 'test'
+  ...
+# Subtest: read_client_documents: canonical dispatcher refuses foreign capability scope before reservation/broker
+ok 6 - read_client_documents: canonical dispatcher refuses foreign capability scope before reservation/broker
+  ---
+  duration_ms: 0.681155
+  type: 'test'
+  ...
+# Subtest: resolve_entity: canonical dispatcher refuses foreign capability scope before reservation/broker
+ok 7 - resolve_entity: canonical dispatcher refuses foreign capability scope before reservation/broker
+  ---
+  duration_ms: 1.672632
+  type: 'test'
+  ...
+# Subtest: find_contacts: canonical dispatcher refuses foreign capability scope before reservation/broker
+ok 8 - find_contacts: canonical dispatcher refuses foreign capability scope before reservation/broker
+  ---
+  duration_ms: 0.941983
+  type: 'test'
+  ...
+# Subtest: get_client_context: actual loopback Fetch reaches canonical handler and governed gateway with exact raw request SHA
+ok 9 - get_client_context: actual loopback Fetch reaches canonical handler and governed gateway with exact raw request SHA
+  ---
+  duration_ms: 28.116847
+  type: 'test'
+  ...
+# Subtest: read_client_documents: actual loopback Fetch reaches canonical handler and governed gateway with exact raw request SHA
+ok 10 - read_client_documents: actual loopback Fetch reaches canonical handler and governed gateway with exact raw request SHA
+  ---
+  duration_ms: 11.583987
+  type: 'test'
+  ...
+# Subtest: resolve_entity: actual loopback Fetch reaches canonical handler and governed gateway with exact raw request SHA
+ok 11 - resolve_entity: actual loopback Fetch reaches canonical handler and governed gateway with exact raw request SHA
+  ---
+  duration_ms: 34.621838
+  type: 'test'
+  ...
+# Subtest: find_contacts: actual loopback Fetch reaches canonical handler and governed gateway with exact raw request SHA
+ok 12 - find_contacts: actual loopback Fetch reaches canonical handler and governed gateway with exact raw request SHA
+  ---
+  duration_ms: 12.068639
+  type: 'test'
+  ...
+# Subtest: get_client_context: changed writer fence after budget reservation blocks source effects
+ok 13 - get_client_context: changed writer fence after budget reservation blocks source effects
+  ---
+  duration_ms: 2.035232
+  type: 'test'
+  ...
+# Subtest: read_client_documents: changed writer fence after budget reservation blocks source effects
+ok 14 - read_client_documents: changed writer fence after budget reservation blocks source effects
+  ---
+  duration_ms: 1.609228
+  type: 'test'
+  ...
+# Subtest: resolve_entity: changed writer fence after budget reservation blocks source effects
+ok 15 - resolve_entity: changed writer fence after budget reservation blocks source effects
+  ---
+  duration_ms: 1.279176
+  type: 'test'
+  ...
+# Subtest: find_contacts: changed writer fence after budget reservation blocks source effects
+ok 16 - find_contacts: changed writer fence after budget reservation blocks source effects
+  ---
+  duration_ms: 0.906952
+  type: 'test'
+  ...
+# Subtest: get_client_context: current decision refresh preserves selected scope and exact original observation
+ok 17 - get_client_context: current decision refresh preserves selected scope and exact original observation
+  ---
+  duration_ms: 4.794603
+  type: 'test'
+  ...
+# Subtest: read_client_documents: current decision refresh preserves selected scope and exact original observation
+ok 18 - read_client_documents: current decision refresh preserves selected scope and exact original observation
+  ---
+  duration_ms: 3.903285
+  type: 'test'
+  ...
+# Subtest: profile client selector resolves from current subject; observation substitution refuses canonical release
+ok 19 - profile client selector resolves from current subject; observation substitution refuses canonical release
+  ---
+  duration_ms: 2.722977
+  type: 'test'
+  ...
+# Subtest: document blocked extraction remains missing readable content, with no new extractor or evidence claim
+ok 20 - document blocked extraction remains missing readable content, with no new extractor or evidence claim
+  ---
+  duration_ms: 4.696847
+  type: 'test'
+  ...
+# Subtest: entity candidate cannot acquire a verified identity label through actual gateway
+ok 21 - entity candidate cannot acquire a verified identity label through actual gateway
+  ---
+  duration_ms: 3.274618
+  type: 'test'
+  ...
+# Subtest: contacts cannot substitute returned selected client at actual release boundary
+ok 22 - contacts cannot substitute returned selected client at actual release boundary
+  ---
+  duration_ms: 2.177864
+  type: 'test'
+  ...
+# Subtest: caller Congress/normalization authority cannot bypass trusted configuration, and missing pin stops before reservation
+ok 23 - caller Congress/normalization authority cannot bypass trusted configuration, and missing pin stops before reservation
+  ---
+  duration_ms: 0.773573
+  type: 'test'
+  ...
+# Subtest: broker immutable context/body receipt substitution refuses before source Fetch
+ok 24 - broker immutable context/body receipt substitution refuses before source Fetch
+  ---
+  duration_ms: 2.066058
+  type: 'test'
+  ...
+# Subtest: stalled actual Response reader has finite cancellation and governed uncertain accounting
+ok 25 - stalled actual Response reader has finite cancellation and governed uncertain accounting
+  ---
+  duration_ms: 71.224525
+  type: 'test'
+  ...
+1..25
+# tests 25
+# suites 0
+# pass 21
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2582.139483
