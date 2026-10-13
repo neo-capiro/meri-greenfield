@@ -31,10 +31,11 @@ export function aggregateMaterial(sections,context){
    if(s.start!==end){bad=true;break;}text+=s.text;end=s.end;
   }
   if(bad||end!==g.identity.total||text.length!==end){incomplete.push({...g.identity,reason:'MISSING_OR_CONFLICTING_BODY_SECTIONS',readSections:g.sections.map(s=>({start:s.start,end:s.end}))});continue;}
-  if(utf8Sha(text)!==g.identity.contentSha256)fail('WORKFLOW_MATERIAL_HASH');
-  const last=g.sections.at(-1),reference=citationReference(g.identity,g.sections[0].citationId),record={sourceId:g.identity.sourceId,recordId:g.identity.recordId,recordVersionId:g.identity.recordVersionId,content:{kind:'full-read',text},contentSha256:g.identity.contentSha256,citationId:reference.citationId,scopes:g.identity.scopes,metadata:{...g.identity.metadata,
+  const contentSha256=utf8Sha(text),nativeSha256=g.identity.metadata.hashScheme==='memory-text-nul-version'?utf8Sha(text+'\0'+g.identity.recordVersionId):contentSha256;
+  if(nativeSha256!==g.identity.contentSha256)fail('WORKFLOW_MATERIAL_HASH');
+  const last=g.sections.at(-1),reference=citationReference({...g.identity,contentSha256},g.sections[0].citationId),record={sourceId:g.identity.sourceId,recordId:g.identity.recordId,recordVersionId:g.identity.recordVersionId,content:{kind:'full-read',text},contentSha256,citationId:reference.citationId,scopes:g.identity.scopes,metadata:{...g.identity.metadata,
    sourceLocators:[...new Set(g.sections.map(s=>s.citationId))],...(reference.citationIdentitySha256?{citationKind:'derived-Meri-reference',citationIdentitySha256:reference.citationIdentitySha256}:{})}};
-  records.set(key,{record,source:last.source,authorizationDecisionId:last.authorizationDecisionId,authorizationDecisionIds:[...decisions],receiptSha256s:[...new Set(g.sections.map(s=>s.receiptSha256))],verification:g.identity.metadata.materialKind==='stored-extracted-section'?'bound-extracted-section':'bound-source-excerpt'});
+  records.set(key,{record,source:last.source,authorizationDecisionId:last.authorizationDecisionId,authorizationDecisionIds:[...decisions],receiptSha256s:[...new Set(g.sections.map(s=>s.receiptSha256))],verification:g.identity.metadata.materialKind==='stored-extracted-section'?'bound-extracted-section':g.identity.metadata.materialKind==='approved-derived-memory'?'bound-derived-memory':'bound-source-excerpt'});
  }
  return {records,incomplete};
 }

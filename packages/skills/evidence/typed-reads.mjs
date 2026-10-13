@@ -12,7 +12,8 @@ export function bindWorkflowReads(rawContext,rawReceipts,identity){
  const asset=selectSkill(identity.skillId,identity.skillVersion);if(!['quick_skill.commitments_audit','quick_skill.relationship_brief'].includes(asset.pin.skillId))fail('WORKFLOW_SKILL_REFUSED');
  const context=contextValue(rawContext,asset),receipts=data(rawReceipts);if(!Array.isArray(receipts)||receipts.length>asset.manifest.budgets.maxToolCalls)fail('WORKFLOW_READ_BUDGET');
  const sections=[],coverage=new Map();
- for(const raw of receipts){const r=own(raw,['operation','request','normalizationContext','result','resultSha256']);if(hash(r.result)!==r.resultSha256||!asset.manifest.allowedOperations.some(op=>same(op,r.operation)))fail('WORKFLOW_RECEIPT_REFUSED');
+ for(const raw of receipts){const r=own(raw,['operation','request','normalizationContext','result','resultSha256'],['observedAt']);if(hash(r.result)!==r.resultSha256||!asset.manifest.allowedOperations.some(op=>same(op,r.operation)))fail('WORKFLOW_RECEIPT_REFUSED');
+  if(r.observedAt!==undefined&&(typeof r.observedAt!=='string'||!Number.isFinite(Date.parse(r.observedAt))||new Date(r.observedAt).toISOString()!==r.observedAt||Date.parse(r.observedAt)>Date.parse(context.asOf)+asset.manifest.budgets.maxRuntimeSeconds*1000))fail('WORKFLOW_OBSERVATION_TIME');
   const contract=resolveOperationContract(r.operation),normalized=contract.normalizeInput(r.request,r.normalizationContext),sourceId=contract.descriptor.sourceRequirements[0]?.sourceId;
   if(contract.descriptor.sourceRequirements.length!==1||!asset.manifest.requiredSources.some(s=>s.sourceId===sourceId))fail('WORKFLOW_SOURCE_REFUSED');
   const rawResult=r.result,wrapped=Object.hasOwn(rawResult,'result');let result=rawResult,subject=rawResult.subject;
@@ -22,7 +23,7 @@ export function bindWorkflowReads(rawContext,rawReceipts,identity){
   if(result.operation&&!same(result.operation,r.operation)||result.argumentsSha256!==undefined&&result.argumentsSha256!==normalized.argumentsSha256)fail('WORKFLOW_REQUEST_BINDING');
   const sourceWindow=result.window??null,windowMatch=sourceWindow===null?'native-window-undeclared':same(sourceWindow,context.window)?'exact':sourceWindow.basis==='unbounded'?'broad-native-read':'refused';
   if(windowMatch==='refused')fail('WORKFLOW_WINDOW_REFUSED');
-  const payload=result.data??result,source=result.sources?.[0]??{sourceId,authority:contract.descriptor.sourceRequirements[0].authority,status:'partial',freshness:'unknown',asOf:null,retrievedAt:payload.generatedAt??null,snapshotVersionId:null,observationBasis:payload.generatedAt?'native-generated-at':'unknown'};
+  const payload=result.data??result,source=result.sources?.[0]??{sourceId,authority:contract.descriptor.sourceRequirements[0].authority,status:'partial',freshness:'unknown',asOf:null,retrievedAt:r.observedAt??payload.generatedAt??null,snapshotVersionId:null,observationBasis:r.observedAt?'trusted-control-observed-at':payload.generatedAt?'native-generated-at':'unknown'};
   if(source.sourceId!==sourceId||source.authority!==contract.descriptor.sourceRequirements[0].authority||source.retrievedAt!==null&&(!Number.isFinite(Date.parse(source.retrievedAt))||Date.parse(source.retrievedAt)>Date.parse(context.asOf)+asset.manifest.budgets.maxRuntimeSeconds*1000))fail('WORKFLOW_SOURCE_BINDING');
   if(payload.clientId!==undefined&&payload.clientId!==null&&!context.subject.scopes.some(s=>s.kind==='client'&&s.resourceId===payload.clientId))fail('WORKFLOW_CLIENT_SCOPE');
   if(sourceId==='client_knowledge_monday'&&(payload.records??[]).some(row=>!context.mondayBoardIds.includes(row.provenance?.boardId)||row.payload?.sourceActorUserId!==context.binding.actorId||!context.subject.scopes.some(s=>s.kind==='client'&&s.resourceId===row.payload?.clientId)))fail('WORKFLOW_MONDAY_SCOPE');
@@ -31,7 +32,9 @@ export function bindWorkflowReads(rawContext,rawReceipts,identity){
   cell.operations.push(r.operation);cell.returnedCount+=cover.returnedCount??cover.returned??result.returned??result.count??0;cell.retrievedAt=source.retrievedAt;cell.sourceWindows.push(sourceWindow);cell.continuation=structuredClone(continuation);
   cell.limitations.push(...(cover.limitations??[]),'Native read coverage and metadata do not verify semantic conclusions or exhaustive history.');if(windowMatch!=='exact')cell.limitations.push('Native window differs or is undeclared; coverage is not evidence of complete selected-window enumeration.');
   coverage.set(sourceId,cell);
-  if(source.retrievedAt!==null)for(const s of materialSections(result,sourceId,subject))sections.push({...s,source,authorizationDecisionId:subject.authorizationDecisionId,receiptSha256:r.resultSha256});
+  const material=materialSections(result,sourceId,subject);
+  if(source.retrievedAt!==null)for(const s of material)sections.push({...s,source,authorizationDecisionId:subject.authorizationDecisionId,receiptSha256:r.resultSha256});
+  if(!material.length||source.retrievedAt===null)cell.limitations.push('Projection-only or unsupported material: no complete eligible version/hash/body with an observed read time; metadata is not a decisive source excerpt.');
  }
  const {records,incomplete}=aggregateMaterial(sections,context);
  for(const value of incomplete){const cell=coverage.get(value.sourceId);cell?.limitations.push(`Decisive body remains incomplete: ${value.recordId} (${value.reason}).`);cell?.continuation.requiredReads.push(value.recordId);}

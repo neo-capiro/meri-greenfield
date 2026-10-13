@@ -1,0 +1,48 @@
+✔ exact original promise is bound with scope/version/hash and visible six-source coverage; no task mutation (11.53527ms)
+✔ suggestions remain separate and exact duplicate promise origins merge without semantic merging (2.692093ms)
+✔ conflicting owner/date evidence stays conflicting, including contradictions from related tracking (2.722829ms)
+✔ completed native task and free-form delivery claim cannot establish delivery or acceptance (2.28024ms)
+✔ unread sources and unmapped Monday are visible and never support absence (1.686067ms)
+✔ disconnected/unavailable mapped Monday retains source failure and continuation (2.065652ms)
+✔ refuses foreign tenant without a ledger (1.340162ms)
+✔ refuses foreign actor without a ledger (1.260564ms)
+✔ refuses different conversation without a ledger (1.422044ms)
+✔ refuses different run without a ledger (1.32481ms)
+✔ refuses different attempt without a ledger (1.198241ms)
+✔ refuses obsolete fence without a ledger (1.253113ms)
+✔ refuses different decision without a ledger (1.1706ms)
+✔ refuses substituted bytes without a ledger (1.19052ms)
+✔ refuses substituted hash without a ledger (1.18364ms)
+✔ refuses snippet without a ledger (1.207896ms)
+✔ refuses future read without a ledger (1.366282ms)
+✔ refuses unknown operation without a ledger (1.151102ms)
+✔ refuses other window without a ledger (9.800731ms)
+✔ refuses unmapped Monday read without a ledger (1.616813ms)
+✔ refuses wrong Monday boards without a ledger (1.606659ms)
+✔ refuses record-version substitution without a ledger (1.691145ms)
+✔ refuses quote mismatch without a ledger (1.607851ms)
+✔ refuses quote range without a ledger (1.537485ms)
+✔ refuses invented tracking source without a ledger (1.683503ms)
+✔ refuses orphan delivery link without a ledger (1.70121ms)
+✔ refuses invalid due date without a ledger (1.518348ms)
+✔ refuses duplicate ID without a ledger (1.632508ms)
+✔ refuses duplicate source without a ledger (1.87651ms)
+✔ refuses model-completed property without a ledger (1.926434ms)
+✔ accessors and extra options do not run during input admission (0.211775ms)
+✔ actual native scalar-safe body pages feed existing Commitments compiler without invented envelopes (12.957245ms)
+✔ missing first source body remains incomplete and has no eligible passage (1.451508ms)
+✔ refuses result digest substitution (1.054988ms)
+✔ refuses current binding substitution (1.41923ms)
+✔ refuses scope substitution (1.512619ms)
+✔ refuses immutable body hash substitution (1.788289ms)
+✔ refuses future source clock substitution (1.26388ms)
+✔ refuses unknown receipt field substitution (0.989611ms)
+✔ native meeting locator gets a stable disclosed Meri UUID without upgrading semantics (8.742147ms)
+ℹ tests 40
+ℹ suites 0
+ℹ pass 40
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1845.311257

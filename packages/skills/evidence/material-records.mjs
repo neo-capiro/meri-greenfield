@@ -22,5 +22,10 @@ export function materialSections(result,sourceId,subject) {
    add({recordId:`${p.sourceRecordId}:section:${p.section}`,recordVersionId:`extraction:${p.contentHash}:${p.sectionHash}:${p.section}`,contentSha256:p.sectionHash,citationId:row.recordId,text:b.text,start:p.characterStart,end:p.characterEnd,total:c.sectionCharacters,metadata:{documentId:p.sourceRecordId,section:p.section,originalDocumentSha256:p.contentHash,materialKind:'stored-extracted-section',citationKind:'source-range-locator',versionKind:'content-addressed-extraction',visualCoverage:false,trust:p.trust}});
   }
  }
+ if(sourceId==='client_knowledge_memory')for(const row of result.records??[]){const p=row.payload,proof=row.provenance,c=p?.content;
+  if(p?.contentStatus==='available'&&proof?.sourceVersion&&!proof.metadataTruncated&&typeof p.value==='string'&&c?.hash)
+   add({recordId:row.recordId,recordVersionId:proof.sourceVersion,contentSha256:c.hash,citationId:`client_knowledge_memory:${row.recordId}:${proof.sourceVersion}`,text:p.value,start:c.offset,end:c.endOffset,total:c.totalCharacters,
+    metadata:{materialKind:'approved-derived-memory',citationKind:'derived-locator',versionKind:'source-version',hashScheme:'memory-text-nul-version',nativeContentHash:c.hash,sourceUpdatedAt:row.updatedAt,governance:p.governance,sourceRef:proof.sourceRef,sourceExcerpt:proof.sourceExcerpt,upstreamExcerptVerified:false}});
+ }
  return out;
 }
