@@ -14,9 +14,9 @@ function setup(options={}){
  const preparePolicy=async call=>{state.policy.push(call);return {authorized:true,selectionSha256:call.selectionSha256,binding,scopes,requiredApprover,proposalExpiresAt:expires,checkedAtMs:now(),expiresAtMs:now()+500};};
  const owner=createTaskCreateApprovalMetadataOwner({store:options.store?.(store,state)??store,commandContext,preparePolicy:options.policy?.(preparePolicy,state,clock)??preparePolicy,now,newId:()=>id(100+(state.ids++)),maxRequestMs:500});
  const request={title:'  Follow up on recommendation  ',clientId:' ',dueDate:'2026-10-14'},operation={id:'create_task',version:'0.2.0'},input=commandToolValidators.normalizeCommandToolInput('task.create',request,{commandContext}).input;
- const call={operation,action:'task.create',binding,request,input,inputSha256:canonicalSha256(input),deadlineMs:now()+500};
+ const call={operation,action:'task.create',binding,request,input,inputSha256:canonicalSha256(input),deadlineMs:now()+500,signal:undefined};
  const tool=createCommandToolInterface({operation,action:'task.create',outputShape:'TaskCreateToolResult',commandContext,validators:commandToolValidators,assertProposal:assertProposalIntegrity,approvalMetadataOwner:owner,executor:{async execute(){state.executor++;return {status:'indeterminate',outcome:null};}},now,limits:{maxRequestMs:500,maxFactBytes:65536}});
- const readCall=record=>({proposalId:record.proposalId,commandSha256:state.stored.commandSha256,operation,action:'task.create',binding,deadlineMs:now()+500});
+ const readCall=record=>({proposalId:record.proposalId,commandSha256:state.stored.commandSha256,operation,action:'task.create',binding,deadlineMs:now()+500,signal:undefined});
  return {clock,now,binding,commandContext,scopes,requiredApprover,state,store,owner,call,tool,readCall,expires};
 }
 test('independent actual command tool prepares exact immutable task proposal without execution or approval',async()=>{
@@ -61,7 +61,7 @@ test('independent read-release revocation cannot return previously stored propos
  await assert.rejects(t.owner.read(t.readCall(record)));assert.equal(t.state.reads,1);assert.equal(t.state.inserts,1);
 });
 test('independent no retained record is a read refusal rather than an absent approval',async()=>{
- const t=setup();await assert.rejects(t.owner.read({proposalId:id(90),commandSha256:'a'.repeat(64),operation:t.call.operation,action:'task.create',binding:t.binding,deadlineMs:t.now()+500}));assert.equal(t.state.inserts,0);
+ const t=setup();await assert.rejects(t.owner.read({proposalId:id(90),commandSha256:'a'.repeat(64),operation:t.call.operation,action:'task.create',binding:t.binding,deadlineMs:t.now()+500,signal:undefined}));assert.equal(t.state.inserts,0);
 });
 test('independent hostile raw request is inert and detached from policy calls',async()=>{
  const t=setup();let hits=0;for(const request of [{get title(){hits++;return 'x';}},new Proxy({},{ownKeys(){hits++;throw Error('trap');}})])await assert.rejects(t.tool.prepare(request));assert.equal(hits,0);assert.equal(t.state.inserts,0);

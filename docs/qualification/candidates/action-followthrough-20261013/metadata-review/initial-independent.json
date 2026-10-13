@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/commands/approval-metadata/owner-independent.test.mjs",
+    "apps/control/commands/approval-metadata/postgres-independent.test.mjs"
+  ],
+  "cwd": "/tmp/meri-approval-metadata-review-20261013",
+  "sourceHead": "2b36ecc3c066f8355e572b9ed1c1516bef77147f",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T01:02:30.678145+00:00",
+  "durationSeconds": 2.725,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 437662,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/initial-independent.stdout.bin",
+      "bytes": 20742,
+      "sha256": "0237e685b0dffb793c8b63e0cda14b49368b6826d9e3b95f729fb22de5e1120d"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/initial-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
