@@ -1,0 +1,36 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "typecheck",
+    "--prefix",
+    "apps/runtime"
+  ],
+  "cwd": "/workspace/meri-runtime-integration",
+  "sourceHead": "059ee82da69064d7ce7075f63b2c6f37b2720788",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T19:28:42.567833+00:00",
+  "durationSeconds": 1.833,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 344643,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/assembled-runtime-20261013/root/integrated-types.stdout.bin",
+      "bytes": 76,
+      "sha256": "b9205ad279b7793153bca230ab7c3f290da1268763a1aa38303f79010a2455bc"
+    },
+    {
+      "path": "docs/qualification/candidates/assembled-runtime-20261013/root/integrated-types.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Root strict adopted Temporal/TLS option types on exact composed source, after native API/configured model-source clarifications.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

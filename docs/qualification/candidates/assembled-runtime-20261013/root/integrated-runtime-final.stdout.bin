@@ -1,0 +1,42 @@
+✔ runner lifecycle reuses canonical claim/UUID echo ACK over fixed task-capability facade (21.06732ms)
+✔ native checkpoint readback permits ordinary pause and source capture refusal never reports paused (9.789112ms)
+✔ runner resume forwards exact retained context and supported SDK restoration options (3.622411ms)
+✔ runner fork forwards exact retained context and supported SDK restoration options (1.783759ms)
+✔ runner native restore substitution refuses the single SDK query (1.202035ms)
+✔ actual control listener mounts canonical opaque issuance, submit/history and task-authorized RPC (3275.136944ms)
+✔ actual listener rejects cross-origin and incorrect methods; dependency loss changes readiness (2100.505722ms)
+✔ actual CLI help and invalid configuration exit before dependency allocation (355.324428ms)
+✔ actual process exits on SIGTERM after listener shutdown (2092.674476ms)
+✔ actual runner command composition consumes native-forwarded steering and acknowledges its immutable UUID (3078.898801ms)
+✔ actual runner native capture refusal leaves pause unverified and retains UNKNOWN control (2763.403251ms)
+✔ configuration refuses sources, production profile, unknown fields and shared task workspace (2.122488ms)
+✔ isolated runner refuses ambient provider, database, cloud and Temporal credentials (0.436295ms)
+✔ trusted Temporal registration uses both canonical workflow definitions and broker activity (0.668945ms)
+✔ broker accepts exact native task identity and propagates completion without an SDK loop (0.476776ms)
+✔ broker refuses a response from another writer fence (0.240982ms)
+✔ isolated runner invokes canonical activity and one scripted SDK query, preserving durable events (24.535057ms)
+✔ runner and container boundaries exclude legacy proxies and arbitrary injected config modules (37.10818ms)
+(node:346557) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ duplicate sslmode cannot disable TLS verification before any Pool or Temporal allocation (3.321549ms)
+✔ one exact verify-full mode reaches the controlled allocation and closes owned Pool on startup failure (1.621485ms)
+✔ pre-aborted control initialization refuses before Pool or Temporal allocation (2.348086ms)
+✔ private run-owner DTO refuses hostile getters, extra capability fields and artifact publication before authority (1.109841ms)
+✔ worker receipt requires exact input hash, scope tenant, selected client, full fence and current decision (1.326968ms)
+✔ worker authority rejects changed post-effect scope receipt and revokes temporary opaque session (5.477805ms)
+✔ invalid private request performs no task-authority or opaque-session effects (0.821747ms)
+✔ native client body read deadline stays bounded when transport cancellation never settles (30.388991ms)
+✔ broker cannot report completion after the immutable execution lease expires while polling (50.387953ms)
+✔ isolated runner enforces its configured immutable versions before any scripted SDK query (19.129116ms)
+✔ pre-aborted HTTP initialization does not expose a live listening application (0.515696ms)
+Error: aborted
+✔ actual HTTP disconnection aborts the native canonical application request (23.841813ms)
+✔ configuration is immutable and closed before dependency startup (0.732162ms)
+ℹ tests 31
+ℹ suites 0
+ℹ pass 31
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13711.492526

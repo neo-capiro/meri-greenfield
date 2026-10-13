@@ -1,0 +1,191 @@
+{
+  "base": "0c2b07d1a512324a3f5412ad5483243bc4649dcb",
+  "runtimeAcceptedSource": "b5734174407b399c75ab9bceafbf29c47a059ea4",
+  "storageAcceptedSource": "99106de14bd2ac600f0198ce02b83c95d3f74837",
+  "checks": [
+    {
+      "path": "packages/skills",
+      "baseObject": "5011e635f265379fc9d1f16e532e2ba6cbd44426",
+      "candidateObject": "5011e635f265379fc9d1f16e532e2ba6cbd44426",
+      "byteExact": true
+    },
+    {
+      "path": "infra",
+      "baseObject": "70c6cfda689ed975f5836a397930ac439742139c",
+      "candidateObject": "70c6cfda689ed975f5836a397930ac439742139c",
+      "byteExact": true
+    },
+    {
+      "path": "apps/control/conversations/migrations",
+      "baseObject": "32258af8efe2f22a23361165841f98506f665006",
+      "candidateObject": "32258af8efe2f22a23361165841f98506f665006",
+      "byteExact": true
+    },
+    {
+      "path": "packages/contracts/dist",
+      "baseObject": "4151d87d30592ea5a28989503b07891407bdff62",
+      "candidateObject": "4151d87d30592ea5a28989503b07891407bdff62",
+      "byteExact": true
+    },
+    {
+      "path": "packages/contracts/meri.schema.json",
+      "baseObject": "d7b3c22491ae81c5e875243754413aa7d35097e3",
+      "candidateObject": "d7b3c22491ae81c5e875243754413aa7d35097e3",
+      "byteExact": true
+    },
+    {
+      "path": "packages/contracts/conversation-lifecycle",
+      "baseObject": "4ff21f4c5cf43089a7519f7eef9bcc6b8cc9e530",
+      "candidateObject": "4ff21f4c5cf43089a7519f7eef9bcc6b8cc9e530",
+      "byteExact": true
+    },
+    {
+      "path": "apps/artifacts/service.mjs",
+      "baseObject": "f1810b26cfd1e40580b53b9e3a5c29e19488a62e",
+      "candidateObject": "f1810b26cfd1e40580b53b9e3a5c29e19488a62e",
+      "byteExact": true
+    },
+    {
+      "path": "apps/control/document-application",
+      "baseObject": "e4ba978b124d531f7d779a6641803256dda764db",
+      "candidateObject": "e4ba978b124d531f7d779a6641803256dda764db",
+      "byteExact": true
+    },
+    {
+      "path": "apps/control/conversations/skills",
+      "baseObject": "7f67a31533fa01969af53d74eba7604c0132699e",
+      "candidateObject": "7f67a31533fa01969af53d74eba7604c0132699e",
+      "byteExact": true
+    },
+    {
+      "path": "apps/gateway",
+      "baseObject": "e0673a0a90fde9c3a2fb6df76081979a810e17f7",
+      "candidateObject": "e0673a0a90fde9c3a2fb6df76081979a810e17f7",
+      "byteExact": true
+    },
+    {
+      "path": "apps/runtime/cli.mjs",
+      "acceptedSourceObject": "6026acb944a2109baa2d9b409483a572a6eb3d1f",
+      "candidateObject": "6026acb944a2109baa2d9b409483a572a6eb3d1f",
+      "byteExact": true
+    },
+    {
+      "path": "apps/runtime/control.mjs",
+      "acceptedSourceObject": "a0a17d67228aa3dbb275ebb8fdd0aa7290774d31",
+      "candidateObject": "a0a17d67228aa3dbb275ebb8fdd0aa7290774d31",
+      "byteExact": true
+    },
+    {
+      "path": "apps/runtime/conversation-runner.mjs",
+      "acceptedSourceObject": "102eeb949f24fd6b49f520908a04666b6a4abd3c",
+      "candidateObject": "102eeb949f24fd6b49f520908a04666b6a4abd3c",
+      "byteExact": true
+    },
+    {
+      "path": "apps/runtime/config.mjs",
+      "acceptedSourceObject": "c235489221044d6e05d87df410a03cc0049245b3",
+      "candidateObject": "c235489221044d6e05d87df410a03cc0049245b3",
+      "byteExact": true
+    },
+    {
+      "path": "apps/runtime/http-server.mjs",
+      "acceptedSourceObject": "efec6559c8e540b37216d0b93903de771ce8816d",
+      "candidateObject": "efec6559c8e540b37216d0b93903de771ce8816d",
+      "byteExact": true
+    },
+    {
+      "path": "apps/runtime/native-client.mjs",
+      "acceptedSourceObject": "f88a795d4dfd788425d443406ad9506c6130b5d6",
+      "candidateObject": "f88a795d4dfd788425d443406ad9506c6130b5d6",
+      "byteExact": true
+    },
+    {
+      "path": "apps/runtime/temporal-worker.mjs",
+      "acceptedSourceObject": "010cc7e87bfbc1c8daefab1d4457fed030070921",
+      "candidateObject": "010cc7e87bfbc1c8daefab1d4457fed030070921",
+      "byteExact": true
+    },
+    {
+      "path": "apps/runtime/worker-http.mjs",
+      "acceptedSourceObject": "f3749838751ef2185b5299155e30a6441dc30db8",
+      "candidateObject": "f3749838751ef2185b5299155e30a6441dc30db8",
+      "byteExact": true
+    },
+    {
+      "path": "apps/runtime/package.json",
+      "acceptedSourceObject": "0e09d0a2047b109d13ab99ecebc6da8de7460983",
+      "candidateObject": "0e09d0a2047b109d13ab99ecebc6da8de7460983",
+      "byteExact": true
+    },
+    {
+      "path": "apps/runtime/package-lock.json",
+      "acceptedSourceObject": "abe5835503d7a58e44f325743d5ebc312fcd6941",
+      "candidateObject": "abe5835503d7a58e44f325743d5ebc312fcd6941",
+      "byteExact": true
+    },
+    {
+      "path": "apps/runtime/Dockerfile",
+      "acceptedSourceObject": "ac7a3422ea466338497a70f56ca719e15503ba4c",
+      "candidateObject": "ac7a3422ea466338497a70f56ca719e15503ba4c",
+      "byteExact": true
+    },
+    {
+      "path": "apps/artifacts/storage/index.mjs",
+      "acceptedSourceObject": "7f2a2c5ec207d60ce91f3688b475fc4b6ff674b9",
+      "candidateObject": "7f2a2c5ec207d60ce91f3688b475fc4b6ff674b9",
+      "byteExact": true
+    },
+    {
+      "path": "apps/artifacts/storage/boundary.mjs",
+      "acceptedSourceObject": "c9bf16ba4dd1fc8a0077faa97973c35e73318956",
+      "candidateObject": "c9bf16ba4dd1fc8a0077faa97973c35e73318956",
+      "byteExact": true
+    },
+    {
+      "path": "apps/artifacts/storage/s3-objects.mjs",
+      "acceptedSourceObject": "de68efd51fbab132c5d03bc14a8d9686504d4fd2",
+      "candidateObject": "de68efd51fbab132c5d03bc14a8d9686504d4fd2",
+      "byteExact": true
+    },
+    {
+      "path": "apps/artifacts/storage/postgres-versions.mjs",
+      "acceptedSourceObject": "aee88dc71498d9e779bf947492026b05a7fb86e9",
+      "candidateObject": "aee88dc71498d9e779bf947492026b05a7fb86e9",
+      "byteExact": true
+    },
+    {
+      "path": "apps/artifacts/storage/package.json",
+      "acceptedSourceObject": "3b0f3bb008d9bc79621b187c6b781ec360051815",
+      "candidateObject": "3b0f3bb008d9bc79621b187c6b781ec360051815",
+      "byteExact": true
+    },
+    {
+      "path": "apps/artifacts/storage/package-lock.json",
+      "acceptedSourceObject": "d3966175df4c6329b332034ee26ce97d7771cdb4",
+      "candidateObject": "d3966175df4c6329b332034ee26ce97d7771cdb4",
+      "byteExact": true
+    },
+    {
+      "path": "apps/artifacts/migrations/0001_versions.sql",
+      "acceptedSourceObject": "3196528485ef2098c3b790ba5e300f9527953fab",
+      "candidateObject": "3196528485ef2098c3b790ba5e300f9527953fab",
+      "byteExact": true
+    },
+    {
+      "path": "packages/contracts/runtime-0.2/validate.mjs",
+      "acceptedSourceObject": "c0edf0eeabd09c58457bb320b0cf8c81d8c2d019",
+      "candidateObject": "c0edf0eeabd09c58457bb320b0cf8c81d8c2d019",
+      "byteExact": true
+    },
+    {
+      "path": ".dockerignore",
+      "acceptedSourceObject": "25693b63967a58ca83225ef70131f138061a19f9",
+      "candidateObject": "25693b63967a58ca83225ef70131f138061a19f9",
+      "byteExact": true
+    }
+  ],
+  "priorArtifactEntriesExact": 30,
+  "initialAuditError": "Nonexistent apps/artifacts/compilers locator; no source audit output written. Corrected by checking all prior canonical artifact entries from git tree. Cleanup completed before this audit error.",
+  "fixtureOrMigrationApplied": false,
+  "nativeAcceptance": false
+}

@@ -1,0 +1,38 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/runtime/test/runtime.test.mjs",
+    "apps/runtime/test/process.test.mjs",
+    "apps/runtime/test/lifecycle.test.mjs",
+    "docs/qualification/candidates/assembled-runtime-20261013/source-independent/runtime-independent.test.mjs",
+    "docs/qualification/candidates/assembled-runtime-20261013/source-independent/database-tls-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-runtime-integration",
+  "sourceHead": "059ee82da69064d7ce7075f63b2c6f37b2720788",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T19:28:41.151117+00:00",
+  "durationSeconds": 14.664,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 344558,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/assembled-runtime-20261013/root/integrated-runtime.stdout.bin",
+      "bytes": 4064,
+      "sha256": "769fa8eb0c7a258a0525edd1deef54b24932126d6f3927b09219fdfe1b20f536"
+    },
+    {
+      "path": "docs/qualification/candidates/assembled-runtime-20261013/root/integrated-runtime.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Root composed executable runtime process/current-task/lifecycle controls after all six independent source HOLD repairs, with exact original PR64 and durable storage source; no real native/provider/DB.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
