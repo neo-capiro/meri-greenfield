@@ -22,13 +22,18 @@
     },
     {
       "path": "docs/qualification/candidates/local-application-20261013/pilot/pricing.json",
-      "bytes": 4624,
-      "sha256": "7087aab17625d35f420b30c6b39b7e8779082ec7f9988f7bc87cf9bc7a2f8b06"
+      "bytes": 4755,
+      "sha256": "748c9412fdbb1f66073d83cf2d45c5bc4e29cd5899ddb2044cf8956dfc77191b"
     },
     {
       "path": "docs/qualification/candidates/local-application-20261013/pilot/public-evidence.json",
       "bytes": 3304,
       "sha256": "dc2df823e9d1d0893fcec15aa531dc86847bfdf12c4f529c9fb7f925fcea5475"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/pilot/review-correction.json",
+      "bytes": 401,
+      "sha256": "9d1250db2bc1dec4a49ad29536543e7dbbd6130e64973251d67b1a9458e7644a"
     },
     {
       "path": "docs/qualification/candidates/local-application-20261013/pilot/source-identities.json",
@@ -52,8 +57,8 @@
     },
     {
       "path": "docs/coordination/reports/CODEX-LOCAL-APPLICATION-PILOT-20261013.md",
-      "bytes": 10052,
-      "sha256": "bc0cb6b036a7d082db325c44b8bef109268bd19d4c6b8d8f4a81522ab2701c05"
+      "bytes": 10290,
+      "sha256": "84ffe6d4bc5db1772b9a6c216c84ada355e9c7f2608426cf7e1d90073057600d"
     }
   ]
 }

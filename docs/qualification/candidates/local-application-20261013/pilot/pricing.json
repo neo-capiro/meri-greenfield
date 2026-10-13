@@ -61,7 +61,7 @@
   "stopAndCleanup": [
     "No launch until exact rate bound and separate spend approval, supported current SDK/proxy/session/source binding and exact tool admission are present. This condition applies to paid model calls, not ordinary source-only synthetic checks.",
     "Before each count and inference reserve one attempt and worst-case cost; no retry/refund assumption for uncertain calls. Stop at3 inference or3 count attempts per session,18/18 total, authority change, unpriced feature, cache field, deadline, budget ceiling, unexpected source/effect or unknown ACK.",
-    "Proposed wall time60 seconds per model operation,180 seconds per session,20 minutes overall; shortest authority deadline wins. Cancel owned SDK session and wait for owned work/streams; record any unsettled call as uncertain, retain liability and stop, never claim remote cancellation refunds cost.",
+    "Retain prior unapproved paid-host proposal ceilings60 seconds per model operation,120 seconds per session,900 seconds overall; existing local demo maxTTL30 seconds is unchanged and does not implement these paid-host limits; shortest authority deadline wins. Cancel owned SDK session and wait for owned work/streams; record any unsettled call as uncertain, retain liability and stop, never claim remote cancellation refunds cost.",
     "Close each owned synthetic session/store after capture; no new daemon/resource/credential. Retain redacted immutable request/config/response/usage hashes, actual source/control receipts and expected-vs-observed fields; cleanup only owned temp files and processes."
   ]
 }

@@ -1,0 +1,6 @@
+{
+  "preimageCommit": "832120c96f33ca07862f10176797b777916ade45",
+  "finding": "New180s/session and20m ceilings unnecessarily widened prior sealed120s/900s and needed distinction from currentdemo maxTTL30s.",
+  "resolution": "Preserve120s/session and900s overall unapproved paid-host proposal ceilings; explicitly retain demo30s maximum. No source/test change.",
+  "sourceOrRuntimeExecution": false
+}
