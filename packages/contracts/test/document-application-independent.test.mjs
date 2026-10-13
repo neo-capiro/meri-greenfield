@@ -9,7 +9,7 @@ import {receiveDocumentRequest,receiveDocumentResponse,receiveDocumentDownload,D
 import {createDocumentApplication} from '../../../apps/control/document-application/index.mjs';
 import {createLocalDocumentFixture} from '../../../apps/control/document-application/local/fixture.mjs';
 const root=fileURLToPath(new URL('../../../',import.meta.url)),encode=x=>new TextEncoder().encode(typeof x==='string'?x:JSON.stringify(x));
-const specs={txt:{operation:'create_word',format:'txt',title:'Independent Unicode',content:{text:'  Café 🙂\r\n=literal\n'}},docx:{operation:'create_word',format:'docx',title:'Independent brief',content:{blocks:[{kind:'paragraph',runs:[{text:'An editable synthetic paragraph.'}]}]}},xlsx:{operation:'create_excel',format:'xlsx',title:'Independent workbook',content:{sheets:[{name:'Budget',rows:[[{value:'Item'},{value:'Amount'}],[{value:'Synthetic'},{value:12}],[{value:'Total'},{formula:'=SUM(B2:B2)'}]]}]}}};
+const specs={txt:{operation:'create_word',format:'txt',title:'Independent Unicode',content:{text:'  Café 🙂\r\n=literal\n'}},docx:{operation:'create_word',format:'docx',title:'Independent brief',content:{blocks:[{kind:'paragraph',runs:[{text:'An editable synthetic paragraph.'}]}]}},xlsx:{operation:'create_excel',format:'xlsx',title:'A'.repeat(120),content:{sheets:[{name:'Budget',rows:[[{value:'Item'},{value:'Amount'}],[{value:'Synthetic'},{value:12}],[{value:'Total'},{formula:'=SUM(B2:B2)'}]]}]}}};
 const raws={},success={},inspections={},downloads={},requests={},cleanups=[];let oldRoot;
 before(async()=>{
  oldRoot=process.env.MERI_REVIEW_SOURCE_ROOT;process.env.MERI_REVIEW_SOURCE_ROOT=root;
@@ -40,6 +40,7 @@ for(const format of ['txt','docx','xlsx'])test('actual '+format+' create/inspect
  const inspected=await receiveDocumentResponse('inspect',200,inspections[format].raw,inspections[format].request);assert.equal(inspected.inspection.currentBytesVerified,true);
  const got=await receiveDocumentDownload(binary(format),out.version);assert.deepEqual(got.bytes,downloads[format].bytes);assert.equal(got.version,out.version);
 });
+test('actual XLSX admits canonical 125-character filename',()=>assert.equal(success.xlsx.version.filename.length,125));
 test('actual TXT preserves exact multibyte whitespace and newline bytes',()=>assert.equal(new TextDecoder().decode(downloads.txt.bytes),specs.txt.content.text));
 test('actual revision correlates immutable parent and retains original',()=>{assert.equal(success.revise.version.parentVersionId,success.txt.version.versionId);assert.equal(success.revise.version.artifactId,success.txt.version.artifactId);assert.notEqual(success.revise.version.versionId,success.txt.version.versionId);assert.equal(new TextDecoder().decode(downloads.txt.bytes),specs.txt.content.text);});
 test('closed request refuses browser authority injection',()=>assert.throws(()=>receiveDocumentRequest('create',encode({deliveryId:'x',request:specs.txt,context:{authorized:true}})),DocumentResponseError));
