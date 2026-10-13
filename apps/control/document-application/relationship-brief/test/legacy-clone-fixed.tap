@@ -1,0 +1,113 @@
+TAP version 13
+# Subtest: original eleven operations collect material and show nine required source families without semantic verification
+not ok 1 - original eleven operations collect material and show nine required source families without semantic verification
+  ---
+  duration_ms: 83.157578
+  type: 'test'
+  location: '/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/test/compiler.test.mjs:7:1'
+  failureType: 'testCodeFailure'
+  error: 'Invalid private execution contract artifacts:ArtifactContext'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    executionShape (file:///workspace/meri-relationship-workflow/packages/contracts/retrieval-0.2/validate.mjs:83:38)
+    validateShape (file:///workspace/meri-relationship-workflow/packages/contracts/retrieval-0.2/execution-tool-validators.mjs:16:33)
+    Object.context (file:///workspace/meri-relationship-workflow/packages/contracts/artifacts-0.2/artifact-validation.mjs:40:32)
+    Object.prepare (file:///workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/compose.mjs:21:2785)
+    async TestContext.<anonymous> (file:///workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/test/compiler.test.mjs:7:139)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: URL and mismatched text cannot mark a free-form relationship claim verified
+not ok 2 - URL and mismatched text cannot mark a free-form relationship claim verified
+  ---
+  duration_ms: 25.870488
+  type: 'test'
+  location: '/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/test/compiler.test.mjs:8:1'
+  failureType: 'testCodeFailure'
+  error: 'Invalid private execution contract artifacts:ArtifactContext'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    executionShape (file:///workspace/meri-relationship-workflow/packages/contracts/retrieval-0.2/validate.mjs:83:38)
+    validateShape (file:///workspace/meri-relationship-workflow/packages/contracts/retrieval-0.2/execution-tool-validators.mjs:16:33)
+    Object.context (file:///workspace/meri-relationship-workflow/packages/contracts/artifacts-0.2/artifact-validation.mjs:40:32)
+    Object.prepare (file:///workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/compose.mjs:21:2785)
+    async TestContext.<anonymous> (file:///workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/test/compiler.test.mjs:8:185)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: missing source and body/call limits stay visible
+not ok 3 - missing source and body/call limits stay visible
+  ---
+  duration_ms: 21.072176
+  type: 'test'
+  location: '/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/test/compiler.test.mjs:9:1'
+  failureType: 'testCodeFailure'
+  error: 'Invalid private execution contract artifacts:ArtifactContext'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    executionShape (file:///workspace/meri-relationship-workflow/packages/contracts/retrieval-0.2/validate.mjs:83:38)
+    validateShape (file:///workspace/meri-relationship-workflow/packages/contracts/retrieval-0.2/execution-tool-validators.mjs:16:33)
+    Object.context (file:///workspace/meri-relationship-workflow/packages/contracts/artifacts-0.2/artifact-validation.mjs:40:32)
+    Object.prepare (file:///workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/compose.mjs:21:2785)
+    async TestContext.<anonymous> (file:///workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/test/compiler.test.mjs:9:75)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: refuses actor substitution
+ok 4 - refuses actor substitution
+  ---
+  duration_ms: 9.68098
+  type: 'test'
+  ...
+# Subtest: refuses fence substitution
+ok 5 - refuses fence substitution
+  ---
+  duration_ms: 9.758969
+  type: 'test'
+  ...
+# Subtest: refuses scope substitution
+ok 6 - refuses scope substitution
+  ---
+  duration_ms: 8.447733
+  type: 'test'
+  ...
+# Subtest: refuses operation substitution
+ok 7 - refuses operation substitution
+  ---
+  duration_ms: 8.335124
+  type: 'test'
+  ...
+# Subtest: exact immutable original pin and private preparation cannot be replaced
+not ok 8 - exact immutable original pin and private preparation cannot be replaced
+  ---
+  duration_ms: 0.262453
+  type: 'test'
+  location: '/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/test/compiler.test.mjs:11:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot assign to read only property 'skillVersion' of object '#<Object>'"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/test/compiler.test.mjs:11:130)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: parked cancellation is typed and propagates source abort
+ok 9 - parked cancellation is typed and propagates source abort
+  ---
+  duration_ms: 1.194931
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 5
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1853.925376

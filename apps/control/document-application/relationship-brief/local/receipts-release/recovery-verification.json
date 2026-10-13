@@ -1,0 +1,280 @@
+{
+  "status": "PASS_LOCAL_SYNTHETIC",
+  "reviewer": "relationship_recovery",
+  "baseCommit": "4803189c6fb282d91f1276f8e865e8fac4402431",
+  "sourceFiles": [
+    {
+      "path": "apps/control/document-application/relationship-brief/binding.mjs",
+      "sha256": "b455613ae12c8b95761ab0f77fba756d3b9bb4eb038f34644767216565eb6a43"
+    },
+    {
+      "path": "apps/control/document-application/relationship-brief/collect.mjs",
+      "sha256": "ab019e49e5ba0c85c23c48a8b3b09bfbb86eeecacc91df783b6b7aaabc8852bc"
+    },
+    {
+      "path": "apps/control/document-application/relationship-brief/compose.mjs",
+      "sha256": "bc60d2436bbb66f0b56c5a0ca389b9c13c539874dad34cc767c028edec3baa5c"
+    },
+    {
+      "path": "apps/control/document-application/relationship-brief/input.mjs",
+      "sha256": "90213ed96e223209d94c5d442a056b6d8376dd413c1a4da68fe96386bc23a7c3"
+    },
+    {
+      "path": "apps/control/document-application/relationship-brief/reads.mjs",
+      "sha256": "220d1fac1106e54c1e42e8463d9ab0690ae8007cf88355a9be1cd60a0dea4ed3"
+    },
+    {
+      "path": "apps/control/document-application/relationship-brief/local/flow.mjs",
+      "sha256": "83ec302d88cd1a96ee6a5581bbc74fd77a6244e3b52f1e26fdc9db4d032c383b"
+    },
+    {
+      "path": "apps/control/document-application/relationship-brief/local/inspection.mjs",
+      "sha256": "16302ab3983e398d475d87024798aa0adb90a727d21031ec36d02d8394594958"
+    },
+    {
+      "path": "apps/control/document-application/relationship-brief/local/render_pdf.py",
+      "sha256": "3861845148162490df1d7ec1aacaabbec1134fab64defc0ac75030ed667b1c63"
+    },
+    {
+      "path": "apps/control/document-application/relationship-brief/test/compiler.test.mjs",
+      "sha256": "283faf86540605d57d7d95d51243cc20fe021c2bbbcd49b0b5abdd5280b90556"
+    },
+    {
+      "path": "apps/control/document-application/relationship-brief/test/document.test.mjs",
+      "sha256": "5beb5d6a0ef774de5740ab894308a7aedd56fc1ea8461de0d4824402e6debccf"
+    },
+    {
+      "path": "apps/control/document-application/relationship-brief/test/fixtures.mjs",
+      "sha256": "419f4ffb707ac00a640a81f8a7220ce9a52b66a24e0cc5f53e7b7f8c01f58b41"
+    }
+  ],
+  "originalSkillPin": {
+    "skillId": "quick_skill.relationship_brief",
+    "skillVersion": "1.0.0",
+    "manifestSha256": "dc7f9358bd9d646d6d6ca88c9528ad16edbc7552d6765b0d97d945c31d1bc7ed",
+    "proseSha256": "3b6a422d87c0a61562fbe2f2ba96b164b282f62d38058e7db0e15a97672d99ee",
+    "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+  },
+  "allPagesFreshlyOpened": true,
+  "documents": [
+    {
+      "label": "original",
+      "versionId": "d589c9d8-05f3-43a5-af17-04ce8f8acab8",
+      "parentVersionId": null,
+      "docxSha256": "6deb1f7c926321514b4b056571ad3107747083f1cd359e893a557a130af939d0",
+      "pdfSha256": "5386eb887a280dc4a75bf9bcbbd540849ae39e43adee1c6003d6417c4fcf04e4",
+      "pageCount": 9,
+      "pages": [
+        {
+          "page": 1,
+          "path": "original-preview-1.png",
+          "sha256": "e6cecbe09f4b456148b54c123bd5f74912f0ba77ce00b958b2bb0807e3760334",
+          "bytes": 116711,
+          "opened": true,
+          "method": "fresh local tools.view_image",
+          "finding": "Readable text and uncertainty/coverage, no visible clipping; provenance paragraphs are dense."
+        },
+        {
+          "page": 2,
+          "path": "original-preview-2.png",
+          "sha256": "14b5099db39f149db23117c2c5c62cc7e78274b4d65edcaa1dd8dcc5b72bc2c5",
+          "bytes": 149216,
+          "opened": true,
+          "method": "fresh local tools.view_image",
+          "finding": "Readable text and uncertainty/coverage, no visible clipping; provenance paragraphs are dense."
+        },
+        {
+          "page": 3,
+          "path": "original-preview-3.png",
+          "sha256": "5b2a51f85a3eeb7531130b1e30f193b563ad5f9f8ea912d44b6a961f541c491e",
+          "bytes": 141569,
+          "opened": true,
+          "method": "fresh local tools.view_image",
+          "finding": "Readable text and uncertainty/coverage, no visible clipping; provenance paragraphs are dense."
+        },
+        {
+          "page": 4,
+          "path": "original-preview-4.png",
+          "sha256": "ad5b177e81ca344feb8d83d41ad8edb83bd9115618b735c5bc5c960c2d287019",
+          "bytes": 120388,
+          "opened": true,
+          "method": "fresh local tools.view_image",
+          "finding": "Readable text and uncertainty/coverage, no visible clipping; provenance paragraphs are dense."
+        },
+        {
+          "page": 5,
+          "path": "original-preview-5.png",
+          "sha256": "f90f06bd20bf6e1b5cd04337cc3e72fe1ae3249a85370ceac942420d6f61a2d7",
+          "bytes": 135023,
+          "opened": true,
+          "method": "fresh local tools.view_image",
+          "finding": "Readable text and uncertainty/coverage, no visible clipping; provenance paragraphs are dense."
+        },
+        {
+          "page": 6,
+          "path": "original-preview-6.png",
+          "sha256": "02714f2a23d34cc3856773102bc8ff03fb986161d37e09e741dde02050534335",
+          "bytes": 126211,
+          "opened": true,
+          "method": "fresh local tools.view_image",
+          "finding": "Readable text and uncertainty/coverage, no visible clipping; provenance paragraphs are dense."
+        },
+        {
+          "page": 7,
+          "path": "original-preview-7.png",
+          "sha256": "1f9167545eb49b4ba8f11f475b3bc148be132f017f2045058738db8dd2a97012",
+          "bytes": 124830,
+          "opened": true,
+          "method": "fresh local tools.view_image",
+          "finding": "Readable text and uncertainty/coverage, no visible clipping; provenance paragraphs are dense."
+        },
+        {
+          "page": 8,
+          "path": "original-preview-8.png",
+          "sha256": "cf685f4f201acaee63bd5225da492e5e371fe94b9d251b2fe6d974fd7dff0307",
+          "bytes": 138100,
+          "opened": true,
+          "method": "fresh local tools.view_image",
+          "finding": "Readable text and uncertainty/coverage, no visible clipping; provenance paragraphs are dense."
+        },
+        {
+          "page": 9,
+          "path": "original-preview-9.png",
+          "sha256": "937a09b3cc06a7ab29acaa894d0aac64697769c2e9028e1749a28d9f3ae32fb1",
+          "bytes": 51011,
+          "opened": true,
+          "method": "fresh local tools.view_image",
+          "finding": "Readable text and uncertainty/coverage, no visible clipping; provenance paragraphs are dense."
+        }
+      ]
+    },
+    {
+      "label": "revision",
+      "versionId": "5e489ffa-fc9b-4457-9533-976207f647bf",
+      "parentVersionId": "d589c9d8-05f3-43a5-af17-04ce8f8acab8",
+      "docxSha256": "f4c251af62bdde9acb248276eb641f6842862df6333e898e6f56e5922d109a19",
+      "pdfSha256": "a0afdd6b07bf6bff88b1fb2595c93ddc4843364745be63fece7a26901544e052",
+      "pageCount": 9,
+      "pages": [
+        {
+          "page": 1,
+          "path": "revision-preview-1.png",
+          "sha256": "6481cc074c2f4592ef9b0430d71441b6c4f67f8004434f8a9674d6a5cd1df4ea",
+          "bytes": 116768,
+          "opened": true,
+          "method": "fresh local tools.view_image",
+          "finding": "Readable text and uncertainty/coverage, no visible clipping; provenance paragraphs are dense."
+        },
+        {
+          "page": 2,
+          "path": "revision-preview-2.png",
+          "sha256": "14b5099db39f149db23117c2c5c62cc7e78274b4d65edcaa1dd8dcc5b72bc2c5",
+          "bytes": 149216,
+          "opened": true,
+          "method": "fresh local tools.view_image",
+          "finding": "Readable text and uncertainty/coverage, no visible clipping; provenance paragraphs are dense."
+        },
+        {
+          "page": 3,
+          "path": "revision-preview-3.png",
+          "sha256": "08c30d337aea39da789b9a9d08d7bcfdee7d4b2ba57353c87beb604c2b5d2a6a",
+          "bytes": 141657,
+          "opened": true,
+          "method": "fresh local tools.view_image",
+          "finding": "Readable text and uncertainty/coverage, no visible clipping; provenance paragraphs are dense."
+        },
+        {
+          "page": 4,
+          "path": "revision-preview-4.png",
+          "sha256": "e2137d64b2c6bacaf20a17a46a873bdc0e9f2a908136b57021ba160b4c6f5fd2",
+          "bytes": 120386,
+          "opened": true,
+          "method": "fresh local tools.view_image",
+          "finding": "Readable text and uncertainty/coverage, no visible clipping; provenance paragraphs are dense."
+        },
+        {
+          "page": 5,
+          "path": "revision-preview-5.png",
+          "sha256": "887cd8a29b84836b79423c34c99d6bc8b4562ef7fdbef0da4e022d5102bcc1a2",
+          "bytes": 134822,
+          "opened": true,
+          "method": "fresh local tools.view_image",
+          "finding": "Readable text and uncertainty/coverage, no visible clipping; provenance paragraphs are dense."
+        },
+        {
+          "page": 6,
+          "path": "revision-preview-6.png",
+          "sha256": "1131146ac0883f6bf946b6799b02897be12a427e33f25cc1ac32300e70c3e257",
+          "bytes": 126294,
+          "opened": true,
+          "method": "fresh local tools.view_image",
+          "finding": "Readable text and uncertainty/coverage, no visible clipping; provenance paragraphs are dense."
+        },
+        {
+          "page": 7,
+          "path": "revision-preview-7.png",
+          "sha256": "d625325b1f942c58de999d1d1dd284e8f2bd6181bb77bbcd2486d947fbe78c4c",
+          "bytes": 124581,
+          "opened": true,
+          "method": "fresh local tools.view_image",
+          "finding": "Readable text and uncertainty/coverage, no visible clipping; provenance paragraphs are dense."
+        },
+        {
+          "page": 8,
+          "path": "revision-preview-8.png",
+          "sha256": "baf6a1adfade995689cc9b28f18dcfaf141eb53cbeb31eeb496a7a2ee710aa83",
+          "bytes": 138139,
+          "opened": true,
+          "method": "fresh local tools.view_image",
+          "finding": "Readable text and uncertainty/coverage, no visible clipping; provenance paragraphs are dense."
+        },
+        {
+          "page": 9,
+          "path": "revision-preview-9.png",
+          "sha256": "f70a80e6802c91051174afd058fda9376f4a5982e082f2aaedbf955daafadabf",
+          "bytes": 72975,
+          "opened": true,
+          "method": "fresh local tools.view_image",
+          "finding": "Readable text and uncertainty/coverage, no visible clipping; provenance paragraphs are dense."
+        }
+      ]
+    }
+  ],
+  "test": {
+    "path": "apps/control/document-application/relationship-brief/test/recovery.tap",
+    "sha256": "587a1ed2a9d9f6ae24795c9e72ade502062d873c5a025d21ced29111b122c009",
+    "passed": 14,
+    "failed": 0
+  },
+  "checks": {
+    "documentPdfPngHashes": true,
+    "immutableParent": true,
+    "provenanceOriginalSkillPin": true,
+    "eachSourceReceiptHash": true,
+    "requiredFamilies": 9,
+    "originalOperations": 11,
+    "toolCeiling": 24,
+    "recordedProcessGroupsAbsent": true,
+    "cleanupRecorded": true
+  },
+  "historicalFailures": [
+    {
+      "path": "apps/control/document-application/relationship-brief/test/approved-final.tap",
+      "error": "ARTIFACT_PROCESS_FAILED",
+      "preservedOriginalPages": 9,
+      "revisionDocxRetained": false,
+      "allFailedCopyPagesInspected": false
+    },
+    {
+      "reportedBy": "root recovery handoff",
+      "error": "upstream image download HTTP503 invalid_value/url (status400)",
+      "repeatedInRecovery": false
+    }
+  ],
+  "limitations": [
+    "Historical missing revision remains unavailable; later successful artifacts cannot reconstruct it.",
+    "Artifact grant is separate historical synthetic output grant; not original selected-skill native admission.",
+    "Dense visible provenance metadata limits user-facing polish.",
+    "No live source/authentic current identity, native SDK/task retirement, Temporal persistence, frontend HTTPS/staging or semantic held-out acceptance is established."
+  ]
+}
