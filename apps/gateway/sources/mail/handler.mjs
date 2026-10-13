@@ -13,7 +13,7 @@ export function createMailReadHandler(options) {
         authority: fields.authority, signal: fields.signal}, now);
       if (fields.argumentsSha256 !== context.argumentsSha256) deny('INVALID_ARGUMENTS');
       context.active();
-      const page = frozenData(await read({operation, input: context.input, request: context.request,
+      const page = frozenData(await read.call(adapter, {operation, input: context.input, request: context.request,
         authority: context.authority, signal: context.signal}));
       context.active(); assertMailPage(page, context, context.request); context.active();
       const output = JSON.stringify(page); context.active(); return output;

@@ -27,10 +27,20 @@ export function readContext(call, now) {
   const {operation, contract} = mailContract(fields.operation);
   const input = frozenData(fields.input), request = frozenData(fields.request), authority = frozenData(fields.authority);
   validateShape(selections[operation.id], input);
-  publicShape('RunBinding', authority.binding); publicShape('CapabilityClaims', authority.claims);
-  assertSubject(authority.subject, authority.binding);
+  try {
+    ownFields(authority, ['binding', 'subject', 'claims', 'policyRevision', 'decision', 'sourceIds', 'deadlineMs']);
+    publicShape('RunBinding', authority.binding); publicShape('CapabilityClaims', authority.claims);
+    publicShape('AuthorizationDecision', authority.decision); assertSubject(authority.subject, authority.binding);
+  } catch { deny('ACCESS_DENIED'); }
+  const {claims, decision, subject} = authority;
   if (!same(authority.binding, authority.claims.binding) ||
       authority.policyRevision !== authority.subject.policyRevision || authority.policyRevision !== authority.claims.policyRevision ||
+      authority.policyRevision !== decision.policyRevision || claims.audience !== 'meri-gateway' ||
+      !claims.actions.includes('tool.read') || decision.decision !== 'allowed' ||
+      decision.operation !== `${operation.id}@${operation.version}` || decision.decisionId !== subject.authorizationDecisionId ||
+      !same(decision.actor, {tenantId: authority.binding.tenantId, actorId: authority.binding.actorId}) ||
+      !same(decision.scopes, subject.scopes) ||
+      claims.scopes.some(scope => scope.tenantId !== authority.binding.tenantId || scope.policyRevision !== authority.policyRevision) ||
       !['personal', 'client'].includes(authority.subject.kind) || input.subject.kind !== authority.subject.kind ||
       (input.subject.kind === 'client' && input.subject.entityId !== authority.subject.entityIds[0]) ||
       !authority.subject.scopes.some(scope => scope.kind === 'mailbox') ||
