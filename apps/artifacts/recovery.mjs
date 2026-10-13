@@ -29,6 +29,7 @@ export async function recoverArtifact(owner,baseVersionId,requestValue,contextVa
     await authority(life,action,{...resource,object:record.version.object},requestSha256,context);
     const bytes=await bytesFor(life,record.version.object,Math.min(context.maxBytes,evidence.maxOutputBytes));
     const inspection=inspectBytes(record.inspection,bytes,request.format);verified=true;
+    await authority(life,action,{...resource,object:record.version.object},requestSha256,context);
     // Only verified, published bytes may complete the original conservative charge.
     const settled=v.snapshot(await life.run(signal=>budget.settle({ticketId:evidence.reservationId,requestSha256,
       bytes:bytes.length,outcome:'completed',signal})));

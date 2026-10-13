@@ -45,12 +45,13 @@ export function createPostgresArtifactService(options){
       // Bookkeeping only; all artifact access below still requires current authority.
       const initial=document?await ports.budget.observe({signal}):null;
       const durableVersionId=document?documentInvocationVersion(initial):undefined;
-      let current,selection,ticketId,committed,outputBytes=null;
+      let current,selection,ticketId,committed,outputBytes=null,replaying=false;
       let deadlineMs=trusted.context.deadlineMs,maxBytes=Math.min(trusted.context.maxBytes,configuredAllocation.budgets.maxOutputBytes);
       const active=()=>{if(signal?.aborted||!Number.isSafeInteger(now())||now()>=deadlineMs)fail('ARTIFACT_DEADLINE');};
       const narrow=value=>{if(!Number.isSafeInteger(value))fail('ARTIFACT_BUDGET_DEADLINE');deadlineMs=Math.min(deadlineMs,value);active();};
       async function authorizeArtifact(resource){
         active();
+        if(replaying)narrow((await ports.budget.recheck({signal:resource.signal})).deadlineMs);
         current=v.snapshot(await ports.authority.check({credential,descriptor:v.snapshot(trusted.descriptor),input:v.snapshot(intent(call)),signal:resource.signal,limitDeadline:narrow}));
         validateShape('CapabilityClaims',current.claims);validateShape('AuthorizationDecision',current.decision);
         if(!same(current.binding,trusted.context.binding)||!same(current.claims.binding,trusted.context.binding)||!same(current.decision.scopes,trusted.context.scopes)||current.decision.decision!=='allowed'||current.decision.operation!==`${trusted.descriptor.operation.id}@${trusted.descriptor.operation.version}`||current.policyRevision!==current.claims.policyRevision||current.decision.policyRevision!==current.policyRevision||trusted.context.scopes.some(s=>s.policyRevision!==current.policyRevision||!current.claims.scopes.some(c=>same(c,s))))fail('ARTIFACT_BUDGET_AUTHORITY');
@@ -103,6 +104,7 @@ export function createPostgresArtifactService(options){
       const executePort={async execute(value){active();const result=await executor.execute({...value,maxBytes:Math.min(value.maxBytes,maxBytes),deadlineMs:Math.min(value.deadlineMs,deadlineMs)});active();outputBytes=result.bytes?.length;if(!Number.isSafeInteger(outputBytes)||outputBytes>maxBytes)fail('ARTIFACT_OUTPUT_LIMIT');return result;}};
       const service=createArtifactService({validators:v,authorize:authorizeArtifact,budget,versions:versionPort,objects:objectPort,executor:executePort,now,ids:()=>{const allocated=v.snapshot(ids());observation.versionId=durableVersionId??allocated.versionId;return allocated;}});
       async function recover(evidence){
+        replaying=true;
         ticketId=evidence.reservationId;observation.ticketId=ticketId;observation.versionId=durableVersionId;
         observation.reservationStarted=true;observation.reservationAcknowledged=true;
         maxBytes=Math.min(maxBytes,evidence.maxOutputBytes);

@@ -111,7 +111,19 @@ export function createToolInvocationOwner({ a, store, admit, storedAllocation, m
           maxOutputBytes:observed?Number(observed.reservation.max_output_bytes):null});
       },()=>active(call,deadline));
     }
-    return Object.freeze({...bound,deadlineMs,limitDeadline,settle,observe});
+    async function recheck(call) {
+      active(call,deadlineMs());
+      return store.transact(async client=>{
+        client=checkedClient(client,()=>active(call,deadlineMs()));
+        const budget=await store.lock(client),row=await prepared(client,d);
+        if(row.invocation_id!==i.invocationId)refuse('INVOCATION_CONFLICT');
+        limitDeadline(Number(row.deadline_ms));
+        await admit(client,i,budget,limitDeadline);active(call,deadlineMs());
+        if(budget.now.getTime()>=deadlineMs())refuse('INVOCATION_STOPPED');
+        return Object.freeze({deadlineMs:deadlineMs()});
+      },()=>active(call,deadlineMs()));
+    }
+    return Object.freeze({...bound,deadlineMs,limitDeadline,settle,observe,recheck});
   }
   async function reconcile(deliveryJson,requestJson,live) {
     const d=deliveryRecord(deliveryJson,requestJson,a);if(live)active(live.call,live.deadline);

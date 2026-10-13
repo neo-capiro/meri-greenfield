@@ -143,3 +143,19 @@ test('original persisted deadline cannot be extended by a later replay',async t=
   const a=await setup(t);await a.run();a.rows()[0].deadline_ms=String(Date.now()-1);
   await assert.rejects(a.run());a.invariant();
 });
+for(const change of ['revoked','expired','run-fence','quarantined'])test(`durable ${change} authority blocks replay even when other current ports allow`,async t=>{
+  const a=await setup(t);await a.run();const state=a.f.ledger.state();
+  if(change==='revoked')state.grant.state='REVOKED';
+  if(change==='expired')state.grant.expires_at=new Date(Date.now()-1);
+  if(change==='run-fence')state.run.fence++;
+  if(change==='quarantined')state.budget.quarantined=true;
+  await unresolved(a.run());assert.equal((await a.owner().reconcileInvocation(a.call)).stage,'SETTLED');a.invariant();
+});
+test('durable grant revocation after replay bytes prevents completion marker and release',async t=>{
+  const a=await setup(t),versions=a.options.versions;
+  a.options.versions={...versions,async commit(...args){await versions.commit(...args);throw Error('LOST_VERSION_ACK');}};
+  await assert.rejects(a.run());assert.equal(a.rows()[0].completion,null);
+  const objects=a.options.objects;a.options.objects={...objects,async get(...args){const bytes=await objects.get(...args);a.f.ledger.state().grant.state='REVOKED';return bytes;}};
+  await unresolved(a.run());assert.equal(a.rows()[0].completion,null);a.invariant(1,1,0);
+  assert.equal((await a.owner().reconcileInvocation(a.call)).stage,'UNKNOWN');
+});
