@@ -1,0 +1,8 @@
+{
+  "sourceHead": "8591fe3fc2ccdd5197669f9438e1292f17b9b135",
+  "initialToolChunk": "80ec9a",
+  "initialExitCode": 1,
+  "initialError": "Traceback (most recent call last):\n  File \"<stdin>\", line 3, in <module>\nKeyError: 'members'\n",
+  "failedExpression": "for row in j['members']:",
+  "correction": "Integration review manifest uses files; six component manifests use members. Read its declared files array. No source, test or manifest modification."
+}
